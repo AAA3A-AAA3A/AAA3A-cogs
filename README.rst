@@ -68,9 +68,9 @@ Credits
   
 **Credits for the cog Ip:**
 
-* Thanks to @ AverageGamer on Discord for the cog idea and the code to find the external ip!
+* Thanks to @AverageGamer on Discord for the cog idea and the code to find the external ip!
 
-* Thanks to @ epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
+* Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 
 -------
 LICENSE

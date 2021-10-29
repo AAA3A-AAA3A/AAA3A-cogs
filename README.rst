@@ -55,14 +55,21 @@ Credits
 -------
 
 **Credits for the cog CmdChannel:**
+
 * Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
+
 * Thanks to TrustyJAID for the code (a bit modified to work here and to improve as needed) for the log messages sent! (https://github.com/TrustyJAID/Trusty-cogs/tree/master/extendedmodlog)
+
 * Thanks to Kreusada for the code (with modifications to make it work and match the syntax of the rest) to add a log channel or remove it if no channel is specified! (https://github.com/Kreusada/Kreusada-Cogs/tree/master/captcha)
+
 * Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
+
 * Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
   
 **Credits for the cog Ip:**
+
 * Thanks to @ AverageGamer on Discord for the cog idea and the code to find the external ip!
+
 * Thanks to @ epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 
 -------

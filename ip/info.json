@@ -1,0 +1,13 @@
+{
+    "author": ["AAA3A"],
+    "name": "Ip",
+    "install_msg": "This cog allows you to obtain the ip of the host machine with the command `[p]ip`.",
+    "short": "A cog to get the ip address of the bot.",
+    "description": "A cog to get the ip address of the bot.",
+    "tags": [
+        "ip",
+        "host",
+        "machine"
+    ],
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

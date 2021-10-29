@@ -1,0 +1,13 @@
+{
+    "author": ["AAA3A"],
+    "name": "CmdChannel",
+    "install_msg": "Thank you for installing this cog! \nDo `[p]help` to get the list of commands and their description. \nIt does not use user data.",
+    "short": "A log to send the result of a command to another channel.",
+    "description": "Have you ever wanted to send commands to the bot and get a result in the channel of your choice? Then this log is for you! It allows you to hide the author of the command and to do as if you had sent the command in the specified channel... It is up to the owner of a server to activate the option and to choose a channel for the logs.",
+    "tags": [
+        "command",
+        "channel",
+        "hide"
+    ],
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

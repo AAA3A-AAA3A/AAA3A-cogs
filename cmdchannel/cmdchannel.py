@@ -4,8 +4,6 @@ import discord, typing, logging, datetime
 from typing import List
 from redbot.core import checks, Config, commands, data_manager
 from redbot.core.utils.chat_formatting import escape, humanize_list, inline, humanize_timedelta, pagify
-
-
 from copy import copy
 
 # Credits:

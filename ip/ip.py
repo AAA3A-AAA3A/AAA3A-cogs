@@ -1,6 +1,10 @@
 import discord, requests, socket
 from redbot.core import checks, commands, data_manager, Config
 
+# Credits:
+# Thanks to @ AverageGamer on Discord for the cog idea and the code to find the external ip!
+# Thanks to @ epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
+
 class Ip(commands.Cog):
     """A cog to get the ip address of the bot!"""
 

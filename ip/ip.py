@@ -58,10 +58,3 @@ class Ip(commands.Cog):
 
         await self.data.port.set(port)
         await ctx.send(f"Port registered: {port}.")
-
-    @commands.is_owner()
-    @commands.command()
-    async def test(self, ctx):
-        """Test"""
-        abc = "903633188419682334"
-        await abc.delete()

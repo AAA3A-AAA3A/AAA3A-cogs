@@ -39,9 +39,9 @@ There are settings for server administrators (logs, delete message, information 
 There is a possibility to imitate a user and also the user and the channel at the same time.
 
 **Ip:**
+
 A cog to display the external ip address of the bot and a command for the web address with support for ip and a custom port.
 In order for cog to calculate the ip address for both commands, please install "requests" with this command.
-.. code-block:: ini
 
     python -m pip install requests
 

@@ -31,10 +31,19 @@ Available cogs list
 -------------------
 
 Here is the list of cogs in my repo. There are (so far) only 2.
-| Cog        | Status | Description                                                                                                                                                                                                             |
-| ---------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| CmdChannel | Well   | <details><summary>Allow bot moderators to type commands in a command channel with a result in the specified channel.</summary>There are settings for server administrators (logs, delete message, information with command in specified channel, disable commands). There is a possibility to imitate a user and also the user and the channel at the same time.</details>    |
-| Ip         | Well   | <details><summary>A cog to display the external ip address of the bot and a command for the web address with support for ip and a custom port.</summary>In order for cog to calculate the ip address for both commands, please install "requests" with the command `python -m pip install requests`.</details>                                                                |
+
+**CmdChannel:**
+
+Allow bot moderators to type commands in a command channel with a result in the specified channel.
+There are settings for server administrators (logs, delete message, information with command in specified channel, disable commands).
+There is a possibility to imitate a user and also the user and the channel at the same time.
+
+**Ip:**
+A cog to display the external ip address of the bot and a command for the web address with support for ip and a custom port.
+In order for cog to calculate the ip address for both commands, please install "requests" with this command.
+.. code-block:: ini
+
+    python -m pip install requests
 
 ------------
 Contributing

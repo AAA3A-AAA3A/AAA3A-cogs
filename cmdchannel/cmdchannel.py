@@ -274,7 +274,7 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.is_owner()
     @commands.command(aliases=["userchannelcmd"])
-    async def cmduserchannel(self, ctx, channel: typing.Optional[discord.TextChannel]=None, user: typing.Optional[discord.Member]=None, *, command):
+    async def cmduserchannel(self, ctx, user: typing.Optional[discord.Member]=None, channel: typing.Optional[discord.TextChannel]=None, *, command):
         """Act as if the command had been typed in the channel of your choice by imitating the specified user.
         The prefix must not be entered.
         If you do not specify a user, the author will be used.

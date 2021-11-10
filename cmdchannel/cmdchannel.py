@@ -46,13 +46,13 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.mod()
     @commands.command(aliases=["channelcmd"])
-    async def cmdchannel(self, ctx, delete: typing.Optional[int]=0, channel: typing.Optional[discord.TextChannel]=None, *, command):
+    async def cmdchannel(self, ctx, delete: typing.Optional[bool]=False, channel: typing.Optional[discord.TextChannel]=None, *, command):
         """Act as if the command had been typed in the channel of your choice.
         The prefix must not be entered.
         If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).
         """
-
-        if delete == 1: await ctx.message.delete()
+        if delete:
+            await ctx.message.delete()
 
         if channel is None:
             channel = ctx.channel
@@ -162,14 +162,13 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.is_owner()
     @commands.command(aliases=["usercmd"])
-    # async def cmduser(self, ctx, delete: typing.Optional[int]=0, user: discord.Member, *, command):
-    async def cmduser(self, ctx, user: typing.Optional[discord.Member]=None, *, command):
+    async def cmduser(self, ctx, delete: typing.Optional[bool]=False, user: typing.Optional[discord.Member]=None, *, command):
         """Act as if the command had been typed by imitating the specified user.
         The prefix must not be entered.
         If you do not specify a user, the author will be used.
         """
-
-        if delete == 1: await ctx.message.delete()
+        if delete:
+            await ctx.message.delete()
 
         if user is None:
             user = ctx.author
@@ -278,13 +277,13 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.is_owner()
     @commands.command(aliases=["userchannelcmd"])
-    async def cmduserchannel(self, ctx, delete: typing.Optional[int]=0, user: typing.Optional[discord.Member]=None, channel: typing.Optional[discord.TextChannel]=None, *, command):
+    async def cmduserchannel(self, ctx, delete: typing.Optional[bool]=False, user: typing.Optional[discord.Member]=None, channel: typing.Optional[discord.TextChannel]=None, *, command):
         """Act as if the command had been typed in the channel of your choice by imitating the specified user.
         The prefix must not be entered.
         If you do not specify a user, the author will be used.
         """
-
-        if delete == 1: await ctx.message.delete()
+        if delete:
+            await ctx.message.delete()
 
         if channel is None:
             channel = ctx.channel

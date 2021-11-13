@@ -38,6 +38,10 @@ Allow bot moderators to type commands in a command channel with a result in the 
 There are settings for server administrators (logs, delete message, information with command in specified channel, disable commands).
 There is a possibility to imitate a user and also the user and the channel at the same time.
 
+**AntiRaid:**
+
+This cog allows you to prevent raids on your servers. If you give a person too many permissions, they can destroy everything by deleting each channel one by one. With this cog, the bot will delete all the roles (and therefore permissions) of the person if he deletes a channel (unless he is the server owner).
+
 **Ip:**
 
 A cog to display the external ip address of the bot and a command for the web address with support for ip and a custom port.

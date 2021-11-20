@@ -99,8 +99,9 @@ class AntiRaid(commands.Cog):
         ``channel``: Text channel.
         You can also use "None" if you wish to remove the logging channel.
         """
-        if ctx.author.id = ctx.guild.owner.id:
+        if not ctx.author.id == ctx.guild.owner.id:
             await ctx.send("Only the owner of this server can access these commands!")
+            return
 
         if channel is None:
             await self.data.guild(ctx.guild).logschannel.clear()
@@ -131,8 +132,9 @@ class AntiRaid(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
-        if ctx.author.id = ctx.guild.owner.id:
+        if not ctx.author.id == ctx.guild.owner.id:
             await ctx.send("Only the owner of this server can access these commands!")
+            return
 
         config = await self.data.guild(ctx.guild).all()
 
@@ -150,8 +152,9 @@ class AntiRaid(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
-        if ctx.author.id = ctx.guild.owner.id:
+        if not ctx.author.id == ctx.guild.owner.id:
             await ctx.send("Only the owner of this server can access these commands!")
+            return
 
         config = await self.data.guild(ctx.guild).all()
 
@@ -169,8 +172,9 @@ class AntiRaid(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
-        if ctx.author.id = ctx.guild.owner.id:
+        if not ctx.author.id == ctx.guild.owner.id:
             await ctx.send("Only the owner of this server can access these commands!")
+            return
 
         config = await self.data.guild(ctx.guild).all()
 

@@ -420,6 +420,9 @@ class CmdChannel(commands.Cog):
         ``channel``: Text channel.
         You can also use "None" if you wish to remove the logging channel.
         """
+        if not ctx.author.id == ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+            return
 
         if channel is None:
             await self.data.guild(ctx.guild).logschannel.clear()
@@ -455,6 +458,10 @@ class CmdChannel(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
+        if not ctx.author.id == ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+            return
+
         config = await self.data.guild(ctx.guild).all()
 
         actual_state_enabled = config["enabled_cmdchannel"]
@@ -471,6 +478,10 @@ class CmdChannel(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
+        if not ctx.author.id == ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+            return
+
         config = await self.data.guild(ctx.guild).all()
 
         actual_state_confirmation = config["confirmation_cmdchannel"]
@@ -487,6 +498,10 @@ class CmdChannel(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
+        if not ctx.author.id == ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+            return
+
         config = await self.data.guild(ctx.guild).all()
 
         actual_state_delete = config["deletemessage_cmdchannel"]
@@ -503,6 +518,10 @@ class CmdChannel(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
+        if not ctx.author.id == ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+            return
+
         config = await self.data.guild(ctx.guild).all()
 
         actual_state_information = config["informationmessage_cmdchannel"]
@@ -524,6 +543,10 @@ class CmdChannel(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
+        if not ctx.author.id == ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+            return
+
         config = await self.data.guild(ctx.guild).all()
 
         actual_state_enabled = config["enabled_cmduser"]
@@ -540,6 +563,10 @@ class CmdChannel(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
+        if not ctx.author.id == ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+            return
+
         config = await self.data.guild(ctx.guild).all()
 
         actual_state_confirmation = config["confirmation_cmduser"]
@@ -556,6 +583,10 @@ class CmdChannel(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
+        if not ctx.author.id == ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+            return
+
         config = await self.data.guild(ctx.guild).all()
 
         actual_state_delete = config["deletemessage_cmduser"]
@@ -572,6 +603,10 @@ class CmdChannel(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
+        if not ctx.author.id == ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+            return
+
         config = await self.data.guild(ctx.guild).all()
 
         actual_state_information = config["informationmessage_cmduser"]
@@ -593,6 +628,10 @@ class CmdChannel(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
+        if not ctx.author.id == ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+            return
+
         config = await self.data.guild(ctx.guild).all()
 
         actual_state_enabled = config["enabled_cmduserchannel"]
@@ -609,6 +648,10 @@ class CmdChannel(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
+        if not ctx.author.id == ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+            return
+
         config = await self.data.guild(ctx.guild).all()
 
         actual_state_confirmation = config["confirmation_cmduserchannel"]
@@ -625,6 +668,10 @@ class CmdChannel(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
+        if not ctx.author.id == ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+            return
+
         config = await self.data.guild(ctx.guild).all()
 
         actual_state_delete = config["deletemessage_cmduserchannel"]
@@ -641,6 +688,10 @@ class CmdChannel(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
+        if not ctx.author.id == ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+            return
+
         config = await self.data.guild(ctx.guild).all()
 
         actual_state_information = config["informationmessage_cmduserchannel"]

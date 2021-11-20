@@ -88,6 +88,22 @@ Credits
 * Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 
 * Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+
+**Credits for the cog TransferChannel:**
+
+* Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
+
+* Thanks to TrustyJAID's Backup for starting the command to list the latest source channel messages! (https://github.com/TrustyJAID/Trusty-cogs/tree/master/backup)
+
+* Thanks to QuoteTools from SimBad for the embed!
+
+* Thanks to Speak from @epic guy for the webhooks! (https://github.com/npc203/npc-cogs/tree/main/speak)
+
+* Thanks to Say from LaggronsDumb for the attachments in the single messages and webhooks! (https://github.com/laggron42/Laggrons-Dumb-Cogs/tree/v3/say)
+
+* Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
+
+* Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
   
 **Credits for the cog Ip:**
 

@@ -25,6 +25,7 @@ class AntiRaid(commands.Cog):
             "logschannel": None, # The channel for logs.
             "enabled": False, # Enable the possibility.
             "user_dm": True, # Enable the user dm.
+            "bots": True, # Enable bots.
         }
 
         self.data.register_guild(**self.cmd_guild)
@@ -37,11 +38,15 @@ class AntiRaid(commands.Cog):
         logschannel = config["logschannel"]
         actual_state_enabled = config["enabled"]
         actual_state_user_dm = config["user_dm"]
+        actual_state_bots = config["bots"]
         perp, reason = await self.get_audit_log_reason(
             old_channel.guild, old_channel, discord.AuditLogAction.channel_delete
         )
         if perp.id == old_channel.guild.owner.id:
             return
+        if not actual_state_bots:
+            if perp.bot:
+                return
         if actual_state_enabled:
             rolelist_name = [r.name for r in perp.roles if r != old_channel.guild.default_role]
             rolelist_mention = [r.mention for r in perp.roles if r != old_channel.guild.default_role]
@@ -94,6 +99,8 @@ class AntiRaid(commands.Cog):
         ``channel``: Text channel.
         You can also use "None" if you wish to remove the logging channel.
         """
+        if ctx.author.id = ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
 
         if channel is None:
             await self.data.guild(ctx.guild).logschannel.clear()
@@ -124,6 +131,9 @@ class AntiRaid(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
+        if ctx.author.id = ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+
         config = await self.data.guild(ctx.guild).all()
 
         actual_state_enabled = config["enabled"]
@@ -140,6 +150,9 @@ class AntiRaid(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
+        if ctx.author.id = ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+
         config = await self.data.guild(ctx.guild).all()
 
         actual_state_user_dm = config["user_dm"]
@@ -149,3 +162,22 @@ class AntiRaid(commands.Cog):
 
         await self.data.guild(ctx.guild).user_dm.set(state)
         await ctx.send(f"User DM state registered: {state}.")
+
+    @config.command(name="bots", aliases=["nobots"], usage="<true_or_false>")
+    async def bots(self, ctx, state: bool):
+        """Enable or disable Bots.
+
+        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
+        """
+        if ctx.author.id = ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+
+        config = await self.data.guild(ctx.guild).all()
+
+        actual_state_bots = config["bots"]
+        if actual_state_bots is state:
+            await ctx.send(f"Bots is already set on {state}.")
+            return
+
+        await self.data.guild(ctx.guild).bots.set(state)
+        await ctx.send(f"Bots state registered: {state}.")

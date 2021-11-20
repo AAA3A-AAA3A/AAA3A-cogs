@@ -42,6 +42,10 @@ There is a possibility to imitate a user and also the user and the channel at th
 
 This cog allows you to prevent raids on your servers. If you give a person too many permissions, they can destroy everything by deleting each channel one by one. With this cog, the bot will delete all the roles (and therefore permissions) of the person if he deletes a channel (unless he is the server owner).
 
+**TransferChannel:**
+
+A cog to transfer messages from one channel to another with embeds or single messages or single messages with webhooks (name and avatar of the original author). Warning: this cog uses the Discord api many times during transfers.
+
 **Ip:**
 
 A cog to display the external ip address of the bot and a command for the web address with support for ip and a custom port.

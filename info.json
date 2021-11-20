@@ -4,5 +4,5 @@
     "name" : "AAA3A-cogs",
     "short" : "Several cogs for the redbot.",
     "description" : "Several cogs adding functionality to the redbot.",
-    "tags" : ["ip", "utility","command"]
+    "tags" : ["ip", "utility","command", "message"]
 }

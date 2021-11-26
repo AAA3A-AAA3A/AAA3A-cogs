@@ -21,14 +21,19 @@ class AntiRaid(commands.Cog):
             identifier=947269490247,
             force_registration=True,
         )
-        self.cmd_guild = {
+        self.antiraid_guild = {
             "logschannel": None, # The channel for logs.
             "enabled": False, # Enable the possibility.
             "user_dm": True, # Enable the user dm.
-            "bots": True, # Enable bots.
+            "number_detected_member": 1, # Number.
+            "number_detected_bot": 1, # Number.
+        }
+        self.antiraid_member = {
+            "count": 0, # The count of channel's deletes.
         }
 
-        self.data.register_guild(**self.cmd_guild)
+        self.data.register_guild(**self.antiraid_guild)
+        self.data.register_member(**self.antiraid_member)
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, old_channel: discord.abc.GuildChannel):
@@ -38,35 +43,51 @@ class AntiRaid(commands.Cog):
         logschannel = config["logschannel"]
         actual_state_enabled = config["enabled"]
         actual_state_user_dm = config["user_dm"]
-        actual_state_bots = config["bots"]
+        actual_number_detected_member = config["number_detected_member"]
+        actual_number_detected_bot = config["number_detected_bot"]
+        logschannel = config["logschannel"]
         perp, reason = await self.get_audit_log_reason(
             old_channel.guild, old_channel, discord.AuditLogAction.channel_delete
         )
         if perp.id == old_channel.guild.owner.id:
             return
-        if not actual_state_bots:
-            if perp.bot:
-                return
+        if self.bot.user.id == old_channel.guild.owner.id:
+            return
+        actual_count = await self.data.member(perp).count()
         if actual_state_enabled:
-            rolelist_name = [r.name for r in perp.roles if r != old_channel.guild.default_role]
-            rolelist_mention = [r.mention for r in perp.roles if r != old_channel.guild.default_role]
-            if actual_state_user_dm:
-                await perp.send(f"All your roles have been taken away because you have deleted channel #{old_channel}.\nYour former roles: {rolelist_name}")
-            for r in perp.roles:
-                if r != old_channel.guild.default_role:
-                    await perp.remove_roles(r)
-            if logschannel:
-                embed: discord.Embed = discord.Embed()
-                embed.title = f"The user {perp.name}#{perp.discriminator} has deleted the channel #{old_channel.name}!"
-                embed.description = f"To prevent him from doing anything else, I took away as many roles as my current permissions would allow.\nUser mention: {perp.mention} - User ID: {perp.id}"
-                embed.color = discord.Colour.dark_teal()
-                embed.set_author(name=perp, url=perp.avatar_url, icon_url=perp.avatar_url)
-                embed.add_field(
+            if not perp.bot:
+                actual_number_detected = actual_number_detected_member
+                if actual_number_detected == 0:
+                    return
+            else:
+                actual_number_detected = actual_number_detected_bot
+                if actual_number_detected == 0:
+                    return
+            actual_count += 1
+            if actual_count >= actual_number_detected:
+                await self.data.member(perp).count.clear()
+                rolelist_name = [r.name for r in perp.roles if r != old_channel.guild.default_role]
+                rolelist_mention = [r.mention for r in perp.roles if r != old_channel.guild.default_role]
+                if actual_state_user_dm:
+                    await perp.send(f"All your roles have been taken away because you have deleted channel #{old_channel}.\nYour former roles: {rolelist_name}")
+                for r in perp.roles:
+                    if r != old_channel.guild.default_role:
+                         await perp.remove_roles(r)
+                if logschannel:
+                    embed: discord.Embed = discord.Embed()
+                    embed.title = f"The user {perp.name}#{perp.discriminator} has deleted the channel #{old_channel.name}!"
+                    embed.description = f"To prevent him from doing anything else, I took away as many roles as my current permissions would allow.\nUser mention: {perp.mention} - User ID: {perp.id}"
+                    embed.color = discord.Colour.dark_teal()
+                    embed.set_author(name=perp, url=perp.avatar_url, icon_url=perp.avatar_url)
+                    embed.add_field(
                     inline=False,
-                    name="Before I intervened, the user had the following roles:",
-                    value=rolelist_mention)
-                logschannel = self.bot.get_channel(logschannel)
-                await logschannel.send(embed=embed)
+                        name="Before I intervened, the user had the following roles:",
+                        value=rolelist_mention)
+                    logschannel = self.bot.get_channel(logschannel)
+                    await logschannel.send(embed=embed)
+            else:
+                await self.data.member(perp).count.set(actual_count)
+                return
         else:
             return
 
@@ -137,10 +158,10 @@ class AntiRaid(commands.Cog):
             return
 
         config = await self.data.guild(ctx.guild).all()
-
         actual_state_enabled = config["enabled"]
         if actual_state_enabled is state:
             await ctx.send(f"AntiRaid is already set on {state}.")
+
             return
 
         await self.data.guild(ctx.guild).enabled.set(state)
@@ -165,12 +186,13 @@ class AntiRaid(commands.Cog):
 
         await self.data.guild(ctx.guild).user_dm.set(state)
         await ctx.send(f"User DM state registered: {state}.")
+        
+    @config.command(name="nbmember", aliases=["membernb"], usage="<int>")
+    async def nbmember(self, ctx, int: int):
+        """Number Detected - Member
 
-    @config.command(name="bots", aliases=["nobots"], usage="<true_or_false>")
-    async def bots(self, ctx, state: bool):
-        """Enable or disable Bots.
-
-        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
+        Before action, how many deleted channels should be detected?
+        `0' to disable this protection.
         """
         if not ctx.author.id == ctx.guild.owner.id:
             await ctx.send("Only the owner of this server can access these commands!")
@@ -178,10 +200,34 @@ class AntiRaid(commands.Cog):
 
         config = await self.data.guild(ctx.guild).all()
 
-        actual_state_bots = config["bots"]
-        if actual_state_bots is state:
-            await ctx.send(f"Bots is already set on {state}.")
+        await self.data.guild(ctx.guild).number_detected_member.set(int)
+        await ctx.send(f"Number Detected - Member registered: {int}.")
+
+    @config.command(name="nbbot", aliases=["botsnb"], usage="<int>")
+    async def nbbot(self, ctx, int: int):
+        """Number Detected - Bot
+
+        Before action, how many deleted channels should be detected?
+        `0' to disable this protection.
+        """
+        if not ctx.author.id == ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        await self.data.guild(ctx.guild).bots.set(state)
-        await ctx.send(f"Bots state registered: {state}.")
+        config = await self.data.guild(ctx.guild).all()
+
+        await self.data.guild(ctx.guild).number_detected_bot.set(int)
+        await ctx.send(f"Number Detected - Bot registered: {int}.")
+        
+    @config.command(name="resetuser", aliases=["userreset"], usage="<int>")
+    async def resetuser(self, ctx, user: discord.Member):
+        """Reset number detected for a user
+        """
+        if not ctx.author.id == ctx.guild.owner.id:
+            await ctx.send("Only the owner of this server can access these commands!")
+            return
+
+        config = await self.data.member(user).all()
+
+        await self.data.member(user).count.clear()
+        await ctx.send(f"Count removed for {user.name}.")

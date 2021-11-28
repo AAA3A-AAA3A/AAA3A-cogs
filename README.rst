@@ -42,6 +42,10 @@ There is a possibility to imitate a user and also the user and the channel at th
 
 This cog allows you to prevent raids on your servers. If you give a person too many permissions, they can destroy everything by deleting each channel one by one. With this cog, the bot will delete all the roles (and therefore permissions) of the person if he deletes a channel (unless he is the server owner).
 
+**ClearChannel:**
+
+This cog will remove ALL messages from the channel in which the command is made. It clones it and deletes the old one. By default, only the server owner (and the bot owner) can use it for security reasons. There are several options: an embed at the beginning of the new channel to say that the channel has been renitialized, a dm to the author of the command, and an additional security feature allowing the old channel to be simply renamed instead of deleted (to keep the messages).
+
 **TransferChannel:**
 
 A cog to transfer messages from one channel to another with embeds or single messages or single messages with webhooks (name and avatar of the original author). Warning: this cog uses the Discord api many times during transfers.
@@ -88,6 +92,14 @@ Credits
 * Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 
 * Thanks to TrustyJAID for the code (a bit modified to work here and to improve as needed) for the log messages sent! (https://github.com/TrustyJAID/Trusty-cogs/tree/master/extendedmodlog)
+
+* Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
+
+* Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+
+**Credits for the cog ClearChannel:**
+
+* Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 
 * Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 

@@ -62,9 +62,11 @@ class TransferChannel(commands.Cog):
         guild = ctx.guild
         today = datetime.date.today().strftime("%Y-%m-%d")
         total_msgs = 0
-        async for message in source.history(limit=limit+1):
-            total_msgs += 1
+        msgList = await source.history(limit=limit+1, oldest_first=False).flatten()
+        msgList.reverse()
+        for message in msgList:
             if not message.id == ctx.message.id:
+                total_msgs += 1
                 if embed:
                     em = embed_from_msg(message)
                     await destination.send(embed=em)

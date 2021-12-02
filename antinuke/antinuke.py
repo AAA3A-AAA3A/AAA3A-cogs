@@ -51,7 +51,7 @@ class AntiNuke(commands.Cog):
         )
         if perp.id == old_channel.guild.owner.id:
             return
-        if self.bot.user.id == old_channel.guild.owner.id:
+        if perp.id == self.bot.user.id:
             return
         actual_count = await self.data.member(perp).count()
         if actual_state_enabled:

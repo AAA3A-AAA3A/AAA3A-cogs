@@ -146,6 +146,7 @@ class CmdChannel(commands.Cog):
                 await ctx.send("CommandChannel have been disabled by an administrator of this server.")
             return
 
+    @commands.guild_only()
     @commands.is_owner()
     @commands.command(aliases=["usercmd"])
     async def cmduser(self, ctx, delete: typing.Optional[bool]=False, user: typing.Optional[discord.Member]=None, *, command):

@@ -49,6 +49,8 @@ class AntiNuke(commands.Cog):
         perp, reason = await self.get_audit_log_reason(
             old_channel.guild, old_channel, discord.AuditLogAction.channel_delete
         )
+        if perp is None:
+            return
         if perp.id == old_channel.guild.owner.id:
             return
         if perp.id == self.bot.user.id:
@@ -70,9 +72,13 @@ class AntiNuke(commands.Cog):
                 rolelist_mention = [r.mention for r in perp.roles if r != old_channel.guild.default_role]
                 if actual_state_user_dm:
                     await perp.send(f"All your roles have been taken away because you have deleted channel #{old_channel}.\nYour former roles: {rolelist_name}")
-                for r in perp.roles:
-                    if r != old_channel.guild.default_role:
-                         await perp.remove_roles(r)
+                if guild.me.guild_permissions.manage_roles:
+                    for r in perp.roles:
+                         if r != old_channel.guild.default_role:
+                             try:
+                                 await perp.remove_roles(r)
+                             except Exception:
+                                 pass
                 if logschannel:
                     embed: discord.Embed = discord.Embed()
                     embed.title = f"The user {perp.name}#{perp.discriminator} has deleted the channel #{old_channel.name}!"

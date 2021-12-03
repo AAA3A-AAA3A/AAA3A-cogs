@@ -16,7 +16,7 @@ from copy import copy
 
 
 class CmdChannel(commands.Cog):
-    """A cog to get the ip address of the bot!"""
+    """A cog to send the result of a command to another channel!"""
 
     def __init__(self, bot):
         self.bot = bot

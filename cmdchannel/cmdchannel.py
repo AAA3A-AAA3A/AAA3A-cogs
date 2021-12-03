@@ -340,7 +340,7 @@ class CmdChannel(commands.Cog):
                 msg.channel = channel
                 msg.content = command
                 ctx.bot.dispatch("message", msg)
-                    if actual_state_confirmation:
+                if actual_state_confirmation:
                     try:
                         await ctx.author.send(f"The `{command}` command has been launched in the {channel} channel by imitating the {user} user. You can check if it worked.")
                     except discord.Forbidden:

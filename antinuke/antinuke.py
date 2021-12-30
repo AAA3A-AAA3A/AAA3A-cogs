@@ -1,9 +1,8 @@
-from random import choice
 
-import discord, typing, logging, datetime
-from typing import Sequence, Union, cast, Optional, Tuple, Dict, List, Any
-from redbot.core import checks, Config, commands, data_manager
-from copy import copy
+import discord
+import typing
+from typing import List, Optional, Tuple, Union
+from redbot.core import Config, commands
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
@@ -30,6 +29,7 @@ class AntiNuke(commands.Cog):
         }
         self.antinuke_member = {
             "count": 0, # The count of channel's deletes.
+            "old_roles": [], # The roles to be handed in if it wasn't a nuke.
         }
 
         self.data.register_guild(**self.antinuke_guild)
@@ -49,11 +49,12 @@ class AntiNuke(commands.Cog):
         perp, reason = await self.get_audit_log_reason(
             old_channel.guild, old_channel, discord.AuditLogAction.channel_delete
         )
+        logschannel = self.bot.get_channel(logschannel)
         if perp is None:
             return
-        if perp.id == old_channel.guild.owner.id:
+        if perp == old_channel.guild.owner:
             return
-        if perp.id == self.bot.user.id:
+        if perp == old_channel.guild.me:
             return
         actual_count = await self.data.member(perp).count()
         if actual_state_enabled:
@@ -68,17 +69,23 @@ class AntiNuke(commands.Cog):
             actual_count += 1
             if actual_count >= actual_number_detected:
                 await self.data.member(perp).count.clear()
-                rolelist_name = [r.name for r in perp.roles if r != old_channel.guild.default_role]
-                rolelist_mention = [r.mention for r in perp.roles if r != old_channel.guild.default_role]
+                old_roles = perp.roles.copy()
+                old_roles.remove(old_channel.guild.default_role)
+                old_roles = [
+                    r for r in old_roles if r.position < old_channel.guild.me.top_role.position and not r.managed
+                ]
+                rolelist_name = [r.name for r in old_roles]
+                rolelist_mention = [r.mention for r in old_roles]
                 if actual_state_user_dm:
                     await perp.send(f"All your roles have been taken away because you have deleted channel #{old_channel}.\nYour former roles: {rolelist_name}")
-                if guild.me.guild_permissions.manage_roles:
-                    for r in perp.roles:
-                         if r != old_channel.guild.default_role:
-                             try:
-                                 await perp.remove_roles(r)
-                             except Exception:
-                                 pass
+                if old_channel.guild.me.guild_permissions.manage_roles:
+                    # await perp.edit(roles=[], reason=f"All roles in {perp} ({perp.id}) roles have been removed as a result of the antinuke system being triggered on this server.")
+                    for role in old_roles:
+                        try:
+                            await perp.remove_roles(role, reason=f"All roles in {perp} ({perp.id}) roles have been removed as a result of the antinuke system being triggered on this server.")
+                        except Exception:
+                            pass
+                    await self.data.member(perp).old_roles.set(old_roles)
                 if logschannel:
                     embed: discord.Embed = discord.Embed()
                     embed.title = f"The user {perp.name}#{perp.discriminator} has deleted the channel #{old_channel.name}!"
@@ -86,7 +93,7 @@ class AntiNuke(commands.Cog):
                     embed.color = discord.Colour.dark_teal()
                     embed.set_author(name=perp, url=perp.avatar_url, icon_url=perp.avatar_url)
                     embed.add_field(
-                    inline=False,
+                        inline=False,
                         name="Before I intervened, the user had the following roles:",
                         value=rolelist_mention)
                     logschannel = self.bot.get_channel(logschannel)
@@ -225,7 +232,7 @@ class AntiNuke(commands.Cog):
         await ctx.send(f"Number Detected - Bot registered: {int}.")
         
     @config.command(name="resetuser", aliases=["userreset"], usage="<int>")
-    async def resetuser(self, ctx, user: discord.Member):
+    async def resetuser(self, ctx, user: discord.Member, give_roles: bool = False):
         """Reset number detected for a user
         """
         if not ctx.author.id == ctx.guild.owner.id:
@@ -234,5 +241,17 @@ class AntiNuke(commands.Cog):
 
         config = await self.data.member(user).all()
 
+        if give_roles:
+            old_roles = config["old_roles"]
+            old_roles = [ctx.guild.get_role(r) for r in old_roles]
+            old_roles = [
+                r for r in old_roles if r.position < ctx.guild.me.top_role.position and not r.managed
+            ]
+            if not old_roles == []:
+                # await user.edit(roles=old_roles, reason=f"All former roles of {user} ({user.id}) have been restored at the request of the server owner.")
+                await user.add_roles(*old_roles, reason=f"All former roles of {user} ({user.id}) have been restored at the request of the server owner.")
+                await ctx.send(f"Restored roles for {user.name} ({user.id}).")
+
         await self.data.member(user).count.clear()
-        await ctx.send(f"Count removed for {user.name}.")
+        await self.data.member(user).old_roles.clear()
+        await ctx.send(f"Count removed for {user.name} ({user.id}).")

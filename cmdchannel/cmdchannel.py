@@ -13,8 +13,6 @@ from copy import copy
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
-
-
 class CmdChannel(commands.Cog):
     """A cog to send the result of a command to another channel!"""
 
@@ -46,7 +44,7 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.mod()
     @commands.command(aliases=["channelcmd"])
-    async def cmdchannel(self, ctx, delete: typing.Optional[bool]=False, channel: typing.Optional[discord.TextChannel]=None, *, command):
+    async def cmdchannel(self, ctx, delete: typing.Optional[bool]=False, channel: typing.Optional[discord.TextChannel]=None, *, command: str = ""):
         """Act as if the command had been typed in the channel of your choice.
         The prefix must be entered if it is a command. Otherwise, it will be a message only.
         If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).
@@ -56,6 +54,10 @@ class CmdChannel(commands.Cog):
 
         if channel is None:
             channel = ctx.channel
+
+        if not command and not ctx.message.embeds and not ctx.message.attachments:
+            await ctx.send_help()
+            return
 
         config = await self.data.guild(ctx.guild).all()
         logschannel = config["logschannel"]
@@ -70,54 +72,14 @@ class CmdChannel(commands.Cog):
                 if actual_state_information:
                     await channel.send(f"The command issued in this channel is:\n```{command}```")
                 if logschannel:
-                    time = ctx.message.created_at
-                    message = command
                     can_run = await self.member_can_run(ctx)
-                    guild = ctx.guild
-                    try:
-                        privs = ctx.command.requires.privilege_level.name
-                        user_perms = ctx.command.requires.user_perms
-                        my_perms = ctx.command.requires.bot_perms
-                    except Exception:
-                        return
-                    if privs == "MOD":
-                        mod_role_list = await ctx.bot.get_mod_roles(guild)
-                        if mod_role_list != []:
-                            role = humanize_list([r.mention for r in mod_role_list]) + f"\n{privs}\n"
-                        else:
-                            role = _("Not Set\nMOD\n")
-                    elif privs == "ADMIN":
-                        admin_role_list = await ctx.bot.get_admin_roles(guild)
-                        if admin_role_list != []:
-                            role = humanize_list([r.mention for r in admin_role_list]) + f"\n{privs}\n"
-                        else:
-                           role = _("Not Set\nADMIN\n")
-                    elif privs == "BOT_OWNER":
-                        role = humanize_list([f"<@!{_id}>" for _id in ctx.bot.owner_ids])
-                        role += f"\n{privs}\n"
-                    elif privs == "GUILD_OWNER":
-                        role = guild.owner.mention + f"\n{privs}\n"
-                    else:
-                        role = f"everyone\n{privs}\n"
-                    if user_perms:
-                        role += humanize_list(
-                            [perm.replace("_", " ").title() for perm, value in user_perms if value]
-                        )
-                    if my_perms:
-                        i_require = humanize_list(
-                            [perm.replace("_", " ").title() for perm, value in my_perms if value]
-                        )
                     embed = discord.Embed(
                         description=f"CmdChannel - Command used: {ctx.prefix}{command}",
                         colour=cmd_colour,
-                        # timestamp=time,
                     )
                     embed.add_field(name=("Imitated user"), value=ctx.author.mention)
                     embed.add_field(name=("Channel"), value=channel.mention)
                     embed.add_field(name=("Can Run"), value=str(can_run))
-                    # embed.add_field(name=("Requires"), value=role)
-                    if i_require:
-                        embed.add_field(name=("Bot Requires"), value=i_require)
                     author_title = ("{member} ({m_id}) - Used a Command").format(
                         member=ctx.author, m_id=ctx.author.id
                     )
@@ -149,7 +111,7 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.is_owner()
     @commands.command(aliases=["usercmd"])
-    async def cmduser(self, ctx, delete: typing.Optional[bool]=False, user: typing.Optional[discord.Member]=None, *, command):
+    async def cmduser(self, ctx, delete: typing.Optional[bool]=False, user: typing.Optional[discord.Member]=None, *, command: str = ""):
         """Act as if the command had been typed by imitating the specified user.
         The prefix must be entered if it is a command. Otherwise, it will be a message only.
         If you do not specify a user, the author will be used.
@@ -159,6 +121,10 @@ class CmdChannel(commands.Cog):
 
         if user is None:
             user = ctx.author
+
+        if not command and not ctx.message.embeds and not ctx.message.attachments:
+            await ctx.send_help()
+            return
 
         config = await self.data.guild(ctx.guild).all()
         logschannel = config["logschannel"]
@@ -170,58 +136,17 @@ class CmdChannel(commands.Cog):
         if actual_state_enabled:
             permissions = ctx.channel.permissions_for(ctx.author)
             if permissions.read_messages and permissions.send_messages:
-                command_exist = True
                 if actual_state_information:
-                    await channel.send(f"The command issued in this channel is:\n```{command}```")
+                    await ctx.channel.send(f"The command issued in this channel is:\n```{command}```")
                 if logschannel:
-                    time = ctx.message.created_at
-                    message = command
                     can_run = await self.member_can_run(ctx)
-                    guild = ctx.guild
-                    try:
-                        privs = ctx.command.requires.privilege_level.name
-                        user_perms = ctx.command.requires.user_perms
-                        my_perms = ctx.command.requires.bot_perms
-                    except Exception:
-                        return
-                    if privs == "MOD":
-                        mod_role_list = await ctx.bot.get_mod_roles(guild)
-                        if mod_role_list != []:
-                            role = humanize_list([r.mention for r in mod_role_list]) + f"\n{privs}\n"
-                        else:
-                            role = _("Not Set\nMOD\n")
-                    elif privs == "ADMIN":
-                        admin_role_list = await ctx.bot.get_admin_roles(guild)
-                        if admin_role_list != []:
-                            role = humanize_list([r.mention for r in admin_role_list]) + f"\n{privs}\n"
-                        else:
-                            role = _("Not Set\nADMIN\n")
-                    elif privs == "BOT_OWNER":
-                        role = humanize_list([f"<@!{_id}>" for _id in ctx.bot.owner_ids])
-                        role += f"\n{privs}\n"
-                    elif privs == "GUILD_OWNER":
-                        role = guild.owner.mention + f"\n{privs}\n"
-                    else:
-                        role = f"everyone\n{privs}\n"
-                    if user_perms:
-                        role += humanize_list(
-                            [perm.replace("_", " ").title() for perm, value in user_perms if value]
-                        )
-                    if my_perms:
-                        i_require = humanize_list(
-                            [perm.replace("_", " ").title() for perm, value in my_perms if value]
-                        )
                     embed = discord.Embed(
-                        description=f"CmdUser - Command used: {ctx.prefix}{command}",
+                        description=f"CmdUser - Command used: {command}",
                         colour=cmd_colour,
-                        # timestamp=time,
                     )
                     embed.add_field(name=("Imitated user"), value=user)
                     embed.add_field(name=("Channel"), value=ctx.channel.mention)
                     embed.add_field(name=("Can Run"), value=str(can_run))
-                    # embed.add_field(name=("Requires"), value=role)
-                    if i_require:
-                        embed.add_field(name=("Bot Requires"), value=i_require)
                     author_title = ("{member} ({m_id}) - Used a Command").format(
                         member=ctx.author, m_id=ctx.author.id
                     )
@@ -235,16 +160,16 @@ class CmdChannel(commands.Cog):
                 ctx.bot.dispatch("message", msg)
                 if actual_state_confirmation:
                     try:
-                        await ctx.author.send(f"The `{command}` command has been launched in the {channel} channel by imitating the {user} user. You can check if it worked.")
+                        await ctx.author.send(f"The `{command}` command has been launched in the {ctx.channel} channel by imitating the {user} user. You can check if it worked.")
                     except discord.Forbidden:
-                        await ctx.send(f"The `{command}` command has been launched in the {channel} channel by imitating the {user} user. You can check if it worked.")
+                        await ctx.send(f"The `{command}` command has been launched in the {ctx.channel} channel by imitating the {user} user. You can check if it worked.")
                 if actual_state_deletemessage:
                     await ctx.message.delete()
             else:
                 try:
-                    await ctx.author.send(f"You cannot run this command because you do not have the permissions to send messages in the {channel} channel.")
+                    await ctx.author.send(f"You cannot run this command because you do not have the permissions to send messages in the {ctx.channel} channel.")
                 except discord.Forbidden:
-                    await ctx.send(f"You cannot run this command because you do not have the permissions to send messages in the {channel} channel.")
+                    await ctx.send(f"You cannot run this command because you do not have the permissions to send messages in the {ctx.channel} channel.")
         else:
             try:
                 await ctx.author.send("CommandUser have been disabled by an administrator of this server.")
@@ -255,7 +180,7 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.is_owner()
     @commands.command(aliases=["userchannelcmd"])
-    async def cmduserchannel(self, ctx, delete: typing.Optional[bool]=False, user: typing.Optional[discord.Member]=None, channel: typing.Optional[discord.TextChannel]=None, *, command):
+    async def cmduserchannel(self, ctx, delete: typing.Optional[bool]=False, user: typing.Optional[discord.Member]=None, channel: typing.Optional[discord.TextChannel]=None, *, command: str = ""):
         """Act as if the command had been typed in the channel of your choice by imitating the specified user.
         The prefix must be entered if it is a command. Otherwise, it will be a message only.
         If you do not specify a user, the author will be used.
@@ -268,6 +193,10 @@ class CmdChannel(commands.Cog):
 
         if user is None:
             user = ctx.author
+
+        if not command and not ctx.message.embeds and not ctx.message.attachments:
+            await ctx.send_help()
+            return
 
         config = await self.data.guild(ctx.guild).all()
         logschannel = config["logschannel"]
@@ -282,54 +211,14 @@ class CmdChannel(commands.Cog):
                 if actual_state_information:
                     await channel.send(f"The command issued in this channel is:\n```{command}```")
                 if logschannel:
-                    time = ctx.message.created_at
-                    message = command
                     can_run = await self.member_can_run(ctx)
-                    guild = ctx.guild
-                    try:
-                        privs = ctx.command.requires.privilege_level.name
-                        user_perms = ctx.command.requires.user_perms
-                        my_perms = ctx.command.requires.bot_perms
-                    except Exception:
-                        return
-                    if privs == "MOD":
-                        mod_role_list = await ctx.bot.get_mod_roles(guild)
-                        if mod_role_list != []:
-                            role = humanize_list([r.mention for r in mod_role_list]) + f"\n{privs}\n"
-                        else:
-                            role = _("Not Set\nMOD\n")
-                    elif privs == "ADMIN":
-                        admin_role_list = await ctx.bot.get_admin_roles(guild)
-                        if admin_role_list != []:
-                            role = humanize_list([r.mention for r in admin_role_list]) + f"\n{privs}\n"
-                        else:
-                            role = _("Not Set\nADMIN\n")
-                    elif privs == "BOT_OWNER":
-                        role = humanize_list([f"<@!{_id}>" for _id in ctx.bot.owner_ids])
-                        role += f"\n{privs}\n"
-                    elif privs == "GUILD_OWNER":
-                        role = guild.owner.mention + f"\n{privs}\n"
-                    else:
-                        role = f"everyone\n{privs}\n"
-                    if user_perms:
-                        role += humanize_list(
-                            [perm.replace("_", " ").title() for perm, value in user_perms if value]
-                        )
-                    if my_perms:
-                        i_require = humanize_list(
-                            [perm.replace("_", " ").title() for perm, value in my_perms if value]
-                        )
                     embed = discord.Embed(
-                        description=f"CmdUserChannel - Command used: {ctx.prefix}{command}",
+                        description=f"CmdUserChannel - Command used: {command}",
                         colour=cmd_colour,
-                        # timestamp=time,
                     )
                     embed.add_field(name=("Imitated user"), value=user)
                     embed.add_field(name=("Channel"), value=channel.mention)
                     embed.add_field(name=("Can Run"), value=str(can_run))
-                    # embed.add_field(name=("Requires"), value=role)
-                    if i_require:
-                        embed.add_field(name=("Bot Requires"), value=i_require)
                     author_title = ("{member} ({m_id}) - Used a Command").format(
                         member=ctx.author, m_id=ctx.author.id
                     )

@@ -74,7 +74,7 @@ class CmdChannel(commands.Cog):
                 if logschannel:
                     can_run = await self.member_can_run(ctx)
                     embed = discord.Embed(
-                        description=f"CmdChannel - Command used: {ctx.prefix}{command}",
+                        description=f"CmdChannel - Command used: {command}",
                         colour=cmd_colour,
                     )
                     embed.add_field(name=("Imitated user"), value=ctx.author.mention)

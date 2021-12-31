@@ -52,7 +52,7 @@ class CmdChannel(commands.Cog):
         if delete:
             await ctx.message.delete()
             
-        if guild is None or if ctx.author.id is not in ctx.bot.owner_ids:
+        if guild is None or ctx.author.id is not in ctx.bot.owner_ids:
             guild = ctx.guild
 
         if channel is None:

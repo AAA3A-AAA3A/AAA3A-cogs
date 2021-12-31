@@ -44,13 +44,16 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.mod()
     @commands.command(aliases=["channelcmd"])
-    async def cmdchannel(self, ctx, delete: typing.Optional[bool]=False, channel: typing.Optional[discord.TextChannel]=None, *, command: str = ""):
+    async def cmdchannel(self, ctx, delete: typing.Optional[bool]=False, guild: typing.Optional[discord.Guild]=None, channel: typing.Optional[discord.TextChannel]=None, *, command: str = ""):
         """Act as if the command had been typed in the channel of your choice.
         The prefix must be entered if it is a command. Otherwise, it will be a message only.
         If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).
         """
         if delete:
             await ctx.message.delete()
+            
+        if guild is None or if ctx.author.id is not in ctx.bot.owner_ids:
+            guild = ctx.guild
 
         if channel is None:
             channel = ctx.channel
@@ -59,13 +62,13 @@ class CmdChannel(commands.Cog):
             await ctx.send_help()
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.data.guild(guild).all()
         logschannel = config["logschannel"]
         actual_state_enabled = config["enabled_cmdchannel"]
         actual_state_confirmation = config["confirmation_cmdchannel"]
         actual_state_deletemessage = config["deletemessage_cmdchannel"]
         actual_state_information = config["informationmessage_cmdchannel"]
-        cmd_colour = await self.bot.get_embed_colour(ctx.guild.text_channels[0])
+        cmd_colour = await self.bot.get_embed_colour(guild.text_channels[0])
         if actual_state_enabled:
             permissions = channel.permissions_for(ctx.author)
             if permissions.read_messages and permissions.send_messages:
@@ -86,8 +89,9 @@ class CmdChannel(commands.Cog):
                     embed.set_author(name=author_title, icon_url=ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
-                msg = copy(ctx.message)
+                msg = copy(ctx)
                 msg.author = ctx.author
+                msg.guild = guild
                 msg.channel = channel
                 msg.content = command
                 ctx.bot.dispatch("message", msg)
@@ -153,7 +157,7 @@ class CmdChannel(commands.Cog):
                     embed.set_author(name=author_title, icon_url=ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
-                msg = copy(ctx.message)
+                msg = copy(message)
                 msg.author = user
                 msg.channel = ctx.channel
                 msg.content = command
@@ -180,13 +184,16 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.is_owner()
     @commands.command(aliases=["userchannelcmd"])
-    async def cmduserchannel(self, ctx, delete: typing.Optional[bool]=False, user: typing.Optional[discord.Member]=None, channel: typing.Optional[discord.TextChannel]=None, *, command: str = ""):
+    async def cmduserchannel(self, ctx, delete: typing.Optional[bool]=False, user: typing.Optional[discord.Member]=None, guild: typing.Optional[discord.Guild], channel: typing.Optional[discord.TextChannel]=None, *, command: str = ""):
         """Act as if the command had been typed in the channel of your choice by imitating the specified user.
         The prefix must be entered if it is a command. Otherwise, it will be a message only.
         If you do not specify a user, the author will be used.
         """
         if delete:
             await ctx.message.delete()
+
+        if guild is None or ctx.author is not in ctx.bot.owner_ids:
+            guild = ctx.guild
 
         if channel is None:
             channel = ctx.channel
@@ -198,13 +205,13 @@ class CmdChannel(commands.Cog):
             await ctx.send_help()
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.data.guild(guild).all()
         logschannel = config["logschannel"]
         actual_state_enabled = config["enabled_cmduserchannel"]
         actual_state_confirmation = config["confirmation_cmduserchannel"]
         actual_state_deletemessage = config["deletemessage_cmduserchannel"]
         actual_state_information = config["informationmessage_cmduserchannel"]
-        cmd_colour = await self.bot.get_embed_colour(ctx.guild.text_channels[0])
+        cmd_colour = await self.bot.get_embed_colour(guild.text_channels[0])
         if actual_state_enabled:
             permissions = channel.permissions_for(ctx.author)
             if permissions.read_messages and permissions.send_messages:
@@ -225,8 +232,9 @@ class CmdChannel(commands.Cog):
                     embed.set_author(name=author_title, icon_url=ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
-                msg = copy(ctx.message)
+                msg = copy(message)
                 msg.author = user
+                msg.guild = guild
                 msg.channel = channel
                 msg.content = command
                 ctx.bot.dispatch("message", msg)

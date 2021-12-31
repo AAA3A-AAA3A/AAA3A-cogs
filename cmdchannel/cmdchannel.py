@@ -52,7 +52,7 @@ class CmdChannel(commands.Cog):
         if delete:
             await ctx.message.delete()
             
-        if guild is None or ctx.author.id is not in ctx.bot.owner_ids:
+        if guild is None:
             guild = ctx.guild
 
         if channel is None:
@@ -192,7 +192,7 @@ class CmdChannel(commands.Cog):
         if delete:
             await ctx.message.delete()
 
-        if guild is None or ctx.author is not in ctx.bot.owner_ids:
+        if guild is None:
             guild = ctx.guild
 
         if channel is None:
@@ -266,7 +266,7 @@ class CmdChannel(commands.Cog):
         embed.description = "Variables:"
         embed.add_field(
             name="Author:",
-            value=f"{ctx.author.name}")
+            value=f"{ctx.author}")
         embed.add_field(
             name="Channel:",
             value=f"{ctx.channel}")

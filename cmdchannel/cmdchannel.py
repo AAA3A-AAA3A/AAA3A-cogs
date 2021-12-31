@@ -157,7 +157,7 @@ class CmdChannel(commands.Cog):
                     embed.set_author(name=author_title, icon_url=ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
-                msg = copy(ctx)
+                msg = copy(ctx.message)
                 msg.author = user
                 msg.channel = ctx.channel
                 msg.content = command

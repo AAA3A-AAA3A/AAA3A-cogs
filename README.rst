@@ -32,6 +32,15 @@ Available cogs list
 
 Here is the list of cogs in my repo. There are (so far) only 2.
 
+**SimpleSanction:**
+
+A cog to gather all sanction/moderation actions (userinfo, warn, ban, sofban, tempban, kick, mute, mutechannel, tempmute, tempmutechannel) in one menu with buttons/reactions.  Many options like a Fake mode, show the author of the command in the embeds or not, show an embed at the end describing the action or not, a confirmation or not, a reason required or not... All options can be included in the command, but are also all optional: whatever is needed will be requested later.
+Short version: [p]sanction
+Long version: [p]sanction 10 @user true true true true true true true 3d Spam.
+There is also a slash command, a context menu for the user and another for the messages (note that this doesn't work all the time because the bot sends a message in the same channel, gets the context of this message, changes the author and invokes the real command).
+
+Translated with www.DeepL.com/Translator (free version)
+
 **CmdChannel:**
 
 Allow bot moderators to type commands in a command channel with a result in the specified channel.
@@ -53,9 +62,6 @@ A cog to transfer messages from one channel to another with embeds or single mes
 **Ip:**
 
 A cog to display the external ip address of the bot and a command for the web address with support for ip and a custom port.
-In order for cog to calculate the ip address for both commands, please install "requests" with this command.
-
-    python -m pip install requests
 
 ------------
 Contributing
@@ -74,6 +80,18 @@ Additionally, feel free to open an issue or pull request to this repo.
 -------
 Credits
 -------
+
+**Credits for the cog SimpleSanction:**
+
+* Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
+
+* Thanks to Laggrons-dumb's WarnSystem cog (https://github.com/laggron42/Laggrons-Dumb-Cogs/tree/v3/warnsystem) for giving me some ideas and code for subcommands for a main command!
+
+* Thanks to @Aikaterna on the Redbot support server for help on displaying the main command help menu and other commands!
+
+* Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
+
+* Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
 **Credits for the cog CmdChannel:**
 

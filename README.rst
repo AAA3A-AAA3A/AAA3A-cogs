@@ -39,8 +39,6 @@ Short version: [p]sanction
 Long version: [p]sanction 10 @user true true true true true true true 3d Spam.
 There is also a slash command, a context menu for the user and another for the messages (note that this doesn't work all the time because the bot sends a message in the same channel, gets the context of this message, changes the author and invokes the real command).
 
-Translated with www.DeepL.com/Translator (free version)
-
 **CmdChannel:**
 
 Allow bot moderators to type commands in a command channel with a result in the specified channel.

@@ -35,8 +35,11 @@ Here is the list of cogs in my repo. There are (so far) only 2.
 **SimpleSanction:**
 
 A cog to gather all sanction/moderation actions (userinfo, warn, ban, sofban, tempban, kick, mute, mutechannel, tempmute, tempmutechannel) in one menu with buttons/reactions.  Many options like a Fake mode, show the author of the command in the embeds or not, show an embed at the end describing the action or not, a confirmation or not, a reason required or not... All options can be included in the command, but are also all optional: whatever is needed will be requested later.
+
 Short version: [p]sanction
+
 Long version: [p]sanction 10 @user true true true true true true true 3d Spam.
+
 There is also a slash command, a context menu for the user and another for the messages (note that this doesn't work all the time because the bot sends a message in the same channel, gets the context of this message, changes the author and invokes the real command).
 
 **CmdChannel:**

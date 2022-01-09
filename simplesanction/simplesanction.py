@@ -374,7 +374,7 @@ class SimpleSanction(settings, commands.Cog):
                     inline=False,
                     name="Duration:",
                     value=f"{parse_timedelta(duration)}")
-            reactions, buttons, buttons_one, buttons_two, buttons_three = await utils.emojis(disable=False)
+            reactions, buttons, buttons_one, buttons_two, buttons_three = await utils.emojis(disabled=False)
             if actual_buttons_use:
                 message = await ctx.send(embed=embed, components=[buttons_one, buttons_two, buttons_three])
             else:

@@ -10,38 +10,44 @@ class utils(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def emojis():
+    async def emojis(disabled: bool):
         reactions = ["ℹ️", "⚠️", "🔨", "🔂", "💨", "👢", "🔇", "👊", "⏳", "⌛", "❌"]
+        buttons = ["userinfo_button", "warn_button", "ban_button", "softban_button", "tempban_button", "kick_button", "mute_button", "mutechannel_button", "tempmute_button", "tempmutechannel_button", "close_button"]
         buttons_one = ActionRow(
             Button(
                 style=ButtonStyle.grey,
                 label="UserInfo",
                 emoji="ℹ️",
-                custom_id="userinfo_button"
+                custom_id="userinfo_button",
+                disabled=disabled
             ),
             Button(
                 style=ButtonStyle.grey,
                 label="Warn",
                 emoji="⚠️",
-                custom_id="warn_button"
+                custom_id="warn_button",
+                disabled=disabled
             ),
             Button(
                 style=ButtonStyle.grey,
                 label="Ban",
                 emoji="🔨",
-                custom_id="ban_button"
+                custom_id="ban_button",
+                disabled=disabled
             ),
             Button(
                 style=ButtonStyle.grey,
                 label="SoftBan",
                 emoji="🔂",
-                custom_id="softban_button"
+                custom_id="softban_button",
+                disabled=disabled
             ),
             Button(
                 style=ButtonStyle.grey,
                 label="TempBan",
                 emoji="💨",
-                custom_id="tempban_button"
+                custom_id="tempban_button",
+                disabled=disabled
             )
         )
         buttons_two = ActionRow(
@@ -49,31 +55,36 @@ class utils(commands.Cog):
                 style=ButtonStyle.grey,
                 label="Kick",
                 emoji="👢",
-                custom_id="kick_button"
+                custom_id="kick_button",
+                disabled=disabled
             ),
             Button(
                 style=ButtonStyle.grey,
                 label="Mute",
                 emoji="🔇",
-                custom_id="mute_button"
+                custom_id="mute_button",
+                disabled=disabled
             ),
             Button(
                 style=ButtonStyle.grey,
                 label="MuteChannel",
                 emoji="👊",
-                custom_id="mutechannel_button"
+                custom_id="mutechannel_button",
+                disabled=disabled
             ),
             Button(
                 style=ButtonStyle.grey,
                 label="TempMute",
                 emoji="⏳",
-                custom_id="tempmute_button"
+                custom_id="tempmute_button",
+                disabled=disabled
             ),
             Button(
                 style=ButtonStyle.grey,
                 label="TempMuteChannel",
                 emoji="⌛",
-                custom_id="tempmutechannel_button"
+                custom_id="tempmutechannel_button",
+                disabled=disabled
             )
         )
         buttons_three = ActionRow(
@@ -81,10 +92,11 @@ class utils(commands.Cog):
                 style=ButtonStyle.grey,
                 label="Close",
                 emoji="❌",
-                custom_id="close_button"
+                custom_id="close_button",
+                disabled=disabled
             )
         )
-        return reactions, buttons_one, buttons_two, buttons_three
+        return reactions, buttons, buttons_one, buttons_two, buttons_three
 
     async def reason_ask(ctx, reason, actual_reason_required, title, description, actual_color, user, actual_timeout):
         if reason is None:

@@ -374,7 +374,7 @@ class SimpleSanction(settings, commands.Cog):
                     inline=False,
                     name="Duration:",
                     value=f"{parse_timedelta(duration)}")
-            reactions, buttons_one, buttons_two, buttons_three = await utils.emojis()
+            reactions, buttons, buttons_one, buttons_two, buttons_three = await utils.emojis(disable=False)
             if actual_buttons_use:
                 message = await ctx.send(embed=embed, components=[buttons_one, buttons_two, buttons_three])
             else:
@@ -655,7 +655,10 @@ class SimpleSanction(settings, commands.Cog):
                             await message.delete()
                         except Exception:
                             pass
-                    await ctx.send("Timed out, please try again.")
+                        await ctx.send("Timed out, please try again.")
+                    else:
+                        reactions, buttons, buttons_one, buttons_two, buttons_three = await utils.emojis(disabled=True)
+                        message = await message.edit(embed=embed, components=[buttons_one, buttons_two, buttons_three])
                     return
 
     async def call_actions(self, ctx, action: typing.Optional[int]=None, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, reason: str = None):

@@ -24,7 +24,6 @@ class SimpleSanction(settings, commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         test = settings.test
-        inter_client = InteractionClient(bot)
         self.data: Config = Config.get_conf(
             self,
             identifier=793615829052,

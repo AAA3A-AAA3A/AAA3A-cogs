@@ -84,7 +84,6 @@ class SimpleSanction(settings, commands.Cog):
             msg.channel = inter.channel
             msg.content = f"{p}sanction {inter.message.author.id}"
             self.bot.dispatch("message", msg)
-            self.bot.process_commands(msg)
             await inter.respond(f"You have chosen to sanction {inter.message.author.mention} ({inter.message.author.id}) in {inter.channel.mention}.", ephemeral=True)
         except Exception:
             await inter.respond("An error has occurred in your interaction. Please try to use the real command instead of this contextual menu.", ephemeral=True)
@@ -105,7 +104,6 @@ class SimpleSanction(settings, commands.Cog):
             if not args == "": args = f" {args}"
             msg.content = f"{p}sanction {user.id}{confirmation}{show_author}{finish_message}{fake_action}{args}"
             self.bot.dispatch("message", msg)
-            self.bot.process_commands(msg)
             await inter.respond(f"You have chosen to sanction {user.mention} ({user.id}) in {inter.channel.mention}.", ephemeral=True)
         except Exception:
             await inter.respond("An error has occurred in this interaction. Please try to use the real command instead of this contextual menu.", ephemeral=True)

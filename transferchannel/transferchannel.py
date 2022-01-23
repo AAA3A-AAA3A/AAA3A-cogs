@@ -34,19 +34,6 @@ class TransferChannel(commands.Cog):
         self.bot = bot
         self.cache = {}
 
-    async def get_guild_obj(self, guild_name):
-        if type(guild_name) == int:
-            page_guild = [g for g in self.bot.guilds if int(guild_name) == g.id]
-        if type(guild_name) == str:
-            page_guild = [g for g in self.bot.guilds if guild_name.lower() in g.name.lower()]
-        try:
-            if guild_name is not None:
-                guilds = [g for g in self.bot.guilds]
-                guild = guilds[guilds.index(page_guild[0])]
-        except IndexError:
-            raise GuildNotFoundError
-        return guild
-
     @commands.command(aliases=["channeltransfer"])
     @checks.admin_or_permissions(manage_guild=True)
     @commands.guild_only()

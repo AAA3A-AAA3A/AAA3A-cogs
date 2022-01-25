@@ -272,6 +272,7 @@ class CmdChannel(commands.Cog):
             value=f"{ctx.channel}")
         message = await ctx.send(embed=embed)
 
+    @commands.guild_only()
     @commands.guildowner_or_permissions(administrator=True)
     @commands.group(name="cmdset", aliases=["setcmd"])
     async def config(self, ctx):

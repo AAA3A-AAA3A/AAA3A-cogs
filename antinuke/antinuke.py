@@ -1,4 +1,3 @@
-
 import discord
 import typing
 from typing import List, Optional, Tuple, Union
@@ -121,6 +120,7 @@ class AntiNuke(commands.Cog):
                     break
         return perp, reason
 
+    @commands.guild_only()
     @commands.guildowner()
     @commands.group(name="setantinuke", aliases=["antinukeset"])
     async def config(self, ctx):

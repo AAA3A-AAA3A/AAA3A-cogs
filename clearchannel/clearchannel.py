@@ -110,6 +110,7 @@ class ClearChannel(commands.Cog):
         if actual_author_dm:
             await ctx.author.send(f"All messages in channel #{old_channel.name} ({old_channel.id}) have been deleted! You can find the new channel, with the same permissions: #{new_channel.name} ({new_channel.id}).")
 
+    @commands.guild_only()
     @commands.guildowner()
     @commands.group(name="setclearchannel", aliases=["clearchannelset"])
     async def config(self, ctx):

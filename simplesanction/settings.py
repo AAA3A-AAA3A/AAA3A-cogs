@@ -6,6 +6,7 @@ class settings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
     @commands.group(name="setsimplesanction", aliases=["simplesanctionset"])
     async def config(self, ctx):
@@ -168,8 +169,8 @@ class settings(commands.Cog):
         await ctx.send(f"Buttons Use state registered: {state}.")
 
     @config.command(name="reasonrequired", aliases=["requiredreason"], usage="<true_or_false>")
-    async def warnsystemuse(self, ctx, state: bool):
-        """Enable or disable Warn System Use
+    async def reasonrequired(self, ctx, state: bool):
+        """Enable or disable Reason Requiered
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """

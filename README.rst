@@ -42,6 +42,10 @@ Long version: [p]sanction 10 @user true true true true true true true 3d Spam.
 
 There is also a slash command, a context menu for the user and another for the messages (note that this doesn't work all the time because the bot sends a message in the same channel, gets the context of this message, changes the author and invokes the real command).
 
+**TicketTool:**
+
+A cog to set up a ticket system on your server, with many options. It has many commands in a ticket channel to export all messages in the ticket, close it, reopen it, delete the channel, log, change the owner of the ticket, claim the ticket, add/remove a member to the ticket, etc. Many roles: a ping role, an admin role, a support role, a view role, a ticket role...
+
 **CmdChannel:**
 
 Allow bot moderators to type commands in a command channel with a result in the specified channel.
@@ -91,6 +95,16 @@ Credits
 * Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel.
 
 * Thanks to @Aikaterna on the Redbot support server for help on displaying the main command help menu and other commands!
+
+* Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
+
+* Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+
+**Credits for the cog TicketTool:**
+
+* Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
+
+* Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel.
 
 * Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 

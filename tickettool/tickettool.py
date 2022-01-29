@@ -239,7 +239,7 @@ class TicketTool(settings, commands.Cog):
                         check = False
                     if not check == claim:
                         return False
-                if ctx.author in ctx.bot.owner_ids:
+                if ctx.author.id in ctx.bot.owner_ids:
                     return True
                 if ticket_owner:
                     if ctx.author == ticket.owner:

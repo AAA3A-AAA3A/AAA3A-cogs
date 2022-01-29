@@ -3,7 +3,7 @@
     "name": "TicketTool",
     "install_msg": "Thank you for installing this cog! \nDo `[p]help` to get the list of commands and their description. \nIt does not use user data.",
     "short": "A cog to manage a ticket system!",
-    "description": "Have you ever wanted to have a simple message with buttons to quickly choose the right sanction for a particular user? Then this cog is for you! It allows you to use the buttons on a message to select a sanction and choose the colour, thumbnail of the embed, and many other parameters... All the possibilities can only be done with arguments, which are all falcutative.",
+    "description": "Have you ever wanted to set up a ticket system, with many options for the user and the support team, on your server? Then this cog is for you! It has many settings, buttons, a reaction to create the ticket, many commands working in the ticket channel, different roles with access to different options...",
     "tags": [
         "ticket",
         "tool",

@@ -270,7 +270,6 @@ class TicketTool(settings, commands.Cog):
         return commands.check(pred)
 
     @commands.guild_only()
-    @commands.admin_or_permissions(administrator=True)
     @commands.group(name="ticket")
     async def ticket(self, ctx):
         """Commands for using the ticket system."""

@@ -653,7 +653,6 @@ class SimpleSanction(settings, commands.Cog):
                             await message.delete()
                         except Exception:
                             pass
-                        await ctx.send("Timed out, please try again.")
                     else:
                         reactions, buttons, buttons_one, buttons_two, buttons_three = await utils.emojis(disabled=True)
                         await message.edit(embed=embed, components=[buttons_one, buttons_two, buttons_three])

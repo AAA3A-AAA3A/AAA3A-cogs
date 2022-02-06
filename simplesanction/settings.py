@@ -185,7 +185,7 @@ class settings(commands.Cog):
         await ctx.send(f"Reason Required state registered: {state}.")
 
     @config.command(name="deleteembed", aliases=["embeddelete"], usage="<true_or_false>")
-    async def warnsystemuse(self, ctx, state: bool):
+    async def deleteembed(self, ctx, state: bool):
         """Enable or disable Delete Embed
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -201,7 +201,7 @@ class settings(commands.Cog):
         await ctx.send(f"Delete Embed state registered: {state}.")
 
     @config.command(name="deletemessage", aliases=["messagedelete"], usage="<true_or_false>")
-    async def warnsystemuse(self, ctx, state: bool):
+    async def deletemessage(self, ctx, state: bool):
         """Enable or disable Delete Message
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -217,7 +217,7 @@ class settings(commands.Cog):
         await ctx.send(f"Delete Message state registered: {state}.")
 
     @config.command(name="timeout", aliases=["time"], usage="<seconds_number_or_`none`>")
-    async def warnsystemuse(self, ctx, timeout: typing.Optional[int]=None):
+    async def timeout(self, ctx, timeout: typing.Optional[int]=None):
         """Choose the timeout
 
         Use a int. The default is 180 seconds.

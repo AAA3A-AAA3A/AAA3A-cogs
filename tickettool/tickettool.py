@@ -493,13 +493,13 @@ class TicketTool(settings, commands.Cog):
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member):
         config = await self.bot.get_cog("TicketTool").get_config(member.guild)
-        data = await self.bot.get_cog("TicketTool").tickets.all()
+        data = await self.bot.get_cog("TicketTool").data.tickets.all()
         if config["close_on_leave"]:
             for channel in data:
                 channel = member.guild.get_channel(int(channel))
                 ticket = await self.bot.get_cog("TicketTool").get_ticket(channel)
                 if ticket.owner == member and ticket.status == "open":
-                    await self.bot.get_cog("TicketTool").close(ticket.guild.me)
+                    ticket.close(ticket.guild.me)
         return
 
     @commands.Cog.listener()

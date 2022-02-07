@@ -53,6 +53,7 @@ class CmdChannel(commands.Cog):
             channel = ctx.channel
 
         guild = channel.guild
+        await ctx.send(f"{channel.name}-{channel.guild.name}")
 
         if channel not in ctx.guild.channels and not ctx.author in ctx.bot.owner_ids:
             await ctx.send("Only a bot owner can use a command from another server.")
@@ -92,8 +93,6 @@ class CmdChannel(commands.Cog):
                 msg = ctx.message
                 msg.content = command
                 new_ctx = await ctx.bot.get_context(msg)
-                await ctx.send(f"{ctx.valid}")
-                await ctx.send(f"{guild.name}")
                 if new_ctx.valid:
                     new_ctx.guild = guild
                     new_ctx.channel = channel

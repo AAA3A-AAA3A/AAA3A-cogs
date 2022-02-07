@@ -100,7 +100,7 @@ class CmdChannel(commands.Cog):
                 else:
                     new_ctx.message.channel = channel
                     new_ctx.message.author = ctx.author
-                    ctx.bot.dispatch("message", new_ctx.msg)
+                    ctx.bot.dispatch("message", new_ctx.message)
                 if actual_state_confirmation:
                     try:
                         await ctx.author.send(f"The `{command}` command has been launched in the {channel} channel. You can check if it worked.")

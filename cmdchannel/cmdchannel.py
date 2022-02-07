@@ -52,6 +52,8 @@ class CmdChannel(commands.Cog):
         if channel is None:
             channel = ctx.channel
 
+        guild = channel.guild
+
         if channel not in ctx.guild.channels and not ctx.author in ctx.bot.owner_ids:
             await ctx.send("Only a bot owner can use a command from another server.")
             return
@@ -122,7 +124,6 @@ class CmdChannel(commands.Cog):
         The prefix must be entered if it is a command. Otherwise, it will be a message only.
         If you do not specify a user, the author will be used.
         """
-
         if user is None:
             user = ctx.author
 
@@ -189,6 +190,8 @@ class CmdChannel(commands.Cog):
         """
         if channel is None:
             channel = ctx.channel
+
+        guild = channel.guild
 
         if user is None:
             user = ctx.author

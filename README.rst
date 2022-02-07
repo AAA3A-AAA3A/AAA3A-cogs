@@ -52,6 +52,10 @@ Allow bot moderators to type commands in a command channel with a result in the 
 There are settings for server administrators (logs, delete message, information with command in specified channel, disable commands).
 There is a possibility to imitate a user and also the user and the channel at the same time.
 
+**Calculator:**
+
+A cog to use a calculator directly in Discord, with buttons. You can also enter the calculation directly as an argument to the command. Buttons allow parentheses, square roots (with parentheses required), moving around the expression, deleting the last character...
+
 **AntiRaid:**
 
 This cog allows you to prevent raids on your servers. If you give a person too many permissions, they can destroy everything by deleting each channel one by one. With this cog, the bot will delete all the roles (and therefore permissions) of the person if he deletes a channel (unless he is the server owner).
@@ -117,6 +121,16 @@ Credits
 * Thanks to TrustyJAID for the code (a bit modified to work here and to improve as needed) for the log messages sent! (https://github.com/TrustyJAID/Trusty-cogs/tree/master/extendedmodlog)
 
 * Thanks to Kreusada for the code (with modifications to make it work and match the syntax of the rest) to add a log channel or remove it if no channel is specified! (https://github.com/Kreusada/Kreusada-Cogs/tree/master/captcha)
+
+* Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
+
+* Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+
+**Credits for the cog Calculator:**
+
+* Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
+
+* Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel.
 
 * Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 

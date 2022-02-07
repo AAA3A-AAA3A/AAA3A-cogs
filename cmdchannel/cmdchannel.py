@@ -44,19 +44,17 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.mod()
     @commands.command(aliases=["channelcmd"])
-    async def cmdchannel(self, ctx, delete: typing.Optional[bool]=False, guild: typing.Optional[discord.Guild]=None, channel: typing.Optional[discord.TextChannel]=None, *, command: str = ""):
+    async def cmdchannel(self, ctx, channel: typing.Optional[discord.TextChannel]=None, *, command: str = ""):
         """Act as if the command had been typed in the channel of your choice.
         The prefix must be entered if it is a command. Otherwise, it will be a message only.
         If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).
         """
-        if delete:
-            await ctx.message.delete()
-            
-        if guild is None:
-            guild = ctx.guild
-
         if channel is None:
             channel = ctx.channel
+
+        if channel not in ctx.guild.channels and not ctx.author in ctx.bot.owner_ids:
+            await ctx.send("Only a bot owner can use a command from another server.")
+            return
 
         if not command and not ctx.message.embeds and not ctx.message.attachments:
             await ctx.send_help()
@@ -89,12 +87,16 @@ class CmdChannel(commands.Cog):
                     embed.set_author(name=author_title, icon_url=ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
-                msg = copy(ctx.message)
+                msg = ctx.message
                 msg.author = ctx.author
-                # msg.guild = guild
+                msg.guild = channel.guild
                 msg.channel = channel
                 msg.content = command
-                ctx.bot.dispatch("message", msg)
+                new_ctx = await ctx.bot.get_context(msg)
+                if new_ctx.valid:
+                    ctx.bot.invoke(new_ctx)
+                else:
+                    ctx.bot.dispatch("message", new_ctx.msg)
                 if actual_state_confirmation:
                     try:
                         await ctx.author.send(f"The `{command}` command has been launched in the {channel} channel. You can check if it worked.")
@@ -115,13 +117,11 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.is_owner()
     @commands.command(aliases=["usercmd"])
-    async def cmduser(self, ctx, delete: typing.Optional[bool]=False, user: typing.Optional[discord.Member]=None, *, command: str = ""):
+    async def cmduser(self, ctx, user: typing.Optional[discord.Member]=None, *, command: str = ""):
         """Act as if the command had been typed by imitating the specified user.
         The prefix must be entered if it is a command. Otherwise, it will be a message only.
         If you do not specify a user, the author will be used.
         """
-        if delete:
-            await ctx.message.delete()
 
         if user is None:
             user = ctx.author
@@ -167,8 +167,6 @@ class CmdChannel(commands.Cog):
                         await ctx.author.send(f"The `{command}` command has been launched in the {ctx.channel} channel by imitating the {user} user. You can check if it worked.")
                     except discord.Forbidden:
                         await ctx.send(f"The `{command}` command has been launched in the {ctx.channel} channel by imitating the {user} user. You can check if it worked.")
-                if actual_state_deletemessage:
-                    await ctx.message.delete()
             else:
                 try:
                     await ctx.author.send(f"You cannot run this command because you do not have the permissions to send messages in the {ctx.channel} channel.")
@@ -184,17 +182,11 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.is_owner()
     @commands.command(aliases=["userchannelcmd"])
-    async def cmduserchannel(self, ctx, delete: typing.Optional[bool]=False, user: typing.Optional[discord.Member]=None, guild: typing.Optional[discord.Guild]=None, channel: typing.Optional[discord.TextChannel]=None, *, command: str = ""):
+    async def cmduserchannel(self, ctx, user: typing.Optional[discord.Member]=None, channel: typing.Optional[discord.TextChannel]=None, *, command: str = ""):
         """Act as if the command had been typed in the channel of your choice by imitating the specified user.
         The prefix must be entered if it is a command. Otherwise, it will be a message only.
         If you do not specify a user, the author will be used.
         """
-        if delete:
-            await ctx.message.delete()
-
-        if guild is None:
-            guild = ctx.guild
-
         if channel is None:
             channel = ctx.channel
 
@@ -243,8 +235,6 @@ class CmdChannel(commands.Cog):
                         await ctx.author.send(f"The `{command}` command has been launched in the {channel} channel by imitating the {user} user. You can check if it worked.")
                     except discord.Forbidden:
                         await ctx.send(f"The `{command}` command has been launched in the {channel} channel by imitating the {user} user. You can check if it worked.")
-                if actual_state_deletemessage:
-                    await ctx.message.delete()
             else:
                 try:
                     await ctx.author.send(f"You cannot run this command because you do not have the permissions to send messages in the {channel} channel.")
@@ -270,7 +260,7 @@ class CmdChannel(commands.Cog):
         embed.add_field(
             name="Channel:",
             value=f"{ctx.channel}")
-        message = await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.guild_only()
     @commands.guildowner_or_permissions(administrator=True)

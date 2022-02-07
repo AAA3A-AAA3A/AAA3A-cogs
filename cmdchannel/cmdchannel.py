@@ -92,6 +92,8 @@ class CmdChannel(commands.Cog):
                 msg = ctx.message
                 msg.content = command
                 new_ctx = await ctx.bot.get_context(msg)
+                await ctx.send(f"{ctx.valid}")
+                await ctx.send(f"{guild.name}")
                 if new_ctx.valid:
                     new_ctx.guild = guild
                     new_ctx.channel = channel

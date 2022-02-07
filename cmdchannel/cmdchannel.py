@@ -53,7 +53,6 @@ class CmdChannel(commands.Cog):
             channel = ctx.channel
 
         guild = channel.guild
-        await ctx.send(f"{channel.name}-{channel.guild.name}")
 
         if channel not in ctx.guild.channels and not ctx.author in ctx.bot.owner_ids:
             await ctx.send("Only a bot owner can use a command from another server.")

@@ -41,6 +41,7 @@ class Calculator(commands.Cog):
         expression = "".join(lst)
         result = expression
         result = result.replace(',', '.')
+        result = result.replace(':', '/')
         result = result.replace(' ', '')
         result = result.replace('π', str(pi))
         result = result.replace('τ', str(tau))
@@ -65,7 +66,7 @@ class Calculator(commands.Cog):
     async def get_embed(self, ctx, expression: str):
         if expression == "":
             expression = None
-        if expression is None or expression == "Error!":
+        if expression is None:
             expression = "|"
         config = await self.data.settings.all()
         actual_color = config["color"]

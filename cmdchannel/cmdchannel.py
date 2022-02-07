@@ -90,14 +90,16 @@ class CmdChannel(commands.Cog):
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
                 msg = ctx.message
-                msg.author = ctx.author
-                msg.guild = channel.guild
-                msg.channel = channel
                 msg.content = command
                 new_ctx = await ctx.bot.get_context(msg)
                 if new_ctx.valid:
+                    new_ctx.guild = guild
+                    new_ctx.channel = channel
+                    new_ctx.author = ctx.author
                     ctx.bot.invoke(new_ctx)
                 else:
+                    new_ctx.message.channel = channel
+                    new_ctx.message.author = ctx.author
                     ctx.bot.dispatch("message", new_ctx.msg)
                 if actual_state_confirmation:
                     try:
@@ -158,11 +160,18 @@ class CmdChannel(commands.Cog):
                     embed.set_author(name=author_title, icon_url=ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
-                msg = copy(ctx.message)
-                msg.author = user
-                msg.channel = ctx.channel
+                msg = ctx.message
                 msg.content = command
-                ctx.bot.dispatch("message", msg)
+                new_ctx = await ctx.bot.get_context(msg)
+                if new_ctx.valid:
+                    new_ctx.guild = ctx.guild
+                    new_ctx.channel = ctx.channel
+                    new_ctx.author = user
+                    ctx.bot.invoke(new_ctx)
+                else:
+                    new_ctx.message.channel = ctx.channel
+                    new_ctx.message.author = user
+                    ctx.bot.dispatch("message", new_ctx.msg)
                 if actual_state_confirmation:
                     try:
                         await ctx.author.send(f"The `{command}` command has been launched in the {ctx.channel} channel by imitating the {user} user. You can check if it worked.")
@@ -190,8 +199,6 @@ class CmdChannel(commands.Cog):
         """
         if channel is None:
             channel = ctx.channel
-
-        guild = channel.guild
 
         if user is None:
             user = ctx.author
@@ -227,12 +234,18 @@ class CmdChannel(commands.Cog):
                     embed.set_author(name=author_title, icon_url=ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
-                msg = copy(ctx.message)
-                msg.author = user
-                # msg.guild = guild
-                msg.channel = channel
+                msg = ctx.message
                 msg.content = command
-                ctx.bot.dispatch("message", msg)
+                new_ctx = await ctx.bot.get_context(msg)
+                if new_ctx.valid:
+                    new_ctx.guild = ctx.guild
+                    new_ctx.channel = channel
+                    new_ctx.author = user
+                    ctx.bot.invoke(new_ctx)
+                else:
+                    new_ctx.message.channel = channel
+                    new_ctx.message.author = user
+                    ctx.bot.dispatch("message", new_ctx.msg)
                 if actual_state_confirmation:
                     try:
                         await ctx.author.send(f"The `{command}` command has been launched in the {channel} channel by imitating the {user} user. You can check if it worked.")

@@ -96,7 +96,7 @@ class CmdChannel(commands.Cog):
                     new_ctx.guild = guild
                     new_ctx.channel = channel
                     new_ctx.author = ctx.author
-                    ctx.bot.invoke(new_ctx)
+                    await ctx.bot.invoke(new_ctx)
                 else:
                     new_ctx.message.channel = channel
                     new_ctx.message.author = ctx.author
@@ -167,7 +167,7 @@ class CmdChannel(commands.Cog):
                     new_ctx.guild = ctx.guild
                     new_ctx.channel = ctx.channel
                     new_ctx.author = user
-                    ctx.bot.invoke(new_ctx)
+                    await ctx.bot.invoke(new_ctx)
                 else:
                     new_ctx.message.channel = ctx.channel
                     new_ctx.message.author = user
@@ -241,7 +241,7 @@ class CmdChannel(commands.Cog):
                     new_ctx.guild = ctx.guild
                     new_ctx.channel = channel
                     new_ctx.author = user
-                    ctx.bot.invoke(new_ctx)
+                    await ctx.bot.invoke(new_ctx)
                 else:
                     new_ctx.message.channel = channel
                     new_ctx.message.author = user

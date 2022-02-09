@@ -44,18 +44,34 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.mod()
     @commands.command(aliases=["channelcmd"])
-    async def cmdchannel(self, ctx, channel: typing.Optional[discord.TextChannel]=None, *, command: str = ""):
+    async def cmdchannel(self, ctx, guild: typing.Optional[discord.Guild]=None, channel: typing.Optional[typing.Union[discord.TextChannel, int]]=None, *, command: str = ""):
         """Act as if the command had been typed in the channel of your choice.
         The prefix must be entered if it is a command. Otherwise, it will be a message only.
         If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).
         """
+        if channel is not None:
+            if isinstance(channel, int):
+                if guild is not None:
+                    channel = guild.get_channel(channel)
+                else:
+                    if ctx.author.id in ctx.bot.owner_ids:
+                        await ctx.send("Please specify a server if you want to use a command in another server.")
+                        return
+                    else:
+                        channel = None
+
         if channel is None:
             channel = ctx.channel
 
         guild = channel.guild
 
-        if channel not in ctx.guild.channels and not ctx.author in ctx.bot.owner_ids:
+        if channel not in ctx.guild.channels and not ctx.author.id in ctx.bot.owner_ids:
             await ctx.send("Only a bot owner can use a command from another server.")
+            return
+
+        member = guild.get_member(ctx.author.id)
+        if member is None:
+            await ctx.send("To send commands to another server, you must be there.")
             return
 
         if not command and not ctx.message.embeds and not ctx.message.attachments:

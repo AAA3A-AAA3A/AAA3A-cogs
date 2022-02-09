@@ -1,0 +1,15 @@
+{
+    "author": ["AAA3A"],
+    "name": "CtxVar",
+    "install_msg": "Thank you for installing this cog! \nDo `[p]help` to get the list of commands and their description. \nIt does not use user data.",
+    "short": "A cog to list and display the contents of all sub-functions of `ctx`!",
+    "description": "A cog to list and display the contents of all sub-functions of `ctx`! This cog allows you to see which variables you want to use when creating the cog.",
+    "tags": [
+        "ctx",
+        "python",
+        "coding",
+        "variables"
+    ],
+    "requirements": [],
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

@@ -351,7 +351,7 @@ class settings(commands.Cog):
         actual_thumbnail = config["thumbnail"]
         embed: discord.Embed = discord.Embed()
         embed.title = str(config["embed_button"]["title"])
-        embed.description = str(config["embed_button"]["description"]).replace('{prefix}', f'ctx.prefix')
+        embed.description = str(config["embed_button"]["description"]).replace('{prefix}', f'{ctx.prefix}')
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
         embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon_url)

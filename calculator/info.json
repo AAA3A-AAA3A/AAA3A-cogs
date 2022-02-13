@@ -10,6 +10,6 @@
         "calculator",
         "maths"
     ],
-    "requirements": ["dislash.py"],
+    "requirements": ["dislash.py", "TagScript"],
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

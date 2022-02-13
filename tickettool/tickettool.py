@@ -727,6 +727,7 @@ class Ticket:
                 embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, True, author=ticket.created_by, title="Ticket Created", description=f"The ticket was created by {ticket.created_by}.")
                 await logschannel.send(f"Report on the creation of the ticket {ticket.id}.", embed=embed)
         # await ticket.bot.get_cog("TicketTool").data.guild(ticket.guild).settings.last_nb.set(ticket.id)
+        await ticket.bot.get_cog("TicketTool").data.guild(ticket.guild).settings.last_nb.set(ticket.id)
         if config["ticket_role"] is not None:
             if ticket.owner:
                 try:

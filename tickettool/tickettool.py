@@ -51,8 +51,8 @@ class TicketTool(settings, commands.Cog):
                 "last_nb": 0000,
                 "embed_button": {
                     "title": "Create a ticket"
-                    "description": ( "To get help on this server or to place a command for example, you can create a ticket.\n"
-                                    f"Just use the command `{ctx.prefix}ticket create` or click on the button below.\n"
+                    "description": ( "To get help on this server or to place a command for example, you can create a ticket.\n",
+                                    f"Just use the command `{ctx.prefix}ticket create` or click on the button below.\n",
                                     f"You can then use the `{ctx.prefix}ticket` subcommand to manage your ticket."),
                 },
             },

@@ -1,10 +1,12 @@
-﻿import asyncio
+from ast import Pass
+import asyncio
 import discord
 import datetime
 import typing
 from redbot.core import Config, commands
 from dislash import ActionRow, Button, ButtonStyle
 from math import *
+from TagScriptEngine import Interpreter, block
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
@@ -32,6 +34,25 @@ class Calculator(commands.Cog):
 
         self.data.register_global(**self.calculator_global)
 
+        blocks = [
+            block.MathBlock(),
+            block.RandomBlock(),
+            block.RangeBlock(),
+        ]
+        self.engine = Interpreter(blocks)
+
+        self.x = {
+            "1":"¹",
+            "2":"²",
+            "3":"³",
+            "4":"⁴",
+            "5":"⁵",
+            "6":"⁶",
+            "7":"⁷",
+            "8":"⁸",
+            "9":"⁹"
+        }
+
     async def calculate(self, expression: str, ASCII_one_hundred_and_twenty_four: bool):
         lst = list(expression)
         try:
@@ -39,26 +60,45 @@ class Calculator(commands.Cog):
         except Exception:
             pass
         expression = "".join(lst)
-        result = expression
-        result = result.replace(',', '.')
-        result = result.replace(':', '/')
-        result = result.replace(' ', '')
-        result = result.replace('π', str(pi))
-        result = result.replace('τ', str(tau))
-        result = result.replace('e', str(e))
-        result = result.replace('x', '*')
-        result = result.replace('÷', '/')
-        result = result.replace('^2', '**2')
-        result = result.replace('^3', '**3')
-        result = result.replace('^', '**')
-        result = result.replace('√', 'sqrt')
+        expression = expression.replace(',', '.')
+        expression = expression.replace(':', '/')
+        expression = expression.replace(' ', '')
+        expression = expression.replace('π', str(pi))
+        expression = expression.replace('pi', str(pi))
+        expression = expression.replace('τ', str(tau))
+        expression = expression.replace('tau', str(tau))
+        expression = expression.replace('e', str(e))
+        expression = expression.replace('x', '*')
+        expression = expression.replace('÷', '/')
+        expression = expression.replace('**2', '^2')
+        expression = expression.replace('**3', '^3')
+        expression = expression.replace('**', '^')
+        expression = expression.replace('√', 'sqrt')
+        expression = expression.replace(',', '')
+        for x in self.x:
+            if self.x[x] in expression:
+                expression = expression.replace(self.x[x], f"^{x}")
+        if "sqrt" in expression and not "^" in expression:
+            expression = expression.replace('^2', '**2')
+            expression = expression.replace('^3', '**3')
+            expression = expression.replace('^', '**')
+            try:
+                result = f"{eval(expression)}"
+            except Exception:
+                result = None
+        else:
+            engine_input = "{m:" + expression + "}"
+            result = self.engine.process(engine_input).body
+            result = result.replace("{m:", "").replace("}", "")
         try:
-            if ASCII_one_hundred_and_twenty_four:
-                result = f"{eval(result)}|"
-            else:
-                result = f"{eval(result)}"
+            result = f"{float(result):,}"
         except Exception:
-            result = "Error!"
+            result = None
+        if result is not None:
+            if ASCII_one_hundred_and_twenty_four:
+                result = f"{result}|"
+            else:
+                result = f"{result}"
         if result is None:
             result = "Error!"
         return result
@@ -306,7 +346,7 @@ class Calculator(commands.Cog):
                 if not inter.author == ctx.author:
                     await inter.respond(f"Only the author of the command `{ctx.prefix}calc` can interact with this message.", ephemeral=True)
                 else:
-                    if expression is None or expression == "Error!":
+                    if expression is None or expression == "Error!" or expression == "∞":
                         expression = None
                     if inter.clicked_button.custom_id == "result_button":
                         expression = f"{await self.calculate(expression, True)}"

@@ -350,10 +350,8 @@ class settings(commands.Cog):
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
         embed: discord.Embed = discord.Embed()
-        embed.title = "Create a ticket"
-        embed.description = ( "To get help on this server or to place a command for example, you can create a ticket.\n"
-                             f"Just use the command `{ctx.prefix}ticket create` or click on the button below."
-                             f"You can then use the `{ctx.prefix}ticket` subcommand to manage your ticket.")
+        embed.title = config["embed_button"]["title"]
+        embed.description = config["embed_button"]["description"]
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
         embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon_url)

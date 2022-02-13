@@ -499,7 +499,7 @@ class TicketTool(settings, commands.Cog):
                 channel = member.guild.get_channel(int(channel))
                 ticket = await self.bot.get_cog("TicketTool").get_ticket(channel)
                 if ticket.owner == member and ticket.status == "open":
-                    ticket.close(ticket.guild.me)
+                    await ticket.close(ticket.guild.me)
         return
 
     @commands.Cog.listener()

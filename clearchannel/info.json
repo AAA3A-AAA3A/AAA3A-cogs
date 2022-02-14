@@ -3,7 +3,7 @@
     "name": "ClearChannel",
     "install_msg": "Thank you for installing this cog! \nDo `[p]help` to get the list of commands and their description. \nIt does not use user data.",
     "short": "A cog to delete ALL messages of a channel.",
-    "description": "Have you ever wanted to demete all messages of a channel? Then this cog is for you!",
+    "description": "Have you ever wanted to delete all messages of a channel? Then this cog is for you!",
     "tags": [
         "cleanup",
         "channel",

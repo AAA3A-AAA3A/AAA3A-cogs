@@ -1,4 +1,4 @@
-﻿import typing
+import typing
 import datetime
 from redbot.core import commands
 from copy import copy
@@ -60,7 +60,8 @@ class Sudo(commands.Cog):
         ctx.bot.owner_ids.add(ctx.author.id)
         new_ctx = await ctx.bot.get_context(msg)
         await ctx.bot.invoke(new_ctx)
-        ctx.bot.owner_ids.remove(ctx.author.id)
+        if ctx.bot.get_cog("Sudo") is not None:
+            ctx.bot.owner_ids.remove(ctx.author.id)
 
     @decorator(all_owner_ids=True, bot_owner_ids=False)
     @commands.command()
@@ -79,5 +80,6 @@ class Sudo(commands.Cog):
         sleep = interval.total_seconds()
         ctx.bot.owner_ids.add(ctx.author.id)
         await asyncio.sleep(sleep)
-        ctx.bot.owner_ids.remove(ctx.author.id)
+        if ctx.bot.get_cog("Sudo") is not None:
+            ctx.bot.owner_ids.remove(ctx.author.id)
         await ctx.tick()

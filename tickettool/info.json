@@ -9,6 +9,6 @@
         "tool",
         "system"
     ],
-    "requirements": ["dislash.py", "chat-exporter"],
+    "requirements": ["dislash.py", "chat-exporter==1.7.3"],
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

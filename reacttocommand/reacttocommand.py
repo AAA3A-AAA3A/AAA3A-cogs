@@ -58,6 +58,7 @@ class ReactToCommand(commands.Cog):
         p = p[0]
         command = config[f"{payload.channel_id}-{payload.message_id}"][f"{payload.emoji}"]
         message.content = f"{p}{command}"
+        message.author = member
         new_ctx = await self.bot.get_context(message)
         await self.bot.invoke(new_ctx)
 

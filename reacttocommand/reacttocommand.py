@@ -30,6 +30,9 @@ class ReactToCommand(commands.Cog):
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
         guild = self.bot.get_guild(payload.guild_id)
         channel = guild.get_channel(payload.channel_id)
+        payload.member = guild.get_member(payload.user_id)
+        if payload.member is None:
+            return
         if guild is None:
             return
         if payload.member.bot:
@@ -76,6 +79,9 @@ class ReactToCommand(commands.Cog):
     async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent) -> None:
         guild = self.bot.get_guild(payload.guild_id)
         channel = guild.get_channel(payload.channel_id)
+        payload.member = guild.get_member(payload.user_id)
+        if payload.member is None:
+            return
         if guild is None:
             return
         if not payload.member.id == guild.me.id:

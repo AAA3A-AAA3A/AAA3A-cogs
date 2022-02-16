@@ -1,4 +1,4 @@
-﻿import discord
+import discord
 import typing
 from redbot.core import commands, Config
 from copy import copy
@@ -43,6 +43,11 @@ class ReactToCommand(commands.Cog):
             payload.emoji = str(payload.emoji.id)
         else:
             payload.emoji = str(payload.emoji).strip("\N{VARIATION SELECTOR-16}")
+        message = channel.get_partial_message(payload.message_id)
+        try:
+            await message.remove_reaction(f"{payload.emoji}", payload.member)
+        except discord.HTTPException:
+            pass
         if not f"{payload.emoji}" in config[f"{payload.channel_id}-{payload.message_id}"]:
             return
         message = copy(await channel.fetch_message(payload.message_id))
@@ -83,11 +88,6 @@ class ReactToCommand(commands.Cog):
             payload.emoji = str(payload.emoji).strip("\N{VARIATION SELECTOR-16}")
         if not f"{payload.emoji}" in config[f"{payload.channel_id}-{payload.message_id}"]:
             return
-        message = channel.get_partial_message(payload.message_id)
-        try:
-            await message.remove_reaction(f"{payload.emoji}", guild.me)
-        except discord.HTTPException:
-            pass
         del config[f"{payload.channel_id}-{payload.message_id}"][f"{payload.emoji}"]
         if config[f"{payload.channel_id}-{payload.message_id}"] == {}:
             del config[f"{payload.channel_id}-{payload.message_id}"]

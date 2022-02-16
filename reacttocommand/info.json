@@ -1,0 +1,14 @@
+{
+    "author": ["AAA3A"],
+    "name": "ReactToCommand",
+    "install_msg": "Thank you for installing this cog! \nDo `[p]help` to get the list of commands and their description. \nIt does not use user data.",
+    "short": "A cog to allow a user to execute a command by clicking on a reaction!",
+    "description": "Have you ever wanted to allow a user to execute a command by clicking on a reaction? Then this cog is for you!",
+    "tags": [
+        "react",
+        "reaction",
+        "command"
+    ],
+    "requirements": [],
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

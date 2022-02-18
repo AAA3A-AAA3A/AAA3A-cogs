@@ -1,0 +1,14 @@
+{
+    "author": ["AAA3A"],
+    "name": "MemberPrefix",
+    "install_msg": "Thank you for installing this cog! \nDo `[p]help` to get the list of commands and their description. \nIt does not use user data.",
+    "short": "A cog to allow a member to choose custom prefixes, just for them!",
+    "description": "Have you ever wanted to allow a member to choose custom prefixes, just for them? Then this cog is for you!",
+    "tags": [
+        "prefix",
+        "custom",
+        "member"
+    ],
+    "requirements": [],
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

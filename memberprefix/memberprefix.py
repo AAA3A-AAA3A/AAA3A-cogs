@@ -1,7 +1,6 @@
-﻿import discord
+import discord
 import typing
 from redbot.core import commands, Config
-from redbot.core.bot import Red as Bot
 
 # Credits:
 # The idea for this cog came from @OnlyEli on Red cogs support! (https://discord.com/channels/240154543684321280/430582201113903114/944075297127538730)
@@ -22,8 +21,12 @@ class MemberPrefix(commands.Cog):
         self.memberprefix_member = {
             "custom_prefixes": [],
         }
+        self.memberprefix_global = {
+            "use_normal_prefixes": False,
+        }
 
         self.config.register_member(**self.memberprefix_member)
+        self.config.register_global(**self.memberprefix_global)
 
         self.cache_messages = []
         self.bot.before_invoke(self.before_invoke)
@@ -49,6 +52,10 @@ class MemberPrefix(commands.Cog):
         config = await self.config.member(message.author).all()
         if not config["custom_prefixes"] == []:
             prefixes = config["custom_prefixes"]
+            if await self.config.use_normal_prefixes():
+                for p in await self.bot.get_valid_prefixes(message.guild):
+                    if not p in prefixes:
+                        prefixes.append(p)
         else:
             prefixes = await self.bot.get_valid_prefixes(message.guild)
             return

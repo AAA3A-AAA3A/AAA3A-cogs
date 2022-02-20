@@ -43,7 +43,10 @@ class MemberPrefix(commands.Cog):
         if ctx.message.id in self.cache_messages:
             self.cache_messages.remove(ctx.message.id)
             return
-        raise
+        try:
+            raise
+        except RuntimeError:
+            pass
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:

@@ -1,4 +1,3 @@
-﻿from unittest import TextTestRunner
 import discord
 import datetime
 import typing
@@ -499,7 +498,7 @@ class TicketTool(settings, commands.Cog):
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member):
         config = await self.bot.get_cog("TicketTool").get_config(member.guild)
-        data = await self.bot.get_cog("TicketTool").data.tickets.all()
+        data = await self.bot.get_cog("TicketTool").data.guild(member.guild).tickets.all()
         if config["close_on_leave"]:
             for channel in data:
                 channel = member.guild.get_channel(int(channel))

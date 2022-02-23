@@ -1,6 +1,8 @@
-﻿import typing
+import discord
+import typing
 from redbot.core import commands
 from pathlib import Path
+from redbot.core.data_manager import cog_data_path
 
 # Credits:
 # I made this cog to be able to update files on my bot's host machine easily and quickly, without having to update cogs from GitHub for all my tests.
@@ -51,3 +53,14 @@ class EditFile(commands.Cog):
             new_file = ctx.message.attachments[0]
             await new_file.save(fp=f"{path}")
             await ctx.send(f"This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly.", file=old_file)
+ 
+    @editfile.command()
+    async def findcog(self, ctx, cog: str):
+        """Get a file on the bot's host machine from its path.
+        """
+        try:
+            path = cog_data_path(raw_name=cog)
+        except Exception:
+            await ctx.send("This cog cannot be found. Are you sure of its name?")
+        else:
+            await ctx.send(f"```{path}```")

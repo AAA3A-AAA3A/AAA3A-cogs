@@ -1,0 +1,14 @@
+{
+    "author": ["AAA3A"],
+    "name": "AutoTraceback",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\nIt does not use user data.",
+    "short": "A cog to display the error traceback of a command aomatically after the error!",
+    "description": "A cog to display the error traceback of a command aomatically after the error! If you are developing cogs for Red for example, you don't need to use the traceback command every time you run a new command.",
+    "tags": [
+        "error",
+        "traceback",
+        "dev"
+    ],
+    "requirements": [],
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

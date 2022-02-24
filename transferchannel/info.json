@@ -1,7 +1,7 @@
 {
     "author": ["AAA3A"],
     "name": "TransferChannel",
-    "install_msg": "Thank you for installing this cog! \nDo `[p]help` to get the list of commands and their description. \nIt does not use user data.\nWarning: the use of this cog should be moderated as it uses the Discord api many times during transfers.",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\nIt does not use user data.\nWarning: the use of this cog should be moderated as it uses the Discord api many times during transfers.",
     "short": "A cog to transfer all messages channel in a other channel.",
     "description": "Have you ever wanted to tranfer all messages channel in a other ? Then this cog is for you!",
     "tags": [

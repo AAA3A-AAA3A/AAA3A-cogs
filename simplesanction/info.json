@@ -1,7 +1,7 @@
 {
     "author": ["AAA3A"],
     "name": "SimpleSanction",
-    "install_msg": "Thank you for installing this cog! \nDo `[p]help` to get the list of commands and their description. \nIt does not use user data.",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\nIt does not use user data.",
     "short": "A cog to collect several sanction actions against a user.",
     "description": "Have you ever wanted to have a simple message with buttons to quickly choose the right sanction for a particular user? Then this cog is for you! It allows you to use the buttons on a message to select a sanction and choose the colour, thumbnail of the embed, and many other parameters... All the possibilities can only be done with arguments, which are all falcutative.",
     "tags": [

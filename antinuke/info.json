@@ -1,7 +1,7 @@
 {
     "author": ["AAA3A"],
     "name": "AntiNuke",
-    "install_msg": "Thank you for installing this cog! \nDo `[p]help` to get the list of commands and their description. \nIt does not use user data.\nPersonally, I would advise you to set your permissions, rather than trusting this log. Trust those who have them.",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description. \nIt does not use user data.\nPersonally, I would advise you to set your permissions, rather than trusting this log. Trust those who have them.",
     "short": "A cog to remove all permissions from a person who deletes a channel.",
     "description": "Have you ever dreamed of preventing a nuke by automatically removing all the permissions of someone who removes a channel from your server? Then this cog is for you! Personally, I would advise you to set your permissions, rather than trusting this cog. Trust those who have them.",
     "tags": [

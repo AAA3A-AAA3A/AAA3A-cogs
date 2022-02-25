@@ -26,7 +26,7 @@ class EditFile(commands.Cog):
         pass
 
     @editfile.command()
-    async def get(self, ctx, path: Path):
+    async def get(self, ctx, *, path: Path):
         """Get a file on the bot's host machine from its path.
         """
         try:
@@ -39,7 +39,7 @@ class EditFile(commands.Cog):
             await ctx.send(f"This is the file available at path `{path}`.", file=file)
 
     @editfile.command()
-    async def replace(self, ctx, path: Path):
+    async def replace(self, ctx, *, path: Path):
         """Replace a file on the bot's host machine from its path.
         """
         try:
@@ -78,7 +78,7 @@ class EditFile(commands.Cog):
             await ctx.send(f"```{path}```")
 
     @editfile.command()
-    async def listdir(self, ctx, path: Path):
+    async def listdir(self, ctx, *, path: Path):
         """Get a file on the bot's host machine from its path.
         """
         if not path.exists():

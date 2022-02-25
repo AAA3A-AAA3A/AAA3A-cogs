@@ -92,6 +92,7 @@ class EditFile(commands.Cog):
             if path_file.is_file():
                 message += "\n" + f"- [FILE] {file}"
             elif path_file.is_dir():
-                message += f"- [DIR] {file}"
+                message += "\n" + f"- [DIR] {file}"
+        message = "```" + message + "```"
         for m in pagify(message):
             await ctx.send(m)

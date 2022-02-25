@@ -79,7 +79,7 @@ class EditFile(commands.Cog):
 
     @editfile.command()
     async def listdir(self, ctx, *, path: Path):
-        """Get a file on the bot's host machine from its path.
+        """List all files/directories of a directory from a path.
         """
         if not path.exists():
             await ctx.send("This directory cannot be found on the host machine.")

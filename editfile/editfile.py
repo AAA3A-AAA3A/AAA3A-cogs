@@ -86,11 +86,11 @@ class EditFile(commands.Cog):
         if not path.is_dir():
             await ctx.send("The path you specified refers to a file, not a directory.")
         files = listdir(str(path))
-        message = f"{'\n- '.join(files)}"
+        message = ""
         for file in files:
             path_file = path / file
             if path_file.is_file():
-                message += f"- [FILE] {file}"
+                message += "\n" + f"- [FILE] {file}"
             elif path_file.is_dir():
                 message += f"- [DIR] {file}"
         for m in pagify(message):

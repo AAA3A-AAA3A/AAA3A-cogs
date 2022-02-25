@@ -3,6 +3,8 @@ import typing
 from redbot.core import commands
 from pathlib import Path
 from redbot.core.data_manager import cog_data_path
+from redbot.core.utils.chat_formatting import pagify
+from os import listdir
 
 # Credits:
 # I made this cog to be able to update files on my bot's host machine easily and quickly, without having to update cogs from GitHub for all my tests.
@@ -41,6 +43,10 @@ class EditFile(commands.Cog):
         """Replace a file on the bot's host machine from its path.
         """
         try:
+            if not path.exists():
+                raise FileNotFoundError
+            if not path.is_dir():
+                raise IsADirectoryError
             old_file = discord.File(f"{path}")
         except FileNotFoundError:
             await ctx.send("This original file cannot be found on the host machine.")
@@ -56,11 +62,36 @@ class EditFile(commands.Cog):
  
     @editfile.command()
     async def findcog(self, ctx, cog: str):
-        """Get a file on the bot's host machine from its path.
+        """Get a cog directory on the bot's host machine from its name.
         """
+        downloader = ctx.bot.get_cog("Downloader")
         try:
-            path = cog_data_path(raw_name=cog)
+            if downloader is not None:
+                path = Path((await downloader.cog_install_path()) / cog)
+            else:
+                path = cog_data_path(raw_name=cog)
+            if not path.exists() or not path.is_dir():
+                raise
         except Exception:
             await ctx.send("This cog cannot be found. Are you sure of its name?")
         else:
             await ctx.send(f"```{path}```")
+
+    @editfile.command()
+    async def listdir(self, ctx, path: Path):
+        """Get a file on the bot's host machine from its path.
+        """
+        if not path.exists():
+            await ctx.send("This directory cannot be found on the host machine.")
+        if not path.is_dir():
+            await ctx.send("The path you specified refers to a file, not a directory.")
+        files = listdir(str(path))
+        message = f"{'\n- '.join(files)}"
+        for file in files:
+            path_file = path / file
+            if path_file.is_file():
+                message += f"- [FILE] {file}"]
+            elif path_file.is_dir():
+                message += f"- [DIR] {file}"]
+        for m in pagify(message):
+            await ctx.send(m)

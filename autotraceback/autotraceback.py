@@ -41,7 +41,7 @@ class AutoTraceback(commands.Cog):
             return
         traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__))
         pages = []
-        for page in pagify(traceback_error, shorten_by=15, page_length=2000):
+        for page in pagify(traceback_error, shorten_by=15, page_length=1985):
             pages.append(box(page, lang="py"))
         try:
             await menu(ctx, pages=pages, controls=CONTROLS, page=0, timeout=30)

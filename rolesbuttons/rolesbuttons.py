@@ -105,7 +105,10 @@ class RolesButtons(commands.Cog):
         if len(config[f"{message.channel.id}-{message.id}"]) == 25:
             await ctx.send("I can't do more than 25 roles-buttons for one message.")
             return
-        config[f"{message.channel.id}-{message.id}"][f"{button}"] = {"role": role.id, "text_button": text_button}
+        if hasattr(button, 'id'):
+            config[f"{message.channel.id}-{message.id}"][f"{button.id}"] = {"role": role.id, "text_button": text_button}
+        else:
+            config[f"{message.channel.id}-{message.id}"][f"{button}"] = {"role": role.id, "text_button": text_button}
         try:
             await message.edit(components=self.get_buttons(config, message))
         except discord.HTTPException:
@@ -201,6 +204,11 @@ class RolesButtons(commands.Cog):
         for l in lists:
             buttons = {"type": 1, "components": []}
             for button in l:
-                buttons["components"].append({"type": 2, "style": 2, "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": {"name": f"{button}"}, "custom_id": f"roles_buttons {button}"})
+                try:
+                    int(button)
+                except ValueError:
+                    buttons["components"].append({"type": 2, "style": 2, "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": {"name": f"{button}"}, "custom_id": f"roles_buttons {button}"})
+                else:
+                    buttons["components"].append({"type": 2, "style": 2, "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": {"name": f"{button}", "id": int(button)}, "custom_id": f"roles_buttons {button}"})
             all_buttons.append(ActionRow.from_dict(buttons))
         return all_buttons

@@ -43,10 +43,10 @@ class EditFile(commands.Cog):
         """Replace a file on the bot's host machine from its path.
         """
         try:
-            if not path.exists():
-                raise FileNotFoundError
-            if not path.is_dir():
-                raise IsADirectoryError
+            # if not path.exists():
+                # raise FileNotFoundError
+            # if not path.is_dir():
+                # raise IsADirectoryError
             old_file = discord.File(f"{path}")
         except FileNotFoundError:
             await ctx.send("This original file cannot be found on the host machine.")

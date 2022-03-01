@@ -135,7 +135,10 @@ class RolesButtons(commands.Cog):
             await ctx.send("I can't do more than 25 roles-buttons for one message.")
             return
         for role, button in roles_buttons:
-            config[f"{message.channel.id}-{message.id}"][f"{button}"] = {"role": role.id, "text_button": None}
+            if hasattr(button, 'id'):
+                config[f"{message.channel.id}-{message.id}"][f"{button.id}"] = {"role": role.id, "text_button": None}
+            else:
+                config[f"{message.channel.id}-{message.id}"][f"{button}"] = {"role": role.id, "text_button": None}
         try:
             await message.edit(components=self.get_buttons(config, message))
         except discord.HTTPException:

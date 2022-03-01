@@ -83,8 +83,10 @@ class EditFile(commands.Cog):
         """
         if not path.exists():
             await ctx.send("This directory cannot be found on the host machine.")
+            return
         if not path.is_dir():
             await ctx.send("The path you specified refers to a file, not a directory.")
+            return
         files = listdir(str(path))
         message = ""
         for file in files:

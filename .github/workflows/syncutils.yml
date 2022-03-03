@@ -1,0 +1,32 @@
+name: Sync utils
+
+on: workflow_dispatch
+
+jobs:
+  syncutils:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8"]
+
+    name: Sync utils
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        pip install gitpython requests
+
+    - name: Run script syncutils.py
+      run: |
+        python .github/workflows/scripts/syncutils.py
+
+    - name: "Commit and push changes"
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Automated utils sync

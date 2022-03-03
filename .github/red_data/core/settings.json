@@ -1,0 +1,11 @@
+{
+    "0": {
+        "CUSTOM_GROUPS": {},
+        "GLOBAL": {
+            "prefix": [
+                "!"
+            ],
+            "schema_version": 2
+        }
+    }
+}

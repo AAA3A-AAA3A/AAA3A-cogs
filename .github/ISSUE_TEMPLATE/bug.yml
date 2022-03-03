@@ -1,0 +1,31 @@
+description: "File a bug report"
+labels: ["type: bug"]
+name: "Bug Report"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Thanks for taking the time to make an issue!
+        If you want general support please ask in the Red Cog Support server at https://discord.gg/GET4DVk
+  - type: input
+    id: cog-name
+    attributes:
+      label: "What cog is this bug report for?"
+      placeholder: "Enter the name of the cog"
+    validations:
+      required: true
+  - type: textarea
+    id: desc
+    attributes:
+      description: "Please go into as much detail as possible and, if you can, show steps to reproduce it. If there's an error, paste it in the next box below."
+      label: "Describe the bug"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      description: "Please copy and paste any relevant log output either from the console or using the `[p]traceback` command. This will be automatically formatted into code, so no need for backticks."
+      label: "If there's an error, paste it here"
+      render: python
+    validations:
+      required: false

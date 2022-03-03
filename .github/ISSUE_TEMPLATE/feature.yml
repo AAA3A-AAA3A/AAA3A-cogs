@@ -1,0 +1,18 @@
+description: "File a feature request"
+labels: ["type: enhancement"]
+name: "Feature request"
+body:
+  - type: input
+    id: cog-name
+    attributes:
+      label: "What cog is this feature request for?"
+      placeholder: "Enter the name of the cog"
+    validations:
+      required: true
+  - type: textarea
+    id: desc
+    attributes:
+      label: "Describe the feature request in as much detail as possible"
+      placeholder: "The more information the better!"
+    validations:
+      required: true

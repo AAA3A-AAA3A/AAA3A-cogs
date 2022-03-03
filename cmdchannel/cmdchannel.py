@@ -1,5 +1,5 @@
+from .AAA3A_utils.cogsutils import CogsUtils
 from random import choice
-
 import discord, typing, logging, datetime
 from typing import List
 from redbot.core import checks, Config, commands, data_manager
@@ -40,6 +40,9 @@ class CmdChannel(commands.Cog):
         }
 
         self.config.register_guild(**self.cmd_guild)
+
+        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils._setup()
 
     @commands.guild_only()
     @commands.mod()

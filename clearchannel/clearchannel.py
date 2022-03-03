@@ -1,7 +1,6 @@
-from typing import NamedTuple
+from .AAA3A_utils.cogsutils import CogsUtils
+from typing import NamedTuple, Union
 from random import randint
-from typing import Union
-
 import discord
 import logging
 import asyncio
@@ -35,6 +34,9 @@ class ClearChannel(commands.Cog):
         }
 
         self.config.register_guild(**self.clearchannel_guild)
+
+        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils._setup()
 
     @commands.command(name="clearchannel")
     @commands.guild_only()

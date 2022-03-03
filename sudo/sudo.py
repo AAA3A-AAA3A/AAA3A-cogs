@@ -1,3 +1,4 @@
+from .AAA3A_utils.cogsutils import CogsUtils
 import typing
 import datetime
 from redbot.core import commands
@@ -17,7 +18,10 @@ class Sudo(commands.Cog):
         self.bot = bot
         self.all_owner_ids = copy(self.bot.owner_ids)
         self.bot.owner_ids.clear()
+
         self.__func_red__ = ["cog_unload"]
+        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils._setup()
 
     def cog_unload(self):
         self.bot.owner_ids.update(copy(self.all_owner_ids))

@@ -1,3 +1,4 @@
+from .AAA3A_utils.cogsutils import CogsUtils
 import discord
 import typing
 from typing import List, Optional, Tuple, Union
@@ -33,6 +34,9 @@ class AntiNuke(commands.Cog):
 
         self.config.register_guild(**self.antinuke_guild)
         self.config.register_member(**self.antinuke_member)
+
+        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils._setup()
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, old_channel: discord.abc.GuildChannel):

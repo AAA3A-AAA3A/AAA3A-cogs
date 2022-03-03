@@ -1,4 +1,4 @@
-from ast import Pass
+from .AAA3A_utils.cogsutils import CogsUtils
 import asyncio
 import discord
 import datetime
@@ -52,6 +52,9 @@ class Calculator(commands.Cog):
             "8":"⁸",
             "9":"⁹"
         }
+
+        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils._setup()
 
     async def calculate(self, expression: str, ASCII_one_hundred_and_twenty_four: bool):
         lst = list(expression)

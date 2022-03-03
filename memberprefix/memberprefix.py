@@ -1,3 +1,4 @@
+from .AAA3A_utils.cogsutils import CogsUtils
 import discord
 import typing
 from redbot.core import commands, Config
@@ -32,6 +33,8 @@ class MemberPrefix(commands.Cog):
         self.bot.before_invoke(self.before_invoke)
         
         self.__func_red__ = ["cog_unload"]
+        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils._setup()
 
     def cog_unload(self):
         self.bot.remove_before_invoke_hook(self.before_invoke)

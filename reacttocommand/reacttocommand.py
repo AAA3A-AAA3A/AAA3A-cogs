@@ -1,3 +1,4 @@
+from .AAA3A_utils.cogsutils import CogsUtils
 import discord
 import typing
 from redbot.core import commands, Config
@@ -25,6 +26,9 @@ class ReactToCommand(commands.Cog):
         }
 
         self.config.register_guild(**self.reacttocommand_guild)
+
+        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils._setup()
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:

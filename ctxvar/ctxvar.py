@@ -1,4 +1,5 @@
-﻿import discord
+﻿from .AAA3A_utils.cogsutils import CogsUtils
+import discord
 import typing
 from redbot.core import commands
 from redbot.core.utils.menus import menu, DEFAULT_CONTROLS
@@ -16,6 +17,9 @@ class CtxVar(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils._setup()
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True, add_reactions=True)

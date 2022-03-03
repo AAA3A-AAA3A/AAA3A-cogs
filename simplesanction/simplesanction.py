@@ -1,4 +1,5 @@
-﻿import asyncio
+﻿from .AAA3A_utils.cogsutils import CogsUtils
+import asyncio
 import discord
 from discord.ext.commands import BadArgument
 import typing
@@ -45,6 +46,9 @@ class SimpleSanction(settings, commands.Cog):
         }
 
         self.config.register_guild(**self.sanction_guild)
+
+        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils._setup()
 
     def check_timedelta(string):
         try:

@@ -1,4 +1,5 @@
-﻿import discord
+﻿from .AAA3A_utils.cogsutils import CogsUtils
+import discord
 from redbot.core import commands
 from redbot.core.utils.chat_formatting import pagify, box
 from redbot.core.utils.menus import menu, close_menu
@@ -32,6 +33,9 @@ class AutoTraceback(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         super().__init__()
+
+        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils._setup()
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):

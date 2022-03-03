@@ -1,3 +1,4 @@
+from .AAA3A_utils.cogsutils import CogsUtils
 import discord, requests, socket
 from redbot.core import checks, commands, data_manager, Config
 
@@ -20,6 +21,9 @@ class Ip(commands.Cog):
         }
 
         self.data.register_global(**self.ip_global)
+
+        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils._setup()
 
     @commands.guild_only()
     @commands.is_owner()

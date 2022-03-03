@@ -1,3 +1,4 @@
+from .AAA3A_utils.cogsutils import CogsUtils
 import discord
 import datetime
 import typing
@@ -59,6 +60,9 @@ class TicketTool(settings, commands.Cog):
         }
 
         self.config.register_guild(**self.ticket_guild)
+
+        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils._setup()
 
     async def get_config(self, guild: discord.Guild):
         config = await self.bot.get_cog("TicketTool").data.guild(guild).settings.all()

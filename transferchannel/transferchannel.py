@@ -1,3 +1,4 @@
+from .AAA3A_utils.cogsutils import CogsUtils
 import datetime
 import discord
 from redbot.core import checks, commands
@@ -24,6 +25,9 @@ class TransferChannel(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.cache = {}
+
+        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils._setup()
 
     @commands.command(aliases=["channeltransfer"])
     @checks.admin_or_permissions(manage_guild=True)

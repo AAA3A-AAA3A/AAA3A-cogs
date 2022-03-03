@@ -1,4 +1,5 @@
-﻿import discord
+﻿from .AAA3A_utils.cogsutils import CogsUtils
+import discord
 import typing
 from redbot.core import commands, Config
 from dislash import ActionRow
@@ -25,6 +26,9 @@ class RolesButtons(commands.Cog):
         }
 
         self.config.register_guild(**self.roles_button_guild)
+
+        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils._setup()
 
     @commands.Cog.listener()
     async def on_button_click(self, inter):

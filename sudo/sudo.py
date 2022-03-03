@@ -17,6 +17,7 @@ class Sudo(commands.Cog):
         self.bot = bot
         self.all_owner_ids = copy(self.bot.owner_ids)
         self.bot.owner_ids.clear()
+        self.__func_red__ = ["cog_unload"]
 
     def cog_unload(self):
         self.bot.owner_ids.update(copy(self.all_owner_ids))
@@ -67,7 +68,7 @@ class Sudo(commands.Cog):
     @commands.command()
     async def sutimeout(
         self,
-        ctx,
+        ctx: commands.Context,
         *,
         interval: commands.TimedeltaConverter(
             minimum=datetime.timedelta(seconds=10),

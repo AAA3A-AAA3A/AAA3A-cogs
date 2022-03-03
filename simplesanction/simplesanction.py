@@ -25,7 +25,7 @@ class SimpleSanction(settings, commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         test = settings.test
-        self.data: Config = Config.get_conf(
+        self.config: Config = Config.get_conf(
             self,
             identifier=793615829052,
             force_registration=True,
@@ -44,7 +44,7 @@ class SimpleSanction(settings, commands.Cog):
             "timeout": 180,
         }
 
-        self.data.register_guild(**self.sanction_guild)
+        self.config.register_guild(**self.sanction_guild)
 
     def check_timedelta(string):
         try:
@@ -280,7 +280,7 @@ class SimpleSanction(settings, commands.Cog):
     async def call_sanction(self, ctx: commands.Context, action: typing.Optional[int]=None, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, reason: str = None):
         """Sanction a user quickly and easily.
         """
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
         actual_thumbnail = config["thumbnail"]
         actual_color = config["color"]
         actual_show_author = config["show_author"]
@@ -659,7 +659,7 @@ class SimpleSanction(settings, commands.Cog):
                     return
 
     async def call_actions(self, ctx: commands.Context, action: typing.Optional[int]=None, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, reason: str = None):
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
         actual_thumbnail = config["thumbnail"]
         actual_color = config["color"]
         actual_warn_system_use = config["warn_system_use"]

@@ -6,28 +6,20 @@ import discord
 from discord.ext import commands
 
 def role_mention_cleanup(message: discord.Message) -> Union[str, None]:
-
     content = message.content
-
     if not content:
         return None
-
     assert isinstance(content, str), "Message.content got screwed somehow..."  # nosec
-
     if message.guild is None:
         return content
-
     transformations = {
         re.escape("<@&{0.id}>".format(role)): "@" + role.name
         for role in message.role_mentions
     }
-
     def repl(obj):
         return transformations.get(re.escape(obj.group(0)), "")
-
     pattern = re.compile("|".join(transformations.keys()))
     result = pattern.sub(repl, content)
-
     return result
 
 def embed_from_msg(message: discord.Message) -> discord.Embed:

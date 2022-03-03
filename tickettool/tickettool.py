@@ -21,7 +21,7 @@ class TicketTool(settings, commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.data: Config = Config.get_conf(
+        self.config: Config = Config.get_conf(
             self,
             identifier=937480369417,
             force_registration=True,
@@ -58,7 +58,7 @@ class TicketTool(settings, commands.Cog):
             "tickets": {},
         }
 
-        self.data.register_guild(**self.ticket_guild)
+        self.config.register_guild(**self.ticket_guild)
 
     async def get_config(self, guild: discord.Guild):
         config = await self.bot.get_cog("TicketTool").data.guild(guild).settings.all()

@@ -30,6 +30,8 @@ class MemberPrefix(commands.Cog):
 
         self.cache_messages = []
         self.bot.before_invoke(self.before_invoke)
+        
+        self.__func_red__ = ["cog_unload"]
 
     def cog_unload(self):
         self.bot.remove_before_invoke_hook(self.before_invoke)

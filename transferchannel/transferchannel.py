@@ -1,13 +1,6 @@
-from typing import NamedTuple
 import datetime
-import json
-import os
-from random import randint
-from typing import Union
-
 import discord
 from redbot.core import checks, commands
-from redbot.core.data_manager import cog_data_path
 from .helpers import embed_from_msg
 from redbot.core.utils.tunnel import Tunnel
 
@@ -20,10 +13,8 @@ from redbot.core.utils.tunnel import Tunnel
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
-
 class GuildNotFoundError(Exception):
     pass
-
 
 class TransferChannel(commands.Cog):
     """
@@ -108,11 +99,3 @@ class TransferChannel(commands.Cog):
             hook = await destination.create_webhook(name="red_bot_hook_" + str(destination.id))
 
         return hook
-
-    async def red_get_data_for_user(self, *, user_id: int):
-        # this cog does not store any data
-        return {}
-
-    async def red_delete_data_for_user(self, *, requester, user_id: int) -> None:
-        # this cog does not store any data
-        pass

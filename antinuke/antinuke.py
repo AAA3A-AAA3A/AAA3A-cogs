@@ -14,7 +14,7 @@ class AntiNuke(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.data: Config = Config.get_conf(
+        self.config: Config = Config.get_conf(
             self,
             identifier=947269490247,
             force_registration=True,
@@ -31,14 +31,14 @@ class AntiNuke(commands.Cog):
             "old_roles": [], # The roles to be handed in if it wasn't a nuke.
         }
 
-        self.data.register_guild(**self.antinuke_guild)
-        self.data.register_member(**self.antinuke_member)
+        self.config.register_guild(**self.antinuke_guild)
+        self.config.register_member(**self.antinuke_member)
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, old_channel: discord.abc.GuildChannel):
         """Remove all permissions from a user if they delete a channel.
         """
-        config = await self.data.guild(old_channel.guild).all()
+        config = await self.config.guild(old_channel.guild).all()
         logschannel = config["logschannel"]
         actual_state_enabled = config["enabled"]
         actual_state_user_dm = config["user_dm"]
@@ -55,7 +55,7 @@ class AntiNuke(commands.Cog):
             return
         if perp == old_channel.guild.me:
             return
-        actual_count = await self.data.member(perp).count()
+        actual_count = await self.config.member(perp).count()
         if actual_state_enabled:
             if not perp.bot:
                 actual_number_detected = actual_number_detected_member
@@ -67,7 +67,7 @@ class AntiNuke(commands.Cog):
                     return
             actual_count += 1
             if actual_count >= actual_number_detected:
-                await self.data.member(perp).count.clear()
+                await self.config.member(perp).count.clear()
                 old_roles = perp.roles.copy()
                 old_roles.remove(old_channel.guild.default_role)
                 old_roles = [
@@ -84,7 +84,7 @@ class AntiNuke(commands.Cog):
                             await perp.remove_roles(role, reason=f"All roles in {perp} ({perp.id}) roles have been removed as a result of the antinuke system being triggered on this server.")
                         except Exception:
                             pass
-                    await self.data.member(perp).old_roles.set(old_roles)
+                    await self.config.member(perp).old_roles.set(old_roles)
                 if logschannel:
                     embed: discord.Embed = discord.Embed()
                     embed.title = f"The user {perp.name}#{perp.discriminator} has deleted the channel #{old_channel.name}!"
@@ -98,7 +98,7 @@ class AntiNuke(commands.Cog):
                     logschannel = self.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
             else:
-                await self.data.member(perp).count.set(actual_count)
+                await self.config.member(perp).count.set(actual_count)
                 return
         else:
             return
@@ -123,10 +123,10 @@ class AntiNuke(commands.Cog):
     @commands.guild_only()
     @commands.guildowner()
     @commands.group(name="setantinuke", aliases=["antinukeset"])
-    async def config(self, ctx: commands.Context):
+    async def configuration(self, ctx: commands.Context):
         """Configure AntiNuke for your server."""
 
-    @config.command(aliases=["lchann", "lchannel", "logschan", "logchannel", "logsc"], usage="<text_channel_or_'none'>")
+    @configuration.command(aliases=["lchann", "lchannel", "logschan", "logchannel", "logsc"], usage="<text_channel_or_'none'>")
     async def logschannel(self, ctx: commands.Context, *, channel: typing.Optional[discord.TextChannel]=None):
         """Set a channel where events are registered.
 
@@ -138,7 +138,7 @@ class AntiNuke(commands.Cog):
             return
 
         if channel is None:
-            await self.data.guild(ctx.guild).logschannel.clear()
+            await self.config.guild(ctx.guild).logschannel.clear()
             await ctx.send("Logging channel removed.")
             return
 
@@ -147,7 +147,7 @@ class AntiNuke(commands.Cog):
             await ctx.send("The bot does not have at least one of the following permissions in this channel: `embed_links`, `read_messages`, `read_message_history`, `send_messages`, `attach_files`.")
             return
 
-        await self.data.guild(ctx.guild).logschannel.set(channel.id)
+        await self.config.guild(ctx.guild).logschannel.set(channel.id)
         await ctx.send(f"Logging channel registered: {channel.mention}.")
 
     async def check_permissions_in_channel(self, permissions: List[str], channel: discord.TextChannel):
@@ -160,7 +160,7 @@ class AntiNuke(commands.Cog):
             if not getattr(channel.permissions_for(channel.guild.me), permission)
         ]
 
-    @config.command(name="enable", aliases=["activate"], usage="<true_or_false>")
+    @configuration.command(name="enable", aliases=["activate"], usage="<true_or_false>")
     async def enable(self, ctx: commands.Context, state: bool):
         """Enable or disable AntiNuke.
 
@@ -170,16 +170,16 @@ class AntiNuke(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
         actual_state_enabled = config["enabled"]
         if actual_state_enabled is state:
             await ctx.send(f"AntiNuke is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).enabled.set(state)
+        await self.config.guild(ctx.guild).enabled.set(state)
         await ctx.send(f"AntiNuke state registered: {state}.")
 
-    @config.command(name="userdm", aliases=["dm"], usage="<true_or_false>")
+    @configuration.command(name="userdm", aliases=["dm"], usage="<true_or_false>")
     async def userdm(self, ctx: commands.Context, state: bool):
         """Enable or disable User DM.
 
@@ -189,17 +189,17 @@ class AntiNuke(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
         actual_state_user_dm = config["user_dm"]
         if actual_state_user_dm is state:
             await ctx.send(f"User DM is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).user_dm.set(state)
+        await self.config.guild(ctx.guild).user_dm.set(state)
         await ctx.send(f"User DM state registered: {state}.")
         
-    @config.command(name="nbmember", aliases=["membernb"], usage="<int>")
+    @configuration.command(name="nbmember", aliases=["membernb"], usage="<int>")
     async def nbmember(self, ctx: commands.Context, int: int):
         """Number Detected - Member
 
@@ -210,12 +210,12 @@ class AntiNuke(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
-        await self.data.guild(ctx.guild).number_detected_member.set(int)
+        await self.config.guild(ctx.guild).number_detected_member.set(int)
         await ctx.send(f"Number Detected - Member registered: {int}.")
 
-    @config.command(name="nbbot", aliases=["botsnb"], usage="<int>")
+    @configuration.command(name="nbbot", aliases=["botsnb"], usage="<int>")
     async def nbbot(self, ctx: commands.Context, int: int):
         """Number Detected - Bot
 
@@ -226,12 +226,12 @@ class AntiNuke(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
-        await self.data.guild(ctx.guild).number_detected_bot.set(int)
+        await self.config.guild(ctx.guild).number_detected_bot.set(int)
         await ctx.send(f"Number Detected - Bot registered: {int}.")
         
-    @config.command(name="resetuser", aliases=["userreset"], usage="<int>")
+    @configuration.command(name="resetuser", aliases=["userreset"], usage="<int>")
     async def resetuser(self, ctx: commands.Context, user: discord.Member, give_roles: bool = False):
         """Reset number detected for a user
         """
@@ -239,7 +239,7 @@ class AntiNuke(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.member(user).all()
+        config = await self.config.member(user).all()
 
         if give_roles:
             old_roles = config["old_roles"]
@@ -252,6 +252,6 @@ class AntiNuke(commands.Cog):
                 await user.add_roles(*old_roles, reason=f"All former roles of {user} ({user.id}) have been restored at the request of the server owner.")
                 await ctx.send(f"Restored roles for {user.name} ({user.id}).")
 
-        await self.data.member(user).count.clear()
-        await self.data.member(user).old_roles.clear()
+        await self.config.member(user).count.clear()
+        await self.config.member(user).old_roles.clear()
         await ctx.send(f"Count removed for {user.name} ({user.id}).")

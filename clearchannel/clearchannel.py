@@ -4,6 +4,7 @@ from typing import Union
 
 import discord
 import logging
+import asyncio
 from redbot.core import checks, Config, commands
 from redbot.core.data_manager import cog_data_path
 from redbot.core.utils.menus import start_adding_reactions
@@ -22,7 +23,7 @@ class ClearChannel(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.data: Config = Config.get_conf(
+        self.config: Config = Config.get_conf(
             self,
             identifier=837018163805,
             force_registration=True,
@@ -33,7 +34,7 @@ class ClearChannel(commands.Cog):
             "author_dm": False,
         }
 
-        self.data.register_guild(**self.clearchannel_guild)
+        self.config.register_guild(**self.clearchannel_guild)
 
     @commands.command(name="clearchannel")
     @commands.guild_only()
@@ -45,7 +46,7 @@ class ClearChannel(commands.Cog):
         """Delete ALL messages from the current channel by duplicating it and then deleting it.
         For security reasons, only the server owner and the bot owner can use the command. Use the "permissions" tool for more options.
         """
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
         actual_author_dm = config["author_dm"]
         actual_channel_delete = config["channel_delete"]
         actual_first_message = config["first_message"]
@@ -79,7 +80,7 @@ class ClearChannel(commands.Cog):
                         return
                         break
                     else:
-                        await message.remove_reaction(reaction, user)
+                        await message.remove_reaction(reaction, abc_author)
                 except asyncio.TimeoutError:
                     if not end_reaction:
                         await message.delete()
@@ -113,10 +114,10 @@ class ClearChannel(commands.Cog):
     @commands.guild_only()
     @commands.guildowner()
     @commands.group(name="setclearchannel", aliases=["clearchannelset"])
-    async def config(self, ctx: commands.Context):
+    async def configuration(self, ctx: commands.Context):
         """Configure ClearChannel for your server."""
 
-    @config.command(name="channeldelete", aliases=["delete"], usage="<true_or_false>")
+    @configuration.command(name="channeldelete", aliases=["delete"], usage="<true_or_false>")
     async def channeldelete(self, ctx: commands.Context, state: bool):
         """Enable or disable Channel Delete
         If this option is enabled, the bot will not delete the original channel: it will duplicate it as normal, but move it to the end of the server's channel list.
@@ -126,17 +127,17 @@ class ClearChannel(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
         actual_channel_delete = config["channel_delete"]
         if actual_channel_delete is state:
             await ctx.send(f"Channel Delete is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).channel_delete.set(state)
+        await self.config.guild(ctx.guild).channel_delete.set(state)
         await ctx.send(f"Channel Delete state registered: {state}.")
 
-    @config.command(name="firstmessage", aliases=["message"], usage="<true_or_false>")
+    @configuration.command(name="firstmessage", aliases=["message"], usage="<true_or_false>")
     async def firstmessage(self, ctx: commands.Context, state: bool):
         """Enable or disable First Message
         If this option is enabled, the bot will send a message to the emptied channel to warn that it has been emptied.
@@ -146,17 +147,17 @@ class ClearChannel(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
         actual_first_message = config["first_message"]
         if actual_first_message is state:
             await ctx.send(f"First Message is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).first_message.set(state)
+        await self.config.guild(ctx.guild).first_message.set(state)
         await ctx.send(f"First Message state registered: {state}.")
 
-    @config.command(name="authordm", aliases=["dmauthor"], usage="<true_or_false>")
+    @configuration.command(name="authordm", aliases=["dmauthor"], usage="<true_or_false>")
     async def authordm(self, ctx: commands.Context, state: bool):
         """Enable or disable Author dm
         If this option is enabled, the bot will try to send a dm to the author of the order to confirm that everything went well.
@@ -166,20 +167,12 @@ class ClearChannel(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
         actual_author_dm = config["author_dm"]
         if actual_author_dm is state:
             await ctx.send(f"Author dm is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).author_dm.set(state)
+        await self.config.guild(ctx.guild).author_dm.set(state)
         await ctx.send(f"Author dm state registered: {state}.")
-
-    async def red_get_data_for_user(self, *, user_id: int):
-        # this cog does not store any data
-        return {}
-
-    async def red_delete_data_for_user(self, *, requester, user_id: int) -> None:
-        # this cog does not store any data
-        pass

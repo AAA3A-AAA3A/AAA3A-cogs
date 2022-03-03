@@ -18,7 +18,7 @@ class CmdChannel(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.data: Config = Config.get_conf(
+        self.config: Config = Config.get_conf(
             self,
             identifier=793502759720,
             force_registration=True,
@@ -39,7 +39,7 @@ class CmdChannel(commands.Cog):
             "informationmessage_cmduserchannel": False, # Enable the information message.
         }
 
-        self.data.register_guild(**self.cmd_guild)
+        self.config.register_guild(**self.cmd_guild)
 
     @commands.guild_only()
     @commands.mod()
@@ -78,7 +78,7 @@ class CmdChannel(commands.Cog):
             await ctx.send_help()
             return
 
-        config = await self.data.guild(guild).all()
+        config = await self.config.guild(guild).all()
         logschannel = config["logschannel"]
         actual_state_enabled = config["enabled_cmdchannel"]
         actual_state_confirmation = config["confirmation_cmdchannel"]
@@ -149,7 +149,7 @@ class CmdChannel(commands.Cog):
             await ctx.send_help()
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
         logschannel = config["logschannel"]
         actual_state_enabled = config["enabled_cmduser"]
         actual_state_confirmation = config["confirmation_cmduser"]
@@ -223,13 +223,13 @@ class CmdChannel(commands.Cog):
             await ctx.send_help()
             return
 
-        config = await self.data.guild(guild).all()
+        config = await self.config.guild(ctx.guild).all()
         logschannel = config["logschannel"]
         actual_state_enabled = config["enabled_cmduserchannel"]
         actual_state_confirmation = config["confirmation_cmduserchannel"]
         actual_state_deletemessage = config["deletemessage_cmduserchannel"]
         actual_state_information = config["informationmessage_cmduserchannel"]
-        cmd_colour = await self.bot.get_embed_colour(guild.text_channels[0])
+        cmd_colour = await self.bot.get_embed_colour(ctx.guild.text_channels[0])
         if actual_state_enabled:
             permissions = channel.permissions_for(ctx.author)
             if permissions.read_messages and permissions.send_messages:
@@ -297,10 +297,10 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.guildowner_or_permissions(administrator=True)
     @commands.group(name="cmdset", aliases=["setcmd"])
-    async def config(self, ctx: commands.Context):
+    async def configuration(self, ctx: commands.Context):
         """Configure Command for your server."""
 
-    @config.command(aliases=["lchann", "lchannel", "logschan", "logchannel", "logsc"], usage="<text_channel_or_'none'>")
+    @configuration.command(aliases=["lchann", "lchannel", "logschan", "logchannel", "logsc"], usage="<text_channel_or_'none'>")
     async def logschannel(self, ctx: commands.Context, *, channel: typing.Optional[discord.TextChannel]=None):
         """Set a channel where events are registered.
 
@@ -312,7 +312,7 @@ class CmdChannel(commands.Cog):
             return
 
         if channel is None:
-            await self.data.guild(ctx.guild).logschannel.clear()
+            await self.config.guild(ctx.guild).logschannel.clear()
             await ctx.send("Logging channel removed.")
             return
 
@@ -321,7 +321,7 @@ class CmdChannel(commands.Cog):
             await ctx.send("The bot does not have at least one of the following permissions in this channel: `embed_links`, `read_messages`, `read_message_history`, `send_messages`, `attach_files`.")
             return
 
-        await self.data.guild(ctx.guild).logschannel.set(channel.id)
+        await self.config.guild(ctx.guild).logschannel.set(channel.id)
         await ctx.send(f"Logging channel registered: {channel.mention}.")
 
     async def check_permissions_in_channel(self, permissions: List[str], channel: discord.TextChannel):
@@ -335,8 +335,8 @@ class CmdChannel(commands.Cog):
         ]
 
     @commands.guildowner_or_permissions(administrator=True)
-    @config.group(name="cmdchannel", aliases=["channelcmd"])
-    async def cmdchannelconfig(self, ctx: commands.Context: commands.GuildContext):
+    @configuration.group(name="cmdchannel", aliases=["channelcmd"])
+    async def cmdchannelconfig(self, ctx: commands.Context):
         """Configure CmdChannel for your server."""
 
     @cmdchannelconfig.command(name="enable", aliases=["activate"], usage="<true_or_false>")
@@ -349,14 +349,14 @@ class CmdChannel(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
         actual_state_enabled = config["enabled_cmdchannel"]
         if actual_state_enabled is state:
             await ctx.send(f"CommandChannel is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).enabled_cmdchannel.set(state)
+        await self.config.guild(ctx.guild).enabled_cmdchannel.set(state)
         await ctx.send(f"CommandChannel state registered: {state}.")
 
     @cmdchannelconfig.command(name="confirmation", aliases=["confirm"], usage="<true_or_false>")
@@ -369,14 +369,14 @@ class CmdChannel(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
         actual_state_confirmation = config["confirmation_cmdchannel"]
         if actual_state_confirmation is state:
             await ctx.send(f"Confirmation is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).confirmation_cmdchannel.set(state)
+        await self.config.guild(ctx.guild).confirmation_cmdchannel.set(state)
         await ctx.send(f"Confirmation state registered: {state}.")
 
     @cmdchannelconfig.command(name="delete", aliases=["deletemessage"], usage="<true_or_false>")
@@ -389,14 +389,14 @@ class CmdChannel(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
         actual_state_delete = config["deletemessage_cmdchannel"]
         if actual_state_delete is state:
             await ctx.send(f"Message delete is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).deletemessage_cmdchannel.set(state)
+        await self.config.guild(ctx.guild).deletemessage_cmdchannel.set(state)
         await ctx.send(f"Message delete state registered: {state}.")
 
     @cmdchannelconfig.command(name="information", aliases=["info"], usage="<true_or_false>")
@@ -409,19 +409,19 @@ class CmdChannel(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
         actual_state_information = config["informationmessage_cmdchannel"]
         if actual_state_information is state:
             await ctx.send(f"Information message is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).informationmessage_cmdchannel.set(state)
+        await self.config.guild(ctx.guild).informationmessage_cmdchannel.set(state)
         await ctx.send(f"Information message state registered: {state}.")
 
     @commands.guildowner_or_permissions(administrator=True)
-    @config.group(name="cmduser", aliases=["usercmd"])
-    async def cmduserconfig(self, ctx: commands.Context: commands.GuildContext):
+    @configuration.group(name="cmduser", aliases=["usercmd"])
+    async def cmduserconfig(self, ctx: commands.Context):
         """Configure CmdUser for your server."""
 
     @cmduserconfig.command(name="enable", aliases=["activate"], usage="<true_or_false>")
@@ -434,14 +434,14 @@ class CmdChannel(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
         actual_state_enabled = config["enabled_cmduser"]
         if actual_state_enabled is state:
             await ctx.send(f"CommandUser is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).enabled_cmduser.set(state)
+        await self.config.guild(ctx.guild).enabled_cmduser.set(state)
         await ctx.send(f"CommandUser state registered: {state}.")
 
     @cmduserconfig.command(name="confirmation", aliases=["confirm"], usage="<true_or_false>")
@@ -454,14 +454,14 @@ class CmdChannel(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
         actual_state_confirmation = config["confirmation_cmduser"]
         if actual_state_confirmation is state:
             await ctx.send(f"CommandUser confirmation is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).confirmation_cmduser.set(state)
+        await self.config.guild(ctx.guild).confirmation_cmduser.set(state)
         await ctx.send(f"CommandUser confirmation state registered: {state}.")
 
     @cmduserconfig.command(name="delete", aliases=["deletemessage"], usage="<true_or_false>")
@@ -474,14 +474,14 @@ class CmdChannel(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
         actual_state_delete = config["deletemessage_cmduser"]
         if actual_state_delete is state:
             await ctx.send(f"CommandUser message delete is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).deletemessage_cmduser.set(state)
+        await self.config.guild(ctx.guild).deletemessage_cmduser.set(state)
         await ctx.send(f"CommandUser message delete state registered: {state}.")
 
     @cmduserconfig.command(name="information", aliases=["info"], usage="<true_or_false>")
@@ -494,19 +494,19 @@ class CmdChannel(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
         actual_state_information = config["informationmessage_cmduser"]
         if actual_state_information is state:
             await ctx.send(f"CommandUser information message is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).informationmessage_cmduser.set(state)
+        await self.config.guild(ctx.guild).informationmessage_cmduser.set(state)
         await ctx.send(f"CommandUser information message state registered: {state}.")
 
     @commands.guildowner_or_permissions(administrator=True)
-    @config.group(name="cmduserchannel", aliases=["userchannelcmd"])
-    async def cmduserchannelconfig(self, ctx: commands.Context: commands.GuildContext):
+    @configuration.group(name="cmduserchannel", aliases=["userchannelcmd"])
+    async def cmduserchannelconfig(self, ctx: commands.Context):
         """Configure CmdUserChannel for your server."""
 
     @cmduserchannelconfig.command(name="enable", aliases=["activate"], usage="<true_or_false>")
@@ -519,14 +519,14 @@ class CmdChannel(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
         actual_state_enabled = config["enabled_cmduserchannel"]
         if actual_state_enabled is state:
             await ctx.send(f"CommandUserChannel is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).enabled_cmduserchannel.set(state)
+        await self.config.guild(ctx.guild).enabled_cmduserchannel.set(state)
         await ctx.send(f"CommandUserChannel state registered: {state}.")
 
     @cmduserchannelconfig.command(name="confirmation", aliases=["confirm"], usage="<true_or_false>")
@@ -539,14 +539,14 @@ class CmdChannel(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
         actual_state_confirmation = config["confirmation_cmduserchannel"]
         if actual_state_confirmation is state:
             await ctx.send(f"CommandUserChannel confirmation is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).confirmation_cmduserchannel.set(state)
+        await self.config.guild(ctx.guild).confirmation_cmduserchannel.set(state)
         await ctx.send(f"CommandUserChannel confirmation state registered: {state}.")
 
     @cmduserchannelconfig.command(name="delete", aliases=["deletemessage"], usage="<true_or_false>")
@@ -559,14 +559,14 @@ class CmdChannel(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
         actual_state_delete = config["deletemessage_cmduserchannel"]
         if actual_state_delete is state:
             await ctx.send(f"CommandUserChannel message delete is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).deletemessage_cmduserchannel.set(state)
+        await self.config.guild(ctx.guild).deletemessage_cmduserchannel.set(state)
         await ctx.send(f"CommandUserChannel message delete state registered: {state}.")
 
     @cmduserchannelconfig.command(name="information", aliases=["info"], usage="<true_or_false>")
@@ -579,14 +579,14 @@ class CmdChannel(commands.Cog):
             await ctx.send("Only the owner of this server can access these commands!")
             return
 
-        config = await self.data.guild(ctx.guild).all()
+        config = await self.config.guild(ctx.guild).all()
 
         actual_state_information = config["informationmessage_cmduserchannel"]
         if actual_state_information is state:
             await ctx.send(f"CommandUserChannel information message is already set on {state}.")
             return
 
-        await self.data.guild(ctx.guild).informationmessage_cmduserchannel.set(state)
+        await self.config.guild(ctx.guild).informationmessage_cmduserchannel.set(state)
         await ctx.send(f"CommandUserChannel information message state registered: {state}.")
 
     async def member_can_run(self, ctx: commands.Context) -> bool:

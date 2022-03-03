@@ -255,3 +255,4 @@ class utils(commands.Cog):
 
 class Timeout_or_Cancel(Exception):
     """An error raised in case the user respond not or cancel."""
+    pass

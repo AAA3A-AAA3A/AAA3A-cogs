@@ -385,11 +385,11 @@ class settings(commands.Cog):
                 return
         count = 0
         to_remove = []
-        data = await ctx.bot.get_cog("TicketTool").data.guild(ctx.guild).tickets.all()
+        data = await ctx.bot.get_cog("TicketTool").config.guild(ctx.guild).tickets.all()
         for channel in data:
             count += 1
             to_remove.append(channel)
         for channel in to_remove:
             del data[str(channel)]
-        await ctx.bot.get_cog("TicketTool").data.guild(ctx.guild).tickets.set(data)
+        await ctx.bot.get_cog("TicketTool").config.guild(ctx.guild).tickets.set(data)
         await ctx.send(_("{count} tickets have been removed from the config.").format(**locals()))

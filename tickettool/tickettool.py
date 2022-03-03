@@ -68,7 +68,7 @@ class TicketTool(settings, commands.Cog):
         self.cogsutils._setup()
 
     async def get_config(self, guild: discord.Guild):
-        config = await self.bot.get_cog("TicketTool").data.guild(guild).settings.all()
+        config = await self.bot.get_cog("TicketTool").config.guild(guild).settings.all()
         if config["logschannel"] is not None:
             config["logschannel"] = guild.get_channel(config["logschannel"])
         if config["category_open"] is not None:
@@ -88,7 +88,7 @@ class TicketTool(settings, commands.Cog):
         return config
 
     async def get_ticket(self, channel: discord.TextChannel):
-        config = await self.bot.get_cog("TicketTool").data.guild(channel.guild).tickets.all()
+        config = await self.bot.get_cog("TicketTool").config.guild(channel.guild).tickets.all()
         if str(channel.id) in config:
             json = config[str(channel.id)]
         else:
@@ -195,7 +195,7 @@ class TicketTool(settings, commands.Cog):
 
     async def check_limit(self, member: discord.Member):
         config = await self.bot.get_cog("TicketTool").get_config(member.guild)
-        data = await self.bot.get_cog("TicketTool").data.guild(member.guild).tickets.all()
+        data = await self.bot.get_cog("TicketTool").config.guild(member.guild).tickets.all()
         to_remove = []
         count = 1
         for id in data:
@@ -207,10 +207,10 @@ class TicketTool(settings, commands.Cog):
             if channel is None:
                 to_remove.append(id)
         if not to_remove == []:
-            data = await self.bot.get_cog("TicketTool").data.guild(member.guild).tickets.all()
+            data = await self.bot.get_cog("TicketTool").config.guild(member.guild).tickets.all()
             for id in to_remove:
                 del data[str(id)]
-            await self.bot.get_cog("TicketTool").data.guild(member.guild).tickets.set(data)
+            await self.bot.get_cog("TicketTool").config.guild(member.guild).tickets.set(data)
         if count > config["nb_max"]:
             return False
         else:
@@ -495,17 +495,17 @@ class TicketTool(settings, commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, old_channel: discord.abc.GuildChannel):
-        data = await self.bot.get_cog("TicketTool").data.guild(old_channel.guild).tickets.all()
+        data = await self.bot.get_cog("TicketTool").config.guild(old_channel.guild).tickets.all()
         if not str(old_channel.id) in data:
             return
         del data[str(old_channel.id)]
-        await self.bot.get_cog("TicketTool").data.guild(old_channel.guild).tickets.set(data)
+        await self.bot.get_cog("TicketTool").config.guild(old_channel.guild).tickets.set(data)
         return
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member):
         config = await self.bot.get_cog("TicketTool").get_config(member.guild)
-        data = await self.bot.get_cog("TicketTool").data.guild(member.guild).tickets.all()
+        data = await self.bot.get_cog("TicketTool").config.guild(member.guild).tickets.all()
         if config["close_on_leave"]:
             for channel in data:
                 channel = member.guild.get_channel(int(channel))
@@ -689,9 +689,9 @@ class Ticket:
         if ticket.first_message is not None:
             ticket.first_message = int(ticket.first_message.id)
         json = ticket.__dict__
-        data = await bot.get_cog("TicketTool").data.guild(guild).tickets.all()
+        data = await bot.get_cog("TicketTool").config.guild(guild).tickets.all()
         data[str(channel.id)] = json
-        await bot.get_cog("TicketTool").data.guild(guild).tickets.set(data)
+        await bot.get_cog("TicketTool").config.guild(guild).tickets.set(data)
         return data
     
     async def create(ticket, name: typing.Optional[str]="ticket"):
@@ -738,7 +738,7 @@ class Ticket:
             if logschannel is not None:
                 embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, True, author=ticket.created_by, title=_("Ticket Created").format(**locals()), description=_("The ticket was created by {ticket.created_by}.").format(**locals()))
                 await logschannel.send(_("Report on the creation of the ticket {ticket.id}.").format(**locals()), embed=embed)
-        await ticket.bot.get_cog("TicketTool").data.guild(ticket.guild).settings.last_nb.set(ticket.id)
+        await ticket.bot.get_cog("TicketTool").config.guild(ticket.guild).settings.last_nb.set(ticket.id)
         if config["ticket_role"] is not None:
             if ticket.owner:
                 try:
@@ -882,9 +882,9 @@ class Ticket:
                                         filename=f"transcript-ticket-{ticket.id}.html")
                 await logschannel.send(_("Report on the deletion of the ticket {ticket.id}.").format(**locals()), embed=embed, file=file)
         await ticket.channel.delete(reason=reason)
-        data = await ticket.bot.get_cog("TicketTool").data.guild(ticket.guild).tickets.all()
+        data = await ticket.bot.get_cog("TicketTool").config.guild(ticket.guild).tickets.all()
         del data[str(ticket.channel.id)]
-        await ticket.bot.get_cog("TicketTool").data.guild(ticket.guild).tickets.set(data)
+        await ticket.bot.get_cog("TicketTool").config.guild(ticket.guild).tickets.set(data)
         return ticket
 
     async def claim_ticket(ticket, member: discord.Member, author: typing.Optional[discord.Member]=None):

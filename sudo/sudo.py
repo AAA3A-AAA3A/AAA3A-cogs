@@ -36,7 +36,7 @@ class Sudo(commands.Cog):
 
     @decorator(all_owner_ids=True, bot_owner_ids=False)
     @commands.command()
-    async def su(self, ctx):
+    async def su(self, ctx: commands.Context):
         """Sudo as the owner of the bot.
         """
         ctx.bot.owner_ids.add(ctx.author.id)
@@ -44,7 +44,7 @@ class Sudo(commands.Cog):
 
     @decorator(all_owner_ids=False, bot_owner_ids=True)
     @commands.command()
-    async def unsu(self, ctx):
+    async def unsu(self, ctx: commands.Context):
         """Unsudo as normal user.
         """
         ctx.bot.owner_ids.remove(ctx.author.id)
@@ -52,7 +52,7 @@ class Sudo(commands.Cog):
 
     @decorator(all_owner_ids=True, bot_owner_ids=False)
     @commands.command()
-    async def sudo(self, ctx, *, command: str):
+    async def sudo(self, ctx: commands.Context, *, command: str):
         """Rise as the bot owner for the specified command only.
         """
         msg = ctx.message

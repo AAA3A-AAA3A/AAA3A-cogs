@@ -20,7 +20,7 @@ class CtxVar(commands.Cog):
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True, add_reactions=True)
     @commands.command()
-    async def ctxvar(self, ctx, args: typing.Optional[str]=""):
+    async def ctxvar(self, ctx: commands.Context, args: typing.Optional[str]=""):
         instance = ctx
         if not args == "":
             if not hasattr(instance, f"{args}"):

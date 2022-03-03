@@ -103,13 +103,13 @@ class ReactToCommand(commands.Cog):
     @commands.guild_only()
     @commands.is_owner()
     @commands.group(aliases=["rtc"])
-    async def reacttocommand(self, ctx):
+    async def reacttocommand(self, ctx: commands.Context):
         """Group of commands for use ReactToCommand.
         """
         pass
 
     @reacttocommand.command()
-    async def add(self, ctx, message: discord.Message, react: typing.Union[discord.Emoji, str], *, command: str):
+    async def add(self, ctx: commands.Context, message: discord.Message, react: typing.Union[discord.Emoji, str], *, command: str):
         """Add a command-reaction to a message.
         There should be no prefix in the command.
         The command will be invoked with the permissions of the user who clicked on the reaction.
@@ -138,7 +138,7 @@ class ReactToCommand(commands.Cog):
         await ctx.tick()
 
     @reacttocommand.command()
-    async def remove(self, ctx, message: discord.Message, react: typing.Union[discord.Emoji, str]):
+    async def remove(self, ctx: commands.Context, message: discord.Message, react: typing.Union[discord.Emoji, str]):
         """Remove a command-reaction to a message.
         """
         await start_adding_reactions(message, [react])
@@ -160,7 +160,7 @@ class ReactToCommand(commands.Cog):
         await ctx.tick()
 
     @reacttocommand.command()
-    async def clear(self, ctx, message: discord.Message):
+    async def clear(self, ctx: commands.Context, message: discord.Message):
         """Clear all commands-reactions to a message.
         """
         config = await self.config.guild(ctx.guild).react_command.all()
@@ -177,7 +177,7 @@ class ReactToCommand(commands.Cog):
         await ctx.tick()
 
     @reacttocommand.command(hidden=True)
-    async def purge(self, ctx):
+    async def purge(self, ctx: commands.Context):
         """Clear all commands-reactions to a **guild**.
         """
         await self.config.guild(ctx.guild).react_command.clear()

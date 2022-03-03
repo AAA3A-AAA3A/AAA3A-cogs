@@ -20,13 +20,13 @@ class EditFile(commands.Cog):
 
     @commands.is_owner()
     @commands.group(aliases=["fileedit"])
-    async def editfile(self, ctx):
+    async def editfile(self, ctx: commands.Context):
         """Commands group to get a file and replace it from its path.
         """
         pass
 
     @editfile.command()
-    async def get(self, ctx, *, path: Path):
+    async def get(self, ctx: commands.Context, *, path: Path):
         """Get a file on the bot's host machine from its path.
         """
         try:
@@ -39,7 +39,7 @@ class EditFile(commands.Cog):
             await ctx.send(f"This is the file available at path `{path}`.", file=file)
 
     @editfile.command()
-    async def replace(self, ctx, *, path: Path):
+    async def replace(self, ctx: commands.Context, *, path: Path):
         """Replace a file on the bot's host machine from its path.
         """
         try:
@@ -61,7 +61,7 @@ class EditFile(commands.Cog):
             await ctx.send(f"This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly.", file=old_file)
  
     @editfile.command()
-    async def findcog(self, ctx, cog: str):
+    async def findcog(self, ctx: commands.Context, cog: str):
         """Get a cog directory on the bot's host machine from its name.
         """
         downloader = ctx.bot.get_cog("Downloader")
@@ -78,7 +78,7 @@ class EditFile(commands.Cog):
             await ctx.send(f"```{path}```")
 
     @editfile.command()
-    async def listdir(self, ctx, *, path: Path):
+    async def listdir(self, ctx: commands.Context, *, path: Path):
         """List all files/directories of a directory from its path.
         """
         if not path.exists():

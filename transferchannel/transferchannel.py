@@ -37,7 +37,7 @@ class TransferChannel(commands.Cog):
     @commands.command(aliases=["channeltransfer"])
     @checks.admin_or_permissions(manage_guild=True)
     @commands.guild_only()
-    async def transferchannel(self, ctx, source: discord.TextChannel, destination: discord.TextChannel, limit: int, embed: bool = True, webhooks: bool = True):
+    async def transferchannel(self, ctx: commands.Context, source: discord.TextChannel, destination: discord.TextChannel, limit: int, embed: bool = True, webhooks: bool = True):
         """
         Transfer all messages channel in a other channel. This might take a long time.
 

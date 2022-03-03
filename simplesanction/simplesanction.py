@@ -112,7 +112,7 @@ class SimpleSanction(settings, commands.Cog):
     @commands.guild_only()
     @commands.mod_or_permissions(administrator=True)
     @commands.bot_has_permissions(add_reactions=True, embed_links=True)
-    async def _sanction(self, ctx, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def _sanction(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
         """
         Sanction a user quickly and easily.
 
@@ -135,7 +135,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="01", aliases=["1","userinfo","info"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_1(self, ctx, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_1(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
         """
          - :information_source: Show info on a user.
 
@@ -148,7 +148,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="02", aliases=["2","warn"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_2(self, ctx, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_2(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
         """
          - :warning: Set a simple warning on a user.
 
@@ -161,7 +161,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="03", aliases=["3","ban"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_3(self, ctx, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_3(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
         """
          - :hammer: Ban the member from the server.
 
@@ -176,7 +176,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="04", aliases=["4","softban"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_4(self, ctx, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_4(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
         """
          - :repeat_one: Softban the member from the server.
 
@@ -191,7 +191,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="05", aliases=["5","tempban"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_5(self, ctx, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_5(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
         """
          - :dash: Tempban the member from the server.
 
@@ -208,7 +208,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="06", aliases=["6","kick"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_6(self, ctx, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_6(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
         """
          - :boot: Kick the member from the server.
 
@@ -221,7 +221,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="07", aliases=["7","mute"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_6(self, ctx, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_6(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
         """
          - :mute: Mute the user in all channels, including voice channels.
 
@@ -234,7 +234,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="08", aliases=["8","mutechannel"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_8(self, ctx, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_8(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
         """
          - :punch: Mute the user in this channel.
 
@@ -247,7 +247,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="09", aliases=["9","tempmute"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_9(self, ctx, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_9(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
         """
          - :hourglass_flowing_sand: TempMute the user in all channels, including voice channels.
 
@@ -263,7 +263,7 @@ class SimpleSanction(settings, commands.Cog):
     @commands.guild_only()
     @_sanction.command(name="10", aliases=["tempmutechannel"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
 
-    async def sanction_10(self, ctx, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_10(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
         """
          - :hourglass: TempMute the user in this channel.
 
@@ -277,7 +277,7 @@ class SimpleSanction(settings, commands.Cog):
         await self.call_sanction(ctx, 10, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
 
     @commands.guild_only()
-    async def call_sanction(self, ctx, action: typing.Optional[int]=None, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, reason: str = None):
+    async def call_sanction(self, ctx: commands.Context, action: typing.Optional[int]=None, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, reason: str = None):
         """Sanction a user quickly and easily.
         """
         config = await self.data.guild(ctx.guild).all()
@@ -658,7 +658,7 @@ class SimpleSanction(settings, commands.Cog):
                         await message.edit(embed=embed, components=[buttons_one, buttons_two, buttons_three])
                     return
 
-    async def call_actions(self, ctx, action: typing.Optional[int]=None, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, reason: str = None):
+    async def call_actions(self, ctx: commands.Context, action: typing.Optional[int]=None, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, reason: str = None):
         config = await self.data.guild(ctx.guild).all()
         actual_thumbnail = config["thumbnail"]
         actual_color = config["color"]

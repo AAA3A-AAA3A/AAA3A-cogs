@@ -24,7 +24,7 @@ class Ip(commands.Cog):
     @commands.guild_only()
     @commands.is_owner()
     @commands.command()
-    async def ip(self, ctx):
+    async def ip(self, ctx: commands.Context):
         """Get the ip address of the bot."""
         hostname = socket.gethostname()
         ip = requests.get('http://ip.42.pl/raw').text  # Gives the "public IP" of the Bot client PC
@@ -33,7 +33,7 @@ class Ip(commands.Cog):
     @commands.guild_only()
     @commands.is_owner()
     @commands.command()
-    async def website(self, ctx):
+    async def website(self, ctx: commands.Context):
         """Get the ip adress website."""
         hostname = socket.gethostname()
         ip = requests.get('http://ip.42.pl/raw').text  # Gives the "public IP" of the Bot client PC
@@ -50,7 +50,7 @@ class Ip(commands.Cog):
         pass
 
     @commands.command(name="setportip", aliases=["ipportset"], usage="<port>")
-    async def deletemessage(self, ctx, *, port):
+    async def deletemessage(self, ctx: commands.Context, *, port):
         """Set the port.
         """
         config = await self.data.all()

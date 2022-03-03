@@ -123,11 +123,11 @@ class AntiNuke(commands.Cog):
     @commands.guild_only()
     @commands.guildowner()
     @commands.group(name="setantinuke", aliases=["antinukeset"])
-    async def config(self, ctx):
+    async def config(self, ctx: commands.Context):
         """Configure AntiNuke for your server."""
 
     @config.command(aliases=["lchann", "lchannel", "logschan", "logchannel", "logsc"], usage="<text_channel_or_'none'>")
-    async def logschannel(self, ctx, *, channel: typing.Optional[discord.TextChannel]=None):
+    async def logschannel(self, ctx: commands.Context, *, channel: typing.Optional[discord.TextChannel]=None):
         """Set a channel where events are registered.
 
         ``channel``: Text channel.
@@ -161,7 +161,7 @@ class AntiNuke(commands.Cog):
         ]
 
     @config.command(name="enable", aliases=["activate"], usage="<true_or_false>")
-    async def enable(self, ctx, state: bool):
+    async def enable(self, ctx: commands.Context, state: bool):
         """Enable or disable AntiNuke.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -180,7 +180,7 @@ class AntiNuke(commands.Cog):
         await ctx.send(f"AntiNuke state registered: {state}.")
 
     @config.command(name="userdm", aliases=["dm"], usage="<true_or_false>")
-    async def userdm(self, ctx, state: bool):
+    async def userdm(self, ctx: commands.Context, state: bool):
         """Enable or disable User DM.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -200,7 +200,7 @@ class AntiNuke(commands.Cog):
         await ctx.send(f"User DM state registered: {state}.")
         
     @config.command(name="nbmember", aliases=["membernb"], usage="<int>")
-    async def nbmember(self, ctx, int: int):
+    async def nbmember(self, ctx: commands.Context, int: int):
         """Number Detected - Member
 
         Before action, how many deleted channels should be detected?
@@ -216,7 +216,7 @@ class AntiNuke(commands.Cog):
         await ctx.send(f"Number Detected - Member registered: {int}.")
 
     @config.command(name="nbbot", aliases=["botsnb"], usage="<int>")
-    async def nbbot(self, ctx, int: int):
+    async def nbbot(self, ctx: commands.Context, int: int):
         """Number Detected - Bot
 
         Before action, how many deleted channels should be detected?
@@ -232,7 +232,7 @@ class AntiNuke(commands.Cog):
         await ctx.send(f"Number Detected - Bot registered: {int}.")
         
     @config.command(name="resetuser", aliases=["userreset"], usage="<int>")
-    async def resetuser(self, ctx, user: discord.Member, give_roles: bool = False):
+    async def resetuser(self, ctx: commands.Context, user: discord.Member, give_roles: bool = False):
         """Reset number detected for a user
         """
         if not ctx.author.id == ctx.guild.owner.id:

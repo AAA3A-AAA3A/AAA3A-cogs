@@ -103,7 +103,7 @@ class Calculator(commands.Cog):
             result = "Error!"
         return result
 
-    async def get_embed(self, ctx, expression: str):
+    async def get_embed(self, ctx: commands.Context, expression: str):
         if expression == "":
             expression = None
         if expression is None:
@@ -326,7 +326,7 @@ class Calculator(commands.Cog):
         return buttons_one, buttons_two, buttons_three, buttons_four, buttons_five
 
     @commands.command(aliases=["calculate"])
-    async def calc(self, ctx, calculation: typing.Optional[str]=None):
+    async def calc(self, ctx: commands.Context, calculation: typing.Optional[str]=None):
         """Calculate a simple expression."""
         config = await self.data.settings.all()
         if calculation is not None:

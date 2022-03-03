@@ -83,13 +83,13 @@ class RolesButtons(commands.Cog):
     @commands.guild_only()
     @commands.admin_or_permissions(manage_roles=True)
     @commands.group()
-    async def rolesbuttons(self, ctx):
+    async def rolesbuttons(self, ctx: commands.Context):
         """Group of commands for use ReactToCommand.
         """
         pass
 
     @rolesbuttons.command()
-    async def add(self, ctx, message: discord.Message, role: discord.Role, button: typing.Union[discord.Emoji, str], *, text_button: typing.Optional[str]=None):
+    async def add(self, ctx: commands.Context, message: discord.Message, role: discord.Role, button: typing.Union[discord.Emoji, str], *, text_button: typing.Optional[str]=None):
         """Add a role-button to a message.
         """
         if not message.author == ctx.guild.me:
@@ -118,7 +118,7 @@ class RolesButtons(commands.Cog):
         await ctx.tick()
 
     @rolesbuttons.command()
-    async def bulk(self, ctx, message: discord.Message, *roles_buttons: RoleEmojiConverter):
+    async def bulk(self, ctx: commands.Context, message: discord.Message, *roles_buttons: RoleEmojiConverter):
         """Add a role-button to a message.
         """
         if not message.author == ctx.guild.me:
@@ -148,7 +148,7 @@ class RolesButtons(commands.Cog):
         await ctx.tick()
 
     @rolesbuttons.command()
-    async def remove(self, ctx, message: discord.Message, button: typing.Union[discord.Emoji, str]):
+    async def remove(self, ctx: commands.Context, message: discord.Message, button: typing.Union[discord.Emoji, str]):
         """Remove a role-button to a message.
         """
         if not message.author == ctx.guild.me:
@@ -169,7 +169,7 @@ class RolesButtons(commands.Cog):
         await ctx.tick()
 
     @rolesbuttons.command()
-    async def clear(self, ctx, message: discord.Message):
+    async def clear(self, ctx: commands.Context, message: discord.Message):
         """Clear all roles-buttons to a message.
         """
         if not message.author == ctx.guild.me:
@@ -188,7 +188,7 @@ class RolesButtons(commands.Cog):
         await ctx.tick()
 
     @rolesbuttons.command(hidden=True)
-    async def purge(self, ctx):
+    async def purge(self, ctx: commands.Context):
         """Clear all roles-buttons to a **guild**.
         """
         await self.config.guild(ctx.guild).roles_buttons.clear()

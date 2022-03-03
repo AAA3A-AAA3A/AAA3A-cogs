@@ -276,11 +276,11 @@ class TicketTool(settings, commands.Cog):
 
     @commands.guild_only()
     @commands.group(name="ticket")
-    async def ticket(self, ctx):
+    async def ticket(self, ctx: commands.Context):
         """Commands for using the ticket system."""
 
     @ticket.command(name="create")
-    async def command_create(self, ctx, *, reason: typing.Optional[str]="No reason provided."):
+    async def command_create(self, ctx: commands.Context, *, reason: typing.Optional[str]="No reason provided."):
         """Create a ticket.
         """
         config = await self.bot.get_cog("TicketTool").get_config(ctx.guild)
@@ -302,7 +302,7 @@ class TicketTool(settings, commands.Cog):
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="export")
-    async def command_export(self, ctx):
+    async def command_export(self, ctx: commands.Context):
         """Export all the messages of an existing ticket in html format.
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         """
@@ -316,7 +316,7 @@ class TicketTool(settings, commands.Cog):
 
     @decorator(enable_check=True, ticket_check=True, status="close", ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="open")
-    async def command_open(self, ctx, *, reason: typing.Optional[str]="No reason provided."):
+    async def command_open(self, ctx: commands.Context, *, reason: typing.Optional[str]="No reason provided."):
         """Open an existing ticket.
         """
         ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
@@ -326,7 +326,7 @@ class TicketTool(settings, commands.Cog):
 
     @decorator(enable_check=False, ticket_check=True, status="open", ticket_owner=True, admin_role=True, support_role=True, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="close")
-    async def command_close(self, ctx, confirmation: typing.Optional[bool]=None, *, reason: typing.Optional[str]="No reason provided."):
+    async def command_close(self, ctx: commands.Context, confirmation: typing.Optional[bool]=None, *, reason: typing.Optional[str]="No reason provided."):
         """Close an existing ticket.
         """
         ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
@@ -348,7 +348,7 @@ class TicketTool(settings, commands.Cog):
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=True, admin_role=True, support_role=True, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="rename")
-    async def command_rename(self, ctx, new_name: str, *, reason: typing.Optional[str]="No reason provided."):
+    async def command_rename(self, ctx: commands.Context, new_name: str, *, reason: typing.Optional[str]="No reason provided."):
         """Rename an existing ticket.
         """
         ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
@@ -358,7 +358,7 @@ class TicketTool(settings, commands.Cog):
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="delete")
-    async def command_delete(self, ctx, confirmation: typing.Optional[bool]=False, *, reason: typing.Optional[str]="No reason provided."):
+    async def command_delete(self, ctx: commands.Context, confirmation: typing.Optional[bool]=False, *, reason: typing.Optional[str]="No reason provided."):
         """Delete an existing ticket.
         If a log channel is defined, an html file containing all the messages of this ticket will be generated.
         (Attachments are not supported, as they are saved with their Discord link)
@@ -379,7 +379,7 @@ class TicketTool(settings, commands.Cog):
 
     @decorator(enable_check=False, ticket_check=True, status="open", ticket_owner=False, admin_role=True, support_role=True, ticket_role=False, view_role=False, guild_owner=True, claim=False, claim_staff=False, members=False)
     @ticket.command(name="claim")
-    async def command_claim(self, ctx, member: typing.Optional[discord.Member]=None, *, reason: typing.Optional[str]="No reason provided."):
+    async def command_claim(self, ctx: commands.Context, member: typing.Optional[discord.Member]=None, *, reason: typing.Optional[str]="No reason provided."):
         """Claim an existing ticket.
         """
         ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
@@ -391,7 +391,7 @@ class TicketTool(settings, commands.Cog):
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=False, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=True, claim_staff=True, members=False)
     @ticket.command(name="unclaim")
-    async def command_unclaim(self, ctx, *, reason: typing.Optional[str]="No reason provided."):
+    async def command_unclaim(self, ctx: commands.Context, *, reason: typing.Optional[str]="No reason provided."):
         """Unclaim an existing ticket.
         """
         ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
@@ -401,7 +401,7 @@ class TicketTool(settings, commands.Cog):
 
     @decorator(enable_check=False, ticket_check=True, status="open", ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=False, members=False)
     @ticket.command(name="owner")
-    async def command_owner(self, ctx, new_owner: discord.Member, *, reason: typing.Optional[str]="No reason provided."):
+    async def command_owner(self, ctx: commands.Context, new_owner: discord.Member, *, reason: typing.Optional[str]="No reason provided."):
         """Change the owner of an existing ticket.
         """
         ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
@@ -413,7 +413,7 @@ class TicketTool(settings, commands.Cog):
 
     @decorator(enable_check=False, ticket_check=True, status="open", ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="add")
-    async def command_add(self, ctx, member: discord.Member, *, reason: typing.Optional[str]="No reason provided."):
+    async def command_add(self, ctx: commands.Context, member: discord.Member, *, reason: typing.Optional[str]="No reason provided."):
         """Add a member to an existing ticket.
         """
         ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
@@ -423,7 +423,7 @@ class TicketTool(settings, commands.Cog):
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="remove")
-    async def command_remove(self, ctx, member: discord.Member, *, reason: typing.Optional[str]="No reason provided."):
+    async def command_remove(self, ctx: commands.Context, member: discord.Member, *, reason: typing.Optional[str]="No reason provided."):
         """Remove a member to an existing ticket.
         """
         ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)

@@ -12,11 +12,11 @@ class settings(commands.Cog):
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
     @commands.group(name="setticket", aliases=["ticketset"])
-    async def config(self, ctx):
+    async def config(self, ctx: commands.Context):
         """Configure TicketTool for your server."""
 
     @config.command(name="enable", usage="<true_or_false>")
-    async def enable(self, ctx, state: bool):
+    async def enable(self, ctx: commands.Context, state: bool):
         """Enable or disable Ticket System
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -39,7 +39,7 @@ class settings(commands.Cog):
         await ctx.send(f"Ticket System state registered: {state}.")
 
     @config.command(aliases=["lchann", "lchannel", "logschan", "logchannel", "logsc"], usage="<text_channel_or_'none'>")
-    async def logschannel(self, ctx, *, channel: typing.Optional[discord.TextChannel]=None):
+    async def logschannel(self, ctx: commands.Context, *, channel: typing.Optional[discord.TextChannel]=None):
         """Set a channel where events are registered.
 
         ``channel``: Text channel.
@@ -59,7 +59,7 @@ class settings(commands.Cog):
         await ctx.send(f"Logging channel registered: {channel.mention}.")
 
     @config.command(usage="<category_or_'none'>")
-    async def categoryopen(self, ctx, *, category: typing.Optional[discord.CategoryChannel]=None):
+    async def categoryopen(self, ctx: commands.Context, *, category: typing.Optional[discord.CategoryChannel]=None):
         """Set a category where open tickets are created.
 
         ``category``: Category.
@@ -74,7 +74,7 @@ class settings(commands.Cog):
         await ctx.send(f"Category Open registered: {category.name}.")
 
     @config.command(usage="<category_or_'none'>")
-    async def categoryclose(self, ctx, *, category: typing.Optional[discord.CategoryChannel]=None):
+    async def categoryclose(self, ctx: commands.Context, *, category: typing.Optional[discord.CategoryChannel]=None):
         """Set a category where close tickets are created.
 
         ``category``: Category.
@@ -89,7 +89,7 @@ class settings(commands.Cog):
         await ctx.send(f"Category Close registered: {category.name}.")
 
     @config.command(usage="<role_or_'none'>")
-    async def adminrole(self, ctx, *, role: typing.Optional[discord.Role]=None):
+    async def adminrole(self, ctx: commands.Context, *, role: typing.Optional[discord.Role]=None):
         """Set a role for administrators of the ticket system.
 
         ``role``: Role.
@@ -104,7 +104,7 @@ class settings(commands.Cog):
         await ctx.send(f"Admin Role registered: {role.name}.")
 
     @config.command(usage="<role_or_'none'>")
-    async def supportrole(self, ctx, *, role: typing.Optional[discord.Role]=None):
+    async def supportrole(self, ctx: commands.Context, *, role: typing.Optional[discord.Role]=None):
         """Set a role for helpers of the ticket system.
 
         ``role``: Role.
@@ -119,7 +119,7 @@ class settings(commands.Cog):
         await ctx.send(f"Support Role registered: {role.name}.")
 
     @config.command(usage="<role_or_'none'>")
-    async def ticketrole(self, ctx, *, role: typing.Optional[discord.Role]=None):
+    async def ticketrole(self, ctx: commands.Context, *, role: typing.Optional[discord.Role]=None):
         """Set a role for creaters of a ticket.
 
         ``role``: Role.
@@ -134,7 +134,7 @@ class settings(commands.Cog):
         await ctx.send(f"Ticket Role registered: {role.name}.")
 
     @config.command(usage="<role_or_'none'>")
-    async def viewrole(self, ctx, *, role: typing.Optional[discord.Role]=None):
+    async def viewrole(self, ctx: commands.Context, *, role: typing.Optional[discord.Role]=None):
         """Set a role for viewers of tickets.
 
         ``role``: Role.
@@ -149,7 +149,7 @@ class settings(commands.Cog):
         await ctx.send(f"View Role registered: {role.name}.")
 
     @config.command(usage="<role_or_'none'>")
-    async def pingrole(self, ctx, *, role: typing.Optional[discord.Role]=None):
+    async def pingrole(self, ctx: commands.Context, *, role: typing.Optional[discord.Role]=None):
         """Set a role for pings on ticket creation.
 
         ``role``: Role.
@@ -164,7 +164,7 @@ class settings(commands.Cog):
         await ctx.send(f"Ping Role registered: {role.name}.")
 
     @config.command(usage="<int>")
-    async def nbmax(self, ctx, int: int):
+    async def nbmax(self, ctx: commands.Context, int: int):
         """Max Number of tickets for a member.
         """
         if int == 0:
@@ -175,7 +175,7 @@ class settings(commands.Cog):
         await ctx.send(f"Max Number registered: {int}.")
 
     @config.command(usage="<true_or_false>")
-    async def modlog(self, ctx, state: bool):
+    async def modlog(self, ctx: commands.Context, state: bool):
         """Enable or disable Modlog.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -191,7 +191,7 @@ class settings(commands.Cog):
         await ctx.send(f"Modlog state registered: {state}.")
 
     @config.command(usage="<true_or_false>")
-    async def closeonleave(self, ctx, state: bool):
+    async def closeonleave(self, ctx: commands.Context, state: bool):
         """Enable or disable Close on Leave.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -207,7 +207,7 @@ class settings(commands.Cog):
         await ctx.send(f"Close on Leave state registered: {state}.")
 
     @config.command(usage="<true_or_false>")
-    async def createonreact(self, ctx, state: bool):
+    async def createonreact(self, ctx: commands.Context, state: bool):
         """Enable or disable Create on React ``.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -226,7 +226,7 @@ class settings(commands.Cog):
 
 
     @config.command(aliases=["colour", "col", "embedcolor", "embedcolour"], usage="<color_or_'none'>")
-    async def color(self, ctx, *, color: typing.Optional[discord.Color]=None):
+    async def color(self, ctx: commands.Context, *, color: typing.Optional[discord.Color]=None):
         """Set a colour fort the embed.
 
         ``color``: Color.
@@ -264,7 +264,7 @@ class settings(commands.Cog):
         message = await ctx.send(embed=embed)
 
     @config.command(aliases=["picture", "thumb", "link"], usage="<link_or_'none'>")
-    async def thumbnail(self, ctx, *, link = None):
+    async def thumbnail(self, ctx: commands.Context, *, link = None):
         """Set a thumbnail fort the embed.
 
         ``link``: Thumbnail link.
@@ -302,7 +302,7 @@ class settings(commands.Cog):
         message = await ctx.send(embed=embed)
 
     @config.command(name="auditlogs", aliases=["logsaudit"], usage="<true_or_false>")
-    async def showauthor(self, ctx, state: bool):
+    async def showauthor(self, ctx: commands.Context, state: bool):
         """Make the author of each action concerning a ticket appear in the server logs.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -318,7 +318,7 @@ class settings(commands.Cog):
         await ctx.send(f"Audit Logs state registered: {state}.")
 
     @config.command(name="closeconfirmation", aliases=["confirm"], usage="<true_or_false>")
-    async def confirmation(self, ctx, state: bool):
+    async def confirmation(self, ctx: commands.Context, state: bool):
         """Enable or disable Close Confirmation.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -334,7 +334,7 @@ class settings(commands.Cog):
         await ctx.send(f"Close Confirmation state registered: {state}.")
 
     @config.command(name="message")
-    async def message(self, ctx, channel: typing.Optional[discord.TextChannel]=None):
+    async def message(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel]=None):
         if channel is None:
             channel = ctx.channel
         button = ActionRow(
@@ -369,7 +369,7 @@ class settings(commands.Cog):
 
     @commands.is_owner()
     @config.command(name="purge", hidden=True)
-    async def command_purge(self, ctx, confirmation: typing.Optional[bool]=False):
+    async def command_purge(self, ctx: commands.Context, confirmation: typing.Optional[bool]=False):
         """Purge all existing tickets in the config. Does not delete any channels. All commands associated with the tickets will no longer work.
         """
         config = await self.bot.get_cog("TicketTool").get_config(ctx.guild)

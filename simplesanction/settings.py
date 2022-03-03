@@ -9,11 +9,11 @@ class settings(commands.Cog):
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
     @commands.group(name="setsimplesanction", aliases=["simplesanctionset"])
-    async def config(self, ctx):
+    async def config(self, ctx: commands.Context):
         """Configure SimpleSanction for your server."""
 
     @config.command(aliases=["colour", "col", "embedcolor", "embedcolour"], usage="<color_or_'none'>")
-    async def color(self, ctx, *, color: typing.Optional[discord.Color]=None):
+    async def color(self, ctx: commands.Context, *, color: typing.Optional[discord.Color]=None):
         """Set a colour fort the embed.
 
         ``color``: Color.
@@ -51,7 +51,7 @@ class settings(commands.Cog):
         message = await ctx.send(embed=embed)
 
     @config.command(aliases=["picture", "thumb", "link"], usage="<link_or_'none'>")
-    async def thumbnail(self, ctx, *, link = None):
+    async def thumbnail(self, ctx: commands.Context, *, link = None):
         """Set a thumbnail fort the embed.
 
         ``link``: Thumbnail link.
@@ -89,7 +89,7 @@ class settings(commands.Cog):
         message = await ctx.send(embed=embed)
 
     @config.command(name="showauthor", aliases=["authorshow"], usage="<true_or_false>")
-    async def showauthor(self, ctx, state: bool):
+    async def showauthor(self, ctx: commands.Context, state: bool):
         """Enable or disable Show Author
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -105,7 +105,7 @@ class settings(commands.Cog):
         await ctx.send(f"Show Author state registered: {state}.")
 
     @config.command(name="confirmation", aliases=["confirm"], usage="<true_or_false>")
-    async def confirmation(self, ctx, state: bool):
+    async def confirmation(self, ctx: commands.Context, state: bool):
         """Enable or disable Action Confirmation
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -121,7 +121,7 @@ class settings(commands.Cog):
         await ctx.send(f"Action Confirmation state registered: {state}.")
 
     @config.command(name="finishmessage", aliases=["messagefinish"], usage="<true_or_false>")
-    async def finishmessage(self, ctx, state: bool):
+    async def finishmessage(self, ctx: commands.Context, state: bool):
         """Enable or disable Finish Message
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -137,7 +137,7 @@ class settings(commands.Cog):
         await ctx.send(f"Finish Message state registered: {state}.")
 
     @config.command(name="warnsystemuse", aliases=["usewarnsystem"], usage="<true_or_false>")
-    async def warnsystemuse(self, ctx, state: bool):
+    async def warnsystemuse(self, ctx: commands.Context, state: bool):
         """Enable or disable Warn System Use
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -153,7 +153,7 @@ class settings(commands.Cog):
         await ctx.send(f"Warn System Use state registered: {state}.")
 
     @config.command(name="buttonsuse", aliases=["buttons"], usage="<true_or_false>")
-    async def buttonsuse(self, ctx, state: bool):
+    async def buttonsuse(self, ctx: commands.Context, state: bool):
         """Enable or disable Buttons Use
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -169,7 +169,7 @@ class settings(commands.Cog):
         await ctx.send(f"Buttons Use state registered: {state}.")
 
     @config.command(name="reasonrequired", aliases=["requiredreason"], usage="<true_or_false>")
-    async def reasonrequired(self, ctx, state: bool):
+    async def reasonrequired(self, ctx: commands.Context, state: bool):
         """Enable or disable Reason Requiered
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -185,7 +185,7 @@ class settings(commands.Cog):
         await ctx.send(f"Reason Required state registered: {state}.")
 
     @config.command(name="deleteembed", aliases=["embeddelete"], usage="<true_or_false>")
-    async def deleteembed(self, ctx, state: bool):
+    async def deleteembed(self, ctx: commands.Context, state: bool):
         """Enable or disable Delete Embed
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -201,7 +201,7 @@ class settings(commands.Cog):
         await ctx.send(f"Delete Embed state registered: {state}.")
 
     @config.command(name="deletemessage", aliases=["messagedelete"], usage="<true_or_false>")
-    async def deletemessage(self, ctx, state: bool):
+    async def deletemessage(self, ctx: commands.Context, state: bool):
         """Enable or disable Delete Message
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -217,7 +217,7 @@ class settings(commands.Cog):
         await ctx.send(f"Delete Message state registered: {state}.")
 
     @config.command(name="timeout", aliases=["time"], usage="<seconds_number_or_`none`>")
-    async def timeout(self, ctx, timeout: typing.Optional[int]=None):
+    async def timeout(self, ctx: commands.Context, timeout: typing.Optional[int]=None):
         """Choose the timeout
 
         Use a int. The default is 180 seconds.

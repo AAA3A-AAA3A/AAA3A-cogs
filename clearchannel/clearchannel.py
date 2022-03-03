@@ -113,11 +113,11 @@ class ClearChannel(commands.Cog):
     @commands.guild_only()
     @commands.guildowner()
     @commands.group(name="setclearchannel", aliases=["clearchannelset"])
-    async def config(self, ctx):
+    async def config(self, ctx: commands.Context):
         """Configure ClearChannel for your server."""
 
     @config.command(name="channeldelete", aliases=["delete"], usage="<true_or_false>")
-    async def channeldelete(self, ctx, state: bool):
+    async def channeldelete(self, ctx: commands.Context, state: bool):
         """Enable or disable Channel Delete
         If this option is enabled, the bot will not delete the original channel: it will duplicate it as normal, but move it to the end of the server's channel list.
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -137,7 +137,7 @@ class ClearChannel(commands.Cog):
         await ctx.send(f"Channel Delete state registered: {state}.")
 
     @config.command(name="firstmessage", aliases=["message"], usage="<true_or_false>")
-    async def firstmessage(self, ctx, state: bool):
+    async def firstmessage(self, ctx: commands.Context, state: bool):
         """Enable or disable First Message
         If this option is enabled, the bot will send a message to the emptied channel to warn that it has been emptied.
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -157,7 +157,7 @@ class ClearChannel(commands.Cog):
         await ctx.send(f"First Message state registered: {state}.")
 
     @config.command(name="authordm", aliases=["dmauthor"], usage="<true_or_false>")
-    async def authordm(self, ctx, state: bool):
+    async def authordm(self, ctx: commands.Context, state: bool):
         """Enable or disable Author dm
         If this option is enabled, the bot will try to send a dm to the author of the order to confirm that everything went well.
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.

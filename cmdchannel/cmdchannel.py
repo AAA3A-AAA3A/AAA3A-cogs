@@ -44,7 +44,7 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.mod()
     @commands.command(aliases=["channelcmd"])
-    async def cmdchannel(self, ctx, guild: typing.Optional[discord.Guild]=None, channel: typing.Optional[typing.Union[discord.TextChannel, int]]=None, *, command: str = ""):
+    async def cmdchannel(self, ctx: commands.Context, guild: typing.Optional[discord.Guild]=None, channel: typing.Optional[typing.Union[discord.TextChannel, int]]=None, *, command: str = ""):
         """Act as if the command had been typed in the channel of your choice.
         The prefix must be entered if it is a command. Otherwise, it will be a message only.
         If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).
@@ -137,7 +137,7 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.is_owner()
     @commands.command(aliases=["usercmd"])
-    async def cmduser(self, ctx, user: typing.Optional[discord.Member]=None, *, command: str = ""):
+    async def cmduser(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, *, command: str = ""):
         """Act as if the command had been typed by imitating the specified user.
         The prefix must be entered if it is a command. Otherwise, it will be a message only.
         If you do not specify a user, the author will be used.
@@ -208,7 +208,7 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.is_owner()
     @commands.command(aliases=["userchannelcmd"])
-    async def cmduserchannel(self, ctx, user: typing.Optional[discord.Member]=None, channel: typing.Optional[discord.TextChannel]=None, *, command: str = ""):
+    async def cmduserchannel(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, channel: typing.Optional[discord.TextChannel]=None, *, command: str = ""):
         """Act as if the command had been typed in the channel of your choice by imitating the specified user.
         The prefix must be entered if it is a command. Otherwise, it will be a message only.
         If you do not specify a user, the author will be used.
@@ -280,7 +280,7 @@ class CmdChannel(commands.Cog):
             return
 
     @commands.command()
-    async def testvar(self, ctx):
+    async def testvar(self, ctx: commands.Context):
         """Test variables.
         """
         embed: discord.Embed = discord.Embed()
@@ -297,11 +297,11 @@ class CmdChannel(commands.Cog):
     @commands.guild_only()
     @commands.guildowner_or_permissions(administrator=True)
     @commands.group(name="cmdset", aliases=["setcmd"])
-    async def config(self, ctx):
+    async def config(self, ctx: commands.Context):
         """Configure Command for your server."""
 
     @config.command(aliases=["lchann", "lchannel", "logschan", "logchannel", "logsc"], usage="<text_channel_or_'none'>")
-    async def logschannel(self, ctx, *, channel: typing.Optional[discord.TextChannel]=None):
+    async def logschannel(self, ctx: commands.Context, *, channel: typing.Optional[discord.TextChannel]=None):
         """Set a channel where events are registered.
 
         ``channel``: Text channel.
@@ -336,11 +336,11 @@ class CmdChannel(commands.Cog):
 
     @commands.guildowner_or_permissions(administrator=True)
     @config.group(name="cmdchannel", aliases=["channelcmd"])
-    async def cmdchannelconfig(self, ctx: commands.GuildContext):
+    async def cmdchannelconfig(self, ctx: commands.Context: commands.GuildContext):
         """Configure CmdChannel for your server."""
 
     @cmdchannelconfig.command(name="enable", aliases=["activate"], usage="<true_or_false>")
-    async def activatecmdchannel(self, ctx, state: bool):
+    async def activatecmdchannel(self, ctx: commands.Context, state: bool):
         """Enable or disable CommandChannel.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -360,7 +360,7 @@ class CmdChannel(commands.Cog):
         await ctx.send(f"CommandChannel state registered: {state}.")
 
     @cmdchannelconfig.command(name="confirmation", aliases=["confirm"], usage="<true_or_false>")
-    async def confirmationcmdchannel(self, ctx, state: bool):
+    async def confirmationcmdchannel(self, ctx: commands.Context, state: bool):
         """Enable or disable confirmation.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -380,7 +380,7 @@ class CmdChannel(commands.Cog):
         await ctx.send(f"Confirmation state registered: {state}.")
 
     @cmdchannelconfig.command(name="delete", aliases=["deletemessage"], usage="<true_or_false>")
-    async def deletemessagecmdchannel(self, ctx, state: bool):
+    async def deletemessagecmdchannel(self, ctx: commands.Context, state: bool):
         """Enable or disable message delete.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -400,7 +400,7 @@ class CmdChannel(commands.Cog):
         await ctx.send(f"Message delete state registered: {state}.")
 
     @cmdchannelconfig.command(name="information", aliases=["info"], usage="<true_or_false>")
-    async def informationcmdchannel(self, ctx, state: bool):
+    async def informationcmdchannel(self, ctx: commands.Context, state: bool):
         """Enable or disable information message.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -421,11 +421,11 @@ class CmdChannel(commands.Cog):
 
     @commands.guildowner_or_permissions(administrator=True)
     @config.group(name="cmduser", aliases=["usercmd"])
-    async def cmduserconfig(self, ctx: commands.GuildContext):
+    async def cmduserconfig(self, ctx: commands.Context: commands.GuildContext):
         """Configure CmdUser for your server."""
 
     @cmduserconfig.command(name="enable", aliases=["activate"], usage="<true_or_false>")
-    async def activatecmduser(self, ctx, state: bool):
+    async def activatecmduser(self, ctx: commands.Context, state: bool):
         """Enable or disable CommandUser.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -445,7 +445,7 @@ class CmdChannel(commands.Cog):
         await ctx.send(f"CommandUser state registered: {state}.")
 
     @cmduserconfig.command(name="confirmation", aliases=["confirm"], usage="<true_or_false>")
-    async def confirmationcmduser(self, ctx, state: bool):
+    async def confirmationcmduser(self, ctx: commands.Context, state: bool):
         """Enable or disable confirmation.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -465,7 +465,7 @@ class CmdChannel(commands.Cog):
         await ctx.send(f"CommandUser confirmation state registered: {state}.")
 
     @cmduserconfig.command(name="delete", aliases=["deletemessage"], usage="<true_or_false>")
-    async def deletemessagecmduser(self, ctx, state: bool):
+    async def deletemessagecmduser(self, ctx: commands.Context, state: bool):
         """Enable or disable message delete.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -485,7 +485,7 @@ class CmdChannel(commands.Cog):
         await ctx.send(f"CommandUser message delete state registered: {state}.")
 
     @cmduserconfig.command(name="information", aliases=["info"], usage="<true_or_false>")
-    async def informationcmduser(self, ctx, state: bool):
+    async def informationcmduser(self, ctx: commands.Context, state: bool):
         """Enable or disable information message.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -506,11 +506,11 @@ class CmdChannel(commands.Cog):
 
     @commands.guildowner_or_permissions(administrator=True)
     @config.group(name="cmduserchannel", aliases=["userchannelcmd"])
-    async def cmduserchannelconfig(self, ctx: commands.GuildContext):
+    async def cmduserchannelconfig(self, ctx: commands.Context: commands.GuildContext):
         """Configure CmdUserChannel for your server."""
 
     @cmduserchannelconfig.command(name="enable", aliases=["activate"], usage="<true_or_false>")
-    async def activatecmduserchannel(self, ctx, state: bool):
+    async def activatecmduserchannel(self, ctx: commands.Context, state: bool):
         """Enable or disable CommandUserChannel.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -530,7 +530,7 @@ class CmdChannel(commands.Cog):
         await ctx.send(f"CommandUserChannel state registered: {state}.")
 
     @cmduserchannelconfig.command(name="confirmation", aliases=["confirm"], usage="<true_or_false>")
-    async def confirmationcmduserchannel(self, ctx, state: bool):
+    async def confirmationcmduserchannel(self, ctx: commands.Context, state: bool):
         """Enable or disable confirmation.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -550,7 +550,7 @@ class CmdChannel(commands.Cog):
         await ctx.send(f"CommandUserChannel confirmation state registered: {state}.")
 
     @cmduserchannelconfig.command(name="delete", aliases=["deletemessage"], usage="<true_or_false>")
-    async def deletemessagecmduserchannel(self, ctx, state: bool):
+    async def deletemessagecmduserchannel(self, ctx: commands.Context, state: bool):
         """Enable or disable message delete.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -570,7 +570,7 @@ class CmdChannel(commands.Cog):
         await ctx.send(f"CommandUserChannel message delete state registered: {state}.")
 
     @cmduserchannelconfig.command(name="information", aliases=["info"], usage="<true_or_false>")
-    async def informationcmduserchannel(self, ctx, state: bool):
+    async def informationcmduserchannel(self, ctx: commands.Context, state: bool):
         """Enable or disable information message.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.

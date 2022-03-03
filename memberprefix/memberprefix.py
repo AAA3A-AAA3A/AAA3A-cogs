@@ -34,7 +34,7 @@ class MemberPrefix(commands.Cog):
     def cog_unload(self):
         self.bot.remove_before_invoke_hook(self.before_invoke)
 
-    async def before_invoke(self, ctx) -> None:
+    async def before_invoke(self, ctx: commands.Context) -> None:
         if ctx.guild is None:
             return
         config = await self.config.member(ctx.author).all()
@@ -70,7 +70,7 @@ class MemberPrefix(commands.Cog):
             await self.bot.invoke(ctx)
 
     @commands.command(aliases=["memberprefixes"])
-    async def memberprefix(self, ctx, *prefixes: str):
+    async def memberprefix(self, ctx: commands.Context, *prefixes: str):
         """Sets [botname]'s prefix(es) for you only.
         Warning: This is not additive. It will replace all current prefixes.
         The real prefixes will no longer work for you.

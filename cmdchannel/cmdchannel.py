@@ -13,6 +13,9 @@ from copy import copy
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
+def _(untranslated: str):
+    return untranslated
+
 class CmdChannel(commands.Cog):
     """A cog to send the result of a command to another channel!"""
 
@@ -58,7 +61,7 @@ class CmdChannel(commands.Cog):
                     channel = guild.get_channel(channel)
                 else:
                     if ctx.author.id in ctx.bot.owner_ids:
-                        await ctx.send("Please specify a server if you want to use a command in another server.")
+                        await ctx.send(_("Please specify a server if you want to use a command in another server.").format(**locals()))
                         return
                     else:
                         channel = None
@@ -69,12 +72,12 @@ class CmdChannel(commands.Cog):
         guild = channel.guild
 
         if channel not in ctx.guild.channels and not ctx.author.id in ctx.bot.owner_ids:
-            await ctx.send("Only a bot owner can use a command from another server.")
+            await ctx.send(_("Only a bot owner can use a command from another server.").format(**locals()))
             return
 
         member = guild.get_member(ctx.author.id)
         if member is None:
-            await ctx.send("To send commands to another server, you must be there.")
+            await ctx.send(_("To send commands to another server, you must be there.").format(**locals()))
             return
 
         if not command and not ctx.message.embeds and not ctx.message.attachments:
@@ -92,19 +95,17 @@ class CmdChannel(commands.Cog):
             permissions = channel.permissions_for(ctx.author)
             if permissions.read_messages and permissions.send_messages:
                 if actual_state_information:
-                    await channel.send(f"The command issued in this channel is:\n```{command}```")
+                    await channel.send(_("The command issued in this channel is:\n```{command}```").format(**locals()))
                 if logschannel:
                     can_run = await self.member_can_run(ctx)
                     embed = discord.Embed(
                         description=f"CmdChannel - Command used: {command}",
                         colour=cmd_colour,
                     )
-                    embed.add_field(name=("Imitated user"), value=ctx.author.mention)
-                    embed.add_field(name=("Channel"), value=channel.mention)
-                    embed.add_field(name=("Can Run"), value=str(can_run))
-                    author_title = ("{member} ({m_id}) - Used a Command").format(
-                        member=ctx.author, m_id=ctx.author.id
-                    )
+                    embed.add_field(name=(_("Imitated user").format(**locals())), value=ctx.author.mention)
+                    embed.add_field(name=(_("Channel").format(**locals())), value=channel.mention)
+                    embed.add_field(name=(_("Can Run").format(**locals())), value=str(can_run))
+                    author_title = _("{ctx.author} ({ctx.author.id}) - Used a Command").format(**locals())
                     embed.set_author(name=author_title, icon_url=ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
@@ -122,19 +123,19 @@ class CmdChannel(commands.Cog):
                     ctx.bot.dispatch("message", new_ctx.message)
                 if actual_state_confirmation:
                     try:
-                        await ctx.author.send(f"The `{command}` command has been launched in the {channel} channel. You can check if it worked.")
+                        await ctx.author.send(_("The `{command}` command has been launched in the {channel} channel. You can check if it worked.").format(**locals()))
                     except discord.Forbidden:
-                        await ctx.send(f"The `{command}` command has been launched in the {channel} channel. You can check if it worked.")
+                        await ctx.send(_("The `{command}` command has been launched in the {channel} channel. You can check if it worked.").format(**locals()))
             else:
                 try:
-                    await ctx.author.send(f"You cannot run this command because you do not have the permissions to send messages in the {channel} channel.")
+                    await ctx.author.send(_("You cannot run this command because you do not have the permissions to send messages in the {channel} channel.").format(**locals()))
                 except discord.Forbidden:
-                    await ctx.send(f"You cannot run this command because you do not have the permissions to send messages in the {channel} channel.")
+                    await ctx.send(_("You cannot run this command because you do not have the permissions to send messages in the {channel} channel.").format(**locals()))
         else:
             try:
-                await ctx.author.send("CommandChannel have been disabled by an administrator of this server.")
+                await ctx.author.send(_("CommandChannel have been disabled by an administrator of this server.").format(**locals()))
             except discord.Forbidden:
-                await ctx.send("CommandChannel have been disabled by an administrator of this server.")
+                await ctx.send(_("CommandChannel have been disabled by an administrator of this server.").format(**locals()))
             return
 
     @commands.guild_only()
@@ -163,19 +164,17 @@ class CmdChannel(commands.Cog):
             permissions = ctx.channel.permissions_for(ctx.author)
             if permissions.read_messages and permissions.send_messages:
                 if actual_state_information:
-                    await ctx.channel.send(f"The command issued in this channel is:\n```{command}```")
+                    await ctx.channel.send(_("The command issued in this channel is:\n```{command}```").format(**locals()))
                 if logschannel:
                     can_run = await self.member_can_run(ctx)
                     embed = discord.Embed(
-                        description=f"CmdUser - Command used: {command}",
+                        description=_("CmdUser - Command used: {command}").format(**locals()),
                         colour=cmd_colour,
                     )
-                    embed.add_field(name=("Imitated user"), value=user)
-                    embed.add_field(name=("Channel"), value=ctx.channel.mention)
-                    embed.add_field(name=("Can Run"), value=str(can_run))
-                    author_title = ("{member} ({m_id}) - Used a Command").format(
-                        member=ctx.author, m_id=ctx.author.id
-                    )
+                    embed.add_field(name=(_("Imitated user").format(**locals())), value=user)
+                    embed.add_field(name=(_("Channel").format(**locals())), value=ctx.channel.mention)
+                    embed.add_field(name=(_("Can Run").format(**locals())), value=str(can_run))
+                    author_title = _("{ctx.author} ({ctx.author.id}) - Used a Command").format(**locals())
                     embed.set_author(name=author_title, icon_url=ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
@@ -193,19 +192,19 @@ class CmdChannel(commands.Cog):
                     ctx.bot.dispatch("message", new_ctx.msg)
                 if actual_state_confirmation:
                     try:
-                        await ctx.author.send(f"The `{command}` command has been launched in the {ctx.channel} channel by imitating the {user} user. You can check if it worked.")
+                        await ctx.author.send(_("The `{command}` command has been launched in the {ctx.channel} channel by imitating the {user} user. You can check if it worked.").format(**locals()))
                     except discord.Forbidden:
-                        await ctx.send(f"The `{command}` command has been launched in the {ctx.channel} channel by imitating the {user} user. You can check if it worked.")
+                        await ctx.send(_("The `{command}` command has been launched in the {ctx.channel} channel by imitating the {user} user. You can check if it worked.").format(**locals()))
             else:
                 try:
-                    await ctx.author.send(f"You cannot run this command because you do not have the permissions to send messages in the {ctx.channel} channel.")
+                    await ctx.author.send(_("You cannot run this command because you do not have the permissions to send messages in the {ctx.channel} channel.").format(**locals()))
                 except discord.Forbidden:
-                    await ctx.send(f"You cannot run this command because you do not have the permissions to send messages in the {ctx.channel} channel.")
+                    await ctx.send(_("You cannot run this command because you do not have the permissions to send messages in the {ctx.channel} channel.").format(**locals()))
         else:
             try:
-                await ctx.author.send("CommandUser have been disabled by an administrator of this server.")
+                await ctx.author.send(_("CommandUser have been disabled by an administrator of this server.").format(**locals()))
             except discord.Forbidden:
-                await ctx.send("CommandUser have been disabled by an administrator of this server.")
+                await ctx.send(_("CommandUser have been disabled by an administrator of this server.").format(**locals()))
             return
 
     @commands.guild_only()
@@ -237,19 +236,17 @@ class CmdChannel(commands.Cog):
             permissions = channel.permissions_for(ctx.author)
             if permissions.read_messages and permissions.send_messages:
                 if actual_state_information:
-                    await channel.send(f"The command issued in this channel is:\n```{command}```")
+                    await channel.send(_("The command issued in this channel is:\n```{command}```").format(**locals()))
                 if logschannel:
                     can_run = await self.member_can_run(ctx)
                     embed = discord.Embed(
-                        description=f"CmdUserChannel - Command used: {command}",
+                        description=_("CmdUserChannel - Command used: {command}").format(**locals()),
                         colour=cmd_colour,
                     )
-                    embed.add_field(name=("Imitated user"), value=user)
-                    embed.add_field(name=("Channel"), value=channel.mention)
-                    embed.add_field(name=("Can Run"), value=str(can_run))
-                    author_title = ("{member} ({m_id}) - Used a Command").format(
-                        member=ctx.author, m_id=ctx.author.id
-                    )
+                    embed.add_field(name=(_("Imitated user").format(**locals())), value=user)
+                    embed.add_field(name=(_("Channel").format(**locals())), value=channel.mention)
+                    embed.add_field(name=(_("Can Run").format(**locals())), value=str(can_run))
+                    author_title = _("{ctx.author} ({ctx.author.id}) - Used a Command").format(**locals())
                     embed.set_author(name=author_title, icon_url=ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
@@ -267,19 +264,19 @@ class CmdChannel(commands.Cog):
                     ctx.bot.dispatch("message", new_ctx.msg)
                 if actual_state_confirmation:
                     try:
-                        await ctx.author.send(f"The `{command}` command has been launched in the {channel} channel by imitating the {user} user. You can check if it worked.")
+                        await ctx.author.send(_("The `{command}` command has been launched in the {channel} channel by imitating the {user} user. You can check if it worked.").format(**locals()))
                     except discord.Forbidden:
-                        await ctx.send(f"The `{command}` command has been launched in the {channel} channel by imitating the {user} user. You can check if it worked.")
+                        await ctx.send(_("The `{command}` command has been launched in the {channel} channel by imitating the {user} user. You can check if it worked.").format(**locals()))
             else:
                 try:
-                    await ctx.author.send(f"You cannot run this command because you do not have the permissions to send messages in the {channel} channel.")
+                    await ctx.author.send(_("You cannot run this command because you do not have the permissions to send messages in the {channel} channel.").format(**locals()))
                 except discord.Forbidden:
-                    await ctx.send(f"You cannot run this command because you do not have the permissions to send messages in the {channel} channel.")
+                    await ctx.send(_("You cannot run this command because you do not have the permissions to send messages in the {channel} channel.").format(**locals()))
         else:
             try:
-                await ctx.author.send("CommandUserChannel have been disabled by an administrator of this server.")
+                await ctx.author.send(_("CommandUserChannel have been disabled by an administrator of this server.").format(**locals()))
             except discord.Forbidden:
-                await ctx.send("CommandUserChannel have been disabled by an administrator of this server.")
+                await ctx.send(_("CommandUserChannel have been disabled by an administrator of this server.").format(**locals()))
             return
 
     @commands.command()
@@ -287,14 +284,14 @@ class CmdChannel(commands.Cog):
         """Test variables.
         """
         embed: discord.Embed = discord.Embed()
-        embed.title = "Testvar"
-        embed.description = "Variables:"
+        embed.title = _("Testvar").format(**locals())
+        embed.description = _("Variables:").format(**locals())
         embed.add_field(
-            name="Author:",
-            value=f"{ctx.author}")
+            name=_("Author:").format(**locals()),
+            value=_("{ctx.author}").format(**locals())
         embed.add_field(
-            name="Channel:",
-            value=f"{ctx.channel}")
+            name="Channel:").format(**locals()),
+            value=_("{ctx.channel}").format(**locals()))
         await ctx.send(embed=embed)
 
     @commands.guild_only()
@@ -311,21 +308,21 @@ class CmdChannel(commands.Cog):
         You can also use "None" if you wish to remove the logging channel.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send("Only the owner of this server can access these commands!")
+            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
             return
 
         if channel is None:
             await self.config.guild(ctx.guild).logschannel.clear()
-            await ctx.send("Logging channel removed.")
+            await ctx.send(_("Logging channel removed.").format(**locals()))
             return
 
         needperm = await self.check_permissions_in_channel(["embed_links", "read_messages", "read_message_history", "send_messages", "attach_files"], channel)
         if needperm:
-            await ctx.send("The bot does not have at least one of the following permissions in this channel: `embed_links`, `read_messages`, `read_message_history`, `send_messages`, `attach_files`.")
+            await ctx.send(_("The bot does not have at least one of the following permissions in this channel: `embed_links`, `read_messages`, `read_message_history`, `send_messages`, `attach_files`.")).format(**locals())
             return
 
         await self.config.guild(ctx.guild).logschannel.set(channel.id)
-        await ctx.send(f"Logging channel registered: {channel.mention}.")
+        await ctx.send(_("Logging channel registered: {channel.mention}.").format(**locals()))
 
     async def check_permissions_in_channel(self, permissions: List[str], channel: discord.TextChannel):
         """Function to checks if the permissions are available in a guild.
@@ -349,18 +346,18 @@ class CmdChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send("Only the owner of this server can access these commands!")
+            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
             return
 
         config = await self.config.guild(ctx.guild).all()
 
         actual_state_enabled = config["enabled_cmdchannel"]
         if actual_state_enabled is state:
-            await ctx.send(f"CommandChannel is already set on {state}.")
+            await ctx.send(_("CommandChannel is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).enabled_cmdchannel.set(state)
-        await ctx.send(f"CommandChannel state registered: {state}.")
+        await ctx.send(_("CommandChannel state registered: {state}.").format(**locals()))
 
     @cmdchannelconfig.command(name="confirmation", aliases=["confirm"], usage="<true_or_false>")
     async def confirmationcmdchannel(self, ctx: commands.Context, state: bool):
@@ -369,14 +366,14 @@ class CmdChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send("Only the owner of this server can access these commands!")
+            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
             return
 
         config = await self.config.guild(ctx.guild).all()
 
         actual_state_confirmation = config["confirmation_cmdchannel"]
         if actual_state_confirmation is state:
-            await ctx.send(f"Confirmation is already set on {state}.")
+            await ctx.send(_("Confirmation is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).confirmation_cmdchannel.set(state)
@@ -389,18 +386,18 @@ class CmdChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send("Only the owner of this server can access these commands!")
+            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
             return
 
         config = await self.config.guild(ctx.guild).all()
 
         actual_state_delete = config["deletemessage_cmdchannel"]
         if actual_state_delete is state:
-            await ctx.send(f"Message delete is already set on {state}.")
+            await ctx.send(_("Message delete is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).deletemessage_cmdchannel.set(state)
-        await ctx.send(f"Message delete state registered: {state}.")
+        await ctx.send(_("Message delete state registered: {state}.").format(**locals()))
 
     @cmdchannelconfig.command(name="information", aliases=["info"], usage="<true_or_false>")
     async def informationcmdchannel(self, ctx: commands.Context, state: bool):
@@ -409,18 +406,18 @@ class CmdChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send("Only the owner of this server can access these commands!")
+            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
             return
 
         config = await self.config.guild(ctx.guild).all()
 
         actual_state_information = config["informationmessage_cmdchannel"]
         if actual_state_information is state:
-            await ctx.send(f"Information message is already set on {state}.")
+            await ctx.send(_("Information message is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).informationmessage_cmdchannel.set(state)
-        await ctx.send(f"Information message state registered: {state}.")
+        await ctx.send(_("Information message state registered: {state}.").format(**locals()))
 
     @commands.guildowner_or_permissions(administrator=True)
     @configuration.group(name="cmduser", aliases=["usercmd"])
@@ -434,18 +431,18 @@ class CmdChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send("Only the owner of this server can access these commands!")
+            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
             return
 
         config = await self.config.guild(ctx.guild).all()
 
         actual_state_enabled = config["enabled_cmduser"]
         if actual_state_enabled is state:
-            await ctx.send(f"CommandUser is already set on {state}.")
+            await ctx.send(_("CommandUser is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).enabled_cmduser.set(state)
-        await ctx.send(f"CommandUser state registered: {state}.")
+        await ctx.send(_("CommandUser state registered: {state}.").format(**locals()))
 
     @cmduserconfig.command(name="confirmation", aliases=["confirm"], usage="<true_or_false>")
     async def confirmationcmduser(self, ctx: commands.Context, state: bool):
@@ -454,18 +451,18 @@ class CmdChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send("Only the owner of this server can access these commands!")
+            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
             return
 
         config = await self.config.guild(ctx.guild).all()
 
         actual_state_confirmation = config["confirmation_cmduser"]
         if actual_state_confirmation is state:
-            await ctx.send(f"CommandUser confirmation is already set on {state}.")
+            await ctx.send(_("CommandUser confirmation is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).confirmation_cmduser.set(state)
-        await ctx.send(f"CommandUser confirmation state registered: {state}.")
+        await ctx.send(_("CommandUser confirmation state registered: {state}.").format(**locals()))
 
     @cmduserconfig.command(name="delete", aliases=["deletemessage"], usage="<true_or_false>")
     async def deletemessagecmduser(self, ctx: commands.Context, state: bool):
@@ -474,18 +471,18 @@ class CmdChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send("Only the owner of this server can access these commands!")
+            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
             return
 
         config = await self.config.guild(ctx.guild).all()
 
         actual_state_delete = config["deletemessage_cmduser"]
         if actual_state_delete is state:
-            await ctx.send(f"CommandUser message delete is already set on {state}.")
+            await ctx.send(_("CommandUser message delete is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).deletemessage_cmduser.set(state)
-        await ctx.send(f"CommandUser message delete state registered: {state}.")
+        await ctx.send(_("CommandUser message delete state registered: {state}.").format(**locals()))
 
     @cmduserconfig.command(name="information", aliases=["info"], usage="<true_or_false>")
     async def informationcmduser(self, ctx: commands.Context, state: bool):
@@ -494,18 +491,18 @@ class CmdChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send("Only the owner of this server can access these commands!")
+            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
             return
 
         config = await self.config.guild(ctx.guild).all()
 
         actual_state_information = config["informationmessage_cmduser"]
         if actual_state_information is state:
-            await ctx.send(f"CommandUser information message is already set on {state}.")
+            await ctx.send(_("CommandUser information message is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).informationmessage_cmduser.set(state)
-        await ctx.send(f"CommandUser information message state registered: {state}.")
+        await ctx.send(_("CommandUser information message state registered: {state}.").format(**locals()))
 
     @commands.guildowner_or_permissions(administrator=True)
     @configuration.group(name="cmduserchannel", aliases=["userchannelcmd"])
@@ -519,18 +516,18 @@ class CmdChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send("Only the owner of this server can access these commands!")
+            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
             return
 
         config = await self.config.guild(ctx.guild).all()
 
         actual_state_enabled = config["enabled_cmduserchannel"]
         if actual_state_enabled is state:
-            await ctx.send(f"CommandUserChannel is already set on {state}.")
+            await ctx.send(_("CommandUserChannel is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).enabled_cmduserchannel.set(state)
-        await ctx.send(f"CommandUserChannel state registered: {state}.")
+        await ctx.send(_("CommandUserChannel state registered: {state}.").format(**locals()))
 
     @cmduserchannelconfig.command(name="confirmation", aliases=["confirm"], usage="<true_or_false>")
     async def confirmationcmduserchannel(self, ctx: commands.Context, state: bool):
@@ -539,18 +536,18 @@ class CmdChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send("Only the owner of this server can access these commands!")
+            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
             return
 
         config = await self.config.guild(ctx.guild).all()
 
         actual_state_confirmation = config["confirmation_cmduserchannel"]
         if actual_state_confirmation is state:
-            await ctx.send(f"CommandUserChannel confirmation is already set on {state}.")
+            await ctx.send(_("CommandUserChannel confirmation is already set on {state}."))
             return
 
         await self.config.guild(ctx.guild).confirmation_cmduserchannel.set(state)
-        await ctx.send(f"CommandUserChannel confirmation state registered: {state}.")
+        await ctx.send(_("CommandUserChannel confirmation state registered: {state}.").format(**locals()))
 
     @cmduserchannelconfig.command(name="delete", aliases=["deletemessage"], usage="<true_or_false>")
     async def deletemessagecmduserchannel(self, ctx: commands.Context, state: bool):
@@ -559,18 +556,18 @@ class CmdChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send("Only the owner of this server can access these commands!")
+            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
             return
 
         config = await self.config.guild(ctx.guild).all()
 
         actual_state_delete = config["deletemessage_cmduserchannel"]
         if actual_state_delete is state:
-            await ctx.send(f"CommandUserChannel message delete is already set on {state}.")
+            await ctx.send(_("CommandUserChannel message delete is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).deletemessage_cmduserchannel.set(state)
-        await ctx.send(f"CommandUserChannel message delete state registered: {state}.")
+        await ctx.send(_("CommandUserChannel message delete state registered: {state}.").format(**locals()))
 
     @cmduserchannelconfig.command(name="information", aliases=["info"], usage="<true_or_false>")
     async def informationcmduserchannel(self, ctx: commands.Context, state: bool):
@@ -579,18 +576,18 @@ class CmdChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send("Only the owner of this server can access these commands!")
+            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
             return
 
         config = await self.config.guild(ctx.guild).all()
 
         actual_state_information = config["informationmessage_cmduserchannel"]
         if actual_state_information is state:
-            await ctx.send(f"CommandUserChannel information message is already set on {state}.")
+            await ctx.send(_("CommandUserChannel information message is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).informationmessage_cmduserchannel.set(state)
-        await ctx.send(f"CommandUserChannel information message state registered: {state}.")
+        await ctx.send(_("CommandUserChannel information message state registered: {state}.").format(**locals()))
 
     async def member_can_run(self, ctx: commands.Context) -> bool:
         """Check if a user can run a command.

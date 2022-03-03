@@ -17,6 +17,9 @@ from .utils import utils
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
+def _(untranslated: str):
+    return untranslated
+
 class TicketTool(settings, commands.Cog):
     """A cog to manage a ticket system!"""
 
@@ -51,7 +54,7 @@ class TicketTool(settings, commands.Cog):
                 "last_nb": 0000,
                 "embed_button": {
                     "title": "Create a ticket",
-                    "description": ( "To get help on this server or to place a command for example, you can create a ticket.\n"
+                    "description": _("To get help on this server or to place a command for example, you can create a ticket.\n"
                                      "Just use the command `{prefix}ticket create` or click on the button below.\n"
                                      "You can then use the `{prefix}ticket` subcommand to manage your ticket."),
                 },
@@ -121,7 +124,7 @@ class TicketTool(settings, commands.Cog):
 
     async def get_audit_reason(self, guild: discord.Guild, author: typing.Optional[discord.Member]=None, reason: typing.Optional[str]=None):
         if reason is None:
-            reason = "Action taken for the ticket system."
+            reason = _("Action taken for the ticket system.").format(**locals())
         config = await self.bot.get_cog("TicketTool").get_config(guild)
         if author is None or not config["audit_logs"]:
             return f"{reason}"
@@ -142,35 +145,35 @@ class TicketTool(settings, commands.Cog):
         embed.set_footer(text=ticket.guild.name, icon_url=ticket.guild.icon_url)
         embed.add_field(
             inline=True,
-            name="Ticket ID:",
+            name=_("Ticket ID:").format(**locals()),
             value=f"{ticket.id}")
         embed.add_field(
             inline=True,
-            name="Owned by:",
+            name=_("Owned by:").format(**locals()),
             value=f"{ticket.owner.mention} ({ticket.owner.id})")
         embed.add_field(
             inline=True,
-            name="Channel:",
+            name=_("Channel:").format(**locals()),
             value=f"{ticket.channel.mention} - {ticket.channel.name} ({ticket.channel.id})")
         if more:
             if ticket.closed_by is not None:
                 embed.add_field(
                     inline=False,
-                    name="Closed by:",
+                    name=_("Closed by:").format(**locals()),
                     value=f"{ticket.owner.mention} ({ticket.owner.id})")
             if ticket.deleted_by is not None:
                 embed.add_field(
                     inline=True,
-                    name="Deleted by:",
+                    name=_("Deleted by:").format(**locals()),
                     value=f"{ticket.deleted_by.mention} ({ticket.deleted_by.id})")
             if ticket.closed_at:
                 embed.add_field(
                     inline=False,
-                    name="Closed at:",
+                    name=_("Closed at:").format(**locals()),
                     value=f"{ticket.closed_at}")
         embed.add_field(
             inline=False,
-            name="Reason:",
+            name=_("Reason:").format(**locals()),
             value=f"{ticket.reason}")
         return embed
 
@@ -178,7 +181,7 @@ class TicketTool(settings, commands.Cog):
         config = await self.bot.get_cog("TicketTool").get_config(ticket.guild)
         actual_color = config["color"]
         embed: discord.Embed = discord.Embed()
-        embed.title = f"Ticket {ticket.id} - Action taken"
+        embed.title = _("Ticket {ticket.id} - Action taken").format(**locals())
         embed.description = f"{action}"
         embed.color = actual_color
         embed.timestamp = datetime.datetime.now()
@@ -186,7 +189,7 @@ class TicketTool(settings, commands.Cog):
         embed.set_footer(text=ticket.guild.name, icon_url=ticket.guild.icon_url)
         embed.add_field(
             inline=False,
-            name="Reason:",
+            name=_("Reason:").format(**locals()),
             value=f"{ticket.reason}")
         return embed
 
@@ -292,17 +295,17 @@ class TicketTool(settings, commands.Cog):
         category_open = config["category_open"]
         category_close = config["category_close"]
         if not config["enable"]:
-            await ctx.send(f"The ticket system is not activated on this server. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it.")
+            await ctx.send(_("The ticket system is not activated on this server. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it.").format(**locals()))
             return
         if not await self.bot.get_cog("TicketTool").check_limit(ctx.author):
             await ctx.send(f"Sorry. You have already reached the limit of {limit} open tickets.")
             return
         if not category_open.permissions_for(ctx.guild.me).manage_channels or not category_close.permissions_for(ctx.guild.me).manage_channels:
-            await ctx.send("The bot does not have `manage_channels` permission on the 'open' and 'close' categories to allow the ticket system to function properly. Please notify an administrator of this server.")
+            await ctx.send(_("The bot does not have `manage_channels` permission on the 'open' and 'close' categories to allow the ticket system to function properly. Please notify an administrator of this server.").format(**locals()))
             return
         ticket = Ticket.instance(ctx, reason)
         await ticket.create()
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="export")
@@ -315,8 +318,8 @@ class TicketTool(settings, commands.Cog):
         if not transcript is None:
             file = discord.File(io.BytesIO(transcript.encode()),
                                 filename=f"transcript-ticket-{ticket.id}.html")
-        await ctx.send("Here is the html file of the transcript of all the messages in this ticket.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.", file=file)
-        await ctx.tick(message="Done.")
+        await ctx.send(_("Here is the html file of the transcript of all the messages in this ticket.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.").format(**locals()), file=file)
+        await ctx.tick()
 
     @decorator(enable_check=True, ticket_check=True, status="close", ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="open")
@@ -326,7 +329,7 @@ class TicketTool(settings, commands.Cog):
         ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         ticket.reason = reason
         await ticket.open(ctx.author)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @decorator(enable_check=False, ticket_check=True, status="open", ticket_owner=True, admin_role=True, support_role=True, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="close")
@@ -340,7 +343,7 @@ class TicketTool(settings, commands.Cog):
             confirmation = not config["close_confirmation"]
         if not confirmation:
             embed: discord.Embed = discord.Embed()
-            embed.title = f"Do you really want to close the ticket {ticket.id}?"
+            embed.title = _("Do you really want to close the ticket {ticket.id}?").format(**locals())
             embed.color = config["color"]
             embed.set_author(name=ctx.author.name, url=ctx.author.avatar_url, icon_url=ctx.author.avatar_url)
             response = await utils(ticket.bot).ConfirmationAsk(ctx, embed=embed)
@@ -348,7 +351,7 @@ class TicketTool(settings, commands.Cog):
                 return
         ticket.reason = reason
         await ticket.close(ctx.author)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=True, admin_role=True, support_role=True, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="rename")
@@ -358,7 +361,7 @@ class TicketTool(settings, commands.Cog):
         ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         ticket.reason = reason
         await ticket.rename(new_name, ctx.author)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="delete")
@@ -371,8 +374,8 @@ class TicketTool(settings, commands.Cog):
         config = await self.bot.get_cog("TicketTool").get_config(ticket.guild)
         if not confirmation:
             embed: discord.Embed = discord.Embed()
-            embed.title = f"Do you really want to delete all the messages of the ticket {ticket.id}?"
-            embed.description = "If a log channel is defined, an html file containing all the messages of this ticket will be generated. (Attachments are not supported, as they are saved with their Discord link)"
+            embed.title = _("Do you really want to delete all the messages of the ticket {ticket.id}?").format(**locals())
+            embed.description = _("If a log channel is defined, an html file containing all the messages of this ticket will be generated. (Attachments are not supported, as they are saved with their Discord link)").format(**locals())
             embed.color = config["color"]
             embed.set_author(name=ctx.author.name, url=ctx.author.avatar_url, icon_url=ctx.author.avatar_url)
             response = await utils(ticket.bot).ConfirmationAsk(ctx, embed=embed)
@@ -391,7 +394,7 @@ class TicketTool(settings, commands.Cog):
         if member is None:
             member = ctx.author
         await ticket.claim_ticket(member, ctx.author)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=False, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=True, claim_staff=True, members=False)
     @ticket.command(name="unclaim")
@@ -401,7 +404,7 @@ class TicketTool(settings, commands.Cog):
         ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         ticket.reason = reason
         await ticket.unclaim_ticket(ticket.claim, ctx.author)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @decorator(enable_check=False, ticket_check=True, status="open", ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=False, members=False)
     @ticket.command(name="owner")
@@ -413,7 +416,7 @@ class TicketTool(settings, commands.Cog):
         if new_owner is None:
             new_owner = ctx.author
         await ticket.change_owner(new_owner, ctx.author)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @decorator(enable_check=False, ticket_check=True, status="open", ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="add")
@@ -423,7 +426,7 @@ class TicketTool(settings, commands.Cog):
         ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         ticket.reason = reason
         await ticket.add_member(member, ctx.author)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="remove")
@@ -433,7 +436,7 @@ class TicketTool(settings, commands.Cog):
         ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         ticket.reason = reason
         await ticket.remove_member(member, ctx.author)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @commands.Cog.listener()
     async def on_button_click(self, inter):
@@ -454,7 +457,7 @@ class TicketTool(settings, commands.Cog):
                         msg.author = inter.author
                         msg.content = f"{p}ticket close"
                         inter.bot.dispatch("message", msg)
-                    await inter.send(f"You have chosen to close this ticket. If this ticket is not closed, you do not have the necessary permissions.", ephemeral=True)
+                    await inter.send(_("You have chosen to close this ticket. If this ticket is not closed, you do not have the necessary permissions.").format(**locals()), ephemeral=True)
         if inter.clicked_button.custom_id == "claim_ticket_button":
             permissions = inter.channel.permissions_for(inter.author)
             if not permissions.read_messages and not permissions.send_messages:
@@ -472,7 +475,7 @@ class TicketTool(settings, commands.Cog):
                         msg.author = inter.author
                         msg.content = f"{p}ticket claim"
                         inter.bot.dispatch("message", msg)
-                    await inter.send(f"You have chosen to claim this ticket. If this ticket is not claimed, you do not have the necessary permissions.", ephemeral=True)
+                    await inter.send(_("You have chosen to claim this ticket. If this ticket is not claimed, you do not have the necessary permissions.").format(**locals()), ephemeral=True)
         if inter.clicked_button.custom_id == "create_ticket_button":
             permissions = inter.channel.permissions_for(inter.author)
             if not permissions.read_messages and not permissions.send_messages:
@@ -487,7 +490,7 @@ class TicketTool(settings, commands.Cog):
                 msg.author = inter.author
                 msg.content = f"{p}ticket create"
                 inter.bot.dispatch("message", msg)
-            await inter.send(f"You have chosen to create a ticket.", ephemeral=True)
+            await inter.send(_("You have chosen to create a ticket.").format(**locals()), ephemeral=True)
         return
 
     @commands.Cog.listener()
@@ -589,7 +592,7 @@ class Ticket:
         self.first_message: discord.Message = first_message
 
     @staticmethod
-    def instance(ctx, reason: typing.Optional[str]="No reason provided."):
+    def instance(ctx, reason: typing.Optional[str]=_("No reason provided.").format(**locals())):
         ticket = Ticket(
             bot=ctx.bot,
             id=None,
@@ -699,7 +702,7 @@ class Ticket:
         ping_role = config["ping_role"]
         ticket.id = config["last_nb"] + 1
         name = f"{emoji_open}-{name}-{ticket.id}"
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=ticket.created_by, reason=f"Creating the ticket {ticket.id}.")
+        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=ticket.created_by, reason=_("Creating the ticket {ticket.id}.").format(**locals()))
         ticket.channel = await ticket.guild.create_text_channel(
                             name,
                             overwrites=overwrites,
@@ -713,14 +716,14 @@ class Ticket:
             buttons = ActionRow(
                 Button(
                     style=ButtonStyle.grey,
-                    label="Close",
+                    label=_("Close").format(**locals()),
                     emoji="🔒",
                     custom_id="close_ticket_button",
                     disabled=False
                 ),
                 Button(
                     style=ButtonStyle.grey,
-                    label="Claim",
+                    label=_("Claim").format(**locals()),
                     emoji="🙋‍♂️",
                     custom_id="claim_ticket_button",
                     disabled=False
@@ -730,11 +733,11 @@ class Ticket:
                 optionnal_ping = f" ||{ping_role.mention}||"
             else:
                 optionnal_ping = ""
-            embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, False, author=ticket.created_by, title="Ticket Created", description="Thank you for creating a ticket on this server!")
+            embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, False, author=ticket.created_by, title=_("Ticket Created").format(**locals()), description=_("Thank you for creating a ticket on this server!").format(**locals()))
             ticket.first_message = await ticket.channel.send(f"{ticket.created_by.mention}{optionnal_ping}", embed=embed, components=[buttons])
             if logschannel is not None:
-                embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, True, author=ticket.created_by, title="Ticket Created", description=f"The ticket was created by {ticket.created_by}.")
-                await logschannel.send(f"Report on the creation of the ticket {ticket.id}.", embed=embed)
+                embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, True, author=ticket.created_by, title=_("Ticket Created").format(**locals()), description=_("The ticket was created by {ticket.created_by}.").format(**locals()))
+                await logschannel.send(_("Report on the creation of the ticket {ticket.id}.").format(**locals()), embed=embed)
         await ticket.bot.get_cog("TicketTool").data.guild(ticket.guild).settings.last_nb.set(ticket.id)
         if config["ticket_role"] is not None:
             if ticket.owner:
@@ -756,7 +759,7 @@ class Ticket:
 
     async def open(ticket, author: typing.Optional[discord.Member]=None):
         config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=f"Opening the ticket {ticket.id}.")
+        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=_("Opening the ticket {ticket.id}.").format(**locals()))
         logschannel = config["logschannel"]
         emoji_open = config["emoji_open"]
         emoji_close = config["emoji_close"]
@@ -770,24 +773,24 @@ class Ticket:
         new_name = f"{emoji_open}-{new_name}"
         await ticket.channel.edit(name=new_name, category=config["category_open"], reason=reason)
         if ticket.logs_messages:
-            embed = await ticket.bot.get_cog("TicketTool").get_embed_action(ticket, author=ticket.opened_by, action="Ticket Opened")
+            embed = await ticket.bot.get_cog("TicketTool").get_embed_action(ticket, author=ticket.opened_by, action=_("Ticket Opened").format(**locals()))
             await ticket.channel.send(embed=embed)
             if logschannel is not None:
-                embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, True, author=ticket.opened_by, title="Ticket Opened", description=f"The ticket was opened by {ticket.opened_by}.")
-                await logschannel.send(f"Report on the close of the ticket {ticket.id}.", embed=embed)
+                embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, True, author=ticket.opened_by, title=_("Ticket Opened").format(**locals()), description=_("The ticket was opened by {ticket.opened_by}.").format(**locals()))
+                await logschannel.send(_("Report on the close of the ticket {ticket.id}.").format(**locals()), embed=embed)
         if ticket.first_message is not None:
             try:
                 buttons = ActionRow(
                     Button(
                         style=ButtonStyle.grey,
-                        label="Close",
+                        label=_("Close").format(**locals()),
                         emoji="🔒",
                         custom_id="close_ticket_button",
                         disabled=False
                     ),
                     Button(
                         style=ButtonStyle.grey,
-                        label="Claim",
+                        label=_("Claim").format(**locals()),
                         emoji="🙋‍♂️",
                         custom_id="claim_ticket_button",
                         disabled=False
@@ -818,20 +821,20 @@ class Ticket:
             await ticket.channel.send(embed=embed)
             if logschannel is not None:
                 embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, True, author=ticket.closed_by, title="Ticket Closed", description=f"The ticket was closed by {ticket.closed_by}.")
-                await logschannel.send(f"Report on the close of the ticket {ticket.id}.", embed=embed)
+                await logschannel.send(_("Report on the close of the ticket {ticket.id}.").format(**locals()), embed=embed)
         if ticket.first_message is not None:
             try:
                 buttons = ActionRow(
                     Button(
                         style=ButtonStyle.grey,
-                        label="Close",
+                        label=_("Close").format(**locals()),
                         emoji="🔒",
                         custom_id="close_ticket_button",
                         disabled=True
                     ),
                     Button(
                         style=ButtonStyle.grey,
-                        label="Claim",
+                        label=_("Claim").format(**locals()),
                         emoji="🙋‍♂️",
                         custom_id="claim_ticket_button",
                         disabled=True
@@ -846,7 +849,7 @@ class Ticket:
 
     async def rename(ticket, new_name: str, author: typing.Optional[discord.Member]=None):
         config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=f"Renaming the ticket {ticket.id}. (`{ticket.channel.name}` to `{new_name}`)")
+        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=_("Renaming the ticket {ticket.id}. (`{ticket.channel.name}` to `{new_name}`)").format(**locals()))
         emoji_open = config["emoji_open"]
         emoji_close = config["emoji_close"]
         ticket.renamed_by = author
@@ -859,7 +862,7 @@ class Ticket:
             new_name = f"{new_name}"
         await ticket.channel.edit(name=new_name, reason=reason)
         if ticket.logs_messages:
-            embed = await ticket.bot.get_cog("TicketTool").get_embed_action(ticket, author=ticket.renamed_by, action="Ticket Renamed")
+            embed = await ticket.bot.get_cog("TicketTool").get_embed_action(ticket, author=ticket.renamed_by, action=_("Ticket Renamed.").format(**locals()))
             await ticket.channel.send(embed=embed)
         await ticket.save()
         return ticket
@@ -867,17 +870,17 @@ class Ticket:
     async def delete(ticket, author: typing.Optional[discord.Member]=None):
         config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
         logschannel = config["logschannel"]
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=f"Deleting the ticket {ticket.id}.")
+        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=_("Deleting the ticket {ticket.id}.").format(**locals()))
         ticket.deleted_by = author
         ticket.deleted_at = datetime.datetime.now()
         if ticket.logs_messages:
             if logschannel is not None:
-                embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, True, author=ticket.deleted_by, title="Ticket Deleted", description=f"The ticket was deleted by {ticket.deleted_by}.")
+                embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, True, author=ticket.deleted_by, title=_("Ticket Deleted").format(**locals()), description=_("The ticket was deleted by {ticket.deleted_by}.").format(**locals()))
                 transcript = await chat_exporter.export(ticket.channel, ticket.guild)
                 if not transcript is None:
                     file = discord.File(io.BytesIO(transcript.encode()),
                                         filename=f"transcript-ticket-{ticket.id}.html")
-                await logschannel.send(f"Report on the deletion of the ticket {ticket.id}.", embed=embed, file=file)
+                await logschannel.send(_("Report on the deletion of the ticket {ticket.id}.").format(**locals()), embed=embed, file=file)
         await ticket.channel.delete(reason=reason)
         data = await ticket.bot.get_cog("TicketTool").data.guild(ticket.guild).tickets.all()
         del data[str(ticket.channel.id)]
@@ -886,9 +889,9 @@ class Ticket:
 
     async def claim_ticket(ticket, member: discord.Member, author: typing.Optional[discord.Member]=None):
         config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=f"Claiming the ticket {ticket.id}.")
+        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=_("Claiming the ticket {ticket.id}.").format(**locals()))
         if member.bot:
-            await ticket.channel.send("A bot cannot claim a ticket.")
+            await ticket.channel.send(_("A bot cannot claim a ticket.").format(**locals()))
             return
         ticket.claim = member
         overwrites = ticket.channel.overwrites
@@ -938,7 +941,7 @@ class Ticket:
 
     async def unclaim_ticket(ticket, member: discord.Member, author: typing.Optional[discord.Member]=None):
         config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=f"Claiming the ticket {ticket.id}.")
+        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=_("Claiming the ticket {ticket.id}.").format(**locals()))
         ticket.claim = None
         if config["support_role"] is not None:
             overwrites = ticket.channel.overwrites
@@ -958,14 +961,14 @@ class Ticket:
                 buttons = ActionRow(
                     Button(
                         style=ButtonStyle.grey,
-                        label="Close",
+                        label=_("Close").format(**locals()),
                         emoji="🔒",
                         custom_id="close_ticket_button",
                         disabled=False if ticket.status == "open" else True
                     ),
                     Button(
                         style=ButtonStyle.grey,
-                        label="Claim",
+                        label=_("Claim").format(**locals()),
                         emoji="🙋‍♂️",
                         custom_id="claim_ticket_button",
                         disabled=False
@@ -980,9 +983,9 @@ class Ticket:
 
     async def change_owner(ticket, member: discord.Member, author: typing.Optional[discord.Member]=None):
         config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=f"Changing owner of the ticket {ticket.id}.")
+        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=_("Changing owner of the ticket {ticket.id}.").format(**locals()))
         if member.bot:
-            await ticket.channel.send("You cannot transfer ownership of a ticket to a bot.")
+            await ticket.channel.send(_("You cannot transfer ownership of a ticket to a bot.").format(**locals()))
             return
         if config["ticket_role"] is not None:
             if ticket.owner:
@@ -1010,21 +1013,21 @@ class Ticket:
                 except discord.HTTPException:
                     pass
         if ticket.logs_messages:
-            embed = await ticket.bot.get_cog("TicketTool").get_embed_action(ticket, author=author, action="Owner Modified")
+            embed = await ticket.bot.get_cog("TicketTool").get_embed_action(ticket, author=author, action=_("Owner Modified.").format(**locals()))
             await ticket.channel.send(embed=embed)
         await ticket.save()
         return ticket
 
     async def add_member(ticket, member: discord.Member, author: typing.Optional[discord.Member]=None):
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=f"Adding a member to the ticket {ticket.id}.")
+        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=_("Adding a member to the ticket {ticket.id}.").format(**locals()))
         if member.bot:
-            await ticket.channel.send("You cannot add a bot to a ticket.")
+            await ticket.channel.send(_("You cannot add a bot to a ticket.").format(**locals()))
             return
         if member in ticket.members:
-            await ticket.channel.send("This member already has access to this ticket.")
+            await ticket.channel.send(_("This member already has access to this ticket.").format(**locals()))
             return
         if member == ticket.owner:
-            await ticket.channel.send("This member is already the owner of this ticket.")
+            await ticket.channel.send(_("This member is already the owner of this ticket.").format(**locals()))
             return
         ticket.members.append(member)
         overwrites = ticket.channel.overwrites
@@ -1038,13 +1041,13 @@ class Ticket:
         )
         await ticket.channel.edit(overwrites=overwrites, reason=reason)
         if ticket.logs_messages:
-            embed = await ticket.bot.get_cog("TicketTool").get_embed_action(ticket, author=author, action=f"Member {member.mention} ({member.id}) Added")
+            embed = await ticket.bot.get_cog("TicketTool").get_embed_action(ticket, author=author, action=_("Member {member.mention} ({member.id}) Added.").format(**locals()))
             await ticket.channel.send(embed=embed)
         await ticket.save()
         return ticket
 
     async def remove_member(ticket, member: discord.Member, author: typing.Optional[discord.Member]=None):
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=f"Removing a member to the ticket {ticket.id}.")
+        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=_("Removing a member to the ticket {ticket.id}.").format(**locals()))
         if member.bot:
             await ticket.channel.send("You cannot remove a bot to a ticket.")
             return
@@ -1054,7 +1057,7 @@ class Ticket:
         ticket.members.remove(member)
         await ticket.channel.set_permissions(member, overwrite=None, reason=reason)
         if ticket.logs_messages:
-            embed = await ticket.bot.get_cog("TicketTool").get_embed_action(ticket, author=author, action=f"Member {member.mention} ({member.id}) Removed")
+            embed = await ticket.bot.get_cog("TicketTool").get_embed_action(ticket, author=author, action=_("Member {member.mention} ({member.id}) Removed.").format(**locals()))
             await ticket.channel.send(embed=embed)
         await ticket.save()
         return ticket

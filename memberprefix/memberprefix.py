@@ -9,6 +9,9 @@ from redbot.core import commands, Config
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
+def _(untranslated: str):
+    return untranslated
+
 class MemberPrefix(commands.Cog):
     """A cog to allow a member to choose custom prefixes, just for them!"""
 
@@ -88,16 +91,13 @@ class MemberPrefix(commands.Cog):
             - `<prefixes...>` - The prefixes the bot will respond for you only.
         """
         if any(len(x) > 10 for x in prefixes):
-            await ctx.send(
-                    "A prefix is above the maximal length (10 characters).\n"
-                    "This is possible for global or per-server prefixes, but not for per-member prefixes."
-            )
+            await ctx.send(_("A prefix is above the maximal length (10 characters).\nThis is possible for global or per-server prefixes, but not for per-member prefixes.").format(**locals()))
             return
         await self.config.member(ctx.author).custom_prefixes.set(prefixes)
         if len(prefixes) == 0 or 1:
-            await ctx.send("Prefix for you only set.")
+            await ctx.send(_("Prefix for you only set.").format(**locals()))
         else:
-            await ctx.send("Prefixes for you only set.")
+            await ctx.send(_("Prefixes for you only set.").format(**locals()))
 
     async def get_context_with_custom_prefixes(self, message: discord.Message, prefixes: typing.List, *, cls=commands.context.Context):
         r"""|coro|

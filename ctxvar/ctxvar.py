@@ -12,6 +12,9 @@ from copy import copy
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
+def _(untranslated: str):
+    return untranslated
+
 class CtxVar(commands.Cog):
     """A cog to list and display the contents of all sub-functions of `ctx`!"""
 
@@ -28,7 +31,7 @@ class CtxVar(commands.Cog):
         instance = ctx
         if not args == "":
             if not hasattr(instance, f"{args}"):
-                await ctx.send("The argument you specified is not a subclass of the instance.")
+                await ctx.send(_("The argument you specified is not a subclass of the instance.").format(**locals()))
                 return
             args = f".{args}"
         instance_name = "ctx"
@@ -37,7 +40,7 @@ class CtxVar(commands.Cog):
             return None
         embed: discord.Embed = discord.Embed()
         embed.title = f"**{full_instance_name}**"
-        embed.description = f"Here are all the variables and their associated values that can be used in this class."
+        embed.description = _("Here are all the variables and their associated values that can be used in this class.").format(**locals())
         embed.color = 0x01d758
         embed.set_thumbnail(url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/2048px-Python-logo-notext.svg.png")
         one_l = []
@@ -65,6 +68,6 @@ class CtxVar(commands.Cog):
         page = 0
         for embed in embeds:
             page += 1
-            embed.set_footer(text=f"Page {page}/{len(embeds)}")
+            embed.set_footer(text=_("Page {page}/{len(embeds)}").format(**locals()))
 
         await menu(ctx, pages=embeds, controls=DEFAULT_CONTROLS)

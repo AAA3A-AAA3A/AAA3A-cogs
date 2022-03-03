@@ -14,6 +14,9 @@ from TagScriptEngine import Interpreter, block
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
+def _(untranslated: str):
+    return untranslated
+
 class Calculator(commands.Cog):
     """A cog to do simple calculations from Discord with buttons!"""
 
@@ -103,7 +106,7 @@ class Calculator(commands.Cog):
             else:
                 result = f"{result}"
         if result is None:
-            result = "Error!"
+            result = _("Error!").format(**locals())
         return result
 
     async def get_embed(self, ctx: commands.Context, expression: str):
@@ -115,7 +118,7 @@ class Calculator(commands.Cog):
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
         embed: discord.Embed = discord.Embed()
-        embed.title = f"Calculator"
+        embed.title = _("Calculator").format(**locals())
         embed.description = f"```{str(expression)}```"
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
@@ -172,7 +175,7 @@ class Calculator(commands.Cog):
             ),
             Button(
                 style=ButtonStyle.red,
-                label="Exit",
+                label=_("Exit").format(**locals()),
                 emoji=None,
                 custom_id="exit_button",
                 disabled=disabled
@@ -246,7 +249,7 @@ class Calculator(commands.Cog):
             ),
             Button(
                 style=ButtonStyle.red,
-                label="Clear",
+                label=_("Clear").format(**locals()),
                 emoji=None,
                 custom_id="clear_button",
                 disabled=disabled
@@ -347,9 +350,9 @@ class Calculator(commands.Cog):
                 inter = await ctx.wait_for_button_click(timeout=config["time_max"], check=check)
                 # waiting for a reaction to be added - times out after x seconds, 30 in this
                 if not inter.author == ctx.author:
-                    await inter.respond(f"Only the author of the command `{ctx.prefix}calc` can interact with this message.", ephemeral=True)
+                    await inter.respond(_("Only the author of the command `{ctx.prefix}calc` can interact with this message.").format(**locals()), ephemeral=True)
                 else:
-                    if expression is None or expression == "Error!" or expression == "∞":
+                    if expression is None or expression == _("Error!").format(**locals()) or expression == "∞":
                         expression = None
                     if inter.clicked_button.custom_id == "result_button":
                         expression = f"{await self.calculate(expression, True)}"
@@ -361,7 +364,7 @@ class Calculator(commands.Cog):
                     elif inter.clicked_button.custom_id == "back_button":
                         if expression == "":
                             expression = None
-                        if expression is None or expression == "Error!":
+                        if expression is None or expression == _("Error!").format(**locals()):
                             expression = "|"
                         lst = list(expression)
                         if len(lst) > 1:
@@ -390,7 +393,7 @@ class Calculator(commands.Cog):
                     elif inter.clicked_button.custom_id == "right_button":
                         if expression == "":
                             expression = None
-                        if expression is None or expression == "Error!":
+                        if expression is None or expression == _("Error!").format(**locals()):
                             expression = "|"
                         lst = list(expression)
                         if len(lst) > 1:
@@ -404,7 +407,7 @@ class Calculator(commands.Cog):
                         if expression == "|":
                             expression = None
                     else:
-                        if expression is None or expression == "Error!":
+                        if expression is None or expression == _("Error!").format(**locals()):
                             expression = "|"
                         expression = await self.input_formatter(expression, str(inter.clicked_button.custom_id))
                     await message.edit(embed=await self.get_embed(ctx, expression))

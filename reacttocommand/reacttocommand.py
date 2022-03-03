@@ -11,6 +11,9 @@ from redbot.core.utils.menus import start_adding_reactions
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
+def _(untranslated: str):
+    return untranslated
+
 class ReactToCommand(commands.Cog):
     """A cog to allow a user to execute a command by clicking on a reaction!"""
 
@@ -121,18 +124,18 @@ class ReactToCommand(commands.Cog):
         """
         permissions = message.channel.permissions_for(ctx.guild.me)
         if not permissions.add_reactions or not permissions.read_message_history or not permissions.read_messages or not permissions.view_channel:
-            await ctx.send("I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to add reactions and to see the messages in that channel.")
+            await ctx.send(_("I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to add reactions and to see the messages in that channel.").format(**locals()))
             return
         msg = ctx.message
         msg.content = f"{ctx.prefix}{command}"
         new_ctx = await ctx.bot.get_context(msg)
         if not new_ctx.valid:
-            await ctx.send("You have not specified a correct command.")
+            await ctx.send(_("You have not specified a correct command.").format(**locals()))
             return
         try:
             await start_adding_reactions(message, [react])
         except discord.HTTPException:
-            await ctx.send("An error has occurred. It is possible that the emoji you provided is invalid.")
+            await ctx.send(_("An error has occurred. It is possible that the emoji you provided is invalid.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).react_command.all()
         if not f"{message.channel.id}-{message.id}" in config:
@@ -148,10 +151,10 @@ class ReactToCommand(commands.Cog):
         await start_adding_reactions(message, [react])
         config = await self.config.guild(ctx.guild).react_command.all()
         if not f"{message.channel.id}-{message.id}" in config:
-            await ctx.send("No command-reaction is configured for this message.")
+            await ctx.send(_("No command-reaction is configured for this message.").format(**locals()))
             return
         if not f"{react}" in config[f"{message.channel.id}-{message.id}"]:
-            await ctx.send("I wasn't watching for this reaction on this message.")
+            await ctx.send(_("I wasn't watching for this reaction on this message.").format(**locals()))
             return
         del config[f"{message.channel.id}-{message.id}"][f"{react}"]
         if config[f"{message.channel.id}-{message.id}"] == {}:
@@ -169,7 +172,7 @@ class ReactToCommand(commands.Cog):
         """
         config = await self.config.guild(ctx.guild).react_command.all()
         if not f"{message.channel.id}-{message.id}" in config:
-            await ctx.send("No command-reaction is configured for this message.")
+            await ctx.send(_("No command-reaction is configured for this message.").format(**locals()))
             return
         for react in config[f"{message.channel.id}-{message.id}"]:
             try:

@@ -14,6 +14,9 @@ from redbot.core.utils.tunnel import Tunnel
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
+def _(untranslated: str):
+    return untranslated
+
 class GuildNotFoundError(Exception):
     pass
 
@@ -55,19 +58,21 @@ class TransferChannel(commands.Cog):
                 else:
                     files = await Tunnel.files_from_attatch(message)
                     if files != []:
+                        nb = len(files)
                         error_message = (
-                            "Has files: yes\n"
-                            f"Number of files: {len(files)}\n"
-                            f"Files URL: " + ", ".join([x.url for x in ctx.message.attachments])
+                            _("Has files: yes\n").format(**locals()),
+                            _("Number of files: {nb}\n").format(**locals()),
+                            _("Files URL: ").format(**locals()) + ", ".join([x.url for x in ctx.message.attachments]),
                         )
                     else:
-                        error_message = "Has files: no"
+                        error_message = _("Has files: no").format(**locals())
                     if not webhooks:
+                        iso_format = message.created_at.isoformat()
                         msg1 = "\n".join(
                             [
-                                f"**Author:** {message.author}({message.author.id})",
-                                f"**Channel:** <#{message.channel.id}>",
-                                f"**Time(UTC):** {message.created_at.isoformat()}",
+                                _("**Author:** {message.author}({message.author.id}").format(**locals()),
+                                _("**Channel:** <#{message.channel.id}>").format(**locals()),
+                                _("**Time(UTC):** {isoformat}").format(**locals())
                             ]
                         )
                         if len(msg1) + len(message.content) < 2000:

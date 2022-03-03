@@ -6,6 +6,9 @@ from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.commands.converter import parse_timedelta
 from dislash import ActionRow, Button, ButtonStyle
 
+def _(untranslated: str):
+    return untranslated
+
 class utils(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -127,7 +130,7 @@ class utils(commands.Cog):
                         reason = msg.content
                         return reason
                 except asyncio.TimeoutError:
-                    await ctx.send("Timed out, please try again.")
+                    await ctx.send(_("Timed out, please try again.").format(**locals()))
                     raise Timeout_or_Cancel
             else:
                 reason = "not"
@@ -159,7 +162,7 @@ class utils(commands.Cog):
                 duration = msg.content
                 return duration
             except asyncio.TimeoutError:
-                await ctx.send("Timed out, please try again.")
+                await ctx.send(_("Timed out, please try again.").format(**locals()))
                 raise Timeout_or_Cancel
         else:
             return duration
@@ -175,7 +178,7 @@ class utils(commands.Cog):
                 embed.add_field(
                     inline=False,
                     name="Reason:",
-                    value=f"The reason was not given.")
+                    value=_("The reason was not given.").format(**locals()))
             else:
                 embed.add_field(
                     inline=False,
@@ -185,13 +188,13 @@ class utils(commands.Cog):
                 if not duration == "Infinity":
                     embed.add_field(
                         inline=False,
-                        name="Duration:",
+                        name=_("Duration:").format(**locals()),
                         value=f"{parse_timedelta(duration)}")
                 else:
                     embed.add_field(
                         inline=False,
-                        name="Duration:",
-                        value=f"Infinity")
+                        name=_("Duration:").format(**locals()),
+                        value=_("Infinity").format(**locals()))
             message = await ctx.send(embed=embed)
             reactions = ["✅", "❌"]
             start_adding_reactions(message, reactions)
@@ -218,7 +221,7 @@ class utils(commands.Cog):
                 except asyncio.TimeoutError:
                     if not end_reaction:
                         await message.delete()
-                        await ctx.send("Timed out, please try again.")
+                        await ctx.send(_("Timed out, please try again.").format(**locals()))
                         raise Timeout_or_Cancel
                         break
 
@@ -226,7 +229,7 @@ class utils(commands.Cog):
         if finish_message:
             embed: discord.Embed = discord.Embed()
             embed.title = f"{title}"
-            embed.description = f"This tool allows you to easily sanction a server member.\nUser mention: {user.mention} - User ID: {user.id}"
+            embed.description = _("This tool allows you to easily sanction a server member.\nUser mention: {user.mention} - User ID: {user.id}").format(**locals())
             embed.set_thumbnail(url=actual_thumbnail)
             embed.color = actual_color
             embed.set_author(name=user, url=user.avatar_url, icon_url=user.avatar_url)
@@ -235,22 +238,22 @@ class utils(commands.Cog):
             embed.add_field(
                 inline=False,
                 name=f"{description}",
-                value=f"If an error has occurred, it will be displayed below.")
+                value=_("If an error has occurred, it will be displayed below.").format(**locals()))
             if not reason is None:
                 embed.add_field(
-                    name="Reason:",
+                    name=_("Reason:").format(**locals()),
                     value=f"{reason}")
             if duration is not None:
                 if not duration == "Infinity":
                     embed.add_field(
                         inline=False,
-                        name="Duration:",
+                        name=_("Duration:").format(**locals()),
                         value=f"{parse_timedelta(duration)}")
                 else:
                     embed.add_field(
                         inline=False,
-                        name="Duration:",
-                        value=f"Infinity")
+                        name=_("Duration:").format(**locals()),
+                        value=_("Infinity").format(**locals()))
             return await ctx.send(embed=embed)
 
 class Timeout_or_Cancel(Exception):

@@ -5,6 +5,9 @@ from typing import List
 from dislash import ActionRow, Button, ButtonStyle
 from .utils import utils
 
+def _(untranslated: str):
+    return untranslated
+
 class settings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -25,19 +28,19 @@ class settings(commands.Cog):
         config = await self.config.guild(ctx.guild).settings.all()
 
         if config["category_open"] is None or config["category_close"] is None or config["admin_role"] is None:
-            await ctx.send("You cannot enable the ticket system on this server if you have not configured the following options:",
-                            f"- The category of open tickets : `{ctx.prefix}setticket categoryopen <category>`",
-                            f"- The category of close tickets : `{ctx.prefix}setticket categoryclose <category>`",
-                            f"- The admin role has full access to the tickets : `{ctx.prefix}setticket adminrole <role>`",
-                            "All other parameters are optional or have default values that will be used.")
+            await ctx.send(_("You cannot enable the ticket system on this server if you have not configured the following options:"
+                            f"- The category of open tickets : `{ctx.prefix}setticket categoryopen <category>`"
+                            f"- The category of close tickets : `{ctx.prefix}setticket categoryclose <category>`"
+                            f"- The admin role has full access to the tickets : `{ctx.prefix}setticket adminrole <role>`"
+                            "All other parameters are optional or have default values that will be used.").format(**locals()))
 
         actual_enable = config["enable"]
         if actual_enable is state:
-            await ctx.send(f"Ticket System is already set on {state}.")
+            await ctx.send(_("Ticket System is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).settings.enable.set(state)
-        await ctx.send(f"Ticket System state registered: {state}.")
+        await ctx.send(_("Ticket System state registered: {state}.").format(**locals()))
 
     @configuration.command(aliases=["lchann", "lchannel", "logschan", "logchannel", "logsc"], usage="<text_channel_or_'none'>")
     async def logschannel(self, ctx: commands.Context, *, channel: typing.Optional[discord.TextChannel]=None):
@@ -48,16 +51,16 @@ class settings(commands.Cog):
         """
         if channel is None:
             await self.config.guild(ctx.guild).settings.logschannel.clear()
-            await ctx.send("Logging channel removed.")
+            await ctx.send(_("Logging channel removed.").format(**locals()))
             return
 
         needperm = await self.check_permissions_in_channel(["embed_links", "read_messages", "read_message_history", "send_messages", "attach_files"], channel)
         if needperm:
-            await ctx.send("The bot does not have at least one of the following permissions in this channel: `embed_links`, `read_messages`, `read_message_history`, `send_messages`, `attach_files`.")
+            await ctx.send(_("The bot does not have at least one of the following permissions in this channel: `embed_links`, `read_messages`, `read_message_history`, `send_messages`, `attach_files`.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).settings.logschannel.set(channel.id)
-        await ctx.send(f"Logging channel registered: {channel.mention}.")
+        await ctx.send(_("Logging channel registered: {channel.mention}.").format(**locals()))
 
     @configuration.command(usage="<category_or_'none'>")
     async def categoryopen(self, ctx: commands.Context, *, category: typing.Optional[discord.CategoryChannel]=None):
@@ -68,11 +71,11 @@ class settings(commands.Cog):
         """
         if category is None:
             await self.config.guild(ctx.guild).settings.category_open.clear()
-            await ctx.send("Category Open removed.")
+            await ctx.send(_("Category Open removed.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).settings.category_open.set(category.id)
-        await ctx.send(f"Category Open registered: {category.name}.")
+        await ctx.send(_("Category Open registered: {category.name}.").format(**locals()))
 
     @configuration.command(usage="<category_or_'none'>")
     async def categoryclose(self, ctx: commands.Context, *, category: typing.Optional[discord.CategoryChannel]=None):
@@ -83,11 +86,11 @@ class settings(commands.Cog):
         """
         if category is None:
             await self.config.guild(ctx.guild).settings.category_close.clear()
-            await ctx.send("Category Close removed.")
+            await ctx.send(_("Category Close removed.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).settings.category_close.set(category.id)
-        await ctx.send(f"Category Close registered: {category.name}.")
+        await ctx.send(_("Category Close registered: {category.name}.").format(**locals()))
 
     @configuration.command(usage="<role_or_'none'>")
     async def adminrole(self, ctx: commands.Context, *, role: typing.Optional[discord.Role]=None):
@@ -98,11 +101,11 @@ class settings(commands.Cog):
         """
         if role is None:
             await self.config.guild(ctx.guild).settings.admin_role.clear()
-            await ctx.send("Admin Role removed.")
+            await ctx.send(_("Admin Role removed.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).settings.admin_role.set(role.id)
-        await ctx.send(f"Admin Role registered: {role.name}.")
+        await ctx.send(_("Admin Role registered: {role.name}.").format(**locals()))
 
     @configuration.command(usage="<role_or_'none'>")
     async def supportrole(self, ctx: commands.Context, *, role: typing.Optional[discord.Role]=None):
@@ -113,11 +116,11 @@ class settings(commands.Cog):
         """
         if role is None:
             await self.config.guild(ctx.guild).settings.support_role.clear()
-            await ctx.send("Support Role removed.")
+            await ctx.send(_("Support Role removed.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).settings.support_role.set(role.id)
-        await ctx.send(f"Support Role registered: {role.name}.")
+        await ctx.send(_("Support Role registered: {role.name}.").format(**locals()))
 
     @configuration.command(usage="<role_or_'none'>")
     async def ticketrole(self, ctx: commands.Context, *, role: typing.Optional[discord.Role]=None):
@@ -128,11 +131,11 @@ class settings(commands.Cog):
         """
         if role is None:
             await self.config.guild(ctx.guild).settings.ticket_role.clear()
-            await ctx.send("Ticket Role removed.")
+            await ctx.send(_("Ticket Role removed.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).settings.ticket_role.set(role.id)
-        await ctx.send(f"Ticket Role registered: {role.name}.")
+        await ctx.send(_("Ticket Role registered: {role.name}.").format(**locals()))
 
     @configuration.command(usage="<role_or_'none'>")
     async def viewrole(self, ctx: commands.Context, *, role: typing.Optional[discord.Role]=None):
@@ -143,11 +146,11 @@ class settings(commands.Cog):
         """
         if role is None:
             await self.config.guild(ctx.guild).settings.view_role.clear()
-            await ctx.send("View Role removed.")
+            await ctx.send(_("View Role removed.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).settings.view_role.set(role.id)
-        await ctx.send(f"View Role registered: {role.name}.")
+        await ctx.send(_("View Role registered: {role.name}.").format(**locals()))
 
     @configuration.command(usage="<role_or_'none'>")
     async def pingrole(self, ctx: commands.Context, *, role: typing.Optional[discord.Role]=None):
@@ -158,22 +161,22 @@ class settings(commands.Cog):
         """
         if role is None:
             await self.config.guild(ctx.guild).settings.ping_role.clear()
-            await ctx.send("Ping Role removed.")
+            await ctx.send(_("Ping Role removed.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).settings.ping_role.set(role.id)
-        await ctx.send(f"Ping Role registered: {role.name}.")
+        await ctx.send(_("Ping Role registered: {role.name}.").format(**locals()))
 
     @configuration.command(usage="<int>")
     async def nbmax(self, ctx: commands.Context, int: int):
         """Max Number of tickets for a member.
         """
         if int == 0:
-            await ctx.send("Disable the system instead.")
+            await ctx.send(_("Disable the system instead.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).nb_max.set(int)
-        await ctx.send(f"Max Number registered: {int}.")
+        await ctx.send(_("Max Number registered: {int}.").format(**locals()))
 
     @configuration.command(usage="<true_or_false>")
     async def modlog(self, ctx: commands.Context, state: bool):
@@ -185,11 +188,11 @@ class settings(commands.Cog):
 
         actual_create_modlog = config["create_modlog"]
         if actual_create_modlog is state:
-            await ctx.send(f"Modlog is already set on {state}.")
+            await ctx.send(_("Modlog is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).settings.create_modlog.set(state)
-        await ctx.send(f"Modlog state registered: {state}.")
+        await ctx.send(_("Modlog state registered: {state}.").format(**locals()))
 
     @configuration.command(usage="<true_or_false>")
     async def closeonleave(self, ctx: commands.Context, state: bool):
@@ -201,11 +204,11 @@ class settings(commands.Cog):
 
         actual_close_on_leave = config["close_on_leave"]
         if actual_close_on_leave is state:
-            await ctx.send(f"Close on Leave is already set on {state}.")
+            await ctx.send(_("Close on Leave is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).settings.close_on_leave.set(state)
-        await ctx.send(f"Close on Leave state registered: {state}.")
+        await ctx.send(_("Close on Leave state registered: {state}.").format(**locals()))
 
     @configuration.command(usage="<true_or_false>")
     async def createonreact(self, ctx: commands.Context, state: bool):
@@ -217,11 +220,11 @@ class settings(commands.Cog):
 
         actual_create_on_react = config["create_on_react"]
         if actual_create_on_react is state:
-            await ctx.send(f"Create on React is already set on {state}.")
+            await ctx.send(_("Create on React is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).settings.create_on_react.set(state)
-        await ctx.send(f"Create on React state registered: {state}.")
+        await ctx.send(_("Create on React state registered: {state}.").format(**locals()))
 
     @configuration.command(aliases=["colour", "col", "embedcolor", "embedcolour"], usage="<color_or_'none'>")
     async def color(self, ctx: commands.Context, *, color: typing.Optional[discord.Color]=None):
@@ -239,10 +242,10 @@ class settings(commands.Cog):
             embed: discord.Embed = discord.Embed()
             embed.color = actual_color
             embed.set_thumbnail(url=actual_thumbnail)
-            embed.title = "Configure the embed"
-            embed.description = "Reset color:"
+            embed.title = _("Configure the embed").format(**locals())
+            embed.description = _("Reset color:").format(**locals())
             embed.add_field(
-                name="Color:",
+                name=_("Color:").format(**locals()),
                 value=f"{actual_color}")
             message = await ctx.send(embed=embed)
             return
@@ -252,12 +255,12 @@ class settings(commands.Cog):
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
         embed: discord.Embed = discord.Embed()
-        embed.title = "Configure the embed"
-        embed.description = "Set color:"
+        embed.title = _("Configure the embed").format(**locals())
+        embed.description = _("Set color:").format(**locals())
         embed.color = actual_color
         embed.set_thumbnail(url=actual_thumbnail)
         embed.add_field(
-            name="Color:",
+            name=_("Color:").format(**locals()),
             value=f"{actual_color}")
         message = await ctx.send(embed=embed)
 
@@ -275,12 +278,12 @@ class settings(commands.Cog):
             actual_thumbnail = config["thumbnail"]
             actual_color = config["color"]
             embed: discord.Embed = discord.Embed()
-            embed.title = "Configure the embed"
-            embed.description = "Reset thumbnail:"
+            embed.title = _("Configure the embed").format(**locals())
+            embed.description = _("Reset thumbnail:").format(**locals())
             embed.set_thumbnail(url=actual_thumbnail)
             embed.color = actual_color
             embed.add_field(
-                name="Thumbnail:",
+                name=_("Thumbnail:").format(**locals()),
                 value=f"{actual_thumbnail}")
             message = await ctx.send(embed=embed)
             return
@@ -290,12 +293,12 @@ class settings(commands.Cog):
         actual_thumbnail = config["thumbnail"]
         actual_color = config["color"]
         embed: discord.Embed = discord.Embed()
-        embed.title = "Configure the embed"
-        embed.description = "Set thumbnail:"
+        embed.title = _("Configure the embed").format(**locals())
+        embed.description = _("Set thumbnail:").format(**locals())
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
         embed.add_field(
-            name="Thumbnail:",
+            name=_("Thumbnail:").format(**locals()),
             value=f"{actual_thumbnail}")
         message = await ctx.send(embed=embed)
 
@@ -309,11 +312,11 @@ class settings(commands.Cog):
 
         actual_audit_logs = config["audit_logs"]
         if actual_audit_logs is state:
-            await ctx.send(f"Audit Logs is already set on {state}.")
+            await ctx.send(_("Audit Logs is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).settings.audit_logs.set(state)
-        await ctx.send(f"Audit Logs state registered: {state}.")
+        await ctx.send(_("Audit Logs state registered: {state}.").format(**locals()))
 
     @configuration.command(name="closeconfirmation", aliases=["confirm"], usage="<true_or_false>")
     async def confirmation(self, ctx: commands.Context, state: bool):
@@ -325,11 +328,11 @@ class settings(commands.Cog):
 
         actual_close_confirmation = config["close_confirmation"]
         if actual_close_confirmation is state:
-            await ctx.send(f"Close Confirmation is already set on {state}.")
+            await ctx.send(_("Close Confirmation is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).settings.close_confirmation.set(state)
-        await ctx.send(f"Close Confirmation state registered: {state}.")
+        await ctx.send(_("Close Confirmation state registered: {state}.").format(**locals()))
 
     @configuration.command(name="message")
     async def message(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel]=None):
@@ -338,7 +341,7 @@ class settings(commands.Cog):
         button = ActionRow(
             Button(
                 style=ButtonStyle.grey,
-                label="Create ticket",
+                label=_("Create ticket").format(**locals()),
                 emoji="🎟️",
                 custom_id="create_ticket_button",
                 disabled=False
@@ -373,8 +376,8 @@ class settings(commands.Cog):
         config = await self.bot.get_cog("TicketTool").get_config(ctx.guild)
         if not confirmation:
             embed: discord.Embed = discord.Embed()
-            embed.title = f"Do you really want to purge all the tickets in the config?"
-            embed.description = "Does not delete any channels. All commands associated with the tickets will no longer work."
+            embed.title = _("Do you really want to purge all the tickets in the config?").format(**locals())
+            embed.description = _("Does not delete any channels. All commands associated with the tickets will no longer work.").format(**locals())
             embed.color = config["color"]
             embed.set_author(name=ctx.author.name, url=ctx.author.avatar_url, icon_url=ctx.author.avatar_url)
             response = await utils(ctx.bot).ConfirmationAsk(ctx, embed=embed)
@@ -389,4 +392,4 @@ class settings(commands.Cog):
         for channel in to_remove:
             del data[str(channel)]
         await ctx.bot.get_cog("TicketTool").data.guild(ctx.guild).tickets.set(data)
-        await ctx.send(f"{count} tickets have been removed from the config.")
+        await ctx.send(_("{count} tickets have been removed from the config.").format(**locals()))

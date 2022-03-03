@@ -11,6 +11,9 @@ from .converters import RoleEmojiConverter
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
+def _(untranslated: str):
+    return untranslated
+
 class RolesButtons(commands.Cog):
     """A cog to have roles-buttons!"""
 
@@ -55,24 +58,24 @@ class RolesButtons(commands.Cog):
             return
         role = inter.guild.get_role(config[f"{inter.channel.id}-{inter.message.id}"][f"{inter.component.emoji}"]["role"])
         if role is None:
-            inter.respond("The role I have to put you in no longer exists. Please notify an administrator of this server.", ephemeral=True)
+            inter.respond(_("The role I have to put you in no longer exists. Please notify an administrator of this server.").format(**locals()), ephemeral=True)
             return
         if not role in inter.author.roles:
             try:
-                await inter.author.add_roles(role, reason=f"Role-button of {inter.message.id} in {channel.id}.")
+                await inter.author.add_roles(role, reason=_("Role-button of {inter.message.id} in {channel.id}.").format(**locals()))
             except discord.HTTPException:
-                await inter.respond(f"I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server.", ephemeral=True)
+                await inter.respond(_("I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server.").format(**locals()), ephemeral=True)
                 return
             else:
-                await inter.respond(f"You now have the role {role.mention} ({role.id}).", ephemeral=True)
+                await inter.respond(_("You now have the role {role.mention} ({role.id}).").format(**locals()), ephemeral=True)
         else:
             try:
                 await inter.author.remove_roles(role, reason=f"Role-button of {inter.message.id} in {channel.id}.")
             except discord.HTTPException:
-                await inter.respond(f"I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server.", ephemeral=True)
+                await inter.respond(_("I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server.").format(**locals()), ephemeral=True)
                 return
             else:
-                await inter.respond(f"I did remove the role {role.mention} ({role.id}).", ephemeral=True)
+                await inter.respond(_("I did remove the role {role.mention} ({role.id}).").format(**locals()), ephemeral=True)
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
@@ -97,17 +100,17 @@ class RolesButtons(commands.Cog):
         """Add a role-button to a message.
         """
         if not message.author == ctx.guild.me:
-            await ctx.send("I have to be the author of the message for the role-button to work.")
+            await ctx.send(_("I have to be the author of the message for the role-button to work.").format(**locals()))
             return
         permissions = message.channel.permissions_for(ctx.guild.me)
         if not permissions.add_reactions or not permissions.read_message_history or not permissions.read_messages or not permissions.view_channel:
-            await ctx.send("I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.")
+            await ctx.send(_("I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if not f"{message.channel.id}-{message.id}" in config:
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) == 25:
-            await ctx.send("I can't do more than 25 roles-buttons for one message.")
+            await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
             return
         if hasattr(button, 'id'):
             config[f"{message.channel.id}-{message.id}"][f"{button.id}"] = {"role": role.id, "text_button": text_button}
@@ -116,7 +119,7 @@ class RolesButtons(commands.Cog):
         try:
             await message.edit(components=self.get_buttons(config, message))
         except discord.HTTPException:
-            await ctx.send("I can't do more than 25 roles-buttons for one message.")
+            await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
             return
         await self.config.guild(ctx.guild).roles_buttons.set(config)
         await ctx.tick()
@@ -126,17 +129,17 @@ class RolesButtons(commands.Cog):
         """Add a role-button to a message.
         """
         if not message.author == ctx.guild.me:
-            await ctx.send("I have to be the author of the message for the role-button to work.")
+            await ctx.send(_("I have to be the author of the message for the role-button to work.").format(**locals()))
             return
         permissions = message.channel.permissions_for(ctx.guild.me)
         if not permissions.add_reactions or not permissions.read_message_history or not permissions.read_messages or not permissions.view_channel:
-            await ctx.send("I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.")
+            await ctx.send(_("I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if not f"{message.channel.id}-{message.id}" in config:
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) + len(roles_buttons) >= 25:
-            await ctx.send("I can't do more than 25 roles-buttons for one message.")
+            await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
             return
         for role, button in roles_buttons:
             if hasattr(button, 'id'):
@@ -146,7 +149,7 @@ class RolesButtons(commands.Cog):
         try:
             await message.edit(components=self.get_buttons(config, message))
         except discord.HTTPException:
-            await ctx.send("I can't do more than 25 roles-buttons for one message.")
+            await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
             return
         await self.config.guild(ctx.guild).roles_buttons.set(config)
         await ctx.tick()
@@ -156,14 +159,14 @@ class RolesButtons(commands.Cog):
         """Remove a role-button to a message.
         """
         if not message.author == ctx.guild.me:
-            await ctx.send("I have to be the author of the message for the role-button to work.")
+            await ctx.send(_("I have to be the author of the message for the role-button to work.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if not f"{message.channel.id}-{message.id}" in config:
-            await ctx.send("No role-button is configured for this message.")
+            await ctx.send(_("No role-button is configured for this message.").format(**locals()))
             return
         if not f"{button}" in config[f"{message.channel.id}-{message.id}"]:
-            await ctx.send("I wasn't watching for this button on this message.")
+            await ctx.send(_("I wasn't watching for this button on this message.").format(**locals()))
             return
         del config[f"{message.channel.id}-{message.id}"][f"{button}"]
         await message.edit(components=self.get_buttons(config, message))
@@ -177,11 +180,11 @@ class RolesButtons(commands.Cog):
         """Clear all roles-buttons to a message.
         """
         if not message.author == ctx.guild.me:
-            await ctx.send("I have to be the author of the message for the role-button to work.")
+            await ctx.send(_("I have to be the author of the message for the role-button to work.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if not f"{message.channel.id}-{message.id}" in config:
-            await ctx.send("No role-button is configured for this message.")
+            await ctx.send(_("No role-button is configured for this message.").format(**locals()))
             return
         try:
             await message.edit(components=[])

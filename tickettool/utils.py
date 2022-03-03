@@ -6,6 +6,9 @@ import typing
 from redbot.core.utils.predicates import MessagePredicate
 from redbot.core.utils.menus import start_adding_reactions
 
+def _(untranslated: str):
+    return untranslated
+
 class utils():
     def __init__(self, bot):
         self.bot = bot
@@ -85,7 +88,7 @@ class utils():
             embed: typing.Optional[discord.Embed]=None,
             file: typing.Optional[discord.File]=None,
             timeout: typing.Optional[int]=60,
-            timeout_message: typing.Optional[str]="Timed out, please try again",
+            timeout_message: typing.Optional[str]=_("Timed out, please try again").format(**locals()),
             use_reactions: typing.Optional[bool]=True,
             message: typing.Optional[discord.Message]=None,
             put_reactions: typing.Optional[bool]=True,
@@ -96,9 +99,9 @@ class utils():
         if message is None:
             if not text and not embed and not file:
                 if use_reactions:
-                    text = "To confirm the current action, please use the feedback below this message."
+                    text = _("To confirm the current action, please use the feedback below this message.").format(**locals())
                 else:
-                    text = "To confirm the current action, please send yes/no in this channel."
+                    text = _("To confirm the current action, please send yes/no in this channel.").format(**locals())
             message = await ctx.send(content=text, embed=embed, file=file)
         if use_reactions:
             if put_reactions:

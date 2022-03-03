@@ -13,6 +13,9 @@ from os import listdir
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
+def _(untranslated: str):
+    return untranslated
+
 class EditFile(commands.Cog):
     """A cog to get a file and replace it from its path from Discord!"""
 
@@ -36,11 +39,11 @@ class EditFile(commands.Cog):
         try:
             file = discord.File(f"{path}")
         except FileNotFoundError:
-            await ctx.send("This file cannot be found on the host machine.")
+            await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
         except IsADirectoryError:
-            await ctx.send("The path you specified refers to a directory, not a file.")
+            await ctx.send(_("The path you specified refers to a directory, not a file.").format(**locals()))
         else:
-            await ctx.send(f"This is the file available at path `{path}`.", file=file)
+            await ctx.send(_("This is the file available at path `{path}`.").format(**locals()), file=file)
 
     @editfile.command()
     async def replace(self, ctx: commands.Context, *, path: Path):
@@ -53,16 +56,16 @@ class EditFile(commands.Cog):
                 # raise IsADirectoryError
             old_file = discord.File(f"{path}")
         except FileNotFoundError:
-            await ctx.send("This original file cannot be found on the host machine.")
+            await ctx.send(_("This original file cannot be found on the host machine.").format(**locals()))
         except IsADirectoryError:
-            await ctx.send("The path you specified refers to a directory, not a file.")
+            await ctx.send(_("The path you specified refers to a directory, not a file.").format(**locals()))
         else:
             if ctx.message.attachments == []:
-                await ctx.send("You must send the command with an attachment that will be used to replace the original file.")
+                await ctx.send(_("You must send the command with an attachment that will be used to replace the original file.").format(**locals()))
                 return
             new_file = ctx.message.attachments[0]
             await new_file.save(fp=f"{path}")
-            await ctx.send(f"This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly.", file=old_file)
+            await ctx.send(_("This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly.").format(**locals()), file=old_file)
  
     @editfile.command()
     async def findcog(self, ctx: commands.Context, cog: str):
@@ -77,7 +80,7 @@ class EditFile(commands.Cog):
             if not path.exists() or not path.is_dir():
                 raise
         except Exception:
-            await ctx.send("This cog cannot be found. Are you sure of its name?")
+            await ctx.send(_("This cog cannot be found. Are you sure of its name?").format(**locals()))
         else:
             await ctx.send(f"```{path}```")
 
@@ -86,10 +89,10 @@ class EditFile(commands.Cog):
         """List all files/directories of a directory from its path.
         """
         if not path.exists():
-            await ctx.send("This directory cannot be found on the host machine.")
+            await ctx.send(_("This directory cannot be found on the host machine.").format(**locals()))
             return
         if not path.is_dir():
-            await ctx.send("The path you specified refers to a file, not a directory.")
+            await ctx.send(_("The path you specified refers to a file, not a directory.").format(**locals()))
             return
         files = listdir(str(path))
         message = ""

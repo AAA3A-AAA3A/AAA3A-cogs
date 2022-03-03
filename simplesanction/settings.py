@@ -2,6 +2,9 @@ import discord
 import typing
 from redbot.core import commands
 
+def _(untranslated: str):
+    return untranslated
+
 class settings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -29,10 +32,10 @@ class settings(commands.Cog):
             embed: discord.Embed = discord.Embed()
             embed.color = actual_color
             embed.set_thumbnail(url=actual_thumbnail)
-            embed.title = "Configure the embed"
-            embed.description = "Reset color:"
+            embed.title = _("Configure the embed").format(**locals())
+            embed.description = _("Reset color:").format(**locals())
             embed.add_field(
-                name="Color:",
+                name=_("Color:").format(**locals()),
                 value=f"{actual_color}")
             message = await ctx.send(embed=embed)
             return
@@ -42,12 +45,12 @@ class settings(commands.Cog):
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
         embed: discord.Embed = discord.Embed()
-        embed.title = "Configure the embed"
-        embed.description = "Set color:"
+        embed.title = _("Configure the embed").format(**locals())
+        embed.description = _("Set color:").format(**locals())
         embed.color = actual_color
         embed.set_thumbnail(url=actual_thumbnail)
         embed.add_field(
-            name="Color:",
+            name=_("Color:").format(**locals()),
             value=f"{actual_color}")
         message = await ctx.send(embed=embed)
 
@@ -65,12 +68,12 @@ class settings(commands.Cog):
             actual_thumbnail = config["thumbnail"]
             actual_color = config["color"]
             embed: discord.Embed = discord.Embed()
-            embed.title = "Configure the embed"
-            embed.description = "Reset thumbnail:"
+            embed.title = _("Configure the embed").format(**locals())
+            embed.description = _("Reset thumbnail:").format(**locals())
             embed.set_thumbnail(url=actual_thumbnail)
             embed.color = actual_color
             embed.add_field(
-                name="Thumbnail:",
+                name=_("Thumbnail:").format(**locals()),
                 value=f"{actual_thumbnail}")
             message = await ctx.send(embed=embed)
             return
@@ -80,12 +83,12 @@ class settings(commands.Cog):
         actual_thumbnail = config["thumbnail"]
         actual_color = config["color"]
         embed: discord.Embed = discord.Embed()
-        embed.title = "Configure the embed"
-        embed.description = "Set thumbnail:"
+        embed.title = _("Configure the embed").format(**locals())
+        embed.description = _("Set thumbnail:").format(**locals())
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
         embed.add_field(
-            name="Thumbnail:",
+            name=_("Thumbnail:").format(**locals()),
             value=f"{actual_thumbnail}")
         message = await ctx.send(embed=embed)
 
@@ -99,11 +102,11 @@ class settings(commands.Cog):
 
         actual_show_author = config["show_author"]
         if actual_show_author is state:
-            await ctx.send(f"Show Author is already set on {state}.")
+            await ctx.send(_("Show Author is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).show_author.set(state)
-        await ctx.send(f"Show Author state registered: {state}.")
+        await ctx.send(_("Show Author state registered: {state}.").format(**locals()))
 
     @configuration.command(name="confirmation", aliases=["confirm"], usage="<true_or_false>")
     async def confirmation(self, ctx: commands.Context, state: bool):
@@ -115,11 +118,11 @@ class settings(commands.Cog):
 
         actual_action_confirmation = config["action_confirmation"]
         if actual_action_confirmation is state:
-            await ctx.send(f"Action Confirmation is already set on {state}.")
+            await ctx.send(_("Action Confirmation is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).action_confirmation.set(state)
-        await ctx.send(f"Action Confirmation state registered: {state}.")
+        await ctx.send(_("Action Confirmation state registered: {state}.").format(**locals()))
 
     @configuration.command(name="finishmessage", aliases=["messagefinish"], usage="<true_or_false>")
     async def finishmessage(self, ctx: commands.Context, state: bool):
@@ -131,7 +134,7 @@ class settings(commands.Cog):
 
         actual_finish_message = config["finish_message"]
         if actual_finish_message is state:
-            await ctx.send(f"Finish Message is already set on {state}.")
+            await ctx.send(_("Finish Message is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).finish_message.set(state)
@@ -147,11 +150,11 @@ class settings(commands.Cog):
 
         actual_warn_system_use = config["warn_system_use"]
         if actual_warn_system_use is state:
-            await ctx.send(f"Warn System Use is already set on {state}.")
+            await ctx.send(_("Warn System Use is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).warn_system_use.set(state)
-        await ctx.send(f"Warn System Use state registered: {state}.")
+        await ctx.send(_("Warn System Use state registered: {state}.").format(**locals()))
 
     @configuration.command(name="buttonsuse", aliases=["buttons"], usage="<true_or_false>")
     async def buttonsuse(self, ctx: commands.Context, state: bool):
@@ -163,7 +166,7 @@ class settings(commands.Cog):
 
         actual_buttons_use = config["buttons_use"]
         if actual_buttons_use is state:
-            await ctx.send(f"Buttons Use is already set on {state}.")
+            await ctx.send(_("Buttons Use is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).buttons_use.set(state)
@@ -179,11 +182,11 @@ class settings(commands.Cog):
 
         actual_reason_required = config["reason_required"]
         if actual_reason_required is state:
-            await ctx.send(f"Reason Required is already set on {state}.")
+            await ctx.send(_("Reason Required is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).reason_required.set(state)
-        await ctx.send(f"Reason Required state registered: {state}.")
+        await ctx.send(_("Reason Required state registered: {state}.").format(**locals()))
 
     @configuration.command(name="deleteembed", aliases=["embeddelete"], usage="<true_or_false>")
     async def deleteembed(self, ctx: commands.Context, state: bool):
@@ -195,7 +198,7 @@ class settings(commands.Cog):
 
         actual_delete_embed = config["delete_embed"]
         if actual_delete_embed is state:
-            await ctx.send(f"Delete Embed is already set on {state}.")
+            await ctx.send(_("Delete Embed is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).delete_embed.set(state)
@@ -211,11 +214,11 @@ class settings(commands.Cog):
 
         actual_delete_message= config["delete_message"]
         if actual_delete_message is state:
-            await ctx.send(f"Delete Message is already set on {state}.")
+            await ctx.send(_("Delete Message is already set on {state}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).delete_message.set(state)
-        await ctx.send(f"Delete Message state registered: {state}.")
+        await ctx.send(_("Delete Message state registered: {state}.").format(**locals()))
 
     @configuration.command(name="timeout", aliases=["time"], usage="<seconds_number_or_`none`>")
     async def timeout(self, ctx: commands.Context, timeout: typing.Optional[int]=None):
@@ -228,11 +231,11 @@ class settings(commands.Cog):
         actual_timeout = config["timeout"]
         if timeout is None:
             await self.config.guild(ctx.guild).timeout.clear()
-            await ctx.send("Timeout restored.")
+            await ctx.send(_("Timeout restored.").format(**locals()))
             return
         if actual_timeout is timeout:
-            await ctx.send(f"Timeout is already set on {timeout}.")
+            await ctx.send(_("Timeout is already set on {timeout}.").format(**locals()))
             return
 
         await self.config.guild(ctx.guild).reason_required.set(timeout)
-        await ctx.send(f"Timeout state registered: {timeout}.")
+        await ctx.send(_("Timeout state registered: {timeout}.").format(**locals()))

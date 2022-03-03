@@ -28,6 +28,9 @@ CONTROLS = {
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
+def _(untranslated: str):
+    return untranslated
+
 class AutoTraceback(commands.Cog):
     """A cog to display the error traceback of a command aomatically after the error!"""
 

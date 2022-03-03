@@ -4,6 +4,7 @@ from redbot.core import commands
 from redbot.core.utils.chat_formatting import pagify, box
 from redbot.core.utils.menus import menu, close_menu
 import traceback
+import os
 
 IGNORED_ERRORS = (
     commands.UserInputError,

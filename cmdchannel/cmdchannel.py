@@ -288,10 +288,10 @@ class CmdChannel(commands.Cog):
         embed.description = _("Variables:").format(**locals())
         embed.add_field(
             name=_("Author:").format(**locals()),
-            value=_("{ctx.author}").format(**locals())
+            value=f"{ctx.author}")
         embed.add_field(
             name=_("Channel:").format(**locals()),
-            value=_("{ctx.channel}").format(**locals()))
+            value=f"{ctx.channel}")
         await ctx.send(embed=embed)
 
     @commands.guild_only()

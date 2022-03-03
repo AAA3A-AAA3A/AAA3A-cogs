@@ -43,7 +43,7 @@ class AutoTraceback(commands.Cog):
             return
         if isinstance(error, IGNORED_ERRORS):
             return
-        traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__))
+        traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__)).replace(os.environ["USERPROFILE"], "{USERPROFILE}")
         pages = []
         for page in pagify(traceback_error, shorten_by=15, page_length=1985):
             pages.append(box(page, lang="py"))

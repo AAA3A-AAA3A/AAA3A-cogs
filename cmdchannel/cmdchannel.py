@@ -290,7 +290,7 @@ class CmdChannel(commands.Cog):
             name=_("Author:").format(**locals()),
             value=_("{ctx.author}").format(**locals())
         embed.add_field(
-            name="Channel:").format(**locals()),
+            name=_("Channel:").format(**locals()),
             value=_("{ctx.channel}").format(**locals()))
         await ctx.send(embed=embed)
 

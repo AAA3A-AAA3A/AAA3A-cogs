@@ -1,4 +1,3 @@
-from xml.dom.expatbuilder import parseFragmentString
 import discord
 import logging
 import typing
@@ -57,9 +56,13 @@ class CogsUtils():
             if hasattr(self.cog, '__authors__'):
                 if isinstance(self.cog.__authors__, typing.List):
                     self.__authors__ = self.cog.__authors__
+                else:
+                    self.__authors__ = [self.cog.__authors__]
             elif hasattr(self.cog, '__author__'):
                 if isinstance(self.cog.__author__, typing.List):
                     self.__authors__ = self.cog.__author__
+                else:
+                    self.__authors__ = [self.cog.__author__]
             if hasattr(self.cog, '__version__'):
                 if isinstance(self.cog.__version__, typing.List):
                     self.__version__ = self.cog.__version__
@@ -72,6 +75,7 @@ class CogsUtils():
         self.repo_name: str = "AAA3A-cogs"
         self.all_cogs: typing.List = [
                                         "AntiNuke",
+                                        "AutoTraceback",
                                         "Calculator",
                                         "ClearChannel",
                                         "CmdChannel",
@@ -91,7 +95,7 @@ class CogsUtils():
         """Thanks Simbad!"""
         context = super(type(self.cog), self.cog).format_help_for_context(ctx)
         s = "s" if len(self.__authors__) > 1 else ""
-        return f"{context}\n\n**Author{s}**: {', '.join(self.__authors__)}\n**Version**: {self.__version__}"
+        return f"{context}\n\n**Author{s}**: {humanize_list(self.__authors__)}\n**Version**: {self.__version__}"
 
     async def red_delete_data_for_user(self, **kwargs):
         """Nothing to delete"""

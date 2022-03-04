@@ -20,6 +20,9 @@ from random import choice
 from pathlib import Path
 from time import monotonic
 
+def _(untranslated: str):
+    return untranslated
+
 def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
     """
     Slimmed down version of rich_markup which ensure no colours (/ANSI) can exist
@@ -34,7 +37,7 @@ def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
     temp_console.print(*objects)
     return box(temp_console.file.getvalue(), lang=lang)  # type: ignore
 
-__all__ = ["CogsUtils", "Loop"]
+__all__ = ["CogsUtils", "Loop", "Captcha"]
 TimestampFormat = typing.Literal["f", "F", "d", "D", "t", "T", "R"]
 
 class CogsUtils():
@@ -110,7 +113,6 @@ class CogsUtils():
     def _setup(self):
         self.cog.cogsutils = self
         self.cog.log = logging.getLogger(f"red.{self.repo_name}.{self.cog.__class__.__name__}")
-        self.add_dev_env_value()
         if not "format_help_for_context" in self.cog.__func_red__:
             setattr(self.cog, 'format_help_for_context', self.format_help_for_context)
         if not "red_delete_data_for_user" in self.cog.__func_red__:
@@ -119,6 +121,11 @@ class CogsUtils():
             setattr(self.cog, 'red_get_data_for_user', self.red_get_data_for_user)
         if not "cog_unload" in self.cog.__func_red__:
             setattr(self.cog, 'cog_unload', self.cog_unload)
+        asyncio.create_task(self._await_setup())
+    
+    async def _await_setup(self):
+        await self.bot.wait_until_red_ready()
+        self.add_dev_env_value()
 
     def _end(self):
         self.remove_dev_env_value()
@@ -201,7 +208,7 @@ class CogsUtils():
             embed: typing.Optional[discord.Embed]=None,
             file: typing.Optional[discord.File]=None,
             timeout: typing.Optional[int]=60,
-            timeout_message: typing.Optional[str]="Timed out, please try again",
+            timeout_message: typing.Optional[str]=_("Timed out, please try again").format(**locals()),
             use_reactions: typing.Optional[bool]=True,
             message: typing.Optional[discord.Message]=None,
             put_reactions: typing.Optional[bool]=True,
@@ -212,9 +219,9 @@ class CogsUtils():
         if message is None:
             if not text and not embed and not file:
                 if use_reactions:
-                    text = "To confirm the current action, please use the feedback below this message."
+                    text = _("To confirm the current action, please use the feedback below this message.").format(**locals())
                 else:
-                    text = "To confirm the current action, please send yes/no in this channel."
+                    text = _("To confirm the current action, please send yes/no in this channel.").format(**locals())
             message = await ctx.send(content=text, embed=embed, file=file)
         if use_reactions:
             if put_reactions:
@@ -332,15 +339,21 @@ class CogsUtils():
             hook = await channel.create_webhook(name="red_bot_hook_" + str(channel.id))
         return hook
 
-    def check_permissions_for(self, channel: typing.Union[discord.TextChannel, discord.VoiceChannel], member: discord.Member, check: typing.Dict):
+    def check_permissions_for(self, channel: typing.Union[discord.TextChannel, discord.VoiceChannel], member: discord.Member, check: typing.Union[typing.List, typing.Dict]):
         permissions = channel.permissions_for(member)
+        if isinstance(check, typing.List):
+            new_check = {}
+            for p in check:
+                new_check[p] = True
+            check = new_check
+
         for p in check:
             if getattr(permissions, f'{p}'):
                 if check[p]:
-                    if not eval(f"permissions.{p}"):
+                    if not getattr(permissions, f"{p}"):
                         return False
                 else:
-                    if eval(f"permissions.{p}"):
+                    if getattr(permissions, f"{p}"):
                         return False
         return True
     
@@ -440,7 +453,10 @@ class CogsUtils():
                 await downloader._delete_cog(poss_installed_path)
             await downloader._remove_from_installed([self.cog.__class__.__name__.lower()])
         else:
-            raise "The cog downloader is not loaded."
+            raise self.DownloaderNotLoaded(_("The cog downloader is not loaded.").format(**locals()))
+
+    class DownloaderNotLoaded(Exception):
+        pass
 
 class Loop():
     """Thanks to Vexed01 on GitHub! (https://github.com/Vexed01/Vex-Cogs/blob/master/timechannel/loop.py)
@@ -473,16 +489,16 @@ class Loop():
         time = math.ceil(time / self.interval) * self.interval
         next_iter = datetime.datetime.fromtimestamp(time) - now
         seconds_to_sleep = (next_iter).total_seconds()
-        if hasattr(self.cogsutils.cog, 'log'):
-            self.cogsutils.cog.log.debug(f"Sleeping for {seconds_to_sleep} seconds until next iter...")
+        if not self.interval <= 60:
+            if hasattr(self.cogsutils.cog, 'log'):
+                self.cogsutils.cog.log.debug(f"Sleeping for {seconds_to_sleep} seconds until next iter...")
         await asyncio.sleep(seconds_to_sleep)
 
     async def loop(self) -> None:
         await self.cogsutils.bot.wait_until_red_ready()
         await asyncio.sleep(1)
-        if not self.interval <= 60:
-            if hasattr(self.cogsutils.cog, 'log'):
-                self.cogsutils.cog.log.debug(f"{self.name} loop has started.")
+        if hasattr(self.cogsutils.cog, 'log'):
+            self.cogsutils.cog.log.debug(f"{self.name} loop has started.")
         if float(self.interval)%float(3600) == 0:
             try:
                 start = monotonic()
@@ -491,8 +507,9 @@ class Loop():
                 self.iter_finish()
                 end = monotonic()
                 total = round(end - start, 1)
-                if hasattr(self.cogsutils.cog, 'log'):
-                    self.cogsutils.cog.log.debug(f"{self.name} initial loop finished in {total}s.")
+                if not self.interval <= 60:
+                    if hasattr(self.cogsutils.cog, 'log'):
+                        self.cogsutils.cog.log.debug(f"{self.name} initial loop finished in {total}s.")
             except Exception as e:
                 if hasattr(self.cogsutils.cog, 'log'):
                     self.cogsutils.cog.log.exception(f"Something went wrong in the {self.cog.name} loop.", exc_info=e)
@@ -734,7 +751,7 @@ class Captcha():
                 try:
                     state = await self.verify(received.content)
                 except self.SameCodeError:
-                    error_message += error(bold("Code invalid. Do not copy and paste."))
+                    error_message += error(bold(_("Code invalid. Do not copy and paste.").format(**locals())))
                     state = False
                 else:
                     if not state:
@@ -762,14 +779,14 @@ class Captcha():
         embed_dict = {
                         "embeds": [
                             {
-                                "title": "Captcha" +  f" for {self.why}" if not self.why == "" else "",
-                                "description": f"Please return me the following code:\n{box(str(self.code))}\nDo not copy and paste.",
+                                "title": _("Captcha").format(**locals()) +  _(" for {self.why}").format(**locals()) if not self.why == "" else "",
+                                "description": _("Please return me the following code:\n{box(str(self.code))}\nDo not copy and paste.").format(**locals()),
                                 "author": {
                                     "name": f"{self.member.display_name}",
                                     "icon_url": f"{self.member.avatar_url}"
                                 },
                                 "footer": {
-                                    "text": f"Tries: {self.trynum} / Limit: {self.limit}"
+                                    "text": _("Tries: {self.trynum} / Limit: {self.limit}").format(**locals())
                                 }
                             }
                         ]

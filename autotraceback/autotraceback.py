@@ -47,7 +47,11 @@ class AutoTraceback(commands.Cog):
             return
         if isinstance(error, IGNORED_ERRORS):
             return
-        traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__)).replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+        traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__))
+        if "USERPROFILE" in os.environ:
+            traceback_error = traceback_error.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+        if "HOME" in os.environ:
+            traceback_error = traceback_error.replace(os.environ["HOME"], "{HOME}")
         pages = []
         for page in pagify(traceback_error, shorten_by=15, page_length=1985):
             pages.append(box(page, lang="py"))

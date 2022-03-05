@@ -68,6 +68,7 @@ class CtxVar(commands.Cog):
         page = 0
         for embed in embeds:
             page += 1
-            embed.set_footer(text=_("Page {page}/{len(embeds)}").format(**locals()))
+            l = len(embeds)
+            embed.set_footer(text=_("Page {page}/{l}").format(**locals()))
 
         await menu(ctx, pages=embeds, controls=DEFAULT_CONTROLS)

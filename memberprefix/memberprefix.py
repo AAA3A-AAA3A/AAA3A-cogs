@@ -45,6 +45,8 @@ class MemberPrefix(commands.Cog):
     async def before_invoke(self, ctx: commands.Context) -> None:
         if ctx.guild is None:
             return
+        if not isinstance(ctx.author, discord.Member):
+            ctx.author = ctx.guild.get_member(ctx.author.id)
         config = await self.config.member(ctx.author).all()
         if config["custom_prefixes"] == []:
             return
@@ -60,6 +62,8 @@ class MemberPrefix(commands.Cog):
     async def on_message(self, message: discord.Message) -> None:
         if message.guild is None:
             return
+        if not isinstance(message.author, discord.Member):
+            message.author = message.guild.get_member(message.author.id)
         config = await self.config.member(message.author).all()
         if not config["custom_prefixes"] == []:
             prefixes = config["custom_prefixes"]
@@ -77,6 +81,7 @@ class MemberPrefix(commands.Cog):
             self.cache_messages.append(ctx.message.id)
             await self.bot.invoke(ctx)
 
+    @commands.guild_only()
     @commands.command(aliases=["memberprefixes"])
     async def memberprefix(self, ctx: commands.Context, *prefixes: str):
         """Sets [botname]'s prefix(es) for you only.

@@ -1,4 +1,5 @@
 import discord
+import redbot
 import logging
 import typing
 import datetime
@@ -19,6 +20,9 @@ import string
 from random import choice
 from pathlib import Path
 from time import monotonic
+import os
+import sys
+from redbot.cogs.downloader.repo_manager import Repo
 
 def _(untranslated: str):
     return untranslated
@@ -93,6 +97,18 @@ class CogsUtils():
                                         "TicketTool",
                                         "TransferChannel"
                                     ]
+        self.all_cogs_dpy2: typing.List = [
+                                    ]
+        if not self.cog.__class__.__name__ in self.all_cogs_dpy2:
+            if self.is_dpy2 or redbot.version_info >= redbot.VersionInfo.from_str("3.5.0"):
+                raise RuntimeError(f"{self.cog.__class__.__name__} needs to be updated to run on dpy2/Red 3.5.0. It's best to use `[p]cog update` with no arguments to update all your cogs, which may be using new dpy2-specific methods.")
+
+    @property
+    def is_dpy2(self) -> bool:
+        """
+        Returns True if the current redbot instance is running under dpy2.
+        """
+        return discord.version_info.major >= 2
 
     def format_help_for_context(self, ctx):
         """Thanks Simbad!"""
@@ -108,7 +124,7 @@ class CogsUtils():
         return {}
     
     def cog_unload(self):
-        self.cogsutils._end()
+        self._end()
 
     def _setup(self):
         self.cog.cogsutils = self
@@ -122,6 +138,7 @@ class CogsUtils():
         if not "cog_unload" in self.cog.__func_red__:
             setattr(self.cog, 'cog_unload', self.cog_unload)
         asyncio.create_task(self._await_setup())
+        # self.bot.add_command(self.getallerrorsfor)
     
     async def _await_setup(self):
         await self.bot.wait_until_red_ready()
@@ -129,8 +146,8 @@ class CogsUtils():
 
     def _end(self):
         self.remove_dev_env_value()
-        for loop in self.loops.values():
-            loop.end_all()
+        for loop in self.loops:
+            self.loops[loop].end_all()
 
     def add_dev_env_value(self):
         sudo_cog = self.bot.get_cog("Sudo")
@@ -149,6 +166,22 @@ class CogsUtils():
                 self.bot.add_dev_env_value(self.cog.__class__.__name__, lambda x: self.cog)
             except Exception:
                 pass
+            try:
+                self.bot.add_dev_env_value("CogsUtils", lambda x: CogsUtils)
+            except Exception:
+                pass
+            try:
+                self.bot.add_dev_env_value("cog", lambda ctx: ctx.bot.get_cog)
+            except Exception:
+                pass
+            try:
+                self.bot.add_dev_env_value("cog", lambda ctx: ctx.bot.get_cog)
+            except Exception:
+                pass
+            try:
+                self.bot.add_dev_env_value("redbot", lambda x: redbot.core)
+            except Exception:
+                pass
 
     def remove_dev_env_value(self):
         sudo_cog = self.bot.get_cog("Sudo")
@@ -164,6 +197,138 @@ class CogsUtils():
                 self.bot.remove_dev_env_value(self.cog.__class__.__name__)
             except Exception:
                 pass
+
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
+        IGNORED_ERRORS = (
+            commands.UserInputError,
+            commands.DisabledCommand,
+            commands.CommandNotFound,
+            commands.CheckFailure,
+            commands.NoPrivateMessage,
+            commands.CommandOnCooldown,
+            commands.MaxConcurrencyReached,
+            commands.BadArgument,
+            commands.BadBoolArgument,
+        )
+        if ctx.cog is None:
+            ctx.cog = "No cog."
+        if ctx.command is None:
+            return
+        if isinstance(error, IGNORED_ERRORS):
+            return
+        if not hasattr(self.bot, 'last_exceptions_cogs'):
+            self.bot.last_exceptions_cogs = {}
+        if not "global" in self.bot.last_exceptions_cogs:
+            self.bot.last_exceptions_cogs["global"] = []
+        if error in self.bot.last_exceptions_cogs["global"]:
+            return
+        self.bot.last_exceptions_cogs["global"].append(error)
+        if isinstance(error, commands.CommandError):
+            traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__)).replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+        else:
+            traceback_error = ("Traceback (most recent call last):"
+                              f"{error}")
+        if "USERPROFILE" in os.environ:
+            traceback_error = traceback_error.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+        if "HOME" in os.environ:
+            traceback_error = traceback_error.replace(os.environ["HOME"], "{HOME}")
+        if not ctx.cog in self.bot.last_exceptions_cogs:
+            self.bot.last_exceptions_cogs[ctx.cog] = {}
+        if not ctx.command in self.bot.last_exceptions_cogs[ctx.cog]:
+            self.bot.last_exceptions_cogs[ctx.cog][ctx.command] = []
+        self.bot.last_exceptions_cogs[ctx.cog][ctx.command].append(traceback_error)
+    
+    @commands.command()
+    async def getallerrorsfor(ctx: commands.Context, repo: typing.Optional[Repo]=None, string: typing.Optional[str]=None):
+        if repo is None and string is None:
+            await ctx.bot.send_help_for(ctx)
+            return
+        downloader = ctx.bot.get_cog("Downloader")
+        if downloader is None:
+            if CogsUtils(bot=ctx.bot).ConfirmationAsk(ctx, "The cog downloader is not loaded. I can't continue. Do you want me to do it?"):
+                await ctx.invoke(ctx.bot.get_command("load"), "downloader")
+            else:
+                return
+        if repo is None and string is not None:
+            if "AAA3A".lower() in string.lower():
+                found = False
+                for r in await downloader.config.installed_cogs():
+                    if "AAA3A".lower() in str(r).lower():
+                        repo = await Repo.convert(ctx, str(r))
+                        found = True
+                        break
+                if not found:
+                    raise commands.BadArgument(_("Repo by the name `{string}` does not exist.").format(**locals()))
+            else:
+                raise commands.BadArgument(_("Repo by the name `{string}` does not exist.").format(**locals()))
+        await ctx.send(repo.name)
+
+        IS_WINDOWS = os.name == "nt"
+        IS_MAC = sys.platform == "darwin"
+        IS_LINUX = sys.platform == "linux"
+        from redbot import version_info as red_version_info
+        from redbot.core.data_manager import storage_type
+        from redbot.core.data_manager import basic_config, config_file
+        from redbot.core.data_manager import instance_name
+        import pip
+        import platform
+        if IS_LINUX:
+            import distro  # pylint: disable=import-error
+        python_executable = sys.executable
+        python_version = ".".join(map(str, sys.version_info[:3]))
+        pyver = f"{python_version} ({platform.architecture()[0]})"
+        pipver = pip.__version__
+        redver = red_version_info
+        dpy_version = discord.__version__
+        if IS_WINDOWS:
+            os_info = platform.uname()
+            osver = f"{os_info.system} {os_info.release} (version {os_info.version})"
+        elif IS_MAC:
+            os_info = platform.mac_ver()
+            osver = f"Mac OSX {os_info[0]} {os_info[2]}"
+        elif IS_LINUX:
+            osver = f"{distro.name()} {distro.version()}".strip()
+        else:
+            osver = "Could not parse OS, report this on Github."
+        driver = storage_type()
+        data_path = Path(basic_config["DATA_PATH"])
+        if "USERPROFILE" in os.environ:
+            data_path = Path(str(data_path).replace(os.environ["USERPROFILE"], "{USERPROFILE}"))
+            config_file = Path(str(config_file).replace(os.environ["USERPROFILE"], "{USERPROFILE}"))
+            python_executable = Path(str(python_executable).replace(os.environ["USERPROFILE"], "{USERPROFILE}"))
+        if "HOME" in os.environ:
+            data_path = Path(str(data_path).replace(os.environ["HOME"], "{HOME}"))
+            config_file = Path(str(config_file).replace(os.environ["HOME"], "{HOME}"))
+            python_executable = Path(str(python_executable).replace(os.environ["HOME"], "{HOME}"))
+        disabled_intents = (
+            ", ".join(
+                intent_name.replace("_", " ").title()
+                for intent_name, enabled in ctx.bot.intents
+                if not enabled
+            )
+            or "None"
+        )
+        os_var = (
+            f"OS version: {osver}\n"
+            f"Python executable: {python_executable}\n"
+            f"Python version: {pyver}\n"
+            f"Pip version: {pipver}\n"
+        )
+        red_var = (
+            f"Red version: {redver}\nDiscord.py version: {dpy_version}\n"
+            f"Instance name: {instance_name}\n"
+            f"Storage type: {driver}\n"
+            f"Disabled intents: {disabled_intents}\n"
+            f"Data path: {data_path}\n"
+            f"Metadata file: {config_file}"
+        )
+        response = (
+            box(os_var),
+            "\n",
+            box(red_var),
+        )
+        await ctx.send("".join(response))
 
     def get_embed(self, embed_dict: typing.Dict) -> typing.Dict[discord.Embed, str]:
         data = embed_dict
@@ -203,7 +368,7 @@ class CogsUtils():
 
     async def ConfirmationAsk(
             self,
-            ctx,
+            ctx: commands.Context,
             text: typing.Optional[str]=None,
             embed: typing.Optional[discord.Embed]=None,
             file: typing.Optional[discord.File]=None,
@@ -357,12 +522,12 @@ class CogsUtils():
                         return False
         return True
     
-    def create_loop(self, function, name: typing.Optional[str]=None, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None):
+    def create_loop(self, function, name: typing.Optional[str]=None, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None, limit_exception: typing.Optional[int]=None):
         if name is None:
             name = f"{self.cog.__class__.__name__}"
         if datetime.timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds).total_seconds() == 0:
             seconds = 900 # 15 minutes
-        loop = Loop(cogsutils=self, name=name, function=function, days=days, hours=hours, minutes=minutes, seconds=seconds, function_args=function_args, limit_count=limit_count, limit_date=limit_date)
+        loop = Loop(cogsutils=self, name=name, function=function, days=days, hours=hours, minutes=minutes, seconds=seconds, function_args=function_args, limit_count=limit_count, limit_date=limit_date, limit_exception=limit_exception)
         if f"{loop.name}" in self.loops:
             self.loops[f"{loop.name}"].stop_all()
         self.loops[f"{loop.name}"] = loop
@@ -461,7 +626,7 @@ class CogsUtils():
 class Loop():
     """Thanks to Vexed01 on GitHub! (https://github.com/Vexed01/Vex-Cogs/blob/master/timechannel/loop.py)
     """
-    def __init__(self, cogsutils: CogsUtils, name: str, function, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None) -> None:
+    def __init__(self, cogsutils: CogsUtils, name: str, function, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None, limit_exception: typing.Optional[int]=None) -> None:
         self.cogsutils: CogsUtils = cogsutils
 
         self.name: str = name
@@ -470,12 +635,14 @@ class Loop():
         self.interval: float = datetime.timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds).total_seconds()
         self.limit_count: int = limit_count
         self.limit_date: datetime.datetime = limit_date
+        self.limit_exception: int = limit_exception
         self.loop = self.cogsutils.bot.loop.create_task(self.loop())
         self.stop_manually: bool = False
         self.stop: bool = False
 
         self.expected_interval = datetime.timedelta(seconds=self.interval)
         self.iter_count: int = 0
+        self.iter_exception: int = 0
         self.currently_running: bool = False  # whether the loop is running or sleeping
         self.last_result = None
         self.last_exc: str = "No exception has occurred yet."
@@ -512,8 +679,9 @@ class Loop():
                         self.cogsutils.cog.log.debug(f"{self.name} initial loop finished in {total}s.")
             except Exception as e:
                 if hasattr(self.cogsutils.cog, 'log'):
-                    self.cogsutils.cog.log.exception(f"Something went wrong in the {self.cog.name} loop.", exc_info=e)
+                    self.cogsutils.cog.log.exception(f"Something went wrong in the {self.name} loop.", exc_info=e)
                 self.iter_error(e)
+                self.iter_exception += 1
             # both iter_finish and iter_error set next_iter as not None
             assert self.next_iter is not None
             self.next_iter = self.next_iter.replace(
@@ -535,7 +703,7 @@ class Loop():
                         self.cogsutils.cog.log.debug(f"{self.name} iteration finished in {total}s.")
             except Exception as e:
                 if hasattr(self.cogsutils.cog, 'log'):
-                    self.cogsutils.cog.log.exception(f"Something went wrong in the {self.cog.name} loop.", exc_info=e)
+                    self.cogsutils.cog.log.exception(f"Something went wrong in the {self.name} loop.", exc_info=e)
                 self.iter_error(e)
             if await self.maybe_stop():
                 return
@@ -554,12 +722,16 @@ class Loop():
         if self.limit_date is not None:
             if datetime.datetime.timestamp(datetime.datetime.now()) >= datetime.datetime.timestamp(self.limit_date):
                 self.stop_all()
+        if self.limit_exception:
+            if self.iter_exception >= self.limit_exception:
+                self.stop_all()
         if self.stop:
             return True
         return False
     
     def stop_all(self):
         self.stop = True
+        self.next_iter = None
         self.loop.cancel()
         if f"{self.name}" in self.cogsutils.loops:
             if self.cogsutils.loops[f"{self.name}"] == self:

@@ -27,8 +27,11 @@ class CtxVar(commands.Cog):
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True, add_reactions=True)
     @commands.command()
-    async def ctxvar(self, ctx: commands.Context, args: typing.Optional[str]=""):
-        instance = ctx
+    async def ctxvar(self, ctx: commands.Context, message: typing.Optional[discord.Message]=None, args: typing.Optional[str]=""):
+        if message is not None:
+            instance = await ctx.bot.get_context(message)
+        else:
+            instance = ctx
         if not args == "":
             if not hasattr(instance, f"{args}"):
                 await ctx.send(_("The argument you specified is not a subclass of the instance.").format(**locals()))
@@ -45,8 +48,11 @@ class CtxVar(commands.Cog):
         embed.set_thumbnail(url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/2048px-Python-logo-notext.svg.png")
         one_l = []
         for x in eval(f"dir(instance{args})"):
-            if not eval(f"hasattr(instance{args}.{x}, '__call__')") and not "__" in x:
-                one_l.append(x)
+            try:
+                if not eval(f"hasattr(instance{args}.{x}, '__call__')") and not "__" in x:
+                    one_l.append(x)
+            except Exception:
+                pass
         lists = []
         while True:
             l = one_l[0:20]
@@ -59,10 +65,13 @@ class CtxVar(commands.Cog):
             e = copy(embed)
             for x in l:
                 if not len(f"{x}") > 256:
-                    e.add_field(
-                        inline=True,
-                        name=f"{x}",
-                        value=box(str(eval(f"instance{args}.{x}"))[:100]))
+                    try:
+                        e.add_field(
+                            inline=True,
+                            name=f"{x}",
+                            value=box(str(eval(f"instance{args}.{x}"))[:100]))
+                    except Exception:
+                        pass
             embeds.append(e)
 
         page = 0

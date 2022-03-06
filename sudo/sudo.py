@@ -33,12 +33,11 @@ class Sudo(commands.Cog):
     def decorator(all_owner_ids: typing.Optional[bool], bot_owner_ids: typing.Optional[bool]):
         async def pred(ctx):
             if all_owner_ids:
-                if ctx.author.id in ctx.bot.get_cog("Sudo").all_owner_ids:
+                if ctx.author.id in ctx.bot.get_cog("Sudo").all_owner_ids and not ctx.author.id in ctx.bot.owner_ids:
                     return True
-            if not all_owner_ids:
-                if bot_owner_ids:
-                    if ctx.author.id in ctx.bot.owner_ids:
-                        return True
+            if bot_owner_ids:
+                if ctx.author.id in ctx.bot.owner_ids:
+                    return True
             return False
         return commands.check(pred)
 
@@ -84,6 +83,7 @@ class Sudo(commands.Cog):
         ) = datetime.timedelta(minutes=5),
     ):
         """Sudo as the owner of the bot for the specified timeout.
+        The time should be between 10 seconds and 1 day.
         """
         sleep = interval.total_seconds()
         ctx.bot.owner_ids.add(ctx.author.id)

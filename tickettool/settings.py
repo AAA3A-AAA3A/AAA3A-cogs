@@ -355,7 +355,7 @@ class settings(commands.Cog):
         embed.description = str(config["embed_button"]["description"]).replace('{prefix}', f'{ctx.prefix}')
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
-        embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon_url)
+        embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon or "" if self.cogsutils.is_dpy2 else ctx.guild.icon_url or "")
         await channel.send(embed=embed, components=[button])
 
     async def check_permissions_in_channel(self, permissions: List[str], channel: discord.TextChannel):
@@ -379,7 +379,7 @@ class settings(commands.Cog):
             embed.title = _("Do you really want to purge all the tickets in the config?").format(**locals())
             embed.description = _("Does not delete any channels. All commands associated with the tickets will no longer work.").format(**locals())
             embed.color = config["color"]
-            embed.set_author(name=ctx.author.name, url=ctx.author.avatar_url, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.name, url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
             response = await utils(ctx.bot).ConfirmationAsk(ctx, embed=embed)
             if not response:
                 return

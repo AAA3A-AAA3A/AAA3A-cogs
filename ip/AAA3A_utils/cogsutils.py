@@ -239,10 +239,10 @@ class CogsUtils():
             self.bot.last_exceptions_cogs[ctx.cog][ctx.command] = []
         self.bot.last_exceptions_cogs[ctx.cog][ctx.command].append(traceback_error)
     
-    @commands.command()
+    @commands.command(hidden=True)
     async def getallerrorsfor(ctx: commands.Context, repo: typing.Optional[Repo]=None, string: typing.Optional[str]=None):
         if repo is None and string is None:
-            await ctx.bot.send_help_for(ctx)
+            await ctx.send_help()
             return
         downloader = ctx.bot.get_cog("Downloader")
         if downloader is None:
@@ -955,7 +955,7 @@ class Captcha():
                                 "description": _("Please return me the following code:\n{box(str(self.code))}\nDo not copy and paste.").format(**locals()),
                                 "author": {
                                     "name": f"{self.member.display_name}",
-                                    "icon_url": f"{self.member.avatar_url}"
+                                    "icon_url": self.member.display_avatar if self.is_dpy2 else self.member.avatar_url
                                 },
                                 "footer": {
                                     "text": _("Tries: {self.trynum} / Limit: {self.limit}").format(**locals())

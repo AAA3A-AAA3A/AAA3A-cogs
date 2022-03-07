@@ -355,9 +355,9 @@ class SimpleSanction(settings, commands.Cog):
             embed.description = _("This tool allows you to easily sanction a server member.\nUser mention: {user.mention} - User ID: {user.id}").format(**locals())
             embed.set_thumbnail(url=actual_thumbnail)
             embed.color = actual_color
-            embed.set_author(name=user, url=user.avatar_url, icon_url=user.avatar_url)
+            embed.set_author(name=user, url=user.display_avatar if self.cogsutils.is_dpy2 else user.avatar_url, icon_url=user.display_avatar if self.cogsutils.is_dpy2 else user.avatar_url)
             if show_author:
-                embed.set_footer(text=ctx.author, icon_url=ctx.author.avatar_url)
+                embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
             embed.add_field(
                 inline=False,
                 name="Possible actions:",

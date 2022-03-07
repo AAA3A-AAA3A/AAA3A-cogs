@@ -111,7 +111,7 @@ class ClearChannel(commands.Cog):
             embed.title = _("ClearChannel").format(**locals())
             embed.description = _("ALL the messages in this channel have been deleted...").format(**locals())
             embed.color = 0xf00020
-            embed.set_author(name=ctx.author, url=ctx.author.avatar_url, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author, url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
             message = await new_channel.send(embed=embed)
         if actual_author_dm:
             await ctx.author.send(_("All messages in channel #{old_channel.name} ({old_channel.id}) have been deleted! You can find the new channel, with the same permissions: #{new_channel.name} ({new_channel.id}).").format(**locals()))

@@ -106,7 +106,7 @@ class CmdChannel(commands.Cog):
                     embed.add_field(name=(_("Channel").format(**locals())), value=channel.mention)
                     embed.add_field(name=(_("Can Run").format(**locals())), value=str(can_run))
                     author_title = _("{ctx.author} ({ctx.author.id}) - Used a Command").format(**locals())
-                    embed.set_author(name=author_title, icon_url=ctx.author.avatar_url)
+                    embed.set_author(name=author_title, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
                 msg = ctx.message
@@ -175,7 +175,7 @@ class CmdChannel(commands.Cog):
                     embed.add_field(name=(_("Channel").format(**locals())), value=ctx.channel.mention)
                     embed.add_field(name=(_("Can Run").format(**locals())), value=str(can_run))
                     author_title = _("{ctx.author} ({ctx.author.id}) - Used a Command").format(**locals())
-                    embed.set_author(name=author_title, icon_url=ctx.author.avatar_url)
+                    embed.set_author(name=author_title, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
                 msg = ctx.message
@@ -247,7 +247,7 @@ class CmdChannel(commands.Cog):
                     embed.add_field(name=(_("Channel").format(**locals())), value=channel.mention)
                     embed.add_field(name=(_("Can Run").format(**locals())), value=str(can_run))
                     author_title = _("{ctx.author} ({ctx.author.id}) - Used a Command").format(**locals())
-                    embed.set_author(name=author_title, icon_url=ctx.author.avatar_url)
+                    embed.set_author(name=author_title, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
                 msg = ctx.message

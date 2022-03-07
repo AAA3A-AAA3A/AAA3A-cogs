@@ -141,8 +141,8 @@ class TicketTool(settings, commands.Cog):
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
         embed.timestamp = datetime.datetime.now()
-        embed.set_author(name=author, url=author.avatar_url, icon_url=author.avatar_url)
-        embed.set_footer(text=ticket.guild.name, icon_url=ticket.guild.icon_url)
+        embed.set_author(name=author, url=author.display_avatar if self.cogsutils.is_dpy2 else author.avatar_url, icon_url=author.display_avatar if self.cogsutils.is_dpy2 else author.avatar_url)
+        embed.set_footer(text=ticket.guild.name, icon_url=ticket.guild.icon or "" if self.cogsutils.is_dpy2 else ticket.guild.icon_url or "")
         embed.add_field(
             inline=True,
             name=_("Ticket ID:").format(**locals()),
@@ -185,8 +185,8 @@ class TicketTool(settings, commands.Cog):
         embed.description = f"{action}"
         embed.color = actual_color
         embed.timestamp = datetime.datetime.now()
-        embed.set_author(name=author, url=author.avatar_url, icon_url=author.avatar_url)
-        embed.set_footer(text=ticket.guild.name, icon_url=ticket.guild.icon_url)
+        embed.set_author(name=author, url=author.display_avatar if self.cogsutils.is_dpy2 else author.avatar_url, icon_url=author.display_avatar if self.cogsutils.is_dpy2 else author.avatar_url)
+        embed.set_footer(text=ticket.guild.name, icon_url=ticket.guild.icon or "" if self.cogsutils.is_dpy2 else ticket.guildicon_url or "")
         embed.add_field(
             inline=False,
             name=_("Reason:").format(**locals()),
@@ -345,7 +345,7 @@ class TicketTool(settings, commands.Cog):
             embed: discord.Embed = discord.Embed()
             embed.title = _("Do you really want to close the ticket {ticket.id}?").format(**locals())
             embed.color = config["color"]
-            embed.set_author(name=ctx.author.name, url=ctx.author.avatar_url, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.name, url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
             response = await utils(ticket.bot).ConfirmationAsk(ctx, embed=embed)
             if not response:
                 return
@@ -377,7 +377,7 @@ class TicketTool(settings, commands.Cog):
             embed.title = _("Do you really want to delete all the messages of the ticket {ticket.id}?").format(**locals())
             embed.description = _("If a log channel is defined, an html file containing all the messages of this ticket will be generated. (Attachments are not supported, as they are saved with their Discord link)").format(**locals())
             embed.color = config["color"]
-            embed.set_author(name=ctx.author.name, url=ctx.author.avatar_url, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.name, url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
             response = await utils(ticket.bot).ConfirmationAsk(ctx, embed=embed)
             if not response:
                 return

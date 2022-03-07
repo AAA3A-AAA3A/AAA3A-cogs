@@ -97,7 +97,7 @@ class AntiNuke(commands.Cog):
                     embed.title = _("The user {perp.name}#{perp.discriminator} has deleted the channel #{old_channel.name}!").format(**locals())
                     embed.description = _("To prevent him from doing anything else, I took away as many roles as my current permissions would allow.\nUser mention: {perp.mention} - User ID: {perp.id}").format(**locals())
                     embed.color = discord.Colour.dark_teal()
-                    embed.set_author(name=perp, url=perp.avatar_url, icon_url=perp.avatar_url)
+                    embed.set_author(name=perp, url=perp.display_avatar if self.cogsutils.is_dpy2 else perp.avatar_url, icon_url=perp.display_avatar if self.cogsutils.is_dpy2 else perp.avatar_url)
                     embed.add_field(
                         inline=False,
                         name=_("Before I intervened, the user had the following roles:").format(**locals()),

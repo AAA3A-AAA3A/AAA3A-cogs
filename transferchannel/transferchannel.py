@@ -47,13 +47,16 @@ class TransferChannel(commands.Cog):
         guild = ctx.guild
         today = datetime.date.today().strftime("%Y-%m-%d")
         total_msgs = 0
-        msgList = await source.history(limit=limit+1, oldest_first=False).flatten()
+        if self.cogsutils.is_dpy2:
+            msgList = [message async for message in source.history(limit=limit+1, oldest_first=False)]
+        else:
+            msgList = await source.history(limit=limit+1, oldest_first=False).flatten()
         msgList.reverse()
         for message in msgList:
             if not message.id == ctx.message.id:
                 total_msgs += 1
                 if embed:
-                    em = embed_from_msg(message)
+                    em = embed_from_msg(message, self.cogsutils)
                     await destination.send(embed=em)
                 else:
                     files = await Tunnel.files_from_attatch(message)
@@ -84,7 +87,7 @@ class TransferChannel(commands.Cog):
                         hook = await self.get_hook(destination)
                         await hook.send(
                             username=message.author.display_name,
-                            avatar_url=message.author.avatar_url,
+                            avatar_url=message.author.display_avatar if self.cogsutils.is_dpy2 else message.author.avatar_url,
                             content=message.content,
                             files=files,
                         )

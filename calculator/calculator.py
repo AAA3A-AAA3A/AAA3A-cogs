@@ -124,9 +124,9 @@ class Calculator(commands.Cog):
         embed.color = actual_color
         embed.timestamp = datetime.datetime.now()
         if ctx.guild:
-            embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon_url)
+            embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon or "" if self.cogsutils.is_dpy2 else ctx.guild.icon_url or "")
         else:
-            embed.set_footer(text=ctx.author.name, icon_url=ctx.author.icon_url)
+            embed.set_footer(text=ctx.author.name, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
         return embed
 
     async def input_formatter(self, expression: str, new: str):

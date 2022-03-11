@@ -48,17 +48,21 @@ class CogsUtils():
     """Tools for AAA3A-cogs!"""
 
     def __init__(self, cog: typing.Optional[commands.Cog]=None, bot: typing.Optional[Red]=None):
-        if cog is None and bot is not None:
-            self.cog: commands.Cog = None
-            self.bot: Red = bot
-        else:
+        if cog is not None:
             if isinstance(cog, str):
                 cog = bot.get_cog(cog)
             self.cog: commands.Cog = cog
             self.bot: Red = self.cog.bot
             self.DataPath: Path = cog_data_path(raw_name=self.cog.__class__.__name__.lower())
+        elif bot is not None:
+            self.cog: commands.Cog = None
+            self.bot: Red = bot
+        else:
+            self.cog: commands.Cog = None
+            self.bot: Red = None
         self.__authors__ = ["AAA3A"]
         self.__version__ = 1.0
+        self.interactions = {"slash": {}, "buttons": {}, "dropdowns": {}, "added": False, "removed": False}
         if self.cog is not None:
             if hasattr(self.cog, '__authors__'):
                 if isinstance(self.cog.__authors__, typing.List):
@@ -78,6 +82,9 @@ class CogsUtils():
                     self.cog.__func_red__ = []
             else:
                 self.cog.__func_red__ = []
+            if hasattr(self.cog, 'interactions'):
+                if isinstance(self.cog.interactions, typing.Dict):
+                    self.interactions = self.cog.interactions
         self.loops: typing.Dict = {}
         self.repo_name: str = "AAA3A-cogs"
         self.all_cogs: typing.List = [
@@ -98,10 +105,22 @@ class CogsUtils():
                                         "TransferChannel"
                                     ]
         self.all_cogs_dpy2: typing.List = [
+                                        "AntiNuke",
+                                        "AutoTraceback",
+                                        "ClearChannel",
+                                        "CmdChannel",
+                                        "CtxVar",
+                                        "EditFile",
+                                        "Ip",
+                                        "MemberPrefix",
+                                        "ReactToCommand",
+                                        "Sudo",
+                                        "TransferChannel"
                                     ]
-        if not self.cog.__class__.__name__ in self.all_cogs_dpy2:
-            if self.is_dpy2 or redbot.version_info >= redbot.VersionInfo.from_str("3.5.0"):
-                raise RuntimeError(f"{self.cog.__class__.__name__} needs to be updated to run on dpy2/Red 3.5.0. It's best to use `[p]cog update` with no arguments to update all your cogs, which may be using new dpy2-specific methods.")
+        if self.cog is not None:
+            if not self.cog.__class__.__name__ in self.all_cogs_dpy2:
+                if self.is_dpy2 or redbot.version_info >= redbot.VersionInfo.from_str("3.5.0"):
+                    raise RuntimeError(f"{self.cog.__class__.__name__} needs to be updated to run on dpy2/Red 3.5.0. It's best to use `[p]cog update` with no arguments to update all your cogs, which may be using new dpy2-specific methods.")
 
     @property
     def is_dpy2(self) -> bool:
@@ -143,11 +162,53 @@ class CogsUtils():
     async def _await_setup(self):
         await self.bot.wait_until_red_ready()
         self.add_dev_env_value()
+        if self.is_dpy2:
+            if not hasattr(self.bot, "tree"):
+                self.bot.tree = discord.app_commands.CommandTree(self.bot)
+            if not self.interactions == {}:
+                if "added" in self.interactions:
+                    if not self.interactions["added"]:
+                        if "slash" in self.interactions:
+                            for slash in self.interactions["slash"]:
+                                try:
+                                    self.bot.tree.add_command(slash, guild=None)
+                                except Exception as e:
+                                    if hasattr(self.cog, 'log'):
+                                        self.cog.log.error(f"The slash command `{slash.name}` could not be added correctly.", exc_info=e)
+                        if "button" in self.interactions:
+                            for button in self.interactions["button"]:
+                                try:
+                                    self.bot.add_view(button, guild=None)
+                                except Exception:
+                                    pass
+                        self.interactions["removed"] = False
+                        self.interactions["added"] = True
+            await self.bot.tree.sync(guild=None)
 
     def _end(self):
         self.remove_dev_env_value()
         for loop in self.loops:
             self.loops[loop].end_all()
+        if self.is_dpy2:
+            if not self.interactions == {}:
+                if "removed" in self.interactions:
+                    if not self.interactions["removed"]:
+                        if "slash" in self.interactions:
+                            for slash in self.interactions["slash"]:
+                                try:
+                                    self.bot.tree.remove_command(slash, guild=None)
+                                except Exception as e:
+                                    if hasattr(self.cog, 'log'):
+                                        self.cog.log.error(f"The slash command `{slash.name}` could not be removed correctly.", exc_info=e)
+                        if "button" in self.interactions:
+                            for button in self.interactions["button"]:
+                                try:
+                                    self.bot.remove_view(button, guild=None)
+                                except Exception:
+                                    pass
+                        self.interactions["added"] = False
+                        self.interactions["removed"] = True
+            asyncio.get_event_loop().call_later(2, asyncio.create_task, self.bot.tree.sync(guild=None))
 
     def add_dev_env_value(self):
         sudo_cog = self.bot.get_cog("Sudo")
@@ -1062,3 +1123,77 @@ class Captcha():
 
     class OtherException(Exception):
         pass
+
+if CogsUtils().is_dpy2:
+
+    class Buttons(discord.ui.View):
+        """Create buttons easily."""
+
+        def __init__(self, timeout: typing.Optional[float]=180, *, buttons: typing.Optional[typing.List]=[]):
+            super().__init__(timeout=timeout)
+            self.interaction_result = None
+            self.clear_items()
+            self.buttons = []
+            self.buttons_dict = []
+            for button_dict in buttons:
+                if not "style" in button_dict:
+                    button_dict["style"] = int(discord.ButtonStyle(2))
+                if not "label" in button_dict:
+                    button_dict["label"] = "Test"
+                button = discord.ui.Button(**button_dict)
+                self.add_item(button)
+                self.buttons.append(button)
+                self.buttons_dict.append(button_dict)
+
+        async def interaction_check(self, interaction: discord.Interaction):
+            self.interaction_result = interaction
+            self.stop()
+            return True
+        
+        async def wait_result(self):
+            await self.wait()
+            interaction = self.get_result()
+            if interaction is None:
+                raise TimeoutError
+            return interaction
+
+        def get_result(self):
+            return self.interaction_result
+
+    class Dropdown(discord.ui.View):
+        """Create dropdowns easily."""
+
+        def __init__(self, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, timeout: typing.Optional[float]=180, *, options: typing.Optional[typing.List]=[]):
+            super().__init__(timeout=timeout)
+            self.dropdown = self.Dropdown(placeholder=placeholder, min_values=min_values, max_values=max_values, options=options)
+            self.add_item(self.dropdown)
+        
+        async def wait_result(self):
+            await self.wait()
+            interaction, values = self.get_result()
+            if interaction is None:
+                raise TimeoutError
+            return interaction, values
+
+        def get_result(self):
+            return self.dropdown.interaction_result, self.dropdown.values_result
+
+        class Dropdown(discord.ui.Select):
+
+            def __init__(self, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[]):
+                self.interaction_result = None
+                self.values_result = None
+                self._options = []
+                self.options_dict = []
+                for option_dict in options:
+                    if not "label" in option_dict:
+                        option_dict["label"] = "Test"
+                    option = discord.SelectOption(**option_dict)
+                    self._options.append(option)
+                    self.options_dict.append(option_dict)
+                super().__init__(placeholder=placeholder, min_values=min_values, max_values=max_values, options=self._options)
+
+            async def callback(self, interaction: discord.Interaction):
+                self.interaction_result = interaction
+                self.values_result = self.values
+                self.view.stop()

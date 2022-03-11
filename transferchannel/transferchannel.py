@@ -5,6 +5,9 @@ from redbot.core import checks, commands
 from .helpers import embed_from_msg
 from redbot.core.utils.tunnel import Tunnel
 
+if CogsUtils().is_dpy2: # To remove
+    setattr(commands, 'Literal', typing.Literal)
+
 # Credits:
 # Thanks to TrustyJAID's Backup for starting the command to list the latest source channel messages! (https://github.com/TrustyJAID/Trusty-cogs/tree/master/backup)
 # Thanks to QuoteTools from SimBad for the embed!
@@ -67,7 +70,7 @@ class TransferChannel(commands.Cog):
     @commands.command(aliases=["channeltransfer"])
     @checks.admin_or_permissions(manage_guild=True)
     @commands.guild_only()
-    async def transferchannel(self, ctx: commands.Context, source: TextChannelGuildConverter, destination: TextChannelGuildConverter, limit: int, way: typing.Literal["embed", "webhook", "message"]):
+    async def transferchannel(self, ctx: commands.Context, source: TextChannelGuildConverter, destination: TextChannelGuildConverter, limit: int, way: commands.Literal["embed", "webhook", "message"]):
         """
         Transfer all messages channel in a other channel. This might take a long time.
         You can specify the id of a channel from another server.

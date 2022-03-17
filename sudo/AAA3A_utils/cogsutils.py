@@ -533,6 +533,8 @@ class CogsUtils(commands.Cog):
         """
         Check all permissions specified as an argument.
         """
+        if channel.guild is None:
+            return True
         permissions = channel.permissions_for(user)
         if isinstance(check, typing.List):
             new_check = {}
@@ -540,7 +542,7 @@ class CogsUtils(commands.Cog):
                 new_check[p] = True
             check = new_check
         for p in check:
-            if getattr(permissions, f'{p}'):
+            if getattr(permissions, f'{p}', None):
                 if check[p]:
                     if not getattr(permissions, f"{p}"):
                         return False
@@ -1500,24 +1502,25 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
             command_table.add_row("Qualified name", str(command.qualified_name))
             command_table.add_row("Cog name", str(command.cog_name))
             command_table.add_row("Short description", str(command.short_doc))
-            command_table.add_row("Syntax", str(f"{ctx.clean_prefix}{command.qualified_name} {command.signature}").replace("<", "&lt;"))
+            command_table.add_row("Syntax", str(f"{ctx.clean_prefix}{command.qualified_name} {command.signature}"))
             command_table.add_row("Hidden", str(command.hidden))
             command_table.add_row("Parents", str(command.full_parent_name if not command.full_parent_name == "" else None))
             command_table.add_row("Can see", str(await command.can_see(ctx)))
             command_table.add_row("Can run", str(await can_run(command)))
-            command_table.add_row("Params", str(command.clean_params).replace("<", "&lt;"))
+            command_table.add_row("Params", str(command.clean_params))
             command_table.add_row("Aliases", str(get_aliases(command, command.qualified_name)))
             command_table.add_row("Requires", str(get_perms(command)))
             command_table.add_row("Cooldowns", str(get_cooldowns(command)))
             command_table.add_row("Is on cooldown", str(command.is_on_cooldown(ctx)))
-            diagnose_result = await get_diagnose(ctx, command)
-            c = 0
-            for x in diagnose_result:
-                c += 1
-                if c == 1:
-                    command_table.add_row("Issue Diagnose", str(x))
-                else:
-                    command_table.add_row("", str(x).replace("✅", "").replace("❌", ""))
+            if ctx.guild is not None:
+                diagnose_result = await get_diagnose(ctx, command)
+                c = 0
+                for x in diagnose_result:
+                    c += 1
+                    if c == 1:
+                        command_table.add_row("Issue Diagnose", str(x))
+                    else:
+                        command_table.add_row("", str(x).replace("✅", "").replace("❌", ""))
             raw_command_table_str.append(no_colour_rich_markup(command_table))
             cog = command.cog.__class__.__name__ if command.cog is not None else "None"
             if hasattr(ctx.bot, 'last_exceptions_cogs') and cog in ctx.bot.last_exceptions_cogs and command.qualified_name in ctx.bot.last_exceptions_cogs[cog]:
@@ -1544,9 +1547,9 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
         if page is not None:
             count_page += 1
             if count_page == 1:
-                to_html += message_html.replace("{MESSAGE_CONTENT}", str(page).replace("```", "").replace("\n", "<br>")).replace("{TIMESTAMP}", str(ctx.message.created_at.strftime("%b %d, %Y %I:%M %p")))
+                to_html += message_html.replace("{MESSAGE_CONTENT}", str(page).replace("```", "").replace("\n", "<br>").replace("<", "&lt;")).replace("{TIMESTAMP}", str(ctx.message.created_at.strftime("%b %d, %Y %I:%M %p")))
             else:
-                to_html += message_html.replace('    <div class="chatlog__messages">', '            </div>            <div class="chatlog__message ">').replace("{MESSAGE_CONTENT}", str(page).replace("```", "").replace("\n", "<br>")).replace('<span class="chatlog__timestamp">{TIMESTAMP}</span>            ', "")
+                to_html += message_html.replace('    <div class="chatlog__messages">', '            </div>            <div class="chatlog__message ">').replace("{MESSAGE_CONTENT}", str(page).replace("```", "").replace("\n", "<br>").replace("<", "&lt;")).replace('<span class="chatlog__timestamp">{TIMESTAMP}</span>            ', "")
             if all is None:
                 for p in pagify(page):
                     p = p.replace("```", "")

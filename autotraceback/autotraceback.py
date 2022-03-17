@@ -2,7 +2,7 @@
 import discord
 from redbot.core import commands
 from redbot.core.utils.chat_formatting import pagify, box
-from redbot.core.utils.menus import menu, close_menu
+from redbot.core.utils.menus import menu, DEFAULT_CONTROLS, close_menu
 import traceback
 import os
 
@@ -17,10 +17,6 @@ IGNORED_ERRORS = (
     commands.BadArgument,
     commands.BadBoolArgument,
 )
-
-CONTROLS = {
-    "\N{CROSS MARK}": close_menu,
-}
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
@@ -56,6 +52,10 @@ class AutoTraceback(commands.Cog):
         for page in pagify(traceback_error, shorten_by=15, page_length=1985):
             pages.append(box(page, lang="py"))
         try:
+            if len(pages) == 1:
+                CONTROLS = {"\N{CROSS MARK}": close_menu}
+            else:
+                CONTROLS = DEFAULT_CONTROLS
             await menu(ctx, pages=pages, controls=CONTROLS, page=0, timeout=30)
         except discord.HTTPException:
             return

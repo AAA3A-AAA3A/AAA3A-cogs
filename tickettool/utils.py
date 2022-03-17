@@ -1,7 +1,6 @@
 import discord
 import asyncio
 from redbot.core import commands
-from dislash import ActionRow, Button, ButtonStyle
 import typing
 from redbot.core.utils.predicates import MessagePredicate
 from redbot.core.utils.menus import start_adding_reactions

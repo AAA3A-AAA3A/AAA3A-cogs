@@ -2,7 +2,10 @@
 import discord
 import typing
 from redbot.core import commands, Config
-from dislash import ActionRow
+if CogsUtils().is_dpy2:
+    from .AAA3A_utils.cogsutils import Buttons
+else:
+    from dislash import ActionRow
 from .converters import RoleEmojiConverter
 
 # Credits:
@@ -33,49 +36,93 @@ class RolesButtons(commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
-    @commands.Cog.listener()
-    async def on_button_click(self, inter):
-        guild = inter.guild
-        channel = inter.channel
-        if inter.author is None:
-            return
-        if inter.guild is None:
-            return
-        if inter.author.bot:
-            return
-        if await self.bot.cog_disabled_in_guild(self, guild):
-            return
-        if not inter.component.custom_id.startswith("roles_buttons"):
-            return
-        config = await self.config.guild(guild).roles_buttons.all()
-        if not f"{inter.channel.id}-{inter.message.id}" in config:
-            return
-        if getattr(inter.component.emoji, "id", None):
-            inter.component.emoji = str(inter.component.emoji.id)
-        else:
-            inter.component.emoji = str(inter.component.emoji).strip("\N{VARIATION SELECTOR-16}")
-        if not f"{inter.component.emoji}" in config[f"{inter.channel.id}-{inter.message.id}"]:
-            return
-        role = inter.guild.get_role(config[f"{inter.channel.id}-{inter.message.id}"][f"{inter.component.emoji}"]["role"])
-        if role is None:
-            inter.respond(_("The role I have to put you in no longer exists. Please notify an administrator of this server.").format(**locals()), ephemeral=True)
-            return
-        if not role in inter.author.roles:
-            try:
-                await inter.author.add_roles(role, reason=_("Role-button of {inter.message.id} in {channel.id}.").format(**locals()))
-            except discord.HTTPException:
-                await inter.respond(_("I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server.").format(**locals()), ephemeral=True)
+    if CogsUtils().is_dpy2:
+        @commands.Cog.listener()
+        async def on_interaction(self, interaction: discord.Interaction):
+            if not interaction.data["component_type"] == 2:
                 return
-            else:
-                await inter.respond(_("You now have the role {role.mention} ({role.id}).").format(**locals()), ephemeral=True)
-        else:
-            try:
-                await inter.author.remove_roles(role, reason=f"Role-button of {inter.message.id} in {channel.id}.")
-            except discord.HTTPException:
-                await inter.respond(_("I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server.").format(**locals()), ephemeral=True)
+            if interaction.user is None:
                 return
+            if interaction.guild is None:
+                return
+            if await self.bot.cog_disabled_in_guild(self, interaction.guild):
+                return
+            if not interaction.data["custom_id"].startswith("roles_buttons"):
+                return
+            config = await self.config.guild(interaction.guild).roles_buttons.all()
+            if not f"{interaction.channel.id}-{interaction.message.id}" in config:
+                return
+            for _component in interaction.message.components:
+                for component in _component.to_dict()["components"]:
+                    if component["custom_id"] == interaction.data["custom_id"]:
+                        emoji = str(component["emoji"]["name"]).strip("\N{VARIATION SELECTOR-16}") if "name" in component["emoji"] else str(component["emoji"]["id"])
+                        break
+            if not f"{emoji}" in config[f"{interaction.channel.id}-{interaction.message.id}"]:
+                return
+            role = interaction.guild.get_role(config[f"{interaction.channel.id}-{interaction.message.id}"][f"{emoji}"]["role"])
+            if role is None:
+                await interaction.response.send_message(_("The role I have to put you in no longer exists. Please notify an administrator of this server.").format(**locals()), ephemeral=True)
+                return
+            if not role in interaction.user.roles:
+                try:
+                    await interaction.user.add_roles(role, reason=_("Role-button of {interaction.message.id} in {interaction.channel.id}.").format(**locals()))
+                except discord.HTTPException:
+                    await interaction.response.send_message(_("I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server.").format(**locals()), ephemeral=True)
+                    return
+                else:
+                    await interaction.response.send_message(_("You now have the role {role.mention} ({role.id}).").format(**locals()), ephemeral=True)
             else:
-                await inter.respond(_("I did remove the role {role.mention} ({role.id}).").format(**locals()), ephemeral=True)
+                try:
+                    await interaction.user.remove_roles(role, reason=f"Role-button of {interaction.message.id} in {interaction.channel.id}.")
+                except discord.HTTPException:
+                    await interaction.response.send_message(_("I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server.").format(**locals()), ephemeral=True)
+                    return
+                else:
+                    await interaction.response.send_message(_("I did remove the role {role.mention} ({role.id}).").format(**locals()), ephemeral=True)
+    else:
+        @commands.Cog.listener()
+        async def on_button_click(self, inter):
+            guild = inter.guild
+            channel = inter.channel
+            if inter.author is None:
+                return
+            if inter.guild is None:
+                return
+            if inter.author.bot:
+                return
+            if await self.bot.cog_disabled_in_guild(self, guild):
+                return
+            if not inter.component.custom_id.startswith("roles_buttons"):
+                return
+            config = await self.config.guild(guild).roles_buttons.all()
+            if not f"{inter.channel.id}-{inter.message.id}" in config:
+                return
+            if getattr(inter.component.emoji, "id", None):
+                inter.component.emoji = str(inter.component.emoji.id)
+            else:
+                inter.component.emoji = str(inter.component.emoji).strip("\N{VARIATION SELECTOR-16}")
+            if not f"{inter.component.emoji}" in config[f"{inter.channel.id}-{inter.message.id}"]:
+                return
+            role = inter.guild.get_role(config[f"{inter.channel.id}-{inter.message.id}"][f"{inter.component.emoji}"]["role"])
+            if role is None:
+                await inter.respond(_("The role I have to put you in no longer exists. Please notify an administrator of this server.").format(**locals()), ephemeral=True)
+                return
+            if not role in inter.author.roles:
+                try:
+                    await inter.author.add_roles(role, reason=_("Role-button of {inter.message.id} in {channel.id}.").format(**locals()))
+                except discord.HTTPException:
+                    await inter.respond(_("I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server.").format(**locals()), ephemeral=True)
+                    return
+                else:
+                    await inter.respond(_("You now have the role {role.mention} ({role.id}).").format(**locals()), ephemeral=True)
+            else:
+                try:
+                    await inter.author.remove_roles(role, reason=f"Role-button of {inter.message.id} in {channel.id}.")
+                except discord.HTTPException:
+                    await inter.respond(_("I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server.").format(**locals()), ephemeral=True)
+                    return
+                else:
+                    await inter.respond(_("I did remove the role {role.mention} ({role.id}).").format(**locals()), ephemeral=True)
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
@@ -117,7 +164,10 @@ class RolesButtons(commands.Cog):
         else:
             config[f"{message.channel.id}-{message.id}"][f"{button}"] = {"role": role.id, "text_button": text_button}
         try:
-            await message.edit(components=self.get_buttons(config, message))
+            if self.cogsutils.is_dpy2:
+                await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message)))
+            else:
+                await message.edit(components=self.get_buttons(config, message))
         except discord.HTTPException:
             await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
             return
@@ -147,7 +197,10 @@ class RolesButtons(commands.Cog):
             else:
                 config[f"{message.channel.id}-{message.id}"][f"{button}"] = {"role": role.id, "text_button": None}
         try:
-            await message.edit(components=self.get_buttons(config, message))
+            if self.cogsutils.is_dpy2:
+                await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message)))
+            else:
+                await message.edit(components=self.get_buttons(config, message))
         except discord.HTTPException:
             await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
             return
@@ -169,7 +222,10 @@ class RolesButtons(commands.Cog):
             await ctx.send(_("I wasn't watching for this button on this message.").format(**locals()))
             return
         del config[f"{message.channel.id}-{message.id}"][f"{button}"]
-        await message.edit(components=self.get_buttons(config, message))
+        if self.cogsutils.is_dpy2:
+            await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message)))
+        else:
+            await message.edit(components=self.get_buttons(config, message))
         if config[f"{message.channel.id}-{message.id}"] == {}:
             del config[f"{message.channel.id}-{message.id}"]
         await self.config.guild(ctx.guild).roles_buttons.set(config)
@@ -187,7 +243,10 @@ class RolesButtons(commands.Cog):
             await ctx.send(_("No role-button is configured for this message.").format(**locals()))
             return
         try:
-            await message.edit(components=[])
+            if self.cogsutils.is_dpy2:
+                await message.edit(view=None)
+            else:
+                await message.edit(components=[])
         except discord.HTTPException:
             pass
         del config[f"{message.channel.id}-{message.id}"]
@@ -203,22 +262,26 @@ class RolesButtons(commands.Cog):
     
     def get_buttons(self, config: typing.Dict, message: discord.Message):
         all_buttons = []
-        lists = []
-        one_l = [button for button in config[f"{message.channel.id}-{message.id}"]]
-        while True:
-            l = one_l[0:4]
-            one_l = one_l[4:]
-            lists.append(l)
-            if one_l == []:
-                break
-        for l in lists:
-            buttons = {"type": 1, "components": []}
-            for button in l:
-                try:
-                    int(button)
-                except ValueError:
-                    buttons["components"].append({"type": 2, "style": 2, "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": {"name": f"{button}"}, "custom_id": f"roles_buttons {button}"})
-                else:
-                    buttons["components"].append({"type": 2, "style": 2, "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": {"name": f"{button}", "id": int(button)}, "custom_id": f"roles_buttons {button}"})
+        if self.cogsutils.is_dpy2:
+            for button in config[f"{message.channel.id}-{message.id}"]:
+                all_buttons.append({"style": 2, "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": f"{button}", "custom_id": f"roles_buttons {button}", "disabled": False})
+        else:
+            lists = []
+            one_l = [button for button in config[f"{message.channel.id}-{message.id}"]]
+            while True:
+                l = one_l[0:4]
+                one_l = one_l[4:]
+                lists.append(l)
+                if one_l == []:
+                    break
+            for l in lists:
+                buttons = {"type": 1, "components": []}
+                for button in l:
+                    try:
+                        int(button)
+                    except ValueError:
+                        buttons["components"].append({"type": 2, "style": 2, "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": {"name": f"{button}"}, "custom_id": f"roles_buttons {button}"})
+                    else:
+                        buttons["components"].append({"type": 2, "style": 2, "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": {"name": f"{button}", "id": int(button)}, "custom_id": f"roles_buttons {button}"})
             all_buttons.append(ActionRow.from_dict(buttons))
         return all_buttons

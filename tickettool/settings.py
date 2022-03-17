@@ -1,8 +1,12 @@
+from .AAA3A_utils.cogsutils import CogsUtils
 import discord
 import typing
 from redbot.core import commands
 from typing import List
-from dislash import ActionRow, Button, ButtonStyle
+if CogsUtils().is_dpy2:
+    from .AAA3A_utils.cogsutils import Buttons
+else:
+    from dislash import ActionRow, Button, ButtonStyle
 from .utils import utils
 
 def _(untranslated: str):
@@ -33,6 +37,7 @@ class settings(commands.Cog):
                             f"- The category of close tickets : `{ctx.prefix}setticket categoryclose <category>`"
                             f"- The admin role has full access to the tickets : `{ctx.prefix}setticket adminrole <role>`"
                             "All other parameters are optional or have default values that will be used.").format(**locals()))
+            return
 
         actual_enable = config["enable"]
         if actual_enable is state:
@@ -338,15 +343,6 @@ class settings(commands.Cog):
     async def message(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel]=None):
         if channel is None:
             channel = ctx.channel
-        button = ActionRow(
-            Button(
-                style=ButtonStyle.grey,
-                label=_("Create ticket").format(**locals()),
-                emoji="🎟️",
-                custom_id="create_ticket_button",
-                disabled=False
-            )
-        )
         config = await self.config.guild(ctx.guild).settings.all()
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
@@ -356,7 +352,20 @@ class settings(commands.Cog):
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
         embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon or "" if self.cogsutils.is_dpy2 else ctx.guild.icon_url or "")
-        await channel.send(embed=embed, components=[button])
+        if self.cogsutils.is_dpy2:
+            view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Create ticket").format(**locals()), "emoji": "🎟️", "custom_id": "create_ticket_button", "disabled": False}])
+            await channel.send(embed=embed, view=view)
+        else:
+            button = ActionRow(
+                Button(
+                    style=ButtonStyle.grey,
+                    label=_("Create ticket"),
+                    emoji="🎟️",
+                    custom_id="create_ticket_button",
+                    disabled=False
+                )
+            )
+            await channel.send(embed=embed, components=[button])
 
     async def check_permissions_in_channel(self, permissions: List[str], channel: discord.TextChannel):
         """Function to checks if the permissions are available in a guild.

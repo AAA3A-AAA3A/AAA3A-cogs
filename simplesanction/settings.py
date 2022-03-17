@@ -156,21 +156,21 @@ class settings(commands.Cog):
         await self.config.guild(ctx.guild).warn_system_use.set(state)
         await ctx.send(_("Warn System Use state registered: {state}.").format(**locals()))
 
-    @configuration.command(name="buttonsuse", aliases=["buttons"], usage="<true_or_false>")
-    async def buttonsuse(self, ctx: commands.Context, state: bool):
+    @configuration.command(name="way", aliases=["wayused"])
+    async def buttonsuse(self, ctx: commands.Context, way: typing.Literal["buttons", "dropdown", "reactions"]):
         """Enable or disable Buttons Use
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         config = await self.config.guild(ctx.guild).all()
 
-        actual_buttons_use = config["buttons_use"]
-        if actual_buttons_use is state:
-            await ctx.send(_("Buttons Use is already set on {state}.").format(**locals()))
+        actual_way = config["way"]
+        if actual_way is way:
+            await ctx.send(_("Way is already set on {way}.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).buttons_use.set(state)
-        await ctx.send(f"Buttons Use state registered: {state}.")
+        await self.config.guild(ctx.guild).way.set(way)
+        await ctx.send(f"Way registered: {way}.")
 
     @configuration.command(name="reasonrequired", aliases=["requiredreason"], usage="<true_or_false>")
     async def reasonrequired(self, ctx: commands.Context, state: bool):

@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
-from dislash import InteractionClient
+from .AAA3A_utils.cogsutils import CogsUtils
+if not CogsUtils().is_dpy2:
+    from dislash import InteractionClient
 
 from .simplesanction import SimpleSanction
 
@@ -9,5 +11,6 @@ with open(Path(__file__).parent / "info.json") as fp:
 
 def setup(bot):
     bot.add_cog(SimpleSanction(bot))
-    if not hasattr(bot, "slash"):
-        bot.slash = InteractionClient(bot)
+    if not CogsUtils().is_dpy2:
+        if not hasattr(bot, "slash"):
+            bot.slash = InteractionClient(bot)

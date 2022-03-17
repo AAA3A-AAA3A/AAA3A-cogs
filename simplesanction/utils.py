@@ -1,10 +1,12 @@
+from .AAA3A_utils.cogsutils import CogsUtils
 import asyncio
 import discord
 from redbot.core import commands
 from redbot.core.utils.predicates import MessagePredicate
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.commands.converter import parse_timedelta
-from dislash import ActionRow, Button, ButtonStyle
+if not CogsUtils().is_dpy2:
+    from dislash import ActionRow, Button, ButtonStyle
 
 def _(untranslated: str):
     return untranslated
@@ -14,7 +16,6 @@ class utils(commands.Cog):
         self.bot = bot
 
     async def emojis(disabled: bool):
-        reactions = ["ℹ️", "⚠️", "🔨", "🔂", "💨", "👢", "🔇", "👊", "⏳", "⌛", "❌"]
         buttons = ["userinfo_button", "warn_button", "ban_button", "softban_button", "tempban_button", "kick_button", "mute_button", "mutechannel_button", "tempmute_button", "tempmutechannel_button", "close_button"]
         buttons_one = ActionRow(
             Button(
@@ -108,7 +109,7 @@ class utils(commands.Cog):
                 embed.title = f"{title}"
                 embed.description = f"{description}"
                 embed.color = actual_color
-                embed.set_author(name=user.name, url=user.display_avatar if self.cogsutils.is_dpy2 else user.avatar_url, icon_url=user.display_avatar if self.cogsutils.is_dpy2 else user.avatar_url)
+                embed.set_author(name=user.name, url=user.display_avatar if CogsUtils.is_dpy2 else user.avatar_url, icon_url=user.display_avatar if CogsUtils.is_dpy2 else user.avatar_url)
                 message = await ctx.send(embed=embed)
                 try:
                     pred = MessagePredicate.same_context(ctx)
@@ -144,7 +145,7 @@ class utils(commands.Cog):
             embed.title = f"{title}"
             embed.description = f"{description}"
             embed.color = actual_color
-            embed.set_author(name=user, url=user.avatar_url, icon_url=user.display_avatar if self.cogsutils.is_dpy2 else user.avatar_url)
+            embed.set_author(name=user, url=user.avatar_url, icon_url=user.display_avatar if CogsUtils.is_dpy2 else user.avatar_url)
             message = await ctx.send(embed=embed)
             try:
                 pred = MessagePredicate.same_context(ctx)
@@ -173,7 +174,7 @@ class utils(commands.Cog):
             embed.title = f"{title}"
             embed.description = f"{description}"
             embed.color = actual_color
-            embed.set_author(name=user, url=user.avatar_url, icon_url=user.display_avatar if self.cogsutils.is_dpy2 else user.avatar_url)
+            embed.set_author(name=user, url=user.avatar_url, icon_url=user.display_avatar if CogsUtils.is_dpy2 else user.avatar_url)
             if reason == "not":
                 embed.add_field(
                     inline=False,
@@ -232,9 +233,9 @@ class utils(commands.Cog):
             embed.description = _("This tool allows you to easily sanction a server member.\nUser mention: {user.mention} - User ID: {user.id}").format(**locals())
             embed.set_thumbnail(url=actual_thumbnail)
             embed.color = actual_color
-            embed.set_author(name=user, url=user.display_avatar if self.cogsutils.is_dpy2 else user.avatar_url, icon_url=user.display_avatar if self.cogsutils.is_dpy2 else user.avatar_url)
+            embed.set_author(name=user, url=user.display_avatar if CogsUtils.is_dpy2 else user.avatar_url, icon_url=user.display_avatar if CogsUtils.is_dpy2 else user.avatar_url)
             if show_author:
-                embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
+                embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar if CogsUtils.is_dpy2 else ctx.author.avatar_url)
             embed.add_field(
                 inline=False,
                 name=f"{description}",

@@ -1,5 +1,5 @@
 ﻿from .AAA3A_utils.cogsutils import CogsUtils
-if CogsUtils.is_dpy2:
+if CogsUtils().is_dpy2:
     from .AAA3A_utils.cogsutils import Buttons, Dropdown
 else:
     from dislash import InteractionClient, Option, OptionType, message_command, slash_command, user_command

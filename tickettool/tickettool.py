@@ -7,7 +7,10 @@ from redbot.core.bot import Red
 from copy import copy
 import io
 import chat_exporter
-from dislash import ActionRow, Button, ButtonStyle
+if CogsUtils().is_dpy2:
+    from .AAA3A_utils.cogsutils import Buttons
+else:
+    from dislash import ActionRow, Button, ButtonStyle
 from .settings import settings
 from .utils import utils
 
@@ -140,7 +143,7 @@ class TicketTool(settings, commands.Cog):
         embed.description = f"{description}"
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
-        embed.timestamp = datetime.datetime.now()
+        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
         embed.set_author(name=author, url=author.display_avatar if self.cogsutils.is_dpy2 else author.avatar_url, icon_url=author.display_avatar if self.cogsutils.is_dpy2 else author.avatar_url)
         embed.set_footer(text=ticket.guild.name, icon_url=ticket.guild.icon or "" if self.cogsutils.is_dpy2 else ticket.guild.icon_url or "")
         embed.add_field(
@@ -184,7 +187,7 @@ class TicketTool(settings, commands.Cog):
         embed.title = _("Ticket {ticket.id} - Action taken").format(**locals())
         embed.description = f"{action}"
         embed.color = actual_color
-        embed.timestamp = datetime.datetime.now()
+        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
         embed.set_author(name=author, url=author.display_avatar if self.cogsutils.is_dpy2 else author.avatar_url, icon_url=author.display_avatar if self.cogsutils.is_dpy2 else author.avatar_url)
         embed.set_footer(text=ticket.guild.name, icon_url=ticket.guild.icon or "" if self.cogsutils.is_dpy2 else ticket.guildicon_url or "")
         embed.add_field(
@@ -438,60 +441,119 @@ class TicketTool(settings, commands.Cog):
         await ticket.remove_member(member, ctx.author)
         await ctx.tick()
 
-    @commands.Cog.listener()
-    async def on_button_click(self, inter):
-        if inter.clicked_button.custom_id == "close_ticket_button":
-            permissions = inter.channel.permissions_for(inter.author)
-            if not permissions.read_messages and not permissions.send_messages:
-                return
-            permissions = inter.channel.permissions_for(inter.guild.me)
-            if not permissions.read_messages and not permissions.read_message_history:
-                return
-            ticket = await self.bot.get_cog("TicketTool").get_ticket(inter.channel)
-            if ticket is not None:
-                if ticket.status == "open":
-                    async for message in inter.channel.history(limit=1):
-                        p = await self.bot.get_valid_prefixes()
-                        p = p[0]
-                        msg = copy(message)
-                        msg.author = inter.author
-                        msg.content = f"{p}ticket close"
-                        inter.bot.dispatch("message", msg)
-                    await inter.send(_("You have chosen to close this ticket. If this ticket is not closed, you do not have the necessary permissions.").format(**locals()), ephemeral=True)
-        if inter.clicked_button.custom_id == "claim_ticket_button":
-            permissions = inter.channel.permissions_for(inter.author)
-            if not permissions.read_messages and not permissions.send_messages:
-                return
-            permissions = inter.channel.permissions_for(inter.guild.me)
-            if not permissions.read_messages and not permissions.read_message_history:
-                return
-            ticket = await self.bot.get_cog("TicketTool").get_ticket(inter.channel)
-            if ticket is not None:
-                if ticket.claim is None:
-                    async for message in inter.channel.history(limit=1):
-                        p = await self.bot.get_valid_prefixes()
-                        p = p[0]
-                        msg = copy(message)
-                        msg.author = inter.author
-                        msg.content = f"{p}ticket claim"
-                        inter.bot.dispatch("message", msg)
-                    await inter.send(_("You have chosen to claim this ticket. If this ticket is not claimed, you do not have the necessary permissions.").format(**locals()), ephemeral=True)
-        if inter.clicked_button.custom_id == "create_ticket_button":
-            permissions = inter.channel.permissions_for(inter.author)
-            if not permissions.read_messages and not permissions.send_messages:
-                return
-            permissions = inter.channel.permissions_for(inter.guild.me)
-            if not permissions.read_messages and not permissions.read_message_history:
-                return
-            async for message in inter.channel.history(limit=1):
-                p = await self.bot.get_valid_prefixes()
-                p = p[0]
-                msg = copy(message)
-                msg.author = inter.author
-                msg.content = f"{p}ticket create"
-                inter.bot.dispatch("message", msg)
-            await inter.send(_("You have chosen to create a ticket.").format(**locals()), ephemeral=True)
-        return
+    if CogsUtils().is_dpy2:
+        @commands.Cog.listener()
+        async def on_interaction(self, interaction: discord.Interaction):
+            if interaction.data["custom_id"] == "close_ticket_button":
+                permissions = interaction.channel.permissions_for(interaction.user)
+                if not permissions.read_messages and not permissions.send_messages:
+                    return
+                permissions = interaction.channel.permissions_for(interaction.guild.me)
+                if not permissions.read_messages and not permissions.read_message_history:
+                    return
+                ticket = await self.bot.get_cog("TicketTool").get_ticket(interaction.channel)
+                if ticket is not None:
+                    if ticket.status == "open":
+                        async for message in interaction.channel.history(limit=1):
+                            p = await self.bot.get_valid_prefixes()
+                            p = p[0]
+                            msg = copy(message)
+                            msg.author = interaction.user
+                            msg.content = f"{p}ticket close"
+                            context = await interaction.client.get_context(msg)
+                            await interaction.client.invoke(context)
+                            await interaction.response.send_message(_("You have chosen to close this ticket. If this ticket is not closed, you do not have the necessary permissions.").format(**locals()), ephemeral=True)
+            if interaction.data["custom_id"] == "claim_ticket_button":
+                permissions = interaction.channel.permissions_for(interaction.user)
+                if not permissions.read_messages and not permissions.send_messages:
+                    return
+                permissions = interaction.channel.permissions_for(interaction.guild.me)
+                if not permissions.read_messages and not permissions.read_message_history:
+                    return
+                ticket = await self.bot.get_cog("TicketTool").get_ticket(interaction.channel)
+                if ticket is not None:
+                    if ticket.claim is None:
+                        async for message in interaction.channel.history(limit=1):
+                            p = await self.bot.get_valid_prefixes()
+                            p = p[0]
+                            msg = copy(message)
+                            msg.author = interaction.user
+                            msg.content = f"{p}ticket claim"
+                            context = await interaction.client.get_context(msg)
+                            await interaction.client.invoke(context)
+                            await interaction.response.send_message(_("You have chosen to claim this ticket. If this ticket is not claimed, you do not have the necessary permissions.").format(**locals()), ephemeral=True)
+            if interaction.data["custom_id"] == "create_ticket_button":
+                permissions = interaction.channel.permissions_for(interaction.user)
+                if not permissions.read_messages and not permissions.send_messages:
+                    return
+                permissions = interaction.channel.permissions_for(interaction.guild.me)
+                if not permissions.read_messages and not permissions.read_message_history:
+                    return
+                async for message in interaction.channel.history(limit=1):
+                    p = await self.bot.get_valid_prefixes()
+                    p = p[0]
+                    msg = copy(message)
+                    msg.author = interaction.user
+                    msg.content = f"{p}ticket create"
+                    context = await interaction.client.get_context(msg)
+                    await interaction.client.invoke(context)
+                    await interaction.response.send_message(_("You have chosen to create a ticket.").format(**locals()), ephemeral=True)
+            return
+    else:
+        @commands.Cog.listener()
+        async def on_button_click(self, inter):
+            if inter.clicked_button.custom_id == "close_ticket_button":
+                permissions = inter.channel.permissions_for(inter.author)
+                if not permissions.read_messages and not permissions.send_messages:
+                    return
+                permissions = inter.channel.permissions_for(inter.guild.me)
+                if not permissions.read_messages and not permissions.read_message_history:
+                    return
+                ticket = await self.bot.get_cog("TicketTool").get_ticket(inter.channel)
+                if ticket is not None:
+                    if ticket.status == "open":
+                        async for message in inter.channel.history(limit=1):
+                            p = await self.bot.get_valid_prefixes()
+                            p = p[0]
+                            msg = copy(message)
+                            msg.author = inter.author
+                            msg.content = f"{p}ticket close"
+                            inter.bot.dispatch("message", msg)
+                        await inter.send(_("You have chosen to close this ticket. If this ticket is not closed, you do not have the necessary permissions.").format(**locals()), ephemeral=True)
+            if inter.clicked_button.custom_id == "claim_ticket_button":
+                permissions = inter.channel.permissions_for(inter.author)
+                if not permissions.read_messages and not permissions.send_messages:
+                    return
+                permissions = inter.channel.permissions_for(inter.guild.me)
+                if not permissions.read_messages and not permissions.read_message_history:
+                    return
+                ticket = await self.bot.get_cog("TicketTool").get_ticket(inter.channel)
+                if ticket is not None:
+                    if ticket.claim is None:
+                        async for message in inter.channel.history(limit=1):
+                            p = await self.bot.get_valid_prefixes()
+                            p = p[0]
+                            msg = copy(message)
+                            msg.author = inter.author
+                            msg.content = f"{p}ticket claim"
+                            inter.bot.dispatch("message", msg)
+                        await inter.send(_("You have chosen to claim this ticket. If this ticket is not claimed, you do not have the necessary permissions.").format(**locals()), ephemeral=True)
+            if inter.clicked_button.custom_id == "create_ticket_button":
+                permissions = inter.channel.permissions_for(inter.author)
+                if not permissions.read_messages and not permissions.send_messages:
+                    return
+                permissions = inter.channel.permissions_for(inter.guild.me)
+                if not permissions.read_messages and not permissions.read_message_history:
+                    return
+                async for message in inter.channel.history(limit=1):
+                    p = await self.bot.get_valid_prefixes()
+                    p = p[0]
+                    msg = copy(message)
+                    msg.author = inter.author
+                    msg.content = f"{p}ticket create"
+                    inter.bot.dispatch("message", msg)
+                await inter.send(_("You have chosen to create a ticket.").format(**locals()), ephemeral=True)
+            return
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, old_channel: discord.abc.GuildChannel):
@@ -713,28 +775,34 @@ class Ticket:
         if config["create_modlog"]:
             await ticket.bot.get_cog("TicketTool").create_modlog(ticket, "ticket_created", reason)
         if ticket.logs_messages:
-            buttons = ActionRow(
-                Button(
-                    style=ButtonStyle.grey,
-                    label=_("Close").format(**locals()),
-                    emoji="🔒",
-                    custom_id="close_ticket_button",
-                    disabled=False
-                ),
-                Button(
-                    style=ButtonStyle.grey,
-                    label=_("Claim").format(**locals()),
-                    emoji="🙋‍♂️",
-                    custom_id="claim_ticket_button",
-                    disabled=False
+            if CogsUtils().is_dpy2:
+                view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Close").format(**locals()), "emoji": "🔒", "custom_id": "close_ticket_button", "disabled": False}, {"style": 2, "label": _("Claim").format(**locals()), "emoji": "🙋‍♂️", "custom_id": "claim_ticket_button", "disabled": False}])
+            else:
+                buttons = ActionRow(
+                    Button(
+                        style=ButtonStyle.grey,
+                        label=_("Close").format(**locals()),
+                        emoji="🔒",
+                        custom_id="close_ticket_button",
+                        disabled=False
+                    ),
+                    Button(
+                        style=ButtonStyle.grey,
+                        label=_("Claim").format(**locals()),
+                        emoji="🙋‍♂️",
+                        custom_id="claim_ticket_button",
+                        disabled=False
+                    )
                 )
-            )
             if ping_role is not None:
                 optionnal_ping = f" ||{ping_role.mention}||"
             else:
                 optionnal_ping = ""
             embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, False, author=ticket.created_by, title=_("Ticket Created").format(**locals()), description=_("Thank you for creating a ticket on this server!").format(**locals()))
-            ticket.first_message = await ticket.channel.send(f"{ticket.created_by.mention}{optionnal_ping}", embed=embed, components=[buttons])
+            if CogsUtils().is_dpy2:
+                ticket.first_message = await ticket.channel.send(f"{ticket.created_by.mention}{optionnal_ping}", embed=embed, view=view)
+            else:
+                ticket.first_message = await ticket.channel.send(f"{ticket.created_by.mention}{optionnal_ping}", embed=embed, components=[buttons])
             if logschannel is not None:
                 embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, True, author=ticket.created_by, title=_("Ticket Created").format(**locals()), description=_("The ticket was created by {ticket.created_by}.").format(**locals()))
                 await logschannel.send(_("Report on the creation of the ticket {ticket.id}.").format(**locals()), embed=embed)
@@ -780,24 +848,29 @@ class Ticket:
                 await logschannel.send(_("Report on the close of the ticket {ticket.id}.").format(**locals()), embed=embed)
         if ticket.first_message is not None:
             try:
-                buttons = ActionRow(
-                    Button(
-                        style=ButtonStyle.grey,
-                        label=_("Close").format(**locals()),
-                        emoji="🔒",
-                        custom_id="close_ticket_button",
-                        disabled=False
-                    ),
-                    Button(
-                        style=ButtonStyle.grey,
-                        label=_("Claim").format(**locals()),
-                        emoji="🙋‍♂️",
-                        custom_id="claim_ticket_button",
-                        disabled=False
+                if CogsUtils().is_dpy2:
+                    view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Close").format(**locals()), "emoji": "🔒", "custom_id": "close_ticket_button", "disabled": False}, {"style": 2, "label": _("Claim").format(**locals()), "emoji": "🙋‍♂️", "custom_id": "claim_ticket_button", "disabled": False}])
+                    ticket.first_message = await ticket.channel.fetch_message(int(ticket.first_message.id))
+                    await ticket.first_message.edit(view=view)
+                else:
+                    buttons = ActionRow(
+                        Button(
+                            style=ButtonStyle.grey,
+                            label=_("Close").format(**locals()),
+                            emoji="🔒",
+                            custom_id="close_ticket_button",
+                            disabled=False
+                        ),
+                        Button(
+                            style=ButtonStyle.grey,
+                            label=_("Claim").format(**locals()),
+                            emoji="🙋‍♂️",
+                            custom_id="claim_ticket_button",
+                            disabled=False
+                        )
                     )
-                )
-                ticket.first_message = await ticket.channel.fetch_message(int(ticket.first_message.id))
-                await ticket.first_message.edit(components=[buttons])
+                    ticket.first_message = await ticket.channel.fetch_message(int(ticket.first_message.id))
+                    await ticket.first_message.edit(components=[buttons])
             except discord.HTTPException:
                 pass
         await ticket.save()
@@ -824,24 +897,29 @@ class Ticket:
                 await logschannel.send(_("Report on the close of the ticket {ticket.id}.").format(**locals()), embed=embed)
         if ticket.first_message is not None:
             try:
-                buttons = ActionRow(
-                    Button(
-                        style=ButtonStyle.grey,
-                        label=_("Close").format(**locals()),
-                        emoji="🔒",
-                        custom_id="close_ticket_button",
-                        disabled=True
-                    ),
-                    Button(
-                        style=ButtonStyle.grey,
-                        label=_("Claim").format(**locals()),
-                        emoji="🙋‍♂️",
-                        custom_id="claim_ticket_button",
-                        disabled=True
+                if CogsUtils().is_dpy2:
+                    view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Close").format(**locals()), "emoji": "🔒", "custom_id": "close_ticket_button", "disabled": True}, {"style": 2, "label": _("Claim").format(**locals()), "emoji": "🙋‍♂️", "custom_id": "claim_ticket_button", "disabled": True}])
+                    ticket.first_message = await ticket.channel.fetch_message(int(ticket.first_message.id))
+                    await ticket.first_message.edit(view=view)
+                else:
+                    buttons = ActionRow(
+                        Button(
+                            style=ButtonStyle.grey,
+                            label=_("Close").format(**locals()),
+                            emoji="🔒",
+                            custom_id="close_ticket_button",
+                            disabled=True
+                        ),
+                        Button(
+                            style=ButtonStyle.grey,
+                            label=_("Claim").format(**locals()),
+                            emoji="🙋‍♂️",
+                            custom_id="claim_ticket_button",
+                            disabled=True
+                        )
                     )
-                )
-                ticket.first_message = await ticket.channel.fetch_message(int(ticket.first_message.id))
-                await ticket.first_message.edit(components=[buttons])
+                    ticket.first_message = await ticket.channel.fetch_message(int(ticket.first_message.id))
+                    await ticket.first_message.edit(components=[buttons])
             except discord.HTTPException:
                 pass
         await ticket.save()
@@ -916,24 +994,29 @@ class Ticket:
         await ticket.channel.edit(overwrites=overwrites, reason=reason)
         if ticket.first_message is not None:
             try:
-                buttons = ActionRow(
-                    Button(
-                        style=ButtonStyle.grey,
-                        label="Close",
-                        emoji="🔒",
-                        custom_id="close_ticket_button",
-                        disabled=False
-                    ),
-                    Button(
-                        style=ButtonStyle.grey,
-                        label="Claim",
-                        emoji="🙋‍♂️",
-                        custom_id="claim_ticket_button",
-                        disabled=True
+                if CogsUtils().is_dpy2:
+                    view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Close").format(**locals()), "emoji": "🔒", "custom_id": "close_ticket_button", "disabled": False if ticket.status == "open" else True}, {"style": 2, "label": _("Claim").format(**locals()), "emoji": "🙋‍♂️", "custom_id": "claim_ticket_button", "disabled": True}])
+                    ticket.first_message = await ticket.channel.fetch_message(int(ticket.first_message.id))
+                    await ticket.first_message.edit(view=view)
+                else:
+                    buttons = ActionRow(
+                        Button(
+                            style=ButtonStyle.grey,
+                            label=_("Close").format(**locals()),
+                            emoji="🔒",
+                            custom_id="close_ticket_button",
+                            disabled=False if ticket.status == "open" else True
+                        ),
+                        Button(
+                            style=ButtonStyle.grey,
+                            label=_("Claim").format(**locals()),
+                            emoji="🙋‍♂️",
+                            custom_id="claim_ticket_button",
+                            disabled=True
+                        )
                     )
-                )
-                ticket.first_message = await ticket.channel.fetch_message(int(ticket.first_message.id))
-                await ticket.first_message.edit(components=[buttons])
+                    ticket.first_message = await ticket.channel.fetch_message(int(ticket.first_message.id))
+                    await ticket.first_message.edit(components=[buttons])
             except discord.HTTPException:
                 pass
         await ticket.save()
@@ -958,24 +1041,29 @@ class Ticket:
         await ticket.channel.set_permissions(member, overwrite=None, reason=reason)
         if ticket.first_message is not None:
             try:
-                buttons = ActionRow(
-                    Button(
-                        style=ButtonStyle.grey,
-                        label=_("Close").format(**locals()),
-                        emoji="🔒",
-                        custom_id="close_ticket_button",
-                        disabled=False if ticket.status == "open" else True
-                    ),
-                    Button(
-                        style=ButtonStyle.grey,
-                        label=_("Claim").format(**locals()),
-                        emoji="🙋‍♂️",
-                        custom_id="claim_ticket_button",
-                        disabled=False
+                if CogsUtils().is_dpy2:
+                    view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Close").format(**locals()), "emoji": "🔒", "custom_id": "close_ticket_button", "disabled": False if ticket.status == "open" else True}, {"style": 2, "label": _("Claim").format(**locals()), "emoji": "🙋‍♂️", "custom_id": "claim_ticket_button", "disabled": True}])
+                    ticket.first_message = await ticket.channel.fetch_message(int(ticket.first_message.id))
+                    await ticket.first_message.edit(view=view)
+                else:
+                    buttons = ActionRow(
+                        Button(
+                            style=ButtonStyle.grey,
+                            label=_("Close").format(**locals()),
+                            emoji="🔒",
+                            custom_id="close_ticket_button",
+                            disabled=False if ticket.status == "open" else True
+                        ),
+                        Button(
+                            style=ButtonStyle.grey,
+                            label=_("Claim").format(**locals()),
+                            emoji="🙋‍♂️",
+                            custom_id="claim_ticket_button",
+                            disabled=False
+                        )
                     )
-                )
-                ticket.first_message = await ticket.channel.fetch_message(int(ticket.first_message.id))
-                await ticket.first_message.edit(components=[buttons])
+                    ticket.first_message = await ticket.channel.fetch_message(int(ticket.first_message.id))
+                    await ticket.first_message.edit(components=[buttons])
             except discord.HTTPException:
                 pass
         await ticket.save()

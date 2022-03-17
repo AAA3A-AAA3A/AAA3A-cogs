@@ -1,10 +1,13 @@
 from .AAA3A_utils.cogsutils import CogsUtils
+if CogsUtils().is_dpy2:
+    from AAA3A_utils.cogsutils import Buttons
+else:
+    from dislash import ActionRow, Button, ButtonStyle
 import asyncio
 import discord
 import datetime
 import typing
 from redbot.core import Config, commands
-from dislash import ActionRow, Button, ButtonStyle
 from math import *
 from TagScriptEngine import Interpreter, block
 
@@ -55,6 +58,61 @@ class Calculator(commands.Cog):
             "8":"⁸",
             "9":"⁹"
         }
+
+        self.buttons_dict = [
+                                {"style": 2, "label": "1", "emoji": None, "custom_id": "1", "disabled": False},
+                                {"style": 2, "label": "2", "emoji": None, "custom_id": "2", "disabled": False},
+                                {"style": 2, "label": "3", "emoji": None, "custom_id": "3", "disabled": False},
+                                {"style": 1, "label": "x", "emoji": None, "custom_id": "x", "disabled": False},
+                                {"style": 4, "label": _("Exit").format(**locals()), "emoji": None, "custom_id": "exit_button", "disabled": False},
+                                {"style": 2, "label": "4", "emoji": None, "custom_id": "4", "disabled": False},
+                                {"style": 2, "label": "5", "emoji": None, "custom_id": "5", "disabled": False},
+                                {"style": 2, "label": "6", "emoji": None, "custom_id": "6", "disabled": False},
+                                {"style": 1, "label": "÷", "emoji": None, "custom_id": "÷", "disabled": False},
+                                {"style": 4, "label": "⌫", "emoji": None, "custom_id": "back_button", "disabled": False},
+                                {"style": 2, "label": "7", "emoji": None, "custom_id": "7", "disabled": False},
+                                {"style": 2, "label": "8", "emoji": None, "custom_id": "8", "disabled": False},
+                                {"style": 2, "label": "9", "emoji": None, "custom_id": "9", "disabled": False},
+                                {"style": 1, "label": "+", "emoji": None, "custom_id": "+", "disabled": False},
+                                {"style": 4, "label": _("Clear").format(**locals()), "emoji": None, "custom_id": "clear_button", "disabled": False},
+                                {"style": 2, "label": "00", "emoji": None, "custom_id": "00", "disabled": False},
+                                {"style": 2, "label": "0", "emoji": None, "custom_id": "0", "disabled": False},
+                                {"style": 2, "label": ".", "emoji": None, "custom_id": ".", "disabled": False},
+                                {"style": 1, "label": "-", "emoji": None, "custom_id": "-", "disabled": False},
+                                {"style": 3, "label": "=", "emoji": None, "custom_id": "result_button", "disabled": False},
+                                {"style": 2, "label": "(", "emoji": None, "custom_id": "(", "disabled": False},
+                                {"style": 2, "label": ")", "emoji": None, "custom_id": ")", "disabled": False},
+                                {"style": 2, "label": "√", "emoji": None, "custom_id": "√", "disabled": False},
+                                {"style": 3, "label": "<", "emoji": None, "custom_id": "left_button", "disabled": False},
+                                {"style": 3, "label": ">", "emoji": None, "custom_id": "right_button", "disabled": False}
+                            ]
+        self.disabled_buttons_dict = [
+                                {"style": 2, "label": "1", "emoji": None, "custom_id": "1", "disabled": True},
+                                {"style": 2, "label": "2", "emoji": None, "custom_id": "2", "disabled": True},
+                                {"style": 2, "label": "3", "emoji": None, "custom_id": "3", "disabled": True},
+                                {"style": 1, "label": "x", "emoji": None, "custom_id": "x", "disabled": True},
+                                {"style": 4, "label": _("Exit").format(**locals()), "emoji": None, "custom_id": "exit_button", "disabled": True},
+                                {"style": 2, "label": "4", "emoji": None, "custom_id": "4", "disabled": True},
+                                {"style": 2, "label": "5", "emoji": None, "custom_id": "5", "disabled": True},
+                                {"style": 2, "label": "6", "emoji": None, "custom_id": "6", "disabled": True},
+                                {"style": 1, "label": "÷", "emoji": None, "custom_id": "÷", "disabled": True},
+                                {"style": 4, "label": "⌫", "emoji": None, "custom_id": "back_button", "disabled": True},
+                                {"style": 2, "label": "7", "emoji": None, "custom_id": "7", "disabled": True},
+                                {"style": 2, "label": "8", "emoji": None, "custom_id": "8", "disabled": True},
+                                {"style": 2, "label": "9", "emoji": None, "custom_id": "9", "disabled": True},
+                                {"style": 1, "label": "+", "emoji": None, "custom_id": "+", "disabled": True},
+                                {"style": 4, "label": _("Clear").format(**locals()), "emoji": None, "custom_id": "clear_button", "disabled": True},
+                                {"style": 2, "label": "00", "emoji": None, "custom_id": "00", "disabled": True},
+                                {"style": 2, "label": "0", "emoji": None, "custom_id": "0", "disabled": True},
+                                {"style": 2, "label": ".", "emoji": None, "custom_id": ".", "disabled": True},
+                                {"style": 1, "label": "-", "emoji": None, "custom_id": "-", "disabled": True},
+                                {"style": 3, "label": "=", "emoji": None, "custom_id": "result_button", "disabled": True},
+                                {"style": 2, "label": "(", "emoji": None, "custom_id": "(", "disabled": True},
+                                {"style": 2, "label": ")", "emoji": None, "custom_id": ")", "disabled": True},
+                                {"style": 2, "label": "√", "emoji": None, "custom_id": "√", "disabled": True},
+                                {"style": 3, "label": "<", "emoji": None, "custom_id": "left_button", "disabled": True},
+                                {"style": 3, "label": ">", "emoji": None, "custom_id": "right_button", "disabled": True}
+                            ]
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
@@ -122,7 +180,7 @@ class Calculator(commands.Cog):
         embed.description = f"```{str(expression)}```"
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
-        embed.timestamp = datetime.datetime.now()
+        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
         if ctx.guild:
             embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon or "" if self.cogsutils.is_dpy2 else ctx.guild.icon_url or "")
         else:
@@ -340,28 +398,26 @@ class Calculator(commands.Cog):
             message = await ctx.send(embed=await self.get_embed(ctx, expression))
             return
         expression = None
-        buttons_one, buttons_two, buttons_three, buttons_four, buttons_five = await self.get_buttons(False)
-        message = await ctx.send(embed=await self.get_embed(ctx, expression), components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five])
-        def check(inter):
-            return inter.guild == ctx.guild or inter.channel == ctx.channel or inter.message == message
-            # This makes sure nobody except the command sender can interact with the "menu"
-        while True:
-            try:
-                inter = await ctx.wait_for_button_click(timeout=config["time_max"], check=check)
-                # waiting for a reaction to be added - times out after x seconds, 30 in this
-                if not inter.author == ctx.author:
-                    await inter.respond(_("Only the author of the command `{ctx.prefix}calc` can interact with this message.").format(**locals()), ephemeral=True)
-                else:
+        if self.cogsutils.is_dpy2:
+            view = Buttons(timeout=config["time_max"], buttons=self.buttons_dict, members=[ctx.author.id])
+            message = await ctx.send(embed=await self.get_embed(ctx, expression), view=view)
+        else:
+            buttons_one, buttons_two, buttons_three, buttons_four, buttons_five = await self.get_buttons(False)
+            message = await ctx.send(embed=await self.get_embed(ctx, expression), components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five])
+        if self.cogsutils.is_dpy2:
+            while True:
+                try:
+                    interaction, function_result = await view.wait_result()
                     if expression is None or expression == _("Error!").format(**locals()) or expression == "∞":
                         expression = None
-                    if inter.clicked_button.custom_id == "result_button":
+                    if interaction.data["custom_id"] == "result_button":
                         expression = f"{await self.calculate(expression, True)}"
-                    elif inter.clicked_button.custom_id == "exit_button":
+                    elif interaction.data["custom_id"] == "exit_button":
                         await message.delete()
                         return
-                    elif inter.clicked_button.custom_id == "clear_button":
+                    elif interaction.data["custom_id"] == "clear_button":
                         expression = None
-                    elif inter.clicked_button.custom_id == "back_button":
+                    elif interaction.data["custom_id"] == "back_button":
                         if expression == "":
                             expression = None
                         if expression is None or expression == _("Error!").format(**locals()):
@@ -374,7 +430,7 @@ class Calculator(commands.Cog):
                                 expression = "".join(lst)
                             except Exception:
                                 expression = None
-                    elif inter.clicked_button.custom_id == "left_button":
+                    elif interaction.data["custom_id"] == "left_button":
                         if expression == "":
                             expression = None
                         if expression is None or expression == "Error!":
@@ -390,7 +446,7 @@ class Calculator(commands.Cog):
                         expression = "".join(lst)
                         if expression == "|":
                             expression = None
-                    elif inter.clicked_button.custom_id == "right_button":
+                    elif interaction.data["custom_id"] == "right_button":
                         if expression == "":
                             expression = None
                         if expression is None or expression == _("Error!").format(**locals()):
@@ -409,10 +465,85 @@ class Calculator(commands.Cog):
                     else:
                         if expression is None or expression == _("Error!").format(**locals()):
                             expression = "|"
-                        expression = await self.input_formatter(expression, str(inter.clicked_button.custom_id))
-                    await message.edit(embed=await self.get_embed(ctx, expression))
-                    await inter.respond(f"```{expression}```", ephemeral=True)
-            except asyncio.TimeoutError:
-                buttons_one, buttons_two, buttons_three, buttons_four, buttons_five = await self.get_buttons(True)
-                await message.edit(components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five])
-                return
+                        expression = await self.input_formatter(expression, str(interaction.data["custom_id"]))
+                    view = Buttons(timeout=config["time_max"], buttons=self.buttons_dict, members=[ctx.author.id])
+                    await message.edit(embed=await self.get_embed(ctx, expression), view=view)
+                except TimeoutError:
+                    view = Buttons(timeout=config["time_max"], buttons=self.disabled_buttons_dict, members=[])
+                    await message.edit(view=view)
+                    return
+        else:
+            def check(inter):
+                return inter.guild == ctx.guild or inter.channel == ctx.channel or inter.message == message
+                # This makes sure nobody except the command sender can interact with the "menu"
+            while True:
+                try:
+                    inter = await ctx.wait_for_button_click(timeout=config["time_max"], check=check)
+                    # waiting for a reaction to be added - times out after x seconds, 30 in this
+                    if not inter.author == ctx.author:
+                        await inter.respond(_("Only the author of the command `{ctx.prefix}calc` can interact with this message.").format(**locals()), ephemeral=True)
+                    else:
+                        if expression is None or expression == _("Error!").format(**locals()) or expression == "∞":
+                            expression = None
+                        if inter.clicked_button.custom_id == "result_button":
+                            expression = f"{await self.calculate(expression, True)}"
+                        elif inter.clicked_button.custom_id == "exit_button":
+                            await message.delete()
+                            return
+                        elif inter.clicked_button.custom_id == "clear_button":
+                            expression = None
+                        elif inter.clicked_button.custom_id == "back_button":
+                            if expression == "":
+                                expression = None
+                            if expression is None or expression == _("Error!").format(**locals()):
+                                expression = "|"
+                            lst = list(expression)
+                            if len(lst) > 1:
+                                try:
+                                    index = lst.index("|")
+                                    lst.pop(index-1)
+                                    expression = "".join(lst)
+                                except Exception:
+                                    expression = None
+                        elif inter.clicked_button.custom_id == "left_button":
+                            if expression == "":
+                                expression = None
+                            if expression is None or expression == "Error!":
+                                expression = "|"
+                            lst = list(expression)
+                            if len(lst) > 1:
+                                try:
+                                    index = lst.index("|")
+                                    lst.remove("|")
+                                    lst.insert(index-1, "|")
+                                except Exception:
+                                    lst = ["|"]
+                            expression = "".join(lst)
+                            if expression == "|":
+                                expression = None
+                        elif inter.clicked_button.custom_id == "right_button":
+                            if expression == "":
+                                expression = None
+                            if expression is None or expression == _("Error!").format(**locals()):
+                                expression = "|"
+                            lst = list(expression)
+                            if len(lst) > 1:
+                                try:
+                                    index = lst.index("|")
+                                    lst.remove("|")
+                                    lst.insert(index+1, "|")
+                                except Exception:
+                                    lst = ["|"]
+                            expression = "".join(lst)
+                            if expression == "|":
+                                expression = None
+                        else:
+                            if expression is None or expression == _("Error!").format(**locals()):
+                                expression = "|"
+                            expression = await self.input_formatter(expression, str(inter.clicked_button.custom_id))
+                        await message.edit(embed=await self.get_embed(ctx, expression))
+                        await inter.respond(f"```{expression}```", ephemeral=True)
+                except asyncio.TimeoutError:
+                    buttons_one, buttons_two, buttons_three, buttons_four, buttons_five = await self.get_buttons(True)
+                    await message.edit(components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five])
+                    return

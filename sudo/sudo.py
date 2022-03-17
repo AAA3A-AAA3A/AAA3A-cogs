@@ -29,6 +29,7 @@ class Sudo(commands.Cog):
     def cog_unload(self):
         self.bot.owner_ids.update(copy(self.all_owner_ids))
         self.all_owner_ids.clear()
+        self.cogsutils._end()
 
     def decorator(all_owner_ids: typing.Optional[bool], bot_owner_ids: typing.Optional[bool]):
         async def pred(ctx):

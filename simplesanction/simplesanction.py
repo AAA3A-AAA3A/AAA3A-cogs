@@ -1,4 +1,8 @@
 ﻿from .AAA3A_utils.cogsutils import CogsUtils
+if CogsUtils.is_dpy2:
+    from .AAA3A_utils.cogsutils import Buttons, Dropdown
+else:
+    from dislash import InteractionClient, Option, OptionType, message_command, slash_command, user_command
 import asyncio
 import discord
 from discord.ext.commands import BadArgument
@@ -8,7 +12,6 @@ from redbot.core.utils.predicates import MessagePredicate
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.commands.converter import parse_timedelta
 from copy import copy
-from dislash import InteractionClient, Option, OptionType, message_command, slash_command, user_command
 from .utils import utils, Timeout_or_Cancel
 from .settings import settings
 
@@ -40,7 +43,7 @@ class SimpleSanction(settings, commands.Cog):
             "action_confirmation": True,
             "finish_message": True,
             "warn_system_use": True,
-            "buttons_use": True,
+            "way": "buttons",
             "reason_required": True,
             "delete_embed": True,
             "delete_message": True,
@@ -48,6 +51,46 @@ class SimpleSanction(settings, commands.Cog):
         }
 
         self.config.register_guild(**self.sanction_guild)
+
+        self.buttons_dict = [
+                                {"style": 2, "label": "UserInfo", "emoji": "ℹ️", "custom_id": "SimpleSanction_userinfo_button", "disabled": False},
+                                {"style": 2, "label": "Warn", "emoji": "⚠️", "custom_id": "SimpleSanction_warn_button", "disabled": False},
+                                {"style": 2, "label": "Ban", "emoji": "🔨", "custom_id": "SimpleSanction_ban_button", "disabled": False},
+                                {"style": 2, "label": "SoftBan", "emoji": "🔂", "custom_id": "SimpleSanction_softban_button", "disabled": False},
+                                {"style": 2, "label": "TempBan", "emoji": "💨", "custom_id": "SimpleSanction_tempban_button", "disabled": False},
+                                {"style": 2, "label": "Kick", "emoji": "👢", "custom_id": "SimpleSanction_kick_button", "disabled": False},
+                                {"style": 2, "label": "Mute", "emoji": "🔇", "custom_id": "SimpleSanction_mute_button", "disabled": False},
+                                {"style": 2, "label": "MuteChannel", "emoji": "👊", "custom_id": "SimpleSanction_mutechannel_button", "disabled": False},
+                                {"style": 2, "label": "TempMute", "emoji": "⏳", "custom_id": "SimpleSanction_tempmute_button", "disabled": False},
+                                {"style": 2, "label": "TempMuteChannel", "emoji": "⌛", "custom_id": "SimpleSanction_tempmutechannel_button", "disabled": False},
+                                {"style": 2, "label": "Close", "emoji": "❌", "custom_id": "SimpleSanction_close_button", "disabled": False}
+                            ]
+        self.disabled_buttons_dict = [
+                                {"style": 2, "label": "UserInfo", "emoji": "ℹ️", "custom_id": "SimpleSanction_userinfo_button", "disabled": True},
+                                {"style": 2, "label": "Warn", "emoji": "⚠️", "custom_id": "SimpleSanction_warn_button", "disabled": True},
+                                {"style": 2, "label": "Ban", "emoji": "🔨", "custom_id": "SimpleSanction_ban_button", "disabled": True},
+                                {"style": 2, "label": "SoftBan", "emoji": "🔂", "custom_id": "SimpleSanction_softban_button", "disabled": True},
+                                {"style": 2, "label": "TempBan", "emoji": "💨", "custom_id": "SimpleSanction_tempban_button", "disabled": True},
+                                {"style": 2, "label": "Kick", "emoji": "👢", "custom_id": "SimpleSanction_kick_button", "disabled": True},
+                                {"style": 2, "label": "Mute", "emoji": "🔇", "custom_id": "SimpleSanction_mute_button", "disabled": True},
+                                {"style": 2, "label": "MuteChannel", "emoji": "👊", "custom_id": "SimpleSanction_mutechannel_button", "disabled": True},
+                                {"style": 2, "label": "TempMute", "emoji": "⏳", "custom_id": "SimpleSanction_tempmute_button", "disabled": True},
+                                {"style": 2, "label": "TempMuteChannel", "emoji": "⌛", "custom_id": "SimpleSanction_tempmutechannel_button", "disabled": True},
+                                {"style": 2, "label": "Close", "emoji": "❌", "custom_id": "SimpleSanction_close_button", "disabled": True}
+                            ]
+        self.options_dict = [
+                                {"label": "UserInfo", "emoji": "ℹ️", "value": "SimpleSanction_userinfo_button"},
+                                {"label": "Warn", "emoji": "⚠️", "value": "SimpleSanction_warn_button"},
+                                {"label": "Ban", "emoji": "🔨", "value": "SimpleSanction_ban_button"},
+                                {"label": "SoftBan", "emoji": "🔂", "value": "SimpleSanction_softban_button"},
+                                {"label": "TempBan", "emoji": "💨", "value": "SimpleSanction_tempban_button"},
+                                {"label": "Kick", "emoji": "👢", "value": "SimpleSanction_kick_button"},
+                                {"label": "Mute", "emoji": "🔇", "value": "SimpleSanction_mute_button"},
+                                {"label": "MuteChannel", "emoji": "👊", "value": "SimpleSanction_mutechannel_button"},
+                                {"label": "TempMute", "emoji": "⏳", "value": "SimpleSanction_tempmute_button"},
+                                {"label": "TempMuteChannel", "emoji": "⌛", "value": "SimpleSanction_tempmutechannel_button"},
+                                {"label": "Close", "emoji": "❌", "value": "SimpleSanction_close_button"}
+                            ]
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
@@ -63,56 +106,58 @@ class SimpleSanction(settings, commands.Cog):
             else:
                 raise BadArgument()
 
-    @user_command(name="Sanction user")
-    async def sanctionusermenu(self, inter):
-        try:
-            message = await inter.channel.send(_("Sanction.").format(**locals()))
-            p = await inter.bot.get_valid_prefixes()
-            p = p[0]
-            msg = copy(message)
-            msg.author = inter.author
-            msg.channel = inter.channel
-            msg.content = f"{p}sanction {inter.user.id}"
-            self.bot.dispatch("message", msg)
-            self.bot.process_commands(msg)
-            await inter.respond(_("You have chosen to sanction {inter.user.mention} ({inter.user.id}) in {inter.channel.mention}.").format(**locals()), ephemeral=True)
-        except Exception:
-            await inter.respond(_("An error has occurred in your interaction. Please try to use the real command instead of this contextual menu.").format(**locals()), ephemeral=True)
+    if not CogsUtils().is_dpy2:
 
-    @message_command(name="Sanction author")
-    async def sanctionmessagemenu(self, inter):
-        try:
-            message = await inter.channel.send(_("Sanction.").format(**locals()))
-            p = await inter.bot.get_valid_prefixes()
-            p = p[0]
-            msg = copy(message) 
-            msg.author = inter.author
-            msg.channel = inter.channel
-            msg.content = f"{p}sanction {inter.message.author.id}"
-            self.bot.dispatch("message", msg)
-            await inter.respond(_("You have chosen to sanction {inter.message.author.mention} ({inter.message.author.id}) in {inter.channel.mention}.").format(**locals()), ephemeral=True)
-        except Exception:
-            await inter.respond(_("An error has occurred in your interaction. Please try to use the real command instead of this contextual menu.").format(**locals()), ephemeral=True)
+        @user_command(name="Sanction user")
+        async def sanctionusermenu(self, inter):
+            try:
+                message = await inter.channel.send(_("Sanction.").format(**locals()))
+                p = await inter.bot.get_valid_prefixes()
+                p = p[0]
+                msg = copy(message)
+                msg.author = inter.author
+                msg.channel = inter.channel
+                msg.content = f"{p}sanction {inter.user.id}"
+                self.bot.dispatch("message", msg)
+                self.bot.process_commands(msg)
+                await inter.respond(_("You have chosen to sanction {inter.user.mention} ({inter.user.id}) in {inter.channel.mention}.").format(**locals()), ephemeral=True)
+            except Exception:
+                await inter.respond(_("An error has occurred in your interaction. Please try to use the real command instead of this contextual menu.").format(**locals()), ephemeral=True)
 
-    @slash_command(name="sanction", description="Sanction user", options=[Option("user", "Enter the user.", OptionType.USER, required=True), Option("confirmation", "Do you want the bot to ask for confirmation from you before the action? (Default is the recorded value)", OptionType.BOOLEAN, required=False), Option("show_author", "Do you want the bot to show in its embeds who is the author of the command/sanction? (Default is the recorded value)", OptionType.BOOLEAN, required=False), Option("finish_message", "Do you want the bot to show an embed just before the action summarising the action and giving the sanctioned user and the reason? (Default is the recorded value)", OptionType.BOOLEAN, required=False), Option("fake_action", "Do you want the command to do everything as usual, but (unintentionally) forget to execute the action?", OptionType.BOOLEAN, required=False), Option("args", "Enter the arguments of the command.", OptionType.STRING, required=False)])
-    async def sanctionslash(self, inter, user, confirmation: typing.Optional[bool]="", show_author: typing.Optional[bool]="", finish_message: typing.Optional[bool]="", fake_action: typing.Optional[bool]="", args: typing.Optional[str]=""):
-        try:
-            message = await inter.channel.send("Sanction.")
-            p = await inter.bot.get_valid_prefixes()
-            p = p[0]
-            msg = copy(message)
-            msg.author = inter.author
-            msg.channel = inter.channel
-            if not confirmation == "": confirmation = f" {confirmation}"
-            if not show_author == "": show_author = f" {show_author}"
-            if not finish_message == "": finish_message = f" {finish_message}"
-            if not fake_action == "": fake_action = f" {fake_action}"
-            if not args == "": args = f" {args}"
-            msg.content = f"{p}sanction {user.id}{confirmation}{show_author}{finish_message}{fake_action}{args}"
-            self.bot.dispatch("message", msg)
-            await inter.respond(_("You have chosen to sanction {user.mention} ({user.id}) in {inter.channel.mention}.").format(**locals()), ephemeral=True)
-        except Exception:
-            await inter.respond(_("An error has occurred in this interaction. Please try to use the real command instead of this contextual menu.").format(**locals()), ephemeral=True)
+        @message_command(name="Sanction author")
+        async def sanctionmessagemenu(self, inter):
+            try:
+                message = await inter.channel.send(_("Sanction.").format(**locals()))
+                p = await inter.bot.get_valid_prefixes()
+                p = p[0]
+                msg = copy(message) 
+                msg.author = inter.author
+                msg.channel = inter.channel
+                msg.content = f"{p}sanction {inter.message.author.id}"
+                self.bot.dispatch("message", msg)
+                await inter.respond(_("You have chosen to sanction {inter.message.author.mention} ({inter.message.author.id}) in {inter.channel.mention}.").format(**locals()), ephemeral=True)
+            except Exception:
+                await inter.respond(_("An error has occurred in your interaction. Please try to use the real command instead of this contextual menu.").format(**locals()), ephemeral=True)
+
+        @slash_command(name="sanction", description="Sanction user", options=[Option("user", "Enter the user.", OptionType.USER, required=True), Option("confirmation", "Do you want the bot to ask for confirmation from you before the action? (Default is the recorded value)", OptionType.BOOLEAN, required=False), Option("show_author", "Do you want the bot to show in its embeds who is the author of the command/sanction? (Default is the recorded value)", OptionType.BOOLEAN, required=False), Option("finish_message", "Do you want the bot to show an embed just before the action summarising the action and giving the sanctioned user and the reason? (Default is the recorded value)", OptionType.BOOLEAN, required=False), Option("fake_action", "Do you want the command to do everything as usual, but (unintentionally) forget to execute the action?", OptionType.BOOLEAN, required=False), Option("args", "Enter the arguments of the command.", OptionType.STRING, required=False)])
+        async def sanctionslash(self, inter, user, confirmation: typing.Optional[bool]="", show_author: typing.Optional[bool]="", finish_message: typing.Optional[bool]="", fake_action: typing.Optional[bool]="", args: typing.Optional[str]=""):
+            try:
+                message = await inter.channel.send("Sanction.")
+                p = await inter.bot.get_valid_prefixes()
+                p = p[0]
+                msg = copy(message)
+                msg.author = inter.author
+                msg.channel = inter.channel
+                if not confirmation == "": confirmation = f" {confirmation}"
+                if not show_author == "": show_author = f" {show_author}"
+                if not finish_message == "": finish_message = f" {finish_message}"
+                if not fake_action == "": fake_action = f" {fake_action}"
+                if not args == "": args = f" {args}"
+                msg.content = f"{p}sanction {user.id}{confirmation}{show_author}{finish_message}{fake_action}{args}"
+                self.bot.dispatch("message", msg)
+                await inter.respond(_("You have chosen to sanction {user.mention} ({user.id}) in {inter.channel.mention}.").format(**locals()), ephemeral=True)
+            except Exception:
+                await inter.respond(_("An error has occurred in this interaction. Please try to use the real command instead of this contextual menu.").format(**locals()), ephemeral=True)
 
     @commands.group(invoke_without_command=True, name="sanction", aliases=["punishuser"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
     @commands.guild_only()
@@ -293,18 +338,12 @@ class SimpleSanction(settings, commands.Cog):
         actual_action_confirmation = config["action_confirmation"]
         actual_finish_message = config["finish_message"]
         actual_warn_system_use = config["warn_system_use"]
-        actual_buttons_use = config["buttons_use"]
-        actual_reason_required = config["reason_required"]
+        actual_way = config["way"]
+        if actual_way == "dropdown" and not self.cogsutils.is_dpy2:
+            actual_way = "buttons"
         actual_delete_embed = config["delete_embed"]
         actual_delete_message = config["delete_message"]
         actual_timeout = config["timeout"]
-        if ctx.bot.get_cog("WarnSystem"):
-            if actual_warn_system_use:
-                warn_system_exist = True
-            else:
-                warn_system_exist = False
-        else:
-            warn_system_exist = False
         if action == 0:
             action = None
         if confirmation is None:
@@ -323,7 +362,7 @@ class SimpleSanction(settings, commands.Cog):
         if delete_message and ctx.author == ctx.message.author:
             try:
                 await ctx.message.delete()
-            except Exception:
+            except discord.HTTPException:
                 pass
         if user is None:
             embed: discord.Embed = discord.Embed()
@@ -343,7 +382,10 @@ class SimpleSanction(settings, commands.Cog):
                     await msg.delete()
                     return
                 await message.delete()
-                await msg.delete()
+                try:
+                    await msg.delete()
+                except discord.HTTPException:
+                    pass
                 user = pred.result
             except asyncio.TimeoutError:
                 await ctx.send(_("Timed out, please try again.").format(**locals()))
@@ -378,11 +420,25 @@ class SimpleSanction(settings, commands.Cog):
                     inline=False,
                     name="Duration:",
                     value=f"{parse_timedelta(duration)}")
-            reactions, buttons, buttons_one, buttons_two, buttons_three = await utils.emojis(disabled=False)
-            if actual_buttons_use:
-                message = await ctx.send(embed=embed, components=[buttons_one, buttons_two, buttons_three])
-            else:
+            if actual_way == "buttons":
+                if self.cogsutils.is_dpy2:
+                    async def send_fake_epheremal(interaction: discord.Interaction, fake_action: bool):
+                        if fake_action:
+                            await interaction.response.send_message(_("You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case.").format(**locals()), ephemeral=True)
+                    view = Buttons(timeout=actual_timeout, buttons=self.buttons_dict, members=[ctx.author.id] + list(ctx.bot.owner_ids), function=send_fake_epheremal, function_args={"fake_action": fake_action})
+                    message = await ctx.send(embed=embed, view=view)
+                else:
+                    buttons, buttons_one, buttons_two, buttons_three = await utils.emojis(disabled=False)
+                    message = await ctx.send(embed=embed, components=[buttons_one, buttons_two, buttons_three])
+            elif actual_way == "dropdown":
+                    async def send_fake_epheremal(interaction: discord.Interaction, fake_action: bool):
+                        if fake_action:
+                            await interaction.response.send_message(_("You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case.").format(**locals()), ephemeral=True)
+                    view = Dropdown(timeout=actual_timeout, options=self.options_dict, members=[ctx.author.id] + list(ctx.bot.owner_ids), function=send_fake_epheremal, function_args={"fake_action": fake_action})
+                    message = await ctx.send(embed=embed, view=view)
+            elif actual_way == "reactions":
                 message = await ctx.send(embed=embed)
+                reactions = ["ℹ️", "⚠️", "🔨", "🔂", "💨", "👢", "🔇", "👊", "⏳", "⌛", "❌"]
                 start_adding_reactions(message, reactions)
             # "\N{information_source}", "\N{warning}", "\N{hammer}", "\N{repeat_one}", "\N{dash}", "\N{boot}", "\N{mute}", "\N{hourglass_flowing_sand}", "\N{punch}", "\N{x}"
             end_reaction = False
@@ -390,7 +446,210 @@ class SimpleSanction(settings, commands.Cog):
         if action is not None:
             await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
 
-        if action is None and not actual_buttons_use:
+        if action is None and actual_way == "buttons" and self.cogsutils.is_dpy2:
+            try:
+                interaction, function_result = await view.wait_result()
+                if interaction.data["custom_id"] == "SimpleSanction_userinfo_button":
+                    action = 1
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if interaction.data["custom_id"] == "SimpleSanction_warn_button":
+                    action = 2
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if interaction.data["custom_id"] == "SimpleSanction_ban_button":
+                    action = 3
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if interaction.data["custom_id"] == "SimpleSanction_softban_button":
+                    action = 4
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if interaction.data["custom_id"] == "SimpleSanction_tempban_button":
+                    action = 5
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if interaction.data["custom_id"] == "SimpleSanction_kick_button":
+                    action = 6
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if interaction.data["custom_id"] == "SimpleSanction_mute_button":
+                    action = 7
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if interaction.data["custom_id"] == "SimpleSanction_mutechannel_button":
+                    action = 8
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if interaction.data["custom_id"] == "SimpleSanction_tempmute_button":
+                    action = 9
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if interaction.data["custom_id"] == "SimpleSanction_tempmutechannel_button":
+                    action = 10
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if interaction.data["custom_id"] == "SimpleSanction_close_button":
+                    action = 11
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+            except TimeoutError:
+                if delete_embed:
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                else:
+                    view = Buttons(timeout=actual_timeout, buttons=self.disabled_buttons_dict, members=[])
+                    await message.edit(embed=embed, view=view)
+                return
+
+        if action is None and actual_way == "dropdown" and self.cogsutils.is_dpy2:
+            try:
+                interaction, values, function_result = await view.wait_result()
+                if str(values[0]) == "SimpleSanction_userinfo_button":
+                    action = 1
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if str(values[0]) == "SimpleSanction_warn_button":
+                    action = 2
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if str(values[0]) == "SimpleSanction_ban_button":
+                    action = 3
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if str(values[0]) == "SimpleSanction_softban_button":
+                    action = 4
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if str(values[0]) == "SimpleSanction_tempban_button":
+                    action = 5
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if str(values[0]) == "SimpleSanction_kick_button":
+                    action = 6
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if str(values[0]) == "SimpleSanction_mute_button":
+                    action = 7
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if str(values[0]) == "SimpleSanction_mutechannel_button":
+                    action = 8
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if str(values[0]) == "SimpleSanction_tempmute_button":
+                    action = 9
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if str(values[0]) == "SimpleSanction_tempmutechannel_button":
+                    action = 10
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+                if str(values[0]) == "SimpleSanction_close_button":
+                    action = 11
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                    await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+                    return
+            except TimeoutError:
+                if delete_embed:
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                else:
+                    await message.edit(embed=embed, view=None)
+                return
+
+        if action is None and actual_way == "reactions":
             def check(reaction, abc_author):
                 return abc_author == ctx.author or abc_author.id in ctx.bot.owner_ids and str(reaction.emoji) in reactions
                 # This makes sure nobody except the command sender can interact with the "menu"
@@ -403,7 +662,7 @@ class SimpleSanction(settings, commands.Cog):
                         action = 1
                         try:
                             await message.delete()
-                        except Exception:
+                        except discord.HTTPException:
                             pass
                         await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                         break
@@ -412,7 +671,7 @@ class SimpleSanction(settings, commands.Cog):
                         action = 2
                         try:
                             await message.delete()
-                        except Exception:
+                        except discord.HTTPException:
                             pass
                         await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                         break
@@ -421,7 +680,7 @@ class SimpleSanction(settings, commands.Cog):
                         action = 3
                         try:
                             await message.delete()
-                        except Exception:
+                        except discord.HTTPException:
                             pass
                         await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                         break
@@ -430,7 +689,7 @@ class SimpleSanction(settings, commands.Cog):
                         action = 4
                         try:
                             await message.delete()
-                        except Exception:
+                        except discord.HTTPException:
                             pass
                         await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                         break
@@ -439,7 +698,7 @@ class SimpleSanction(settings, commands.Cog):
                         action = 5
                         try:
                             await message.delete()
-                        except Exception:
+                        except discord.HTTPException:
                             pass
                         await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                         break
@@ -448,7 +707,7 @@ class SimpleSanction(settings, commands.Cog):
                         action = 6
                         try:
                             await message.delete()
-                        except Exception:
+                        except discord.HTTPException:
                             pass
                         await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                         break
@@ -457,7 +716,7 @@ class SimpleSanction(settings, commands.Cog):
                         action = 7
                         try:
                             await message.delete()
-                        except Exception:
+                        except discord.HTTPException:
                             pass
                         await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                         break
@@ -466,7 +725,7 @@ class SimpleSanction(settings, commands.Cog):
                         action = 8
                         try:
                             await message.delete()
-                        except Exception:
+                        except discord.HTTPException:
                             pass
                         await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                         break
@@ -475,7 +734,7 @@ class SimpleSanction(settings, commands.Cog):
                         action = 9
                         try:
                             await message.delete()
-                        except Exception:
+                        except discord.HTTPException:
                             pass
                         await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                         break
@@ -484,7 +743,7 @@ class SimpleSanction(settings, commands.Cog):
                         action = 10
                         try:
                             await message.delete()
-                        except Exception:
+                        except discord.HTTPException:
                             pass
                         await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                         break
@@ -493,7 +752,7 @@ class SimpleSanction(settings, commands.Cog):
                         action = 11
                         try:
                             await message.delete()
-                        except Exception:
+                        except discord.HTTPException:
                             pass
                         await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                         break
@@ -504,15 +763,12 @@ class SimpleSanction(settings, commands.Cog):
                         if delete_embed:
                             try:
                                 await message.delete()
-                            except Exception:
+                            except discord.HTTPException:
                                 pass
                         await ctx.send("Timed out, please try again.")
                         return
 
-        if action is None and actual_buttons_use:
-            def check(reaction, abc_author):
-                return abc_author == ctx.author or abc_author.id in ctx.bot.owner_ids
-                # This makes sure nobody except the command sender can interact with the "menu"
+        if action is None and actual_way == "buttons" and not self.cogsutils.is_dpy2:
             on_click = message.create_click_listener(timeout=actual_timeout)
             @on_click.not_from_user(ctx.author, cancel_others=True, reset_timeout=False)
             async def on_wrong_user(inter):
@@ -529,7 +785,7 @@ class SimpleSanction(settings, commands.Cog):
                 action = 1
                 try:
                     await message.delete()
-                except Exception:
+                except discord.HTTPException:
                     pass
                 await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                 return
@@ -541,7 +797,7 @@ class SimpleSanction(settings, commands.Cog):
                 action = 2
                 try:
                     await message.delete()
-                except Exception:
+                except discord.HTTPException:
                     pass
                 await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                 return
@@ -553,7 +809,7 @@ class SimpleSanction(settings, commands.Cog):
                 action = 3
                 try:
                     await message.delete()
-                except Exception:
+                except discord.HTTPException:
                     pass
                 await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                 return
@@ -565,7 +821,7 @@ class SimpleSanction(settings, commands.Cog):
                 action = 4
                 try:
                     await message.delete()
-                except Exception:
+                except discord.HTTPException:
                     pass
                 await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                 return
@@ -577,7 +833,7 @@ class SimpleSanction(settings, commands.Cog):
                 action = 5
                 try:
                     await message.delete()
-                except Exception:
+                except discord.HTTPException:
                     pass
                 await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                 return
@@ -589,7 +845,7 @@ class SimpleSanction(settings, commands.Cog):
                 action = 6
                 try:
                     await message.delete()
-                except Exception:
+                except discord.HTTPException:
                     pass
                 await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                 return
@@ -601,7 +857,7 @@ class SimpleSanction(settings, commands.Cog):
                 action = 7
                 try:
                     await message.delete()
-                except Exception:
+                except discord.HTTPException:
                     pass
                 await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                 return
@@ -613,7 +869,7 @@ class SimpleSanction(settings, commands.Cog):
                 action = 8
                 try:
                     await message.delete()
-                except Exception:
+                except discord.HTTPException:
                     pass
                 await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                 return
@@ -625,7 +881,7 @@ class SimpleSanction(settings, commands.Cog):
                 action = 9
                 try:
                     await message.delete()
-                except Exception:
+                except discord.HTTPException:
                     pass
                 await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                 return
@@ -637,7 +893,7 @@ class SimpleSanction(settings, commands.Cog):
                 action = 10
                 try:
                     await message.delete()
-                except Exception:
+                except discord.HTTPException:
                     pass
                 await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                 return
@@ -647,7 +903,7 @@ class SimpleSanction(settings, commands.Cog):
                 action = 11
                 try:
                     await message.delete()
-                except Exception:
+                except discord.HTTPException:
                     pass
                 await self.call_actions(ctx, action, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
                 return
@@ -657,7 +913,7 @@ class SimpleSanction(settings, commands.Cog):
                     if delete_embed:
                         try:
                             await message.delete()
-                        except Exception:
+                        except discord.HTTPException:
                             pass
                     else:
                         reactions, buttons, buttons_one, buttons_two, buttons_three = await utils.emojis(disabled=True)

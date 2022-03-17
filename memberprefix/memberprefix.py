@@ -41,6 +41,7 @@ class MemberPrefix(commands.Cog):
 
     def cog_unload(self):
         self.bot.remove_before_invoke_hook(self.before_invoke)
+        self.cogsutils._end()
 
     async def before_invoke(self, ctx: commands.Context) -> None:
         if ctx.guild is None:
@@ -53,10 +54,7 @@ class MemberPrefix(commands.Cog):
         if ctx.message.id in self.cache_messages:
             self.cache_messages.remove(ctx.message.id)
             return
-        try:
-            raise
-        except RuntimeError:
-            pass
+        raise discord.ext.commands.CheckFailure
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
@@ -128,26 +126,39 @@ class MemberPrefix(commands.Cog):
             The invocation context. The type of this can change via the
             ``cls`` parameter.
         """
-
-        view = discord.ext.commands.view.StringView(message.content)
-        ctx = cls(prefix=None, view=view, bot=self.bot, message=message)
-
-        if self.bot._skip_check(message.author.id, self.bot.user.id):
+        if self.cogsutils.is_dpy2:
+            view = discord.ext.commands.view.StringView(message.content)
+            ctx = cls(prefix=None, view=view, bot=self.bot, message=message)
+            if message.author.id == self.bot.user.id:
+                return ctx
+            prefix = prefixes
+            invoked_prefix = prefix
+            if message.content.startswith(tuple(prefix)):
+                invoked_prefix = discord.utils.find(view.skip_string, prefix)
+            else:
+                return ctx
+            if self.bot.strip_after_prefix:
+                view.skip_ws()
+            invoker = view.get_word()
+            ctx.invoked_with = invoker
+            ctx.prefix = invoked_prefix
+            ctx.command = self.bot.all_commands.get(invoker)
             return ctx
-
-        prefix = prefixes
-        invoked_prefix = prefix
-
-        if message.content.startswith(tuple(prefix)):
-            invoked_prefix = discord.utils.find(view.skip_string, prefix)
         else:
+            view = discord.ext.commands.view.StringView(message.content)
+            ctx = cls(prefix=None, view=view, bot=self.bot, message=message)
+            if self.bot._skip_check(message.author.id, self.bot.user.id):
+                return ctx
+            prefix = prefixes
+            invoked_prefix = prefix
+            if message.content.startswith(tuple(prefix)):
+                invoked_prefix = discord.utils.find(view.skip_string, prefix)
+            else:
+                return ctx
+            if self.bot.strip_after_prefix:
+                view.skip_ws()
+            invoker = view.get_word()
+            ctx.invoked_with = invoker
+            ctx.prefix = invoked_prefix
+            ctx.command = self.bot.all_commands.get(invoker)
             return ctx
-
-        if self.bot.strip_after_prefix:
-            view.skip_ws()
-
-        invoker = view.get_word()
-        ctx.invoked_with = invoker
-        ctx.prefix = invoked_prefix
-        ctx.command = self.bot.all_commands.get(invoker)
-        return ctx

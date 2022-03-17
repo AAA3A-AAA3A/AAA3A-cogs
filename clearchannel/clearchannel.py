@@ -19,9 +19,7 @@ def _(untranslated: str):
     return untranslated
 
 class ClearChannel(commands.Cog):
-    """
-    A cog to transfer all messages channel in a other channel.
-    """
+    """A cog to transfer all messages channel in a other channel!"""
 
     def __init__(self, bot):
         self.bot = bot

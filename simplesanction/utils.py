@@ -100,7 +100,7 @@ class utils(commands.Cog):
                 disabled=disabled
             )
         )
-        return reactions, buttons, buttons_one, buttons_two, buttons_three
+        return buttons, buttons_one, buttons_two, buttons_three
 
     async def reason_ask(ctx, reason, actual_reason_required, title, description, actual_color, user, actual_timeout):
         if reason is None:

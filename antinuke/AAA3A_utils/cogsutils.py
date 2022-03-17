@@ -533,7 +533,7 @@ class CogsUtils(commands.Cog):
         """
         Check all permissions specified as an argument.
         """
-        if channel.guild is None:
+        if getattr(channel, "guild", None) is None:
             return True
         permissions = channel.permissions_for(user)
         if isinstance(check, typing.List):
@@ -1547,16 +1547,16 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
         if page is not None:
             count_page += 1
             if count_page == 1:
-                to_html += message_html.replace("{MESSAGE_CONTENT}", str(page).replace("```", "").replace("\n", "<br>").replace("<", "&lt;")).replace("{TIMESTAMP}", str(ctx.message.created_at.strftime("%b %d, %Y %I:%M %p")))
+                to_html += message_html.replace("{MESSAGE_CONTENT}", str(page).replace("```", "").replace("<", "&lt;").replace("\n", "<br>")).replace("{TIMESTAMP}", str(ctx.message.created_at.strftime("%b %d, %Y %I:%M %p")))
             else:
-                to_html += message_html.replace('    <div class="chatlog__messages">', '            </div>            <div class="chatlog__message ">').replace("{MESSAGE_CONTENT}", str(page).replace("```", "").replace("\n", "<br>").replace("<", "&lt;")).replace('<span class="chatlog__timestamp">{TIMESTAMP}</span>            ', "")
+                to_html += message_html.replace('    <div class="chatlog__messages">', '            </div>            <div class="chatlog__message ">').replace("{MESSAGE_CONTENT}", str(page).replace("```", "").replace("<", "&lt;").replace("\n", "<br>")).replace('<span class="chatlog__timestamp">{TIMESTAMP}</span>            ', "")
             if all is None:
                 for p in pagify(page):
                     p = p.replace("```", "")
                     p = box(p)
                     await ctx.send(p)
     to_html += end_html
-    if CogsUtils().check_permissions_for(channel=ctx.channel, user=ctx.bot.user, check=["send_attachments"]):
+    if ctx.guild is None or CogsUtils().check_permissions_for(channel=ctx.channel, user=ctx.guild.me, check=["send_attachments"]):
         await ctx.send(file=text_to_file(text=to_html, filename="diagnostic.html"))
 
 to_html_getallfor = """

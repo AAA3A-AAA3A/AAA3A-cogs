@@ -1536,7 +1536,7 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
         if x is not None:
             for y in x:
                 response.append(y)
-    to_html = to_html_getallfor.replace("{AVATAR_URL}", str(ctx.bot.user.display_avatar)).replace("{BOT_NAME}", str(ctx.bot.user.name)).replace("{REPO_NAME}", str(getattr(repos[0], "name", None) if all is None else "All")).replace("{COG_NAME}", str(getattr(cogs[0], "name", None) if all is None else "All")).replace("{COMMAND_NAME}", str(getattr(commands[0], "qualified_name", None) if all is None else "All"))
+    to_html = to_html_getallfor.replace("{AVATAR_URL}", str(ctx.bot.user.display_avatar) if CogsUtils().is_dpy2 else str(ctx.bot.user.avatar_url)).replace("{BOT_NAME}", str(ctx.bot.user.name)).replace("{REPO_NAME}", str(getattr(repos[0], "name", None) if all is None else "All")).replace("{COG_NAME}", str(getattr(cogs[0], "name", None) if all is None else "All")).replace("{COMMAND_NAME}", str(getattr(commands[0], "qualified_name", None) if all is None else "All"))
     message_html = message_html_getallfor
     end_html = end_html_getallfor
     count_page = 0

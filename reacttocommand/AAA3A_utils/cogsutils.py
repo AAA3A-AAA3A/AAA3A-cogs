@@ -1252,6 +1252,7 @@ def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
     temp_console.print(*objects)
     return box(temp_console.file.getvalue(), lang=lang)  # type: ignore
 
+@commands.is_owner()
 @commands.command(hidden=True)
 async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["all", "ALL"]]=None, repo: typing.Optional[typing.Union[Repo, typing.Literal["AAA3A", "aaa3a"]]]=None, check_updates: typing.Optional[bool]=False, cog: typing.Optional[InstalledCog]=None, command: typing.Optional[str]=None):
     """Get all the necessary information to get support on a bot/repo/cog/command.

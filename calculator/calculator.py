@@ -1,6 +1,6 @@
 from .AAA3A_utils.cogsutils import CogsUtils
 if CogsUtils().is_dpy2:
-    from AAA3A_utils.cogsutils import Buttons
+    from .AAA3A_utils.cogsutils import Buttons
 else:
     from dislash import ActionRow, Button, ButtonStyle
 import asyncio

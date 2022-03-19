@@ -1,3 +1,4 @@
+from .AAA3A_utils.cogsutils import CogsUtils
 import json
 from pathlib import Path
 
@@ -6,6 +7,6 @@ from .transferchannel import TransferChannel
 with open(Path(__file__).parent / "info.json") as fp:
     __red_end_user_data_statement__ = json.load(fp)["end_user_data_statement"]
 
-
-def setup(bot):
-    bot.add_cog(TransferChannel(bot))
+async def setup(bot):
+    cog = TransferChannel(bot)
+    await CogsUtils().add_cog(bot, cog)

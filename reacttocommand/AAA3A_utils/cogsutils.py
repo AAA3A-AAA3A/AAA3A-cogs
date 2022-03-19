@@ -1,10 +1,3 @@
-import discord
-import redbot
-import logging
-import typing
-import datetime
-import asyncio
-import contextlib
 from redbot.core import commands
 from redbot.core.bot import Red
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
@@ -13,6 +6,13 @@ from redbot.core.data_manager import cog_data_path
 from redbot.core.utils.chat_formatting import *
 from redbot.cogs.downloader.repo_manager import Repo
 from redbot.cogs.downloader.converters import InstalledCog
+import discord
+import redbot
+import logging
+import typing
+import datetime
+import asyncio
+import contextlib
 import traceback
 import math
 from rich.table import Table
@@ -24,8 +24,8 @@ from pathlib import Path
 from time import monotonic
 import os
 import sys
+import inspect
 
-# message_delete
 # Menu
 
 def _(untranslated: str):
@@ -152,6 +152,16 @@ class CogsUtils(commands.Cog):
     
     def cog_unload(self):
         self._end()
+    
+    async def add_cog(self, bot: Red, cog: commands.Cog):
+        """
+        Load a cog by checking whether the required function is awaitable or not.
+        """
+        value = bot.add_cog(cog)
+        if inspect.isawaitable(value):
+            return await value
+        else:
+            return value
 
     def _setup(self):
         """
@@ -663,6 +673,62 @@ class CogsUtils(commands.Cog):
             await message.delete()
         except discord.HTTPException:
             pass
+    
+    async def check_in_listener(self, output, allowed_by_whitelist_blacklist: typing.Optional[bool]=True):
+        """
+        Check all parameters for the output of any listener.
+        Thanks to Jack! (https://discord.com/channels/133049272517001216/160386989819035648/825373605000511518)
+        """
+        if isinstance(output, discord.Message):
+            # check whether the message was sent in a guild
+            if output.guild is None:
+                raise discord.ext.commands.BadArgument()
+            # check whether the message author isn't a bot
+            if output.author is None:
+                raise discord.ext.commands.BadArgument()
+            if output.author.bot:
+                raise discord.ext.commands.BadArgument()
+            # check whether the bot can send message in the given channel
+            if not self.check_permissions_for(channel=output.channel, user=output.guild.me, check=["send_messages"]):
+                raise discord.ext.commands.BadArgument()
+            # check whether the cog isn't disabled
+            if self.cog is not None:
+                if await self.bot.cog_disabled_in_guild(self.cog, output.guild):
+                    raise discord.ext.commands.BadArgument()
+            # check whether the channel isn't on the ignore list 
+            if not await self.bot.ignored_channel_or_guild(output):
+                raise discord.ext.commands.BadArgument()
+            # check whether the message author isn't on allowlist/blocklist
+            if allowed_by_whitelist_blacklist:
+                if not await self.bot.allowed_by_whitelist_blacklist(output.author):
+                    raise discord.ext.commands.BadArgument()
+        if isinstance(output, discord.RawReactionActionEvent):
+            # check whether the message was sent in a guild
+            output.guild = self.bot.get_guild(output.guild_id)
+            if output.guild is None:
+                raise discord.ext.commands.BadArgument()
+            # check whether the message author isn't a bot
+            output.author = output.guild.get_member(output.user_id)
+            if output.author is None:
+                raise discord.ext.commands.BadArgument()
+            if output.author.bot:
+                raise discord.ext.commands.BadArgument()
+            # check whether the bot can send message in the given channel
+            output.channel = output.guild.get_channel(output.channel_id)
+            if not self.check_permissions_for(channel=output.channel, user=output.guild.me, check=["send_messages"]):
+                raise discord.ext.commands.BadArgument()
+            # check whether the cog isn't disabled
+            if self.cog is not None:
+                if await self.bot.cog_disabled_in_guild(self.cog, output.guild):
+                    raise discord.ext.commands.BadArgument()
+            # check whether the channel isn't on the ignore list 
+            if not await self.bot.ignored_channel_or_guild(output):
+                raise discord.ext.commands.BadArgument()
+            # check whether the message author isn't on allowlist/blocklist
+            if allowed_by_whitelist_blacklist:
+                if not await self.bot.allowed_by_whitelist_blacklist(output.author):
+                    raise discord.ext.commands.BadArgument()
+        return
 
     async def autodestruction(self):
         """
@@ -1556,7 +1622,7 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
                     p = box(p)
                     await ctx.send(p)
     to_html += end_html
-    if ctx.guild is None or CogsUtils().check_permissions_for(channel=ctx.channel, user=ctx.guild.me, check=["send_attachments"]):
+    if CogsUtils().check_permissions_for(channel=ctx.channel, user=ctx.me, check=["send_attachments"]):
         await ctx.send(file=text_to_file(text=to_html, filename="diagnostic.html"))
 
 to_html_getallfor = """

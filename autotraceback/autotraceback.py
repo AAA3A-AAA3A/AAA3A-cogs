@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils.cogsutils import CogsUtils
+﻿from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
 import discord
 from redbot.core import commands
 from redbot.core.utils.chat_formatting import pagify, box

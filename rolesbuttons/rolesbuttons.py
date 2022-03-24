@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils.cogsutils import CogsUtils
+﻿from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
 import discord
 import typing
 from redbot.core import commands, Config
@@ -39,8 +39,9 @@ class RolesButtons(commands.Cog):
     if CogsUtils().is_dpy2:
         @commands.Cog.listener()
         async def on_interaction(self, interaction: discord.Interaction):
-            if not interaction.data["component_type"] == 2:
-                return
+            if "component_type" in interaction.data:
+                if not interaction.data["component_type"] == 2:
+                    return
             if interaction.user is None:
                 return
             if interaction.guild is None:

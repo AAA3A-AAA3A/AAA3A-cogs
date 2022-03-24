@@ -1,4 +1,4 @@
-from .AAA3A_utils.cogsutils import CogsUtils
+from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
 from typing import NamedTuple, Union
 from random import randint
 import discord

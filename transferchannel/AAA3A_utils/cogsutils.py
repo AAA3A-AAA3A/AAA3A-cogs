@@ -1,30 +1,36 @@
-from redbot.core import commands
-from redbot.core.bot import Red
-from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
-from redbot.core.utils.menus import start_adding_reactions
-from redbot.core.data_manager import cog_data_path
-from redbot.core.utils.chat_formatting import *
-from redbot.cogs.downloader.repo_manager import Repo
-from redbot.cogs.downloader.converters import InstalledCog
 import discord
-import redbot
-import logging
-import typing
-import datetime
+from redbot.core import commands
+
 import asyncio
 import contextlib
-import traceback
-import math
-from rich.table import Table
-from rich.console import Console
-from io import StringIO
-import string
-from random import choice
-from pathlib import Path
-from time import monotonic
-import os
-import sys
+import datetime
 import inspect
+import logging
+import math
+import os
+import platform
+import string
+import sys
+import traceback
+import typing
+from io import StringIO
+from pathlib import Path
+from random import choice
+from time import monotonic
+
+import pip
+import redbot
+from redbot import version_info as red_version_info
+from redbot.cogs.downloader.converters import InstalledCog
+from redbot.cogs.downloader.repo_manager import Repo
+from redbot.core._diagnoser import IssueDiagnoser
+from redbot.core.bot import Red
+from redbot.core.data_manager import basic_config, cog_data_path, config_file, instance_name, storage_type
+from redbot.core.utils.chat_formatting import bold, box, error, humanize_list, humanize_timedelta, pagify, text_to_file, warning
+from redbot.core.utils.menus import start_adding_reactions
+from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
+from rich.console import Console
+from rich.table import Table
 
 # Menu
 
@@ -45,7 +51,7 @@ def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
     temp_console.print(*objects)
     return box(temp_console.file.getvalue(), lang=lang)  # type: ignore
 
-__all__ = ["CogsUtils", "Loop", "Captcha"]
+__all__ = ["CogsUtils", "Loop", "Captcha", "Buttons", "Dropdown", "Modal"]
 TimestampFormat = typing.Literal["f", "F", "d", "D", "t", "T", "R"]
 
 class CogsUtils(commands.Cog):
@@ -98,6 +104,7 @@ class CogsUtils(commands.Cog):
                                         "ClearChannel",
                                         "CmdChannel",
                                         "CtxVar",
+                                        "DiscordModals",
                                         "EditFile",
                                         "Ip",
                                         "MemberPrefix",
@@ -115,6 +122,7 @@ class CogsUtils(commands.Cog):
                                         "ClearChannel",
                                         "CmdChannel",
                                         "CtxVar",
+                                        "DiscordModals",
                                         "EditFile",
                                         "Ip",
                                         "MemberPrefix",
@@ -126,7 +134,7 @@ class CogsUtils(commands.Cog):
                                         "TransferChannel"
                                     ]
         if self.cog is not None:
-            if not self.cog.__class__.__name__ in self.all_cogs_dpy2:
+            if self.cog.__class__.__name__ not in self.all_cogs_dpy2:
                 if self.is_dpy2 or redbot.version_info >= redbot.VersionInfo.from_str("3.5.0"):
                     raise RuntimeError(f"{self.cog.__class__.__name__} needs to be updated to run on dpy2/Red 3.5.0. It's best to use `[p]cog update` with no arguments to update all your cogs, which may be using new dpy2-specific methods.")
 
@@ -149,19 +157,22 @@ class CogsUtils(commands.Cog):
 
     async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[typing.Any, typing.Any]:
         return {}
-    
+
     def cog_unload(self):
         self._end()
-    
+
     async def add_cog(self, bot: Red, cog: commands.Cog):
         """
         Load a cog by checking whether the required function is awaitable or not.
         """
         value = bot.add_cog(cog)
         if inspect.isawaitable(value):
-            return await value
+            cog = await value
         else:
-            return value
+            cog = value
+        if hasattr(cog, 'initialize'):
+            await bot.initialize()
+        return cog
 
     def _setup(self):
         """
@@ -169,20 +180,20 @@ class CogsUtils(commands.Cog):
         """
         self.cog.cogsutils = self
         self.cog.log = logging.getLogger(f"red.{self.repo_name}.{self.cog.__class__.__name__}")
-        if not "format_help_for_context" in self.cog.__func_red__:
+        if "format_help_for_context" not in self.cog.__func_red__:
             setattr(self.cog, 'format_help_for_context', self.format_help_for_context)
-        if not "red_delete_data_for_user" in self.cog.__func_red__:
+        if "red_delete_data_for_user" not in self.cog.__func_red__:
             setattr(self.cog, 'red_delete_data_for_user', self.red_delete_data_for_user)
-        if not "red_get_data_for_user" in self.cog.__func_red__:
+        if "red_get_data_for_user" not in self.cog.__func_red__:
             setattr(self.cog, 'red_get_data_for_user', self.red_get_data_for_user)
-        if not "cog_unload" in self.cog.__func_red__:
+        if "cog_unload" not in self.cog.__func_red__:
             setattr(self.cog, 'cog_unload', self.cog_unload)
         self.bot.remove_listener(self.on_command_error)
         self.bot.add_listener(self.on_command_error)
-        asyncio.create_task(self._await_setup())
         self.bot.remove_command("getallfor")
         self.bot.add_command(getallfor)
-    
+        asyncio.create_task(self._await_setup())
+
     async def _await_setup(self):
         """
         Adds dev environment values, slash commands add Views.
@@ -219,6 +230,12 @@ class CogsUtils(commands.Cog):
         self.remove_dev_env_value()
         for loop in self.loops:
             self.loops[loop].end_all()
+        if not self.at_least_one_cog_loaded:
+            self.bot.remove_listener(self.on_command_error)
+            self.bot.remove_command("getallfor")
+        asyncio.create_task(self._await_end())
+
+    async def _await_end(self):
         if self.is_dpy2:
             if not self.interactions == {}:
                 if "removed" in self.interactions:
@@ -238,7 +255,8 @@ class CogsUtils(commands.Cog):
                                     pass
                         self.interactions["added"] = False
                         self.interactions["removed"] = True
-            asyncio.get_event_loop().call_later(2, asyncio.create_task, self.bot.tree.sync(guild=None))
+            await asyncio.sleep(2)
+            await self.bot.tree.sync(guild=None)
 
     def add_dev_env_value(self):
         """
@@ -325,7 +343,7 @@ class CogsUtils(commands.Cog):
                 return
             if not hasattr(self.bot, 'last_exceptions_cogs'):
                 self.bot.last_exceptions_cogs = {}
-            if not "global" in self.bot.last_exceptions_cogs:
+            if "global" not in self.bot.last_exceptions_cogs:
                 self.bot.last_exceptions_cogs["global"] = []
             if error in self.bot.last_exceptions_cogs["global"]:
                 return
@@ -333,15 +351,14 @@ class CogsUtils(commands.Cog):
             if isinstance(error, commands.CommandError):
                 traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__)).replace(os.environ["USERPROFILE"], "{USERPROFILE}")
             else:
-                traceback_error = ("Traceback (most recent call last):"
-                                f"{error}")
+                traceback_error = f"Traceback (most recent call last): {error}"
             if "USERPROFILE" in os.environ:
                 traceback_error = traceback_error.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
             if "HOME" in os.environ:
                 traceback_error = traceback_error.replace(os.environ["HOME"], "{HOME}")
-            if not cog in self.bot.last_exceptions_cogs:
+            if cog not in self.bot.last_exceptions_cogs:
                 self.bot.last_exceptions_cogs[cog] = {}
-            if not ctx.command.qualified_name in self.bot.last_exceptions_cogs[cog]:
+            if ctx.command.qualified_name not in self.bot.last_exceptions_cogs[cog]:
                 self.bot.last_exceptions_cogs[cog][ctx.command.qualified_name] = []
             self.bot.last_exceptions_cogs[cog][ctx.command.qualified_name].append(traceback_error)
         except Exception:
@@ -357,7 +374,7 @@ class CogsUtils(commands.Cog):
             file: typing.Optional[discord.File]=None,
             timeout: typing.Optional[int]=60,
             timeout_message: typing.Optional[str]=_("Timed out, please try again").format(**locals()),
-            way: typing.Optional[typing.Literal["buttons", "dropdown", "reactions", "message"]]="buttons",
+            way: typing.Optional[typing.Literal["buttons", "dropdown", "reactions", "message"]] = "buttons",
             message: typing.Optional[discord.Message]=None,
             put_reactions: typing.Optional[bool]=True,
             delete_message: typing.Optional[bool]=True,
@@ -393,7 +410,7 @@ class CogsUtils(commands.Cog):
             except discord.HTTPException:
                 pass
         if way == "buttons":
-            view = Buttons(timeout=timeout, buttons=[{"style": 3, "label": "Yes", "emoji": reactions[0], "custom_id": "ConfirmationAsk_Yes"}, {"style": 4,"label": "No", "emoji": reactions[1], "custom_id": "ConfirmationAsk_No"}], members=[ctx.author.id] + list(ctx.bot.owner_ids)if check_owner else [] + [x.id for x in members_authored])
+            view = Buttons(timeout=timeout, buttons=[{"style": 3, "label": "Yes", "emoji": reactions[0], "custom_id": "ConfirmationAsk_Yes"}, {"style": 4, "label": "No", "emoji": reactions[1], "custom_id": "ConfirmationAsk_No"}], members=[ctx.author.id] + list(ctx.bot.owner_ids)if check_owner else [] + [x.id for x in members_authored])
             message = await ctx.send(content=text, embed=embed, file=file, view=view)
             try:
                 interaction, function_result = await view.wait_result()
@@ -560,7 +577,7 @@ class CogsUtils(commands.Cog):
                     if getattr(permissions, f"{p}"):
                         return False
         return True
-    
+
     def create_loop(self, function, name: typing.Optional[str]=None, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None, limit_exception: typing.Optional[int]=None):
         """
         Create a loop like Loop, but with default values and loop object recording functionality.
@@ -568,13 +585,13 @@ class CogsUtils(commands.Cog):
         if name is None:
             name = f"{self.cog.__class__.__name__}"
         if datetime.timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds).total_seconds() == 0:
-            seconds = 900 # 15 minutes
+            seconds = 900  # 15 minutes
         loop = Loop(cogsutils=self, name=name, function=function, days=days, hours=hours, minutes=minutes, seconds=seconds, function_args=function_args, limit_count=limit_count, limit_date=limit_date, limit_exception=limit_exception)
         if f"{loop.name}" in self.loops:
             self.loops[f"{loop.name}"].stop_all()
         self.loops[f"{loop.name}"] = loop
         return loop
-    
+
     async def captcha(self, member: discord.Member, channel: discord.TextChannel, limit: typing.Optional[int]=3, timeout: typing.Optional[int]=60, why: typing.Optional[str]=""):
         """
         Create a Captcha challenge like Captcha, but with default values.
@@ -588,9 +605,23 @@ class CogsUtils(commands.Cog):
         cogs = {}
         for cog in self.all_cogs:
             object = self.bot.get_cog(f"{cog}")
-            cogs[f"{cog}"] = object
+            if object is not None:
+                cogs[f"{cog}"] = object if hasattr(object, 'cogsutils') else None
+            else:
+                cogs[f"{cog}"] = None
         return cogs
-    
+
+    def at_least_one_cog_loaded(self):
+        """
+        Return True if at least one cog of all my cogs is loaded.
+        """
+        at_least_one_cog_loaded = False
+        for object in self.get_all_repo_cogs_objects().values:
+            if object is not None:
+                at_least_one_cog_loaded = True
+                break
+        return at_least_one_cog_loaded
+
     def add_all_dev_env_values(self):
         """
         Add values to the development environment for all my loaded cogs. Not really useful anymore, now that my cogs use AAA3A_utils.
@@ -647,7 +678,7 @@ class CogsUtils(commands.Cog):
         while True:
             # This probably won't turn into an endless loop
             key = "".join(choice(strings) for i in range(number))
-            if not key in existing_keys:
+            if key not in existing_keys:
                 return key
 
     def await_function(self, function, function_args: typing.Optional[typing.Dict]={}):
@@ -663,7 +694,7 @@ class CogsUtils(commands.Cog):
         except Exception as e:
             if hasattr(self.cogsutils.cog, 'log'):
                 self.cog.log.error(f"An error occurred with the {function.__name__} function.", exc_info=e)
-    
+
     async def delete_message(self, message: discord.Message):
         """
         Delete a message, ignoring any exceptions.
@@ -673,7 +704,7 @@ class CogsUtils(commands.Cog):
             await message.delete()
         except discord.HTTPException:
             pass
-    
+
     async def check_in_listener(self, output, allowed_by_whitelist_blacklist: typing.Optional[bool]=True):
         """
         Check all parameters for the output of any listener.
@@ -695,7 +726,7 @@ class CogsUtils(commands.Cog):
             if self.cog is not None:
                 if await self.bot.cog_disabled_in_guild(self.cog, output.guild):
                     raise discord.ext.commands.BadArgument()
-            # check whether the channel isn't on the ignore list 
+            # check whether the channel isn't on the ignore list
             if not await self.bot.ignored_channel_or_guild(output):
                 raise discord.ext.commands.BadArgument()
             # check whether the message author isn't on allowlist/blocklist
@@ -721,7 +752,7 @@ class CogsUtils(commands.Cog):
             if self.cog is not None:
                 if await self.bot.cog_disabled_in_guild(self.cog, output.guild):
                     raise discord.ext.commands.BadArgument()
-            # check whether the channel isn't on the ignore list 
+            # check whether the channel isn't on the ignore list
             if not await self.bot.ignored_channel_or_guild(output):
                 raise discord.ext.commands.BadArgument()
             # check whether the message author isn't on allowlist/blocklist
@@ -743,7 +774,7 @@ class CogsUtils(commands.Cog):
                     self.bot.unload_extension(self.cog.__class__.__name__.lower())
                     await self.bot.remove_loaded_package(self.cog.__class__.__name__.lower())
                 await downloader._delete_cog(poss_installed_path)
-            await downloader._remove_from_installed([self.cog.__class__.__name__.lower()])
+            await downloader._remove_from_installed([discord.utils.get(await downloader.installed_cogs(), name=self.cog.__class__.__name__.lower())])
         else:
             raise self.DownloaderNotLoaded(_("The cog downloader is not loaded.").format(**locals()))
 
@@ -779,6 +810,13 @@ class Loop():
         self.last_iter: typing.Optional[datetime.datetime] = None
         self.next_iter: typing.Optional[datetime.datetime] = None
 
+    async def start(self):
+        if self.cogsutils.is_dpy2:
+            async with self.cogsutils.bot:
+                self.cogsutils.bot.loop.create_task(self.loop())
+        else:
+            self.cogsutils.bot.loop.create_task(self.loop())
+
     async def wait_until_iter(self) -> None:
         now = datetime.datetime.utcnow()
         time = now.timestamp()
@@ -795,7 +833,7 @@ class Loop():
         await asyncio.sleep(1)
         if hasattr(self.cogsutils.cog, 'log'):
             self.cogsutils.cog.log.debug(f"{self.name} loop has started.")
-        if float(self.interval)%float(3600) == 0:
+        if float(self.interval) % float(3600) == 0:
             try:
                 start = monotonic()
                 self.iter_start()
@@ -836,12 +874,12 @@ class Loop():
                 self.iter_error(e)
             if await self.maybe_stop():
                 return
-            if float(self.interval)%float(3600) == 0:
+            if float(self.interval) % float(3600) == 0:
                 await self.sleep_until_next()
             else:
                 if not self.interval == 0:
                     await self.wait_until_iter()
-    
+
     async def maybe_stop(self):
         if self.stop_manually:
             self.stop_all()
@@ -857,7 +895,7 @@ class Loop():
         if self.stop:
             return True
         return False
-    
+
     def stop_all(self):
         self.stop = True
         self.next_iter = None
@@ -1024,7 +1062,7 @@ class Captcha():
             raise self.MissingPermissions(e)
         except Exception as e:
             if hasattr(self.cogsutils.cog, 'log'):
-                self.cogsutils.cog.log.error(f"An unsupported error occurred during the captcha.", exc_info=e)
+                self.cogsutils.cog.log.error("An unsupported error occurred during the captcha.", exc_info=e)
             raise self.OtherException(e)
         finally:
             if timeout:
@@ -1068,7 +1106,7 @@ class Captcha():
         finally:
             self.running = False
 
-    def generate_code(self, put_fake_espace: typing.Optional[bool]=True):
+    def generate_code(self, put_fake_espace: typing.Optional[bool] = True):
         code = self.cogsutils.generate_key(number=8, existing_keys=[], strings_used={"ascii_lowercase": False, "ascii_uppercase": True, "digits": True, "punctuation": False})
         if put_fake_espace:
             code = self.escape_char.join(list(code))
@@ -1081,7 +1119,7 @@ class Captcha():
         embed_dict = {
                         "embeds": [
                             {
-                                "title": _("Captcha").format(**locals()) +  _(" for {self.why}").format(**locals()) if not self.why == "" else "",
+                                "title": _("Captcha").format(**locals()) + _(" for {self.why}").format(**locals()) if not self.why == "" else "",
                                 "description": _("Please return me the following code:\n{box(str(self.code))}\nDo not copy and paste.").format(**locals()),
                                 "author": {
                                     "name": f"{self.member.display_name}",
@@ -1127,7 +1165,7 @@ class Captcha():
         else:
             return False
 
-    async def wait_for_action(self) -> Union[discord.Reaction, discord.Message, None]:
+    async def wait_for_action(self) -> typing.Union[discord.Reaction, discord.Message, None]:
         """Wait for an action from the user.
         It will return an object of discord.Message or discord.Reaction depending what the user
         did.
@@ -1159,11 +1197,11 @@ class Captcha():
             return u.id == self.member.id
         return [
             asyncio.create_task(
-                 self.cogsutils.bot.wait_for(
+                self.cogsutils.bot.wait_for(
                     "reaction_add",
                     check=ReactionPredicate.with_emojis(
                         "🔁", message=self.message, user=self.member
-                    ),
+                    )
                 )
             ),
             asyncio.create_task(
@@ -1172,12 +1210,12 @@ class Captcha():
                     check=MessagePredicate.same_context(
                         channel=self.channel,
                         user=self.member,
-                    ),
+                    )
                 )
             ),
-            asyncio.create_task(self.cogsutils.bot.wait_for("user_remove", check=leave_check)),
+            asyncio.create_task(self.cogsutils.bot.wait_for("user_remove", check=leave_check))
         ]
-    
+
     class MissingPermissions(Exception):
         pass
 
@@ -1196,10 +1234,15 @@ class Captcha():
 if CogsUtils().is_dpy2:
 
     class Buttons(discord.ui.View):
-        """Create buttons easily."""
+        """Create Buttons easily."""
 
-        def __init__(self, timeout: typing.Optional[float]=180, buttons: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}):
+        def __init__(self, timeout: typing.Optional[float]=180, buttons: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
+            """style: ButtonStyle, label: Optional[str], disabled: bool, custom_id: Optional[str], url: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], row: Optional[int]"""
+            self.buttons_dict_instance = {"timeout": timeout, "buttons": buttons, "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
+            if infinity:
+                timeout = None
             super().__init__(timeout=timeout)
+            self.infinity = infinity
             self.interaction_result = None
             self.function_result = None
             self.members = members
@@ -1211,14 +1254,25 @@ if CogsUtils().is_dpy2:
             self.buttons_dict = []
             self.done = asyncio.Event()
             for button_dict in buttons:
-                if not "style" in button_dict:
+                if "style" not in button_dict:
                     button_dict["style"] = int(discord.ButtonStyle(2))
-                if not "label" in button_dict:
+                if "label" not in button_dict:
                     button_dict["label"] = "Test"
                 button = discord.ui.Button(**button_dict)
                 self.add_item(button)
                 self.buttons.append(button)
                 self.buttons_dict.append(button_dict)
+
+        def to_dict_cogsutils(self, for_Config: typing.Optional[bool]=False):
+            buttons_dict_instance = self.buttons_dict_instance
+            if for_Config:
+                buttons_dict_instance["check"] = None
+                buttons_dict_instance["function"] = None
+            return buttons_dict_instance
+
+        @property
+        def from_dict_cogsutils(buttons_dict_instance: typing.Dict):
+            return Buttons(**buttons_dict_instance)
 
         async def interaction_check(self, interaction: discord.Interaction):
             if self.check is not None:
@@ -1226,21 +1280,23 @@ if CogsUtils().is_dpy2:
                     await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
                     return True
             if self.members is not None:
-                if not interaction.user.id in self.members:
+                if interaction.user.id not in self.members:
                     await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
                     return True
             if self.function is not None:
-                self.function_result = await self.function(interaction, **self.function_args)
+                self.function_result = await self.function(self, interaction, **self.function_args)
             self.interaction_result = interaction
             self.done.set()
-            self.stop()
+            if not self.infinity:
+                self.stop()
             return True
-        
+
         async def on_timeout(self):
             self.done.set()
             self.stop()
-        
+
         async def wait_result(self):
+            self.done = asyncio.Event()
             await self.done.wait()
             interaction, function_result = self.get_result()
             if interaction is None:
@@ -1251,19 +1307,36 @@ if CogsUtils().is_dpy2:
             return self.interaction_result, self.function_result
 
     class Dropdown(discord.ui.View):
-        """Create dropdowns easily."""
+        """Create Dropdown easily."""
 
-        def __init__(self, timeout: typing.Optional[float]=180, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}):
+        def __init__(self, timeout: typing.Optional[float]=180, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
+            """label: str, value: str, description: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], default: bool"""
+            self.dropdown_dict_instance = {"timeout": timeout, "placeholder": placeholder, "min_values": min_values, "max_values": max_values, "options": options, "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
+            if infinity:
+                timeout = None
             super().__init__(timeout=timeout)
-            self.dropdown = self.Dropdown(placeholder=placeholder, min_values=min_values, max_values=max_values, options=options, members=members, check=check, function=function, function_args=function_args)
+            self.infinity = infinity
+            self.dropdown = self.Dropdown(placeholder=placeholder, min_values=min_values, max_values=max_values, options=options, members=members, check=check, function=function, function_args=function_args, infinity=self.infinity)
             self.add_item(self.dropdown)
 
+        def to_dict_cogsutils(self, for_Config: typing.Optional[bool]=False):
+            dropdown_dict_instance = self.dropdown_dict_instance
+            if for_Config:
+                dropdown_dict_instance["check"] = None
+                dropdown_dict_instance["function"] = None
+            return dropdown_dict_instance
+
+        @property
+        def from_dict_cogsutils(dropdown_dict_instance: typing.Dict):
+            return Dropdown(**dropdown_dict_instance)
+
         async def on_timeout(self):
-            self.done.set()
+            self.dropdown.done.set()
             self.stop()
-        
+
         async def wait_result(self):
-            await self.wait()
+            self.done = asyncio.Event()
+            await self.dropdown.done.wait()
             interaction, values, function_result = self.get_result()
             if interaction is None:
                 raise TimeoutError
@@ -1274,7 +1347,8 @@ if CogsUtils().is_dpy2:
 
         class Dropdown(discord.ui.Select):
 
-            def __init__(self, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}):
+            def __init__(self, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
+                self.infinity = infinity
                 self.interaction_result = None
                 self.values_result = None
                 self.function_result = None
@@ -1284,8 +1358,9 @@ if CogsUtils().is_dpy2:
                 self.function_args = function_args
                 self._options = []
                 self.options_dict = []
+                self.done = asyncio.Event()
                 for option_dict in options:
-                    if not "label" in option_dict:
+                    if "label" not in option_dict:
                         option_dict["label"] = "Test"
                     option = discord.SelectOption(**option_dict)
                     self._options.append(option)
@@ -1298,27 +1373,74 @@ if CogsUtils().is_dpy2:
                         await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
                         return True
                 if self.members is not None:
-                    if not interaction.user.id in self.members:
+                    if interaction.user.id not in self.members:
                         await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
                         return True
                 if self.function is not None:
-                    self.function_result = await self.function(interaction, **self.function_args)
+                    self.function_result = await self.function(self, interaction, self.values, **self.function_args)
                 self.interaction_result = interaction
                 self.values_result = self.values
-                self.view.stop()
+                self.done.set()
+                if not self.infinity:
+                    self.view.stop()
 
-def _(string):
-    return string
+    class Modal(discord.ui.Modal):
+        """Create Modal easily."""
 
-def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
-    temp_console = Console(  # Prevent messing with STDOUT's console
-        color_system=None,
-        file=StringIO(),
-        force_terminal=True,
-        width=80,
-    )
-    temp_console.print(*objects)
-    return box(temp_console.file.getvalue(), lang=lang)  # type: ignore
+        def __init__(self, title: typing.Optional[str]="Form", timeout: typing.Optional[float]=None, inputs: typing.Optional[typing.List]=[], function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}):
+            """name: str, label: str, style: TextStyle, custom_id: str, placeholder: Optional[str], default: Optional[str], required: bool, min_length: Optional[int], max_length: Optional[int], row: Optional[int]"""
+            self.modal_dict_instance = {"title": title, "timeout": timeout, "inputs": inputs, "function": function, "function_args": function_args}
+            super().__init__(title=title, timeout=timeout)
+            self.title = title
+            self.interaction_result = None
+            self.values_result = None
+            self.function_result = None
+            self.function = function
+            self.function_args = function_args
+            self.inputs = []
+            self.inputs_dict = []
+            self.done = asyncio.Event()
+            for input_dict in inputs:
+                if "style" in input_dict:
+                    if isinstance(input_dict["style"], int):
+                        input_dict["style"] = discord.ui.text_input.TextStyle(input_dict["style"])
+                input = discord.ui.text_input.TextInput(**input_dict)
+                self.add_item(input)
+                self.inputs.append(input)
+                self.inputs_dict.append(input_dict)
+
+        def to_dict_cogsutils(self, for_Config: typing.Optional[bool]=False):
+            modal_dict_instance = self.modal_dict_instance
+            if for_Config:
+                modal_dict_instance["function"] = None
+            return modal_dict_instance
+
+        @property
+        def from_dict_cogsutils(modal_dict_instance: typing.Dict):
+            return Modal(**modal_dict_instance)
+
+        async def on_submit(self, interaction: discord.Interaction):
+            self.interaction_result = interaction
+            self.values_result = self.inputs
+            if self.function is not None:
+                self.function_result = await self.function(self, self.interaction_result, self.values_result, **self.function_args)
+            self.done.set()
+            self.stop()
+
+        async def on_timeout(self):
+            self.done.set()
+            self.stop()
+
+        async def wait_result(self):
+            self.done = asyncio.Event()
+            await self.done.wait()
+            interaction, values, function_result = self.get_result()
+            if interaction is None:
+                raise TimeoutError
+            return interaction, values, function_result
+
+        def get_result(self):
+            return self.interaction_result, self.values_result, self.function_result
 
 @commands.is_owner()
 @commands.command(hidden=True)
@@ -1378,7 +1500,7 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
             cogs_to_update, libs_to_update = await downloader._available_updates(cogs_to_check)
             cogs_to_update, filter_message = downloader._filter_incorrect_cogs(cogs_to_update)
             to_update_cogs = [c.name.lower() for c in cogs_to_update]
-    
+
     if all is not None:
         repos = []
         for r in installed_cogs:
@@ -1399,12 +1521,6 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
     IS_WINDOWS = os.name == "nt"
     IS_MAC = sys.platform == "darwin"
     IS_LINUX = sys.platform == "linux"
-    from redbot import version_info as red_version_info
-    from redbot.core.data_manager import storage_type
-    from redbot.core.data_manager import basic_config, config_file
-    from redbot.core.data_manager import instance_name
-    import pip
-    import platform
     if IS_LINUX:
         import distro  # pylint: disable=import-error
     python_executable = sys.executable
@@ -1427,11 +1543,11 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
     data_path_original = Path(basic_config["DATA_PATH"])
     if "USERPROFILE" in os.environ:
         data_path = Path(str(data_path_original).replace(os.environ["USERPROFILE"], "{USERPROFILE}"))
-        config_file = Path(str(config_file).replace(os.environ["USERPROFILE"], "{USERPROFILE}"))
+        _config_file = Path(str(config_file).replace(os.environ["USERPROFILE"], "{USERPROFILE}"))
         python_executable = Path(str(python_executable).replace(os.environ["USERPROFILE"], "{USERPROFILE}"))
     if "HOME" in os.environ:
         data_path = Path(str(data_path_original).replace(os.environ["HOME"], "{HOME}"))
-        config_file = Path(str(config_file).replace(os.environ["HOME"], "{HOME}"))
+        _config_file = Path(str(config_file).replace(os.environ["HOME"], "{HOME}"))
         python_executable = Path(str(python_executable).replace(os.environ["HOME"], "{HOME}"))
     disabled_intents = (
         ", ".join(
@@ -1456,7 +1572,8 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
             return alias
     def get_perms(command):
         final_perms = ""
-        neat_format = lambda x: " ".join(i.capitalize() for i in x.replace("_", " ").split())
+        def neat_format(x):
+            return " ".join(i.capitalize() for i in x.replace("_", " ").split())
         user_perms = []
         if perms := getattr(command.requires, "user_perms"):
             user_perms.extend(neat_format(i) for i, j in perms if j)
@@ -1483,7 +1600,6 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
             cooldowns.append(f"Max concurrent uses: {s.number} per {s.per.name.capitalize()}")
         return cooldowns
     async def get_diagnose(ctx, command):
-        from redbot.core._diagnoser import IssueDiagnoser
         issue_diagnoser = IssueDiagnoser(ctx.bot, ctx, ctx.channel, ctx.author, command)
         await issue_diagnoser._prepare()
         diagnose_result = []
@@ -1523,7 +1639,7 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
     red_table.add_row("Storage type", str(driver))
     red_table.add_row("Disabled intents", str(disabled_intents))
     red_table.add_row("Data path", str(data_path))
-    red_table.add_row("Metadata file", str(config_file))
+    red_table.add_row("Metadata file", str(_config_file))
     red_table.add_row("Global prefixe(s)", str(await ctx.bot.get_valid_prefixes()))
     raw_red_table_str = no_colour_rich_markup(red_table)
     if repo is not None:
@@ -1827,7 +1943,7 @@ message_html_getallfor = """    <div class="chatlog__messages">
             <div class="chatlog__content">
 <div class="markdown">
     <span class="preserve-whitespace"><div class="pre pre--multiline nohighlight">{MESSAGE_CONTENT}</div></span>
-    
+
 </div>
 </div>"""
 end_html_getallfor = """

@@ -1,4 +1,4 @@
-from .AAA3A_utils.cogsutils import CogsUtils
+from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
 import json
 from pathlib import Path
 if not CogsUtils().is_dpy2:

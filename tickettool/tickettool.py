@@ -1,4 +1,4 @@
-from .AAA3A_utils.cogsutils import CogsUtils
+from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
 import discord
 import datetime
 import typing
@@ -444,6 +444,9 @@ class TicketTool(settings, commands.Cog):
     if CogsUtils().is_dpy2:
         @commands.Cog.listener()
         async def on_interaction(self, interaction: discord.Interaction):
+            if "component_type" in interaction.data:
+                if not interaction.data["component_type"] == 2:
+                    return
             if interaction.data["custom_id"] == "close_ticket_button":
                 permissions = interaction.channel.permissions_for(interaction.user)
                 if not permissions.read_messages and not permissions.send_messages:

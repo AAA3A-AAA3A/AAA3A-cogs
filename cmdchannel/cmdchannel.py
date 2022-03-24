@@ -1,4 +1,4 @@
-from .AAA3A_utils.cogsutils import CogsUtils
+from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
 from random import choice
 import discord, typing, logging, datetime
 from typing import List

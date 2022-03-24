@@ -1,4 +1,4 @@
-from .AAA3A_utils.cogsutils import CogsUtils
+from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
 import typing
 import datetime
 from redbot.core import commands

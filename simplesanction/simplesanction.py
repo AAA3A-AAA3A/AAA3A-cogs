@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils.cogsutils import CogsUtils
+﻿from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
 if CogsUtils().is_dpy2:
     from .AAA3A_utils.cogsutils import Buttons, Dropdown
 else:

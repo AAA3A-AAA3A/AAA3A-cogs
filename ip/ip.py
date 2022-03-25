@@ -1,7 +1,8 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
-import requests
 import socket
-from redbot.core import commands, Config
+
+import requests
+from redbot.core import Config, commands
 
 # Credits:
 # Thanks to @ AverageGamer on Discord for the cog idea and the code to find the external ip!

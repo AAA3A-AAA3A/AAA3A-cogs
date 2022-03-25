@@ -1,12 +1,14 @@
 ﻿from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
 if CogsUtils().is_dpy2:
     from .AAA3A_utils.cogsutils import Buttons  # isort:skip
 else:
     from dislash import ActionRow  # isort:skip
-from redbot.core import commands  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+
 from redbot.core import Config
+
 from .converters import RoleEmojiConverter
 
 # Credits:

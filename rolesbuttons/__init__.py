@@ -1,6 +1,7 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 import json
 from pathlib import Path
+
 if not CogsUtils().is_dpy2:
     from dislash import InteractionClient
 

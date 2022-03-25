@@ -3,6 +3,7 @@ import discord  # isort:skip
 import typing  # isort:skip
 import re
 
+
 def _(untranslated: str):
     return untranslated
 

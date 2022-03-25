@@ -1,7 +1,9 @@
 import re
-from typing import Dict, Sequence, Optional, Union
+from typing import Dict, Optional, Sequence, Union
+
 import discord
 from discord.ext import commands
+
 
 def role_mention_cleanup(message: discord.Message, cogsutils) -> Union[str, None]:
     content = message.content

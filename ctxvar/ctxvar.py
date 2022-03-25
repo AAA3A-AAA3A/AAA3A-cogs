@@ -2,9 +2,10 @@
 from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
-from redbot.core.utils.menus import menu, DEFAULT_CONTROLS
-from redbot.core.utils.chat_formatting import box
 from copy import copy
+
+from redbot.core.utils.chat_formatting import box
+from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!

@@ -1,15 +1,17 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
 if CogsUtils().is_dpy2:
     from .AAA3A_utils.cogsutils import Buttons  # isort:skip
 else:
     from dislash import ActionRow, Button, ButtonStyle  # isort:skip
-from redbot.core import commands  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+
 import asyncio
 import datetime
-from redbot.core import Config
 from math import *
+
+from redbot.core import Config
 from TagScriptEngine import Interpreter, block
 
 # Credits:

@@ -6,12 +6,15 @@ if CogsUtils().is_dpy2:
     from .AAA3A_utils.cogsutils import Buttons  # isort:skip
 else:
     from dislash import ActionRow, Button, ButtonStyle  # isort:skip
+
 import datetime
+import io
+from copy import copy
+
+import chat_exporter
 from redbot.core import Config, modlog
 from redbot.core.bot import Red
-from copy import copy
-import io
-import chat_exporter
+
 from .settings import settings
 from .utils import utils
 

@@ -3,10 +3,12 @@ if CogsUtils().is_dpy2:
     from .AAA3A_utils.cogsutils import Buttons  # isort:skip
 else:
     from dislash import ActionRow, Button, ButtonStyle  # isort:skip
+
 from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 from .utils import utils
+
 
 def _(untranslated: str):
     return untranslated

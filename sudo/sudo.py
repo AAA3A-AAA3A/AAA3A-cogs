@@ -1,9 +1,9 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 import typing  # isort:skip
+import asyncio
 import datetime
 from copy import copy
-import asyncio
 
 # Credits:
 # The idea for this cog came from @Jack1142. This PR will take time, so I'm making it. If one day this one is integrated into Red, this cog may make it easier to manage. (https://github.com/Cog-Creators/Red-DiscordBot/pull/5419)

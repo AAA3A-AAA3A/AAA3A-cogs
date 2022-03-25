@@ -15,7 +15,7 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to transfer all messages channel in a other channel.
+A cog to transfer all messages channel in a other channel!
 
 --------
 Commands
@@ -23,7 +23,7 @@ Commands
 
 Here are all the commands included in this cog (1):
 
-* ``[p]transferchannel <source> <destination> <limit> [embed=True] [webhooks=True]``
+* ``[p]transferchannel <source> <destination> <limit> <"embed"|"webhook"|"message">``
  Transfer all messages channel in a other channel. This might take a long time.
 
 ------------

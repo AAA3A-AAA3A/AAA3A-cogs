@@ -15,7 +15,7 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to transfer all messages channel in a other channel.
+A cog to transfer all messages channel in a other channel!
 
 --------
 Commands

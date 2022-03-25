@@ -1,8 +1,9 @@
-from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
-import discord
-import typing
+from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
 from typing import List, Optional, Tuple, Union
-from redbot.core import Config, commands
+from redbot.core import Config
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!

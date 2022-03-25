@@ -1,7 +1,8 @@
-from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
-import discord
-import typing
-from redbot.core import commands, Config
+from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
+from redbot.core import Config
 
 # Credits:
 # The idea for this cog came from @OnlyEli on Red cogs support! (https://discord.com/channels/240154543684321280/430582201113903114/944075297127538730)
@@ -34,7 +35,7 @@ class MemberPrefix(commands.Cog):
 
         self.cache_messages = []
         self.bot.before_invoke(self.before_invoke)
-        
+
         self.__func_red__ = ["cog_unload"]
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
@@ -67,7 +68,7 @@ class MemberPrefix(commands.Cog):
             prefixes = config["custom_prefixes"]
             if await self.config.use_normal_prefixes():
                 for p in await self.bot.get_valid_prefixes(message.guild):
-                    if not p in prefixes:
+                    if p not in prefixes:
                         prefixes.append(p)
         else:
             prefixes = await self.bot.get_valid_prefixes(message.guild)

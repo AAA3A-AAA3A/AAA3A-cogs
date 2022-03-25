@@ -1,7 +1,8 @@
-from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
-import discord
-import typing
-from redbot.core import commands, Config
+from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
+from redbot.core import Config
 from copy import copy
 from redbot.core.utils.menus import start_adding_reactions
 
@@ -47,7 +48,7 @@ class ReactToCommand(commands.Cog):
         if await self.bot.cog_disabled_in_guild(self, guild):
             return
         config = await self.config.guild(guild).react_command.all()
-        if not f"{payload.channel_id}-{payload.message_id}" in config:
+        if f"{payload.channel_id}-{payload.message_id}" not in config:
             return
         if getattr(payload.emoji, "id", None):
             payload.emoji = str(payload.emoji.id)
@@ -58,7 +59,7 @@ class ReactToCommand(commands.Cog):
             await message.remove_reaction(f"{payload.emoji}", payload.member)
         except discord.HTTPException:
             pass
-        if not f"{payload.emoji}" in config[f"{payload.channel_id}-{payload.message_id}"]:
+        if f"{payload.emoji}" not in config[f"{payload.channel_id}-{payload.message_id}"]:
             return
         message = copy(await channel.fetch_message(payload.message_id))
         permissions = channel.permissions_for(payload.member)
@@ -77,7 +78,7 @@ class ReactToCommand(commands.Cog):
         if not message.guild:
             return
         config = await self.config.guild(message.guild).react_command.all()
-        if not f"{message.channel.id}-{message.id}" in config:
+        if f"{message.channel.id}-{message.id}" not in config:
             return
         del config[f"{message.channel.id}-{message.id}"]
         await self.config.guild(message.guild).react_command.set(config)
@@ -85,7 +86,6 @@ class ReactToCommand(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent) -> None:
         guild = self.bot.get_guild(payload.guild_id)
-        channel = guild.get_channel(payload.channel_id)
         payload.member = guild.get_member(payload.user_id)
         if payload.member is None:
             return
@@ -94,13 +94,13 @@ class ReactToCommand(commands.Cog):
         if not payload.member.id == guild.me.id:
             return
         config = await self.config.guild(guild).react_command.all()
-        if not f"{payload.channel_id}-{payload.message_id}" in config:
+        if f"{payload.channel_id}-{payload.message_id}" not in config:
             return
         if getattr(payload.emoji, "id", None):
             payload.emoji = str(payload.emoji.id)
         else:
             payload.emoji = str(payload.emoji).strip("\N{VARIATION SELECTOR-16}")
-        if not f"{payload.emoji}" in config[f"{payload.channel_id}-{payload.message_id}"]:
+        if f"{payload.emoji}" not in config[f"{payload.channel_id}-{payload.message_id}"]:
             return
         del config[f"{payload.channel_id}-{payload.message_id}"][f"{payload.emoji}"]
         if config[f"{payload.channel_id}-{payload.message_id}"] == {}:
@@ -138,7 +138,7 @@ class ReactToCommand(commands.Cog):
             await ctx.send(_("An error has occurred. It is possible that the emoji you provided is invalid.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).react_command.all()
-        if not f"{message.channel.id}-{message.id}" in config:
+        if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
         config[f"{message.channel.id}-{message.id}"][f"{react}"] = command
         await self.config.guild(ctx.guild).react_command.set(config)
@@ -150,10 +150,10 @@ class ReactToCommand(commands.Cog):
         """
         await start_adding_reactions(message, [react])
         config = await self.config.guild(ctx.guild).react_command.all()
-        if not f"{message.channel.id}-{message.id}" in config:
+        if f"{message.channel.id}-{message.id}" not in config:
             await ctx.send(_("No command-reaction is configured for this message.").format(**locals()))
             return
-        if not f"{react}" in config[f"{message.channel.id}-{message.id}"]:
+        if f"{react}" not in config[f"{message.channel.id}-{message.id}"]:
             await ctx.send(_("I wasn't watching for this reaction on this message.").format(**locals()))
             return
         del config[f"{message.channel.id}-{message.id}"][f"{react}"]
@@ -171,7 +171,7 @@ class ReactToCommand(commands.Cog):
         """Clear all commands-reactions to a message.
         """
         config = await self.config.guild(ctx.guild).react_command.all()
-        if not f"{message.channel.id}-{message.id}" in config:
+        if f"{message.channel.id}-{message.id}" not in config:
             await ctx.send(_("No command-reaction is configured for this message.").format(**locals()))
             return
         for react in config[f"{message.channel.id}-{message.id}"]:

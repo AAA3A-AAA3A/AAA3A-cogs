@@ -1,11 +1,11 @@
-from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
-import typing
-import discord
-from redbot.core import checks, commands
+from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
 from .helpers import embed_from_msg
 from redbot.core.utils.tunnel import Tunnel
 
-if CogsUtils().is_dpy2: # To remove
+if CogsUtils().is_dpy2:  # To remove
     setattr(commands, 'Literal', typing.Literal)
 
 # Credits:
@@ -33,13 +33,13 @@ class TextChannelGuildConverter(discord.ext.commands.TextChannelConverter):
             channel = None
         if channel is not None:
             if channel.guild == ctx.guild:
-                if not ctx.author.id in ctx.bot.owner_ids and not channel.permissions_for(ctx.author).manage_guild:
+                if ctx.author.id not in ctx.bot.owner_ids and not channel.permissions_for(ctx.author).manage_guild:
                     raise discord.ext.commands.BadArgument(_("You must have permissions to manage this server to use this command.").format(**locals()))
                 permissions = channel.permissions_for(channel.guild.me)
                 if not permissions.read_messages or not permissions.read_message_history or not permissions.send_messages or not permissions.view_channel:
                     raise discord.ext.commands.BadArgument(_("I need to have all the following permissions for the {channel.mention} channel ({channel.id}).\n`read_messages`, `read_message_history`, `send_messages` and `view_channel`.").format(**locals()))
                 return channel
-        if not ctx.author.id in ctx.bot.owner_ids:
+        if ctx.author.id not in ctx.bot.owner_ids:
             raise discord.ext.commands.BadArgument(_("This channel cannot be found.").format(**locals()))
         try:
             argument = int(argument)
@@ -66,7 +66,7 @@ class TransferChannel(commands.Cog):
         self.cogsutils._setup()
 
     @commands.command(aliases=["channeltransfer"])
-    @checks.admin_or_permissions(manage_guild=True)
+    @commands.admin_or_permissions(manage_guild=True)
     @commands.guild_only()
     async def transferchannel(self, ctx: commands.Context, source: TextChannelGuildConverter, destination: TextChannelGuildConverter, limit: int, way: commands.Literal["embed", "webhook", "message"]):
         """
@@ -91,9 +91,9 @@ class TransferChannel(commands.Cog):
                 return
         count = 0
         if self.cogsutils.is_dpy2:
-            msgList = [message async for message in source.history(limit=limit+1, oldest_first=False)]
+            msgList = [message async for message in source.history(limit=limit + 1, oldest_first=False)]
         else:
-            msgList = await source.history(limit=limit+1, oldest_first=False).flatten()
+            msgList = await source.history(limit=limit + 1, oldest_first=False).flatten()
         msgList.reverse()
         for message in msgList:
             if not message.id == ctx.message.id:

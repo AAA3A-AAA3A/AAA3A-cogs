@@ -23,7 +23,7 @@ Commands
 
 Here are all the commands included in this cog (21):
 
-* ``[p]cmdchannel [delete=False] [channel] [command]``
+* ``[p]cmdchannel [guild] [channel] [command]``
  Act as if the command had been typed in the channel of your choice.
 * ``[p]cmdset``
  Configure Command for your server.
@@ -59,9 +59,9 @@ Here are all the commands included in this cog (21):
  Enable or disable information message.
 * ``[p]cmdset logschannel <text_channel_or_'none'>``
  Set a channel where events are registered.
-* ``[p]cmduser [delete=False] [user] [command]``
+* ``[p]cmduser [user] [command]``
  Act as if the command had been typed by imitating the specified user.
-* ``[p]cmduserchannel [delete=False] [user] [channel] [command]``
+* ``[p]cmduserchannel [user] [channel] [command]``
  Act as if the command had been typed in the channel of your choice by imitating the specified user.
 * ``[p]testvar``
  Test variables.

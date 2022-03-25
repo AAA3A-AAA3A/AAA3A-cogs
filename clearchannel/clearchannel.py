@@ -1,14 +1,9 @@
-from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
-from typing import NamedTuple, Union
-from random import randint
-import discord
-import logging
+from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
 import asyncio
-from redbot.core import checks, Config, commands
-from redbot.core.data_manager import cog_data_path
+from redbot.core import Config
 from redbot.core.utils.menus import start_adding_reactions
-
-log = logging.getLogger("ClearChannel")
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
@@ -97,7 +92,7 @@ class ClearChannel(commands.Cog):
         else:
             await old_channel.edit(name=_("🗑️ Deleted-{old_channel.name}").format(**locals()), position=len(ctx.guild.channels), reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id})").format(**locals()))
         await new_channel.edit(position=channel_position, reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id})").format(**locals()))
-        log.info(
+        self.log.info(
             _("%s (%s) deleted ALL messages in channel %s (%s).").format(**locals()),
             ctx.author,
             ctx.author.id,

@@ -1,12 +1,11 @@
-from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
-import discord
-import typing
-from redbot.core import commands
-from typing import List
+from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 if CogsUtils().is_dpy2:
-    from .AAA3A_utils.cogsutils import Buttons
+    from .AAA3A_utils.cogsutils import Buttons  # isort:skip
 else:
-    from dislash import ActionRow, Button, ButtonStyle
+    from dislash import ActionRow, Button, ButtonStyle  # isort:skip
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
 from .utils import utils
 
 def _(untranslated: str):
@@ -367,7 +366,7 @@ class settings(commands.Cog):
             )
             await channel.send(embed=embed, components=[button])
 
-    async def check_permissions_in_channel(self, permissions: List[str], channel: discord.TextChannel):
+    async def check_permissions_in_channel(self, permissions: typing.List[str], channel: discord.TextChannel):
         """Function to checks if the permissions are available in a guild.
         This will return a list of the missing permissions.
         """

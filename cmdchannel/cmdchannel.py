@@ -1,10 +1,8 @@
-from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
-from random import choice
-import discord, typing, logging, datetime
-from typing import List
-from redbot.core import checks, Config, commands, data_manager
-from redbot.core.utils.chat_formatting import escape, humanize_list, inline, humanize_timedelta, pagify
-from copy import copy
+from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
+from redbot.core import Config
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
@@ -27,19 +25,19 @@ class CmdChannel(commands.Cog):
             force_registration=True,
         )
         self.cmd_guild = {
-            "logschannel": None, # The channel for logs.
-            "enabled_cmdchannel": True, # Enable the possibility of commands.
-            "confirmation_cmdchannel": False, # Enable the confirmation.
-            "deletemessage_cmdchannel": False, # Enable the message delete.
-            "informationmessage_cmdchannel": False, # Enable the information message.
-            "enabled_cmduser": True, # Enable the possibility of commands.
-            "confirmation_cmduser": False, # Enable the confirmation.
-            "deletemessage_cmduser": False, # Enable the message delete.
-            "informationmessage_cmduser": False, # Enable the information message.
-            "enabled_cmduserchannel": True, # Enable the possibility of commands.
-            "confirmation_cmduserchannel": False, # Enable the confirmation.
-            "deletemessage_cmduserchannel": False, # Enable the message delete.
-            "informationmessage_cmduserchannel": False, # Enable the information message.
+            "logschannel": None,  # The channel for logs.
+            "enabled_cmdchannel": True,  # Enable the possibility of commands.
+            "confirmation_cmdchannel": False,  # Enable the confirmation.
+            "deletemessage_cmdchannel": False,  # Enable the message delete.
+            "informationmessage_cmdchannel": False,  # Enable the information message.
+            "enabled_cmduser": True,  # Enable the possibility of commands.
+            "confirmation_cmduser": False,  # Enable the confirmation.
+            "deletemessage_cmduser": False,  # Enable the message delete.
+            "informationmessage_cmduser": False,  # Enable the information message.
+            "enabled_cmduserchannel": True,  # Enable the possibility of commands.
+            "confirmation_cmduserchannel": False,  # Enable the confirmation.
+            "deletemessage_cmduserchannel": False,  # Enable the message delete.
+            "informationmessage_cmduserchannel": False,  # Enable the information message.
         }
 
         self.config.register_guild(**self.cmd_guild)
@@ -71,7 +69,7 @@ class CmdChannel(commands.Cog):
 
         guild = channel.guild
 
-        if channel not in ctx.guild.channels and not ctx.author.id in ctx.bot.owner_ids:
+        if channel not in ctx.guild.channels and ctx.author.id not in ctx.bot.owner_ids:
             await ctx.send(_("Only a bot owner can use a command from another server.").format(**locals()))
             return
 
@@ -324,7 +322,7 @@ class CmdChannel(commands.Cog):
         await self.config.guild(ctx.guild).logschannel.set(channel.id)
         await ctx.send(_("Logging channel registered: {channel.mention}.").format(**locals()))
 
-    async def check_permissions_in_channel(self, permissions: List[str], channel: discord.TextChannel):
+    async def check_permissions_in_channel(self, permissions: typing.List[str], channel: discord.TextChannel):
         """Function to checks if the permissions are available in a guild.
         This will return a list of the missing permissions.
         """

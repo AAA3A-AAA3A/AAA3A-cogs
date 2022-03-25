@@ -47,8 +47,6 @@ Here are all the commands included in this cog (23):
  - :hourglass: TempMute the user in this channel.
 * ``[p]setsimplesanction``
  Configure SimpleSanction for your server.
-* ``[p]setsimplesanction buttonsuse <true_or_false>``
- Enable or disable Buttons Use
 * ``[p]setsimplesanction color <color_or_'none'>``
  Set a colour fort the embed.
 * ``[p]setsimplesanction confirmation <true_or_false>``
@@ -69,6 +67,8 @@ Here are all the commands included in this cog (23):
  Choose the timeout
 * ``[p]setsimplesanction warnsystemuse <true_or_false>``
  Enable or disable Warn System Use
+* ``[p]setsimplesanction way <"buttons"|"dropdown"|"reactions">``
+ Enable or disable Buttons Use
 
 ------------
 Installation

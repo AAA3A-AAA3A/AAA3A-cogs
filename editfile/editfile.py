@@ -1,7 +1,6 @@
-from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
-import discord
-import typing
-from redbot.core import commands
+from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
 from pathlib import Path
 from redbot.core.data_manager import cog_data_path
 from redbot.core.utils.chat_formatting import pagify

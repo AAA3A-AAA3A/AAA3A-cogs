@@ -284,15 +284,19 @@ class CogsUtils(commands.Cog):
             except Exception:
                 pass
             try:
-                self.bot.add_dev_env_value("cog", lambda ctx: ctx.bot.get_cog)
+                self.bot.add_dev_env_value("discord", lambda x: discord)
             except Exception:
                 pass
             try:
-                self.bot.add_dev_env_value("cog", lambda ctx: ctx.bot.get_cog)
+                self.bot.add_dev_env_value("typing", lambda x: typing)
             except Exception:
                 pass
             try:
                 self.bot.add_dev_env_value("redbot", lambda x: redbot.core)
+            except Exception:
+                pass
+            try:
+                self.bot.add_dev_env_value("cog", lambda ctx: ctx.bot.get_cog)
             except Exception:
                 pass
 

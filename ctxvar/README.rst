@@ -23,7 +23,7 @@ Commands
 
 Here are all the commands included in this cog (1):
 
-* ``[p]ctxvar [args]``
+* ``[p]ctxvar [message] [args]``
  
 
 ------------

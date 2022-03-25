@@ -1,5 +1,6 @@
-from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
-import requests, socket
+from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+import requests
+import socket
 from redbot.core import commands, Config
 
 # Credits:
@@ -20,7 +21,7 @@ class Ip(commands.Cog):
             force_registration=True,
         )
         self.ip_global = {
-            "port": None, # Port.
+            "port": None,  # Port.
         }
 
         self.data.register_global(**self.ip_global)

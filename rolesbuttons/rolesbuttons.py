@@ -1,11 +1,12 @@
-﻿from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
-import discord
-import typing
-from redbot.core import commands, Config
+﻿from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 if CogsUtils().is_dpy2:
-    from .AAA3A_utils.cogsutils import Buttons
+    from .AAA3A_utils.cogsutils import Buttons  # isort:skip
 else:
-    from dislash import ActionRow
+    from dislash import ActionRow  # isort:skip
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
+from redbot.core import Config
 from .converters import RoleEmojiConverter
 
 # Credits:
@@ -51,20 +52,20 @@ class RolesButtons(commands.Cog):
             if not interaction.data["custom_id"].startswith("roles_buttons"):
                 return
             config = await self.config.guild(interaction.guild).roles_buttons.all()
-            if not f"{interaction.channel.id}-{interaction.message.id}" in config:
+            if f"{interaction.channel.id}-{interaction.message.id}" not in config:
                 return
             for _component in interaction.message.components:
                 for component in _component.to_dict()["components"]:
                     if component["custom_id"] == interaction.data["custom_id"]:
                         emoji = str(component["emoji"]["name"]).strip("\N{VARIATION SELECTOR-16}") if "name" in component["emoji"] else str(component["emoji"]["id"])
                         break
-            if not f"{emoji}" in config[f"{interaction.channel.id}-{interaction.message.id}"]:
+            if f"{emoji}" not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
                 return
             role = interaction.guild.get_role(config[f"{interaction.channel.id}-{interaction.message.id}"][f"{emoji}"]["role"])
             if role is None:
                 await interaction.response.send_message(_("The role I have to put you in no longer exists. Please notify an administrator of this server.").format(**locals()), ephemeral=True)
                 return
-            if not role in interaction.user.roles:
+            if role not in interaction.user.roles:
                 try:
                     await interaction.user.add_roles(role, reason=_("Role-button of {interaction.message.id} in {interaction.channel.id}.").format(**locals()))
                 except discord.HTTPException:
@@ -96,19 +97,19 @@ class RolesButtons(commands.Cog):
             if not inter.component.custom_id.startswith("roles_buttons"):
                 return
             config = await self.config.guild(guild).roles_buttons.all()
-            if not f"{inter.channel.id}-{inter.message.id}" in config:
+            if f"{inter.channel.id}-{inter.message.id}" not in config:
                 return
             if getattr(inter.component.emoji, "id", None):
                 inter.component.emoji = str(inter.component.emoji.id)
             else:
                 inter.component.emoji = str(inter.component.emoji).strip("\N{VARIATION SELECTOR-16}")
-            if not f"{inter.component.emoji}" in config[f"{inter.channel.id}-{inter.message.id}"]:
+            if f"{inter.component.emoji}" not in config[f"{inter.channel.id}-{inter.message.id}"]:
                 return
             role = inter.guild.get_role(config[f"{inter.channel.id}-{inter.message.id}"][f"{inter.component.emoji}"]["role"])
             if role is None:
                 await inter.respond(_("The role I have to put you in no longer exists. Please notify an administrator of this server.").format(**locals()), ephemeral=True)
                 return
-            if not role in inter.author.roles:
+            if role not in inter.author.roles:
                 try:
                     await inter.author.add_roles(role, reason=_("Role-button of {inter.message.id} in {channel.id}.").format(**locals()))
                 except discord.HTTPException:
@@ -130,7 +131,7 @@ class RolesButtons(commands.Cog):
         if not message.guild:
             return
         config = await self.config.guild(message.guild).roles_buttons.all()
-        if not f"{message.channel.id}-{message.id}" in config:
+        if f"{message.channel.id}-{message.id}" not in config:
             return
         del config[f"{message.channel.id}-{message.id}"]
         await self.config.guild(message.guild).roles_buttons.set(config)
@@ -155,7 +156,7 @@ class RolesButtons(commands.Cog):
             await ctx.send(_("I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
-        if not f"{message.channel.id}-{message.id}" in config:
+        if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) == 25:
             await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
@@ -187,7 +188,7 @@ class RolesButtons(commands.Cog):
             await ctx.send(_("I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
-        if not f"{message.channel.id}-{message.id}" in config:
+        if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) + len(roles_buttons) >= 25:
             await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
@@ -216,10 +217,10 @@ class RolesButtons(commands.Cog):
             await ctx.send(_("I have to be the author of the message for the role-button to work.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
-        if not f"{message.channel.id}-{message.id}" in config:
+        if f"{message.channel.id}-{message.id}" not in config:
             await ctx.send(_("No role-button is configured for this message.").format(**locals()))
             return
-        if not f"{button}" in config[f"{message.channel.id}-{message.id}"]:
+        if f"{button}" not in config[f"{message.channel.id}-{message.id}"]:
             await ctx.send(_("I wasn't watching for this button on this message.").format(**locals()))
             return
         del config[f"{message.channel.id}-{message.id}"][f"{button}"]
@@ -240,7 +241,7 @@ class RolesButtons(commands.Cog):
             await ctx.send(_("I have to be the author of the message for the role-button to work.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
-        if not f"{message.channel.id}-{message.id}" in config:
+        if f"{message.channel.id}-{message.id}" not in config:
             await ctx.send(_("No role-button is configured for this message.").format(**locals()))
             return
         try:
@@ -260,7 +261,7 @@ class RolesButtons(commands.Cog):
         """
         await self.config.guild(ctx.guild).roles_buttons.clear()
         await ctx.tick()
-    
+
     def get_buttons(self, config: typing.Dict, message: discord.Message):
         all_buttons = []
         if self.cogsutils.is_dpy2:

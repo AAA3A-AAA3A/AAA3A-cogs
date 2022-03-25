@@ -1,16 +1,17 @@
-from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
-import discord
+from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
+if CogsUtils().is_dpy2:
+    from .AAA3A_utils.cogsutils import Buttons  # isort:skip
+else:
+    from dislash import ActionRow, Button, ButtonStyle  # isort:skip
 import datetime
-import typing
-from redbot.core import Config, commands, modlog
+from redbot.core import Config, modlog
 from redbot.core.bot import Red
 from copy import copy
 import io
 import chat_exporter
-if CogsUtils().is_dpy2:
-    from .AAA3A_utils.cogsutils import Buttons
-else:
-    from dislash import ActionRow, Button, ButtonStyle
 from .settings import settings
 from .utils import utils
 

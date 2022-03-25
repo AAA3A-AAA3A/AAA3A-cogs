@@ -1,7 +1,7 @@
-from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
-import typing
+from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from redbot.core import commands  # isort:skip
+import typing  # isort:skip
 import datetime
-from redbot.core import commands
 from copy import copy
 import asyncio
 
@@ -34,7 +34,7 @@ class Sudo(commands.Cog):
     def decorator(all_owner_ids: typing.Optional[bool], bot_owner_ids: typing.Optional[bool]):
         async def pred(ctx):
             if all_owner_ids:
-                if ctx.author.id in ctx.bot.get_cog("Sudo").all_owner_ids and not ctx.author.id in ctx.bot.owner_ids:
+                if ctx.author.id in ctx.bot.get_cog("Sudo").all_owner_ids and ctx.author.id not in ctx.bot.owner_ids:
                     return True
             if bot_owner_ids:
                 if ctx.author.id in ctx.bot.owner_ids:
@@ -80,7 +80,7 @@ class Sudo(commands.Cog):
         interval: commands.TimedeltaConverter(
             minimum=datetime.timedelta(seconds=10),
             maximum=datetime.timedelta(days=1),
-            default_unit="minutes",
+            default_unit="m",
         ) = datetime.timedelta(minutes=5),
     ):
         """Sudo as the owner of the bot for the specified timeout.

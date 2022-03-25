@@ -1,7 +1,7 @@
-from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
+from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
 import asyncio
-import discord
-from redbot.core import commands
 from redbot.core.utils.predicates import MessagePredicate
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.commands.converter import parse_timedelta
@@ -240,7 +240,7 @@ class utils(commands.Cog):
                 inline=False,
                 name=f"{description}",
                 value=_("If an error has occurred, it will be displayed below.").format(**locals()))
-            if not reason is None:
+            if reason is not None:
                 embed.add_field(
                     name=_("Reason:").format(**locals()),
                     value=f"{reason}")

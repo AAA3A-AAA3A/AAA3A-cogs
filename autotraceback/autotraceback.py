@@ -1,6 +1,6 @@
-﻿from .AAA3A_utils.cogsutils import CogsUtils # isort:skip
-import discord
-from redbot.core import commands
+﻿from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
 from redbot.core.utils.chat_formatting import pagify, box
 from redbot.core.utils.menus import menu, DEFAULT_CONTROLS, close_menu
 import traceback

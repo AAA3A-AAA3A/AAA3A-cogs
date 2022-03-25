@@ -1,7 +1,7 @@
-import discord
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
 import re
-import typing
-from redbot.core import commands
 
 def _(untranslated: str):
     return untranslated

@@ -1,6 +1,6 @@
-import discord
-import typing
-from redbot.core import commands
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
 
 def _(untranslated: str):
     return untranslated
@@ -55,7 +55,7 @@ class settings(commands.Cog):
         message = await ctx.send(embed=embed)
 
     @configuration.command(aliases=["picture", "thumb", "link"], usage="<link_or_'none'>")
-    async def thumbnail(self, ctx: commands.Context, *, link = None):
+    async def thumbnail(self, ctx: commands.Context, *, link: typing.Optional[str]=None):
         """Set a thumbnail fort the embed.
 
         ``link``: Thumbnail link.
@@ -212,7 +212,7 @@ class settings(commands.Cog):
         """
         config = await self.config.guild(ctx.guild).all()
 
-        actual_delete_message= config["delete_message"]
+        actual_delete_message = config["delete_message"]
         if actual_delete_message is state:
             await ctx.send(_("Delete Message is already set on {state}.").format(**locals()))
             return

@@ -4,6 +4,8 @@ import discord  # isort:skip
 import typing  # isort:skip
 if CogsUtils().is_dpy2:
     from .AAA3A_utils.cogsutils import Buttons, Dropdown  # isort:skip
+else:
+    from dislash import user_command, message_command, slash_command, Option, OptionType
 
 import asyncio
 from copy import copy

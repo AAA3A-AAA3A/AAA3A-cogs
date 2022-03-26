@@ -1296,9 +1296,9 @@ if CogsUtils().is_dpy2:
                 if interaction.user.id not in self.members:
                     await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
                     return True
+            self.interaction_result = interaction
             if self.function is not None:
                 self.function_result = await self.function(self, interaction, **self.function_args)
-            self.interaction_result = interaction
             self.done.set()
             if not self.infinity:
                 self.stop()
@@ -1387,10 +1387,10 @@ if CogsUtils().is_dpy2:
                     if interaction.user.id not in self.members:
                         await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
                         return True
-                if self.function is not None:
-                    self.function_result = await self.function(self, interaction, self.values, **self.function_args)
                 self.interaction_result = interaction
                 self.values_result = self.values
+                if self.function is not None:
+                    self.function_result = await self.function(self, interaction, self.values, **self.function_args)
                 self.done.set()
                 if not self.infinity:
                     self.view.stop()
@@ -1398,7 +1398,7 @@ if CogsUtils().is_dpy2:
     class Modal(discord.ui.Modal):
         """Create Modal easily."""
 
-        def __init__(self, title: typing.Optional[str]="Form", timeout: typing.Optional[float]=None, inputs: typing.Optional[typing.List]=[], function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}):
+        def __init__(self, title: typing.Optional[str]="Form", timeout: typing.Optional[float]=None, inputs: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}):
             """name: str, label: str, style: TextStyle, custom_id: str, placeholder: Optional[str], default: Optional[str], required: bool, min_length: Optional[int], max_length: Optional[int], row: Optional[int]"""
             self.modal_dict_instance = {"title": title, "timeout": timeout, "inputs": [i.copy() for i in inputs], "function": function, "function_args": function_args}
             super().__init__(title=title, timeout=timeout)
@@ -1406,6 +1406,8 @@ if CogsUtils().is_dpy2:
             self.interaction_result = None
             self.values_result = None
             self.function_result = None
+            self.members = members
+            self.check = check
             self.function = function
             self.function_args = function_args
             self.inputs = []
@@ -1431,6 +1433,14 @@ if CogsUtils().is_dpy2:
             return cls(**modal_dict_instance)
 
         async def on_submit(self, interaction: discord.Interaction):
+            if self.check is not None:
+                if not self.check(interaction):
+                    await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
+                    return True
+            if self.members is not None:
+                if interaction.user.id not in self.members:
+                    await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
+                    return True
             self.interaction_result = interaction
             self.values_result = self.inputs
             if self.function is not None:

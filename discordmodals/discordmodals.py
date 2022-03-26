@@ -194,7 +194,10 @@ class DiscordModals(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message):
-        await self.cogsutils.check_in_listener(message, False)
+        try:
+            await self.cogsutils.check_in_listener(message, False)
+        except discord.ext.commands.BadArgument:
+            return
         config = await self.config.guild(message.guild).modals.all()
         if f"{message.channel.id}-{message.id}" not in config:
             return

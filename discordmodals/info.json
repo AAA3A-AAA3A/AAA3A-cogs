@@ -11,6 +11,6 @@
         "form"
     ],
     "requirements": [],
-    "min_bot_version": "3.5.0",
+    "min_bot_version": "3.5.0.dev1",
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

@@ -129,7 +129,7 @@ class RolesButtons(commands.Cog):
                     await inter.respond(_("I did remove the role {role.mention} ({role.id}).").format(**locals()), ephemeral=True)
 
     @commands.Cog.listener()
-    async def on_message_delete(self, message):
+    async def on_message_delete(self, message: discord.Message):
         if not message.guild:
             return
         config = await self.config.guild(message.guild).roles_buttons.all()

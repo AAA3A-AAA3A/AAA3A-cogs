@@ -1,0 +1,15 @@
+{
+    "author": ["AAA3A"],
+    "name": "DiscordModals",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\nIt does not use user data.",
+    "short": "A cog to use Discord Modals, forms with graphic interface!",
+    "description": "Have you ever wanted to allow users to report a bug, for example by filling in a form with a graphical interface on Discord, after clicking on a button? Then this cog is for you!",
+    "tags": [
+        "discord",
+        "interaction",
+        "modal",
+        "form"
+    ],
+    "requirements": [],
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

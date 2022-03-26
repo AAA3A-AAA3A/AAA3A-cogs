@@ -275,30 +275,38 @@ class CogsUtils(commands.Cog):
             else:
                 owner_ids = self.bot.owner_ids
         if 829612600059887649 in owner_ids:
-            try:
-                self.bot.add_dev_env_value(self.cog.__class__.__name__, lambda x: self.cog)
-            except Exception:
-                pass
-            try:
-                self.bot.add_dev_env_value("CogsUtils", lambda x: CogsUtils)
-            except Exception:
-                pass
-            try:
-                self.bot.add_dev_env_value("discord", lambda x: discord)
-            except Exception:
-                pass
-            try:
-                self.bot.add_dev_env_value("typing", lambda x: typing)
-            except Exception:
-                pass
-            try:
-                self.bot.add_dev_env_value("redbot", lambda x: redbot.core)
-            except Exception:
-                pass
-            try:
-                self.bot.add_dev_env_value("cog", lambda ctx: ctx.bot.get_cog)
-            except Exception:
-                pass
+            if self.is_dpy2:
+                to_add = {
+                    self.cog.__class__.__name__: lambda x: self.cog,
+                    "CogsUtils": lambda x: CogsUtils,
+                    "Loop": lambda x: Loop,
+                    "Captcha": lambda x: Captcha,
+                    "Buttons": lambda x: Buttons,
+                    "Dropdown": lambda x: Dropdown,
+                    "Modal": lambda x: Modal,
+                    "discord": lambda x: discord,
+                    "typing": lambda x: typing,
+                    "redbot": lambda x: redbot,
+                    "cog": lambda ctx: ctx.bot.get_cog
+                }
+            else:
+                to_add = {
+                    self.cog.__class__.__name__: lambda x: self.cog,
+                    "CogsUtils": lambda x: CogsUtils,
+                    "Loop": lambda x: Loop,
+                    "Captcha": lambda x: Captcha,
+                    "discord": lambda x: discord,
+                    "typing": lambda x: typing,
+                    "redbot": lambda x: redbot,
+                    "cog": lambda ctx: ctx.bot.get_cog
+                }
+            for name, value in to_add.items():
+                try:
+                    self.bot.add_dev_env_value(name, value)
+                except RuntimeError:
+                    pass
+                except Exception as e:
+                    self.cog.log.error(f"Error when adding the value `{name}` to the development environment.", exc_info=e)
 
     def remove_dev_env_value(self):
         """
@@ -662,7 +670,7 @@ class CogsUtils(commands.Cog):
                 new_dict[e] = original_dict[e]
         return new_dict
 
-    def generate_key(self, number: typing.Optional[int]=15, existing_keys: typing.Optional[typing.List]=[], strings_used: typing.Optional[typing.List]={"ascii_lowercase": True, "ascii_uppercase": False, "digits": True, "punctuation": False}):
+    def generate_key(self, number: typing.Optional[int]=15, existing_keys: typing.Optional[typing.List]=[], strings_used: typing.Optional[typing.List]={"ascii_lowercase": True, "ascii_uppercase": False, "digits": True, "punctuation": False, "others": []}):
         """
         Generate a secret key, with the choice of characters, the number of characters and a list of existing keys.
         """
@@ -679,6 +687,9 @@ class CogsUtils(commands.Cog):
         if "punctuation" in strings_used:
             if strings_used["punctuation"]:
                 strings += string.punctuation
+        if "others" in strings_used:
+            if isinstance(strings_used["others"], typing.List):
+                strings += strings_used["others"]
         while True:
             # This probably won't turn into an endless loop
             key = "".join(choice(strings) for i in range(number))
@@ -1242,9 +1253,7 @@ if CogsUtils().is_dpy2:
 
         def __init__(self, timeout: typing.Optional[float]=180, buttons: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
             """style: ButtonStyle, label: Optional[str], disabled: bool, custom_id: Optional[str], url: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], row: Optional[int]"""
-            self.buttons_dict_instance = {"timeout": timeout, "buttons": buttons, "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
-            if infinity:
-                timeout = None
+            self.buttons_dict_instance = {"timeout": timeout, "buttons": [b.copy() for b in buttons], "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
             super().__init__(timeout=timeout)
             self.infinity = infinity
             self.interaction_result = None
@@ -1274,9 +1283,9 @@ if CogsUtils().is_dpy2:
                 buttons_dict_instance["function"] = None
             return buttons_dict_instance
 
-        @property
-        def from_dict_cogsutils(buttons_dict_instance: typing.Dict):
-            return Buttons(**buttons_dict_instance)
+        @classmethod
+        def from_dict_cogsutils(cls, buttons_dict_instance: typing.Dict):
+            return cls(**buttons_dict_instance)
 
         async def interaction_check(self, interaction: discord.Interaction):
             if self.check is not None:
@@ -1315,9 +1324,7 @@ if CogsUtils().is_dpy2:
 
         def __init__(self, timeout: typing.Optional[float]=180, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
             """label: str, value: str, description: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], default: bool"""
-            self.dropdown_dict_instance = {"timeout": timeout, "placeholder": placeholder, "min_values": min_values, "max_values": max_values, "options": options, "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
-            if infinity:
-                timeout = None
+            self.dropdown_dict_instance = {"timeout": timeout, "placeholder": placeholder, "min_values": min_values, "max_values": max_values, "options": [o.copy() for o in options], "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
             super().__init__(timeout=timeout)
             self.infinity = infinity
             self.dropdown = self.Dropdown(placeholder=placeholder, min_values=min_values, max_values=max_values, options=options, members=members, check=check, function=function, function_args=function_args, infinity=self.infinity)
@@ -1330,9 +1337,9 @@ if CogsUtils().is_dpy2:
                 dropdown_dict_instance["function"] = None
             return dropdown_dict_instance
 
-        @property
-        def from_dict_cogsutils(dropdown_dict_instance: typing.Dict):
-            return Dropdown(**dropdown_dict_instance)
+        @classmethod
+        def from_dict_cogsutils(cls, dropdown_dict_instance: typing.Dict):
+            return cls(**dropdown_dict_instance)
 
         async def on_timeout(self):
             self.dropdown.done.set()
@@ -1393,7 +1400,7 @@ if CogsUtils().is_dpy2:
 
         def __init__(self, title: typing.Optional[str]="Form", timeout: typing.Optional[float]=None, inputs: typing.Optional[typing.List]=[], function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}):
             """name: str, label: str, style: TextStyle, custom_id: str, placeholder: Optional[str], default: Optional[str], required: bool, min_length: Optional[int], max_length: Optional[int], row: Optional[int]"""
-            self.modal_dict_instance = {"title": title, "timeout": timeout, "inputs": inputs, "function": function, "function_args": function_args}
+            self.modal_dict_instance = {"title": title, "timeout": timeout, "inputs": [i.copy() for i in inputs], "function": function, "function_args": function_args}
             super().__init__(title=title, timeout=timeout)
             self.title = title
             self.interaction_result = None
@@ -1419,9 +1426,9 @@ if CogsUtils().is_dpy2:
                 modal_dict_instance["function"] = None
             return modal_dict_instance
 
-        @property
-        def from_dict_cogsutils(modal_dict_instance: typing.Dict):
-            return Modal(**modal_dict_instance)
+        @classmethod
+        def from_dict_cogsutils(cls, modal_dict_instance: typing.Dict):
+            return cls(**modal_dict_instance)
 
         async def on_submit(self, interaction: discord.Interaction):
             self.interaction_result = interaction

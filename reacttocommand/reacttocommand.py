@@ -75,7 +75,7 @@ class ReactToCommand(commands.Cog):
         await self.bot.invoke(new_ctx)
 
     @commands.Cog.listener()
-    async def on_message_delete(self, message):
+    async def on_message_delete(self, message: discord.Message):
         if not message.guild:
             return
         config = await self.config.guild(message.guild).react_command.all()

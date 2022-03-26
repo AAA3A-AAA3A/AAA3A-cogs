@@ -26,12 +26,12 @@ class YAMLConverter(commands.Converter):
             raise discord.ext.commands.BadArgument(_("Error parsing YAML. Please make sure the format is valid (a YAML validator may help)").format(**locals()))
         # general
         required_arguments = ["title", "button", "modal"]
-        optional_arguments = ["channel", "messages"]
+        optional_arguments = ["channel", "anonymous", "messages"]
         for arg in required_arguments:
             if arg not in argument_dict:
                 raise discord.ext.commands.BadArgument(_("The argument `/{arg}` is required in the root in the YAML.").format(**locals()))
         for arg in argument_dict:
-            if arg is not None in required_arguments + optional_arguments:
+            if arg not in required_arguments + optional_arguments:
                 raise discord.ext.commands.BadArgument(_("The agument `/{arg}` is invalid in in the YAML. Check the spelling.").format(**locals()))
         # button
         required_arguments = ["label"]
@@ -106,6 +106,9 @@ class YAMLConverter(commands.Converter):
                 argument_dict["channel"] = ctx.channel.id
         else:
             argument_dict["channel"] = ctx.channel.id
+        # anonymous
+        if "anonymous" not in argument_dict:
+            argument_dict["anonymous"] = False
         # messages
         if "messages" in argument_dict:
             if "error" not in argument_dict["messages"]:
@@ -176,6 +179,12 @@ class DiscordModals(commands.Cog):
                 return
             embed: discord.Embed = discord.Embed()
             embed.title = config["title"]
+            if "anonymous" not in config:
+                embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar)
+            elif not config["anonymous"]:
+                embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar)
+            else:
+                embed.set_author(name="Anonymous", icon_url="https://forum.mtasa.com/uploads/monthly_2016_10/Anonyme.png.4060431ce866962fa496657f752d5613.png")
             for value in values:
                 if not getattr(value, 'label') or not getattr(value, 'value'):
                     continue
@@ -183,7 +192,6 @@ class DiscordModals(commands.Cog):
                     embed.add_field(name=value.label, value=value.value, inline=False)
                 except Exception:
                     pass
-            embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar)
             embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)
             await channel.send(embed=embed)
         except Exception as e:
@@ -231,11 +239,12 @@ class DiscordModals(commands.Cog):
             required: True
             default: None
         channel: général # id, mention, name
+        anonymous: False
         messages:
           error: Error!
           done: Form submitted.
         ```
-        The `style`, 'emoji', `default`, `channel`, `required` and `messages` are not required.
+        The `style`, 'emoji', `default`, `channel`, `required`, `anonymous` and `messages` are not required.
         """
         if not message.author == ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the button to work.").format(**locals()))
@@ -252,7 +261,7 @@ class DiscordModals(commands.Cog):
             await ctx.send(_("Sorry. An error occurred when I tried to put the button on the message.").format(**locals()))
             return
         modal = Modal(title=argument["title"], inputs=argument["modal"], function=self.send_embed_with_responses)
-        config[f"{message.channel.id}-{message.id}"] = {"title": argument["title"], "button": view.to_dict_cogsutils(True), "channel": argument["channel"], "modal": modal.to_dict_cogsutils(True), "messages": {"error": argument["messages"]["error"], "done": argument["messages"]["done"]}}
+        config[f"{message.channel.id}-{message.id}"] = {"title": argument["title"], "button": view.to_dict_cogsutils(True), "channel": argument["channel"], "modal": modal.to_dict_cogsutils(True), "anonymous": argument["anonymous"], "messages": {"error": argument["messages"]["error"], "done": argument["messages"]["done"]}}
         await self.config.guild(ctx.guild).modals.set(config)
         await ctx.tick()
 

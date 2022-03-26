@@ -34,8 +34,8 @@ class YAMLConverter(commands.Converter):
             if arg is not None in required_arguments + optional_arguments:
                 raise discord.ext.commands.BadArgument(_("The agument `/{arg}` is invalid in in the YAML. Check the spelling.").format(**locals()))
         # button
-        required_arguments = ["label", "emoji"]
-        optional_arguments = ["style"]
+        required_arguments = ["label"]
+        optional_arguments = ["emoji", "style"]
         for arg in required_arguments:
             if arg not in argument_dict["button"]:
                 raise discord.ext.commands.BadArgument(_("The argument `/button/{arg}` is required in the YAML.").format(**locals()))
@@ -232,7 +232,7 @@ class DiscordModals(commands.Cog):
           error: Error!
           done: Form submitted.
         ```
-        The `style`, `default`, `channel`, `required` and `messages` are not required.
+        The `style`, 'emoji', `default`, `channel`, `required` and `messages` are not required.
         """
         if not message.author == ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the button to work.").format(**locals()))

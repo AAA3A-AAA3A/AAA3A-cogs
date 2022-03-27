@@ -57,7 +57,7 @@ class YAMLConverter(commands.Converter):
         if not isinstance(argument_dict["modal"], typing.List):
             raise discord.ext.commands.BadArgument(_("The argument `/button/modal` must be a list of TextInputs.").format(**locals()))
         required_arguments = ["label"]
-        optional_arguments = ["style", "required", "default"]
+        optional_arguments = ["style", "required", "default", "placeholder"]
         count = 0
         for input in argument_dict["modal"]:
             count += 1
@@ -94,8 +94,10 @@ class YAMLConverter(commands.Converter):
                     raise discord.ext.commands.BadArgument(_("The agument `/modal/{count}/required` must be a boolean (True or False).").format(**locals()))
             else:
                 input["required"] = True
-            if "default" not in input:
+            if "default" not in input or input["default"] == "None":
                 input["default"] = ""
+            if "placeholder" not in input or input["placeholder"] == "None":
+                input["placeholder"] = ""
         # channel
         if "channel" in argument_dict:
             argument_dict["channel"] = str(argument_dict["channel"])
@@ -238,13 +240,14 @@ class DiscordModals(commands.Cog):
             style: 2 # short = 1, paragraph = 2
             required: True
             default: None
+            placeholder: None
         channel: général # id, mention, name
         anonymous: False
         messages:
           error: Error!
           done: Form submitted.
         ```
-        The `style`, 'emoji', `default`, `channel`, `required`, `anonymous` and `messages` are not required.
+        The `style`, 'emoji', `default`, `placeholder`, `channel`, `required`, `anonymous` and `messages` are not required.
         """
         if not message.author == ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the button to work.").format(**locals()))

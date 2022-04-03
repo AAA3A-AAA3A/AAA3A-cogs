@@ -7,7 +7,6 @@ else:
 from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
-from .utils import utils
 
 
 def _(untranslated: str):
@@ -390,7 +389,7 @@ class settings(commands.Cog):
             embed.description = _("Does not delete any channels. All commands associated with the tickets will no longer work.").format(**locals())
             embed.color = config["color"]
             embed.set_author(name=ctx.author.name, url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
-            response = await utils(ctx.bot).ConfirmationAsk(ctx, embed=embed)
+            response = await CogsUtils().ConfirmationAsk(ctx, embed=embed)
             if not response:
                 return
         count = 0

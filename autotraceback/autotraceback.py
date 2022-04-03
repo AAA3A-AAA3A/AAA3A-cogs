@@ -1,11 +1,10 @@
-﻿from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+﻿from .AAA3A_utils.cogsutils import CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import os
 import traceback
 
 from redbot.core.utils.chat_formatting import box, pagify
-from redbot.core.utils.menus import DEFAULT_CONTROLS, close_menu, menu
 
 IGNORED_ERRORS = (
     commands.UserInputError,
@@ -40,7 +39,7 @@ class AutoTraceback(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
-        if not ctx.author.id in ctx.bot.owner_ids:
+        if ctx.author.id not in ctx.bot.owner_ids:
             return
         if isinstance(error, IGNORED_ERRORS):
             return
@@ -53,11 +52,7 @@ class AutoTraceback(commands.Cog):
         for page in pagify(traceback_error, shorten_by=15, page_length=1985):
             pages.append(box(page, lang="py"))
         try:
-            if len(pages) == 1:
-                CONTROLS = {"\N{CROSS MARK}": close_menu}
-            else:
-                CONTROLS = DEFAULT_CONTROLS
-            await menu(ctx, pages=pages, controls=CONTROLS, page=0, timeout=30)
+            await Menu(pages=pages, timeout=30, delete_after_timeout=True).start(ctx)
         except discord.HTTPException:
             return
         return

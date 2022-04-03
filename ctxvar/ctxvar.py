@@ -1,11 +1,10 @@
-﻿from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+﻿from .AAA3A_utils.cogsutils import CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 from copy import copy
 
 from redbot.core.utils.chat_formatting import box
-from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
@@ -81,4 +80,4 @@ class CtxVar(commands.Cog):
             l = len(embeds)
             embed.set_footer(text=_("Page {page}/{l}").format(**locals()))
 
-        await menu(ctx, pages=embeds, controls=DEFAULT_CONTROLS)
+        await Menu(pages=embeds, delete_after_timeout=True).start(ctx)

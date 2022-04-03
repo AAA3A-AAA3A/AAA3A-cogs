@@ -353,7 +353,7 @@ class TicketTool(settings, commands.Cog):
             embed.title = _("Do you really want to close the ticket {ticket.id}?").format(**locals())
             embed.color = config["color"]
             embed.set_author(name=ctx.author.name, url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
-            response = await utils(ticket.bot).ConfirmationAsk(ctx, embed=embed)
+            response = await self.cogsutils.ConfirmationAsk(ctx, embed=embed)
             if not response:
                 return
         ticket.reason = reason
@@ -385,7 +385,7 @@ class TicketTool(settings, commands.Cog):
             embed.description = _("If a log channel is defined, an html file containing all the messages of this ticket will be generated. (Attachments are not supported, as they are saved with their Discord link)").format(**locals())
             embed.color = config["color"]
             embed.set_author(name=ctx.author.name, url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
-            response = await utils(ticket.bot).ConfirmationAsk(ctx, embed=embed)
+            response = await self.cogsutils.ConfirmationAsk(ctx, embed=embed)
             if not response:
                 return
         ticket.reason = reason

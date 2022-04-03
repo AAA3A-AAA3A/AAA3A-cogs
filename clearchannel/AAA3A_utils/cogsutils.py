@@ -29,10 +29,11 @@ from redbot.core.data_manager import basic_config, cog_data_path, config_file, i
 from redbot.core.utils.chat_formatting import bold, box, error, humanize_list, humanize_timedelta, pagify, text_to_file, warning
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
+from redbot.vendored.discord.ext import menus
 from rich.console import Console
 from rich.table import Table
 
-# Menu
+__all__ = ["CogsUtils", "Loop", "Captcha", "Buttons", "Dropdown", "Modal", "Reactions"]
 
 def _(untranslated: str):
     return untranslated
@@ -50,9 +51,6 @@ def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
     )
     temp_console.print(*objects)
     return box(temp_console.file.getvalue(), lang=lang)  # type: ignore
-
-__all__ = ["CogsUtils", "Loop", "Captcha", "Buttons", "Dropdown", "Modal"]
-TimestampFormat = typing.Literal["f", "F", "d", "D", "t", "T", "R"]
 
 class CogsUtils(commands.Cog):
     """Tools for AAA3A-cogs!"""
@@ -376,8 +374,6 @@ class CogsUtils(commands.Cog):
         except Exception:
             pass
 
-    _ReactableEmoji = typing.Union[str, discord.Emoji]
-
     async def ConfirmationAsk(
             self,
             ctx: commands.Context,
@@ -390,7 +386,7 @@ class CogsUtils(commands.Cog):
             message: typing.Optional[discord.Message]=None,
             put_reactions: typing.Optional[bool]=True,
             delete_message: typing.Optional[bool]=True,
-            reactions: typing.Optional[typing.Iterable[_ReactableEmoji]]=["✅", "❌"],
+            reactions: typing.Optional[typing.Iterable[typing.Union[str, discord.Emoji]]]=["✅", "❌"],
             check_owner: typing.Optional[bool]=True,
             members_authored: typing.Optional[typing.Iterable[discord.Member]]=[]):
         """
@@ -422,7 +418,7 @@ class CogsUtils(commands.Cog):
             except discord.HTTPException:
                 pass
         if way == "buttons":
-            view = Buttons(timeout=timeout, buttons=[{"style": 3, "label": "Yes", "emoji": reactions[0], "custom_id": "ConfirmationAsk_Yes"}, {"style": 4, "label": "No", "emoji": reactions[1], "custom_id": "ConfirmationAsk_No"}], members=[ctx.author.id] + list(ctx.bot.owner_ids)if check_owner else [] + [x.id for x in members_authored])
+            view = Buttons(timeout=timeout, buttons=[{"style": 3, "label": "Yes", "emoji": reactions[0], "custom_id": "ConfirmationAsk_Yes"}, {"style": 4, "label": "No", "emoji": reactions[1], "custom_id": "ConfirmationAsk_No"}], members=[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored])
             message = await ctx.send(content=text, embed=embed, file=file, view=view)
             try:
                 interaction, function_result = await view.wait_result()
@@ -441,7 +437,7 @@ class CogsUtils(commands.Cog):
                     await ctx.send(timeout_message)
                 return None
         if way == "dropdown":
-            view = Dropdown(timeout=timeout, options=[{"label": "Yes", "emoji": reactions[0], "value": "ConfirmationAsk_Yes"}, {"label": "No", "emoji": reactions[1], "value": "ConfirmationAsk_No"}], members=[ctx.author.id] + list(ctx.bot.owner_ids)if check_owner else [] + [x.id for x in members_authored])
+            view = Dropdown(timeout=timeout, options=[{"label": "Yes", "emoji": reactions[0], "value": "ConfirmationAsk_Yes"}, {"label": "No", "emoji": reactions[1], "value": "ConfirmationAsk_No"}], members=[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored])
             message = await ctx.send(content=text, embed=embed, file=file, view=view)
             try:
                 interaction, values, function_result = await view.wait_result()
@@ -460,39 +456,25 @@ class CogsUtils(commands.Cog):
                     await ctx.send(timeout_message)
                 return None
         if way == "reactions":
-            end_reaction = False
-            def check(reaction, user):
-                if check_owner:
-                    return user.id == ctx.author.id or user.id in ctx.bot.owner_ids or user in [x.id for x in members_authored] and str(reaction.emoji) in reactions
-                else:
-                    return user.id == ctx.author.id or user.id in [x.id for x in members_authored] and str(reaction.emoji) in reactions
-                # This makes sure nobody except the command sender can interact with the "menu"
-            while True:
-                try:
-                    reaction, abc_author = await ctx.bot.wait_for("reaction_add", timeout=timeout, check=check)
-                    # waiting for a reaction to be added - times out after x seconds
-                    if str(reaction.emoji) == reactions[0]:
-                        end_reaction = True
-                        if delete_message:
-                            await delete_message(message)
-                        return True
-                    elif str(reaction.emoji) == reactions[1]:
-                        end_reaction = True
-                        if delete_message:
-                            await delete_message(message)
-                        return False
-                    else:
-                        try:
-                            await message.remove_reaction(reaction, abc_author)
-                        except discord.HTTPException:
-                            pass
-                except asyncio.TimeoutError:
-                    if not end_reaction:
-                        if delete_message:
-                            await delete_message(message)
-                        if timeout_message is not None:
-                            await ctx.send(timeout_message)
-                        return None
+            view = Reactions(bot=ctx.bot, message=message, remove_reaction=False, timeout=timeout, reactions=reactions, members=[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored])
+            try:
+                reaction, user, function_result = await view.wait_result()
+                if str(reaction.emoji) == reactions[0]:
+                    end_reaction = True
+                    if delete_message:
+                        await delete_message(message)
+                    return True
+                elif str(reaction.emoji) == reactions[1]:
+                    end_reaction = True
+                    if delete_message:
+                        await delete_message(message)
+                    return False
+            except TimeoutError:
+                if delete_message:
+                    await delete_message(message)
+                if timeout_message is not None:
+                    await ctx.send(timeout_message)
+                return None
         if way == "message":
             def check(msg):
                 if check_owner:
@@ -525,7 +507,7 @@ class CogsUtils(commands.Cog):
                         await ctx.send(timeout_message)
                     return None
 
-    def datetime_to_timestamp(self, dt: datetime.datetime, format: TimestampFormat = "f") -> str:
+    def datetime_to_timestamp(self, dt: datetime.datetime, format: typing.Literal["f", "F", "d", "D", "t", "T", "R"]="f") -> str:
         """
         Generate a Discord timestamp from a datetime object.
         <t:TIMESTAMP:FORMAT>
@@ -1081,7 +1063,7 @@ class Captcha():
             raise self.OtherException(e)
         finally:
             if timeout:
-                raise TimeoutError
+                raise TimeoutError()
             if failed:
                 return False
             if leave_guild:
@@ -1117,7 +1099,7 @@ class Captcha():
             else:
                 raise self.AskedForReload("User want to reload Captcha.")
         except TimeoutError:
-            raise TimeoutError
+            raise TimeoutError()
         finally:
             self.running = False
 
@@ -1194,7 +1176,7 @@ class Captcha():
         )
         self.cancel_tasks()
         if len(done) == 0:
-            raise TimeoutError("User didn't answer.")
+            raise TimeoutError()("User didn't answer.")
         try:  # An error is raised if we return the result and when the task got cancelled.
             return done.pop().result()
         except asyncio.CancelledError:
@@ -1251,8 +1233,11 @@ if CogsUtils().is_dpy2:
     class Buttons(discord.ui.View):
         """Create Buttons easily."""
 
-        def __init__(self, timeout: typing.Optional[float]=180, buttons: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
+        def __init__(self, timeout: typing.Optional[float]=180, buttons: typing.Optional[typing.List]=[{}], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
             """style: ButtonStyle, label: Optional[str], disabled: bool, custom_id: Optional[str], url: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], row: Optional[int]"""
+            for button_dict in buttons:
+                if "custom_id" not in button_dict:
+                    button_dict["custom_id"] = "CogsUtils" + "_" + CogsUtils().generate_key(number=10)
             self.buttons_dict_instance = {"timeout": timeout, "buttons": [b.copy() for b in buttons], "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
             super().__init__(timeout=timeout)
             self.infinity = infinity
@@ -1269,7 +1254,7 @@ if CogsUtils().is_dpy2:
             for button_dict in buttons:
                 if "style" not in button_dict:
                     button_dict["style"] = int(discord.ButtonStyle(2))
-                if "label" not in button_dict:
+                if "label" not in button_dict and "emoji" not in button_dict:
                     button_dict["label"] = "Test"
                 button = discord.ui.Button(**button_dict)
                 self.add_item(button)
@@ -1313,7 +1298,7 @@ if CogsUtils().is_dpy2:
             await self.done.wait()
             interaction, function_result = self.get_result()
             if interaction is None:
-                raise TimeoutError
+                raise TimeoutError()
             return interaction, function_result
 
         def get_result(self):
@@ -1322,7 +1307,7 @@ if CogsUtils().is_dpy2:
     class Dropdown(discord.ui.View):
         """Create Dropdown easily."""
 
-        def __init__(self, timeout: typing.Optional[float]=180, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
+        def __init__(self, timeout: typing.Optional[float]=180, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[{}], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
             """label: str, value: str, description: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], default: bool"""
             self.dropdown_dict_instance = {"timeout": timeout, "placeholder": placeholder, "min_values": min_values, "max_values": max_values, "options": [o.copy() for o in options], "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
             super().__init__(timeout=timeout)
@@ -1350,7 +1335,7 @@ if CogsUtils().is_dpy2:
             await self.dropdown.done.wait()
             interaction, values, function_result = self.get_result()
             if interaction is None:
-                raise TimeoutError
+                raise TimeoutError()
             return interaction, values, function_result
 
         def get_result(self):
@@ -1371,7 +1356,7 @@ if CogsUtils().is_dpy2:
                 self.options_dict = []
                 self.done = asyncio.Event()
                 for option_dict in options:
-                    if "label" not in option_dict:
+                    if "label" not in option_dict and "emoji" not in option_dict:
                         option_dict["label"] = "Test"
                     option = discord.SelectOption(**option_dict)
                     self._options.append(option)
@@ -1398,8 +1383,11 @@ if CogsUtils().is_dpy2:
     class Modal(discord.ui.Modal):
         """Create Modal easily."""
 
-        def __init__(self, title: typing.Optional[str]="Form", timeout: typing.Optional[float]=None, inputs: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}):
+        def __init__(self, title: typing.Optional[str]="Form", timeout: typing.Optional[float]=None, inputs: typing.Optional[typing.List]=[{}], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}):
             """name: str, label: str, style: TextStyle, custom_id: str, placeholder: Optional[str], default: Optional[str], required: bool, min_length: Optional[int], max_length: Optional[int], row: Optional[int]"""
+            for input_dict in inputs:
+                if "custom_id" not in input_dict:
+                    input_dict["custom_id"] = "CogsUtils" + "_" + CogsUtils().generate_key(number=10)
             self.modal_dict_instance = {"title": title, "timeout": timeout, "inputs": [i.copy() for i in inputs], "function": function, "function_args": function_args}
             super().__init__(title=title, timeout=timeout)
             self.title = title
@@ -1414,6 +1402,8 @@ if CogsUtils().is_dpy2:
             self.inputs_dict = []
             self.done = asyncio.Event()
             for input_dict in inputs:
+                if "label" not in input_dict:
+                    input_dict["label"] = "Test"
                 if "style" in input_dict:
                     if isinstance(input_dict["style"], int):
                         input_dict["style"] = discord.ui.text_input.TextStyle(input_dict["style"])
@@ -1457,11 +1447,238 @@ if CogsUtils().is_dpy2:
             await self.done.wait()
             interaction, values, function_result = self.get_result()
             if interaction is None:
-                raise TimeoutError
+                raise TimeoutError()
             return interaction, values, function_result
 
         def get_result(self):
             return self.interaction_result, self.values_result, self.function_result
+
+class Reactions():
+    """Create Reactions easily."""
+
+    def __init__(self, bot: Red, message: discord.Message, remove_reaction: typing.Optional[bool]=True, timeout: typing.Optional[float]=180, reactions: typing.Optional[typing.List]=["✅", "❌"], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
+        self.reactions_dict_instance = {"message": message, "timeout": timeout, "reactions": reactions, "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
+        self.bot = bot
+        self.message = message
+        self.remove_reaction = remove_reaction
+        self.timeout = timeout
+        self.infinity = infinity
+        self.reaction_result = None
+        self.user_result = None
+        self.function_result = None
+        self.members = members
+        self.check = check
+        self.function = function
+        self.function_args = function_args
+        self.reactions = reactions
+        self.done = asyncio.Event()
+        self.r = False
+        asyncio.create_task(self.wait())
+
+    def to_dict_cogsutils(self, for_Config: typing.Optional[bool]=False):
+        reactions_dict_instance = self.reactions_dict_instance
+        if for_Config:
+            reactions_dict_instance["bot"] = None
+            reactions_dict_instance["message"] = None
+            reactions_dict_instance["check"] = None
+            reactions_dict_instance["function"] = None
+        return reactions_dict_instance
+
+    @classmethod
+    def from_dict_cogsutils(cls, reactions_dict_instance: typing.Dict):
+        return cls(**reactions_dict_instance)
+
+    async def wait(self):
+        if not self.r:
+            await start_adding_reactions(self.message, self.reactions)
+            self.r = True
+        predicates = ReactionPredicate.same_context(message=self.message)
+        result = False
+        try:
+            while True:
+                if result:
+                    break
+                tasks = [asyncio.create_task(self.bot.wait_for("reaction_add", check=predicates))]
+                done, pending = await asyncio.wait(
+                    tasks, timeout=self.timeout, return_when=asyncio.FIRST_COMPLETED
+                )
+                for task in pending:
+                    task.cancel()
+                if len(done) == 0:
+                    raise TimeoutError()
+                reaction, user = done.pop().result()
+                result = await self.reaction_check(reaction, user)
+        except TimeoutError:
+            await self.on_timeout()
+
+    async def reaction_check(self, reaction: discord.Reaction, user: discord.User):
+        async def remove_reaction(remove_reaction, message: discord.Message, reaction: discord.Reaction, user: discord.User):
+            if remove_reaction:
+                try:
+                    await message.remove_reaction(emoji=reaction, member=user)
+                except discord.HTTPException:
+                    pass
+        if not str(reaction.emoji) in self.reactions:
+            await remove_reaction(self.remove_reaction, self.message, reaction, user)
+            return False
+        if self.check is not None:
+            if not self.check(reaction, user):
+                await remove_reaction(self.remove_reaction, self.message, reaction, user)
+                return False
+        if self.members is not None:
+            if user.id not in self.members:
+                await remove_reaction(self.remove_reaction, self.message, reaction, user)
+                return False
+        await remove_reaction(self.remove_reaction, self.message, reaction, user)
+        self.reaction_result = reaction
+        self.user_result = user
+        if self.function is not None:
+            self.function_result = await self.function(self, reaction, user, **self.function_args)
+        self.done.set()
+        if self.infinity:
+            return True
+        else:
+            return False
+
+    async def on_timeout(self):
+        self.done.set()
+
+    async def wait_result(self):
+        self.done = asyncio.Event()
+        await self.done.wait()
+        reaction, user, function_result = self.get_result()
+        if reaction is None:
+            raise TimeoutError()
+        return reaction, user, function_result
+
+    def get_result(self):
+        return self.reaction_result, self.user_result, self.function_result
+
+class Menu():
+    """Create Menus easily."""
+
+    def __init__(self, pages: typing.List[typing.Union[typing.Dict[str, typing.Union[str, discord.Embed]], discord.Embed, str]], timeout: typing.Optional[int]=180, delete_after_timeout: typing.Optional[bool]=False, way: typing.Optional[typing.Literal["buttons", "reactions", "dropdown"]]="buttons", controls: typing.Optional[typing.Dict]={"⏮️": "left_page", "◀️": "prev_page", "❌": "close_page", "▶️": "next_page", "⏭️": "right_page"}, page_start: typing.Optional[int]=0, check_owner: typing.Optional[bool]=True, members_authored: typing.Optional[typing.Iterable[discord.Member]]=[]):
+        self.ctx = None
+        self.pages = pages
+        self.timeout = timeout
+        self.delete_after_timeout = delete_after_timeout
+        self.way = way
+        self.controls = controls.copy()
+        self.check_owner = check_owner
+        self.members_authored = members_authored
+        if not CogsUtils().is_dpy2 and self.way == "buttons" or not CogsUtils().is_dpy2 and self.way == "dropdown":
+            way = "reactions"
+        if not isinstance(self.pages[0], (discord.Embed, str)):
+            raise RuntimeError("Pages must be of type discord.Embed or str.")
+
+        self.source = self._SimplePageSource(items=pages)
+        if not self.source.is_paginating():
+            for emoji, name in controls.items():
+                if name in ["left_page", "prev_page", "next_page", "right_page"]:
+                    del self.controls[emoji]
+        self.message = None
+        self.view = None
+        self.current_page = page_start
+
+    async def start(self, ctx: commands.Context):
+        """
+        Used to start the menu displaying the first page requested.
+        Parameters
+        ----------
+            ctx: `commands.Context`
+                The context to start the menu in.
+        """
+        self.ctx = ctx
+        if self.way == "buttons":
+            self.view = Buttons(timeout=self.timeout, buttons=[{"emoji": str(e), "custom_id": str(n)} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+        elif self.way == "reactions":
+            self.view = Reactions(bot=self.ctx.bot, message=self.message, remove_reaction=True, timeout=self.timeout, reactions=[str(e) for e in self.controls.keys()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+        elif self.way == "dropdown":
+            self.view = Dropdown(timeout=self.timeout, options=[{"emoji": str(e)} for e in self.controls.keys()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+        await self.send_initial_message(ctx, ctx.channel)
+        try:
+            while True:
+                if self.way == "buttons":
+                    interaction, function_result = await self.view.wait_result()
+                    response = interaction.data["custom_id"]
+                elif self.way == "reactions":
+                    reaction, user, function_result = await self.view.wait_result()
+                    response = self.controls[str(reaction.emoji)]
+                elif self.way == "dropdown":
+                    interaction, values, function_result = await self.view.wait_result()
+                    response = self.controls[str(values[0].emoji)]
+                if response == "left_page":
+                    self.current_page = 0
+                elif response == "prev_page":
+                    self.current_page += -1
+                elif response == "close_page":
+                    if self.way == "buttons" or self.way == "dropdown":
+                        self.view.stop()
+                    await self.message.delete()
+                    break
+                elif response == "next_page":
+                    self.current_page += 1
+                elif response == "right_page":
+                    self.current_page = self.source.get_max_pages() - 1
+                kwargs = await self.get_page(self.current_page)
+                if self.way == "buttons" or self.way == "dropdown":
+                    await interaction.response.edit_message(**kwargs)
+                else:
+                    await self.message.edit(**kwargs)
+        except TimeoutError:
+            await self.on_timeout()
+
+    async def send_initial_message(self, ctx: commands.Context, channel: discord.abc.Messageable):
+        self.author = ctx.author
+        self.ctx = ctx
+        kwargs = await self.get_page(self.current_page)
+        self.message = await channel.send(**kwargs, view=self.view if self.way in ["buttons", "dropdown"] else None)
+        if self.way == "reactions":
+            start_adding_reactions(self.message, self.controls.keys())
+        return self.message
+
+    async def get_page(self, page_num: int):
+        try:
+            page = await self.source.get_page(page_num)
+        except IndexError:
+            self.current_page = 0
+            page = await self.source.get_page(self.current_page)
+        value = await self.source.format_page(self, page)
+        if isinstance(value, dict):
+            return value
+        elif isinstance(value, str):
+            return {"content": value, "embed": None}
+        elif isinstance(value, discord.Embed):
+            return {"embed": value, "content": None}
+
+    async def on_timeout(self):
+        if self.delete_after_timeout:
+            await self.message.delete()
+        else:
+            if self.way == "buttons":
+                self.view.stop()
+                await self.message.edit(view=None)
+            elif self.way == "reactions":
+                try:
+                    await self.message.clear_reactions()
+                except discord.HTTPException:
+                    try:
+                        await self.message.remove_reaction(*self.controls.keys(), self.ctx.bot.user)
+                    except discord.HTTPException:
+                        pass
+            elif self.way == "dropdown":
+                self.view.stop()
+                await self.message.edit(view=None)
+
+    class _SimplePageSource(menus.ListPageSource):
+
+        def __init__(self, items: typing.List[typing.Union[typing.Dict[str, typing.Union[str, discord.Embed]], discord.Embed, str]]):
+            super().__init__(items, per_page=1)
+
+        async def format_page(
+            self, view: discord.ui.View, page: typing.Union[typing.Dict[str, typing.Union[str, discord.Embed]], discord.Embed, str]
+        ) -> typing.Union[str, discord.Embed]:
+            return page
 
 @commands.is_owner()
 @commands.command(hidden=True)
@@ -1578,6 +1795,7 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
         )
         or "None"
     )
+    uptime = humanize_timedelta(timedelta=datetime.datetime.utcnow() - ctx.bot.uptime)
     async def can_run(command):
         try:
             await command.can_run(ctx, check_all_parents=True, change_permission_state=False)
@@ -1661,6 +1879,7 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
     red_table.add_row("Disabled intents", str(disabled_intents))
     red_table.add_row("Data path", str(data_path))
     red_table.add_row("Metadata file", str(_config_file))
+    red_table.add_row("Uptime", str(uptime))
     red_table.add_row("Global prefixe(s)", str(await ctx.bot.get_valid_prefixes()))
     raw_red_table_str = no_colour_rich_markup(red_table)
     if repo is not None:

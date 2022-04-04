@@ -1687,7 +1687,7 @@ class Menu():
             super().__init__(items, per_page=1)
 
         async def format_page(
-            self, view: discord.ui.View, page: typing.Union[typing.Dict[str, typing.Union[str, discord.Embed]], discord.Embed, str]
+            self, view, page: typing.Union[typing.Dict[str, typing.Union[str, discord.Embed]], discord.Embed, str]
         ) -> typing.Union[str, discord.Embed]:
             return page
 

@@ -294,6 +294,7 @@ class CogsUtils(commands.Cog):
                     "CogsUtils": lambda x: CogsUtils,
                     "Loop": lambda x: Loop,
                     "Captcha": lambda x: Captcha,
+                    "Menu": lambda x: Menu,
                     "discord": lambda x: discord,
                     "typing": lambda x: typing,
                     "redbot": lambda x: redbot,
@@ -1572,7 +1573,7 @@ class Menu():
         self.check_owner = check_owner
         self.members_authored = members_authored
         if not CogsUtils().is_dpy2 and self.way == "buttons" or not CogsUtils().is_dpy2 and self.way == "dropdown":
-            way = "reactions"
+            self.way = "reactions"
         if not isinstance(self.pages[0], (discord.Embed, str)):
             raise RuntimeError("Pages must be of type discord.Embed or str.")
 

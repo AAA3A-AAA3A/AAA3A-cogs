@@ -132,7 +132,7 @@ class CogsUtils(commands.Cog):
                                         "TransferChannel"
                                     ]
         if self.cog is not None:
-            if self.cog.__class__.__name__ not in self.all_cogs_dpy2:
+            if self.cog.__class__.__name__ not in self.all_cogs_dpy2 and self.cog.__class__.__name__ in self.all_cogs:
                 if self.is_dpy2 or redbot.version_info >= redbot.VersionInfo.from_str("3.5.0"):
                     raise RuntimeError(f"{self.cog.__class__.__name__} needs to be updated to run on dpy2/Red 3.5.0. It's best to use `[p]cog update` with no arguments to update all your cogs, which may be using new dpy2-specific methods.")
 
@@ -169,7 +169,7 @@ class CogsUtils(commands.Cog):
         else:
             cog = value
         if hasattr(cog, 'initialize'):
-            await bot.initialize()
+            await cog.initialize()
         return cog
 
     def _setup(self):
@@ -282,6 +282,7 @@ class CogsUtils(commands.Cog):
                     "Buttons": lambda x: Buttons,
                     "Dropdown": lambda x: Dropdown,
                     "Modal": lambda x: Modal,
+                    "Menu": lambda x: Menu,
                     "discord": lambda x: discord,
                     "typing": lambda x: typing,
                     "redbot": lambda x: redbot,
@@ -717,6 +718,8 @@ class CogsUtils(commands.Cog):
             if output.author.bot:
                 raise discord.ext.commands.BadArgument()
             # check whether the bot can send message in the given channel
+            if output.channel is None:
+                raise discord.ext.commands.BadArgument()
             if not self.check_permissions_for(channel=output.channel, user=output.guild.me, check=["send_messages"]):
                 raise discord.ext.commands.BadArgument()
             # check whether the cog isn't disabled
@@ -743,6 +746,8 @@ class CogsUtils(commands.Cog):
                 raise discord.ext.commands.BadArgument()
             # check whether the bot can send message in the given channel
             output.channel = output.guild.get_channel(output.channel_id)
+            if output.channel is None:
+                raise discord.ext.commands.BadArgument()
             if not self.check_permissions_for(channel=output.channel, user=output.guild.me, check=["send_messages"]):
                 raise discord.ext.commands.BadArgument()
             # check whether the cog isn't disabled
@@ -1589,13 +1594,18 @@ class Menu():
                 The context to start the menu in.
         """
         self.ctx = ctx
+        if self.way == "reactions":
+            asyncio.create_task(redbot.core.utils.menus.menu(ctx, pages=self.pages, controls=redbot.core.utils.menus.DEFAULT_CONTROLS, page=self.current_page, timeout=self.timeout))
+            return
         if self.way == "buttons":
             self.view = Buttons(timeout=self.timeout, buttons=[{"emoji": str(e), "custom_id": str(n)} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+            await self.send_initial_message(ctx, ctx.channel)
         elif self.way == "reactions":
+            await self.send_initial_message(ctx, ctx.channel)
             self.view = Reactions(bot=self.ctx.bot, message=self.message, remove_reaction=True, timeout=self.timeout, reactions=[str(e) for e in self.controls.keys()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
         elif self.way == "dropdown":
-            self.view = Dropdown(timeout=self.timeout, options=[{"emoji": str(e)} for e in self.controls.keys()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
-        await self.send_initial_message(ctx, ctx.channel)
+            self.view = Dropdown(timeout=self.timeout, options=[{"emoji": str(e), "label": str(n)} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+            await self.send_initial_message(ctx, ctx.channel)
         try:
             while True:
                 if self.way == "buttons":
@@ -1606,7 +1616,7 @@ class Menu():
                     response = self.controls[str(reaction.emoji)]
                 elif self.way == "dropdown":
                     interaction, values, function_result = await self.view.wait_result()
-                    response = self.controls[str(values[0].emoji)]
+                    response = str(values[0])
                 if response == "left_page":
                     self.current_page = 0
                 elif response == "prev_page":
@@ -1622,7 +1632,10 @@ class Menu():
                     self.current_page = self.source.get_max_pages() - 1
                 kwargs = await self.get_page(self.current_page)
                 if self.way == "buttons" or self.way == "dropdown":
-                    await interaction.response.edit_message(**kwargs)
+                    try:
+                        await interaction.response.edit_message(**kwargs)  # , view=self.view.from_dict_cogsutils(self.view.to_dict_cogsutils())
+                    except discord.errors.InteractionResponded:
+                        await self.message.edit(**kwargs)
                 else:
                     await self.message.edit(**kwargs)
         except TimeoutError:
@@ -1633,8 +1646,6 @@ class Menu():
         self.ctx = ctx
         kwargs = await self.get_page(self.current_page)
         self.message = await channel.send(**kwargs, view=self.view if self.way in ["buttons", "dropdown"] else None)
-        if self.way == "reactions":
-            start_adding_reactions(self.message, self.controls.keys())
         return self.message
 
     async def get_page(self, page_num: int):
@@ -1644,7 +1655,7 @@ class Menu():
             self.current_page = 0
             page = await self.source.get_page(self.current_page)
         value = await self.source.format_page(self, page)
-        if isinstance(value, dict):
+        if isinstance(value, typing.Dict):
             return value
         elif isinstance(value, str):
             return {"content": value, "embed": None}
@@ -1682,7 +1693,7 @@ class Menu():
 
 @commands.is_owner()
 @commands.command(hidden=True)
-async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["all", "ALL"]]=None, repo: typing.Optional[typing.Union[Repo, typing.Literal["AAA3A", "aaa3a"]]]=None, check_updates: typing.Optional[bool]=False, cog: typing.Optional[InstalledCog]=None, command: typing.Optional[str]=None):
+async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["all", "ALL"]]=None, page: typing.Optional[int]=None, repo: typing.Optional[typing.Union[Repo, typing.Literal["AAA3A", "aaa3a"]]]=None, check_updates: typing.Optional[bool]=False, cog: typing.Optional[InstalledCog]=None, command: typing.Optional[str]=None):
     """Get all the necessary information to get support on a bot/repo/cog/command.
     With a html file.
     """
@@ -1880,7 +1891,10 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
     red_table.add_row("Data path", str(data_path))
     red_table.add_row("Metadata file", str(_config_file))
     red_table.add_row("Uptime", str(uptime))
-    red_table.add_row("Global prefixe(s)", str(await ctx.bot.get_valid_prefixes()))
+    red_table.add_row("Global prefixe(s)", str(await ctx.bot.get_valid_prefixes()).replace(f"{ctx.bot.user.id}", "{bot_id}"))
+    if ctx.guild is not None:
+        if not await ctx.bot.get_valid_prefixes() == await ctx.bot.get_valid_prefixes(ctx.guild):
+            red_table.add_row("Guild prefixe(s)", str(await ctx.bot.get_valid_prefixes(ctx.guild)).replace(f"{ctx.bot.user.id}", "{bot_id}"))
     raw_red_table_str = no_colour_rich_markup(red_table)
     if repo is not None:
         raw_cogs_table_str = []
@@ -1965,6 +1979,8 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
     message_html = message_html_getallfor
     end_html = end_html_getallfor
     count_page = 0
+    if page is not None and page - 1 in [0, 1, 2, 3, 4, 5]:
+        response = [response[page - 1]]
     for page in response:
         if page is not None:
             count_page += 1

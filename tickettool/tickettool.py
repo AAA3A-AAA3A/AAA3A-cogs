@@ -7,6 +7,7 @@ if CogsUtils().is_dpy2:
 else:
     from dislash import ActionRow, Button, ButtonStyle  # isort:skip
 
+import asyncio
 import datetime
 import io
 from copy import copy
@@ -73,6 +74,15 @@ class TicketTool(settings, commands.Cog):
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
+
+        asyncio.create_task(self.load_buttons())
+
+    async def load_buttons(self):
+        try:
+            self.bot.add_view(Buttons(timeout=None, buttons=[{"style": 2, "label": _("Create ticket").format(**locals()), "emoji": "🎟️", "custom_id": "create_ticket_button", "disabled": False}], function=self.on_button_interaction, infinity=True))
+            self.bot.add_view(Buttons(timeout=None, buttons=[{"style": 2, "label": _("Close").format(**locals()), "emoji": "🔒", "custom_id": "close_ticket_button", "disabled": False}, {"style": 2, "label": _("Claim").format(**locals()), "emoji": "🙋‍♂️", "custom_id": "claim_ticket_button", "disabled": False}], function=self.on_button_interaction, infinity=True))
+        except Exception as e:
+            self.log.error(f"The Buttons View could not be added correctly.", exc_info=e)
 
     async def get_config(self, guild: discord.Guild):
         config = await self.bot.get_cog("TicketTool").config.guild(guild).settings.all()
@@ -222,7 +232,7 @@ class TicketTool(settings, commands.Cog):
             return False
         else:
             return True
-        
+
     async def create_modlog(self, ticket, action: str, reason: str):
         config = await self.bot.get_cog("TicketTool").get_config(ticket.guild)
         if config["create_modlog"]:
@@ -321,8 +331,8 @@ class TicketTool(settings, commands.Cog):
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         """
         ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
-        transcript = await chat_exporter.export(ticket.channel, ticket.guild)
-        if not transcript is None:
+        transcript = await chat_exporter.export(channel=ticket.channel, limit=None, tz_info="UTC", guild=ticket.guild, bot=ticket.bot)
+        if transcript is not None:
             file = discord.File(io.BytesIO(transcript.encode()),
                                 filename=f"transcript-ticket-{ticket.id}.html")
         await ctx.send(_("Here is the html file of the transcript of all the messages in this ticket.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.").format(**locals()), file=file)
@@ -446,11 +456,10 @@ class TicketTool(settings, commands.Cog):
         await ctx.tick()
 
     if CogsUtils().is_dpy2:
-        @commands.Cog.listener()
-        async def on_interaction(self, interaction: discord.Interaction):
-            if "component_type" in interaction.data:
-                if not interaction.data["component_type"] == 2:
-                    return
+        async def on_button_interaction(self, view: Buttons, interaction: discord.Interaction):
+            # if "component_type" in interaction.data:
+            #     if not interaction.data["component_type"] == 2:
+            #         return
             if interaction.data["custom_id"] == "close_ticket_button":
                 permissions = interaction.channel.permissions_for(interaction.user)
                 if not permissions.read_messages and not permissions.send_messages:
@@ -565,7 +574,7 @@ class TicketTool(settings, commands.Cog):
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, old_channel: discord.abc.GuildChannel):
         data = await self.bot.get_cog("TicketTool").config.guild(old_channel.guild).tickets.all()
-        if not str(old_channel.id) in data:
+        if str(old_channel.id) not in data:
             return
         del data[str(old_channel.id)]
         await self.bot.get_cog("TicketTool").config.guild(old_channel.guild).tickets.set(data)
@@ -762,7 +771,7 @@ class Ticket:
         data[str(channel.id)] = json
         await bot.get_cog("TicketTool").config.guild(guild).tickets.set(data)
         return data
-    
+
     async def create(ticket, name: typing.Optional[str]="ticket"):
         config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
         logschannel = config["logschannel"]
@@ -783,7 +792,7 @@ class Ticket:
             await ticket.bot.get_cog("TicketTool").create_modlog(ticket, "ticket_created", reason)
         if ticket.logs_messages:
             if CogsUtils().is_dpy2:
-                view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Close").format(**locals()), "emoji": "🔒", "custom_id": "close_ticket_button", "disabled": False}, {"style": 2, "label": _("Claim").format(**locals()), "emoji": "🙋‍♂️", "custom_id": "claim_ticket_button", "disabled": False}])
+                view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Close").format(**locals()), "emoji": "🔒", "custom_id": "close_ticket_button", "disabled": False}, {"style": 2, "label": _("Claim").format(**locals()), "emoji": "🙋‍♂️", "custom_id": "claim_ticket_button", "disabled": False}], function=ticket.bot.get_cog("TicketTool").on_button_interaction, infinity=True)
             else:
                 buttons = ActionRow(
                     Button(
@@ -825,8 +834,8 @@ class Ticket:
 
     async def export(ticket):
         if ticket.channel:
-            transcript = await chat_exporter.export(ticket.channel, ticket.guild)
-            if not transcript is None:
+            transcript = await chat_exporter.export(channel=ticket.channel, limit=None, tz_info="UTC", guild=ticket.guild, bot=ticket.bot)
+            if transcript is not None:
                 transcript_file = discord.File(io.BytesIO(transcript.encode()),
                                   filename=f"transcript-ticket-{ticket.id}.html")
                 return transcript_file
@@ -856,7 +865,7 @@ class Ticket:
         if ticket.first_message is not None:
             try:
                 if CogsUtils().is_dpy2:
-                    view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Close").format(**locals()), "emoji": "🔒", "custom_id": "close_ticket_button", "disabled": False}, {"style": 2, "label": _("Claim").format(**locals()), "emoji": "🙋‍♂️", "custom_id": "claim_ticket_button", "disabled": False}])
+                    view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Close").format(**locals()), "emoji": "🔒", "custom_id": "close_ticket_button", "disabled": False}, {"style": 2, "label": _("Claim").format(**locals()), "emoji": "🙋‍♂️", "custom_id": "claim_ticket_button", "disabled": False}], function=ticket.bot.get_cog("TicketTool").on_button_interaction, infinity=True)
                     ticket.first_message = await ticket.channel.fetch_message(int(ticket.first_message.id))
                     await ticket.first_message.edit(view=view)
                 else:
@@ -882,7 +891,7 @@ class Ticket:
                 pass
         await ticket.save()
         return ticket
-    
+
     async def close(ticket, author: typing.Optional[discord.Member]=None):
         config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
         reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=f"Closing the ticket {ticket.id}.")
@@ -905,7 +914,7 @@ class Ticket:
         if ticket.first_message is not None:
             try:
                 if CogsUtils().is_dpy2:
-                    view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Close").format(**locals()), "emoji": "🔒", "custom_id": "close_ticket_button", "disabled": True}, {"style": 2, "label": _("Claim").format(**locals()), "emoji": "🙋‍♂️", "custom_id": "claim_ticket_button", "disabled": True}])
+                    view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Close").format(**locals()), "emoji": "🔒", "custom_id": "close_ticket_button", "disabled": True}, {"style": 2, "label": _("Claim").format(**locals()), "emoji": "🙋‍♂️", "custom_id": "claim_ticket_button", "disabled": True}], function=ticket.bot.get_cog("TicketTool").on_button_interaction, infinity=True)
                     ticket.first_message = await ticket.channel.fetch_message(int(ticket.first_message.id))
                     await ticket.first_message.edit(view=view)
                 else:
@@ -961,14 +970,19 @@ class Ticket:
         if ticket.logs_messages:
             if logschannel is not None:
                 embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, True, author=ticket.deleted_by, title=_("Ticket Deleted").format(**locals()), description=_("The ticket was deleted by {ticket.deleted_by}.").format(**locals()))
-                transcript = await chat_exporter.export(ticket.channel, ticket.guild)
-                if not transcript is None:
+                transcript = await chat_exporter.export(channel=ticket.channel, limit=None, tz_info="UTC", guild=ticket.guild, bot=ticket.bot)
+                if transcript is not None:
                     file = discord.File(io.BytesIO(transcript.encode()),
                                         filename=f"transcript-ticket-{ticket.id}.html")
+                else:
+                    file = None
                 await logschannel.send(_("Report on the deletion of the ticket {ticket.id}.").format(**locals()), embed=embed, file=file)
         await ticket.channel.delete(reason=reason)
         data = await ticket.bot.get_cog("TicketTool").config.guild(ticket.guild).tickets.all()
-        del data[str(ticket.channel.id)]
+        try:
+            del data[str(ticket.channel.id)]
+        except ValueError:
+            pass
         await ticket.bot.get_cog("TicketTool").config.guild(ticket.guild).tickets.set(data)
         return ticket
 
@@ -1002,7 +1016,7 @@ class Ticket:
         if ticket.first_message is not None:
             try:
                 if CogsUtils().is_dpy2:
-                    view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Close").format(**locals()), "emoji": "🔒", "custom_id": "close_ticket_button", "disabled": False if ticket.status == "open" else True}, {"style": 2, "label": _("Claim").format(**locals()), "emoji": "🙋‍♂️", "custom_id": "claim_ticket_button", "disabled": True}])
+                    view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Close").format(**locals()), "emoji": "🔒", "custom_id": "close_ticket_button", "disabled": False if ticket.status == "open" else True}, {"style": 2, "label": _("Claim").format(**locals()), "emoji": "🙋‍♂️", "custom_id": "claim_ticket_button", "disabled": True}], function=ticket.bot.get_cog("TicketTool").on_button_interaction, infinity=True)
                     ticket.first_message = await ticket.channel.fetch_message(int(ticket.first_message.id))
                     await ticket.first_message.edit(view=view)
                 else:
@@ -1049,7 +1063,7 @@ class Ticket:
         if ticket.first_message is not None:
             try:
                 if CogsUtils().is_dpy2:
-                    view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Close").format(**locals()), "emoji": "🔒", "custom_id": "close_ticket_button", "disabled": False if ticket.status == "open" else True}, {"style": 2, "label": _("Claim").format(**locals()), "emoji": "🙋‍♂️", "custom_id": "claim_ticket_button", "disabled": True}])
+                    view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Close").format(**locals()), "emoji": "🔒", "custom_id": "close_ticket_button", "disabled": False if ticket.status == "open" else True}, {"style": 2, "label": _("Claim").format(**locals()), "emoji": "🙋‍♂️", "custom_id": "claim_ticket_button", "disabled": True}], function=ticket.bot.get_cog("TicketTool").on_button_interaction, infinity=True)
                     ticket.first_message = await ticket.channel.fetch_message(int(ticket.first_message.id))
                     await ticket.first_message.edit(view=view)
                 else:
@@ -1146,7 +1160,7 @@ class Ticket:
         if member.bot:
             await ticket.channel.send("You cannot remove a bot to a ticket.")
             return
-        if not member in ticket.members:
+        if member not in ticket.members:
             await ticket.channel.send("This member is not in the list of those authorised to access the ticket.")
             return
         ticket.members.remove(member)

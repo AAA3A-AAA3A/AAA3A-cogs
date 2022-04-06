@@ -137,10 +137,10 @@ class DiscordModals(commands.Cog):
 
         self.config.register_guild(**self.discordmodals_guild)
 
-        asyncio.create_task(self.load_buttons())
-
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
+
+        asyncio.create_task(self.load_buttons())
 
     async def load_buttons(self):
         all_guilds = await self.config.all_guilds()

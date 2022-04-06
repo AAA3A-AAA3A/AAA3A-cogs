@@ -282,6 +282,7 @@ class CogsUtils(commands.Cog):
                     "Buttons": lambda x: Buttons,
                     "Dropdown": lambda x: Dropdown,
                     "Modal": lambda x: Modal,
+                    "Reactions": lambda x: Reactions,
                     "Menu": lambda x: Menu,
                     "discord": lambda x: discord,
                     "typing": lambda x: typing,
@@ -1605,7 +1606,7 @@ class Menu():
             await self.send_initial_message(ctx, ctx.channel)
             self.view = Reactions(bot=self.ctx.bot, message=self.message, remove_reaction=True, timeout=self.timeout, reactions=[str(e) for e in self.controls.keys()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
         elif self.way == "dropdown":
-            self.view = Dropdown(timeout=self.timeout, options=[{"emoji": str(e), "label": str(n)} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+            self.view = Dropdown(timeout=self.timeout, options=[{"emoji": str(e), "label": str(n).replace("_", " ").capitalize()} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
             await self.send_initial_message(ctx, ctx.channel)
         try:
             while True:

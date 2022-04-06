@@ -7,6 +7,8 @@ if CogsUtils().is_dpy2:
 else:
     from dislash import ActionRow  # isort:skip
 
+import asyncio
+
 from redbot.core import Config
 
 from .converters import RoleEmojiConverter
@@ -39,12 +41,22 @@ class RolesButtons(commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
+        asyncio.create_task(self.load_buttons())
+
+    async def load_buttons(self):
+        all_guilds = await self.config.all_guilds()
+        for guild in all_guilds:
+            for role_button in all_guilds[guild]["roles_buttons"]:
+                try:
+                    self.bot.add_view(Buttons(timeout=None, buttons=[{"style": 2, "label": all_guilds[guild]["roles_buttons"][role_button][f"{b}"]["text_button"], "emoji": f"{b}", "custom_id": f"roles_buttons {b}", "disabled": False} for b in all_guilds[guild]["roles_buttons"][role_button]], function=self.on_button_interaction, infinity=True), message_id=int((str(role_button).split("-"))[1]))
+                except Exception as e:
+                    self.log.error(f"The Button View could not be added correctly for the {guild}-{role_button} message.", exc_info=e)
+
     if CogsUtils().is_dpy2:
-        @commands.Cog.listener()
-        async def on_interaction(self, interaction: discord.Interaction):
-            if "component_type" in interaction.data:
-                if not interaction.data["component_type"] == 2:
-                    return
+        async def on_button_interaction(self, view: Buttons, interaction: discord.Interaction):
+            # if "component_type" in interaction.data:
+            #     if not interaction.data["component_type"] == 2:
+            #         return
             if interaction.user is None:
                 return
             if interaction.guild is None:
@@ -169,7 +181,7 @@ class RolesButtons(commands.Cog):
             config[f"{message.channel.id}-{message.id}"][f"{button}"] = {"role": role.id, "text_button": text_button}
         try:
             if self.cogsutils.is_dpy2:
-                await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message)))
+                await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message), function=self.on_button_interaction, infinity=True))
             else:
                 await message.edit(components=self.get_buttons(config, message))
         except discord.HTTPException:
@@ -202,7 +214,7 @@ class RolesButtons(commands.Cog):
                 config[f"{message.channel.id}-{message.id}"][f"{button}"] = {"role": role.id, "text_button": None}
         try:
             if self.cogsutils.is_dpy2:
-                await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message)))
+                await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message), function=self.on_button_interaction, infinity=True))
             else:
                 await message.edit(components=self.get_buttons(config, message))
         except discord.HTTPException:
@@ -227,7 +239,7 @@ class RolesButtons(commands.Cog):
             return
         del config[f"{message.channel.id}-{message.id}"][f"{button}"]
         if self.cogsutils.is_dpy2:
-            await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message)))
+            await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message), function=self.on_button_interaction, infinity=True))
         else:
             await message.edit(components=self.get_buttons(config, message))
         if config[f"{message.channel.id}-{message.id}"] == {}:

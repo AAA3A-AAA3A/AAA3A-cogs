@@ -353,7 +353,7 @@ class settings(commands.Cog):
         embed.color = actual_color
         embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon or "" if self.cogsutils.is_dpy2 else ctx.guild.icon_url or "")
         if self.cogsutils.is_dpy2:
-            view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Create ticket").format(**locals()), "emoji": "🎟️", "custom_id": "create_ticket_button", "disabled": False}])
+            view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Create ticket").format(**locals()), "emoji": "🎟️", "custom_id": "create_ticket_button", "disabled": False}], function=self.bot.get_cog("TicketTool").on_button_interaction, infinity=True)
             await channel.send(embed=embed, view=view)
         else:
             button = ActionRow(

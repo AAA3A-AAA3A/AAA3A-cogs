@@ -36,7 +36,7 @@ class Ip(commands.Cog):
     async def ip(self, ctx: commands.Context):
         """Get the ip address of the bot."""
         hostname = socket.gethostname()
-        ip = requests.get('http://ip.42.pl/raw').text  # Gives the "public IP" of the Bot client PC
+        ip = requests.get("https://www.wikipedia.org").headers["X-Client-IP"]  # Gives the "public IP" of the Bot client PC
         await ctx.send(_("The ip address of your bot is `{ip}`.").format(**locals()))
 
     @commands.guild_only()

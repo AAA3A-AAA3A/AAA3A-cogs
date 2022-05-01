@@ -19,6 +19,7 @@ class CmdChannel(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
         self.config: Config = Config.get_conf(
             self,
             identifier=793502759720,
@@ -39,7 +40,6 @@ class CmdChannel(commands.Cog):
             "deletemessage_cmduserchannel": False,  # Enable the message delete.
             "informationmessage_cmduserchannel": False,  # Enable the information message.
         }
-
         self.config.register_guild(**self.cmd_guild)
 
         self.cogsutils = CogsUtils(cog=self)

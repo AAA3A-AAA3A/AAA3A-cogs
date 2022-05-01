@@ -21,6 +21,7 @@ class ReactToCommand(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
         self.config: Config = Config.get_conf(
             self,
             identifier=703485369742,
@@ -29,7 +30,6 @@ class ReactToCommand(commands.Cog):
         self.reacttocommand_guild = {
             "react_command": {},
         }
-
         self.config.register_guild(**self.reacttocommand_guild)
 
         self.cogsutils = CogsUtils(cog=self)

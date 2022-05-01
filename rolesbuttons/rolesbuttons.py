@@ -15,6 +15,7 @@ from .converters import RoleEmojiConverter
 
 # Credits:
 # Thanks to TrustyJAID for the two converter for the bulk command arguments! (https://github.com/TrustyJAID/Trusty-cogs/blob/main/roletools/converter.py)
+# Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel!
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
@@ -27,6 +28,7 @@ class RolesButtons(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
         self.config: Config = Config.get_conf(
             self,
             identifier=370638632963,
@@ -35,7 +37,6 @@ class RolesButtons(commands.Cog):
         self.roles_button_guild = {
             "roles_buttons": {},
         }
-
         self.config.register_guild(**self.roles_button_guild)
 
         self.cogsutils = CogsUtils(cog=self)

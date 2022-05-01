@@ -16,7 +16,8 @@ class Ip(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.data: Config = Config.get_conf(
+
+        self.config: Config = Config.get_conf(
             self,
             identifier=969369062738,
             force_registration=True,
@@ -24,8 +25,7 @@ class Ip(commands.Cog):
         self.ip_global = {
             "port": None,  # Port.
         }
-
-        self.data.register_global(**self.ip_global)
+        self.config.register_global(**self.ip_global)
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
@@ -46,7 +46,7 @@ class Ip(commands.Cog):
         """Get the ip adress website."""
         hostname = socket.gethostname()
         ip = requests.get('http://ip.42.pl/raw').text  # Gives the "public IP" of the Bot client PC
-        config = await self.data.all()
+        config = await self.config.all()
         port = config["port"]
         await ctx.send(_("The Administrator Panel website is http://{ip}:{port}/.").format(**locals()))
 
@@ -54,7 +54,7 @@ class Ip(commands.Cog):
     async def deletemessage(self, ctx: commands.Context, *, port):
         """Set the port.
         """
-        config = await self.data.all()
+        config = await self.config.all()
 
         actual_port = config["port"]
         if actual_port is port:

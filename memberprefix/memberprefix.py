@@ -18,6 +18,7 @@ class MemberPrefix(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
         self.config: Config = Config.get_conf(
             self,
             identifier=647053803629,
@@ -29,7 +30,6 @@ class MemberPrefix(commands.Cog):
         self.memberprefix_global = {
             "use_normal_prefixes": False,
         }
-
         self.config.register_member(**self.memberprefix_member)
         self.config.register_global(**self.memberprefix_global)
 

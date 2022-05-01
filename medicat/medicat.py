@@ -125,7 +125,10 @@ class Medicat(commands.Cog):
             self.log.error(f"An error occurred while adding the custom_commands.", exc_info=e)
 
     async def edit_config_schema(self):
+        ALL_CONFIG = await self.config.all()
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
+        if ALL_CONFIG == self.medicat_global:
+            return
         if CONFIG_SCHEMA is None:
             CONFIG_SCHEMA = 1
             await self.config.CONFIG_SCHEMA(CONFIG_SCHEMA)
@@ -145,13 +148,17 @@ class Medicat(commands.Cog):
             self.log.error(f"An error occurred while removing the custom_commands.", exc_info=e)
         self.cogsutils._end()
 
-    async def ventoy_updates(self):
-        guild = self.bot.get_guild(MEDICAT_GUILD)
-        if guild is None:
-            return
-        channel = guild.get_channel(VENTOY_UPDATES_CHANNEL)
+    async def ventoy_updates(self, channel: typing.Optional[discord.TextChannel]=None):
         if channel is None:
-            return
+            guild = self.bot.get_guild(MEDICAT_GUILD)
+            if guild is None:
+                return
+            channel = guild.get_channel(VENTOY_UPDATES_CHANNEL)
+            if channel is None:
+                return
+        else:
+            guild = channel.guild
+            channel = channel
         last_ventoy_version_str = str(await self.config.last_ventoy_version())
         last_ventoy_version = VersionInfo.from_str(last_ventoy_version_str)
 
@@ -197,13 +204,17 @@ class Medicat(commands.Cog):
                 except discord.HTTPException:
                     pass
 
-    async def bootables_tools_updates(self):
-        guild = self.bot.get_guild(MEDICAT_GUILD)
-        if guild is None:
-            return
-        channel = guild.get_channel(BOOTABLES_TOOLS_UPDATES_CHANNEL)
+    async def bootables_tools_updates(self, channel: typing.Optional[discord.TextChannel]=None):
         if channel is None:
-            return
+            guild = self.bot.get_guild(MEDICAT_GUILD)
+            if guild is None:
+                return
+            channel = guild.get_channel(BOOTABLES_TOOLS_UPDATES_CHANNEL)
+            if channel is None:
+                return
+        else:
+            guild = channel.guild
+            channel = channel
         last_bootables_tools_versions_str: typing.Dict = await self.config.last_bootables_tools_versions()
 
         tools_versions_str = {}

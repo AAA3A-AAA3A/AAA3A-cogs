@@ -1,6 +1,7 @@
 import discord
 from redbot.core import commands
 
+import aiohttp
 import asyncio
 import contextlib
 import datetime
@@ -105,6 +106,7 @@ class CogsUtils(commands.Cog):
                                         "DiscordModals",
                                         "EditFile",
                                         "Ip",
+                                        "Medicat",  # Private cog.
                                         "MemberPrefix",
                                         "ReactToCommand",
                                         "RolesButtons",
@@ -123,6 +125,7 @@ class CogsUtils(commands.Cog):
                                         "DiscordModals",
                                         "EditFile",
                                         "Ip",
+                                        "Medicat",  # Private cog.
                                         "MemberPrefix",
                                         "ReactToCommand",
                                         "RolesButtons",
@@ -253,8 +256,8 @@ class CogsUtils(commands.Cog):
                                     pass
                         self.interactions["added"] = False
                         self.interactions["removed"] = True
-            await asyncio.sleep(2)
-            await self.bot.tree.sync(guild=None)
+                        await asyncio.sleep(2)
+                        await self.bot.tree.sync(guild=None)
 
     def add_dev_env_value(self):
         """
@@ -765,6 +768,25 @@ class CogsUtils(commands.Cog):
                     raise discord.ext.commands.BadArgument()
         return
 
+    async def to_update(self, cog_name: typing.Optional[str]=None):
+        if cog_name is None:
+            cog_name = self.cog.__class__.__name__
+        cog_name = cog_name.lower()
+
+        downloader = self.bot.get_cog("Downloader")
+        if downloader is None:
+            raise self.DownloaderNotLoaded(_("The cog downloader is not loaded.").format(**locals()))
+
+        local = discord.utils.get(await downloader.installed_cogs(), name=cog_name)
+        if local is None:
+            return None
+        local_commit = local.commit
+        repo = local.repo
+
+        online_commit = await repo.latest_commit()
+
+        return not online_commit == local_commit, online_commit, local_commit
+
     async def autodestruction(self):
         """
         Cog self-destruct.
@@ -788,7 +810,7 @@ class CogsUtils(commands.Cog):
 class Loop():
     """
     Create a loop, with many features.
-    Thanks to Vexed01 on GitHub! (https://github.com/Vexed01/Vex-Cogs/blob/master/timechannel/loop.py)
+    Thanks to Vexed01 on GitHub! (https://github.com/Vexed01/Vex-Cogs/blob/master/timechannel/loop.py and https://github.com/Vexed01/vex-cog-utils/vexutils/loop.py)
     """
     def __init__(self, cogsutils: CogsUtils, name: str, function, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None, limit_exception: typing.Optional[int]=None) -> None:
         self.cogsutils: CogsUtils = cogsutils
@@ -800,7 +822,6 @@ class Loop():
         self.limit_count: int = limit_count
         self.limit_date: datetime.datetime = limit_date
         self.limit_exception: int = limit_exception
-        self.loop = self.cogsutils.bot.loop.create_task(self.loop())
         self.stop_manually: bool = False
         self.stop: bool = False
 
@@ -813,6 +834,8 @@ class Loop():
         self.last_exc_raw: typing.Optional[BaseException] = None
         self.last_iter: typing.Optional[datetime.datetime] = None
         self.next_iter: typing.Optional[datetime.datetime] = None
+
+        self.loop = self.cogsutils.bot.loop.create_task(self.loop())
 
     async def start(self):
         if self.cogsutils.is_dpy2:
@@ -991,7 +1014,7 @@ class Loop():
             processed_table_str = "Loop hasn't started yet."
 
         emoji = "✅" if self.integrity else "❌"
-        embed = discord.Embed(title=f"{self.name}: `{emoji}`")
+        embed = discord.Embed(title=f"{self.name} Loop: `{emoji}`")
         embed.add_field(name="Raw data", value=raw_table_str, inline=False)
         embed.add_field(
             name="Processed data",

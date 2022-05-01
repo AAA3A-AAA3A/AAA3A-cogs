@@ -80,31 +80,33 @@ class Medicat(commands.Cog):
             identifier=953864285308,
             force_registration=True,
         )
+        self.CONFIG_SCHEMA = 2
         self.medicat_global = {
+            "CONFIG_SCHEMA": None,
             "last_ventoy_version": "1.0.74",
             "last_bootables_tools_versions": {
-                "Acronis Cyber Backup": "12.5.0",
-                "Acronis True Image": "2021.6.0",
-                "AOMEI Backupper Technician Plus": "6.8.0",
-                "EaseUS Data Recovery Wizard": "14.2.1",
+                "Acronis Cyber Backup": "12.5",
+                "Acronis True Image": "2021.6",
+                "AOMEI Backupper Technician Plus": "6.9.1",
+                "EaseUS Data Recovery Wizard": "15.1.0.0",
                 "EaseUS Todo Backup": "13.5.0",
-                "Macrium Reflect": "7.2.628",
-                "MiniTool ShadowMaker Pro Ultimate": "3.6.0",
-                "MiniTool Power Data Recovery": "10.2.0",
+                "Macrium Reflect": "8.0.6635",
+                "MiniTool ShadowMaker Pro Ultimate": "3.6.1",
+                "MiniTool Power Data Recovery": "10.2",
                 "Boot Repair Disk": "2021-12-16",
-                "EasyUEFI Technician": "4.8.0",
-                "SystemRescue": "8.07.0",
-                "Ultimate Boot": "5.3.9",
-                "HDAT2": "7.4.0",
+                "EasyUEFI Technician": "4.9.1",
+                "SystemRescue": "9.02",
+                "Ultimate Boot": "5.3.8",
+                "HDAT2": "7.4",
                 "Memtest86 Pro": "9.4.1000",
                 "Active@ Boot Disk": "19.0.0",
                 "Acronis Disk Director": "12.5.163",
-                "AOMEI Partition Assistant Technician Edition": "9.5.0",
-                "EaseUS Partition Master": "16.5.0",
-                "MiniTool Partition Wizard Technician": "12.6.0",
+                "AOMEI Partition Assistant Technician Edition": "9.7.0",
+                "EaseUS Partition Master": "16.8",
+                "MiniTool Partition Wizard Technician": "12.6",
                 "NIUBI Partition Editor Technician Edition": "7.8.7",
-                "Paragon Hard Disk Manager Advanced": "17.13.1",
-                "Parted Magic": "2021.11.17",
+                "Paragon Hard Disk Manager Advanced": "17.20.11",
+                "Parted Magic": "2021.01.18",
             },
         }
         self.config.register_global(**self.medicat_global)
@@ -119,6 +121,20 @@ class Medicat(commands.Cog):
             self.add_custom_commands()
         except Exception as e:
             self.log.error(f"An error occurred while adding the custom_commands.", exc_info=e)
+
+    async def initialize(self):
+        CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
+        if CONFIG_SCHEMA is None:
+            CONFIG_SCHEMA = 1
+            await self.config.CONFIG_SCHEMA(CONFIG_SCHEMA)
+        if CONFIG_SCHEMA == 1 and not CONFIG_SCHEMA == self.CONFIG_SCHEMA:
+            await self.config.last_bootables_tools_versions.clear()
+            self.log.info(f"The Config scheme has been successfully modified to {self.CONFIG_SCHEMA} for the {self.__class__.__name__} cog.")
+            CONFIG_SCHEMA = 2
+            await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
+        if CONFIG_SCHEMA < self.CONFIG_SCHEMA and not CONFIG_SCHEMA == self.CONFIG_SCHEMA:
+            self.log.info(f"The Config scheme has been successfully modified to {self.CONFIG_SCHEMA} for the {self.__class__.__name__} cog.")
+            await self.config.CONFIG_SCHEMA.set(self.CONFIG_SCHEMA)
 
     def cog_unload(self):
         try:
@@ -186,17 +202,14 @@ class Medicat(commands.Cog):
         channel = guild.get_channel(BOOTABLES_TOOLS_UPDATES_CHANNEL)
         if channel is None:
             return
-        last_bootables_tools_versions_str = await self.config.last_bootables_tools_versions()
-        last_bootables_tools_versions = {}
-        for x, y in last_bootables_tools_versions_str.items():
-            _y = y.replace("-", ".").replace(".0", ".").replace("..", ".0.")
-            _y = (str("".join(list(_y)[:len(list(_y)) - 1])) + ".0") if _y.endswith(".") else _y
-            last_bootables_tools_versions[x] = VersionInfo.from_str(_y)
+        last_bootables_tools_versions_str: typing.Dict = await self.config.last_bootables_tools_versions()
 
-        tools_versions = {}
+        tools_versions_str = {}
         for tool in BOOTABLES_TOOLS:
+            if tool not in last_bootables_tools_versions_str:
+                continue
             url = BOOTABLES_TOOLS[tool]["url"]
-            last_tool_version = last_bootables_tools_versions[tool]
+            last_tool_version_str = last_bootables_tools_versions_str[tool]
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, timeout=3) as r:
                     r = await r.text()
@@ -205,24 +218,14 @@ class Medicat(commands.Cog):
                     break
             x = x.replace('    "headline": "', '').replace('",', '')
             regex = re.compile(BOOTABLES_TOOLS[tool]["regex"], re.I).findall(x)
-            regex = regex[0] if len(regex) > 0 else None
+            if regex == []:
+                continue
+            regex = regex[0]
             regex = regex[0] if isinstance(regex, typing.Tuple) and len(regex) > 0 else regex
             tool_version_str: str = regex
-            _tool_version_str = tool_version_str.replace("-", ".").replace(".0.0", ".0").replace(".0", ".").replace("..", ".0.")
-            _tool_version_str = (str("".join(list(_tool_version_str)[:len(list(_tool_version_str)) - 1])) + ".0") if _tool_version_str.endswith(".") else _tool_version_str
-            try:
-                try:
-                    tool_version = VersionInfo.from_str(_tool_version_str)
-                except ValueError:
-                    _tool_version_str = f"{_tool_version_str}.0"
-                    tool_version_str = f"{tool_version_str}.0"
-                    tool_version = VersionInfo.from_str(_tool_version_str)
-            except ValueError:
-                tools_versions[tool] = last_tool_version
-                continue
-            tools_versions[tool] = tool_version_str
+            tools_versions_str[tool] = tool_version_str
 
-            if last_tool_version >= tool_version:
+            if last_tool_version_str == tool_version_str:
                 continue
 
             embed: discord.Embed = discord.Embed()
@@ -231,8 +234,8 @@ class Medicat(commands.Cog):
             embed.url = url
             embed.title = f"{tool} now has a new version!"
             embed.description = f"[View on FCportables!]({url})"
-            embed.add_field(name="Old version:", value=last_tool_version, inline=True)
-            embed.add_field(name="New version:", value=tool_version, inline=True)
+            embed.add_field(name="Old version:", value=last_tool_version_str, inline=True)
+            embed.add_field(name="New version:", value=tool_version_str, inline=True)
 
             hook: discord.Webhook = await CogsUtils(bot=self.bot).get_hook(channel)
             message: discord.Message = await hook.send(embed=embed, username="Bootables Tools Updates", avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg")
@@ -241,7 +244,7 @@ class Medicat(commands.Cog):
                     await message.publish()
                 except discord.HTTPException:
                     pass
-        await self.config.last_bootables_tools_versions.set(tools_versions)
+        await self.config.last_bootables_tools_versions.set(tools_versions_str)
 
     def in_medicat_guild():
         async def pred(ctx):

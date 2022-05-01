@@ -4,6 +4,7 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import aiohttp
+import asyncio
 import os
 import re
 import textwrap
@@ -115,6 +116,7 @@ class Medicat(commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
+        asyncio.create_task(self.edit_config_schema())
         self.cogsutils.create_loop(function=self.ventoy_updates, name="Ventoy Updates", hours=1)
         self.cogsutils.create_loop(function=self.bootables_tools_updates, name="Bootables Tools Updates", hours=1)
         try:
@@ -122,7 +124,7 @@ class Medicat(commands.Cog):
         except Exception as e:
             self.log.error(f"An error occurred while adding the custom_commands.", exc_info=e)
 
-    async def initialize(self):
+    async def edit_config_schema(self):
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
         if CONFIG_SCHEMA is None:
             CONFIG_SCHEMA = 1

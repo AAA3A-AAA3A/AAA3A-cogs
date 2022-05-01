@@ -107,7 +107,7 @@ class Medicat(commands.Cog):
                 "MiniTool Partition Wizard Technician": "12.6",
                 "NIUBI Partition Editor Technician Edition": "7.8.7",
                 "Paragon Hard Disk Manager Advanced": "17.20.11",
-                "Parted Magic": "2021.01.18",
+                "Parted Magic": "2022.01.18",
             },
         }
         self.config.register_global(**self.medicat_global)
@@ -128,6 +128,8 @@ class Medicat(commands.Cog):
         ALL_CONFIG = await self.config.all()
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
         if ALL_CONFIG == self.medicat_global:
+            CONFIG_SCHEMA = self.CONFIG_SCHEMA
+            await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
             return
         if CONFIG_SCHEMA is None:
             CONFIG_SCHEMA = 1
@@ -139,7 +141,8 @@ class Medicat(commands.Cog):
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         if CONFIG_SCHEMA < self.CONFIG_SCHEMA and not CONFIG_SCHEMA == self.CONFIG_SCHEMA:
             self.log.info(f"The Config scheme has been successfully modified to {self.CONFIG_SCHEMA} for the {self.__class__.__name__} cog.")
-            await self.config.CONFIG_SCHEMA.set(self.CONFIG_SCHEMA)
+            CONFIG_SCHEMA = self.CONFIG_SCHEMA
+            await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
 
     def cog_unload(self):
         try:

@@ -17,7 +17,8 @@ class Ip(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.data: Config = Config.get_conf(
+
+        self.config: Config = Config.get_conf(
             self,
             identifier=969369062738,
             force_registration=True,
@@ -25,8 +26,7 @@ class Ip(commands.Cog):
         self.ip_global = {
             "port": "0000",  # Port.
         }
-
-        self.data.register_global(**self.ip_global)
+        self.config.register_global(**self.ip_global)
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
@@ -51,7 +51,7 @@ class Ip(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://www.wikipedia.org", timeout=3) as r:
                 ip = r.headers["X-Client-IP"]  # Gives the "public IP" of the Bot client PC
-        config = await self.data.all()
+        config = await self.config.all()
         port = config["port"]
         await ctx.send(_("The Administrator Panel website is http://{ip}:{port}/.").format(**locals()))
 
@@ -59,12 +59,12 @@ class Ip(commands.Cog):
     async def setportip(self, ctx: commands.Context, *, port):
         """Set the port.
         """
-        config = await self.data.all()
+        config = await self.config.all()
 
         actual_port = config["port"]
         if actual_port is port:
             await ctx.send(_("Port is already set on {port}.").format(**locals()))
             return
 
-        await self.data.port.set(port)
+        await self.config.port.set(port)
         await ctx.send(_("Port registered: {port}.").format(**locals()))

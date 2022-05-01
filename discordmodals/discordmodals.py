@@ -126,6 +126,7 @@ class DiscordModals(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
         self.config: Config = Config.get_conf(
             self,
             identifier=897374386384,
@@ -134,7 +135,6 @@ class DiscordModals(commands.Cog):
         self.discordmodals_guild = {
             "modals": {},
         }
-
         self.config.register_guild(**self.discordmodals_guild)
 
         self.cogsutils = CogsUtils(cog=self)

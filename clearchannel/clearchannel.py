@@ -19,6 +19,7 @@ class ClearChannel(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
         self.config: Config = Config.get_conf(
             self,
             identifier=837018163805,
@@ -29,7 +30,6 @@ class ClearChannel(commands.Cog):
             "first_message": True,
             "author_dm": False,
         }
-
         self.config.register_guild(**self.clearchannel_guild)
 
         self.cogsutils = CogsUtils(cog=self)

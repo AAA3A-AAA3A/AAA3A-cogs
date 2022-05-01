@@ -20,6 +20,7 @@ class AntiNuke(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
         self.config: Config = Config.get_conf(
             self,
             identifier=947269490247,
@@ -36,7 +37,6 @@ class AntiNuke(commands.Cog):
             "count": 0, # The count of channel's deletes.
             "old_roles": [], # The roles to be handed in if it wasn't a nuke.
         }
-
         self.config.register_guild(**self.antinuke_guild)
         self.config.register_member(**self.antinuke_member)
 

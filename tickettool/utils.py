@@ -1,7 +1,7 @@
 import discord  # isort:skip
+from redbot.core.i18n import Translator  # isort:skip
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("TicketTool", __file__)
 
 class utils():
     def __init__(self, bot):

@@ -1,9 +1,9 @@
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("SimpleSanction", __file__)
 
 class settings(commands.Cog):
     def __init__(self, bot):

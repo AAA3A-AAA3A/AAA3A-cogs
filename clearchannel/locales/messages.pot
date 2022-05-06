@@ -1,0 +1,122 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-05-06 11:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: clearchannel.py:19
+#, docstring
+msgid "A cog to transfer all messages channel in a other channel!"
+msgstr ""
+
+#: clearchannel.py:46
+#, docstring
+msgid ""
+"Delete ALL messages from the current channel by duplicating it and then deleting it.\n"
+"        For security reasons, only the server owner and the bot owner can use the command. Use the \"permissions\" tool for more options.\n"
+"        "
+msgstr ""
+
+#: clearchannel.py:59
+msgid ":warning: - ClearChannel"
+msgstr ""
+
+#: clearchannel.py:60
+msgid ""
+"{ctx.author.mention} | Do you really want to delete ALL messages from "
+"channel {old_channel.mention} ({old_channel.id})?"
+msgstr ""
+
+#: clearchannel.py:87
+msgid "Timed out, please try again."
+msgstr ""
+
+#: clearchannel.py:91 clearchannel.py:93 clearchannel.py:95 clearchannel.py:96
+msgid "Clear Channel requested by {ctx.author} ({ctx.author.id})"
+msgstr ""
+
+#: clearchannel.py:95
+msgid "🗑️ Deleted-{old_channel.name}"
+msgstr ""
+
+#: clearchannel.py:98
+msgid "%s (%s) deleted ALL messages in channel %s (%s)."
+msgstr ""
+
+#: clearchannel.py:106
+msgid "ClearChannel"
+msgstr ""
+
+#: clearchannel.py:107
+msgid "ALL the messages in this channel have been deleted..."
+msgstr ""
+
+#: clearchannel.py:112
+msgid ""
+"All messages in channel #{old_channel.name} ({old_channel.id}) have been "
+"deleted! You can find the new channel, with the same permissions: "
+"#{new_channel.name} ({new_channel.id})."
+msgstr ""
+
+#: clearchannel.py:118
+#, docstring
+msgid "Configure ClearChannel for your server."
+msgstr ""
+
+#: clearchannel.py:122
+#, docstring
+msgid ""
+"Enable or disable Channel Delete\n"
+"        If this option is enabled, the bot will not delete the original channel: it will duplicate it as normal, but move it to the end of the server's channel list.\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: clearchannel.py:127 clearchannel.py:147 clearchannel.py:167
+msgid "Only the owner of this server can access these commands!"
+msgstr ""
+
+#: clearchannel.py:134
+msgid "Channel Delete is already set on {state}."
+msgstr ""
+
+#: clearchannel.py:138
+msgid "Channel Delete state registered: {state}."
+msgstr ""
+
+#: clearchannel.py:142
+#, docstring
+msgid ""
+"Enable or disable First Message\n"
+"        If this option is enabled, the bot will send a message to the emptied channel to warn that it has been emptied.\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: clearchannel.py:154
+msgid "First Message is already set on {state}."
+msgstr ""
+
+#: clearchannel.py:162
+#, docstring
+msgid ""
+"Enable or disable Author dm\n"
+"        If this option is enabled, the bot will try to send a dm to the author of the order to confirm that everything went well.\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: clearchannel.py:174
+msgid "Author dm is already set on {state}."
+msgstr ""
+
+#: clearchannel.py:178
+msgid "Author dm state registered: {state}."
+msgstr ""

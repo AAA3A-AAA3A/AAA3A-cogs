@@ -1,17 +1,18 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
-import socket
+from redbot.core import Config, commands  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 
 import aiohttp
-from redbot.core import Config, commands
+import socket
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 # Thanks to @AverageGamer on Discord for the cog idea and the code to find the external ip!
 # Thanks to @Flanisch on GitHub for the use of Wikipedia headers instead of the site found above! (https://github.com/AAA3A-AAA3A/AAA3A-cogs/pull/3)
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("Ip", __file__)
 
+@cog_i18n(_)
 class Ip(commands.Cog):
     """A cog to get the ip address of the bot!"""
 

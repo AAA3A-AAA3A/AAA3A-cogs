@@ -5,12 +5,12 @@ else:
     from dislash import ActionRow, Button, ButtonStyle  # isort:skip
 
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("TicketTool", __file__)
 
 class settings(commands.Cog):
     def __init__(self, bot):
@@ -32,11 +32,11 @@ class settings(commands.Cog):
         config = await self.config.guild(ctx.guild).settings.all()
 
         if config["category_open"] is None or config["category_close"] is None or config["admin_role"] is None:
-            await ctx.send(_("You cannot enable the ticket system on this server if you have not configured the following options:"
-                            f"- The category of open tickets : `{ctx.prefix}setticket categoryopen <category>`"
-                            f"- The category of close tickets : `{ctx.prefix}setticket categoryclose <category>`"
-                            f"- The admin role has full access to the tickets : `{ctx.prefix}setticket adminrole <role>`"
-                            "All other parameters are optional or have default values that will be used.").format(**locals()))
+            await ctx.send(_("You cannot enable the ticket system on this server if you have not configured the following options:\n"
+                             "- The category of open tickets : `{ctx.prefix}setticket categoryopen <category>`\n"
+                             "- The category of close tickets : `{ctx.prefix}setticket categoryclose <category>`\n"
+                             "- The admin role has full access to the tickets : `{ctx.prefix}setticket adminrole <role>`\n"
+                             "All other parameters are optional or have default values that will be used.").format(**locals()))
             return
 
         actual_enable = config["enable"]

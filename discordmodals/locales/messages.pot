@@ -1,0 +1,139 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-05-06 11:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: discordmodals.py:26
+msgid ""
+"Error parsing YAML. Please make sure the format is valid (a YAML validator "
+"may help)"
+msgstr ""
+
+#: discordmodals.py:32
+msgid "The argument `/{arg}` is required in the root in the YAML."
+msgstr ""
+
+#: discordmodals.py:35
+msgid "The agument `/{arg}` is invalid in in the YAML. Check the spelling."
+msgstr ""
+
+#: discordmodals.py:41
+msgid "The argument `/button/{arg}` is required in the YAML."
+msgstr ""
+
+#: discordmodals.py:44
+msgid ""
+"The agument `/button/{arg}` is invalid in the YAML. Check the spelling."
+msgstr ""
+
+#: discordmodals.py:50 discordmodals.py:52
+msgid "The agument `/button/style` must be a number between 1 and 4."
+msgstr ""
+
+#: discordmodals.py:58
+msgid "The argument `/button/modal` must be a list of TextInputs."
+msgstr ""
+
+#: discordmodals.py:66
+msgid "The argument `/modal/{count}/{arg}` is required in the YAML."
+msgstr ""
+
+#: discordmodals.py:69
+msgid ""
+"The agument `/modal/{count}/{arg}` is invalid in the YAML. Check the "
+"spelling."
+msgstr ""
+
+#: discordmodals.py:75 discordmodals.py:77
+msgid "The agument `/modal/{count}/style` must be a number between 1 and 2."
+msgstr ""
+
+#: discordmodals.py:94
+msgid ""
+"The agument `/modal/{count}/required` must be a boolean (True or False)."
+msgstr ""
+
+#: discordmodals.py:126
+#, docstring
+msgid "A cog to use Discord Modals, forms with graphic interface!"
+msgstr ""
+
+#: discordmodals.py:222
+#, docstring
+msgid ""
+"Group of commands for use ReactToCommand.\n"
+"        "
+msgstr ""
+
+#: discordmodals.py:228
+#, docstring
+msgid ""
+"Add a Modal to a message.\n"
+"        Use YAML syntax to set up everything.\n"
+"\n"
+"        **Example:**\n"
+"        ```\n"
+"        [p]discordmodals add 1234567890\n"
+"        title: Report a bug\n"
+"        button:\n"
+"          label: Report\n"
+"          emoji: ⚠️\n"
+"          style: 4 # blurple = 1, grey = 2, green = 3, red = 4\n"
+"        modal:\n"
+"          - label: What is the problem?\n"
+"            style: 2 # short = 1, paragraph = 2\n"
+"            required: True\n"
+"            default: None\n"
+"            placeholder: None\n"
+"        channel: général # id, mention, name\n"
+"        anonymous: False\n"
+"        messages:\n"
+"          error: Error!\n"
+"          done: Form submitted.\n"
+"        ```\n"
+"        The `style`, 'emoji', `default`, `placeholder`, `channel`, `required`, `anonymous` and `messages` are not required.\n"
+"        "
+msgstr ""
+
+#: discordmodals.py:254
+msgid "I have to be the author of the message for the button to work."
+msgstr ""
+
+#: discordmodals.py:258
+msgid "This message already has a Modal."
+msgstr ""
+
+#: discordmodals.py:265
+msgid ""
+"Sorry. An error occurred when I tried to put the button on the message."
+msgstr ""
+
+#: discordmodals.py:274
+#, docstring
+msgid ""
+"Remove a Modal to a message.\n"
+"        "
+msgstr ""
+
+#: discordmodals.py:277
+msgid "I have to be the author of the message for the Modal to work."
+msgstr ""
+
+#: discordmodals.py:281
+msgid "No Modal is configured for this message."
+msgstr ""
+
+#: discordmodals.py:293
+#, docstring
+msgid ""
+"Clear all Modals to a **guild**.\n"
+"        "
+msgstr ""

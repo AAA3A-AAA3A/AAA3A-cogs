@@ -1,11 +1,12 @@
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
+
 import re
 
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("RolesButtons", __file__)
 
 class RoleHierarchyConverter(discord.ext.commands.RoleConverter):
     """Similar to d.py's RoleConverter but only returns if we have already

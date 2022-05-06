@@ -1,5 +1,6 @@
 ﻿from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 if CogsUtils().is_dpy2:
@@ -27,9 +28,9 @@ from .utils import Timeout_or_Cancel, utils
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("SimpleSanction", __file__)
 
+@cog_i18n(_)
 class SimpleSanction(settings, commands.Cog):
     """A cog to sanction a user!"""
 
@@ -1072,10 +1073,10 @@ class SimpleSanction(settings, commands.Cog):
             except Timeout_or_Cancel:
                 return
             try:
-                confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :dash: TempBan", f"Do you really want to tempban {user}?").format(**locals()), actual_color, user, reason, duration, actual_timeout)
+                confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :dash: TempBan"), _("Do you really want to tempban {user}?").format(**locals()), actual_color, user, reason, duration, actual_timeout)
             except Timeout_or_Cancel:
                 return
-            message = await utils.finish_message(ctx, finish_message, _("Sanctioning a member - :dash: TempBan", f"The user {user} has been tempban!").format(**locals()), actual_thumbnail, actual_color, user, show_author, duration, reason)
+            message = await utils.finish_message(ctx, finish_message, _("Sanctioning a member - :dash: TempBan"), _("The user {user} has been tempban!").format(**locals()), actual_thumbnail, actual_color, user, show_author, duration, reason)
             if not fake_action:
                 if not warn_system_exist:
                     if not ctx.bot.get_cog("Mod"):

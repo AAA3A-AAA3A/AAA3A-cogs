@@ -1,0 +1,684 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-05-06 11:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: settings.py:16
+#, docstring
+msgid "Configure SimpleSanction for your server."
+msgstr ""
+
+#: settings.py:21
+#, docstring
+msgid ""
+"Set a colour fort the embed.\n"
+"\n"
+"        ``color``: Color.\n"
+"        You can also use \"None\" if you wish to reset the color.\n"
+"        "
+msgstr ""
+
+#: settings.py:35 settings.py:48 settings.py:71 settings.py:86
+msgid "Configure the embed"
+msgstr ""
+
+#: settings.py:36
+msgid "Reset color:"
+msgstr ""
+
+#: settings.py:38 settings.py:53
+msgid "Color:"
+msgstr ""
+
+#: settings.py:49
+msgid "Set color:"
+msgstr ""
+
+#: settings.py:59
+#, docstring
+msgid ""
+"Set a thumbnail fort the embed.\n"
+"\n"
+"        ``link``: Thumbnail link.\n"
+"        You can also use \"None\" if you wish to reset the thumbnail.\n"
+"        "
+msgstr ""
+
+#: settings.py:72
+msgid "Reset thumbnail:"
+msgstr ""
+
+#: settings.py:76 settings.py:91
+msgid "Thumbnail:"
+msgstr ""
+
+#: settings.py:87
+msgid "Set thumbnail:"
+msgstr ""
+
+#: settings.py:97
+#, docstring
+msgid ""
+"Enable or disable Show Author\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: settings.py:105
+msgid "Show Author is already set on {state}."
+msgstr ""
+
+#: settings.py:109
+msgid "Show Author state registered: {state}."
+msgstr ""
+
+#: settings.py:113
+#, docstring
+msgid ""
+"Enable or disable Action Confirmation\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: settings.py:121
+msgid "Action Confirmation is already set on {state}."
+msgstr ""
+
+#: settings.py:125
+msgid "Action Confirmation state registered: {state}."
+msgstr ""
+
+#: settings.py:129
+#, docstring
+msgid ""
+"Enable or disable Finish Message\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: settings.py:137
+msgid "Finish Message is already set on {state}."
+msgstr ""
+
+#: settings.py:145
+#, docstring
+msgid ""
+"Enable or disable Warn System Use\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: settings.py:153
+msgid "Warn System Use is already set on {state}."
+msgstr ""
+
+#: settings.py:157
+msgid "Warn System Use state registered: {state}."
+msgstr ""
+
+#: settings.py:161
+#, docstring
+msgid ""
+"Enable or disable Buttons Use\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: settings.py:169
+msgid "Way is already set on {way}."
+msgstr ""
+
+#: settings.py:177
+#, docstring
+msgid ""
+"Enable or disable Reason Requiered\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: settings.py:185
+msgid "Reason Required is already set on {state}."
+msgstr ""
+
+#: settings.py:189
+msgid "Reason Required state registered: {state}."
+msgstr ""
+
+#: settings.py:193
+#, docstring
+msgid ""
+"Enable or disable Delete Embed\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: settings.py:201
+msgid "Delete Embed is already set on {state}."
+msgstr ""
+
+#: settings.py:209
+#, docstring
+msgid ""
+"Enable or disable Delete Message\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: settings.py:217
+msgid "Delete Message is already set on {state}."
+msgstr ""
+
+#: settings.py:221
+msgid "Delete Message state registered: {state}."
+msgstr ""
+
+#: settings.py:225
+#, docstring
+msgid ""
+"Choose the timeout\n"
+"\n"
+"        Use a int. The default is 180 seconds.\n"
+"        "
+msgstr ""
+
+#: settings.py:234
+msgid "Timeout restored."
+msgstr ""
+
+#: settings.py:237
+msgid "Timeout is already set on {timeout}."
+msgstr ""
+
+#: settings.py:241
+msgid "Timeout state registered: {timeout}."
+msgstr ""
+
+#: simplesanction.py:35
+#, docstring
+msgid "A cog to sanction a user!"
+msgstr ""
+
+#: simplesanction.py:119 simplesanction.py:135
+msgid "Sanction."
+msgstr ""
+
+#: simplesanction.py:128
+msgid ""
+"You have chosen to sanction {inter.user.mention} ({inter.user.id}) in "
+"{inter.channel.mention}."
+msgstr ""
+
+#: simplesanction.py:130 simplesanction.py:145
+msgid ""
+"An error has occurred in your interaction. Please try to use the real "
+"command instead of this contextual menu."
+msgstr ""
+
+#: simplesanction.py:143
+msgid ""
+"You have chosen to sanction {inter.message.author.mention} "
+"({inter.message.author.id}) in {inter.channel.mention}."
+msgstr ""
+
+#: simplesanction.py:168
+msgid ""
+"You have chosen to sanction {user.mention} ({user.id}) in "
+"{inter.channel.mention}."
+msgstr ""
+
+#: simplesanction.py:170
+msgid ""
+"An error has occurred in this interaction. Please try to use the real "
+"command instead of this contextual menu."
+msgstr ""
+
+#: simplesanction.py:177
+#, docstring
+msgid ""
+"\n"
+"        Sanction a user quickly and easily.\n"
+"\n"
+"        All arguments are optional and will be requested during the course of the action if necessary.\n"
+"        For \"Confirmation\", \"Show_author\" and \"finish_message\", a `true` or `false` is expected.\n"
+"        In this order, you must put the arguments and it is mandatory to specify the ones before if you want to specify one after.\n"
+"\n"
+"        ``user``: Server member.\t\t\t    Who is the user concerned?\n"
+"        ``confirmation``: True or False.\t\tDo you want the bot to ask for confirmation from you before the action? (Default is the recorded value)\n"
+"        ``show_author``: True or False.\t\t\tDo you want the bot to show in its embeds who is the author of the command/sanction? (Default is the recorded value)\n"
+"        ``finish_message``: True or False.\t\tDo you want the bot to show an embed just before the action summarising the action and giving the sanctioned user and the reason? (Default is the recorded value)\n"
+"        ``fake_action``: True or False.\t\t    Do you want the command to do everything as usual, but (unintentionally) forget to execute the action?\n"
+"        ``duration``: Duration. (5d, 8h, 1m...)\tIf you choose a TempBan, TempMute or TempMuteChanne, this value will be used for the duration of that action.\n"
+"        ``reason``: Text.\t\t\t\t        The reason for this action. (`not` to not specify one, unless the reason has been made falcutative in the parameters)\n"
+"\n"
+"        Short version: [p]sanction\n"
+"        Long version:  [p]sanction 10 @user true true true true true true 3d Spam.\n"
+"        "
+msgstr ""
+
+#: simplesanction.py:200
+#, docstring
+msgid ""
+"\n"
+"         - :information_source: Show info on a user.\n"
+"\n"
+"        Examples:\n"
+"        - `[p]sanction 1 @user`: UserInfo for no reason\n"
+"        - `[p]sanction 1 @user What are these roles?`: Ban for the reason \"What are these roles?\"\n"
+"        - `[p]sanction 1 012345678987654321`: UserInfo with the ID provided.\n"
+"        "
+msgstr ""
+
+#: simplesanction.py:213
+#, docstring
+msgid ""
+"\n"
+"         - :warning: Set a simple warning on a user.\n"
+"\n"
+"        Examples:\n"
+"        - `[p]sanction 2 @user not`: Warn for no reason\n"
+"        - `[p]sanction 2 @user Insults`: Warn for the reason \"Insults\"\n"
+"        - `[p]sanction 2 012345678987654321 Advertising`: Warn the user with the ID provided.\n"
+"        "
+msgstr ""
+
+#: simplesanction.py:226
+#, docstring
+msgid ""
+"\n"
+"         - :hammer: Ban the member from the server.\n"
+"\n"
+"        It won't delete messages by default.\n"
+"\n"
+"        Examples:\n"
+"        - `[p]sanction 3 @user not`: Ban for no reason\n"
+"        - `[p]sanction 3 @user Insults`: Ban for the reason \"Insults\"\n"
+"        - `[p]sanction 3 012345678987654321 Advertising`: Ban the user with the ID provided.\n"
+"        "
+msgstr ""
+
+#: simplesanction.py:241
+#, docstring
+msgid ""
+"\n"
+"         - :repeat_one: Softban the member from the server.\n"
+"\n"
+"        This means that the user will be banned and immediately unbanned, so it will purge their messages in all channels.\n"
+"\n"
+"        Examples:\n"
+"        - `[p]sanction 4 @user not`: SoftBan for no reason\n"
+"        - `[p]sanction 4 @user Insults`: SoftBan for the reason \"Insults\"\n"
+"        - `[p]sanction 4 012345678987654321 Advertising`: SoftBan the user with the ID provided.\n"
+"        "
+msgstr ""
+
+#: simplesanction.py:256
+#, docstring
+msgid ""
+"\n"
+"         - :dash: Tempban the member from the server.\n"
+"\n"
+"        It won't delete messages by default.\n"
+"\n"
+"        If you want to perform a temporary ban, provide the time before the reason.\n"
+"\n"
+"        Examples:\n"
+"        - `[p]sanction 5 @user not`: Ban for no reason\n"
+"        - `[p]sanction 5 @user 7d Insults`: 7 days ban for the reason \"Insults\"\n"
+"        - `[p]sanction 5 012345678987654321 Advertising`: Ban the user with the ID provided.\n"
+"        "
+msgstr ""
+
+#: simplesanction.py:273
+#, docstring
+msgid ""
+"\n"
+"         - :boot: Kick the member from the server.\n"
+"\n"
+"        Examples:\n"
+"        - `[p]sanction 6 @user not`: Kick for no reason\n"
+"        - `[p]sanction 6 @user Insults`: Kick for the reason \"Insults\"\n"
+"        - `[p]sanction 6 012345678987654321 Advertising`: Kick the user with the ID provided.\n"
+"        "
+msgstr ""
+
+#: simplesanction.py:286
+#, docstring
+msgid ""
+"\n"
+"         - :mute: Mute the user in all channels, including voice channels.\n"
+"\n"
+"        Examples:\n"
+"        - `[p]sanction 7 @user not`: Infinite mute for no reason\n"
+"        - `[p]sanction 7 @user Spam`:Infinite  mute for the reason \"Spam\"\n"
+"        - `[p]sanction 7 @user Advertising`: Infinite mute for the reason \"Advertising\"\n"
+"        "
+msgstr ""
+
+#: simplesanction.py:299
+#, docstring
+msgid ""
+"\n"
+"         - :punch: Mute the user in this channel.\n"
+"\n"
+"        Examples:\n"
+"        - `[p]sanction 8 @user not`: Infinite mute for no reason\n"
+"        - `[p]sanction 8 @user Spam`: Infinite mute for the reason \"Spam\"\n"
+"        - `[p]sanction 8 @user Advertising`: Infinite mute for the reason \"Advertising\"\n"
+"        "
+msgstr ""
+
+#: simplesanction.py:312
+#, docstring
+msgid ""
+"\n"
+"         - :hourglass_flowing_sand: TempMute the user in all channels, including voice channels.\n"
+"\n"
+"        You can set a timed mute by providing a valid time before the reason.\n"
+"\n"
+"        Examples:\n"
+"        - `[p]sanction 9 @user 30m not`: 30 minutes mute for no reason\n"
+"        - `[p]sanction 9 @user 5h Spam`: 5 hours mute for the reason \"Spam\"\n"
+"        - `[p]sanction 9 @user 3d Advertising`: 3 days mute for the reason \"Advertising\"\n"
+"        "
+msgstr ""
+
+#: simplesanction.py:327
+#, docstring
+msgid ""
+"\n"
+"         - :hourglass: TempMute the user in this channel.\n"
+"\n"
+"        You can set a timed mute by providing a valid time before the reason.\n"
+"\n"
+"        Examples:\n"
+"        - `[p]sanction 10 @user 30m not`: 30 minutes mute for no reason\n"
+"        - `[p]sanction 10 @user 5h Spam`: 5 hours mute for the reason \"Spam\"\n"
+"        - `[p]sanction 10 @user 3d Advertising`: 3 days mute for the reason \"Advertising\"\n"
+"        "
+msgstr ""
+
+#: simplesanction.py:341
+#, docstring
+msgid ""
+"Sanction a user quickly and easily.\n"
+"        "
+msgstr ""
+
+#: simplesanction.py:378 simplesanction.py:405
+msgid "Sanctioning a member"
+msgstr ""
+
+#: simplesanction.py:379
+msgid "Which member do you want to sanction? (Set `cancel` to cancel.)"
+msgstr ""
+
+#: simplesanction.py:400 utils.py:137 utils.py:169 utils.py:228
+msgid "Timed out, please try again."
+msgstr ""
+
+#: simplesanction.py:406 utils.py:236
+msgid ""
+"This tool allows you to easily sanction a server member.\n"
+"User mention: {user.mention} - User ID: {user.id}"
+msgstr ""
+
+#: simplesanction.py:419 simplesanction.py:425 utils.py:248
+msgid "Reason:"
+msgstr ""
+
+#: simplesanction.py:420
+msgid "The reason was not given and will not be asked later."
+msgstr ""
+
+#: simplesanction.py:436 simplesanction.py:445 simplesanction.py:793
+#: simplesanction.py:805 simplesanction.py:817 simplesanction.py:829
+#: simplesanction.py:841 simplesanction.py:853 simplesanction.py:865
+#: simplesanction.py:877 simplesanction.py:889 simplesanction.py:901
+msgid ""
+"You are using this command in Fake mode, so no action will be taken, but I "
+"will pretend it is not the case."
+msgstr ""
+
+#: simplesanction.py:788
+msgid "You are not the author of this command."
+msgstr ""
+
+#: simplesanction.py:948
+msgid "Sanctioning a member - :information_source: UserInfo"
+msgstr ""
+
+#: simplesanction.py:948
+msgid "Here is the information about the user {user.name}!"
+msgstr ""
+
+#: simplesanction.py:951
+msgid "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`."
+msgstr ""
+
+#: simplesanction.py:963 simplesanction.py:967 simplesanction.py:970
+msgid "Sanctioning a member - :warning: Warn"
+msgstr ""
+
+#: simplesanction.py:963
+msgid ""
+"Why do you want warn {user}? (Set `cancel` to cancel or `not` for none)"
+msgstr ""
+
+#: simplesanction.py:967
+msgid "Do you really want to warn {user}?"
+msgstr ""
+
+#: simplesanction.py:970
+msgid "The user {user} has been received a warning!"
+msgstr ""
+
+#: simplesanction.py:974
+msgid ""
+"The cog Warnings is not loaded. To load it, do `{ctx.prefix}load warnings`. "
+"You can also install/load the WarnSystem cog."
+msgstr ""
+
+#: simplesanction.py:979
+msgid "{ctx.prefix}warn {user.id} The reason was not given."
+msgstr ""
+
+#: simplesanction.py:981
+msgid "{ctx.prefix}warn {user.id} {reason}"
+msgstr ""
+
+#: simplesanction.py:998 simplesanction.py:1002 simplesanction.py:1005
+msgid "Sanctioning a member - :hammer: Ban"
+msgstr ""
+
+#: simplesanction.py:998
+msgid ""
+"Why do you want to ban {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr ""
+
+#: simplesanction.py:1002
+msgid "Do you really want to ban {user}?"
+msgstr ""
+
+#: simplesanction.py:1005
+msgid "The user {user} has been banned!"
+msgstr ""
+
+#: simplesanction.py:1009 simplesanction.py:1044 simplesanction.py:1083
+#: simplesanction.py:1119
+msgid ""
+"The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`. You can "
+"also install/load the WarnSystem cog."
+msgstr ""
+
+#: simplesanction.py:1033 simplesanction.py:1037 simplesanction.py:1040
+msgid "Sanctioning a member - :repeat_one: SoftBan"
+msgstr ""
+
+#: simplesanction.py:1033
+msgid ""
+"Why do you want to softban {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr ""
+
+#: simplesanction.py:1037
+msgid "Do you really want to softban {user}?"
+msgstr ""
+
+#: simplesanction.py:1040
+msgid "The user {user} has been softbanned!"
+msgstr ""
+
+#: simplesanction.py:1068 simplesanction.py:1072
+msgid "Sanctioning a member - :dash: TempBan"
+msgstr ""
+
+#: simplesanction.py:1068
+msgid "How long do you want to tempban {user}? (Set `cancel` to cancel)"
+msgstr ""
+
+#: simplesanction.py:1072
+msgid ""
+"Why do you want to tempban {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr ""
+
+#: simplesanction.py:1108 simplesanction.py:1112 simplesanction.py:1115
+msgid "Sanctioning a member - :boot: Kick"
+msgstr ""
+
+#: simplesanction.py:1108 simplesanction.py:1112
+msgid ""
+"Why do you want to kick {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr ""
+
+#: simplesanction.py:1115
+msgid "The user {user} has been kicked!"
+msgstr ""
+
+#: simplesanction.py:1143 simplesanction.py:1147 simplesanction.py:1150
+msgid "Sanctioning a member - :mute: Mute"
+msgstr ""
+
+#: simplesanction.py:1143
+msgid ""
+"Why do you want to mute {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr ""
+
+#: simplesanction.py:1147
+msgid "Do you really want to mute {user}?"
+msgstr ""
+
+#: simplesanction.py:1150
+msgid "The user {user} has been muted!"
+msgstr ""
+
+#: simplesanction.py:1154 simplesanction.py:1218
+msgid ""
+"The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`. You "
+"can also install/load the WarnSystem cog."
+msgstr ""
+
+#: simplesanction.py:1178 simplesanction.py:1182 simplesanction.py:1185
+msgid "Sanctioning a member - :punch: MuteChannel"
+msgstr ""
+
+#: simplesanction.py:1178
+msgid ""
+"Why do you want to mute {user} in {ctx.channel.mention}? (Set `cancel` to "
+"cancel or `not` to none)"
+msgstr ""
+
+#: simplesanction.py:1182
+msgid "Do you really want to mute {user} in {ctx.channel.mention}?"
+msgstr ""
+
+#: simplesanction.py:1185
+msgid "The user {user} has been muted in #{ctx.channel.name}!"
+msgstr ""
+
+#: simplesanction.py:1188 simplesanction.py:1256
+msgid "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`."
+msgstr ""
+
+#: simplesanction.py:1203 simplesanction.py:1207 simplesanction.py:1211
+#: simplesanction.py:1214
+msgid "Sanctioning a member - :hourglass_flowing_sand: TempMute"
+msgstr ""
+
+#: simplesanction.py:1203
+msgid "How long do you want to tempmute {user}? (Set `cancel` to cancel)"
+msgstr ""
+
+#: simplesanction.py:1207
+msgid ""
+"Why do you want to tempmute {user}? (Set `cancel` to cancel or `not` to "
+"none)"
+msgstr ""
+
+#: simplesanction.py:1211
+msgid "Do you really want to tempmute {user}?"
+msgstr ""
+
+#: simplesanction.py:1214
+msgid "The user {user} has been tempmuted!"
+msgstr ""
+
+#: simplesanction.py:1242 simplesanction.py:1246 simplesanction.py:1250
+#: simplesanction.py:1253
+msgid "Sanctioning a member - :hourglass: TempMuteChannel"
+msgstr ""
+
+#: simplesanction.py:1242
+msgid ""
+"How long do you want to tempmute {user} in {ctx.channel.mention}? (Set "
+"`cancel` to cancel)"
+msgstr ""
+
+#: simplesanction.py:1246
+msgid ""
+"Why do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` "
+"to cancel or `not` to none)"
+msgstr ""
+
+#: simplesanction.py:1250
+msgid "Do you really want to tempmute {user} in {ctx.channel.mention}?"
+msgstr ""
+
+#: simplesanction.py:1253
+msgid "The user {user} has been tempmuted in #{ctx.channel.name}!"
+msgstr ""
+
+#: utils.py:185
+msgid "The reason was not given."
+msgstr ""
+
+#: utils.py:195 utils.py:200 utils.py:254 utils.py:259
+msgid "Duration:"
+msgstr ""
+
+#: utils.py:201 utils.py:260
+msgid "Infinity"
+msgstr ""
+
+#: utils.py:245
+msgid "If an error has occurred, it will be displayed below."
+msgstr ""
+
+#: utils.py:264
+#, docstring
+msgid "An error raised in case the user respond not or cancel."
+msgstr ""

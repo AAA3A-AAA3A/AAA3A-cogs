@@ -1,5 +1,6 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 
 import asyncio
@@ -11,8 +12,7 @@ from redbot.core.utils.predicates import MessagePredicate
 if not CogsUtils().is_dpy2:
     from dislash import ActionRow, Button, ButtonStyle
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("SimpleSanction", __file__)
 
 class utils(commands.Cog):
     def __init__(self, bot):

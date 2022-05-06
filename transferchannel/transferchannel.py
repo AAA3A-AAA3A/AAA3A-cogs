@@ -1,5 +1,6 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -20,9 +21,9 @@ if CogsUtils().is_dpy2:  # To remove
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("TransferChannel", __file__)
 
+@cog_i18n(_)
 class TextChannelGuildConverter(discord.ext.commands.TextChannelConverter):
     """Similar to d.py's TextChannelConverter but only returns if we have already
     passed our hierarchy checks and find in all guilds.

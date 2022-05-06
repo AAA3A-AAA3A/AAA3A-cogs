@@ -1,0 +1,46 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-05-06 11:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: calculator.py:28
+#, docstring
+msgid "A cog to do simple calculations from Discord with buttons!"
+msgstr ""
+
+#: calculator.py:71 calculator.py:98 calculator.py:240
+msgid "Exit"
+msgstr ""
+
+#: calculator.py:81 calculator.py:108 calculator.py:314
+msgid "Clear"
+msgstr ""
+
+#: calculator.py:171 calculator.py:415 calculator.py:427 calculator.py:456
+#: calculator.py:470 calculator.py:490 calculator.py:502 calculator.py:531
+#: calculator.py:545
+msgid "Error!"
+msgstr ""
+
+#: calculator.py:183
+msgid "Calculator"
+msgstr ""
+
+#: calculator.py:398
+#, docstring
+msgid "Calculate a simple expression."
+msgstr ""
+
+#: calculator.py:488
+msgid ""
+"Only the author of the command `{ctx.prefix}calc` can interact with this "
+"message."
+msgstr ""

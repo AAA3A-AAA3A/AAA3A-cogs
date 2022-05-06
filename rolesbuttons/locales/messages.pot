@@ -1,0 +1,154 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-05-06 11:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: converters.py:12
+#, docstring
+msgid ""
+"Similar to d.py's RoleConverter but only returns if we have already\n"
+"    passed our hierarchy checks.\n"
+"    "
+msgstr ""
+
+#: converters.py:25
+msgid ""
+"The {role.mention} role is a bot integration role and cannot be assigned or "
+"removed."
+msgstr ""
+
+#: converters.py:27
+msgid ""
+"The {role.mention} role is an integration role and cannot be assigned or "
+"removed."
+msgstr ""
+
+#: converters.py:29
+msgid ""
+"The {role.mention} role is a premium subscriber role and can only be "
+"assigned or removed by Nitro boosting the server."
+msgstr ""
+
+#: converters.py:31
+msgid ""
+"The {role.mention} role is higher than my highest role in the discord "
+"hierarchy."
+msgstr ""
+
+#: converters.py:33
+msgid ""
+"The {role.mention} role is higher than your highest role in the discord "
+"hierarchy."
+msgstr ""
+
+#: converters.py:42
+msgid ""
+"Role Emoji must be a role followed by an emoji separated by either `;`, `,`,"
+" `|`, or `-`."
+msgstr ""
+
+#: rolesbuttons.py:28
+#, docstring
+msgid "A cog to have roles-buttons!"
+msgstr ""
+
+#: rolesbuttons.py:82 rolesbuttons.py:126
+msgid ""
+"The role I have to put you in no longer exists. Please notify an "
+"administrator of this server."
+msgstr ""
+
+#: rolesbuttons.py:86
+msgid "Role-button of {interaction.message.id} in {interaction.channel.id}."
+msgstr ""
+
+#: rolesbuttons.py:88 rolesbuttons.py:132
+msgid ""
+"I could not add the {role.mention} ({role.id}) role to you. Please notify an"
+" administrator of this server."
+msgstr ""
+
+#: rolesbuttons.py:91 rolesbuttons.py:135
+msgid "You now have the role {role.mention} ({role.id})."
+msgstr ""
+
+#: rolesbuttons.py:96 rolesbuttons.py:140
+msgid ""
+"I could not remove the {role.mention} ({role.id}) role to you. Please notify"
+" an administrator of this server."
+msgstr ""
+
+#: rolesbuttons.py:99 rolesbuttons.py:143
+msgid "I did remove the role {role.mention} ({role.id})."
+msgstr ""
+
+#: rolesbuttons.py:130
+msgid "Role-button of {inter.message.id} in {channel.id}."
+msgstr ""
+
+#: rolesbuttons.py:159
+#, docstring
+msgid ""
+"Group of commands for use ReactToCommand.\n"
+"        "
+msgstr ""
+
+#: rolesbuttons.py:165 rolesbuttons.py:197
+#, docstring
+msgid ""
+"Add a role-button to a message.\n"
+"        "
+msgstr ""
+
+#: rolesbuttons.py:168 rolesbuttons.py:200 rolesbuttons.py:233
+#: rolesbuttons.py:257
+msgid "I have to be the author of the message for the role-button to work."
+msgstr ""
+
+#: rolesbuttons.py:172 rolesbuttons.py:204
+msgid ""
+"I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr ""
+
+#: rolesbuttons.py:178 rolesbuttons.py:190 rolesbuttons.py:210
+#: rolesbuttons.py:223
+msgid "I can't do more than 25 roles-buttons for one message."
+msgstr ""
+
+#: rolesbuttons.py:230
+#, docstring
+msgid ""
+"Remove a role-button to a message.\n"
+"        "
+msgstr ""
+
+#: rolesbuttons.py:237 rolesbuttons.py:261
+msgid "No role-button is configured for this message."
+msgstr ""
+
+#: rolesbuttons.py:240
+msgid "I wasn't watching for this button on this message."
+msgstr ""
+
+#: rolesbuttons.py:254
+#, docstring
+msgid ""
+"Clear all roles-buttons to a message.\n"
+"        "
+msgstr ""
+
+#: rolesbuttons.py:276
+#, docstring
+msgid ""
+"Clear all roles-buttons to a **guild**.\n"
+"        "
+msgstr ""

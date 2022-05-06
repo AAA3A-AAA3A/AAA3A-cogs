@@ -1,5 +1,6 @@
 ﻿from .AAA3A_utils.cogsutils import CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -57,7 +58,7 @@ BOOTABLES_TOOLS = {
     "Ultimate Boot": {"url": "https://www.fcportables.com/ultimate-boot-cd/", "category": "USB\\Boot_Repair\\", "regex": r"Ultimate Boot CD (\d*\.\d*\.\d*) Final"},
     "HDAT2": {"url": "https://www.fcportables.com/hdat-boot/", "category": "USB\\Boot_Repair\\", "regex": r"HDAT2 (\d*\.\d*) \(ALL-IN-ONE BOOT Version\)"},
     "Memtest86 Pro": {"url": "https://www.fcportables.com/memtest86-pro/", "category": "USB\\Boot_Repair\\", "regex": r"Memtest86 Pro (\d*\.\d*\.\d*) Retail \(ISO/USB\)"},
-    "Active@ Boot Disk": {"url": "https://www.fcportables.com/active-boot-disk/", "category": "USB\\Live_Operating_Systems\\", "regex": r"Active@ Boot Disk (\d*\.\d*\.\d*) WinPE \(x64\)"},
+    "Active@ Boot Disk": {"url": "https://www.fcportables.com/active-boot-disk/", "category": "USB\\Live_Operating_Systems\\", "regex": r"Active@ Boot Disk (\d*\.\d*) WinPE \(x64\)"},
     "Acronis Disk Director": {"url": "https://www.fcportables.com/acronis-disk-director-boot/", "category": "USB\\Partition_Tools\\", "regex": r"Acronis Disk Director (\d*\.\d*\.\d*) WinPE"},
     "AOMEI Partition Assistant Technician Edition": {"url": "https://www.fcportables.com/aomei-partition-assistant-technician-winpe/", "category": "USB\\Partition_Tools\\", "regex": r"Portable AOMEI Partition Assistant Technician Edition (\d*\.\d*\.\d*) \+ WinPE"},
     "EaseUS Partition Master": {"url": "https://www.fcportables.com/easeus-partition-master-winpe/", "category": "USB\\Partition_Tools\\", "regex": r"EaseUS Partition Master (\d*\.\d*) WinPE"},
@@ -67,9 +68,9 @@ BOOTABLES_TOOLS = {
     "Parted Magic": {"url": "https://www.fcportables.com/parted-magic/", "category": "USB\\Partition_Tools\\", "regex": r"Parted Magic (\d*\.\d*\.\d*) Boot ISO \(x64\)"}
 }
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("Medicat", __file__)
 
+@cog_i18n(_)
 class Medicat(commands.Cog):
     """This cog will only work on x server and therefore cannot be used by the general public!"""
 

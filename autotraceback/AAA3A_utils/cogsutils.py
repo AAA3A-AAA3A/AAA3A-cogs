@@ -1,7 +1,6 @@
 import discord
 from redbot.core import commands
 
-import aiohttp
 import asyncio
 import contextlib
 import datetime
@@ -21,15 +20,17 @@ from time import monotonic
 
 import pip
 import redbot
+from copy import copy
 from redbot import version_info as red_version_info
 from redbot.cogs.downloader.converters import InstalledCog
 from redbot.cogs.downloader.repo_manager import Repo
 from redbot.core._diagnoser import IssueDiagnoser
 from redbot.core.bot import Red
 from redbot.core.data_manager import basic_config, cog_data_path, config_file, instance_name, storage_type
-from redbot.core.utils.chat_formatting import bold, box, error, humanize_list, humanize_timedelta, pagify, text_to_file, warning
+from redbot.core.utils.chat_formatting import bold, box, error, humanize_list, humanize_timedelta, inline, pagify, text_to_file, warning
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
+from redbot.logging import RotatingFileHandler
 from redbot.vendored.discord.ext import menus
 from rich.console import Console
 from rich.table import Table
@@ -62,7 +63,7 @@ class CogsUtils(commands.Cog):
                 cog = bot.get_cog(cog)
             self.cog: commands.Cog = cog
             self.bot: Red = self.cog.bot
-            self.DataPath: Path = cog_data_path(raw_name=self.cog.__class__.__name__.lower())
+            self.DataPath: Path = cog_data_path(cog_instance=self.cog)
         elif bot is not None:
             self.cog: commands.Cog = None
             self.bot: Red = bot
@@ -162,6 +163,20 @@ class CogsUtils(commands.Cog):
     def cog_unload(self):
         self._end()
 
+    async def cog_command_error(self, ctx: commands.Context, error: Exception):
+        if self.cog is None:
+            return
+        if isinstance(error, commands.CommandInvokeError):
+            asyncio.create_task(ctx.bot._delete_delay(ctx))
+            self.cog.log.exception(f"Exception in command '{ctx.command.qualified_name}'", exc_info=error.original)
+            message = f"Error in command '{ctx.command.qualified_name}'. Check your console or logs for details.\nIf necessary, please inform the creator of the cog in which this command is located. Thank you."
+            exception_log = f"Exception in command '{ctx.command.qualified_name}'\n"
+            exception_log += "".join(traceback.format_exception(type(error), error, error.__traceback__))
+            ctx.bot._last_exception = exception_log
+            await ctx.send(inline(message))
+        else:
+            await ctx.bot.on_command_error(ctx=ctx, error=error, unhandled_by_cog=True)
+
     async def add_cog(self, bot: Red, cog: commands.Cog):
         """
         Load a cog by checking whether the required function is awaitable or not.
@@ -180,7 +195,7 @@ class CogsUtils(commands.Cog):
         Adding additional functionality to the cog.
         """
         self.cog.cogsutils = self
-        self.cog.log = logging.getLogger(f"red.{self.repo_name}.{self.cog.__class__.__name__}")
+        self.init_logger()
         if "format_help_for_context" not in self.cog.__func_red__:
             setattr(self.cog, 'format_help_for_context', self.format_help_for_context)
         if "red_delete_data_for_user" not in self.cog.__func_red__:
@@ -189,6 +204,8 @@ class CogsUtils(commands.Cog):
             setattr(self.cog, 'red_get_data_for_user', self.red_get_data_for_user)
         if "cog_unload" not in self.cog.__func_red__:
             setattr(self.cog, 'cog_unload', self.cog_unload)
+        if "cog_command_error" not in self.cog.__func_red__:
+            setattr(self.cog, 'cog_command_error', self.cog_command_error)
         self.bot.remove_listener(self.on_command_error)
         self.bot.add_listener(self.on_command_error)
         self.bot.remove_command("getallfor")
@@ -199,6 +216,16 @@ class CogsUtils(commands.Cog):
         """
         Adds dev environment values, slash commands add Views.
         """
+        try:
+            to_update, local_commit, online_commit = await self.to_update()
+            if to_update:
+                self.cog.log.warning(f"Your {self.cog.__class__.__name__} cog, from {self.repo_name}, is out of date. You can update your cogs with the 'cog update' command in Discord.")
+            else:
+                self.cog.log.debug(f"{self.cog.__class__.__name__} cog is up to date.")
+        except self.DownloaderNotLoaded:
+            pass
+        except Exception as e:  # really doesn't matter if this fails so fine with debug level
+            self.cog.log.debug(f"Something went wrong checking if {self.cog.__class__.__name__} cog is up to date.", exc_info=e)
         await self.bot.wait_until_red_ready()
         self.add_dev_env_value()
         if self.is_dpy2:
@@ -228,6 +255,7 @@ class CogsUtils(commands.Cog):
         """
         Removes dev environment values, slash commands add Views.
         """
+        self.close_logger()
         self.remove_dev_env_value()
         for loop in self.loops:
             self.loops[loop].end_all()
@@ -258,6 +286,40 @@ class CogsUtils(commands.Cog):
                         self.interactions["removed"] = True
                         await asyncio.sleep(2)
                         await self.bot.tree.sync(guild=None)
+
+    def init_logger(self):
+        """
+        Prepare the logger for the cog.
+        Thanks to @laggron42 on GitHub! (https://github.com/laggron42/Laggron-utils/blob/master/laggron_utils/logging.py)
+            
+        """
+        self.cog.log = logging.getLogger(f"red.{self.repo_name}.{self.cog.__class__.__name__}")
+        formatter = logging.Formatter(
+            "[{asctime}] {levelname} [{name}] {message}", datefmt="%Y-%m-%d %H:%M:%S", style="{"
+        )
+        # logging to a log file
+        # file is automatically created by the module, if the parent foler exists
+        cog_path = cog_data_path(cog_instance=self.cog)
+        if cog_path.exists():
+            file_handler = RotatingFileHandler(
+                stem=self.cog.__class__.__name__,
+                directory=cog_path,
+                maxBytes=1_000_0,
+                backupCount=0,
+                encoding="utf-8",
+            )
+            # file_handler.doRollover()
+            file_handler.setLevel(logging.DEBUG)
+            file_handler.setFormatter(formatter)
+            self.cog.log.addHandler(file_handler)
+
+    def close_logger(self):
+        """
+        Closes the files for the logger of a cog.
+        """
+        for handler in self.cog.log.handlers:
+            handler.close()
+        self.cog.log.handlers = []
 
     def add_dev_env_value(self):
         """
@@ -484,22 +546,21 @@ class CogsUtils(commands.Cog):
         if way == "message":
             def check(msg):
                 if check_owner:
-                    return msg.author.id == ctx.author.id or msg.author.id in ctx.bot.owner_ids or msg.author.id in [x.id for x in members_authored] and msg.channel is ctx.channel
+                    return msg.author.id == ctx.author.id or msg.author.id in ctx.bot.owner_ids or msg.author.id in [x.id for x in members_authored] and msg.channel == ctx.channel and msg.content in ("yes", "y", "no", "n")
                 else:
-                    return msg.author.id == ctx.author.id or msg.author.id in [x.id for x in members_authored] and msg.channel is ctx.channel
+                    return msg.author.id == ctx.author.id or msg.author.id in [x.id for x in members_authored] and msg.channel == ctx.channel and msg.content in ("yes", "y", "no", "n")
                 # This makes sure nobody except the command sender can interact with the "menu"
             try:
                 end_reaction = False
-                check = MessagePredicate.yes_or_no(ctx)
                 msg = await ctx.bot.wait_for("message", timeout=timeout, check=check)
                 # waiting for a a message to be sended - times out after x seconds
-                if check.result:
+                if msg.content in ("yes", "y"):
                     end_reaction = True
                     if delete_message:
                         await delete_message(message)
                     await delete_message(msg)
                     return True
-                else:
+                elif msg.content in ("no", "n"):
                     end_reaction = True
                     if delete_message:
                         await delete_message(message)
@@ -512,6 +573,39 @@ class CogsUtils(commands.Cog):
                     if timeout_message is not None:
                         await ctx.send(timeout_message)
                     return None
+
+    async def invoke_command(self, author: discord.User, channel: discord.TextChannel, command: str, prefix: typing.Optional[str]=None, message: typing.Optional[discord.Message]=None, message_id: typing.Optional[str]="".join(choice(string.digits) for i in range(18)), timestamp: typing.Optional[datetime.datetime]=datetime.datetime.now()) -> typing.Union[commands.Context, discord.Message]:
+        """
+        Invoke the specified command with the specified user in the specified channel.
+        """
+        bot = self.bot
+        if prefix is None:
+            prefixes = await bot.get_valid_prefixes(guild=channel.guild)
+            prefix = prefixes[0] if len(prefixes) < 3 else prefixes[2]
+        content = f"{prefix}{command}"
+
+        if message is None:
+            author_dict = {"id": f"{author.id}", "username": author.display_name, "avatar": author.avatar, 'avatar_decoration': None, 'discriminator': f"{author.discriminator}", "public_flags": author.public_flags, "bot": author.bot}
+            channel_id = channel.id
+            message_content = content
+            timestamp = str(timestamp).replace(" ", "T") + "+00:00"
+            data = {"id": message_id, "type": 0, "content": message_content, "channel_id": f"{channel_id}", "author": author_dict, "attachments": [], "embeds": [], "mentions": [], "mention_roles": [], "pinned": False, "mention_everyone": False, "tts": False, "timestamp": timestamp , "edited_timestamp": None, "flags": 0, "components": [], "referenced_message": None}
+            message = discord.Message(channel=channel, state=bot._connection, data=data)
+        else:
+            message = copy(message)
+
+        message.content = content
+        context = await bot.get_context(message)
+        if context.valid:
+            context.author = author
+            context.guild = channel.guild
+            context.channel = channel
+            await bot.invoke(context)
+        else:
+            message.author = author
+            message.channel = channel
+            bot.dispatch("message", message)
+        return context if context.valid else message
 
     def datetime_to_timestamp(self, dt: datetime.datetime, format: typing.Literal["f", "F", "d", "D", "t", "T", "R"]="f") -> str:
         """
@@ -785,7 +879,7 @@ class CogsUtils(commands.Cog):
 
         online_commit = await repo.latest_commit()
 
-        return not online_commit == local_commit, online_commit, local_commit
+        return online_commit != local_commit, local_commit, online_commit
 
     async def autodestruction(self):
         """

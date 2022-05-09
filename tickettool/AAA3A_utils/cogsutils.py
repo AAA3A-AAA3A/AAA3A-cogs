@@ -1,7 +1,9 @@
-import discord
-from redbot.core import commands
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
 
 import asyncio
+import aiohttp
 import contextlib
 import datetime
 import inspect
@@ -12,13 +14,13 @@ import platform
 import string
 import sys
 import traceback
-import typing
 from io import StringIO
 from pathlib import Path
 from random import choice
 from time import monotonic
 
 import pip
+import re
 import redbot
 from copy import copy
 from redbot import version_info as red_version_info
@@ -871,13 +873,23 @@ class CogsUtils(commands.Cog):
         if downloader is None:
             raise self.DownloaderNotLoaded(_("The cog downloader is not loaded.").format(**locals()))
 
+        if await self.bot._cog_mgr.find_cog(cog_name) is None:
+            raise ValueError(_("This cog was not found in any cog path."))
+
         local = discord.utils.get(await downloader.installed_cogs(), name=cog_name)
         if local is None:
-            return None
+            raise ValueError(_("This cog has not been installed from the cog Downloader.").format(**locals()))
         local_commit = local.commit
         repo = local.repo
 
-        online_commit = await repo.latest_commit()
+        repo_owner, repo_name, repo_branch = (re.compile(r"(?:https?:\/\/)?git(?:hub|lab).com\/(?P<repo_owner>[A-z0-9-_.]*)\/(?P<repo>[A-z0-9-_.]*)(?:\/tree\/(?P<repo_branch>[A-z0-9-_.]*))?", re.I).findall(repo.url))[0]
+        repo_branch = repo.branch
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}", timeout=3) as r:
+                online = await r.json()
+        if online is None or "object" not in online or "sha" not in online["object"]:
+            raise
+        online_commit = online["object"]["sha"]
 
         return online_commit != local_commit, local_commit, online_commit
 

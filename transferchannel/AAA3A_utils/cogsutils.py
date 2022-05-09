@@ -894,7 +894,7 @@ class CogsUtils(commands.Cog):
             async with session.get(f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}", timeout=3) as r:
                 online = await r.json()
         if online is None or "object" not in online or "sha" not in online["object"]:
-            raise
+            raise asyncio.IncompleteReadError(_("No results could be retrieved from the git api.").format(**locals()))
         online_commit = online["object"]["sha"]
 
         return online_commit != local_commit, local_commit, online_commit

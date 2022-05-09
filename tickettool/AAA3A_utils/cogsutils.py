@@ -218,6 +218,7 @@ class CogsUtils(commands.Cog):
         """
         Adds dev environment values, slash commands add Views.
         """
+        await self.bot.wait_until_red_ready()
         try:
             to_update, local_commit, online_commit = await self.to_update()
             if to_update:
@@ -228,7 +229,6 @@ class CogsUtils(commands.Cog):
             pass
         except Exception as e:  # really doesn't matter if this fails so fine with debug level
             self.cog.log.debug(f"Something went wrong checking if {self.cog.__class__.__name__} cog is up to date.", exc_info=e)
-        await self.bot.wait_until_red_ready()
         self.add_dev_env_value()
         if self.is_dpy2:
             if not hasattr(self.bot, "tree"):

@@ -227,6 +227,10 @@ class CogsUtils(commands.Cog):
                 self.cog.log.debug(f"{self.cog.__class__.__name__} cog is up to date.")
         except self.DownloaderNotLoaded:
             pass
+        except asyncio.TimeoutError:
+            pass
+        except ValueError:
+            pass
         except Exception as e:  # really doesn't matter if this fails so fine with debug level
             self.cog.log.debug(f"Something went wrong checking if {self.cog.__class__.__name__} cog is up to date.", exc_info=e)
         self.add_dev_env_value()
@@ -878,9 +882,11 @@ class CogsUtils(commands.Cog):
 
         local = discord.utils.get(await downloader.installed_cogs(), name=cog_name)
         if local is None:
-            raise ValueError(_("This cog has not been installed from the cog Downloader.").format(**locals()))
+            raise ValueError(_("This cog is not installed on this bot.").format(**locals()))
         local_commit = local.commit
         repo = local.repo
+        if repo is None:
+            raise ValueError(_("This cog has not been installed from the cog Downloader.").format(**locals()))
 
         repo_owner, repo_name, repo_branch = (re.compile(r"(?:https?:\/\/)?git(?:hub|lab).com\/(?P<repo_owner>[A-z0-9-_.]*)\/(?P<repo>[A-z0-9-_.]*)(?:\/tree\/(?P<repo_branch>[A-z0-9-_.]*))?", re.I).findall(repo.url))[0]
         repo_branch = repo.branch

@@ -326,6 +326,30 @@ class Medicat(commands.Cog):
 
     @commands.guild_only()
     @in_medicat_guild()
+    @commands.command()
+    async def getlastbootablestoolsversions(self, ctx: commands.Context):
+        result = {}
+        for tool in BOOTABLES_TOOLS:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(BOOTABLES_TOOLS[tool]["url"], timeout=3) as r:
+                    r = await r.text()
+            for x in r.split("\n"):
+                if '"headline":' in x and '<html lang="en-US">' not in x:
+                    break
+            x = x.replace('    "headline": "', '').replace('",', '')
+            regex = re.compile(BOOTABLES_TOOLS[tool]["regex"], re.I).findall(x)
+            regex = regex[0] if len(regex) > 0 else None
+            regex = regex[0] if isinstance(regex, typing.Tuple) and len(regex) > 0 else regex
+            result[tool] = regex
+        embed: discord.Embed = discord.Embed()
+        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
+        embed.set_footer(text="Medicat USB Official", icon_url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
+        embed.title = "Last bootables tools versions"
+        embed.description = "\n".join([f"{x} ===> {y}" for x, y in result.items()])
+        await ctx.send(embed=embed)
+
+    @commands.guild_only()
+    @in_medicat_guild()
     @commands.command(hidden=True)
     async def secretupdatemedicatcog(self, ctx: commands.Context):
         try:

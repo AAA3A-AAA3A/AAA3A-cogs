@@ -1,6 +1,7 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 if CogsUtils().is_dpy2:
@@ -33,7 +34,7 @@ class TicketTool(settings, commands.Cog):
     """A cog to manage a ticket system!"""
 
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
             self,

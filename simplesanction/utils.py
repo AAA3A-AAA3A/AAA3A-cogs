@@ -15,8 +15,6 @@ if not CogsUtils().is_dpy2:
 _ = Translator("SimpleSanction", __file__)
 
 class utils(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
 
     async def emojis(disabled: bool):
         buttons = ["userinfo_button", "warn_button", "ban_button", "softban_button", "tempban_button", "kick_button", "mute_button", "mutechannel_button", "tempmute_button", "tempmutechannel_button", "close_button"]

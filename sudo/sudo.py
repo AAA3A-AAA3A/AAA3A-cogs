@@ -1,6 +1,7 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import typing  # isort:skip
 
 import asyncio
@@ -20,7 +21,7 @@ class Sudo(commands.Cog):
     """A cog to allow bot owners to be normal users in terms of permissions!"""
 
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: Red = bot
         self.all_owner_ids = copy(self.bot.owner_ids)
         self.bot.owner_ids.clear()
 

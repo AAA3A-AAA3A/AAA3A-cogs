@@ -1,11 +1,12 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from .AAA3A_utils.cogsutils import Buttons, Modal  # isort:skip
-import discord  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
 
 import asyncio
-import typing
 
 import yaml
 from redbot.core import Config
@@ -126,7 +127,7 @@ class DiscordModals(commands.Cog):
     """A cog to use Discord Modals, forms with graphic interface!"""
 
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
             self,

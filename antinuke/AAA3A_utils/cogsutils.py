@@ -591,9 +591,9 @@ class CogsUtils(commands.Cog):
         content = f"{prefix}{command}"
 
         if message is None:
+            message_content = content
             author_dict = {"id": f"{author.id}", "username": author.display_name, "avatar": author.avatar, 'avatar_decoration': None, 'discriminator': f"{author.discriminator}", "public_flags": author.public_flags, "bot": author.bot}
             channel_id = channel.id
-            message_content = content
             timestamp = str(timestamp).replace(" ", "T") + "+00:00"
             data = {"id": message_id, "type": 0, "content": message_content, "channel_id": f"{channel_id}", "author": author_dict, "attachments": [], "embeds": [], "mentions": [], "mention_roles": [], "pinned": False, "mention_everyone": False, "tts": False, "timestamp": timestamp , "edited_timestamp": None, "flags": 0, "components": [], "referenced_message": None}
             message = discord.Message(channel=channel, state=bot._connection, data=data)

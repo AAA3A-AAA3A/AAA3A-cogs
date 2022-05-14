@@ -1,6 +1,7 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import asyncio
 
@@ -19,7 +20,7 @@ class ClearChannel(commands.Cog):
     """A cog to transfer all messages channel in a other channel!"""
 
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
             self,

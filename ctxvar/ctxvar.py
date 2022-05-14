@@ -1,6 +1,7 @@
 ﻿from .AAA3A_utils.cogsutils import CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 from copy import copy
@@ -20,7 +21,7 @@ class CtxVar(commands.Cog):
     """A cog to list and display the contents of all sub-functions of `ctx`!"""
 
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()

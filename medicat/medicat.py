@@ -1,6 +1,7 @@
 ﻿from .AAA3A_utils.cogsutils import CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -44,28 +45,28 @@ CUSTOM_COMMANDS = {
 }
 
 BOOTABLES_TOOLS = {
-    "Acronis Cyber Backup": {"url": "https://www.fcportables.com/acronis-cyber-backup-boot/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Acronis Cyber Backup (\d*\.\d*) Build (\d*) Multilingual BootCD"},
-    "Acronis True Image": {"url": "https://www.fcportables.com/acronis-true-image-boot/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Acronis True Image (\d*\.\d*) Build (\d*) Multilingual Boot ISO"},
-    "AOMEI Backupper Technician Plus": {"url": "https://www.fcportables.com/aomei-backupper-boot/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Portable AOMEI Backupper Technician Plus (\d*\.\d*\.\d*) \+ Boot WinPE"},
-    "EaseUS Data Recovery Wizard": {"url": "https://www.fcportables.com/easeus-recovery-wizard-winpe/", "category": "USB\\Backup_and_Recovery\\", "regex": r"EaseUS Data Recovery Wizard (\d*\.\d*\.\d*\.\d*) WinPE"},
-    "EaseUS Todo Backup": {"url": "https://www.fcportables.com/easeus-todo-backup-winpe/", "category": "USB\\Backup_and_Recovery\\", "regex": r"EaseUS Todo Backup (\d*\.\d*\.\d*) Build (\d*) Enterprise Technician WinPE"},
-    "Macrium Reflect": {"url": "https://www.fcportables.com/macrium-reflect-rescue-winpe/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Macrium Reflect (\d*\.\d*\.\d*) Server Plus WinPE \(x64\)"},
-    "MiniTool ShadowMaker Pro Ultimate": {"url": "https://www.fcportables.com/shadowmaker-pro/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Portable MiniTool ShadowMaker Pro Ultimate (\d*\.\d*\.\d*) \(x64\) \+ WinPE"},
-    "MiniTool Power Data Recovery": {"url": "https://www.fcportables.com/minitool-data-recovery-winpe/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Portable MiniTool Power Data Recovery (\d*\.\d*) Business Technician \+ WinPE"},
-    "Boot Repair Disk": {"url": "https://www.fcportables.com/boot-repair-disk/", "category": "USB\\Boot_Repair\\", "regex": r"Boot-Repair-Disk (\d*\-\d*\-\d*)"},
-    "EasyUEFI Technician": {"url": "https://www.fcportables.com/easyuefi-portable-winpe/", "category": "USB\\Boot_Repair\\", "regex": r"Portable EasyUEFI Technician (\d*\.\d*\.\d*) \+ WinPE \(x64\)"},
-    "SystemRescue": {"url": "https://www.fcportables.com/systemrescuecd/", "category": "USB\\Boot_Repair\\", "regex": r"SystemRescue (\d*\.\d*) Boot ISO \(x64\)"},
-    "Ultimate Boot": {"url": "https://www.fcportables.com/ultimate-boot-cd/", "category": "USB\\Boot_Repair\\", "regex": r"Ultimate Boot CD (\d*\.\d*\.\d*) Final"},
-    "HDAT2": {"url": "https://www.fcportables.com/hdat-boot/", "category": "USB\\Boot_Repair\\", "regex": r"HDAT2 (\d*\.\d*) \(ALL-IN-ONE BOOT Version\)"},
-    "Memtest86 Pro": {"url": "https://www.fcportables.com/memtest86-pro/", "category": "USB\\Boot_Repair\\", "regex": r"Memtest86 Pro (\d*\.\d*\.\d*) Retail \(ISO/USB\)"},
-    "Active@ Boot Disk": {"url": "https://www.fcportables.com/active-boot-disk/", "category": "USB\\Live_Operating_Systems\\", "regex": r"Active@ Boot Disk (\d*\.\d*) WinPE \(x64\)"},
-    "Acronis Disk Director": {"url": "https://www.fcportables.com/acronis-disk-director-boot/", "category": "USB\\Partition_Tools\\", "regex": r"Acronis Disk Director (\d*\.\d*\.\d*) WinPE"},
-    "AOMEI Partition Assistant Technician Edition": {"url": "https://www.fcportables.com/aomei-partition-assistant-technician-winpe/", "category": "USB\\Partition_Tools\\", "regex": r"Portable AOMEI Partition Assistant Technician Edition (\d*\.\d*\.\d*) \+ WinPE"},
-    "EaseUS Partition Master": {"url": "https://www.fcportables.com/easeus-partition-master-winpe/", "category": "USB\\Partition_Tools\\", "regex": r"EaseUS Partition Master (\d*\.\d*) WinPE"},
-    "MiniTool Partition Wizard Technician": {"url": "https://www.fcportables.com/minitool-partition-wizard-portable/", "category": "USB\\Partition_Tools\\", "regex": r"Portable MiniTool Partition Wizard Technician v(\d*\.\d*) \(x64\) \+ WinPE"},
-    "NIUBI Partition Editor Technician Edition": {"url": "https://www.fcportables.com/niubi-partition-editor-portable/", "category": "USB\\Partition_Tools\\", "regex": r"Portable NIUBI Partition Editor Technician Edition (\d*\.\d*\.\d*) \(x64\) \+ Boot ISO"},
-    "Paragon Hard Disk Manager Advanced": {"url": "https://www.fcportables.com/paragon-hard-disk-manager-portable/", "category": "USB\\Partition_Tools\\", "regex": r"Portable Paragon Hard Disk Manager Advanced v(\d*\.\d*\.\d*) \(x64\) \+WinPE"},
-    "Parted Magic": {"url": "https://www.fcportables.com/parted-magic/", "category": "USB\\Partition_Tools\\", "regex": r"Parted Magic (\d*\.\d*\.\d*) Boot ISO \(x64\)"}
+    "Acronis Cyber Backup": {"url": "https://www.fcportables.com/acronis-cyber-backup-boot/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Acronis Cyber Backup (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Build (\d*) Multilingual BootCD"},
+    "Acronis True Image": {"url": "https://www.fcportables.com/acronis-true-image-boot/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Acronis True Image (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Build (\d*) Multilingual Boot ISO"},
+    "AOMEI Backupper Technician Plus": {"url": "https://www.fcportables.com/aomei-backupper-boot/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Portable AOMEI Backupper Technician Plus (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \+ Boot WinPE"},
+    "EaseUS Data Recovery Wizard": {"url": "https://www.fcportables.com/easeus-recovery-wizard-winpe/", "category": "USB\\Backup_and_Recovery\\", "regex": r"EaseUS Data Recovery Wizard (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) WinPE"},
+    "EaseUS Todo Backup": {"url": "https://www.fcportables.com/easeus-todo-backup-winpe/", "category": "USB\\Backup_and_Recovery\\", "regex": r"EaseUS Todo Backup (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Build (\d*) Enterprise Technician WinPE"},
+    "Macrium Reflect": {"url": "https://www.fcportables.com/macrium-reflect-rescue-winpe/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Macrium Reflect (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Server Plus WinPE \(x64\)"},
+    "MiniTool ShadowMaker Pro Ultimate": {"url": "https://www.fcportables.com/shadowmaker-pro/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Portable MiniTool ShadowMaker Pro Ultimate (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) \+ WinPE"},
+    "MiniTool Power Data Recovery": {"url": "https://www.fcportables.com/minitool-data-recovery-winpe/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Portable MiniTool Power Data Recovery (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Business Technician \+ WinPE"},
+    "Boot Repair Disk": {"url": "https://www.fcportables.com/boot-repair-disk/", "category": "USB\\Boot_Repair\\", "regex": r"Boot-Repair-Disk (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*)"},
+    "EasyUEFI Technician": {"url": "https://www.fcportables.com/easyuefi-portable-winpe/", "category": "USB\\Boot_Repair\\", "regex": r"Portable EasyUEFI Technician (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \+ WinPE \(x64\)"},
+    "SystemRescue": {"url": "https://www.fcportables.com/systemrescuecd/", "category": "USB\\Boot_Repair\\", "regex": r"SystemRescue (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Boot ISO \(x64\)"},
+    "Ultimate Boot": {"url": "https://www.fcportables.com/ultimate-boot-cd/", "category": "USB\\Boot_Repair\\", "regex": r"Ultimate Boot CD (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Final"},
+    "HDAT2": {"url": "https://www.fcportables.com/hdat-boot/", "category": "USB\\Boot_Repair\\", "regex": r"HDAT2 (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(ALL-IN-ONE BOOT Version\)"},
+    "Memtest86 Pro": {"url": "https://www.fcportables.com/memtest86-pro/", "category": "USB\\Boot_Repair\\", "regex": r"Memtest86 Pro (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Retail \(ISO/USB\)"},
+    "Active@ Boot Disk": {"url": "https://www.fcportables.com/active-boot-disk/", "category": "USB\\Live_Operating_Systems\\", "regex": r"Active@ Boot Disk (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) WinPE \(x64\)"},
+    "Acronis Disk Director": {"url": "https://www.fcportables.com/acronis-disk-director-boot/", "category": "USB\\Partition_Tools\\", "regex": r"Acronis Disk Director (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) WinPE"},
+    "AOMEI Partition Assistant Technician Edition": {"url": "https://www.fcportables.com/aomei-partition-assistant-technician-winpe/", "category": "USB\\Partition_Tools\\", "regex": r"Portable AOMEI Partition Assistant Technician Edition (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \+ WinPE"},
+    "EaseUS Partition Master": {"url": "https://www.fcportables.com/easeus-partition-master-winpe/", "category": "USB\\Partition_Tools\\", "regex": r"EaseUS Partition Master (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) WinPE"},
+    "MiniTool Partition Wizard Technician": {"url": "https://www.fcportables.com/minitool-partition-wizard-portable/", "category": "USB\\Partition_Tools\\", "regex": r"Portable MiniTool Partition Wizard Technician v(\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) \+ WinPE"},
+    "NIUBI Partition Editor Technician Edition": {"url": "https://www.fcportables.com/niubi-partition-editor-portable/", "category": "USB\\Partition_Tools\\", "regex": r"Portable NIUBI Partition Editor Technician Edition (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) \+ Boot ISO"},
+    "Paragon Hard Disk Manager Advanced": {"url": "https://www.fcportables.com/paragon-hard-disk-manager-portable/", "category": "USB\\Partition_Tools\\", "regex": r"Portable Paragon Hard Disk Manager Advanced v(\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) \+WinPE"},
+    "Parted Magic": {"url": "https://www.fcportables.com/parted-magic/", "category": "USB\\Partition_Tools\\", "regex": r"Parted Magic (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Boot ISO \(x64\)"}
 }
 
 _ = Translator("Medicat", __file__)
@@ -75,7 +76,7 @@ class Medicat(commands.Cog):
     """This cog will only work on x server and therefore cannot be used by the general public!"""
 
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
             self,
@@ -286,35 +287,41 @@ class Medicat(commands.Cog):
             return result
 
         for name, text in CUSTOM_COMMANDS.items():
-            self.bot.remove_command(name)
-            command_str = """
-def in_medicat_guild():
-    async def pred(ctx):
-        if ctx.guild.id == {MEDICAT_GUILD} or ctx.guild.id == {TEST_GUILD}:
-            return True
-        else:
-            return False
-    return commands.check(pred)
+            try:
+                self.bot.remove_command(name)
+                command_str = """
+    def in_medicat_guild():
+        async def pred(ctx):
+            if ctx.guild.id == {MEDICAT_GUILD} or ctx.guild.id == {TEST_GUILD}:
+                return True
+            else:
+                return False
+        return commands.check(pred)
 
-@in_medicat_guild()
-@commands.command()
-async def {name}(ctx):
-    embed: discord.Embed = discord.Embed()
-    embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
-    embed.set_footer(text="Medicat USB Official", icon_url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
-    embed.title = CUSTOM_COMMANDS[ctx.command.name]["title"]
-    embed.description = CUSTOM_COMMANDS[ctx.command.name]["description"]
-    await ctx.send(embed=embed)
-return {name}
-""".format(MEDICAT_GUILD=MEDICAT_GUILD, TEST_GUILD=TEST_GUILD, name=name)
-            command: commands.command = get_function_from_str(self.bot, command_str)
-            command.name = name
-            command.description = text["title"]
-            self.bot.add_command(command)
+    @in_medicat_guild()
+    @commands.command()
+    async def {name}(ctx):
+        embed: discord.Embed = discord.Embed()
+        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
+        embed.set_footer(text="Medicat USB Official", icon_url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
+        embed.title = CUSTOM_COMMANDS[ctx.command.name]["title"]
+        embed.description = CUSTOM_COMMANDS[ctx.command.name]["description"]
+        await ctx.send(embed=embed)
+    return {name}
+    """.format(MEDICAT_GUILD=MEDICAT_GUILD, TEST_GUILD=TEST_GUILD, name=name)
+                command: commands.command = get_function_from_str(self.bot, command_str)
+                command.name = name
+                command.description = text["title"]
+                command.cog = self
+                self.bot.add_command(command)
+            except Exception:
+                self.bot.remove_command(name)
+            else:
+                self.__cog_commands__.__add__(tuple([command]))
 
     def remove_custom_commands(self):
         for name in CUSTOM_COMMANDS:
-            self.bot.remove_command(name)
+            self.remove_command(name)
 
     @commands.guild_only()
     @in_medicat_guild()

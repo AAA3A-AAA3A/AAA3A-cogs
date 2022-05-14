@@ -6,8 +6,6 @@ import typing  # isort:skip
 _ = Translator("SimpleSanction", __file__)
 
 class settings(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
 
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)

@@ -1,6 +1,7 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 from typing import List, Optional, Tuple, Union
@@ -20,7 +21,7 @@ class AntiNuke(commands.Cog):
     """A cog to remove all permissions from a person who deletes a channel!"""
 
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
             self,

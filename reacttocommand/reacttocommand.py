@@ -1,6 +1,7 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -22,7 +23,7 @@ class ReactToCommand(commands.Cog):
     """A cog to allow a user to execute a command by clicking on a reaction!"""
 
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
             self,
@@ -64,17 +65,11 @@ class ReactToCommand(commands.Cog):
             pass
         if f"{payload.emoji}" not in config[f"{payload.channel_id}-{payload.message_id}"]:
             return
-        message = copy(await channel.fetch_message(payload.message_id))
         permissions = channel.permissions_for(payload.member)
         if not permissions.read_message_history or not permissions.read_messages or not permissions.send_messages or not permissions.view_channel:
             return
-        p = await self.bot.get_valid_prefixes()
-        p = p[0]
         command = config[f"{payload.channel_id}-{payload.message_id}"][f"{payload.emoji}"]
-        message.content = f"{p}{command}"
-        message.author = payload.member
-        new_ctx = await self.bot.get_context(message)
-        await self.bot.invoke(new_ctx)
+        await self.cogsutils.invoke_command(author=payload.member, channel=channel, command=command)
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message):

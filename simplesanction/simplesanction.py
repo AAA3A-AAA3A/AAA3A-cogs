@@ -1,6 +1,7 @@
 ﻿from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 if CogsUtils().is_dpy2:
@@ -35,7 +36,7 @@ class SimpleSanction(settings, commands.Cog):
     """A cog to sanction a user!"""
 
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
             self,
@@ -116,15 +117,7 @@ class SimpleSanction(settings, commands.Cog):
         @user_command(name="Sanction user")
         async def sanctionusermenu(self, inter):
             try:
-                message = await inter.channel.send(_("Sanction.").format(**locals()))
-                p = await inter.bot.get_valid_prefixes()
-                p = p[0]
-                msg = copy(message)
-                msg.author = inter.author
-                msg.channel = inter.channel
-                msg.content = f"{p}sanction {inter.user.id}"
-                self.bot.dispatch("message", msg)
-                self.bot.process_commands(msg)
+                await self.cogsutils.invoke_command(author=inter.author, channel=inter.channel, command=f"sanction {inter.user.id}")
                 await inter.respond(_("You have chosen to sanction {inter.user.mention} ({inter.user.id}) in {inter.channel.mention}.").format(**locals()), ephemeral=True)
             except Exception:
                 await inter.respond(_("An error has occurred in your interaction. Please try to use the real command instead of this contextual menu.").format(**locals()), ephemeral=True)
@@ -132,14 +125,7 @@ class SimpleSanction(settings, commands.Cog):
         @message_command(name="Sanction author")
         async def sanctionmessagemenu(self, inter):
             try:
-                message = await inter.channel.send(_("Sanction.").format(**locals()))
-                p = await inter.bot.get_valid_prefixes()
-                p = p[0]
-                msg = copy(message)
-                msg.author = inter.author
-                msg.channel = inter.channel
-                msg.content = f"{p}sanction {inter.message.author.id}"
-                self.bot.dispatch("message", msg)
+                await self.cogsutils.invoke_command(author=inter.author, channel=inter.channel, command=f"sanction {inter.message.author.id}")
                 await inter.respond(_("You have chosen to sanction {inter.message.author.mention} ({inter.message.author.id}) in {inter.channel.mention}.").format(**locals()), ephemeral=True)
             except Exception:
                 await inter.respond(_("An error has occurred in your interaction. Please try to use the real command instead of this contextual menu.").format(**locals()), ephemeral=True)
@@ -147,12 +133,6 @@ class SimpleSanction(settings, commands.Cog):
         @slash_command(name="sanction", description="Sanction user", options=[Option("user", "Enter the user.", OptionType.USER, required=True), Option("confirmation", "Do you want the bot to ask for confirmation from you before the action? (Default is the recorded value)", OptionType.BOOLEAN, required=False), Option("show_author", "Do you want the bot to show in its embeds who is the author of the command/sanction? (Default is the recorded value)", OptionType.BOOLEAN, required=False), Option("finish_message", "Do you want the bot to show an embed just before the action summarising the action and giving the sanctioned user and the reason? (Default is the recorded value)", OptionType.BOOLEAN, required=False), Option("fake_action", "Do you want the command to do everything as usual, but (unintentionally) forget to execute the action?", OptionType.BOOLEAN, required=False), Option("args", "Enter the arguments of the command.", OptionType.STRING, required=False)])
         async def sanctionslash(self, inter, user, confirmation: typing.Optional[bool]="", show_author: typing.Optional[bool]="", finish_message: typing.Optional[bool]="", fake_action: typing.Optional[bool]="", args: typing.Optional[str]=""):
             try:
-                message = await inter.channel.send("Sanction.")
-                p = await inter.bot.get_valid_prefixes()
-                p = p[0]
-                msg = copy(message)
-                msg.author = inter.author
-                msg.channel = inter.channel
                 if not confirmation == "":
                     confirmation = f" {confirmation}"
                 if not show_author == "":
@@ -163,8 +143,7 @@ class SimpleSanction(settings, commands.Cog):
                     fake_action = f" {fake_action}"
                 if not args == "":
                     args = f" {args}"
-                msg.content = f"{p}sanction {user.id}{confirmation}{show_author}{finish_message}{fake_action}{args}"
-                self.bot.dispatch("message", msg)
+                await self.cogsutils.invoke_command(author=inter.author, channel=inter.channel, command=f"sanction {user.id}{confirmation}{show_author}{finish_message}{fake_action}{args}")
                 await inter.respond(_("You have chosen to sanction {user.mention} ({user.id}) in {inter.channel.mention}.").format(**locals()), ephemeral=True)
             except Exception:
                 await inter.respond(_("An error has occurred in this interaction. Please try to use the real command instead of this contextual menu.").format(**locals()), ephemeral=True)

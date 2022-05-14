@@ -4,8 +4,6 @@ from redbot.core.i18n import Translator  # isort:skip
 _ = Translator("TicketTool", __file__)
 
 class utils():
-    def __init__(self, bot):
-        self.bot = bot
 
     async def get_overwrites(self, ticket):
         config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)

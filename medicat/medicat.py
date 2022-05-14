@@ -345,7 +345,7 @@ class Medicat(commands.Cog):
         embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
         embed.set_footer(text="Medicat USB Official", icon_url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
         embed.title = "Last bootables tools versions"
-        embed.description = "\n".join([f"**{x}**   ➜   {y}" for x, y in result.items()])
+        embed.description = "\n".join([f"**{x}** ===> {y}" for x, y in result.items()])
         await ctx.send(embed=embed)
 
     @commands.guild_only()

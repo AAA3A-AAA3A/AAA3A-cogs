@@ -5,7 +5,6 @@ import typing  # isort:skip
 
 import re
 
-
 _ = Translator("RolesButtons", __file__)
 
 class RoleHierarchyConverter(discord.ext.commands.RoleConverter):

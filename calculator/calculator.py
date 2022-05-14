@@ -13,8 +13,9 @@ import asyncio
 import datetime
 from math import *
 
-from redbot.core import Config
 from TagScriptEngine import Interpreter, block
+
+from redbot.core import Config
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!

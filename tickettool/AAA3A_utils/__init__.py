@@ -1,4 +1,5 @@
-from .cogsutils import CogsUtils, Loop, Captcha, Reactions
+from .cogsutils import Captcha, CogsUtils, Loop, Reactions
+
 if CogsUtils().is_dpy2:
     from .cogsutils import Buttons, Dropdown
 

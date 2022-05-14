@@ -3,7 +3,6 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import asyncio
-import aiohttp
 import contextlib
 import datetime
 import inspect
@@ -11,18 +10,22 @@ import logging
 import math
 import os
 import platform
+import re
 import string
 import sys
 import traceback
+from copy import copy
 from io import StringIO
 from pathlib import Path
 from random import choice
 from time import monotonic
 
+import aiohttp
 import pip
-import re
+from rich.console import Console
+from rich.table import Table
+
 import redbot
-from copy import copy
 from redbot import version_info as red_version_info
 from redbot.cogs.downloader.converters import InstalledCog
 from redbot.cogs.downloader.repo_manager import Repo
@@ -34,8 +37,6 @@ from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
 from redbot.logging import RotatingFileHandler
 from redbot.vendored.discord.ext import menus
-from rich.console import Console
-from rich.table import Table
 
 __all__ = ["CogsUtils", "Loop", "Captcha", "Buttons", "Dropdown", "Modal", "Reactions"]
 

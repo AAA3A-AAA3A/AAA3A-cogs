@@ -7,6 +7,7 @@ from typing import Any, Dict, Tuple
 
 from dotenv import load_dotenv
 from jsonrpc_websocket import Server
+
 from redbot import __version__ as red_str_ver
 
 load_dotenv(".env")

@@ -3,8 +3,9 @@ from redbot.core import Config, commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 
-import aiohttp
 import socket
+
+import aiohttp
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!

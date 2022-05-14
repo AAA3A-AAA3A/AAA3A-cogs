@@ -5,14 +5,15 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import aiohttp
 import asyncio
 import os
 import re
 import textwrap
 import traceback
-
 from copy import copy
+
+import aiohttp
+
 from redbot import VersionInfo
 from redbot.core import Config
 from redbot.core.utils.chat_formatting import box, pagify

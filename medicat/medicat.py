@@ -92,18 +92,18 @@ class Medicat(commands.Cog):
                 "Acronis Cyber Backup": "12.5",
                 "Acronis True Image": "2021.6",
                 "AOMEI Backupper Technician Plus": "6.9.1",
-                "EaseUS Data Recovery Wizard": "15.1.0.0",
+                "EaseUS Data Recovery Wizard": "15.2.0.0",
                 "EaseUS Todo Backup": "13.5.0",
-                "Macrium Reflect": "8.0.6635",
+                "Macrium Reflect": "8.0.6758",
                 "MiniTool ShadowMaker Pro Ultimate": "3.6.1",
                 "MiniTool Power Data Recovery": "10.2",
                 "Boot Repair Disk": "2021-12-16",
-                "EasyUEFI Technician": "4.9.1",
+                "EasyUEFI Technician": "4.9.2",
                 "SystemRescue": "9.02",
                 "Ultimate Boot": "5.3.8",
                 "HDAT2": "7.4",
                 "Memtest86 Pro": "9.4.1000",
-                "Active@ Boot Disk": "19.0.0",
+                "Active@ Boot Disk": "22.0",
                 "Acronis Disk Director": "12.5.163",
                 "AOMEI Partition Assistant Technician Edition": "9.7.0",
                 "EaseUS Partition Master": "16.8",
@@ -326,26 +326,30 @@ class Medicat(commands.Cog):
 
     @commands.guild_only()
     @in_medicat_guild()
+    @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @commands.command()
     async def getlastbootablestoolsversions(self, ctx: commands.Context):
         result = {}
         for tool in BOOTABLES_TOOLS:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(BOOTABLES_TOOLS[tool]["url"], timeout=3) as r:
-                    r = await r.text()
-            for x in r.split("\n"):
-                if '"headline":' in x and '<html lang="en-US">' not in x:
-                    break
-            x = x.replace('    "headline": "', '').replace('",', '')
-            regex = re.compile(BOOTABLES_TOOLS[tool]["regex"], re.I).findall(x)
-            regex = regex[0] if len(regex) > 0 else None
-            regex = regex[0] if isinstance(regex, typing.Tuple) and len(regex) > 0 else regex
-            result[tool] = regex
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(BOOTABLES_TOOLS[tool]["url"], timeout=3) as r:
+                        r = await r.text()
+                for x in r.split("\n"):
+                    if '"headline":' in x and '<html lang="en-US">' not in x:
+                        break
+                x = x.replace('    "headline": "', '').replace('",', '')
+                regex = re.compile(BOOTABLES_TOOLS[tool]["regex"], re.I).findall(x)
+                regex = regex[0] if len(regex) > 0 else None
+                regex = regex[0] if isinstance(regex, typing.Tuple) and len(regex) > 0 else regex
+                result[tool] = regex
+            except asyncio.TimeoutError:
+                result[tool] = None
         embed: discord.Embed = discord.Embed()
         embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
         embed.set_footer(text="Medicat USB Official", icon_url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
         embed.title = "Last bootables tools versions"
-        embed.description = "\n".join([f"**{x}** ===> {y}" for x, y in result.items()])
+        embed.description = "\n".join([f"**{x}** ➜ {y}" for x, y in result.items()])
         await ctx.send(embed=embed)
 
     @commands.guild_only()

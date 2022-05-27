@@ -379,7 +379,7 @@ class CogsUtils(commands.Cog):
                 try:
                     try:
                         self.bot.remove_dev_env_value(name)
-                    except ValueError:
+                    except KeyError:
                         pass
                     self.bot.add_dev_env_value(name, value)
                 except RuntimeError:

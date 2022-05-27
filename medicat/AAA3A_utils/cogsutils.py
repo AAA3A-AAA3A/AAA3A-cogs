@@ -1,5 +1,6 @@
-import discord
-from redbot.core import commands
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
 
 import asyncio
 import contextlib
@@ -9,16 +10,21 @@ import logging
 import math
 import os
 import platform
+import re
 import string
 import sys
 import traceback
-import typing
+from copy import copy
 from io import StringIO
 from pathlib import Path
 from random import choice
 from time import monotonic
 
+import aiohttp
 import pip
+from rich.console import Console
+from rich.table import Table
+
 import redbot
 from redbot import version_info as red_version_info
 from redbot.cogs.downloader.converters import InstalledCog
@@ -26,12 +32,11 @@ from redbot.cogs.downloader.repo_manager import Repo
 from redbot.core._diagnoser import IssueDiagnoser
 from redbot.core.bot import Red
 from redbot.core.data_manager import basic_config, cog_data_path, config_file, instance_name, storage_type
-from redbot.core.utils.chat_formatting import bold, box, error, humanize_list, humanize_timedelta, pagify, text_to_file, warning
+from redbot.core.utils.chat_formatting import bold, box, error, humanize_list, humanize_timedelta, inline, pagify, text_to_file, warning
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
+from redbot.logging import RotatingFileHandler
 from redbot.vendored.discord.ext import menus
-from rich.console import Console
-from rich.table import Table
 
 __all__ = ["CogsUtils", "Loop", "Captcha", "Buttons", "Dropdown", "Modal", "Reactions"]
 
@@ -60,8 +65,8 @@ class CogsUtils(commands.Cog):
             if isinstance(cog, str):
                 cog = bot.get_cog(cog)
             self.cog: commands.Cog = cog
-            self.bot: Red = self.cog.bot
-            self.DataPath: Path = cog_data_path(raw_name=self.cog.__class__.__name__.lower())
+            self.bot: Red = self.cog.bot if hasattr(self.cog, 'bot') else bot
+            self.DataPath: Path = cog_data_path(cog_instance=self.cog)
         elif bot is not None:
             self.cog: commands.Cog = None
             self.bot: Red = bot
@@ -105,6 +110,7 @@ class CogsUtils(commands.Cog):
                                         "DiscordModals",
                                         "EditFile",
                                         "Ip",
+                                        "Medicat",  # Private cog.
                                         "MemberPrefix",
                                         "ReactToCommand",
                                         "RolesButtons",
@@ -123,6 +129,7 @@ class CogsUtils(commands.Cog):
                                         "DiscordModals",
                                         "EditFile",
                                         "Ip",
+                                        "Medicat",  # Private cog.
                                         "MemberPrefix",
                                         "ReactToCommand",
                                         "RolesButtons",
@@ -159,6 +166,20 @@ class CogsUtils(commands.Cog):
     def cog_unload(self):
         self._end()
 
+    async def cog_command_error(self, ctx: commands.Context, error: Exception):
+        if self.cog is None:
+            return
+        if isinstance(error, commands.CommandInvokeError):
+            asyncio.create_task(ctx.bot._delete_delay(ctx))
+            self.cog.log.exception(f"Exception in command '{ctx.command.qualified_name}'", exc_info=error.original)
+            message = f"Error in command '{ctx.command.qualified_name}'. Check your console or logs for details.\nIf necessary, please inform the creator of the cog in which this command is located. Thank you."
+            exception_log = f"Exception in command '{ctx.command.qualified_name}'\n"
+            exception_log += "".join(traceback.format_exception(type(error), error, error.__traceback__))
+            ctx.bot._last_exception = exception_log
+            await ctx.send(inline(message))
+        else:
+            await ctx.bot.on_command_error(ctx=ctx, error=error, unhandled_by_cog=True)
+
     async def add_cog(self, bot: Red, cog: commands.Cog):
         """
         Load a cog by checking whether the required function is awaitable or not.
@@ -177,7 +198,7 @@ class CogsUtils(commands.Cog):
         Adding additional functionality to the cog.
         """
         self.cog.cogsutils = self
-        self.cog.log = logging.getLogger(f"red.{self.repo_name}.{self.cog.__class__.__name__}")
+        self.init_logger()
         if "format_help_for_context" not in self.cog.__func_red__:
             setattr(self.cog, 'format_help_for_context', self.format_help_for_context)
         if "red_delete_data_for_user" not in self.cog.__func_red__:
@@ -186,6 +207,8 @@ class CogsUtils(commands.Cog):
             setattr(self.cog, 'red_get_data_for_user', self.red_get_data_for_user)
         if "cog_unload" not in self.cog.__func_red__:
             setattr(self.cog, 'cog_unload', self.cog_unload)
+        if "cog_command_error" not in self.cog.__func_red__:
+            setattr(self.cog, 'cog_command_error', self.cog_command_error)
         self.bot.remove_listener(self.on_command_error)
         self.bot.add_listener(self.on_command_error)
         self.bot.remove_command("getallfor")
@@ -197,6 +220,20 @@ class CogsUtils(commands.Cog):
         Adds dev environment values, slash commands add Views.
         """
         await self.bot.wait_until_red_ready()
+        try:
+            to_update, local_commit, online_commit = await self.to_update()
+            if to_update:
+                self.cog.log.warning(f"Your {self.cog.__class__.__name__} cog, from {self.repo_name}, is out of date. You can update your cogs with the 'cog update' command in Discord.")
+            else:
+                self.cog.log.debug(f"{self.cog.__class__.__name__} cog is up to date.")
+        except self.DownloaderNotLoaded:
+            pass
+        except asyncio.TimeoutError:
+            pass
+        except ValueError:
+            pass
+        except Exception as e:  # really doesn't matter if this fails so fine with debug level
+            self.cog.log.debug(f"Something went wrong checking if {self.cog.__class__.__name__} cog is up to date.", exc_info=e)
         self.add_dev_env_value()
         if self.is_dpy2:
             if not hasattr(self.bot, "tree"):
@@ -225,6 +262,7 @@ class CogsUtils(commands.Cog):
         """
         Removes dev environment values, slash commands add Views.
         """
+        self.close_logger()
         self.remove_dev_env_value()
         for loop in self.loops:
             self.loops[loop].end_all()
@@ -253,8 +291,42 @@ class CogsUtils(commands.Cog):
                                     pass
                         self.interactions["added"] = False
                         self.interactions["removed"] = True
-            await asyncio.sleep(2)
-            await self.bot.tree.sync(guild=None)
+                        await asyncio.sleep(2)
+                        await self.bot.tree.sync(guild=None)
+
+    def init_logger(self):
+        """
+        Prepare the logger for the cog.
+        Thanks to @laggron42 on GitHub! (https://github.com/laggron42/Laggron-utils/blob/master/laggron_utils/logging.py)
+            
+        """
+        self.cog.log = logging.getLogger(f"red.{self.repo_name}.{self.cog.__class__.__name__}")
+        formatter = logging.Formatter(
+            "[{asctime}] {levelname} [{name}] {message}", datefmt="%Y-%m-%d %H:%M:%S", style="{"
+        )
+        # logging to a log file
+        # file is automatically created by the module, if the parent foler exists
+        cog_path = cog_data_path(cog_instance=self.cog)
+        if cog_path.exists():
+            file_handler = RotatingFileHandler(
+                stem=self.cog.__class__.__name__,
+                directory=cog_path,
+                maxBytes=1_000_0,
+                backupCount=0,
+                encoding="utf-8",
+            )
+            # file_handler.doRollover()
+            file_handler.setLevel(logging.DEBUG)
+            file_handler.setFormatter(formatter)
+            self.cog.log.addHandler(file_handler)
+
+    def close_logger(self):
+        """
+        Closes the files for the logger of a cog.
+        """
+        for handler in self.cog.log.handlers:
+            handler.close()
+        self.cog.log.handlers = []
 
     def add_dev_env_value(self):
         """
@@ -276,33 +348,39 @@ class CogsUtils(commands.Cog):
             if self.is_dpy2:
                 to_add = {
                     self.cog.__class__.__name__: lambda x: self.cog,
-                    "CogsUtils": lambda x: CogsUtils,
-                    "Loop": lambda x: Loop,
-                    "Captcha": lambda x: Captcha,
-                    "Buttons": lambda x: Buttons,
-                    "Dropdown": lambda x: Dropdown,
-                    "Modal": lambda x: Modal,
-                    "Reactions": lambda x: Reactions,
-                    "Menu": lambda x: Menu,
-                    "discord": lambda x: discord,
-                    "typing": lambda x: typing,
-                    "redbot": lambda x: redbot,
-                    "cog": lambda ctx: ctx.bot.get_cog
+                    "CogsUtils": lambda ctx: CogsUtils,
+                    "Loop": lambda ctx: Loop,
+                    "Captcha": lambda ctx: Captcha,
+                    "Buttons": lambda ctx: Buttons,
+                    "Dropdown": lambda ctx: Dropdown,
+                    "Modal": lambda ctx: Modal,
+                    "Reactions": lambda ctx: Reactions,
+                    "Menu": lambda ctx: Menu,
+                    "discord": lambda ctx: discord,
+                    "redbot": lambda ctx: redbot,
+                    "Red": lambda ctx: Red,
+                    "typing": lambda ctx: typing,
+                    "inspect": lambda ctx: inspect
                 }
             else:
                 to_add = {
                     self.cog.__class__.__name__: lambda x: self.cog,
-                    "CogsUtils": lambda x: CogsUtils,
-                    "Loop": lambda x: Loop,
-                    "Captcha": lambda x: Captcha,
-                    "Menu": lambda x: Menu,
-                    "discord": lambda x: discord,
-                    "typing": lambda x: typing,
-                    "redbot": lambda x: redbot,
-                    "cog": lambda ctx: ctx.bot.get_cog
+                    "CogsUtils": lambda ctx: CogsUtils,
+                    "Loop": lambda ctx: Loop,
+                    "Captcha": lambda ctx: Captcha,
+                    "Menu": lambda ctx: Menu,
+                    "discord": lambda ctx: discord,
+                    "redbot": lambda ctx: redbot,
+                    "Red": lambda ctx: Red,
+                    "typing": lambda ctx: typing,
+                    "inspect": lambda ctx: inspect
                 }
             for name, value in to_add.items():
                 try:
+                    try:
+                        self.bot.remove_dev_env_value(name)
+                    except KeyError:
+                        pass
                     self.bot.add_dev_env_value(name, value)
                 except RuntimeError:
                     pass
@@ -481,22 +559,21 @@ class CogsUtils(commands.Cog):
         if way == "message":
             def check(msg):
                 if check_owner:
-                    return msg.author.id == ctx.author.id or msg.author.id in ctx.bot.owner_ids or msg.author.id in [x.id for x in members_authored] and msg.channel is ctx.channel
+                    return msg.author.id == ctx.author.id or msg.author.id in ctx.bot.owner_ids or msg.author.id in [x.id for x in members_authored] and msg.channel == ctx.channel and msg.content in ("yes", "y", "no", "n")
                 else:
-                    return msg.author.id == ctx.author.id or msg.author.id in [x.id for x in members_authored] and msg.channel is ctx.channel
+                    return msg.author.id == ctx.author.id or msg.author.id in [x.id for x in members_authored] and msg.channel == ctx.channel and msg.content in ("yes", "y", "no", "n")
                 # This makes sure nobody except the command sender can interact with the "menu"
             try:
                 end_reaction = False
-                check = MessagePredicate.yes_or_no(ctx)
                 msg = await ctx.bot.wait_for("message", timeout=timeout, check=check)
                 # waiting for a a message to be sended - times out after x seconds
-                if check.result:
+                if msg.content in ("yes", "y"):
                     end_reaction = True
                     if delete_message:
                         await delete_message(message)
                     await delete_message(msg)
                     return True
-                else:
+                elif msg.content in ("no", "n"):
                     end_reaction = True
                     if delete_message:
                         await delete_message(message)
@@ -509,6 +586,76 @@ class CogsUtils(commands.Cog):
                     if timeout_message is not None:
                         await ctx.send(timeout_message)
                     return None
+
+    async def invoke_command(self, author: discord.User, channel: discord.TextChannel, command: str, prefix: typing.Optional[str]=None, message: typing.Optional[discord.Message]=None, message_id: typing.Optional[str]="".join(choice(string.digits) for i in range(18)), timestamp: typing.Optional[datetime.datetime]=datetime.datetime.now()) -> typing.Union[commands.Context, discord.Message]:
+        """
+        Invoke the specified command with the specified user in the specified channel.
+        """
+        bot = self.bot
+        if prefix is None:
+            prefixes = await bot.get_valid_prefixes(guild=channel.guild)
+            prefix = prefixes[0] if len(prefixes) < 3 else prefixes[2]
+        old_content = f"{command}"
+        content = f"{prefix}{old_content}"
+
+        if message is None:
+            message_content = content
+            author_dict = {"id": f"{author.id}", "username": author.display_name, "avatar": author.avatar, 'avatar_decoration': None, 'discriminator': f"{author.discriminator}", "public_flags": author.public_flags, "bot": author.bot}
+            channel_id = channel.id
+            timestamp = str(timestamp).replace(" ", "T") + "+00:00"
+            data = {"id": message_id, "type": 0, "content": message_content, "channel_id": f"{channel_id}", "author": author_dict, "attachments": [], "embeds": [], "mentions": [], "mention_roles": [], "pinned": False, "mention_everyone": False, "tts": False, "timestamp": timestamp , "edited_timestamp": None, "flags": 0, "components": [], "referenced_message": None}
+            message = discord.Message(channel=channel, state=bot._connection, data=data)
+        else:
+            message = copy(message)
+
+        message.content = content
+        context = await bot.get_context(message)
+        if context.valid:
+            context.author = author
+            context.guild = channel.guild
+            context.channel = channel
+            await bot.invoke(context)
+        else:
+            message.content = old_content
+            message.author = author
+            message.channel = channel
+            bot.dispatch("message", message)
+        return context if context.valid else message
+
+	
+    def get_embed(self, embed_dict: typing.Dict) -> typing.Dict[discord.Embed, str]:
+        data = embed_dict
+        if data.get("embed"):
+            data = data["embed"]
+        elif data.get("embeds"):
+            data = data.get("embeds")[0]
+        if timestamp := data.get("timestamp"):
+            data["timestamp"] = timestamp.strip("Z")
+        if data.get("content"):
+            content = data["content"]
+            del data["content"]
+        else:
+            content = ""
+        for x in data:
+            if data[x] is None:
+                del data[x]
+            elif isinstance(data[x], typing.Dict):
+                for y in data[x]:
+                    if data[x][y] is None:
+                        del data[x][y]
+        try:
+            embed = discord.Embed.from_dict(data)
+            length = len(embed)
+            if length > 6000:
+                raise commands.BadArgument(
+                    f"Embed size exceeds Discord limit of 6000 characters ({length})."
+                )
+        except Exception as e:
+            raise commands.BadArgument(
+                f"An error has occurred.\n{e})."
+            )
+        back = {"embed": embed, "content": content}
+        return back
 
     def datetime_to_timestamp(self, dt: datetime.datetime, format: typing.Literal["f", "F", "d", "D", "t", "T", "R"]="f") -> str:
         """
@@ -763,7 +910,61 @@ class CogsUtils(commands.Cog):
             if allowed_by_whitelist_blacklist:
                 if not await self.bot.allowed_by_whitelist_blacklist(output.author):
                     raise discord.ext.commands.BadArgument()
+        if self.is_dpy2:
+            if isinstance(output, discord.Interaction):
+                # check whether the message was sent in a guild
+                if output.guild is None:
+                    raise discord.ext.commands.BadArgument()
+                # check whether the message author isn't a bot
+                if output.author is None:
+                    raise discord.ext.commands.BadArgument()
+                if output.author.bot:
+                    raise discord.ext.commands.BadArgument()
+                # check whether the bot can send message in the given channel
+                if output.channel is None:
+                    raise discord.ext.commands.BadArgument()
+                if not self.check_permissions_for(channel=output.channel, user=output.guild.me, check=["send_messages"]):
+                    raise discord.ext.commands.BadArgument()
+                # check whether the cog isn't disabled
+                if self.cog is not None:
+                    if await self.bot.cog_disabled_in_guild(self.cog, output.guild):
+                        raise discord.ext.commands.BadArgument()
+                # check whether the message author isn't on allowlist/blocklist
+                if allowed_by_whitelist_blacklist:
+                    if not await self.bot.allowed_by_whitelist_blacklist(output.author):
+                        raise discord.ext.commands.BadArgument()
         return
+
+    async def to_update(self, cog_name: typing.Optional[str]=None):
+        if cog_name is None:
+            cog_name = self.cog.__class__.__name__
+        cog_name = cog_name.lower()
+
+        downloader = self.bot.get_cog("Downloader")
+        if downloader is None:
+            raise self.DownloaderNotLoaded(_("The cog downloader is not loaded.").format(**locals()))
+
+        if await self.bot._cog_mgr.find_cog(cog_name) is None:
+            raise ValueError(_("This cog was not found in any cog path."))
+
+        local = discord.utils.get(await downloader.installed_cogs(), name=cog_name)
+        if local is None:
+            raise ValueError(_("This cog is not installed on this bot.").format(**locals()))
+        local_commit = local.commit
+        repo = local.repo
+        if repo is None:
+            raise ValueError(_("This cog has not been installed from the cog Downloader.").format(**locals()))
+
+        repo_owner, repo_name, repo_branch = (re.compile(r"(?:https?:\/\/)?git(?:hub|lab).com\/(?P<repo_owner>[A-z0-9-_.]*)\/(?P<repo>[A-z0-9-_.]*)(?:\/tree\/(?P<repo_branch>[A-z0-9-_.]*))?", re.I).findall(repo.url))[0]
+        repo_branch = repo.branch
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}", timeout=3) as r:
+                online = await r.json()
+        if online is None or "object" not in online or "sha" not in online["object"]:
+            raise asyncio.IncompleteReadError(_("No results could be retrieved from the git api.").format(**locals()), None)
+        online_commit = online["object"]["sha"]
+
+        return online_commit != local_commit, local_commit, online_commit
 
     async def autodestruction(self):
         """
@@ -788,7 +989,7 @@ class CogsUtils(commands.Cog):
 class Loop():
     """
     Create a loop, with many features.
-    Thanks to Vexed01 on GitHub! (https://github.com/Vexed01/Vex-Cogs/blob/master/timechannel/loop.py)
+    Thanks to Vexed01 on GitHub! (https://github.com/Vexed01/Vex-Cogs/blob/master/timechannel/loop.py and https://github.com/Vexed01/vex-cog-utils/vexutils/loop.py)
     """
     def __init__(self, cogsutils: CogsUtils, name: str, function, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None, limit_exception: typing.Optional[int]=None) -> None:
         self.cogsutils: CogsUtils = cogsutils
@@ -800,7 +1001,6 @@ class Loop():
         self.limit_count: int = limit_count
         self.limit_date: datetime.datetime = limit_date
         self.limit_exception: int = limit_exception
-        self.loop = self.cogsutils.bot.loop.create_task(self.loop())
         self.stop_manually: bool = False
         self.stop: bool = False
 
@@ -813,6 +1013,8 @@ class Loop():
         self.last_exc_raw: typing.Optional[BaseException] = None
         self.last_iter: typing.Optional[datetime.datetime] = None
         self.next_iter: typing.Optional[datetime.datetime] = None
+
+        self.loop = self.cogsutils.bot.loop.create_task(self.loop())
 
     async def start(self):
         if self.cogsutils.is_dpy2:
@@ -991,7 +1193,7 @@ class Loop():
             processed_table_str = "Loop hasn't started yet."
 
         emoji = "✅" if self.integrity else "❌"
-        embed = discord.Embed(title=f"{self.name}: `{emoji}`")
+        embed = discord.Embed(title=f"{self.name} Loop: `{emoji}`")
         embed.add_field(name="Raw data", value=raw_table_str, inline=False)
         embed.add_field(
             name="Processed data",

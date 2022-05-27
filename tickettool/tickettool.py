@@ -16,11 +16,11 @@ from copy import copy
 
 import chat_exporter
 
-from redbot.core import Config, modlog
-from redbot.core.bot import Red
-
 from .settings import settings
 from .utils import utils
+
+from redbot.core import Config, modlog
+from redbot.core.bot import Red
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!

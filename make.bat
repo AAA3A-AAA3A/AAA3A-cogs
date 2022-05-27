@@ -11,7 +11,7 @@ if exist "%~dp0.venv\" (
 goto %1
 
 :reformat
-"%VENV_PYTHON%" -m isort "%~dp0." -m 7 -l 1000 -p redbot -s "cogsutils.py" --sg ".github/* --sg "docs/*"
+"%VENV_PYTHON%" -m isort "%~dp0." -m 7 -l 1000 -p redbot -s "cogsutils.py" --sg ".github/* --sg "docs/*" --sp "%~dp0.\.isort.cfg"
 goto:eof
 
 :stylecheck

@@ -5,9 +5,9 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.tunnel import Tunnel
-
 from .helpers import embed_from_msg
+
+from redbot.core.utils.tunnel import Tunnel
 
 if CogsUtils().is_dpy2:  # To remove
     setattr(commands, 'Literal', typing.Literal)

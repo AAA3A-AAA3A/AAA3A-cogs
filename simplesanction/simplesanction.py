@@ -14,13 +14,13 @@ from copy import copy
 
 from discord.ext.commands import BadArgument
 
+from .settings import settings
+from .utils import Timeout_or_Cancel, utils
+
 from redbot.core import Config
 from redbot.core.commands.converter import parse_timedelta
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate
-
-from .settings import settings
-from .utils import Timeout_or_Cancel, utils
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!

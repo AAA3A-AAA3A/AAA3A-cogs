@@ -11,9 +11,9 @@ else:
 
 import asyncio
 
-from redbot.core import Config
-
 from .converters import RoleEmojiConverter
+
+from redbot.core import Config
 
 # Credits:
 # Thanks to TrustyJAID for the two converter for the bulk command arguments! (https://github.com/TrustyJAID/Trusty-cogs/blob/main/roletools/converter.py)

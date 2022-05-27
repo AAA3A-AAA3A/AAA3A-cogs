@@ -31,7 +31,7 @@ class Calculator(commands.Cog):
 
     def __init__(self, bot):
         self.bot: Red = bot
-        self.data: Config = Config.get_conf(
+        self.config: Config = Config.get_conf(
             self,
             identifier=905683670375,
             force_registration=True,
@@ -44,7 +44,7 @@ class Calculator(commands.Cog):
             },
         }
 
-        self.data.register_global(**self.calculator_global)
+        self.config.register_global(**self.calculator_global)
 
         blocks = [
             block.MathBlock(),
@@ -178,7 +178,7 @@ class Calculator(commands.Cog):
             expression = None
         if expression is None:
             expression = "|"
-        config = await self.data.settings.all()
+        config = await self.config.settings.all()
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
         embed: discord.Embed = discord.Embed()
@@ -398,7 +398,7 @@ class Calculator(commands.Cog):
     @commands.command(aliases=["calculate"])
     async def calc(self, ctx: commands.Context, calculation: typing.Optional[str]=None):
         """Calculate a simple expression."""
-        config = await self.data.settings.all()
+        config = await self.config.settings.all()
         if calculation is not None:
             expression = await self.calculate(calculation, False)
             message = await ctx.send(embed=await self.get_embed(ctx, expression))

@@ -65,7 +65,7 @@ class CogsUtils(commands.Cog):
             if isinstance(cog, str):
                 cog = bot.get_cog(cog)
             self.cog: commands.Cog = cog
-            self.bot: Red = self.cog.bot
+            self.bot: Red = self.cog.bot if hasattr(self.cog, 'bot') else bot
             self.DataPath: Path = cog_data_path(cog_instance=self.cog)
         elif bot is not None:
             self.cog: commands.Cog = None
@@ -348,33 +348,39 @@ class CogsUtils(commands.Cog):
             if self.is_dpy2:
                 to_add = {
                     self.cog.__class__.__name__: lambda x: self.cog,
-                    "CogsUtils": lambda x: CogsUtils,
-                    "Loop": lambda x: Loop,
-                    "Captcha": lambda x: Captcha,
-                    "Buttons": lambda x: Buttons,
-                    "Dropdown": lambda x: Dropdown,
-                    "Modal": lambda x: Modal,
-                    "Reactions": lambda x: Reactions,
-                    "Menu": lambda x: Menu,
-                    "discord": lambda x: discord,
-                    "typing": lambda x: typing,
-                    "redbot": lambda x: redbot,
-                    "cog": lambda ctx: ctx.bot.get_cog
+                    "CogsUtils": lambda ctx: CogsUtils,
+                    "Loop": lambda ctx: Loop,
+                    "Captcha": lambda ctx: Captcha,
+                    "Buttons": lambda ctx: Buttons,
+                    "Dropdown": lambda ctx: Dropdown,
+                    "Modal": lambda ctx: Modal,
+                    "Reactions": lambda ctx: Reactions,
+                    "Menu": lambda ctx: Menu,
+                    "discord": lambda ctx: discord,
+                    "redbot": lambda ctx: redbot,
+                    "Red": lambda ctx: Red,
+                    "typing": lambda ctx: typing,
+                    "inspect": lambda ctx: inspect
                 }
             else:
                 to_add = {
                     self.cog.__class__.__name__: lambda x: self.cog,
-                    "CogsUtils": lambda x: CogsUtils,
-                    "Loop": lambda x: Loop,
-                    "Captcha": lambda x: Captcha,
-                    "Menu": lambda x: Menu,
-                    "discord": lambda x: discord,
-                    "typing": lambda x: typing,
-                    "redbot": lambda x: redbot,
-                    "cog": lambda ctx: ctx.bot.get_cog
+                    "CogsUtils": lambda ctx: CogsUtils,
+                    "Loop": lambda ctx: Loop,
+                    "Captcha": lambda ctx: Captcha,
+                    "Menu": lambda ctx: Menu,
+                    "discord": lambda ctx: discord,
+                    "redbot": lambda ctx: redbot,
+                    "Red": lambda ctx: Red,
+                    "typing": lambda ctx: typing,
+                    "inspect": lambda ctx: inspect
                 }
             for name, value in to_add.items():
                 try:
+                    try:
+                        self.bot.remove_dev_env_value(name)
+                    except ValueError:
+                        pass
                     self.bot.add_dev_env_value(name, value)
                 except RuntimeError:
                     pass
@@ -589,7 +595,8 @@ class CogsUtils(commands.Cog):
         if prefix is None:
             prefixes = await bot.get_valid_prefixes(guild=channel.guild)
             prefix = prefixes[0] if len(prefixes) < 3 else prefixes[2]
-        content = f"{prefix}{command}"
+        old_content = f"{command}"
+        content = f"{prefix}{old_content}"
 
         if message is None:
             message_content = content
@@ -609,10 +616,46 @@ class CogsUtils(commands.Cog):
             context.channel = channel
             await bot.invoke(context)
         else:
+            message.content = old_content
             message.author = author
             message.channel = channel
             bot.dispatch("message", message)
         return context if context.valid else message
+
+	
+    def get_embed(self, embed_dict: typing.Dict) -> typing.Dict[discord.Embed, str]:
+        data = embed_dict
+        if data.get("embed"):
+            data = data["embed"]
+        elif data.get("embeds"):
+            data = data.get("embeds")[0]
+        if timestamp := data.get("timestamp"):
+            data["timestamp"] = timestamp.strip("Z")
+        if data.get("content"):
+            content = data["content"]
+            del data["content"]
+        else:
+            content = ""
+        for x in data:
+            if data[x] is None:
+                del data[x]
+            elif isinstance(data[x], typing.Dict):
+                for y in data[x]:
+                    if data[x][y] is None:
+                        del data[x][y]
+        try:
+            embed = discord.Embed.from_dict(data)
+            length = len(embed)
+            if length > 6000:
+                raise commands.BadArgument(
+                    f"Embed size exceeds Discord limit of 6000 characters ({length})."
+                )
+        except Exception as e:
+            raise commands.BadArgument(
+                f"An error has occurred.\n{e})."
+            )
+        back = {"embed": embed, "content": content}
+        return back
 
     def datetime_to_timestamp(self, dt: datetime.datetime, format: typing.Literal["f", "F", "d", "D", "t", "T", "R"]="f") -> str:
         """
@@ -867,6 +910,29 @@ class CogsUtils(commands.Cog):
             if allowed_by_whitelist_blacklist:
                 if not await self.bot.allowed_by_whitelist_blacklist(output.author):
                     raise discord.ext.commands.BadArgument()
+        if self.is_dpy2:
+            if isinstance(output, discord.Interaction):
+                # check whether the message was sent in a guild
+                if output.guild is None:
+                    raise discord.ext.commands.BadArgument()
+                # check whether the message author isn't a bot
+                if output.author is None:
+                    raise discord.ext.commands.BadArgument()
+                if output.author.bot:
+                    raise discord.ext.commands.BadArgument()
+                # check whether the bot can send message in the given channel
+                if output.channel is None:
+                    raise discord.ext.commands.BadArgument()
+                if not self.check_permissions_for(channel=output.channel, user=output.guild.me, check=["send_messages"]):
+                    raise discord.ext.commands.BadArgument()
+                # check whether the cog isn't disabled
+                if self.cog is not None:
+                    if await self.bot.cog_disabled_in_guild(self.cog, output.guild):
+                        raise discord.ext.commands.BadArgument()
+                # check whether the message author isn't on allowlist/blocklist
+                if allowed_by_whitelist_blacklist:
+                    if not await self.bot.allowed_by_whitelist_blacklist(output.author):
+                        raise discord.ext.commands.BadArgument()
         return
 
     async def to_update(self, cog_name: typing.Optional[str]=None):
@@ -895,7 +961,7 @@ class CogsUtils(commands.Cog):
             async with session.get(f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}", timeout=3) as r:
                 online = await r.json()
         if online is None or "object" not in online or "sha" not in online["object"]:
-            raise asyncio.IncompleteReadError(_("No results could be retrieved from the git api.").format(**locals()))
+            raise asyncio.IncompleteReadError(_("No results could be retrieved from the git api.").format(**locals()), None)
         online_commit = online["object"]["sha"]
 
         return online_commit != local_commit, local_commit, online_commit

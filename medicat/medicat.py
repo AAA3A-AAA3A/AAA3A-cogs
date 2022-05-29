@@ -312,7 +312,7 @@ class Medicat(commands.Cog):
     """.format(MEDICAT_GUILD=MEDICAT_GUILD, TEST_GUILD=TEST_GUILD, name=name)
                 command: commands.command = get_function_from_str(self.bot, command_str)
                 command.name = name
-                command.description = text["title"]
+                command.description = CUSTOM_COMMANDS[name]["title"]
                 command.cog = self
                 self.bot.add_command(command)
             except Exception:

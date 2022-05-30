@@ -315,7 +315,8 @@ class Medicat(commands.Cog):
                 command.brief = text["title"]
                 command.description = text["title"]
                 command.cog = self
-                command.params = {}
+                if self.cogsutils.is_dpy2:
+                    command.params = {}
                 setattr(self, name, command)
                 self.bot.add_command(command)
             except Exception:

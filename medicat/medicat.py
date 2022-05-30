@@ -301,7 +301,7 @@ class Medicat(commands.Cog):
 
     @in_medicat_guild()
     @commands.command()
-    async def {name}(ctx):
+    async def {name}(self, ctx):
         embed: discord.Embed = discord.Embed()
         embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
         embed.set_footer(text="Medicat USB Official", icon_url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
@@ -312,8 +312,11 @@ class Medicat(commands.Cog):
     """.format(MEDICAT_GUILD=MEDICAT_GUILD, TEST_GUILD=TEST_GUILD, name=name)
                 command: commands.command = get_function_from_str(self.bot, command_str)
                 command.name = name
-                command.description = CUSTOM_COMMANDS[name]["title"]
+                command.brief = text["title"]
+                command.description = text["title"]
                 command.cog = self
+                command.params = {}
+                setattr(self, name, command)
                 self.bot.add_command(command)
             except Exception:
                 self.bot.remove_command(name)
@@ -322,7 +325,7 @@ class Medicat(commands.Cog):
 
     def remove_custom_commands(self):
         for name in CUSTOM_COMMANDS:
-            self.remove_command(name)
+            self.bot.remove_command(name)
 
     @commands.guild_only()
     @in_medicat_guild()

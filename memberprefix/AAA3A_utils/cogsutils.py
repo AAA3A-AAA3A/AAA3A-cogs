@@ -171,9 +171,9 @@ class CogsUtils(commands.Cog):
             return
         if isinstance(error, commands.CommandInvokeError):
             asyncio.create_task(ctx.bot._delete_delay(ctx))
-            self.cog.log.exception(f"Exception in command '{ctx.command.qualified_name}'", exc_info=error.original)
+            self.cog.log.exception(f"Exception in command '{ctx.command.qualified_name}'.", exc_info=error.original)
             message = f"Error in command '{ctx.command.qualified_name}'. Check your console or logs for details.\nIf necessary, please inform the creator of the cog in which this command is located. Thank you."
-            exception_log = f"Exception in command '{ctx.command.qualified_name}'\n"
+            exception_log = f"Exception in command '{ctx.command.qualified_name}.'\n"
             exception_log += "".join(traceback.format_exception(type(error), error, error.__traceback__))
             ctx.bot._last_exception = exception_log
             await ctx.send(inline(message))
@@ -265,7 +265,7 @@ class CogsUtils(commands.Cog):
         self.close_logger()
         self.remove_dev_env_value()
         for loop in self.loops:
-            self.loops[loop].end_all()
+            self.loops[loop].stop_all()
         if not self.at_least_one_cog_loaded:
             self.bot.remove_listener(self.on_command_error)
             self.bot.remove_command("getallfor")

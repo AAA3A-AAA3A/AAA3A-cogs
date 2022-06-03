@@ -21,9 +21,10 @@ This cog will only work on x server and therefore cannot be used by the general 
 Commands
 --------
 
-Here are all the commands included in this cog (0):
+Here are all the commands included in this cog (1):
 
-
+* ``[p]getlastbootablestoolsversions``
+ 
 
 ------------
 Installation

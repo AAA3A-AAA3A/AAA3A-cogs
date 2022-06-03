@@ -199,7 +199,7 @@ class Medicat(commands.Cog):
                     if x == "See [https://www.ventoy.net/en/doc_news.html](https://www.ventoy.net/en/doc_news.html) for more details.\r":
                         break
                     result += x
-                ventoy_tag_body = "".join(result)
+                ventoy_tag_body = "\n".join(result)
                 message += "\n" + box(ventoy_tag_body[:1999 - len(message + "\n") - len("``````")])
 
             hook: discord.Webhook = await CogsUtils(bot=self.bot).get_hook(channel)

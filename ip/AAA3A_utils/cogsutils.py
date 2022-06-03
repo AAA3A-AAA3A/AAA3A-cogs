@@ -109,6 +109,7 @@ class CogsUtils(commands.Cog):
                                         "CtxVar",
                                         "DiscordModals",
                                         "EditFile",
+                                        "GetLoc",
                                         "Ip",
                                         "Medicat",  # Private cog.
                                         "MemberPrefix",
@@ -128,6 +129,7 @@ class CogsUtils(commands.Cog):
                                         "CtxVar",
                                         "DiscordModals",
                                         "EditFile",
+                                        "GetLoc",
                                         "Ip",
                                         "Medicat",  # Private cog.
                                         "MemberPrefix",

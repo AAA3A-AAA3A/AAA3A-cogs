@@ -37,7 +37,7 @@ TEST_CHANNEL = 905737223348047914
 
 CUSTOM_COMMANDS = {
     "customtools": {"title": "How to add your own bootable tools (iso, wim, vhd) to Medicat USB?", "description": "To add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\nThen you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template."},
-    "howinstall": {"title": "How do I install Medicat USB?", "description": "1) Install Ventoy on your USB stick (<https://github.com/ventoy/Ventoy/releases> & <https://ventoy.net/en/doc_start.html>).\n2) Download Medicat USB 21.06 with Torrent, Mega or Google Drive (<https://medicatusb.com/>).\n3) Extract the downloaded zips to the root of the USB stick.\nFull tutorial: <https://medicatusb.com/docs/installation/installing-medicat/>\nYou can also use the automatic installer of MON5TERMATT (<https://medicatusb.com/installer/>)."},
+    "howinstall": {"title": "How do I install Medicat USB?", "description": "1) Install the latest version of Ventoy on your USB stick (<https://github.com/ventoy/Ventoy/releases> & <https://ventoy.net/en/doc_start.html>).\n2) Download the last version of Medicat USB with Torrent, Mega or Google Drive (<https://medicatusb.com/>).\n3) Extract the downloaded zips to the root of the USB stick.\nFull tutorial: <https://medicatusb.com/docs/installation/installing-medicat/>\nYou can also use the automatic installer of MON5TERMATT (<https://medicatusb.com/installer/>).\nWarning: do not forget to disable your antivirus software (see the `virus` command for more information)."},
     "kofi": {"title": "How to make a donation?", "description": "Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\nMON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\nAAA3A (Medicat Developer): None"},
     "medicatversion": {"title": "What is the latest version of Medicat USB?", "description": "The latest version of Medicat USB is 21.12!\n||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||"},
     "menus": {"title": "How to download one of the menus?", "description": "Here are the latest links to download the latest versions of the menus:\n- Jayro's Lockîck: \n<https://mega.nz/file/ZtpwEDhR#4bCjUDri2hhUlCgv8Y1EmZVyUnGyhqZjCo0fazXLzqY>\n- AAA3A's Backup: \n<https://mega.nz/file/s8hATRbZ#C28qA8HWKi_xikC6AUG46DiXKIG2Qjl__-4MOl6SI7w>\n- AAA3A's Partition: \n<https://mega.nz/file/w8oFkKYQ#5BbIf7K6pyxYDlE6L4efPqtHUWtCMmx_kta_QHejhpk>\nHere is also a link that should never change to access the same folder containing all the menus: \n<https://mega.nz/folder/FtRCgLQL#KTq897WQiXCJT8OQ3cT9Tg>"},
@@ -192,7 +192,6 @@ class Medicat(commands.Cog):
             except Exception:
                 ventoy_tag_body = None
 
-            message: str = f"Ventoy v{ventoy_version_str} has been released!\nhttps://ventoy.net/en/index.html"
             if ventoy_tag_body is not None:
                 ventoy_tag_body = ventoy_tag_body.split("\n")
                 result = []
@@ -201,10 +200,18 @@ class Medicat(commands.Cog):
                         break
                     result += x
                 ventoy_tag_body = "\n".join(result)
-                message += "\n" + box(ventoy_tag_body[:1999 - len(message + "\n") - len("``````")])
+                changelog = box(ventoy_tag_body)
 
+            embed: discord.Embed = discord.Embed()
+            embed.set_thumbnail(url="https://ventoy.net/static/img/ventoy.png?v=1")
+            embed.set_footer(text="From official Ventoy.", icon_url="https://ventoy.net/static/img/ventoy.png?v=1")
+            embed.url = "https://www.ventoy.net/en/doc_news.html"
+            embed.title = f"Ventoy v{ventoy_version_str} has been released!"
+            embed.description = "New features:\n" + changelog
+            embed.add_field(name="More details:", value="https://www.ventoy.net/en/doc_news.html", inline=True)
+            embed.add_field(name="Download this version:", value=f"https://github.com/ventoy/Ventoy/releases/tag/{ventoy_version_str}", inline=True)
             hook: discord.Webhook = await CogsUtils(bot=self.bot).get_hook(channel)
-            message: discord.Message = await hook.send(content=message, username="Ventoy Updates", avatar_url="https://ventoy.net/static/img/ventoy.png?v=1")
+            message: discord.Message = await hook.send(embed=embed, username="Ventoy Updates", avatar_url="https://ventoy.net/static/img/ventoy.png?v=1")
             if message is not None:
                 try:
                     await message.publish()

@@ -198,9 +198,12 @@ class Medicat(commands.Cog):
                 for x in ventoy_tag_body:
                     if x == "See [https://www.ventoy.net/en/doc_news.html](https://www.ventoy.net/en/doc_news.html) for more details.\r":
                         break
-                    result += x
+                    if not x == "\r":
+                        result.append(x)
                 ventoy_tag_body = "\n".join(result)
                 changelog = box(ventoy_tag_body)
+            else:
+                changelog = ""
 
             embed: discord.Embed = discord.Embed()
             embed.set_thumbnail(url="https://ventoy.net/static/img/ventoy.png?v=1")
@@ -340,29 +343,83 @@ class Medicat(commands.Cog):
     @in_medicat_guild()
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @commands.command()
-    async def getlastbootablestoolsversions(self, ctx: commands.Context):
-        result = {}
-        for tool in BOOTABLES_TOOLS:
-            try:
+    async def getlastventoyversion(self, ctx: commands.Context):
+        """Get the latest version of Ventoy.
+        """
+        try:
+            async with ctx.typing():
                 async with aiohttp.ClientSession() as session:
-                    async with session.get(BOOTABLES_TOOLS[tool]["url"], timeout=3) as r:
-                        r = await r.text()
-                for x in r.split("\n"):
-                    if '"headline":' in x and '<html lang="en-US">' not in x:
-                        break
-                x = x.replace('    "headline": "', '').replace('",', '')
-                regex = re.compile(BOOTABLES_TOOLS[tool]["regex"], re.I).findall(x)
-                regex = regex[0] if len(regex) > 0 else None
-                regex = regex[0] if isinstance(regex, typing.Tuple) and len(regex) > 0 else regex
-                result[tool] = regex
-            except asyncio.TimeoutError:
-                result[tool] = None
+                    async with session.get("https://api.github.com/repos/ventoy/Ventoy/git/refs/tags", timeout=3) as r:
+                        ventoy_tags = await r.json()
+                versions = sorted(ventoy_tags, key=lambda ventoy_version: VersionInfo.from_str(str(ventoy_version["ref"]).replace("refs/tags/v", "").replace("1.0.0", "1.0.").replace("beta", ".dev")))
+                version = versions[len(versions) - 1]
+                ventoy_tag_name = str(version["ref"]).replace("refs/tags/", "")
+                ventoy_version_str = ventoy_tag_name.replace("v", "").replace("1.0.0", "1.0.").replace("beta", ".dev")
+
+                try:
+                    async with aiohttp.ClientSession() as session:
+                        async with session.get(f"https://api.github.com/repos/ventoy/Ventoy/releases/tags/{ventoy_tag_name}", timeout=3) as r:
+                            ventoy_tag_body = str((await r.json())["body"])
+                except Exception:
+                    ventoy_tag_body = None
+
+                if ventoy_tag_body is not None:
+                    ventoy_tag_body = ventoy_tag_body.split("\n")
+                    result = []
+                    for x in ventoy_tag_body:
+                        if x == "See [https://www.ventoy.net/en/doc_news.html](https://www.ventoy.net/en/doc_news.html) for more details.\r":
+                            break
+                        if not x == "\r":
+                            result.append(x)
+                    ventoy_tag_body = "\n".join(result)
+                    changelog = box(ventoy_tag_body)
+                else:
+                    changelog = ""
+        except Exception:
+            await ctx.send(_("An error has occurred. Please try again.").format(**locals()))
+            return
         embed: discord.Embed = discord.Embed()
-        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
-        embed.set_footer(text="Medicat USB Official", icon_url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
+        embed.set_thumbnail(url="https://ventoy.net/static/img/ventoy.png?v=1")
+        embed.set_footer(text="From official Ventoy.", icon_url="https://ventoy.net/static/img/ventoy.png?v=1")
+        embed.url = "https://www.ventoy.net/en/doc_news.html"
+        embed.title = f"Ventoy v{ventoy_version_str} has been released!"
+        embed.description = "New features:\n" + changelog
+        embed.add_field(name="More details:", value="https://www.ventoy.net/en/doc_news.html", inline=True)
+        embed.add_field(name="Download this version:", value=f"https://github.com/ventoy/Ventoy/releases/tag/{ventoy_version_str}", inline=True)
+        hook: discord.Webhook = await CogsUtils(bot=self.bot).get_hook(ctx.channel)
+        await hook.send(embed=embed, username="Ventoy Updates", avatar_url="https://ventoy.net/static/img/ventoy.png?v=1")
+
+    @commands.guild_only()
+    @in_medicat_guild()
+    @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
+    @commands.command()
+    async def getlastbootablestoolsversions(self, ctx: commands.Context):
+        """Get the latest versions of each Medicat USB bootable tool.
+        """
+        async with ctx.typing():
+            result = {}
+            for tool in BOOTABLES_TOOLS:
+                try:
+                    async with aiohttp.ClientSession() as session:
+                        async with session.get(BOOTABLES_TOOLS[tool]["url"], timeout=3) as r:
+                            r = await r.text()
+                    for x in r.split("\n"):
+                        if '"headline":' in x and '<html lang="en-US">' not in x:
+                            break
+                    x = x.replace('    "headline": "', '').replace('",', '')
+                    regex = re.compile(BOOTABLES_TOOLS[tool]["regex"], re.I).findall(x)
+                    regex = regex[0] if len(regex) > 0 else None
+                    regex = regex[0] if isinstance(regex, typing.Tuple) and len(regex) > 0 else regex
+                    result[tool] = regex
+                except asyncio.TimeoutError:
+                    result[tool] = None
+        embed: discord.Embed = discord.Embed()
+        embed.set_thumbnail(url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg")
+        embed.set_footer(text="From FCportables.", icon_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg")
         embed.title = "Last bootables tools versions"
         embed.description = "\n".join([f"**{x}** ➜ {y}" for x, y in result.items()])
-        await ctx.send(embed=embed)
+        hook: discord.Webhook = await CogsUtils(bot=self.bot).get_hook(ctx.channel)
+        await hook.send(embed=embed, username="Bootables Tools Updates", avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg")
 
     @commands.guild_only()
     @in_medicat_guild()

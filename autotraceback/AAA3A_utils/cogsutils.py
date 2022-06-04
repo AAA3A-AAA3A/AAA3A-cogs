@@ -177,10 +177,24 @@ class CogsUtils(commands.Cog):
             message = f"Error in command '{ctx.command.qualified_name}'. Check your console or logs for details.\nIf necessary, please inform the creator of the cog in which this command is located. Thank you."
             exception_log = f"Exception in command '{ctx.command.qualified_name}.'\n"
             exception_log += "".join(traceback.format_exception(type(error), error, error.__traceback__))
+            if "USERPROFILE" in os.environ:
+                exception_log = exception_log.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+            if "HOME" in os.environ:
+                exception_log = exception_log.replace(os.environ["HOME"], "{HOME}")
             ctx.bot._last_exception = exception_log
             await ctx.send(inline(message))
         else:
             await ctx.bot.on_command_error(ctx=ctx, error=error, unhandled_by_cog=True)
+
+    @staticmethod
+    def sanitize_output(ctx: commands.Context, input_: str) -> str:
+        """Hides the bot's token from a string."""
+        token = ctx.bot.http.token
+        if "USERPROFILE" in os.environ:
+            input_ = input_.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+        if "HOME" in os.environ:
+            input_ = input_.replace(os.environ["HOME"], "{HOME}")
+        return re.sub(re.escape(token), "[EXPUNGED]", input_, re.I)
 
     async def add_cog(self, bot: Red, cog: commands.Cog):
         """
@@ -388,6 +402,9 @@ class CogsUtils(commands.Cog):
                     pass
                 except Exception as e:
                     self.cog.log.error(f"Error when adding the value `{name}` to the development environment.", exc_info=e)
+            Dev = self.bot.get_cog("Dev")
+            if Dev is not None:
+                setattr(Dev, 'sanitize_output', self.sanitize_output)
 
     def remove_dev_env_value(self):
         """

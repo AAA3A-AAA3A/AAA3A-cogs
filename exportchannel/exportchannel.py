@@ -8,7 +8,8 @@ import typing  # isort:skip
 import chat_exporter
 import io
 
-from redbot.core.commands import RawUserIdConverter
+if CogsUtils().is_dpy2:
+    from redbot.core.commands import RawUserIdConverter
 
 # Credits:
 # Thanks to Red's `Cleanup` cog for the converters and help with the message retrieval function! (https://github.com/Cog-Creators/Red-DiscordBot/blob/V3/develop/redbot/cogs/cleanup/converters.py#L12)

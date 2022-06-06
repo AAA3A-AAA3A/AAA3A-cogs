@@ -53,6 +53,7 @@ class ExportChannel(commands.Cog):
         """Export all of a channel's messages to an html file.
 
         Please note: all attachments and user avatars are saved with the Discord link in this file.
+        Remember that exporting other users' messages from Discord does not respect the TOS.
         """
         async with ctx.typing():
             if channel is None:
@@ -66,7 +67,7 @@ class ExportChannel(commands.Cog):
             transcript = await chat_exporter.raw_export(channel=channel, messages=messages, tz_info="UTC", guild=channel.guild, bot=ctx.bot)
             file = discord.File(io.BytesIO(transcript.encode()),
                                 filename=f"transcript-{channel.id}.html")
-        await ctx.send(_("Here is the html file of the transcript of all the messages in the channel {channel.mention} ({channel.id}).\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nThere are {count_messages} exported messages.").format(**locals()), file=file)
+        await ctx.send(_("Here is the html file of the transcript of all the messages in the channel {channel.mention} ({channel.id}).\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nThere are {count_messages} exported messages.\nRemember that exporting other users' messages from Discord does not respect the TOS.").format(**locals()), file=file)
         await ctx.tick()
 
     @exportchannel.command()
@@ -75,6 +76,7 @@ class ExportChannel(commands.Cog):
 
         Specify the number of messages since the end of the channel.
         Please note: all attachments and user avatars are saved with the Discord link in this file.
+        Remember that exporting other users' messages from Discord does not respect the TOS.
         """
         async with ctx.typing():
             if channel is None:
@@ -88,7 +90,7 @@ class ExportChannel(commands.Cog):
             transcript = await chat_exporter.raw_export(channel=channel, messages=messages, tz_info="UTC", guild=channel.guild, bot=ctx.bot)
             file = discord.File(io.BytesIO(transcript.encode()),
                                 filename=f"transcript-{channel.id}.html")
-        await ctx.send(_("Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.").format(**locals()), file=file)
+        await ctx.send(_("Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nRemember that exporting other users' messages from Discord does not respect the TOS.").format(**locals()), file=file)
         await ctx.tick()
 
     @exportchannel.command()
@@ -97,6 +99,7 @@ class ExportChannel(commands.Cog):
 
         Specify the before message (id or link).
         Please note: all attachments and user avatars are saved with the Discord link in this file.
+        Remember that exporting other users' messages from Discord does not respect the TOS.
         """
         async with ctx.typing():
             if channel is None:
@@ -107,7 +110,7 @@ class ExportChannel(commands.Cog):
             transcript = await chat_exporter.raw_export(channel=channel, messages=messages, tz_info="UTC", guild=channel.guild, bot=ctx.bot)
             file = discord.File(io.BytesIO(transcript.encode()),
                                 filename=f"transcript-{channel.id}.html")
-        await ctx.send(_("Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.").format(**locals()), file=file)
+        await ctx.send(_("Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nRemember that exporting other users' messages from Discord does not respect the TOS.").format(**locals()), file=file)
         await ctx.tick()
 
     @exportchannel.command()
@@ -116,6 +119,7 @@ class ExportChannel(commands.Cog):
 
         Specify the after message (id or link).
         Please note: all attachments and user avatars are saved with the Discord link in this file.
+        Remember that exporting other users' messages from Discord does not respect the TOS.
         """
         async with ctx.typing():
             if channel is None:
@@ -129,7 +133,7 @@ class ExportChannel(commands.Cog):
             transcript = await chat_exporter.raw_export(channel=channel, messages=messages, tz_info="UTC", guild=channel.guild, bot=ctx.bot)
             file = discord.File(io.BytesIO(transcript.encode()),
                                 filename=f"transcript-{channel.id}.html")
-        await ctx.send(_("Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.").format(**locals()), file=file)
+        await ctx.send(_("Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nRemember that exporting other users' messages from Discord does not respect the TOS.").format(**locals()), file=file)
         await ctx.tick()
 
     @exportchannel.command()
@@ -138,6 +142,7 @@ class ExportChannel(commands.Cog):
 
         Specify the between messages (id or link).
         Please note: all attachments and user avatars are saved with the Discord link in this file.
+        Remember that exporting other users' messages from Discord does not respect the TOS.
         """
         async with ctx.typing():
             if channel is None:
@@ -151,7 +156,7 @@ class ExportChannel(commands.Cog):
             transcript = await chat_exporter.raw_export(channel=channel, messages=messages, tz_info="UTC", guild=channel.guild, bot=ctx.bot)
             file = discord.File(io.BytesIO(transcript.encode()),
                                 filename=f"transcript-{channel.id}.html")
-        await ctx.send(_("Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.").format(**locals()), file=file)
+        await ctx.send(_("Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nRemember that exporting other users' messages from Discord does not respect the TOS.").format(**locals()), file=file)
         await ctx.tick()
 
     @exportchannel.command()
@@ -160,6 +165,7 @@ class ExportChannel(commands.Cog):
 
         Specify the member (id, name or mention).
         Please note: all attachments and user avatars are saved with the Discord link in this file.
+        Remember that exporting other users' messages from Discord does not respect the TOS.
         """
         async with ctx.typing():
             if channel is None:
@@ -173,7 +179,7 @@ class ExportChannel(commands.Cog):
             transcript = await chat_exporter.raw_export(channel=channel, messages=messages, tz_info="UTC", guild=channel.guild, bot=ctx.bot)
             file = discord.File(io.BytesIO(transcript.encode()),
                                 filename=f"transcript-{channel.id}.html")
-        await ctx.send(_("Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.").format(**locals()), file=file)
+        await ctx.send(_("Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nRemember that exporting other users' messages from Discord does not respect the TOS.").format(**locals()), file=file)
         await ctx.tick()
 
     @exportchannel.command()
@@ -182,6 +188,7 @@ class ExportChannel(commands.Cog):
 
         Specify the bool option.
         Please note: all attachments and user avatars are saved with the Discord link in this file.
+        Remember that exporting other users' messages from Discord does not respect the TOS.
         """
         async with ctx.typing():
             if channel is None:
@@ -195,5 +202,5 @@ class ExportChannel(commands.Cog):
             transcript = await chat_exporter.raw_export(channel=channel, messages=messages, tz_info="UTC", guild=channel.guild, bot=ctx.bot)
             file = discord.File(io.BytesIO(transcript.encode()),
                                 filename=f"transcript-{channel.id}.html")
-        await ctx.send(_("Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.").format(**locals()), file=file)
+        await ctx.send(_("Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nRemember that exporting other users' messages from Discord does not respect the TOS.").format(**locals()), file=file)
         await ctx.tick()

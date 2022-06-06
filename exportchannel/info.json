@@ -1,0 +1,14 @@
+{
+    "author": ["AAA3A"],
+    "name": "ExportChannel",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\nIt does not use user data.",
+    "short": "A cog to export all or part of a channel's messages to an html file!",
+    "description": "Have you ever wanted to export all or part of a channel's messages to an html file? Then this cog is for you!",
+    "tags": [
+        "export",
+        "messages",
+        "html"
+    ],
+    "requirements": ["chat-exporter"],
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

@@ -21,10 +21,12 @@ This cog will only work on x server and therefore cannot be used by the general 
 Commands
 --------
 
-Here are all the commands included in this cog (1):
+Here are all the commands included in this cog (2):
 
 * ``[p]getlastbootablestoolsversions``
- 
+ Get the latest versions of each Medicat USB bootable tool.
+* ``[p]getlastventoyversion``
+ Get the latest version of Ventoy.
 
 ------------
 Installation

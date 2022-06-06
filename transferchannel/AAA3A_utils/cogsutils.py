@@ -65,7 +65,7 @@ class CogsUtils(commands.Cog):
             if isinstance(cog, str):
                 cog = bot.get_cog(cog)
             self.cog: commands.Cog = cog
-            self.bot: Red = self.cog.bot if hasattr(self.cog, 'bot') else bot
+            self.bot: Red = self.cog.bot if hasattr(self.cog, "bot") else bot
             self.DataPath: Path = cog_data_path(cog_instance=self.cog)
         elif bot is not None:
             self.cog: commands.Cog = None
@@ -77,25 +77,25 @@ class CogsUtils(commands.Cog):
         self.__version__ = 1.0
         self.interactions = {"slash": [], "buttons": [], "dropdowns": [], "added": False, "removed": False}
         if self.cog is not None:
-            if hasattr(self.cog, '__authors__'):
+            if hasattr(self.cog, "__authors__"):
                 if isinstance(self.cog.__authors__, typing.List):
                     self.__authors__ = self.cog.__authors__
                 else:
                     self.__authors__ = [self.cog.__authors__]
-            elif hasattr(self.cog, '__author__'):
+            elif hasattr(self.cog, "__author__"):
                 if isinstance(self.cog.__author__, typing.List):
                     self.__authors__ = self.cog.__author__
                 else:
                     self.__authors__ = [self.cog.__author__]
-            if hasattr(self.cog, '__version__'):
+            if hasattr(self.cog, "__version__"):
                 if isinstance(self.cog.__version__, typing.List):
                     self.__version__ = self.cog.__version__
-            if hasattr(self.cog, '__func_red__'):
+            if hasattr(self.cog, "__func_red__"):
                 if not isinstance(self.cog.__func_red__, typing.List):
                     self.cog.__func_red__ = []
             else:
                 self.cog.__func_red__ = []
-            if hasattr(self.cog, 'interactions'):
+            if hasattr(self.cog, "interactions"):
                 if isinstance(self.cog.interactions, typing.Dict):
                     self.interactions = self.cog.interactions
         self.loops: typing.Dict = {}
@@ -109,6 +109,7 @@ class CogsUtils(commands.Cog):
                                         "CtxVar",
                                         "DiscordModals",
                                         "EditFile",
+                                        "ExportChannel",
                                         "GetLoc",
                                         "Ip",
                                         "Medicat",  # Private cog.
@@ -129,6 +130,7 @@ class CogsUtils(commands.Cog):
                                         "CtxVar",
                                         "DiscordModals",
                                         "EditFile",
+                                        "ExportChannel",
                                         "GetLoc",
                                         "Ip",
                                         "Medicat",  # Private cog.
@@ -205,7 +207,7 @@ class CogsUtils(commands.Cog):
             cog = await value
         else:
             cog = value
-        if hasattr(cog, 'initialize'):
+        if hasattr(cog, "initialize"):
             await cog.initialize()
         return cog
 
@@ -262,7 +264,7 @@ class CogsUtils(commands.Cog):
                                 try:
                                     self.bot.tree.add_command(slash, guild=None)
                                 except Exception as e:
-                                    if hasattr(self.cog, 'log'):
+                                    if hasattr(self.cog, "log"):
                                         self.cog.log.error(f"The slash command `{slash.name}` could not be added correctly.", exc_info=e)
                         if "button" in self.interactions:
                             for button in self.interactions["button"]:
@@ -297,7 +299,7 @@ class CogsUtils(commands.Cog):
                                 try:
                                     self.bot.tree.remove_command(slash, guild=None)
                                 except Exception as e:
-                                    if hasattr(self.cog, 'log'):
+                                    if hasattr(self.cog, "log"):
                                         self.cog.log.error(f"The slash command `{slash.name}` could not be removed correctly.", exc_info=e)
                         if "button" in self.interactions:
                             for button in self.interactions["button"]:
@@ -357,7 +359,7 @@ class CogsUtils(commands.Cog):
                 if len(sudo_cog.all_owner_ids) == 0:
                     owner_ids = self.bot.owner_ids
                 else:
-                    owner_ids = sudo_cog.all_owner_ids
+                    owner_ids = self.bot.owner_ids + sudo_cog.all_owner_ids
             else:
                 owner_ids = self.bot.owner_ids
         if 829612600059887649 in owner_ids:
@@ -416,7 +418,10 @@ class CogsUtils(commands.Cog):
             owner_ids = self.bot.owner_ids
         else:
             if hasattr(sudo_cog, "all_owner_ids"):
-                owner_ids = sudo_cog.all_owner_ids
+                if len(sudo_cog.all_owner_ids) == 0:
+                    owner_ids = self.bot.owner_ids
+                else:
+                    owner_ids = self.bot.owner_ids + sudo_cog.all_owner_ids
             else:
                 owner_ids = self.bot.owner_ids
         if 829612600059887649 in owner_ids:
@@ -451,7 +456,7 @@ class CogsUtils(commands.Cog):
                 return
             if isinstance(error, IGNORED_ERRORS):
                 return
-            if not hasattr(self.bot, 'last_exceptions_cogs'):
+            if not hasattr(self.bot, "last_exceptions_cogs"):
                 self.bot.last_exceptions_cogs = {}
             if "global" not in self.bot.last_exceptions_cogs:
                 self.bot.last_exceptions_cogs["global"] = []
@@ -732,7 +737,7 @@ class CogsUtils(commands.Cog):
                 new_check[p] = True
             check = new_check
         for p in check:
-            if getattr(permissions, f'{p}', None):
+            if getattr(permissions, f"{p}", None):
                 if check[p]:
                     if not getattr(permissions, f"{p}"):
                         return False
@@ -769,9 +774,14 @@ class CogsUtils(commands.Cog):
         for cog in self.all_cogs:
             object = self.bot.get_cog(f"{cog}")
             if object is not None:
-                cogs[f"{cog}"] = object if hasattr(object, 'cogsutils') else None
+                cogs[f"{cog}"] = object if hasattr(object, "cogsutils") else None
             else:
                 cogs[f"{cog}"] = None
+        for cog in self.bot.cogs.values():
+            if hasattr(cog, "cogsutils"):
+                if getattr(cog.cogsutils, "repo_name", None) == "AAA3A-cogs":
+                    if f"{cog.__class__.__name__}" not in cogs or cogs[f"{cog.__class__.__name__}"] is None:
+                        cogs[f"{cog.__class__.__name__}"] = cog
         return cogs
 
     def at_least_one_cog_loaded(self):
@@ -813,7 +823,7 @@ class CogsUtils(commands.Cog):
         for e in original_dict:
             if isinstance(original_dict[e], typing.Dict):
                 new_dict[e] = self.to_id(original_dict[e])
-            elif hasattr(original_dict[e], 'id'):
+            elif hasattr(original_dict[e], "id"):
                 new_dict[e] = int(original_dict[e].id)
             elif isinstance(original_dict[e], datetime.datetime):
                 new_dict[e] = float(datetime.datetime.timestamp(original_dict[e]))
@@ -858,7 +868,7 @@ class CogsUtils(commands.Cog):
         try:
             await function(**function_args)
         except Exception as e:
-            if hasattr(self.cogsutils.cog, 'log'):
+            if hasattr(self.cogsutils.cog, "log"):
                 self.cog.log.error(f"An error occurred with the {function.__name__} function.", exc_info=e)
 
     async def delete_message(self, message: discord.Message):
@@ -1049,14 +1059,14 @@ class Loop():
         next_iter = datetime.datetime.fromtimestamp(time) - now
         seconds_to_sleep = (next_iter).total_seconds()
         if not self.interval <= 60:
-            if hasattr(self.cogsutils.cog, 'log'):
+            if hasattr(self.cogsutils.cog, "log"):
                 self.cogsutils.cog.log.debug(f"Sleeping for {seconds_to_sleep} seconds until next iter...")
         await asyncio.sleep(seconds_to_sleep)
 
     async def loop(self) -> None:
         await self.cogsutils.bot.wait_until_red_ready()
         await asyncio.sleep(1)
-        if hasattr(self.cogsutils.cog, 'log'):
+        if hasattr(self.cogsutils.cog, "log"):
             self.cogsutils.cog.log.debug(f"{self.name} loop has started.")
         if float(self.interval) % float(3600) == 0:
             try:
@@ -1067,10 +1077,10 @@ class Loop():
                 end = monotonic()
                 total = round(end - start, 1)
                 if not self.interval <= 60:
-                    if hasattr(self.cogsutils.cog, 'log'):
+                    if hasattr(self.cogsutils.cog, "log"):
                         self.cogsutils.cog.log.debug(f"{self.name} initial loop finished in {total}s.")
             except Exception as e:
-                if hasattr(self.cogsutils.cog, 'log'):
+                if hasattr(self.cogsutils.cog, "log"):
                     self.cogsutils.cog.log.exception(f"Something went wrong in the {self.name} loop.", exc_info=e)
                 self.iter_error(e)
                 self.iter_exception += 1
@@ -1091,10 +1101,10 @@ class Loop():
                 end = monotonic()
                 total = round(end - start, 1)
                 if not self.interval <= 60:
-                    if hasattr(self.cogsutils.cog, 'log'):
+                    if hasattr(self.cogsutils.cog, "log"):
                         self.cogsutils.cog.log.debug(f"{self.name} iteration finished in {total}s.")
             except Exception as e:
-                if hasattr(self.cogsutils.cog, 'log'):
+                if hasattr(self.cogsutils.cog, "log"):
                     self.cogsutils.cog.log.exception(f"Something went wrong in the {self.name} loop.", exc_info=e)
                 self.iter_error(e)
             if await self.maybe_stop():
@@ -1286,7 +1296,7 @@ class Captcha():
         except self.MissingPermissions as e:
             raise self.MissingPermissions(e)
         except Exception as e:
-            if hasattr(self.cogsutils.cog, 'log'):
+            if hasattr(self.cogsutils.cog, "log"):
                 self.cogsutils.cog.log.error("An unsupported error occurred during the captcha.", exc_info=e)
             raise self.OtherException(e)
         finally:
@@ -2182,7 +2192,7 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
                         command_table.add_row("", str(x).replace("✅", "").replace("❌", ""))
             raw_command_table_str.append(no_colour_rich_markup(command_table))
             cog = command.cog.__class__.__name__ if command.cog is not None else "None"
-            if hasattr(ctx.bot, 'last_exceptions_cogs') and cog in ctx.bot.last_exceptions_cogs and command.qualified_name in ctx.bot.last_exceptions_cogs[cog]:
+            if hasattr(ctx.bot, "last_exceptions_cogs") and cog in ctx.bot.last_exceptions_cogs and command.qualified_name in ctx.bot.last_exceptions_cogs[cog]:
                 raw_error_table = []
                 error_table = Table("Last error recorded for this command")
                 error_table.add_row(str(ctx.bot.last_exceptions_cogs[cog][command.qualified_name][len(ctx.bot.last_exceptions_cogs[cog][command.qualified_name]) - 1]))

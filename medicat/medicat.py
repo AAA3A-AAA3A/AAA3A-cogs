@@ -28,6 +28,8 @@ VENTOY_UPDATES_CHANNEL = 831224763162165278
 BOOTABLES_TOOLS_UPDATES_CHANNEL = 970043597481185301
 PORTABLEAPPS_SOFTWARES_UPDATES_CHANNEL = None
 
+VENTOY_UPDATES_ROLE = 985288671009837066
+
 # MODERATORS_ROLE = 829472084454670346
 # DEVELOPER_ROLE = 883612487881195520
 # MEMBERS_ROLE = 829538904720932884
@@ -274,7 +276,7 @@ class Medicat(commands.Cog):
             self.log.error(f"An error occurred while removing the custom_commands.", exc_info=e)
         self.cogsutils._end()
 
-    async def ventoy_updates(self, channel: typing.Optional[discord.TextChannel]=None):
+    async def ventoy_updates(self, channel: typing.Optional[discord.TextChannel]=None, role_id: typing.Optional[int]=None):
         if channel is None:
             guild = self.bot.get_guild(MEDICAT_GUILD)
             if guild is None:
@@ -333,8 +335,8 @@ class Medicat(commands.Cog):
             embed.add_field(name="More details:", value="https://www.ventoy.net/en/doc_news.html", inline=True)
             embed.add_field(name="Download this version:", value=f"https://github.com/ventoy/Ventoy/releases/tag/{ventoy_version_str}", inline=True)
             hook: discord.Webhook = await CogsUtils(bot=self.bot).get_hook(channel)
-            role = guild.get_role(985288671009837066)
-            message: discord.Message = await hook.send(content=role.mention if role is not None else None, embed=embed, username="Ventoy Updates", avatar_url="https://ventoy.net/static/img/ventoy.png?v=1")
+            role = guild.get_role(VENTOY_UPDATES_ROLE) if role_id is None else guild.get_role(role_id)
+            message: discord.Message = await hook.send(content=role.mention if role is not None else None, embed=embed, username="Ventoy Updates", avatar_url="https://ventoy.net/static/img/ventoy.png?v=1", allowed_mentions=discord.AllowedMentions(everyone=True, roles=True))
             if message is not None:
                 try:
                     await message.publish()
@@ -388,7 +390,7 @@ class Medicat(commands.Cog):
             embed.add_field(name="New version:", value=tool_version_str, inline=True)
 
             hook: discord.Webhook = await CogsUtils(bot=self.bot).get_hook(channel)
-            message: discord.Message = await hook.send(embed=embed, username="Bootables Tools Updates", avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg")
+            message: discord.Message = await hook.send(embed=embed, username="Bootables Tools Updates", avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg", allowed_mentions=discord.AllowedMentions(everyone=True, roles=True))
             if message is not None:
                 try:
                     await message.publish()

@@ -43,7 +43,7 @@ class ExportChannel(commands.Cog):
                 break
         return messages
 
-    @commands.admin_or_permissions(manage_channels=True)
+    @commands.admin_or_permissions(manage_guild=True)
     @commands.guild_only()
     @commands.group(name="exportchannel")
     async def exportchannel(self, ctx: commands.Context):

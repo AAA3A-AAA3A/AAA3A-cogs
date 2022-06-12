@@ -36,40 +36,158 @@ TEST_GUILD = 886147551890399253
 TEST_CHANNEL = 905737223348047914
 
 CUSTOM_COMMANDS = {
-    "customtools": {"title": "How to add your own bootable tools (iso, wim, vhd) to Medicat USB?", "description": "To add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\nThen you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template."},
-    "howinstall": {"title": "How do I install Medicat USB?", "description": "1) Install the latest version of Ventoy on your USB stick (<https://github.com/ventoy/Ventoy/releases> & <https://ventoy.net/en/doc_start.html>).\n2) Download the last version of Medicat USB with Torrent, Mega or Google Drive (<https://medicatusb.com/>).\n3) Extract the downloaded zips to the root of the USB stick.\nFull tutorial: <https://medicatusb.com/docs/installation/installing-medicat/>\nYou can also use the automatic installer of MON5TERMATT (<https://medicatusb.com/installer/>).\nWarning: do not forget to disable your antivirus software (see the `virus` command for more information)."},
-    "kofi": {"title": "How to make a donation?", "description": "Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\nMON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\nAAA3A (Medicat Developer): None"},
-    "medicatversion": {"title": "What is the latest version of Medicat USB?", "description": "The latest version of Medicat USB is 21.12!\n||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||"},
-    "menus": {"title": "How to download one of the menus?", "description": "Here are the latest links to download the latest versions of the menus:\n- Jayro's Lockîck: \n<https://mega.nz/file/ZtpwEDhR#4bCjUDri2hhUlCgv8Y1EmZVyUnGyhqZjCo0fazXLzqY>\n- AAA3A's Backup: \n<https://mega.nz/file/s8hATRbZ#C28qA8HWKi_xikC6AUG46DiXKIG2Qjl__-4MOl6SI7w>\n- AAA3A's Partition: \n<https://mega.nz/file/w8oFkKYQ#5BbIf7K6pyxYDlE6L4efPqtHUWtCMmx_kta_QHejhpk>\nHere is also a link that should never change to access the same folder containing all the menus: \n<https://mega.nz/folder/FtRCgLQL#KTq897WQiXCJT8OQ3cT9Tg>"},
-    "usbvhd": {"title": "What is the difference between Medicat USB and Medicat VHD?", "description": "Medicat USB is a bootable menu that runs on Ventoy and contains all the necessary tools for computer troubleshooting. It contains for example Malwarebytes bootable for virus scans, Mini Windows 10 for a winPE utility and Jayro's Lockpick for all things password related.\n<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>\nMedicat VHD is a full-featured windows, using the real performance of the computer. It is therefore much more powerful than Mini Windows 10. Moreover, all data is saved and you can find it again at each reboot. (Not intended to be used as an operating system).\n<https://gbatemp.net/threads/official-medicat-vhd-a-usb-bootable-windows-10-virtual-harddisk-for-pc-repair.581637/>\nJayro's Lockpick is a winPE with a menu containing all the necessary tools to remove/bypass/retrieve a Windows password or even for a server.\n<https://gbatemp.net/threads/release-jayros-lockpick-a-bootable-password-removal-suite-winpe.579278/>\nMalwarebytes bootable is a very powerful antivirus. Since it is launched from a winPE, a potential virus cannot prevent it from running properly.\n<https://gbatemp.net/threads/unofficial-malwarebytes-bootable.481046/>"},
-    "virus": {"title": "Why does my antivirus software blame Medicat?", "description": "Medicat USB does not contain any viruses! If an antivirus software detects one of its files as such, it is a false positive. As you know, Medicat USB contains tools that can reset a partition, find a password, and modify the system. Portable applications can be falsely flagged because of how they are cracked and packaged. For these reasons all antivirus software's 'real-time scanning' should be disabled when installing, and sometimes even when using, Medicat USB."},
-    "whatmedicat": {"title": "What is Medicat USB?", "description": "Medicat USB contains tools to backup/restore data, to manage disks/partitions, to reset/bypass/find a Windows password, to use software with admin rights from a winPE, to do virus scans. In addition, it uses Ventoy, which allows you to add your own bootable tools with a simple copy and paste."},
-    "xy": {"title": "X & Y", "description": "What is the context?\nIf you have any problems or would like to ask for help, please give information about what you are not able to do. Don't just say you don't understand how to make x software work, say where you are, what is wrong with it and what is the potential error. \nThank you for your understanding."}
+    "customtools": {
+        "title": "How to add your own bootable tools (iso, wim, vhd) to Medicat USB?",
+        "description": "To add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\nThen you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template."
+    },
+    "howinstall": {
+        "title": "How do I install Medicat USB?",
+        "description": "1) Install the latest version of Ventoy on your USB stick (<https://github.com/ventoy/Ventoy/releases> & <https://ventoy.net/en/doc_start.html>).\n2) Download the last version of Medicat USB with Torrent, Mega or Google Drive (<https://medicatusb.com/>).\n3) Extract the downloaded zips to the root of the USB stick.\nFull tutorial: <https://medicatusb.com/docs/installation/installing-medicat/>\nYou can also use the automatic installer of MON5TERMATT (<https://medicatusb.com/installer/>).\nWarning: do not forget to disable your antivirus software (see the `virus` command for more information)."
+    },
+    "kofi": {
+        "title": "How to make a donation?",
+        "description": "Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\nMON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\nAAA3A (Medicat Developer): None"
+    },
+    "medicatversion": {
+        "title": "What is the latest version of Medicat USB?",
+        "description": "The latest version of Medicat USB is 21.12!\n||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||"
+    },
+    "menus": {
+        "title": "How to download one of the menus?",
+        "description": "Here are the latest links to download the latest versions of the menus:\n- Jayro's Lockîck: \n<https://mega.nz/file/ZtpwEDhR#4bCjUDri2hhUlCgv8Y1EmZVyUnGyhqZjCo0fazXLzqY>\n- AAA3A's Backup: \n<https://mega.nz/file/s8hATRbZ#C28qA8HWKi_xikC6AUG46DiXKIG2Qjl__-4MOl6SI7w>\n- AAA3A's Partition: \n<https://mega.nz/file/w8oFkKYQ#5BbIf7K6pyxYDlE6L4efPqtHUWtCMmx_kta_QHejhpk>\nHere is also a link that should never change to access the same folder containing all the menus: \n<https://mega.nz/folder/FtRCgLQL#KTq897WQiXCJT8OQ3cT9Tg>"
+    },
+    "noiso": {
+        "title": "How do I download the Medicat USB iso file?",
+        "description": "Medicat USB is not available as an iso file.\nPreviously, Medicat USB was available as an iso file. Now it uses Ventoy to run. It is currently impossible to put Ventoy and therefore Medicat USB in an iso file, or at least not without difficulties."
+    },
+    "usbvhd": {
+        "title": "What is the difference between Medicat USB and Medicat VHD?",
+        "description": "Medicat USB is a bootable menu that runs on Ventoy and contains all the necessary tools for computer troubleshooting. It contains for example Malwarebytes bootable for virus scans, Mini Windows 10 for a winPE utility and Jayro's Lockpick for all things password related.\n<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>\nMedicat VHD is a full-featured windows, using the real performance of the computer. It is therefore much more powerful than Mini Windows 10. Moreover, all data is saved and you can find it again at each reboot. (Not intended to be used as an operating system).\n<https://gbatemp.net/threads/official-medicat-vhd-a-usb-bootable-windows-10-virtual-harddisk-for-pc-repair.581637/>\nJayro's Lockpick is a winPE with a menu containing all the necessary tools to remove/bypass/retrieve a Windows password or even for a server.\n<https://gbatemp.net/threads/release-jayros-lockpick-a-bootable-password-removal-suite-winpe.579278/>\nMalwarebytes bootable is a very powerful antivirus. Since it is launched from a winPE, a potential virus cannot prevent it from running properly.\n<https://gbatemp.net/threads/unofficial-malwarebytes-bootable.481046/>"
+    },
+    "virus": {
+        "title": "Why does my antivirus software blame Medicat?",
+        "description": "Medicat USB does not contain any viruses! If an antivirus software detects one of its files as such, it is a false positive. As you know, Medicat USB contains tools that can reset a partition, find a password, and modify the system. Portable applications can be falsely flagged because of how they are cracked and packaged. For these reasons all antivirus software's 'real-time scanning' should be disabled when installing, and sometimes even when using, Medicat USB."},
+    "whatmedicat": {
+        "title": "What is Medicat USB?",
+        "description": "Medicat USB contains tools to backup/restore data, to manage disks/partitions, to reset/bypass/find a Windows password, to use software with admin rights from a winPE, to do virus scans. In addition, it uses Ventoy, which allows you to add your own bootable tools with a simple copy and paste."
+    },
+    "xy": {
+        "title": "X & Y",
+        "description": "What is the context?\nIf you have any problems or would like to ask for help, please give information about what you are not able to do. Don't just say you don't understand how to make x software work, say where you are, what is wrong with it and what is the potential error. \nThank you for your understanding."
+    }
 }
 
 BOOTABLES_TOOLS = {
-    "Acronis Cyber Backup": {"url": "https://www.fcportables.com/acronis-cyber-backup-boot/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Acronis Cyber Backup (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Build (\d*) Multilingual BootCD"},
-    "Acronis True Image": {"url": "https://www.fcportables.com/acronis-true-image-boot/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Acronis True Image (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Build (\d*) Multilingual Boot ISO"},
-    "AOMEI Backupper Technician Plus": {"url": "https://www.fcportables.com/aomei-backupper-boot/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Portable AOMEI Backupper Technician Plus (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \+ Boot WinPE"},
-    "EaseUS Data Recovery Wizard": {"url": "https://www.fcportables.com/easeus-recovery-wizard-winpe/", "category": "USB\\Backup_and_Recovery\\", "regex": r"EaseUS Data Recovery Wizard (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) WinPE"},
-    "EaseUS Todo Backup": {"url": "https://www.fcportables.com/easeus-todo-backup-winpe/", "category": "USB\\Backup_and_Recovery\\", "regex": r"EaseUS Todo Backup (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Build (\d*) Enterprise Technician WinPE"},
-    "Macrium Reflect": {"url": "https://www.fcportables.com/macrium-reflect-rescue-winpe/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Macrium Reflect (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Server Plus WinPE \(x64\)"},
-    "MiniTool ShadowMaker Pro Ultimate": {"url": "https://www.fcportables.com/shadowmaker-pro/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Portable MiniTool ShadowMaker Pro Ultimate (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) \+ WinPE"},
-    "MiniTool Power Data Recovery": {"url": "https://www.fcportables.com/minitool-data-recovery-winpe/", "category": "USB\\Backup_and_Recovery\\", "regex": r"Portable MiniTool Power Data Recovery (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Business Technician \+ WinPE"},
-    "Boot Repair Disk": {"url": "https://www.fcportables.com/boot-repair-disk/", "category": "USB\\Boot_Repair\\", "regex": r"Boot-Repair-Disk (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*)"},
-    "EasyUEFI Technician": {"url": "https://www.fcportables.com/easyuefi-portable-winpe/", "category": "USB\\Boot_Repair\\", "regex": r"Portable EasyUEFI Technician (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \+ WinPE \(x64\)"},
-    "SystemRescue": {"url": "https://www.fcportables.com/systemrescuecd/", "category": "USB\\Boot_Repair\\", "regex": r"SystemRescue (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Boot ISO \(x64\)"},
-    "Ultimate Boot": {"url": "https://www.fcportables.com/ultimate-boot-cd/", "category": "USB\\Boot_Repair\\", "regex": r"Ultimate Boot CD (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Final"},
-    "HDAT2": {"url": "https://www.fcportables.com/hdat-boot/", "category": "USB\\Boot_Repair\\", "regex": r"HDAT2 (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(ALL-IN-ONE BOOT Version\)"},
-    "Memtest86 Pro": {"url": "https://www.fcportables.com/memtest86-pro/", "category": "USB\\Boot_Repair\\", "regex": r"Memtest86 Pro (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Retail \(ISO/USB\)"},
-    "Active@ Boot Disk": {"url": "https://www.fcportables.com/active-boot-disk/", "category": "USB\\Live_Operating_Systems\\", "regex": r"Active@ Boot Disk (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) WinPE \(x64\)"},
-    "Acronis Disk Director": {"url": "https://www.fcportables.com/acronis-disk-director-boot/", "category": "USB\\Partition_Tools\\", "regex": r"Acronis Disk Director (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) WinPE"},
-    "AOMEI Partition Assistant Technician Edition": {"url": "https://www.fcportables.com/aomei-partition-assistant-technician-winpe/", "category": "USB\\Partition_Tools\\", "regex": r"Portable AOMEI Partition Assistant Technician Edition (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \+ WinPE"},
-    "EaseUS Partition Master": {"url": "https://www.fcportables.com/easeus-partition-master-winpe/", "category": "USB\\Partition_Tools\\", "regex": r"EaseUS Partition Master (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) WinPE"},
-    "MiniTool Partition Wizard Technician": {"url": "https://www.fcportables.com/minitool-partition-wizard-portable/", "category": "USB\\Partition_Tools\\", "regex": r"Portable MiniTool Partition Wizard Technician v(\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) \+ WinPE"},
-    "NIUBI Partition Editor Technician Edition": {"url": "https://www.fcportables.com/niubi-partition-editor-portable/", "category": "USB\\Partition_Tools\\", "regex": r"Portable NIUBI Partition Editor Technician Edition (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) \+ Boot ISO"},
-    "Paragon Hard Disk Manager Advanced": {"url": "https://www.fcportables.com/paragon-hard-disk-manager-portable/", "category": "USB\\Partition_Tools\\", "regex": r"Portable Paragon Hard Disk Manager Advanced v(\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) \+WinPE"},
-    "Parted Magic": {"url": "https://www.fcportables.com/parted-magic/", "category": "USB\\Partition_Tools\\", "regex": r"Parted Magic (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Boot ISO \(x64\)"}
+    "Acronis Cyber Backup": {
+        "url": "https://www.fcportables.com/acronis-cyber-backup-boot/",
+        "category": "USB\\Backup_and_Recovery\\",
+        "regex": r"Acronis Cyber Backup (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Build (\d*) Multilingual BootCD"
+    },
+    "Acronis True Image": {
+        "url": "https://www.fcportables.com/acronis-true-image-boot/",
+        "category": "USB\\Backup_and_Recovery\\",
+        "regex": r"Acronis True Image (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Build (\d*) Multilingual Boot ISO"
+    },
+    "AOMEI Backupper Technician Plus": {
+        "url": "https://www.fcportables.com/aomei-backupper-boot/",
+        "category": "USB\\Backup_and_Recovery\\",
+        "regex": r"Portable AOMEI Backupper Technician Plus (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \+ Boot WinPE"
+    },
+    "EaseUS Data Recovery Wizard": {
+        "url": "https://www.fcportables.com/easeus-recovery-wizard-winpe/",
+        "category": "USB\\Backup_and_Recovery\\",
+        "regex": r"EaseUS Data Recovery Wizard (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) WinPE"
+    },
+    "EaseUS Todo Backup": {
+        "url": "https://www.fcportables.com/easeus-todo-backup-winpe/",
+        "category": "USB\\Backup_and_Recovery\\",
+        "regex": r"EaseUS Todo Backup (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Build (\d*) Enterprise Technician WinPE"
+    },
+    "Macrium Reflect": {
+        "url": "https://www.fcportables.com/macrium-reflect-rescue-winpe/",
+        "category": "USB\\Backup_and_Recovery\\",
+        "regex": r"Macrium Reflect (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Server Plus WinPE \(x64\)"
+    },
+    "MiniTool ShadowMaker Pro Ultimate": {
+        "url": "https://www.fcportables.com/shadowmaker-pro/",
+        "category": "USB\\Backup_and_Recovery\\",
+        "regex": r"Portable MiniTool ShadowMaker Pro Ultimate (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) \+ WinPE"
+    },
+    "MiniTool Power Data Recovery": {
+        "url": "https://www.fcportables.com/minitool-data-recovery-winpe/",
+        "category": "USB\\Backup_and_Recovery\\",
+        "regex": r"Portable MiniTool Power Data Recovery (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Business Technician \+ WinPE"
+    },
+    "Boot Repair Disk": {
+        "url": "https://www.fcportables.com/boot-repair-disk/",
+        "category": "USB\\Boot_Repair\\",
+        "regex": r"Boot-Repair-Disk (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*)"
+    },
+    "EasyUEFI Technician": {
+        "url": "https://www.fcportables.com/easyuefi-portable-winpe/",
+        "category": "USB\\Boot_Repair\\",
+        "regex": r"Portable EasyUEFI Technician (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \+ WinPE \(x64\)"
+    },
+    "SystemRescue": {
+        "url": "https://www.fcportables.com/systemrescuecd/",
+        "category": "USB\\Boot_Repair\\",
+        "regex": r"SystemRescue (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Boot ISO \(x64\)"
+    },
+    "Ultimate Boot": {
+        "url": "https://www.fcportables.com/ultimate-boot-cd/",
+        "category": "USB\\Boot_Repair\\",
+        "regex": r"Ultimate Boot CD (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Final"
+    },
+    "HDAT2": {
+        "url": "https://www.fcportables.com/hdat-boot/",
+        "category": "USB\\Boot_Repair\\",
+        "regex": r"HDAT2 (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(ALL-IN-ONE BOOT Version\)"
+    },
+    "Memtest86 Pro": {
+        "url": "https://www.fcportables.com/memtest86-pro/",
+        "category": "USB\\Boot_Repair\\",
+        "regex": r"Memtest86 Pro (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Retail \(ISO/USB\)"
+    },
+    "Active@ Boot Disk": {
+        "url": "https://www.fcportables.com/active-boot-disk/",
+        "category": "USB\\Live_Operating_Systems\\",
+        "regex": r"Active@ Boot Disk (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) WinPE \(x64\)"
+    },
+    "Acronis Disk Director": {
+        "url": "https://www.fcportables.com/acronis-disk-director-boot/",
+        "category": "USB\\Partition_Tools\\",
+        "regex": r"Acronis Disk Director (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) WinPE"
+    },
+    "AOMEI Partition Assistant Technician Edition": {
+        "url": "https://www.fcportables.com/aomei-partition-assistant-technician-winpe/",
+        "category": "USB\\Partition_Tools\\",
+        "regex": r"Portable AOMEI Partition Assistant Technician Edition (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \+ WinPE"
+    },
+    "EaseUS Partition Master": {
+        "url": "https://www.fcportables.com/easeus-partition-master-winpe/",
+        "category": "USB\\Partition_Tools\\",
+        "regex": r"EaseUS Partition Master (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) WinPE"
+    },
+    "MiniTool Partition Wizard Technician": {
+        "url": "https://www.fcportables.com/minitool-partition-wizard-portable/",
+        "category": "USB\\Partition_Tools\\",
+        "regex": r"Portable MiniTool Partition Wizard Technician v(\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) \+ WinPE"
+    },
+    "NIUBI Partition Editor Technician Edition": {
+        "url": "https://www.fcportables.com/niubi-partition-editor-portable/",
+        "category": "USB\\Partition_Tools\\",
+        "regex": r"Portable NIUBI Partition Editor Technician Edition (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) \+ Boot ISO"
+    },
+    "Paragon Hard Disk Manager Advanced": {
+        "url": "https://www.fcportables.com/paragon-hard-disk-manager-portable/",
+        "category": "USB\\Partition_Tools\\",
+        "regex": r"Portable Paragon Hard Disk Manager Advanced v(\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) \+WinPE"
+    },
+    "Parted Magic": {
+        "url": "https://www.fcportables.com/parted-magic/",
+        "category": "USB\\Partition_Tools\\",
+        "regex": r"Parted Magic (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Boot ISO \(x64\)"
+    }
 }
 
 _ = Translator("Medicat", __file__)
@@ -215,7 +333,8 @@ class Medicat(commands.Cog):
             embed.add_field(name="More details:", value="https://www.ventoy.net/en/doc_news.html", inline=True)
             embed.add_field(name="Download this version:", value=f"https://github.com/ventoy/Ventoy/releases/tag/{ventoy_version_str}", inline=True)
             hook: discord.Webhook = await CogsUtils(bot=self.bot).get_hook(channel)
-            message: discord.Message = await hook.send(embed=embed, username="Ventoy Updates", avatar_url="https://ventoy.net/static/img/ventoy.png?v=1")
+            role = guild.get_role(985288671009837066)
+            message: discord.Message = await hook.send(content=role.mention if role is not None else None, embed=embed, username="Ventoy Updates", avatar_url="https://ventoy.net/static/img/ventoy.png?v=1")
             if message is not None:
                 try:
                     await message.publish()

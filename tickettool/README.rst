@@ -45,7 +45,7 @@ Here are all the commands included in this cog (32):
  Enable or disable Ticket System
 * ``[p]setticket logschannel <text_channel_or_'none'>``
  Set a channel where events are registered.
-* ``[p]setticket message [channel]``
+* ``[p]setticket message [channel=None]``
  
 * ``[p]setticket modlog <true_or_false>``
  Enable or disable Modlog.
@@ -67,9 +67,9 @@ Here are all the commands included in this cog (32):
  Commands for using the ticket system.
 * ``[p]ticket add <member> [reason=No reason provided.]``
  Add a member to an existing ticket.
-* ``[p]ticket claim [member] [reason=No reason provided.]``
+* ``[p]ticket claim [member=None] [reason=No reason provided.]``
  Claim an existing ticket.
-* ``[p]ticket close [confirmation] [reason=No reason provided.]``
+* ``[p]ticket close [confirmation=None] [reason=No reason provided.]``
  Close an existing ticket.
 * ``[p]ticket create [reason=No reason provided.]``
  Create a ticket.

@@ -25,7 +25,7 @@ Here are all the commands included in this cog (6):
 
 * ``[p]rolesbuttons``
  Group of commands for use ReactToCommand.
-* ``[p]rolesbuttons add <message> <role> <button> [text_button]``
+* ``[p]rolesbuttons add <message> <role> <button> [text_button=None]``
  Add a role-button to a message.
 * ``[p]rolesbuttons bulk <message> [roles_buttons...]``
  Add a role-button to a message.

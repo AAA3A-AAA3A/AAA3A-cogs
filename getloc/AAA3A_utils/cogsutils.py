@@ -82,14 +82,19 @@ class CogsUtils(commands.Cog):
                     self.__authors__ = self.cog.__authors__
                 else:
                     self.__authors__ = [self.cog.__authors__]
+                del self.cog.__authors__
             elif hasattr(self.cog, "__author__"):
                 if isinstance(self.cog.__author__, typing.List):
                     self.__authors__ = self.cog.__author__
                 else:
                     self.__authors__ = [self.cog.__author__]
+                del self.cog.__author__
+            self.cog.__authors__ = self.__authors__
             if hasattr(self.cog, "__version__"):
                 if isinstance(self.cog.__version__, typing.List):
                     self.__version__ = self.cog.__version__
+                del self.cog.__version__
+            self.cog.__version__ = self.__version__
             if hasattr(self.cog, "__func_red__"):
                 if not isinstance(self.cog.__func_red__, typing.List):
                     self.cog.__func_red__ = []
@@ -109,6 +114,7 @@ class CogsUtils(commands.Cog):
                                         "CtxVar",
                                         "DiscordModals",
                                         "EditFile",
+                                        "EditRole",
                                         "ExportChannel",
                                         "GetLoc",
                                         "Ip",
@@ -130,6 +136,7 @@ class CogsUtils(commands.Cog):
                                         "CtxVar",
                                         "DiscordModals",
                                         "EditFile",
+                                        "EditRole",
                                         "ExportChannel",
                                         "GetLoc",
                                         "Ip",
@@ -154,11 +161,26 @@ class CogsUtils(commands.Cog):
         """
         return discord.version_info.major >= 2
 
-    def format_help_for_context(self, ctx):
+    def format_help_for_context(self, ctx: commands.Context):
         """Thanks Simbad!"""
         context = super(type(self.cog), self.cog).format_help_for_context(ctx)
         s = "s" if len(self.__authors__) > 1 else ""
         return f"{context}\n\n**Author{s}**: {humanize_list(self.__authors__)}\n**Version**: {self.__version__}"
+
+    def format_text_for_context(self, ctx: commands.Context, text: str, shortdoc: typing.Optional[bool]=False):
+        text = text.replace("        ", "")
+        context = super(type(ctx.command), ctx.command).format_text_for_context(ctx, text)
+        if shortdoc:
+            return context
+        s = "s" if len(self.__authors__) > 1 else ""
+        return f"{context}\n\n**Author{s}**: {humanize_list(self.__authors__)}\n**Version**: {self.__version__}"
+
+    def format_shortdoc_for_context(self, ctx: commands.Context):
+        sh = super(type(ctx.command), ctx.command).short_doc
+        try:
+            return super(type(ctx.command), ctx.command).format_text_for_context(ctx, sh, shortdoc=True) if sh else sh
+        except Exception:
+            return super(type(ctx.command), ctx.command).format_text_for_context(ctx, sh) if sh else sh
 
     async def red_delete_data_for_user(self, **kwargs):
         """Nothing to delete"""
@@ -194,8 +216,10 @@ class CogsUtils(commands.Cog):
         token = ctx.bot.http.token
         if "USERPROFILE" in os.environ:
             input_ = input_.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+            input_ = input_.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
         if "HOME" in os.environ:
             input_ = input_.replace(os.environ["HOME"], "{HOME}")
+            input_ = input_.replace(os.environ["HOME"].lower(), "{HOME}")
         return re.sub(re.escape(token), "[EXPUNGED]", input_, re.I)
 
     async def add_cog(self, bot: Red, cog: commands.Cog):
@@ -215,23 +239,27 @@ class CogsUtils(commands.Cog):
         """
         Adding additional functionality to the cog.
         """
-        self.cog.cogsutils = self
-        self.init_logger()
-        if "format_help_for_context" not in self.cog.__func_red__:
-            setattr(self.cog, 'format_help_for_context', self.format_help_for_context)
-        if "red_delete_data_for_user" not in self.cog.__func_red__:
-            setattr(self.cog, 'red_delete_data_for_user', self.red_delete_data_for_user)
-        if "red_get_data_for_user" not in self.cog.__func_red__:
-            setattr(self.cog, 'red_get_data_for_user', self.red_get_data_for_user)
-        if "cog_unload" not in self.cog.__func_red__:
-            setattr(self.cog, 'cog_unload', self.cog_unload)
-        if "cog_command_error" not in self.cog.__func_red__:
-            setattr(self.cog, 'cog_command_error', self.cog_command_error)
+        if self.cog is not None:
+            self.cog.cogsutils = self
+            self.init_logger()
+            if "format_help_for_context" not in self.cog.__func_red__:
+                setattr(self.cog, 'format_help_for_context', self.format_help_for_context)
+            # for command in self.cog.walk_commands():
+            #     setattr(command, 'format_text_for_context', self.format_text_for_context)
+            #     setattr(command, 'format_shortdoc_for_context', self.format_shortdoc_for_context)
+            if "red_delete_data_for_user" not in self.cog.__func_red__:
+                setattr(self.cog, 'red_delete_data_for_user', self.red_delete_data_for_user)
+            if "red_get_data_for_user" not in self.cog.__func_red__:
+                setattr(self.cog, 'red_get_data_for_user', self.red_get_data_for_user)
+            if "cog_unload" not in self.cog.__func_red__:
+                setattr(self.cog, 'cog_unload', self.cog_unload)
+            if "cog_command_error" not in self.cog.__func_red__:
+                setattr(self.cog, 'cog_command_error', self.cog_command_error)
+        asyncio.create_task(self._await_setup())
         self.bot.remove_listener(self.on_command_error)
         self.bot.add_listener(self.on_command_error)
         self.bot.remove_command("getallfor")
         self.bot.add_command(getallfor)
-        asyncio.create_task(self._await_setup())
 
     async def _await_setup(self):
         """
@@ -831,7 +859,7 @@ class CogsUtils(commands.Cog):
                 new_dict[e] = original_dict[e]
         return new_dict
 
-    def generate_key(self, number: typing.Optional[int]=15, existing_keys: typing.Optional[typing.List]=[], strings_used: typing.Optional[typing.List]={"ascii_lowercase": True, "ascii_uppercase": False, "digits": True, "punctuation": False, "others": []}):
+    def generate_key(self, number: typing.Optional[int]=10, existing_keys: typing.Optional[typing.List]=[], strings_used: typing.Optional[typing.List]={"ascii_lowercase": True, "ascii_uppercase": False, "digits": True, "punctuation": False, "others": []}):
         """
         Generate a secret key, with the choice of characters, the number of characters and a list of existing keys.
         """

@@ -27,7 +27,7 @@ Here are all the commands included in this cog (8):
  Commands for export all or part of a channel's messages to an html file.
 * ``[p]exportchannel after [channel] <after>``
  Export part of a channel's messages to an html file.
-* ``[p]exportchannel all [channel]``
+* ``[p]exportchannel all [channel=None]``
  Export all of a channel's messages to an html file.
 * ``[p]exportchannel before [channel] <before>``
  Export part of a channel's messages to an html file.

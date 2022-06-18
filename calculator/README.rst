@@ -23,7 +23,7 @@ Commands
 
 Here are all the commands included in this cog (1):
 
-* ``[p]calc [calculation]``
+* ``[p]calc [calculation=None]``
  Calculate a simple expression.
 
 ------------

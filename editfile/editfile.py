@@ -4,6 +4,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 
+import os
 from os import listdir
 from pathlib import Path
 
@@ -39,6 +40,12 @@ class EditFile(commands.Cog):
     async def get(self, ctx: commands.Context, *, path: Path):
         """Get a file on the bot's host machine from its path.
         """
+        path = str(path)
+        if "USERPROFILE" in os.environ:
+            path = path.replace("{USERPROFILE}", os.environ["USERPROFILE"])
+        if "HOME" in os.environ:
+            path = path.replace("{HOME}", os.environ["HOME"])
+        path = Path(path)
         try:
             file = discord.File(f"{path}")
         except FileNotFoundError:
@@ -52,11 +59,17 @@ class EditFile(commands.Cog):
     async def replace(self, ctx: commands.Context, *, path: Path):
         """Replace a file on the bot's host machine from its path.
         """
+        path = str(path)
+        if "USERPROFILE" in os.environ:
+            path = path.replace("{USERPROFILE}", os.environ["USERPROFILE"])
+        if "HOME" in os.environ:
+            path = path.replace("{HOME}", os.environ["HOME"])
+        path = Path(path)
         try:
-            # if not path.exists():
-                # raise FileNotFoundError
-            # if not path.is_dir():
-                # raise IsADirectoryError
+            """if not path.exists():
+                raise FileNotFoundError
+            if not path.is_dir():
+                raise IsADirectoryError """
             old_file = discord.File(f"{path}")
         except FileNotFoundError:
             await ctx.send(_("This original file cannot be found on the host machine.").format(**locals()))
@@ -69,7 +82,7 @@ class EditFile(commands.Cog):
             new_file = ctx.message.attachments[0]
             await new_file.save(fp=f"{path}")
             await ctx.send(_("This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly.").format(**locals()), file=old_file)
- 
+
     @editfile.command()
     async def findcog(self, ctx: commands.Context, cog: str):
         """Get a cog directory on the bot's host machine from its name.
@@ -85,6 +98,11 @@ class EditFile(commands.Cog):
         except Exception:
             await ctx.send(_("This cog cannot be found. Are you sure of its name?").format(**locals()))
         else:
+            path = str(path)
+            if "USERPROFILE" in os.environ:
+                path = path.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+            if "HOME" in os.environ:
+                path = path.replace(os.environ["HOME"], "{HOME}")
             await ctx.send(f"```{path}```")
 
     @editfile.command()

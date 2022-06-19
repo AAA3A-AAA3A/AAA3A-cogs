@@ -81,6 +81,11 @@ class EditFile(commands.Cog):
                 return
             new_file = ctx.message.attachments[0]
             await new_file.save(fp=f"{path}")
+            path = str(path)
+            if "USERPROFILE" in os.environ:
+                path = path.replace("{USERPROFILE}", os.environ["USERPROFILE"])
+            if "HOME" in os.environ:
+                path = path.replace("{HOME}", os.environ["HOME"])
             await ctx.send(_("This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly.").format(**locals()), file=old_file)
 
     @editfile.command()

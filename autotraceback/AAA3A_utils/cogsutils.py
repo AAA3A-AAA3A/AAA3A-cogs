@@ -343,8 +343,7 @@ class CogsUtils(commands.Cog):
     def init_logger(self):
         """
         Prepare the logger for the cog.
-        Thanks to @laggron42 on GitHub! (https://github.com/laggron42/Laggron-utils/blob/master/laggron_utils/logging.py)
-            
+        Thanks to @laggron42 on GitHub! (https://github.com/laggron42/Laggron-utils/blob/master/laggron_utils/logging.py) 
         """
         self.cog.log = logging.getLogger(f"red.{self.repo_name}.{self.cog.__class__.__name__}")
         formatter = logging.Formatter(
@@ -655,7 +654,7 @@ class CogsUtils(commands.Cog):
             author_dict = {"id": f"{author.id}", "username": author.display_name, "avatar": author.avatar, 'avatar_decoration': None, 'discriminator': f"{author.discriminator}", "public_flags": author.public_flags, "bot": author.bot}
             channel_id = channel.id
             timestamp = str(timestamp).replace(" ", "T") + "+00:00"
-            data = {"id": message_id, "type": 0, "content": message_content, "channel_id": f"{channel_id}", "author": author_dict, "attachments": [], "embeds": [], "mentions": [], "mention_roles": [], "pinned": False, "mention_everyone": False, "tts": False, "timestamp": timestamp , "edited_timestamp": None, "flags": 0, "components": [], "referenced_message": None}
+            data = {"id": message_id, "type": 0, "content": message_content, "channel_id": f"{channel_id}", "author": author_dict, "attachments": [], "embeds": [], "mentions": [], "mention_roles": [], "pinned": False, "mention_everyone": False, "tts": False, "timestamp": timestamp, "edited_timestamp": None, "flags": 0, "components": [], "referenced_message": None}
             message = discord.Message(channel=channel, state=bot._connection, data=data)
         else:
             message = copy(message)
@@ -663,6 +662,7 @@ class CogsUtils(commands.Cog):
         message.content = content
         context = await bot.get_context(message)
         if context.valid:
+            author.bot = False
             context.author = author
             context.guild = channel.guild
             context.channel = channel
@@ -674,7 +674,6 @@ class CogsUtils(commands.Cog):
             bot.dispatch("message", message)
         return context if context.valid else message
 
-	
     def get_embed(self, embed_dict: typing.Dict) -> typing.Dict[discord.Embed, str]:
         data = embed_dict
         if data.get("embed"):
@@ -1964,23 +1963,23 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
         command = None
         check_updates = False
     if repo is not None:
-        repos = [repo]
+        _repos = [repo]
     else:
-        repos = [None]
+        _repos = [None]
     if cog is not None:
-        cogs = [cog]
+        _cogs = [cog]
     else:
-        cogs = [None]
+        _cogs = [None]
     if command is not None:
-        commands = [command]
+        _commands = [command]
     else:
-        commands = [None]
+        _commands = [None]
     if command is not None:
-        object_command = ctx.bot.get_command(commands[0])
+        object_command = ctx.bot.get_command(_commands[0])
         if object_command is None:
             await ctx.send(_("The command `{command}` does not exist.").format(**locals()))
             return
-        commands = [object_command]
+        _commands = [object_command]
     downloader = ctx.bot.get_cog("Downloader")
     if downloader is None:
         if CogsUtils(bot=ctx.bot).ConfirmationAsk(ctx, _("The cog downloader is not loaded. I can't continue. Do you want me to do it?").format(**locals())):
@@ -1991,7 +1990,7 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
     installed_cogs = await downloader.config.installed_cogs()
     loaded_cogs = [c.lower() for c in ctx.bot.cogs]
     if repo is not None:
-        rp = repos[0]
+        rp = _repos[0]
         if not isinstance(rp, Repo) and not "AAA3A".lower() in rp.lower():
             await ctx.send(_("Repo by the name `{rp}` does not exist.").format(**locals()))
             return
@@ -1999,31 +1998,31 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
             found = False
             for r in await downloader.config.installed_cogs():
                 if "AAA3A".lower() in str(r).lower():
-                    repos = [downloader._repo_manager.get_repo(str(r))]
+                    _repos = [downloader._repo_manager.get_repo(str(r))]
                     found = True
                     break
             if not found:
                 await ctx.send(_("Repo by the name `{rp}` does not exist.").format(**locals()))
                 return
         if check_updates:
-            cogs_to_check, failed = await downloader._get_cogs_to_check(repos={repos[0]})
+            cogs_to_check, failed = await downloader._get_cogs_to_check(repos={_repos[0]})
             cogs_to_update, libs_to_update = await downloader._available_updates(cogs_to_check)
             cogs_to_update, filter_message = downloader._filter_incorrect_cogs(cogs_to_update)
             to_update_cogs = [c.name.lower() for c in cogs_to_update]
 
     if all is not None:
-        repos = []
+        _repos = []
         for r in installed_cogs:
-            repos.append(downloader._repo_manager.get_repo(str(r)))
-        cogs = []
+            _repos.append(downloader._repo_manager.get_repo(str(r)))
+        _cogs = []
         for r in installed_cogs:
             for c in installed_cogs[r]:
-                cogs.append(await InstalledCog.convert(ctx, str(c)))
-        commands = []
+                _cogs.append(await InstalledCog.convert(ctx, str(c)))
+        _commands = []
         for c in ctx.bot.all_commands:
             cmd = ctx.bot.get_command(str(c))
             if cmd.cog is not None:
-                commands.append(cmd)
+                _commands.append(cmd)
         repo = True
         cog = True
         command = True
@@ -2133,16 +2132,32 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
             diagnose_result.append(bold(_("Solution: ")) + result.resolution)
         diagnose_result.extend(issue_diagnoser._get_message_from_check_result(result))
         return diagnose_result
-
+    async def get_all_config(cog: commands.Cog):
+        config = {}
+        if not hasattr(cog, 'config'):
+            return config
+        try:
+            config["global"] = await cog.config.all()
+            config["users"] = await cog.config.all_users()
+            config["guilds"] = await cog.config.all_guilds()
+            config["members"] = await cog.config.all_members()
+            config["roles"] = await cog.config.all_roles()
+            config["channels"] = await cog.config.all_channels()
+        except Exception:
+            return config
+        return config
     use_emojis = False
     check_emoji = "✅" if use_emojis else True
     cross_emoji = "❌" if use_emojis else False
+
+    ##################################################
     os_table = Table("Key", "Value", title="Host machine informations")
     os_table.add_row("OS version", str(osver))
     os_table.add_row("Python executable", str(python_executable))
     os_table.add_row("Python version", str(pyver))
     os_table.add_row("Pip version", str(pipver))
     raw_os_table_str = no_colour_rich_markup(os_table)
+    ##################################################
     red_table = Table("Key", "Value", title="Red instance informations")
     red_table.add_row("Red version", str(redver))
     red_table.add_row("Discord.py version", str(dpy_version))
@@ -2157,9 +2172,18 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
         if not await ctx.bot.get_valid_prefixes() == await ctx.bot.get_valid_prefixes(ctx.guild):
             red_table.add_row("Guild prefixe(s)", str(await ctx.bot.get_valid_prefixes(ctx.guild)).replace(f"{ctx.bot.user.id}", "{bot_id}"))
     raw_red_table_str = no_colour_rich_markup(red_table)
+    ##################################################
+    context_table = Table("Key", "Value", title="Context")
+    context_table.add_row("Channel type", str(f"discord.{ctx.channel.__class__.__name__}"))
+    context_table.add_row("Bot permissions value (guild)", str(ctx.guild.me.guild_permissions.value if ctx.guild is not None else "Not in a guild."))
+    context_table.add_row("Bot permissions value (channel)", str(ctx.channel.permissions_for(ctx.guild.me).value if ctx.guild is not None else ctx.channel.permissions_for(ctx.bot.user).value))
+    context_table.add_row("User permissions value (guild)", str(ctx.author.guild_permissions.value if ctx.guild is not None else "Not in a guild."))
+    context_table.add_row("User permissions value (channel)", str(ctx.channel.permissions_for(ctx.author).value))
+    raw_context_table_str = no_colour_rich_markup(context_table)
+    ##################################################
     if repo is not None:
-        raw_cogs_table_str = []
-        for repo in repos:
+        raw_repo_table_str = []
+        for repo in _repos:
             if not check_updates:
                 cogs_table = Table("Name", "Commit", "Loaded", "Pinned", title=f"Cogs installed for {repo.name}")
             else:
@@ -2170,12 +2194,13 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
                     cogs_table.add_row(str(_cog.name), str(_cog.commit), str(check_emoji if _cog.name in loaded_cogs else cross_emoji), str(check_emoji if _cog.pinned else cross_emoji))
                 else:
                     cogs_table.add_row(str(_cog.name), str(_cog.commit), str(check_emoji if _cog.name in loaded_cogs else cross_emoji), str(check_emoji if _cog.pinned else cross_emoji), str(check_emoji if _cog.name in to_update_cogs else cross_emoji))
-            raw_cogs_table_str.append(no_colour_rich_markup(cogs_table))
+            raw_repo_table_str.append(no_colour_rich_markup(cogs_table))
     else:
-        raw_cogs_table_str = None
+        raw_repo_table_str = None
+    ##################################################
     if cog is not None:
-        raw_cog_table_str = []
-        for cog in cogs:
+        raw_cogs_table_str = []
+        for cog in _cogs:
             cog_table = Table("Key", "Value", title=f"Cog {cog.name}")
             cog_table.add_row("Name", str(cog.name))
             cog_table.add_row("Repo name", str(cog.repo_name))
@@ -2189,12 +2214,14 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
             cog_table.add_row("Min python version", str(cog.min_python_version))
             cog_table.add_row("Author", str([a for a in cog.author]))
             cog_table.add_row("Commit", str(cog.commit))
-            raw_cog_table_str.append(no_colour_rich_markup(cog_table))
+            raw_cog_table_str = no_colour_rich_markup(cog_table)
+            raw_cogs_table_str.append(raw_cog_table_str)
     else:
-        raw_cog_table_str = None
+        raw_cogs_table_str = None
+    ##################################################
     if command is not None:
-        raw_command_table_str = []
-        for command in commands:
+        raw_commands_table_str = []
+        for command in _commands:
             command_table = Table("Key", "Value", title=f"Command {command.qualified_name}")
             command_table.add_row("Qualified name", str(command.qualified_name))
             command_table.add_row("Cog name", str(command.cog_name))
@@ -2218,30 +2245,53 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
                         command_table.add_row("Issue Diagnose", str(x))
                     else:
                         command_table.add_row("", str(x).replace("✅", "").replace("❌", ""))
-            raw_command_table_str.append(no_colour_rich_markup(command_table))
+            raw_command_table_str = no_colour_rich_markup(command_table)
+            raw_commands_table_str.append(raw_command_table_str)
             cog = command.cog.__class__.__name__ if command.cog is not None else "None"
             if hasattr(ctx.bot, "last_exceptions_cogs") and cog in ctx.bot.last_exceptions_cogs and command.qualified_name in ctx.bot.last_exceptions_cogs[cog]:
-                raw_error_table = []
+                raw_errors_table = []
                 error_table = Table("Last error recorded for this command")
                 error_table.add_row(str(ctx.bot.last_exceptions_cogs[cog][command.qualified_name][len(ctx.bot.last_exceptions_cogs[cog][command.qualified_name]) - 1]))
-                raw_error_table.append(no_colour_rich_markup(error_table))
+                raw_errors_table.append(no_colour_rich_markup(error_table))
             else:
-                raw_error_table = None
+                raw_errors_table = None
     else:
-        raw_command_table_str = None
-        raw_error_table = None
+        raw_commands_table_str = None
+        raw_errors_table = None
+    ##################################################
+    if _cogs is not None and len(_cogs) == 1:
+        cog = None
+        for name, value in ctx.bot.cogs.items():
+            if name.lower() == _cogs[0].name.lower():
+                cog = value
+                break
+        if cog is not None:
+            config_table = Table("", title=f"All Config for {cog.__class__.__name__}")
+            config_table.add_row(str(await get_all_config(cog)))
+            raw_config_table_str = no_colour_rich_markup(config_table)
+        else:
+            raw_config_table_str = None
+    else:
+        raw_config_table_str = None
+    ##################################################
 
-    response = [raw_os_table_str, raw_red_table_str]
-    for x in [raw_cogs_table_str, raw_cog_table_str, raw_command_table_str, raw_error_table]:
+    response = [raw_os_table_str, raw_red_table_str, raw_context_table_str]
+    for x in [raw_repo_table_str, raw_cogs_table_str, raw_commands_table_str, raw_errors_table, raw_config_table_str]:
         if x is not None:
-            for y in x:
-                response.append(y)
-    to_html = to_html_getallfor.replace("{AVATAR_URL}", str(ctx.bot.user.display_avatar) if CogsUtils().is_dpy2 else str(ctx.bot.user.avatar_url)).replace("{BOT_NAME}", str(ctx.bot.user.name)).replace("{REPO_NAME}", str(getattr(repos[0], "name", None) if all is None else "All")).replace("{COG_NAME}", str(getattr(cogs[0], "name", None) if all is None else "All")).replace("{COMMAND_NAME}", str(getattr(commands[0], "qualified_name", None) if all is None else "All"))
+            if isinstance(x, typing.List):
+                for y in x:
+                    response.append(y)
+            elif isinstance(x, str):
+                response.append(x)
+    to_html = to_html_getallfor.replace("{AVATAR_URL}", str(ctx.bot.user.display_avatar) if CogsUtils().is_dpy2 else str(ctx.bot.user.avatar_url)).replace("{BOT_NAME}", str(ctx.bot.user.name)).replace("{REPO_NAME}", str(getattr(_repos[0], "name", None) if all is None else "All")).replace("{COG_NAME}", str(getattr(_cogs[0], "name", None) if all is None else "All")).replace("{COMMAND_NAME}", str(getattr(_commands[0], "qualified_name", None) if all is None else "All"))
     message_html = message_html_getallfor
     end_html = end_html_getallfor
     count_page = 0
-    if page is not None and page - 1 in [0, 1, 2, 3, 4, 5]:
-        response = [response[page - 1]]
+    try:
+        if page is not None and page - 1 in [0, 1, 2, 3, 4, 5, 6, 7]:
+            response = [response[page - 1]]
+    except ValueError:
+        pass
     for page in response:
         if page is not None:
             count_page += 1
@@ -2249,7 +2299,7 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
                 to_html += message_html.replace("{MESSAGE_CONTENT}", str(page).replace("```", "").replace("<", "&lt;").replace("\n", "<br>")).replace("{TIMESTAMP}", str(ctx.message.created_at.strftime("%b %d, %Y %I:%M %p")))
             else:
                 to_html += message_html.replace('    <div class="chatlog__messages">', '            </div>            <div class="chatlog__message ">').replace("{MESSAGE_CONTENT}", str(page).replace("```", "").replace("<", "&lt;").replace("\n", "<br>")).replace('<span class="chatlog__timestamp">{TIMESTAMP}</span>            ', "")
-            if all is None:
+            if all is None and "Config" not in page:
                 for p in pagify(page):
                     p = p.replace("```", "")
                     p = box(p)

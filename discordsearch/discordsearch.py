@@ -10,6 +10,7 @@ import dateparser
 import datetime
 
 from redbot.core.utils.chat_formatting import bold, underline
+from redbot.core.utils.common_filters import URL_RE
 from time import monotonic
 
 # Credits:
@@ -43,6 +44,7 @@ class DiscordSearch(commands.Cog):
         `--after "25/12/2000 00h00"`
         `--pinned true`
         `--content "AAA3A-cogs"`
+        `--contain link --contain embed --contain file`
         """
         if not args:
             await ctx.send_help()
@@ -58,6 +60,12 @@ class DiscordSearch(commands.Cog):
         after = args.after
         pinned = args.pinned
         content = args.content
+        contains = args.contains
+        if channel is None:
+            channel = ctx.channel
+        if not any([setting is not None for setting in [authors, mentions, before, after, pinned, content, contains]]):
+            await ctx.send("You must provide at least one parameter.")
+            return
         args_str = [
             underline("--- Settings of search ---"),
             bold("Authors:") + " " + (", ".join([author.mention for author in authors]) if authors is not None else "None"),
@@ -65,14 +73,10 @@ class DiscordSearch(commands.Cog):
             bold("Before:") + " " + f"{before}",
             bold("After:") + " " + f"{after}",
             bold("Pinned:") + " " + f"{pinned}",
-            bold("Content:") + " " + f"{content}"
+            bold("Content:") + " " + f"{content}",
+            bold("Contains:") + " " + (", ".join([contain for contain in contains]) if contains is not None else "None")
         ]
         args_str = "\n".join(args_str)
-        if channel is None:
-            channel = ctx.channel
-        if not any([setting is not None for setting in [authors, mentions, before, after, pinned, content]]):
-            await ctx.send("You must provide at least one parameter.")
-            return
         async with ctx.typing():
             start = monotonic()
             messages: typing.List[discord.Message] = []
@@ -85,6 +89,15 @@ class DiscordSearch(commands.Cog):
                     continue
                 if content is not None and not content.lower() in message.content.lower():
                     continue
+                if contains is not None:
+                    if "link" in contains:
+                        regex = URL_RE.findall(message.content.lower())
+                        if regex == []:
+                            continue
+                    if "embed" in contains and len(message.embeds) == 0:
+                        continue
+                    if "file" in contains and len(message.attachments) == 0:
+                        continue
                 messages.append(message)
             embeds = []
             if len(messages) == 0:
@@ -100,7 +113,7 @@ class DiscordSearch(commands.Cog):
                     embed.description = args_str
                     embed.url = message.jump_url
                     embed.set_author(name=f"{message.author.display_name} ({message.author.id})")
-                    embed.add_field(name=f"Message {message.id}", value=message.content if len(message.content) < 1025 else message.content[:1020] + "...")
+                    embed.add_field(name=f"Message {message.id}", value=(message.content if len(message.content) < 1025 else message.content[:1020] + "...") if message.content is not None else "None")
                     embed.timestamp = message.created_at
                     embed.set_thumbnail(url="https://us.123rf.com/450wm/sommersby/sommersby1610/sommersby161000062/66918773-recherche-ic%C3%B4ne-plate-recherche-ic%C3%B4ne-conception-recherche-ic%C3%B4ne-web-vecteur-loupe.jpg")
                     embed.set_footer(text=f"Page {count}/{len(messages)}", icon_url="https://us.123rf.com/450wm/sommersby/sommersby1610/sommersby161000062/66918773-recherche-ic%C3%B4ne-plate-recherche-ic%C3%B4ne-conception-recherche-ic%C3%B4ne-web-vecteur-loupe.jpg")
@@ -135,6 +148,7 @@ class SearchArgs():
         parser.add_argument("--after", dest="after")
         parser.add_argument("--pinned", dest="pinned")
         parser.add_argument("--content", dest="content", nargs="*")
+        parser.add_argument("--contain", dest="contains", nargs="+")
 
         return parser.parse_args(arguments)
 
@@ -173,6 +187,14 @@ class SearchArgs():
             else:
                 self.pinned = args.pinned
             self.content = "".join(args.content) if args.content is not None else args.content
+            if args.contains is not None:
+                self.contains = []
+                for contain in args.contains:
+                    if contain.lower() not in ("link", "embed", "file"):
+                        raise commands.BadArgument("`--contain` must be `link`, `embed` or `file`.")
+                    self.contains.append(contain.lower())
+            else:
+                self.contains = None
         return self
 
     class DateConverter(commands.Converter):

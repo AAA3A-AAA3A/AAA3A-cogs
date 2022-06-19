@@ -201,8 +201,8 @@ class utils(commands.Cog):
             reactions = ["✅", "❌"]
             start_adding_reactions(message, reactions)
             end_reaction = False
-            def check(reaction, msg):
-                return msg == ctx.author or msg.id in ctx.bot.owner_ids and str(reaction.emoji) in reactions
+            def check(reaction, author):
+                return author == ctx.author or author.id in ctx.bot.owner_ids and str(reaction.emoji) in reactions
                 # This makes sure nobody except the command sender can interact with the "menu"
             while True:
                 try:

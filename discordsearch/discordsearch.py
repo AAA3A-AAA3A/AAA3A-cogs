@@ -30,8 +30,7 @@ class DiscordSearch(commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
-    @commands.guildowner()
-    @commands.guild_only()
+    @commands.is_owner()
     @commands.command(name="discordsearch", aliases=["dsearch"])
     async def discordsearch(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel]=None, *args: str):
         """Search for a message on Discord in a channel.

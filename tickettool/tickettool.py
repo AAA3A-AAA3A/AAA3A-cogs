@@ -440,22 +440,24 @@ class TicketTool(settings, commands.Cog):
 
     @decorator(enable_check=False, ticket_check=True, status="open", ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="add")
-    async def command_add(self, ctx: commands.Context, member: discord.Member, *, reason: typing.Optional[str]="No reason provided."):
+    async def command_add(self, ctx: commands.Context, *members: discord.Member, reason: typing.Optional[str]="No reason provided."):
         """Add a member to an existing ticket.
         """
         ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         ticket.reason = reason
-        await ticket.add_member(member, ctx.author)
+        members = [member for member in members]
+        await ticket.add_member(members, ctx.author)
         await ctx.tick()
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="remove")
-    async def command_remove(self, ctx: commands.Context, member: discord.Member, *, reason: typing.Optional[str]="No reason provided."):
+    async def command_remove(self, ctx: commands.Context, *members: discord.Member, reason: typing.Optional[str]="No reason provided."):
         """Remove a member to an existing ticket.
         """
         ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         ticket.reason = reason
-        await ticket.remove_member(member, ctx.author)
+        members = [member for member in members]
+        await ticket.remove_member(members, ctx.author)
         await ctx.tick()
 
     if CogsUtils().is_dpy2:
@@ -778,7 +780,7 @@ class Ticket:
     async def create(ticket, name: typing.Optional[str]="ticket"):
         config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
         logschannel = config["logschannel"]
-        overwrites = await utils(ticket.bot).get_overwrites(ticket)
+        overwrites = await utils().get_overwrites(ticket)
         emoji_open = config["emoji_open"]
         ping_role = config["ping_role"]
         ticket.id = config["last_nb"] + 1
@@ -999,20 +1001,21 @@ class Ticket:
         overwrites = ticket.channel.overwrites
         overwrites[member] = (
             discord.PermissionOverwrite(
-                attach_files=True,
-                read_messages=True,
-                read_message_history=True,
-                send_messages=True,
+                    attach_files=True,
+                    read_message_history=True,
+                    read_messages=True,
+                    send_messages=True,
+                    view_channel=True,
             )
         )
         if config["support_role"] is not None:
             overwrites[config["support_role"]] = (
                 discord.PermissionOverwrite(
-                    view_channel=True,
-                    read_messages=True,
+                    attach_files=False,
                     read_message_history=True,
+                    read_messages=True,
                     send_messages=False,
-                    attach_files=True,
+                    view_channel=True,
                 )
             )
         await ticket.channel.edit(overwrites=overwrites, reason=reason)
@@ -1054,11 +1057,11 @@ class Ticket:
             overwrites = ticket.channel.overwrites
             overwrites[config["support_role"]] = (
                 discord.PermissionOverwrite(
-                    view_channel=True,
-                    read_messages=True,
-                    read_message_history=True,
-                    send_messages=True,
                     attach_files=True,
+                    read_message_history=True,
+                    read_messages=True,
+                    send_messages=True,
+                    view_channel=True,
                 )
             )
             await ticket.channel.edit(overwrites=overwrites, reason=reason)
@@ -1105,16 +1108,18 @@ class Ticket:
                     ticket.owner.remove_roles(config["ticket_role"], reason=reason)
                 except discord.HTTPException:
                     pass
-        ticket.members.append(ticket.owner)
+        ticket.remove_member(ticket.owner, author=None)
+        ticket.add_member(ticket.owner, author=None)
         ticket.owner = member
-        ticket.remove(ticket.owner)
+        ticket.remove_member(ticket.owner, author=None)
         overwrites = ticket.channel.overwrites
         overwrites[member] = (
             discord.PermissionOverwrite(
-                attach_files=True,
-                read_messages=True,
-                read_message_history=True,
-                send_messages=True,
+                    attach_files=True,
+                    read_message_history=True,
+                    read_messages=True,
+                    send_messages=True,
+                    view_channel=True,
             )
         )
         await ticket.channel.edit(overwrites=overwrites, reason=reason)
@@ -1130,46 +1135,83 @@ class Ticket:
         await ticket.save()
         return ticket
 
-    async def add_member(ticket, member: discord.Member, author: typing.Optional[discord.Member]=None):
+    async def add_member(ticket, members: typing.List[discord.Member], author: typing.Optional[discord.Member]=None):
+        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
         reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=_("Adding a member to the ticket {ticket.id}.").format(**locals()))
-        if member.bot:
-            await ticket.channel.send(_("You cannot add a bot to a ticket.").format(**locals()))
-            return
-        if member in ticket.members:
-            await ticket.channel.send(_("This member already has access to this ticket.").format(**locals()))
-            return
-        if member == ticket.owner:
-            await ticket.channel.send(_("This member is already the owner of this ticket.").format(**locals()))
-            return
-        ticket.members.append(member)
+        if config["admin_role"] is not None:
+            admin_role_members = config["admin_role"].members
+        else:
+            admin_role_members = []
         overwrites = ticket.channel.overwrites
-        overwrites[member] = (
-            discord.PermissionOverwrite(
-                attach_files=True,
-                read_messages=True,
-                read_message_history=True,
-                send_messages=True,
+        for member in members:
+            if author is not None:
+                if member.bot:
+                    await ticket.channel.send(_("You cannot add a bot to a ticket." ({member})).format(**locals()))
+                    continue
+                if member == ticket.owner:
+                    await ticket.channel.send(_("This member is already the owner of this ticket. ({member})").format(**locals()))
+                    continue
+                if member in ticket.members:
+                    await ticket.channel.send(_("This member already has access to this ticket. ({member})").format(**locals()))
+                    continue
+                if member in admin_role_members:
+                    await ticket.channel.send(_("This member is an administrator for the ticket system. He will always have access to the ticket anyway. ({member})").format(**locals()))
+                    continue
+            if member not in ticket.members:
+                ticket.members.append(member)
+            overwrites[member] = (
+                discord.PermissionOverwrite(
+                    attach_files=True,
+                    read_message_history=True,
+                    read_messages=True,
+                    send_messages=True,
+                    view_channel=True,
+                )
             )
-        )
         await ticket.channel.edit(overwrites=overwrites, reason=reason)
-        if ticket.logs_messages:
-            embed = await ticket.bot.get_cog("TicketTool").get_embed_action(ticket, author=author, action=_("Member {member.mention} ({member.id}) Added.").format(**locals()))
-            await ticket.channel.send(embed=embed)
         await ticket.save()
         return ticket
 
-    async def remove_member(ticket, member: discord.Member, author: typing.Optional[discord.Member]=None):
+    async def remove_member(ticket, members: typing.List[discord.Member], author: typing.Optional[discord.Member]=None):
+        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
         reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=_("Removing a member to the ticket {ticket.id}.").format(**locals()))
-        if member.bot:
-            await ticket.channel.send("You cannot remove a bot to a ticket.")
-            return
-        if member not in ticket.members:
-            await ticket.channel.send("This member is not in the list of those authorised to access the ticket.")
-            return
-        ticket.members.remove(member)
-        await ticket.channel.set_permissions(member, overwrite=None, reason=reason)
-        if ticket.logs_messages:
-            embed = await ticket.bot.get_cog("TicketTool").get_embed_action(ticket, author=author, action=_("Member {member.mention} ({member.id}) Removed.").format(**locals()))
-            await ticket.channel.send(embed=embed)
+        if config["admin_role"] is not None:
+            admin_role_members = config["admin_role"].members
+        else:
+            admin_role_members = []
+        if config["support_role"] is not None:
+            support_role_members = config["support_role"].members
+        else:
+            support_role_members = []
+        for member in members:
+            if author is not None:
+                if member.bot:
+                    await ticket.channel.send(_("You cannot remove a bot to a ticket ({member}).").format(locals()))
+                    continue
+                if member == ticket.owner:
+                    await ticket.channel.send(_("You cannot remove the owner of this ticket. ({member})").format(**locals()))
+                    continue
+                if member not in ticket.members and member not in support_role_members:
+                    await ticket.channel.send(_("This member is not in the list of those authorised to access the ticket. ({member})").format(locals()))
+                    continue
+                if member in admin_role_members:
+                    await ticket.channel.send(_("This member is an administrator for the ticket system. He will always have access to the ticket. ({member})").format(**locals()))
+                    continue
+            if member in ticket.members:
+                ticket.members.remove(member)
+            if member in support_role_members:
+                overwrites = ticket.channel.overwrites
+                overwrites[member] = (
+                    discord.PermissionOverwrite(
+                        attach_files=False,
+                        read_message_history=False,
+                        read_messages=False,
+                        send_messages=False,
+                        view_channel=False,
+                    )
+                )
+                await ticket.channel.edit(overwrites=overwrites, reason=reason)
+            else:
+                await ticket.channel.set_permissions(member, overwrite=None, reason=reason)
         await ticket.save()
         return ticket

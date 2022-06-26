@@ -48,7 +48,7 @@ CUSTOM_COMMANDS = {
     },
     "kofi": {
         "title": "How to make a donation?",
-        "description": "Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\nMON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\nAAA3A (Medicat Developer): None"
+        "description": "@Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\n@MON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\n@AAA3A (Medicat Developer): Nothing"
     },
     "medicatversion": {
         "title": "What is the latest version of Medicat USB?",
@@ -61,6 +61,10 @@ CUSTOM_COMMANDS = {
     "noiso": {
         "title": "How do I download the Medicat USB iso file?",
         "description": "Medicat USB is not available as an iso file.\nPreviously, Medicat USB was available as an iso file. Now it uses Ventoy to run. It is currently impossible to put Ventoy and therefore Medicat USB in an iso file, or at least not without difficulties."
+    },
+    "updateonly": {
+        "title": "How can I update Medicat USB without having to install all the files again?",
+        "description": "For the time being, you are in any case obliged to download all Medicat USB files again to update it. However, if you only want to keep your previous personal changes, you can save them somewhere and reproduce them on the new instance of the bootable USB stick. For Medicat USB 22.06, @AAA3A is currently coding an update only script for Medicat USB, in batch. It will be downloaded with only the necessary files and will however only work from one version to another, after being prepared in advance."
     },
     "usbvhd": {
         "title": "What is the difference between Medicat USB and Medicat VHD?",

@@ -2272,7 +2272,7 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
                 cog = value
                 break
         if cog is not None:
-            config_table = Table("", title=f"All Config for {cog.__class__.__name__}")
+            config_table = Table(f"All Config for {cog.__class__.__name__}")
             config_table.add_row(str(await get_all_config(cog)))
             raw_config_table_str = no_colour_rich_markup(config_table)
         else:

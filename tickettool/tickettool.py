@@ -206,7 +206,7 @@ class TicketTool(settings, commands.Cog):
         embed.color = actual_color
         embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
         embed.set_author(name=author, url=author.display_avatar if self.cogsutils.is_dpy2 else author.avatar_url, icon_url=author.display_avatar if self.cogsutils.is_dpy2 else author.avatar_url)
-        embed.set_footer(text=ticket.guild.name, icon_url=ticket.guild.icon or "" if self.cogsutils.is_dpy2 else ticket.guildicon_url or "")
+        embed.set_footer(text=ticket.guild.name, icon_url=ticket.guild.icon or "" if self.cogsutils.is_dpy2 else ticket.guild.icon_url or "")
         embed.add_field(
             inline=False,
             name=_("Reason:").format(**locals()),

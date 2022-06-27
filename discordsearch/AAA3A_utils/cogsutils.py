@@ -205,8 +205,10 @@ class CogsUtils(commands.Cog):
             exception_log += "".join(traceback.format_exception(type(error), error, error.__traceback__))
             if "USERPROFILE" in os.environ:
                 exception_log = exception_log.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+                exception_log = exception_log.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
             if "HOME" in os.environ:
                 exception_log = exception_log.replace(os.environ["HOME"], "{HOME}")
+                exception_log = exception_log.replace(os.environ["HOME"].lower(), "{HOME}")
             ctx.bot._last_exception = exception_log
             await ctx.send(inline(message))
         else:
@@ -493,13 +495,15 @@ class CogsUtils(commands.Cog):
                 return
             self.bot.last_exceptions_cogs["global"].append(error)
             if isinstance(error, commands.CommandError):
-                traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__)).replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+                traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__))
             else:
                 traceback_error = f"Traceback (most recent call last): {error}"
             if "USERPROFILE" in os.environ:
                 traceback_error = traceback_error.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+                traceback_error = traceback_error.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
             if "HOME" in os.environ:
                 traceback_error = traceback_error.replace(os.environ["HOME"], "{HOME}")
+                traceback_error = traceback_error.replace(os.environ["HOME"].lower(), "{HOME}")
             if cog not in self.bot.last_exceptions_cogs:
                 self.bot.last_exceptions_cogs[cog] = {}
             if ctx.command.qualified_name not in self.bot.last_exceptions_cogs[cog]:
@@ -2053,13 +2057,13 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
     driver = storage_type()
     data_path_original = Path(basic_config["DATA_PATH"])
     if "USERPROFILE" in os.environ:
-        data_path = Path(str(data_path_original).replace(os.environ["USERPROFILE"], "{USERPROFILE}"))
-        _config_file = Path(str(config_file).replace(os.environ["USERPROFILE"], "{USERPROFILE}"))
-        python_executable = Path(str(python_executable).replace(os.environ["USERPROFILE"], "{USERPROFILE}"))
+        data_path = Path(str(data_path_original).replace(os.environ["USERPROFILE"], "{USERPROFILE}").replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}"))
+        _config_file = Path(str(config_file).replace(os.environ["USERPROFILE"], "{USERPROFILE}").replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}"))
+        python_executable = Path(str(python_executable).replace(os.environ["USERPROFILE"], "{USERPROFILE}").replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}"))
     if "HOME" in os.environ:
-        data_path = Path(str(data_path_original).replace(os.environ["HOME"], "{HOME}"))
-        _config_file = Path(str(config_file).replace(os.environ["HOME"], "{HOME}"))
-        python_executable = Path(str(python_executable).replace(os.environ["HOME"], "{HOME}"))
+        data_path = Path(str(data_path_original).replace(os.environ["HOME"], "{HOME}").replace(os.environ["HOME"].lower(), "{HOME}"))
+        _config_file = Path(str(config_file).replace(os.environ["HOME"], "{HOME}").replace(os.environ["HOME"].lower(), "{HOME}"))
+        python_executable = Path(str(python_executable).replace(os.environ["HOME"], "{HOME}").replace(os.environ["HOME"].lower(), "{HOME}"))
     disabled_intents = (
         ", ".join(
             intent_name.replace("_", " ").title()
@@ -2261,7 +2265,7 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
         raw_commands_table_str = None
         raw_errors_table = None
     ##################################################
-    if _cogs is not None and len(_cogs) == 1:
+    if _cogs is not None and len(_cogs) == 1 and _cogs[0] is not None:
         cog = None
         for name, value in ctx.bot.cogs.items():
             if name.lower() == _cogs[0].name.lower():

@@ -43,8 +43,10 @@ class EditFile(commands.Cog):
         path = str(path)
         if "USERPROFILE" in os.environ:
             path = path.replace("{USERPROFILE}", os.environ["USERPROFILE"])
+            path = path.replace("{USERPROFILE}".lower(), os.environ["USERPROFILE"])
         if "HOME" in os.environ:
             path = path.replace("{HOME}", os.environ["HOME"])
+            path = path.replace("{HOME}".lower(), os.environ["HOME"])
         path = Path(path)
         try:
             file = discord.File(f"{path}")
@@ -62,8 +64,10 @@ class EditFile(commands.Cog):
         path = str(path)
         if "USERPROFILE" in os.environ:
             path = path.replace("{USERPROFILE}", os.environ["USERPROFILE"])
+            path = path.replace("{USERPROFILE}".lower(), os.environ["USERPROFILE"])
         if "HOME" in os.environ:
             path = path.replace("{HOME}", os.environ["HOME"])
+            path = path.replace("{HOME}".lower(), os.environ["HOME"])
         path = Path(path)
         try:
             """if not path.exists():
@@ -83,9 +87,11 @@ class EditFile(commands.Cog):
             await new_file.save(fp=f"{path}")
             path = str(path)
             if "USERPROFILE" in os.environ:
-                path = path.replace("{USERPROFILE}", os.environ["USERPROFILE"])
+                path = path.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+                path = path.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
             if "HOME" in os.environ:
-                path = path.replace("{HOME}", os.environ["HOME"])
+                path = path.replace(os.environ["HOME"], "{HOME}")
+                path = path.replace(os.environ["HOME"].lower(), "{HOME}")
             await ctx.send(_("This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly.").format(**locals()), file=old_file)
 
     @editfile.command()
@@ -106,8 +112,10 @@ class EditFile(commands.Cog):
             path = str(path)
             if "USERPROFILE" in os.environ:
                 path = path.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+                path = path.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
             if "HOME" in os.environ:
                 path = path.replace(os.environ["HOME"], "{HOME}")
+                path = path.replace(os.environ["HOME"].lower(), "{HOME}")
             await ctx.send(f"```{path}```")
 
     @editfile.command()

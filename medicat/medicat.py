@@ -72,7 +72,7 @@ CUSTOM_COMMANDS = {
     },
     "virus": {
         "title": "Why does my antivirus software blame Medicat?",
-        "description": "Medicat USB does not contain any viruses! If an antivirus software detects one of its files as such, it is a false positive. As you know, Medicat USB contains tools that can reset a partition, find a password, and modify the system. Portable applications can be falsely flagged because of how they are cracked and packaged. For these reasons all antivirus software's 'real-time scanning' should be disabled when installing, and sometimes even when using, Medicat USB."},
+        "description": "Medicat USB does not contain any viruses! If an antivirus software detects one of its files as such, it is a false positive.\nAs you know, Medicat USB contains tools that can reset a partition, find a password, and modify the system. Portable applications can be falsely flagged because of how they are cracked and packaged.\nFor these reasons all antivirus software's 'real-time scanning' should be disabled when installing, and sometimes even when using, Medicat USB.\nAll the scripts associated with the project (published by one of the 3 developers) and Ventoy do not have one either."},
     "whatmedicat": {
         "title": "What is Medicat USB?",
         "description": "Medicat USB contains tools to backup/restore data, to manage disks/partitions, to reset/bypass/find a Windows password, to use software with admin rights from a winPE, to do virus scans. In addition, it uses Ventoy, which allows you to add your own bootable tools with a simple copy and paste."
@@ -437,15 +437,15 @@ class Medicat(commands.Cog):
         return commands.check(pred)
 
     @in_medicat_guild()
-    @commands.command()
-    async def {name}(self, ctx):
+    @commands.command(name="{name}")
+    async def CC_{name}(self, ctx):
         embed: discord.Embed = discord.Embed()
         embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
         embed.set_footer(text="Medicat USB Official", icon_url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
         embed.title = CUSTOM_COMMANDS[ctx.command.name]["title"]
         embed.description = CUSTOM_COMMANDS[ctx.command.name]["description"]
         await ctx.send(embed=embed)
-    return {name}
+    return CC_{name}
     """.format(MEDICAT_GUILD=MEDICAT_GUILD, TEST_GUILD=TEST_GUILD, name=name)
                 command: commands.command = get_function_from_str(self.bot, command_str)
                 command.name = name
@@ -456,7 +456,7 @@ class Medicat(commands.Cog):
                 # setattr(command, 'format_shortdoc_for_context', self.cogsutils.allow_forformat_shortdoc_for_context)
                 if self.cogsutils.is_dpy2:
                     command.params = {}
-                setattr(self, name, command)
+                setattr(self, f"CC_{name}", command)
                 self.bot.add_command(command)
             except Exception:
                 self.bot.remove_command(name)

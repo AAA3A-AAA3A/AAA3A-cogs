@@ -1146,7 +1146,7 @@ class Ticket:
         for member in members:
             if author is not None:
                 if member.bot:
-                    await ticket.channel.send(_("You cannot add a bot to a ticket." ({member})).format(**locals()))
+                    await ticket.channel.send(_("You cannot add a bot to a ticket. ({member})").format(**locals()))
                     continue
                 if member == ticket.owner:
                     await ticket.channel.send(_("This member is already the owner of this ticket. ({member})").format(**locals()))

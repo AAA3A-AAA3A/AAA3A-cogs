@@ -254,24 +254,25 @@ class Medicat(commands.Cog):
             self.log.error(f"An error occurred while adding the custom_commands.", exc_info=e)
 
     async def edit_config_schema(self):
-        ALL_CONFIG = await self.config.all()
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
-        if ALL_CONFIG == self.medicat_global:
+        ALL_CONFIG_GLOBAL = await self.config.all()
+        if ALL_CONFIG_GLOBAL == self.medicat_global:
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
             return
         if CONFIG_SCHEMA is None:
             CONFIG_SCHEMA = 1
             await self.config.CONFIG_SCHEMA(CONFIG_SCHEMA)
-        if CONFIG_SCHEMA == 1 and not CONFIG_SCHEMA == self.CONFIG_SCHEMA:
+        if CONFIG_SCHEMA == self.CONFIG_SCHEMA:
+            return
+        if CONFIG_SCHEMA == 1:
             await self.config.last_bootables_tools_versions.clear()
-            self.log.info(f"The Config scheme has been successfully modified to {self.CONFIG_SCHEMA} for the {self.__class__.__name__} cog.")
             CONFIG_SCHEMA = 2
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
-        if CONFIG_SCHEMA < self.CONFIG_SCHEMA and not CONFIG_SCHEMA == self.CONFIG_SCHEMA:
-            self.log.info(f"The Config scheme has been successfully modified to {self.CONFIG_SCHEMA} for the {self.__class__.__name__} cog.")
+        if CONFIG_SCHEMA < self.CONFIG_SCHEMA:
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
+        self.log.info(f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.__class__.__name__} cog.")
 
     def cog_unload(self):
         try:
@@ -404,6 +405,10 @@ class Medicat(commands.Cog):
 
     def in_medicat_guild():
         async def pred(ctx):
+            if ctx.author.id in ctx.bot.owner_ids or ctx.author.id == 829612600059887649:
+                return True
+            if ctx.guild is None:
+                return False
             if ctx.guild.id == MEDICAT_GUILD or ctx.guild.id == TEST_GUILD:
                 return True
             else:
@@ -430,6 +435,10 @@ class Medicat(commands.Cog):
                 command_str = """
     def in_medicat_guild():
         async def pred(ctx):
+            if ctx.author.id in ctx.bot.owner_ids or ctx.author.id == 829612600059887649:
+                return True
+            if ctx.guild is None:
+                return False
             if ctx.guild.id == {MEDICAT_GUILD} or ctx.guild.id == {TEST_GUILD}:
                 return True
             else:
@@ -467,7 +476,6 @@ class Medicat(commands.Cog):
         for name in CUSTOM_COMMANDS:
             self.bot.remove_command(name)
 
-    @commands.guild_only()
     @in_medicat_guild()
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @commands.command()
@@ -517,7 +525,6 @@ class Medicat(commands.Cog):
         hook: discord.Webhook = await CogsUtils(bot=self.bot).get_hook(ctx.channel)
         await hook.send(embed=embed, username="Ventoy Updates", avatar_url="https://ventoy.net/static/img/ventoy.png?v=1")
 
-    @commands.guild_only()
     @in_medicat_guild()
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @commands.command()
@@ -549,13 +556,23 @@ class Medicat(commands.Cog):
         hook: discord.Webhook = await CogsUtils(bot=self.bot).get_hook(ctx.channel)
         await hook.send(embed=embed, username="Bootables Tools Updates", avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg")
 
-    @commands.guild_only()
-    @in_medicat_guild()
+    def is_owner_or_AAA3A():
+        async def pred(ctx):
+            if ctx.author.id in ctx.bot.owner_ids or ctx.author.id == 829612600059887649:
+                return True
+            else:
+                return False
+        return commands.check(pred)
+
+    @is_owner_or_AAA3A()
     @commands.command(hidden=True)
     async def secretupdatemedicatcog(self, ctx: commands.Context):
         try:
             message = copy(ctx.message)
-            message.author = ctx.guild.get_member(list(ctx.bot.owner_ids)[0]) or ctx.guild.get_member(list(ctx.bot.owner_ids)[1])
+            if ctx.guild is not None:
+                message.author = ctx.guild.get_member(list(ctx.bot.owner_ids)[0]) or ctx.guild.get_member(list(ctx.bot.owner_ids)[1])
+            else:
+                message.author = ctx.bot.get_user(list(ctx.bot.owner_ids)[0]) or ctx.bot.get_user(list(ctx.bot.owner_ids)[1])
             message.content = f"{ctx.prefix}cog update medicat"
             context = await ctx.bot.get_context(message)
             context.assume_yes = True
@@ -564,8 +581,10 @@ class Medicat(commands.Cog):
             traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__))
             if "USERPROFILE" in os.environ:
                 traceback_error = traceback_error.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+                traceback_error = traceback_error.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
             if "HOME" in os.environ:
                 traceback_error = traceback_error.replace(os.environ["HOME"], "{HOME}")
+                traceback_error = traceback_error.replace(os.environ["HOME"].lower(), "{HOME}")
             pages = []
             for page in pagify(traceback_error, shorten_by=15, page_length=1985):
                 pages.append(box(page, lang="py"))

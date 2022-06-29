@@ -106,7 +106,7 @@ class ReactToCommand(commands.Cog):
     async def on_message_delete(self, message: discord.Message):
         if not message.guild:
             return
-        config = await self.config.guild(message.guild).react_command.all()
+        config = await self.config.guild(message.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
             return
         del config[f"{message.channel.id}-{message.id}"]

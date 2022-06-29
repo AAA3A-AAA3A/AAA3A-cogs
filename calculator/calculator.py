@@ -54,15 +54,15 @@ class Calculator(commands.Cog):
         self.engine = Interpreter(blocks)
 
         self.x = {
-            "1":"¹",
-            "2":"²",
-            "3":"³",
-            "4":"⁴",
-            "5":"⁵",
-            "6":"⁶",
-            "7":"⁷",
-            "8":"⁸",
-            "9":"⁹"
+            "1": "¹",
+            "2": "²",
+            "3": "³",
+            "4": "⁴",
+            "5": "⁵",
+            "6": "⁶",
+            "7": "⁷",
+            "8": "⁸",
+            "9": "⁹"
         }
 
         self.buttons_dict = [
@@ -148,7 +148,7 @@ class Calculator(commands.Cog):
         for x in self.x:
             if self.x[x] in expression:
                 expression = expression.replace(self.x[x], f"^{x}")
-        if "sqrt" in expression and not "^" in expression:
+        if "sqrt" in expression and "^" not in expression:
             expression = expression.replace('^2', '**2')
             expression = expression.replace('^3', '**3')
             expression = expression.replace('^', '**')
@@ -201,9 +201,9 @@ class Calculator(commands.Cog):
             index = lst.index("|")
             lst.remove("|")
         except Exception:
-            index=0
+            index = 0
         lst.insert(index, new)
-        lst.insert(index+1, "|")
+        lst.insert(index + 1, "|")
         expression = "".join(lst)
         return expression
 
@@ -411,8 +411,8 @@ class Calculator(commands.Cog):
             buttons_one, buttons_two, buttons_three, buttons_four, buttons_five = await self.get_buttons(False)
             message = await ctx.send(embed=await self.get_embed(ctx, expression), components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five])
         if self.cogsutils.is_dpy2:
-            while True:
-                try:
+            try:
+                while True:
                     interaction, function_result = await view.wait_result()
                     if expression is None or expression == _("Error!").format(**locals()) or expression == "∞":
                         expression = None
@@ -432,7 +432,7 @@ class Calculator(commands.Cog):
                         if len(lst) > 1:
                             try:
                                 index = lst.index("|")
-                                lst.pop(index-1)
+                                lst.pop(index - 1)
                                 expression = "".join(lst)
                             except Exception:
                                 expression = None
@@ -446,7 +446,7 @@ class Calculator(commands.Cog):
                             try:
                                 index = lst.index("|")
                                 lst.remove("|")
-                                lst.insert(index-1, "|")
+                                lst.insert(index - 1, "|")
                             except Exception:
                                 lst = ["|"]
                         expression = "".join(lst)
@@ -462,7 +462,7 @@ class Calculator(commands.Cog):
                             try:
                                 index = lst.index("|")
                                 lst.remove("|")
-                                lst.insert(index+1, "|")
+                                lst.insert(index + 1, "|")
                             except Exception:
                                 lst = ["|"]
                         expression = "".join(lst)
@@ -474,20 +474,18 @@ class Calculator(commands.Cog):
                         expression = await self.input_formatter(expression, str(interaction.data["custom_id"]))
                     view = Buttons(timeout=config["time_max"], buttons=self.buttons_dict, members=[ctx.author.id])
                     await message.edit(embed=await self.get_embed(ctx, expression), view=view)
-                except TimeoutError:
-                    view = Buttons(timeout=config["time_max"], buttons=self.disabled_buttons_dict, members=[])
-                    await message.edit(view=view)
-                    return
+            except TimeoutError:
+                view = Buttons(timeout=config["time_max"], buttons=self.disabled_buttons_dict, members=[])
+                await message.edit(view=view)
+                return
         else:
             def check(inter):
-                return inter.guild == ctx.guild or inter.channel == ctx.channel or inter.message == message
-                # This makes sure nobody except the command sender can interact with the "menu"
-            while True:
-                try:
+                return inter.guild == ctx.guild and inter.channel == ctx.channel and inter.message == message
+            try:
+                while True:
                     inter = await ctx.wait_for_button_click(timeout=config["time_max"], check=check)
-                    # waiting for a reaction to be added - times out after x seconds, 30 in this
                     if not inter.author == ctx.author:
-                        await inter.respond(_("Only the author of the command `{ctx.prefix}calc` can interact with this message.").format(**locals()), ephemeral=True)
+                        await inter.respond(_("Only the author of the command `{ctx.prefix}{ctx.command.name}` can interact with this message.").format(**locals()), ephemeral=True)
                     else:
                         if expression is None or expression == _("Error!").format(**locals()) or expression == "∞":
                             expression = None
@@ -507,7 +505,7 @@ class Calculator(commands.Cog):
                             if len(lst) > 1:
                                 try:
                                     index = lst.index("|")
-                                    lst.pop(index-1)
+                                    lst.pop(index - 1)
                                     expression = "".join(lst)
                                 except Exception:
                                     expression = None
@@ -521,7 +519,7 @@ class Calculator(commands.Cog):
                                 try:
                                     index = lst.index("|")
                                     lst.remove("|")
-                                    lst.insert(index-1, "|")
+                                    lst.insert(index - 1, "|")
                                 except Exception:
                                     lst = ["|"]
                             expression = "".join(lst)
@@ -537,7 +535,7 @@ class Calculator(commands.Cog):
                                 try:
                                     index = lst.index("|")
                                     lst.remove("|")
-                                    lst.insert(index+1, "|")
+                                    lst.insert(index + 1, "|")
                                 except Exception:
                                     lst = ["|"]
                             expression = "".join(lst)
@@ -549,7 +547,7 @@ class Calculator(commands.Cog):
                             expression = await self.input_formatter(expression, str(inter.clicked_button.custom_id))
                         await message.edit(embed=await self.get_embed(ctx, expression))
                         await inter.respond(f"```{expression}```", ephemeral=True)
-                except asyncio.TimeoutError:
-                    buttons_one, buttons_two, buttons_three, buttons_four, buttons_five = await self.get_buttons(True)
-                    await message.edit(components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five])
-                    return
+            except asyncio.TimeoutError:
+                buttons_one, buttons_two, buttons_three, buttons_four, buttons_five = await self.get_buttons(True)
+                await message.edit(components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five])
+                return

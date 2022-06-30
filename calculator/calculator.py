@@ -473,7 +473,7 @@ class Calculator(commands.Cog):
                             expression = "|"
                         expression = await self.input_formatter(expression, str(interaction.data["custom_id"]))
                     view = Buttons(timeout=config["time_max"], buttons=self.buttons_dict, members=[ctx.author.id])
-                    await message.edit(embed=await self.get_embed(ctx, expression), view=view)
+                    await interaction.response.edit_message(embed=await self.get_embed(ctx, expression), view=view)
             except TimeoutError:
                 view = Buttons(timeout=config["time_max"], buttons=self.disabled_buttons_dict, members=[])
                 await message.edit(view=view)

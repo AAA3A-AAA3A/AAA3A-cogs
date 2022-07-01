@@ -113,7 +113,7 @@ class TicketTool(settings, commands.Cog):
             json = config[str(channel.id)]
         else:
             return None
-        ticket = Ticket.from_json(json, self.bot)
+        ticket: Ticket = Ticket.from_json(json, self.bot)
         ticket.bot = self.bot
         ticket.guild = ticket.bot.get_guild(ticket.guild)
         ticket.owner = ticket.guild.get_member(ticket.owner)
@@ -221,7 +221,7 @@ class TicketTool(settings, commands.Cog):
         for id in data:
             channel = member.guild.get_channel(int(id))
             if channel is not None:
-                ticket = await self.bot.get_cog("TicketTool").get_ticket(channel)
+                ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(channel)
                 if ticket.created_by == member and ticket.status == "open":
                     count += 1
             if channel is None:
@@ -258,7 +258,7 @@ class TicketTool(settings, commands.Cog):
                 if not config["enable"]:
                     return
             if ticket_check:
-                ticket = await ctx.bot.get_cog("TicketTool").get_ticket(ctx.channel)
+                ticket: Ticket = await ctx.bot.get_cog("TicketTool").get_ticket(ctx.channel)
                 if ticket is None:
                     return
                 if status is not None:
@@ -323,7 +323,7 @@ class TicketTool(settings, commands.Cog):
         if not category_open.permissions_for(ctx.guild.me).manage_channels or not category_close.permissions_for(ctx.guild.me).manage_channels:
             await ctx.send(_("The bot does not have `manage_channels` permission on the 'open' and 'close' categories to allow the ticket system to function properly. Please notify an administrator of this server.").format(**locals()))
             return
-        ticket = Ticket.instance(ctx, reason)
+        ticket: Ticket = Ticket.instance(ctx, reason)
         await ticket.create()
         await ctx.tick()
 
@@ -333,7 +333,7 @@ class TicketTool(settings, commands.Cog):
         """Export all the messages of an existing ticket in html format.
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         """
-        ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
+        ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         transcript = await chat_exporter.export(channel=ticket.channel, limit=None, tz_info="UTC", guild=ticket.guild, bot=ticket.bot)
         if transcript is not None:
             file = discord.File(io.BytesIO(transcript.encode()),
@@ -346,7 +346,7 @@ class TicketTool(settings, commands.Cog):
     async def command_open(self, ctx: commands.Context, *, reason: typing.Optional[str]="No reason provided."):
         """Open an existing ticket.
         """
-        ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
+        ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         ticket.reason = reason
         await ticket.open(ctx.author)
         await ctx.tick()
@@ -356,7 +356,7 @@ class TicketTool(settings, commands.Cog):
     async def command_close(self, ctx: commands.Context, confirmation: typing.Optional[bool]=None, *, reason: typing.Optional[str]="No reason provided."):
         """Close an existing ticket.
         """
-        ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
+        ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         config = await self.bot.get_cog("TicketTool").get_config(ticket.guild)
         if confirmation is None:
             config = await self.bot.get_cog("TicketTool").get_config(ticket.guild)
@@ -378,7 +378,7 @@ class TicketTool(settings, commands.Cog):
     async def command_rename(self, ctx: commands.Context, new_name: str, *, reason: typing.Optional[str]="No reason provided."):
         """Rename an existing ticket.
         """
-        ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
+        ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         ticket.reason = reason
         await ticket.rename(new_name, ctx.author)
         await ctx.tick()
@@ -390,7 +390,7 @@ class TicketTool(settings, commands.Cog):
         If a log channel is defined, an html file containing all the messages of this ticket will be generated.
         (Attachments are not supported, as they are saved with their Discord link)
         """
-        ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
+        ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         config = await self.bot.get_cog("TicketTool").get_config(ticket.guild)
         if not confirmation:
             embed: discord.Embed = discord.Embed()
@@ -409,7 +409,7 @@ class TicketTool(settings, commands.Cog):
     async def command_claim(self, ctx: commands.Context, member: typing.Optional[discord.Member]=None, *, reason: typing.Optional[str]="No reason provided."):
         """Claim an existing ticket.
         """
-        ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
+        ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         ticket.reason = reason
         if member is None:
             member = ctx.author
@@ -421,7 +421,7 @@ class TicketTool(settings, commands.Cog):
     async def command_unclaim(self, ctx: commands.Context, *, reason: typing.Optional[str]="No reason provided."):
         """Unclaim an existing ticket.
         """
-        ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
+        ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         ticket.reason = reason
         await ticket.unclaim_ticket(ticket.claim, ctx.author)
         await ctx.tick()
@@ -431,7 +431,7 @@ class TicketTool(settings, commands.Cog):
     async def command_owner(self, ctx: commands.Context, new_owner: discord.Member, *, reason: typing.Optional[str]="No reason provided."):
         """Change the owner of an existing ticket.
         """
-        ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
+        ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         ticket.reason = reason
         if new_owner is None:
             new_owner = ctx.author
@@ -443,7 +443,7 @@ class TicketTool(settings, commands.Cog):
     async def command_add(self, ctx: commands.Context, *members: discord.Member, reason: typing.Optional[str]="No reason provided."):
         """Add a member to an existing ticket.
         """
-        ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
+        ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         ticket.reason = reason
         members = [member for member in members]
         await ticket.add_member(members, ctx.author)
@@ -454,7 +454,7 @@ class TicketTool(settings, commands.Cog):
     async def command_remove(self, ctx: commands.Context, *members: discord.Member, reason: typing.Optional[str]="No reason provided."):
         """Remove a member to an existing ticket.
         """
-        ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
+        ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(ctx.channel)
         ticket.reason = reason
         members = [member for member in members]
         await ticket.remove_member(members, ctx.author)
@@ -472,7 +472,7 @@ class TicketTool(settings, commands.Cog):
                 permissions = interaction.channel.permissions_for(interaction.guild.me)
                 if not permissions.read_messages and not permissions.read_message_history:
                     return
-                ticket = await self.bot.get_cog("TicketTool").get_ticket(interaction.channel)
+                ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(interaction.channel)
                 if ticket is not None:
                     if ticket.status == "open":
                         async for message in interaction.channel.history(limit=1):
@@ -491,7 +491,7 @@ class TicketTool(settings, commands.Cog):
                 permissions = interaction.channel.permissions_for(interaction.guild.me)
                 if not permissions.read_messages and not permissions.read_message_history:
                     return
-                ticket = await self.bot.get_cog("TicketTool").get_ticket(interaction.channel)
+                ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(interaction.channel)
                 if ticket is not None:
                     if ticket.claim is None:
                         async for message in interaction.channel.history(limit=1):
@@ -530,7 +530,7 @@ class TicketTool(settings, commands.Cog):
                 permissions = inter.channel.permissions_for(inter.guild.me)
                 if not permissions.read_messages and not permissions.read_message_history:
                     return
-                ticket = await self.bot.get_cog("TicketTool").get_ticket(inter.channel)
+                ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(inter.channel)
                 if ticket is not None:
                     if ticket.status == "open":
                         async for message in inter.channel.history(limit=1):
@@ -548,7 +548,7 @@ class TicketTool(settings, commands.Cog):
                 permissions = inter.channel.permissions_for(inter.guild.me)
                 if not permissions.read_messages and not permissions.read_message_history:
                     return
-                ticket = await self.bot.get_cog("TicketTool").get_ticket(inter.channel)
+                ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(inter.channel)
                 if ticket is not None:
                     if ticket.claim is None:
                         async for message in inter.channel.history(limit=1):
@@ -592,7 +592,7 @@ class TicketTool(settings, commands.Cog):
         if config["close_on_leave"]:
             for channel in data:
                 channel = member.guild.get_channel(int(channel))
-                ticket = await self.bot.get_cog("TicketTool").get_ticket(channel)
+                ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(channel)
                 if ticket.owner == member and ticket.status == "open":
                     await ticket.close(ticket.guild.me)
         return
@@ -676,7 +676,7 @@ class Ticket:
 
     @staticmethod
     def instance(ctx, reason: typing.Optional[str]=_("No reason provided.").format(**locals())):
-        ticket = Ticket(
+        ticket: Ticket = Ticket(
             bot=ctx.bot,
             id=None,
             owner=ctx.author,
@@ -704,7 +704,7 @@ class Ticket:
 
     @staticmethod
     def from_json(json: dict, bot: Red):
-        ticket = Ticket(
+        ticket: Ticket = Ticket(
             bot=bot,
             id=json["id"],
             owner=json["owner"],
@@ -975,7 +975,10 @@ class Ticket:
         if ticket.logs_messages:
             if logschannel is not None:
                 embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, True, author=ticket.deleted_by, title=_("Ticket Deleted").format(**locals()), description=_("The ticket was deleted by {ticket.deleted_by}.").format(**locals()))
-                transcript = await chat_exporter.export(channel=ticket.channel, limit=None, tz_info="UTC", guild=ticket.guild, bot=ticket.bot)
+                try:
+                    transcript = await chat_exporter.export(channel=ticket.channel, limit=None, tz_info="UTC", guild=ticket.guild, bot=ticket.bot)
+                except Exception:
+                    transcript = None
                 if transcript is not None:
                     file = discord.File(io.BytesIO(transcript.encode()),
                                         filename=f"transcript-ticket-{ticket.id}.html")

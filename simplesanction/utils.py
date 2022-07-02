@@ -120,14 +120,14 @@ class utils(commands.Cog):
                         check=pred,
                     )
                     if msg.content.lower() == "cancel":
-                        await message.delete()
-                        await msg.delete()
+                        await CogsUtils().delete_message(message)
+                        await CogsUtils().delete_message(msg)
                         raise Timeout_or_Cancel
                     if msg.content.lower() == "not":
                         reason = "not"
                         return reason
-                    await message.delete()
-                    await msg.delete()
+                    await CogsUtils().delete_message(message)
+                    await CogsUtils().delete_message(msg)
                     if reason is None:
                         reason = msg.content
                         return reason
@@ -146,7 +146,7 @@ class utils(commands.Cog):
             embed.title = f"{title}"
             embed.description = f"{description}"
             embed.color = actual_color
-            embed.set_author(name=user, url=user.avatar_url, icon_url=user.display_avatar if CogsUtils().is_dpy2 else user.avatar_url)
+            embed.set_author(name=user, url=user.display_avatar if CogsUtils().is_dpy2 else user.avatar_url, icon_url=user.display_avatar if CogsUtils().is_dpy2 else user.avatar_url)
             message = await ctx.send(embed=embed)
             try:
                 pred = MessagePredicate.same_context(ctx)
@@ -156,11 +156,11 @@ class utils(commands.Cog):
                     check=pred,
                 )
                 if msg.content.lower() == "cancel":
-                    await message.delete()
-                    await msg.delete()
+                    await CogsUtils().delete_message(message)
+                    await CogsUtils().delete_message(msg)
                     raise Timeout_or_Cancel
-                await message.delete()
-                await msg.delete()
+                await CogsUtils().delete_message(message)
+                await CogsUtils().delete_message(msg)
                 duration = msg.content
                 return duration
             except asyncio.TimeoutError:
@@ -175,7 +175,7 @@ class utils(commands.Cog):
             embed.title = f"{title}"
             embed.description = f"{description}"
             embed.color = actual_color
-            embed.set_author(name=user, url=user.avatar_url, icon_url=user.display_avatar if CogsUtils().is_dpy2 else user.avatar_url)
+            embed.set_author(name=user, url=user.display_avatar if CogsUtils().is_dpy2 else user.avatar_url, icon_url=user.display_avatar if CogsUtils().is_dpy2 else user.avatar_url)
             if reason == "not":
                 embed.add_field(
                     inline=False,
@@ -210,22 +210,19 @@ class utils(commands.Cog):
                     # waiting for a reaction to be added - times out after x seconds, 30 in this
                     if str(reaction.emoji) == "✅":
                         end_reaction = True
-                        await message.delete()
+                        await CogsUtils().delete_message(message)
                         return
-                        break
                     elif str(reaction.emoji) == "❌":
                         end_reaction = True
-                        await message.delete()
+                        await CogsUtils().delete_message(message)
                         raise Timeout_or_Cancel
-                        break
                     else:
                         await message.remove_reaction(reaction, user)
                 except asyncio.TimeoutError:
                     if not end_reaction:
-                        await message.delete()
+                        await CogsUtils().delete_message(message)
                         await ctx.send(_("Timed out, please try again.").format(**locals()))
                         raise Timeout_or_Cancel
-                        break
 
     async def finish_message(ctx, finish_message, title, description, actual_thumbnail, actual_color, user, show_author, duration, reason):
         if finish_message:

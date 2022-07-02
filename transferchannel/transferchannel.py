@@ -128,4 +128,4 @@ class TransferChannel(commands.Cog):
                     else:
                         await ctx.send(msg1)
                         await ctx.send(message.content, files=files)
-        await ctx.send(_("{count} messages transfered from {source.mention} to {destination.mention}").format(**locals()))
+        await ctx.send(_("{count} messages transfered from {source.mention} to {destination.mention}.").format(**locals()))

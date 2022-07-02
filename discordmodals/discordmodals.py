@@ -250,7 +250,7 @@ class DiscordModals(commands.Cog):
           error: Error!
           done: Form submitted.
         ```
-        The `style`, 'emoji', `default`, `placeholder`, `channel`, `required`, `anonymous` and `messages` are not required.
+        The `style`, `emoji`, `default`, `placeholder`, `channel`, `required`, `anonymous` and `messages` are not required.
         """
         if not message.author == ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the button to work.").format(**locals()))

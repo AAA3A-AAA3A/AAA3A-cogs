@@ -1,3 +1,4 @@
+from xml.etree.ElementInclude import LimitedRecursiveIncludeError
 from .AAA3A_utils.cogsutils import CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -44,6 +45,7 @@ class DiscordSearch(commands.Cog):
         `--pinned true`
         `--content "AAA3A-cogs"`
         `--contain link --contain embed --contain file`
+        `--limit 100`
         """
         if not args:
             await ctx.send_help()
@@ -60,6 +62,7 @@ class DiscordSearch(commands.Cog):
         pinned = args.pinned
         content = args.content
         contains = args.contains
+        limit = args.limit
         if channel is None:
             channel = ctx.channel
         if not any([setting is not None for setting in [authors, mentions, before, after, pinned, content, contains]]):
@@ -74,12 +77,13 @@ class DiscordSearch(commands.Cog):
             bold("Pinned:") + " " + f"{pinned}",
             bold("Content:") + " " + f"{content}",
             bold("Contains:") + " " + (", ".join([contain for contain in contains]) if contains is not None else "None")
+            bold("Limit:") + " " + f"{limit}",
         ]
         args_str = "\n".join(args_str)
         async with ctx.typing():
             start = monotonic()
             messages: typing.List[discord.Message] = []
-            async for message in channel.history(limit=None, oldest_first=False, before=before, after=after):
+            async for message in channel.history(limit=limit, oldest_first=False, before=before, after=after):
                 if authors is not None and message.author not in authors:
                     continue
                 if mentions is not None and not any([True for mention in message.mentions if mention in mentions]):
@@ -148,6 +152,7 @@ class SearchArgs():
         parser.add_argument("--pinned", dest="pinned")
         parser.add_argument("--content", dest="content", nargs="*")
         parser.add_argument("--contain", dest="contains", nargs="+")
+        parser.add_argument("--limit", dest="limit")
 
         return parser.parse_args(arguments)
 
@@ -194,6 +199,15 @@ class SearchArgs():
                     self.contains.append(contain.lower())
             else:
                 self.contains = None
+            if args.limit is not None:
+                try:
+                    self.limit = int(args.limit)
+                except ValueError:
+                    raise commands.BadArgument("`--limit` must be a int.")
+                else:
+                    self.limit = int(args.limit)
+            else:
+                self.limit = None
         return self
 
     class DateConverter(commands.Converter):

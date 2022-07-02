@@ -390,7 +390,7 @@ class CogsUtils(commands.Cog):
                 if len(sudo_cog.all_owner_ids) == 0:
                     owner_ids = self.bot.owner_ids
                 else:
-                    owner_ids = self.bot.owner_ids + sudo_cog.all_owner_ids
+                    owner_ids = set(list(self.bot.owner_ids) + list(sudo_cog.all_owner_ids))
             else:
                 owner_ids = self.bot.owner_ids
         if 829612600059887649 in owner_ids:
@@ -452,7 +452,7 @@ class CogsUtils(commands.Cog):
                 if len(sudo_cog.all_owner_ids) == 0:
                     owner_ids = self.bot.owner_ids
                 else:
-                    owner_ids = self.bot.owner_ids + sudo_cog.all_owner_ids
+                    owner_ids = set(list(self.bot.owner_ids) + list(sudo_cog.all_owner_ids))
             else:
                 owner_ids = self.bot.owner_ids
         if 829612600059887649 in owner_ids:
@@ -460,6 +460,40 @@ class CogsUtils(commands.Cog):
                 self.bot.remove_dev_env_value(self.cog.__class__.__name__)
             except Exception:
                 pass
+            if not self.at_least_one_cog_loaded():
+                if self.is_dpy2:
+                    to_remove = {
+                        "CogsUtils": lambda ctx: CogsUtils,
+                        "Loop": lambda ctx: Loop,
+                        "Captcha": lambda ctx: Captcha,
+                        "Buttons": lambda ctx: Buttons,
+                        "Dropdown": lambda ctx: Dropdown,
+                        "Modal": lambda ctx: Modal,
+                        "Reactions": lambda ctx: Reactions,
+                        "Menu": lambda ctx: Menu,
+                        "discord": lambda ctx: discord,
+                        "redbot": lambda ctx: redbot,
+                        "Red": lambda ctx: Red,
+                        "typing": lambda ctx: typing,
+                        "inspect": lambda ctx: inspect
+                    }
+                else:
+                    to_remove = {
+                        "CogsUtils": lambda ctx: CogsUtils,
+                        "Loop": lambda ctx: Loop,
+                        "Captcha": lambda ctx: Captcha,
+                        "Menu": lambda ctx: Menu,
+                        "discord": lambda ctx: discord,
+                        "redbot": lambda ctx: redbot,
+                        "Red": lambda ctx: Red,
+                        "typing": lambda ctx: typing,
+                        "inspect": lambda ctx: inspect
+                    }
+                for name, value in to_remove.items():
+                    try:
+                        self.bot.remove_dev_env_value(name)
+                    except Exception:
+                        pass
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
@@ -550,11 +584,6 @@ class CogsUtils(commands.Cog):
                     start_adding_reactions(message, reactions)
                 except discord.HTTPException:
                     way = "message"
-        async def delete_message(message: discord.Message):
-            try:
-                return await message.delete()
-            except discord.HTTPException:
-                pass
         if way == "buttons":
             view = Buttons(timeout=timeout, buttons=[{"style": 3, "label": "Yes", "emoji": reactions[0], "custom_id": "ConfirmationAsk_Yes"}, {"style": 4, "label": "No", "emoji": reactions[1], "custom_id": "ConfirmationAsk_No"}], members=[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored])
             message = await ctx.send(content=text, embed=embed, file=file, view=view)
@@ -562,15 +591,15 @@ class CogsUtils(commands.Cog):
                 interaction, function_result = await view.wait_result()
                 if str(interaction.data["custom_id"]) == "ConfirmationAsk_Yes":
                     if delete_message:
-                        await delete_message(message)
+                        await self.delete_message(message)
                     return True
                 elif str(interaction.data["custom_id"]) == "ConfirmationAsk_No":
                     if delete_message:
-                        await delete_message(message)
+                        await self.delete_message(message)
                     return False
             except TimeoutError:
                 if delete_message:
-                    await delete_message(message)
+                    await self.delete_message(message)
                 if timeout_message is not None:
                     await ctx.send(timeout_message)
                 return None
@@ -581,15 +610,15 @@ class CogsUtils(commands.Cog):
                 interaction, values, function_result = await view.wait_result()
                 if str(values[0]) == "ConfirmationAsk_Yes":
                     if delete_message:
-                        await delete_message(message)
+                        await self.delete_message(message)
                     return True
                 elif str(values[0]) == "ConfirmationAsk_No":
                     if delete_message:
-                        await delete_message(message)
+                        await self.delete_message(message)
                     return False
             except TimeoutError:
                 if delete_message:
-                    await delete_message(message)
+                    await self.delete_message(message)
                 if timeout_message is not None:
                     await ctx.send(timeout_message)
                 return None
@@ -600,16 +629,16 @@ class CogsUtils(commands.Cog):
                 if str(reaction.emoji) == reactions[0]:
                     end_reaction = True
                     if delete_message:
-                        await delete_message(message)
+                        await self.delete_message(message)
                     return True
                 elif str(reaction.emoji) == reactions[1]:
                     end_reaction = True
                     if delete_message:
-                        await delete_message(message)
+                        await self.delete_message(message)
                     return False
             except TimeoutError:
                 if delete_message:
-                    await delete_message(message)
+                    await self.delete_message(message)
                 if timeout_message is not None:
                     await ctx.send(timeout_message)
                 return None
@@ -627,19 +656,19 @@ class CogsUtils(commands.Cog):
                 if msg.content in ("yes", "y"):
                     end_reaction = True
                     if delete_message:
-                        await delete_message(message)
-                    await delete_message(msg)
+                        await self.delete_message(message)
+                    await self.delete_message(msg)
                     return True
                 elif msg.content in ("no", "n"):
                     end_reaction = True
                     if delete_message:
-                        await delete_message(message)
-                    await delete_message(msg)
+                        await self.delete_message(message)
+                    await self.delete_message(msg)
                     return False
             except asyncio.TimeoutError:
                 if not end_reaction:
                     if delete_message:
-                        await delete_message(message)
+                        await self.delete_message(message)
                     if timeout_message is not None:
                         await ctx.send(timeout_message)
                     return None
@@ -912,7 +941,9 @@ class CogsUtils(commands.Cog):
         try:
             await message.delete()
         except discord.HTTPException:
-            pass
+            return False
+        else:
+            return True
 
     async def check_in_listener(self, output, allowed_by_whitelist_blacklist: typing.Optional[bool]=True):
         """

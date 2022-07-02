@@ -419,7 +419,7 @@ class Calculator(commands.Cog):
                     if interaction.data["custom_id"] == "result_button":
                         expression = f"{await self.calculate(expression, True)}"
                     elif interaction.data["custom_id"] == "exit_button":
-                        await message.delete()
+                        await self.cogsutils.delete_message(message)
                         return
                     elif interaction.data["custom_id"] == "clear_button":
                         expression = None
@@ -492,7 +492,7 @@ class Calculator(commands.Cog):
                         if inter.clicked_button.custom_id == "result_button":
                             expression = f"{await self.calculate(expression, True)}"
                         elif inter.clicked_button.custom_id == "exit_button":
-                            await message.delete()
+                            await self.cogsutils.delete_message(message)
                             return
                         elif inter.clicked_button.custom_id == "clear_button":
                             expression = None

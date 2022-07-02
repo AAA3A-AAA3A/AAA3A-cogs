@@ -58,43 +58,18 @@ class ClearChannel(commands.Cog):
         if not skip:
             embed: discord.Embed = discord.Embed()
             embed.title = _(":warning: - ClearChannel").format(**locals())
-            embed.description = _("{ctx.author.mention} | Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?").format(**locals())
+            embed.description = _("Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?").format(**locals())
             embed.color = 0xf00020
-            message = await ctx.send(embed=embed)
-            reactions = ["✅", "❌"]
-            start_adding_reactions(message, reactions)
-            end_reaction = False
-            def check(reaction, abc_author):
-                return abc_author == ctx.author and str(reaction.emoji) in reactions
-                # This makes sure nobody except the command sender can interact with the "menu"
-            while True:
-                try:
-                    reaction, abc_author = await ctx.bot.wait_for("reaction_add", timeout=30, check=check)
-                    # waiting for a reaction to be added - times out after x seconds, 30 in this
-                    if str(reaction.emoji) == "✅":
-                        end_reaction = True
-                        await message.delete()
-                        break
-                    elif str(reaction.emoji) == "❌":
-                        end_reaction = True
-                        await message.delete()
-                        return
-                        break
-                    else:
-                        await message.remove_reaction(reaction, abc_author)
-                except asyncio.TimeoutError:
-                    if not end_reaction:
-                        await message.delete()
-                        await ctx.send(_("Timed out, please try again.").format(**locals()))
-                        return
-                        break
+            if not await self.cogsutils.ConfirmationAsk(ctx, text=f"{ctx.author.mention}", embed=embed):
+                await self.cogsutils.delete_message(ctx.message)
+                return
 
-        new_channel = await old_channel.clone(reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id})").format(**locals()))
+        new_channel = await old_channel.clone(reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(**locals()))
         if actual_channel_delete:
-            await old_channel.delete(reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id})").format(**locals()))
+            await old_channel.delete(reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(**locals()))
         else:
-            await old_channel.edit(name=_("🗑️ Deleted-{old_channel.name}").format(**locals()), position=len(ctx.guild.channels), reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id})").format(**locals()))
-        await new_channel.edit(position=channel_position, reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id})").format(**locals()))
+            await old_channel.edit(name=_("🗑️-Deleted-{old_channel.name}").format(**locals()), position=len(ctx.guild.channels), reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(**locals()))
+        await new_channel.edit(position=channel_position, reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(**locals()))
         self.log.info(
             _("%s (%s) deleted ALL messages in channel %s (%s).").format(**locals()),
             ctx.author,

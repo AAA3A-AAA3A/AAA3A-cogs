@@ -215,7 +215,7 @@ class settings(commands.Cog):
 
     @configuration.command(usage="<true_or_false>")
     async def createonreact(self, ctx: commands.Context, state: bool):
-        """Enable or disable Create on React ``.
+        """Enable or disable Create on React.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
@@ -228,6 +228,22 @@ class settings(commands.Cog):
 
         await self.config.guild(ctx.guild).settings.create_on_react.set(state)
         await ctx.send(_("Create on React state registered: {state}.").format(**locals()))
+
+    @configuration.command(usage="<true_or_false>")
+    async def usercanclose(self, ctx: commands.Context, state: bool):
+        """Enable or disable User Can Close.
+
+        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
+        """
+        config = await self.config.guild(ctx.guild).settings.all()
+
+        actual_user_can_close = config["user_can_close"]
+        if actual_user_can_close is state:
+            await ctx.send(_("User Can Close is already set on {state}.").format(**locals()))
+            return
+
+        await self.config.guild(ctx.guild).settings.user_can_close.set(state)
+        await ctx.send(_("User Can Close state registered: {state}.").format(**locals()))
 
     @configuration.command(aliases=["colour", "col", "embedcolor", "embedcolour"], usage="<color_or_'none'>")
     async def color(self, ctx: commands.Context, *, color: typing.Optional[discord.Color]=None):

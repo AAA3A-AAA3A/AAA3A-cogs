@@ -56,6 +56,7 @@ class TicketTool(settings, commands.Cog):
                 "create_modlog": False,
                 "close_on_leave": False,
                 "create_on_react": False,
+                "user_can_close": True,
                 "color": 0x01d758,
                 "thumbnail": "http://www.quidd.it/wp-content/uploads/2017/10/Ticket-add-icon.png",
                 "audit_logs": False,
@@ -275,7 +276,8 @@ class TicketTool(settings, commands.Cog):
                     return True
                 if ticket_owner:
                     if ctx.author == ticket.owner:
-                        return True
+                        if not ctx.command.name == "close" or config["user_can_close"]:
+                            return True
                 if admin_role and config["admin_role"] is not None:
                     if ctx.author in config["admin_role"].members:
                         return True
@@ -383,7 +385,7 @@ class TicketTool(settings, commands.Cog):
         await ticket.rename(new_name, ctx.author)
         await ctx.tick()
 
-    @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
+    @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=False, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="delete")
     async def command_delete(self, ctx: commands.Context, confirmation: typing.Optional[bool]=False, *, reason: typing.Optional[str]="No reason provided."):
         """Delete an existing ticket.
@@ -462,9 +464,6 @@ class TicketTool(settings, commands.Cog):
 
     if CogsUtils().is_dpy2:
         async def on_button_interaction(self, view: Buttons, interaction: discord.Interaction):
-            # if "component_type" in interaction.data:
-            #     if not interaction.data["component_type"] == 2:
-            #         return
             if interaction.data["custom_id"] == "close_ticket_button":
                 permissions = interaction.channel.permissions_for(interaction.user)
                 if not permissions.read_messages and not permissions.send_messages:

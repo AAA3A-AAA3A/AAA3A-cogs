@@ -117,14 +117,14 @@ class TicketTool(settings, commands.Cog):
         ticket: Ticket = Ticket.from_json(json, self.bot)
         ticket.bot = self.bot
         ticket.guild = ticket.bot.get_guild(ticket.guild)
-        ticket.owner = ticket.guild.get_member(ticket.owner)
+        ticket.owner = ticket.guild.get_member(ticket.owner) or ticket.owner
         ticket.channel = ticket.guild.get_channel(ticket.channel)
         ticket.claim = ticket.guild.get_member(ticket.claim)
-        ticket.created_by = ticket.guild.get_member(ticket.created_by)
-        ticket.opened_by = ticket.guild.get_member(ticket.opened_by)
-        ticket.closed_by = ticket.guild.get_member(ticket.closed_by)
-        ticket.deleted_by = ticket.guild.get_member(ticket.deleted_by)
-        ticket.renamed_by = ticket.guild.get_member(ticket.renamed_by)
+        ticket.created_by = ticket.guild.get_member(ticket.created_by) or ticket.created_by
+        ticket.opened_by = ticket.guild.get_member(ticket.opened_by) or ticket.opened_by
+        ticket.closed_by = ticket.guild.get_member(ticket.closed_by) or ticket.closed_by
+        ticket.deleted_by = ticket.guild.get_member(ticket.deleted_by) or ticket.deleted_by
+        ticket.renamed_by = ticket.guild.get_member(ticket.renamed_by) or ticket.renamed_by
         members = ticket.members
         ticket.members = []
         for m in members:
@@ -152,7 +152,7 @@ class TicketTool(settings, commands.Cog):
         else:
             return f"{author.name} ({author.id}) - {reason}"
 
-    async def get_embed_important(self, ticket, more: bool, author: discord.Member, title: str, description: str):
+    async def get_embed_important(self, ticket:Ticket, more: bool, author: discord.Member, title: str, description: str):
         config = await self.bot.get_cog("TicketTool").get_config(ticket.guild)
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
@@ -171,7 +171,7 @@ class TicketTool(settings, commands.Cog):
         embed.add_field(
             inline=True,
             name=_("Owned by:").format(**locals()),
-            value=f"{ticket.owner.mention} ({ticket.owner.id})")
+            value=f"{ticket.owner.mention} ({ticket.owner.id})" if not isinstance(ticket.owner, int) else f"<@{ticket.owner}> ({ticket.owner})")
         embed.add_field(
             inline=True,
             name=_("Channel:").format(**locals()),
@@ -181,12 +181,12 @@ class TicketTool(settings, commands.Cog):
                 embed.add_field(
                     inline=False,
                     name=_("Closed by:").format(**locals()),
-                    value=f"{ticket.owner.mention} ({ticket.owner.id})")
+                    value=f"{ticket.closed_by.mention} ({ticket.closed_by.id})" if not isinstance(ticket.closed_by, int) else f"<@{ticket.closed_by}> ({ticket.closed_by})")
             if ticket.deleted_by is not None:
                 embed.add_field(
                     inline=True,
                     name=_("Deleted by:").format(**locals()),
-                    value=f"{ticket.deleted_by.mention} ({ticket.deleted_by.id})")
+                    value=f"{ticket.deleted_by.mention} ({ticket.deleted_by.id})" if not isinstance(ticket.deleted_by, int) else f"<@{ticket.deleted_by}> ({ticket.deleted_by})")
             if ticket.closed_at:
                 embed.add_field(
                     inline=False,
@@ -198,7 +198,7 @@ class TicketTool(settings, commands.Cog):
             value=f"{ticket.reason}")
         return embed
 
-    async def get_embed_action(self, ticket, author: discord.Member, action: str):
+    async def get_embed_action(self, ticket: Ticket, author: discord.Member, action: str):
         config = await self.bot.get_cog("TicketTool").get_config(ticket.guild)
         actual_color = config["color"]
         embed: discord.Embed = discord.Embed()
@@ -237,7 +237,7 @@ class TicketTool(settings, commands.Cog):
         else:
             return True
 
-    async def create_modlog(self, ticket, action: str, reason: str):
+    async def create_modlog(self, ticket: Ticket, action: str, reason: str):
         config = await self.bot.get_cog("TicketTool").get_config(ticket.guild)
         if config["create_modlog"]:
             case = await modlog.create_case(
@@ -275,9 +275,10 @@ class TicketTool(settings, commands.Cog):
                 if ctx.author.id in ctx.bot.owner_ids:
                     return True
                 if ticket_owner:
-                    if ctx.author == ticket.owner:
-                        if not ctx.command.name == "close" or config["user_can_close"]:
-                            return True
+                    if not isinstance(ticket.owner, int):
+                        if ctx.author == ticket.owner:
+                            if not ctx.command.name == "close" or config["user_can_close"]:
+                                return True
                 if admin_role and config["admin_role"] is not None:
                     if ctx.author in config["admin_role"].members:
                         return True
@@ -592,6 +593,8 @@ class TicketTool(settings, commands.Cog):
             for channel in data:
                 channel = member.guild.get_channel(int(channel))
                 ticket: Ticket = await self.bot.get_cog("TicketTool").get_ticket(channel)
+                if isinstance(ticket.owner, int):
+                    continue
                 if ticket.owner == member and ticket.status == "open":
                     await ticket.close(ticket.guild.me)
         return
@@ -737,7 +740,7 @@ class Ticket:
         channel = ticket.channel
         ticket.bot = None
         if ticket.owner is not None:
-            ticket.owner = int(ticket.owner.id)
+            ticket.owner = int(ticket.owner.id) if not isinstance(ticket.owner, int) else int(ticket.owner)
         if ticket.guild is not None:
             ticket.guild = int(ticket.guild.id)
         if ticket.channel is not None:
@@ -745,15 +748,15 @@ class Ticket:
         if ticket.claim is not None:
             ticket.claim = ticket.claim.id
         if ticket.created_by is not None:
-            ticket.created_by = int(ticket.created_by.id)
+            ticket.created_by = int(ticket.created_by.id) if not isinstance(ticket.created_by, int) else int(ticket.created_by)
         if ticket.opened_by is not None:
-            ticket.opened_by = int(ticket.opened_by.id)
+            ticket.opened_by = int(ticket.opened_by.id) if not isinstance(ticket.opened_by, int) else int(ticket.opened_by)
         if ticket.closed_by is not None:
-            ticket.closed_by = int(ticket.closed_by.id)
+            ticket.closed_by = int(ticket.closed_by.id) if not isinstance(ticket.closed_by, int) else int(ticket.closed_by)
         if ticket.deleted_by is not None:
-            ticket.deleted_by = int(ticket.deleted_by.id)
+            ticket.deleted_by = int(ticket.deleted_by.id) if not isinstance(ticket.deleted_by, int) else int(ticket.deleted_by)
         if ticket.renamed_by is not None:
-            ticket.renamed_by = int(ticket.renamed_by.id)
+            ticket.renamed_by = int(ticket.renamed_by.id) if not isinstance(ticket.renamed_by, int) else int(ticket.renamed_by)
         members = ticket.members
         ticket.members = []
         for m in members:
@@ -1104,14 +1107,14 @@ class Ticket:
         if member.bot:
             await ticket.channel.send(_("You cannot transfer ownership of a ticket to a bot.").format(**locals()))
             return
-        if config["ticket_role"] is not None:
-            if ticket.owner:
+        if not isinstance(ticket.owner, int):
+            if config["ticket_role"] is not None:
                 try:
                     ticket.owner.remove_roles(config["ticket_role"], reason=reason)
                 except discord.HTTPException:
                     pass
-        ticket.remove_member(ticket.owner, author=None)
-        ticket.add_member(ticket.owner, author=None)
+            ticket.remove_member(ticket.owner, author=None)
+            ticket.add_member(ticket.owner, author=None)
         ticket.owner = member
         ticket.remove_member(ticket.owner, author=None)
         overwrites = ticket.channel.overwrites
@@ -1126,11 +1129,10 @@ class Ticket:
         )
         await ticket.channel.edit(overwrites=overwrites, reason=reason)
         if config["ticket_role"] is not None:
-            if ticket.owner:
-                try:
-                    ticket.owner.add_roles(config["ticket_role"], reason=reason)
-                except discord.HTTPException:
-                    pass
+            try:
+                ticket.owner.add_roles(config["ticket_role"], reason=reason)
+            except discord.HTTPException:
+                pass
         if ticket.logs_messages:
             embed = await ticket.bot.get_cog("TicketTool").get_embed_action(ticket, author=author, action=_("Owner Modified.").format(**locals()))
             await ticket.channel.send(embed=embed)
@@ -1150,9 +1152,10 @@ class Ticket:
                 if member.bot:
                     await ticket.channel.send(_("You cannot add a bot to a ticket. ({member})").format(**locals()))
                     continue
-                if member == ticket.owner:
-                    await ticket.channel.send(_("This member is already the owner of this ticket. ({member})").format(**locals()))
-                    continue
+                if not isinstance(ticket.owner, int):
+                    if member == ticket.owner:
+                        await ticket.channel.send(_("This member is already the owner of this ticket. ({member})").format(**locals()))
+                        continue
                 if member in admin_role_members:
                     await ticket.channel.send(_("This member is an administrator for the ticket system. He will always have access to the ticket anyway. ({member})").format(**locals()))
                     continue
@@ -1190,9 +1193,10 @@ class Ticket:
                 if member.bot:
                     await ticket.channel.send(_("You cannot remove a bot to a ticket ({member}).").format(locals()))
                     continue
-                if member == ticket.owner:
-                    await ticket.channel.send(_("You cannot remove the owner of this ticket. ({member})").format(**locals()))
-                    continue
+                if not isinstance(ticket.owner, int):
+                    if member == ticket.owner:
+                        await ticket.channel.send(_("You cannot remove the owner of this ticket. ({member})").format(**locals()))
+                        continue
                 if member in admin_role_members:
                     await ticket.channel.send(_("This member is an administrator for the ticket system. He will always have access to the ticket. ({member})").format(**locals()))
                     continue

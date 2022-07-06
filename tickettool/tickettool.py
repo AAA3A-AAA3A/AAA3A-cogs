@@ -152,7 +152,7 @@ class TicketTool(settings, commands.Cog):
         else:
             return f"{author.name} ({author.id}) - {reason}"
 
-    async def get_embed_important(self, ticket:Ticket, more: bool, author: discord.Member, title: str, description: str):
+    async def get_embed_important(self, ticket, more: bool, author: discord.Member, title: str, description: str):
         config = await self.bot.get_cog("TicketTool").get_config(ticket.guild)
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
@@ -198,7 +198,7 @@ class TicketTool(settings, commands.Cog):
             value=f"{ticket.reason}")
         return embed
 
-    async def get_embed_action(self, ticket: Ticket, author: discord.Member, action: str):
+    async def get_embed_action(self, ticket, author: discord.Member, action: str):
         config = await self.bot.get_cog("TicketTool").get_config(ticket.guild)
         actual_color = config["color"]
         embed: discord.Embed = discord.Embed()
@@ -237,7 +237,7 @@ class TicketTool(settings, commands.Cog):
         else:
             return True
 
-    async def create_modlog(self, ticket: Ticket, action: str, reason: str):
+    async def create_modlog(self, ticket, action: str, reason: str):
         config = await self.bot.get_cog("TicketTool").get_config(ticket.guild)
         if config["create_modlog"]:
             case = await modlog.create_case(

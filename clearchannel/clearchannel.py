@@ -42,7 +42,7 @@ class ClearChannel(commands.Cog):
     @commands.guildowner()
     @commands.bot_has_permissions(manage_channels=True)
     async def cleanup_channel(
-        self, ctx: commands.Context, skip: bool=False
+        self, ctx: commands.Context, confirmation: bool=False
     ):
         """Delete ALL messages from the current channel by duplicating it and then deleting it.
         For security reasons, only the server owner and the bot owner can use the command. Use the "permissions" tool for more options.
@@ -55,7 +55,7 @@ class ClearChannel(commands.Cog):
         old_channel = ctx.channel
         channel_position = old_channel.position
 
-        if not skip:
+        if not confirmation:
             embed: discord.Embed = discord.Embed()
             embed.title = _(":warning: - ClearChannel").format(**locals())
             embed.description = _("Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?").format(**locals())

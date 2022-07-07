@@ -139,3 +139,24 @@ class EditFile(commands.Cog):
         message = "```" + message + "```"
         for m in pagify(message):
             await ctx.send(m)
+
+    @editfile.command()
+    async def delete(self, ctx: commands.Context, *, path: Path):
+        """Delete a file.
+        """
+        path = str(path)
+        if "USERPROFILE" in os.environ:
+            path = path.replace("{USERPROFILE}", os.environ["USERPROFILE"])
+            path = path.replace("{USERPROFILE}".lower(), os.environ["USERPROFILE"])
+        if "HOME" in os.environ:
+            path = path.replace("{HOME}", os.environ["HOME"])
+            path = path.replace("{HOME}".lower(), os.environ["HOME"])
+        path = Path(path)
+        try:
+            path.unlink()
+        except FileNotFoundError:
+            await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
+        except IsADirectoryError:
+            await ctx.send(_("The path you specified refers to a directory, not a file.").format(**locals()))
+        else:
+            await ctx.send(_("The `{path}` file has been deleted.").format(**locals()))

@@ -21,7 +21,7 @@ A cog to manage a ticket system!
 Commands
 --------
 
-Here are all the commands included in this cog (32):
+Here are all the commands included in this cog (33):
 
 * ``[p]setticket``
  Configure TicketTool for your server.
@@ -40,7 +40,7 @@ Here are all the commands included in this cog (32):
 * ``[p]setticket color <color_or_'none'>``
  Set a colour fort the embed.
 * ``[p]setticket createonreact <true_or_false>``
- Enable or disable Create on React ``.
+ Enable or disable Create on React.
 * ``[p]setticket enable <true_or_false>``
  Enable or disable Ticket System
 * ``[p]setticket logschannel <text_channel_or_'none'>``
@@ -61,11 +61,13 @@ Here are all the commands included in this cog (32):
  Set a thumbnail fort the embed.
 * ``[p]setticket ticketrole <role_or_'none'>``
  Set a role for creaters of a ticket.
+* ``[p]setticket usercanclose <true_or_false>``
+ Enable or disable User Can Close.
 * ``[p]setticket viewrole <role_or_'none'>``
  Set a role for viewers of tickets.
 * ``[p]ticket``
  Commands for using the ticket system.
-* ``[p]ticket add <member> [reason=No reason provided.]``
+* ``[p]ticket add [members...] [reason=No reason provided.]``
  Add a member to an existing ticket.
 * ``[p]ticket claim [member=None] [reason=No reason provided.]``
  Claim an existing ticket.
@@ -81,7 +83,7 @@ Here are all the commands included in this cog (32):
  Open an existing ticket.
 * ``[p]ticket owner <new_owner> [reason=No reason provided.]``
  Change the owner of an existing ticket.
-* ``[p]ticket remove <member> [reason=No reason provided.]``
+* ``[p]ticket remove [members...] [reason=No reason provided.]``
  Remove a member to an existing ticket.
 * ``[p]ticket rename <new_name> [reason=No reason provided.]``
  Rename an existing ticket.

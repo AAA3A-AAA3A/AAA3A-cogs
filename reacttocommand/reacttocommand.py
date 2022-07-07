@@ -72,6 +72,8 @@ class ReactToCommand(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
         guild = self.bot.get_guild(payload.guild_id)
+        if guild is None:
+            return
         channel = guild.get_channel(payload.channel_id)
         payload.member = guild.get_member(payload.user_id)
         if payload.member is None:

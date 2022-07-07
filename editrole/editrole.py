@@ -3,6 +3,7 @@ from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
+import typing  # isort:skip
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
@@ -45,7 +46,7 @@ class EditRole(commands.Cog):
         if not await self.check_role(ctx, role):
             return
         try:
-            await role.edit(name=name, reason=f"{ctx.author.display_name} ({ctx.author.id}) has changed the role {role.name} ({role.id}).")
+            await role.edit(name=name, reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).")
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
@@ -58,7 +59,7 @@ class EditRole(commands.Cog):
         if not await self.check_role(ctx, role):
             return
         try:
-            await role.edit(color=colour, reason=f"{ctx.author.display_name} ({ctx.author.id}) has changed the role {role.name} ({role.id}).")
+            await role.edit(color=colour, reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).")
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
@@ -71,7 +72,7 @@ class EditRole(commands.Cog):
         if not await self.check_role(ctx, role):
             return
         try:
-            await role.edit(mentionable=mentionable, reason=f"{ctx.author.display_name} ({ctx.author.id}) has changed the role {role.name} ({role.id}).")
+            await role.edit(mentionable=mentionable, reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).")
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
@@ -85,16 +86,16 @@ class EditRole(commands.Cog):
         """
         if not await self.check_role(ctx, role):
             return
-        max_guild_roles_position = len(ctx.guild.roles) - 1
-        if not position > 0 or not position < max_guild_roles_position:
+        max_guild_roles_position = len(ctx.guild.roles)
+        if not position > 0 or not position < max_guild_roles_position + 1:
             await ctx.send(_("The indicated position must be between 1 and {max_guild_roles_position}.").format(**locals()))
             return
-        l = [x for x in range(0, max_guild_roles_position)]
+        l = [x for x in range(0, max_guild_roles_position - 1)]
         l.reverse()
         position = l[position - 1]
         position = position + 1
         try:
-            await role.edit(position=position, reason=f"{ctx.author.display_name} ({ctx.author.id}) has changed the role {role.name} ({role.id}).")
+            await role.edit(position=position, reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).")
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
@@ -116,7 +117,28 @@ class EditRole(commands.Cog):
             return
         permissions = discord.Permissions(permissions=permissions)
         try:
-            await role.edit(permissions=permissions, reason=f"{ctx.author.display_name} ({ctx.author.id}) has changed the role {role.name} ({role.id}).")
+            await role.edit(permissions=permissions, reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).")
+        except discord.HTTPException:
+            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+        else:
+            await ctx.tick()
+
+    @editrole.command()
+    async def delete(self, ctx: commands.Context, role: discord.Role, confirmation: typing.Optional[bool]=False):
+        """Delete role.
+        """
+        if not await self.check_role(ctx, role):
+            return
+        if not confirmation:
+            embed: discord.Embed = discord.Embed()
+            embed.title = _(":warning: - Delete role").format(**locals())
+            embed.description = _("Do you really want to delete the role {role.mention} ({role.id})?").format(**locals())
+            embed.color = 0xf00020
+            if not await self.cogsutils.ConfirmationAsk(ctx, text=f"{ctx.author.mention}", embed=embed):
+                await self.cogsutils.delete_message(ctx.message)
+                return
+        try:
+            await role.delete(reason=f"{ctx.author} ({ctx.author.id}) has deleted the role {role.name} ({role.id}).")
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:

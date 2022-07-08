@@ -24,10 +24,10 @@ class EditTextChannel(commands.Cog):
 
     async def check_text_channel(self, ctx: commands.Context, channel: discord.TextChannel):
         if not self.cogsutils.check_permissions_for(channel=channel, user=ctx.guild.me, check=["manage_channel"]):
-            await ctx.send(_("I can not let you edit {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission.").format(**locals()), allowed_mentions=None)
+            await ctx.send(_("I can not let you edit the text channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission.").format(**locals()))
             return False
         if not self.cogsutils.check_permissions_for(channel=channel, user=ctx.author, check=["manage_channel"]) and ctx.author.id not in ctx.bot.owner_ids:
-            await ctx.send(_("I can not edit {channel.mention} ({channel.id}) because you don't have the `manage_channel` permission.").format(**locals()), allowed_mentions=None)
+            await ctx.send(_("I can not edit the text channel {channel.mention} ({channel.id}) because you don't have the `manage_channel` permission.").format(**locals()))
             return False
         return True
 
@@ -42,6 +42,8 @@ class EditTextChannel(commands.Cog):
     async def name(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], name: str):
         """Edit text channel name.
         """
+        if channel is None:
+            channel = ctx.channel
         if not await self.check_text_channel(ctx, channel):
             return
         try:
@@ -155,7 +157,7 @@ class EditTextChannel(commands.Cog):
             await ctx.tick()
 
     @edittextchannel.command()
-    async def type(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], type: int):
+    async def type(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], type: typing.Literal[0, 5]):
         """Edit text channel type.
 
         `text`: 0
@@ -165,14 +167,6 @@ class EditTextChannel(commands.Cog):
         if channel is None:
             channel = ctx.channel
         if not await self.check_text_channel(ctx, channel):
-            return
-        try:
-            type = int(type)
-        except ValueError:
-            await ctx.send_help()
-            return
-        if type not in [0, 5]:
-            await ctx.send_help()
             return
         type = discord.ChannelType(type)
         try:
@@ -216,7 +210,7 @@ class EditTextChannel(commands.Cog):
                 await self.cogsutils.delete_message(ctx.message)
                 return
         try:
-            await channel.delete(reason=f"{ctx.author} ({ctx.author.id}) has deleted the text text channel #{channel.name} ({channel.id}).")
+            await channel.delete(reason=f"{ctx.author} ({ctx.author.id}) has deleted the text channel #{channel.name} ({channel.id}).")
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:

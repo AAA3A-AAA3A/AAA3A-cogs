@@ -72,14 +72,14 @@ class EditTextChannel(commands.Cog):
     async def position(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], *, position: int):
         """Edit text channel position.
         
-        Warning: Only textual channels are taken into account. Channel 1 is the highest positioned channel.
+        Warning: Only text channels are taken into account. Channel 1 is the highest positioned text channel.
         Channels cannot be moved to a position that takes them out of their current category.
         """
         if channel is None:
             channel = ctx.channel
         if not await self.check_text_channel(ctx, channel):
             return
-        max_guild_text_channels_position = len([c for c in ctx.guild.channels if isinstance(c, discord.TextChannel)]) + 1
+        max_guild_text_channels_position = len([c for c in ctx.guild.channels if isinstance(c, discord.TextChannel)])
         if not position > 0 or not position < max_guild_text_channels_position + 1:
             await ctx.send(_("The indicated position must be between 1 and {max_guild_text_channels_position}.").format(**locals()))
             return

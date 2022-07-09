@@ -812,7 +812,7 @@ class CogsUtils(commands.Cog):
                         return False
         return True
 
-    def create_loop(self, function, name: typing.Optional[str]=None, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None, limit_exception: typing.Optional[int]=None):
+    def create_loop(self, function, name: typing.Optional[str]=None, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, wait_raw: typing.Optional[bool]=False, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None, limit_exception: typing.Optional[int]=None):
         """
         Create a loop like Loop, but with default values and loop object recording functionality.
         """
@@ -820,7 +820,7 @@ class CogsUtils(commands.Cog):
             name = f"{self.cog.__class__.__name__}"
         if datetime.timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds).total_seconds() == 0:
             seconds = 900  # 15 minutes
-        loop = Loop(cogsutils=self, name=name, function=function, days=days, hours=hours, minutes=minutes, seconds=seconds, function_args=function_args, limit_count=limit_count, limit_date=limit_date, limit_exception=limit_exception)
+        loop = Loop(cogsutils=self, name=name, function=function, days=days, hours=hours, minutes=minutes, seconds=seconds, function_args=function_args, wait_raw=wait_raw, limit_count=limit_count, limit_date=limit_date, limit_exception=limit_exception)
         if f"{loop.name}" in self.loops:
             self.loops[f"{loop.name}"].stop_all()
         self.loops[f"{loop.name}"] = loop
@@ -1088,28 +1088,30 @@ class Loop():
     Create a loop, with many features.
     Thanks to Vexed01 on GitHub! (https://github.com/Vexed01/Vex-Cogs/blob/master/timechannel/loop.py and https://github.com/Vexed01/vex-cog-utils/vexutils/loop.py)
     """
-    def __init__(self, cogsutils: CogsUtils, name: str, function, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None, limit_exception: typing.Optional[int]=None) -> None:
+    def __init__(self, cogsutils: CogsUtils, name: str, function, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, wait_raw: typing.Optional[bool]=False, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None, limit_exception: typing.Optional[int]=None) -> None:
         self.cogsutils: CogsUtils = cogsutils
 
         self.name: str = name
         self.function = function
         self.function_args = function_args
         self.interval: float = datetime.timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds).total_seconds()
+        self.wait_raw = wait_raw
         self.limit_count: int = limit_count
         self.limit_date: datetime.datetime = limit_date
         self.limit_exception: int = limit_exception
         self.stop_manually: bool = False
-        self.stop: bool = False
 
+        self.start_datetime: datetime.datetime = datetime.datetime.utcnow()
         self.expected_interval = datetime.timedelta(seconds=self.interval)
-        self.iter_count: int = 0
-        self.iter_exception: int = 0
-        self.currently_running: bool = False  # whether the loop is running or sleeping
+        self.last_iteration: typing.Optional[datetime.datetime] = None
+        self.next_iteration: typing.Optional[datetime.datetime] = None
+        self.currently_running: bool = False  # whether the function is running 
+        self.iteration_count: int = 0
         self.last_result = None
+        self.iteration_exception: int = 0
         self.last_exc: str = "No exception has occurred yet."
         self.last_exc_raw: typing.Optional[BaseException] = None
-        self.last_iter: typing.Optional[datetime.datetime] = None
-        self.next_iter: typing.Optional[datetime.datetime] = None
+        self.stop: bool = False
 
         self.loop = self.cogsutils.bot.loop.create_task(self.loop())
 
@@ -1120,15 +1122,16 @@ class Loop():
         else:
             self.cogsutils.bot.loop.create_task(self.loop())
 
-    async def wait_until_iter(self) -> None:
+    async def wait_until_iteration(self) -> None:
+        """Sleep during the raw interval."""
         now = datetime.datetime.utcnow()
         time = now.timestamp()
         time = math.ceil(time / self.interval) * self.interval
-        next_iter = datetime.datetime.fromtimestamp(time) - now
-        seconds_to_sleep = (next_iter).total_seconds()
+        next_iteration = datetime.datetime.fromtimestamp(time) - now
+        seconds_to_sleep = (next_iteration).total_seconds()
         if not self.interval <= 60:
             if hasattr(self.cogsutils.cog, "log"):
-                self.cogsutils.cog.log.debug(f"Sleeping for {seconds_to_sleep} seconds until next iter...")
+                self.cogsutils.cog.log.debug(f"Sleeping for {seconds_to_sleep} seconds until {self.name} loop next iteration ({self.iteration_count + 1})...")
         await asyncio.sleep(seconds_to_sleep)
 
     async def loop(self) -> None:
@@ -1136,64 +1139,63 @@ class Loop():
         await asyncio.sleep(1)
         if hasattr(self.cogsutils.cog, "log"):
             self.cogsutils.cog.log.debug(f"{self.name} loop has started.")
-        if float(self.interval) % float(3600) == 0:
-            try:
-                start = monotonic()
-                self.iter_start()
-                self.last_result = await self.function(**self.function_args)
-                self.iter_finish()
-                end = monotonic()
-                total = round(end - start, 1)
-                if not self.interval <= 60:
-                    if hasattr(self.cogsutils.cog, "log"):
-                        self.cogsutils.cog.log.debug(f"{self.name} initial loop finished in {total}s.")
-            except Exception as e:
-                if hasattr(self.cogsutils.cog, "log"):
-                    self.cogsutils.cog.log.exception(f"Something went wrong in the {self.name} loop.", exc_info=e)
-                self.iter_error(e)
-                self.iter_exception += 1
-            # both iter_finish and iter_error set next_iter as not None
-            assert self.next_iter is not None
-            self.next_iter = self.next_iter.replace(
-                minute=0
-            )  # ensure further iterations are on the hour
-            if await self.maybe_stop():
-                return
-            await self.sleep_until_next()
         while True:
             try:
                 start = monotonic()
-                self.iter_start()
+                self.iteration_start()
                 self.last_result = await self.function(**self.function_args)
-                self.iter_finish()
+                self.iteration_finish()
                 end = monotonic()
                 total = round(end - start, 1)
-                if not self.interval <= 60:
-                    if hasattr(self.cogsutils.cog, "log"):
-                        self.cogsutils.cog.log.debug(f"{self.name} iteration finished in {total}s.")
+                if hasattr(self.cogsutils.cog, "log"):
+                    if self.iteration_count == 1:
+                        self.cogsutils.cog.log.debug(f"{self.name} initial iteration finished in {total}s ({self.iteration_count}).")
+                    else:
+                        if not self.interval <= 60:
+                            self.cogsutils.cog.log.debug(f"{self.name} iteration finished in {total}s ({self.iteration_count}).")
             except Exception as e:
                 if hasattr(self.cogsutils.cog, "log"):
-                    self.cogsutils.cog.log.exception(f"Something went wrong in the {self.name} loop.", exc_info=e)
-                self.iter_error(e)
-            if await self.maybe_stop():
+                    if self.iteration_count == 1:
+                        self.cogsutils.cog.log.exception(f"Something went wrong in the {self.name} loop ({self.iteration_count}).", exc_info=e)
+                    else:
+                        self.cogsutils.cog.log.exception(f"Something went wrong in the {self.name} loop iteration ({self.iteration_count}).", exc_info=e)
+                self.iteration_error(e)
+            if self.maybe_stop():
                 return
-            if float(self.interval) % float(3600) == 0:
-                await self.sleep_until_next()
-            else:
+            if not self.wait_raw:
+                # both iteration_finish and iteration_error set next_iteration as not None
+                assert self.next_iteration is not None
+                if float(self.interval) % float(3600) == 0:
+                    self.next_iteration = self.next_iteration.replace(
+                        minute=0,
+                        second=0,
+                        microsecond=0
+                    )  # ensure further iterations are on the hour
+                elif float(self.interval) % float(60) == 0:
+                    self.next_iteration = self.next_iteration.replace(
+                        second=0,
+                        microsecond=0
+                    )  # ensure further iterations are on the minute
+                else:
+                    self.next_iteration = self.next_iteration.replace(
+                        microsecond=0
+                    )  # ensure further iterations are on the second
                 if not self.interval == 0:
-                    await self.wait_until_iter()
+                    await self.wait_until_iteration()
+            else:
+                await self.sleep_until_next()
 
-    async def maybe_stop(self):
+    def maybe_stop(self):
         if self.stop_manually:
             self.stop_all()
         if self.limit_count is not None:
-            if self.iter_count >= self.limit_count:
+            if self.iteration_count >= self.limit_count:
                 self.stop_all()
         if self.limit_date is not None:
             if datetime.datetime.timestamp(datetime.datetime.now()) >= datetime.datetime.timestamp(self.limit_date):
                 self.stop_all()
         if self.limit_exception:
-            if self.iter_exception >= self.limit_exception:
+            if self.iteration_exception >= self.limit_exception:
                 self.stop_all()
         if self.stop:
             return True
@@ -1201,18 +1203,20 @@ class Loop():
 
     def stop_all(self):
         self.stop = True
-        self.next_iter = None
+        self.next_iteration = None
         self.loop.cancel()
         if f"{self.name}" in self.cogsutils.loops:
             if self.cogsutils.loops[f"{self.name}"] == self:
                 del self.cogsutils.loops[f"{self.name}"]
+        if hasattr(self.cogsutils.cog, "log"):
+            self.cogsutils.cog.log.debug(f"{self.name} loop has been stopped after {self.iteration_count} iterations.")
         return self
 
     def __repr__(self) -> str:
         return (
-            f"<friendly_name={self.name} iter_count={self.iter_count} "
-            f"currently_running={self.currently_running} last_iter={self.last_iter} "
-            f"next_iter={self.next_iter} integrity={self.integrity}>"
+            f"<friendly_name={self.name} iteration_count={self.iteration_count} "
+            f"currently_running={self.currently_running} last_iteration={self.last_iteration} "
+            f"next_iteration={self.next_iteration} integrity={self.integrity}>"
         )
 
     @property
@@ -1220,9 +1224,9 @@ class Loop():
         """
         If the loop is running on time (whether or not next expected iteration is in the future)
         """
-        if self.next_iter is None:  # not started yet
+        if self.next_iteration is None:  # not started yet
             return False
-        return self.next_iter > datetime.datetime.utcnow()
+        return self.next_iteration > datetime.datetime.utcnow()
 
     @property
     def until_next(self) -> float:
@@ -1231,10 +1235,10 @@ class Loop():
         iteration and the interval.
         If the expected time of the next iteration is in the past, this will return `0.0`
         """
-        if self.next_iter is None:  # not started yet
+        if self.next_iteration is None:  # not started yet
             return 0.0
 
-        raw_until_next = (self.next_iter - datetime.datetime.utcnow()).total_seconds()
+        raw_until_next = (self.next_iteration - datetime.datetime.utcnow()).total_seconds()
         if raw_until_next > self.expected_interval.total_seconds():  # should never happen
             return self.expected_interval.total_seconds()
         elif raw_until_next > 0.0:
@@ -1246,20 +1250,20 @@ class Loop():
         """Sleep until the next iteration. Basically an "all-in-one" version of `until_next`."""
         await asyncio.sleep(self.until_next)
 
-    def iter_start(self) -> None:
+    def iteration_start(self) -> None:
         """Register an iteration as starting."""
-        self.iter_count += 1
+        self.iteration_count += 1
         self.currently_running = True
-        self.last_iter = datetime.datetime.utcnow()
-        self.next_iter = datetime.datetime.utcnow() + self.expected_interval
+        self.last_iteration = datetime.datetime.utcnow()
+        self.next_iteration = datetime.datetime.utcnow() + self.expected_interval
         # this isn't accurate, it will be "corrected" when finishing is called
 
-    def iter_finish(self) -> None:
+    def iteration_finish(self) -> None:
         """Register an iteration as finished successfully."""
         self.currently_running = False
         # now this is accurate. imo its better to have something than nothing
 
-    def iter_error(self, error: BaseException) -> None:
+    def iteration_error(self, error: BaseException) -> None:
         """Register an iteration's error."""
         self.currently_running = False
         self.last_exc_raw = error
@@ -1269,32 +1273,48 @@ class Loop():
 
     def get_debug_embed(self) -> discord.Embed:
         """Get an embed with infomation on this loop."""
-        table = Table("Key", "Value")
+        now: datetime.datetime = datetime.datetime.utcnow()
 
-        table.add_row("expected_interval", str(self.expected_interval))
-        table.add_row("iter_count", str(self.iter_count))
-        table.add_row("currently_running", str(self.currently_running))
-        table.add_row("last_iterstr", str(self.last_iter) or "Loop not started")
-        table.add_row("next_iterstr", str(self.next_iter) or "Loop not started")
+        raw_table = Table("Key", "Value")
+        raw_table.add_row("expected_interval", str(self.expected_interval))
+        raw_table.add_row("iteration_count", str(self.iteration_count))
+        raw_table.add_row("currently_running", str(self.currently_running))
+        raw_table.add_row("next_iteration", str(self.last_iteration))
+        raw_table.add_row("next_iteration", str(self.next_iteration))
+        raw_table_str = no_colour_rich_markup(raw_table)
 
-        raw_table_str = no_colour_rich_markup(table)
-
-        now = datetime.datetime.utcnow()
-
-        if self.next_iter and self.last_iter:
-            table = Table("Key", "Value")
-            table.add_row("Seconds until next", str((self.next_iter - now).total_seconds()))
-            table.add_row("Seconds since last", str((now - self.last_iter).total_seconds()))
-            processed_table_str = no_colour_rich_markup(table)
+        if self.next_iteration and self.last_iteration:
+            processed_table = Table("Key", "Value")
+            processed_table.add_row("Seconds until next", str((self.next_iteration - now).total_seconds()))
+            processed_table.add_row("Seconds since last", str((now - self.last_iteration).total_seconds()))
+            processed_table.add_row("Raw interval", str((self.next_iteration - now).total_seconds() + (now - self.last_iteration).total_seconds()))
+            processed_table_str = no_colour_rich_markup(processed_table)
         else:
             processed_table_str = "Loop hasn't started yet."
 
+        datetime_table = Table("Key", "Value")
+        datetime_table.add_row("Start date-time", str(self.start_datetime))
+        datetime_table.add_row("Now date-time", str(now))
+        datetime_table.add_row("Runtime", (str(now - self.start_datetime) + "\n" + str((now - self.start_datetime).total_seconds()) + "s"))
+        datetime_table_str = no_colour_rich_markup(datetime_table)
+
         emoji = "✅" if self.integrity else "❌"
-        embed = discord.Embed(title=f"{self.name} Loop: `{emoji}`")
-        embed.add_field(name="Raw data", value=raw_table_str, inline=False)
+        embed: discord.Embed = discord.Embed(title=f"{self.name} Loop: `{emoji}`")
+        embed.color = 0x00D26A if self.integrity else 0xF92F60
+        embed.timestamp = now
+        embed.add_field(
+            name="Raw data",
+            value=raw_table_str,
+            inline=False
+        )
         embed.add_field(
             name="Processed data",
             value=processed_table_str,
+            inline=False,
+        )
+        embed.add_field(
+            name="DateTime data",
+            value=datetime_table_str,
             inline=False,
         )
         exc = self.last_exc

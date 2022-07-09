@@ -55,9 +55,15 @@ class EditVoiceChannel(commands.Cog):
     async def bitrate(self, ctx: commands.Context, channel: discord.VoiceChannel, bitrate: int):
         """Edit voice channel bitrate.
 
-        It must be a number between 8000 and 64000.
+        It must be a number between 8000 and
+        Level 1: 128000
+        Level 2: 256000
+        Level 3: 384000
         """
         if not await self.check_voice_channel(ctx, channel):
+            return
+        if not bitrate > 7999 or not bitrate < ctx.guild.bitrate_limit + 1:
+            await ctx.send_help()
             return
         try:
             await channel.edit(bitrate=bitrate, reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).")

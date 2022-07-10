@@ -171,15 +171,18 @@ class settings(commands.Cog):
         await ctx.send(_("Ping Role registered: {role.name}.").format(**locals()))
 
     @configuration.command(usage="<int>")
-    async def nbmax(self, ctx: commands.Context, int: int):
+    async def nbmax(self, ctx: commands.Context, nb_max: int):
         """Max Number of tickets for a member.
         """
-        if int == 0:
-            await ctx.send(_("Disable the system instead.").format(**locals()))
+        config = await self.config.guild(ctx.guild).settings.all()
+
+        actual_nb_max = config["nb_max"]
+        if actual_nb_max is nb_max:
+            await ctx.send(_("Max Number of tickets is already set on {nb_max}.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).nb_max.set(int)
-        await ctx.send(_("Max Number registered: {int}.").format(**locals()))
+        await self.config.guild(ctx.guild).nb_max.set(nb_max)
+        await ctx.send(_("Max Number of tickets registered: {nbmax}.").format(**locals()))
 
     @configuration.command(usage="<true_or_false>")
     async def modlog(self, ctx: commands.Context, state: bool):

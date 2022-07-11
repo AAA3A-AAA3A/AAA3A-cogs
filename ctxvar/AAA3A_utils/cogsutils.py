@@ -103,7 +103,7 @@ class CogsUtils(commands.Cog):
             if hasattr(self.cog, "interactions"):
                 if isinstance(self.cog.interactions, typing.Dict):
                     self.interactions = self.cog.interactions
-        self.loops: typing.Dict = {}
+        self.loops: typing.Dict[str, Loop] = {}
         self.repo_name: str = "AAA3A-cogs"
         self.all_cogs: typing.List = [
                                         "AntiNuke",
@@ -1318,6 +1318,12 @@ class Loop():
             inline=False,
         )
         exc = self.last_exc
+        if "USERPROFILE" in os.environ:
+            exc = exc.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+            exc = exc.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
+        if "HOME" in os.environ:
+            exc = exc.replace(os.environ["HOME"], "{HOME}")
+            exc = exc.replace(os.environ["HOME"].lower(), "{HOME}")
         if len(exc) > 1024:
             exc = list(pagify(exc, page_length=1024))[0] + "\n..."
         embed.add_field(name="Exception", value=box(exc), inline=False)

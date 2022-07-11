@@ -566,6 +566,12 @@ class Medicat(commands.Cog):
 
     @is_owner_or_AAA3A()
     @commands.command(hidden=True)
+    async def getmedicatcogloopsstatus(self, ctx: commands.Context):
+        for loop in self.cogsutils.loops.values():
+            await ctx.send(embed=loop.get_debug_embed())
+
+    @is_owner_or_AAA3A()
+    @commands.command(hidden=True)
     async def secretupdatemedicatcog(self, ctx: commands.Context):
         try:
             message = copy(ctx.message)

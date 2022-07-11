@@ -567,12 +567,14 @@ class Medicat(commands.Cog):
     @is_owner_or_AAA3A()
     @commands.command(hidden=True)
     async def getmedicatcogloopsstatus(self, ctx: commands.Context):
+        """Get an embed for check loops status."""
         for loop in self.cogsutils.loops.values():
             await ctx.send(embed=loop.get_debug_embed())
 
     @is_owner_or_AAA3A()
     @commands.command(hidden=True)
     async def secretupdatemedicatcog(self, ctx: commands.Context):
+        """Update the Medicat cog without be bot owner."""
         try:
             message = copy(ctx.message)
             if ctx.guild is not None:

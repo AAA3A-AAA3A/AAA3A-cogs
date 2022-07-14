@@ -49,7 +49,7 @@ class EditFile(commands.Cog):
             path = path.replace("{HOME}".lower(), os.environ["HOME"])
         path = Path(path)
         try:
-            file = discord.File(fp=f"{path}", file_name=path.name)
+            file = discord.File(fp=f"{path}", filename=path.name)
         except FileNotFoundError:
             await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
         except IsADirectoryError:
@@ -70,7 +70,7 @@ class EditFile(commands.Cog):
             path = path.replace("{HOME}".lower(), os.environ["HOME"])
         path = Path(path)
         try:
-            old_file = discord.File(fp=f"{path}", file_name=path.name)
+            old_file = discord.File(fp=f"{path}", filename=path.name)
         except FileNotFoundError:
             await ctx.send(_("This original file cannot be found on the host machine.").format(**locals()))
         except IsADirectoryError:

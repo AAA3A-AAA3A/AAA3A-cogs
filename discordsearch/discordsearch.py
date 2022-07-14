@@ -1,4 +1,3 @@
-from xml.etree.ElementInclude import LimitedRecursiveIncludeError
 from .AAA3A_utils.cogsutils import CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -76,7 +75,7 @@ class DiscordSearch(commands.Cog):
             bold("After:") + " " + f"{after}",
             bold("Pinned:") + " " + f"{pinned}",
             bold("Content:") + " " + f"{content}",
-            bold("Contains:") + " " + (", ".join([contain for contain in contains]) if contains is not None else "None")
+            bold("Contains:") + " " + (", ".join([contain for contain in contains]) if contains is not None else "None"),
             bold("Limit:") + " " + f"{limit}",
         ]
         args_str = "\n".join(args_str)

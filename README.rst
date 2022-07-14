@@ -90,8 +90,6 @@ Additionally, feel free to open an issue or pull request to this repo.
 Credits
 -------
 
-**Credits for the cog SimpleSanction:**
-
 * Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 
 * Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)

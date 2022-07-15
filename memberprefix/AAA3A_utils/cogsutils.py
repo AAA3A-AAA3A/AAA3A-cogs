@@ -1979,7 +1979,7 @@ class Menu():
             self.current_page = 0
             page = await self.source.get_page(self.current_page)
         for page in self.pages:
-            del self.pages[page]["file"]
+            del page["file"]
         value = await self.source.format_page(self, page)
         if isinstance(value, typing.Dict):
             return value

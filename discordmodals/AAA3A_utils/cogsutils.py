@@ -1887,14 +1887,14 @@ class Menu():
     """Create Menus easily."""
 
     def __init__(self, pages: typing.List[typing.Union[typing.Dict[str, typing.Union[str, typing.Any]], discord.Embed, str]], timeout: typing.Optional[int]=180, delete_after_timeout: typing.Optional[bool]=False, way: typing.Optional[typing.Literal["buttons", "reactions", "dropdown"]]="buttons", controls: typing.Optional[typing.Dict]={"⏮️": "left_page", "◀️": "prev_page", "❌": "close_page", "▶️": "next_page", "⏭️": "right_page"}, page_start: typing.Optional[int]=0, check_owner: typing.Optional[bool]=True, members_authored: typing.Optional[typing.Iterable[discord.Member]]=[]):
-        self.ctx = None
-        self.pages = pages
-        self.timeout = timeout
-        self.delete_after_timeout = delete_after_timeout
-        self.way = way
-        self.controls = controls.copy()
-        self.check_owner = check_owner
-        self.members_authored = members_authored
+        self.ctx: commands.Context = None
+        self.pages: typing.List = pages
+        self.timeout: int = timeout
+        self.delete_after_timeout: bool = delete_after_timeout
+        self.way: typing.Literal["buttons", "reactions", "dropdown"] = way
+        self.controls: typing.Dict = controls.copy()
+        self.check_owner: bool = check_owner
+        self.members_authored: typing.List = members_authored
         if not CogsUtils().is_dpy2 and self.way == "buttons" or not CogsUtils().is_dpy2 and self.way == "dropdown":
             self.way = "reactions"
         if not isinstance(self.pages[0], (typing.Dict, discord.Embed, str)):
@@ -1905,9 +1905,9 @@ class Menu():
             for emoji, name in controls.items():
                 if name in ["left_page", "prev_page", "next_page", "right_page"]:
                     del self.controls[emoji]
-        self.message = None
-        self.view = None
-        self.current_page = page_start
+        self.message: discord.Message = None
+        self.view: typing.Union[Buttons, Dropdown] = None
+        self.current_page: int = page_start
 
     async def start(self, ctx: commands.Context):
         """
@@ -1978,6 +1978,8 @@ class Menu():
         except IndexError:
             self.current_page = 0
             page = await self.source.get_page(self.current_page)
+        for page in self.pages:
+            del self.pages[page]["file"]
         value = await self.source.format_page(self, page)
         if isinstance(value, typing.Dict):
             return value

@@ -207,27 +207,34 @@ class CogsUtils(commands.Cog):
             message = f"Error in command '{ctx.command.qualified_name}'. Check your console or logs for details.\nIf necessary, please inform the creator of the cog in which this command is located. Thank you."
             exception_log = f"Exception in command '{ctx.command.qualified_name}.'\n"
             exception_log += "".join(traceback.format_exception(type(error), error, error.__traceback__))
-            if "USERPROFILE" in os.environ:
-                exception_log = exception_log.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
-                exception_log = exception_log.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
-            if "HOME" in os.environ:
-                exception_log = exception_log.replace(os.environ["HOME"], "{HOME}")
-                exception_log = exception_log.replace(os.environ["HOME"].lower(), "{HOME}")
+            exception_log = self.replace_var_paths(exception_log)
             ctx.bot._last_exception = exception_log
             await ctx.send(inline(message))
         else:
             await ctx.bot.on_command_error(ctx=ctx, error=error, unhandled_by_cog=True)
 
+    def replace_var_paths(self, text: str, reverse: typing.Optional[bool]=False):
+        if not reverse:
+            if "USERPROFILE" in os.environ:
+                text = text.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+                text = text.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
+            if "HOME" in os.environ:
+                text = text.replace(os.environ["HOME"], "{HOME}")
+                text = text.replace(os.environ["HOME"].lower(), "{HOME}")
+        else:
+            if "USERPROFILE" in os.environ:
+                text = text.replace("{USERPROFILE}", os.environ["USERPROFILE"])
+                text = text.replace("{USERPROFILE}".lower(), os.environ["USERPROFILE"])
+            if "HOME" in os.environ:
+                text = text.replace("{HOME}", os.environ["HOME"])
+                text = text.replace("{HOME}".lower(), os.environ["HOME"])
+        return text
+
     @staticmethod
     def sanitize_output(ctx: commands.Context, input_: str) -> str:
         """Hides the bot's token from a string."""
         token = ctx.bot.http.token
-        if "USERPROFILE" in os.environ:
-            input_ = input_.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
-            input_ = input_.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
-        if "HOME" in os.environ:
-            input_ = input_.replace(os.environ["HOME"], "{HOME}")
-            input_ = input_.replace(os.environ["HOME"].lower(), "{HOME}")
+        input_ = CogsUtils().replace_var_paths(input_)
         return re.sub(re.escape(token), "[EXPUNGED]", input_, re.I)
 
     async def add_cog(self, bot: Red, cog: commands.Cog):
@@ -536,12 +543,7 @@ class CogsUtils(commands.Cog):
                 traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__))
             else:
                 traceback_error = f"Traceback (most recent call last): {error}"
-            if "USERPROFILE" in os.environ:
-                traceback_error = traceback_error.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
-                traceback_error = traceback_error.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
-            if "HOME" in os.environ:
-                traceback_error = traceback_error.replace(os.environ["HOME"], "{HOME}")
-                traceback_error = traceback_error.replace(os.environ["HOME"].lower(), "{HOME}")
+            traceback_error = self.replace_var_paths(traceback_error)
             if cog not in self.bot.last_exceptions_cogs:
                 self.bot.last_exceptions_cogs[cog] = {}
             if ctx.command.qualified_name not in self.bot.last_exceptions_cogs[cog]:
@@ -677,6 +679,18 @@ class CogsUtils(commands.Cog):
                         await ctx.send(timeout_message)
                     return None
 
+    async def delete_message(self, message: discord.Message):
+        """
+        Delete a message, ignoring any exceptions.
+        Easier than putting these 3 lines at each message deletion for each cog.
+        """
+        try:
+            await message.delete()
+        except discord.HTTPException:
+            return False
+        else:
+            return True
+
     async def invoke_command(self, author: discord.User, channel: discord.TextChannel, command: str, prefix: typing.Optional[str]=None, message: typing.Optional[discord.Message]=None, message_id: typing.Optional[str]="".join(choice(string.digits) for i in range(18)), timestamp: typing.Optional[datetime.datetime]=datetime.datetime.now()) -> typing.Union[commands.Context, discord.Message]:
         """
         Invoke the specified command with the specified user in the specified channel.
@@ -712,6 +726,23 @@ class CogsUtils(commands.Cog):
             message.channel = channel
             bot.dispatch("message", message)
         return context if context.valid else message
+
+    async def get_hook(self, channel: discord.TextChannel):
+        """
+        Create a discord.Webhook object. It tries to retrieve an existing webhook created by the bot or to create it itself.
+        """
+        try:
+            for webhook in await channel.webhooks():
+                if webhook.user.id == self.bot.user.id:
+                    hook = webhook
+                    break
+            else:
+                hook = await channel.create_webhook(
+                    name="red_bot_hook_" + str(channel.id)
+                )
+        except discord.errors.NotFound:  # Probably user deleted the hook
+            hook = await channel.create_webhook(name="red_bot_hook_" + str(channel.id))
+        return hook
 
     def get_embed(self, embed_dict: typing.Dict) -> typing.Dict[discord.Embed, str]:
         data = embed_dict
@@ -772,23 +803,6 @@ class CogsUtils(commands.Cog):
         """
         t = str(int(dt.timestamp()))
         return f"<t:{t}:{format}>"
-
-    async def get_hook(self, channel: discord.TextChannel):
-        """
-        Create a discord.Webhook object. It tries to retrieve an existing webhook created by the bot or to create it itself.
-        """
-        try:
-            for webhook in await channel.webhooks():
-                if webhook.user.id == self.bot.user.id:
-                    hook = webhook
-                    break
-            else:
-                hook = await channel.create_webhook(
-                    name="red_bot_hook_" + str(channel.id)
-                )
-        except discord.errors.NotFound:  # Probably user deleted the hook
-            hook = await channel.create_webhook(name="red_bot_hook_" + str(channel.id))
-        return hook
 
     def check_permissions_for(self, channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.DMChannel], user: discord.User, check: typing.Union[typing.List, typing.Dict]):
         """
@@ -936,18 +950,6 @@ class CogsUtils(commands.Cog):
         except Exception as e:
             if hasattr(self.cogsutils.cog, "log"):
                 self.cog.log.error(f"An error occurred with the {function.__name__} function.", exc_info=e)
-
-    async def delete_message(self, message: discord.Message):
-        """
-        Delete a message, ignoring any exceptions.
-        Easier than putting these 3 lines at each message deletion for each cog.
-        """
-        try:
-            await message.delete()
-        except discord.HTTPException:
-            return False
-        else:
-            return True
 
     async def check_in_listener(self, output, allowed_by_whitelist_blacklist: typing.Optional[bool]=True):
         """
@@ -1318,12 +1320,7 @@ class Loop():
             inline=False,
         )
         exc = self.last_exc
-        if "USERPROFILE" in os.environ:
-            exc = exc.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
-            exc = exc.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
-        if "HOME" in os.environ:
-            exc = exc.replace(os.environ["HOME"], "{HOME}")
-            exc = exc.replace(os.environ["HOME"].lower(), "{HOME}")
+        exc = self.replace_var_paths(exc)
         if len(exc) > 1024:
             exc = list(pagify(exc, page_length=1024))[0] + "\n..."
         embed.add_field(name="Exception", value=box(exc), inline=False)
@@ -1889,7 +1886,7 @@ class Reactions():
 class Menu():
     """Create Menus easily."""
 
-    def __init__(self, pages: typing.List[typing.Union[typing.Dict[str, typing.Union[str, discord.Embed]], discord.Embed, str]], timeout: typing.Optional[int]=180, delete_after_timeout: typing.Optional[bool]=False, way: typing.Optional[typing.Literal["buttons", "reactions", "dropdown"]]="buttons", controls: typing.Optional[typing.Dict]={"⏮️": "left_page", "◀️": "prev_page", "❌": "close_page", "▶️": "next_page", "⏭️": "right_page"}, page_start: typing.Optional[int]=0, check_owner: typing.Optional[bool]=True, members_authored: typing.Optional[typing.Iterable[discord.Member]]=[]):
+    def __init__(self, pages: typing.List[typing.Union[typing.Dict[str, typing.Union[str, typing.Any]], discord.Embed, str]], timeout: typing.Optional[int]=180, delete_after_timeout: typing.Optional[bool]=False, way: typing.Optional[typing.Literal["buttons", "reactions", "dropdown"]]="buttons", controls: typing.Optional[typing.Dict]={"⏮️": "left_page", "◀️": "prev_page", "❌": "close_page", "▶️": "next_page", "⏭️": "right_page"}, page_start: typing.Optional[int]=0, check_owner: typing.Optional[bool]=True, members_authored: typing.Optional[typing.Iterable[discord.Member]]=[]):
         self.ctx = None
         self.pages = pages
         self.timeout = timeout
@@ -1960,7 +1957,7 @@ class Menu():
                 kwargs = await self.get_page(self.current_page)
                 if self.way == "buttons" or self.way == "dropdown":
                     try:
-                        await interaction.response.edit_message(**kwargs)  # , view=self.view.from_dict_cogsutils(self.view.to_dict_cogsutils())
+                        await interaction.response.edit_message(**kwargs)
                     except discord.errors.InteractionResponded:
                         await self.message.edit(**kwargs)
                 else:
@@ -2117,14 +2114,9 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
         osver = "Could not parse OS, report this on Github."
     driver = storage_type()
     data_path_original = Path(basic_config["DATA_PATH"])
-    if "USERPROFILE" in os.environ:
-        data_path = Path(str(data_path_original).replace(os.environ["USERPROFILE"], "{USERPROFILE}").replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}"))
-        _config_file = Path(str(config_file).replace(os.environ["USERPROFILE"], "{USERPROFILE}").replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}"))
-        python_executable = Path(str(python_executable).replace(os.environ["USERPROFILE"], "{USERPROFILE}").replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}"))
-    if "HOME" in os.environ:
-        data_path = Path(str(data_path_original).replace(os.environ["HOME"], "{HOME}").replace(os.environ["HOME"].lower(), "{HOME}"))
-        _config_file = Path(str(config_file).replace(os.environ["HOME"], "{HOME}").replace(os.environ["HOME"].lower(), "{HOME}"))
-        python_executable = Path(str(python_executable).replace(os.environ["HOME"], "{HOME}").replace(os.environ["HOME"].lower(), "{HOME}"))
+    data_path = Path(CogsUtils().replace_var_paths(str(data_path_original)))
+    _config_file = Path(CogsUtils().replace_var_paths(str(config_file)))
+    python_executable = Path(CogsUtils().replace_var_paths(str(python_executable)))
     disabled_intents = (
         ", ".join(
             intent_name.replace("_", " ").title()

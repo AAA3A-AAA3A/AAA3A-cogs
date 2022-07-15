@@ -1897,7 +1897,7 @@ class Menu():
         self.members_authored = members_authored
         if not CogsUtils().is_dpy2 and self.way == "buttons" or not CogsUtils().is_dpy2 and self.way == "dropdown":
             self.way = "reactions"
-        if not isinstance(self.pages[0], (discord.Embed, str)):
+        if not isinstance(self.pages[0], (typing.Dict, discord.Embed, str)):
             raise RuntimeError("Pages must be of type discord.Embed or str.")
 
         self.source = self._SimplePageSource(items=pages)

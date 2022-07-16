@@ -175,21 +175,17 @@ class RolesButtons(commands.Cog):
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
-        if len(config[f"{message.channel.id}-{message.id}"]) == 25:
+        if len(config[f"{message.channel.id}-{message.id}"]) >= 25:
             await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
             return
         if hasattr(button, 'id'):
             config[f"{message.channel.id}-{message.id}"][f"{button.id}"] = {"role": role.id, "text_button": text_button}
         else:
             config[f"{message.channel.id}-{message.id}"][f"{button}"] = {"role": role.id, "text_button": text_button}
-        try:
-            if self.cogsutils.is_dpy2:
-                await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message), function=self.on_button_interaction, infinity=True))
-            else:
-                await message.edit(components=self.get_buttons(config, message))
-        except discord.HTTPException:
-            await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
-            return
+        if self.cogsutils.is_dpy2:
+            await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message), function=self.on_button_interaction, infinity=True))
+        else:
+            await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).roles_buttons.set(config)
         await ctx.tick()
 
@@ -215,14 +211,10 @@ class RolesButtons(commands.Cog):
                 config[f"{message.channel.id}-{message.id}"][f"{button.id}"] = {"role": role.id, "text_button": None}
             else:
                 config[f"{message.channel.id}-{message.id}"][f"{button}"] = {"role": role.id, "text_button": None}
-        try:
-            if self.cogsutils.is_dpy2:
-                await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message), function=self.on_button_interaction, infinity=True))
-            else:
-                await message.edit(components=self.get_buttons(config, message))
-        except discord.HTTPException:
-            await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
-            return
+        if self.cogsutils.is_dpy2:
+            await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message), function=self.on_button_interaction, infinity=True))
+        else:
+            await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).roles_buttons.set(config)
         await ctx.tick()
 

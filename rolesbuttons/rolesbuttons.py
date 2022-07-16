@@ -172,6 +172,11 @@ class RolesButtons(commands.Cog):
         if not permissions.add_reactions or not permissions.read_message_history or not permissions.read_messages or not permissions.view_channel:
             await ctx.send(_("I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.").format(**locals()))
             return
+        try:
+            await ctx.message.add_reaction(button)
+        except discord.HTTPException:
+            await ctx.send(_("The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
+            return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
@@ -199,6 +204,12 @@ class RolesButtons(commands.Cog):
         permissions = message.channel.permissions_for(ctx.guild.me)
         if not permissions.add_reactions or not permissions.read_message_history or not permissions.read_messages or not permissions.view_channel:
             await ctx.send(_("I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.").format(**locals()))
+            return
+        try:
+            for role, button in roles_buttons:
+                await ctx.message.add_reaction(button)
+        except discord.HTTPException:
+            await ctx.send(_("A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:

@@ -1,0 +1,13 @@
+{
+    "author": ["AAA3A"],
+    "name": "UrlButtons",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\nIt does not use user data.",
+    "short": "A cog to have url-buttons!",
+    "description": "Have you ever wanted to have url-buttons? Then this cog is for you!",
+    "tags": [
+        "url",
+        "button"
+    ],
+    "requirements": ["dislash.py"],
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

@@ -55,7 +55,7 @@ class RolesButtons(commands.Cog):
         for guild in all_guilds:
             for role_button in all_guilds[guild]["roles_buttons"]:
                 try:
-                    self.bot.add_view(Buttons(timeout=None, buttons=[{"style": all_guilds[guild]["roles_buttons"][role_button][f"{b}"]["style_button"], "label": all_guilds[guild]["roles_buttons"][role_button][f"{b}"]["text_button"], "emoji": f"{b}", "custom_id": f"roles_buttons {b}", "disabled": False} for b in all_guilds[guild]["roles_buttons"][role_button]], function=self.on_button_interaction, infinity=True), message_id=int((str(role_button).split("-"))[1]))
+                    self.bot.add_view(Buttons(timeout=None, buttons=[{"style": all_guilds[guild]["roles_buttons"][role_button][f"{b}"]["style_button"] if "style_button" in all_guilds[guild]["roles_buttons"][role_button][f"{b}"] else 2, "label": all_guilds[guild]["roles_buttons"][role_button][f"{b}"]["text_button"], "emoji": f"{b}", "custom_id": f"roles_buttons {b}", "disabled": False} for b in all_guilds[guild]["roles_buttons"][role_button]], function=self.on_button_interaction, infinity=True), message_id=int((str(role_button).split("-"))[1]))
                 except Exception as e:
                     self.log.error(f"The Button View could not be added correctly for the {guild}-{role_button} message.", exc_info=e)
 

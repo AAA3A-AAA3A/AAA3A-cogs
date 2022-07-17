@@ -12,6 +12,7 @@ import typing  # isort:skip
 
 _ = Translator("TicketTool", __file__)
 
+@cog_i18n(_)
 class settings(commands.Cog):
 
     @commands.guild_only()

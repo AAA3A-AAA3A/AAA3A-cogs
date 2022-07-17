@@ -1,3 +1,4 @@
+from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
@@ -8,6 +9,7 @@ if CogsUtils().is_dpy2:  # To remove
 
 _ = Translator("SimpleSanction", __file__)
 
+@cog_i18n(_)
 class settings(commands.Cog):
 
     @commands.guild_only()

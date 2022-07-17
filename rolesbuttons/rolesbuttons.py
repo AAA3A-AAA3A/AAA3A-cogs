@@ -161,7 +161,7 @@ class RolesButtons(commands.Cog):
     @commands.admin_or_permissions(manage_roles=True)
     @commands.group()
     async def rolesbuttons(self, ctx: commands.Context):
-        """Group of commands for use ReactToCommand.
+        """Group of commands for use RolesButtons.
         """
         pass
 
@@ -211,7 +211,7 @@ class RolesButtons(commands.Cog):
 
     @rolesbuttons.command()
     async def bulk(self, ctx: commands.Context, message: discord.Message, *roles_buttons: RoleEmojiConverter):
-        """Add a role-button to a message.
+        """Add roles-buttons to a message.
         """
         if not message.author == ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the role-button to work.").format(**locals()))
@@ -234,9 +234,9 @@ class RolesButtons(commands.Cog):
             return
         for role, emoji in roles_buttons:
             if hasattr(emoji, 'id'):
-                config[f"{message.channel.id}-{message.id}"][f"{emoji.id}"] = {"role": role.id, "style_button": None, "text_button": None}
+                config[f"{message.channel.id}-{message.id}"][f"{emoji.id}"] = {"role": role.id, "style_button": 2, "text_button": None}
             else:
-                config[f"{message.channel.id}-{message.id}"][f"{emoji}"] = {"role": role.id, "style_button": None, "text_button": None}
+                config[f"{message.channel.id}-{message.id}"][f"{emoji}"] = {"role": role.id, "style_button": 2, "text_button": None}
         if self.cogsutils.is_dpy2:
             await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message), function=self.on_button_interaction, infinity=True))
         else:
@@ -319,6 +319,6 @@ class RolesButtons(commands.Cog):
                     except ValueError:
                         buttons["components"].append({"type": 2, "style": config[f"{message.channel.id}-{message.id}"][f"{button}"]["style_button"], "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": {"name": f"{button}"}, "custom_id": f"roles_buttons {button}"})
                     else:
-                        buttons["components"].append({"type": 2, "style": 2, "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": {"name": f"{button}", "id": int(button)}, "custom_id": f"roles_buttons {button}"})
+                        buttons["components"].append({"type": 2, "style": config[f"{message.channel.id}-{message.id}"][f"{button}"]["style_button"], "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": {"name": f"{button}", "id": int(button)}, "custom_id": f"roles_buttons {button}"})
             all_buttons.append(ActionRow.from_dict(buttons))
         return all_buttons

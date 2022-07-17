@@ -39,6 +39,7 @@ class RoleEmojiConverter(discord.ext.commands.Converter):
             role, emoji = arg_split
         except Exception:
             raise discord.ext.commands.BadArgument(_("Role Emoji must be a role followed by an emoji separated by either `;`, `,`, `|`, or `-`.").format(**locals()))
+        role = await RoleHierarchyConverter().convert(ctx, role.strip())
         custom_emoji = None
         try:
             custom_emoji = await commands.PartialEmojiConverter().convert(ctx, emoji.strip())
@@ -46,8 +47,4 @@ class RoleEmojiConverter(discord.ext.commands.Converter):
             pass
         if not custom_emoji:
             custom_emoji = str(emoji)
-        try:
-            role = await RoleHierarchyConverter().convert(ctx, role.strip())
-        except commands.BadArgument:
-            raise
         return role, custom_emoji

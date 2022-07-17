@@ -44,7 +44,7 @@ class RolesButtons(commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
-        if self.cogsutils.is_dpy2():
+        if self.cogsutils.is_dpy2:
             asyncio.create_task(self.load_buttons())
 
     async def load_buttons(self):

@@ -139,7 +139,7 @@ class EditTextChannel(commands.Cog):
     @edittextchannel.command()
     async def slowmodedelay(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], slowmode_delay: int):
         """Edit text channel slowmode delay.
-        
+
         Specifies the slowmode rate limit for user in this channel, in seconds. A value of 0 disables slowmode. The maximum value possible is 21600.
         """
         if channel is None:

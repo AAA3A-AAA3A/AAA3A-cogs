@@ -123,6 +123,7 @@ class CogsUtils(commands.Cog):
                                         "Ip",
                                         "Medicat",  # Private cog.
                                         "MemberPrefix",
+                                        "UrlButtons",
                                         "ReactToCommand",
                                         "RolesButtons",
                                         "SimpleSanction",
@@ -148,6 +149,7 @@ class CogsUtils(commands.Cog):
                                         "Ip",
                                         "Medicat",  # Private cog.
                                         "MemberPrefix",
+                                        "UrlButtons",
                                         "ReactToCommand",
                                         "RolesButtons",
                                         "SimpleSanction",
@@ -1970,6 +1972,9 @@ class Menu():
         self.ctx = ctx
         kwargs = await self.get_page(self.current_page)
         self.message = await channel.send(**kwargs, view=self.view if self.way in ["buttons", "dropdown"] else None)
+        for page in self.pages:
+            if "file" in page:
+                del page["file"]
         return self.message
 
     async def get_page(self, page_num: int):
@@ -1978,8 +1983,6 @@ class Menu():
         except IndexError:
             self.current_page = 0
             page = await self.source.get_page(self.current_page)
-        for page in self.pages:
-            del page["file"]
         value = await self.source.format_page(self, page)
         if isinstance(value, typing.Dict):
             return value

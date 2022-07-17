@@ -15,6 +15,9 @@ from .converters import RoleEmojiConverter
 
 from redbot.core import Config
 
+if CogsUtils().is_dpy2:  # To remove
+    setattr(commands, 'Literal', typing.Literal)
+
 # Credits:
 # Thanks to TrustyJAID for the two converter for the bulk command arguments! (https://github.com/TrustyJAID/Trusty-cogs/blob/main/roletools/converter.py)
 # Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel!
@@ -163,7 +166,7 @@ class RolesButtons(commands.Cog):
         pass
 
     @rolesbuttons.command()
-    async def add(self, ctx: commands.Context, message: discord.Message, role: discord.Role, emoji: typing.Union[discord.Emoji, str], style_button: typing.Optional[typing.Literal[1, 2, 3, 4]]=2, *, text_button: typing.Optional[str]=None):
+    async def add(self, ctx: commands.Context, message: discord.Message, role: discord.Role, emoji: typing.Union[discord.Emoji, str], style_button: typing.Optional[commands.Literal[1, 2, 3, 4]]=2, *, text_button: typing.Optional[str]=None):
         """Add a role-button to a message.
 
         `primary`: 1

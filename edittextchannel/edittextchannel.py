@@ -5,6 +5,9 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+if CogsUtils().is_dpy2:  # To remove
+    setattr(commands, 'Literal', typing.Literal)
+
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
@@ -157,7 +160,7 @@ class EditTextChannel(commands.Cog):
             await ctx.tick()
 
     @edittextchannel.command()
-    async def type(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], type: typing.Literal[0, 5]):
+    async def type(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], type: commands.Literal[0, 5]):
         """Edit text channel type.
 
         `text`: 0
@@ -177,7 +180,7 @@ class EditTextChannel(commands.Cog):
             await ctx.tick()
 
     @edittextchannel.command()
-    async def defaultautoarchiveduration(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], default_auto_archive_duration: typing.Literal[60, 1440, 4320, 10080]):
+    async def defaultautoarchiveduration(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], default_auto_archive_duration: commands.Literal[60, 1440, 4320, 10080]):
         """Edit text channel default auto archive duration.
         
         The new default auto archive duration in minutes for threads created in this channel. Must be one of `60`, `1440`, `4320`, or `10080`.

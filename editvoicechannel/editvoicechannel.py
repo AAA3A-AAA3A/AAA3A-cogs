@@ -5,6 +5,9 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+if CogsUtils().is_dpy2:  # To remove
+    setattr(commands, 'Literal', typing.Literal)
+
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
@@ -151,7 +154,7 @@ class EditVoiceChannel(commands.Cog):
             await ctx.tick()
 
     @editvoicechannel.command()
-    async def videoqualitymode(self, ctx: commands.Context, channel: discord.VoiceChannel, video_quality_mode: typing.Literal[1, 2]):
+    async def videoqualitymode(self, ctx: commands.Context, channel: discord.VoiceChannel, video_quality_mode: commands.Literal[1, 2]):
         """Edit voice channel video quality mode.
 
         auto = 1

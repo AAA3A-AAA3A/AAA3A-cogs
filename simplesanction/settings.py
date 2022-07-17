@@ -3,6 +3,9 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+if CogsUtils().is_dpy2:  # To remove
+    setattr(commands, 'Literal', typing.Literal)
+
 _ = Translator("SimpleSanction", __file__)
 
 class settings(commands.Cog):
@@ -155,7 +158,7 @@ class settings(commands.Cog):
         await ctx.send(_("Warn System Use state registered: {state}.").format(**locals()))
 
     @configuration.command(name="way", aliases=["wayused"])
-    async def buttonsuse(self, ctx: commands.Context, way: typing.Literal["buttons", "dropdown", "reactions"]):
+    async def buttonsuse(self, ctx: commands.Context, way: commands.Literal["buttons", "dropdown", "reactions"]):
         """Enable or disable Buttons Use
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.

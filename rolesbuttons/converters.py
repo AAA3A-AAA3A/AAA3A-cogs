@@ -33,7 +33,7 @@ class RoleHierarchyConverter(discord.ext.commands.RoleConverter):
         return role
 
 class RoleEmojiConverter(discord.ext.commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.Tuple[discord.Role, str]:
+    async def convert(self, ctx: commands.Context, argument: str) -> typing.Tuple[discord.Role, typing.Union[discord.PartialEmoji, str]]:
         arg_split = re.split(r";|,|\||-", argument)
         try:
             role, emoji = arg_split

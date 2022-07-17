@@ -51,7 +51,7 @@ class RolesButtons(commands.Cog):
         for guild in all_guilds:
             for role_button in all_guilds[guild]["roles_buttons"]:
                 try:
-                    self.bot.add_view(Buttons(timeout=None, buttons=[{"style": 2, "label": all_guilds[guild]["roles_buttons"][role_button][f"{b}"]["text_button"], "emoji": f"{b}", "custom_id": f"roles_buttons {b}", "disabled": False} for b in all_guilds[guild]["roles_buttons"][role_button]], function=self.on_button_interaction, infinity=True), message_id=int((str(role_button).split("-"))[1]))
+                    self.bot.add_view(Buttons(timeout=None, buttons=[{"style": all_guilds[guild]["roles_buttons"][role_button][f"{b}"]["style_button"], "label": all_guilds[guild]["roles_buttons"][role_button][f"{b}"]["text_button"], "emoji": f"{b}", "custom_id": f"roles_buttons {b}", "disabled": False} for b in all_guilds[guild]["roles_buttons"][role_button]], function=self.on_button_interaction, infinity=True), message_id=int((str(role_button).split("-"))[1]))
                 except Exception as e:
                     self.log.error(f"The Button View could not be added correctly for the {guild}-{role_button} message.", exc_info=e)
 
@@ -162,8 +162,19 @@ class RolesButtons(commands.Cog):
         pass
 
     @rolesbuttons.command()
-    async def add(self, ctx: commands.Context, message: discord.Message, role: discord.Role, button: typing.Union[discord.Emoji, str], *, text_button: typing.Optional[str]=None):
+    async def add(self, ctx: commands.Context, message: discord.Message, role: discord.Role, emoji: typing.Union[discord.Emoji, str], style_button: typing.Optional[typing.Literal[1, 2, 3, 4]]=2, *, text_button: typing.Optional[str]=None):
         """Add a role-button to a message.
+
+        `primary`: 1
+        `secondary`: 2
+        `success`: 3
+        `danger`: 4
+        # Aliases
+        `blurple`: 1
+        `grey`: 2
+        `gray`: 2
+        `green`: 3
+        `red`: 4
         """
         if not message.author == ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the role-button to work.").format(**locals()))
@@ -173,7 +184,7 @@ class RolesButtons(commands.Cog):
             await ctx.send(_("I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.").format(**locals()))
             return
         try:
-            await ctx.message.add_reaction(button)
+            await ctx.message.add_reaction(emoji)
         except discord.HTTPException:
             await ctx.send(_("The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
             return
@@ -183,10 +194,10 @@ class RolesButtons(commands.Cog):
         if len(config[f"{message.channel.id}-{message.id}"]) >= 25:
             await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
             return
-        if hasattr(button, 'id'):
-            config[f"{message.channel.id}-{message.id}"][f"{button.id}"] = {"role": role.id, "text_button": text_button}
+        if hasattr(emoji, 'id'):
+            config[f"{message.channel.id}-{message.id}"][f"{emoji.id}"] = {"role": role.id, "style_button": style_button, "text_button": text_button}
         else:
-            config[f"{message.channel.id}-{message.id}"][f"{button}"] = {"role": role.id, "text_button": text_button}
+            config[f"{message.channel.id}-{message.id}"][f"{emoji}"] = {"role": role.id, "style_button": style_button, "text_button": text_button}
         if self.cogsutils.is_dpy2:
             await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message), function=self.on_button_interaction, infinity=True))
         else:
@@ -206,8 +217,8 @@ class RolesButtons(commands.Cog):
             await ctx.send(_("I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.").format(**locals()))
             return
         try:
-            for role, button in roles_buttons:
-                await ctx.message.add_reaction(button)
+            for role, emoji in roles_buttons:
+                await ctx.message.add_reaction(emoji)
         except discord.HTTPException:
             await ctx.send(_("A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
             return
@@ -217,11 +228,11 @@ class RolesButtons(commands.Cog):
         if len(config[f"{message.channel.id}-{message.id}"]) + len(roles_buttons) >= 25:
             await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
             return
-        for role, button in roles_buttons:
-            if hasattr(button, 'id'):
-                config[f"{message.channel.id}-{message.id}"][f"{button.id}"] = {"role": role.id, "text_button": None}
+        for role, emoji in roles_buttons:
+            if hasattr(emoji, 'id'):
+                config[f"{message.channel.id}-{message.id}"][f"{emoji.id}"] = {"role": role.id, "style_button": None, "text_button": None}
             else:
-                config[f"{message.channel.id}-{message.id}"][f"{button}"] = {"role": role.id, "text_button": None}
+                config[f"{message.channel.id}-{message.id}"][f"{emoji}"] = {"role": role.id, "style_button": None, "text_button": None}
         if self.cogsutils.is_dpy2:
             await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message), function=self.on_button_interaction, infinity=True))
         else:
@@ -286,7 +297,7 @@ class RolesButtons(commands.Cog):
         all_buttons = []
         if self.cogsutils.is_dpy2:
             for button in config[f"{message.channel.id}-{message.id}"]:
-                all_buttons.append({"style": 2, "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": f"{button}", "custom_id": f"roles_buttons {button}", "disabled": False})
+                all_buttons.append({"style": config[f"{message.channel.id}-{message.id}"][f"{button}"]["style_button"], "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": f"{button}", "custom_id": f"roles_buttons {button}", "disabled": False})
         else:
             lists = []
             one_l = [button for button in config[f"{message.channel.id}-{message.id}"]]
@@ -302,7 +313,7 @@ class RolesButtons(commands.Cog):
                     try:
                         int(button)
                     except ValueError:
-                        buttons["components"].append({"type": 2, "style": 2, "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": {"name": f"{button}"}, "custom_id": f"roles_buttons {button}"})
+                        buttons["components"].append({"type": 2, "style": config[f"{message.channel.id}-{message.id}"][f"{button}"]["style_button"], "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": {"name": f"{button}"}, "custom_id": f"roles_buttons {button}"})
                     else:
                         buttons["components"].append({"type": 2, "style": 2, "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": {"name": f"{button}", "id": int(button)}, "custom_id": f"roles_buttons {button}"})
             all_buttons.append(ActionRow.from_dict(buttons))

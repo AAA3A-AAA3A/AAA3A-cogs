@@ -21,12 +21,14 @@ A cog to edit roles!
 Commands
 --------
 
-Here are all the commands included in this cog (6):
+Here are all the commands included in this cog (7):
 
 * ``[p]editrole``
  Commands for edit a role.
 * ``[p]editrole colour <role> <colour>``
  Edit role colour.
+* ``[p]editrole delete <role> [confirmation=False]``
+ Delete role.
 * ``[p]editrole mentionable <role> <mentionable>``
  Edit role mentionable.
 * ``[p]editrole name <role> <name>``

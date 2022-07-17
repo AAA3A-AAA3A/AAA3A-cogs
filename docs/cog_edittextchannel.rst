@@ -43,7 +43,7 @@ Here are all the commands included in this cog (11):
  Edit text channel syncpermissions with category.
 * ``[p]edittextchannel topic [channel] <topic>``
  Edit text channel topic.
-* ``[p]edittextchannel type [channel] <type>``
+* ``[p]edittextchannel type [channel] <0|5>``
  Edit text channel type.
 
 ------------

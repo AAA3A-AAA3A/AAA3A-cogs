@@ -23,7 +23,7 @@ Commands
 
 Here are all the commands included in this cog (5):
 
-* ``[p]clearchannel [skip=False]``
+* ``[p]clearchannel [confirmation=False]``
  Delete ALL messages from the current channel by duplicating it and then deleting it.
 * ``[p]setclearchannel``
  Configure ClearChannel for your server.

@@ -823,9 +823,9 @@ class Ticket:
                 optionnal_ping = ""
             embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, False, author=ticket.created_by, title=_("Ticket Created").format(**locals()), description=_("Thank you for creating a ticket on this server!").format(**locals()))
             if CogsUtils().is_dpy2:
-                ticket.first_message = await ticket.channel.send(f"{ticket.created_by.mention}{optionnal_ping}", embed=embed, view=view)
+                ticket.first_message = await ticket.channel.send(f"{ticket.created_by.mention}{optionnal_ping}", embed=embed, view=view, allowed_mentions=discord.AllowedMentions(users=True, roles=True))
             else:
-                ticket.first_message = await ticket.channel.send(f"{ticket.created_by.mention}{optionnal_ping}", embed=embed, components=[buttons])
+                ticket.first_message = await ticket.channel.send(f"{ticket.created_by.mention}{optionnal_ping}", embed=embed, components=[buttons], allowed_mentions=discord.AllowedMentions(users=True, roles=True))
             if logschannel is not None:
                 embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, True, author=ticket.created_by, title=_("Ticket Created").format(**locals()), description=_("The ticket was created by {ticket.created_by}.").format(**locals()))
                 await logschannel.send(_("Report on the creation of the ticket {ticket.id}.").format(**locals()), embed=embed)

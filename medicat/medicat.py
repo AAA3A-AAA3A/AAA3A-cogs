@@ -6,7 +6,6 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import asyncio
-import os
 import re
 import textwrap
 import traceback
@@ -248,10 +247,7 @@ class Medicat(commands.Cog):
         asyncio.create_task(self.edit_config_schema())
         self.cogsutils.create_loop(function=self.ventoy_updates, name="Ventoy Updates", hours=1)
         self.cogsutils.create_loop(function=self.bootables_tools_updates, name="Bootables Tools Updates", hours=1)
-        try:
-            self.add_custom_commands()
-        except Exception as e:
-            self.log.error(f"An error occurred while adding the custom_commands.", exc_info=e)
+        asyncio.create_task(self.add_custom_commands())
 
     async def edit_config_schema(self):
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
@@ -415,8 +411,7 @@ class Medicat(commands.Cog):
                 return False
         return commands.check(pred)
 
-    def add_custom_commands(self):
-
+    async def add_custom_commands(self):
         def get_function_from_str(bot, command, name=None):
             to_compile = "def func():\n%s" % textwrap.indent(command, "  ")
             env = {
@@ -456,7 +451,7 @@ class Medicat(commands.Cog):
         await ctx.send(embed=embed)
     return CC_{name}
     """.format(MEDICAT_GUILD=MEDICAT_GUILD, TEST_GUILD=TEST_GUILD, name=name)
-                command: commands.command = get_function_from_str(self.bot, command_str)
+                command: commands.Command = get_function_from_str(self.bot, command_str)
                 command.name = name
                 command.brief = text["title"]
                 command.description = text["title"]
@@ -467,10 +462,13 @@ class Medicat(commands.Cog):
                     command.params = {}
                 setattr(self, f"CC_{name}", command)
                 self.bot.add_command(command)
-            except Exception:
+            except Exception as e:
+                self.log.error(f"An error occurred while adding the `{name}` custom command.", exc_info=e)
                 self.bot.remove_command(name)
             else:
-                self.__cog_commands__.__add__(tuple([command]))
+                cog_commands = list(self.__cog_commands__)
+                cog_commands.append(command)
+                self.__cog_commands__ = tuple(cog_commands)
 
     def remove_custom_commands(self):
         for name in CUSTOM_COMMANDS:
@@ -587,12 +585,7 @@ class Medicat(commands.Cog):
             await ctx.bot.invoke(context)
         except Exception as error:
             traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__))
-            if "USERPROFILE" in os.environ:
-                traceback_error = traceback_error.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
-                traceback_error = traceback_error.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
-            if "HOME" in os.environ:
-                traceback_error = traceback_error.replace(os.environ["HOME"], "{HOME}")
-                traceback_error = traceback_error.replace(os.environ["HOME"].lower(), "{HOME}")
+            traceback_error = self.cogsutils.replace_var_paths(traceback_error)
             pages = []
             for page in pagify(traceback_error, shorten_by=15, page_length=1985):
                 pages.append(box(page, lang="py"))

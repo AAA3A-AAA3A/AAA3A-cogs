@@ -21,17 +21,19 @@ A cog to get a file and replace it from its path from Discord!
 Commands
 --------
 
-Here are all the commands included in this cog (5):
+Here are all the commands included in this cog (6):
 
 * ``[p]editfile``
  Commands group to get a file and replace it from its path.
+* ``[p]editfile delete <path>``
+ Delete a file.
 * ``[p]editfile findcog <cog>``
  Get a cog directory on the bot's host machine from its name.
-* ``[p]editfile get <path>``
+* ``[p]editfile get [menu=False] [show_line=False] <path>``
  Get a file on the bot's host machine from its path.
 * ``[p]editfile listdir <path>``
  List all files/directories of a directory from its path.
-* ``[p]editfile replace <path>``
+* ``[p]editfile replace <path> [content=None]``
  Replace a file on the bot's host machine from its path.
 
 ------------

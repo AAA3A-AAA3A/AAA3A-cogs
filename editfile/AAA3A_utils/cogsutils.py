@@ -123,6 +123,7 @@ class CogsUtils(commands.Cog):
                                         "Ip",
                                         "Medicat",  # Private cog.
                                         "MemberPrefix",
+                                        "UrlButtons",
                                         "ReactToCommand",
                                         "RolesButtons",
                                         "SimpleSanction",
@@ -148,6 +149,7 @@ class CogsUtils(commands.Cog):
                                         "Ip",
                                         "Medicat",  # Private cog.
                                         "MemberPrefix",
+                                        "UrlButtons",
                                         "ReactToCommand",
                                         "RolesButtons",
                                         "SimpleSanction",
@@ -1565,6 +1567,9 @@ if CogsUtils().is_dpy2:
         def __init__(self, timeout: typing.Optional[float]=180, buttons: typing.Optional[typing.List]=[{}], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
             """style: ButtonStyle, label: Optional[str], disabled: bool, custom_id: Optional[str], url: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], row: Optional[int]"""
             for button_dict in buttons:
+                if "url" in button_dict and button_dict["url"] is not None:
+                    button_dict["style"] = 5
+                    continue
                 if "custom_id" not in button_dict:
                     button_dict["custom_id"] = "CogsUtils" + "_" + CogsUtils().generate_key(number=10)
             self.buttons_dict_instance = {"timeout": timeout, "buttons": [b.copy() for b in buttons], "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
@@ -1583,6 +1588,8 @@ if CogsUtils().is_dpy2:
             for button_dict in buttons:
                 if "style" not in button_dict:
                     button_dict["style"] = int(discord.ButtonStyle(2))
+                if "disabled" not in button_dict:
+                    button_dict["disabled"] = False
                 if "label" not in button_dict and "emoji" not in button_dict:
                     button_dict["label"] = "Test"
                 button = discord.ui.Button(**button_dict)
@@ -1970,6 +1977,10 @@ class Menu():
         self.ctx = ctx
         kwargs = await self.get_page(self.current_page)
         self.message = await channel.send(**kwargs, view=self.view if self.way in ["buttons", "dropdown"] else None)
+        for page in self.pages:
+            if isinstance(page, typing.Dict):
+                if "file" in page:
+                    del page["file"]
         return self.message
 
     async def get_page(self, page_num: int):
@@ -1978,8 +1989,6 @@ class Menu():
         except IndexError:
             self.current_page = 0
             page = await self.source.get_page(self.current_page)
-        for page in self.pages:
-            del page["file"]
         value = await self.source.format_page(self, page)
         if isinstance(value, typing.Dict):
             return value

@@ -1978,8 +1978,9 @@ class Menu():
         kwargs = await self.get_page(self.current_page)
         self.message = await channel.send(**kwargs, view=self.view if self.way in ["buttons", "dropdown"] else None)
         for page in self.pages:
-            if "file" in page:
-                del page["file"]
+            if isinstance(page, typing.Dict):
+                if "file" in page:
+                    del page["file"]
         return self.message
 
     async def get_page(self, page_num: int):

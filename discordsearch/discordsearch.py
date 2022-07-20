@@ -74,7 +74,7 @@ class DiscordSearch(commands.Cog):
             bold("Before:") + " " + f"{before}",
             bold("After:") + " " + f"{after}",
             bold("Pinned:") + " " + f"{pinned}",
-            bold("Content:") + " " + f"{content}",
+            bold("Content:") + " " + f"`{content}`",
             bold("Contains:") + " " + (", ".join([contain for contain in contains]) if contains is not None else "None"),
             bold("Limit:") + " " + f"{limit}",
         ]
@@ -89,7 +89,7 @@ class DiscordSearch(commands.Cog):
                     continue
                 if pinned is not None and not message.pinned == pinned:
                     continue
-                if content is not None and not content.lower() in message.content.lower():
+                if content is not None and not (content.lower() in message.content.lower() or any([content.lower() in str(embed.to_dict()).lower() for embed in message.embeds])):
                     continue
                 if contains is not None:
                     if "link" in contains:
@@ -115,14 +115,15 @@ class DiscordSearch(commands.Cog):
                     embed.description = args_str
                     embed.url = message.jump_url
                     embed.set_author(name=f"{message.author.display_name} ({message.author.id})")
-                    embed.add_field(name=f"Message {message.id}", value=(message.content if len(message.content) < 1025 else message.content[:1020] + "...") if message.content is not None else "None")
+                    embed.add_field(name=f"Message ({message.id}) content:", value=(message.content if len(message.content) < 1025 else (message.content[:1020] + "...")) if message.content else "None", inline=False)
+                    embed.add_field(name="Embed(s):", value="Look at the original message." if len(message.embeds) > 0 else "None", inline=False)
                     embed.timestamp = message.created_at
                     embed.set_thumbnail(url="https://us.123rf.com/450wm/sommersby/sommersby1610/sommersby161000062/66918773-recherche-ic%C3%B4ne-plate-recherche-ic%C3%B4ne-conception-recherche-ic%C3%B4ne-web-vecteur-loupe.jpg")
                     embed.set_footer(text=f"Page {count}/{len(messages)}", icon_url="https://us.123rf.com/450wm/sommersby/sommersby1610/sommersby161000062/66918773-recherche-ic%C3%B4ne-plate-recherche-ic%C3%B4ne-conception-recherche-ic%C3%B4ne-web-vecteur-loupe.jpg")
                     embeds.append(embed)
             else:
                 embed: discord.Embed = discord.Embed()
-                embed.title = f"Search in #{channel.name}"
+                embed.title = f"Search in #{channel.name} ({channel.id})"
                 embed.add_field(name="Result:", value="Sorry, I could not find any results.")
                 embed.timestamp = datetime.datetime.now()
                 embed.set_thumbnail(url="https://us.123rf.com/450wm/sommersby/sommersby1610/sommersby161000062/66918773-recherche-ic%C3%B4ne-plate-recherche-ic%C3%B4ne-conception-recherche-ic%C3%B4ne-web-vecteur-loupe.jpg")

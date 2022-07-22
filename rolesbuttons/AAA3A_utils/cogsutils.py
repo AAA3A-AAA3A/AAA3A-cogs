@@ -121,7 +121,7 @@ class CogsUtils(commands.Cog):
                                         "ExportChannel",
                                         "GetLoc",
                                         "Ip",
-                                        "Medicat",  # Private cog.
+                                        "Medicat",  # Private cog, but public code.
                                         "MemberPrefix",
                                         "UrlButtons",
                                         "ReactToCommand",
@@ -147,7 +147,7 @@ class CogsUtils(commands.Cog):
                                         "ExportChannel",
                                         "GetLoc",
                                         "Ip",
-                                        "Medicat",  # Private cog.
+                                        "Medicat",  # Private cog, but public code.
                                         "MemberPrefix",
                                         "UrlButtons",
                                         "ReactToCommand",
@@ -158,7 +158,7 @@ class CogsUtils(commands.Cog):
                                         "TransferChannel"
                                     ]
         if self.cog is not None:
-            if self.cog.__class__.__name__ not in self.all_cogs_dpy2 and self.cog.__class__.__name__ in self.all_cogs:
+            if self.cog.__class__.__name__ in self.all_cogs and self.cog.__class__.__name__ not in self.all_cogs_dpy2:
                 if self.is_dpy2 or redbot.version_info >= redbot.VersionInfo.from_str("3.5.0"):
                     raise RuntimeError(f"{self.cog.__class__.__name__} needs to be updated to run on dpy2/Red 3.5.0. It's best to use `[p]cog update` with no arguments to update all your cogs, which may be using new dpy2-specific methods.")
 
@@ -1322,7 +1322,7 @@ class Loop():
             inline=False,
         )
         exc = self.last_exc
-        exc = self.replace_var_paths(exc)
+        exc = self.cogsutils.replace_var_paths(exc)
         if len(exc) > 1024:
             exc = list(pagify(exc, page_length=1024))[0] + "\n..."
         embed.add_field(name="Exception", value=box(exc), inline=False)

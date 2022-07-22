@@ -20,7 +20,7 @@ _ = Translator("Sudo", __file__)
 class Sudo(commands.Cog):
     """A cog to allow bot owners to be normal users in terms of permissions!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
         self.all_owner_ids = copy(self.bot.owner_ids)
         self.bot.owner_ids.clear()

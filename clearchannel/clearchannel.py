@@ -19,7 +19,7 @@ _ = Translator("ClearChannel", __file__)
 class ClearChannel(commands.Cog):
     """A cog to transfer all messages channel in a other channel!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(

@@ -18,7 +18,7 @@ _ = Translator("Ip", __file__)
 class Ip(commands.Cog):
     """A cog to get the ip address of the bot!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(

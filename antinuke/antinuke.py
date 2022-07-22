@@ -20,7 +20,7 @@ _ = Translator("AntiNuke", __file__)
 class AntiNuke(commands.Cog):
     """A cog to remove all permissions from a person who deletes a channel!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(

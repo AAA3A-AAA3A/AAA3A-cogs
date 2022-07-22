@@ -24,7 +24,7 @@ _ = Translator("DiscordSearch", __file__)
 class DiscordSearch(commands.Cog):
     """A cog to edit roles!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)

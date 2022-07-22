@@ -17,7 +17,7 @@ _ = Translator("GetLoc", __file__)
 class GetLoc(commands.Cog):
     """A cog to display information about a location based on its address or geographical coordinates!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)

@@ -22,7 +22,7 @@ _ = Translator("ReactToCommand", __file__)
 class ReactToCommand(commands.Cog):
     """A cog to allow a user to execute a command by clicking on a reaction!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(

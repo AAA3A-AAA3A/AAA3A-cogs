@@ -31,7 +31,7 @@ _ = Translator("RolesButtons", __file__)
 class RolesButtons(commands.Cog):
     """A cog to have roles-buttons!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(

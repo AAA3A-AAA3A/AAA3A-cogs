@@ -36,7 +36,7 @@ _ = Translator("SimpleSanction", __file__)
 class SimpleSanction(settings, commands.Cog):
     """A cog to sanction a user!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(

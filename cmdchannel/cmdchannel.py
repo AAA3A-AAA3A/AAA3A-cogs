@@ -19,7 +19,7 @@ _ = Translator("CmdChannel", __file__)
 class CmdChannel(commands.Cog):
     """A cog to send the result of a command to another channel!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(

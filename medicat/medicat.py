@@ -201,7 +201,7 @@ _ = Translator("Medicat", __file__)
 class Medicat(commands.Cog):
     """This cog will only work on x server and therefore cannot be used by the general public!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(

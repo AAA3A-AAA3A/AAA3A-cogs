@@ -3,7 +3,6 @@ from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
-import os
 import traceback
 
 from redbot.core.utils.chat_formatting import box, pagify
@@ -32,7 +31,7 @@ _ = Translator("AutoTraceback", __file__)
 class AutoTraceback(commands.Cog):
     """A cog to display the error traceback of a command aomatically after the error!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
         super().__init__()
 

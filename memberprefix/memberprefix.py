@@ -18,7 +18,7 @@ _ = Translator("MemberPrefix", __file__)
 class MemberPrefix(commands.Cog):
     """A cog to allow a member to choose custom prefixes, just for them!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(

@@ -29,7 +29,7 @@ _ = Translator("Calculator", __file__)
 class Calculator(commands.Cog):
     """A cog to do simple calculations from Discord with buttons!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
         self.config: Config = Config.get_conf(
             self,
@@ -43,7 +43,6 @@ class Calculator(commands.Cog):
                 "thumbnail": "https://cdn.pixabay.com/photo/2017/07/06/17/13/calculator-2478633_960_720.png",
             },
         }
-
         self.config.register_global(**self.calculator_global)
 
         blocks = [

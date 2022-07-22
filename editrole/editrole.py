@@ -16,7 +16,7 @@ _ = Translator("EditRole", __file__)
 class EditRole(commands.Cog):
     """A cog to edit roles!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)

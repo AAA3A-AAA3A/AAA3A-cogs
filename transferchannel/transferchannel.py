@@ -62,7 +62,7 @@ class TextChannelGuildConverter(discord.ext.commands.TextChannelConverter):
 class TransferChannel(commands.Cog):
     """A cog to transfer all messages channel in a other channel!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
         self.cache = {}
 

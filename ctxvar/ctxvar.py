@@ -20,7 +20,7 @@ _ = Translator("CtxVar", __file__)
 class CtxVar(commands.Cog):
     """A cog to list and display the contents of all sub-functions of `ctx`!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)

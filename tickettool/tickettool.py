@@ -33,7 +33,7 @@ _ = Translator("TicketTool", __file__)
 class TicketTool(settings, commands.Cog):
     """A cog to manage a ticket system!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(

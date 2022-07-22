@@ -29,7 +29,7 @@ _ = Translator("EditFile", __file__)
 class EditFile(commands.Cog):
     """A cog to get a file and replace it from its path from Discord!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)

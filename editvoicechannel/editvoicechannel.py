@@ -19,7 +19,7 @@ _ = Translator("EditVoiceChannel", __file__)
 class EditVoiceChannel(commands.Cog):
     """A cog to edit voice channels!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)

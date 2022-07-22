@@ -23,7 +23,7 @@ _ = Translator("ExportChannel", __file__)
 class ExportChannel(commands.Cog):
     """A cog to export all or part of a channel's messages to an html file!"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)

@@ -11,6 +11,7 @@ from pathlib import Path
 import re
 import typing
 
+from redbot.core.cog_manager import CogManager
 from redbot.core.data_manager import cog_data_path
 from redbot.core.utils.chat_formatting import box, pagify
 
@@ -163,21 +164,22 @@ class EditFile(commands.Cog):
         downloader = ctx.bot.get_cog("Downloader")
         try:
             if downloader is not None:
-                path = Path((await downloader.cog_install_path()) / cog)
+                path = Path((await CogManager().find_cog(cog)).submodule_search_locations[0])
             else:
                 path = cog_data_path(raw_name=cog)
             if not path.exists() or not path.is_dir():
-                raise
-        except Exception:
+                raise FileNotFoundError()
+        except FileNotFoundError:
             await ctx.send(_("This cog cannot be found. Are you sure of its name?").format(**locals()))
-        else:
-            path = Path(self.cogsutils.replace_var_paths(str(path)))
-            await ctx.send(box(f"{path}"))
+            return
+        path = Path(self.cogsutils.replace_var_paths(str(path)))
+        await ctx.send(box(f"{path}"))
 
     @editfile.command()
     async def listdir(self, ctx: commands.Context, *, path: Path):
         """List all files/directories of a directory from its path.
         """
+        path = Path(self.cogsutils.replace_var_paths(str(path), reverse=True))
         if not path.exists():
             await ctx.send(_("This directory cannot be found on the host machine.").format(**locals()))
             return
@@ -186,6 +188,7 @@ class EditFile(commands.Cog):
             return
         files = listdir(str(path))
         message = ""
+        files = sorted(files, key=lambda file: (path / file).is_dir(), reverse=True)
         for file in files:
             path_file = path / file
             if path_file.is_file():

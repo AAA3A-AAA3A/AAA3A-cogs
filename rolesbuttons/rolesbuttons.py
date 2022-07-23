@@ -320,5 +320,5 @@ class RolesButtons(commands.Cog):
                         buttons["components"].append({"type": 2, "style": config[f"{message.channel.id}-{message.id}"][f"{button}"]["style_button"], "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": {"name": f"{button}"}, "custom_id": f"roles_buttons {button}"})
                     else:
                         buttons["components"].append({"type": 2, "style": config[f"{message.channel.id}-{message.id}"][f"{button}"]["style_button"], "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": {"name": f"{button}", "id": int(button)}, "custom_id": f"roles_buttons {button}"})
-            all_buttons.append(ActionRow.from_dict(buttons))
+                all_buttons.append(ActionRow.from_dict(buttons))
         return all_buttons

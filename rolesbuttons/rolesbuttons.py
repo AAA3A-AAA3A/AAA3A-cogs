@@ -195,7 +195,7 @@ class RolesButtons(commands.Cog):
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
-        if len(config[f"{message.channel.id}-{message.id}"]) >= 25:
+        if len(config[f"{message.channel.id}-{message.id}"]) > 25:
             await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
             return
         if hasattr(emoji, 'id'):
@@ -221,7 +221,7 @@ class RolesButtons(commands.Cog):
             await ctx.send(_("I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.").format(**locals()))
             return
         try:
-            for role, emoji in roles_buttons:
+            for role, emoji in roles_buttons[:19]:
                 await ctx.message.add_reaction(emoji)
         except discord.HTTPException:
             await ctx.send(_("A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
@@ -229,7 +229,7 @@ class RolesButtons(commands.Cog):
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
-        if len(config[f"{message.channel.id}-{message.id}"]) + len(roles_buttons) >= 25:
+        if len(config[f"{message.channel.id}-{message.id}"]) + len(roles_buttons) > 25:
             await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
             return
         for role, emoji in roles_buttons:

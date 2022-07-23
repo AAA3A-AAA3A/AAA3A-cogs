@@ -33,7 +33,7 @@ from redbot.core._diagnoser import IssueDiagnoser
 from redbot.core.bot import Red
 from redbot.core.data_manager import basic_config, cog_data_path, config_file, instance_name, storage_type
 from redbot.core.utils.chat_formatting import bold, box, error, humanize_list, humanize_timedelta, inline, pagify, text_to_file, warning
-from redbot.core.utils.menus import start_adding_reactions
+from redbot.core.utils.menus import start_adding_reactions, menu
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
 from redbot.logging import RotatingFileHandler
 from redbot.vendored.discord.ext import menus
@@ -572,7 +572,7 @@ class CogsUtils(commands.Cog):
         """
         Allow confirmation to be requested from the user, in the form of buttons/dropdown/reactions/message, with many additional options.
         """
-        if not self.is_dpy2 and way == "buttons" or not self.is_dpy2 and way == "dropdown":
+        if (way == "buttons" or way == "dropdown") and not self.is_dpy2:
             way = "reactions"
         if message is None:
             if not text and not embed and not file:
@@ -1829,10 +1829,10 @@ class Reactions():
             await start_adding_reactions(self.message, self.reactions)
             self.r = True
         predicates = ReactionPredicate.same_context(message=self.message)
-        result = False
+        running = True
         try:
             while True:
-                if result:
+                if not running:
                     break
                 tasks = [asyncio.create_task(self.bot.wait_for("reaction_add", check=predicates))]
                 done, pending = await asyncio.wait(
@@ -1843,7 +1843,7 @@ class Reactions():
                 if len(done) == 0:
                     raise TimeoutError()
                 reaction, user = done.pop().result()
-                result = await self.reaction_check(reaction, user)
+                running = await self.reaction_check(reaction, user)
         except TimeoutError:
             await self.on_timeout()
 
@@ -1925,9 +1925,6 @@ class Menu():
                 The context to start the menu in.
         """
         self.ctx = ctx
-        if self.way == "reactions":
-            asyncio.create_task(redbot.core.utils.menus.menu(ctx, pages=self.pages, controls=redbot.core.utils.menus.DEFAULT_CONTROLS, page=self.current_page, timeout=self.timeout))
-            return
         if self.way == "buttons":
             self.view = Buttons(timeout=self.timeout, buttons=[{"emoji": str(e), "custom_id": str(n)} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
             await self.send_initial_message(ctx, ctx.channel)
@@ -1947,7 +1944,7 @@ class Menu():
                     response = self.controls[str(reaction.emoji)]
                 elif self.way == "dropdown":
                     interaction, values, function_result = await self.view.wait_result()
-                    response = str(values[0])
+                    response = str(values[0]).lower().replace(" ", "_")
                 if response == "left_page":
                     self.current_page = 0
                 elif response == "prev_page":

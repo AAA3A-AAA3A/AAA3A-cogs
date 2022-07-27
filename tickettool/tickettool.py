@@ -603,7 +603,10 @@ class TicketTool(settings, commands.Cog):
         data = await self.config.guild(old_channel.guild).tickets.all()
         if str(old_channel.id) not in data:
             return
-        del data[str(old_channel.id)]
+        try:
+            del data[str(old_channel.id)]
+        except KeyError:
+            pass
         await self.config.guild(old_channel.guild).tickets.set(data)
         return
 
@@ -985,7 +988,7 @@ class Ticket:
         data = await ticket.bot.get_cog("TicketTool").config.guild(ticket.guild).tickets.all()
         try:
             del data[str(ticket.channel.id)]
-        except ValueError:
+        except KeyError:
             pass
         await ticket.bot.get_cog("TicketTool").config.guild(ticket.guild).tickets.set(data)
         return ticket

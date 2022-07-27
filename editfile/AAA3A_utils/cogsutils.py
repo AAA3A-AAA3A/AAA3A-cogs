@@ -1672,7 +1672,7 @@ if CogsUtils().is_dpy2:
             self.dropdown_dict_instance = {"timeout": timeout, "placeholder": placeholder, "min_values": min_values, "max_values": max_values, "options": [o.copy() for o in options], "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
             super().__init__(timeout=timeout)
             self.infinity = infinity
-            self.dropdown = self.Dropdown(view=self, placeholder=placeholder, min_values=min_values, max_values=max_values, options=options, members=members, check=check, function=function, function_args=function_args, infinity=self.infinity)
+            self.dropdown = self.Dropdown(placeholder=placeholder, min_values=min_values, max_values=max_values, options=options, members=members, check=check, function=function, function_args=function_args, infinity=self.infinity)
             self.add_item(self.dropdown)
 
         def to_dict_cogsutils(self, for_Config: typing.Optional[bool]=False):
@@ -1691,7 +1691,7 @@ if CogsUtils().is_dpy2:
             self.stop()
 
         async def wait_result(self):
-            self.done = asyncio.Event()
+            self.dropdown.done = asyncio.Event()
             await self.dropdown.done.wait()
             interaction, values, function_result = self.get_result()
             if interaction is None:
@@ -1703,8 +1703,7 @@ if CogsUtils().is_dpy2:
 
         class Dropdown(discord.ui.Select):
 
-            def __init__(self, view, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
-                self.view = view
+            def __init__(self, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
                 self.infinity = infinity
                 self.interaction_result = None
                 self.values_result = None

@@ -207,7 +207,7 @@ class CogsUtils(commands.Cog):
             asyncio.create_task(ctx.bot._delete_delay(ctx))
             self.cog.log.exception(f"Exception in command '{ctx.command.qualified_name}'.", exc_info=error.original)
             message = f"Error in command '{ctx.command.qualified_name}'. Check your console or logs for details.\nIf necessary, please inform the creator of the cog in which this command is located. Thank you."
-            exception_log = f"Exception in command '{ctx.command.qualified_name}.'\n"
+            exception_log = f"Exception in command '{ctx.command.qualified_name}'.\n"
             exception_log += "".join(traceback.format_exception(type(error), error, error.__traceback__))
             exception_log = self.replace_var_paths(exception_log)
             ctx.bot._last_exception = exception_log
@@ -389,6 +389,37 @@ class CogsUtils(commands.Cog):
         for handler in self.cog.log.handlers:
             handler.close()
         self.cog.log.handlers = []
+
+    async def to_update(self, cog_name: typing.Optional[str]=None):
+        if cog_name is None:
+            cog_name = self.cog.__class__.__name__
+        cog_name = cog_name.lower()
+
+        downloader = self.bot.get_cog("Downloader")
+        if downloader is None:
+            raise self.DownloaderNotLoaded(_("The cog downloader is not loaded.").format(**locals()))
+
+        if await self.bot._cog_mgr.find_cog(cog_name) is None:
+            raise ValueError(_("This cog was not found in any cog path."))
+
+        local = discord.utils.get(await downloader.installed_cogs(), name=cog_name)
+        if local is None:
+            raise ValueError(_("This cog is not installed on this bot.").format(**locals()))
+        local_commit = local.commit
+        repo = local.repo
+        if repo is None:
+            raise ValueError(_("This cog has not been installed from the cog Downloader.").format(**locals()))
+
+        repo_owner, repo_name, repo_branch = (re.compile(r"(?:https?:\/\/)?git(?:hub|lab).com\/(?P<repo_owner>[A-z0-9-_.]*)\/(?P<repo>[A-z0-9-_.]*)(?:\/tree\/(?P<repo_branch>[A-z0-9-_.]*))?", re.I).findall(repo.url))[0]
+        repo_branch = repo.branch
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}", timeout=3) as r:
+                online = await r.json()
+        if online is None or "object" not in online or "sha" not in online["object"]:
+            raise asyncio.IncompleteReadError(_("No results could be retrieved from the git api.").format(**locals()), None)
+        online_commit = online["object"]["sha"]
+
+        return online_commit != local_commit, local_commit, online_commit
 
     def add_dev_env_value(self):
         """
@@ -1036,36 +1067,29 @@ class CogsUtils(commands.Cog):
                         raise discord.ext.commands.BadArgument()
         return
 
-    async def to_update(self, cog_name: typing.Optional[str]=None):
-        if cog_name is None:
-            cog_name = self.cog.__class__.__name__
-        cog_name = cog_name.lower()
-
-        downloader = self.bot.get_cog("Downloader")
-        if downloader is None:
-            raise self.DownloaderNotLoaded(_("The cog downloader is not loaded.").format(**locals()))
-
-        if await self.bot._cog_mgr.find_cog(cog_name) is None:
-            raise ValueError(_("This cog was not found in any cog path."))
-
-        local = discord.utils.get(await downloader.installed_cogs(), name=cog_name)
-        if local is None:
-            raise ValueError(_("This cog is not installed on this bot.").format(**locals()))
-        local_commit = local.commit
-        repo = local.repo
-        if repo is None:
-            raise ValueError(_("This cog has not been installed from the cog Downloader.").format(**locals()))
-
-        repo_owner, repo_name, repo_branch = (re.compile(r"(?:https?:\/\/)?git(?:hub|lab).com\/(?P<repo_owner>[A-z0-9-_.]*)\/(?P<repo>[A-z0-9-_.]*)(?:\/tree\/(?P<repo_branch>[A-z0-9-_.]*))?", re.I).findall(repo.url))[0]
-        repo_branch = repo.branch
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}", timeout=3) as r:
-                online = await r.json()
-        if online is None or "object" not in online or "sha" not in online["object"]:
-            raise asyncio.IncompleteReadError(_("No results could be retrieved from the git api.").format(**locals()), None)
-        online_commit = online["object"]["sha"]
-
-        return online_commit != local_commit, local_commit, online_commit
+    # async def get_new_Config_with_modal(self, ctx: commands.Context, config: typing.Dict):
+    #     new_config = {}
+    #     view_button = Buttons(timeout=180, buttons=[{"label": "Configure", "emoji": "⚙️", "disabled": False}], members=[ctx.author.id])
+    #     message = await ctx.send(view=view_button)
+    #     try:
+    #         interaction, function_result = await view_button.wait_result()
+    #     except TimeoutError:
+    #         await message.edit(view=Buttons(timeout=None, buttons=[{"label": "Configure", "emoji": "⚙️", "disabled": True}]))
+    #         return None
+    #     view_modal = None ###########################
+    #     view_modal = Modal(title=f"{self.cog.__class__.__name__} Config", inputs=[{"label": config[input]["label"], "default"} for input in config], function=self.send_embed_with_responses)
+    #     await interaction.response.send_modal(view_modal)
+    #     try:
+    #         interaction, values, function_result = await view_modal.wait_result()
+    #     except TimeoutError:
+    #         return None
+    #     ###########################
+    #     await message.delete()
+    #     embed: discord.Embed = discord.Embed()
+    #     embed.title = _("⚙️ Do you want to replace the entire Config of {self.cog.__class__.__name__} with what you specified?").format(**locals())
+    #     if not await self.ConfirmationAsk(ctx, embed=embed):
+    #         return None
+    #     return new_config
 
     async def autodestruction(self):
         """
@@ -1648,7 +1672,7 @@ if CogsUtils().is_dpy2:
             self.dropdown_dict_instance = {"timeout": timeout, "placeholder": placeholder, "min_values": min_values, "max_values": max_values, "options": [o.copy() for o in options], "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
             super().__init__(timeout=timeout)
             self.infinity = infinity
-            self.dropdown = self.Dropdown(placeholder=placeholder, min_values=min_values, max_values=max_values, options=options, members=members, check=check, function=function, function_args=function_args, infinity=self.infinity)
+            self.dropdown = self.Dropdown(view=self, placeholder=placeholder, min_values=min_values, max_values=max_values, options=options, members=members, check=check, function=function, function_args=function_args, infinity=self.infinity)
             self.add_item(self.dropdown)
 
         def to_dict_cogsutils(self, for_Config: typing.Optional[bool]=False):
@@ -1679,7 +1703,8 @@ if CogsUtils().is_dpy2:
 
         class Dropdown(discord.ui.Select):
 
-            def __init__(self, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
+            def __init__(self, view, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
+                self.view = view
                 self.infinity = infinity
                 self.interaction_result = None
                 self.values_result = None
@@ -1711,7 +1736,7 @@ if CogsUtils().is_dpy2:
                 self.interaction_result = interaction
                 self.values_result = self.values
                 if self.function is not None:
-                    self.function_result = await self.function(self, interaction, self.values, **self.function_args)
+                    self.function_result = await self.function(self.view, interaction, self.values, **self.function_args)
                 self.done.set()
                 if not self.infinity:
                     self.view.stop()

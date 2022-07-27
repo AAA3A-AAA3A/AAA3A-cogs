@@ -1,6 +1,6 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 if CogsUtils().is_dpy2:
-    from .AAA3A_utils.cogsutils import Buttons  # isort:skip
+    from .AAA3A_utils.cogsutils import Buttons, Dropdown  # isort:skip
 else:
     from dislash import ActionRow, Button, ButtonStyle  # isort:skip
 
@@ -8,6 +8,8 @@ from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
+
+from .utils import EmojiLabelConverter
 
 
 _ = Translator("TicketTool", __file__)
@@ -308,7 +310,7 @@ class settings(commands.Cog):
             embed.add_field(
                 name=_("Thumbnail:").format(**locals()),
                 value=f"{actual_thumbnail}")
-            message = await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
             return
 
         await self.config.guild(ctx.guild).settings.thumbnail.set(link)
@@ -323,7 +325,7 @@ class settings(commands.Cog):
         embed.add_field(
             name=_("Thumbnail:").format(**locals()),
             value=f"{actual_thumbnail}")
-        message = await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
     @configuration.command(name="auditlogs", aliases=["logsaudit"], usage="<true_or_false>")
     async def showauthor(self, ctx: commands.Context, state: bool):
@@ -358,9 +360,15 @@ class settings(commands.Cog):
         await ctx.send(_("Close Confirmation state registered: {state}.").format(**locals()))
 
     @configuration.command(name="message")
-    async def message(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel]=None):
+    async def message(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel]=None, *reason_options: EmojiLabelConverter):
+        """Send a message with a button to open a ticket or dropdown with possible reasons.
+        
+        Example: `[p]setticket message #general "🐛|Report a bug" "⚠️|Report an user"`.
+        """
         if channel is None:
             channel = ctx.channel
+        if reason_options == ():
+            reason_options = None
         config = await self.config.guild(ctx.guild).settings.all()
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
@@ -371,8 +379,15 @@ class settings(commands.Cog):
         embed.color = actual_color
         embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon or "" if self.cogsutils.is_dpy2 else ctx.guild.icon_url or "")
         if self.cogsutils.is_dpy2:
-            view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Create ticket").format(**locals()), "emoji": "🎟️", "custom_id": "create_ticket_button", "disabled": False}], function=self.bot.get_cog("TicketTool").on_button_interaction, infinity=True)
-            await channel.send(embed=embed, view=view)
+            if reason_options is None:
+                view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Create ticket").format(**locals()), "emoji": "🎟️", "custom_id": "create_ticket_button", "disabled": False}], function=self.on_button_interaction, infinity=True)
+                await channel.send(embed=embed, view=view)
+            else:
+                dropdown_config = await self.config.guild(ctx.guild).dropdowns.all()
+                view = Dropdown(timeout=None, placeholder="Choose the reason for open a ticket.", options=[{"label": label, "emoji": emoji, "default": False} for emoji, label in reason_options], function=self.on_dropdown_interaction, infinity=True, custom_id="create_ticket_dropdown")
+                message = await channel.send(embed=embed, view=view)
+                dropdown_config[f"{channel.id}-{message.id}"] = [{"emoji": emoji, "label": label} for emoji, label in reason_options]
+                await self.config.guild(ctx.guild).dropdowns.set(dropdown_config)
         else:
             button = ActionRow(
                 Button(

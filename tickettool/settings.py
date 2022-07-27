@@ -2,7 +2,7 @@ from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 if CogsUtils().is_dpy2:
     from .AAA3A_utils.cogsutils import Buttons, Dropdown  # isort:skip
 else:
-    from dislash import ActionRow, Button, ButtonStyle  # isort:skip
+    from dislash import ActionRow, Button, ButtonStyle, SelectMenu, SelectOption  # isort:skip
 
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -384,21 +384,34 @@ class settings(commands.Cog):
                 await channel.send(embed=embed, view=view)
             else:
                 dropdown_config = await self.config.guild(ctx.guild).dropdowns.all()
-                view = Dropdown(timeout=None, placeholder="Choose the reason for open a ticket.", options=[{"label": label, "emoji": emoji, "default": False} for emoji, label in reason_options], function=self.on_dropdown_interaction, infinity=True, custom_id="create_ticket_dropdown")
+                view = Dropdown(timeout=None, placeholder="Choose the reason for open a ticket.", min_values=0, max_values=1, options=[{"label": label, "emoji": emoji, "default": False} for emoji, label in reason_options], function=self.on_dropdown_interaction, infinity=True, custom_id="create_ticket_dropdown")
                 message = await channel.send(embed=embed, view=view)
                 dropdown_config[f"{channel.id}-{message.id}"] = [{"emoji": emoji, "label": label} for emoji, label in reason_options]
                 await self.config.guild(ctx.guild).dropdowns.set(dropdown_config)
         else:
-            button = ActionRow(
-                Button(
-                    style=ButtonStyle.grey,
-                    label=_("Create ticket"),
-                    emoji="🎟️",
-                    custom_id="create_ticket_button",
-                    disabled=False
+            if reason_options is None:
+                button = ActionRow(
+                    Button(
+                        style=ButtonStyle.grey,
+                        label=_("Create ticket"),
+                        emoji="🎟️",
+                        custom_id="create_ticket_button",
+                        disabled=False
+                    )
                 )
-            )
-            await channel.send(embed=embed, components=[button])
+                await channel.send(embed=embed, components=[button])
+            else:
+                dropdown_config = await self.config.guild(ctx.guild).dropdowns.all()
+                dropdown = SelectMenu(
+                        custom_id="create_ticket_dropdown",
+                        placeholder="Choose the reason for open a ticket.",
+                        min_values=0,
+                        max_values=1,
+                        options=[SelectOption(label=label, value=label, emoji=emoji) for emoji, label in reason_options]
+                )
+                message = await channel.send(embed=embed, components=[dropdown])
+                dropdown_config[f"{channel.id}-{message.id}"] = [{"emoji": emoji, "label": label} for emoji, label in reason_options]
+                await self.config.guild(ctx.guild).dropdowns.set(dropdown_config)
 
     async def check_permissions_in_channel(self, permissions: typing.List[str], channel: discord.TextChannel):
         """Function to checks if the permissions are available in a guild.

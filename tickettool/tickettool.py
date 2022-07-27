@@ -7,7 +7,7 @@ import typing  # isort:skip
 if CogsUtils().is_dpy2:
     from .AAA3A_utils.cogsutils import Buttons, Dropdown  # isort:skip
 else:
-    from dislash import ActionRow, Button, ButtonStyle  # isort:skip
+    from dislash import ActionRow, Button, ButtonStyle, MessageInteraction  # isort:skip
 
 import asyncio
 import datetime
@@ -482,7 +482,7 @@ class TicketTool(settings, commands.Cog):
                     return
                 ctx = await self.cogsutils.invoke_command(author=interaction.user, channel=interaction.channel, command="ticket close")
                 if not all(check(ctx) for check in ctx.command.checks):
-                    await interaction.response.send_message(_("You are not allowed to execute this command."))
+                    await interaction.response.send_message(_("You are not allowed to execute this command."), ephemeral=True)
                 else:
                     await interaction.response.send_message(_("You have chosen to close this ticket.").format(**locals()), ephemeral=True)
             if interaction.data["custom_id"] == "claim_ticket_button":
@@ -494,7 +494,7 @@ class TicketTool(settings, commands.Cog):
                     return
                 ctx = await self.cogsutils.invoke_command(author=interaction.user, channel=interaction.channel, command="ticket claim")
                 if not all(check(ctx) for check in ctx.command.checks):
-                    await interaction.response.send_message(_("You are not allowed to execute this command."))
+                    await interaction.response.send_message(_("You are not allowed to execute this command."), ephemeral=True)
                 else:
                     await interaction.response.send_message(_("You have chosen to claim this ticket.").format(**locals()), ephemeral=True)
             if interaction.data["custom_id"] == "create_ticket_button":
@@ -506,12 +506,14 @@ class TicketTool(settings, commands.Cog):
                     return
                 ctx = await self.cogsutils.invoke_command(author=interaction.user, channel=interaction.channel, command="ticket create")
                 if not all(check(ctx) for check in ctx.command.checks):
-                    await interaction.response.send_message(_("You are not allowed to execute this command."))
+                    await interaction.response.send_message(_("You are not allowed to execute this command."), ephemeral=True)
                 else:
                     await interaction.response.send_message(_("You have chosen to create a ticket.").format(**locals()), ephemeral=True)
             return
 
         async def on_dropdown_interaction(self, view: Dropdown, interaction: discord.Interaction, options: typing.List):
+            if len(options) == 0:
+                await interaction.response.defer()
             permissions = interaction.channel.permissions_for(interaction.user)
             if not permissions.read_messages and not permissions.send_messages:
                 return
@@ -522,12 +524,12 @@ class TicketTool(settings, commands.Cog):
             reason = f"{option.emoji} - {option.label}"
             ctx = await self.cogsutils.invoke_command(author=interaction.user, channel=interaction.channel, command=f"ticket create {reason}")
             if not all(check(ctx) for check in ctx.command.checks):
-                await interaction.response.send_message(_("You are not allowed to execute this command."))
+                await interaction.response.send_message(_("You are not allowed to execute this command."), ephemeral=True)
             else:
                 await interaction.response.send_message(_("You have chosen to create a ticket with the reason `{reason}`.").format(**locals()), ephemeral=True)
     else:
         @commands.Cog.listener()
-        async def on_button_click(self, inter):
+        async def on_button_click(self, inter: MessageInteraction):
             if inter.clicked_button.custom_id == "close_ticket_button":
                 permissions = inter.channel.permissions_for(inter.author)
                 if not permissions.read_messages and not permissions.send_messages:
@@ -537,9 +539,9 @@ class TicketTool(settings, commands.Cog):
                     return
                 ctx = await self.cogsutils.invoke_command(author=inter.author, channel=inter.channel, command="ticket close")
                 if not all(check(ctx) for check in ctx.command.checks):
-                    await inter.send(_("You are not allowed to execute this command."))
+                    await inter.create_response(_("You are not allowed to execute this command."), ephemeral=True)
                 else:
-                    await inter.send(_("You have chosen to close this ticket.").format(**locals()), ephemeral=True)
+                    await inter.create_response(_("You have chosen to close this ticket.").format(**locals()), ephemeral=True)
             if inter.clicked_button.custom_id == "claim_ticket_button":
                 permissions = inter.channel.permissions_for(inter.author)
                 if not permissions.read_messages and not permissions.send_messages:
@@ -549,9 +551,9 @@ class TicketTool(settings, commands.Cog):
                     return
                 ctx = await self.cogsutils.invoke_command(author=inter.author, channel=inter.channel, command="ticket claim")
                 if not all(check(ctx) for check in ctx.command.checks):
-                    await inter.send(_("You are not allowed to execute this command."))
+                    await inter.create_response(_("You are not allowed to execute this command."), ephemeral=True)
                 else:
-                    await inter.send(_("You have chosen to claim this ticket.").format(**locals()), ephemeral=True)
+                    await inter.create_response(_("You have chosen to claim this ticket.").format(**locals()), ephemeral=True)
             if inter.clicked_button.custom_id == "create_ticket_button":
                 permissions = inter.channel.permissions_for(inter.author)
                 if not permissions.read_messages and not permissions.send_messages:
@@ -561,10 +563,30 @@ class TicketTool(settings, commands.Cog):
                     return
                 ctx = await self.cogsutils.invoke_command(author=inter.author, channel=inter.channel, command="ticket create")
                 if not all(check(ctx) for check in ctx.command.checks):
-                    await inter.send(_("You are not allowed to execute this command."))
+                    await inter.create_response(_("You are not allowed to execute this command."), ephemeral=True)
                 else:
-                    await inter.send(_("You have chosen to create a ticket.").format(**locals()), ephemeral=True)
+                    await inter.create_response(_("You have chosen to create a ticket.").format(**locals()), ephemeral=True)
             return
+
+        @commands.Cog.listener()
+        async def on_dropdown(self, inter: MessageInteraction):
+            if not inter.select_menu.custom_id == "create_ticket_dropdown":
+                return
+            if len(inter.select_menu.selected_options) == 0:
+                return
+            permissions = inter.channel.permissions_for(inter.author)
+            if not permissions.read_messages and not permissions.send_messages:
+                return
+            permissions = inter.channel.permissions_for(inter.guild.me)
+            if not permissions.read_messages and not permissions.read_message_history:
+                return
+            option = inter.select_menu.selected_options[0]
+            reason = f"{option.emoji} - {option.label}"
+            ctx = await self.cogsutils.invoke_command(author=inter.author, channel=inter.channel, command=f"ticket create {reason}")
+            if not all(check(ctx) for check in ctx.command.checks):
+                await inter.create_response(_("You are not allowed to execute this command."), ephemeral=True)
+            else:
+                await inter.create_response(_("You have chosen to create a ticket with the reason `{reason}`.").format(**locals()), ephemeral=True)
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):

@@ -96,14 +96,14 @@ class UrlButtons(commands.Cog):
         await ctx.tick()
 
     @urlbuttons.command()
-    async def bulk(self, ctx: commands.Context, message: discord.Message, *url_buttons: UrlEmojiConverter):
+    async def bulk(self, ctx: commands.Context, message: discord.Message, *url_buttons: EmojiUrlConverter):
         """Add a url-button to a message.
         """
         if not message.author == ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the url-button to work.").format(**locals()))
             return
         try:
-            for url, emoji in url_buttons:
+            for emoji, url in url_buttons:
                 await ctx.message.add_reaction(emoji)
         except discord.HTTPException:
             await ctx.send(_("A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
@@ -114,7 +114,7 @@ class UrlButtons(commands.Cog):
         if len(config[f"{message.channel.id}-{message.id}"]) + len(url_buttons) >= 25:
             await ctx.send(_("I can't do more than 25 url-buttons for one message.").format(**locals()))
             return
-        for url, emoji in url_buttons:
+        for emoji, url in url_buttons:
             if hasattr(emoji, 'id'):
                 config[f"{message.channel.id}-{message.id}"][f"{emoji.id}"] = {"url": url, "text_button": None}
             else:

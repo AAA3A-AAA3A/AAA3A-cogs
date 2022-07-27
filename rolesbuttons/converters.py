@@ -32,19 +32,16 @@ class RoleHierarchyConverter(discord.ext.commands.RoleConverter):
                 raise discord.ext.commands.BadArgument(_("The {role.mention} role is higher than your highest role in the discord hierarchy.").format(**locals()))
         return role
 
-class RoleEmojiConverter(discord.ext.commands.Converter):
+class EmojiRoleConverter(discord.ext.commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> typing.Tuple[discord.Role, typing.Union[discord.PartialEmoji, str]]:
         arg_split = re.split(r";|,|\||-", argument)
         try:
-            role, emoji = arg_split
+            emoji, role = arg_split
         except Exception:
-            raise discord.ext.commands.BadArgument(_("Role Emoji must be a role followed by an emoji separated by either `;`, `,`, `|`, or `-`.").format(**locals()))
-        role = await RoleHierarchyConverter().convert(ctx, role.strip())
-        custom_emoji = None
+            raise discord.ext.commands.BadArgument(_("Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`.").format(**locals()))
         try:
-            custom_emoji = await commands.PartialEmojiConverter().convert(ctx, emoji.strip())
+            emoji = await commands.PartialEmojiConverter().convert(ctx, emoji.strip())
         except commands.BadArgument:
-            pass
-        if not custom_emoji:
-            custom_emoji = str(emoji)
-        return role, custom_emoji
+            emoji = str(emoji)
+            role = await RoleHierarchyConverter().convert(ctx, role.strip())
+        return emoji, role

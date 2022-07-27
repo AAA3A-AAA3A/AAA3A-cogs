@@ -11,7 +11,7 @@ else:
 
 import asyncio
 
-from .converters import RoleEmojiConverter
+from .converters import EmojiRoleConverter
 
 from redbot.core import Config
 
@@ -61,9 +61,6 @@ class RolesButtons(commands.Cog):
 
     if CogsUtils().is_dpy2:
         async def on_button_interaction(self, view: Buttons, interaction: discord.Interaction):
-            # if "component_type" in interaction.data:
-            #     if not interaction.data["component_type"] == 2:
-            #         return
             if interaction.user is None:
                 return
             if interaction.guild is None:
@@ -210,7 +207,7 @@ class RolesButtons(commands.Cog):
         await ctx.tick()
 
     @rolesbuttons.command()
-    async def bulk(self, ctx: commands.Context, message: discord.Message, *roles_buttons: RoleEmojiConverter):
+    async def bulk(self, ctx: commands.Context, message: discord.Message, *roles_buttons: EmojiRoleConverter):
         """Add roles-buttons to a message.
         """
         if not message.author == ctx.guild.me:
@@ -221,7 +218,7 @@ class RolesButtons(commands.Cog):
             await ctx.send(_("I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.").format(**locals()))
             return
         try:
-            for role, emoji in roles_buttons[:19]:
+            for emoji, role in roles_buttons[:19]:
                 await ctx.message.add_reaction(emoji)
         except discord.HTTPException:
             await ctx.send(_("A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
@@ -232,7 +229,7 @@ class RolesButtons(commands.Cog):
         if len(config[f"{message.channel.id}-{message.id}"]) + len(roles_buttons) > 25:
             await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
             return
-        for role, emoji in roles_buttons:
+        for emoji, role in roles_buttons:
             if hasattr(emoji, 'id'):
                 config[f"{message.channel.id}-{message.id}"][f"{emoji.id}"] = {"role": role.id, "style_button": 2, "text_button": None}
             else:

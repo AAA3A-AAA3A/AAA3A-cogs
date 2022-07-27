@@ -7,21 +7,18 @@ import re
 
 _ = Translator("UrlButtons", __file__)
 
-class UrlEmojiConverter(discord.ext.commands.Converter):
+class EmojiUrlConverter(discord.ext.commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> typing.Tuple[str, typing.Union[discord.PartialEmoji, str]]:
         arg_split = re.split(r";|,|\||-", argument)
         try:
-            url, emoji = arg_split
+            emoji, url = arg_split
         except Exception:
-            raise discord.ext.commands.BadArgument(_("Url Emoji must be a url followed by an emoji separated by either `;`, `,`, `|`, or `-`.").format(**locals()))
+            raise discord.ext.commands.BadArgument(_("Emoji Url must be an emoji followed by a url separated by either `;`, `,`, `|`, or `-`.").format(**locals()))
+        try:
+            emoji = await commands.PartialEmojiConverter().convert(ctx, emoji.strip())
+        except commands.BadArgument:
+            emoji = str(emoji)
         url = str(url)
         if not url.startswith("http"):
             raise discord.ext.commands.BadArgument(_("Url must start with `https` or `http`.").format(**locals()))
-        custom_emoji = None
-        try:
-            custom_emoji = await commands.PartialEmojiConverter().convert(ctx, emoji.strip())
-        except commands.BadArgument:
-            pass
-        if not custom_emoji:
-            custom_emoji = str(emoji)
-        return url, custom_emoji
+        return url, emoji

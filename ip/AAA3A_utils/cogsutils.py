@@ -1667,12 +1667,12 @@ if CogsUtils().is_dpy2:
     class Dropdown(discord.ui.View):
         """Create Dropdown easily."""
 
-        def __init__(self, timeout: typing.Optional[float]=180, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[{}], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
+        def __init__(self, timeout: typing.Optional[float]=180, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[{}], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False, custom_id: typing.Optional[str]=f"CogsUtils_{CogsUtils().generate_key(number=10)}"):
             """label: str, value: str, description: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], default: bool"""
             self.dropdown_dict_instance = {"timeout": timeout, "placeholder": placeholder, "min_values": min_values, "max_values": max_values, "options": [o.copy() for o in options], "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
             super().__init__(timeout=timeout)
             self.infinity = infinity
-            self.dropdown = self.Dropdown(placeholder=placeholder, min_values=min_values, max_values=max_values, options=options, members=members, check=check, function=function, function_args=function_args, infinity=self.infinity)
+            self.dropdown = self.Dropdown(placeholder=placeholder, min_values=min_values, max_values=max_values, options=options, members=members, check=check, function=function, function_args=function_args, infinity=self.infinity, custom_id=custom_id)
             self.add_item(self.dropdown)
 
         def to_dict_cogsutils(self, for_Config: typing.Optional[bool]=False):
@@ -1703,7 +1703,7 @@ if CogsUtils().is_dpy2:
 
         class Dropdown(discord.ui.Select):
 
-            def __init__(self, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
+            def __init__(self, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False, custom_id: typing.Optional[str]=f"CogsUtils_{CogsUtils().generate_key(number=10)}"):
                 self.infinity = infinity
                 self.interaction_result = None
                 self.values_result = None
@@ -1721,7 +1721,7 @@ if CogsUtils().is_dpy2:
                     option = discord.SelectOption(**option_dict)
                     self._options.append(option)
                     self.options_dict.append(option_dict)
-                super().__init__(placeholder=placeholder, min_values=min_values, max_values=max_values, options=self._options)
+                super().__init__(custom_id=custom_id, placeholder=placeholder, min_values=min_values, max_values=max_values, options=self._options)
 
             async def callback(self, interaction: discord.Interaction):
                 if self.check is not None:

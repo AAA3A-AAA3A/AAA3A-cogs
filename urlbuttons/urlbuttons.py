@@ -9,7 +9,7 @@ if CogsUtils().is_dpy2:
 else:
     from dislash import ActionRow  # isort:skip
 
-from .converters import UrlEmojiConverter
+from .converters import EmojiUrlConverter
 
 from redbot.core import Config
 

@@ -469,7 +469,7 @@ class settings(commands.Cog):
                     message = await channel.send(embed=embed, view=view)
                 else:
                     await message.edit(view=view)
-                dropdown_config[f"{channel.id}-{message.id}"] = [{"emoji": emoji, "label": label, "description": description, "value": value} for emoji, label, description, value in reason_options]
+                dropdown_config[f"{channel.id}-{message.id}"] = [{"emoji": emoji if not hasattr(emoji, "id") else emoji.id, "label": label, "description": description, "value": value} for emoji, label, description, value in reason_options]
                 await self.config.guild(ctx.guild).dropdowns.set(dropdown_config)
         else:
             if reason_options is None:
@@ -499,7 +499,7 @@ class settings(commands.Cog):
                     message = await channel.send(embed=embed, components=[dropdown])
                 else:
                     await message.edit(components=[dropdown])
-                dropdown_config[f"{channel.id}-{message.id}"] = [{"emoji": emoji, "label": label, "description": description, "value": value} for emoji, label, description, value in reason_options]
+                dropdown_config[f"{channel.id}-{message.id}"] = [{"emoji": emoji if not hasattr(emoji, "id") else emoji.id, "label": label, "description": description, "value": value} for emoji, label, description, value in reason_options]
                 await self.config.guild(ctx.guild).dropdowns.set(dropdown_config)
         await ctx.tick()
 

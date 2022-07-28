@@ -93,11 +93,15 @@ Credits
 
 * Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 
-* Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
+* Thanks to the developers of the cogs I saw as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav, for example)
 
 * Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
 * Individual credits in each cog.
+
+* Thanks to 26, Aika, Yami, Jack, Flame, Draper and others for the discussions that helped me develop my cogs!
+
+* Thanks to Kreusada because his repo served as a model for mine! Everything in the documentation uses the layout of his.
 
 -------
 LICENSE

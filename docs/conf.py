@@ -17,6 +17,6 @@ master_doc = "index"
 exclude_patterns = []
 add_function_parentheses = True
 
-project = "Kreusada-Cogs"
+project = "AAA3A-cogs"
 copyright = "2022 | AAA3A"
 html_logo = "image_cog-creators-logo.png"

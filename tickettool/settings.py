@@ -11,6 +11,8 @@ import typing  # isort:skip
 
 from .utils import EmojiLabelConverter
 
+if CogsUtils().is_dpy2:  # To remove
+    setattr(commands, "Literal", typing.Literal)
 
 _ = Translator("TicketTool", __file__)
 
@@ -251,14 +253,42 @@ class settings(commands.Cog):
         await self.config.guild(ctx.guild).settings.user_can_close.set(state)
         await ctx.send(_("User Can Close state registered: {state}.").format(**locals()))
 
+    @configuration.command()
+    async def dynamicchannelname(self, ctx: commands.Context, dynamic_channel_name: typing.Optional[str]=None):
+        """Set the Dinamic Ticket Channel Name.
+
+        `{ticket.id}`, `{ticket.created_by.id}`, `{ticket.guild.id}`, {ticket.channel.mention}...
+        If, when creating the ticket, an error occurs with this name, another name will be used.        
+        """
+        if dynamic_channel_name is None:
+            await self.config.guild(ctx.guild).settings.dynamic_channel_name.clear()
+            await ctx.tick()
+            return
+
+        await self.config.guild(ctx.guild).settings.dynamic_channel_name.set(dynamic_channel_name)
+        await ctx.tick()
+
+    @configuration.command()
+    async def custommessage(self, ctx: commands.Context, *, custom_message: typing.Optional[str]=None):
+        """Set the Custom Message.
+
+        `{ticket.id}`, `{ticket.created_by.display_name}`, `{ticket.guild.name}`...     
+        """
+        if custom_message is None:
+            await self.config.guild(ctx.guild).settings.custom_message.clear()
+            await ctx.tick()
+            return
+
+        await self.config.guild(ctx.guild).settings.custom_message.set(custom_message)
+        await ctx.tick()
+
     @configuration.command(aliases=["colour", "col", "embedcolor", "embedcolour"], usage="<color_or_'none'>")
     async def color(self, ctx: commands.Context, *, color: typing.Optional[discord.Color]=None):
-        """Set a colour fort the embed.
+        """Set a colour for the embeds.
 
         ``color``: Color.
         You can also use "None" if you wish to reset the color.
         """
-
         if color is None:
             await self.config.guild(ctx.guild).settings.color.clear()
             config = await self.config.guild(ctx.guild).settings.all()
@@ -290,13 +320,12 @@ class settings(commands.Cog):
         message = await ctx.send(embed=embed)
 
     @configuration.command(aliases=["picture", "thumb", "link"], usage="<link_or_'none'>")
-    async def thumbnail(self, ctx: commands.Context, *, link = None):
-        """Set a thumbnail fort the embed.
+    async def thumbnail(self, ctx: commands.Context, *, link: typing.Optional[str]=None):
+        """Set a thumbnail for the embeds.
 
         ``link``: Thumbnail link.
         You can also use "None" if you wish to reset the thumbnail.
         """
-
         if link is None:
             await self.config.guild(ctx.guild).settings.thumbnail.clear()
             config = await self.config.guild(ctx.guild).settings.all()
@@ -359,6 +388,48 @@ class settings(commands.Cog):
         await self.config.guild(ctx.guild).settings.close_confirmation.set(state)
         await ctx.send(_("Close Confirmation state registered: {state}.").format(**locals()))
 
+    @configuration.command(aliases=["buttonembed"])
+    async def embedbutton(self, ctx: commands.Context, where: commands.Literal["title", "description", "image", "placeholderdropdown"], *, text: typing.Optional[str]=None):
+        """Set the settings for the button embed.
+        """
+        if text is None:
+            if where == "title":
+                await self.config.guild(ctx.guild).settings.embed_button.title.clear()
+            elif where == "description":
+                await self.config.guild(ctx.guild).settings.embed_button.description.clear()
+            elif where == "image":
+                await self.config.guild(ctx.guild).settings.embed_button.image.clear()
+            elif where == "placeholderdropdown":
+                await self.config.guild(ctx.guild).settings.embed_button.placeholder_dropdown.clear()
+            await ctx.tick()
+            return
+
+        if where == "title":
+            await self.config.guild(ctx.guild).settings.embed_button.title.set(text)
+        elif where == "description":
+            await self.config.guild(ctx.guild).settings.embed_button.description.set(text)
+        elif where == "image":
+            await self.config.guild(ctx.guild).settings.embed_button.image.set(text)
+        elif where == "placeholderdropdown":
+            await self.config.guild(ctx.guild).settings.embed_button.placeholder_dropdown.set(text)
+        await ctx.tick()
+
+    @configuration.command(usage="<true_or_false>")
+    async def renamechanneldropdown(self, ctx: commands.Context, state: bool):
+        """Enable or disable Rename Channel Dropdown.
+
+        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
+        """
+        config = await self.config.guild(ctx.guild).settings.all()
+
+        actual_rename_channel_dropdown = config["embed_button"]["rename_channel_dropdown"]
+        if actual_rename_channel_dropdown is state:
+            await ctx.send(_("Rename Channel Dropdown is already set on {state}.").format(**locals()))
+            return
+
+        await self.config.guild(ctx.guild).settings.embed_button.rename_channel_dropdown.set(state)
+        await ctx.send(_("Rename Channel Dropdown state registered: {state}.").format(**locals()))
+
     @configuration.command(name="message")
     async def message(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel]=None, message: typing.Optional[discord.Message]=None, *reason_options: EmojiLabelConverter):
         """Send a message with a button to open a ticket or dropdown with possible reasons.
@@ -378,8 +449,9 @@ class settings(commands.Cog):
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
         embed: discord.Embed = discord.Embed()
-        embed.title = str(config["embed_button"]["title"])
-        embed.description = str(config["embed_button"]["description"]).replace('{prefix}', f'{ctx.prefix}')
+        embed.title = config["embed_button"]["title"]
+        embed.description = config["embed_button"]["description"].replace('{prefix}', f'{ctx.prefix}')
+        embed.set_image(url=config["embed_button"]["image"])
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
         embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon or "" if self.cogsutils.is_dpy2 else ctx.guild.icon_url or "")
@@ -392,7 +464,7 @@ class settings(commands.Cog):
                     await message.edit(view=view)
             else:
                 dropdown_config = await self.config.guild(ctx.guild).dropdowns.all()
-                view = Dropdown(timeout=None, placeholder="Choose the reason for open a ticket.", min_values=0, max_values=1, options=[{"label": label, "emoji": emoji, "default": False} for emoji, label in reason_options], function=self.on_dropdown_interaction, infinity=True, custom_id="create_ticket_dropdown")
+                view = Dropdown(timeout=None, placeholder=config["embed_button"]["placeholder_dropdown"], min_values=0, max_values=1, options=[{"label": label, "emoji": emoji, "default": False} for emoji, label in reason_options], function=self.on_dropdown_interaction, infinity=True, custom_id="create_ticket_dropdown")
                 if message is None:
                     message = await channel.send(embed=embed, view=view)
                 else:

@@ -96,7 +96,7 @@ class TicketTool(settings, commands.Cog):
         for guild in all_guilds:
             for dropdown in all_guilds[guild]["dropdowns"]:
                 try:
-                    self.bot.add_view(Dropdown(timeout=None, placeholder="Choose the reason for open a ticket.", options=[{"label": reason_option["label"], "emoji": reason_option["emoji"], "default": False} for reason_option in all_guilds[guild]["dropdowns"][dropdown]], function=self.on_dropdown_interaction, infinity=True, custom_id="create_ticket_dropdown"), message_id=int((str(dropdown).split("-"))[1]))
+                    self.bot.add_view(Dropdown(timeout=None, placeholder="Choose the reason for open a ticket.", options=[{"label": reason_option["label"], "value": reason_option.get("value", reason_option["label"]), "description": reason_option.get("description", None), "emoji": reason_option["emoji"], "default": False} for reason_option in all_guilds[guild]["dropdowns"][dropdown]], function=self.on_dropdown_interaction, infinity=True, custom_id="create_ticket_dropdown"), message_id=int((str(dropdown).split("-"))[1]))
                 except Exception as e:
                     self.log.error(f"The Dropdown View could not be added correctly for the {guild}-{dropdown} message.", exc_info=e)
 
@@ -526,7 +526,7 @@ class TicketTool(settings, commands.Cog):
             permissions = interaction.channel.permissions_for(interaction.guild.me)
             if not permissions.read_messages and not permissions.read_message_history:
                 return
-            option = [option for option in view.dropdown._options if option.label == options[0]][0]
+            option = [option for option in view.dropdown._options if option.value == options[0]][0]
             reason = f"{option.emoji} - {option.label}"
             ctx = await self.cogsutils.invoke_command(author=interaction.user, channel=interaction.channel, command=f"ticket create {reason}")
             if not all(check(ctx) for check in ctx.command.checks) or not hasattr(ctx, "ticket"):
@@ -537,7 +537,7 @@ class TicketTool(settings, commands.Cog):
                     try:
                         ticket: Ticket = await self.get_ticket(ctx.guild.get_channel(ctx.ticket.channel))
                         if ticket is not None:
-                            await ticket.rename(new_name=f"{option.emoji}-{option.label}_{interaction.user.id}".replace(" ", "-"), author=None)
+                            await ticket.rename(new_name=f"{option.emoji}-{option.value}_{interaction.user.id}".replace(" ", "-"), author=None)
                     except discord.HTTPException:
                         pass
                 await interaction.response.send_message(_("You have chosen to create a ticket with the reason `{reason}`.").format(**locals()), ephemeral=True)
@@ -605,7 +605,7 @@ class TicketTool(settings, commands.Cog):
                     try:
                         ticket: Ticket = await self.get_ticket(ctx.guild.get_channel(ctx.ticket.channel))
                         if ticket is not None:
-                            await ticket.rename(new_name=(f"{option.emoji}-{option.label}_{inter.author.id}".replace(" ", "-"))[:99], author=None)
+                            await ticket.rename(new_name=(f"{option.emoji}-{option.value}_{inter.author.id}".replace(" ", "-"))[:99], author=None)
                     except discord.HTTPException:
                         pass
                 await inter.create_response(_("You have chosen to create a ticket with the reason `{reason}`.").format(**locals()), ephemeral=True)

@@ -1,3 +1,5 @@
+from errno import EXDEV
+from operator import truth
 import discord  # isort:skip
 import typing  # isort:skip
 from redbot.core import commands  # isort:skip
@@ -75,16 +77,25 @@ class utils():
             )
         return overwrites
 
-class EmojiLabelConverter(discord.ext.commands.Converter):
+class EmojiLabelDescriptionValueConverter(discord.ext.commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> typing.Tuple[str, typing.Union[discord.PartialEmoji, str]]:
         arg_split = re.split(r";|,|\||-", argument)
         try:
-            emoji, label = arg_split
+            try:
+                emoji, label, description, value = arg_split
+            except Exception:
+                try:
+                    emoji, label, description = arg_split
+                    value = label
+                except Exception:
+                    emoji, label = arg_split
+                    description = None
+                    value = label
         except Exception:
-            raise discord.ext.commands.BadArgument(_("Emoji Label must be a emoji followed by an string separated by either `;`, `,`, `|`, or `-`.").format(**locals()))
+            raise discord.ext.commands.BadArgument(_("Emoji Label must be a emoji followed by an string, and optionnaly by a description and a value (for rename ticket channel), separated by either `;`, `,`, `|`, or `-`.").format(**locals()))
         try:
             emoji = await commands.PartialEmojiConverter().convert(ctx, emoji.strip())
         except commands.BadArgument:
             emoji = str(emoji)
         label = str(label)
-        return emoji, label
+        return emoji, label, description, value

@@ -9,7 +9,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from .utils import EmojiLabelConverter
+from .utils import EmojiLabelDescriptionValueConverter
 
 if CogsUtils().is_dpy2:  # To remove
     setattr(commands, "Literal", typing.Literal)
@@ -187,7 +187,7 @@ class settings(commands.Cog):
             return
 
         await self.config.guild(ctx.guild).settings.nb_max.set(nb_max)
-        await ctx.send(_("Max Number of tickets registered: {nbmax}.").format(**locals()))
+        await ctx.send(_("Max Number of tickets registered: {nb_max}.").format(**locals()))
 
     @configuration.command(usage="<true_or_false>")
     async def modlog(self, ctx: commands.Context, state: bool):
@@ -431,11 +431,11 @@ class settings(commands.Cog):
         await ctx.send(_("Rename Channel Dropdown state registered: {state}.").format(**locals()))
 
     @configuration.command(name="message")
-    async def message(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel]=None, message: typing.Optional[discord.Message]=None, *reason_options: EmojiLabelConverter):
+    async def message(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel]=None, message: typing.Optional[discord.Message]=None, *reason_options: EmojiLabelDescriptionValueConverter):
         """Send a message with a button to open a ticket or dropdown with possible reasons.
         
         Example:
-        `[p]setticket message #general "🐛|Report a bug" "⚠️|Report a user"`
+        `[p]setticket message #general "🐛|Report a bug|If you find a bug, report it here.|bug" "⚠️|Report a user|If you find a malicious user, report it here.|user"`
         `[p]setticket 1234567890-0987654321`
         """
         if channel is None:
@@ -464,12 +464,12 @@ class settings(commands.Cog):
                     await message.edit(view=view)
             else:
                 dropdown_config = await self.config.guild(ctx.guild).dropdowns.all()
-                view = Dropdown(timeout=None, placeholder=config["embed_button"]["placeholder_dropdown"], min_values=0, max_values=1, options=[{"label": label, "emoji": emoji, "default": False} for emoji, label in reason_options], function=self.on_dropdown_interaction, infinity=True, custom_id="create_ticket_dropdown")
+                view = Dropdown(timeout=None, placeholder=config["embed_button"]["placeholder_dropdown"], min_values=0, max_values=1, options=[{"label": label, "value": value, "description": description, "emoji": emoji, "default": False} for emoji, label, description, value in reason_options], function=self.on_dropdown_interaction, infinity=True, custom_id="create_ticket_dropdown")
                 if message is None:
                     message = await channel.send(embed=embed, view=view)
                 else:
                     await message.edit(view=view)
-                dropdown_config[f"{channel.id}-{message.id}"] = [{"emoji": emoji, "label": label} for emoji, label in reason_options]
+                dropdown_config[f"{channel.id}-{message.id}"] = [{"emoji": emoji, "label": label, "description": description, "value": value} for emoji, label, description, value in reason_options]
                 await self.config.guild(ctx.guild).dropdowns.set(dropdown_config)
         else:
             if reason_options is None:
@@ -493,13 +493,13 @@ class settings(commands.Cog):
                         placeholder="Choose the reason for open a ticket.",
                         min_values=0,
                         max_values=1,
-                        options=[SelectOption(label=label, value=label, emoji=emoji) for emoji, label in reason_options]
+                        options=[SelectOption(label=label, value=value, description=description, emoji=emoji) for emoji, label, description, value in reason_options]
                 )
                 if message is None:
                     message = await channel.send(embed=embed, components=[dropdown])
                 else:
                     await message.edit(components=[dropdown])
-                dropdown_config[f"{channel.id}-{message.id}"] = [{"emoji": emoji, "label": label} for emoji, label in reason_options]
+                dropdown_config[f"{channel.id}-{message.id}"] = [{"emoji": emoji, "label": label, "description": description, "value": value} for emoji, label, description, value in reason_options]
                 await self.config.guild(ctx.guild).dropdowns.set(dropdown_config)
         await ctx.tick()
 

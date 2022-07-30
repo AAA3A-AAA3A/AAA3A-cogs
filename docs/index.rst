@@ -22,7 +22,6 @@ Useful Links
     cog_calculator
     cog_clearchannel
     cog_cmdchannel
-    cog_cmdslash
     cog_ctxvar
     cog_discordmodals
     cog_discordsearch

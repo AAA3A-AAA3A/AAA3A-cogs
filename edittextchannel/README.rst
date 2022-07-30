@@ -2,6 +2,7 @@
 ===============
 EditTextChannel
 ===============
+
 This is the cog guide for the 'EditTextChannel' cog. This guide contains the collection of commands which you can use in the cog.
 Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` with your own prefix when you use these commands in Discord.
 
@@ -25,24 +26,34 @@ Here are all the commands included in this cog (11):
 
 * ``[p]edittextchannel``
  Commands for edit a text channel.
+
 * ``[p]edittextchannel category [channel] <category>``
  Edit text channel category.
+
 * ``[p]edittextchannel defaultautoarchiveduration [channel] <60|1440|4320|10080>``
  Edit text channel default auto archive duration.
+
 * ``[p]edittextchannel delete [channel] [confirmation=False]``
  Delete text channel.
+
 * ``[p]edittextchannel name [channel] <name>``
  Edit text channel name.
+
 * ``[p]edittextchannel nsfw [channel] <nsfw>``
  Edit text channel nsfw.
+
 * ``[p]edittextchannel position [channel] <position>``
  Edit text channel position.
+
 * ``[p]edittextchannel slowmodedelay [channel] <slowmode_delay>``
  Edit text channel slowmode delay.
+
 * ``[p]edittextchannel syncpermissions [channel] <sync_permissions>``
  Edit text channel syncpermissions with category.
+
 * ``[p]edittextchannel topic [channel] <topic>``
  Edit text channel topic.
+
 * ``[p]edittextchannel type [channel] <0|5>``
  Edit text channel type.
 
@@ -73,6 +84,6 @@ Once it's installed, it is not loaded by default. Load it by running the followi
 Further Support
 ---------------
 
-For more support, head over to the `cog support server <https://discord.gg/GET4DVk>`_,
-You can ask in #support_othercogs by pinging me.
-You can also contact me by private message.
+Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
+Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
+Additionally, feel free to open an issue or pull request to this repo.

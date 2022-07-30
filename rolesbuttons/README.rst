@@ -2,6 +2,7 @@
 ============
 RolesButtons
 ============
+
 This is the cog guide for the 'RolesButtons' cog. This guide contains the collection of commands which you can use in the cog.
 Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` with your own prefix when you use these commands in Discord.
 
@@ -25,14 +26,19 @@ Here are all the commands included in this cog (6):
 
 * ``[p]rolesbuttons``
  Group of commands for use RolesButtons.
+
 * ``[p]rolesbuttons add <message> <role> <emoji> [1|2|3|4=2] [text_button=None]``
  Add a role-button to a message.
+
 * ``[p]rolesbuttons bulk <message> [roles_buttons...]``
  Add roles-buttons to a message.
+
 * ``[p]rolesbuttons clear <message>``
  Clear all roles-buttons to a message.
+
 * ``[p]rolesbuttons purge``
  Clear all roles-buttons to a **guild**.
+
 * ``[p]rolesbuttons remove <message> <button>``
  Remove a role-button to a message.
 
@@ -63,6 +69,6 @@ Once it's installed, it is not loaded by default. Load it by running the followi
 Further Support
 ---------------
 
-For more support, head over to the `cog support server <https://discord.gg/GET4DVk>`_,
-You can ask in #support_othercogs by pinging me.
-You can also contact me by private message.
+Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
+Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
+Additionally, feel free to open an issue or pull request to this repo.

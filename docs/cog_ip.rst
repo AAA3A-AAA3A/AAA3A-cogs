@@ -2,6 +2,7 @@
 ==
 Ip
 ==
+
 This is the cog guide for the 'Ip' cog. This guide contains the collection of commands which you can use in the cog.
 Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` with your own prefix when you use these commands in Discord.
 
@@ -25,8 +26,10 @@ Here are all the commands included in this cog (3):
 
 * ``[p]ip``
  Get the ip address of the bot.
+
 * ``[p]setportip <port>``
  Set the port.
+
 * ``[p]website``
  Get the ip adress website.
 
@@ -57,6 +60,6 @@ Once it's installed, it is not loaded by default. Load it by running the followi
 Further Support
 ---------------
 
-For more support, head over to the `cog support server <https://discord.gg/GET4DVk>`_,
-You can ask in #support_othercogs by pinging me.
-You can also contact me by private message.
+Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
+Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
+Additionally, feel free to open an issue or pull request to this repo.

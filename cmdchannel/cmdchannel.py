@@ -109,7 +109,7 @@ class CmdChannel(commands.Cog):
                     embed.set_author(name=author_title, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
-                await self.cogsutils.invoke_command(author=ctx.author, channel=channel, command=command)
+                await self.cogsutils.invoke_command(author=ctx.author, channel=channel, command=command, prefix=ctx.prefix)
                 if actual_state_confirmation:
                     try:
                         await ctx.author.send(_("The `{command}` command has been launched in the {channel} channel. You can check if it worked.").format(**locals()))
@@ -167,7 +167,7 @@ class CmdChannel(commands.Cog):
                     embed.set_author(name=author_title, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
-                await self.cogsutils.invoke_command(author=user, channel=ctx.channel, command=command)
+                await self.cogsutils.invoke_command(author=user, channel=ctx.channel, command=command, prefix=ctx.prefix)
                 if actual_state_confirmation:
                     try:
                         await ctx.author.send(_("The `{command}` command has been launched in the {ctx.channel} channel by imitating the {user} user. You can check if it worked.").format(**locals()))
@@ -228,7 +228,7 @@ class CmdChannel(commands.Cog):
                     embed.set_author(name=author_title, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
-                await self.cogsutils.invoke_command(author=user, channel=channel, command=command)
+                await self.cogsutils.invoke_command(author=user, channel=channel, command=command, prefix=ctx.prefix)
                 if actual_state_confirmation:
                     try:
                         await ctx.author.send(_("The `{command}` command has been launched in the {channel} channel by imitating the {user} user. You can check if it worked.").format(**locals()))

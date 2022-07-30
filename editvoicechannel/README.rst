@@ -2,6 +2,7 @@
 ================
 EditVoiceChannel
 ================
+
 This is the cog guide for the 'EditVoiceChannel' cog. This guide contains the collection of commands which you can use in the cog.
 Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` with your own prefix when you use these commands in Discord.
 
@@ -25,22 +26,31 @@ Here are all the commands included in this cog (10):
 
 * ``[p]editvoicechannel``
  Commands for edit a voice channel.
+
 * ``[p]editvoicechannel bitrate <channel> <bitrate>``
  Edit voice channel bitrate.
+
 * ``[p]editvoicechannel category <channel> <category>``
  Edit voice channel category.
+
 * ``[p]editvoicechannel delete <channel> [confirmation=False]``
  Delete voice channel.
+
 * ``[p]editvoicechannel name <channel> <name>``
  Edit voice channel name.
+
 * ``[p]editvoicechannel nsfw <channel> <nsfw>``
  Edit voice channel nsfw.
+
 * ``[p]editvoicechannel position <channel> <position>``
  Edit voice channel position.
+
 * ``[p]editvoicechannel syncpermissions <channel> <sync_permissions>``
  Edit voice channel sync permissions.
+
 * ``[p]editvoicechannel userlimit <channel> <user_limit>``
  Edit voice channel user limit.
+
 * ``[p]editvoicechannel videoqualitymode <channel> <1|2>``
  Edit voice channel video quality mode.
 
@@ -71,6 +81,6 @@ Once it's installed, it is not loaded by default. Load it by running the followi
 Further Support
 ---------------
 
-For more support, head over to the `cog support server <https://discord.gg/GET4DVk>`_,
-You can ask in #support_othercogs by pinging me.
-You can also contact me by private message.
+Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
+Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
+Additionally, feel free to open an issue or pull request to this repo.

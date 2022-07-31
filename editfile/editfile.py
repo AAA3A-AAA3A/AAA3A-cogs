@@ -147,11 +147,11 @@ class EditFile(commands.Cog):
             content = content.strip("` \n")
             new_file_content = content.encode(encoding="utf-8")
         else:
-            new_file_content = ctx.message.attachments[0].read()
+            new_file_content = await ctx.message.attachments[0].read()
         if line_span is not None:
             lines = old_file_content.split(b"\n")[:line_span[0] - 1] + new_file_content.split(b"\n") + old_file_content.split(b"\n")[line_span[1]:]
         else:
-            lines = content.split(b"\n")
+            lines = new_file_content.split(b"\n")
         with open(path, "wb") as file:
             file.write(b"\n".join(lines))
         path = Path(self.cogsutils.replace_var_paths(str(path)))

@@ -33,12 +33,12 @@ from redbot.core._diagnoser import IssueDiagnoser
 from redbot.core.bot import Red
 from redbot.core.data_manager import basic_config, cog_data_path, config_file, instance_name, storage_type
 from redbot.core.utils.chat_formatting import bold, box, error, humanize_list, humanize_timedelta, inline, pagify, text_to_file, warning
-from redbot.core.utils.menus import start_adding_reactions, menu
+from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
 from redbot.logging import RotatingFileHandler
 from redbot.vendored.discord.ext import menus
 
-__all__ = ["CogsUtils", "Loop", "Captcha", "Buttons", "Dropdown", "Modal", "Reactions"]
+__all__ = ["CogsUtils", "Loop", "Captcha", "Buttons", "Dropdown", "Modal", "Reactions", "Menu"]
 
 def _(untranslated: str):
     return untranslated
@@ -126,6 +126,7 @@ class CogsUtils(commands.Cog):
                                         "UrlButtons",
                                         "ReactToCommand",
                                         "RolesButtons",
+                                        "Seen",
                                         "SimpleSanction",
                                         "Sudo",
                                         "TicketTool",
@@ -152,6 +153,7 @@ class CogsUtils(commands.Cog):
                                         "UrlButtons",
                                         "ReactToCommand",
                                         "RolesButtons",
+                                        "Seen",
                                         "SimpleSanction",
                                         "Sudo",
                                         "TicketTool",
@@ -289,11 +291,7 @@ class CogsUtils(commands.Cog):
                 self.cog.log.warning(f"Your {self.cog.__class__.__name__} cog, from {self.repo_name}, is out of date. You can update your cogs with the 'cog update' command in Discord.")
             else:
                 self.cog.log.debug(f"{self.cog.__class__.__name__} cog is up to date.")
-        except self.DownloaderNotLoaded:
-            pass
-        except asyncio.TimeoutError:
-            pass
-        except ValueError:
+        except (self.DownloaderNotLoaded, asyncio.TimeoutError, ValueError):
             pass
         except Exception as e:  # really doesn't matter if this fails so fine with debug level
             self.cog.log.debug(f"Something went wrong checking if {self.cog.__class__.__name__} cog is up to date.", exc_info=e)
@@ -1067,29 +1065,46 @@ class CogsUtils(commands.Cog):
                         raise discord.ext.commands.BadArgument()
         return
 
-    # async def get_new_Config_with_modal(self, ctx: commands.Context, config: typing.Dict):
-    #     new_config = {}
-    #     view_button = Buttons(timeout=180, buttons=[{"label": "Configure", "emoji": "⚙️", "disabled": False}], members=[ctx.author.id])
-    #     message = await ctx.send(view=view_button)
-    #     try:
-    #         interaction, function_result = await view_button.wait_result()
-    #     except TimeoutError:
-    #         await message.edit(view=Buttons(timeout=None, buttons=[{"label": "Configure", "emoji": "⚙️", "disabled": True}]))
-    #         return None
-    #     view_modal = None ###########################
-    #     view_modal = Modal(title=f"{self.cog.__class__.__name__} Config", inputs=[{"label": config[input]["label"], "default"} for input in config], function=self.send_embed_with_responses)
-    #     await interaction.response.send_modal(view_modal)
-    #     try:
-    #         interaction, values, function_result = await view_modal.wait_result()
-    #     except TimeoutError:
-    #         return None
-    #     ###########################
-    #     await message.delete()
-    #     embed: discord.Embed = discord.Embed()
-    #     embed.title = _("⚙️ Do you want to replace the entire Config of {self.cog.__class__.__name__} with what you specified?").format(**locals())
-    #     if not await self.ConfirmationAsk(ctx, embed=embed):
-    #         return None
-    #     return new_config
+    async def get_new_Config_with_modal(self, ctx: commands.Context, config: typing.Dict, all_config: typing.Optional[typing.Dict]={}, bypass_confirm: typing.Optional[bool]=False):
+        # {"x": {"default": "", "value": "", "style": 1, "converter": None}, "all_config": {}}
+        for input in config:
+            config[input]["param"] = discord.ext.commands.parameters.Parameter(name=input, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=config[input]["converter"])
+        new_config = {}
+        view_button = Buttons(timeout=180, buttons=[{"label": "Configure", "emoji": "⚙️", "disabled": False}], members=[ctx.author.id])
+        message = await ctx.send(_("Click on the buttons below to fully set up the cog {self.cog.__class__.__name__}.").format(**locals()), view=view_button)
+        try:
+            interaction, function_result = await view_button.wait_result()
+        except TimeoutError:
+            await message.edit(view=Buttons(timeout=None, buttons=[{"label": "Configure", "emoji": "⚙️", "disabled": True}]))
+            return None
+        view_modal = Modal(title=f"{self.cog.__class__.__name__} Config", inputs=[{"label": (input.replace("_", " ").capitalize() + " (" + (('|'.join(f'"{v}"' if isinstance(v, str) else str(v) for v in config[input]["param"].converter.__args__)) if config[input]["param"].converter is typing.Literal else getattr(config[input]["param"].converter, "__name__", "")) + ")")[:44], "style": config[input]["style"], "placeholder": str(config[input]["default"]), "default": (str(config[input]["value"]) if not str(config[input]["value"]) == str(config[input]["default"]) else None), "required": False, "custom_id": f"CogsUtils_ModalConfig_{input}"} for input in config], custom_id=f"CogsUtils_ModalConfig_{self.cog.__class__.__name__}")
+        await interaction.response.send_modal(view_modal)
+        try:
+            interaction, inputs, function_result = await view_modal.wait_result()
+        except TimeoutError:
+            return None
+        async with ctx.typing():
+            for input in inputs:
+                custom_id = input.custom_id.replace("CogsUtils_ModalConfig_", "")
+                if input.value == "":
+                    new_config[input.custom_id.replace("CogsUtils_ModalConfig_", "")] = config[custom_id]["default"]
+                    continue
+                try:
+                    value = await discord.ext.commands.converter.run_converters(ctx, converter=config[custom_id]["param"].converter, argument=str(input.value), param=config[custom_id]["param"])
+                except discord.ext.commands.errors.CommandError as e:
+                    await ctx.send(f"An error occurred when using the `{input.label}` converter:\n{box(e)}")
+                    return
+                new_config[custom_id] = value
+            for key, value in all_config.items():
+                if key not in new_config:
+                    new_config[key] = value
+        await message.delete()
+        if not bypass_confirm:
+            embed: discord.Embed = discord.Embed()
+            embed.title = _("⚙️ Do you want to replace the entire Config of {self.cog.__class__.__name__} with what you specified?").format(**locals())
+            if not await self.ConfirmationAsk(ctx, embed=embed):
+                return None
+        return new_config
 
     async def autodestruction(self):
         """
@@ -1667,17 +1682,30 @@ if CogsUtils().is_dpy2:
     class Dropdown(discord.ui.View):
         """Create Dropdown easily."""
 
-        def __init__(self, timeout: typing.Optional[float]=180, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[{}], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False, custom_id: typing.Optional[str]=f"CogsUtils_{CogsUtils().generate_key(number=10)}"):
+        def __init__(self, timeout: typing.Optional[float]=180, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[{}], disabled: typing.Optional[bool]=False, members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False, custom_id: typing.Optional[str]=f"CogsUtils_{CogsUtils().generate_key(number=10)}"):
             """label: str, value: str, description: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], default: bool"""
-            self.dropdown_dict_instance = {"timeout": timeout, "placeholder": placeholder, "min_values": min_values, "max_values": max_values, "options": [o.copy() for o in options], "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
+            self.dropdown_dict_instance = {"timeout": timeout, "placeholder": placeholder, "min_values": min_values, "max_values": max_values, "options": [o.copy() for o in options], "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity, "custom_id": custom_id}
             super().__init__(timeout=timeout)
             self.infinity = infinity
-            self.dropdown = self.Dropdown(placeholder=placeholder, min_values=min_values, max_values=max_values, options=options, members=members, check=check, function=function, function_args=function_args, infinity=self.infinity, custom_id=custom_id)
+            self.interaction_result = None
+            self.values_result = None
+            self.function_result = None
+            self.disabled = disabled
+            self.members = members
+            self.check = check
+            self.function = function
+            self.function_args = function_args
+            self.clear_items()
+            self.dropdown = Select(placeholder=placeholder, min_values=min_values, max_values=max_values, options=options, disabled=disabled, custom_id=custom_id)
+            self.options = self.dropdown._options
+            self.options_dict = self.dropdown.options_dict
+            self.done = asyncio.Event()
             self.add_item(self.dropdown)
 
         def to_dict_cogsutils(self, for_Config: typing.Optional[bool]=False):
             dropdown_dict_instance = self.dropdown_dict_instance
             if for_Config:
+                dropdown_dict_instance["members"] = None
                 dropdown_dict_instance["check"] = None
                 dropdown_dict_instance["function"] = None
             return dropdown_dict_instance
@@ -1691,68 +1719,64 @@ if CogsUtils().is_dpy2:
             self.stop()
 
         async def wait_result(self):
-            self.dropdown.done = asyncio.Event()
-            await self.dropdown.done.wait()
+            self.done = asyncio.Event()
+            await self.done.wait()
             interaction, values, function_result = self.get_result()
             if interaction is None:
                 raise TimeoutError()
             return interaction, values, function_result
 
         def get_result(self):
-            return self.dropdown.interaction_result, self.dropdown.values_result, self.dropdown.function_result
+            return self.interaction_result, self.values_result, self.function_result
 
-        class Dropdown(discord.ui.Select):
+        async def callback(self, interaction: discord.Interaction):
+            if self.check is not None:
+                if not self.check(interaction):
+                    await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
+                    return True
+            if self.members is not None:
+                if interaction.user.id not in self.members:
+                    await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
+                    return True
+            self.interaction_result = interaction
+            self.values_result = self.dropdown.values
+            if self.function is not None:
+                self.function_result = await self.function(self, interaction, self.dropdown.values, **self.function_args)
+            self.done.set()
+            if not self.infinity:
+                self.stop()
 
-            def __init__(self, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False, custom_id: typing.Optional[str]=f"CogsUtils_{CogsUtils().generate_key(number=10)}"):
-                self.infinity = infinity
-                self.interaction_result = None
-                self.values_result = None
-                self.function_result = None
-                self.members = members
-                self.check = check
-                self.function = function
-                self.function_args = function_args
-                self._options = []
-                self.options_dict = []
-                self.done = asyncio.Event()
-                for option_dict in options:
-                    if "label" not in option_dict and "emoji" not in option_dict:
-                        option_dict["label"] = "Test"
-                    option = discord.SelectOption(**option_dict)
-                    self._options.append(option)
-                    self.options_dict.append(option_dict)
-                super().__init__(custom_id=custom_id, placeholder=placeholder, min_values=min_values, max_values=max_values, options=self._options)
+    class Select(discord.ui.Select):
 
-            async def callback(self, interaction: discord.Interaction):
-                if self.check is not None:
-                    if not self.check(interaction):
-                        await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
-                        return True
-                if self.members is not None:
-                    if interaction.user.id not in self.members:
-                        await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
-                        return True
-                self.interaction_result = interaction
-                self.values_result = self.values
-                if self.function is not None:
-                    self.function_result = await self.function(self.view, interaction, self.values, **self.function_args)
-                self.done.set()
-                if not self.infinity:
-                    self.view.stop()
+        def __init__(self, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], disabled: typing.Optional[bool]=False, custom_id: typing.Optional[str]=f"CogsUtils_{CogsUtils().generate_key(number=10)}"):
+            self._options = []
+            self.options_dict = []
+            self.done = asyncio.Event()
+            for option_dict in options:
+                if "label" not in option_dict and "emoji" not in option_dict:
+                    option_dict["label"] = "Test"
+                option = discord.SelectOption(**option_dict)
+                self._options.append(option)
+                self.options_dict.append(option_dict)
+            super().__init__(custom_id=custom_id, placeholder=placeholder, min_values=min_values, max_values=max_values, options=self._options, disabled=disabled)
+
+        async def callback(self, interaction: discord.Interaction):
+            if hasattr(self.view, "callback"):
+                await self.view.callback(interaction)
 
     class Modal(discord.ui.Modal):
         """Create Modal easily."""
 
-        def __init__(self, title: typing.Optional[str]="Form", timeout: typing.Optional[float]=None, inputs: typing.Optional[typing.List]=[{}], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}):
-            """name: str, label: str, style: TextStyle, custom_id: str, placeholder: Optional[str], default: Optional[str], required: bool, min_length: Optional[int], max_length: Optional[int], row: Optional[int]"""
+        def __init__(self, title: typing.Optional[str]="Form", timeout: typing.Optional[float]=None, inputs: typing.Optional[typing.List]=[{}], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, custom_id: typing.Optional[str]=f"CogsUtils_{CogsUtils().generate_key(number=10)}"):
+            """label: str, style: TextStyle, custom_id: str, placeholder: Optional[str], default: Optional[str], required: bool, min_length: Optional[int], max_length: Optional[int], row: Optional[int]"""
             for input_dict in inputs:
                 if "custom_id" not in input_dict:
-                    input_dict["custom_id"] = "CogsUtils" + "_" + CogsUtils().generate_key(number=10)
-            self.modal_dict_instance = {"title": title, "timeout": timeout, "inputs": [i.copy() for i in inputs], "function": function, "function_args": function_args}
-            super().__init__(title=title, timeout=timeout)
+                    input_dict["custom_id"] = f"CogsUtils_{CogsUtils().generate_key(number=10)}"
+            self.modal_dict_instance = {"title": title, "timeout": timeout, "inputs": [i.copy() for i in inputs], "members": members, "check": check, "function": function, "function_args": function_args, "custom_id": custom_id}
+            super().__init__(title=title, timeout=timeout, custom_id=custom_id)
             self.title = title
             self.interaction_result = None
-            self.values_result = None
+            self.inputs_result = None
             self.function_result = None
             self.members = members
             self.check = check
@@ -1775,6 +1799,8 @@ if CogsUtils().is_dpy2:
         def to_dict_cogsutils(self, for_Config: typing.Optional[bool]=False):
             modal_dict_instance = self.modal_dict_instance
             if for_Config:
+                modal_dict_instance["members"] = None
+                modal_dict_instance["check"] = None
                 modal_dict_instance["function"] = None
             return modal_dict_instance
 
@@ -1792,7 +1818,7 @@ if CogsUtils().is_dpy2:
                     await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
                     return True
             self.interaction_result = interaction
-            self.values_result = self.inputs
+            self.inputs_result = self.inputs
             if self.function is not None:
                 self.function_result = await self.function(self, self.interaction_result, self.values_result, **self.function_args)
             self.done.set()
@@ -1805,13 +1831,13 @@ if CogsUtils().is_dpy2:
         async def wait_result(self):
             self.done = asyncio.Event()
             await self.done.wait()
-            interaction, values, function_result = self.get_result()
+            interaction, inputs, function_result = self.get_result()
             if interaction is None:
                 raise TimeoutError()
-            return interaction, values, function_result
+            return interaction, inputs, function_result
 
         def get_result(self):
-            return self.interaction_result, self.values_result, self.function_result
+            return self.interaction_result, self.inputs_result, self.function_result
 
 class Reactions():
     """Create Reactions easily."""
@@ -1840,6 +1866,7 @@ class Reactions():
         if for_Config:
             reactions_dict_instance["bot"] = None
             reactions_dict_instance["message"] = None
+            reactions_dict_instance["members"] = None
             reactions_dict_instance["check"] = None
             reactions_dict_instance["function"] = None
         return reactions_dict_instance

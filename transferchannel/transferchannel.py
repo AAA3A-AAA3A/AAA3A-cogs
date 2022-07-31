@@ -10,7 +10,7 @@ from .helpers import embed_from_msg
 from redbot.core.utils.tunnel import Tunnel
 
 if CogsUtils().is_dpy2:  # To remove
-    setattr(commands, 'Literal', typing.Literal)
+    setattr(commands, "Literal", typing.Literal)
 
 # Credits:
 # Thanks to TrustyJAID's Backup for starting the command to list the latest source channel messages! (https://github.com/TrustyJAID/Trusty-cogs/tree/master/backup)

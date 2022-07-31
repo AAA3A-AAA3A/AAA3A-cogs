@@ -260,13 +260,13 @@ class DiscordModals(commands.Cog):
             await ctx.send(_("This message already has a Modal.").format(**locals()))
             return
         try:
-            argument["button"]["custom_id"] = "DiscordModals_" + self.cogsutils.generate_key(number=15)
+            argument["button"]["custom_id"] = f"DiscordModals_{self.cogsutils.generate_key(number=10)}"
             view = Buttons(timeout=None, buttons=[argument["button"]], function=self.send_modal, infinity=True)
             await message.edit(view=view)
         except discord.HTTPException:
             await ctx.send(_("Sorry. An error occurred when I tried to put the button on the message.").format(**locals()))
             return
-        modal = Modal(title=argument["title"], inputs=argument["modal"], function=self.send_embed_with_responses)
+        modal = Modal(title=argument["title"], inputs=argument["modal"], function=self.send_embed_with_responses, custom_id=f"DiscordModals_{self.cogsutils.generate_key(number=10)}")
         config[f"{message.channel.id}-{message.id}"] = {"title": argument["title"], "button": view.to_dict_cogsutils(True), "channel": argument["channel"], "modal": modal.to_dict_cogsutils(True), "anonymous": argument["anonymous"], "messages": {"error": argument["messages"]["error"], "done": argument["messages"]["done"]}}
         await self.config.guild(ctx.guild).modals.set(config)
         await ctx.tick()

@@ -270,12 +270,20 @@ class Medicat(commands.Cog):
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         self.log.info(f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.__class__.__name__} cog.")
 
-    def cog_unload(self):
-        try:
-            self.remove_custom_commands()
-        except Exception as e:
-            self.log.error(f"An error occurred while removing the custom_commands.", exc_info=e)
-        self.cogsutils._end()
+    if CogsUtils().is_dpy2:
+        async def cog_unload(self):
+            try:
+                self.remove_custom_commands()
+            except Exception as e:
+                self.log.error(f"An error occurred while removing the custom_commands.", exc_info=e)
+            self.cogsutils._end()
+    else:
+        def cog_unload(self):
+            try:
+                self.remove_custom_commands()
+            except Exception as e:
+                self.log.error(f"An error occurred while removing the custom_commands.", exc_info=e)
+            self.cogsutils._end()
 
     async def ventoy_updates(self, channel: typing.Optional[discord.TextChannel]=None, role_id: typing.Optional[int]=None):
         if channel is None:

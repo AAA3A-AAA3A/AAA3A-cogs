@@ -42,9 +42,14 @@ class MemberPrefix(commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
-    def cog_unload(self):
-        self.bot.remove_before_invoke_hook(self.before_invoke)
-        self.cogsutils._end()
+    if CogsUtils().is_dpy2:
+        async def cog_unload(self):
+            self.bot.remove_before_invoke_hook(self.before_invoke)
+            self.cogsutils._end()
+    else:
+        def cog_unload(self):
+            self.bot.remove_before_invoke_hook(self.before_invoke)
+            self.cogsutils._end()
 
     async def before_invoke(self, ctx: commands.Context) -> None:
         if ctx.guild is None:

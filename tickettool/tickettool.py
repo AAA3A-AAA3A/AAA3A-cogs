@@ -846,6 +846,12 @@ class Ticket:
                                 topic=ticket.reason,
                                 reason=reason,
                             )
+        topic = _("🎟️ Ticket ID: {ticket.id}\n"
+                  "🔥 Channel ID: {ticket.channel.id}\n"
+                  "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+                  "☢️ Ticket reason: {ticket.reason}\n"
+                  "👥 Ticket claimed by: Nobody.").format(**locals())
+        await ticket.channel.edit(topic=topic)
         if config["create_modlog"]:
             await ticket.bot.get_cog("TicketTool").create_modlog(ticket, "ticket_created", reason)
         if ticket.logs_messages:
@@ -1054,6 +1060,11 @@ class Ticket:
             await ticket.channel.send(_("A bot cannot claim a ticket.").format(**locals()))
             return
         ticket.claim = member
+        topic = _("🎟️ Ticket ID: {ticket.id}\n"
+                  "🔥 Channel ID: {ticket.channel.id}\n"
+                  "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+                  "☢️ Ticket reason: {ticket.reason}\n"
+                  "👥 Ticket claimed by: @{ticket.claim.display_name}.").format(**locals())
         overwrites = ticket.channel.overwrites
         overwrites[member] = (
             discord.PermissionOverwrite(
@@ -1074,7 +1085,7 @@ class Ticket:
                     view_channel=True,
                 )
             )
-        await ticket.channel.edit(overwrites=overwrites, reason=reason)
+        await ticket.channel.edit(topic=topic, overwrites=overwrites, reason=reason)
         if ticket.first_message is not None:
             try:
                 if CogsUtils().is_dpy2:
@@ -1109,6 +1120,12 @@ class Ticket:
         config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
         reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(guild=ticket.guild, author=author, reason=_("Claiming the ticket {ticket.id}.").format(**locals()))
         ticket.claim = None
+        topic = _("🎟️ Ticket ID: {ticket.id}\n"
+                  "🔥 Channel ID: {ticket.channel.id}\n"
+                  "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+                  "☢️ Ticket reason: {ticket.reason}\n"
+                  "👥 Ticket claimed by: Nobody.").format(**locals())
+        await ticket.channel.edit(topic=topic)
         if config["support_role"] is not None:
             overwrites = ticket.channel.overwrites
             overwrites[config["support_role"]] = (

@@ -528,8 +528,11 @@ class Medicat(commands.Cog):
         embed.description = "New features:\n" + changelog
         embed.add_field(name="More details:", value="https://www.ventoy.net/en/doc_news.html", inline=True)
         embed.add_field(name="Download this version:", value=f"https://github.com/ventoy/Ventoy/releases/tag/{ventoy_version_str}", inline=True)
-        hook: discord.Webhook = await CogsUtils(bot=self.bot).get_hook(ctx.channel)
-        await hook.send(embed=embed, username="Ventoy Updates", avatar_url="https://ventoy.net/static/img/ventoy.png?v=1")
+        try:
+            hook: discord.Webhook = await CogsUtils(bot=self.bot).get_hook(ctx.channel)
+            await hook.send(embed=embed, username="Ventoy Updates", avatar_url="https://ventoy.net/static/img/ventoy.png?v=1")
+        except discord.errors.Forbidden:
+            await ctx.send(embed=embed)
 
     @in_medicat_guild()
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
@@ -559,8 +562,11 @@ class Medicat(commands.Cog):
         embed.set_footer(text="From FCportables.", icon_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg")
         embed.title = "Last bootables tools versions"
         embed.description = "\n".join([f"**{x}** ➜ {y}" for x, y in result.items()])
-        hook: discord.Webhook = await CogsUtils(bot=self.bot).get_hook(ctx.channel)
-        await hook.send(embed=embed, username="Bootables Tools Updates", avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg")
+        try:
+            hook: discord.Webhook = await CogsUtils(bot=self.bot).get_hook(ctx.channel)
+            await hook.send(embed=embed, username="Bootables Tools Updates", avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg")
+        except discord.errors.Forbidden:
+            await ctx.send(embed=embed)
 
     def is_owner_or_AAA3A():
         async def pred(ctx):

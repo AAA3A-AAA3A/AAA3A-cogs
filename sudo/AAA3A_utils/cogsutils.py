@@ -175,7 +175,7 @@ class CogsUtils(commands.Cog):
         """Thanks Simbad!"""
         context = super(type(self.cog), self.cog).format_help_for_context(ctx)
         s = "s" if len(self.__authors__) > 1 else ""
-        return f"{context}\n\n**Author{s}**: {humanize_list(self.__authors__)}\n**Version**: {self.__version__}"
+        return f"{context}\n\n**Author{s}**: {humanize_list(self.__authors__)}\n**Cog version**: {self.__version__}\n**Cog documentation**: https://aaa3a-cogs.readthedocs.io/en/latest/cog_{self.cog.__class__.__name__.lower()}.html"
 
     def format_text_for_context(self, ctx: commands.Context, text: str, shortdoc: typing.Optional[bool]=False):
         text = text.replace("        ", "")
@@ -183,7 +183,7 @@ class CogsUtils(commands.Cog):
         if shortdoc:
             return context
         s = "s" if len(self.__authors__) > 1 else ""
-        return f"{context}\n\n**Author{s}**: {humanize_list(self.__authors__)}\n**Version**: {self.__version__}"
+        return f"{context}\n\n**Author{s}**: {humanize_list(self.__authors__)}\n**Cog version**: {self.__version__}\n**Cog documentation**: https://aaa3a-cogs.readthedocs.io/en/latest/cog_{self.cog.__class__.__name__.lower()}.html"
 
     def format_shortdoc_for_context(self, ctx: commands.Context):
         sh = super(type(ctx.command), ctx.command).short_doc
@@ -199,7 +199,10 @@ class CogsUtils(commands.Cog):
     async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[typing.Any, typing.Any]:
         return {}
 
-    def cog_unload(self):
+    async def cog_unload_dpy2(self):
+        self._end()
+
+    def cog_unload_dpy1(self):
         self._end()
 
     async def cog_command_error(self, ctx: commands.Context, error: Exception):
@@ -271,7 +274,7 @@ class CogsUtils(commands.Cog):
             if "red_get_data_for_user" not in self.cog.__func_red__:
                 setattr(self.cog, 'red_get_data_for_user', self.red_get_data_for_user)
             if "cog_unload" not in self.cog.__func_red__:
-                setattr(self.cog, 'cog_unload', self.cog_unload)
+                setattr(self.cog, 'cog_unload', self.cog_unload_dpy2 if self.is_dpy2 else self.cog_unload_dpy1)
             if "cog_command_error" not in self.cog.__func_red__:
                 setattr(self.cog, 'cog_command_error', self.cog_command_error)
         asyncio.create_task(self._await_setup())
@@ -762,16 +765,12 @@ class CogsUtils(commands.Cog):
         """
         Create a discord.Webhook object. It tries to retrieve an existing webhook created by the bot or to create it itself.
         """
-        try:
-            for webhook in await channel.webhooks():
-                if webhook.user.id == self.bot.user.id:
-                    hook = webhook
-                    break
-            else:
-                hook = await channel.create_webhook(
-                    name="red_bot_hook_" + str(channel.id)
-                )
-        except discord.errors.NotFound:  # Probably user deleted the hook
+        hook = None
+        for webhook in await channel.webhooks():
+            if webhook.user.id == self.bot.user.id:
+                hook = webhook
+                break
+        if hook is None:
             hook = await channel.create_webhook(name="red_bot_hook_" + str(channel.id))
         return hook
 
@@ -942,7 +941,7 @@ class CogsUtils(commands.Cog):
                 new_dict[e] = original_dict[e]
         return new_dict
 
-    def generate_key(self, number: typing.Optional[int]=10, existing_keys: typing.Optional[typing.List]=[], strings_used: typing.Optional[typing.List]={"ascii_lowercase": True, "ascii_uppercase": False, "digits": True, "punctuation": False, "others": []}):
+    def generate_key(self, number: typing.Optional[int]=10, existing_keys: typing.Optional[typing.Union[typing.List, typing.Set]]=[], strings_used: typing.Optional[typing.List]={"ascii_lowercase": True, "ascii_uppercase": False, "digits": True, "punctuation": False, "others": []}):
         """
         Generate a secret key, with the choice of characters, the number of characters and a list of existing keys.
         """
@@ -963,8 +962,8 @@ class CogsUtils(commands.Cog):
             if isinstance(strings_used["others"], typing.List):
                 strings += strings_used["others"]
         while True:
-            # This probably won't turn into an endless loop
-            key = "".join(choice(strings) for i in range(number))
+            # This probably won't turn into an endless loop.
+            key = "".join(choice(strings) for x in range(number))
             if key not in existing_keys:
                 return key
 
@@ -1322,7 +1321,7 @@ class Loop():
         raw_table.add_row("expected_interval", str(self.expected_interval))
         raw_table.add_row("iteration_count", str(self.iteration_count))
         raw_table.add_row("currently_running", str(self.currently_running))
-        raw_table.add_row("next_iteration", str(self.last_iteration))
+        raw_table.add_row("last_iteration", str(self.last_iteration))
         raw_table.add_row("next_iteration", str(self.next_iteration))
         raw_table_str = no_colour_rich_markup(raw_table)
 
@@ -1820,7 +1819,7 @@ if CogsUtils().is_dpy2:
             self.interaction_result = interaction
             self.inputs_result = self.inputs
             if self.function is not None:
-                self.function_result = await self.function(self, self.interaction_result, self.values_result, **self.function_args)
+                self.function_result = await self.function(self, self.interaction_result, self.inputs_result, **self.function_args)
             self.done.set()
             self.stop()
 
@@ -1831,10 +1830,10 @@ if CogsUtils().is_dpy2:
         async def wait_result(self):
             self.done = asyncio.Event()
             await self.done.wait()
-            interaction, inputs, function_result = self.get_result()
+            interaction, inputs_result, function_result = self.get_result()
             if interaction is None:
                 raise TimeoutError()
-            return interaction, inputs, function_result
+            return interaction, inputs_result, function_result
 
         def get_result(self):
             return self.interaction_result, self.inputs_result, self.function_result

@@ -358,30 +358,33 @@ class CogsUtils(commands.Cog):
                         await asyncio.sleep(2)
                         await self.bot.tree.sync(guild=None)
 
-    def init_logger(self):
+    def init_logger(self, name: typing.Optional[str]=None):
         """
         Prepare the logger for the cog.
         Thanks to @laggron42 on GitHub! (https://github.com/laggron42/Laggron-utils/blob/master/laggron_utils/logging.py) 
         """
-        self.cog.log = logging.getLogger(f"red.{self.repo_name}.{self.cog.__class__.__name__}")
-        formatter = logging.Formatter(
-            "[{asctime}] {levelname} [{name}] {message}", datefmt="%Y-%m-%d %H:%M:%S", style="{"
-        )
-        # logging to a log file
-        # file is automatically created by the module, if the parent foler exists
-        cog_path = cog_data_path(cog_instance=self.cog)
-        if cog_path.exists():
-            file_handler = RotatingFileHandler(
-                stem=self.cog.__class__.__name__,
-                directory=cog_path,
-                maxBytes=1_000_0,
-                backupCount=0,
-                encoding="utf-8",
+        if name is None:
+            self.cog.log = logging.getLogger(f"red.{self.repo_name}.{self.cog.__class__.__name__}")
+            formatter = logging.Formatter(
+                "[{asctime}] {levelname} [{name}] {message}", datefmt="%Y-%m-%d %H:%M:%S", style="{"
             )
-            # file_handler.doRollover()
-            file_handler.setLevel(logging.DEBUG)
-            file_handler.setFormatter(formatter)
-            self.cog.log.addHandler(file_handler)
+            # logging to a log file
+            # file is automatically created by the module, if the parent foler exists
+            cog_path = cog_data_path(cog_instance=self.cog)
+            if cog_path.exists():
+                file_handler = RotatingFileHandler(
+                    stem=self.cog.__class__.__name__,
+                    directory=cog_path,
+                    maxBytes=1_000_0,
+                    backupCount=0,
+                    encoding="utf-8",
+                )
+                # file_handler.doRollover()
+                file_handler.setLevel(logging.DEBUG)
+                file_handler.setFormatter(formatter)
+                self.cog.log.addHandler(file_handler)
+        else:
+            return logging.getLogger(f"red.{self.repo_name}.{name}")
 
     def close_logger(self):
         """

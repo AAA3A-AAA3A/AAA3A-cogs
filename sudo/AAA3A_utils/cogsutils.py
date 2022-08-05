@@ -116,6 +116,7 @@ class CogsUtils(commands.Cog):
                                         "CtxVar",
                                         "DiscordModals",
                                         "DiscordSearch",
+                                        "DropdownsTexts",
                                         "EditFile",
                                         "EditRole",
                                         "EditTextChannel",
@@ -143,6 +144,7 @@ class CogsUtils(commands.Cog):
                                         "CtxVar",
                                         "DiscordModals",
                                         "DiscordSearch",
+                                        "DropdownsTexts",
                                         "EditFile",
                                         "EditRole",
                                         "EditTextChannel",
@@ -1860,7 +1862,7 @@ if CogsUtils().is_dpy2:
             super().__init__(timeout=timeout)
             self.infinity = infinity
             self.interaction_result = None
-            self.values_result = None
+            self.options_result = None
             self.function_result = None
             self.disabled = disabled
             self.members = members
@@ -1893,13 +1895,13 @@ if CogsUtils().is_dpy2:
         async def wait_result(self):
             self.done = asyncio.Event()
             await self.done.wait()
-            interaction, values, function_result = self.get_result()
+            interaction, options, function_result = self.get_result()
             if interaction is None:
                 raise TimeoutError()
-            return interaction, values, function_result
+            return interaction, options, function_result
 
         def get_result(self):
-            return self.interaction_result, self.values_result, self.function_result
+            return self.interaction_result, self.options_result, self.function_result
 
         async def callback(self, interaction: discord.Interaction):
             if self.check is not None:
@@ -1911,7 +1913,7 @@ if CogsUtils().is_dpy2:
                     await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
                     return True
             self.interaction_result = interaction
-            self.values_result = self.dropdown.values
+            self.options_result = self.dropdown.values
             if self.function is not None:
                 self.function_result = await self.function(self, interaction, self.dropdown.values, **self.function_args)
             self.done.set()

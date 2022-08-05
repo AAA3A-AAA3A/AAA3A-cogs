@@ -197,32 +197,7 @@ class utils(commands.Cog):
                         inline=False,
                         name=_("Duration:").format(**locals()),
                         value=_("Infinity").format(**locals()))
-            message = await ctx.send(embed=embed)
-            reactions = ["✅", "❌"]
-            start_adding_reactions(message, reactions)
-            end_reaction = False
-            def check(reaction, author):
-                return author == ctx.author or author.id in ctx.bot.owner_ids and str(reaction.emoji) in reactions
-                # This makes sure nobody except the command sender can interact with the "menu"
-            while True:
-                try:
-                    reaction, abc_author = await ctx.bot.wait_for("reaction_add", timeout=actual_timeout, check=check)
-                    # waiting for a reaction to be added - times out after x seconds, 30 in this
-                    if str(reaction.emoji) == "✅":
-                        end_reaction = True
-                        await CogsUtils().delete_message(message)
-                        return
-                    elif str(reaction.emoji) == "❌":
-                        end_reaction = True
-                        await CogsUtils().delete_message(message)
-                        raise Timeout_or_Cancel
-                    else:
-                        await message.remove_reaction(reaction, user)
-                except asyncio.TimeoutError:
-                    if not end_reaction:
-                        await CogsUtils().delete_message(message)
-                        await ctx.send(_("Timed out, please try again.").format(**locals()))
-                        raise Timeout_or_Cancel
+            return await CogsUtils(bot=ctx.bot).ConfirmationAsk(ctx=ctx, embed=embed)
 
     async def finish_message(ctx, finish_message, title, description, actual_thumbnail, actual_color, user, show_author, duration, reason):
         if finish_message:

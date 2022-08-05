@@ -13,12 +13,12 @@ import platform
 import re
 import string
 import sys
+import time
 import traceback
 from copy import copy
 from io import StringIO
 from pathlib import Path
 from random import choice
-from time import monotonic
 
 import aiohttp
 import pip
@@ -36,6 +36,8 @@ from redbot.core.utils.chat_formatting import bold, box, error, humanize_list, h
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
 from redbot.logging import RotatingFileHandler
+from redbot.core import utils as redutils
+from redbot.core.utils import chat_formatting as cf
 from redbot.vendored.discord.ext import menus
 
 __all__ = ["CogsUtils", "Loop", "Captcha", "Buttons", "Dropdown", "Modal", "Reactions", "Menu"]
@@ -225,9 +227,16 @@ class CogsUtils(commands.Cog):
             if "USERPROFILE" in os.environ:
                 text = text.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
                 text = text.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
+                text = text.replace(os.environ["USERPROFILE"].replace("\\", "\\\\"), "{USERPROFILE}")
+                text = text.replace(os.environ["USERPROFILE"].replace("\\", "\\\\").lower(), "{USERPROFILE}")
             if "HOME" in os.environ:
                 text = text.replace(os.environ["HOME"], "{HOME}")
                 text = text.replace(os.environ["HOME"].lower(), "{HOME}")
+                text = text.replace(os.environ["HOME"].replace("\\", "\\\\"), "{HOME}")
+                text = text.replace(os.environ["HOME"].replace("\\", "\\\\").lower(), "{HOME}")
+            if "USERNAME" in os.environ:
+                text = text.replace(os.environ["USERNAME"], "{USERNAME}")
+                text = text.replace(os.environ["USERNAME"].lower(), "{USERNAME}")
         else:
             if "USERPROFILE" in os.environ:
                 text = text.replace("{USERPROFILE}", os.environ["USERPROFILE"])
@@ -235,6 +244,9 @@ class CogsUtils(commands.Cog):
             if "HOME" in os.environ:
                 text = text.replace("{HOME}", os.environ["HOME"])
                 text = text.replace("{HOME}".lower(), os.environ["HOME"])
+            if "USERNAME" in os.environ:
+                text = text.replace("{USERNAME}", os.environ["USERNAME"])
+                text = text.replace("{USERNAME}".lower(), os.environ["USERNAME"])
         return text
 
     @staticmethod
@@ -298,7 +310,7 @@ class CogsUtils(commands.Cog):
             pass
         except Exception as e:  # really doesn't matter if this fails so fine with debug level
             self.cog.log.debug(f"Something went wrong checking if {self.cog.__class__.__name__} cog is up to date.", exc_info=e)
-        self.add_dev_env_value()
+        self.add_dev_env_values()
         if self.is_dpy2:
             if not hasattr(self.bot, "tree"):
                 self.bot.tree = discord.app_commands.CommandTree(self.bot)
@@ -327,7 +339,7 @@ class CogsUtils(commands.Cog):
         Removes dev environment values, slash commands add Views.
         """
         self.close_logger()
-        self.remove_dev_env_value()
+        self.remove_dev_env_values()
         for loop in self.loops:
             self.loops[loop].stop_all()
         if not self.at_least_one_cog_loaded:
@@ -425,7 +437,7 @@ class CogsUtils(commands.Cog):
 
         return online_commit != local_commit, local_commit, online_commit
 
-    def add_dev_env_value(self):
+    def add_dev_env_values(self):
         """
         If the bot owner is X, then add several values to the development environment, if they don't already exist.
         Even checks the id of the bot owner in the variable of my Sudo cog, if it is installed and loaded.
@@ -442,9 +454,28 @@ class CogsUtils(commands.Cog):
             else:
                 owner_ids = self.bot.owner_ids
         if 829612600059887649 in owner_ids:
+            def get_url(ctx):
+                async def get_url_with_aiohttp(url: str, **kwargs):
+                    async with aiohttp.ClientSession() as session:
+                        async with session.get(url=url, **kwargs) as r:
+                            return r
+                return get_url_with_aiohttp
+            def get(ctx):
+                def inner(a, b):
+                    return [x for x in dir(b) if a.lower() in x]
+                return inner
+            def reply(ctx):
+                if hasattr(ctx.message, "reference") and ctx.message.reference != None:
+                    msg = ctx.message.reference.resolved
+                    if isinstance(msg, discord.Message):
+                        return msg
+            def _console_custom(ctx):
+                return {"width": 37, "color_system": None}
             if self.is_dpy2:
                 to_add = {
+                    # Cog
                     self.cog.__class__.__name__: lambda x: self.cog,
+                    # CogsUtils
                     "CogsUtils": lambda ctx: CogsUtils,
                     "Loop": lambda ctx: Loop,
                     "Captcha": lambda ctx: Captcha,
@@ -453,24 +484,80 @@ class CogsUtils(commands.Cog):
                     "Modal": lambda ctx: Modal,
                     "Reactions": lambda ctx: Reactions,
                     "Menu": lambda ctx: Menu,
+                    # Dpy & Red
                     "discord": lambda ctx: discord,
                     "redbot": lambda ctx: redbot,
                     "Red": lambda ctx: Red,
+                    "redutils": lambda ctx: redutils,
+                    "cf": lambda ctx: cf,
+                    # Typing
                     "typing": lambda ctx: typing,
-                    "inspect": lambda ctx: inspect
+                    # Inspect
+                    "inspect": lambda ctx: inspect,
+                    "gs": lambda ctx: inspect.getsource,
+                    # Date & Time
+                    "datetime": lambda ctx: datetime,
+                    "time": lambda ctx: time,
+                    # Os & Sys
+                    "os": lambda ctx: os,
+                    "sys": lambda ctx: sys,
+                    # Aiohttp
+                    "session": lambda ctx: aiohttp.ClientSession(),
+                    "get_url": get_url,
+                    # Search attr
+                    "get": get,
+                    # `reference`
+                    "reply": reply,
+                    # No color (Dev cog from fluffy-cogs in mobile).
+                    "_console_custom": _console_custom,
+                    # Dpy get
+                    "get_cog": lambda ctx: ctx.bot.get_cog,
+                    "get_command": lambda ctx: ctx.bot.get_command,
+                    "get_guild": lambda ctx: ctx.bot.get_guild,
+                    "get_channel": lambda ctx: ctx.guild.get_channel,
+                    "fetch_message": lambda ctx: ctx.channel.fetch_message
                 }
             else:
                 to_add = {
+                    # Cog
                     self.cog.__class__.__name__: lambda x: self.cog,
+                    # CogsUtils
                     "CogsUtils": lambda ctx: CogsUtils,
                     "Loop": lambda ctx: Loop,
                     "Captcha": lambda ctx: Captcha,
                     "Menu": lambda ctx: Menu,
+                    # Dpy & Red
                     "discord": lambda ctx: discord,
                     "redbot": lambda ctx: redbot,
                     "Red": lambda ctx: Red,
+                    "redutils": lambda ctx: redutils,
+                    "cf": lambda ctx: cf,
+                    # Typing
                     "typing": lambda ctx: typing,
-                    "inspect": lambda ctx: inspect
+                    # Inspect
+                    "inspect": lambda ctx: inspect,
+                    "gs": lambda ctx: inspect.getsource,
+                    # Date & Time
+                    "datetime": lambda ctx: datetime,
+                    "time": lambda ctx: time,
+                    # Os & Sys
+                    "os": lambda ctx: os,
+                    "sys": lambda ctx: sys,
+                    # Aiohttp
+                    "session": lambda ctx: aiohttp.ClientSession(),
+                    "get_url": get_url,
+                    # Search attr
+                    "get": get,
+                    # `reference`
+                    "reply": reply,
+                    # No color (Dev cog from fluffy-cogs in mobile).
+                    "_console_custom": _console_custom,
+                    # Dpy get
+                    "get_cog": lambda ctx: ctx.bot.get_cog,
+                    "get_command": lambda ctx: ctx.bot.get_command,
+                    "get_guild": lambda ctx: ctx.bot.get_guild,
+                    "get_channel": lambda ctx: ctx.guild.get_channel,
+                    "fetch_message": lambda ctx: ctx.channel.fetch_message
                 }
             for name, value in to_add.items():
                 try:
@@ -486,8 +573,11 @@ class CogsUtils(commands.Cog):
             Dev = self.bot.get_cog("Dev")
             if Dev is not None:
                 setattr(Dev, 'sanitize_output', self.sanitize_output)
+            self.bot.remove_listener(self.on_cog_add)
+            self.bot.add_listener(self.on_cog_add)
+            return to_add
 
-    def remove_dev_env_value(self):
+    def remove_dev_env_values(self):
         """
         If the bot owner is X, then remove several values to the development environment, if they don't already exist.
         Even checks the id of the bot owner in the variable of my Sudo cog, if it is installed and loaded.
@@ -509,8 +599,25 @@ class CogsUtils(commands.Cog):
             except Exception:
                 pass
             if not self.at_least_one_cog_loaded():
+                def get_url(ctx):
+                    async def get_url_with_aiohttp(url: str, **kwargs):
+                        async with aiohttp.ClientSession() as session:
+                            async with session.get(url=url, **kwargs) as r:
+                                return r
+                    return get_url_with_aiohttp
+                def get(ctx):
+                    def inner(a, b):
+                        return [x for x in dir(b) if a.lower() in x]
+                def reply(ctx):
+                    if hasattr(ctx.message, "reference") and ctx.message.reference != None:
+                        msg = ctx.message.reference.resolved
+                        if isinstance(msg, discord.Message):
+                            return msg
+                def _console_custom(ctx):
+                    return {"width": 37, "color_system": None}
                 if self.is_dpy2:
                     to_remove = {
+                        # CogsUtils
                         "CogsUtils": lambda ctx: CogsUtils,
                         "Loop": lambda ctx: Loop,
                         "Captcha": lambda ctx: Captcha,
@@ -519,29 +626,92 @@ class CogsUtils(commands.Cog):
                         "Modal": lambda ctx: Modal,
                         "Reactions": lambda ctx: Reactions,
                         "Menu": lambda ctx: Menu,
+                        # Dpy & Red
                         "discord": lambda ctx: discord,
                         "redbot": lambda ctx: redbot,
                         "Red": lambda ctx: Red,
+                        "redutils": lambda ctx: redutils,
+                        "cf": lambda ctx: cf,
+                        # Typing
                         "typing": lambda ctx: typing,
-                        "inspect": lambda ctx: inspect
+                        # Inspect
+                        "inspect": lambda ctx: inspect,
+                        "gs": lambda ctx: inspect.getsource,
+                        # Date & Time
+                        "datetime": lambda ctx: datetime,
+                        "time": lambda ctx: time,
+                        # Os & Sys
+                        "os": lambda ctx: os,
+                        "sys": lambda ctx: sys,
+                        # Aiohttp
+                        "session": lambda ctx: aiohttp.ClientSession(),
+                        "get_url": get_url,
+                        # Search attr
+                        "get": get,
+                        # `reference`
+                        "reply": reply,
+                        # No color (Dev cog from fluffy-cogs in mobile).
+                        "_console_custom": _console_custom,
+                        # Dpy get
+                        "get_cog": lambda ctx: ctx.bot.get_cog,
+                        "get_command": lambda ctx: ctx.bot.get_command,
+                        "get_guild": lambda ctx: ctx.bot.get_guild,
+                        "get_channel": lambda ctx: ctx.guild.get_channel,
+                        "fetch_message": lambda ctx: ctx.channel.fetch_message
                     }
                 else:
                     to_remove = {
+                        # CogsUtils
                         "CogsUtils": lambda ctx: CogsUtils,
                         "Loop": lambda ctx: Loop,
                         "Captcha": lambda ctx: Captcha,
                         "Menu": lambda ctx: Menu,
+                        # Dpy & Red
                         "discord": lambda ctx: discord,
                         "redbot": lambda ctx: redbot,
                         "Red": lambda ctx: Red,
+                        "redutils": lambda ctx: redutils,
+                        "cf": lambda ctx: cf,
+                        # Typing
                         "typing": lambda ctx: typing,
-                        "inspect": lambda ctx: inspect
+                        # Inspect
+                        "inspect": lambda ctx: inspect,
+                        "gs": lambda ctx: inspect.getsource,
+                        # Date & Time
+                        "datetime": lambda ctx: datetime,
+                        "time": lambda ctx: time,
+                        # Os & Sys
+                        "os": lambda ctx: os,
+                        "sys": lambda ctx: sys,
+                        # Aiohttp
+                        "session": lambda ctx: aiohttp.ClientSession(),
+                        "get_url": get_url,
+                        # Search attr
+                        "get": get,
+                        # `reference`
+                        "reply": reply,
+                        # No color (Dev cog from fluffy-cogs in mobile).
+                        "_console_custom": _console_custom,
+                        # Dpy get
+                        "get_cog": lambda ctx: ctx.bot.get_cog,
+                        "get_command": lambda ctx: ctx.bot.get_command,
+                        "get_guild": lambda ctx: ctx.bot.get_guild,
+                        "get_channel": lambda ctx: ctx.guild.get_channel,
+                        "fetch_message": lambda ctx: ctx.channel.fetch_message
                     }
                 for name, value in to_remove.items():
                     try:
                         self.bot.remove_dev_env_value(name)
                     except Exception:
                         pass
+
+    @commands.Cog.listener()
+    async def on_cog_add(self, cog: commands.Cog):
+        if not cog.qualified_name == "Dev":
+            return
+        if not hasattr(cog, "sanitize_output"):
+            return
+        setattr(cog, "sanitize_output", self.sanitize_output)
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
@@ -1186,11 +1356,11 @@ class Loop():
             self.cogsutils.cog.log.debug(f"{self.name} loop has started.")
         while True:
             try:
-                start = monotonic()
+                start = time.monotonic()
                 self.iteration_start()
                 self.last_result = await self.function(**self.function_args)
                 self.iteration_finish()
-                end = monotonic()
+                end = time.monotonic()
                 total = round(end - start, 1)
                 if hasattr(self.cogsutils.cog, "log"):
                     if self.iteration_count == 1:

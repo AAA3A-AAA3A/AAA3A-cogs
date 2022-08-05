@@ -794,9 +794,8 @@ class SimpleSanction(settings, commands.Cog):
                 reason = await utils.reason_ask(ctx, reason, actual_reason_required, _("Sanctioning a member - :warning: Warn").format(**locals()), _("Why do you want warn {user}? (Set `cancel` to cancel or `not` for none)").format(**locals()), actual_color, user, actual_timeout)
             except Timeout_or_Cancel:
                 return
-            try:
-                confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :warning: Warn").format(**locals()), _("Do you really want to warn {user}?").format(**locals()), actual_color, user, reason, None, actual_timeout)
-            except Timeout_or_Cancel:
+            confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :warning: Warn").format(**locals()), _("Do you really want to warn {user}?").format(**locals()), actual_color, user, reason, None, actual_timeout)
+            if not confirmation:
                 return
             message = await utils.finish_message(ctx, finish_message, _("Sanctioning a member - :warning: Warn").format(**locals()), _("The user {user} has been received a warning!").format(**locals()), actual_thumbnail, actual_color, user, show_author, None, reason)
             if not fake_action:
@@ -829,9 +828,8 @@ class SimpleSanction(settings, commands.Cog):
                 reason = await utils.reason_ask(ctx, reason, actual_reason_required, _("Sanctioning a member - :hammer: Ban").format(**locals()), _("Why do you want to ban {user}? (Set `cancel` to cancel or `not` to none)").format(**locals()), actual_color, user, actual_timeout)
             except Timeout_or_Cancel:
                 return
-            try:
-                confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :hammer: Ban").format(**locals()), _("Do you really want to ban {user}?").format(**locals()), actual_color, user, reason, None, actual_timeout)
-            except Timeout_or_Cancel:
+            confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :hammer: Ban").format(**locals()), _("Do you really want to ban {user}?").format(**locals()), actual_color, user, reason, None, actual_timeout)
+            if not confirmation:
                 return
             message = await utils.finish_message(ctx, finish_message, _("Sanctioning a member - :hammer: Ban").format(**locals()), _("The user {user} has been banned!").format(**locals()), actual_thumbnail, actual_color, user, show_author, None, reason)
             if not fake_action:
@@ -864,9 +862,8 @@ class SimpleSanction(settings, commands.Cog):
                 reason = await utils.reason_ask(ctx, reason, actual_reason_required, _("Sanctioning a member - :repeat_one: SoftBan").format(**locals()), _("Why do you want to softban {user}? (Set `cancel` to cancel or `not` to none)").format(**locals()), actual_color, user, actual_timeout)
             except Timeout_or_Cancel:
                 return
-            try:
-                confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :repeat_one: SoftBan").format(**locals()), _("Do you really want to softban {user}?").format(**locals()), actual_color, user, reason, None, actual_timeout)
-            except Timeout_or_Cancel:
+            confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :repeat_one: SoftBan").format(**locals()), _("Do you really want to softban {user}?").format(**locals()), actual_color, user, reason, None, actual_timeout)
+            if not confirmation:
                 return
             message = await utils.finish_message(ctx, finish_message, _("Sanctioning a member - :repeat_one: SoftBan").format(**locals()), _("The user {user} has been softbanned!").format(**locals()), actual_thumbnail, actual_color, user, show_author, None, reason)
             if not fake_action:
@@ -903,9 +900,8 @@ class SimpleSanction(settings, commands.Cog):
                 reason = await utils.reason_ask(ctx, reason, actual_reason_required, _("Sanctioning a member - :dash: TempBan").format(**locals()), _("Why do you want to tempban {user}? (Set `cancel` to cancel or `not` to none)").format(**locals()), actual_color, user, actual_timeout)
             except Timeout_or_Cancel:
                 return
-            try:
-                confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :dash: TempBan"), _("Do you really want to tempban {user}?").format(**locals()), actual_color, user, reason, duration, actual_timeout)
-            except Timeout_or_Cancel:
+            confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :dash: TempBan"), _("Do you really want to tempban {user}?").format(**locals()), actual_color, user, reason, duration, actual_timeout)
+            if not confirmation:
                 return
             message = await utils.finish_message(ctx, finish_message, _("Sanctioning a member - :dash: TempBan"), _("The user {user} has been tempban!").format(**locals()), actual_thumbnail, actual_color, user, show_author, duration, reason)
             if not fake_action:
@@ -939,9 +935,8 @@ class SimpleSanction(settings, commands.Cog):
                 reason = await utils.reason_ask(ctx, reason, actual_reason_required, _("Sanctioning a member - :boot: Kick").format(**locals()), _("Why do you want to kick {user}? (Set `cancel` to cancel or `not` to none)").format(**locals()), actual_color, user, actual_timeout)
             except Timeout_or_Cancel:
                 return
-            try:
-                confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :boot: Kick").format(**locals()), _("Why do you want to kick {user}? (Set `cancel` to cancel or `not` to none)").format(**locals()), actual_color, user, reason, None, actual_timeout)
-            except Timeout_or_Cancel:
+            confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :boot: Kick").format(**locals()), _("Why do you want to kick {user}? (Set `cancel` to cancel or `not` to none)").format(**locals()), actual_color, user, reason, None, actual_timeout)
+            if not confirmation:
                 return
             message = await utils.finish_message(ctx, finish_message, _("Sanctioning a member - :boot: Kick").format(**locals()), _("The user {user} has been kicked!").format(**locals()), actual_thumbnail, actual_color, user, show_author, None, reason)
             if not fake_action:
@@ -974,9 +969,8 @@ class SimpleSanction(settings, commands.Cog):
                 reason = await utils.reason_ask(ctx, reason, actual_reason_required, _("Sanctioning a member - :mute: Mute").format(**locals()), _("Why do you want to mute {user}? (Set `cancel` to cancel or `not` to none)").format(**locals()), actual_color, user, actual_timeout)
             except Timeout_or_Cancel:
                 return
-            try:
-                confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :mute: Mute").format(**locals()), _("Do you really want to mute {user}?").format(**locals()), actual_color, user, reason, None, actual_timeout)
-            except Timeout_or_Cancel:
+            confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :mute: Mute").format(**locals()), _("Do you really want to mute {user}?").format(**locals()), actual_color, user, reason, None, actual_timeout)
+            if not confirmation:
                 return
             message = await utils.finish_message(ctx, finish_message, _("Sanctioning a member - :mute: Mute").format(**locals()), _("The user {user} has been muted!").format(**locals()), actual_thumbnail, actual_color, user, show_author, None, reason)
             if not fake_action:
@@ -1009,9 +1003,8 @@ class SimpleSanction(settings, commands.Cog):
                 reason = await utils.reason_ask(ctx, reason, actual_reason_required, _("Sanctioning a member - :punch: MuteChannel").format(**locals()), _("Why do you want to mute {user} in {ctx.channel.mention}? (Set `cancel` to cancel or `not` to none)").format(**locals()), actual_color, user, actual_timeout)
             except Timeout_or_Cancel:
                 return
-            try:
-                confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :punch: MuteChannel").format(**locals()), _("Do you really want to mute {user} in {ctx.channel.mention}?").format(**locals()), actual_color, user, reason, None, actual_timeout)
-            except Timeout_or_Cancel:
+            confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :punch: MuteChannel").format(**locals()), _("Do you really want to mute {user} in {ctx.channel.mention}?").format(**locals()), actual_color, user, reason, None, actual_timeout)
+            if not confirmation:
                 return
             message = await utils.finish_message(ctx, finish_message, _("Sanctioning a member - :punch: MuteChannel").format(**locals()), _("The user {user} has been muted in #{ctx.channel.name}!").format(**locals()), actual_thumbnail, actual_color, user, show_author, None, reason)
             if not fake_action:
@@ -1038,9 +1031,8 @@ class SimpleSanction(settings, commands.Cog):
                 reason = await utils.reason_ask(ctx, reason, actual_reason_required, _("Sanctioning a member - :hourglass_flowing_sand: TempMute").format(**locals()), _("Why do you want to tempmute {user}? (Set `cancel` to cancel or `not` to none)").format(**locals()), actual_color, user, actual_timeout)
             except Timeout_or_Cancel:
                 return
-            try:
-                confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :hourglass_flowing_sand: TempMute").format(**locals()), _("Do you really want to tempmute {user}?").format(**locals()), actual_color, user, reason, duration, actual_timeout)
-            except Timeout_or_Cancel:
+            confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :hourglass_flowing_sand: TempMute").format(**locals()), _("Do you really want to tempmute {user}?").format(**locals()), actual_color, user, reason, duration, actual_timeout)
+            if not confirmation:
                 return
             message = await utils.finish_message(ctx, finish_message, _("Sanctioning a member - :hourglass_flowing_sand: TempMute").format(**locals()), _("The user {user} has been tempmuted!").format(**locals()), actual_thumbnail, actual_color, user, show_author, duration, reason)
             if not fake_action:
@@ -1077,9 +1069,8 @@ class SimpleSanction(settings, commands.Cog):
                 reason = await utils.reason_ask(ctx, reason, actual_reason_required, _("Sanctioning a member - :hourglass: TempMuteChannel").format(**locals()), _("Why do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` to cancel or `not` to none)").format(**locals()), actual_color, user, actual_timeout)
             except Timeout_or_Cancel:
                 return
-            try:
-                confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :hourglass: TempMuteChannel").format(**locals()), _("Do you really want to tempmute {user} in {ctx.channel.mention}?").format(**locals()), actual_color, user, reason, duration, actual_timeout)
-            except Timeout_or_Cancel:
+            confirmation = await utils.confirmation_ask(ctx, confirmation, _("Sanctioning a member - :hourglass: TempMuteChannel").format(**locals()), _("Do you really want to tempmute {user} in {ctx.channel.mention}?").format(**locals()), actual_color, user, reason, duration, actual_timeout)
+            if not confirmation:
                 return
             message = await utils.finish_message(ctx, finish_message, _("Sanctioning a member - :hourglass: TempMuteChannel").format(**locals()), _("The user {user} has been tempmuted in #{ctx.channel.name}!").format(**locals()), actual_thumbnail, actual_color, user, show_author, duration, reason)
             if not fake_action:

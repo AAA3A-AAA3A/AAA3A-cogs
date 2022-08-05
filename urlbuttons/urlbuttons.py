@@ -17,7 +17,6 @@ if CogsUtils().is_dpy2:  # To remove
     setattr(commands, 'Literal', typing.Literal)
 
 # Credits:
-# Thanks to TrustyJAID for the two converter for the bulk command arguments! (https://github.com/TrustyJAID/Trusty-cogs/blob/main/roletools/converter.py)
 # Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel!
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
@@ -37,10 +36,10 @@ class UrlButtons(commands.Cog):
             identifier=974269742704,
             force_registration=True,
         )
-        self.url_button_guild = {
+        self.url_buttons_guild = {
             "url_buttons": {},
         }
-        self.config.register_guild(**self.url_button_guild)
+        self.config.register_guild(**self.url_buttons_guild)
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
@@ -135,18 +134,23 @@ class UrlButtons(commands.Cog):
             return
         config = await self.config.guild(ctx.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
-            await ctx.send(_("No role-button is configured for this message.").format(**locals()))
+            await ctx.send(_("No url-button is configured for this message.").format(**locals()))
             return
         if f"{button}" not in config[f"{message.channel.id}-{message.id}"]:
             await ctx.send(_("I wasn't watching for this button on this message.").format(**locals()))
             return
         del config[f"{message.channel.id}-{message.id}"][f"{button}"]
-        if self.cogsutils.is_dpy2:
-            await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message)))
+        if not config[f"{message.channel.id}-{message.id}"] == {}:
+            if self.cogsutils.is_dpy2:
+                await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message)))
+            else:
+                await message.edit(components=self.get_buttons(config, message))
         else:
-            await message.edit(components=self.get_buttons(config, message))
-        if config[f"{message.channel.id}-{message.id}"] == {}:
             del config[f"{message.channel.id}-{message.id}"]
+            if self.cogsutils.is_dpy2:
+                await message.edit(view=None)
+            else:
+                await message.edit(components=None)
         await self.config.guild(ctx.guild).url_buttons.set(config)
         await ctx.tick()
 

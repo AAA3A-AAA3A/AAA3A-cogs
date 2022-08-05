@@ -39,10 +39,10 @@ class RolesButtons(commands.Cog):
             identifier=370638632963,
             force_registration=True,
         )
-        self.roles_button_guild = {
+        self.roles_buttons_guild = {
             "roles_buttons": {},
         }
-        self.config.register_guild(**self.roles_button_guild)
+        self.config.register_guild(**self.roles_buttons_guild)
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
@@ -61,10 +61,6 @@ class RolesButtons(commands.Cog):
 
     if CogsUtils().is_dpy2:
         async def on_button_interaction(self, view: Buttons, interaction: discord.Interaction):
-            if interaction.user is None:
-                return
-            if interaction.guild is None:
-                return
             if await self.bot.cog_disabled_in_guild(self, interaction.guild):
                 return
             if not interaction.data["custom_id"].startswith("roles_buttons"):
@@ -107,8 +103,6 @@ class RolesButtons(commands.Cog):
             if inter.author is None:
                 return
             if inter.guild is None:
-                return
-            if inter.author.bot:
                 return
             if await self.bot.cog_disabled_in_guild(self, guild):
                 return
@@ -256,12 +250,17 @@ class RolesButtons(commands.Cog):
             await ctx.send(_("I wasn't watching for this button on this message.").format(**locals()))
             return
         del config[f"{message.channel.id}-{message.id}"][f"{button}"]
-        if self.cogsutils.is_dpy2:
-            await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message), function=self.on_button_interaction, infinity=True))
+        if not config[f"{message.channel.id}-{message.id}"] == {}:
+            if self.cogsutils.is_dpy2:
+                await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message), function=self.on_button_interaction, infinity=True))
+            else:
+                await message.edit(components=self.get_buttons(config, message))
         else:
-            await message.edit(components=self.get_buttons(config, message))
-        if config[f"{message.channel.id}-{message.id}"] == {}:
             del config[f"{message.channel.id}-{message.id}"]
+            if self.cogsutils.is_dpy2:
+                await message.edit(view=None)
+            else:
+                await message.edit(components=None)
         await self.config.guild(ctx.guild).roles_buttons.set(config)
         await ctx.tick()
 

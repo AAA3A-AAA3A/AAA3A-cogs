@@ -37,6 +37,7 @@ Useful Links
     cog_reacttocommand
     cog_rolesbuttons
     cog_simplesanction
+    cog_seen
     cog_sudo
     cog_tickettool
     cog_transferchannel

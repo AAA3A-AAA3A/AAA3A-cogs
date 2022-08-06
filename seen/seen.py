@@ -9,6 +9,8 @@ import asyncio
 import datetime
 import time as _time
 
+from copy import deepcopy
+
 from redbot.core.utils.chat_formatting import pagify
 
 if CogsUtils().is_dpy2:  # To remove
@@ -115,9 +117,9 @@ class Seen(commands.Cog):
     async def save_to_config(self):
         cache = self.cache.copy()
         cache["existing_keys"] = []
-        if self.cache == {"global": {}, "users": {}, "members": {}, "roles": {}, "channels": {}, "categories": {}, "guilds": {}, "existing_keys": []}:
+        if cache == {"global": {}, "users": {}, "members": {}, "roles": {}, "channels": {}, "categories": {}, "guilds": {}, "existing_keys": []}:
             return
-        self.cache = {"global": {}, "users": {}, "members": {}, "roles": {}, "channels": {}, "categories": {}, "guilds": {}, "existing_keys": []}
+        self.cache = {"global": {}, "users": {}, "members": {}, "roles": {}, "channels": {}, "categories": {}, "guilds": {}, "existing_keys": self.cache["existing_keys"].copy()}
         global_group = self.config._get_base_group(self.config.GLOBAL)
         user_group = self.config._get_base_group(self.config.USER)
         member_group = self.config._get_base_group(self.config.MEMBER)
@@ -137,9 +139,6 @@ class Seen(commands.Cog):
                     users_data[str(user)] = {}
                 for type, custom_id in cache["users"][user].items():
                     users_data[str(user)][type] = custom_id
-            for user in users_data:
-                for custom_id in users_data[user].values():
-                    self.cache["existing_keys"].append(custom_id)
         # Members
         async with member_group.all() as members_data:
             for guild in cache["members"]:
@@ -151,10 +150,6 @@ class Seen(commands.Cog):
                     for type in cache["members"][guild][member]:
                         custom_id = cache["members"][guild][member][type]
                         members_data[str(guild)][str(member)][str(type)] = custom_id
-            for guild in members_data:
-                for member in members_data[guild]:
-                    for custom_id in members_data[guild][member].values():
-                        self.cache["existing_keys"].append(custom_id)
         # Roles
         async with role_group.all() as roles_data:
             for guild in cache["roles"]:
@@ -164,9 +159,6 @@ class Seen(commands.Cog):
                     for type in cache["roles"][guild][role]:
                         custom_id = cache["roles"][guild][role][type]
                         roles_data[str(role)][type] = custom_id
-            for role in roles_data:
-                for custom_id in roles_data[role].values():
-                    self.cache["existing_keys"].append(custom_id)
         # Channels
         async with channel_group.all() as channels_data:
             for guild in cache["channels"]:
@@ -176,9 +168,6 @@ class Seen(commands.Cog):
                     for type in cache["channels"][guild][channel]:
                         custom_id = cache["channels"][guild][channel][type]
                         channels_data[str(channel)][type] = custom_id
-            for channel in channels_data:
-                for custom_id in channels_data[channel].values():
-                    self.cache["existing_keys"].append(custom_id)
         # Categories
         async with category_group.all() as categories_data:
             for guild in cache["categories"]:
@@ -188,9 +177,6 @@ class Seen(commands.Cog):
                     for type in cache["categories"][guild][category]:
                         custom_id = cache["categories"][guild][category][type]
                         categories_data[str(category)][type] = custom_id
-            for category in categories_data:
-                for custom_id in categories_data[category].values():
-                    self.cache["existing_keys"].append(custom_id)
         # Guilds
         async with guild_group.all() as guilds_data:
             for guild in cache["guilds"]:
@@ -198,47 +184,99 @@ class Seen(commands.Cog):
                     guilds_data[str(guild)] = {}
                 for type, custom_id in cache["guilds"][guild].items():
                     guilds_data[str(guild)][type] = custom_id
-            for guild in guilds_data:
-                for custom_id in guilds_data[guild].values():
-                    self.cache["existing_keys"].append(custom_id)
-        # Global cleanup
-        # async with global_group.all() as global_data:
-        #     _global_data = global_data.copy()
-        #     for type in _global_data.copy():
-        #         for custom_id in _global_data[type]:
-        #             if custom_id not in self.cache["existing_keys"]:  # The action is no longer used by any data.
-        #                 del global_data[type][custom_id]
+        # Run Cleanup
+        asyncio.create_task(self.cleanup())
 
-    async def get_data_for(self, object: typing.Union[discord.User, discord.Member, discord.Role, discord.TextChannel, discord.CategoryChannel, discord.Guild], type: typing.Optional[typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], all_data: typing.Optional[typing.Dict]=None):
-        await self.save_to_config()
+    async def cleanup(self):
+        users_data = await self.config.all_users()
+        members_data = await self.config.all_members()
+        roles_data = await self.config.all_roles()
+        channels_data = await self.config.all_channels()
+        categories_data = await self.config.all_channels()
+        guilds_data = await self.config.all_guilds()
+        global_group = self.config._get_base_group(self.config.GLOBAL)
+        existing_keys = []
+        # Users
+        for user in users_data:
+            for custom_id in users_data[user].values():
+                if custom_id is not None and custom_id not in self.cache["existing_keys"]:
+                    existing_keys.append(custom_id)
+        # Members
+        for guild in members_data:
+            for member in members_data[guild]:
+                for custom_id in members_data[guild][member].values():
+                    if custom_id is not None and custom_id not in self.cache["existing_keys"]:
+                        existing_keys.append(custom_id)
+        # Roles
+        for role in roles_data:
+            for custom_id in roles_data[role].values():
+                if custom_id is not None and custom_id not in self.cache["existing_keys"]:
+                    existing_keys.append(custom_id)
+        # Channels
+        for channel in channels_data:
+            for custom_id in channels_data[channel].values():
+                if custom_id is not None and custom_id not in self.cache["existing_keys"]:
+                    existing_keys.append(custom_id)
+        # Categories
+        for category in categories_data:
+            for custom_id in categories_data[category].values():
+                if custom_id is not None and custom_id not in self.cache["existing_keys"]:
+                    existing_keys.append(custom_id)
+        # Guilds
+        for guild in guilds_data:
+            for custom_id in guilds_data[guild].values():
+                if custom_id is not None and custom_id not in self.cache["existing_keys"]:
+                    existing_keys.append(custom_id)
+        self.cache["existing_keys"] += existing_keys
+        # Global
+        async with global_group.all() as global_data:
+            _global_data = deepcopy(global_data)
+            for type in _global_data:
+                for custom_id in _global_data[type]:
+                    if custom_id not in self.cache["existing_keys"]:  # The action is no longer used by any data.
+                        del global_data[type][custom_id]
+
+    async def get_data_for(self, object: typing.Union[discord.User, discord.Member, discord.Role, discord.TextChannel, discord.CategoryChannel, discord.Guild], type: typing.Optional[typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], all_data_config: typing.Optional[typing.Dict]=None, all_data_cache: typing.Optional[typing.Dict]=None):
         global_config = await self.config.all()
-        if all_data is None:
+        if not all([all_data_config is not None, all_data_cache is not None]):
             if isinstance(object, discord.User):
-                all_data = await self.config.user(object).all()
+                all_data_config = await self.config.user(object).all()
+                all_data_cache = self.cache["users"].get(object.id, {})
             elif isinstance(object, discord.Member):
-                all_data = await self.config.member(object).all()
+                all_data_config = await self.config.member(object).all()
+                all_data_cache = self.cache["members"].get(object.guild.id, {}).get(object.id, {})
             elif isinstance(object, discord.Role):
-                all_data = await self.config.role(object).all()
+                all_data_config = await self.config.role(object).all()
+                all_data_cache = self.cache["roles"].get(object.guild.id, {}).get(object.id, {})
             elif isinstance(object, discord.TextChannel):
-                all_data = await self.config.channel(object).all()
+                all_data_config = await self.config.channel(object).all()
+                all_data_cache = self.cache["channels"].get(object.guild.id, {}).get(object.id, {})
             elif isinstance(object, discord.CategoryChannel):
-                all_data = await self.config.channel(object).all()
+                all_data_config = await self.config.channel(object).all()
+                all_data_cache = self.cache["categories"].get(object.guild.id, {}).get(object.id, {})
             elif isinstance(object, discord.Guild):
-                all_data = await self.config.guild(object).all()
+                all_data_config = await self.config.guild(object).all()
+                all_data_cache = self.cache["members"].get(object.id, {})
             else:
                 return None
         if type is not None:
-            custom_id = all_data[type]
-            if custom_id is None:
+            custom_ids = [custom_id for custom_id in [all_data_config.get(type, None), all_data_cache.get(type, None)] if custom_id is not None]
+            if len(custom_ids) == 0:
                 return
+            custom_id = sorted(custom_ids, key=lambda x: global_config[type][x], reverse=True)[0]
             data = global_config[type][custom_id]
             if data["seen"] is None or data["action"] is None:
                 return None
         else:
-            all_data = {x: all_data[x] for x in ["message", "message_edit", "reaction_add", "reaction_remove"] if all_data[x] is not None}
+            all_data_config = {x: all_data_config[x] for x in ["message", "message_edit", "reaction_add", "reaction_remove"] if all_data_config[x] is not None}
+            all_data_cache = {x: all_data_cache.get(x, None) for x in ["message", "message_edit", "reaction_add", "reaction_remove"] if all_data_cache.get(x, None) is not None}
+            all_data_config = [{"type": x, "seen": global_config[x].get(all_data_config[x], {"seen": None, "action": None})["seen"], "action": global_config[x].get(all_data_config[x], {"seen": None, "action": None})["action"]} for x in all_data_config if global_config[x].get(all_data_config[x], {"seen": None, "action": None})["seen"] is not None and global_config[x].get(all_data_config[x], {"seen": None, "action": None})["action"] is not None]
+            all_data_cache = [{"type": x, "seen": global_config[x].get(all_data_cache[x], {"seen": None, "action": None})["seen"], "action": global_config[x].get(all_data_cache[x], {"seen": None, "action": None})["action"]} for x in all_data_cache if global_config[x].get(all_data_cache[x], {"seen": None, "action": None})["seen"] is not None and global_config[x].get(all_data_cache[x], {"seen": None, "action": None})["action"] is not None]
+            if len(all_data_config) == 0 and len(all_data_cache):
+                return None
+            all_data = all_data_config + all_data_cache
             if len(all_data) == 0:
                 return None
-            all_data = [{"type": x, "seen": global_config[x][all_data[x]]["seen"], "action": global_config[x][all_data[x]]["action"]} for x in all_data if global_config[x][all_data[x]]["seen"] is not None or global_config[x][all_data[x]]["action"] is not None]
             data = sorted(all_data, key=lambda x: x["seen"], reverse=True)[0]
             type = data["type"]
             del data["type"]
@@ -295,9 +333,9 @@ class Seen(commands.Cog):
             action = f"The reaction {reaction} has been removed to the [this message]({message_link}) by @{member}."
         return time, seen, action
 
-    async def send_seen(self, ctx: commands.Context, object: typing.Union[discord.User, discord.Member, discord.Role, discord.TextChannel, discord.CategoryChannel, discord.Guild], type: typing.Optional[typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], all_data: typing.Optional[typing.Dict]=None):
+    async def send_seen(self, ctx: commands.Context, object: typing.Union[discord.User, discord.Member, discord.Role, discord.TextChannel, discord.CategoryChannel, discord.Guild], type: typing.Optional[typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], all_data_config: typing.Optional[typing.Dict]=None, all_data_cache: typing.Optional[typing.Dict]=None):
         async with ctx.typing():
-            data = await self.get_data_for(type=type, object=object, all_data=all_data)
+            data = await self.get_data_for(type=type, object=object, all_data_config=all_data_config, all_data_cache=all_data_cache)
             if data is None:
                 embed = discord.Embed()
                 embed.color = discord.Color.red()
@@ -347,7 +385,7 @@ class Seen(commands.Cog):
                 all_data = {ctx.bot.get_guild(guild): data for guild, data in guilds.items() if ctx.bot.get_guild(guild) is not None}
             data = {}
             for x in all_data:
-                result = await self.get_data_for(type=type, object=x, all_data=all_data[x])
+                result = await self.get_data_for(type=type, object=x, all_data_config=all_data[x], all_data_cache={})
                 if result is None:
                     continue
                 time, seen, action = result
@@ -400,13 +438,13 @@ class Seen(commands.Cog):
     async def on_reaction_add(self, reaction: discord.Reaction, user: typing.Union[discord.Member, discord.User]):
         if reaction.message.guild is None:
             return
-        self.upsert_cache(time=_time.time(), type="reaction_add", member=user, guild=user.guild, channel=reaction.message.channel, message=reaction.message, reaction=str(getattr(reaction.emoji, "id", reaction.emoji)))
+        self.upsert_cache(time=_time.time(), type="reaction_add", member=user, guild=user.guild, channel=reaction.message.channel, message=reaction.message, reaction=str(reaction.emoji))
 
     @commands.Cog.listener()
     async def on_reaction_remove(self, reaction: discord.Reaction, user: typing.Union[discord.Member, discord.User]):
         if reaction.message.guild is None:
             return
-        self.upsert_cache(time=_time.time(), type="reaction_remove", member=user, guild=user.guild, channel=reaction.message.channel, message=reaction.message, reaction=str(getattr(reaction.emoji, "id", reaction.emoji)))
+        self.upsert_cache(time=_time.time(), type="reaction_remove", member=user, guild=user.guild, channel=reaction.message.channel, message=reaction.message, reaction=str(reaction.emoji))
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
@@ -480,10 +518,11 @@ class Seen(commands.Cog):
             if user is None:
                 await ctx.send(f'User "{user_id}" not found.')
                 return
-        all_data = await self.config.member_from_ids(guild_id=ctx.guild.id, member_id=user.id).all()
         if show_details is None:
             show_details = True
-        await self.send_seen(ctx, object=user, type=type, show_details=show_details, all_data=all_data)
+        all_data_config = await self.config.member_from_ids(guild_id=ctx.guild.id, member_id=user.id).all()
+        all_data_cache = self.cache["members"].get(object.guild.id, {}).get(object.id, {})
+        await self.send_seen(ctx, object=user, type=type, show_details=show_details, all_data_config=all_data_config, all_data_cache=all_data_cache)
         await ctx.tick()
 
     @commands.bot_has_permissions(embed_links=True)

@@ -59,14 +59,14 @@ class EditFile(commands.Cog):
             line_span = (start, int(match.group(3) or start))
         path = self.cogsutils.replace_var_paths(path, reverse=True)
         path = Path(path)
-        size = os.path.getsize(path)
-        if size <= 0:
-            await ctx.send(_("Cowardly refusing to read a file with no size stat. (it may be empty, endless or inaccessible).").format(**locals()))
-            return
-        if size > 128 * (1024 ** 2):
-            await ctx.send(_("Cowardly refusing to read a file >128MB.").format(**locals()))
-            return
         try:
+            size = os.path.getsize(path)
+            if size <= 0:
+                await ctx.send(_("Cowardly refusing to read a file with no size stat. (it may be empty, endless or inaccessible).").format(**locals()))
+                return
+            if size > 128 * (1024 ** 2):
+                await ctx.send(_("Cowardly refusing to read a file >128MB.").format(**locals()))
+                return
             with open(file=path, mode="rb") as file:
                 content = file.read()
             if line_span is not None:

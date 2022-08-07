@@ -9,6 +9,6 @@
         "messages",
         "html"
     ],
-    "requirements": ["chat-exporter"],
+    "requirements": ["chat-exporter==1.7.3"],
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

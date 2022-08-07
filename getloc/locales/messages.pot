@@ -11,37 +11,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: \medicat\medicat.py:202
+#: \getloc\getloc.py:18
 #, docstring
 msgid ""
-"This cog will only work on x server and therefore cannot be used by the "
-"general public!"
+"A cog to display information about a location based on its address or "
+"geographical coordinates!"
 msgstr ""
 
-#: \medicat\medicat.py:489
+#: \getloc\getloc.py:28
 #, docstring
 msgid ""
-"Get the latest version of Ventoy.\n"
+"Display information about a location.\n"
+"        You can provide a full address or gps coordinates.\n"
 "        "
 msgstr ""
 
-#: \medicat\medicat.py:521
+#: \getloc\getloc.py:35
 msgid "An error has occurred. Please try again."
 msgstr ""
 
-#: \medicat\medicat.py:541
-#, docstring
+#: \getloc\getloc.py:38
 msgid ""
-"Get the latest versions of each Medicat USB bootable tool.\n"
-"        "
-msgstr ""
-
-#: \medicat\medicat.py:582
-#, docstring
-msgid "Get an embed for check loops status."
-msgstr ""
-
-#: \medicat\medicat.py:589
-#, docstring
-msgid "Update the Medicat cog without be bot owner."
+"The address or contact details you have provided do not lead to any results."
+" Are you sure of your input?"
 msgstr ""

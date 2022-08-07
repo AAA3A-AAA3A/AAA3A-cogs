@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-05-06 11:38+0200\n"
+"POT-Creation-Date: 2022-08-07 20:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,12 +11,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: settings.py:16
+#: \simplesanction\settings.py:19
 #, docstring
 msgid "Configure SimpleSanction for your server."
 msgstr ""
 
-#: settings.py:21
+#: \simplesanction\settings.py:24
 #, docstring
 msgid ""
 "Set a colour fort the embed.\n"
@@ -26,23 +26,27 @@ msgid ""
 "        "
 msgstr ""
 
-#: settings.py:35 settings.py:48 settings.py:71 settings.py:86
+#: \simplesanction\settings.py:38
+#: \simplesanction\settings.py:51
+#: \simplesanction\settings.py:74
+#: \simplesanction\settings.py:89
 msgid "Configure the embed"
 msgstr ""
 
-#: settings.py:36
+#: \simplesanction\settings.py:39
 msgid "Reset color:"
 msgstr ""
 
-#: settings.py:38 settings.py:53
+#: \simplesanction\settings.py:41
+#: \simplesanction\settings.py:56
 msgid "Color:"
 msgstr ""
 
-#: settings.py:49
+#: \simplesanction\settings.py:52
 msgid "Set color:"
 msgstr ""
 
-#: settings.py:59
+#: \simplesanction\settings.py:62
 #, docstring
 msgid ""
 "Set a thumbnail fort the embed.\n"
@@ -52,19 +56,20 @@ msgid ""
 "        "
 msgstr ""
 
-#: settings.py:72
+#: \simplesanction\settings.py:75
 msgid "Reset thumbnail:"
 msgstr ""
 
-#: settings.py:76 settings.py:91
+#: \simplesanction\settings.py:79
+#: \simplesanction\settings.py:94
 msgid "Thumbnail:"
 msgstr ""
 
-#: settings.py:87
+#: \simplesanction\settings.py:90
 msgid "Set thumbnail:"
 msgstr ""
 
-#: settings.py:97
+#: \simplesanction\settings.py:100
 #, docstring
 msgid ""
 "Enable or disable Show Author\n"
@@ -73,15 +78,15 @@ msgid ""
 "        "
 msgstr ""
 
-#: settings.py:105
+#: \simplesanction\settings.py:108
 msgid "Show Author is already set on {state}."
 msgstr ""
 
-#: settings.py:109
+#: \simplesanction\settings.py:112
 msgid "Show Author state registered: {state}."
 msgstr ""
 
-#: settings.py:113
+#: \simplesanction\settings.py:116
 #, docstring
 msgid ""
 "Enable or disable Action Confirmation\n"
@@ -90,15 +95,15 @@ msgid ""
 "        "
 msgstr ""
 
-#: settings.py:121
+#: \simplesanction\settings.py:124
 msgid "Action Confirmation is already set on {state}."
 msgstr ""
 
-#: settings.py:125
+#: \simplesanction\settings.py:128
 msgid "Action Confirmation state registered: {state}."
 msgstr ""
 
-#: settings.py:129
+#: \simplesanction\settings.py:132
 #, docstring
 msgid ""
 "Enable or disable Finish Message\n"
@@ -107,11 +112,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: settings.py:137
+#: \simplesanction\settings.py:140
 msgid "Finish Message is already set on {state}."
 msgstr ""
 
-#: settings.py:145
+#: \simplesanction\settings.py:148
 #, docstring
 msgid ""
 "Enable or disable Warn System Use\n"
@@ -120,15 +125,15 @@ msgid ""
 "        "
 msgstr ""
 
-#: settings.py:153
+#: \simplesanction\settings.py:156
 msgid "Warn System Use is already set on {state}."
 msgstr ""
 
-#: settings.py:157
+#: \simplesanction\settings.py:160
 msgid "Warn System Use state registered: {state}."
 msgstr ""
 
-#: settings.py:161
+#: \simplesanction\settings.py:164
 #, docstring
 msgid ""
 "Enable or disable Buttons Use\n"
@@ -137,11 +142,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: settings.py:169
+#: \simplesanction\settings.py:172
 msgid "Way is already set on {way}."
 msgstr ""
 
-#: settings.py:177
+#: \simplesanction\settings.py:180
 #, docstring
 msgid ""
 "Enable or disable Reason Requiered\n"
@@ -150,15 +155,15 @@ msgid ""
 "        "
 msgstr ""
 
-#: settings.py:185
+#: \simplesanction\settings.py:188
 msgid "Reason Required is already set on {state}."
 msgstr ""
 
-#: settings.py:189
+#: \simplesanction\settings.py:192
 msgid "Reason Required state registered: {state}."
 msgstr ""
 
-#: settings.py:193
+#: \simplesanction\settings.py:196
 #, docstring
 msgid ""
 "Enable or disable Delete Embed\n"
@@ -167,11 +172,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: settings.py:201
+#: \simplesanction\settings.py:204
 msgid "Delete Embed is already set on {state}."
 msgstr ""
 
-#: settings.py:209
+#: \simplesanction\settings.py:212
 #, docstring
 msgid ""
 "Enable or disable Delete Message\n"
@@ -180,15 +185,15 @@ msgid ""
 "        "
 msgstr ""
 
-#: settings.py:217
+#: \simplesanction\settings.py:220
 msgid "Delete Message is already set on {state}."
 msgstr ""
 
-#: settings.py:221
+#: \simplesanction\settings.py:224
 msgid "Delete Message state registered: {state}."
 msgstr ""
 
-#: settings.py:225
+#: \simplesanction\settings.py:228
 #, docstring
 msgid ""
 "Choose the timeout\n"
@@ -197,58 +202,55 @@ msgid ""
 "        "
 msgstr ""
 
-#: settings.py:234
+#: \simplesanction\settings.py:237
 msgid "Timeout restored."
 msgstr ""
 
-#: settings.py:237
+#: \simplesanction\settings.py:240
 msgid "Timeout is already set on {timeout}."
 msgstr ""
 
-#: settings.py:241
+#: \simplesanction\settings.py:244
 msgid "Timeout state registered: {timeout}."
 msgstr ""
 
-#: simplesanction.py:35
+#: \simplesanction\simplesanction.py:37
 #, docstring
 msgid "A cog to sanction a user!"
 msgstr ""
 
-#: simplesanction.py:119 simplesanction.py:135
-msgid "Sanction."
-msgstr ""
-
-#: simplesanction.py:128
+#: \simplesanction\simplesanction.py:122
 msgid ""
 "You have chosen to sanction {inter.user.mention} ({inter.user.id}) in "
 "{inter.channel.mention}."
 msgstr ""
 
-#: simplesanction.py:130 simplesanction.py:145
+#: \simplesanction\simplesanction.py:124
+#: \simplesanction\simplesanction.py:132
 msgid ""
 "An error has occurred in your interaction. Please try to use the real "
 "command instead of this contextual menu."
 msgstr ""
 
-#: simplesanction.py:143
+#: \simplesanction\simplesanction.py:130
 msgid ""
 "You have chosen to sanction {inter.message.author.mention} "
 "({inter.message.author.id}) in {inter.channel.mention}."
 msgstr ""
 
-#: simplesanction.py:168
+#: \simplesanction\simplesanction.py:148
 msgid ""
 "You have chosen to sanction {user.mention} ({user.id}) in "
 "{inter.channel.mention}."
 msgstr ""
 
-#: simplesanction.py:170
+#: \simplesanction\simplesanction.py:150
 msgid ""
 "An error has occurred in this interaction. Please try to use the real "
 "command instead of this contextual menu."
 msgstr ""
 
-#: simplesanction.py:177
+#: \simplesanction\simplesanction.py:157
 #, docstring
 msgid ""
 "\n"
@@ -271,7 +273,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction.py:200
+#: \simplesanction\simplesanction.py:180
 #, docstring
 msgid ""
 "\n"
@@ -284,7 +286,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction.py:213
+#: \simplesanction\simplesanction.py:193
 #, docstring
 msgid ""
 "\n"
@@ -297,7 +299,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction.py:226
+#: \simplesanction\simplesanction.py:206
 #, docstring
 msgid ""
 "\n"
@@ -312,7 +314,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction.py:241
+#: \simplesanction\simplesanction.py:221
 #, docstring
 msgid ""
 "\n"
@@ -327,7 +329,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction.py:256
+#: \simplesanction\simplesanction.py:236
 #, docstring
 msgid ""
 "\n"
@@ -344,7 +346,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction.py:273
+#: \simplesanction\simplesanction.py:253
 #, docstring
 msgid ""
 "\n"
@@ -357,7 +359,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction.py:286
+#: \simplesanction\simplesanction.py:266
 #, docstring
 msgid ""
 "\n"
@@ -370,7 +372,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction.py:299
+#: \simplesanction\simplesanction.py:279
 #, docstring
 msgid ""
 "\n"
@@ -383,7 +385,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction.py:312
+#: \simplesanction\simplesanction.py:292
 #, docstring
 msgid ""
 "\n"
@@ -398,7 +400,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction.py:327
+#: \simplesanction\simplesanction.py:307
 #, docstring
 msgid ""
 "\n"
@@ -413,272 +415,309 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction.py:341
-#, docstring
-msgid ""
-"Sanction a user quickly and easily.\n"
-"        "
-msgstr ""
-
-#: simplesanction.py:378 simplesanction.py:405
+#: \simplesanction\simplesanction.py:358
+#: \simplesanction\simplesanction.py:382
 msgid "Sanctioning a member"
 msgstr ""
 
-#: simplesanction.py:379
+#: \simplesanction\simplesanction.py:359
 msgid "Which member do you want to sanction? (Set `cancel` to cancel.)"
 msgstr ""
 
-#: simplesanction.py:400 utils.py:137 utils.py:169 utils.py:228
+#: \simplesanction\simplesanction.py:377
+#: \simplesanction\utils.py:135
+#: \simplesanction\utils.py:167
 msgid "Timed out, please try again."
 msgstr ""
 
-#: simplesanction.py:406 utils.py:236
+#: \simplesanction\simplesanction.py:383
+#: \simplesanction\utils.py:206
 msgid ""
 "This tool allows you to easily sanction a server member.\n"
 "User mention: {user.mention} - User ID: {user.id}"
 msgstr ""
 
-#: simplesanction.py:419 simplesanction.py:425 utils.py:248
+#: \simplesanction\simplesanction.py:396
+#: \simplesanction\simplesanction.py:402
+#: \simplesanction\utils.py:218
 msgid "Reason:"
 msgstr ""
 
-#: simplesanction.py:420
+#: \simplesanction\simplesanction.py:397
 msgid "The reason was not given and will not be asked later."
 msgstr ""
 
-#: simplesanction.py:436 simplesanction.py:445 simplesanction.py:793
-#: simplesanction.py:805 simplesanction.py:817 simplesanction.py:829
-#: simplesanction.py:841 simplesanction.py:853 simplesanction.py:865
-#: simplesanction.py:877 simplesanction.py:889 simplesanction.py:901
+#: \simplesanction\simplesanction.py:412
+#: \simplesanction\simplesanction.py:660
+#: \simplesanction\simplesanction.py:669
+#: \simplesanction\simplesanction.py:678
+#: \simplesanction\simplesanction.py:687
+#: \simplesanction\simplesanction.py:696
+#: \simplesanction\simplesanction.py:705
+#: \simplesanction\simplesanction.py:714
+#: \simplesanction\simplesanction.py:723
+#: \simplesanction\simplesanction.py:732
+#: \simplesanction\simplesanction.py:741
 msgid ""
 "You are using this command in Fake mode, so no action will be taken, but I "
 "will pretend it is not the case."
 msgstr ""
 
-#: simplesanction.py:788
+#: \simplesanction\simplesanction.py:655
 msgid "You are not the author of this command."
 msgstr ""
 
-#: simplesanction.py:948
+#: \simplesanction\simplesanction.py:779
 msgid "Sanctioning a member - :information_source: UserInfo"
 msgstr ""
 
-#: simplesanction.py:948
+#: \simplesanction\simplesanction.py:779
 msgid "Here is the information about the user {user.name}!"
 msgstr ""
 
-#: simplesanction.py:951
+#: \simplesanction\simplesanction.py:782
 msgid "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`."
 msgstr ""
 
-#: simplesanction.py:963 simplesanction.py:967 simplesanction.py:970
+#: \simplesanction\simplesanction.py:794
+#: \simplesanction\simplesanction.py:797
+#: \simplesanction\simplesanction.py:800
 msgid "Sanctioning a member - :warning: Warn"
 msgstr ""
 
-#: simplesanction.py:963
+#: \simplesanction\simplesanction.py:794
 msgid ""
 "Why do you want warn {user}? (Set `cancel` to cancel or `not` for none)"
 msgstr ""
 
-#: simplesanction.py:967
+#: \simplesanction\simplesanction.py:797
 msgid "Do you really want to warn {user}?"
 msgstr ""
 
-#: simplesanction.py:970
+#: \simplesanction\simplesanction.py:800
 msgid "The user {user} has been received a warning!"
 msgstr ""
 
-#: simplesanction.py:974
+#: \simplesanction\simplesanction.py:804
 msgid ""
 "The cog Warnings is not loaded. To load it, do `{ctx.prefix}load warnings`. "
 "You can also install/load the WarnSystem cog."
 msgstr ""
 
-#: simplesanction.py:979
+#: \simplesanction\simplesanction.py:809
 msgid "{ctx.prefix}warn {user.id} The reason was not given."
 msgstr ""
 
-#: simplesanction.py:981
+#: \simplesanction\simplesanction.py:811
 msgid "{ctx.prefix}warn {user.id} {reason}"
 msgstr ""
 
-#: simplesanction.py:998 simplesanction.py:1002 simplesanction.py:1005
+#: \simplesanction\simplesanction.py:828
+#: \simplesanction\simplesanction.py:831
+#: \simplesanction\simplesanction.py:834
 msgid "Sanctioning a member - :hammer: Ban"
 msgstr ""
 
-#: simplesanction.py:998
+#: \simplesanction\simplesanction.py:828
 msgid ""
 "Why do you want to ban {user}? (Set `cancel` to cancel or `not` to none)"
 msgstr ""
 
-#: simplesanction.py:1002
+#: \simplesanction\simplesanction.py:831
 msgid "Do you really want to ban {user}?"
 msgstr ""
 
-#: simplesanction.py:1005
+#: \simplesanction\simplesanction.py:834
 msgid "The user {user} has been banned!"
 msgstr ""
 
-#: simplesanction.py:1009 simplesanction.py:1044 simplesanction.py:1083
-#: simplesanction.py:1119
+#: \simplesanction\simplesanction.py:838
+#: \simplesanction\simplesanction.py:872
+#: \simplesanction\simplesanction.py:910
+#: \simplesanction\simplesanction.py:945
 msgid ""
 "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`. You can "
 "also install/load the WarnSystem cog."
 msgstr ""
 
-#: simplesanction.py:1033 simplesanction.py:1037 simplesanction.py:1040
+#: \simplesanction\simplesanction.py:862
+#: \simplesanction\simplesanction.py:865
+#: \simplesanction\simplesanction.py:868
 msgid "Sanctioning a member - :repeat_one: SoftBan"
 msgstr ""
 
-#: simplesanction.py:1033
+#: \simplesanction\simplesanction.py:862
 msgid ""
 "Why do you want to softban {user}? (Set `cancel` to cancel or `not` to none)"
 msgstr ""
 
-#: simplesanction.py:1037
+#: \simplesanction\simplesanction.py:865
 msgid "Do you really want to softban {user}?"
 msgstr ""
 
-#: simplesanction.py:1040
+#: \simplesanction\simplesanction.py:868
 msgid "The user {user} has been softbanned!"
 msgstr ""
 
-#: simplesanction.py:1068 simplesanction.py:1072
+#: \simplesanction\simplesanction.py:896
+#: \simplesanction\simplesanction.py:900
+#: \simplesanction\simplesanction.py:903
+#: \simplesanction\simplesanction.py:906
 msgid "Sanctioning a member - :dash: TempBan"
 msgstr ""
 
-#: simplesanction.py:1068
+#: \simplesanction\simplesanction.py:896
 msgid "How long do you want to tempban {user}? (Set `cancel` to cancel)"
 msgstr ""
 
-#: simplesanction.py:1072
+#: \simplesanction\simplesanction.py:900
 msgid ""
 "Why do you want to tempban {user}? (Set `cancel` to cancel or `not` to none)"
 msgstr ""
 
-#: simplesanction.py:1108 simplesanction.py:1112 simplesanction.py:1115
+#: \simplesanction\simplesanction.py:903
+msgid "Do you really want to tempban {user}?"
+msgstr ""
+
+#: \simplesanction\simplesanction.py:906
+msgid "The user {user} has been tempban!"
+msgstr ""
+
+#: \simplesanction\simplesanction.py:935
+#: \simplesanction\simplesanction.py:938
+#: \simplesanction\simplesanction.py:941
 msgid "Sanctioning a member - :boot: Kick"
 msgstr ""
 
-#: simplesanction.py:1108 simplesanction.py:1112
+#: \simplesanction\simplesanction.py:935
+#: \simplesanction\simplesanction.py:938
 msgid ""
 "Why do you want to kick {user}? (Set `cancel` to cancel or `not` to none)"
 msgstr ""
 
-#: simplesanction.py:1115
+#: \simplesanction\simplesanction.py:941
 msgid "The user {user} has been kicked!"
 msgstr ""
 
-#: simplesanction.py:1143 simplesanction.py:1147 simplesanction.py:1150
+#: \simplesanction\simplesanction.py:969
+#: \simplesanction\simplesanction.py:972
+#: \simplesanction\simplesanction.py:975
 msgid "Sanctioning a member - :mute: Mute"
 msgstr ""
 
-#: simplesanction.py:1143
+#: \simplesanction\simplesanction.py:969
 msgid ""
 "Why do you want to mute {user}? (Set `cancel` to cancel or `not` to none)"
 msgstr ""
 
-#: simplesanction.py:1147
+#: \simplesanction\simplesanction.py:972
 msgid "Do you really want to mute {user}?"
 msgstr ""
 
-#: simplesanction.py:1150
+#: \simplesanction\simplesanction.py:975
 msgid "The user {user} has been muted!"
 msgstr ""
 
-#: simplesanction.py:1154 simplesanction.py:1218
+#: \simplesanction\simplesanction.py:979
+#: \simplesanction\simplesanction.py:1041
 msgid ""
 "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`. You "
 "can also install/load the WarnSystem cog."
 msgstr ""
 
-#: simplesanction.py:1178 simplesanction.py:1182 simplesanction.py:1185
+#: \simplesanction\simplesanction.py:1003
+#: \simplesanction\simplesanction.py:1006
+#: \simplesanction\simplesanction.py:1009
 msgid "Sanctioning a member - :punch: MuteChannel"
 msgstr ""
 
-#: simplesanction.py:1178
+#: \simplesanction\simplesanction.py:1003
 msgid ""
 "Why do you want to mute {user} in {ctx.channel.mention}? (Set `cancel` to "
 "cancel or `not` to none)"
 msgstr ""
 
-#: simplesanction.py:1182
+#: \simplesanction\simplesanction.py:1006
 msgid "Do you really want to mute {user} in {ctx.channel.mention}?"
 msgstr ""
 
-#: simplesanction.py:1185
+#: \simplesanction\simplesanction.py:1009
 msgid "The user {user} has been muted in #{ctx.channel.name}!"
 msgstr ""
 
-#: simplesanction.py:1188 simplesanction.py:1256
+#: \simplesanction\simplesanction.py:1012
+#: \simplesanction\simplesanction.py:1078
 msgid "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`."
 msgstr ""
 
-#: simplesanction.py:1203 simplesanction.py:1207 simplesanction.py:1211
-#: simplesanction.py:1214
+#: \simplesanction\simplesanction.py:1027
+#: \simplesanction\simplesanction.py:1031
+#: \simplesanction\simplesanction.py:1034
+#: \simplesanction\simplesanction.py:1037
 msgid "Sanctioning a member - :hourglass_flowing_sand: TempMute"
 msgstr ""
 
-#: simplesanction.py:1203
+#: \simplesanction\simplesanction.py:1027
 msgid "How long do you want to tempmute {user}? (Set `cancel` to cancel)"
 msgstr ""
 
-#: simplesanction.py:1207
+#: \simplesanction\simplesanction.py:1031
 msgid ""
 "Why do you want to tempmute {user}? (Set `cancel` to cancel or `not` to "
 "none)"
 msgstr ""
 
-#: simplesanction.py:1211
+#: \simplesanction\simplesanction.py:1034
 msgid "Do you really want to tempmute {user}?"
 msgstr ""
 
-#: simplesanction.py:1214
+#: \simplesanction\simplesanction.py:1037
 msgid "The user {user} has been tempmuted!"
 msgstr ""
 
-#: simplesanction.py:1242 simplesanction.py:1246 simplesanction.py:1250
-#: simplesanction.py:1253
+#: \simplesanction\simplesanction.py:1065
+#: \simplesanction\simplesanction.py:1069
+#: \simplesanction\simplesanction.py:1072
+#: \simplesanction\simplesanction.py:1075
 msgid "Sanctioning a member - :hourglass: TempMuteChannel"
 msgstr ""
 
-#: simplesanction.py:1242
+#: \simplesanction\simplesanction.py:1065
 msgid ""
 "How long do you want to tempmute {user} in {ctx.channel.mention}? (Set "
 "`cancel` to cancel)"
 msgstr ""
 
-#: simplesanction.py:1246
+#: \simplesanction\simplesanction.py:1069
 msgid ""
 "Why do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` "
 "to cancel or `not` to none)"
 msgstr ""
 
-#: simplesanction.py:1250
+#: \simplesanction\simplesanction.py:1072
 msgid "Do you really want to tempmute {user} in {ctx.channel.mention}?"
 msgstr ""
 
-#: simplesanction.py:1253
+#: \simplesanction\simplesanction.py:1075
 msgid "The user {user} has been tempmuted in #{ctx.channel.name}!"
 msgstr ""
 
-#: utils.py:185
+#: \simplesanction\utils.py:183
 msgid "The reason was not given."
 msgstr ""
 
-#: utils.py:195 utils.py:200 utils.py:254 utils.py:259
+#: \simplesanction\utils.py:193
+#: \simplesanction\utils.py:198
+#: \simplesanction\utils.py:224
+#: \simplesanction\utils.py:229
 msgid "Duration:"
 msgstr ""
 
-#: utils.py:201 utils.py:260
+#: \simplesanction\utils.py:199
+#: \simplesanction\utils.py:230
 msgid "Infinity"
 msgstr ""
 
-#: utils.py:245
+#: \simplesanction\utils.py:215
 msgid "If an error has occurred, it will be displayed below."
-msgstr ""
-
-#: utils.py:264
-#, docstring
-msgid "An error raised in case the user respond not or cancel."
 msgstr ""

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-05-06 11:38+0200\n"
+"POT-Creation-Date: 2022-08-07 20:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,36 +11,46 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: calculator.py:28
+#: \calculator\calculator.py:30
 #, docstring
 msgid "A cog to do simple calculations from Discord with buttons!"
 msgstr ""
 
-#: calculator.py:71 calculator.py:98 calculator.py:240
+#: \calculator\calculator.py:72
+#: \calculator\calculator.py:99
+#: \calculator\calculator.py:241
 msgid "Exit"
 msgstr ""
 
-#: calculator.py:81 calculator.py:108 calculator.py:314
+#: \calculator\calculator.py:82
+#: \calculator\calculator.py:109
+#: \calculator\calculator.py:315
 msgid "Clear"
 msgstr ""
 
-#: calculator.py:171 calculator.py:415 calculator.py:427 calculator.py:456
-#: calculator.py:470 calculator.py:490 calculator.py:502 calculator.py:531
-#: calculator.py:545
+#: \calculator\calculator.py:172
+#: \calculator\calculator.py:416
+#: \calculator\calculator.py:428
+#: \calculator\calculator.py:457
+#: \calculator\calculator.py:471
+#: \calculator\calculator.py:489
+#: \calculator\calculator.py:501
+#: \calculator\calculator.py:530
+#: \calculator\calculator.py:544
 msgid "Error!"
 msgstr ""
 
-#: calculator.py:183
+#: \calculator\calculator.py:184
 msgid "Calculator"
 msgstr ""
 
-#: calculator.py:398
+#: \calculator\calculator.py:399
 #, docstring
 msgid "Calculate a simple expression."
 msgstr ""
 
-#: calculator.py:488
+#: \calculator\calculator.py:487
 msgid ""
-"Only the author of the command `{ctx.prefix}calc` can interact with this "
-"message."
+"Only the author of the command `{ctx.prefix}{ctx.command.name}` can interact"
+" with this message."
 msgstr ""

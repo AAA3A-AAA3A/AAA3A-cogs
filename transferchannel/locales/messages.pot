@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-05-06 11:38+0200\n"
+"POT-Creation-Date: 2022-08-07 20:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: transferchannel.py:28
+#: \transferchannel\transferchannel.py:29
 #, docstring
 msgid ""
 "Similar to d.py's TextChannelConverter but only returns if we have already\n"
@@ -19,44 +19,39 @@ msgid ""
 "    "
 msgstr ""
 
-#: transferchannel.py:40
+#: \transferchannel\transferchannel.py:41
 msgid "You must have permissions to manage this server to use this command."
 msgstr ""
 
-#: transferchannel.py:43
+#: \transferchannel\transferchannel.py:44
 msgid ""
 "I need to have all the following permissions for the {channel.mention} channel ({channel.id}).\n"
 "`read_messages`, `read_message_history`, `send_messages` and `view_channel`."
 msgstr ""
 
-#: transferchannel.py:46
+#: \transferchannel\transferchannel.py:47
 msgid "This channel cannot be found."
 msgstr ""
 
-#: transferchannel.py:53
+#: \transferchannel\transferchannel.py:54
 msgid ""
 "This channel cannot be found. If this channel is in another Discord server, "
 "please give the id of a valid text channel."
 msgstr ""
 
-#: transferchannel.py:55
+#: \transferchannel\transferchannel.py:56
 msgid ""
 "The specified channel must be a text channel in a server where the bot is "
 "located."
 msgstr ""
 
-#: transferchannel.py:58
+#: \transferchannel\transferchannel.py:59
 msgid ""
 "I need to have all the following permissions for the {channel.name} channel ({channel.id}) in {destination.guild.name} ({destination.guild.id}).\n"
 "`read_messages`, `read_message_history`, `send_messages` and `view_channel`."
 msgstr ""
 
-#: transferchannel.py:62
-#, docstring
-msgid "A cog to transfer all messages channel in a other channel!"
-msgstr ""
-
-#: transferchannel.py:75
+#: \transferchannel\transferchannel.py:76
 #, docstring
 msgid ""
 "\n"
@@ -72,31 +67,31 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel.py:89
+#: \transferchannel\transferchannel.py:90
 msgid ""
 "I need to have all the following permissions for the {destination.name} channel ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n"
 "`embed_links`."
 msgstr ""
 
-#: transferchannel.py:93
+#: \transferchannel\transferchannel.py:94
 msgid ""
 "I need to have all the following permissions for the {destination.name} channel ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n"
 "`manage_channels`"
 msgstr ""
 
-#: transferchannel.py:120
+#: \transferchannel\transferchannel.py:121
 msgid "**Author:** {message.author}({message.author.id}"
 msgstr ""
 
-#: transferchannel.py:121
+#: \transferchannel\transferchannel.py:122
 msgid "**Channel:** <#{message.channel.id}>"
 msgstr ""
 
-#: transferchannel.py:122
+#: \transferchannel\transferchannel.py:123
 msgid "**Time(UTC):** {isoformat}"
 msgstr ""
 
-#: transferchannel.py:130
+#: \transferchannel\transferchannel.py:131
 msgid ""
-"{count} messages transfered from {source.mention} to {destination.mention}"
+"{count} messages transfered from {source.mention} to {destination.mention}."
 msgstr ""

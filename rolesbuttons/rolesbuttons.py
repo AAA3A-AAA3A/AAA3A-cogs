@@ -16,7 +16,7 @@ from .converters import EmojiRoleConverter
 from redbot.core import Config
 
 if CogsUtils().is_dpy2:  # To remove
-    setattr(commands, 'Literal', typing.Literal)
+    setattr(commands, "Literal", typing.Literal)
 
 # Credits:
 # Thanks to TrustyJAID for the two converter for the bulk command arguments! (https://github.com/TrustyJAID/Trusty-cogs/blob/main/roletools/converter.py)

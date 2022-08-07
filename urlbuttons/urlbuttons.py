@@ -14,7 +14,7 @@ from .converters import EmojiUrlConverter
 from redbot.core import Config
 
 if CogsUtils().is_dpy2:  # To remove
-    setattr(commands, 'Literal', typing.Literal)
+    setattr(commands, "Literal", typing.Literal)
 
 # Credits:
 # Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel!

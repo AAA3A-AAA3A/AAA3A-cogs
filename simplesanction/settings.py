@@ -5,7 +5,7 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 if CogsUtils().is_dpy2:  # To remove
-    setattr(commands, 'Literal', typing.Literal)
+    setattr(commands, "Literal", typing.Literal)
 
 _ = Translator("SimpleSanction", __file__)
 

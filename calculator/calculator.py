@@ -129,28 +129,28 @@ class Calculator(commands.Cog):
         except Exception:
             pass
         expression = "".join(lst)
-        expression = expression.replace(',', '.')
-        expression = expression.replace(':', '/')
-        expression = expression.replace(' ', '')
-        expression = expression.replace('π', str(pi))
-        expression = expression.replace('pi', str(pi))
-        expression = expression.replace('τ', str(tau))
-        expression = expression.replace('tau', str(tau))
-        expression = expression.replace('e', str(e))
-        expression = expression.replace('x', '*')
-        expression = expression.replace('÷', '/')
-        expression = expression.replace('**2', '^2')
-        expression = expression.replace('**3', '^3')
-        expression = expression.replace('**', '^')
-        expression = expression.replace('√', 'sqrt')
-        expression = expression.replace(',', '')
+        expression = expression.replace(",", ".")
+        expression = expression.replace(":", "/")
+        expression = expression.replace(" ", "")
+        expression = expression.replace("π", str(pi))
+        expression = expression.replace("pi", str(pi))
+        expression = expression.replace("τ", str(tau))
+        expression = expression.replace("tau", str(tau))
+        expression = expression.replace("e", str(e))
+        expression = expression.replace("x", "*")
+        expression = expression.replace("÷", "/")
+        expression = expression.replace("**2", "^2")
+        expression = expression.replace("**3", "^3")
+        expression = expression.replace("**", "^")
+        expression = expression.replace("√", "sqrt")
+        expression = expression.replace(",", "")
         for x in self.x:
             if self.x[x] in expression:
                 expression = expression.replace(self.x[x], f"^{x}")
         if "sqrt" in expression and "^" not in expression:
-            expression = expression.replace('^2', '**2')
-            expression = expression.replace('^3', '**3')
-            expression = expression.replace('^', '**')
+            expression = expression.replace("^2", "**2")
+            expression = expression.replace("^3", "**3")
+            expression = expression.replace("^", "**")
             try:
                 result = f"{eval(expression)}"
             except Exception:

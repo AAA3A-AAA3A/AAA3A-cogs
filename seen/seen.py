@@ -11,7 +11,7 @@ import time as _time
 
 from copy import deepcopy
 
-from redbot.core.utils.chat_formatting import pagify
+from redbot.core.utils.chat_formatting import pagify, box
 
 if CogsUtils().is_dpy2:  # To remove
     setattr(commands, "Literal", typing.Literal)
@@ -120,7 +120,6 @@ class Seen(commands.Cog):
         if cache == {"global": {}, "users": {}, "members": {}, "roles": {}, "channels": {}, "categories": {}, "guilds": {}, "existing_keys": []}:
             return
         self.cache = {"global": {}, "users": {}, "members": {}, "roles": {}, "channels": {}, "categories": {}, "guilds": {}, "existing_keys": self.cache["existing_keys"].copy()}
-        global_group = self.config._get_base_group(self.config.GLOBAL)
         user_group = self.config._get_base_group(self.config.USER)
         member_group = self.config._get_base_group(self.config.MEMBER)
         role_group = self.config._get_base_group(self.config.ROLE)
@@ -128,7 +127,7 @@ class Seen(commands.Cog):
         category_group = self.config._get_base_group(self.config.CHANNEL)
         guild_group = self.config._get_base_group(self.config.GUILD)
         # Global
-        async with global_group.all() as global_data:
+        async with self.config.all() as global_data:
             for type in cache["global"]:
                 for custom_id, data in cache["global"][type].items():
                     global_data[type][custom_id] = data
@@ -187,54 +186,91 @@ class Seen(commands.Cog):
         # Run Cleanup
         asyncio.create_task(self.cleanup())
 
-    async def cleanup(self):
+    async def cleanup(self, for_count: typing.Optional[bool]=False):
         users_data = await self.config.all_users()
         members_data = await self.config.all_members()
         roles_data = await self.config.all_roles()
         channels_data = await self.config.all_channels()
         categories_data = await self.config.all_channels()
         guilds_data = await self.config.all_guilds()
-        global_group = self.config._get_base_group(self.config.GLOBAL)
         existing_keys = []
+        if for_count:
+            global_count = 0
+            users_count = 0
+            members_count = 0
+            roles_count = 0
+            channels_count = 0
+            categories_count = 0
+            guilds_count = 0
         # Users
         for user in users_data:
             for custom_id in users_data[user].values():
-                if custom_id is not None and custom_id not in self.cache["existing_keys"]:
-                    existing_keys.append(custom_id)
+                if custom_id is not None:
+                    if not for_count:
+                        # if custom_id not in self.cache["existing_keys"]:
+                        existing_keys.append(custom_id)
+                    else:
+                        users_count += 1
         # Members
         for guild in members_data:
             for member in members_data[guild]:
                 for custom_id in members_data[guild][member].values():
-                    if custom_id is not None and custom_id not in self.cache["existing_keys"]:
-                        existing_keys.append(custom_id)
+                    if custom_id is not None:
+                        if not for_count:
+                            # if custom_id not in self.cache["existing_keys"]:
+                            existing_keys.append(custom_id)
+                        else:
+                            members_count += 1
         # Roles
         for role in roles_data:
             for custom_id in roles_data[role].values():
-                if custom_id is not None and custom_id not in self.cache["existing_keys"]:
-                    existing_keys.append(custom_id)
+                if custom_id is not None:
+                    if not for_count:
+                        # if custom_id not in self.cache["existing_keys"]:
+                        existing_keys.append(custom_id)
+                    else:
+                        roles_count += 1
         # Channels
         for channel in channels_data:
             for custom_id in channels_data[channel].values():
-                if custom_id is not None and custom_id not in self.cache["existing_keys"]:
-                    existing_keys.append(custom_id)
+                if custom_id is not None:
+                    if not for_count:
+                        # if custom_id not in self.cache["existing_keys"]:
+                        existing_keys.append(custom_id)
+                    else:
+                        channels_count += 1
         # Categories
         for category in categories_data:
             for custom_id in categories_data[category].values():
-                if custom_id is not None and custom_id not in self.cache["existing_keys"]:
-                    existing_keys.append(custom_id)
+                if custom_id is not None:
+                    if not for_count:
+                        # if custom_id not in self.cache["existing_keys"]:
+                        existing_keys.append(custom_id)
+                    else:
+                        categories_count += 1
         # Guilds
         for guild in guilds_data:
             for custom_id in guilds_data[guild].values():
-                if custom_id is not None and custom_id not in self.cache["existing_keys"]:
-                    existing_keys.append(custom_id)
-        self.cache["existing_keys"] += existing_keys
+                if custom_id is not None:
+                    if not for_count:
+                        # if custom_id not in self.cache["existing_keys"]:
+                        existing_keys.append(custom_id)
+                    else:
+                        guilds_count += 1
+        if not for_count:
+            self.cache["existing_keys"] = list(set(existing_keys))
         # Global
-        async with global_group.all() as global_data:
+        async with self.config.all() as global_data:
             _global_data = deepcopy(global_data)
             for type in _global_data:
                 for custom_id in _global_data[type]:
-                    if custom_id not in self.cache["existing_keys"]:  # The action is no longer used by any data.
-                        del global_data[type][custom_id]
+                    if not for_count:
+                        if custom_id not in self.cache["existing_keys"]:  # The action is no longer used by any data.
+                            del global_data[type][custom_id]
+                    else:
+                        global_count += 1
+        if for_count:
+            return global_count, users_count, members_count, roles_count, channels_count, categories_count, guilds_count
 
     async def get_data_for(self, object: typing.Union[discord.User, discord.Member, discord.Role, discord.TextChannel, discord.CategoryChannel, discord.Guild], type: typing.Optional[typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], all_data_config: typing.Optional[typing.Dict]=None, all_data_cache: typing.Optional[typing.Dict]=None):
         global_config = await self.config.all()
@@ -587,6 +623,26 @@ class Seen(commands.Cog):
         object = "users"
         await self.send_board(ctx, object=object, type=type, reverse=reverse)
         await ctx.tick()
+
+    @commands.is_owner()
+    @seen.command(hidden=True)
+    async def configstats(self, ctx: commands.Context):
+        async with ctx.typing():
+            global_count, users_count, members_count, roles_count, channels_count, categories_count, guilds_count = await self.cleanup(for_count=True)
+            stats = {
+                "Global count": global_count,
+                "Users count": users_count,
+                "Members count": members_count,
+                "Roles count": roles_count,
+                "Channels count (+ categories channels)": channels_count,
+                "Categories count (+ text channels)": categories_count,
+                "Guilds count": guilds_count
+            }
+            stats = [f"{key}: {value}" for key, value in stats.items()]
+            message = "--- Config Stats for Seen ---\n\n"
+            message += "\n".join(stats)
+            message = box(message)
+        await ctx.send(message)
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)

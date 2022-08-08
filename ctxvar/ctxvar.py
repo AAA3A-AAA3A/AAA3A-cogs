@@ -51,7 +51,7 @@ class CtxVar(commands.Cog):
         one_l = []
         for x in eval(f"dir(instance{args})"):
             try:
-                if not eval(f"hasattr(instance{args}.{x}, '__call__')") and not "__" in x:
+                if not eval(f"hasattr(instance{args}.{x}, '__call__')") and "__" not in x:
                     one_l.append(x)
             except Exception:
                 pass

@@ -1,0 +1,140 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-08-07 20:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: \editvoicechannel\editvoicechannel.py:20
+#, docstring
+msgid "A cog to edit voice channels!"
+msgstr ""
+
+#: \editvoicechannel\editvoicechannel.py:30
+msgid ""
+"I can not let you edit the voice channel {channel.mention} ({channel.id}) "
+"because I don't have the `manage_channel` permission."
+msgstr ""
+
+#: \editvoicechannel\editvoicechannel.py:33
+msgid ""
+"I can not edit the voice channel {channel.mention} ({channel.id}) because "
+"you don't have the `manage_channel` permission."
+msgstr ""
+
+#: \editvoicechannel\editvoicechannel.py:41
+#, docstring
+msgid "Commands for edit a voice channel."
+msgstr ""
+
+#: \editvoicechannel\editvoicechannel.py:46
+#, docstring
+msgid ""
+"Edit voice channel name.\n"
+"        "
+msgstr ""
+
+#: \editvoicechannel\editvoicechannel.py:53
+#: \editvoicechannel\editvoicechannel.py:74
+#: \editvoicechannel\editvoicechannel.py:87
+#: \editvoicechannel\editvoicechannel.py:105
+#: \editvoicechannel\editvoicechannel.py:126
+#: \editvoicechannel\editvoicechannel.py:139
+#: \editvoicechannel\editvoicechannel.py:152
+#: \editvoicechannel\editvoicechannel.py:169
+#: \editvoicechannel\editvoicechannel.py:190
+msgid ""
+"I attempted to do something that Discord denied me permissions for. Your "
+"command failed to successfully complete."
+msgstr ""
+
+#: \editvoicechannel\editvoicechannel.py:59
+#, docstring
+msgid ""
+"Edit voice channel bitrate.\n"
+"\n"
+"        It must be a number between 8000 and\n"
+"        Level 1: 128000\n"
+"        Level 2: 256000\n"
+"        Level 3: 384000\n"
+"        "
+msgstr ""
+
+#: \editvoicechannel\editvoicechannel.py:80
+#, docstring
+msgid ""
+"Edit voice channel nsfw.\n"
+"        "
+msgstr ""
+
+#: \editvoicechannel\editvoicechannel.py:93
+#, docstring
+msgid ""
+"Edit voice channel user limit.\n"
+"\n"
+"        It must be a number between 0 and 99.\n"
+"        "
+msgstr ""
+
+#: \editvoicechannel\editvoicechannel.py:111
+#, docstring
+msgid ""
+"Edit voice channel position.\n"
+"        \n"
+"        Warning: Only voice channels are taken into account. Channel 1 is the highest positioned voice channel.\n"
+"        Channels cannot be moved to a position that takes them out of their current category.\n"
+"        "
+msgstr ""
+
+#: \editvoicechannel\editvoicechannel.py:120
+msgid ""
+"The indicated position must be between 1 and "
+"{max_guild_voice_channels_position}."
+msgstr ""
+
+#: \editvoicechannel\editvoicechannel.py:132
+#, docstring
+msgid ""
+"Edit voice channel sync permissions.\n"
+"        "
+msgstr ""
+
+#: \editvoicechannel\editvoicechannel.py:145
+#, docstring
+msgid ""
+"Edit voice channel category.\n"
+"        "
+msgstr ""
+
+#: \editvoicechannel\editvoicechannel.py:158
+#, docstring
+msgid ""
+"Edit voice channel video quality mode.\n"
+"\n"
+"        auto = 1\n"
+"        full = 2\n"
+"        "
+msgstr ""
+
+#: \editvoicechannel\editvoicechannel.py:175
+#, docstring
+msgid ""
+"Delete voice channel.\n"
+"        "
+msgstr ""
+
+#: \editvoicechannel\editvoicechannel.py:181
+msgid ":warning: - Delete voice channel"
+msgstr ""
+
+#: \editvoicechannel\editvoicechannel.py:182
+msgid ""
+"Do you really want to delete the voice channel {channel.mention} "
+"({channel.id})?"
+msgstr ""

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-05-06 11:38+0200\n"
+"POT-Creation-Date: 2022-08-07 20:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,82 +11,118 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: editfile.py:22
+#: \editfile\editfile.py:31
 #, docstring
 msgid "A cog to get a file and replace it from its path from Discord!"
 msgstr ""
 
-#: editfile.py:33
+#: \editfile\editfile.py:42
 #, docstring
 msgid ""
 "Commands group to get a file and replace it from its path.\n"
 "        "
 msgstr ""
 
-#: editfile.py:39
+#: \editfile\editfile.py:48
 #, docstring
 msgid ""
 "Get a file on the bot's host machine from its path.\n"
+"        `#L10` or `#L10-L30` is supported.\n"
 "        "
 msgstr ""
 
-#: editfile.py:44
+#: \editfile\editfile.py:53
+#: \editfile\editfile.py:112
+msgid "Couldn't parse this input."
+msgstr ""
+
+#: \editfile\editfile.py:65
+msgid ""
+"Cowardly refusing to read a file with no size stat. (it may be empty, "
+"endless or inaccessible)."
+msgstr ""
+
+#: \editfile\editfile.py:68
+msgid "Cowardly refusing to read a file >128MB."
+msgstr ""
+
+#: \editfile\editfile.py:85
+#: \editfile\editfile.py:211
 msgid "This file cannot be found on the host machine."
 msgstr ""
 
-#: editfile.py:46 editfile.py:63
+#: \editfile\editfile.py:88
+#: \editfile\editfile.py:137
+#: \editfile\editfile.py:213
 msgid "The path you specified refers to a directory, not a file."
 msgstr ""
 
-#: editfile.py:48
-msgid "This is the file available at path `{path}`."
+#: \editfile\editfile.py:98
+#: \editfile\editfile.py:130
+msgid "There are only {len_lines} lines in this file."
 msgstr ""
 
-#: editfile.py:52
+#: \editfile\editfile.py:102
+msgid "Here are the contents of the file `{path}`."
+msgstr ""
+
+#: \editfile\editfile.py:106
 #, docstring
 msgid ""
 "Replace a file on the bot's host machine from its path.\n"
+"        `#L10` or `#L10-L30` is supported.\n"
 "        "
 msgstr ""
 
-#: editfile.py:61
+#: \editfile\editfile.py:134
 msgid "This original file cannot be found on the host machine."
 msgstr ""
 
-#: editfile.py:66
+#: \editfile\editfile.py:140
 msgid ""
 "You must send the command with an attachment that will be used to replace "
 "the original file."
 msgstr ""
 
-#: editfile.py:70
+#: \editfile\editfile.py:158
 msgid ""
 "This is the original/old file available at path `{path}`. Normally, this "
 "file has been replaced correctly."
 msgstr ""
 
-#: editfile.py:74
+#: \editfile\editfile.py:162
 #, docstring
 msgid ""
 "Get a cog directory on the bot's host machine from its name.\n"
 "        "
 msgstr ""
 
-#: editfile.py:85
+#: \editfile\editfile.py:173
 msgid "This cog cannot be found. Are you sure of its name?"
 msgstr ""
 
-#: editfile.py:91
+#: \editfile\editfile.py:180
 #, docstring
 msgid ""
 "List all files/directories of a directory from its path.\n"
 "        "
 msgstr ""
 
-#: editfile.py:94
+#: \editfile\editfile.py:184
 msgid "This directory cannot be found on the host machine."
 msgstr ""
 
-#: editfile.py:97
+#: \editfile\editfile.py:187
 msgid "The path you specified refers to a file, not a directory."
+msgstr ""
+
+#: \editfile\editfile.py:205
+#, docstring
+msgid ""
+"Delete a file.\n"
+"        "
+msgstr ""
+
+#: \editfile\editfile.py:215
+msgid "The `{path}` file has been deleted."
 msgstr ""

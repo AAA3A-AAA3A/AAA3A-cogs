@@ -16,7 +16,7 @@ from redbot.core.data_manager import cog_data_path
 from redbot.core.utils.chat_formatting import box, pagify
 
 if CogsUtils().is_dpy2:  # To remove
-    setattr(commands, 'Literal', typing.Literal)
+    setattr(commands, "Literal", typing.Literal)
 
 # Credits:
 # I made this cog to be able to update files on my bot's host machine easily and quickly, without having to update cogs from GitHub for all my tests.

@@ -1,0 +1,110 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-08-07 20:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: \seen\seen.py:29
+#, docstring
+msgid ""
+"A cog to check when a member/role/channel/category/user/guild was last "
+"active!"
+msgstr ""
+
+#: \seen\seen.py:385
+#: \seen\seen.py:387
+msgid "@{object.display_name} was seen {seen}."
+msgstr ""
+
+#: \seen\seen.py:389
+msgid "The role @&{object.name} was seen {seen}."
+msgstr ""
+
+#: \seen\seen.py:391
+msgid "The text channel #{object.name} was seen {seen}."
+msgstr ""
+
+#: \seen\seen.py:393
+msgid "The category {object.name} was seen {seen}."
+msgstr ""
+
+#: \seen\seen.py:395
+msgid "The guild {object.name} was seen {seen}."
+msgstr ""
+
+#: \seen\seen.py:489
+#, docstring
+msgid "Check when a member/role/channel/category was last active!"
+msgstr ""
+
+#: \seen\seen.py:499
+#, docstring
+msgid "Check when a member was last active!"
+msgstr ""
+
+#: \seen\seen.py:511
+#, docstring
+msgid "Check when a role was last active!"
+msgstr ""
+
+#: \seen\seen.py:523
+#, docstring
+msgid "Check when a channel was last active!"
+msgstr ""
+
+#: \seen\seen.py:535
+#, docstring
+msgid "Check when a category was last active!"
+msgstr ""
+
+#: \seen\seen.py:550
+#, docstring
+msgid "Check when a old member was last active!"
+msgstr ""
+
+#: \seen\seen.py:567
+#, docstring
+msgid "Check when a guild was last active!"
+msgstr ""
+
+#: \seen\seen.py:579
+#, docstring
+msgid "Check when a user was last active!"
+msgstr ""
+
+#: \seen\seen.py:591
+#, docstring
+msgid "Check when a old user was last active!"
+msgstr ""
+
+#: \seen\seen.py:605
+#, docstring
+msgid "View a Seen Board for members/roles/channels/categories!"
+msgstr ""
+
+#: \seen\seen.py:613
+#, docstring
+msgid "View a Seen Board for guilds!"
+msgstr ""
+
+#: \seen\seen.py:622
+#, docstring
+msgid "View a Seen Board for users!"
+msgstr ""
+
+#: \seen\seen.py:651
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr ""
+
+#: \seen\seen.py:658
+#, docstring
+msgid "Purge Config for a specified type ou all."
+msgstr ""

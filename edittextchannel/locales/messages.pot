@@ -1,0 +1,146 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-08-07 20:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: \edittextchannel\edittextchannel.py:20
+#, docstring
+msgid "A cog to edit text channels!"
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:30
+msgid ""
+"I can not let you edit the text channel {channel.mention} ({channel.id}) "
+"because I don't have the `manage_channel` permission."
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:33
+msgid ""
+"I can not edit the text channel {channel.mention} ({channel.id}) because you"
+" don't have the `manage_channel` permission."
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:41
+#, docstring
+msgid "Commands for edit a text channel."
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:46
+#, docstring
+msgid ""
+"Edit text channel name.\n"
+"        "
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:55
+#: \edittextchannel\edittextchannel.py:70
+#: \edittextchannel\edittextchannel.py:93
+#: \edittextchannel\edittextchannel.py:108
+#: \edittextchannel\edittextchannel.py:123
+#: \edittextchannel\edittextchannel.py:138
+#: \edittextchannel\edittextchannel.py:158
+#: \edittextchannel\edittextchannel.py:178
+#: \edittextchannel\edittextchannel.py:195
+#: \edittextchannel\edittextchannel.py:218
+msgid ""
+"I attempted to do something that Discord denied me permissions for. Your "
+"command failed to successfully complete."
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:61
+#, docstring
+msgid ""
+"Edit text channel topic.\n"
+"        "
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:76
+#, docstring
+msgid ""
+"Edit text channel position.\n"
+"        \n"
+"        Warning: Only text channels are taken into account. Channel 1 is the highest positioned text channel.\n"
+"        Channels cannot be moved to a position that takes them out of their current category.\n"
+"        "
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:87
+msgid ""
+"The indicated position must be between 1 and "
+"{max_guild_text_channels_position}."
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:99
+#, docstring
+msgid ""
+"Edit text channel nsfw.\n"
+"        "
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:114
+#, docstring
+msgid ""
+"Edit text channel syncpermissions with category.\n"
+"        "
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:129
+#, docstring
+msgid ""
+"Edit text channel category.\n"
+"        "
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:144
+#, docstring
+msgid ""
+"Edit text channel slowmode delay.\n"
+"\n"
+"        Specifies the slowmode rate limit for user in this channel, in seconds. A value of 0 disables slowmode. The maximum value possible is 21600.\n"
+"        "
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:164
+#, docstring
+msgid ""
+"Edit text channel type.\n"
+"\n"
+"        `text`: 0\n"
+"        `news`: 5\n"
+"        Currently, only conversion between ChannelType.text and ChannelType.news is supported. This is only available to guilds that contain NEWS in Guild.features.\n"
+"        "
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:184
+#, docstring
+msgid ""
+"Edit text channel default auto archive duration.\n"
+"        \n"
+"        The new default auto archive duration in minutes for threads created in this channel. Must be one of `60`, `1440`, `4320`, or `10080`.\n"
+"        "
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:201
+#, docstring
+msgid ""
+"Delete text channel.\n"
+"        "
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:209
+msgid ":warning: - Delete text channel"
+msgstr ""
+
+#: \edittextchannel\edittextchannel.py:210
+msgid ""
+"Do you really want to delete the text channel {channel.mention} "
+"({channel.id})?"
+msgstr ""

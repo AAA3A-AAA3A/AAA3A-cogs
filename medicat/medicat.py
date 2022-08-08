@@ -464,8 +464,8 @@ class Medicat(commands.Cog):
                 command.brief = text["title"]
                 command.description = text["title"]
                 command.cog = self
-                # setattr(command, 'format_text_for_context', self.cogsutils.format_text_to_context)
-                # setattr(command, 'format_shortdoc_for_context', self.cogsutils.allow_forformat_shortdoc_for_context)
+                # setattr(command, "format_text_for_context", self.cogsutils.format_text_to_context)
+                # setattr(command, "format_shortdoc_for_context", self.cogsutils.allow_forformat_shortdoc_for_context)
                 if self.cogsutils.is_dpy2:
                     command.params = {}
                 setattr(self, f"CC_{name}", command)

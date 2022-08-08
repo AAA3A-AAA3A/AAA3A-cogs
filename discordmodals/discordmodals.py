@@ -191,7 +191,7 @@ class DiscordModals(commands.Cog):
             else:
                 embed.set_author(name="Anonymous", icon_url="https://forum.mtasa.com/uploads/monthly_2016_10/Anonyme.png.4060431ce866962fa496657f752d5613.png")
             for value in values:
-                if not getattr(value, 'label') or not getattr(value, 'value'):
+                if not hasattr(value, "label") or not hasattr(value, "value"):
                     continue
                 try:
                     embed.add_field(name=value.label, value=value.value, inline=False)

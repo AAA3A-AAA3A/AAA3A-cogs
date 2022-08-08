@@ -78,6 +78,14 @@ Contributing
 
 If you have ideas, you can open a problem. If you have coded new features, make a PR. I'm happy to make changes to these cogs!
 
+-----------------
+Translate my cogs
+-----------------
+
+The associated crowdin project is available at this address: https://crowdin.com/project/aaa3a-cogs
+
+If you would like to see languages added to this project, please let me know.
+
 -------
 Support
 -------

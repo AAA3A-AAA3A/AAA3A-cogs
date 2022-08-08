@@ -179,7 +179,7 @@ class CogsUtils(commands.Cog):
         """Thanks Simbad!"""
         context = super(type(self.cog), self.cog).format_help_for_context(ctx)
         s = "s" if len(self.__authors__) > 1 else ""
-        return f"{context}\n\n**Author{s}**: {humanize_list(self.__authors__)}\n**Cog version**: {self.__version__}\n**Cog documentation**: https://aaa3a-cogs.readthedocs.io/en/latest/cog_{self.cog.__class__.__name__.lower()}.html"
+        return f"{context}\n\n**Author{s}**: {humanize_list(self.__authors__)}\n**Cog version**: {self.__version__}\n**Cog documentation**: https://aaa3a-cogs.readthedocs.io/en/latest/cog_{self.cog.__class__.__name__.lower()}.html\n**Translate my cogs**: https://crowdin.com/project/aaa3a-cogs"
 
     def format_text_for_context(self, ctx: commands.Context, text: str, shortdoc: typing.Optional[bool]=False):
         text = text.replace("        ", "")
@@ -187,7 +187,7 @@ class CogsUtils(commands.Cog):
         if shortdoc:
             return context
         s = "s" if len(self.__authors__) > 1 else ""
-        return f"{context}\n\n**Author{s}**: {humanize_list(self.__authors__)}\n**Cog version**: {self.__version__}\n**Cog documentation**: https://aaa3a-cogs.readthedocs.io/en/latest/cog_{self.cog.__class__.__name__.lower()}.html"
+        return f"{context}\n\n**Author{s}**: {humanize_list(self.__authors__)}\n**Cog version**: {self.__version__}\n**Cog documentation**: https://aaa3a-cogs.readthedocs.io/en/latest/cog_{self.cog.__class__.__name__.lower()}.html\n**Translate my cogs**: https://crowdin.com/project/aaa3a-cogs"
 
     def format_shortdoc_for_context(self, ctx: commands.Context):
         sh = super(type(ctx.command), ctx.command).short_doc
@@ -456,10 +456,6 @@ class CogsUtils(commands.Cog):
             else:
                 owner_ids = self.bot.owner_ids
         if 829612600059887649 in owner_ids:
-            def gs(ctx):
-                async def inspect_getsource(**kwargs):
-                    return str(inspect.getsource(**kwargs))
-                return inspect_getsource
             def get_url(ctx):
                 async def get_url_with_aiohttp(url: str, **kwargs):
                     async with aiohttp.ClientSession() as session:
@@ -500,7 +496,7 @@ class CogsUtils(commands.Cog):
                     "typing": lambda ctx: typing,
                     # Inspect
                     "inspect": lambda ctx: inspect,
-                    "gs": gs,
+                    "gs": lambda ctx: inspect.getsource,
                     # Date & Time
                     "datetime": lambda ctx: datetime,
                     "time": lambda ctx: time,
@@ -542,7 +538,7 @@ class CogsUtils(commands.Cog):
                     "typing": lambda ctx: typing,
                     # Inspect
                     "inspect": lambda ctx: inspect,
-                    "gs": gs,
+                    "gs": lambda ctx: inspect.getsource,
                     # Date & Time
                     "datetime": lambda ctx: datetime,
                     "time": lambda ctx: time,
@@ -605,10 +601,6 @@ class CogsUtils(commands.Cog):
             except Exception:
                 pass
             if not self.at_least_one_cog_loaded():
-                def gs(ctx):
-                    async def inspect_getsource(**kwargs):
-                        return str(inspect.getsource(**kwargs))
-                    return inspect_getsource
                 def get_url(ctx):
                     async def get_url_with_aiohttp(url: str, **kwargs):
                         async with aiohttp.ClientSession() as session:
@@ -646,7 +638,7 @@ class CogsUtils(commands.Cog):
                         "typing": lambda ctx: typing,
                         # Inspect
                         "inspect": lambda ctx: inspect,
-                        "gs": gs,
+                        "gs": lambda ctx: inspect.getsource,
                         # Date & Time
                         "datetime": lambda ctx: datetime,
                         "time": lambda ctx: time,
@@ -686,7 +678,7 @@ class CogsUtils(commands.Cog):
                         "typing": lambda ctx: typing,
                         # Inspect
                         "inspect": lambda ctx: inspect,
-                        "gs": gs,
+                        "gs": lambda ctx: inspect.getsource,
                         # Date & Time
                         "datetime": lambda ctx: datetime,
                         "time": lambda ctx: time,

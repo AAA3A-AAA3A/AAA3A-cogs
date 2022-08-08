@@ -70,6 +70,8 @@ class Seen(commands.Cog):
             asyncio.create_task(self.save_to_config())
 
     def upsert_cache(self, time: _time, type: typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"], member: discord.Member, guild: discord.Guild, channel: discord.TextChannel, message: discord.Message, reaction: typing.Optional[str]=None):
+        if not isinstance(channel, discord.TextChannel):
+            return
         custom_id = self.cogsutils.generate_key(number=10, existing_keys=self.cache["existing_keys"], strings_used={"ascii_lowercase": True, "ascii_uppercase": True, "digits": True, "punctuation": False, "others": []})
         data = {"seen": int(time), "action": {"message": [message.guild.id, message.channel.id, message.id], "member": member.id, "reaction": reaction}}
         if data["action"]["reaction"] is None:

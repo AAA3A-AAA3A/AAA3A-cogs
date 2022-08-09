@@ -34,7 +34,6 @@ class Ip(commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
-    @commands.guild_only()
     @commands.is_owner()
     @commands.command()
     async def ip(self, ctx: commands.Context):
@@ -45,7 +44,6 @@ class Ip(commands.Cog):
                 ip = r.headers["X-Client-IP"]  # Gives the "public IP" of the Bot client PC
         await ctx.send(_("The ip address of your bot is `{ip}`.").format(**locals()))
 
-    @commands.guild_only()
     @commands.is_owner()
     @commands.command()
     async def website(self, ctx: commands.Context):
@@ -58,6 +56,7 @@ class Ip(commands.Cog):
         port = config["port"]
         await ctx.send(_("The Administrator Panel website is http://{ip}:{port}/.").format(**locals()))
 
+    @commands.is_owner()
     @commands.command(name="setportip", aliases=["ipportset"], usage="<port>")
     async def setportip(self, ctx: commands.Context, *, port):
         """Set the port.

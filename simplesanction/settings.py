@@ -21,7 +21,7 @@ class settings(commands.Cog):
 
     @configuration.command(aliases=["colour", "col", "embedcolor", "embedcolour"], usage="<color_or_'none'>")
     async def color(self, ctx: commands.Context, *, color: typing.Optional[discord.Color]=None):
-        """Set a colour fort the embed.
+        """Set a colour for the embed.
 
         ``color``: Color.
         You can also use "None" if you wish to reset the color.
@@ -59,7 +59,7 @@ class settings(commands.Cog):
 
     @configuration.command(aliases=["picture", "thumb", "link"], usage="<link_or_'none'>")
     async def thumbnail(self, ctx: commands.Context, *, link: typing.Optional[str]=None):
-        """Set a thumbnail fort the embed.
+        """Set a thumbnail for the embed.
 
         ``link``: Thumbnail link.
         You can also use "None" if you wish to reset the thumbnail.

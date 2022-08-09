@@ -29,7 +29,7 @@ _ = Translator("AutoTraceback", __file__)
 
 @cog_i18n(_)
 class AutoTraceback(commands.Cog):
-    """A cog to display the error traceback of a command aomatically after the error!"""
+    """A cog to display the error traceback of a command automatically after the error!"""
 
     def __init__(self, bot: Red):
         self.bot: Red = bot

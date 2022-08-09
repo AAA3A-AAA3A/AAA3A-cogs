@@ -240,7 +240,7 @@ class AntiNuke(commands.Cog):
         
     @configuration.command(name="resetuser", aliases=["userreset"], usage="<int>")
     async def resetuser(self, ctx: commands.Context, user: discord.Member, give_roles: bool = False):
-        """Reset number detected for a user
+        """Reset number detected for a user.
         """
         if not ctx.author.id == ctx.guild.owner.id:
             await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
@@ -261,4 +261,4 @@ class AntiNuke(commands.Cog):
 
         await self.config.member(user).count.clear()
         await self.config.member(user).old_roles.clear()
-        await ctx.send(_("Count removed for {user.name} ({user.id}).").format(**locals()))
+        await ctx.send(_("Count reset for {user.name} ({user.id}).").format(**locals()))

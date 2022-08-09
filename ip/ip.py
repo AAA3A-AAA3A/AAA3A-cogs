@@ -47,7 +47,7 @@ class Ip(commands.Cog):
     @commands.is_owner()
     @commands.command()
     async def website(self, ctx: commands.Context):
-        """Get the ip adress website."""
+        """Get the ip address website."""
         hostname = socket.gethostname()
         async with aiohttp.ClientSession() as session:
             async with session.get("https://www.wikipedia.org", timeout=3) as r:

@@ -2198,7 +2198,10 @@ class Menu():
         self.author = ctx.author
         self.ctx = ctx
         kwargs = await self.get_page(self.current_page)
-        self.message = await channel.send(**kwargs, view=self.view if self.way in ["buttons", "dropdown"] else None)
+        if self.way in ["buttons", "dropdown"]:
+            self.message = await channel.send(**kwargs, view=self.view)
+        else:
+            self.message = await channel.send(**kwargs)
         for page in self.pages:
             if isinstance(page, typing.Dict):
                 if "file" in page:

@@ -161,6 +161,8 @@ class Calculator(commands.Cog):
             result = result.replace("{m:", "").replace("}", "")
         try:
             result = f"{float(result):,}"
+            if result == "inf":
+                result = "∞"
         except Exception:
             result = None
         if result is not None:
@@ -416,6 +418,8 @@ class Calculator(commands.Cog):
                     if expression is None or expression == _("Error!").format(**locals()) or expression == "∞":
                         expression = None
                     if interaction.data["custom_id"] == "result_button":
+                        if expression is None or expression == _("Error!").format(**locals()):
+                            expression = "|"
                         expression = f"{await self.calculate(expression, True)}"
                     elif interaction.data["custom_id"] == "exit_button":
                         await self.cogsutils.delete_message(message)
@@ -468,8 +472,6 @@ class Calculator(commands.Cog):
                         if expression == "|":
                             expression = None
                     else:
-                        if expression is None or expression == _("Error!").format(**locals()):
-                            expression = "|"
                         expression = await self.input_formatter(expression, str(interaction.data["custom_id"]))
                     view = Buttons(timeout=config["time_max"], buttons=self.buttons_dict, members=[ctx.author.id])
                     await interaction.response.edit_message(embed=await self.get_embed(ctx, expression), view=view)

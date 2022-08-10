@@ -188,6 +188,7 @@ class DiscordModals(commands.Cog):
                 embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar)
             elif not config["anonymous"]:
                 embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar)
+                embed.color = interaction.user.color
             else:
                 embed.set_author(name="Anonymous", icon_url="https://forum.mtasa.com/uploads/monthly_2016_10/Anonyme.png.4060431ce866962fa496657f752d5613.png")
             for value in values:

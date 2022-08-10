@@ -50,7 +50,7 @@ class AutoTraceback(commands.Cog):
         for page in pagify(traceback_error, shorten_by=15, page_length=1985):
             pages.append(box(page, lang="py"))
         try:
-            await Menu(pages=pages, timeout=30, delete_after_timeout=True).start(ctx)
+            await Menu(pages=pages, timeout=30, delete_after_timeout=False).start(ctx)
         except discord.HTTPException:
             return
         return

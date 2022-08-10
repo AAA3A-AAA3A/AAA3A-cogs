@@ -451,7 +451,7 @@ class settings(commands.Cog):
         embed: discord.Embed = discord.Embed()
         embed.title = config["embed_button"]["title"]
         embed.description = config["embed_button"]["description"].replace('{prefix}', f'{ctx.prefix}')
-        embed.set_image(url=config["embed_button"]["image"])
+        embed.set_image(url=config["embed_button"]["image"] or (None if self.cogsutils.is_dpy2 else discord.Embed.Empty))
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
         embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon or "" if self.cogsutils.is_dpy2 else ctx.guild.icon_url or "")

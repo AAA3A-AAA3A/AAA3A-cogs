@@ -2155,13 +2155,13 @@ class Menu():
         """
         self.ctx = ctx
         if self.way == "buttons":
-            self.view = Buttons(timeout=self.timeout, buttons=[{"emoji": str(e), "custom_id": str(n)} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+            self.view = Buttons(timeout=self.timeout, buttons=[{"emoji": str(e), "custom_id": str(n), "disabled": False} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
             await self.send_initial_message(ctx, ctx.channel)
         elif self.way == "reactions":
             await self.send_initial_message(ctx, ctx.channel)
             self.view = Reactions(bot=self.ctx.bot, message=self.message, remove_reaction=True, timeout=self.timeout, reactions=[str(e) for e in self.controls.keys()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
         elif self.way == "dropdown":
-            self.view = Dropdown(timeout=self.timeout, options=[{"emoji": str(e), "label": str(n).replace("_", " ").capitalize()} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+            self.view = Dropdown(timeout=self.timeout, options=[{"emoji": str(e), "label": str(n).replace("_", " ").capitalize()} for e, n in self.controls.items()], disabled=False, members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
             await self.send_initial_message(ctx, ctx.channel)
         try:
             while True:
@@ -2232,7 +2232,8 @@ class Menu():
         else:
             if self.way == "buttons":
                 self.view.stop()
-                await self.message.edit(view=None)
+                view = Buttons(timeout=self.timeout, buttons=[{"emoji": str(e), "custom_id": str(n), "disabled": True} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+                await self.message.edit(view=view)
             elif self.way == "reactions":
                 try:
                     await self.message.clear_reactions()
@@ -2243,7 +2244,8 @@ class Menu():
                         pass
             elif self.way == "dropdown":
                 self.view.stop()
-                await self.message.edit(view=None)
+                view = Dropdown(timeout=self.timeout, options=[{"emoji": str(e), "label": str(n).replace("_", " ").capitalize()} for e, n in self.controls.items()], disabled=True, members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+                await self.message.edit(view=view)
 
     class _SimplePageSource(menus.ListPageSource):
 

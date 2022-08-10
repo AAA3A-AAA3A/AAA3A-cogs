@@ -458,10 +458,13 @@ class Seen(commands.Cog):
             return
         if message.guild is None:
             return
-        ctx: commands.Context = await self.bot.get_context(message)
-        if ctx.valid:
-            if ctx.command.cog_name is not None and ctx.command.cog_name == "Seen":  # The commands of this cog will not be counted in order to measure its own absence for example.
-                return
+        if not message.author.bot:
+            ctx: commands.Context = await self.bot.get_context(message)
+            if ctx.valid:
+                if ctx.command.cog_name is not None and ctx.command.cog_name == "Seen":  # The commands of this cog will not be counted in order to measure its own absence for example.
+                    return
+        if message.author.id == message.guild.me.id and len(message.embeds) == 1 and ("Seen".lower() in message.embeds[0].to_dict().get("author", {}).get("name", "").lower() or "Seen".lower() in message.embeds[0].to_dict().get("title", "").lower()):
+            return
         self.upsert_cache(time=_time.time(), type="message", member=message.author, guild=message.guild, channel=message.channel, message=message, reaction=None)
 
     @commands.Cog.listener()
@@ -476,6 +479,12 @@ class Seen(commands.Cog):
     async def on_reaction_add(self, reaction: discord.Reaction, user: typing.Union[discord.Member, discord.User]):
         if reaction.message.guild is None:
             return
+        if user.id == reaction.message.guild.me.id and reaction.emoji == "✅":
+            if not reaction.message.author.bot:
+                ctx: commands.Context = await self.bot.get_context(reaction.message)
+                if ctx.valid:
+                    if ctx.command.cog_name is not None and ctx.command.cog_name == "Seen":  # The commands of this cog will not be counted in order to measure its own absence for example.
+                        return
         self.upsert_cache(time=_time.time(), type="reaction_add", member=user, guild=user.guild, channel=reaction.message.channel, message=reaction.message, reaction=str(reaction.emoji))
 
     @commands.Cog.listener()

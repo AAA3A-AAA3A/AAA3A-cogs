@@ -40,7 +40,8 @@ class Seen(commands.Cog):
             "message": {},
             "message_edit": {},
             "reaction_add": {},
-            "reaction_remove": {}
+            "reaction_remove": {},
+            "ignored_users": [345628097929936898]  # MAX
         }
         self.default_config = {
             "message": None,
@@ -186,7 +187,7 @@ class Seen(commands.Cog):
                 for type, custom_id in cache["guilds"][guild].items():
                     guilds_data[str(guild)][type] = custom_id
         # Run Cleanup
-        asyncio.create_task(self.cleanup())
+        await self.cleanup()
 
     async def cleanup(self, for_count: typing.Optional[bool]=False):
         users_data = await self.config.all_users()
@@ -268,14 +269,17 @@ class Seen(commands.Cog):
                 for custom_id in _global_data[type]:
                     if not for_count:
                         if custom_id not in self.cache["existing_keys"]:  # The action is no longer used by any data.
-                            del global_data[type][custom_id]
+                            try:
+                                del global_data[type][custom_id]
+                            except IndexError:
+                                pass
                     else:
                         global_count += 1
         if for_count:
             return global_count, users_count, members_count, roles_count, channels_count, categories_count, guilds_count
 
     async def get_data_for(self, object: typing.Union[discord.User, discord.Member, discord.Role, discord.TextChannel, discord.CategoryChannel, discord.Guild], type: typing.Optional[typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], all_data_config: typing.Optional[typing.Dict]=None, all_data_cache: typing.Optional[typing.Dict]=None):
-        global_config = await self.config.all()
+        global_data = await self.config.all()
         if not all([all_data_config is not None, all_data_cache is not None]):
             if isinstance(object, discord.User):
                 all_data_config = await self.config.user(object).all()
@@ -301,15 +305,15 @@ class Seen(commands.Cog):
             custom_ids = [custom_id for custom_id in [all_data_config.get(type, None), all_data_cache.get(type, None)] if custom_id is not None]
             if len(custom_ids) == 0:
                 return
-            custom_id = sorted(custom_ids, key=lambda x: global_config[type][x], reverse=True)[0]
-            data = global_config[type][custom_id]
+            custom_id = sorted(custom_ids, key=lambda x: global_data[type][x], reverse=True)[0]
+            data = global_data[type][custom_id]
             if data["seen"] is None or data["action"] is None:
                 return None
         else:
             all_data_config = {x: all_data_config[x] for x in ["message", "message_edit", "reaction_add", "reaction_remove"] if all_data_config[x] is not None}
             all_data_cache = {x: all_data_cache.get(x, None) for x in ["message", "message_edit", "reaction_add", "reaction_remove"] if all_data_cache.get(x, None) is not None}
-            all_data_config = [{"type": x, "seen": global_config[x].get(all_data_config[x], {"seen": None, "action": None})["seen"], "action": global_config[x].get(all_data_config[x], {"seen": None, "action": None})["action"]} for x in all_data_config if global_config[x].get(all_data_config[x], {"seen": None, "action": None})["seen"] is not None and global_config[x].get(all_data_config[x], {"seen": None, "action": None})["action"] is not None]
-            all_data_cache = [{"type": x, "seen": global_config[x].get(all_data_cache[x], {"seen": None, "action": None})["seen"], "action": global_config[x].get(all_data_cache[x], {"seen": None, "action": None})["action"]} for x in all_data_cache if global_config[x].get(all_data_cache[x], {"seen": None, "action": None})["seen"] is not None and global_config[x].get(all_data_cache[x], {"seen": None, "action": None})["action"] is not None]
+            all_data_config = [{"type": x, "seen": global_data[x].get(all_data_config[x], {"seen": None, "action": None})["seen"], "action": global_data[x].get(all_data_config[x], {"seen": None, "action": None})["action"]} for x in all_data_config if global_data[x].get(all_data_config[x], {"seen": None, "action": None})["seen"] is not None and global_data[x].get(all_data_config[x], {"seen": None, "action": None})["action"] is not None]
+            all_data_cache = [{"type": x, "seen": global_data[x].get(all_data_cache[x], {"seen": None, "action": None})["seen"], "action": global_data[x].get(all_data_cache[x], {"seen": None, "action": None})["action"]} for x in all_data_cache if global_data[x].get(all_data_cache[x], {"seen": None, "action": None})["seen"] is not None and global_data[x].get(all_data_cache[x], {"seen": None, "action": None})["action"] is not None]
             if len(all_data_config) == 0 and len(all_data_cache):
                 return None
             all_data = all_data_config + all_data_cache
@@ -373,6 +377,14 @@ class Seen(commands.Cog):
 
     async def send_seen(self, ctx: commands.Context, object: typing.Union[discord.User, discord.Member, discord.Role, discord.TextChannel, discord.CategoryChannel, discord.Guild], type: typing.Optional[typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], all_data_config: typing.Optional[typing.Dict]=None, all_data_cache: typing.Optional[typing.Dict]=None):
         async with ctx.typing():
+            if isinstance(object, (discord.User, discord.Member)):
+                ignored_users = await self.config.ignored_users()
+                if object.id in ignored_users:
+                    embed = discord.Embed()
+                    embed.color = discord.Color.red()
+                    embed.title = f"This {object.__class__.__name__.lower()} is in the ignored users list (`{ctx.prefix}seen ignoreme`)."
+                    await ctx.send(embed=embed)
+                    return
             data = await self.get_data_for(type=type, object=object, all_data_config=all_data_config, all_data_cache=all_data_cache)
             if data is None:
                 embed = discord.Embed()
@@ -465,6 +477,9 @@ class Seen(commands.Cog):
                     return
         if message.author.id == message.guild.me.id and len(message.embeds) == 1 and ("Seen".lower() in message.embeds[0].to_dict().get("author", {}).get("name", "").lower() or "Seen".lower() in message.embeds[0].to_dict().get("title", "").lower()):
             return
+        ignored_users = await self.config.ignored_users()
+        if message.author.id in ignored_users:
+            return
         self.upsert_cache(time=_time.time(), type="message", member=message.author, guild=message.guild, channel=message.channel, message=message, reaction=None)
 
     @commands.Cog.listener()
@@ -472,6 +487,9 @@ class Seen(commands.Cog):
         if isinstance(after, discord.WebhookMessage):
             return
         if after.guild is None:
+            return
+        ignored_users = await self.config.ignored_users()
+        if after.author.id in ignored_users:
             return
         self.upsert_cache(time=_time.time(), type="message_edit", member=after.author, guild=after.guild, channel=after.channel, message=after, reaction=None)
 
@@ -485,11 +503,17 @@ class Seen(commands.Cog):
                 if ctx.valid:
                     if ctx.command.cog_name is not None and ctx.command.cog_name == "Seen":  # The commands of this cog will not be counted in order to measure its own absence for example.
                         return
+        ignored_users = await self.config.ignored_users()
+        if user.id in ignored_users:
+            return
         self.upsert_cache(time=_time.time(), type="reaction_add", member=user, guild=user.guild, channel=reaction.message.channel, message=reaction.message, reaction=str(reaction.emoji))
 
     @commands.Cog.listener()
     async def on_reaction_remove(self, reaction: discord.Reaction, user: typing.Union[discord.Member, discord.User]):
         if reaction.message.guild is None:
+            return
+        ignored_users = await self.config.ignored_users()
+        if user.id in ignored_users:
             return
         self.upsert_cache(time=_time.time(), type="reaction_remove", member=user, guild=user.guild, channel=reaction.message.channel, message=reaction.message, reaction=str(reaction.emoji))
 
@@ -554,9 +578,10 @@ class Seen(commands.Cog):
         await self.send_seen(ctx, object=category, type=type, show_details=show_details)
         await ctx.tick()
 
+    @commands.is_owner()
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @seen.command()
+    @seen.command(hidden=True)
     async def hackmember(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], user: typing.Union[discord.User, int]):
         """Check when a old member was last active!"""
         if not isinstance(user, discord.User):
@@ -585,7 +610,7 @@ class Seen(commands.Cog):
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
-    @seen.command()
+    @seen.command(hidden=True)
     async def user(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], *, user: typing.Optional[discord.User]=None):
         """Check when a user was last active!"""
         if user is None:
@@ -597,7 +622,7 @@ class Seen(commands.Cog):
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
-    @seen.command()
+    @seen.command(hidden=True)
     async def hackuser(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], user_id: int):
         """Check when a old user was last active!"""
         if show_details is None:
@@ -628,7 +653,7 @@ class Seen(commands.Cog):
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
-    @board.command(name="users")
+    @board.command(name="users", hidden=True)
     async def board_users(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], reverse: typing.Optional[bool]=False):
         """View a Seen Board for users!"""
         object = "users"
@@ -654,6 +679,59 @@ class Seen(commands.Cog):
             message += "\n".join(stats)
             message = box(message)
         await ctx.send(message)
+
+    @seen.command()
+    async def ignoreme(self, ctx: commands.Context):
+        user = ctx.author
+        ignored_users = await self.config.ignored_users()
+        if user.id not in ignored_users:
+            ignored_users.append(user.id)
+            global_data = await self.config.all()
+            member_group = self.config._get_base_group(self.config.MEMBER)
+            role_group = self.config._get_base_group(self.config.ROLE)
+            channel_group = self.config._get_base_group(self.config.CHANNEL)
+            category_group = self.config._get_base_group(self.config.CHANNEL)
+            guild_group = self.config._get_base_group(self.config.GUILD)
+            # Users
+            await self.config.user_from_id(user.id).clear()
+            # Members
+            async with member_group.all() as members_data:
+                _members_data = deepcopy(members_data)
+                for guild in _members_data:
+                    if str(user.id) in _members_data[guild]:
+                        del members_data[guild][str(user.id)]
+            # Roles
+            async with role_group.all() as roles_data:
+                _roles_data = deepcopy(roles_data)
+                for role in _roles_data:
+                    for type, custom_id in _roles_data[role].items():
+                        if global_data[type].get(custom_id, {"action": {"member": None}})["action"]["member"] == user.id:
+                            roles_data[role][type] = None
+            # Channels
+            async with channel_group.all() as channels_data:
+                _channels_data = deepcopy(channels_data)
+                for channel in _channels_data:
+                    for type, custom_id in _channels_data[channel].items():
+                        if global_data[type].get(custom_id, {"action": {"member": None}})["action"]["member"] == user.id:
+                            channels_data[channel][type] = None
+            # Categories
+            async with category_group.all() as categories_data:
+                _categories_data = deepcopy(categories_data)
+                for category in _categories_data:
+                    for type, custom_id in _categories_data[category].items():
+                        if global_data[type].get(custom_id, {"action": {"member": None}})["action"]["member"] == user.id:
+                            categories_data[category][type] = None
+            # Guilds
+            async with guild_group.all() as guilds_data:
+                _guilds_data = deepcopy(guilds_data)
+                for guild in guilds_data:
+                    for type, custom_id in _guilds_data[guild].items():
+                        if global_data[type].get(custom_id, {"action": {"member": None}})["action"]["member"] == user.id:
+                            guilds_data[guild][type] = None
+        else:
+            ignored_users.remove(user.id)
+        await self.config.ignored_users.set(ignored_users)
+        await ctx.tick()
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)

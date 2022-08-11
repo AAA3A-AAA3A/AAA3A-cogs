@@ -2122,12 +2122,14 @@ class Reactions():
 class Menu():
     """Create Menus easily."""
 
-    def __init__(self, pages: typing.List[typing.Union[typing.Dict[str, typing.Union[str, typing.Any]], discord.Embed, str]], timeout: typing.Optional[int]=180, delete_after_timeout: typing.Optional[bool]=False, way: typing.Optional[typing.Literal["buttons", "reactions", "dropdown"]]="buttons", controls: typing.Optional[typing.Dict]={"⏮️": "left_page", "◀️": "prev_page", "❌": "close_page", "▶️": "next_page", "⏭️": "right_page"}, page_start: typing.Optional[int]=0, check_owner: typing.Optional[bool]=True, members_authored: typing.Optional[typing.Iterable[discord.Member]]=[]):
+    def __init__(self, pages: typing.List[typing.Union[typing.Dict[str, typing.Union[str, typing.Any]], discord.Embed, str]], timeout: typing.Optional[int]=180, delete_after_timeout: typing.Optional[bool]=False, way: typing.Optional[typing.Literal["buttons", "reactions", "dropdown"]]="buttons", controls: typing.Optional[typing.Dict]=None, page_start: typing.Optional[int]=0, check_owner: typing.Optional[bool]=True, members_authored: typing.Optional[typing.Iterable[discord.Member]]=[]):
         self.ctx: commands.Context = None
         self.pages: typing.List = pages
         self.timeout: int = timeout
         self.delete_after_timeout: bool = delete_after_timeout
         self.way: typing.Literal["buttons", "reactions", "dropdown"] = way
+        if controls is None:
+            controls = {"⏮️": "left_page", "◀️": "prev_page", "❌": "close_page", "▶️": "next_page", "⏭️": "right_page", "🔻": "send_all", "📁": "send_as_file"}
         self.controls: typing.Dict = controls.copy()
         self.check_owner: bool = check_owner
         self.members_authored: typing.List = members_authored
@@ -2141,6 +2143,15 @@ class Menu():
             for emoji, name in controls.items():
                 if name in ["left_page", "prev_page", "next_page", "right_page"]:
                     del self.controls[emoji]
+        if len(pages) > 3:
+            for emoji, name in controls.items():
+                if name in ["send_all"]:
+                    del self.controls[emoji]
+        if not all([isinstance(page, str) for page in self.pages]):
+            for emoji, name in controls.items():
+                if name in ["save_as_file"]:
+                    del self.controls[emoji]
+
         self.message: discord.Message = None
         self.view: typing.Union[Buttons, Dropdown] = None
         self.current_page: int = page_start
@@ -2187,6 +2198,19 @@ class Menu():
                     self.current_page += 1
                 elif response == "right_page":
                     self.current_page = self.source.get_max_pages() - 1
+                elif response == "send_all":
+                    for x in range(0, self.source.get_max_pages()):
+                        kwargs = await self.get_page(x)
+                        await ctx.send(**kwargs)
+                elif response == "send_as_file":
+                    def cleanup_code(content):
+                        """Automatically removes code blocks from the code."""
+                        # remove ˋˋˋpy\n````
+                        if content.startswith("```") and content.endswith("```"):
+                            return re.compile(r"^((```py(thon)?)(?=\s)|(```))").sub("", content)[:-3]
+                    all_text = [cleanup_code(page) for page in self.pages]
+                    all_text = "\n".join(all_text)
+                    await ctx.send(file=text_to_file(all_text, filename=f"Menu_{self.message.channel.id}-{self.message.id}.txt"))
                 kwargs = await self.get_page(self.current_page)
                 if self.way == "buttons" or self.way == "dropdown":
                     try:

@@ -906,7 +906,10 @@ class Ticket:
 
     async def export(ticket):
         if ticket.channel:
-            transcript = await chat_exporter.export(channel=ticket.channel, limit=None, tz_info="UTC", guild=ticket.guild, bot=ticket.bot)
+            if ticket.bot.get_cog("TicketTool").cogsutils.is_dpy2:
+                transcript = await chat_exporter.export(channel=ticket.channel, limit=None, tz_info="UTC", guild=ticket.guild, bot=ticket.bot)
+            else:
+                transcript = await chat_exporter.export(channel=ticket.channel, guild=ticket.guild, limit=None)
             if transcript is not None:
                 transcript_file = discord.File(io.BytesIO(transcript.encode()),
                                   filename=f"transcript-ticket-{ticket.id}.html")

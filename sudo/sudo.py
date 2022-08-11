@@ -72,13 +72,11 @@ class Sudo(commands.Cog):
     async def sudo(self, ctx: commands.Context, *, command: str):
         """Rise as the bot owner for the specified command only.
         """
-        msg = ctx.message
-        msg.content = f"{ctx.prefix}{command}"
         ctx.bot.owner_ids.add(ctx.author.id)
-        new_ctx = await ctx.bot.get_context(msg)
-        await ctx.bot.invoke(new_ctx)
+        await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, message=ctx.message)
         if ctx.bot.get_cog("Sudo") is not None:
             ctx.bot.owner_ids.remove(ctx.author.id)
+        await ctx.tick()
 
     @decorator(all_owner_ids=True, bot_owner_ids=False)
     @commands.command()

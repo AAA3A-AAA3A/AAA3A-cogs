@@ -198,10 +198,11 @@ class CogsUtils(commands.Cog):
             return super(type(ctx.command), ctx.command).format_text_for_context(ctx, sh) if sh else sh
 
     async def red_delete_data_for_user(self, **kwargs):
-        """Nothing to delete"""
+        """Nothing to delete."""
         return
 
     async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[typing.Any, typing.Any]:
+        """Nothing to get."""
         return {}
 
     async def cog_unload_dpy2(self):
@@ -576,6 +577,25 @@ class CogsUtils(commands.Cog):
             Dev = self.bot.get_cog("Dev")
             if Dev is not None:
                 setattr(Dev, 'sanitize_output', self.sanitize_output)
+            RTFS = self.bot.get_cog("RTFS")
+            if RTFS is not None:
+                try:
+                    from rtfs import rtfs
+                    class SourceSource(rtfs.SourceSource):
+                        def format_page(self, menu, page):
+                            try:
+                                if page is None:
+                                    if self.header.startswith("<"):
+                                        return CogsUtils().replace_var_paths(self.header)
+                                    return {}
+                                return CogsUtils().replace_var_paths(f"{self.header}\n{box(page, lang='py')}\nPage {menu.current_page + 1} / {self.get_max_pages()}")
+                            except Exception as e:
+                                # since d.py menus likes to suppress all errors
+                                rtfs.LOG.debug("Exception in SourceSource", exc_info=e)
+                                raise
+                    setattr(rtfs, "SourceSource", SourceSource)
+                except ImportError:
+                    pass
             self.bot.remove_listener(self.on_cog_add)
             self.bot.add_listener(self.on_cog_add)
             return to_add
@@ -710,11 +730,29 @@ class CogsUtils(commands.Cog):
 
     @commands.Cog.listener()
     async def on_cog_add(self, cog: commands.Cog):
-        if not cog.qualified_name == "Dev":
+        if cog.qualified_name == "Dev":
+            if not hasattr(cog, "sanitize_output"):
+                return
+            setattr(cog, "sanitize_output", self.sanitize_output)
             return
-        if not hasattr(cog, "sanitize_output"):
-            return
-        setattr(cog, "sanitize_output", self.sanitize_output)
+        if cog.qualified_name == "RTFS":
+            try:
+                from rtfs import rtfs
+                class SourceSource(rtfs.SourceSource):
+                    def format_page(self, menu, page):
+                        try:
+                            if page is None:
+                                if self.header.startswith("<"):
+                                    return CogsUtils().replace_var_paths(self.header)
+                                return {}
+                            return CogsUtils().replace_var_paths(f"{self.header}\n{box(page, lang='py')}\nPage {menu.current_page + 1} / {self.get_max_pages()}")
+                        except Exception as e:
+                            # since d.py menus likes to suppress all errors
+                            rtfs.LOG.debug("Exception in SourceSource", exc_info=e)
+                            raise
+                setattr(rtfs, "SourceSource", SourceSource)
+            except ImportError:
+                pass
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):

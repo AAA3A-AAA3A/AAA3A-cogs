@@ -1,0 +1,31 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-08-07 20:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: \ctxvar\ctxvar.py:21
+#, docstring
+msgid "A cog to list and display the contents of all sub-functions of `ctx`!"
+msgstr ""
+
+#: \ctxvar\ctxvar.py:39
+msgid "The argument you specified is not a subclass of the instance."
+msgstr ""
+
+#: \ctxvar\ctxvar.py:48
+msgid ""
+"Here are all the variables and their associated values that can be used in "
+"this class."
+msgstr ""
+
+#: \ctxvar\ctxvar.py:83
+msgid "Page {page}/{l}"
+msgstr ""

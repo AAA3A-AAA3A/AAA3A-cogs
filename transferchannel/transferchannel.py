@@ -1,14 +1,16 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.tunnel import Tunnel
-
 from .helpers import embed_from_msg
 
+from redbot.core.utils.tunnel import Tunnel
+
 if CogsUtils().is_dpy2:  # To remove
-    setattr(commands, 'Literal', typing.Literal)
+    setattr(commands, "Literal", typing.Literal)
 
 # Credits:
 # Thanks to TrustyJAID's Backup for starting the command to list the latest source channel messages! (https://github.com/TrustyJAID/Trusty-cogs/tree/master/backup)
@@ -20,9 +22,9 @@ if CogsUtils().is_dpy2:  # To remove
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("TransferChannel", __file__)
 
+@cog_i18n(_)
 class TextChannelGuildConverter(discord.ext.commands.TextChannelConverter):
     """Similar to d.py's TextChannelConverter but only returns if we have already
     passed our hierarchy checks and find in all guilds.
@@ -60,8 +62,8 @@ class TextChannelGuildConverter(discord.ext.commands.TextChannelConverter):
 class TransferChannel(commands.Cog):
     """A cog to transfer all messages channel in a other channel!"""
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Red):
+        self.bot: Red = bot
         self.cache = {}
 
         self.cogsutils = CogsUtils(cog=self)
@@ -126,4 +128,4 @@ class TransferChannel(commands.Cog):
                     else:
                         await ctx.send(msg1)
                         await ctx.send(message.content, files=files)
-        await ctx.send(_("{count} messages transfered from {source.mention} to {destination.mention}").format(**locals()))
+        await ctx.send(_("{count} messages transfered from {source.mention} to {destination.mention}.").format(**locals()))

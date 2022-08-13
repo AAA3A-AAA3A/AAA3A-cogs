@@ -1,0 +1,839 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-08-07 20:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: \tickettool\settings.py:26
+#, docstring
+msgid "Configure TicketTool for your server."
+msgstr ""
+
+#: \tickettool\settings.py:31
+#, docstring
+msgid ""
+"Enable or disable Ticket System\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:38
+msgid ""
+"You cannot enable the ticket system on this server if you have not configured the following options:\n"
+"- The category of open tickets : `{ctx.prefix}setticket categoryopen <category>`\n"
+"- The category of close tickets : `{ctx.prefix}setticket categoryclose <category>`\n"
+"- The admin role has full access to the tickets : `{ctx.prefix}setticket adminrole <role>`\n"
+"All other parameters are optional or have default values that will be used."
+msgstr ""
+
+#: \tickettool\settings.py:47
+msgid "Ticket System is already set on {state}."
+msgstr ""
+
+#: \tickettool\settings.py:51
+msgid "Ticket System state registered: {state}."
+msgstr ""
+
+#: \tickettool\settings.py:55
+#, docstring
+msgid ""
+"Set a channel where events are registered.\n"
+"\n"
+"        ``channel``: Text channel.\n"
+"        You can also use \"None\" if you wish to remove the logging channel.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:62
+msgid "Logging channel removed."
+msgstr ""
+
+#: \tickettool\settings.py:67
+msgid ""
+"The bot does not have at least one of the following permissions in this "
+"channel: `embed_links`, `read_messages`, `read_message_history`, "
+"`send_messages`, `attach_files`."
+msgstr ""
+
+#: \tickettool\settings.py:71
+msgid "Logging channel registered: {channel.mention}."
+msgstr ""
+
+#: \tickettool\settings.py:75
+#, docstring
+msgid ""
+"Set a category where open tickets are created.\n"
+"\n"
+"        ``category``: Category.\n"
+"        You can also use \"None\" if you wish to remove the open category.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:82
+msgid "Category Open removed."
+msgstr ""
+
+#: \tickettool\settings.py:86
+msgid "Category Open registered: {category.name}."
+msgstr ""
+
+#: \tickettool\settings.py:90
+#, docstring
+msgid ""
+"Set a category where close tickets are created.\n"
+"\n"
+"        ``category``: Category.\n"
+"        You can also use \"None\" if you wish to remove the close category.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:97
+msgid "Category Close removed."
+msgstr ""
+
+#: \tickettool\settings.py:101
+msgid "Category Close registered: {category.name}."
+msgstr ""
+
+#: \tickettool\settings.py:105
+#, docstring
+msgid ""
+"Set a role for administrators of the ticket system.\n"
+"\n"
+"        ``role``: Role.\n"
+"        You can also use \"None\" if you wish to remove the admin role.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:112
+msgid "Admin Role removed."
+msgstr ""
+
+#: \tickettool\settings.py:116
+msgid "Admin Role registered: {role.name}."
+msgstr ""
+
+#: \tickettool\settings.py:120
+#, docstring
+msgid ""
+"Set a role for helpers of the ticket system.\n"
+"\n"
+"        ``role``: Role.\n"
+"        You can also use \"None\" if you wish to remove the support role.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:127
+msgid "Support Role removed."
+msgstr ""
+
+#: \tickettool\settings.py:131
+msgid "Support Role registered: {role.name}."
+msgstr ""
+
+#: \tickettool\settings.py:135
+#, docstring
+msgid ""
+"Set a role for creaters of a ticket.\n"
+"\n"
+"        ``role``: Role.\n"
+"        You can also use \"None\" if you wish to remove the ticket role.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:142
+msgid "Ticket Role removed."
+msgstr ""
+
+#: \tickettool\settings.py:146
+msgid "Ticket Role registered: {role.name}."
+msgstr ""
+
+#: \tickettool\settings.py:150
+#, docstring
+msgid ""
+"Set a role for viewers of tickets.\n"
+"\n"
+"        ``role``: Role.\n"
+"        You can also use \"None\" if you wish to remove the view role.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:157
+msgid "View Role removed."
+msgstr ""
+
+#: \tickettool\settings.py:161
+msgid "View Role registered: {role.name}."
+msgstr ""
+
+#: \tickettool\settings.py:165
+#, docstring
+msgid ""
+"Set a role for pings on ticket creation.\n"
+"\n"
+"        ``role``: Role.\n"
+"        You can also use \"None\" if you wish to remove the ping role.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:172
+msgid "Ping Role removed."
+msgstr ""
+
+#: \tickettool\settings.py:176
+msgid "Ping Role registered: {role.name}."
+msgstr ""
+
+#: \tickettool\settings.py:180
+#, docstring
+msgid ""
+"Max Number of tickets for a member.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:186
+msgid "Max Number of tickets is already set on {nb_max}."
+msgstr ""
+
+#: \tickettool\settings.py:190
+msgid "Max Number of tickets registered: {nb_max}."
+msgstr ""
+
+#: \tickettool\settings.py:194
+#, docstring
+msgid ""
+"Enable or disable Modlog.\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:202
+msgid "Modlog is already set on {state}."
+msgstr ""
+
+#: \tickettool\settings.py:206
+msgid "Modlog state registered: {state}."
+msgstr ""
+
+#: \tickettool\settings.py:210
+#, docstring
+msgid ""
+"Enable or disable Close on Leave.\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:218
+msgid "Close on Leave is already set on {state}."
+msgstr ""
+
+#: \tickettool\settings.py:222
+msgid "Close on Leave state registered: {state}."
+msgstr ""
+
+#: \tickettool\settings.py:226
+#, docstring
+msgid ""
+"Enable or disable Create on React.\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:234
+msgid "Create on React is already set on {state}."
+msgstr ""
+
+#: \tickettool\settings.py:238
+msgid "Create on React state registered: {state}."
+msgstr ""
+
+#: \tickettool\settings.py:242
+#, docstring
+msgid ""
+"Enable or disable User Can Close.\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:250
+msgid "User Can Close is already set on {state}."
+msgstr ""
+
+#: \tickettool\settings.py:254
+msgid "User Can Close state registered: {state}."
+msgstr ""
+
+#: \tickettool\settings.py:258
+#, docstring
+msgid ""
+"Set the Dinamic Ticket Channel Name.\n"
+"\n"
+"        `{ticket.id}`, `{ticket.created_by.id}`, `{ticket.guild.id}`, {ticket.channel.mention}...\n"
+"        If, when creating the ticket, an error occurs with this name, another name will be used.        \n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:273
+#, docstring
+msgid ""
+"Set the Custom Message.\n"
+"\n"
+"        `{ticket.id}`, `{ticket.created_by.display_name}`, `{ticket.guild.name}`...     \n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:287
+#, docstring
+msgid ""
+"Set a colour for the embeds.\n"
+"\n"
+"        ``color``: Color.\n"
+"        You can also use \"None\" if you wish to reset the color.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:300
+#: \tickettool\settings.py:313
+#: \tickettool\settings.py:335
+#: \tickettool\settings.py:350
+msgid "Configure the embed"
+msgstr ""
+
+#: \tickettool\settings.py:301
+msgid "Reset color:"
+msgstr ""
+
+#: \tickettool\settings.py:303
+#: \tickettool\settings.py:318
+msgid "Color:"
+msgstr ""
+
+#: \tickettool\settings.py:314
+msgid "Set color:"
+msgstr ""
+
+#: \tickettool\settings.py:324
+#, docstring
+msgid ""
+"Set a thumbnail for the embeds.\n"
+"\n"
+"        ``link``: Thumbnail link.\n"
+"        You can also use \"None\" if you wish to reset the thumbnail.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:336
+msgid "Reset thumbnail:"
+msgstr ""
+
+#: \tickettool\settings.py:340
+#: \tickettool\settings.py:355
+msgid "Thumbnail:"
+msgstr ""
+
+#: \tickettool\settings.py:351
+msgid "Set thumbnail:"
+msgstr ""
+
+#: \tickettool\settings.py:361
+#, docstring
+msgid ""
+"Make the author of each action concerning a ticket appear in the server logs.\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:369
+msgid "Audit Logs is already set on {state}."
+msgstr ""
+
+#: \tickettool\settings.py:373
+msgid "Audit Logs state registered: {state}."
+msgstr ""
+
+#: \tickettool\settings.py:377
+#, docstring
+msgid ""
+"Enable or disable Close Confirmation.\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:385
+msgid "Close Confirmation is already set on {state}."
+msgstr ""
+
+#: \tickettool\settings.py:389
+msgid "Close Confirmation state registered: {state}."
+msgstr ""
+
+#: \tickettool\settings.py:393
+#, docstring
+msgid ""
+"Set the settings for the button embed.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:419
+#, docstring
+msgid ""
+"Enable or disable Rename Channel Dropdown.\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:427
+msgid "Rename Channel Dropdown is already set on {state}."
+msgstr ""
+
+#: \tickettool\settings.py:431
+msgid "Rename Channel Dropdown state registered: {state}."
+msgstr ""
+
+#: \tickettool\settings.py:435
+#, docstring
+msgid ""
+"Send a message with a button to open a ticket or dropdown with possible reasons.\n"
+"        \n"
+"        Example:\n"
+"        `[p]setticket message #general \"🐛|Report a bug|If you find a bug, report it here.|bug\" \"⚠️|Report a user|If you find a malicious user, report it here.|user\"`\n"
+"        `[p]setticket 1234567890-0987654321`\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:446
+msgid "I have to be the author of the message for the interaction to work."
+msgstr ""
+
+#: \tickettool\settings.py:460
+#: \tickettool\settings.py:479
+#: \tickettool\tickettool.py:91
+msgid "Create ticket"
+msgstr ""
+
+#: \tickettool\settings.py:519
+#, docstring
+msgid ""
+"Purge all existing tickets in the config. Does not delete any channels. All commands associated with the tickets will no longer work.\n"
+"        "
+msgstr ""
+
+#: \tickettool\settings.py:524
+msgid "Do you really want to purge all the tickets in the config?"
+msgstr ""
+
+#: \tickettool\settings.py:525
+msgid ""
+"Does not delete any channels. All commands associated with the tickets will "
+"no longer work."
+msgstr ""
+
+#: \tickettool\settings.py:540
+msgid "{count} tickets have been removed from the config."
+msgstr ""
+
+#: \tickettool\tickettool.py:33
+#, docstring
+msgid "A cog to manage a ticket system!"
+msgstr ""
+
+#: \tickettool\tickettool.py:70
+msgid ""
+"To get help on this server or to make an order for example, you can create a ticket.\n"
+"Just use the command `{prefix}ticket create` or click on the button below.\n"
+"You can then use the `{prefix}ticket` subcommand to manage your ticket."
+msgstr ""
+
+#: \tickettool\tickettool.py:92
+#: \tickettool\tickettool.py:859
+#: \tickettool\tickettool.py:864
+#: \tickettool\tickettool.py:940
+#: \tickettool\tickettool.py:947
+#: \tickettool\tickettool.py:989
+#: \tickettool\tickettool.py:996
+#: \tickettool\tickettool.py:1092
+#: \tickettool\tickettool.py:1099
+#: \tickettool\tickettool.py:1145
+#: \tickettool\tickettool.py:1152
+msgid "Close"
+msgstr ""
+
+#: \tickettool\tickettool.py:92
+#: \tickettool\tickettool.py:859
+#: \tickettool\tickettool.py:871
+#: \tickettool\tickettool.py:940
+#: \tickettool\tickettool.py:954
+#: \tickettool\tickettool.py:989
+#: \tickettool\tickettool.py:1003
+#: \tickettool\tickettool.py:1092
+#: \tickettool\tickettool.py:1106
+#: \tickettool\tickettool.py:1145
+#: \tickettool\tickettool.py:1159
+msgid "Claim"
+msgstr ""
+
+#: \tickettool\tickettool.py:160
+msgid "Action taken for the ticket system."
+msgstr ""
+
+#: \tickettool\tickettool.py:181
+msgid "Ticket ID:"
+msgstr ""
+
+#: \tickettool\tickettool.py:185
+msgid "Owned by:"
+msgstr ""
+
+#: \tickettool\tickettool.py:189
+msgid "Channel:"
+msgstr ""
+
+#: \tickettool\tickettool.py:195
+msgid "Closed by:"
+msgstr ""
+
+#: \tickettool\tickettool.py:200
+msgid "Deleted by:"
+msgstr ""
+
+#: \tickettool\tickettool.py:205
+msgid "Closed at:"
+msgstr ""
+
+#: \tickettool\tickettool.py:209
+#: \tickettool\tickettool.py:225
+msgid "Reason:"
+msgstr ""
+
+#: \tickettool\tickettool.py:217
+msgid "Ticket {ticket.id} - Action taken"
+msgstr ""
+
+#: \tickettool\tickettool.py:322
+#, docstring
+msgid "Commands for using the ticket system."
+msgstr ""
+
+#: \tickettool\tickettool.py:326
+#, docstring
+msgid ""
+"Create a ticket.\n"
+"        "
+msgstr ""
+
+#: \tickettool\tickettool.py:333
+msgid ""
+"The ticket system is not activated on this server. Please ask an "
+"administrator of this server to use the `{ctx.prefix}ticketset` subcommands "
+"to configure it."
+msgstr ""
+
+#: \tickettool\tickettool.py:339
+msgid ""
+"The bot does not have `manage_channels` permission on the 'open' and 'close'"
+" categories to allow the ticket system to function properly. Please notify "
+"an administrator of this server."
+msgstr ""
+
+#: \tickettool\tickettool.py:349
+#, docstring
+msgid ""
+"Export all the messages of an existing ticket in html format.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        "
+msgstr ""
+
+#: \tickettool\tickettool.py:357
+msgid ""
+"Here is the html file of the transcript of all the messages in this ticket.\n"
+"Please note: all attachments and user avatars are saved with the Discord link in this file."
+msgstr ""
+
+#: \tickettool\tickettool.py:363
+#, docstring
+msgid ""
+"Open an existing ticket.\n"
+"        "
+msgstr ""
+
+#: \tickettool\tickettool.py:373
+#, docstring
+msgid ""
+"Close an existing ticket.\n"
+"        "
+msgstr ""
+
+#: \tickettool\tickettool.py:382
+msgid "Do you really want to close the ticket {ticket.id}?"
+msgstr ""
+
+#: \tickettool\tickettool.py:395
+#, docstring
+msgid ""
+"Rename an existing ticket.\n"
+"        "
+msgstr ""
+
+#: \tickettool\tickettool.py:405
+#, docstring
+msgid ""
+"Delete an existing ticket.\n"
+"        If a log channel is defined, an html file containing all the messages of this ticket will be generated.\n"
+"        (Attachments are not supported, as they are saved with their Discord link)\n"
+"        "
+msgstr ""
+
+#: \tickettool\tickettool.py:413
+msgid ""
+"Do you really want to delete all the messages of the ticket {ticket.id}?"
+msgstr ""
+
+#: \tickettool\tickettool.py:414
+msgid ""
+"If a log channel is defined, an html file containing all the messages of "
+"this ticket will be generated. (Attachments are not supported, as they are "
+"saved with their Discord link)"
+msgstr ""
+
+#: \tickettool\tickettool.py:426
+#, docstring
+msgid ""
+"Claim an existing ticket.\n"
+"        "
+msgstr ""
+
+#: \tickettool\tickettool.py:438
+#, docstring
+msgid ""
+"Unclaim an existing ticket.\n"
+"        "
+msgstr ""
+
+#: \tickettool\tickettool.py:448
+#, docstring
+msgid ""
+"Change the owner of an existing ticket.\n"
+"        "
+msgstr ""
+
+#: \tickettool\tickettool.py:460
+#, docstring
+msgid ""
+"Add a member to an existing ticket.\n"
+"        "
+msgstr ""
+
+#: \tickettool\tickettool.py:471
+#, docstring
+msgid ""
+"Remove a member to an existing ticket.\n"
+"        "
+msgstr ""
+
+#: \tickettool\tickettool.py:490
+#: \tickettool\tickettool.py:502
+#: \tickettool\tickettool.py:514
+#: \tickettool\tickettool.py:533
+#: \tickettool\tickettool.py:556
+#: \tickettool\tickettool.py:568
+#: \tickettool\tickettool.py:580
+#: \tickettool\tickettool.py:601
+msgid "You are not allowed to execute this command."
+msgstr ""
+
+#: \tickettool\tickettool.py:492
+#: \tickettool\tickettool.py:558
+msgid "You have chosen to create a ticket."
+msgstr ""
+
+#: \tickettool\tickettool.py:504
+#: \tickettool\tickettool.py:570
+msgid "You have chosen to close this ticket."
+msgstr ""
+
+#: \tickettool\tickettool.py:516
+#: \tickettool\tickettool.py:582
+msgid "You have chosen to claim this ticket."
+msgstr ""
+
+#: \tickettool\tickettool.py:543
+#: \tickettool\tickettool.py:611
+msgid "You have chosen to create a ticket with the reason `{reason}`."
+msgstr ""
+
+#: \tickettool\tickettool.py:721
+msgid "No reason provided."
+msgstr ""
+
+#: \tickettool\tickettool.py:830
+msgid "Creating the ticket {ticket.id}."
+msgstr ""
+
+#: \tickettool\tickettool.py:849
+#: \tickettool\tickettool.py:1123
+msgid ""
+"🎟️ Ticket ID: {ticket.id}\n"
+"🔥 Channel ID: {ticket.channel.id}\n"
+"🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+"☢️ Ticket reason: {ticket.reason}\n"
+"👥 Ticket claimed by: Nobody."
+msgstr ""
+
+#: \tickettool\tickettool.py:881
+#: \tickettool\tickettool.py:895
+msgid "Ticket Created"
+msgstr ""
+
+#: \tickettool\tickettool.py:881
+msgid "Thank you for creating a ticket on this server!"
+msgstr ""
+
+#: \tickettool\tickettool.py:895
+msgid "The ticket was created by {ticket.created_by}."
+msgstr ""
+
+#: \tickettool\tickettool.py:896
+msgid "Report on the creation of the ticket {ticket.id}."
+msgstr ""
+
+#: \tickettool\tickettool.py:918
+msgid "Opening the ticket {ticket.id}."
+msgstr ""
+
+#: \tickettool\tickettool.py:932
+#: \tickettool\tickettool.py:935
+msgid "Ticket Opened"
+msgstr ""
+
+#: \tickettool\tickettool.py:935
+msgid "The ticket was opened by {ticket.opened_by}."
+msgstr ""
+
+#: \tickettool\tickettool.py:936
+#: \tickettool\tickettool.py:985
+msgid "Report on the close of the ticket {ticket.id}."
+msgstr ""
+
+#: \tickettool\tickettool.py:1017
+msgid ""
+"Renaming the ticket {ticket.id}. (`{ticket.channel.name}` to `{new_name}`)"
+msgstr ""
+
+#: \tickettool\tickettool.py:1023
+msgid "Ticket Renamed."
+msgstr ""
+
+#: \tickettool\tickettool.py:1031
+msgid "Deleting the ticket {ticket.id}."
+msgstr ""
+
+#: \tickettool\tickettool.py:1036
+msgid "Ticket Deleted"
+msgstr ""
+
+#: \tickettool\tickettool.py:1036
+msgid "The ticket was deleted by {ticket.deleted_by}."
+msgstr ""
+
+#: \tickettool\tickettool.py:1046
+msgid "Report on the deletion of the ticket {ticket.id}."
+msgstr ""
+
+#: \tickettool\tickettool.py:1058
+#: \tickettool\tickettool.py:1121
+msgid "Claiming the ticket {ticket.id}."
+msgstr ""
+
+#: \tickettool\tickettool.py:1060
+msgid "A bot cannot claim a ticket."
+msgstr ""
+
+#: \tickettool\tickettool.py:1063
+msgid ""
+"🎟️ Ticket ID: {ticket.id}\n"
+"🔥 Channel ID: {ticket.channel.id}\n"
+"🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+"☢️ Ticket reason: {ticket.reason}\n"
+"👥 Ticket claimed by: @{ticket.claim.display_name}."
+msgstr ""
+
+#: \tickettool\tickettool.py:1174
+msgid "Changing owner of the ticket {ticket.id}."
+msgstr ""
+
+#: \tickettool\tickettool.py:1176
+msgid "You cannot transfer ownership of a ticket to a bot."
+msgstr ""
+
+#: \tickettool\tickettool.py:1205
+msgid "Owner Modified."
+msgstr ""
+
+#: \tickettool\tickettool.py:1212
+msgid "Adding a member to the ticket {ticket.id}."
+msgstr ""
+
+#: \tickettool\tickettool.py:1221
+msgid "You cannot add a bot to a ticket. ({member})"
+msgstr ""
+
+#: \tickettool\tickettool.py:1225
+msgid "This member is already the owner of this ticket. ({member})"
+msgstr ""
+
+#: \tickettool\tickettool.py:1228
+msgid ""
+"This member is an administrator for the ticket system. He will always have "
+"access to the ticket anyway. ({member})"
+msgstr ""
+
+#: \tickettool\tickettool.py:1231
+msgid "This member already has access to this ticket. ({member})"
+msgstr ""
+
+#: \tickettool\tickettool.py:1250
+msgid "Removing a member to the ticket {ticket.id}."
+msgstr ""
+
+#: \tickettool\tickettool.py:1262
+msgid "You cannot remove a bot to a ticket ({member})."
+msgstr ""
+
+#: \tickettool\tickettool.py:1266
+msgid "You cannot remove the owner of this ticket. ({member})"
+msgstr ""
+
+#: \tickettool\tickettool.py:1269
+msgid ""
+"This member is an administrator for the ticket system. He will always have "
+"access to the ticket. ({member})"
+msgstr ""
+
+#: \tickettool\tickettool.py:1272
+msgid ""
+"This member is not in the list of those authorised to access the ticket. "
+"({member})"
+msgstr ""
+
+#: \tickettool\utils.py:95
+msgid ""
+"Emoji Label must be a emoji followed by an string, and optionnaly by a "
+"description and a value (for rename ticket channel), separated by either "
+"`;`, `,`, `|`, or `-`."
+msgstr ""

@@ -1,6 +1,9 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import typing  # isort:skip
+
 import asyncio
 import datetime
 from copy import copy
@@ -11,14 +14,14 @@ from copy import copy
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("Sudo", __file__)
 
+@cog_i18n(_)
 class Sudo(commands.Cog):
     """A cog to allow bot owners to be normal users in terms of permissions!"""
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Red):
+        self.bot: Red = bot
         self.all_owner_ids = copy(self.bot.owner_ids)
         self.bot.owner_ids.clear()
 
@@ -26,10 +29,16 @@ class Sudo(commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
-    def cog_unload(self):
-        self.bot.owner_ids.update(copy(self.all_owner_ids))
-        self.all_owner_ids.clear()
-        self.cogsutils._end()
+    if CogsUtils().is_dpy2:
+        async def cog_unload(self):
+            self.bot.owner_ids.update(copy(self.all_owner_ids))
+            self.all_owner_ids.clear()
+            self.cogsutils._end()
+    else:
+        def cog_unload(self):
+            self.bot.owner_ids.update(copy(self.all_owner_ids))
+            self.all_owner_ids.clear()
+            self.cogsutils._end()
 
     def decorator(all_owner_ids: typing.Optional[bool], bot_owner_ids: typing.Optional[bool]):
         async def pred(ctx):
@@ -63,13 +72,11 @@ class Sudo(commands.Cog):
     async def sudo(self, ctx: commands.Context, *, command: str):
         """Rise as the bot owner for the specified command only.
         """
-        msg = ctx.message
-        msg.content = f"{ctx.prefix}{command}"
         ctx.bot.owner_ids.add(ctx.author.id)
-        new_ctx = await ctx.bot.get_context(msg)
-        await ctx.bot.invoke(new_ctx)
+        await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, message=ctx.message)
         if ctx.bot.get_cog("Sudo") is not None:
             ctx.bot.owner_ids.remove(ctx.author.id)
+        await ctx.tick()
 
     @decorator(all_owner_ids=True, bot_owner_ids=False)
     @commands.command()

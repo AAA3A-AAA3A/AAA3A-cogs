@@ -1,0 +1,14 @@
+{
+    "author": ["AAA3A"],
+    "name": "ExportChannel",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\nIt does not use user data.\nRemember that exporting other users' messages from Discord does not respect the TOS.",
+    "short": "A cog to export all or part of a channel's messages to an html file!",
+    "description": "Have you ever wanted to export all or part of a channel's messages to an html file? Then this cog is for you!\nRemember that exporting other users' messages from Discord does not respect the TOS.",
+    "tags": [
+        "export",
+        "messages",
+        "html"
+    ],
+    "requirements": ["chat-exporter==1.7.3"],
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

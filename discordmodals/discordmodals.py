@@ -1,12 +1,15 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from .AAA3A_utils.cogsutils import Buttons, Modal  # isort:skip
-import discord  # isort:skip
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
 
 import asyncio
-import typing
 
 import yaml
+
 from redbot.core import Config
 
 # Credits:
@@ -14,8 +17,7 @@ from redbot.core import Config
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("DiscordModals", __file__)
 
 class YAMLConverter(commands.Converter):
 
@@ -121,11 +123,12 @@ class YAMLConverter(commands.Converter):
             argument_dict["messages"] = {"error": None, "done": None}
         return argument_dict
 
+@cog_i18n(_)
 class DiscordModals(commands.Cog):
     """A cog to use Discord Modals, forms with graphic interface!"""
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Red):
+        self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
             self,
@@ -185,10 +188,11 @@ class DiscordModals(commands.Cog):
                 embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar)
             elif not config["anonymous"]:
                 embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar)
+                embed.color = interaction.user.color
             else:
                 embed.set_author(name="Anonymous", icon_url="https://forum.mtasa.com/uploads/monthly_2016_10/Anonyme.png.4060431ce866962fa496657f752d5613.png")
             for value in values:
-                if not getattr(value, 'label') or not getattr(value, 'value'):
+                if not hasattr(value, "label") or not hasattr(value, "value"):
                     continue
                 try:
                     embed.add_field(name=value.label, value=value.value, inline=False)
@@ -247,7 +251,7 @@ class DiscordModals(commands.Cog):
           error: Error!
           done: Form submitted.
         ```
-        The `style`, 'emoji', `default`, `placeholder`, `channel`, `required`, `anonymous` and `messages` are not required.
+        The `style`, `emoji`, `default`, `placeholder`, `channel`, `required`, `anonymous` and `messages` are not required.
         """
         if not message.author == ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the button to work.").format(**locals()))
@@ -257,13 +261,13 @@ class DiscordModals(commands.Cog):
             await ctx.send(_("This message already has a Modal.").format(**locals()))
             return
         try:
-            argument["button"]["custom_id"] = "DiscordModals_" + self.cogsutils.generate_key(number=15)
+            argument["button"]["custom_id"] = f"DiscordModals_{self.cogsutils.generate_key(number=10)}"
             view = Buttons(timeout=None, buttons=[argument["button"]], function=self.send_modal, infinity=True)
             await message.edit(view=view)
         except discord.HTTPException:
             await ctx.send(_("Sorry. An error occurred when I tried to put the button on the message.").format(**locals()))
             return
-        modal = Modal(title=argument["title"], inputs=argument["modal"], function=self.send_embed_with_responses)
+        modal = Modal(title=argument["title"], inputs=argument["modal"], function=self.send_embed_with_responses, custom_id=f"DiscordModals_{self.cogsutils.generate_key(number=10)}")
         config[f"{message.channel.id}-{message.id}"] = {"title": argument["title"], "button": view.to_dict_cogsutils(True), "channel": argument["channel"], "modal": modal.to_dict_cogsutils(True), "anonymous": argument["anonymous"], "messages": {"error": argument["messages"]["error"], "done": argument["messages"]["done"]}}
         await self.config.guild(ctx.guild).modals.set(config)
         await ctx.tick()

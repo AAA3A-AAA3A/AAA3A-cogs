@@ -1,8 +1,8 @@
 {
     "author" : ["AAA3A"],
-    "install_msg" : "Thank you for installing my repo. If you need support, ping me in the Cog Support server or create a issue here.",
+    "install_msg" : "Thank you for installing my repo. If you need support, ping me in the Cog Support server or create a issue on GitHub.",
     "name" : "AAA3A-cogs",
-    "short" : "Several cogs for the redbot.",
-    "description" : "Several cogs adding functionality to the redbot.",
+    "short" : "Several cogs for the redbot!",
+    "description" : "Several cogs adding functionality to the redbot!",
     "tags" : ["utility","command", "message", "functionality"]
 }

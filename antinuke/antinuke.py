@@ -1,5 +1,7 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 from typing import List, Optional, Tuple, Union
@@ -12,14 +14,14 @@ from redbot.core import Config
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("AntiNuke", __file__)
 
+@cog_i18n(_)
 class AntiNuke(commands.Cog):
     """A cog to remove all permissions from a person who deletes a channel!"""
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Red):
+        self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
             self,
@@ -238,7 +240,7 @@ class AntiNuke(commands.Cog):
         
     @configuration.command(name="resetuser", aliases=["userreset"], usage="<int>")
     async def resetuser(self, ctx: commands.Context, user: discord.Member, give_roles: bool = False):
-        """Reset number detected for a user
+        """Reset number detected for a user.
         """
         if not ctx.author.id == ctx.guild.owner.id:
             await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
@@ -259,4 +261,4 @@ class AntiNuke(commands.Cog):
 
         await self.config.member(user).count.clear()
         await self.config.member(user).old_roles.clear()
-        await ctx.send(_("Count removed for {user.name} ({user.id}).").format(**locals()))
+        await ctx.send(_("Count reset for {user.name} ({user.id}).").format(**locals()))

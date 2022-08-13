@@ -1,0 +1,47 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-08-07 20:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: \medicat\medicat.py:202
+#, docstring
+msgid ""
+"This cog will only work on x server and therefore cannot be used by the "
+"general public!"
+msgstr ""
+
+#: \medicat\medicat.py:489
+#, docstring
+msgid ""
+"Get the latest version of Ventoy.\n"
+"        "
+msgstr ""
+
+#: \medicat\medicat.py:521
+msgid "An error has occurred. Please try again."
+msgstr ""
+
+#: \medicat\medicat.py:541
+#, docstring
+msgid ""
+"Get the latest versions of each Medicat USB bootable tool.\n"
+"        "
+msgstr ""
+
+#: \medicat\medicat.py:582
+#, docstring
+msgid "Get an embed for check loops status."
+msgstr ""
+
+#: \medicat\medicat.py:589
+#, docstring
+msgid "Update the Medicat cog without be bot owner."
+msgstr ""

@@ -1,5 +1,7 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 from redbot.core import Config
@@ -11,14 +13,14 @@ from redbot.core import Config
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("CmdChannel", __file__)
 
+@cog_i18n(_)
 class CmdChannel(commands.Cog):
     """A cog to send the result of a command to another channel!"""
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Red):
+        self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
             self,
@@ -107,18 +109,7 @@ class CmdChannel(commands.Cog):
                     embed.set_author(name=author_title, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
-                msg = ctx.message
-                msg.content = command
-                new_ctx = await ctx.bot.get_context(msg)
-                if new_ctx.valid:
-                    new_ctx.guild = guild
-                    new_ctx.channel = channel
-                    new_ctx.author = ctx.author
-                    await ctx.bot.invoke(new_ctx)
-                else:
-                    new_ctx.message.channel = channel
-                    new_ctx.message.author = ctx.author
-                    ctx.bot.dispatch("message", new_ctx.message)
+                await self.cogsutils.invoke_command(author=ctx.author, channel=channel, command=command, prefix=ctx.prefix)
                 if actual_state_confirmation:
                     try:
                         await ctx.author.send(_("The `{command}` command has been launched in the {channel} channel. You can check if it worked.").format(**locals()))
@@ -176,18 +167,7 @@ class CmdChannel(commands.Cog):
                     embed.set_author(name=author_title, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
-                msg = ctx.message
-                msg.content = command
-                new_ctx = await ctx.bot.get_context(msg)
-                if new_ctx.valid:
-                    new_ctx.guild = ctx.guild
-                    new_ctx.channel = ctx.channel
-                    new_ctx.author = user
-                    await ctx.bot.invoke(new_ctx)
-                else:
-                    new_ctx.message.channel = ctx.channel
-                    new_ctx.message.author = user
-                    ctx.bot.dispatch("message", new_ctx.msg)
+                await self.cogsutils.invoke_command(author=user, channel=ctx.channel, command=command, prefix=ctx.prefix)
                 if actual_state_confirmation:
                     try:
                         await ctx.author.send(_("The `{command}` command has been launched in the {ctx.channel} channel by imitating the {user} user. You can check if it worked.").format(**locals()))
@@ -248,18 +228,7 @@ class CmdChannel(commands.Cog):
                     embed.set_author(name=author_title, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
                     logschannel = ctx.bot.get_channel(logschannel)
                     await logschannel.send(embed=embed)
-                msg = ctx.message
-                msg.content = command
-                new_ctx = await ctx.bot.get_context(msg)
-                if new_ctx.valid:
-                    new_ctx.guild = ctx.guild
-                    new_ctx.channel = channel
-                    new_ctx.author = user
-                    await ctx.bot.invoke(new_ctx)
-                else:
-                    new_ctx.message.channel = channel
-                    new_ctx.message.author = user
-                    ctx.bot.dispatch("message", new_ctx.msg)
+                await self.cogsutils.invoke_command(author=user, channel=channel, command=command, prefix=ctx.prefix)
                 if actual_state_confirmation:
                     try:
                         await ctx.author.send(_("The `{command}` command has been launched in the {channel} channel by imitating the {user} user. You can check if it worked.").format(**locals()))

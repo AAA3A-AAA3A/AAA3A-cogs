@@ -1,5 +1,6 @@
-import discord
-from redbot.core import commands
+from redbot.core import commands  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
 
 import asyncio
 import contextlib
@@ -9,16 +10,21 @@ import logging
 import math
 import os
 import platform
+import re
 import string
 import sys
+import time
 import traceback
-import typing
+from copy import copy
 from io import StringIO
 from pathlib import Path
 from random import choice
-from time import monotonic
 
+import aiohttp
 import pip
+from rich.console import Console
+from rich.table import Table
+
 import redbot
 from redbot import version_info as red_version_info
 from redbot.cogs.downloader.converters import InstalledCog
@@ -26,14 +32,15 @@ from redbot.cogs.downloader.repo_manager import Repo
 from redbot.core._diagnoser import IssueDiagnoser
 from redbot.core.bot import Red
 from redbot.core.data_manager import basic_config, cog_data_path, config_file, instance_name, storage_type
-from redbot.core.utils.chat_formatting import bold, box, error, humanize_list, humanize_timedelta, pagify, text_to_file, warning
+from redbot.core.utils.chat_formatting import bold, box, error, humanize_list, humanize_timedelta, inline, pagify, text_to_file, warning
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
+from redbot.logging import RotatingFileHandler
+from redbot.core import utils as redutils
+from redbot.core.utils import chat_formatting as cf
 from redbot.vendored.discord.ext import menus
-from rich.console import Console
-from rich.table import Table
 
-__all__ = ["CogsUtils", "Loop", "Captcha", "Buttons", "Dropdown", "Modal", "Reactions"]
+__all__ = ["CogsUtils", "Loop", "Captcha", "Buttons", "Dropdown", "Modal", "Reactions", "Menu"]
 
 def _(untranslated: str):
     return untranslated
@@ -60,8 +67,8 @@ class CogsUtils(commands.Cog):
             if isinstance(cog, str):
                 cog = bot.get_cog(cog)
             self.cog: commands.Cog = cog
-            self.bot: Red = self.cog.bot
-            self.DataPath: Path = cog_data_path(raw_name=self.cog.__class__.__name__.lower())
+            self.bot: Red = self.cog.bot if hasattr(self.cog, "bot") else bot
+            self.DataPath: Path = cog_data_path(cog_instance=self.cog)
         elif bot is not None:
             self.cog: commands.Cog = None
             self.bot: Red = bot
@@ -72,28 +79,34 @@ class CogsUtils(commands.Cog):
         self.__version__ = 1.0
         self.interactions = {"slash": [], "buttons": [], "dropdowns": [], "added": False, "removed": False}
         if self.cog is not None:
-            if hasattr(self.cog, '__authors__'):
+            if hasattr(self.cog, "__authors__"):
                 if isinstance(self.cog.__authors__, typing.List):
                     self.__authors__ = self.cog.__authors__
                 else:
                     self.__authors__ = [self.cog.__authors__]
-            elif hasattr(self.cog, '__author__'):
+                del self.cog.__authors__
+            elif hasattr(self.cog, "__author__"):
                 if isinstance(self.cog.__author__, typing.List):
                     self.__authors__ = self.cog.__author__
                 else:
                     self.__authors__ = [self.cog.__author__]
-            if hasattr(self.cog, '__version__'):
+                del self.cog.__author__
+            self.cog.__authors__ = self.__authors__
+            if hasattr(self.cog, "__version__"):
                 if isinstance(self.cog.__version__, typing.List):
                     self.__version__ = self.cog.__version__
-            if hasattr(self.cog, '__func_red__'):
+                del self.cog.__version__
+            self.cog.__version__ = self.__version__
+            if hasattr(self.cog, "__func_red__"):
                 if not isinstance(self.cog.__func_red__, typing.List):
                     self.cog.__func_red__ = []
             else:
                 self.cog.__func_red__ = []
-            if hasattr(self.cog, 'interactions'):
+            self.interactions = {}
+            if hasattr(self.cog, "interactions"):
                 if isinstance(self.cog.interactions, typing.Dict):
                     self.interactions = self.cog.interactions
-        self.loops: typing.Dict = {}
+        self.loops: typing.Dict[str, Loop] = {}
         self.repo_name: str = "AAA3A-cogs"
         self.all_cogs: typing.List = [
                                         "AntiNuke",
@@ -103,11 +116,21 @@ class CogsUtils(commands.Cog):
                                         "CmdChannel",
                                         "CtxVar",
                                         "DiscordModals",
+                                        "DiscordSearch",
+                                        "DropdownsTexts",
                                         "EditFile",
+                                        "EditRole",
+                                        "EditTextChannel",
+                                        "EditVoiceChannel",
+                                        "ExportChannel",
+                                        "GetLoc",
                                         "Ip",
+                                        "Medicat",  # Private cog, but public code.
                                         "MemberPrefix",
+                                        "UrlButtons",
                                         "ReactToCommand",
                                         "RolesButtons",
+                                        "Seen",
                                         "SimpleSanction",
                                         "Sudo",
                                         "TicketTool",
@@ -121,18 +144,28 @@ class CogsUtils(commands.Cog):
                                         "CmdChannel",
                                         "CtxVar",
                                         "DiscordModals",
+                                        "DiscordSearch",
+                                        "DropdownsTexts",
                                         "EditFile",
+                                        "EditRole",
+                                        "EditTextChannel",
+                                        "EditVoiceChannel",
+                                        "ExportChannel",
+                                        "GetLoc",
                                         "Ip",
+                                        "Medicat",  # Private cog, but public code.
                                         "MemberPrefix",
+                                        "UrlButtons",
                                         "ReactToCommand",
                                         "RolesButtons",
+                                        "Seen",
                                         "SimpleSanction",
                                         "Sudo",
                                         "TicketTool",
                                         "TransferChannel"
                                     ]
         if self.cog is not None:
-            if self.cog.__class__.__name__ not in self.all_cogs_dpy2 and self.cog.__class__.__name__ in self.all_cogs:
+            if self.cog.__class__.__name__ in self.all_cogs and self.cog.__class__.__name__ not in self.all_cogs_dpy2:
                 if self.is_dpy2 or redbot.version_info >= redbot.VersionInfo.from_str("3.5.0"):
                     raise RuntimeError(f"{self.cog.__class__.__name__} needs to be updated to run on dpy2/Red 3.5.0. It's best to use `[p]cog update` with no arguments to update all your cogs, which may be using new dpy2-specific methods.")
 
@@ -143,21 +176,89 @@ class CogsUtils(commands.Cog):
         """
         return discord.version_info.major >= 2
 
-    def format_help_for_context(self, ctx):
+    def format_help_for_context(self, ctx: commands.Context):
         """Thanks Simbad!"""
         context = super(type(self.cog), self.cog).format_help_for_context(ctx)
         s = "s" if len(self.__authors__) > 1 else ""
-        return f"{context}\n\n**Author{s}**: {humanize_list(self.__authors__)}\n**Version**: {self.__version__}"
+        return f"{context}\n\n**Author{s}**: {humanize_list(self.__authors__)}\n**Cog version**: {self.__version__}\n**Cog documentation**: https://aaa3a-cogs.readthedocs.io/en/latest/cog_{self.cog.__class__.__name__.lower()}.html\n**Translate my cogs**: https://crowdin.com/project/aaa3a-cogs"
+
+    def format_text_for_context(self, ctx: commands.Context, text: str, shortdoc: typing.Optional[bool]=False):
+        text = text.replace("        ", "")
+        context = super(type(ctx.command), ctx.command).format_text_for_context(ctx, text)
+        if shortdoc:
+            return context
+        s = "s" if len(self.__authors__) > 1 else ""
+        return f"{context}\n\n**Author{s}**: {humanize_list(self.__authors__)}\n**Cog version**: {self.__version__}\n**Cog documentation**: https://aaa3a-cogs.readthedocs.io/en/latest/cog_{self.cog.__class__.__name__.lower()}.html\n**Translate my cogs**: https://crowdin.com/project/aaa3a-cogs"
+
+    def format_shortdoc_for_context(self, ctx: commands.Context):
+        sh = super(type(ctx.command), ctx.command).short_doc
+        try:
+            return super(type(ctx.command), ctx.command).format_text_for_context(ctx, sh, shortdoc=True) if sh else sh
+        except Exception:
+            return super(type(ctx.command), ctx.command).format_text_for_context(ctx, sh) if sh else sh
 
     async def red_delete_data_for_user(self, **kwargs):
-        """Nothing to delete"""
+        """Nothing to delete."""
         return
 
     async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[typing.Any, typing.Any]:
+        """Nothing to get."""
         return {}
 
-    def cog_unload(self):
+    async def cog_unload_dpy2(self):
         self._end()
+
+    def cog_unload_dpy1(self):
+        self._end()
+
+    async def cog_command_error(self, ctx: commands.Context, error: Exception):
+        if self.cog is None:
+            return
+        if isinstance(error, commands.CommandInvokeError):
+            asyncio.create_task(ctx.bot._delete_delay(ctx))
+            self.cog.log.exception(f"Exception in command '{ctx.command.qualified_name}'.", exc_info=error.original)
+            message = f"Error in command '{ctx.command.qualified_name}'. Check your console or logs for details.\nIf necessary, please inform the creator of the cog in which this command is located. Thank you."
+            exception_log = f"Exception in command '{ctx.command.qualified_name}'.\n"
+            exception_log += "".join(traceback.format_exception(type(error), error, error.__traceback__))
+            exception_log = self.replace_var_paths(exception_log)
+            ctx.bot._last_exception = exception_log
+            await ctx.send(inline(message))
+        else:
+            await ctx.bot.on_command_error(ctx=ctx, error=error, unhandled_by_cog=True)
+
+    def replace_var_paths(self, text: str, reverse: typing.Optional[bool]=False):
+        if not reverse:
+            if "USERPROFILE" in os.environ:
+                text = text.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+                text = text.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
+                text = text.replace(os.environ["USERPROFILE"].replace("\\", "\\\\"), "{USERPROFILE}")
+                text = text.replace(os.environ["USERPROFILE"].replace("\\", "\\\\").lower(), "{USERPROFILE}")
+            if "HOME" in os.environ:
+                text = text.replace(os.environ["HOME"], "{HOME}")
+                text = text.replace(os.environ["HOME"].lower(), "{HOME}")
+                text = text.replace(os.environ["HOME"].replace("\\", "\\\\"), "{HOME}")
+                text = text.replace(os.environ["HOME"].replace("\\", "\\\\").lower(), "{HOME}")
+            if "USERNAME" in os.environ:
+                text = text.replace(os.environ["USERNAME"], "{USERNAME}")
+                text = text.replace(os.environ["USERNAME"].lower(), "{USERNAME}")
+        else:
+            if "USERPROFILE" in os.environ:
+                text = text.replace("{USERPROFILE}", os.environ["USERPROFILE"])
+                text = text.replace("{USERPROFILE}".lower(), os.environ["USERPROFILE"])
+            if "HOME" in os.environ:
+                text = text.replace("{HOME}", os.environ["HOME"])
+                text = text.replace("{HOME}".lower(), os.environ["HOME"])
+            if "USERNAME" in os.environ:
+                text = text.replace("{USERNAME}", os.environ["USERNAME"])
+                text = text.replace("{USERNAME}".lower(), os.environ["USERNAME"])
+        return text
+
+    @staticmethod
+    def sanitize_output(ctx: commands.Context, input_: str) -> str:
+        """Hides the bot's token from a string."""
+        token = ctx.bot.http.token
+        input_ = CogsUtils().replace_var_paths(input_)
+        return re.sub(re.escape(token), "[EXPUNGED]", input_, re.I)
 
     async def add_cog(self, bot: Red, cog: commands.Cog):
         """
@@ -168,7 +269,7 @@ class CogsUtils(commands.Cog):
             cog = await value
         else:
             cog = value
-        if hasattr(cog, 'initialize'):
+        if hasattr(cog, "initialize"):
             await cog.initialize()
         return cog
 
@@ -176,28 +277,44 @@ class CogsUtils(commands.Cog):
         """
         Adding additional functionality to the cog.
         """
-        self.cog.cogsutils = self
-        self.cog.log = logging.getLogger(f"red.{self.repo_name}.{self.cog.__class__.__name__}")
-        if "format_help_for_context" not in self.cog.__func_red__:
-            setattr(self.cog, 'format_help_for_context', self.format_help_for_context)
-        if "red_delete_data_for_user" not in self.cog.__func_red__:
-            setattr(self.cog, 'red_delete_data_for_user', self.red_delete_data_for_user)
-        if "red_get_data_for_user" not in self.cog.__func_red__:
-            setattr(self.cog, 'red_get_data_for_user', self.red_get_data_for_user)
-        if "cog_unload" not in self.cog.__func_red__:
-            setattr(self.cog, 'cog_unload', self.cog_unload)
+        if self.cog is not None:
+            self.cog.cogsutils = self
+            self.init_logger()
+            if "format_help_for_context" not in self.cog.__func_red__:
+                setattr(self.cog, 'format_help_for_context', self.format_help_for_context)
+            # for command in self.cog.walk_commands():
+            #     setattr(command, 'format_text_for_context', self.format_text_for_context)
+            #     setattr(command, 'format_shortdoc_for_context', self.format_shortdoc_for_context)
+            if "red_delete_data_for_user" not in self.cog.__func_red__:
+                setattr(self.cog, 'red_delete_data_for_user', self.red_delete_data_for_user)
+            if "red_get_data_for_user" not in self.cog.__func_red__:
+                setattr(self.cog, 'red_get_data_for_user', self.red_get_data_for_user)
+            if "cog_unload" not in self.cog.__func_red__:
+                setattr(self.cog, 'cog_unload', self.cog_unload_dpy2 if self.is_dpy2 else self.cog_unload_dpy1)
+            if "cog_command_error" not in self.cog.__func_red__:
+                setattr(self.cog, 'cog_command_error', self.cog_command_error)
+        asyncio.create_task(self._await_setup())
         self.bot.remove_listener(self.on_command_error)
         self.bot.add_listener(self.on_command_error)
         self.bot.remove_command("getallfor")
         self.bot.add_command(getallfor)
-        asyncio.create_task(self._await_setup())
 
     async def _await_setup(self):
         """
         Adds dev environment values, slash commands add Views.
         """
         await self.bot.wait_until_red_ready()
-        self.add_dev_env_value()
+        try:
+            to_update, local_commit, online_commit = await self.to_update()
+            if to_update:
+                self.cog.log.warning(f"Your {self.cog.__class__.__name__} cog, from {self.repo_name}, is out of date. You can update your cogs with the 'cog update' command in Discord.")
+            else:
+                self.cog.log.debug(f"{self.cog.__class__.__name__} cog is up to date.")
+        except (self.DownloaderNotLoaded, asyncio.TimeoutError, ValueError):
+            pass
+        except Exception as e:  # really doesn't matter if this fails so fine with debug level
+            self.cog.log.debug(f"Something went wrong checking if {self.cog.__class__.__name__} cog is up to date.", exc_info=e)
+        self.add_dev_env_values()
         if self.is_dpy2:
             if not hasattr(self.bot, "tree"):
                 self.bot.tree = discord.app_commands.CommandTree(self.bot)
@@ -209,7 +326,7 @@ class CogsUtils(commands.Cog):
                                 try:
                                     self.bot.tree.add_command(slash, guild=None)
                                 except Exception as e:
-                                    if hasattr(self.cog, 'log'):
+                                    if hasattr(self.cog, "log"):
                                         self.cog.log.error(f"The slash command `{slash.name}` could not be added correctly.", exc_info=e)
                         if "button" in self.interactions:
                             for button in self.interactions["button"]:
@@ -225,9 +342,10 @@ class CogsUtils(commands.Cog):
         """
         Removes dev environment values, slash commands add Views.
         """
-        self.remove_dev_env_value()
+        self.close_logger()
+        self.remove_dev_env_values()
         for loop in self.loops:
-            self.loops[loop].end_all()
+            self.loops[loop].stop_all()
         if not self.at_least_one_cog_loaded:
             self.bot.remove_listener(self.on_command_error)
             self.bot.remove_command("getallfor")
@@ -243,7 +361,7 @@ class CogsUtils(commands.Cog):
                                 try:
                                     self.bot.tree.remove_command(slash, guild=None)
                                 except Exception as e:
-                                    if hasattr(self.cog, 'log'):
+                                    if hasattr(self.cog, "log"):
                                         self.cog.log.error(f"The slash command `{slash.name}` could not be removed correctly.", exc_info=e)
                         if "button" in self.interactions:
                             for button in self.interactions["button"]:
@@ -253,10 +371,77 @@ class CogsUtils(commands.Cog):
                                     pass
                         self.interactions["added"] = False
                         self.interactions["removed"] = True
-            await asyncio.sleep(2)
-            await self.bot.tree.sync(guild=None)
+                        await asyncio.sleep(2)
+                        await self.bot.tree.sync(guild=None)
 
-    def add_dev_env_value(self):
+    def init_logger(self, name: typing.Optional[str]=None):
+        """
+        Prepare the logger for the cog.
+        Thanks to @laggron42 on GitHub! (https://github.com/laggron42/Laggron-utils/blob/master/laggron_utils/logging.py) 
+        """
+        if name is None:
+            self.cog.log = logging.getLogger(f"red.{self.repo_name}.{self.cog.__class__.__name__}")
+            formatter = logging.Formatter(
+                "[{asctime}] {levelname} [{name}] {message}", datefmt="%Y-%m-%d %H:%M:%S", style="{"
+            )
+            # logging to a log file
+            # file is automatically created by the module, if the parent foler exists
+            cog_path = cog_data_path(cog_instance=self.cog)
+            if cog_path.exists():
+                file_handler = RotatingFileHandler(
+                    stem=self.cog.__class__.__name__,
+                    directory=cog_path,
+                    maxBytes=1_000_0,
+                    backupCount=0,
+                    encoding="utf-8",
+                )
+                # file_handler.doRollover()
+                file_handler.setLevel(logging.DEBUG)
+                file_handler.setFormatter(formatter)
+                self.cog.log.addHandler(file_handler)
+        else:
+            return logging.getLogger(f"red.{self.repo_name}.{name}")
+
+    def close_logger(self):
+        """
+        Closes the files for the logger of a cog.
+        """
+        for handler in self.cog.log.handlers:
+            handler.close()
+        self.cog.log.handlers = []
+
+    async def to_update(self, cog_name: typing.Optional[str]=None):
+        if cog_name is None:
+            cog_name = self.cog.__class__.__name__
+        cog_name = cog_name.lower()
+
+        downloader = self.bot.get_cog("Downloader")
+        if downloader is None:
+            raise self.DownloaderNotLoaded(_("The cog downloader is not loaded.").format(**locals()))
+
+        if await self.bot._cog_mgr.find_cog(cog_name) is None:
+            raise ValueError(_("This cog was not found in any cog path."))
+
+        local = discord.utils.get(await downloader.installed_cogs(), name=cog_name)
+        if local is None:
+            raise ValueError(_("This cog is not installed on this bot.").format(**locals()))
+        local_commit = local.commit
+        repo = local.repo
+        if repo is None:
+            raise ValueError(_("This cog has not been installed from the cog Downloader.").format(**locals()))
+
+        repo_owner, repo_name, repo_branch = (re.compile(r"(?:https?:\/\/)?git(?:hub|lab).com\/(?P<repo_owner>[A-z0-9-_.]*)\/(?P<repo>[A-z0-9-_.]*)(?:\/tree\/(?P<repo_branch>[A-z0-9-_.]*))?", re.I).findall(repo.url))[0]
+        repo_branch = repo.branch
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}", timeout=3) as r:
+                online = await r.json()
+        if online is None or "object" not in online or "sha" not in online["object"]:
+            raise asyncio.IncompleteReadError(_("No results could be retrieved from the git api.").format(**locals()), None)
+        online_commit = online["object"]["sha"]
+
+        return online_commit != local_commit, local_commit, online_commit
+
+    def add_dev_env_values(self):
         """
         If the bot owner is X, then add several values to the development environment, if they don't already exist.
         Even checks the id of the bot owner in the variable of my Sudo cog, if it is installed and loaded.
@@ -269,47 +454,153 @@ class CogsUtils(commands.Cog):
                 if len(sudo_cog.all_owner_ids) == 0:
                     owner_ids = self.bot.owner_ids
                 else:
-                    owner_ids = sudo_cog.all_owner_ids
+                    owner_ids = set(list(self.bot.owner_ids) + list(sudo_cog.all_owner_ids))
             else:
                 owner_ids = self.bot.owner_ids
         if 829612600059887649 in owner_ids:
+            def get_url(ctx: commands.Context):
+                async def get_url_with_aiohttp(url: str, **kwargs):
+                    async with aiohttp.ClientSession() as session:
+                        async with session.get(url=url, **kwargs) as r:
+                            return r
+                return get_url_with_aiohttp
+            def get(ctx: commands.Context):
+                def inner(a, b):
+                    return [x for x in dir(b) if a.lower() in x]
+                return inner
+            def reference(ctx: commands.Context):
+                if hasattr(ctx.message, "reference") and ctx.message.reference != None:
+                    msg = ctx.message.reference.resolved
+                    if isinstance(msg, discord.Message):
+                        return msg
+            def _console_custom(ctx: commands.Context):
+                return {"width": 80, "color_system": None}
             if self.is_dpy2:
                 to_add = {
+                    # Cog
                     self.cog.__class__.__name__: lambda x: self.cog,
-                    "CogsUtils": lambda x: CogsUtils,
-                    "Loop": lambda x: Loop,
-                    "Captcha": lambda x: Captcha,
-                    "Buttons": lambda x: Buttons,
-                    "Dropdown": lambda x: Dropdown,
-                    "Modal": lambda x: Modal,
-                    "Reactions": lambda x: Reactions,
-                    "Menu": lambda x: Menu,
-                    "discord": lambda x: discord,
-                    "typing": lambda x: typing,
-                    "redbot": lambda x: redbot,
-                    "cog": lambda ctx: ctx.bot.get_cog
+                    # CogsUtils
+                    "CogsUtils": lambda ctx: CogsUtils,
+                    "Loop": lambda ctx: Loop,
+                    "Captcha": lambda ctx: Captcha,
+                    "Buttons": lambda ctx: Buttons,
+                    "Dropdown": lambda ctx: Dropdown,
+                    "Modal": lambda ctx: Modal,
+                    "Reactions": lambda ctx: Reactions,
+                    "Menu": lambda ctx: Menu,
+                    # Dpy & Red
+                    "discord": lambda ctx: discord,
+                    "redbot": lambda ctx: redbot,
+                    "Red": lambda ctx: Red,
+                    "redutils": lambda ctx: redutils,
+                    "cf": lambda ctx: cf,
+                    # Typing
+                    "typing": lambda ctx: typing,
+                    # Inspect
+                    "inspect": lambda ctx: inspect,
+                    "gs": lambda ctx: inspect.getsource,
+                    # Date & Time
+                    "datetime": lambda ctx: datetime,
+                    "time": lambda ctx: time,
+                    # Os & Sys
+                    "os": lambda ctx: os,
+                    "sys": lambda ctx: sys,
+                    # Aiohttp
+                    "session": lambda ctx: aiohttp.ClientSession(),
+                    "get_url": get_url,
+                    # Search attr
+                    "get": get,
+                    # `reference`
+                    "reference": reference,
+                    # No color (Dev cog from fluffy-cogs in mobile).
+                    "_console_custom": _console_custom,
+                    # Dpy get
+                    "get_cog": lambda ctx: ctx.bot.get_cog,
+                    "get_command": lambda ctx: ctx.bot.get_command,
+                    "get_guild": lambda ctx: ctx.bot.get_guild,
+                    "get_channel": lambda ctx: ctx.guild.get_channel,
+                    "fetch_message": lambda ctx: ctx.channel.fetch_message
                 }
             else:
                 to_add = {
+                    # Cog
                     self.cog.__class__.__name__: lambda x: self.cog,
-                    "CogsUtils": lambda x: CogsUtils,
-                    "Loop": lambda x: Loop,
-                    "Captcha": lambda x: Captcha,
-                    "Menu": lambda x: Menu,
-                    "discord": lambda x: discord,
-                    "typing": lambda x: typing,
-                    "redbot": lambda x: redbot,
-                    "cog": lambda ctx: ctx.bot.get_cog
+                    # CogsUtils
+                    "CogsUtils": lambda ctx: CogsUtils,
+                    "Loop": lambda ctx: Loop,
+                    "Captcha": lambda ctx: Captcha,
+                    "Menu": lambda ctx: Menu,
+                    # Dpy & Red
+                    "discord": lambda ctx: discord,
+                    "redbot": lambda ctx: redbot,
+                    "Red": lambda ctx: Red,
+                    "redutils": lambda ctx: redutils,
+                    "cf": lambda ctx: cf,
+                    # Typing
+                    "typing": lambda ctx: typing,
+                    # Inspect
+                    "inspect": lambda ctx: inspect,
+                    "gs": lambda ctx: inspect.getsource,
+                    # Date & Time
+                    "datetime": lambda ctx: datetime,
+                    "time": lambda ctx: time,
+                    # Os & Sys
+                    "os": lambda ctx: os,
+                    "sys": lambda ctx: sys,
+                    # Aiohttp
+                    "session": lambda ctx: aiohttp.ClientSession(),
+                    "get_url": get_url,
+                    # Search attr
+                    "get": get,
+                    # `reference`
+                    "reference": reference,
+                    # No color (Dev cog from fluffy-cogs in mobile).
+                    "_console_custom": _console_custom,
+                    # Dpy get
+                    "get_cog": lambda ctx: ctx.bot.get_cog,
+                    "get_command": lambda ctx: ctx.bot.get_command,
+                    "get_guild": lambda ctx: ctx.bot.get_guild,
+                    "get_channel": lambda ctx: ctx.guild.get_channel,
+                    "fetch_message": lambda ctx: ctx.channel.fetch_message
                 }
             for name, value in to_add.items():
                 try:
+                    try:
+                        self.bot.remove_dev_env_value(name)
+                    except KeyError:
+                        pass
                     self.bot.add_dev_env_value(name, value)
                 except RuntimeError:
                     pass
                 except Exception as e:
                     self.cog.log.error(f"Error when adding the value `{name}` to the development environment.", exc_info=e)
+            Dev = self.bot.get_cog("Dev")
+            if Dev is not None:
+                setattr(Dev, 'sanitize_output', self.sanitize_output)
+            RTFS = self.bot.get_cog("RTFS")
+            if RTFS is not None:
+                try:
+                    from rtfs import rtfs
+                    class SourceSource(rtfs.SourceSource):
+                        def format_page(self, menu, page):
+                            try:
+                                if page is None:
+                                    if self.header.startswith("<"):
+                                        return CogsUtils().replace_var_paths(self.header)
+                                    return {}
+                                return CogsUtils().replace_var_paths(f"{self.header}\n{box(page, lang='py')}\nPage {menu.current_page + 1} / {self.get_max_pages()}")
+                            except Exception as e:
+                                # since d.py menus likes to suppress all errors
+                                rtfs.LOG.debug("Exception in SourceSource", exc_info=e)
+                                raise
+                    setattr(rtfs, "SourceSource", SourceSource)
+                except ImportError:
+                    pass
+            self.bot.remove_listener(self.on_cog_add)
+            self.bot.add_listener(self.on_cog_add)
+            return to_add
 
-    def remove_dev_env_value(self):
+    def remove_dev_env_values(self):
         """
         If the bot owner is X, then remove several values to the development environment, if they don't already exist.
         Even checks the id of the bot owner in the variable of my Sudo cog, if it is installed and loaded.
@@ -319,13 +610,148 @@ class CogsUtils(commands.Cog):
             owner_ids = self.bot.owner_ids
         else:
             if hasattr(sudo_cog, "all_owner_ids"):
-                owner_ids = sudo_cog.all_owner_ids
+                if len(sudo_cog.all_owner_ids) == 0:
+                    owner_ids = self.bot.owner_ids
+                else:
+                    owner_ids = set(list(self.bot.owner_ids) + list(sudo_cog.all_owner_ids))
             else:
                 owner_ids = self.bot.owner_ids
         if 829612600059887649 in owner_ids:
             try:
                 self.bot.remove_dev_env_value(self.cog.__class__.__name__)
             except Exception:
+                pass
+            if not self.at_least_one_cog_loaded():
+                def get_url(ctx: commands.Context):
+                    async def get_url_with_aiohttp(url: str, **kwargs):
+                        async with aiohttp.ClientSession() as session:
+                            async with session.get(url=url, **kwargs) as r:
+                                return r
+                    return get_url_with_aiohttp
+                def get(ctx: commands.Context):
+                    def inner(a, b):
+                        return [x for x in dir(b) if a.lower() in x]
+                def reference(ctx: commands.Context):
+                    if hasattr(ctx.message, "reference") and ctx.message.reference != None:
+                        msg = ctx.message.reference.resolved
+                        if isinstance(msg, discord.Message):
+                            return msg
+                def _console_custom(ctx: commands.Context):
+                    return {"width": 80, "color_system": None}
+                if self.is_dpy2:
+                    to_remove = {
+                        # CogsUtils
+                        "CogsUtils": lambda ctx: CogsUtils,
+                        "Loop": lambda ctx: Loop,
+                        "Captcha": lambda ctx: Captcha,
+                        "Buttons": lambda ctx: Buttons,
+                        "Dropdown": lambda ctx: Dropdown,
+                        "Modal": lambda ctx: Modal,
+                        "Reactions": lambda ctx: Reactions,
+                        "Menu": lambda ctx: Menu,
+                        # Dpy & Red
+                        "discord": lambda ctx: discord,
+                        "redbot": lambda ctx: redbot,
+                        "Red": lambda ctx: Red,
+                        "redutils": lambda ctx: redutils,
+                        "cf": lambda ctx: cf,
+                        # Typing
+                        "typing": lambda ctx: typing,
+                        # Inspect
+                        "inspect": lambda ctx: inspect,
+                        "gs": lambda ctx: inspect.getsource,
+                        # Date & Time
+                        "datetime": lambda ctx: datetime,
+                        "time": lambda ctx: time,
+                        # Os & Sys
+                        "os": lambda ctx: os,
+                        "sys": lambda ctx: sys,
+                        # Aiohttp
+                        "session": lambda ctx: aiohttp.ClientSession(),
+                        "get_url": get_url,
+                        # Search attr
+                        "get": get,
+                        # `reference`
+                        "reference": reference,
+                        # No color (Dev cog from fluffy-cogs in mobile).
+                        "_console_custom": _console_custom,
+                        # Dpy get
+                        "get_cog": lambda ctx: ctx.bot.get_cog,
+                        "get_command": lambda ctx: ctx.bot.get_command,
+                        "get_guild": lambda ctx: ctx.bot.get_guild,
+                        "get_channel": lambda ctx: ctx.guild.get_channel,
+                        "fetch_message": lambda ctx: ctx.channel.fetch_message
+                    }
+                else:
+                    to_remove = {
+                        # CogsUtils
+                        "CogsUtils": lambda ctx: CogsUtils,
+                        "Loop": lambda ctx: Loop,
+                        "Captcha": lambda ctx: Captcha,
+                        "Menu": lambda ctx: Menu,
+                        # Dpy & Red
+                        "discord": lambda ctx: discord,
+                        "redbot": lambda ctx: redbot,
+                        "Red": lambda ctx: Red,
+                        "redutils": lambda ctx: redutils,
+                        "cf": lambda ctx: cf,
+                        # Typing
+                        "typing": lambda ctx: typing,
+                        # Inspect
+                        "inspect": lambda ctx: inspect,
+                        "gs": lambda ctx: inspect.getsource,
+                        # Date & Time
+                        "datetime": lambda ctx: datetime,
+                        "time": lambda ctx: time,
+                        # Os & Sys
+                        "os": lambda ctx: os,
+                        "sys": lambda ctx: sys,
+                        # Aiohttp
+                        "session": lambda ctx: aiohttp.ClientSession(),
+                        "get_url": get_url,
+                        # Search attr
+                        "get": get,
+                        # `reference`
+                        "reference": reference,
+                        # No color (Dev cog from fluffy-cogs in mobile).
+                        "_console_custom": _console_custom,
+                        # Dpy get
+                        "get_cog": lambda ctx: ctx.bot.get_cog,
+                        "get_command": lambda ctx: ctx.bot.get_command,
+                        "get_guild": lambda ctx: ctx.bot.get_guild,
+                        "get_channel": lambda ctx: ctx.guild.get_channel,
+                        "fetch_message": lambda ctx: ctx.channel.fetch_message
+                    }
+                for name, value in to_remove.items():
+                    try:
+                        self.bot.remove_dev_env_value(name)
+                    except Exception:
+                        pass
+
+    @commands.Cog.listener()
+    async def on_cog_add(self, cog: commands.Cog):
+        if cog.qualified_name == "Dev":
+            if not hasattr(cog, "sanitize_output"):
+                return
+            setattr(cog, "sanitize_output", self.sanitize_output)
+            return
+        if cog.qualified_name == "RTFS":
+            try:
+                from rtfs import rtfs
+                class SourceSource(rtfs.SourceSource):
+                    def format_page(self, menu, page):
+                        try:
+                            if page is None:
+                                if self.header.startswith("<"):
+                                    return CogsUtils().replace_var_paths(self.header)
+                                return {}
+                            return CogsUtils().replace_var_paths(f"{self.header}\n{box(page, lang='py')}\nPage {menu.current_page + 1} / {self.get_max_pages()}")
+                        except Exception as e:
+                            # since d.py menus likes to suppress all errors
+                            rtfs.LOG.debug("Exception in SourceSource", exc_info=e)
+                            raise
+                setattr(rtfs, "SourceSource", SourceSource)
+            except ImportError:
                 pass
 
     @commands.Cog.listener()
@@ -354,7 +780,7 @@ class CogsUtils(commands.Cog):
                 return
             if isinstance(error, IGNORED_ERRORS):
                 return
-            if not hasattr(self.bot, 'last_exceptions_cogs'):
+            if not hasattr(self.bot, "last_exceptions_cogs"):
                 self.bot.last_exceptions_cogs = {}
             if "global" not in self.bot.last_exceptions_cogs:
                 self.bot.last_exceptions_cogs["global"] = []
@@ -362,13 +788,10 @@ class CogsUtils(commands.Cog):
                 return
             self.bot.last_exceptions_cogs["global"].append(error)
             if isinstance(error, commands.CommandError):
-                traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__)).replace(os.environ["USERPROFILE"], "{USERPROFILE}")
+                traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__))
             else:
                 traceback_error = f"Traceback (most recent call last): {error}"
-            if "USERPROFILE" in os.environ:
-                traceback_error = traceback_error.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
-            if "HOME" in os.environ:
-                traceback_error = traceback_error.replace(os.environ["HOME"], "{HOME}")
+            traceback_error = self.replace_var_paths(traceback_error)
             if cog not in self.bot.last_exceptions_cogs:
                 self.bot.last_exceptions_cogs[cog] = {}
             if ctx.command.qualified_name not in self.bot.last_exceptions_cogs[cog]:
@@ -395,7 +818,7 @@ class CogsUtils(commands.Cog):
         """
         Allow confirmation to be requested from the user, in the form of buttons/dropdown/reactions/message, with many additional options.
         """
-        if not self.is_dpy2 and way == "buttons" or not self.is_dpy2 and way == "dropdown":
+        if (way == "buttons" or way == "dropdown") and not self.is_dpy2:
             way = "reactions"
         if message is None:
             if not text and not embed and not file:
@@ -415,11 +838,6 @@ class CogsUtils(commands.Cog):
                     start_adding_reactions(message, reactions)
                 except discord.HTTPException:
                     way = "message"
-        async def delete_message(message: discord.Message):
-            try:
-                return await message.delete()
-            except discord.HTTPException:
-                pass
         if way == "buttons":
             view = Buttons(timeout=timeout, buttons=[{"style": 3, "label": "Yes", "emoji": reactions[0], "custom_id": "ConfirmationAsk_Yes"}, {"style": 4, "label": "No", "emoji": reactions[1], "custom_id": "ConfirmationAsk_No"}], members=[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored])
             message = await ctx.send(content=text, embed=embed, file=file, view=view)
@@ -427,15 +845,15 @@ class CogsUtils(commands.Cog):
                 interaction, function_result = await view.wait_result()
                 if str(interaction.data["custom_id"]) == "ConfirmationAsk_Yes":
                     if delete_message:
-                        await delete_message(message)
+                        await self.delete_message(message)
                     return True
                 elif str(interaction.data["custom_id"]) == "ConfirmationAsk_No":
                     if delete_message:
-                        await delete_message(message)
+                        await self.delete_message(message)
                     return False
             except TimeoutError:
                 if delete_message:
-                    await delete_message(message)
+                    await self.delete_message(message)
                 if timeout_message is not None:
                     await ctx.send(timeout_message)
                 return None
@@ -446,15 +864,15 @@ class CogsUtils(commands.Cog):
                 interaction, values, function_result = await view.wait_result()
                 if str(values[0]) == "ConfirmationAsk_Yes":
                     if delete_message:
-                        await delete_message(message)
+                        await self.delete_message(message)
                     return True
                 elif str(values[0]) == "ConfirmationAsk_No":
                     if delete_message:
-                        await delete_message(message)
+                        await self.delete_message(message)
                     return False
             except TimeoutError:
                 if delete_message:
-                    await delete_message(message)
+                    await self.delete_message(message)
                 if timeout_message is not None:
                     await ctx.send(timeout_message)
                 return None
@@ -465,50 +883,144 @@ class CogsUtils(commands.Cog):
                 if str(reaction.emoji) == reactions[0]:
                     end_reaction = True
                     if delete_message:
-                        await delete_message(message)
+                        await self.delete_message(message)
                     return True
                 elif str(reaction.emoji) == reactions[1]:
                     end_reaction = True
                     if delete_message:
-                        await delete_message(message)
+                        await self.delete_message(message)
                     return False
             except TimeoutError:
                 if delete_message:
-                    await delete_message(message)
+                    await self.delete_message(message)
                 if timeout_message is not None:
                     await ctx.send(timeout_message)
                 return None
         if way == "message":
             def check(msg):
                 if check_owner:
-                    return msg.author.id == ctx.author.id or msg.author.id in ctx.bot.owner_ids or msg.author.id in [x.id for x in members_authored] and msg.channel is ctx.channel
+                    return msg.author.id == ctx.author.id or msg.author.id in ctx.bot.owner_ids or msg.author.id in [x.id for x in members_authored] and msg.channel == ctx.channel and msg.content in ("yes", "y", "no", "n")
                 else:
-                    return msg.author.id == ctx.author.id or msg.author.id in [x.id for x in members_authored] and msg.channel is ctx.channel
+                    return msg.author.id == ctx.author.id or msg.author.id in [x.id for x in members_authored] and msg.channel == ctx.channel and msg.content in ("yes", "y", "no", "n")
                 # This makes sure nobody except the command sender can interact with the "menu"
             try:
                 end_reaction = False
-                check = MessagePredicate.yes_or_no(ctx)
                 msg = await ctx.bot.wait_for("message", timeout=timeout, check=check)
                 # waiting for a a message to be sended - times out after x seconds
-                if check.result:
+                if msg.content in ("yes", "y"):
                     end_reaction = True
                     if delete_message:
-                        await delete_message(message)
-                    await delete_message(msg)
+                        await self.delete_message(message)
+                    await self.delete_message(msg)
                     return True
-                else:
+                elif msg.content in ("no", "n"):
                     end_reaction = True
                     if delete_message:
-                        await delete_message(message)
-                    await delete_message(msg)
+                        await self.delete_message(message)
+                    await self.delete_message(msg)
                     return False
             except asyncio.TimeoutError:
                 if not end_reaction:
                     if delete_message:
-                        await delete_message(message)
+                        await self.delete_message(message)
                     if timeout_message is not None:
                         await ctx.send(timeout_message)
                     return None
+
+    async def delete_message(self, message: discord.Message):
+        """
+        Delete a message, ignoring any exceptions.
+        Easier than putting these 3 lines at each message deletion for each cog.
+        """
+        try:
+            await message.delete()
+        except discord.HTTPException:
+            return False
+        else:
+            return True
+
+    async def invoke_command(self, author: discord.User, channel: discord.TextChannel, command: str, prefix: typing.Optional[str]=None, message: typing.Optional[discord.Message]=None, message_id: typing.Optional[str]="".join(choice(string.digits) for i in range(18)), timestamp: typing.Optional[datetime.datetime]=datetime.datetime.now()) -> typing.Union[commands.Context, discord.Message]:
+        """
+        Invoke the specified command with the specified user in the specified channel.
+        """
+        bot = self.bot
+        if prefix is None:
+            prefixes = await bot.get_valid_prefixes(guild=channel.guild)
+            prefix = prefixes[0] if len(prefixes) < 3 else prefixes[2]
+        old_content = f"{command}"
+        content = f"{prefix}{old_content}"
+
+        if message is None:
+            message_content = content
+            author_dict = {"id": f"{author.id}", "username": author.display_name, "avatar": author.avatar, 'avatar_decoration': None, 'discriminator': f"{author.discriminator}", "public_flags": author.public_flags, "bot": author.bot}
+            channel_id = channel.id
+            timestamp = str(timestamp).replace(" ", "T") + "+00:00"
+            data = {"id": message_id, "type": 0, "content": message_content, "channel_id": f"{channel_id}", "author": author_dict, "attachments": [], "embeds": [], "mentions": [], "mention_roles": [], "pinned": False, "mention_everyone": False, "tts": False, "timestamp": timestamp, "edited_timestamp": None, "flags": 0, "components": [], "referenced_message": None}
+            message = discord.Message(channel=channel, state=bot._connection, data=data)
+        else:
+            message = copy(message)
+            message.author = author
+
+        message.content = content
+        context = await bot.get_context(message)
+        if context.valid:
+            context.author = author
+            context.guild = channel.guild
+            context.channel = channel
+            await bot.invoke(context)
+        else:
+            message.content = old_content
+            message.author = author
+            message.channel = channel
+            bot.dispatch("message", message)
+        return context if context.valid else message
+
+    async def get_hook(self, channel: discord.TextChannel):
+        """
+        Create a discord.Webhook object. It tries to retrieve an existing webhook created by the bot or to create it itself.
+        """
+        hook = None
+        for webhook in await channel.webhooks():
+            if webhook.user.id == self.bot.user.id:
+                hook = webhook
+                break
+        if hook is None:
+            hook = await channel.create_webhook(name="red_bot_hook_" + str(channel.id))
+        return hook
+
+    def get_embed(self, embed_dict: typing.Dict) -> typing.Dict[discord.Embed, str]:
+        data = embed_dict
+        if data.get("embed"):
+            data = data["embed"]
+        elif data.get("embeds"):
+            data = data.get("embeds")[0]
+        if timestamp := data.get("timestamp"):
+            data["timestamp"] = timestamp.strip("Z")
+        if data.get("content"):
+            content = data["content"]
+            del data["content"]
+        else:
+            content = ""
+        for x in data:
+            if data[x] is None:
+                del data[x]
+            elif isinstance(data[x], typing.Dict):
+                for y in data[x]:
+                    if data[x][y] is None:
+                        del data[x][y]
+        try:
+            embed = discord.Embed.from_dict(data)
+            length = len(embed)
+            if length > 6000:
+                raise commands.BadArgument(
+                    f"Embed size exceeds Discord limit of 6000 characters ({length})."
+                )
+        except Exception as e:
+            raise commands.BadArgument(
+                f"An error has occurred.\n{e})."
+            )
+        back = {"embed": embed, "content": content}
+        return back
 
     def datetime_to_timestamp(self, dt: datetime.datetime, format: typing.Literal["f", "F", "d", "D", "t", "T", "R"]="f") -> str:
         """
@@ -536,23 +1048,6 @@ class CogsUtils(commands.Cog):
         t = str(int(dt.timestamp()))
         return f"<t:{t}:{format}>"
 
-    async def get_hook(self, channel: discord.TextChannel):
-        """
-        Create a discord.Webhook object. It tries to retrieve an existing webhook created by the bot or to create it itself.
-        """
-        try:
-            for webhook in await channel.webhooks():
-                if webhook.user.id == self.bot.user.id:
-                    hook = webhook
-                    break
-            else:
-                hook = await channel.create_webhook(
-                    name="red_bot_hook_" + str(channel.id)
-                )
-        except discord.errors.NotFound:  # Probably user deleted the hook
-            hook = await channel.create_webhook(name="red_bot_hook_" + str(channel.id))
-        return hook
-
     def check_permissions_for(self, channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.DMChannel], user: discord.User, check: typing.Union[typing.List, typing.Dict]):
         """
         Check all permissions specified as an argument.
@@ -566,7 +1061,7 @@ class CogsUtils(commands.Cog):
                 new_check[p] = True
             check = new_check
         for p in check:
-            if getattr(permissions, f'{p}', None):
+            if getattr(permissions, f"{p}", None):
                 if check[p]:
                     if not getattr(permissions, f"{p}"):
                         return False
@@ -575,7 +1070,7 @@ class CogsUtils(commands.Cog):
                         return False
         return True
 
-    def create_loop(self, function, name: typing.Optional[str]=None, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None, limit_exception: typing.Optional[int]=None):
+    def create_loop(self, function, name: typing.Optional[str]=None, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, wait_raw: typing.Optional[bool]=False, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None, limit_exception: typing.Optional[int]=None):
         """
         Create a loop like Loop, but with default values and loop object recording functionality.
         """
@@ -583,7 +1078,7 @@ class CogsUtils(commands.Cog):
             name = f"{self.cog.__class__.__name__}"
         if datetime.timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds).total_seconds() == 0:
             seconds = 900  # 15 minutes
-        loop = Loop(cogsutils=self, name=name, function=function, days=days, hours=hours, minutes=minutes, seconds=seconds, function_args=function_args, limit_count=limit_count, limit_date=limit_date, limit_exception=limit_exception)
+        loop = Loop(cogsutils=self, name=name, function=function, days=days, hours=hours, minutes=minutes, seconds=seconds, function_args=function_args, wait_raw=wait_raw, limit_count=limit_count, limit_date=limit_date, limit_exception=limit_exception)
         if f"{loop.name}" in self.loops:
             self.loops[f"{loop.name}"].stop_all()
         self.loops[f"{loop.name}"] = loop
@@ -603,9 +1098,14 @@ class CogsUtils(commands.Cog):
         for cog in self.all_cogs:
             object = self.bot.get_cog(f"{cog}")
             if object is not None:
-                cogs[f"{cog}"] = object if hasattr(object, 'cogsutils') else None
+                cogs[f"{cog}"] = object if hasattr(object, "cogsutils") else None
             else:
                 cogs[f"{cog}"] = None
+        for cog in self.bot.cogs.values():
+            if hasattr(cog, "cogsutils"):
+                if getattr(cog.cogsutils, "repo_name", None) == "AAA3A-cogs":
+                    if f"{cog.__class__.__name__}" not in cogs or cogs[f"{cog.__class__.__name__}"] is None:
+                        cogs[f"{cog.__class__.__name__}"] = cog
         return cogs
 
     def at_least_one_cog_loaded(self):
@@ -647,7 +1147,7 @@ class CogsUtils(commands.Cog):
         for e in original_dict:
             if isinstance(original_dict[e], typing.Dict):
                 new_dict[e] = self.to_id(original_dict[e])
-            elif hasattr(original_dict[e], 'id'):
+            elif hasattr(original_dict[e], "id"):
                 new_dict[e] = int(original_dict[e].id)
             elif isinstance(original_dict[e], datetime.datetime):
                 new_dict[e] = float(datetime.datetime.timestamp(original_dict[e]))
@@ -655,7 +1155,7 @@ class CogsUtils(commands.Cog):
                 new_dict[e] = original_dict[e]
         return new_dict
 
-    def generate_key(self, number: typing.Optional[int]=15, existing_keys: typing.Optional[typing.List]=[], strings_used: typing.Optional[typing.List]={"ascii_lowercase": True, "ascii_uppercase": False, "digits": True, "punctuation": False, "others": []}):
+    def generate_key(self, number: typing.Optional[int]=10, existing_keys: typing.Optional[typing.Union[typing.List, typing.Set]]=[], strings_used: typing.Optional[typing.List]={"ascii_lowercase": True, "ascii_uppercase": False, "digits": True, "punctuation": False, "others": []}):
         """
         Generate a secret key, with the choice of characters, the number of characters and a list of existing keys.
         """
@@ -676,8 +1176,8 @@ class CogsUtils(commands.Cog):
             if isinstance(strings_used["others"], typing.List):
                 strings += strings_used["others"]
         while True:
-            # This probably won't turn into an endless loop
-            key = "".join(choice(strings) for i in range(number))
+            # This probably won't turn into an endless loop.
+            key = "".join(choice(strings) for x in range(number))
             if key not in existing_keys:
                 return key
 
@@ -692,18 +1192,8 @@ class CogsUtils(commands.Cog):
         try:
             await function(**function_args)
         except Exception as e:
-            if hasattr(self.cogsutils.cog, 'log'):
+            if hasattr(self.cogsutils.cog, "log"):
                 self.cog.log.error(f"An error occurred with the {function.__name__} function.", exc_info=e)
-
-    async def delete_message(self, message: discord.Message):
-        """
-        Delete a message, ignoring any exceptions.
-        Easier than putting these 3 lines at each message deletion for each cog.
-        """
-        try:
-            await message.delete()
-        except discord.HTTPException:
-            pass
 
     async def check_in_listener(self, output, allowed_by_whitelist_blacklist: typing.Optional[bool]=True):
         """
@@ -763,7 +1253,71 @@ class CogsUtils(commands.Cog):
             if allowed_by_whitelist_blacklist:
                 if not await self.bot.allowed_by_whitelist_blacklist(output.author):
                     raise discord.ext.commands.BadArgument()
+        if self.is_dpy2:
+            if isinstance(output, discord.Interaction):
+                # check whether the message was sent in a guild
+                if output.guild is None:
+                    raise discord.ext.commands.BadArgument()
+                # check whether the message author isn't a bot
+                if output.author is None:
+                    raise discord.ext.commands.BadArgument()
+                if output.author.bot:
+                    raise discord.ext.commands.BadArgument()
+                # check whether the bot can send message in the given channel
+                if output.channel is None:
+                    raise discord.ext.commands.BadArgument()
+                if not self.check_permissions_for(channel=output.channel, user=output.guild.me, check=["send_messages"]):
+                    raise discord.ext.commands.BadArgument()
+                # check whether the cog isn't disabled
+                if self.cog is not None:
+                    if await self.bot.cog_disabled_in_guild(self.cog, output.guild):
+                        raise discord.ext.commands.BadArgument()
+                # check whether the message author isn't on allowlist/blocklist
+                if allowed_by_whitelist_blacklist:
+                    if not await self.bot.allowed_by_whitelist_blacklist(output.author):
+                        raise discord.ext.commands.BadArgument()
         return
+
+    async def get_new_Config_with_modal(self, ctx: commands.Context, config: typing.Dict, all_config: typing.Optional[typing.Dict]={}, bypass_confirm: typing.Optional[bool]=False):
+        # {"x": {"default": "", "value": "", "style": 1, "converter": None}, "all_config": {}}
+        for input in config:
+            config[input]["param"] = discord.ext.commands.parameters.Parameter(name=input, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=config[input]["converter"])
+        new_config = {}
+        view_button = Buttons(timeout=180, buttons=[{"label": "Configure", "emoji": "⚙️", "disabled": False}], members=[ctx.author.id])
+        message = await ctx.send(_("Click on the buttons below to fully set up the cog {self.cog.__class__.__name__}.").format(**locals()), view=view_button)
+        try:
+            interaction, function_result = await view_button.wait_result()
+        except TimeoutError:
+            await message.edit(view=Buttons(timeout=None, buttons=[{"label": "Configure", "emoji": "⚙️", "disabled": True}]))
+            return None
+        view_modal = Modal(title=f"{self.cog.__class__.__name__} Config", inputs=[{"label": (input.replace("_", " ").capitalize() + " (" + (('|'.join(f'"{v}"' if isinstance(v, str) else str(v) for v in config[input]["param"].converter.__args__)) if config[input]["param"].converter is typing.Literal else getattr(config[input]["param"].converter, "__name__", "")) + ")")[:44], "style": config[input]["style"], "placeholder": str(config[input]["default"]), "default": (str(config[input]["value"]) if not str(config[input]["value"]) == str(config[input]["default"]) else None), "required": False, "custom_id": f"CogsUtils_ModalConfig_{input}"} for input in config], custom_id=f"CogsUtils_ModalConfig_{self.cog.__class__.__name__}")
+        await interaction.response.send_modal(view_modal)
+        try:
+            interaction, inputs, function_result = await view_modal.wait_result()
+        except TimeoutError:
+            return None
+        async with ctx.typing():
+            for input in inputs:
+                custom_id = input.custom_id.replace("CogsUtils_ModalConfig_", "")
+                if input.value == "":
+                    new_config[input.custom_id.replace("CogsUtils_ModalConfig_", "")] = config[custom_id]["default"]
+                    continue
+                try:
+                    value = await discord.ext.commands.converter.run_converters(ctx, converter=config[custom_id]["param"].converter, argument=str(input.value), param=config[custom_id]["param"])
+                except discord.ext.commands.errors.CommandError as e:
+                    await ctx.send(f"An error occurred when using the `{input.label}` converter:\n{box(e)}")
+                    return
+                new_config[custom_id] = value
+            for key, value in all_config.items():
+                if key not in new_config:
+                    new_config[key] = value
+        await message.delete()
+        if not bypass_confirm:
+            embed: discord.Embed = discord.Embed()
+            embed.title = _("⚙️ Do you want to replace the entire Config of {self.cog.__class__.__name__} with what you specified?").format(**locals())
+            if not await self.ConfirmationAsk(ctx, embed=embed):
+                return None
+        return new_config
 
     async def autodestruction(self):
         """
@@ -788,31 +1342,34 @@ class CogsUtils(commands.Cog):
 class Loop():
     """
     Create a loop, with many features.
-    Thanks to Vexed01 on GitHub! (https://github.com/Vexed01/Vex-Cogs/blob/master/timechannel/loop.py)
+    Thanks to Vexed01 on GitHub! (https://github.com/Vexed01/Vex-Cogs/blob/master/timechannel/loop.py and https://github.com/Vexed01/vex-cog-utils/vexutils/loop.py)
     """
-    def __init__(self, cogsutils: CogsUtils, name: str, function, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None, limit_exception: typing.Optional[int]=None) -> None:
+    def __init__(self, cogsutils: CogsUtils, name: str, function, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, wait_raw: typing.Optional[bool]=False, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None, limit_exception: typing.Optional[int]=None) -> None:
         self.cogsutils: CogsUtils = cogsutils
 
         self.name: str = name
         self.function = function
         self.function_args = function_args
         self.interval: float = datetime.timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds).total_seconds()
+        self.wait_raw = wait_raw
         self.limit_count: int = limit_count
         self.limit_date: datetime.datetime = limit_date
         self.limit_exception: int = limit_exception
-        self.loop = self.cogsutils.bot.loop.create_task(self.loop())
         self.stop_manually: bool = False
-        self.stop: bool = False
 
+        self.start_datetime: datetime.datetime = datetime.datetime.utcnow()
         self.expected_interval = datetime.timedelta(seconds=self.interval)
-        self.iter_count: int = 0
-        self.iter_exception: int = 0
-        self.currently_running: bool = False  # whether the loop is running or sleeping
+        self.last_iteration: typing.Optional[datetime.datetime] = None
+        self.next_iteration: typing.Optional[datetime.datetime] = None
+        self.currently_running: bool = False  # whether the function is running 
+        self.iteration_count: int = 0
         self.last_result = None
+        self.iteration_exception: int = 0
         self.last_exc: str = "No exception has occurred yet."
         self.last_exc_raw: typing.Optional[BaseException] = None
-        self.last_iter: typing.Optional[datetime.datetime] = None
-        self.next_iter: typing.Optional[datetime.datetime] = None
+        self.stop: bool = False
+
+        self.loop = self.cogsutils.bot.loop.create_task(self.loop())
 
     async def start(self):
         if self.cogsutils.is_dpy2:
@@ -821,80 +1378,80 @@ class Loop():
         else:
             self.cogsutils.bot.loop.create_task(self.loop())
 
-    async def wait_until_iter(self) -> None:
+    async def wait_until_iteration(self) -> None:
+        """Sleep during the raw interval."""
         now = datetime.datetime.utcnow()
         time = now.timestamp()
         time = math.ceil(time / self.interval) * self.interval
-        next_iter = datetime.datetime.fromtimestamp(time) - now
-        seconds_to_sleep = (next_iter).total_seconds()
+        next_iteration = datetime.datetime.fromtimestamp(time) - now
+        seconds_to_sleep = (next_iteration).total_seconds()
         if not self.interval <= 60:
-            if hasattr(self.cogsutils.cog, 'log'):
-                self.cogsutils.cog.log.debug(f"Sleeping for {seconds_to_sleep} seconds until next iter...")
+            if hasattr(self.cogsutils.cog, "log"):
+                self.cogsutils.cog.log.debug(f"Sleeping for {seconds_to_sleep} seconds until {self.name} loop next iteration ({self.iteration_count + 1})...")
         await asyncio.sleep(seconds_to_sleep)
 
     async def loop(self) -> None:
         await self.cogsutils.bot.wait_until_red_ready()
         await asyncio.sleep(1)
-        if hasattr(self.cogsutils.cog, 'log'):
+        if hasattr(self.cogsutils.cog, "log"):
             self.cogsutils.cog.log.debug(f"{self.name} loop has started.")
-        if float(self.interval) % float(3600) == 0:
-            try:
-                start = monotonic()
-                self.iter_start()
-                self.last_result = await self.function(**self.function_args)
-                self.iter_finish()
-                end = monotonic()
-                total = round(end - start, 1)
-                if not self.interval <= 60:
-                    if hasattr(self.cogsutils.cog, 'log'):
-                        self.cogsutils.cog.log.debug(f"{self.name} initial loop finished in {total}s.")
-            except Exception as e:
-                if hasattr(self.cogsutils.cog, 'log'):
-                    self.cogsutils.cog.log.exception(f"Something went wrong in the {self.name} loop.", exc_info=e)
-                self.iter_error(e)
-                self.iter_exception += 1
-            # both iter_finish and iter_error set next_iter as not None
-            assert self.next_iter is not None
-            self.next_iter = self.next_iter.replace(
-                minute=0
-            )  # ensure further iterations are on the hour
-            if await self.maybe_stop():
-                return
-            await self.sleep_until_next()
         while True:
             try:
-                start = monotonic()
-                self.iter_start()
+                start = time.monotonic()
+                self.iteration_start()
                 self.last_result = await self.function(**self.function_args)
-                self.iter_finish()
-                end = monotonic()
+                self.iteration_finish()
+                end = time.monotonic()
                 total = round(end - start, 1)
-                if not self.interval <= 60:
-                    if hasattr(self.cogsutils.cog, 'log'):
-                        self.cogsutils.cog.log.debug(f"{self.name} iteration finished in {total}s.")
+                if hasattr(self.cogsutils.cog, "log"):
+                    if self.iteration_count == 1:
+                        self.cogsutils.cog.log.debug(f"{self.name} initial iteration finished in {total}s ({self.iteration_count}).")
+                    else:
+                        if not self.interval <= 60:
+                            self.cogsutils.cog.log.debug(f"{self.name} iteration finished in {total}s ({self.iteration_count}).")
             except Exception as e:
-                if hasattr(self.cogsutils.cog, 'log'):
-                    self.cogsutils.cog.log.exception(f"Something went wrong in the {self.name} loop.", exc_info=e)
-                self.iter_error(e)
-            if await self.maybe_stop():
+                if hasattr(self.cogsutils.cog, "log"):
+                    if self.iteration_count == 1:
+                        self.cogsutils.cog.log.exception(f"Something went wrong in the {self.name} loop ({self.iteration_count}).", exc_info=e)
+                    else:
+                        self.cogsutils.cog.log.exception(f"Something went wrong in the {self.name} loop iteration ({self.iteration_count}).", exc_info=e)
+                self.iteration_error(e)
+            if self.maybe_stop():
                 return
-            if float(self.interval) % float(3600) == 0:
-                await self.sleep_until_next()
-            else:
+            if not self.wait_raw:
+                # both iteration_finish and iteration_error set next_iteration as not None
+                assert self.next_iteration is not None
+                if float(self.interval) % float(3600) == 0:
+                    self.next_iteration = self.next_iteration.replace(
+                        minute=0,
+                        second=0,
+                        microsecond=0
+                    )  # ensure further iterations are on the hour
+                elif float(self.interval) % float(60) == 0:
+                    self.next_iteration = self.next_iteration.replace(
+                        second=0,
+                        microsecond=0
+                    )  # ensure further iterations are on the minute
+                else:
+                    self.next_iteration = self.next_iteration.replace(
+                        microsecond=0
+                    )  # ensure further iterations are on the second
                 if not self.interval == 0:
-                    await self.wait_until_iter()
+                    await self.wait_until_iteration()
+            else:
+                await self.sleep_until_next()
 
-    async def maybe_stop(self):
+    def maybe_stop(self):
         if self.stop_manually:
             self.stop_all()
         if self.limit_count is not None:
-            if self.iter_count >= self.limit_count:
+            if self.iteration_count >= self.limit_count:
                 self.stop_all()
         if self.limit_date is not None:
             if datetime.datetime.timestamp(datetime.datetime.now()) >= datetime.datetime.timestamp(self.limit_date):
                 self.stop_all()
         if self.limit_exception:
-            if self.iter_exception >= self.limit_exception:
+            if self.iteration_exception >= self.limit_exception:
                 self.stop_all()
         if self.stop:
             return True
@@ -902,18 +1459,20 @@ class Loop():
 
     def stop_all(self):
         self.stop = True
-        self.next_iter = None
+        self.next_iteration = None
         self.loop.cancel()
         if f"{self.name}" in self.cogsutils.loops:
             if self.cogsutils.loops[f"{self.name}"] == self:
                 del self.cogsutils.loops[f"{self.name}"]
+        if hasattr(self.cogsutils.cog, "log"):
+            self.cogsutils.cog.log.debug(f"{self.name} loop has been stopped after {self.iteration_count} iterations.")
         return self
 
     def __repr__(self) -> str:
         return (
-            f"<friendly_name={self.name} iter_count={self.iter_count} "
-            f"currently_running={self.currently_running} last_iter={self.last_iter} "
-            f"next_iter={self.next_iter} integrity={self.integrity}>"
+            f"<friendly_name={self.name} iteration_count={self.iteration_count} "
+            f"currently_running={self.currently_running} last_iteration={self.last_iteration} "
+            f"next_iteration={self.next_iteration} integrity={self.integrity}>"
         )
 
     @property
@@ -921,9 +1480,9 @@ class Loop():
         """
         If the loop is running on time (whether or not next expected iteration is in the future)
         """
-        if self.next_iter is None:  # not started yet
+        if self.next_iteration is None:  # not started yet
             return False
-        return self.next_iter > datetime.datetime.utcnow()
+        return self.next_iteration > datetime.datetime.utcnow()
 
     @property
     def until_next(self) -> float:
@@ -932,10 +1491,10 @@ class Loop():
         iteration and the interval.
         If the expected time of the next iteration is in the past, this will return `0.0`
         """
-        if self.next_iter is None:  # not started yet
+        if self.next_iteration is None:  # not started yet
             return 0.0
 
-        raw_until_next = (self.next_iter - datetime.datetime.utcnow()).total_seconds()
+        raw_until_next = (self.next_iteration - datetime.datetime.utcnow()).total_seconds()
         if raw_until_next > self.expected_interval.total_seconds():  # should never happen
             return self.expected_interval.total_seconds()
         elif raw_until_next > 0.0:
@@ -947,20 +1506,20 @@ class Loop():
         """Sleep until the next iteration. Basically an "all-in-one" version of `until_next`."""
         await asyncio.sleep(self.until_next)
 
-    def iter_start(self) -> None:
+    def iteration_start(self) -> None:
         """Register an iteration as starting."""
-        self.iter_count += 1
+        self.iteration_count += 1
         self.currently_running = True
-        self.last_iter = datetime.datetime.utcnow()
-        self.next_iter = datetime.datetime.utcnow() + self.expected_interval
+        self.last_iteration = datetime.datetime.utcnow()
+        self.next_iteration = datetime.datetime.utcnow() + self.expected_interval
         # this isn't accurate, it will be "corrected" when finishing is called
 
-    def iter_finish(self) -> None:
+    def iteration_finish(self) -> None:
         """Register an iteration as finished successfully."""
         self.currently_running = False
         # now this is accurate. imo its better to have something than nothing
 
-    def iter_error(self, error: BaseException) -> None:
+    def iteration_error(self, error: BaseException) -> None:
         """Register an iteration's error."""
         self.currently_running = False
         self.last_exc_raw = error
@@ -970,35 +1529,52 @@ class Loop():
 
     def get_debug_embed(self) -> discord.Embed:
         """Get an embed with infomation on this loop."""
-        table = Table("Key", "Value")
+        now: datetime.datetime = datetime.datetime.utcnow()
 
-        table.add_row("expected_interval", str(self.expected_interval))
-        table.add_row("iter_count", str(self.iter_count))
-        table.add_row("currently_running", str(self.currently_running))
-        table.add_row("last_iterstr", str(self.last_iter) or "Loop not started")
-        table.add_row("next_iterstr", str(self.next_iter) or "Loop not started")
+        raw_table = Table("Key", "Value")
+        raw_table.add_row("expected_interval", str(self.expected_interval))
+        raw_table.add_row("iteration_count", str(self.iteration_count))
+        raw_table.add_row("currently_running", str(self.currently_running))
+        raw_table.add_row("last_iteration", str(self.last_iteration))
+        raw_table.add_row("next_iteration", str(self.next_iteration))
+        raw_table_str = no_colour_rich_markup(raw_table)
 
-        raw_table_str = no_colour_rich_markup(table)
-
-        now = datetime.datetime.utcnow()
-
-        if self.next_iter and self.last_iter:
-            table = Table("Key", "Value")
-            table.add_row("Seconds until next", str((self.next_iter - now).total_seconds()))
-            table.add_row("Seconds since last", str((now - self.last_iter).total_seconds()))
-            processed_table_str = no_colour_rich_markup(table)
+        if self.next_iteration and self.last_iteration:
+            processed_table = Table("Key", "Value")
+            processed_table.add_row("Seconds until next", str((self.next_iteration - now).total_seconds()))
+            processed_table.add_row("Seconds since last", str((now - self.last_iteration).total_seconds()))
+            processed_table.add_row("Raw interval", str((self.next_iteration - now).total_seconds() + (now - self.last_iteration).total_seconds()))
+            processed_table_str = no_colour_rich_markup(processed_table)
         else:
             processed_table_str = "Loop hasn't started yet."
 
+        datetime_table = Table("Key", "Value")
+        datetime_table.add_row("Start date-time", str(self.start_datetime))
+        datetime_table.add_row("Now date-time", str(now))
+        datetime_table.add_row("Runtime", (str(now - self.start_datetime) + "\n" + str((now - self.start_datetime).total_seconds()) + "s"))
+        datetime_table_str = no_colour_rich_markup(datetime_table)
+
         emoji = "✅" if self.integrity else "❌"
-        embed = discord.Embed(title=f"{self.name}: `{emoji}`")
-        embed.add_field(name="Raw data", value=raw_table_str, inline=False)
+        embed: discord.Embed = discord.Embed(title=f"{self.name} Loop: `{emoji}`")
+        embed.color = 0x00D26A if self.integrity else 0xF92F60
+        embed.timestamp = now
+        embed.add_field(
+            name="Raw data",
+            value=raw_table_str,
+            inline=False
+        )
         embed.add_field(
             name="Processed data",
             value=processed_table_str,
             inline=False,
         )
+        embed.add_field(
+            name="DateTime data",
+            value=datetime_table_str,
+            inline=False,
+        )
         exc = self.last_exc
+        exc = self.cogsutils.replace_var_paths(exc)
         if len(exc) > 1024:
             exc = list(pagify(exc, page_length=1024))[0] + "\n..."
         embed.add_field(name="Exception", value=box(exc), inline=False)
@@ -1065,7 +1641,7 @@ class Captcha():
         except self.MissingPermissions as e:
             raise self.MissingPermissions(e)
         except Exception as e:
-            if hasattr(self.cogsutils.cog, 'log'):
+            if hasattr(self.cogsutils.cog, "log"):
                 self.cogsutils.cog.log.error("An unsupported error occurred during the captcha.", exc_info=e)
             raise self.OtherException(e)
         finally:
@@ -1243,6 +1819,9 @@ if CogsUtils().is_dpy2:
         def __init__(self, timeout: typing.Optional[float]=180, buttons: typing.Optional[typing.List]=[{}], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
             """style: ButtonStyle, label: Optional[str], disabled: bool, custom_id: Optional[str], url: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], row: Optional[int]"""
             for button_dict in buttons:
+                if "url" in button_dict and button_dict["url"] is not None:
+                    button_dict["style"] = 5
+                    continue
                 if "custom_id" not in button_dict:
                     button_dict["custom_id"] = "CogsUtils" + "_" + CogsUtils().generate_key(number=10)
             self.buttons_dict_instance = {"timeout": timeout, "buttons": [b.copy() for b in buttons], "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
@@ -1260,7 +1839,12 @@ if CogsUtils().is_dpy2:
             self.done = asyncio.Event()
             for button_dict in buttons:
                 if "style" not in button_dict:
-                    button_dict["style"] = int(discord.ButtonStyle(2))
+                    button_dict["style"] = discord.ButtonStyle(2)
+                else:
+                    if isinstance(button_dict["style"], int):
+                        button_dict["style"] = discord.ButtonStyle(button_dict["style"])
+                if "disabled" not in button_dict:
+                    button_dict["disabled"] = False
                 if "label" not in button_dict and "emoji" not in button_dict:
                     button_dict["label"] = "Test"
                 button = discord.ui.Button(**button_dict)
@@ -1314,17 +1898,30 @@ if CogsUtils().is_dpy2:
     class Dropdown(discord.ui.View):
         """Create Dropdown easily."""
 
-        def __init__(self, timeout: typing.Optional[float]=180, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[{}], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
+        def __init__(self, timeout: typing.Optional[float]=180, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[{}], disabled: typing.Optional[bool]=False, members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False, custom_id: typing.Optional[str]=f"CogsUtils_{CogsUtils().generate_key(number=10)}"):
             """label: str, value: str, description: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], default: bool"""
-            self.dropdown_dict_instance = {"timeout": timeout, "placeholder": placeholder, "min_values": min_values, "max_values": max_values, "options": [o.copy() for o in options], "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
+            self.dropdown_dict_instance = {"timeout": timeout, "placeholder": placeholder, "min_values": min_values, "max_values": max_values, "options": [o.copy() for o in options], "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity, "custom_id": custom_id}
             super().__init__(timeout=timeout)
             self.infinity = infinity
-            self.dropdown = self.Dropdown(placeholder=placeholder, min_values=min_values, max_values=max_values, options=options, members=members, check=check, function=function, function_args=function_args, infinity=self.infinity)
+            self.interaction_result = None
+            self.options_result = None
+            self.function_result = None
+            self.disabled = disabled
+            self.members = members
+            self.check = check
+            self.function = function
+            self.function_args = function_args
+            self.clear_items()
+            self.dropdown = Select(placeholder=placeholder, min_values=min_values, max_values=max_values, options=options, disabled=disabled, custom_id=custom_id)
+            self.options = self.dropdown._options
+            self.options_dict = self.dropdown.options_dict
+            self.done = asyncio.Event()
             self.add_item(self.dropdown)
 
         def to_dict_cogsutils(self, for_Config: typing.Optional[bool]=False):
             dropdown_dict_instance = self.dropdown_dict_instance
             if for_Config:
+                dropdown_dict_instance["members"] = None
                 dropdown_dict_instance["check"] = None
                 dropdown_dict_instance["function"] = None
             return dropdown_dict_instance
@@ -1339,67 +1936,63 @@ if CogsUtils().is_dpy2:
 
         async def wait_result(self):
             self.done = asyncio.Event()
-            await self.dropdown.done.wait()
-            interaction, values, function_result = self.get_result()
+            await self.done.wait()
+            interaction, options, function_result = self.get_result()
             if interaction is None:
                 raise TimeoutError()
-            return interaction, values, function_result
+            return interaction, options, function_result
 
         def get_result(self):
-            return self.dropdown.interaction_result, self.dropdown.values_result, self.dropdown.function_result
+            return self.interaction_result, self.options_result, self.function_result
 
-        class Dropdown(discord.ui.Select):
+        async def callback(self, interaction: discord.Interaction):
+            if self.check is not None:
+                if not self.check(interaction):
+                    await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
+                    return True
+            if self.members is not None:
+                if interaction.user.id not in self.members:
+                    await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
+                    return True
+            self.interaction_result = interaction
+            self.options_result = self.dropdown.values
+            if self.function is not None:
+                self.function_result = await self.function(self, interaction, self.dropdown.values, **self.function_args)
+            self.done.set()
+            if not self.infinity:
+                self.stop()
 
-            def __init__(self, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
-                self.infinity = infinity
-                self.interaction_result = None
-                self.values_result = None
-                self.function_result = None
-                self.members = members
-                self.check = check
-                self.function = function
-                self.function_args = function_args
-                self._options = []
-                self.options_dict = []
-                self.done = asyncio.Event()
-                for option_dict in options:
-                    if "label" not in option_dict and "emoji" not in option_dict:
-                        option_dict["label"] = "Test"
-                    option = discord.SelectOption(**option_dict)
-                    self._options.append(option)
-                    self.options_dict.append(option_dict)
-                super().__init__(placeholder=placeholder, min_values=min_values, max_values=max_values, options=self._options)
+    class Select(discord.ui.Select):
 
-            async def callback(self, interaction: discord.Interaction):
-                if self.check is not None:
-                    if not self.check(interaction):
-                        await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
-                        return True
-                if self.members is not None:
-                    if interaction.user.id not in self.members:
-                        await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
-                        return True
-                self.interaction_result = interaction
-                self.values_result = self.values
-                if self.function is not None:
-                    self.function_result = await self.function(self, interaction, self.values, **self.function_args)
-                self.done.set()
-                if not self.infinity:
-                    self.view.stop()
+        def __init__(self, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], disabled: typing.Optional[bool]=False, custom_id: typing.Optional[str]=f"CogsUtils_{CogsUtils().generate_key(number=10)}"):
+            self._options = []
+            self.options_dict = []
+            self.done = asyncio.Event()
+            for option_dict in options:
+                if "label" not in option_dict and "emoji" not in option_dict:
+                    option_dict["label"] = "Test"
+                option = discord.SelectOption(**option_dict)
+                self._options.append(option)
+                self.options_dict.append(option_dict)
+            super().__init__(custom_id=custom_id, placeholder=placeholder, min_values=min_values, max_values=max_values, options=self._options, disabled=disabled)
+
+        async def callback(self, interaction: discord.Interaction):
+            if hasattr(self.view, "callback"):
+                await self.view.callback(interaction)
 
     class Modal(discord.ui.Modal):
         """Create Modal easily."""
 
-        def __init__(self, title: typing.Optional[str]="Form", timeout: typing.Optional[float]=None, inputs: typing.Optional[typing.List]=[{}], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}):
-            """name: str, label: str, style: TextStyle, custom_id: str, placeholder: Optional[str], default: Optional[str], required: bool, min_length: Optional[int], max_length: Optional[int], row: Optional[int]"""
+        def __init__(self, title: typing.Optional[str]="Form", timeout: typing.Optional[float]=None, inputs: typing.Optional[typing.List]=[{}], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, custom_id: typing.Optional[str]=f"CogsUtils_{CogsUtils().generate_key(number=10)}"):
+            """label: str, style: TextStyle, custom_id: str, placeholder: Optional[str], default: Optional[str], required: bool, min_length: Optional[int], max_length: Optional[int], row: Optional[int]"""
             for input_dict in inputs:
                 if "custom_id" not in input_dict:
-                    input_dict["custom_id"] = "CogsUtils" + "_" + CogsUtils().generate_key(number=10)
-            self.modal_dict_instance = {"title": title, "timeout": timeout, "inputs": [i.copy() for i in inputs], "function": function, "function_args": function_args}
-            super().__init__(title=title, timeout=timeout)
+                    input_dict["custom_id"] = f"CogsUtils_{CogsUtils().generate_key(number=10)}"
+            self.modal_dict_instance = {"title": title, "timeout": timeout, "inputs": [i.copy() for i in inputs], "members": members, "check": check, "function": function, "function_args": function_args, "custom_id": custom_id}
+            super().__init__(title=title, timeout=timeout, custom_id=custom_id)
             self.title = title
             self.interaction_result = None
-            self.values_result = None
+            self.inputs_result = None
             self.function_result = None
             self.members = members
             self.check = check
@@ -1422,6 +2015,8 @@ if CogsUtils().is_dpy2:
         def to_dict_cogsutils(self, for_Config: typing.Optional[bool]=False):
             modal_dict_instance = self.modal_dict_instance
             if for_Config:
+                modal_dict_instance["members"] = None
+                modal_dict_instance["check"] = None
                 modal_dict_instance["function"] = None
             return modal_dict_instance
 
@@ -1439,9 +2034,9 @@ if CogsUtils().is_dpy2:
                     await interaction.response.send_message("You are not allowed to use this interaction.", ephemeral=True)
                     return True
             self.interaction_result = interaction
-            self.values_result = self.inputs
+            self.inputs_result = self.inputs
             if self.function is not None:
-                self.function_result = await self.function(self, self.interaction_result, self.values_result, **self.function_args)
+                self.function_result = await self.function(self, self.interaction_result, self.inputs_result, **self.function_args)
             self.done.set()
             self.stop()
 
@@ -1452,13 +2047,13 @@ if CogsUtils().is_dpy2:
         async def wait_result(self):
             self.done = asyncio.Event()
             await self.done.wait()
-            interaction, values, function_result = self.get_result()
+            interaction, inputs_result, function_result = self.get_result()
             if interaction is None:
                 raise TimeoutError()
-            return interaction, values, function_result
+            return interaction, inputs_result, function_result
 
         def get_result(self):
-            return self.interaction_result, self.values_result, self.function_result
+            return self.interaction_result, self.inputs_result, self.function_result
 
 class Reactions():
     """Create Reactions easily."""
@@ -1487,6 +2082,7 @@ class Reactions():
         if for_Config:
             reactions_dict_instance["bot"] = None
             reactions_dict_instance["message"] = None
+            reactions_dict_instance["members"] = None
             reactions_dict_instance["check"] = None
             reactions_dict_instance["function"] = None
         return reactions_dict_instance
@@ -1500,10 +2096,10 @@ class Reactions():
             await start_adding_reactions(self.message, self.reactions)
             self.r = True
         predicates = ReactionPredicate.same_context(message=self.message)
-        result = False
+        running = True
         try:
             while True:
-                if result:
+                if not running:
                     break
                 tasks = [asyncio.create_task(self.bot.wait_for("reaction_add", check=predicates))]
                 done, pending = await asyncio.wait(
@@ -1514,7 +2110,7 @@ class Reactions():
                 if len(done) == 0:
                     raise TimeoutError()
                 reaction, user = done.pop().result()
-                result = await self.reaction_check(reaction, user)
+                running = await self.reaction_check(reaction, user)
         except TimeoutError:
             await self.on_timeout()
 
@@ -1564,18 +2160,20 @@ class Reactions():
 class Menu():
     """Create Menus easily."""
 
-    def __init__(self, pages: typing.List[typing.Union[typing.Dict[str, typing.Union[str, discord.Embed]], discord.Embed, str]], timeout: typing.Optional[int]=180, delete_after_timeout: typing.Optional[bool]=False, way: typing.Optional[typing.Literal["buttons", "reactions", "dropdown"]]="buttons", controls: typing.Optional[typing.Dict]={"⏮️": "left_page", "◀️": "prev_page", "❌": "close_page", "▶️": "next_page", "⏭️": "right_page"}, page_start: typing.Optional[int]=0, check_owner: typing.Optional[bool]=True, members_authored: typing.Optional[typing.Iterable[discord.Member]]=[]):
-        self.ctx = None
-        self.pages = pages
-        self.timeout = timeout
-        self.delete_after_timeout = delete_after_timeout
-        self.way = way
-        self.controls = controls.copy()
-        self.check_owner = check_owner
-        self.members_authored = members_authored
+    def __init__(self, pages: typing.List[typing.Union[typing.Dict[str, typing.Union[str, typing.Any]], discord.Embed, str]], timeout: typing.Optional[int]=180, delete_after_timeout: typing.Optional[bool]=False, way: typing.Optional[typing.Literal["buttons", "reactions", "dropdown"]]="buttons", controls: typing.Optional[typing.Dict]=None, page_start: typing.Optional[int]=0, check_owner: typing.Optional[bool]=True, members_authored: typing.Optional[typing.Iterable[discord.Member]]=[]):
+        self.ctx: commands.Context = None
+        self.pages: typing.List = pages
+        self.timeout: int = timeout
+        self.delete_after_timeout: bool = delete_after_timeout
+        self.way: typing.Literal["buttons", "reactions", "dropdown"] = way
+        if controls is None:
+            controls = {"⏮️": "left_page", "◀️": "prev_page", "❌": "close_page", "▶️": "next_page", "⏭️": "right_page", "🔻": "send_all", "📁": "send_as_file"}
+        self.controls: typing.Dict = controls.copy()
+        self.check_owner: bool = check_owner
+        self.members_authored: typing.List = members_authored
         if not CogsUtils().is_dpy2 and self.way == "buttons" or not CogsUtils().is_dpy2 and self.way == "dropdown":
             self.way = "reactions"
-        if not isinstance(self.pages[0], (discord.Embed, str)):
+        if not isinstance(self.pages[0], (typing.Dict, discord.Embed, str)):
             raise RuntimeError("Pages must be of type discord.Embed or str.")
 
         self.source = self._SimplePageSource(items=pages)
@@ -1583,9 +2181,18 @@ class Menu():
             for emoji, name in controls.items():
                 if name in ["left_page", "prev_page", "next_page", "right_page"]:
                     del self.controls[emoji]
-        self.message = None
-        self.view = None
-        self.current_page = page_start
+        if len(pages) > 3:
+            for emoji, name in controls.items():
+                if name in ["send_all"]:
+                    del self.controls[emoji]
+        if not all([isinstance(page, str) for page in self.pages]):
+            for emoji, name in controls.items():
+                if name in ["save_as_file"]:
+                    del self.controls[emoji]
+
+        self.message: discord.Message = None
+        self.view: typing.Union[Buttons, Dropdown] = None
+        self.current_page: int = page_start
 
     async def start(self, ctx: commands.Context):
         """
@@ -1596,17 +2203,14 @@ class Menu():
                 The context to start the menu in.
         """
         self.ctx = ctx
-        if self.way == "reactions":
-            asyncio.create_task(redbot.core.utils.menus.menu(ctx, pages=self.pages, controls=redbot.core.utils.menus.DEFAULT_CONTROLS, page=self.current_page, timeout=self.timeout))
-            return
         if self.way == "buttons":
-            self.view = Buttons(timeout=self.timeout, buttons=[{"emoji": str(e), "custom_id": str(n)} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+            self.view = Buttons(timeout=self.timeout, buttons=[{"emoji": str(e), "custom_id": str(n), "disabled": False} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
             await self.send_initial_message(ctx, ctx.channel)
         elif self.way == "reactions":
             await self.send_initial_message(ctx, ctx.channel)
             self.view = Reactions(bot=self.ctx.bot, message=self.message, remove_reaction=True, timeout=self.timeout, reactions=[str(e) for e in self.controls.keys()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
         elif self.way == "dropdown":
-            self.view = Dropdown(timeout=self.timeout, options=[{"emoji": str(e), "label": str(n).replace("_", " ").capitalize()} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+            self.view = Dropdown(timeout=self.timeout, options=[{"emoji": str(e), "label": str(n).replace("_", " ").capitalize()} for e, n in self.controls.items()], disabled=False, members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
             await self.send_initial_message(ctx, ctx.channel)
         try:
             while True:
@@ -1618,7 +2222,7 @@ class Menu():
                     response = self.controls[str(reaction.emoji)]
                 elif self.way == "dropdown":
                     interaction, values, function_result = await self.view.wait_result()
-                    response = str(values[0])
+                    response = str(values[0]).lower().replace(" ", "_")
                 if response == "left_page":
                     self.current_page = 0
                 elif response == "prev_page":
@@ -1632,10 +2236,23 @@ class Menu():
                     self.current_page += 1
                 elif response == "right_page":
                     self.current_page = self.source.get_max_pages() - 1
+                elif response == "send_all":
+                    for x in range(0, self.source.get_max_pages()):
+                        kwargs = await self.get_page(x)
+                        await ctx.send(**kwargs)
+                elif response == "send_as_file":
+                    def cleanup_code(content):
+                        """Automatically removes code blocks from the code."""
+                        # remove ˋˋˋpy\n````
+                        if content.startswith("```") and content.endswith("```"):
+                            return re.compile(r"^((```py(thon)?)(?=\s)|(```))").sub("", content)[:-3]
+                    all_text = [cleanup_code(page) for page in self.pages]
+                    all_text = "\n".join(all_text)
+                    await ctx.send(file=text_to_file(all_text, filename=f"Menu_{self.message.channel.id}-{self.message.id}.txt"))
                 kwargs = await self.get_page(self.current_page)
                 if self.way == "buttons" or self.way == "dropdown":
                     try:
-                        await interaction.response.edit_message(**kwargs)  # , view=self.view.from_dict_cogsutils(self.view.to_dict_cogsutils())
+                        await interaction.response.edit_message(**kwargs)
                     except discord.errors.InteractionResponded:
                         await self.message.edit(**kwargs)
                 else:
@@ -1647,7 +2264,14 @@ class Menu():
         self.author = ctx.author
         self.ctx = ctx
         kwargs = await self.get_page(self.current_page)
-        self.message = await channel.send(**kwargs, view=self.view if self.way in ["buttons", "dropdown"] else None)
+        if self.way in ["buttons", "dropdown"]:
+            self.message = await channel.send(**kwargs, view=self.view)
+        else:
+            self.message = await channel.send(**kwargs)
+        for page in self.pages:
+            if isinstance(page, typing.Dict):
+                if "file" in page:
+                    del page["file"]
         return self.message
 
     async def get_page(self, page_num: int):
@@ -1670,7 +2294,8 @@ class Menu():
         else:
             if self.way == "buttons":
                 self.view.stop()
-                await self.message.edit(view=None)
+                view = Buttons(timeout=self.timeout, buttons=[{"emoji": str(e), "custom_id": str(n), "disabled": True} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+                await self.message.edit(view=view)
             elif self.way == "reactions":
                 try:
                     await self.message.clear_reactions()
@@ -1681,7 +2306,8 @@ class Menu():
                         pass
             elif self.way == "dropdown":
                 self.view.stop()
-                await self.message.edit(view=None)
+                view = Dropdown(timeout=self.timeout, options=[{"emoji": str(e), "label": str(n).replace("_", " ").capitalize()} for e, n in self.controls.items()], disabled=True, members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+                await self.message.edit(view=view)
 
     class _SimplePageSource(menus.ListPageSource):
 
@@ -1705,23 +2331,23 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
         command = None
         check_updates = False
     if repo is not None:
-        repos = [repo]
+        _repos = [repo]
     else:
-        repos = [None]
+        _repos = [None]
     if cog is not None:
-        cogs = [cog]
+        _cogs = [cog]
     else:
-        cogs = [None]
+        _cogs = [None]
     if command is not None:
-        commands = [command]
+        _commands = [command]
     else:
-        commands = [None]
+        _commands = [None]
     if command is not None:
-        object_command = ctx.bot.get_command(commands[0])
+        object_command = ctx.bot.get_command(_commands[0])
         if object_command is None:
             await ctx.send(_("The command `{command}` does not exist.").format(**locals()))
             return
-        commands = [object_command]
+        _commands = [object_command]
     downloader = ctx.bot.get_cog("Downloader")
     if downloader is None:
         if CogsUtils(bot=ctx.bot).ConfirmationAsk(ctx, _("The cog downloader is not loaded. I can't continue. Do you want me to do it?").format(**locals())):
@@ -1732,7 +2358,7 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
     installed_cogs = await downloader.config.installed_cogs()
     loaded_cogs = [c.lower() for c in ctx.bot.cogs]
     if repo is not None:
-        rp = repos[0]
+        rp = _repos[0]
         if not isinstance(rp, Repo) and not "AAA3A".lower() in rp.lower():
             await ctx.send(_("Repo by the name `{rp}` does not exist.").format(**locals()))
             return
@@ -1740,31 +2366,31 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
             found = False
             for r in await downloader.config.installed_cogs():
                 if "AAA3A".lower() in str(r).lower():
-                    repos = [downloader._repo_manager.get_repo(str(r))]
+                    _repos = [downloader._repo_manager.get_repo(str(r))]
                     found = True
                     break
             if not found:
                 await ctx.send(_("Repo by the name `{rp}` does not exist.").format(**locals()))
                 return
         if check_updates:
-            cogs_to_check, failed = await downloader._get_cogs_to_check(repos={repos[0]})
+            cogs_to_check, failed = await downloader._get_cogs_to_check(repos={_repos[0]})
             cogs_to_update, libs_to_update = await downloader._available_updates(cogs_to_check)
             cogs_to_update, filter_message = downloader._filter_incorrect_cogs(cogs_to_update)
             to_update_cogs = [c.name.lower() for c in cogs_to_update]
 
     if all is not None:
-        repos = []
+        _repos = []
         for r in installed_cogs:
-            repos.append(downloader._repo_manager.get_repo(str(r)))
-        cogs = []
+            _repos.append(downloader._repo_manager.get_repo(str(r)))
+        _cogs = []
         for r in installed_cogs:
             for c in installed_cogs[r]:
-                cogs.append(await InstalledCog.convert(ctx, str(c)))
-        commands = []
+                _cogs.append(await InstalledCog.convert(ctx, str(c)))
+        _commands = []
         for c in ctx.bot.all_commands:
             cmd = ctx.bot.get_command(str(c))
             if cmd.cog is not None:
-                commands.append(cmd)
+                _commands.append(cmd)
         repo = True
         cog = True
         command = True
@@ -1792,14 +2418,9 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
         osver = "Could not parse OS, report this on Github."
     driver = storage_type()
     data_path_original = Path(basic_config["DATA_PATH"])
-    if "USERPROFILE" in os.environ:
-        data_path = Path(str(data_path_original).replace(os.environ["USERPROFILE"], "{USERPROFILE}"))
-        _config_file = Path(str(config_file).replace(os.environ["USERPROFILE"], "{USERPROFILE}"))
-        python_executable = Path(str(python_executable).replace(os.environ["USERPROFILE"], "{USERPROFILE}"))
-    if "HOME" in os.environ:
-        data_path = Path(str(data_path_original).replace(os.environ["HOME"], "{HOME}"))
-        _config_file = Path(str(config_file).replace(os.environ["HOME"], "{HOME}"))
-        python_executable = Path(str(python_executable).replace(os.environ["HOME"], "{HOME}"))
+    data_path = Path(CogsUtils().replace_var_paths(str(data_path_original)))
+    _config_file = Path(CogsUtils().replace_var_paths(str(config_file)))
+    python_executable = Path(CogsUtils().replace_var_paths(str(python_executable)))
     disabled_intents = (
         ", ".join(
             intent_name.replace("_", " ").title()
@@ -1874,16 +2495,32 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
             diagnose_result.append(bold(_("Solution: ")) + result.resolution)
         diagnose_result.extend(issue_diagnoser._get_message_from_check_result(result))
         return diagnose_result
-
+    async def get_all_config(cog: commands.Cog):
+        config = {}
+        if not hasattr(cog, 'config'):
+            return config
+        try:
+            config["global"] = await cog.config.all()
+            config["users"] = await cog.config.all_users()
+            config["guilds"] = await cog.config.all_guilds()
+            config["members"] = await cog.config.all_members()
+            config["roles"] = await cog.config.all_roles()
+            config["channels"] = await cog.config.all_channels()
+        except Exception:
+            return config
+        return config
     use_emojis = False
     check_emoji = "✅" if use_emojis else True
     cross_emoji = "❌" if use_emojis else False
+
+    ##################################################
     os_table = Table("Key", "Value", title="Host machine informations")
     os_table.add_row("OS version", str(osver))
     os_table.add_row("Python executable", str(python_executable))
     os_table.add_row("Python version", str(pyver))
     os_table.add_row("Pip version", str(pipver))
     raw_os_table_str = no_colour_rich_markup(os_table)
+    ##################################################
     red_table = Table("Key", "Value", title="Red instance informations")
     red_table.add_row("Red version", str(redver))
     red_table.add_row("Discord.py version", str(dpy_version))
@@ -1898,9 +2535,18 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
         if not await ctx.bot.get_valid_prefixes() == await ctx.bot.get_valid_prefixes(ctx.guild):
             red_table.add_row("Guild prefixe(s)", str(await ctx.bot.get_valid_prefixes(ctx.guild)).replace(f"{ctx.bot.user.id}", "{bot_id}"))
     raw_red_table_str = no_colour_rich_markup(red_table)
+    ##################################################
+    context_table = Table("Key", "Value", title="Context")
+    context_table.add_row("Channel type", str(f"discord.{ctx.channel.__class__.__name__}"))
+    context_table.add_row("Bot permissions value (guild)", str(ctx.guild.me.guild_permissions.value if ctx.guild is not None else "Not in a guild."))
+    context_table.add_row("Bot permissions value (channel)", str(ctx.channel.permissions_for(ctx.guild.me).value if ctx.guild is not None else ctx.channel.permissions_for(ctx.bot.user).value))
+    context_table.add_row("User permissions value (guild)", str(ctx.author.guild_permissions.value if ctx.guild is not None else "Not in a guild."))
+    context_table.add_row("User permissions value (channel)", str(ctx.channel.permissions_for(ctx.author).value))
+    raw_context_table_str = no_colour_rich_markup(context_table)
+    ##################################################
     if repo is not None:
-        raw_cogs_table_str = []
-        for repo in repos:
+        raw_repo_table_str = []
+        for repo in _repos:
             if not check_updates:
                 cogs_table = Table("Name", "Commit", "Loaded", "Pinned", title=f"Cogs installed for {repo.name}")
             else:
@@ -1911,12 +2557,13 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
                     cogs_table.add_row(str(_cog.name), str(_cog.commit), str(check_emoji if _cog.name in loaded_cogs else cross_emoji), str(check_emoji if _cog.pinned else cross_emoji))
                 else:
                     cogs_table.add_row(str(_cog.name), str(_cog.commit), str(check_emoji if _cog.name in loaded_cogs else cross_emoji), str(check_emoji if _cog.pinned else cross_emoji), str(check_emoji if _cog.name in to_update_cogs else cross_emoji))
-            raw_cogs_table_str.append(no_colour_rich_markup(cogs_table))
+            raw_repo_table_str.append(no_colour_rich_markup(cogs_table))
     else:
-        raw_cogs_table_str = None
+        raw_repo_table_str = None
+    ##################################################
     if cog is not None:
-        raw_cog_table_str = []
-        for cog in cogs:
+        raw_cogs_table_str = []
+        for cog in _cogs:
             cog_table = Table("Key", "Value", title=f"Cog {cog.name}")
             cog_table.add_row("Name", str(cog.name))
             cog_table.add_row("Repo name", str(cog.repo_name))
@@ -1930,12 +2577,14 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
             cog_table.add_row("Min python version", str(cog.min_python_version))
             cog_table.add_row("Author", str([a for a in cog.author]))
             cog_table.add_row("Commit", str(cog.commit))
-            raw_cog_table_str.append(no_colour_rich_markup(cog_table))
+            raw_cog_table_str = no_colour_rich_markup(cog_table)
+            raw_cogs_table_str.append(raw_cog_table_str)
     else:
-        raw_cog_table_str = None
+        raw_cogs_table_str = None
+    ##################################################
     if command is not None:
-        raw_command_table_str = []
-        for command in commands:
+        raw_commands_table_str = []
+        for command in _commands:
             command_table = Table("Key", "Value", title=f"Command {command.qualified_name}")
             command_table.add_row("Qualified name", str(command.qualified_name))
             command_table.add_row("Cog name", str(command.cog_name))
@@ -1959,30 +2608,53 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
                         command_table.add_row("Issue Diagnose", str(x))
                     else:
                         command_table.add_row("", str(x).replace("✅", "").replace("❌", ""))
-            raw_command_table_str.append(no_colour_rich_markup(command_table))
+            raw_command_table_str = no_colour_rich_markup(command_table)
+            raw_commands_table_str.append(raw_command_table_str)
             cog = command.cog.__class__.__name__ if command.cog is not None else "None"
-            if hasattr(ctx.bot, 'last_exceptions_cogs') and cog in ctx.bot.last_exceptions_cogs and command.qualified_name in ctx.bot.last_exceptions_cogs[cog]:
-                raw_error_table = []
+            if hasattr(ctx.bot, "last_exceptions_cogs") and cog in ctx.bot.last_exceptions_cogs and command.qualified_name in ctx.bot.last_exceptions_cogs[cog]:
+                raw_errors_table = []
                 error_table = Table("Last error recorded for this command")
                 error_table.add_row(str(ctx.bot.last_exceptions_cogs[cog][command.qualified_name][len(ctx.bot.last_exceptions_cogs[cog][command.qualified_name]) - 1]))
-                raw_error_table.append(no_colour_rich_markup(error_table))
+                raw_errors_table.append(no_colour_rich_markup(error_table))
             else:
-                raw_error_table = None
+                raw_errors_table = None
     else:
-        raw_command_table_str = None
-        raw_error_table = None
+        raw_commands_table_str = None
+        raw_errors_table = None
+    ##################################################
+    if _cogs is not None and len(_cogs) == 1 and _cogs[0] is not None:
+        cog = None
+        for name, value in ctx.bot.cogs.items():
+            if name.lower() == _cogs[0].name.lower():
+                cog = value
+                break
+        if cog is not None:
+            config_table = Table(f"All Config for {cog.__class__.__name__}")
+            config_table.add_row(str(await get_all_config(cog)))
+            raw_config_table_str = no_colour_rich_markup(config_table)
+        else:
+            raw_config_table_str = None
+    else:
+        raw_config_table_str = None
+    ##################################################
 
-    response = [raw_os_table_str, raw_red_table_str]
-    for x in [raw_cogs_table_str, raw_cog_table_str, raw_command_table_str, raw_error_table]:
+    response = [raw_os_table_str, raw_red_table_str, raw_context_table_str]
+    for x in [raw_repo_table_str, raw_cogs_table_str, raw_commands_table_str, raw_errors_table, raw_config_table_str]:
         if x is not None:
-            for y in x:
-                response.append(y)
-    to_html = to_html_getallfor.replace("{AVATAR_URL}", str(ctx.bot.user.display_avatar) if CogsUtils().is_dpy2 else str(ctx.bot.user.avatar_url)).replace("{BOT_NAME}", str(ctx.bot.user.name)).replace("{REPO_NAME}", str(getattr(repos[0], "name", None) if all is None else "All")).replace("{COG_NAME}", str(getattr(cogs[0], "name", None) if all is None else "All")).replace("{COMMAND_NAME}", str(getattr(commands[0], "qualified_name", None) if all is None else "All"))
+            if isinstance(x, typing.List):
+                for y in x:
+                    response.append(y)
+            elif isinstance(x, str):
+                response.append(x)
+    to_html = to_html_getallfor.replace("{AVATAR_URL}", str(ctx.bot.user.display_avatar) if CogsUtils().is_dpy2 else str(ctx.bot.user.avatar_url)).replace("{BOT_NAME}", str(ctx.bot.user.name)).replace("{REPO_NAME}", str(getattr(_repos[0], "name", None) if all is None else "All")).replace("{COG_NAME}", str(getattr(_cogs[0], "name", None) if all is None else "All")).replace("{COMMAND_NAME}", str(getattr(_commands[0], "qualified_name", None) if all is None else "All"))
     message_html = message_html_getallfor
     end_html = end_html_getallfor
     count_page = 0
-    if page is not None and page - 1 in [0, 1, 2, 3, 4, 5]:
-        response = [response[page - 1]]
+    try:
+        if page is not None and page - 1 in [0, 1, 2, 3, 4, 5, 6, 7]:
+            response = [response[page - 1]]
+    except ValueError:
+        pass
     for page in response:
         if page is not None:
             count_page += 1
@@ -1990,7 +2662,7 @@ async def getallfor(ctx: commands.Context, all: typing.Optional[typing.Literal["
                 to_html += message_html.replace("{MESSAGE_CONTENT}", str(page).replace("```", "").replace("<", "&lt;").replace("\n", "<br>")).replace("{TIMESTAMP}", str(ctx.message.created_at.strftime("%b %d, %Y %I:%M %p")))
             else:
                 to_html += message_html.replace('    <div class="chatlog__messages">', '            </div>            <div class="chatlog__message ">').replace("{MESSAGE_CONTENT}", str(page).replace("```", "").replace("<", "&lt;").replace("\n", "<br>")).replace('<span class="chatlog__timestamp">{TIMESTAMP}</span>            ', "")
-            if all is None:
+            if all is None and "Config" not in page:
                 for p in pagify(page):
                     p = p.replace("```", "")
                     p = box(p)

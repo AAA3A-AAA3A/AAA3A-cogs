@@ -1,0 +1,386 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-08-07 20:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: \cmdchannel\cmdchannel.py:20
+#, docstring
+msgid "A cog to send the result of a command to another channel!"
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:54
+#, docstring
+msgid ""
+"Act as if the command had been typed in the channel of your choice.\n"
+"        The prefix must be entered if it is a command. Otherwise, it will be a message only.\n"
+"        If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).\n"
+"        "
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:64
+msgid ""
+"Please specify a server if you want to use a command in another server."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:75
+msgid "Only a bot owner can use a command from another server."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:80
+msgid "To send commands to another server, you must be there."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:98
+#: \cmdchannel\cmdchannel.py:156
+#: \cmdchannel\cmdchannel.py:217
+msgid ""
+"The command issued in this channel is:\n"
+"```{command}```"
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:105
+#: \cmdchannel\cmdchannel.py:163
+#: \cmdchannel\cmdchannel.py:224
+msgid "Imitated user"
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:106
+#: \cmdchannel\cmdchannel.py:164
+#: \cmdchannel\cmdchannel.py:225
+msgid "Channel"
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:107
+#: \cmdchannel\cmdchannel.py:165
+#: \cmdchannel\cmdchannel.py:226
+msgid "Can Run"
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:108
+#: \cmdchannel\cmdchannel.py:166
+#: \cmdchannel\cmdchannel.py:227
+msgid "{ctx.author} ({ctx.author.id}) - Used a Command"
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:115
+#: \cmdchannel\cmdchannel.py:117
+msgid ""
+"The `{command}` command has been launched in the {channel} channel. You can "
+"check if it worked."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:120
+#: \cmdchannel\cmdchannel.py:122
+#: \cmdchannel\cmdchannel.py:239
+#: \cmdchannel\cmdchannel.py:241
+msgid ""
+"You cannot run this command because you do not have the permissions to send "
+"messages in the {channel} channel."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:125
+#: \cmdchannel\cmdchannel.py:127
+msgid "CommandChannel have been disabled by an administrator of this server."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:134
+#, docstring
+msgid ""
+"Act as if the command had been typed by imitating the specified user.\n"
+"        The prefix must be entered if it is a command. Otherwise, it will be a message only.\n"
+"        If you do not specify a user, the author will be used.\n"
+"        "
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:160
+msgid "CmdUser - Command used: {command}"
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:173
+#: \cmdchannel\cmdchannel.py:175
+msgid ""
+"The `{command}` command has been launched in the {ctx.channel} channel by "
+"imitating the {user} user. You can check if it worked."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:178
+#: \cmdchannel\cmdchannel.py:180
+msgid ""
+"You cannot run this command because you do not have the permissions to send "
+"messages in the {ctx.channel} channel."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:183
+#: \cmdchannel\cmdchannel.py:185
+msgid "CommandUser have been disabled by an administrator of this server."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:192
+#, docstring
+msgid ""
+"Act as if the command had been typed in the channel of your choice by imitating the specified user.\n"
+"        The prefix must be entered if it is a command. Otherwise, it will be a message only.\n"
+"        If you do not specify a user, the author will be used.\n"
+"        "
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:221
+msgid "CmdUserChannel - Command used: {command}"
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:234
+#: \cmdchannel\cmdchannel.py:236
+msgid ""
+"The `{command}` command has been launched in the {channel} channel by "
+"imitating the {user} user. You can check if it worked."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:244
+#: \cmdchannel\cmdchannel.py:246
+msgid ""
+"CommandUserChannel have been disabled by an administrator of this server."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:251
+#, docstring
+msgid ""
+"Test variables.\n"
+"        "
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:254
+msgid "Testvar"
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:255
+msgid "Variables:"
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:257
+msgid "Author:"
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:260
+msgid "Channel:"
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:268
+#, docstring
+msgid "Configure Command for your server."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:272
+#, docstring
+msgid ""
+"Set a channel where events are registered.\n"
+"\n"
+"        ``channel``: Text channel.\n"
+"        You can also use \"None\" if you wish to remove the logging channel.\n"
+"        "
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:278
+#: \cmdchannel\cmdchannel.py:316
+#: \cmdchannel\cmdchannel.py:336
+#: \cmdchannel\cmdchannel.py:356
+#: \cmdchannel\cmdchannel.py:376
+#: \cmdchannel\cmdchannel.py:401
+#: \cmdchannel\cmdchannel.py:421
+#: \cmdchannel\cmdchannel.py:441
+#: \cmdchannel\cmdchannel.py:461
+#: \cmdchannel\cmdchannel.py:486
+#: \cmdchannel\cmdchannel.py:506
+#: \cmdchannel\cmdchannel.py:526
+#: \cmdchannel\cmdchannel.py:546
+msgid "Only the owner of this server can access these commands!"
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:283
+msgid "Logging channel removed."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:288
+msgid ""
+"The bot does not have at least one of the following permissions in this "
+"channel: `embed_links`, `read_messages`, `read_message_history`, "
+"`send_messages`, `attach_files`."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:292
+msgid "Logging channel registered: {channel.mention}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:307
+#, docstring
+msgid "Configure CmdChannel for your server."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:311
+#, docstring
+msgid ""
+"Enable or disable CommandChannel.\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:323
+msgid "CommandChannel is already set on {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:327
+msgid "CommandChannel state registered: {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:331
+#: \cmdchannel\cmdchannel.py:416
+#: \cmdchannel\cmdchannel.py:501
+#, docstring
+msgid ""
+"Enable or disable confirmation.\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:343
+msgid "Confirmation is already set on {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:351
+#: \cmdchannel\cmdchannel.py:436
+#: \cmdchannel\cmdchannel.py:521
+#, docstring
+msgid ""
+"Enable or disable message delete.\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:363
+msgid "Message delete is already set on {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:367
+msgid "Message delete state registered: {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:371
+#: \cmdchannel\cmdchannel.py:456
+#: \cmdchannel\cmdchannel.py:541
+#, docstring
+msgid ""
+"Enable or disable information message.\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:383
+msgid "Information message is already set on {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:387
+msgid "Information message state registered: {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:392
+#, docstring
+msgid "Configure CmdUser for your server."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:396
+#, docstring
+msgid ""
+"Enable or disable CommandUser.\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:408
+msgid "CommandUser is already set on {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:412
+msgid "CommandUser state registered: {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:428
+msgid "CommandUser confirmation is already set on {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:432
+msgid "CommandUser confirmation state registered: {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:448
+msgid "CommandUser message delete is already set on {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:452
+msgid "CommandUser message delete state registered: {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:468
+msgid "CommandUser information message is already set on {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:472
+msgid "CommandUser information message state registered: {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:477
+#, docstring
+msgid "Configure CmdUserChannel for your server."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:481
+#, docstring
+msgid ""
+"Enable or disable CommandUserChannel.\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:493
+msgid "CommandUserChannel is already set on {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:497
+msgid "CommandUserChannel state registered: {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:513
+msgid "CommandUserChannel confirmation is already set on {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:517
+msgid "CommandUserChannel confirmation state registered: {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:533
+msgid "CommandUserChannel message delete is already set on {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:537
+msgid "CommandUserChannel message delete state registered: {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:553
+msgid "CommandUserChannel information message is already set on {state}."
+msgstr ""
+
+#: \cmdchannel\cmdchannel.py:557
+msgid "CommandUserChannel information message state registered: {state}."
+msgstr ""

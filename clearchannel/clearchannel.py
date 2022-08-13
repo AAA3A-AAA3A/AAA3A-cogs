@@ -1,5 +1,7 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import asyncio
 
@@ -11,14 +13,14 @@ from redbot.core.utils.menus import start_adding_reactions
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("ClearChannel", __file__)
 
+@cog_i18n(_)
 class ClearChannel(commands.Cog):
     """A cog to transfer all messages channel in a other channel!"""
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Red):
+        self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
             self,
@@ -40,7 +42,7 @@ class ClearChannel(commands.Cog):
     @commands.guildowner()
     @commands.bot_has_permissions(manage_channels=True)
     async def cleanup_channel(
-        self, ctx: commands.Context, skip: bool=False
+        self, ctx: commands.Context, confirmation: bool=False
     ):
         """Delete ALL messages from the current channel by duplicating it and then deleting it.
         For security reasons, only the server owner and the bot owner can use the command. Use the "permissions" tool for more options.
@@ -53,46 +55,21 @@ class ClearChannel(commands.Cog):
         old_channel = ctx.channel
         channel_position = old_channel.position
 
-        if not skip:
+        if not confirmation:
             embed: discord.Embed = discord.Embed()
             embed.title = _(":warning: - ClearChannel").format(**locals())
-            embed.description = _("{ctx.author.mention} | Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?").format(**locals())
+            embed.description = _("Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?").format(**locals())
             embed.color = 0xf00020
-            message = await ctx.send(embed=embed)
-            reactions = ["✅", "❌"]
-            start_adding_reactions(message, reactions)
-            end_reaction = False
-            def check(reaction, abc_author):
-                return abc_author == ctx.author and str(reaction.emoji) in reactions
-                # This makes sure nobody except the command sender can interact with the "menu"
-            while True:
-                try:
-                    reaction, abc_author = await ctx.bot.wait_for("reaction_add", timeout=30, check=check)
-                    # waiting for a reaction to be added - times out after x seconds, 30 in this
-                    if str(reaction.emoji) == "✅":
-                        end_reaction = True
-                        await message.delete()
-                        break
-                    elif str(reaction.emoji) == "❌":
-                        end_reaction = True
-                        await message.delete()
-                        return
-                        break
-                    else:
-                        await message.remove_reaction(reaction, abc_author)
-                except asyncio.TimeoutError:
-                    if not end_reaction:
-                        await message.delete()
-                        await ctx.send(_("Timed out, please try again.").format(**locals()))
-                        return
-                        break
+            if not await self.cogsutils.ConfirmationAsk(ctx, text=f"{ctx.author.mention}", embed=embed):
+                await self.cogsutils.delete_message(ctx.message)
+                return
 
-        new_channel = await old_channel.clone(reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id})").format(**locals()))
+        new_channel = await old_channel.clone(reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(**locals()))
         if actual_channel_delete:
-            await old_channel.delete(reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id})").format(**locals()))
+            await old_channel.delete(reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(**locals()))
         else:
-            await old_channel.edit(name=_("🗑️ Deleted-{old_channel.name}").format(**locals()), position=len(ctx.guild.channels), reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id})").format(**locals()))
-        await new_channel.edit(position=channel_position, reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id})").format(**locals()))
+            await old_channel.edit(name=_("🗑️-Deleted-{old_channel.name}").format(**locals()), position=len(ctx.guild.channels), reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(**locals()))
+        await new_channel.edit(position=channel_position, reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(**locals()))
         self.log.info(
             _("%s (%s) deleted ALL messages in channel %s (%s).").format(**locals()),
             ctx.author,

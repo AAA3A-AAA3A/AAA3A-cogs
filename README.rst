@@ -30,7 +30,7 @@ To install a cog, use this command, replacing <cog> with the name of the cog you
 Available cogs list
 -------------------
 
-Here is the list of cogs in my repo. There are (so far) only 2.
+This list of cogs is not up to date. At the time of writing there are 22. You can look at the folder names on this repo or see a more complete description on Red's Index or in the README for each cog.
 
 **SimpleSanction:**
 
@@ -78,10 +78,19 @@ Contributing
 
 If you have ideas, you can open a problem. If you have coded new features, make a PR. I'm happy to make changes to these cogs!
 
+-----------------
+Translate my cogs
+-----------------
+
+The associated crowdin project is available at this address: https://crowdin.com/project/aaa3a-cogs
+
+If you would like to see languages added to this project, please let me know.
+
 -------
 Support
 -------
 
+Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
 Mention me in the #support_othercogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
 Please ping me or contact me in DM.
 Additionally, feel free to open an issue or pull request to this repo.
@@ -90,91 +99,17 @@ Additionally, feel free to open an issue or pull request to this repo.
 Credits
 -------
 
-**Credits for the cog SimpleSanction:**
-
 * Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 
-* Thanks to Laggrons-dumb's WarnSystem cog (https://github.com/laggron42/Laggrons-Dumb-Cogs/tree/v3/warnsystem) for giving me some ideas and code for subcommands for a main command!
-
-* Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel.
-
-* Thanks to @Aikaterna on the Redbot support server for help on displaying the main command help menu and other commands!
-
-* Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
+* Thanks to the developers of the cogs I saw as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav, for example)
 
 * Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
-**Credits for the cog TicketTool:**
+* Individual credits in each cog.
 
-* Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
+* Thanks to 26, Aika, Yami, Jack, Flame, Draper and others for the discussions that helped me develop my cogs!
 
-* Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel.
-
-* Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-
-* Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
-
-**Credits for the cog CmdChannel:**
-
-* Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-
-* Thanks to TrustyJAID for the code (a bit modified to work here and to improve as needed) for the log messages sent! (https://github.com/TrustyJAID/Trusty-cogs/tree/master/extendedmodlog)
-
-* Thanks to Kreusada for the code (with modifications to make it work and match the syntax of the rest) to add a log channel or remove it if no channel is specified! (https://github.com/Kreusada/Kreusada-Cogs/tree/master/captcha)
-
-* Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-
-* Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
-
-**Credits for the cog Calculator:**
-
-* Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-
-* Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel.
-
-* Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-
-* Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
-
-**Credits for the cog AntiRaid:**
-
-* Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-
-* Thanks to TrustyJAID for the code (a bit modified to work here and to improve as needed) for the log messages sent! (https://github.com/TrustyJAID/Trusty-cogs/tree/master/extendedmodlog)
-
-* Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-
-* Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
-
-**Credits for the cog ClearChannel:**
-
-* Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-
-* Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-
-* Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
-
-**Credits for the cog TransferChannel:**
-
-* Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-
-* Thanks to TrustyJAID's Backup for starting the command to list the latest source channel messages! (https://github.com/TrustyJAID/Trusty-cogs/tree/master/backup)
-
-* Thanks to QuoteTools from SimBad for the embed!
-
-* Thanks to Speak from @epic guy for the webhooks! (https://github.com/npc203/npc-cogs/tree/main/speak)
-
-* Thanks to Say from LaggronsDumb for the attachments in the single messages and webhooks! (https://github.com/laggron42/Laggrons-Dumb-Cogs/tree/v3/say)
-
-* Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-
-* Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
-  
-**Credits for the cog Ip:**
-
-* Thanks to @AverageGamer on Discord for the cog idea and the code to find the external ip!
-
-* Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
+* Thanks to Kreusada because his repo served as a model for mine! Everything in the documentation uses the layout of his.
 
 -------
 LICENSE
@@ -182,6 +117,6 @@ LICENSE
 
 This repository and its cogs are protected under the MIT License.
 
-For further information, please click `here <https://github.com/AAA3A-AAA3A/AAA3A-cogs/blob/master/LICENSE>`_
+For further information, please click `here <https://github.com/AAA3A-AAA3A/AAA3A-cogs/blob/main/LICENSE>`_
 
-Copyright (c) 2021 AAA3A-AAA3A
+Copyright (c) 2022 AAA3A

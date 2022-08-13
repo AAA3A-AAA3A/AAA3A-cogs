@@ -1,0 +1,167 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-08-07 20:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: \antinuke\antinuke.py:21
+#, docstring
+msgid "A cog to remove all permissions from a person who deletes a channel!"
+msgstr ""
+
+#: \antinuke\antinuke.py:90
+msgid ""
+"All your roles have been taken away because you have deleted channel #{old_channel}.\n"
+"Your former roles: {rolelist_name}"
+msgstr ""
+
+#: \antinuke\antinuke.py:95
+msgid ""
+"All roles in {perp} ({perp.id}) roles have been removed as a result of the "
+"antinuke system being triggered on this server."
+msgstr ""
+
+#: \antinuke\antinuke.py:101
+msgid ""
+"The user {perp.name}#{perp.discriminator} has deleted the channel "
+"#{old_channel.name}!"
+msgstr ""
+
+#: \antinuke\antinuke.py:102
+msgid ""
+"To prevent him from doing anything else, I took away as many roles as my current permissions would allow.\n"
+"User mention: {perp.mention} - User ID: {perp.id}"
+msgstr ""
+
+#: \antinuke\antinuke.py:107
+msgid "Before I intervened, the user had the following roles:"
+msgstr ""
+
+#: \antinuke\antinuke.py:138
+#, docstring
+msgid "Configure AntiNuke for your server."
+msgstr ""
+
+#: \antinuke\antinuke.py:142
+#, docstring
+msgid ""
+"Set a channel where events are registered.\n"
+"\n"
+"        ``channel``: Text channel.\n"
+"        You can also use \"None\" if you wish to remove the logging channel.\n"
+"        "
+msgstr ""
+
+#: \antinuke\antinuke.py:148
+#: \antinuke\antinuke.py:181
+#: \antinuke\antinuke.py:200
+#: \antinuke\antinuke.py:221
+#: \antinuke\antinuke.py:235
+#: \antinuke\antinuke.py:246
+msgid "Only the owner of this server can access these commands!"
+msgstr ""
+
+#: \antinuke\antinuke.py:153
+msgid "Logging channel removed."
+msgstr ""
+
+#: \antinuke\antinuke.py:158
+msgid ""
+"The bot does not have at least one of the following permissions in this "
+"channel: `embed_links`, `read_messages`, `read_message_history`, "
+"`send_messages`, `attach_files`."
+msgstr ""
+
+#: \antinuke\antinuke.py:162
+msgid "Logging channel registered: {channel.mention}."
+msgstr ""
+
+#: \antinuke\antinuke.py:176
+#, docstring
+msgid ""
+"Enable or disable AntiNuke.\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: \antinuke\antinuke.py:187
+msgid "AntiNuke is already set on {state}."
+msgstr ""
+
+#: \antinuke\antinuke.py:191
+msgid "AntiNuke state registered: {state}."
+msgstr ""
+
+#: \antinuke\antinuke.py:195
+#, docstring
+msgid ""
+"Enable or disable User DM.\n"
+"\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr ""
+
+#: \antinuke\antinuke.py:207
+msgid "User DM is already set on {state}."
+msgstr ""
+
+#: \antinuke\antinuke.py:211
+msgid "User DM state registered: {state}."
+msgstr ""
+
+#: \antinuke\antinuke.py:215
+#, docstring
+msgid ""
+"Number Detected - Member\n"
+"\n"
+"        Before action, how many deleted channels should be detected?\n"
+"        `0' to disable this protection.\n"
+"        "
+msgstr ""
+
+#: \antinuke\antinuke.py:225
+msgid "Number Detected - Member registered: {int}."
+msgstr ""
+
+#: \antinuke\antinuke.py:229
+#, docstring
+msgid ""
+"Number Detected - Bot\n"
+"\n"
+"        Before action, how many deleted channels should be detected?\n"
+"        `0' to disable this protection.\n"
+"        "
+msgstr ""
+
+#: \antinuke\antinuke.py:239
+msgid "Number Detected - Bot registered: {int}."
+msgstr ""
+
+#: \antinuke\antinuke.py:243
+#, docstring
+msgid ""
+"Reset number detected for a user\n"
+"        "
+msgstr ""
+
+#: \antinuke\antinuke.py:259
+msgid ""
+"All former roles of {user} ({user.id}) have been restored at the request of "
+"the server owner."
+msgstr ""
+
+#: \antinuke\antinuke.py:260
+msgid "Restored roles for {user.name} ({user.id})."
+msgstr ""
+
+#: \antinuke\antinuke.py:264
+msgid "Count removed for {user.name} ({user.id})."
+msgstr ""

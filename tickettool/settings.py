@@ -1,20 +1,23 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 if CogsUtils().is_dpy2:
-    from .AAA3A_utils.cogsutils import Buttons  # isort:skip
+    from .AAA3A_utils.cogsutils import Buttons, Dropdown  # isort:skip
 else:
-    from dislash import ActionRow, Button, ButtonStyle  # isort:skip
+    from dislash import ActionRow, Button, ButtonStyle, SelectMenu, SelectOption  # isort:skip
 
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+from .utils import EmojiLabelDescriptionValueConverter
 
-def _(untranslated: str):
-    return untranslated
+if CogsUtils().is_dpy2:  # To remove
+    setattr(commands, "Literal", typing.Literal)
 
+_ = Translator("TicketTool", __file__)
+
+@cog_i18n(_)
 class settings(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
 
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
@@ -32,11 +35,11 @@ class settings(commands.Cog):
         config = await self.config.guild(ctx.guild).settings.all()
 
         if config["category_open"] is None or config["category_close"] is None or config["admin_role"] is None:
-            await ctx.send(_("You cannot enable the ticket system on this server if you have not configured the following options:"
-                            f"- The category of open tickets : `{ctx.prefix}setticket categoryopen <category>`"
-                            f"- The category of close tickets : `{ctx.prefix}setticket categoryclose <category>`"
-                            f"- The admin role has full access to the tickets : `{ctx.prefix}setticket adminrole <role>`"
-                            "All other parameters are optional or have default values that will be used.").format(**locals()))
+            await ctx.send(_("You cannot enable the ticket system on this server if you have not configured the following options:\n"
+                             "- The category of open tickets : `{ctx.prefix}setticket categoryopen <category>`\n"
+                             "- The category of close tickets : `{ctx.prefix}setticket categoryclose <category>`\n"
+                             "- The admin role has full access to the tickets : `{ctx.prefix}setticket adminrole <role>`\n"
+                             "All other parameters are optional or have default values that will be used.").format(**locals()))
             return
 
         actual_enable = config["enable"]
@@ -173,15 +176,18 @@ class settings(commands.Cog):
         await ctx.send(_("Ping Role registered: {role.name}.").format(**locals()))
 
     @configuration.command(usage="<int>")
-    async def nbmax(self, ctx: commands.Context, int: int):
+    async def nbmax(self, ctx: commands.Context, nb_max: int):
         """Max Number of tickets for a member.
         """
-        if int == 0:
-            await ctx.send(_("Disable the system instead.").format(**locals()))
+        config = await self.config.guild(ctx.guild).settings.all()
+
+        actual_nb_max = config["nb_max"]
+        if actual_nb_max is nb_max:
+            await ctx.send(_("Max Number of tickets is already set on {nb_max}.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).nb_max.set(int)
-        await ctx.send(_("Max Number registered: {int}.").format(**locals()))
+        await self.config.guild(ctx.guild).settings.nb_max.set(nb_max)
+        await ctx.send(_("Max Number of tickets registered: {nb_max}.").format(**locals()))
 
     @configuration.command(usage="<true_or_false>")
     async def modlog(self, ctx: commands.Context, state: bool):
@@ -217,7 +223,7 @@ class settings(commands.Cog):
 
     @configuration.command(usage="<true_or_false>")
     async def createonreact(self, ctx: commands.Context, state: bool):
-        """Enable or disable Create on React ``.
+        """Enable or disable Create on React.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
@@ -231,14 +237,58 @@ class settings(commands.Cog):
         await self.config.guild(ctx.guild).settings.create_on_react.set(state)
         await ctx.send(_("Create on React state registered: {state}.").format(**locals()))
 
+    @configuration.command(usage="<true_or_false>")
+    async def usercanclose(self, ctx: commands.Context, state: bool):
+        """Enable or disable User Can Close.
+
+        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
+        """
+        config = await self.config.guild(ctx.guild).settings.all()
+
+        actual_user_can_close = config["user_can_close"]
+        if actual_user_can_close is state:
+            await ctx.send(_("User Can Close is already set on {state}.").format(**locals()))
+            return
+
+        await self.config.guild(ctx.guild).settings.user_can_close.set(state)
+        await ctx.send(_("User Can Close state registered: {state}.").format(**locals()))
+
+    @configuration.command()
+    async def dynamicchannelname(self, ctx: commands.Context, dynamic_channel_name: typing.Optional[str]=None):
+        """Set the Dinamic Ticket Channel Name.
+
+        `{ticket.id}`, `{ticket.created_by.id}`, `{ticket.guild.id}`, {ticket.channel.mention}...
+        If, when creating the ticket, an error occurs with this name, another name will be used.        
+        """
+        if dynamic_channel_name is None:
+            await self.config.guild(ctx.guild).settings.dynamic_channel_name.clear()
+            await ctx.tick()
+            return
+
+        await self.config.guild(ctx.guild).settings.dynamic_channel_name.set(dynamic_channel_name)
+        await ctx.tick()
+
+    @configuration.command()
+    async def custommessage(self, ctx: commands.Context, *, custom_message: typing.Optional[str]=None):
+        """Set the Custom Message.
+
+        `{ticket.id}`, `{ticket.created_by.display_name}`, `{ticket.guild.name}`...     
+        """
+        if custom_message is None:
+            await self.config.guild(ctx.guild).settings.custom_message.clear()
+            await ctx.tick()
+            return
+
+        await self.config.guild(ctx.guild).settings.custom_message.set(custom_message)
+        await ctx.tick()
+
     @configuration.command(aliases=["colour", "col", "embedcolor", "embedcolour"], usage="<color_or_'none'>")
     async def color(self, ctx: commands.Context, *, color: typing.Optional[discord.Color]=None):
-        """Set a colour fort the embed.
+        """Set a colour for the embeds.
 
         ``color``: Color.
         You can also use "None" if you wish to reset the color.
         """
-
         if color is None:
             await self.config.guild(ctx.guild).settings.color.clear()
             config = await self.config.guild(ctx.guild).settings.all()
@@ -270,13 +320,12 @@ class settings(commands.Cog):
         message = await ctx.send(embed=embed)
 
     @configuration.command(aliases=["picture", "thumb", "link"], usage="<link_or_'none'>")
-    async def thumbnail(self, ctx: commands.Context, *, link = None):
-        """Set a thumbnail fort the embed.
+    async def thumbnail(self, ctx: commands.Context, *, link: typing.Optional[str]=None):
+        """Set a thumbnail for the embeds.
 
         ``link``: Thumbnail link.
         You can also use "None" if you wish to reset the thumbnail.
         """
-
         if link is None:
             await self.config.guild(ctx.guild).settings.thumbnail.clear()
             config = await self.config.guild(ctx.guild).settings.all()
@@ -290,7 +339,7 @@ class settings(commands.Cog):
             embed.add_field(
                 name=_("Thumbnail:").format(**locals()),
                 value=f"{actual_thumbnail}")
-            message = await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
             return
 
         await self.config.guild(ctx.guild).settings.thumbnail.set(link)
@@ -305,7 +354,7 @@ class settings(commands.Cog):
         embed.add_field(
             name=_("Thumbnail:").format(**locals()),
             value=f"{actual_thumbnail}")
-        message = await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
     @configuration.command(name="auditlogs", aliases=["logsaudit"], usage="<true_or_false>")
     async def showauthor(self, ctx: commands.Context, state: bool):
@@ -339,33 +388,120 @@ class settings(commands.Cog):
         await self.config.guild(ctx.guild).settings.close_confirmation.set(state)
         await ctx.send(_("Close Confirmation state registered: {state}.").format(**locals()))
 
+    @configuration.command(aliases=["buttonembed"])
+    async def embedbutton(self, ctx: commands.Context, where: commands.Literal["title", "description", "image", "placeholderdropdown"], *, text: typing.Optional[str]=None):
+        """Set the settings for the button embed.
+        """
+        if text is None:
+            if where == "title":
+                await self.config.guild(ctx.guild).settings.embed_button.title.clear()
+            elif where == "description":
+                await self.config.guild(ctx.guild).settings.embed_button.description.clear()
+            elif where == "image":
+                await self.config.guild(ctx.guild).settings.embed_button.image.clear()
+            elif where == "placeholderdropdown":
+                await self.config.guild(ctx.guild).settings.embed_button.placeholder_dropdown.clear()
+            await ctx.tick()
+            return
+
+        if where == "title":
+            await self.config.guild(ctx.guild).settings.embed_button.title.set(text)
+        elif where == "description":
+            await self.config.guild(ctx.guild).settings.embed_button.description.set(text)
+        elif where == "image":
+            await self.config.guild(ctx.guild).settings.embed_button.image.set(text)
+        elif where == "placeholderdropdown":
+            await self.config.guild(ctx.guild).settings.embed_button.placeholder_dropdown.set(text)
+        await ctx.tick()
+
+    @configuration.command(usage="<true_or_false>")
+    async def renamechanneldropdown(self, ctx: commands.Context, state: bool):
+        """Enable or disable Rename Channel Dropdown.
+
+        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
+        """
+        config = await self.config.guild(ctx.guild).settings.all()
+
+        actual_rename_channel_dropdown = config["embed_button"]["rename_channel_dropdown"]
+        if actual_rename_channel_dropdown is state:
+            await ctx.send(_("Rename Channel Dropdown is already set on {state}.").format(**locals()))
+            return
+
+        await self.config.guild(ctx.guild).settings.embed_button.rename_channel_dropdown.set(state)
+        await ctx.send(_("Rename Channel Dropdown state registered: {state}.").format(**locals()))
+
     @configuration.command(name="message")
-    async def message(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel]=None):
+    async def message(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel]=None, message: typing.Optional[discord.Message]=None, *reason_options: EmojiLabelDescriptionValueConverter):
+        """Send a message with a button to open a ticket or dropdown with possible reasons.
+        
+        Example:
+        `[p]setticket message #general "🐛|Report a bug|If you find a bug, report it here.|bug" "⚠️|Report a user|If you find a malicious user, report it here.|user"`
+        `[p]setticket 1234567890-0987654321`
+        """
         if channel is None:
             channel = ctx.channel
+        if reason_options == ():
+            reason_options = None
+        if message is not None and not message.author == ctx.guild.me:
+            await ctx.send(_("I have to be the author of the message for the interaction to work.").format(**locals()))
+            return
         config = await self.config.guild(ctx.guild).settings.all()
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
         embed: discord.Embed = discord.Embed()
-        embed.title = str(config["embed_button"]["title"])
-        embed.description = str(config["embed_button"]["description"]).replace('{prefix}', f'{ctx.prefix}')
+        embed.title = config["embed_button"]["title"]
+        embed.description = config["embed_button"]["description"].replace('{prefix}', f'{ctx.prefix}')
+        embed.set_image(url=config["embed_button"]["image"] or (None if self.cogsutils.is_dpy2 else discord.Embed.Empty))
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
         embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon or "" if self.cogsutils.is_dpy2 else ctx.guild.icon_url or "")
         if self.cogsutils.is_dpy2:
-            view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Create ticket").format(**locals()), "emoji": "🎟️", "custom_id": "create_ticket_button", "disabled": False}], function=self.bot.get_cog("TicketTool").on_button_interaction, infinity=True)
-            await channel.send(embed=embed, view=view)
+            if reason_options is None:
+                view = Buttons(timeout=None, buttons=[{"style": 2, "label": _("Create ticket").format(**locals()), "emoji": "🎟️", "custom_id": "create_ticket_button", "disabled": False}], function=self.on_button_interaction, infinity=True)
+                if message is None:
+                    await channel.send(embed=embed, view=view)
+                else:
+                    await message.edit(view=view)
+            else:
+                dropdown_config = await self.config.guild(ctx.guild).dropdowns.all()
+                view = Dropdown(timeout=None, placeholder=config["embed_button"]["placeholder_dropdown"], min_values=0, max_values=1, options=[{"label": label, "value": value, "description": description, "emoji": emoji, "default": False} for emoji, label, description, value in reason_options], function=self.on_dropdown_interaction, infinity=True, custom_id="create_ticket_dropdown")
+                if message is None:
+                    message = await channel.send(embed=embed, view=view)
+                else:
+                    await message.edit(view=view)
+                dropdown_config[f"{channel.id}-{message.id}"] = [{"emoji": emoji if not hasattr(emoji, "id") else emoji.id, "label": label, "description": description, "value": value} for emoji, label, description, value in reason_options]
+                await self.config.guild(ctx.guild).dropdowns.set(dropdown_config)
         else:
-            button = ActionRow(
-                Button(
-                    style=ButtonStyle.grey,
-                    label=_("Create ticket"),
-                    emoji="🎟️",
-                    custom_id="create_ticket_button",
-                    disabled=False
+            if reason_options is None:
+                button = ActionRow(
+                    Button(
+                        style=ButtonStyle.grey,
+                        label=_("Create ticket"),
+                        emoji="🎟️",
+                        custom_id="create_ticket_button",
+                        disabled=False
+                    )
                 )
-            )
-            await channel.send(embed=embed, components=[button])
+                if message is None:
+                    await channel.send(embed=embed, components=[button])
+                else:
+                    await message.edit(components=[button])
+            else:
+                dropdown_config = await self.config.guild(ctx.guild).dropdowns.all()
+                dropdown = SelectMenu(
+                        custom_id="create_ticket_dropdown",
+                        placeholder="Choose the reason for open a ticket.",
+                        min_values=0,
+                        max_values=1,
+                        options=[SelectOption(label=label, value=value, description=description, emoji=emoji) for emoji, label, description, value in reason_options]
+                )
+                if message is None:
+                    message = await channel.send(embed=embed, components=[dropdown])
+                else:
+                    await message.edit(components=[dropdown])
+                dropdown_config[f"{channel.id}-{message.id}"] = [{"emoji": emoji if not hasattr(emoji, "id") else emoji.id, "label": label, "description": description, "value": value} for emoji, label, description, value in reason_options]
+                await self.config.guild(ctx.guild).dropdowns.set(dropdown_config)
+        await ctx.tick()
 
     async def check_permissions_in_channel(self, permissions: typing.List[str], channel: discord.TextChannel):
         """Function to checks if the permissions are available in a guild.

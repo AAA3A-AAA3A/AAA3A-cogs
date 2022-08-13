@@ -1,5 +1,7 @@
 ﻿from .AAA3A_utils.cogsutils import CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 from copy import copy
@@ -12,14 +14,14 @@ from redbot.core.utils.chat_formatting import box
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("CtxVar", __file__)
 
+@cog_i18n(_)
 class CtxVar(commands.Cog):
     """A cog to list and display the contents of all sub-functions of `ctx`!"""
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Red):
+        self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
@@ -49,7 +51,7 @@ class CtxVar(commands.Cog):
         one_l = []
         for x in eval(f"dir(instance{args})"):
             try:
-                if not eval(f"hasattr(instance{args}.{x}, '__call__')") and not "__" in x:
+                if not eval(f"hasattr(instance{args}.{x}, '__call__')") and "__" not in x:
                     one_l.append(x)
             except Exception:
                 pass

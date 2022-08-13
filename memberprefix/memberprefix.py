@@ -1,5 +1,7 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 from redbot.core import Config
@@ -10,14 +12,14 @@ from redbot.core import Config
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
-def _(untranslated: str):
-    return untranslated
+_ = Translator("MemberPrefix", __file__)
 
+@cog_i18n(_)
 class MemberPrefix(commands.Cog):
     """A cog to allow a member to choose custom prefixes, just for them!"""
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Red):
+        self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
             self,
@@ -40,9 +42,14 @@ class MemberPrefix(commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
-    def cog_unload(self):
-        self.bot.remove_before_invoke_hook(self.before_invoke)
-        self.cogsutils._end()
+    if CogsUtils().is_dpy2:
+        async def cog_unload(self):
+            self.bot.remove_before_invoke_hook(self.before_invoke)
+            self.cogsutils._end()
+    else:
+        def cog_unload(self):
+            self.bot.remove_before_invoke_hook(self.before_invoke)
+            self.cogsutils._end()
 
     async def before_invoke(self, ctx: commands.Context) -> None:
         if ctx.guild is None:

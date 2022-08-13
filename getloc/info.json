@@ -1,0 +1,14 @@
+{
+    "author": ["AAA3A"],
+    "name": "GetLoc",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\nIt does not use user data.",
+    "short": "A cog to display information about a location based on its address or geographical coordinates!",
+    "description": "Have you ever wanted to display information about a location based on its address or geographical coordinates? Then this cog is for you!",
+    "tags": [
+        "localisation",
+        "latitude",
+        "longitude"
+    ],
+    "requirements": ["geopy"],
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

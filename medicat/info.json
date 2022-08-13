@@ -1,0 +1,12 @@
+{
+    "author": ["AAA3A"],
+    "name": "Medicat",
+    "install_msg": "This cog will only work on x server and therefore cannot be used by the general public!",
+    "short": "This cog will only work on x server and therefore cannot be used by the general public!",
+    "description": "This cog will only work on x server and therefore cannot be used by the general public!",
+    "tags": [
+    ],
+    "requirements": [],
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users.",
+    "hidden": true
+}

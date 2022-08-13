@@ -1,0 +1,14 @@
+{
+    "author": ["AAA3A"],
+    "name": "Seen",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\nIt does not use user data.",
+    "short": "A cog to check when a member/role/channel/category/user/guild was last active!",
+    "description": "Have you ever wanted to check when a member/role/channel/category/user/guild was last active? Then this cog is for you!",
+    "tags": [
+        "seen",
+        "activity",
+        "time"
+    ],
+    "requirements": [],
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

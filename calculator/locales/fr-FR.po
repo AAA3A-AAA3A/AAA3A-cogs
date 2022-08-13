@@ -1,0 +1,61 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2022-08-07 20:34+0200\n"
+"PO-Revision-Date: 2022-08-13 08:24\n"
+"Last-Translator: \n"
+"Language-Team: French\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/calculator/locales/messages.pot\n"
+"X-Crowdin-File-ID: 76\n"
+"Language: fr_FR\n"
+
+#: \calculator\calculator.py:30
+#, docstring
+msgid "A cog to do simple calculations from Discord with buttons!"
+msgstr "Un cog pour faire des calculs simples depuis Discord avec des boutons !"
+
+#: \calculator\calculator.py:72
+#: \calculator\calculator.py:99
+#: \calculator\calculator.py:241
+msgid "Exit"
+msgstr "Quitter"
+
+#: \calculator\calculator.py:82
+#: \calculator\calculator.py:109
+#: \calculator\calculator.py:315
+msgid "Clear"
+msgstr "Effacer"
+
+#: \calculator\calculator.py:172
+#: \calculator\calculator.py:416
+#: \calculator\calculator.py:428
+#: \calculator\calculator.py:457
+#: \calculator\calculator.py:471
+#: \calculator\calculator.py:489
+#: \calculator\calculator.py:501
+#: \calculator\calculator.py:530
+#: \calculator\calculator.py:544
+msgid "Error!"
+msgstr "Erreur !"
+
+#: \calculator\calculator.py:184
+msgid "Calculator"
+msgstr "Calculateur"
+
+#: \calculator\calculator.py:399
+#, docstring
+msgid "Calculate a simple expression."
+msgstr "Calculer une expression simple."
+
+#: \calculator\calculator.py:487
+msgid "Only the author of the command `{ctx.prefix}{ctx.command.name}` can interact with this message."
+msgstr "Seul l'auteur de la commande `{ctx.prefix}{ctx.command.name}` peut interagir avec ce message."
+

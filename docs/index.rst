@@ -25,7 +25,6 @@ Useful Links
     cog_ctxvar
     cog_discordmodals
     cog_discordsearch
-    cog_dropdowntext
     cog_editfile
     cog_editrole
     cog_edittextchannel

@@ -24,7 +24,7 @@ goto:eof
 
 :help
 echo Usage:
-echo   make ^<command^>
+echo   make ^<command^>_
 echo.
 echo Commands:
 echo   reformat                   Reformat all .py files being tracked by git.

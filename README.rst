@@ -111,6 +111,8 @@ Credits
 
 * Thanks to Kreusada because his repo served as a model for mine! Everything in the documentation uses the layout of his.
 
+* Thanks to Nado on Discord and Flame for giving me the solution to fix my repo, which Downloader could not update anymore!
+
 -------
 LICENSE
 -------

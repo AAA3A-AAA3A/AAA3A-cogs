@@ -350,7 +350,10 @@ class TicketTool(settings, commands.Cog):
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         """
         ticket: Ticket = await self.get_ticket(ctx.channel)
-        transcript = await chat_exporter.export(channel=ticket.channel, limit=None, tz_info="UTC", guild=ticket.guild, bot=ticket.bot)
+        if ticket.bot.get_cog("TicketTool").cogsutils.is_dpy2:
+            transcript = await chat_exporter.export(channel=ticket.channel, limit=None, tz_info="UTC", guild=ticket.guild, bot=ticket.bot)
+        else:
+            transcript = await chat_exporter.export(channel=ticket.channel, guild=ticket.guild, limit=None)
         if transcript is not None:
             file = discord.File(io.BytesIO(transcript.encode()),
                                 filename=f"transcript-ticket-{ticket.id}.html")
@@ -1038,8 +1041,11 @@ class Ticket:
             if logschannel is not None:
                 embed = await ticket.bot.get_cog("TicketTool").get_embed_important(ticket, True, author=ticket.deleted_by, title=_("Ticket Deleted").format(**locals()), description=_("The ticket was deleted by {ticket.deleted_by}.").format(**locals()))
                 try:
-                    transcript = await chat_exporter.export(channel=ticket.channel, limit=None, tz_info="UTC", guild=ticket.guild, bot=ticket.bot)
-                except Exception:
+                    if ticket.bot.get_cog("TicketTool").cogsutils.is_dpy2:
+                        transcript = await chat_exporter.export(channel=ticket.channel, limit=None, tz_info="UTC", guild=ticket.guild, bot=ticket.bot)
+                    else:
+                        transcript = await chat_exporter.export(channel=ticket.channel, guild=ticket.guild, limit=None)
+                except AttributeError:
                     transcript = None
                 if transcript is not None:
                     file = discord.File(io.BytesIO(transcript.encode()),

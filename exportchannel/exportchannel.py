@@ -43,7 +43,7 @@ class ExportChannel(commands.Cog):
                 break
         return messages
 
-    @commands.admin_or_permissions(administrator=True)
+    @commands.guildowner_or_permissions(administrator=True)
     @commands.guild_only()
     @commands.group(name="exportchannel")
     async def exportchannel(self, ctx: commands.Context):
@@ -192,7 +192,7 @@ class ExportChannel(commands.Cog):
 
     if CogsUtils().is_dpy2:
         @exportchannel.command()
-        async def user(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], user: typing.Union[discord.Member, RawUserIdConverter]):
+        async def user(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], user: typing.Union[discord.Member, RawUserIdConverter], limit: typing.Optional[int]=None):
             """Export part of a channel's messages to an html file.
 
             Specify the member (id, name or mention).
@@ -205,7 +205,7 @@ class ExportChannel(commands.Cog):
                 if not self.cogsutils.check_permissions_for(channel=channel, user=ctx.me, check=["view_channel", "read_messages", "read_message_history"]):
                     await ctx.send(_("Sorry, I can't read the content of the messages in {channel.mention} ({channel.id}).").format())
                     return
-                messages = await self.get_messages(channel=channel, user_id=user.id if isinstance(user, discord.Member) else user)
+                messages = await self.get_messages(channel=channel, user_id=user.id if isinstance(user, discord.Member) else user, limit=limit)
                 messages = [message for message in messages if not message.id == ctx.message.id]
                 count_messages = len(messages)
                 if count_messages == 0:
@@ -221,7 +221,7 @@ class ExportChannel(commands.Cog):
             await ctx.tick()
 
     @exportchannel.command()
-    async def bot(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], bot: typing.Optional[bool]=True):
+    async def bot(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], bot: typing.Optional[bool]=True, limit: typing.Optional[int]=None):
         """Export part of a channel's messages to an html file.
 
         Specify the bool option.
@@ -234,7 +234,7 @@ class ExportChannel(commands.Cog):
             if not self.cogsutils.check_permissions_for(channel=channel, user=ctx.me, check=["view_channel", "read_messages", "read_message_history"]):
                 await ctx.send(_("Sorry, I can't read the content of the messages in {channel.mention} ({channel.id}).").format())
                 return
-            messages = await self.get_messages(channel=channel, bot=bot)
+            messages = await self.get_messages(channel=channel, bot=bot, limit=limit)
             messages = [message for message in messages if not message.id == ctx.message.id]
             count_messages = len(messages)
             if count_messages == 0:

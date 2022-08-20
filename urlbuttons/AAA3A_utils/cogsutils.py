@@ -1113,7 +1113,7 @@ class CogsUtils(commands.Cog):
         Return True if at least one cog of all my cogs is loaded.
         """
         at_least_one_cog_loaded = False
-        for object in self.get_all_repo_cogs_objects().values:
+        for object in self.get_all_repo_cogs_objects().values():
             if object is not None:
                 at_least_one_cog_loaded = True
                 break

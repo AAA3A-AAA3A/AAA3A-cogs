@@ -280,13 +280,13 @@ class CogsUtils(commands.Cog):
             # for command in self.cog.walk_commands():
             #     setattr(command, 'format_text_for_context', self.format_text_for_context)
             #     setattr(command, 'format_shortdoc_for_context', self.format_shortdoc_for_context)
-            if self.cog.red_delete_data_for_user == commands.Cog.red_delete_data_for_user:
+            if self.cog.red_delete_data_for_user.__func__ == commands.Cog.red_delete_data_for_user:
                 setattr(self.cog, 'red_delete_data_for_user', self.red_delete_data_for_user)
-            if self.cog.red_get_data_for_user == commands.Cog.red_get_data_for_user:
+            if self.cog.red_get_data_for_user.__func__ == commands.Cog.red_get_data_for_user:
                 setattr(self.cog, 'red_get_data_for_user', self.red_get_data_for_user)
-            if self.cog.cog_unload == commands.Cog.cog_unload:
+            if self.cog.cog_unload.__func__ == commands.Cog.cog_unload:
                 setattr(self.cog, 'cog_unload', self.cog_unload_dpy2 if self.is_dpy2 else self.cog_unload_dpy1)
-            if self.cog.cog_command_error == commands.Cog.cog_command_error:
+            if self.cog.cog_command_error.__func__ == commands.Cog.cog_command_error:
                 setattr(self.cog, 'cog_command_error', self.cog_command_error)
         asyncio.create_task(self._await_setup())
         self.bot.remove_listener(self.on_command_error)
@@ -2185,13 +2185,13 @@ class Menu():
             for emoji, name in controls.items():
                 if name in ["left_page", "prev_page", "next_page", "right_page"]:
                     del self.controls[emoji]
-        if len(self.pages) > 3 and not all([isinstance(page, str) for page in self.pages]):
+        if len(self.pages) > 3 or not all([isinstance(page, str) for page in self.pages]):
             for emoji, name in controls.items():
-                if name in ["save_as_file"]:
+                if name in ["send_all"]:
                     del self.controls[emoji]
         if not all([isinstance(page, str) for page in self.pages]):
             for emoji, name in controls.items():
-                if name in ["save_as_file"]:
+                if name in ["send_as_file"]:
                     del self.controls[emoji]
 
         self.message: discord.Message = None

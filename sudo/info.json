@@ -1,7 +1,7 @@
 {
     "author": ["AAA3A"],
     "name": "Sudo",
-    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\nIt does not use user data.",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
     "short": "A cog to allow bot owners to be normal users in terms of permissions!",
     "description": "Have you ever wanted to allow bot owners to be normal users in terms of permissions? Then this cog is for you!",
     "tags": [

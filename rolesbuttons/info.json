@@ -1,7 +1,7 @@
 {
     "author": ["AAA3A"],
     "name": "RolesButtons",
-    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\nIt does not use user data.",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
     "short": "A cog to have roles-buttons!",
     "description": "Have you ever wanted to have roles-buttons? Then this cog is for you!",
     "tags": [

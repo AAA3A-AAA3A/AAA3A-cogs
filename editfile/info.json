@@ -1,7 +1,7 @@
 {
     "author": ["AAA3A"],
     "name": "EditFile",
-    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\nIt does not use user data.",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
     "short": "A cog to get a file and replace it from its path from Discord!",
     "description": "Have you ever wanted to get a file and replace it from its path from Discord? Then this cog is for you!",
     "tags": [

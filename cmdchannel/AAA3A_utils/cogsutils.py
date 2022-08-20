@@ -275,7 +275,7 @@ class CogsUtils(commands.Cog):
         if self.cog is not None:
             self.cog.cogsutils = self
             self.init_logger()
-            if self.cog.format_help_for_context == commands.Cog.format_help_for_context:
+            if self.cog.format_help_for_context.__func__ == commands.Cog.format_help_for_context:
                 setattr(self.cog, 'format_help_for_context', self.format_help_for_context)
             # for command in self.cog.walk_commands():
             #     setattr(command, 'format_text_for_context', self.format_text_for_context)

@@ -97,11 +97,6 @@ class CogsUtils(commands.Cog):
                     self.__version__ = self.cog.__version__
                 del self.cog.__version__
             self.cog.__version__ = self.__version__
-            if hasattr(self.cog, "__func_red__"):
-                if not isinstance(self.cog.__func_red__, typing.List):
-                    self.cog.__func_red__ = []
-            else:
-                self.cog.__func_red__ = []
             self.interactions = {}
             if hasattr(self.cog, "interactions"):
                 if isinstance(self.cog.interactions, typing.Dict):
@@ -280,18 +275,18 @@ class CogsUtils(commands.Cog):
         if self.cog is not None:
             self.cog.cogsutils = self
             self.init_logger()
-            if "format_help_for_context" not in self.cog.__func_red__:
+            if self.cog.format_help_for_context == commands.Cog.format_help_for_context:
                 setattr(self.cog, 'format_help_for_context', self.format_help_for_context)
             # for command in self.cog.walk_commands():
             #     setattr(command, 'format_text_for_context', self.format_text_for_context)
             #     setattr(command, 'format_shortdoc_for_context', self.format_shortdoc_for_context)
-            if "red_delete_data_for_user" not in self.cog.__func_red__:
+            if self.cog.red_delete_data_for_user == commands.Cog.red_delete_data_for_user:
                 setattr(self.cog, 'red_delete_data_for_user', self.red_delete_data_for_user)
-            if "red_get_data_for_user" not in self.cog.__func_red__:
+            if self.cog.red_get_data_for_user == commands.Cog.red_get_data_for_user:
                 setattr(self.cog, 'red_get_data_for_user', self.red_get_data_for_user)
-            if "cog_unload" not in self.cog.__func_red__:
+            if self.cog.cog_unload == commands.Cog.cog_unload:
                 setattr(self.cog, 'cog_unload', self.cog_unload_dpy2 if self.is_dpy2 else self.cog_unload_dpy1)
-            if "cog_command_error" not in self.cog.__func_red__:
+            if self.cog.cog_command_error == commands.Cog.cog_command_error:
                 setattr(self.cog, 'cog_command_error', self.cog_command_error)
         asyncio.create_task(self._await_setup())
         self.bot.remove_listener(self.on_command_error)
@@ -444,17 +439,17 @@ class CogsUtils(commands.Cog):
     def add_dev_env_values(self):
         """
         If the bot owner is X, then add several values to the development environment, if they don't already exist.
-        Even checks the id of the bot owner in the variable of my Sudo cog, if it is installed and loaded.
+        Even checks the id of the bot owner in the variable of my Sudo cog, if it's installed and loaded.
         """
-        sudo_cog = self.bot.get_cog("Sudo")
-        if sudo_cog is None:
+        Sudo = self.bot.get_cog("Sudo")
+        if Sudo is None:
             owner_ids = self.bot.owner_ids
         else:
-            if hasattr(sudo_cog, "all_owner_ids"):
-                if len(sudo_cog.all_owner_ids) == 0:
+            if hasattr(Sudo, "all_owner_ids"):
+                if len(Sudo.all_owner_ids) == 0:
                     owner_ids = self.bot.owner_ids
                 else:
-                    owner_ids = set(list(self.bot.owner_ids) + list(sudo_cog.all_owner_ids))
+                    owner_ids = set(list(self.bot.owner_ids) + list(Sudo.all_owner_ids))
             else:
                 owner_ids = self.bot.owner_ids
         if 829612600059887649 in owner_ids:
@@ -603,17 +598,17 @@ class CogsUtils(commands.Cog):
     def remove_dev_env_values(self):
         """
         If the bot owner is X, then remove several values to the development environment, if they don't already exist.
-        Even checks the id of the bot owner in the variable of my Sudo cog, if it is installed and loaded.
+        Even checks the id of the bot owner in the variable of my Sudo cog, if it's installed and loaded.
         """
-        sudo_cog = self.bot.get_cog("Sudo")
-        if sudo_cog is None:
+        Sudo = self.bot.get_cog("Sudo")
+        if Sudo is None:
             owner_ids = self.bot.owner_ids
         else:
-            if hasattr(sudo_cog, "all_owner_ids"):
-                if len(sudo_cog.all_owner_ids) == 0:
+            if hasattr(Sudo, "all_owner_ids"):
+                if len(Sudo.all_owner_ids) == 0:
                     owner_ids = self.bot.owner_ids
                 else:
-                    owner_ids = set(list(self.bot.owner_ids) + list(sudo_cog.all_owner_ids))
+                    owner_ids = set(list(self.bot.owner_ids) + list(Sudo.all_owner_ids))
             else:
                 owner_ids = self.bot.owner_ids
         if 829612600059887649 in owner_ids:
@@ -722,7 +717,7 @@ class CogsUtils(commands.Cog):
                         "get_channel": lambda ctx: ctx.guild.get_channel,
                         "fetch_message": lambda ctx: ctx.channel.fetch_message
                     }
-                for name, value in to_remove.items():
+                for name in to_remove:
                     try:
                         self.bot.remove_dev_env_value(name)
                     except Exception:
@@ -939,7 +934,7 @@ class CogsUtils(commands.Cog):
         else:
             return True
 
-    async def invoke_command(self, author: discord.User, channel: discord.TextChannel, command: str, prefix: typing.Optional[str]=None, message: typing.Optional[discord.Message]=None, message_id: typing.Optional[str]="".join(choice(string.digits) for i in range(18)), timestamp: typing.Optional[datetime.datetime]=datetime.datetime.now()) -> typing.Union[commands.Context, discord.Message]:
+    async def invoke_command(self, author: discord.User, channel: discord.TextChannel, command: str, prefix: typing.Optional[str]=None, message: typing.Optional[discord.Message]=None, dispatch_message: typing.Optional[bool]=False, message_id: typing.Optional[str]="".join(choice(string.digits) for i in range(18)), timestamp: typing.Optional[datetime.datetime]=datetime.datetime.now()) -> typing.Union[commands.Context, discord.Message]:
         """
         Invoke the specified command with the specified user in the specified channel.
         """
@@ -967,12 +962,17 @@ class CogsUtils(commands.Cog):
             context.author = author
             context.guild = channel.guild
             context.channel = channel
+            MemberPrefix = self.bot.get_cog("MemberPrefix")
+            if MemberPrefix is not None:
+                if hasattr(MemberPrefix, "cache_messages"):
+                    MemberPrefix.cache_messages.append(message.id)
             await bot.invoke(context)
         else:
-            message.content = old_content
-            message.author = author
-            message.channel = channel
-            bot.dispatch("message", message)
+            if dispatch_message:
+                message.content = old_content
+                message.author = author
+                message.channel = channel
+                bot.dispatch("message", message)
         return context if context.valid else message
 
     async def get_hook(self, channel: discord.TextChannel):
@@ -1890,6 +1890,7 @@ if CogsUtils().is_dpy2:
             interaction, function_result = self.get_result()
             if interaction is None:
                 raise TimeoutError()
+            self.interaction_result, self.function_result = None, None
             return interaction, function_result
 
         def get_result(self):
@@ -1940,6 +1941,7 @@ if CogsUtils().is_dpy2:
             interaction, options, function_result = self.get_result()
             if interaction is None:
                 raise TimeoutError()
+            self.interaction_result, self.options_result, self.function_result = None, None, None
             return interaction, options, function_result
 
         def get_result(self):
@@ -2050,6 +2052,7 @@ if CogsUtils().is_dpy2:
             interaction, inputs_result, function_result = self.get_result()
             if interaction is None:
                 raise TimeoutError()
+            self.interaction_result, self.inputs_result, self.function_result = None, None, None
             return interaction, inputs_result, function_result
 
         def get_result(self):
@@ -2152,6 +2155,7 @@ class Reactions():
         reaction, user, function_result = self.get_result()
         if reaction is None:
             raise TimeoutError()
+        self.reaction_result, self.user_result, self.function_result = None, None, None
         return reaction, user, function_result
 
     def get_result(self):
@@ -2181,9 +2185,9 @@ class Menu():
             for emoji, name in controls.items():
                 if name in ["left_page", "prev_page", "next_page", "right_page"]:
                     del self.controls[emoji]
-        if len(pages) > 3:
+        if len(self.pages) > 3 and not all([isinstance(page, str) for page in self.pages]):
             for emoji, name in controls.items():
-                if name in ["send_all"]:
+                if name in ["save_as_file"]:
                     del self.controls[emoji]
         if not all([isinstance(page, str) for page in self.pages]):
             for emoji, name in controls.items():
@@ -2237,18 +2241,24 @@ class Menu():
                 elif response == "right_page":
                     self.current_page = self.source.get_max_pages() - 1
                 elif response == "send_all":
-                    for x in range(0, self.source.get_max_pages()):
-                        kwargs = await self.get_page(x)
-                        await ctx.send(**kwargs)
+                    if len(self.pages) <= 3:
+                        for x in range(0, self.source.get_max_pages()):
+                            kwargs = await self.get_page(x)
+                            await ctx.send(**kwargs)
+                    else:
+                        await ctx.send_interactive(self.pages)
+                    continue
                 elif response == "send_as_file":
                     def cleanup_code(content):
                         """Automatically removes code blocks from the code."""
                         # remove ˋˋˋpy\n````
                         if content.startswith("```") and content.endswith("```"):
-                            return re.compile(r"^((```py(thon)?)(?=\s)|(```))").sub("", content)[:-3]
+                            content = re.compile(r"^((```py(thon)?)(?=\s)|(```))").sub("", content)[:-3]
+                        return content.strip("` \n")
                     all_text = [cleanup_code(page) for page in self.pages]
                     all_text = "\n".join(all_text)
                     await ctx.send(file=text_to_file(all_text, filename=f"Menu_{self.message.channel.id}-{self.message.id}.txt"))
+                    continue
                 kwargs = await self.get_page(self.current_page)
                 if self.way == "buttons" or self.way == "dropdown":
                     try:

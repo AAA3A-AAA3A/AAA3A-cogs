@@ -332,8 +332,11 @@ class TicketTool(settings, commands.Cog):
         if not config["enable"]:
             await ctx.send(_("The ticket system is not activated on this server. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it.").format(**locals()))
             return
+        if category_open is None or category_close is None:
+            await ctx.send(_("The category `open` or the category `close` have not been configured. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it.").format(**locals()))
+            return
         if not await self.check_limit(ctx.author):
-            await ctx.send(f"Sorry. You have already reached the limit of {limit} open tickets.")
+            await ctx.send(_("Sorry. You have already reached the limit of {limit} open tickets.").format(**locals()))
             return
         if not category_open.permissions_for(ctx.guild.me).manage_channels or not category_close.permissions_for(ctx.guild.me).manage_channels:
             await ctx.send(_("The bot does not have `manage_channels` permission on the 'open' and 'close' categories to allow the ticket system to function properly. Please notify an administrator of this server.").format(**locals()))

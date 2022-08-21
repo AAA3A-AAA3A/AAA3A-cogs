@@ -6,8 +6,11 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import asyncio
+import traceback
 
 from redbot.core import Config
+from redbot.core.events import log as red_log
+from redbot.core.utils.chat_formatting import inline
 from redbot.core.utils.menus import start_adding_reactions
 
 # Credits:
@@ -44,6 +47,8 @@ class ReactToCommand(commands.Cog):
         self.cogsutils._setup()
 
         asyncio.create_task(self.edit_config_schema())
+
+        self.cache = []
 
     async def edit_config_schema(self):
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
@@ -102,7 +107,24 @@ class ReactToCommand(commands.Cog):
         if not permissions.read_message_history or not permissions.read_messages or not permissions.send_messages or not permissions.view_channel:
             return
         command = config[f"{payload.channel_id}-{payload.message_id}"][f"{payload.emoji}"]
-        await self.cogsutils.invoke_command(author=payload.member, channel=channel, command=command, message=message)
+        context = await self.cogsutils.invoke_command(author=payload.member, channel=channel, command=command, message=message)
+        self.cache.append(context)
+
+    @commands.Cog.listener()
+    async def on_command_completion(self, ctx: commands.Context):
+        if ctx in self.cache:
+            self.cache.remove(ctx)
+
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx: commands.Context, error: Exception):
+        if ctx not in self.cache:
+            return
+        self.cache.remove(ctx)
+        if isinstance(error, commands.CommandInvokeError):
+            await asyncio.sleep(0.7)
+            self.log.exception(f"This exception in the '{ctx.command.qualified_name}' command may have been triggered by the use of ReactToCommand. Check that the same error occurs with the text command, before reporting it.", exc_info=None)
+            message = f"This error in the '{ctx.command.qualified_name}' command may have been triggered by the use of ReactToCommand.\nCheck that the same error occurs with the text command, before reporting it."
+            await ctx.send(inline(message))
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message):

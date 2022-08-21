@@ -196,9 +196,12 @@ class EditFile(commands.Cog):
             elif path_file.is_dir():
                 message += "\n" + f"- [DIR] {file}"
         message = self.cogsutils.replace_var_paths(message)
-        message = "```" + message + "```"
-        for m in pagify(message):
-            await ctx.send(m)
+        pages = [box(page, lang="ansi") for page in pagify(message, page_length=2000 - 12)]
+        if len(pages) <= 3:
+            for page in pages:
+                await ctx.send(page)
+        else:
+            await ctx.send_interactive(pages)
 
     @editfile.command()
     async def delete(self, ctx: commands.Context, *, path: Path):

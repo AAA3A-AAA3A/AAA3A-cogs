@@ -492,7 +492,7 @@ class TicketTool(settings, commands.Cog):
                 if not permissions.read_messages and not permissions.read_message_history:
                     return
                 ctx = await self.cogsutils.invoke_command(author=interaction.user, channel=interaction.channel, command="ticket create")
-                if not all(check(ctx) for check in ctx.command.checks):
+                if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
                     await interaction.response.send_message(_("You are not allowed to execute this command."), ephemeral=True)
                 else:
                     await interaction.response.send_message(_("You have chosen to create a ticket.").format(**locals()), ephemeral=True)
@@ -504,7 +504,7 @@ class TicketTool(settings, commands.Cog):
                 if not permissions.read_messages and not permissions.read_message_history:
                     return
                 ctx = await self.cogsutils.invoke_command(author=interaction.user, channel=interaction.channel, command="ticket close")
-                if not all(check(ctx) for check in ctx.command.checks):
+                if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
                     await interaction.response.send_message(_("You are not allowed to execute this command."), ephemeral=True)
                 else:
                     await interaction.response.send_message(_("You have chosen to close this ticket.").format(**locals()), ephemeral=True)
@@ -516,7 +516,7 @@ class TicketTool(settings, commands.Cog):
                 if not permissions.read_messages and not permissions.read_message_history:
                     return
                 ctx = await self.cogsutils.invoke_command(author=interaction.user, channel=interaction.channel, command="ticket claim")
-                if not all(check(ctx) for check in ctx.command.checks):
+                if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
                     await interaction.response.send_message(_("You are not allowed to execute this command."), ephemeral=True)
                 else:
                     await interaction.response.send_message(_("You have chosen to claim this ticket.").format(**locals()), ephemeral=True)
@@ -535,7 +535,7 @@ class TicketTool(settings, commands.Cog):
             option = [option for option in view.dropdown._options if option.value == options[0]][0]
             reason = f"{option.emoji} - {option.label}"
             ctx = await self.cogsutils.invoke_command(author=interaction.user, channel=interaction.channel, command=f"ticket create {reason}")
-            if not all(check(ctx) for check in ctx.command.checks) or not hasattr(ctx, "ticket"):
+            if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks) or not hasattr(ctx, "ticket"):
                 await interaction.response.send_message(_("You are not allowed to execute this command."), ephemeral=True)
             else:
                 config = await self.get_config(interaction.guild)
@@ -558,7 +558,7 @@ class TicketTool(settings, commands.Cog):
                 if not permissions.read_messages and not permissions.read_message_history:
                     return
                 ctx = await self.cogsutils.invoke_command(author=inter.author, channel=inter.channel, command="ticket create")
-                if not all(check(ctx) for check in ctx.command.checks):
+                if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
                     await inter.create_response(_("You are not allowed to execute this command."), ephemeral=True)
                 else:
                     await inter.create_response(_("You have chosen to create a ticket.").format(**locals()), ephemeral=True)
@@ -570,7 +570,7 @@ class TicketTool(settings, commands.Cog):
                 if not permissions.read_messages and not permissions.read_message_history:
                     return
                 ctx = await self.cogsutils.invoke_command(author=inter.author, channel=inter.channel, command="ticket close")
-                if not all(check(ctx) for check in ctx.command.checks):
+                if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
                     await inter.create_response(_("You are not allowed to execute this command."), ephemeral=True)
                 else:
                     await inter.create_response(_("You have chosen to close this ticket.").format(**locals()), ephemeral=True)
@@ -582,7 +582,8 @@ class TicketTool(settings, commands.Cog):
                 if not permissions.read_messages and not permissions.read_message_history:
                     return
                 ctx = await self.cogsutils.invoke_command(author=inter.author, channel=inter.channel, command="ticket claim")
-                if not all(check(ctx) for check in ctx.command.checks):
+                commands.Command
+                if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
                     await inter.create_response(_("You are not allowed to execute this command."), ephemeral=True)
                 else:
                     await inter.create_response(_("You have chosen to claim this ticket.").format(**locals()), ephemeral=True)
@@ -603,7 +604,7 @@ class TicketTool(settings, commands.Cog):
             option = inter.select_menu.selected_options[0]
             reason = f"{option.emoji} - {option.label}"
             ctx = await self.cogsutils.invoke_command(author=inter.author, channel=inter.channel, command=f"ticket create {reason}")
-            if not all(check(ctx) for check in ctx.command.checks) or not hasattr(ctx, "ticket"):
+            if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks) or not hasattr(ctx, "ticket"):
                 await inter.create_response(_("You are not allowed to execute this command."), ephemeral=True)
             else:
                 config = await self.get_config(inter.guild)
@@ -904,7 +905,7 @@ class Ticket:
         if config["ticket_role"] is not None:
             if ticket.owner:
                 try:
-                    ticket.owner.add_roles(config["ticket_role"], reason=reason)
+                    await ticket.owner.add_roles(config["ticket_role"], reason=reason)
                 except discord.HTTPException:
                     pass
         await ticket.save()

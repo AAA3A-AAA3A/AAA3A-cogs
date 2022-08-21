@@ -43,9 +43,9 @@ class ExportChannel(commands.Cog):
                 break
         return messages
 
-    @commands.guildowner_or_permissions(administrator=True)
     @commands.guild_only()
-    @commands.group(name="exportchannel")
+    @commands.guildowner_or_permissions(administrator=True)
+    @commands.group(name="exportchannel", aliases=["exportmessages"])
     async def exportchannel(self, ctx: commands.Context):
         """Commands for export all or part of a channel's messages to an html file."""
 

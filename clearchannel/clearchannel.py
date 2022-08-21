@@ -37,10 +37,10 @@ class ClearChannel(commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
-    @commands.command(name="clearchannel")
     @commands.guild_only()
     @commands.guildowner()
     @commands.bot_has_permissions(manage_channels=True)
+    @commands.command(name="clearchannel")
     async def cleanup_channel(
         self, ctx: commands.Context, confirmation: bool=False
     ):

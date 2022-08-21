@@ -9,6 +9,6 @@
         "tool",
         "system"
     ],
-    "requirements": ["chat-exporter==1.7.3", "dislash.py"],
-    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+    "requirements": ["chat-exporter==1.7.3", "emoji==1.7", "dislash.py"],
+    "end_user_data_statement": "This cog records all the data needed to operate the ticket system. It records the reason for the ticket, the open/close dates, the members who have opened/closed/claimed a ticket. Apart from deleting the ticket with `[p]ticket delete`, this cog is not configured to delete this operational data."
 }

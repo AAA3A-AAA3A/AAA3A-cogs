@@ -1,13 +1,11 @@
 from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import asyncio
-import json
-from pathlib import Path
+from redbot.core.utils import get_end_user_data_statement
 
 from .editrole import EditRole
 
-with open(Path(__file__).parent / "info.json") as fp:
-    __red_end_user_data_statement__ = json.load(fp)["end_user_data_statement"]
+__red_end_user_data_statement__ = get_end_user_data_statement(file=__file__)
 
 old_editrole = None
 

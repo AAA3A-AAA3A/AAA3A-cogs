@@ -4,6 +4,8 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
+
+from copy import deepcopy
 from typing import List, Optional, Tuple, Union
 
 from redbot.core import Config
@@ -29,21 +31,36 @@ class AntiNuke(commands.Cog):
             force_registration=True,
         )
         self.antinuke_guild = {
-            "logschannel": None, # The channel for logs.
-            "enabled": False, # Enable the possibility.
-            "user_dm": True, # Enable the user dm.
-            "number_detected_member": 1, # Number.
-            "number_detected_bot": 1, # Number.
+            "logschannel": None,  # The channel for logs.
+            "enabled": False,  # Enable the possibility.
+            "user_dm": True,  # Enable the user dm.
+            "number_detected_member": 1,  # Number.
+            "number_detected_bot": 1,  # Number.
         }
         self.antinuke_member = {
-            "count": 0, # The count of channel's deletes.
-            "old_roles": [], # The roles to be handed in if it wasn't a nuke.
+            "count": 0,  # The count of channel's deletes.
+            "old_roles": [],  # The roles to be handed in if it wasn't a nuke.
         }
         self.config.register_guild(**self.antinuke_guild)
         self.config.register_member(**self.antinuke_member)
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
+
+    async def red_delete_data_for_user(self, *, requester: typing.Literal["discord_deleted_user", "owner", "user", "user_strict"], user_id: int):
+        """Delete actions count and old roles, if the requester is `discord_deleted_user` or `owner`."""
+        if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
+            return
+        if requester not in ["discord_deleted_user", "owner"]:
+            return
+        member_group = self.config._get_base_group(self.config.MEMBER)
+        async with member_group.all() as members_data:
+            _members_data = deepcopy(members_data)
+            for guild in _members_data:
+                if str(user_id) in _members_data[guild]:
+                    del members_data[guild][str(user_id)]
+                if members_data[guild] == {}:
+                    del members_data[guild]
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, old_channel: discord.abc.GuildChannel):
@@ -87,7 +104,10 @@ class AntiNuke(commands.Cog):
                 rolelist_name = [r.name for r in old_roles]
                 rolelist_mention = [r.mention for r in old_roles]
                 if actual_state_user_dm:
-                    await perp.send(_("All your roles have been taken away because you have deleted channel #{old_channel}.\nYour former roles: {rolelist_name}").format(**locals()))
+                    try:
+                        await perp.send(_("All your roles have been taken away because you have deleted channel #{old_channel}.\nYour former roles: {rolelist_name}").format(**locals()))
+                    except Exception:
+                        pass
                 if old_channel.guild.me.guild_permissions.manage_roles:
                     # await perp.edit(roles=[], reason=f"All roles in {perp} ({perp.id}) roles have been removed as a result of the antinuke system being triggered on this server.")
                     for role in old_roles:

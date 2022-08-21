@@ -240,7 +240,6 @@ class Medicat(commands.Cog):
         }
         self.config.register_global(**self.medicat_global)
 
-        self.__func_red__ = ["cog_unload"]
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 

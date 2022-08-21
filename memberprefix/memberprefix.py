@@ -4,6 +4,9 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
+
+from copy import deepcopy
+
 from redbot.core import Config
 
 # Credits:
@@ -38,7 +41,6 @@ class MemberPrefix(commands.Cog):
         self.cache_messages = []
         self.bot.before_invoke(self.before_invoke)
 
-        self.__func_red__ = ["cog_unload"]
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
@@ -50,6 +52,21 @@ class MemberPrefix(commands.Cog):
         def cog_unload(self):
             self.bot.remove_before_invoke_hook(self.before_invoke)
             self.cogsutils._end()
+
+    async def red_delete_data_for_user(self, *, requester: typing.Literal["discord_deleted_user", "owner", "user", "user_strict"], user_id: int):
+        """Delete all user chosen prefixes in all Config guilds."""
+        if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
+            return
+        if requester == "user":
+            return
+        member_group = self.config._get_base_group(self.config.MEMBER)
+        async with member_group.all() as members_data:
+            _members_data = deepcopy(members_data)
+            for guild in _members_data:
+                if str(user_id) in _members_data[guild]:
+                    del members_data[guild][str(user_id)]
+                if members_data[guild] == {}:
+                    del members_data[guild]
 
     async def before_invoke(self, ctx: commands.Context) -> None:
         if ctx.guild is None:
@@ -80,7 +97,7 @@ class MemberPrefix(commands.Cog):
         else:
             prefixes = await self.bot.get_valid_prefixes(message.guild)
             return
-        ctx = await self.get_context_with_custom_prefixes(message=message, prefixes=prefixes, cls=commands.context.Context)
+        ctx = await self.get_context_with_custom_prefixes(origin=message, prefixes=prefixes, cls=commands.context.Context)
         if ctx is None:
             return
         if ctx.valid:
@@ -101,33 +118,54 @@ class MemberPrefix(commands.Cog):
         **Arguments:**
             - `<prefixes...>` - The prefixes the bot will respond for you only.
         """
-        if any(len(x) > 10 for x in prefixes):
-            await ctx.send(_("A prefix is above the maximal length (10 characters).\nThis is possible for global or per-server prefixes, but not for per-member prefixes.").format(**locals()))
+        if len(prefixes) == 0:
+            await self.config.member(ctx.author).custom_prefixes.clear()
+            await ctx.send(_("You now use this server or global prefixes.").format(**locals()))
+            return
+        if any(len(x) > 25 for x in prefixes):
+            await ctx.send(_("A prefix is above the maximal length (25 characters).\nThis is possible for global or per-server prefixes, but not for per-member prefixes.").format(**locals()))
+            return
+        if any(prefix.startswith("/") for prefix in prefixes):
+            await ctx.send(_("Prefixes cannot start with `/`, as it conflicts with Discord's slash commands.").format(**locals()))
             return
         await self.config.member(ctx.author).custom_prefixes.set(prefixes)
-        if len(prefixes) == 0 or 1:
+        if len(prefixes) == 1:
             await ctx.send(_("Prefix for you only set.").format(**locals()))
         else:
             await ctx.send(_("Prefixes for you only set.").format(**locals()))
 
-    async def get_context_with_custom_prefixes(self, message: discord.Message, prefixes: typing.List, *, cls=commands.context.Context):
+    async def get_context_with_custom_prefixes(self, origin: discord.Message, prefixes: typing.List, *, cls=commands.context.Context):
         r"""|coro|
-        Returns the invocation context from the message.
+
+        Returns the invocation context from the message or interaction.
+
         This is a more low-level counter-part for :meth:`.process_commands`
         to allow users more fine grained control over the processing.
+
         The returned context is not guaranteed to be a valid invocation
         context, :attr:`.Context.valid` must be checked to make sure it is.
         If the context is not valid then it is not a valid candidate to be
         invoked under :meth:`~.Bot.invoke`.
+
+        .. note::
+
+            In order for the custom context to be used inside an interaction-based
+            context (such as :class:`HybridCommand`) then this method must be
+            overridden to return that class.
+
+        .. versionchanged:: 2.0
+
+            ``message`` parameter is now positional-only and renamed to ``origin``.
         Parameters
         -----------
-        message: :class:`discord.Message`
-            The message to get the invocation context from.
+        origin: Union[:class:`discord.Message`, :class:`discord.Interaction`]
+            The message or interaction to get the invocation context from.
         cls
             The factory class that will be used to create the context.
             By default, this is :class:`.Context`. Should a custom
             class be provided, it must be similar enough to :class:`.Context`\'s
             interface.
+
         Returns
         --------
         :class:`.Context`
@@ -135,38 +173,26 @@ class MemberPrefix(commands.Cog):
             ``cls`` parameter.
         """
         if self.cogsutils.is_dpy2:
-            view = discord.ext.commands.view.StringView(message.content)
-            ctx = cls(prefix=None, view=view, bot=self.bot, message=message)
-            if message.author.id == self.bot.user.id:
-                return ctx
-            prefix = prefixes
-            invoked_prefix = prefix
-            if message.content.startswith(tuple(prefix)):
-                invoked_prefix = discord.utils.find(view.skip_string, prefix)
-            else:
-                return ctx
-            if self.bot.strip_after_prefix:
-                view.skip_ws()
-            invoker = view.get_word()
-            ctx.invoked_with = invoker
-            ctx.prefix = invoked_prefix
-            ctx.command = self.bot.all_commands.get(invoker)
+            if isinstance(origin, discord.Interaction):
+                return
+        view = discord.ext.commands.view.StringView(origin.content)
+        ctx = cls(prefix=None, view=view, bot=self.bot, message=origin)
+        if origin.author.id == self.bot.user.id:  # type: ignore
             return ctx
+        prefix = prefixes
+        invoked_prefix = prefix
+        if isinstance(prefix, str):
+            if not view.skip_string(prefix):
+                return ctx
         else:
-            view = discord.ext.commands.view.StringView(message.content)
-            ctx = cls(prefix=None, view=view, bot=self.bot, message=message)
-            if self.bot._skip_check(message.author.id, self.bot.user.id):
-                return ctx
-            prefix = prefixes
-            invoked_prefix = prefix
-            if message.content.startswith(tuple(prefix)):
+            if origin.content.startswith(tuple(prefix)):
                 invoked_prefix = discord.utils.find(view.skip_string, prefix)
             else:
                 return ctx
-            if self.bot.strip_after_prefix:
-                view.skip_ws()
-            invoker = view.get_word()
-            ctx.invoked_with = invoker
-            ctx.prefix = invoked_prefix
-            ctx.command = self.bot.all_commands.get(invoker)
-            return ctx
+        if self.bot.strip_after_prefix:
+            view.skip_ws()
+        invoker = view.get_word()
+        ctx.invoked_with = invoker
+        ctx.prefix = invoked_prefix
+        ctx.command = self.bot.all_commands.get(invoker)
+        return ctx

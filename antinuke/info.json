@@ -10,5 +10,5 @@
         "anti",
         "raid"
     ],
-    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+    "end_user_data_statement": "This cog records the number of times the user has performed an action that may be considered dangerous (e.g. deleting a channel)."
 }

@@ -8,6 +8,7 @@ import typing  # isort:skip
 import argparse
 import dateparser
 import datetime
+import re
 
 from redbot.core.utils.chat_formatting import bold, underline
 from redbot.core.utils.common_filters import URL_RE
@@ -30,7 +31,9 @@ class DiscordSearch(commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
-    @commands.is_owner()
+    @commands.guild_only()
+    @commands.admin_or_permissions(administrator=True)
+    @commands.cooldown(rate=3, per=30, type=commands.BucketType.user)
     @commands.command(name="discordsearch", aliases=["dsearch"])
     async def discordsearch(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel]=None, *args: str):
         """Search for a message on Discord in a channel.
@@ -43,6 +46,7 @@ class DiscordSearch(commands.Cog):
         `--after "25/12/2000 00h00"`
         `--pinned true`
         `--content "AAA3A-cogs"`
+        `--regex "\[p\]"`
         `--contain link --contain embed --contain file`
         `--limit 100`
         """
@@ -60,11 +64,12 @@ class DiscordSearch(commands.Cog):
         after = args.after
         pinned = args.pinned
         content = args.content
+        regex = args.regex
         contains = args.contains
         limit = args.limit
         if channel is None:
             channel = ctx.channel
-        if not any([setting is not None for setting in [authors, mentions, before, after, pinned, content, contains]]):
+        if not any([setting is not None for setting in [authors, mentions, before, after, pinned, content, regex, contains, limit]]):
             await ctx.send("You must provide at least one parameter.")
             return
         args_str = [
@@ -74,7 +79,8 @@ class DiscordSearch(commands.Cog):
             bold("Before:") + " " + f"{before}",
             bold("After:") + " " + f"{after}",
             bold("Pinned:") + " " + f"{pinned}",
-            bold("Content:") + " " + f"`{content}`",
+            bold("Content:") + " " + (f"`{content}`" if content is not None else "None"),
+            bold("Regex:") + " " + f"{regex}",
             bold("Contains:") + " " + (", ".join([contain for contain in contains]) if contains is not None else "None"),
             bold("Limit:") + " " + f"{limit}",
         ]
@@ -90,6 +96,8 @@ class DiscordSearch(commands.Cog):
                 if pinned is not None and not message.pinned == pinned:
                     continue
                 if content is not None and not (content.lower() in message.content.lower() or any([content.lower() in str(embed.to_dict()).lower() for embed in message.embeds])):
+                    continue
+                if regex is not None and regex.findall(message.content) == []:
                     continue
                 if contains is not None:
                     if "link" in contains:
@@ -151,6 +159,7 @@ class SearchArgs():
         parser.add_argument("--after", dest="after")
         parser.add_argument("--pinned", dest="pinned")
         parser.add_argument("--content", dest="content", nargs="*")
+        parser.add_argument("--regex", dest="regex", nargs="*")
         parser.add_argument("--contain", dest="contains", nargs="+")
         parser.add_argument("--limit", dest="limit")
 
@@ -191,6 +200,13 @@ class SearchArgs():
             else:
                 self.pinned = args.pinned
             self.content = "".join(args.content) if args.content is not None else args.content
+            if args.regex is not None:
+                try:
+                    self.regex = re.compile("".join(args.regex))
+                except Exception as e:
+                    raise commands.BadArgument(_("`{args.regex}` is not a valid regex pattern.\n{e}").format(**locals()))
+            else:
+                self.regex = None
             if args.contains is not None:
                 self.contains = []
                 for contain in args.contains:

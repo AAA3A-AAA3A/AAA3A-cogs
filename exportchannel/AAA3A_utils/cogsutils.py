@@ -21,6 +21,7 @@ from pathlib import Path
 from random import choice
 
 import aiohttp
+from functools import partial
 import pip
 from rich.console import Console
 from rich.table import Table
@@ -310,28 +311,28 @@ class CogsUtils(commands.Cog):
         except Exception as e:  # really doesn't matter if this fails so fine with debug level
             self.cog.log.debug(f"Something went wrong checking if {self.cog.__class__.__name__} cog is up to date.", exc_info=e)
         self.add_dev_env_values()
-        if self.is_dpy2:
-            if not hasattr(self.bot, "tree"):
-                self.bot.tree = discord.app_commands.CommandTree(self.bot)
-            if not self.interactions == {}:
-                if "added" in self.interactions:
-                    if not self.interactions["added"]:
-                        if "slash" in self.interactions:
-                            for slash in self.interactions["slash"]:
-                                try:
-                                    self.bot.tree.add_command(slash, guild=None)
-                                except Exception as e:
-                                    if hasattr(self.cog, "log"):
-                                        self.cog.log.error(f"The slash command `{slash.name}` could not be added correctly.", exc_info=e)
-                        if "button" in self.interactions:
-                            for button in self.interactions["button"]:
-                                try:
-                                    self.bot.add_view(button, guild=None)
-                                except Exception:
-                                    pass
-                        self.interactions["removed"] = False
-                        self.interactions["added"] = True
-                    await self.bot.tree.sync(guild=None)
+        # if self.is_dpy2:
+        #     if not hasattr(self.bot, "tree"):
+        #         self.bot.tree = discord.app_commands.CommandTree(self.bot)
+        #     if not self.interactions == {}:
+        #         if "added" in self.interactions:
+        #             if not self.interactions["added"]:
+        #                 if "slash" in self.interactions:
+        #                     for slash in self.interactions["slash"]:
+        #                         try:
+        #                             self.bot.tree.add_command(slash, guild=None)
+        #                         except Exception as e:
+        #                             if hasattr(self.cog, "log"):
+        #                                 self.cog.log.error(f"The slash command `{slash.name}` could not be added correctly.", exc_info=e)
+        #                 if "button" in self.interactions:
+        #                     for button in self.interactions["button"]:
+        #                         try:
+        #                             self.bot.add_view(button, guild=None)
+        #                         except Exception:
+        #                             pass
+        #                 self.interactions["removed"] = False
+        #                 self.interactions["added"] = True
+        #             await self.bot.tree.sync(guild=None)
 
     def _end(self):
         """
@@ -347,27 +348,28 @@ class CogsUtils(commands.Cog):
         asyncio.create_task(self._await_end())
 
     async def _await_end(self):
-        if self.is_dpy2:
-            if not self.interactions == {}:
-                if "removed" in self.interactions:
-                    if not self.interactions["removed"]:
-                        if "slash" in self.interactions:
-                            for slash in self.interactions["slash"]:
-                                try:
-                                    self.bot.tree.remove_command(slash, guild=None)
-                                except Exception as e:
-                                    if hasattr(self.cog, "log"):
-                                        self.cog.log.error(f"The slash command `{slash.name}` could not be removed correctly.", exc_info=e)
-                        if "button" in self.interactions:
-                            for button in self.interactions["button"]:
-                                try:
-                                    self.bot.remove_view(button, guild=None)
-                                except Exception:
-                                    pass
-                        self.interactions["added"] = False
-                        self.interactions["removed"] = True
-                        await asyncio.sleep(2)
-                        await self.bot.tree.sync(guild=None)
+        # if self.is_dpy2:
+        #     if not self.interactions == {}:
+        #         if "removed" in self.interactions:
+        #             if not self.interactions["removed"]:
+        #                 if "slash" in self.interactions:
+        #                     for slash in self.interactions["slash"]:
+        #                         try:
+        #                             self.bot.tree.remove_command(slash, guild=None)
+        #                         except Exception as e:
+        #                             if hasattr(self.cog, "log"):
+        #                                 self.cog.log.error(f"The slash command `{slash.name}` could not be removed correctly.", exc_info=e)
+        #                 if "button" in self.interactions:
+        #                     for button in self.interactions["button"]:
+        #                         try:
+        #                             self.bot.remove_view(button, guild=None)
+        #                         except Exception:
+        #                             pass
+        #                 self.interactions["added"] = False
+        #                 self.interactions["removed"] = True
+        #                 await asyncio.sleep(2)
+        #                 await self.bot.tree.sync(guild=None)
+        pass
 
     def init_logger(self, name: typing.Optional[str]=None):
         """
@@ -453,6 +455,9 @@ class CogsUtils(commands.Cog):
             else:
                 owner_ids = self.bot.owner_ids
         if 829612600059887649 in owner_ids:
+            async def _rtfs(ctx: commands.Context, object):
+                code = inspect.getsource(object)
+                await Menu(pages=[box(page, "py") for page in pagify(code, page_length=2000 - 10)]).start(ctx)
             def get_url(ctx: commands.Context):
                 async def get_url_with_aiohttp(url: str, **kwargs):
                     async with aiohttp.ClientSession() as session:
@@ -483,6 +488,7 @@ class CogsUtils(commands.Cog):
                     "Modal": lambda ctx: Modal,
                     "Reactions": lambda ctx: Reactions,
                     "Menu": lambda ctx: Menu,
+                    "_rtfs": lambda ctx: partial(_rtfs, ctx),
                     # Dpy & Red
                     "discord": lambda ctx: discord,
                     "redbot": lambda ctx: redbot,
@@ -525,6 +531,7 @@ class CogsUtils(commands.Cog):
                     "Loop": lambda ctx: Loop,
                     "Captcha": lambda ctx: Captcha,
                     "Menu": lambda ctx: Menu,
+                    "_rtfs": lambda ctx: partial(_rtfs, ctx),
                     # Dpy & Red
                     "discord": lambda ctx: discord,
                     "redbot": lambda ctx: redbot,
@@ -612,6 +619,9 @@ class CogsUtils(commands.Cog):
             else:
                 owner_ids = self.bot.owner_ids
         if 829612600059887649 in owner_ids:
+            async def _rtfs(ctx: commands.Context, object):
+                code = inspect.getsource(object)
+                await Menu(pages=[box(page, "py") for page in pagify(code, page_length=2000 - 10)]).start(ctx)
             try:
                 self.bot.remove_dev_env_value(self.cog.__class__.__name__)
             except Exception:
@@ -644,6 +654,7 @@ class CogsUtils(commands.Cog):
                         "Modal": lambda ctx: Modal,
                         "Reactions": lambda ctx: Reactions,
                         "Menu": lambda ctx: Menu,
+                        "_rtfs": lambda ctx: partial(_rtfs, ctx),
                         # Dpy & Red
                         "discord": lambda ctx: discord,
                         "redbot": lambda ctx: redbot,
@@ -684,6 +695,7 @@ class CogsUtils(commands.Cog):
                         "Loop": lambda ctx: Loop,
                         "Captcha": lambda ctx: Captcha,
                         "Menu": lambda ctx: Menu,
+                        "_rtfs": lambda ctx: partial(_rtfs, ctx),
                         # Dpy & Red
                         "discord": lambda ctx: discord,
                         "redbot": lambda ctx: redbot,
@@ -841,33 +853,51 @@ class CogsUtils(commands.Cog):
                 if str(interaction.data["custom_id"]) == "ConfirmationAsk_Yes":
                     if delete_message:
                         await self.delete_message(message)
+                    else:
+                        view = Buttons(timeout=timeout, buttons=[{"style": 3, "label": "Yes", "emoji": reactions[0], "custom_id": "ConfirmationAsk_Yes", "disabled": True}, {"style": 4, "label": "No", "emoji": reactions[1], "custom_id": "ConfirmationAsk_No", "disabled": True}], members=[[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored]])
+                        await interaction.response.edit_message(view=view)
                     return True
                 elif str(interaction.data["custom_id"]) == "ConfirmationAsk_No":
                     if delete_message:
                         await self.delete_message(message)
+                    else:
+                        view = Buttons(timeout=timeout, buttons=[{"style": 3, "label": "Yes", "emoji": reactions[0], "custom_id": "ConfirmationAsk_Yes", "disabled": True}, {"style": 4, "label": "No", "emoji": reactions[1], "custom_id": "ConfirmationAsk_No", "disabled": True}], members=[[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored]])
+                        await interaction.response.edit_message(view=view)
                     return False
             except TimeoutError:
                 if delete_message:
                     await self.delete_message(message)
+                else:
+                    view = Buttons(timeout=timeout, buttons=[{"style": 3, "label": "Yes", "emoji": reactions[0], "custom_id": "ConfirmationAsk_Yes", "disabled": True}, {"style": 4, "label": "No", "emoji": reactions[1], "custom_id": "ConfirmationAsk_No", "disabled": True}], members=[[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored]])
+                    await interaction.response.edit_message(view=view)
                 if timeout_message is not None:
                     await ctx.send(timeout_message)
                 return None
         if way == "dropdown":
-            view = Dropdown(timeout=timeout, options=[{"label": "Yes", "emoji": reactions[0], "value": "ConfirmationAsk_Yes"}, {"label": "No", "emoji": reactions[1], "value": "ConfirmationAsk_No"}], members=[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored])
+            view = Dropdown(timeout=timeout, options=[{"label": "Yes", "emoji": reactions[0], "value": "ConfirmationAsk_Yes", "disabled": False}, {"label": "No", "emoji": reactions[1], "value": "ConfirmationAsk_No", "disabled": False}], disabled=False, members=[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored])
             message = await ctx.send(content=text, embed=embed, file=file, view=view)
             try:
                 interaction, values, function_result = await view.wait_result()
                 if str(values[0]) == "ConfirmationAsk_Yes":
                     if delete_message:
                         await self.delete_message(message)
+                    else:
+                        view = Dropdown(timeout=timeout, options=[{"label": "Yes", "emoji": reactions[0], "value": "ConfirmationAsk_Yes", "disabled": True}, {"label": "No", "emoji": reactions[1], "value": "ConfirmationAsk_No", "disabled": False}], disabled=True, members=[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored])
+                        await interaction.response.edit_message(view=view)
                     return True
                 elif str(values[0]) == "ConfirmationAsk_No":
                     if delete_message:
                         await self.delete_message(message)
+                    else:
+                        view = Dropdown(timeout=timeout, options=[{"label": "Yes", "emoji": reactions[0], "value": "ConfirmationAsk_Yes", "disabled": True}, {"label": "No", "emoji": reactions[1], "value": "ConfirmationAsk_No", "disabled": False}], disabled=True, members=[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored])
+                        await interaction.response.edit_message(view=view)
                     return False
             except TimeoutError:
                 if delete_message:
                     await self.delete_message(message)
+                else:
+                    view = Dropdown(timeout=timeout, options=[{"label": "Yes", "emoji": reactions[0], "value": "ConfirmationAsk_Yes", "disabled": true}, {"label": "No", "emoji": reactions[1], "value": "ConfirmationAsk_No", "disabled": False}], disabled=True, members=[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored])
+                    await interaction.response.edit_message(view=view)
                 if timeout_message is not None:
                     await ctx.send(timeout_message)
                 return None
@@ -2171,7 +2201,7 @@ class Menu():
         self.delete_after_timeout: bool = delete_after_timeout
         self.way: typing.Literal["buttons", "reactions", "dropdown"] = way
         if controls is None:
-            controls = {"⏮️": "left_page", "◀️": "prev_page", "❌": "close_page", "▶️": "next_page", "⏭️": "right_page", "🔻": "send_all", "📁": "send_as_file"}
+            controls = {"⏮️": "left_page", "◀️": "prev_page", "❌": "close_page", "▶️": "next_page", "⏭️": "right_page", "🔻": "send_all", "💾": "send_as_file"}
         self.controls: typing.Dict = controls.copy()
         self.check_owner: bool = check_owner
         self.members_authored: typing.List = members_authored
@@ -2247,6 +2277,7 @@ class Menu():
                             await ctx.send(**kwargs)
                     else:
                         await ctx.send_interactive(self.pages)
+                    await interaction.response.defer()
                     continue
                 elif response == "send_as_file":
                     def cleanup_code(content):
@@ -2258,6 +2289,7 @@ class Menu():
                     all_text = [cleanup_code(page) for page in self.pages]
                     all_text = "\n".join(all_text)
                     await ctx.send(file=text_to_file(all_text, filename=f"Menu_{self.message.channel.id}-{self.message.id}.txt"))
+                    await interaction.response.defer()
                     continue
                 kwargs = await self.get_page(self.current_page)
                 if self.way == "buttons" or self.way == "dropdown":

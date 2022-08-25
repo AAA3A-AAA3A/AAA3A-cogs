@@ -160,7 +160,7 @@ class EditTextChannel(commands.Cog):
             await ctx.tick()
 
     @edittextchannel.command()
-    async def type(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], type: commands.Literal[0, 5]):
+    async def type(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], type: commands.Literal["0", "5"]):
         """Edit text channel type.
 
         `text`: 0
@@ -171,7 +171,7 @@ class EditTextChannel(commands.Cog):
             channel = ctx.channel
         if not await self.check_text_channel(ctx, channel):
             return
-        type = discord.ChannelType(type)
+        type = discord.ChannelType(int(type))
         try:
             await channel.edit(type=type, reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).")
         except discord.HTTPException:
@@ -180,7 +180,7 @@ class EditTextChannel(commands.Cog):
             await ctx.tick()
 
     @edittextchannel.command()
-    async def defaultautoarchiveduration(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], default_auto_archive_duration: commands.Literal[60, 1440, 4320, 10080]):
+    async def defaultautoarchiveduration(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], default_auto_archive_duration: commands.Literal["60", "1440", "4320", "10080"]):
         """Edit text channel default auto archive duration.
         
         The new default auto archive duration in minutes for threads created in this channel. Must be one of `60`, `1440`, `4320`, or `10080`.
@@ -190,7 +190,7 @@ class EditTextChannel(commands.Cog):
         if not await self.check_text_channel(ctx, channel):
             return
         try:
-            await channel.edit(default_auto_archive_duration=default_auto_archive_duration, reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).")
+            await channel.edit(default_auto_archive_duration=int(default_auto_archive_duration), reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).")
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:

@@ -157,7 +157,7 @@ class RolesButtons(commands.Cog):
         pass
 
     @rolesbuttons.command()
-    async def add(self, ctx: commands.Context, message: discord.Message, role: discord.Role, emoji: typing.Union[discord.Emoji, str], style_button: typing.Optional[commands.Literal[1, 2, 3, 4]]=2, *, text_button: typing.Optional[str]=None):
+    async def add(self, ctx: commands.Context, message: discord.Message, role: discord.Role, emoji: typing.Union[discord.Emoji, str], style_button: typing.Optional[commands.Literal["1", "2", "3", "4"]]="2", *, text_button: typing.Optional[str]=None):
         """Add a role-button to a message.
 
         `primary`: 1
@@ -190,9 +190,9 @@ class RolesButtons(commands.Cog):
             await ctx.send(_("I can't do more than 25 roles-buttons for one message.").format(**locals()))
             return
         if hasattr(emoji, 'id'):
-            config[f"{message.channel.id}-{message.id}"][f"{emoji.id}"] = {"role": role.id, "style_button": style_button, "text_button": text_button}
+            config[f"{message.channel.id}-{message.id}"][f"{emoji.id}"] = {"role": role.id, "style_button": int(style_button), "text_button": text_button}
         else:
-            config[f"{message.channel.id}-{message.id}"][f"{emoji}"] = {"role": role.id, "style_button": style_button, "text_button": text_button}
+            config[f"{message.channel.id}-{message.id}"][f"{emoji}"] = {"role": role.id, "style_button": int(style_button), "text_button": text_button}
         if self.cogsutils.is_dpy2:
             await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message), function=self.on_button_interaction, infinity=True))
         else:

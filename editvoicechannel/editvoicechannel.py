@@ -154,7 +154,7 @@ class EditVoiceChannel(commands.Cog):
             await ctx.tick()
 
     @editvoicechannel.command()
-    async def videoqualitymode(self, ctx: commands.Context, channel: discord.VoiceChannel, video_quality_mode: commands.Literal[1, 2]):
+    async def videoqualitymode(self, ctx: commands.Context, channel: discord.VoiceChannel, video_quality_mode: commands.Literal["1", "2"]):
         """Edit voice channel video quality mode.
 
         auto = 1
@@ -162,7 +162,7 @@ class EditVoiceChannel(commands.Cog):
         """
         if not await self.check_voice_channel(ctx, channel):
             return
-        video_quality_mode = discord.VideoQualityMode(video_quality_mode)
+        video_quality_mode = discord.VideoQualityMode(int(video_quality_mode))
         try:
             await channel.edit(video_quality_mode=video_quality_mode, reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).")
         except discord.HTTPException:

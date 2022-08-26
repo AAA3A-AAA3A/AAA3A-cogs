@@ -1,6 +1,6 @@
-from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from .AAA3A_utils import CogsUtils  # isort:skip
 if CogsUtils().is_dpy2:
-    from .AAA3A_utils.cogsutils import Buttons, Dropdown  # isort:skip
+    from .AAA3A_utils import Buttons, Dropdown  # isort:skip
 else:
     from dislash import ActionRow, Button, ButtonStyle, SelectMenu, SelectOption  # isort:skip
 

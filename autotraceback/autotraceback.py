@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils.cogsutils import CogsUtils, Menu  # isort:skip
+﻿from .AAA3A_utils import CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -37,6 +37,56 @@ class AutoTraceback(commands.Cog):
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
+
+    @commands.is_owner()
+    @commands.command()
+    async def traceback(self, ctx: commands.Context, public: bool = False):
+        """Sends to the owner the last command exception that has occurred.
+
+        If public (yes is specified), it will be sent to the chat instead.
+
+        Warning: Sending the traceback publicly can accidentally reveal sensitive information about your computer or configuration.
+
+        **Examples:**
+            - `[p]traceback` - Sends the traceback to your DMs.
+            - `[p]traceback True` - Sends the last traceback in the current context.
+
+        **Arguments:**
+            - `[public]` - Whether to send the traceback to the current context. Leave blank to send to your DMs.
+        """
+        if not public:
+            destination = ctx.author
+        else:
+            destination = ctx.channel
+
+        if ctx.bot._last_exception:
+            _last_exception = ctx.bot._last_exception.split("\n")
+            _last_exception[0] = _last_exception[0] + ":\n"
+            _last_exception = "\n".join(_last_exception)
+            _last_exception = self.cogsutils.replace_var_paths(_last_exception)
+            if public:
+                pages = []
+                for page in pagify(_last_exception, shorten_by=15, page_length=1985):
+                    pages.append(box(page, lang="py"))
+                try:
+                    await Menu(pages=pages, timeout=180, delete_after_timeout=False).start(ctx)
+                except discord.HTTPException:
+                    pass
+                else:
+                    await ctx.tick()
+                    return
+            for page in pagify(_last_exception, shorten_by=15, page_length=1985):
+                try:
+                    await destination.send(box(page, lang="py"))
+                except discord.HTTPException:
+                    await ctx.channel.send(
+                        "I couldn't send the traceback message to you in DM. "
+                        "Either you blocked me or you disabled DMs in this server."
+                    )
+                    return
+            await ctx.tick()
+        else:
+            await ctx.send(_("No exception has occurred yet."))
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):

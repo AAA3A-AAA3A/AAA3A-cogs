@@ -1,4 +1,4 @@
-from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from .AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import asyncio
 from redbot.core.utils import get_end_user_data_statement

@@ -1,9 +1,10 @@
-from .AAA3A_utils.cogsutils import CogsUtils, Menu  # isort:skip
+from .AAA3A_utils import CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 
+import inspect
 import io
 import os
 from os import listdir
@@ -11,8 +12,8 @@ from pathlib import Path
 import re
 import typing
 
-from redbot.core.cog_manager import CogManager
-from redbot.core.data_manager import cog_data_path
+from redbot.core import Config
+from redbot.core import data_manager
 from redbot.core.utils.chat_formatting import box, pagify
 
 if CogsUtils().is_dpy2:  # To remove
@@ -161,19 +162,22 @@ class EditFile(commands.Cog):
     async def findcog(self, ctx: commands.Context, cog: str):
         """Get a cog directory on the bot's host machine from its name.
         """
-        downloader = ctx.bot.get_cog("Downloader")
-        try:
-            if downloader is not None:
-                path = Path((await CogManager().find_cog(cog)).submodule_search_locations[0])
-            else:
-                path = cog_data_path(raw_name=cog)
-            if not path.exists() or not path.is_dir():
-                raise FileNotFoundError()
-        except FileNotFoundError:
-            await ctx.send(_("This cog cannot be found. Are you sure of its name?").format(**locals()))
+        cog_obj = ctx.bot.get_cog(cog)
+        if cog_obj is None:
+            await ctx.send("Could not find a cog with this name.")
             return
-        path = Path(self.cogsutils.replace_var_paths(str(path)))
-        await ctx.send(box(f"{path}"))
+        cog_path = Path(inspect.getfile(cog_obj.__class__)).parent.resolve()
+        cog_data_path = Path(data_manager.cog_data_path() / cog_obj.qualified_name).resolve()
+        if not cog_data_path.exists():
+            cog_data_path = None
+            if not isinstance(getattr(cog_obj, "config", None), Config):
+                reason = "This cog does not store any data."
+            else:
+                reason = "This cog had its data directory removed."
+        list_files = "\n".join([f"- {file}" for file in sorted(cog_path.iterdir(), key=lambda file: file.is_dir(), reverse=True) if file.is_file() and file.suffix == ".py"])
+        message = f"Cog path: {cog_path}\nData path: {cog_data_path or reason}" + "\n\n" + f"Files `.py`:\n{list_files}"
+        message = self.cogsutils.replace_var_paths(message)
+        await ctx.send(box(f"{message}"))
 
     @editfile.command()
     async def listdir(self, ctx: commands.Context, *, path: Path):
@@ -186,8 +190,8 @@ class EditFile(commands.Cog):
         if not path.is_dir():
             await ctx.send(_("The path you specified refers to a file, not a directory.").format(**locals()))
             return
-        files = listdir(str(path))
         message = ""
+        files = listdir(str(path))
         files = sorted(files, key=lambda file: (path / file).is_dir(), reverse=True)
         for file in files:
             path_file = path / file
@@ -204,9 +208,35 @@ class EditFile(commands.Cog):
             await ctx.send_interactive(pages)
 
     @editfile.command()
+    async def rename(self, ctx: commands.Context, new_name: str, *, path: Path):
+        """Rename a file.
+        """
+        path = Path(self.cogsutils.replace_var_paths(str(path)))
+        if not path.exists():
+            await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
+            return
+        if not path.is_file() and path.is_dir():
+            await ctx.send(_("The path you specified refers to a directory, not a file.").format(**locals()))
+            return
+        try:
+            path.rename(target=Path(f"{path.parent}") + f"{new_name}")
+        except FileNotFoundError:
+            await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
+        except IsADirectoryError:
+            await ctx.send(_("The path you specified refers to a directory, not a file.").format(**locals()))
+        else:
+            await ctx.send(_("The `{path}` file has been deleted.").format(**locals()))
+
+    @editfile.command()
     async def delete(self, ctx: commands.Context, *, path: Path):
         """Delete a file.
         """
+        if not path.exists():
+            await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
+            return
+        if not path.is_file() and path.is_dir():
+            await ctx.send(_("The path you specified refers to a directory, not a file.").format(**locals()))
+            return
         path = Path(self.cogsutils.replace_var_paths(str(path)))
         try:
             path.unlink()

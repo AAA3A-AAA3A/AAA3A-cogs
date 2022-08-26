@@ -1,11 +1,11 @@
-from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from .AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 if CogsUtils().is_dpy2:
-    from .AAA3A_utils.cogsutils import Buttons, Dropdown  # isort:skip
+    from .AAA3A_utils import Buttons, Dropdown  # isort:skip
 else:
     from dislash import ActionRow, Button, ButtonStyle, MessageInteraction  # isort:skip
 

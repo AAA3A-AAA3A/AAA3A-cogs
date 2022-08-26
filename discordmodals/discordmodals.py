@@ -1,5 +1,5 @@
-from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
-from .AAA3A_utils.cogsutils import Buttons, Modal  # isort:skip
+from .AAA3A_utils import CogsUtils  # isort:skip
+from .AAA3A_utils import Buttons, Modal  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip

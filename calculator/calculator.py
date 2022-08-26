@@ -1,13 +1,13 @@
-from .AAA3A_utils.cogsutils import CogsUtils  # isort:skip
+from .AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 if CogsUtils().is_dpy2:
-    from .AAA3A_utils.cogsutils import Buttons  # isort:skip
+    from .AAA3A_utils import Buttons  # isort:skip
 else:
-    from dislash import ActionRow, Button, ButtonStyle  # isort:skip
+    from dislash import ActionRow, Button, ButtonStyle, ResponseType  # isort:skip
 
 import asyncio
 import datetime
@@ -16,6 +16,7 @@ from math import *
 from TagScriptEngine import Interpreter, block
 
 from redbot.core import Config
+from redbot.core.utils.chat_formatting import box
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
@@ -27,7 +28,7 @@ _ = Translator("Calculator", __file__)
 
 @cog_i18n(_)
 class Calculator(commands.Cog):
-    """A cog to do simple calculations from Discord with buttons!"""
+    """A cog to do calculations from Discord with buttons!"""
 
     def __init__(self, bot: Red):
         self.bot: Red = bot
@@ -119,10 +120,12 @@ class Calculator(commands.Cog):
                                 {"style": 3, "label": ">", "emoji": None, "custom_id": "right_button", "disabled": True}
                             ]
 
+        self.history: typing.Dict[typing.Union[discord.Member, discord.User], typing.List[str]] = {}
+
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
-    async def calculate(self, expression: str, ASCII_one_hundred_and_twenty_four: bool):
+    async def calculate(self, expression: str):
         lst = list(expression)
         try:
             lst.remove("|")
@@ -166,15 +169,12 @@ class Calculator(commands.Cog):
         except Exception:
             result = None
         if result is not None:
-            if ASCII_one_hundred_and_twenty_four:
-                result = f"{result}|"
-            else:
-                result = f"{result}"
+            result = f"{result}"
         if result is None:
             result = _("Error!").format(**locals())
         return result
 
-    async def get_embed(self, ctx: commands.Context, expression: str):
+    async def get_embed(self, ctx: commands.Context, expression: str, result: str):
         if expression == "":
             expression = None
         if expression is None:
@@ -184,7 +184,11 @@ class Calculator(commands.Cog):
         actual_thumbnail = config["thumbnail"]
         embed: discord.Embed = discord.Embed()
         embed.title = _("Calculator").format(**locals())
-        embed.description = f"```{str(expression)}```"
+        if result is None:
+            embed.description = box(f"{str(expression)}")
+        else:
+            expression = str(expression).replace("|", "")
+            embed.description = box(f"{str(expression)} = {str(result)}")
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
         embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
@@ -401,36 +405,42 @@ class Calculator(commands.Cog):
         """Calculate a simple expression."""
         config = await self.config.settings.all()
         if calculation is not None:
-            expression = await self.calculate(calculation, False)
-            message = await ctx.send(embed=await self.get_embed(ctx, expression))
+            result = await self.calculate(calculation)
+            message = await ctx.send(embed=await self.get_embed(ctx, calculation, result))
             return
         expression = None
+        result = None
         if self.cogsutils.is_dpy2:
-            view = Buttons(timeout=config["time_max"], buttons=self.buttons_dict, members=[ctx.author.id])
-            message = await ctx.send(embed=await self.get_embed(ctx, expression), view=view)
+            view = Buttons(timeout=config["time_max"], buttons=self.buttons_dict, members=[ctx.author.id] + ctx.bot.owner_ids)
+            message = await ctx.send(embed=await self.get_embed(ctx, expression, result), view=view)
         else:
             buttons_one, buttons_two, buttons_three, buttons_four, buttons_five = await self.get_buttons(False)
-            message = await ctx.send(embed=await self.get_embed(ctx, expression), components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five])
+            message = await ctx.send(embed=await self.get_embed(ctx, expression, result), components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five])
         if self.cogsutils.is_dpy2:
             try:
                 while True:
                     interaction, function_result = await view.wait_result()
-                    if expression is None or expression == _("Error!").format(**locals()) or expression == "∞":
-                        expression = None
+                    if result == _("Error!").format(**locals()) or result == "∞" or result == "":
+                        result = None
+                    if result is not None:
+                        if not interaction.data["custom_id"] == "result_button":
+                            expression = f"{result}|"
+                            result = None
+                    if expression is None or expression == _("Error!").format(**locals()) or expression == "∞" or expression == "":
+                        expression = "|"
                     if interaction.data["custom_id"] == "result_button":
-                        if expression is None or expression == _("Error!").format(**locals()):
-                            expression = "|"
-                        expression = f"{await self.calculate(expression, True)}"
+                        result = f"{await self.calculate(expression)}"
+                        if ctx.author not in self.history:
+                            self.history[ctx.author] = []
+                        self.history[ctx.author].append((expression.replace("|", ""), result.replace("|", "")))
                     elif interaction.data["custom_id"] == "exit_button":
-                        await self.cogsutils.delete_message(message)
+                        view = Buttons(timeout=config["time_max"], buttons=self.disabled_buttons_dict, members=[])
+                        await message.edit(view=view)
                         return
                     elif interaction.data["custom_id"] == "clear_button":
                         expression = None
+                        result = None
                     elif interaction.data["custom_id"] == "back_button":
-                        if expression == "":
-                            expression = None
-                        if expression is None or expression == _("Error!").format(**locals()):
-                            expression = "|"
                         lst = list(expression)
                         if len(lst) > 1:
                             try:
@@ -440,10 +450,6 @@ class Calculator(commands.Cog):
                             except Exception:
                                 expression = None
                     elif interaction.data["custom_id"] == "left_button":
-                        if expression == "":
-                            expression = None
-                        if expression is None or expression == "Error!":
-                            expression = "|"
                         lst = list(expression)
                         if len(lst) > 1:
                             try:
@@ -456,10 +462,6 @@ class Calculator(commands.Cog):
                         if expression == "|":
                             expression = None
                     elif interaction.data["custom_id"] == "right_button":
-                        if expression == "":
-                            expression = None
-                        if expression is None or expression == _("Error!").format(**locals()):
-                            expression = "|"
                         lst = list(expression)
                         if len(lst) > 1:
                             try:
@@ -474,80 +476,78 @@ class Calculator(commands.Cog):
                     else:
                         expression = await self.input_formatter(expression, str(interaction.data["custom_id"]))
                     view = Buttons(timeout=config["time_max"], buttons=self.buttons_dict, members=[ctx.author.id])
-                    await interaction.response.edit_message(embed=await self.get_embed(ctx, expression), view=view)
+                    await interaction.response.edit_message(embed=await self.get_embed(ctx, expression, result), view=view)
             except TimeoutError:
                 view = Buttons(timeout=config["time_max"], buttons=self.disabled_buttons_dict, members=[])
                 await message.edit(view=view)
                 return
         else:
             def check(inter):
-                return inter.guild == ctx.guild and inter.channel == ctx.channel and inter.message == message
+                return inter.guild == ctx.guild and inter.channel == ctx.channel and inter.message.id == message.id
             try:
                 while True:
                     inter = await ctx.wait_for_button_click(timeout=config["time_max"], check=check)
-                    if not inter.author == ctx.author:
+                    if not inter.author == ctx.author and ctx.author.id not in ctx.bot.owner_ids:
                         await inter.respond(_("Only the author of the command `{ctx.prefix}{ctx.command.name}` can interact with this message.").format(**locals()), ephemeral=True)
+                        continue
+                    if result == _("Error!").format(**locals()) or result == "∞" or result == "":
+                        result = None
+                    if result is not None:
+                        if not inter.clicked_button.custom_id == "result_button":  
+                            expression = f"{result}|"
+                            result = None
+                    if expression is None or expression == _("Error!").format(**locals()) or expression == "∞" or expression == "":
+                        expression = "|"
+                    if inter.clicked_button.custom_id == "result_button":
+                        result = f"{await self.calculate(expression)}"
+                        if ctx.author not in self.history:
+                            self.history[ctx.author] = []
+                        self.history[ctx.author].append((expression.replace("|", ""), result.replace("|", "")))
+                    elif inter.clicked_button.custom_id == "exit_button":
+                        buttons_one, buttons_two, buttons_three, buttons_four, buttons_five = await self.get_buttons(True)
+                        await message.edit(components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five])
+                        await inter.reply(type=ResponseType.DeferredUpdateMessage)
+                        return
+                    elif inter.clicked_button.custom_id == "clear_button":
+                        expression = None
+                        result = None
+                    elif inter.clicked_button.custom_id == "back_button":
+                        lst = list(expression)
+                        if len(lst) > 1:
+                            try:
+                                index = lst.index("|")
+                                lst.pop(index - 1)
+                                expression = "".join(lst)
+                            except Exception:
+                                expression = None
+                    elif inter.clicked_button.custom_id == "left_button":
+                        lst = list(expression)
+                        if len(lst) > 1:
+                            try:
+                                index = lst.index("|")
+                                lst.remove("|")
+                                lst.insert(index - 1, "|")
+                            except Exception:
+                                lst = ["|"]
+                        expression = "".join(lst)
+                        if expression == "|":
+                            expression = None
+                    elif inter.clicked_button.custom_id == "right_button":
+                        lst = list(expression)
+                        if len(lst) > 1:
+                            try:
+                                index = lst.index("|")
+                                lst.remove("|")
+                                lst.insert(index + 1, "|")
+                            except Exception:
+                                lst = ["|"]
+                        expression = "".join(lst)
+                        if expression == "|":
+                            expression = None
                     else:
-                        if expression is None or expression == _("Error!").format(**locals()) or expression == "∞":
-                            expression = None
-                        if inter.clicked_button.custom_id == "result_button":
-                            expression = f"{await self.calculate(expression, True)}"
-                        elif inter.clicked_button.custom_id == "exit_button":
-                            await self.cogsutils.delete_message(message)
-                            return
-                        elif inter.clicked_button.custom_id == "clear_button":
-                            expression = None
-                        elif inter.clicked_button.custom_id == "back_button":
-                            if expression == "":
-                                expression = None
-                            if expression is None or expression == _("Error!").format(**locals()):
-                                expression = "|"
-                            lst = list(expression)
-                            if len(lst) > 1:
-                                try:
-                                    index = lst.index("|")
-                                    lst.pop(index - 1)
-                                    expression = "".join(lst)
-                                except Exception:
-                                    expression = None
-                        elif inter.clicked_button.custom_id == "left_button":
-                            if expression == "":
-                                expression = None
-                            if expression is None or expression == "Error!":
-                                expression = "|"
-                            lst = list(expression)
-                            if len(lst) > 1:
-                                try:
-                                    index = lst.index("|")
-                                    lst.remove("|")
-                                    lst.insert(index - 1, "|")
-                                except Exception:
-                                    lst = ["|"]
-                            expression = "".join(lst)
-                            if expression == "|":
-                                expression = None
-                        elif inter.clicked_button.custom_id == "right_button":
-                            if expression == "":
-                                expression = None
-                            if expression is None or expression == _("Error!").format(**locals()):
-                                expression = "|"
-                            lst = list(expression)
-                            if len(lst) > 1:
-                                try:
-                                    index = lst.index("|")
-                                    lst.remove("|")
-                                    lst.insert(index + 1, "|")
-                                except Exception:
-                                    lst = ["|"]
-                            expression = "".join(lst)
-                            if expression == "|":
-                                expression = None
-                        else:
-                            if expression is None or expression == _("Error!").format(**locals()):
-                                expression = "|"
-                            expression = await self.input_formatter(expression, str(inter.clicked_button.custom_id))
-                        await message.edit(embed=await self.get_embed(ctx, expression))
-                        await inter.respond(f"```{expression}```", ephemeral=True)
+                        expression = await self.input_formatter(expression, str(inter.clicked_button.custom_id))
+                    await message.edit(embed=await self.get_embed(ctx, expression, result))
+                    await inter.reply(type=ResponseType.DeferredUpdateMessage)
             except asyncio.TimeoutError:
                 buttons_one, buttons_two, buttons_three, buttons_four, buttons_five = await self.get_buttons(True)
                 await message.edit(components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five])

@@ -41,7 +41,13 @@ class Seen(commands.Cog):
             "message_edit": {},
             "reaction_add": {},
             "reaction_remove": {},
-            "ignored_users": [345628097929936898]  # MAX
+            "ignored_users": [345628097929936898],  # MAX
+            "listeners": {
+                "message": True,
+                "message_edit": True,
+                "reaction_add": True,
+                "reaction_remove": True
+            }
         }
         self.default_config = {
             "message": None,
@@ -65,9 +71,11 @@ class Seen(commands.Cog):
 
     if CogsUtils().is_dpy2:
         async def cog_unload(self):
+            self.cogsutils._end()
             asyncio.create_task(self.save_to_config())
     else:
         def cog_unload(self):
+            self.cogsutils._end()
             asyncio.create_task(self.save_to_config())
 
     async def red_delete_data_for_user(self, *, requester: typing.Literal["discord_deleted_user", "owner", "user", "user_strict"], user_id: int):
@@ -352,7 +360,7 @@ class Seen(commands.Cog):
             custom_ids = [custom_id for custom_id in [all_data_config.get(type, None), all_data_cache.get(type, None)] if custom_id is not None]
             if len(custom_ids) == 0:
                 return
-            custom_id = sorted(custom_ids, key=lambda x: global_data[type][x], reverse=True)[0]
+            custom_id = sorted(custom_ids, key=lambda x: global_data[type].get(x) or self.cache["global"].get(type, {}).get(x), reverse=True)[0]
             data = global_data[type][custom_id]
             if data["seen"] is None or data["action"] is None:
                 return None
@@ -529,6 +537,8 @@ class Seen(commands.Cog):
         ignored_users = await self.config.ignored_users()
         if message.author.id in ignored_users:
             return
+        if not await self.config.listeners.message():
+            return
         self.upsert_cache(time=_time.time(), type="message", member=message.author, guild=message.guild, channel=message.channel, message=message, reaction=None)
 
     @commands.Cog.listener()
@@ -541,6 +551,8 @@ class Seen(commands.Cog):
             return
         ignored_users = await self.config.ignored_users()
         if after.author.id in ignored_users:
+            return
+        if not await self.config.listeners.message_edit():
             return
         self.upsert_cache(time=_time.time(), type="message_edit", member=after.author, guild=after.guild, channel=after.channel, message=after, reaction=None)
 
@@ -559,6 +571,8 @@ class Seen(commands.Cog):
         ignored_users = await self.config.ignored_users()
         if user.id in ignored_users:
             return
+        if not await self.config.listeners.reaction_add():
+            return
         self.upsert_cache(time=_time.time(), type="reaction_add", member=user, guild=user.guild, channel=reaction.message.channel, message=reaction.message, reaction=str(reaction.emoji))
 
     @commands.Cog.listener()
@@ -569,6 +583,8 @@ class Seen(commands.Cog):
             return
         ignored_users = await self.config.ignored_users()
         if user.id in ignored_users:
+            return
+        if not await self.config.listeners.reaction_remove():
             return
         self.upsert_cache(time=_time.time(), type="reaction_remove", member=user, guild=user.guild, channel=reaction.message.channel, message=reaction.message, reaction=str(reaction.emoji))
 
@@ -615,6 +631,9 @@ class Seen(commands.Cog):
             channel = ctx.channel
         if show_details is None:
             show_details = True
+        if not channel.permissions_for(ctx.author).view_channel:
+            await ctx.send(_("You do not have permission to view this channel.").format(**locals()))
+            return
         await self.send_seen(ctx, object=channel, type=type, show_details=show_details)
         await ctx.tick()
 
@@ -630,6 +649,9 @@ class Seen(commands.Cog):
                 return
         if show_details is None:
             show_details = True
+        if all([not channel.permissions_for(ctx.author).view_channel for channel in category.text_channels]):
+            await ctx.send(_("You do not have permission to view any of the channels in this category.").format(**locals()))
+            return
         await self.send_seen(ctx, object=category, type=type, show_details=show_details)
         await ctx.tick()
 
@@ -716,8 +738,9 @@ class Seen(commands.Cog):
         await ctx.tick()
 
     @commands.is_owner()
-    @seen.command(hidden=True)
+    @seen.command()
     async def configstats(self, ctx: commands.Context):
+        """Get Config data stats."""
         async with ctx.typing():
             global_count, users_count, members_count, roles_count, channels_count, categories_count, guilds_count = await self.cleanup(for_count=True)
             stats = {
@@ -735,8 +758,19 @@ class Seen(commands.Cog):
             message = box(message)
         await ctx.send(message)
 
+    @commands.is_owner()
+    @seen.command()
+    async def listener(self, ctx: commands.Context, state: bool, *types: typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]):
+        """Enable or disable a listener."""
+        config = await self.config.listeners.all()
+        for type in types:
+            config[type] = state
+        await self.config.listeners.set(config)
+        await ctx.tick()
+
     @seen.command()
     async def ignoreme(self, ctx: commands.Context):
+        """Asking Seen to ignore your actions."""
         user = ctx.author
         ignored_users = await self.config.ignored_users()
         if user.id not in ignored_users:
@@ -757,10 +791,14 @@ class Seen(commands.Cog):
 
     @commands.is_owner()
     @seen.command(hidden=True)
-    async def purge(self, ctx: commands.Context, type: typing.Optional[commands.Literal["user", "member", "role", "channel", "guild"]]=None):
-        """Purge Config for a specified type ou all."""
-        if type is None:
-            await self.config.clear_all()
+    async def purge(self, ctx: commands.Context, type: commands.Literal["all", "user", "member", "role", "channel", "guild"]):
+        """Purge Config for a specified type or all."""
+        if type == "all":
+            await self.config.clear_all_users()
+            await self.config.clear_all_members()
+            await self.config.clear_all_roles()
+            await self.config.clear_all_channels()
+            await self.config.clear_all_guilds()
         else:
             if type == "user":
                 await self.config.clear_all_users()

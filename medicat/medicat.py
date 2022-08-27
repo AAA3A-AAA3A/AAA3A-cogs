@@ -15,7 +15,7 @@ import aiohttp
 
 from redbot import VersionInfo
 from redbot.core import Config
-from redbot.core.utils.chat_formatting import box, pagify
+from redbot.core.utils.chat_formatting import box, pagify, bold
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
@@ -560,7 +560,7 @@ class Medicat(commands.Cog):
         embed.set_thumbnail(url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg")
         embed.set_footer(text="From FCportables.", icon_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg")
         embed.title = "Last bootables tools versions"
-        embed.description = "\n".join([f"**{x}** ➜ {y}" for x, y in result.items()])
+        embed.description = "\n".join([f"{bold(name)} ➜ {value}" for name, value in result.items()])
         try:
             hook: discord.Webhook = await CogsUtils(bot=self.bot).get_hook(ctx.channel)
             await hook.send(embed=embed, username="Bootables Tools Updates", avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg")

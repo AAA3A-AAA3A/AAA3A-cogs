@@ -1,10 +1,6 @@
-from .cogsutils import CogsUtils
-from .captcha import Captcha
-from .loop import Loop
-from .menus import Reactions, Menu
-from .shared_cog import SharedCog
+from .cogsutils import CogsUtils, Captcha, Loop, Reactions, Menu  # isort:ignore
+
 if CogsUtils().is_dpy2:
-    from .views import Buttons, Dropdown, Select, Modal
+    from .cogsutils import Buttons, Dropdown, Select, Modal  # isort:ignore
 
 __author__ = "AAA3A"
-__all__ = ["CogsUtils", "Captcha", "Loop", "Reactions", "Menu", "SharedCog", "Buttons", "Dropdown", "Select", "Modal"]

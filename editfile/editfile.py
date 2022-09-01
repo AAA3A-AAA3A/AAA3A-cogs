@@ -27,6 +27,14 @@ if CogsUtils().is_dpy2:  # To remove
 
 _ = Translator("EditFile", __file__)
 
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
+
 @cog_i18n(_)
 class EditFile(commands.Cog):
     """A cog to get a file and replace it from its path from Discord!"""
@@ -38,7 +46,7 @@ class EditFile(commands.Cog):
         self.cogsutils._setup()
 
     @commands.is_owner()
-    @commands.group(aliases=["fileedit"])
+    @hybrid_group(aliases=["fileedit"])
     async def editfile(self, ctx: commands.Context):
         """Commands group to get a file and replace it from its path.
         """
@@ -180,10 +188,10 @@ class EditFile(commands.Cog):
         await ctx.send(box(f"{message}"))
 
     @editfile.command()
-    async def listdir(self, ctx: commands.Context, *, path: Path):
+    async def listdir(self, ctx: commands.Context, *, path: str):
         """List all files/directories of a directory from its path.
         """
-        path = Path(self.cogsutils.replace_var_paths(str(path), reverse=True))
+        path = Path(self.cogsutils.replace_var_paths(path, reverse=True))
         if not path.exists():
             await ctx.send(_("This directory cannot be found on the host machine.").format(**locals()))
             return
@@ -208,10 +216,10 @@ class EditFile(commands.Cog):
             await ctx.send_interactive(pages)
 
     @editfile.command()
-    async def rename(self, ctx: commands.Context, new_name: str, *, path: Path):
+    async def rename(self, ctx: commands.Context, new_name: str, *, path: str):
         """Rename a file.
         """
-        path = Path(self.cogsutils.replace_var_paths(str(path)))
+        path = Path(self.cogsutils.replace_var_paths(path))
         if not path.exists():
             await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
             return
@@ -228,7 +236,7 @@ class EditFile(commands.Cog):
             await ctx.send(_("The `{path}` file has been deleted.").format(**locals()))
 
     @editfile.command()
-    async def delete(self, ctx: commands.Context, *, path: Path):
+    async def delete(self, ctx: commands.Context, *, path: str):
         """Delete a file.
         """
         if not path.exists():
@@ -237,7 +245,7 @@ class EditFile(commands.Cog):
         if not path.is_file() and path.is_dir():
             await ctx.send(_("The path you specified refers to a directory, not a file.").format(**locals()))
             return
-        path = Path(self.cogsutils.replace_var_paths(str(path)))
+        path = Path(self.cogsutils.replace_var_paths(path))
         try:
             path.unlink()
         except FileNotFoundError:

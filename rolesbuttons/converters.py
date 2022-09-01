@@ -5,7 +5,19 @@ import typing  # isort:skip
 
 import re
 
+try:
+    from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
+except ImportError:
+    from emoji import EMOJI_DATA  # emoji>=2.0.0
+from redbot.core.commands import Context, EmojiConverter
+
 _ = Translator("RolesButtons", __file__)
+
+class Emoji(EmojiConverter):
+    async def convert(self, ctx: Context, argument: str):
+        if argument in EMOJI_DATA:
+            return argument
+        return str(await super().convert(ctx, argument))
 
 class RoleHierarchyConverter(discord.ext.commands.RoleConverter):
     """Similar to d.py's RoleConverter but only returns if we have already
@@ -39,9 +51,6 @@ class EmojiRoleConverter(discord.ext.commands.Converter):
             emoji, role = arg_split
         except Exception:
             raise discord.ext.commands.BadArgument(_("Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`.").format(**locals()))
-        try:
-            emoji = await commands.PartialEmojiConverter().convert(ctx, emoji.strip())
-        except commands.BadArgument:
-            emoji = str(emoji)
-            role = await RoleHierarchyConverter().convert(ctx, role.strip())
+        emoji = await Emoji().convert(ctx, emoji.strip())
+        role = await RoleHierarchyConverter().convert(ctx, role.strip())
         return emoji, role

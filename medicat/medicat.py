@@ -7,7 +7,6 @@ import typing  # isort:skip
 
 import asyncio
 import re
-import textwrap
 import traceback
 from copy import copy
 
@@ -21,6 +20,16 @@ from redbot.core.utils.chat_formatting import box, pagify, bold
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+
+_ = Translator("Medicat", __file__)
+
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
 
 MEDICAT_GUILD = 829469886681972816
 VENTOY_UPDATES_CHANNEL = 831224763162165278
@@ -38,47 +47,48 @@ TEST_CHANNEL = 905737223348047914
 
 CUSTOM_COMMANDS = {
     "customtools": {
-        "title": "How to add your own bootable tools (iso, wim, vhd) to Medicat USB?",
-        "description": "To add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\nThen you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template."
+        "title": _("How to add your own bootable tools (iso, wim, vhd) to Medicat USB?").format(**locals()),
+        "description": _("To add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\nThen you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template.").format(**locals())
     },
     "howinstall": {
-        "title": "How do I install Medicat USB?",
-        "description": "1) Install the latest version of Ventoy on your USB stick (<https://github.com/ventoy/Ventoy/releases> & <https://ventoy.net/en/doc_start.html>).\n2) Download the last version of Medicat USB with Torrent, Mega or Google Drive (<https://medicatusb.com/>).\n3) Extract the downloaded zips to the root of the USB stick.\nFull tutorial: <https://medicatusb.com/docs/installation/installing-medicat/>\nYou can also use the automatic installer of MON5TERMATT (<https://medicatusb.com/installer/>).\nWarning: do not forget to disable your antivirus software (see the `virus` command for more information)."
+        "title": _("How do I install Medicat USB?").format(**locals()),
+        "description": _("1) Install the latest version of Ventoy on your USB stick (<https://github.com/ventoy/Ventoy/releases> & <https://ventoy.net/en/doc_start.html>).\n2) Download the last version of Medicat USB with Torrent, Mega or Google Drive (<https://medicatusb.com/>).\n3) Extract the downloaded zips to the root of the USB stick.\nFull tutorial: <https://medicatusb.com/docs/installation/installing-medicat/>\nYou can also use the automatic installer of MON5TERMATT (<https://medicatusb.com/installer/>).\nWarning: do not forget to disable your antivirus software (see the `virus` command for more information).").format(**locals())
     },
     "kofi": {
-        "title": "How to make a donation?",
-        "description": "@Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\n@MON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\n@AAA3A (Medicat Developer): Nothing"
+        "title": _("How to make a donation?").format(**locals()),
+        "description": _("@Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\n@MON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\n@AAA3A (Medicat Developer): Nothing").format(**locals())
     },
     "medicatversion": {
-        "title": "What is the latest version of Medicat USB?",
-        "description": "The latest version of Medicat USB is 21.12!\n||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||"
+        "title": _("What is the latest version of Medicat USB?").format(**locals()),
+        "description": _("The latest version of Medicat USB is 21.12!\n||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||").format(**locals())
     },
     "menus": {
-        "title": "How to download one of the menus?",
-        "description": "Here are the latest links to download the latest versions of the menus:\n- Jayro's Lockîck: \n<https://mega.nz/file/ZtpwEDhR#4bCjUDri2hhUlCgv8Y1EmZVyUnGyhqZjCo0fazXLzqY>\n- AAA3A's Backup: \n<https://mega.nz/file/s8hATRbZ#C28qA8HWKi_xikC6AUG46DiXKIG2Qjl__-4MOl6SI7w>\n- AAA3A's Partition: \n<https://mega.nz/file/w8oFkKYQ#5BbIf7K6pyxYDlE6L4efPqtHUWtCMmx_kta_QHejhpk>\nHere is also a link that should never change to access the same folder containing all the menus: \n<https://mega.nz/folder/FtRCgLQL#KTq897WQiXCJT8OQ3cT9Tg>"
+        "title": _("How to download one of the menus?").format(**locals()),
+        "description": _("Here are the latest links to download the latest versions of the menus:\n- Jayro's Lockîck: \n<https://mega.nz/file/ZtpwEDhR#4bCjUDri2hhUlCgv8Y1EmZVyUnGyhqZjCo0fazXLzqY>\n- AAA3A's Backup: \n<https://mega.nz/file/s8hATRbZ#C28qA8HWKi_xikC6AUG46DiXKIG2Qjl__-4MOl6SI7w>\n- AAA3A's Partition: \n<https://mega.nz/file/w8oFkKYQ#5BbIf7K6pyxYDlE6L4efPqtHUWtCMmx_kta_QHejhpk>\nHere is also a link that should never change to access the same folder containing all the menus: \n<https://mega.nz/folder/FtRCgLQL#KTq897WQiXCJT8OQ3cT9Tg>").format(**locals())
     },
     "noiso": {
-        "title": "How do I download the Medicat USB iso file?",
-        "description": "Medicat USB is not available as an iso file.\nPreviously, Medicat USB was available as an iso file. Now it uses Ventoy to run. It is currently impossible to put Ventoy and therefore Medicat USB in an iso file, or at least not without difficulties."
+        "title": _("How do I download the Medicat USB iso file?").format(**locals()),
+        "description": _("Medicat USB is not available as an iso file.\nPreviously, Medicat USB was available as an iso file. Now it uses Ventoy to run. It is currently impossible to put Ventoy and therefore Medicat USB in an iso file, or at least not without difficulties.").format(**locals())
     },
     "updateonly": {
-        "title": "How can I update Medicat USB without having to install all the files again?",
-        "description": "For the time being, you are in any case obliged to download all Medicat USB files again to update it. However, if you only want to keep your previous personal changes, you can save them somewhere and reproduce them on the new instance of the bootable USB stick.\nFor Medicat USB 22.06, @AAA3A is currently coding an update only script for Medicat USB, in batch. It will be downloaded with only the necessary files and will however only work from one version to another, after being prepared in advance."
+        "title": _("How can I update Medicat USB without having to install all the files again?").format(**locals()),
+        "description": _("For the time being, you are in any case obliged to download all Medicat USB files again to update it. However, if you only want to keep your previous personal changes, you can save them somewhere and reproduce them on the new instance of the bootable USB stick.\nFor Medicat USB 22.06, @AAA3A is currently coding an update only script for Medicat USB, in batch. It will be downloaded with only the necessary files and will however only work from one version to another, after being prepared in advance.").format(**locals())
     },
     "usbvhd": {
-        "title": "What is the difference between Medicat USB and Medicat VHD?",
-        "description": "Medicat USB is a bootable menu that runs on Ventoy and contains all the necessary tools for computer troubleshooting. It contains for example Malwarebytes bootable for virus scans, Mini Windows 10 for a winPE utility and Jayro's Lockpick for all things password related.\n<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>\nMedicat VHD is a full-featured windows, using the real performance of the computer. It is therefore much more powerful than Mini Windows 10. Moreover, all data is saved and you can find it again at each reboot. (Not intended to be used as an operating system).\n<https://gbatemp.net/threads/official-medicat-vhd-a-usb-bootable-windows-10-virtual-harddisk-for-pc-repair.581637/>\nJayro's Lockpick is a winPE with a menu containing all the necessary tools to remove/bypass/retrieve a Windows password or even for a server.\n<https://gbatemp.net/threads/release-jayros-lockpick-a-bootable-password-removal-suite-winpe.579278/>\nMalwarebytes bootable is a very powerful antivirus. Since it is launched from a winPE, a potential virus cannot prevent it from running properly.\n<https://gbatemp.net/threads/unofficial-malwarebytes-bootable.481046/>"
+        "title": _("What is the difference between Medicat USB and Medicat VHD?").format(**locals()),
+        "description": _("Medicat USB is a bootable menu that runs on Ventoy and contains all the necessary tools for computer troubleshooting. It contains for example Malwarebytes bootable for virus scans, Mini Windows 10 for a winPE utility and Jayro's Lockpick for all things password related.\n<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>\nMedicat VHD is a full-featured windows, using the real performance of the computer. It is therefore much more powerful than Mini Windows 10. Moreover, all data is saved and you can find it again at each reboot. (Not intended to be used as an operating system).\n<https://gbatemp.net/threads/official-medicat-vhd-a-usb-bootable-windows-10-virtual-harddisk-for-pc-repair.581637/>\nJayro's Lockpick is a winPE with a menu containing all the necessary tools to remove/bypass/retrieve a Windows password or even for a server.\n<https://gbatemp.net/threads/release-jayros-lockpick-a-bootable-password-removal-suite-winpe.579278/>\nMalwarebytes bootable is a very powerful antivirus. Since it is launched from a winPE, a potential virus cannot prevent it from running properly.\n<https://gbatemp.net/threads/unofficial-malwarebytes-bootable.481046/>").format(**locals())
     },
     "virus": {
-        "title": "Why does my antivirus software blame Medicat?",
-        "description": "Medicat USB does not contain any viruses! If an antivirus software detects one of its files as such, it is a false positive.\nAs you know, Medicat USB contains tools that can reset a partition, find a password, and modify the system. Portable applications can be falsely flagged because of how they are cracked and packaged.\nFor these reasons all antivirus software's 'real-time scanning' should be disabled when installing, and sometimes even when using, Medicat USB.\nAll the scripts associated with the project (published by one of the 3 developers) and Ventoy do not have one either."},
+        "title": _("Why does my antivirus software blame Medicat?").format(**locals()),
+        "description": _("Medicat USB does not contain any viruses! If an antivirus software detects one of its files as such, it is a false positive.\nAs you know, Medicat USB contains tools that can reset a partition, find a password, and modify the system. Portable applications can be falsely flagged because of how they are cracked and packaged.\nFor these reasons all antivirus software's 'real-time scanning' should be disabled when installing, and sometimes even when using, Medicat USB.\nAll the scripts associated with the project (published by one of the 3 developers) and Ventoy do not have one either.").format(**locals())
+    },
     "whatmedicat": {
-        "title": "What is Medicat USB?",
-        "description": "Medicat USB contains tools to backup/restore data, to manage disks/partitions, to reset/bypass/find a Windows password, to use software with admin rights from a winPE, to do virus scans. In addition, it uses Ventoy, which allows you to add your own bootable tools with a simple copy and paste."
+        "title": _("What is Medicat USB?").format(**locals()),
+        "description": _("Medicat USB contains tools to backup/restore data, to manage disks/partitions, to reset/bypass/find a Windows password, to use software with admin rights from a winPE, to do virus scans. In addition, it uses Ventoy, which allows you to add your own bootable tools with a simple copy and paste.").format(**locals())
     },
     "xy": {
-        "title": "X & Y",
-        "description": "What is the context?\nIf you have any problems or would like to ask for help, please give information about what you are not able to do. Don't just say you don't understand how to make x software work, say where you are, what is wrong with it and what is the potential error. \nThank you for your understanding."
+        "title": _("X & Y").format(**locals()),
+        "description": _("What is the context?\nIf you have any problems or would like to ask for help, please give information about what you are not able to do. Don't just say you don't understand how to make x software work, say where you are, what is wrong with it and what is the potential error. \nThank you for your understanding.").format(**locals())
     }
 }
 
@@ -194,8 +204,6 @@ BOOTABLES_TOOLS = {
         "regex": r"Parted Magic (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Boot ISO \(x64\)"
     }
 }
-
-_ = Translator("Medicat", __file__)
 
 @cog_i18n(_)
 class Medicat(commands.Cog):
@@ -418,60 +426,53 @@ class Medicat(commands.Cog):
                 return False
         return commands.check(pred)
 
+    @in_medicat_guild()
+    @hybrid_group()
+    async def medicat(self, ctx: commands.Context):
+        """Commands of the Medicat cog."""
+        pass
+
     async def add_custom_commands(self):
-        def get_function_from_str(bot, command, name=None):
-            to_compile = "def func():\n%s" % textwrap.indent(command, "  ")
-            env = {
-                "bot": bot,
-                "discord": discord,
-                "commands": commands,
-                "CUSTOM_COMMANDS": CUSTOM_COMMANDS,
-            }
-            exec(to_compile, env)
-            result = env["func"]()
-            return result
+        # def get_function_from_str(bot: Red, command: str):
+        #     to_compile = "def func():\n%s" % textwrap.indent(command, "  ")
+        #     env = {
+        #         "bot": bot,
+        #         "discord": discord,
+        #         "commands": commands,
+        #         "CUSTOM_COMMANDS": CUSTOM_COMMANDS,
+        #         "medicat": self.medicat,
+        #     }
+        #     exec(to_compile, env)
+        #     result = env["func"]()
+        #     return result
 
         for name, text in CUSTOM_COMMANDS.items():
             try:
-                self.bot.remove_command(name)
-                command_str = """
-    def in_medicat_guild():
-        async def pred(ctx):
-            if ctx.author.id in ctx.bot.owner_ids or ctx.author.id == 829612600059887649:
-                return True
-            if ctx.guild is None:
-                return False
-            if ctx.guild.id == {MEDICAT_GUILD} or ctx.guild.id == {TEST_GUILD}:
-                return True
-            else:
-                return False
-        return commands.check(pred)
-
-    @in_medicat_guild()
-    @commands.command(name="{name}")
-    async def CC_{name}(self, ctx):
-        embed: discord.Embed = discord.Embed()
-        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
-        embed.set_footer(text="Medicat USB Official", icon_url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
-        embed.title = CUSTOM_COMMANDS[ctx.command.name]["title"]
-        embed.description = CUSTOM_COMMANDS[ctx.command.name]["description"]
-        await ctx.send(embed=embed)
-    return CC_{name}
-    """.format(MEDICAT_GUILD=MEDICAT_GUILD, TEST_GUILD=TEST_GUILD, name=name)
-                command: commands.Command = get_function_from_str(self.bot, command_str)
+                self.medicat.remove_command(name)
+                @self.medicat.command(name=name, help=text["title"])
+                async def CC(ctx: commands.Context):
+                    embed: discord.Embed = discord.Embed()
+                    embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
+                    embed.set_footer(text="Medicat USB Official", icon_url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
+                    embed.title = CUSTOM_COMMANDS[ctx.command.name]["title"]
+                    embed.description = CUSTOM_COMMANDS[ctx.command.name]["description"]
+                    await ctx.send(embed=embed)
+                command: commands.Command = CC
                 command.name = name
                 command.brief = text["title"]
                 command.description = text["title"]
-                command.cog = self
+                command.callback.__doc__ = text["title"]
+                # command.cog = self
+                self.bot.dispatch("command_add", command)
+                if self.bot.get_cog("permissions") is None:
+                    command.requires.ready_event.set()
                 # setattr(command, "format_text_for_context", self.cogsutils.format_text_to_context)
                 # setattr(command, "format_shortdoc_for_context", self.cogsutils.allow_forformat_shortdoc_for_context)
                 if self.cogsutils.is_dpy2:
                     command.params = {}
                 setattr(self, f"CC_{name}", command)
-                self.bot.add_command(command)
             except Exception as e:
                 self.log.error(f"An error occurred while adding the `{name}` custom command.", exc_info=e)
-                self.bot.remove_command(name)
             else:
                 cog_commands = list(self.__cog_commands__)
                 cog_commands.append(command)
@@ -479,11 +480,10 @@ class Medicat(commands.Cog):
 
     def remove_custom_commands(self):
         for name in CUSTOM_COMMANDS:
-            self.bot.remove_command(name)
+            self.medicat.remove_command(name)
 
-    @in_medicat_guild()
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
-    @commands.command()
+    @medicat.command()
     async def getlastventoyversion(self, ctx: commands.Context):
         """Get the latest version of Ventoy.
         """
@@ -533,9 +533,8 @@ class Medicat(commands.Cog):
         except discord.errors.Forbidden:
             await ctx.send(embed=embed)
 
-    @in_medicat_guild()
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
-    @commands.command()
+    @medicat.command()
     async def getlastbootablestoolsversions(self, ctx: commands.Context):
         """Get the latest versions of each Medicat USB bootable tool.
         """
@@ -576,8 +575,8 @@ class Medicat(commands.Cog):
         return commands.check(pred)
 
     @is_owner_or_AAA3A()
-    @commands.command(hidden=True)
-    async def getmedicatcogloopsstatus(self, ctx: commands.Context):
+    @medicat.command(hidden=True)
+    async def getloopsstatus(self, ctx: commands.Context):
         """Get an embed for check loops status."""
         for loop in self.cogsutils.loops.values():
             await ctx.send(embed=loop.get_debug_embed())

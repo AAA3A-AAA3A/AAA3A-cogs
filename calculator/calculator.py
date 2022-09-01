@@ -26,6 +26,14 @@ from redbot.core.utils.chat_formatting import box
 
 _ = Translator("Calculator", __file__)
 
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
+
 @cog_i18n(_)
 class Calculator(commands.Cog):
     """A cog to do calculations from Discord with buttons!"""
@@ -400,8 +408,8 @@ class Calculator(commands.Cog):
         )
         return buttons_one, buttons_two, buttons_three, buttons_four, buttons_five
 
-    @commands.command(aliases=["calculate"])
-    async def calc(self, ctx: commands.Context, calculation: typing.Optional[str]=None):
+    @hybrid_command(aliases=["calc"])
+    async def calculate(self, ctx: commands.Context, calculation: typing.Optional[str]=None):
         """Calculate a simple expression."""
         config = await self.config.settings.all()
         if calculation is not None:
@@ -411,7 +419,7 @@ class Calculator(commands.Cog):
         expression = None
         result = None
         if self.cogsutils.is_dpy2:
-            view = Buttons(timeout=config["time_max"], buttons=self.buttons_dict, members=[ctx.author.id] + ctx.bot.owner_ids)
+            view = Buttons(timeout=config["time_max"], buttons=self.buttons_dict, members=[ctx.author.id] + list(ctx.bot.owner_ids))
             message = await ctx.send(embed=await self.get_embed(ctx, expression, result), view=view)
         else:
             buttons_one, buttons_two, buttons_three, buttons_four, buttons_five = await self.get_buttons(False)

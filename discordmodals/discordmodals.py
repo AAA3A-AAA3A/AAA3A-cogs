@@ -7,7 +7,6 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import asyncio
-
 import yaml
 
 from redbot.core import Config
@@ -18,6 +17,14 @@ from redbot.core import Config
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
 _ = Translator("DiscordModals", __file__)
+
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
 
 class YAMLConverter(commands.Converter):
 
@@ -142,6 +149,7 @@ class DiscordModals(commands.Cog):
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
+        self.purge.very_hidden = True
 
         asyncio.create_task(self.load_buttons())
 
@@ -220,7 +228,7 @@ class DiscordModals(commands.Cog):
 
     @commands.guild_only()
     @commands.mod_or_permissions(manage_guild=True)
-    @commands.group()
+    @hybrid_group()
     async def discordmodals(self, ctx: commands.Context):
         """Group of commands for use ReactToCommand.
         """

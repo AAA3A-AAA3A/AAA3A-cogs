@@ -9,18 +9,26 @@ if CogsUtils().is_dpy2:  # To remove
 
 _ = Translator("SimpleSanction", __file__)
 
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
+
 @cog_i18n(_)
 class settings(commands.Cog):
 
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
-    @commands.group(name="setsimplesanction", aliases=["simplesanctionset"])
+    @hybrid_group(name="setsimplesanction", aliases=["simplesanctionset"])
     async def configuration(self, ctx: commands.Context):
         """Configure SimpleSanction for your server."""
         pass
 
     @configuration.command(aliases=["colour", "col", "embedcolor", "embedcolour"], usage="<color_or_'none'>")
-    async def color(self, ctx: commands.Context, *, color: typing.Optional[discord.Color]=None):
+    async def color(self, ctx: commands.Context, *, color: typing.Optional[discord.ext.commands.converter.ColorConverter]=None):
         """Set a colour for the embed.
 
         ``color``: Color.

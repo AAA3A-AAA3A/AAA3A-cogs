@@ -24,6 +24,14 @@ if CogsUtils().is_dpy2:  # To remove
 
 _ = Translator("Seen", __file__)
 
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
+
 @cog_i18n(_)
 class Seen(commands.Cog):
     """A cog to check when a member/role/channel/category/user/guild was last active!"""
@@ -66,6 +74,7 @@ class Seen(commands.Cog):
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
+        self.purge.very_hidden = True
 
         self.cogsutils.create_loop(function=self.save_to_config, name="Save Seen Config", minutes=1)
 
@@ -353,14 +362,14 @@ class Seen(commands.Cog):
                 all_data_cache = self.cache["categories"].get(object.guild.id, {}).get(object.id, {})
             elif isinstance(object, discord.Guild):
                 all_data_config = await self.config.guild(object).all()
-                all_data_cache = self.cache["members"].get(object.id, {})
+                all_data_cache = self.cache["guilds"].get(object.id, {})
             else:
                 return None
         if type is not None:
             custom_ids = [custom_id for custom_id in [all_data_config.get(type, None), all_data_cache.get(type, None)] if custom_id is not None]
             if len(custom_ids) == 0:
                 return
-            custom_id = sorted(custom_ids, key=lambda x: global_data[type].get(x) or self.cache["global"].get(type, {}).get(x), reverse=True)[0]
+            custom_id = sorted(custom_ids, key=lambda x: global_data[type].get(x, {}).get("seen") or self.cache["global"].get(type, {}).get(x, {}).get("seen"), reverse=True)[0]
             data = global_data[type][custom_id]
             if data["seen"] is None or data["action"] is None:
                 return None
@@ -369,8 +378,6 @@ class Seen(commands.Cog):
             all_data_cache = {x: all_data_cache.get(x, None) for x in ["message", "message_edit", "reaction_add", "reaction_remove"] if all_data_cache.get(x, None) is not None}
             all_data_config = [{"type": x, "seen": global_data[x].get(all_data_config[x], {"seen": None, "action": None})["seen"], "action": global_data[x].get(all_data_config[x], {"seen": None, "action": None})["action"]} for x in all_data_config if global_data[x].get(all_data_config[x], {"seen": None, "action": None})["seen"] is not None and global_data[x].get(all_data_config[x], {"seen": None, "action": None})["action"] is not None]
             all_data_cache = [{"type": x, "seen": global_data[x].get(all_data_cache[x], {"seen": None, "action": None})["seen"], "action": global_data[x].get(all_data_cache[x], {"seen": None, "action": None})["action"]} for x in all_data_cache if global_data[x].get(all_data_cache[x], {"seen": None, "action": None})["seen"] is not None and global_data[x].get(all_data_cache[x], {"seen": None, "action": None})["action"] is not None]
-            if len(all_data_config) == 0 and len(all_data_cache):
-                return None
             all_data = all_data_config + all_data_cache
             if len(all_data) == 0:
                 return None
@@ -590,7 +597,7 @@ class Seen(commands.Cog):
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.group(invoke_without_command=True)
+    @hybrid_group(invoke_without_command=True)
     async def seen(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], *, object: typing.Union[discord.Member, discord.Role, discord.TextChannel, discord.CategoryChannel]):
         """Check when a member/role/channel/category was last active!"""
         if show_details is None:
@@ -659,24 +666,18 @@ class Seen(commands.Cog):
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
     @seen.command(hidden=True)
-    async def hackmember(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], user: typing.Union[discord.User, int]):
+    async def hackmember(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], user: discord.User):
         """Check when a old member was last active!"""
-        if not isinstance(user, discord.User):
-            user_id = user
-            user = await ctx.bot.fetch_user(user_id)
-            if user is None:
-                await ctx.send(f'User "{user_id}" not found.')
-                return
         if show_details is None:
             show_details = True
         all_data_config = await self.config.member_from_ids(guild_id=ctx.guild.id, member_id=user.id).all()
-        all_data_cache = self.cache["members"].get(object.guild.id, {}).get(object.id, {})
+        all_data_cache = self.cache["members"].get(ctx.guild.id, {}).get(user.id, {})
         await self.send_seen(ctx, object=user, type=type, show_details=show_details, all_data_config=all_data_config, all_data_cache=all_data_cache)
         await ctx.tick()
 
     @commands.bot_has_permissions(embed_links=True)
     @seen.command()
-    async def guild(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], *, guild: typing.Optional[discord.Guild]=None):
+    async def guild(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], *, guild: discord.Guild):
         """Check when a guild was last active!"""
         if guild is None or ctx.author.id not in ctx.bot.owner_ids:
             guild = ctx.guild
@@ -760,7 +761,7 @@ class Seen(commands.Cog):
 
     @commands.is_owner()
     @seen.command()
-    async def listener(self, ctx: commands.Context, state: bool, *types: typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]):
+    async def listener(self, ctx: commands.Context, state: bool, types: commands.Greedy[typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]]):
         """Enable or disable a listener."""
         config = await self.config.listeners.all()
         for type in types:

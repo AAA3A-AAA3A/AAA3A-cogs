@@ -21,6 +21,19 @@ from time import monotonic
 
 _ = Translator("DiscordSearch", __file__)
 
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
+
+class StrConverter(commands.Converter):
+
+    async def convert(self, ctx: commands.Context, arg: str):
+        return arg
+
 @cog_i18n(_)
 class DiscordSearch(commands.Cog):
     """A cog to edit roles!"""
@@ -35,7 +48,7 @@ class DiscordSearch(commands.Cog):
     @commands.admin_or_permissions(administrator=True)
     @commands.cooldown(rate=3, per=30, type=commands.BucketType.user)
     @commands.command(name="discordsearch", aliases=["dsearch"])
-    async def discordsearch(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel]=None, *args: str):
+    async def discordsearch(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], args: commands.Greedy[StrConverter]):
         """Search for a message on Discord in a channel.
 
         Warning: The bot uses the api for each search.
@@ -54,7 +67,7 @@ class DiscordSearch(commands.Cog):
             await ctx.send_help()
             return
         try:
-            args = await SearchArgs().convert(ctx, args)
+            args = await SearchArgs().convert(ctx, list(args))
         except commands.BadArgument as e:
             await ctx.send(e)
             return

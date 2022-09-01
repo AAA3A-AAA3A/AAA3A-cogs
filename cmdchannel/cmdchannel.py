@@ -15,6 +15,14 @@ from redbot.core import Config
 
 _ = Translator("CmdChannel", __file__)
 
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
+
 @cog_i18n(_)
 class CmdChannel(commands.Cog):
     """A cog to send the result of a command to another channel!"""
@@ -39,44 +47,29 @@ class CmdChannel(commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
+    @hybrid_group()
+    async def cmdchannel(self, ctx: commands.Context):
+        pass
+
     @commands.mod()
-    @commands.command(aliases=["channelcmd"])
-    async def cmdchannel(self, ctx: commands.Context, guild: typing.Optional[discord.Guild]=None, channel: typing.Optional[typing.Union[discord.TextChannel, int]]=None, *, command: str = ""):
+    @cmdchannel.command()
+    async def channel(self, ctx: commands.Context, channel: discord.TextChannel, *, command: str):
         """Act as if the command had been typed in the channel of your choice.
         The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.
         If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).
         """
-        if channel is not None:
-            if isinstance(channel, int):
-                if guild is not None:
-                    channel = guild.get_channel(channel)
-                else:
-                    if ctx.author.id in ctx.bot.owner_ids:
-                        await ctx.send(_("Please specify a server if you want to use a command in another server.").format(**locals()))
-                        return
-                    else:
-                        channel = None
-
-        if channel is None:
-            channel = ctx.channel
-
         guild = channel.guild
-
-        if channel not in getattr(ctx.guild, "channels", []) and ctx.author.id not in ctx.bot.owner_ids:
-            await ctx.send(_("Only a bot owner can use a command from another server.").format(**locals()))
-            return
-
-        member = guild.get_member(ctx.author.id)
-        if member is None:
+        if ctx.author not in guild.members:
             await ctx.send(_("To send commands to another server, you must be there.").format(**locals()))
             return
-
         if not command and not ctx.message.embeds and not ctx.message.attachments:
             await ctx.send_help()
             return
 
         if ctx.author.id in ctx.bot.owner_ids:
-            await self.cogsutils.invoke_command(author=ctx.author, channel=channel, command=command, prefix=ctx.prefix, message=ctx.message, dispatch_message=True)
+            await self.cogsutils.invoke_command(author=ctx.author, channel=channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message, dispatch_message=True)
+            if self.cogsutils.is_dpy2:
+                await ctx.defer()
             await ctx.tick()
             return
 
@@ -106,16 +99,21 @@ class CmdChannel(commands.Cog):
                         await logschannel.send(embed=embed)
                 if actual_state_information:
                     await channel.send(_("The command issued in this channel is:\n```{command}```").format(**locals()))
-                await self.cogsutils.invoke_command(author=ctx.author, channel=channel, command=command, prefix=ctx.prefix, message=ctx.message, dispatch_message=True)
+                await self.cogsutils.invoke_command(author=ctx.author, channel=channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message, dispatch_message=True)
                 if actual_state_confirmation:
                     try:
-                        await ctx.author.send(_("The `{command}` command has been launched in the {channel} channel. You can check if it worked.").format(**locals()))
+                        await ctx.send(_("The `{command}` command has been launched in the {channel} channel. You can check if it worked.").format(**locals()))
                     except discord.Forbidden:
                         await ctx.send(_("The `{command}` command has been launched in the {channel} channel. You can check if it worked.").format(**locals()))
-                await ctx.tick()
+                if self.cogsutils.is_dpy2:
+                    await ctx.defer()
+                if actual_state_deletemessage:
+                    await self.cogsutils.delete_message(ctx.message)
+                else:
+                    await ctx.tick()
             else:
                 try:
-                    await ctx.author.send(_("You cannot run this command because you do not have the permissions to send messages in the {channel} channel.").format(**locals()))
+                    await ctx.send(_("You cannot run this command because you do not have the permissions to send messages in the {channel} channel.").format(**locals()))
                 except discord.Forbidden:
                     await ctx.send(_("You cannot run this command because you do not have the permissions to send messages in the {channel} channel.").format(**locals()))
         else:
@@ -126,44 +124,48 @@ class CmdChannel(commands.Cog):
             return
 
     @commands.is_owner()
-    @commands.command(aliases=["usercmd"])
-    async def cmduser(self, ctx: commands.Context, user: typing.Optional[typing.Union[discord.Member, discord.User]]=None, *, command: str = ""):
+    @cmdchannel.command()
+    async def user(self, ctx: commands.Context, user: typing.Union[discord.Member, discord.User], *, command: str):
         """Act as if the command had been typed by imitating the specified user.
         The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.
         If you do not specify a user, the author will be used.
         """
         if user is None:
             user = ctx.author
-        if not command and not ctx.message.embeds and not ctx.message.attachments:
-            await ctx.send_help()
-            return
         if ctx.bot.get_cog("Dev") is None:
             await ctx.send("To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing.")
             return
-        await self.cogsutils.invoke_command(author=user, channel=ctx.channel, command=command, prefix=ctx.prefix, message=ctx.message, dispatch_message=True)
+        await self.cogsutils.invoke_command(author=user, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message, dispatch_message=True)
+        if self.cogsutils.is_dpy2:
+            await ctx.defer()
         await ctx.tick()
 
     @commands.is_owner()
-    @commands.command(aliases=["userchannelcmd"])
-    async def cmduserchannel(self, ctx: commands.Context, user: typing.Optional[typing.Union[discord.Member, discord.User]]=None, channel: typing.Optional[discord.TextChannel]=None, *, command: str = ""):
+    @cmdchannel.command()
+    async def userchannel(self, ctx: commands.Context, user: discord.User, channel: typing.Optional[discord.TextChannel]=None, *, command: str):
         """Act as if the command had been typed in the channel of your choice by imitating the specified user.
         The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.
         If you do not specify a user, the author will be used.
         """
-        if channel is None:
-            channel = ctx.channel
         if user is None:
             user = ctx.author
-        if not command and not ctx.message.embeds and not ctx.message.attachments:
-            await ctx.send_help()
-            return
+        if channel is None:
+            channel = ctx.channel
+        if channel.guild is not None:
+            if ctx.author not in channel.guild.members:
+                await ctx.send(_("To send commands to another server, you must be there.").format(**locals()))
+                return
+            user = channel.guild.get_member(user.id) or user
         if ctx.bot.get_cog("Dev") is None:
             await ctx.send("To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing.")
             return
-        await self.cogsutils.invoke_command(author=user, channel=channel, command=command, prefix=ctx.prefix, message=ctx.message, dispatch_message=True)
+        
+        await self.cogsutils.invoke_command(author=user, channel=channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message, dispatch_message=True)
+        if self.cogsutils.is_dpy2:
+            await ctx.defer()
         await ctx.tick()
 
-    @commands.command()
+    @cmdchannel.command()
     async def testvar(self, ctx: commands.Context):
         """Test variables.
         """
@@ -180,7 +182,7 @@ class CmdChannel(commands.Cog):
 
     @commands.guild_only()
     @commands.guildowner_or_permissions(administrator=True)
-    @commands.group(name="cmdset", aliases=["setcmd"])
+    @hybrid_group(name="cmdset", aliases=["setcmd"])
     async def configuration(self, ctx: commands.Context):
         """Configure Command for your server."""
 

@@ -11,7 +11,7 @@ else:
 
 import asyncio
 
-from .converters import EmojiRoleConverter
+from .converters import Emoji, EmojiRoleConverter
 
 from redbot.core import Config
 
@@ -21,11 +21,20 @@ if CogsUtils().is_dpy2:  # To remove
 # Credits:
 # Thanks to TrustyJAID for the two converter for the bulk command arguments! (https://github.com/TrustyJAID/Trusty-cogs/blob/main/roletools/converter.py)
 # Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel!
+# Thanks to Kuro for the emoji converter!(https://canary.discord.com/channels/133049272517001216/133251234164375552/1014520590239019048)
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
 _ = Translator("RolesButtons", __file__)
+
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
 
 @cog_i18n(_)
 class RolesButtons(commands.Cog):
@@ -46,6 +55,7 @@ class RolesButtons(commands.Cog):
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
+        self.purge.very_hidden = True
 
         if self.cogsutils.is_dpy2:
             asyncio.create_task(self.load_buttons())
@@ -94,7 +104,7 @@ class RolesButtons(commands.Cog):
                     await interaction.response.send_message(_("I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server.").format(**locals()), ephemeral=True)
                     return
                 else:
-                    await interaction.response.send_message(_("I did remove the role {role.mention} ({role.id}).").format(**locals()), ephemeral=True)
+                    await interaction.response.send_message(_("I removed the role {role.mention} ({role.id}).").format(**locals()), ephemeral=True)
     else:
         @commands.Cog.listener()
         async def on_button_click(self, inter):
@@ -150,14 +160,14 @@ class RolesButtons(commands.Cog):
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_roles=True)
-    @commands.group()
+    @hybrid_group()
     async def rolesbuttons(self, ctx: commands.Context):
         """Group of commands for use RolesButtons.
         """
         pass
 
     @rolesbuttons.command()
-    async def add(self, ctx: commands.Context, message: discord.Message, role: discord.Role, emoji: typing.Union[discord.Emoji, str], style_button: typing.Optional[commands.Literal["1", "2", "3", "4"]]="2", *, text_button: typing.Optional[str]=None):
+    async def add(self, ctx: commands.Context, message: discord.Message, role: discord.Role, emoji: Emoji, style_button: typing.Optional[commands.Literal["1", "2", "3", "4"]]="2", *, text_button: typing.Optional[str]=None):
         """Add a role-button to a message.
 
         `primary`: 1
@@ -178,11 +188,12 @@ class RolesButtons(commands.Cog):
         if not permissions.add_reactions or not permissions.read_message_history or not permissions.read_messages or not permissions.view_channel:
             await ctx.send(_("I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.").format(**locals()))
             return
-        try:
-            await ctx.message.add_reaction(emoji)
-        except discord.HTTPException:
-            await ctx.send(_("The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
-            return
+        if getattr(ctx, "interaction", None) is None:
+            try:
+                await ctx.message.add_reaction(emoji)
+            except discord.HTTPException:
+                await ctx.send(_("The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
+                return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
@@ -201,9 +212,10 @@ class RolesButtons(commands.Cog):
         await ctx.tick()
 
     @rolesbuttons.command()
-    async def bulk(self, ctx: commands.Context, message: discord.Message, *roles_buttons: EmojiRoleConverter):
+    async def bulk(self, ctx: commands.Context, message: discord.Message, roles_buttons: commands.Greedy[EmojiRoleConverter]):
         """Add roles-buttons to a message.
         """
+        roles_buttons = list(roles_buttons)
         if not message.author == ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the role-button to work.").format(**locals()))
             return
@@ -211,12 +223,13 @@ class RolesButtons(commands.Cog):
         if not permissions.add_reactions or not permissions.read_message_history or not permissions.read_messages or not permissions.view_channel:
             await ctx.send(_("I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.").format(**locals()))
             return
-        try:
-            for emoji, role in roles_buttons[:19]:
-                await ctx.message.add_reaction(emoji)
-        except discord.HTTPException:
-            await ctx.send(_("A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
-            return
+        if getattr(ctx, "interaction", None) is None:
+            try:
+                for emoji, role in roles_buttons[:19]:
+                    await ctx.message.add_reaction(emoji)
+            except discord.HTTPException:
+                await ctx.send(_("A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
+                return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
@@ -236,7 +249,7 @@ class RolesButtons(commands.Cog):
         await ctx.tick()
 
     @rolesbuttons.command()
-    async def remove(self, ctx: commands.Context, message: discord.Message, button: typing.Union[discord.Emoji, str]):
+    async def remove(self, ctx: commands.Context, message: discord.Message, button: Emoji):
         """Remove a role-button to a message.
         """
         if not message.author == ctx.guild.me:

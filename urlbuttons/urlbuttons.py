@@ -9,7 +9,7 @@ if CogsUtils().is_dpy2:
 else:
     from dislash import ActionRow  # isort:skip
 
-from .converters import EmojiUrlConverter
+from .converters import Emoji, EmojiUrlConverter
 
 from redbot.core import Config
 
@@ -18,11 +18,20 @@ if CogsUtils().is_dpy2:  # To remove
 
 # Credits:
 # Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel!
+# Thanks to Kuro for the emoji converter!(https://canary.discord.com/channels/133049272517001216/133251234164375552/1014520590239019048)
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
 _ = Translator("UrlButtons", __file__)
+
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
 
 @cog_i18n(_)
 class UrlButtons(commands.Cog):
@@ -43,6 +52,7 @@ class UrlButtons(commands.Cog):
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
+        self.purge.very_hidden = True
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message):
@@ -56,24 +66,25 @@ class UrlButtons(commands.Cog):
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_messages=True)
-    @commands.group()
+    @hybrid_group()
     async def urlbuttons(self, ctx: commands.Context):
         """Group of commands for use UrlButtons.
         """
         pass
 
     @urlbuttons.command()
-    async def add(self, ctx: commands.Context, message: discord.Message, url: str, emoji: typing.Union[discord.Emoji, str], *, text_button: typing.Optional[str]=None):
+    async def add(self, ctx: commands.Context, message: discord.Message, url: str, emoji: Emoji, *, text_button: typing.Optional[str]=None):
         """Add a url-button to a message.
         """
         if not message.author == ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the url-button to work.").format(**locals()))
             return
-        try:
-            await ctx.message.add_reaction(emoji)
-        except discord.HTTPException:
-            await ctx.send(_("The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
-            return
+        if getattr(ctx, "interaction", None) is None:
+            try:
+                await ctx.message.add_reaction(emoji)
+            except discord.HTTPException:
+                await ctx.send(_("The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
+                return
         if not url.startswith("http"):
             await ctx.send(_("Url must start with `https` or `http`.").format(**locals()))
             return
@@ -95,18 +106,20 @@ class UrlButtons(commands.Cog):
         await ctx.tick()
 
     @urlbuttons.command()
-    async def bulk(self, ctx: commands.Context, message: discord.Message, *url_buttons: EmojiUrlConverter):
+    async def bulk(self, ctx: commands.Context, message: discord.Message, url_buttons: commands.Greedy[EmojiUrlConverter]):
         """Add a url-button to a message.
         """
+        url_buttons = list(url_buttons)
         if not message.author == ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the url-button to work.").format(**locals()))
             return
-        try:
-            for emoji, url in url_buttons:
-                await ctx.message.add_reaction(emoji)
-        except discord.HTTPException:
-            await ctx.send(_("A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
-            return
+        if getattr(ctx, "interaction", None) is None:
+            try:
+                for emoji, url in url_buttons:
+                    await ctx.message.add_reaction(emoji)
+            except discord.HTTPException:
+                await ctx.send(_("A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
+                return
         config = await self.config.guild(ctx.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
@@ -126,7 +139,7 @@ class UrlButtons(commands.Cog):
         await ctx.tick()
 
     @urlbuttons.command()
-    async def remove(self, ctx: commands.Context, message: discord.Message, button: typing.Union[discord.Emoji, str]):
+    async def remove(self, ctx: commands.Context, message: discord.Message, button: Emoji):
         """Remove a url-button to a message.
         """
         if not message.author == ctx.guild.me:

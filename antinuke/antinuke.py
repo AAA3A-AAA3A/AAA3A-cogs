@@ -18,6 +18,14 @@ from redbot.core import Config
 
 _ = Translator("AntiNuke", __file__)
 
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
+
 @cog_i18n(_)
 class AntiNuke(commands.Cog):
     """A cog to remove all permissions from a person who deletes a channel!"""
@@ -153,7 +161,7 @@ class AntiNuke(commands.Cog):
 
     @commands.guild_only()
     @commands.guildowner()
-    @commands.group(name="setantinuke", aliases=["antinukeset"])
+    @hybrid_group(name="setantinuke", aliases=["antinukeset"])
     async def configuration(self, ctx: commands.Context):
         """Configure AntiNuke for your server."""
 

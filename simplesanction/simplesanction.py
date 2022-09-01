@@ -32,6 +32,23 @@ from redbot.core.utils.predicates import MessagePredicate
 
 _ = Translator("SimpleSanction", __file__)
 
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
+
+class TimeDeltaConverter(commands.Converter):
+
+    async def convert(self, ctx: commands.Context, arg: str):
+        delta = parse_timedelta(arg)
+        if delta is not None:
+            return arg
+        else:
+            raise BadArgument()
+
 @cog_i18n(_)
 class SimpleSanction(settings, commands.Cog):
     """A cog to sanction a user!"""
@@ -102,17 +119,6 @@ class SimpleSanction(settings, commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
-    def check_timedelta(string):
-        try:
-            delta = parse_timedelta(string)
-        except BadArgument:
-            raise BadArgument()
-        else:
-            if delta is not None:
-                return string
-            else:
-                raise BadArgument()
-
     if not CogsUtils().is_dpy2:
 
         @user_command(name="Sanction user")
@@ -149,11 +155,11 @@ class SimpleSanction(settings, commands.Cog):
             except Exception:
                 await inter.respond(_("An error has occurred in this interaction. Please try to use the real command instead of this contextual menu.").format(**locals()), ephemeral=True)
 
-    @commands.group(invoke_without_command=True, name="sanction", aliases=["punishuser"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
     @commands.guild_only()
     @commands.mod_or_permissions(administrator=True)
     @commands.bot_has_permissions(add_reactions=True, embed_links=True)
-    async def _sanction(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    @hybrid_group(invoke_without_command=True, name="sanction", aliases=["punishuser"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
+    async def _sanction(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[TimeDeltaConverter]=None, *, reason: str = None):
         """
         Sanction a user quickly and easily.
 
@@ -175,21 +181,34 @@ class SimpleSanction(settings, commands.Cog):
         await self.call_sanction(ctx, 0, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
 
     @commands.guild_only()
+    @_sanction.command(name="00", aliases=["0", "sanction"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
+    async def sanction_0(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[TimeDeltaConverter]=None, *, reason: str = None):
+        """
+         - :information_source: Show info on a user.
+
+        Examples:
+        - `[p]sanction 0 @user`
+        - `[p]sanction 0 @user What are these roles?`
+        - `[p]sanction 0 012345678987654321`
+        """
+        await self.call_sanction(ctx, 0, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
+
+    @commands.guild_only()
     @_sanction.command(name="01", aliases=["1", "userinfo", "info"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_1(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_1(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[TimeDeltaConverter]=None, *, reason: str = None):
         """
          - :information_source: Show info on a user.
 
         Examples:
         - `[p]sanction 1 @user`: UserInfo for no reason
-        - `[p]sanction 1 @user What are these roles?`: Ban for the reason "What are these roles?"
+        - `[p]sanction 1 @user What are these roles?`: UserInfo for the reason "What are these roles?"
         - `[p]sanction 1 012345678987654321`: UserInfo with the ID provided.
         """
         await self.call_sanction(ctx, 1, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
 
     @commands.guild_only()
     @_sanction.command(name="02", aliases=["2", "warn"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_2(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_2(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[TimeDeltaConverter]=None, *, reason: str = None):
         """
          - :warning: Set a simple warning on a user.
 
@@ -202,7 +221,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="03", aliases=["3", "ban"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_3(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_3(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[TimeDeltaConverter]=None, *, reason: str = None):
         """
          - :hammer: Ban the member from the server.
 
@@ -217,7 +236,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="04", aliases=["4", "softban"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_4(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_4(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[TimeDeltaConverter]=None, *, reason: str = None):
         """
          - :repeat_one: Softban the member from the server.
 
@@ -232,7 +251,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="05", aliases=["5", "tempban"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_5(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_5(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[TimeDeltaConverter]=None, *, reason: str = None):
         """
          - :dash: Tempban the member from the server.
 
@@ -249,7 +268,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="06", aliases=["6", "kick"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_6(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_6(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[TimeDeltaConverter]=None, *, reason: str = None):
         """
          - :boot: Kick the member from the server.
 
@@ -262,7 +281,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="07", aliases=["7", "mute"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_7(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_7(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[TimeDeltaConverter]=None, *, reason: str = None):
         """
          - :mute: Mute the user in all channels, including voice channels.
 
@@ -275,7 +294,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="08", aliases=["8", "mutechannel"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_8(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_8(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[TimeDeltaConverter]=None, *, reason: str = None):
         """
          - :punch: Mute the user in this channel.
 
@@ -288,7 +307,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="09", aliases=["9", "tempmute"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_9(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_9(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[TimeDeltaConverter]=None, *, reason: str = None):
         """
          - :hourglass_flowing_sand: TempMute the user in all channels, including voice channels.
 
@@ -303,7 +322,7 @@ class SimpleSanction(settings, commands.Cog):
 
     @commands.guild_only()
     @_sanction.command(name="10", aliases=["tempmutechannel"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
-    async def sanction_10(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, *, reason: str = None):
+    async def sanction_10(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[TimeDeltaConverter]=None, *, reason: str = None):
         """
          - :hourglass: TempMute the user in this channel.
 
@@ -317,7 +336,7 @@ class SimpleSanction(settings, commands.Cog):
         await self.call_sanction(ctx, 10, user, confirmation, show_author, finish_message, fake_action, delete_embed, delete_message, duration, reason)
 
     @commands.guild_only()
-    async def call_sanction(self, ctx: commands.Context, action: typing.Optional[int]=None, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, reason: str = None):
+    async def call_sanction(self, ctx: commands.Context, action: typing.Optional[int]=None, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[TimeDeltaConverter]=None, reason: str = None):
         """Sanction a user quickly and easily.
         """
         config = await self.config.guild(ctx.guild).all()
@@ -760,7 +779,7 @@ class SimpleSanction(settings, commands.Cog):
                         await message.edit(embed=embed, components=[buttons_one, buttons_two, buttons_three])
                     return
 
-    async def call_actions(self, ctx: commands.Context, action: typing.Optional[int]=None, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[check_timedelta]=None, reason: str = None):
+    async def call_actions(self, ctx: commands.Context, action: typing.Optional[int]=None, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[TimeDeltaConverter]=None, reason: str = None):
         config = await self.config.guild(ctx.guild).all()
         actual_thumbnail = config["thumbnail"]
         actual_color = config["color"]
@@ -780,11 +799,8 @@ class SimpleSanction(settings, commands.Cog):
             if not fake_action:
                 if not ctx.bot.get_cog("Mod"):
                     await ctx.send(_("The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`.").format(**locals()))
-                msg = copy(ctx.message)
-                msg.author = ctx.author
-                msg.channel = ctx.channel
-                msg.content = f"{ctx.prefix}userinfo {user.id}"
-                ctx.bot.dispatch("message", msg)
+                command = f"userinfo {user.id}"
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -802,23 +818,16 @@ class SimpleSanction(settings, commands.Cog):
                 if not warn_system_exist:
                     if not ctx.bot.get_cog("Warnings"):
                         await ctx.send(_("The cog Warnings is not loaded. To load it, do `{ctx.prefix}load warnings`. You can also install/load the WarnSystem cog.").format(**locals()))
-                    msg = copy(ctx.message)
-                    msg.author = ctx.author
-                    msg.channel = ctx.channel
                     if reason == "not":
-                        msg.content = _("{ctx.prefix}warn {user.id} The reason was not given.").format(**locals())
+                        command = "warn {user.id} The reason was not given."
                     else:
-                        msg.content = _("{ctx.prefix}warn {user.id} {reason}").format(**locals())
-                    ctx.bot.dispatch("message", msg)
+                        command = "warn {user.id} {reason}"
                 else:
-                    msg = copy(ctx.message)
-                    msg.author = ctx.author
-                    msg.channel = ctx.channel
                     if reason == "not":
-                        msg.content = f"{ctx.prefix}warn 1 {user.id}"
+                        command = f"warn 1 {user.id}"
                     else:
-                        msg.content = f"{ctx.prefix}warn 1 {user.id} {reason}"
-                    ctx.bot.dispatch("message", msg)
+                        command = f"warn 1 {user.id} {reason}"
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -836,23 +845,16 @@ class SimpleSanction(settings, commands.Cog):
                 if not warn_system_exist:
                     if not ctx.bot.get_cog("Mod"):
                         await ctx.send(_("The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`. You can also install/load the WarnSystem cog.").format(**locals()))
-                    msg = copy(ctx.message)
-                    msg.author = ctx.author
-                    msg.channel = ctx.channel
                     if reason == "not":
-                        msg.content = f"{ctx.prefix}ban {user.id}"
+                        command = f"ban {user.id}"
                     else:
-                        msg.content = f"{ctx.prefix}ban {user.id} {reason}"
-                    ctx.bot.dispatch("message", msg)
+                        command = f"ban {user.id} {reason}"
                 else:
-                    msg = copy(ctx.message)
-                    msg.author = ctx.author
-                    msg.channel = ctx.channel
                     if reason == "not":
-                        msg.content = f"{ctx.prefix}warn 5 {user.id}"
+                        command = f"warn 5 {user.id}"
                     else:
-                        msg.content = f"{ctx.prefix}warn 5 {user.id} {reason}"
-                    ctx.bot.dispatch("message", msg)
+                        command = f"warn 5 {user.id} {reason}"
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -870,23 +872,16 @@ class SimpleSanction(settings, commands.Cog):
                 if not warn_system_exist:
                     if not ctx.bot.get_cog("Mod"):
                         await ctx.send(_("The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`. You can also install/load the WarnSystem cog.").format(**locals()))
-                    msg = copy(ctx.message)
-                    msg.author = ctx.author
-                    msg.channel = ctx.channel
                     if reason == "not":
-                        msg.content = f"{ctx.prefix}softban {user.id}"
+                        command = f"softban {user.id}"
                     else:
-                        msg.content = f"{ctx.prefix}softban {user.id} {reason}"
-                    ctx.bot.dispatch("message", msg)
+                        command = f"softban {user.id} {reason}"
                 else:
-                    msg = copy(ctx.message)
-                    msg.author = ctx.author
-                    msg.channel = ctx.channel
                     if reason == "not":
-                        msg.content = f"{ctx.prefix}warn 4 {user.id}"
+                        command = f"warn 4 {user.id}"
                     else:
-                        msg.content = f"{ctx.prefix}warn 4 {user.id} {reason}"
-                    ctx.bot.dispatch("message", msg)
+                        command = f"warn 4 {user.id} {reason}"
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -908,24 +903,16 @@ class SimpleSanction(settings, commands.Cog):
                 if not warn_system_exist:
                     if not ctx.bot.get_cog("Mod"):
                         await ctx.send(_("The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`. You can also install/load the WarnSystem cog.").format(**locals()))
-                    msg = copy(ctx.message)
-                    msg.author = ctx.author
-                    msg.channel = ctx.channel
                     if reason == "not":
-                        msg.content = f"{ctx.prefix}tempban {user.id} {duration}"
+                        command = f"tempban {user.id} {duration}"
                     else:
-                        msg.content = f"{ctx.prefix}tempban {user.id} {duration} {reason}"
-                    await ctx.send(f"{ctx.prefix}tempban {user.id} {duration} {reason}")
-                    ctx.bot.dispatch("message", msg)
+                        command = f"tempban {user.id} {duration} {reason}"
                 else:
-                    msg = copy(ctx.message)
-                    msg.author = ctx.author
-                    msg.channel = ctx.channel
                     if reason == "not":
-                        msg.content = f"{ctx.prefix}warn 5 {user.id} {duration}"
+                        command = f"warn 5 {user.id} {duration}"
                     else:
-                        msg.content = f"{ctx.prefix}warn 5 {user.id} {duration} {reason}"
-                    ctx.bot.dispatch("message", msg)
+                        command = f"warn 5 {user.id} {duration} {reason}"
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -943,23 +930,16 @@ class SimpleSanction(settings, commands.Cog):
                 if not warn_system_exist:
                     if not ctx.bot.get_cog("Mod"):
                         await ctx.send(_("The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`. You can also install/load the WarnSystem cog.").format(**locals()))
-                    msg = copy(ctx.message)
-                    msg.author = ctx.author
-                    msg.channel = ctx.channel
                     if reason == "not":
-                        msg.content = f"{ctx.prefix}kick {user.id}"
+                        command = f"kick {user.id}"
                     else:
-                        msg.content = f"{ctx.prefix}kick {user.id} {reason}"
-                    ctx.bot.dispatch("message", msg)
+                        command = f"kick {user.id} {reason}"
                 else:
-                    msg = copy(ctx.message)
-                    msg.author = ctx.author
-                    msg.channel = ctx.channel
                     if reason == "not":
-                        msg.content = f"{ctx.prefix}warn 3 {user.id}"
+                        command = f"warn 3 {user.id}"
                     else:
-                        msg.content = f"{ctx.prefix}warn 3 {user.id} {reason}"
-                    ctx.bot.dispatch("message", msg)
+                        command = f"warn 3 {user.id} {reason}"
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -977,23 +957,16 @@ class SimpleSanction(settings, commands.Cog):
                 if not warn_system_exist:
                     if not ctx.bot.get_cog("Mutes"):
                         await ctx.send(_("The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`. You can also install/load the WarnSystem cog.").format(**locals()))
-                    msg = copy(ctx.message)
-                    msg.author = ctx.author
-                    msg.channel = ctx.channel
                     if reason == "not":
-                        msg.content = f"{ctx.prefix}mute {user.id}"
+                        command = f"mute {user.id}"
                     else:
-                        msg.content = f"{ctx.prefix}mute {user.id}"
-                    ctx.bot.dispatch("message", msg)
+                        command = f"mute {user.id}"
                 else:
-                    msg = copy(ctx.message)
-                    msg.author = ctx.author
-                    msg.channel = ctx.channel
                     if reason == "not":
-                        msg.content = f"{ctx.prefix}warn 2 {user.id}"
+                        command = f"warn 2 {user.id}"
                     else:
-                        msg.content = f"{ctx.prefix}warn 2 {user.id} {reason}"
-                    ctx.bot.dispatch("message", msg)
+                        command = f"warn 2 {user.id} {reason}"
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -1010,14 +983,11 @@ class SimpleSanction(settings, commands.Cog):
             if not fake_action:
                 if not ctx.bot.get_cog("Mutes"):
                     await ctx.send(_("The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`.").format(**locals()))
-                msg = copy(ctx.message)
-                msg.author = ctx.author
-                msg.channel = ctx.channel
                 if reason == "not":
-                    msg.content = f"{ctx.prefix}mutechannel {user.id}"
+                    command = f"mutechannel {user.id}"
                 else:
-                    msg.content = f"{ctx.prefix}mutechannel {user.id}"
-                ctx.bot.dispatch("message", msg)
+                    command = f"mutechannel {user.id}"
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -1039,23 +1009,16 @@ class SimpleSanction(settings, commands.Cog):
                 if not warn_system_exist:
                     if not ctx.bot.get_cog("Mutes"):
                         await ctx.send(_("The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`. You can also install/load the WarnSystem cog.").format(**locals()))
-                    msg = copy(ctx.message)
-                    msg.author = ctx.author
-                    msg.channel = ctx.channel
                     if reason == "not":
-                        msg.content = f"{ctx.prefix}mute {user.id} {duration}"
+                        command = f"mute {user.id} {duration}"
                     else:
-                        msg.content = f"{ctx.prefix}mute {user.id} {duration} {reason}"
-                    ctx.bot.dispatch("message", msg)
+                        command = f"mute {user.id} {duration} {reason}"
                 else:
-                    msg = copy(ctx.message)
-                    msg.author = ctx.author
-                    msg.channel = ctx.channel
                     if reason == "not":
-                        msg.content = f"{ctx.prefix}warn 2 {user.id} {duration}"
+                        command = f"warn 2 {user.id} {duration}"
                     else:
-                        msg.content = f"{ctx.prefix}warn 2 {user.id} {duration} {reason}"
-                    ctx.bot.dispatch("message", msg)
+                        command = f"warn 2 {user.id} {duration} {reason}"
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -1076,14 +1039,11 @@ class SimpleSanction(settings, commands.Cog):
             if not fake_action:
                 if not ctx.bot.get_cog("Mutes"):
                     await ctx.send(_("The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`.").format(**locals()))
-                msg = copy(ctx.message)
-                msg.author = ctx.author
-                msg.channel = ctx.channel
                 if reason == "not":
-                    msg.content = f"{ctx.prefix}mutechannel {user.id} {duration}"
+                    command = f"mutechannel {user.id} {duration}"
                 else:
-                    msg.content = f"{ctx.prefix}mutechannel {user.id} {duration} {reason}"
-                ctx.bot.dispatch("message", msg)
+                    command = f"mutechannel {user.id} {duration} {reason}"
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return

@@ -14,6 +14,14 @@ import aiohttp
 
 _ = Translator("Ip", __file__)
 
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
+
 @cog_i18n(_)
 class Ip(commands.Cog):
     """A cog to get the ip address of the bot!"""
@@ -35,7 +43,12 @@ class Ip(commands.Cog):
         self.cogsutils._setup()
 
     @commands.is_owner()
-    @commands.command()
+    @hybrid_group(name="ip")
+    async def ip_group(self, ctx: commands.Context):
+        """Commands group for Ip."""
+        pass
+
+    @ip_group.command()
     async def ip(self, ctx: commands.Context):
         """Get the ip address of the bot."""
         hostname = socket.gethostname()
@@ -44,8 +57,7 @@ class Ip(commands.Cog):
                 ip = r.headers["X-Client-IP"]  # Gives the "public IP" of the Bot client PC
         await ctx.send(_("The ip address of your bot is `{ip}`.").format(**locals()))
 
-    @commands.is_owner()
-    @commands.command()
+    @ip_group.command()
     async def website(self, ctx: commands.Context):
         """Get the ip address website."""
         hostname = socket.gethostname()
@@ -56,8 +68,7 @@ class Ip(commands.Cog):
         port = config["port"]
         await ctx.send(_("The Administrator Panel website is http://{ip}:{port}/.").format(**locals()))
 
-    @commands.is_owner()
-    @commands.command(name="setportip", aliases=["ipportset"], usage="<port>")
+    @ip_group.command(name="setportip", aliases=["ipportset"], usage="<port>")
     async def setportip(self, ctx: commands.Context, *, port):
         """Set the port.
         """

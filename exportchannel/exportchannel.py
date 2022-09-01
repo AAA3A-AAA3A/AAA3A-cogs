@@ -8,9 +8,6 @@ import typing  # isort:skip
 import chat_exporter
 import io
 
-if CogsUtils().is_dpy2:
-    from redbot.core.commands import RawUserIdConverter
-
 # Credits:
 # Thanks to Red's `Cleanup` cog for the converters and help with the message retrieval function! (https://github.com/Cog-Creators/Red-DiscordBot/blob/V3/develop/redbot/cogs/cleanup/converters.py#L12)
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
@@ -18,6 +15,14 @@ if CogsUtils().is_dpy2:
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
 _ = Translator("ExportChannel", __file__)
+
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
 
 @cog_i18n(_)
 class ExportChannel(commands.Cog):
@@ -45,7 +50,7 @@ class ExportChannel(commands.Cog):
 
     @commands.guild_only()
     @commands.guildowner_or_permissions(administrator=True)
-    @commands.group(name="exportchannel", aliases=["exportmessages"])
+    @hybrid_group(name="exportchannel", aliases=["exportmessages"])
     async def exportchannel(self, ctx: commands.Context):
         """Commands for export all or part of a channel's messages to an html file."""
 
@@ -190,35 +195,34 @@ class ExportChannel(commands.Cog):
         await ctx.send(_("Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nRemember that exporting other users' messages from Discord does not respect the TOS.").format(**locals()), file=file)
         await ctx.tick()
 
-    if CogsUtils().is_dpy2:
-        @exportchannel.command()
-        async def user(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], user: typing.Union[discord.Member, RawUserIdConverter], limit: typing.Optional[int]=None):
-            """Export part of a channel's messages to an html file.
+    @exportchannel.command()
+    async def user(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], user: discord.User, limit: typing.Optional[int]=None):
+        """Export part of a channel's messages to an html file.
 
-            Specify the member (id, name or mention).
-            Please note: all attachments and user avatars are saved with the Discord link in this file.
-            Remember that exporting other users' messages from Discord does not respect the TOS.
-            """
-            async with ctx.typing():
-                if channel is None:
-                    channel = ctx.channel
-                if not self.cogsutils.check_permissions_for(channel=channel, user=ctx.me, check=["view_channel", "read_messages", "read_message_history"]):
-                    await ctx.send(_("Sorry, I can't read the content of the messages in {channel.mention} ({channel.id}).").format())
-                    return
-                messages = await self.get_messages(channel=channel, user_id=user.id if isinstance(user, discord.Member) else user, limit=limit)
-                messages = [message for message in messages if not message.id == ctx.message.id]
-                count_messages = len(messages)
-                if count_messages == 0:
-                    await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-                    return
-                if self.cogsutils.is_dpy2:
-                    transcript = await chat_exporter.raw_export(channel=channel, messages=messages, tz_info="UTC", guild=channel.guild, bot=ctx.bot)
-                else:
-                    transcript = await chat_exporter.raw_export(channel=channel, messages=messages, guild=channel.guild)
-                file = discord.File(io.BytesIO(transcript.encode()),
-                                    filename=f"transcript-{channel.id}.html")
-            await ctx.send(_("Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nRemember that exporting other users' messages from Discord does not respect the TOS.").format(**locals()), file=file)
-            await ctx.tick()
+        Specify the member (id, name or mention).
+        Please note: all attachments and user avatars are saved with the Discord link in this file.
+        Remember that exporting other users' messages from Discord does not respect the TOS.
+        """
+        async with ctx.typing():
+            if channel is None:
+                channel = ctx.channel
+            if not self.cogsutils.check_permissions_for(channel=channel, user=ctx.me, check=["view_channel", "read_messages", "read_message_history"]):
+                await ctx.send(_("Sorry, I can't read the content of the messages in {channel.mention} ({channel.id}).").format())
+                return
+            messages = await self.get_messages(channel=channel, user_id=user.id if isinstance(user, discord.Member) else user, limit=limit)
+            messages = [message for message in messages if not message.id == ctx.message.id]
+            count_messages = len(messages)
+            if count_messages == 0:
+                await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
+                return
+            if self.cogsutils.is_dpy2:
+                transcript = await chat_exporter.raw_export(channel=channel, messages=messages, tz_info="UTC", guild=channel.guild, bot=ctx.bot)
+            else:
+                transcript = await chat_exporter.raw_export(channel=channel, messages=messages, guild=channel.guild)
+            file = discord.File(io.BytesIO(transcript.encode()),
+                                filename=f"transcript-{channel.id}.html")
+        await ctx.send(_("Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nRemember that exporting other users' messages from Discord does not respect the TOS.").format(**locals()), file=file)
+        await ctx.tick()
 
     @exportchannel.command()
     async def bot(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], bot: typing.Optional[bool]=True, limit: typing.Optional[int]=None):

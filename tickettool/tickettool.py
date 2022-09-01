@@ -28,6 +28,14 @@ from redbot.core import Config, modlog
 
 _ = Translator("TicketTool", __file__)
 
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
+
 @cog_i18n(_)
 class TicketTool(settings, commands.Cog):
     """A cog to manage a ticket system!"""
@@ -317,7 +325,7 @@ class TicketTool(settings, commands.Cog):
         return commands.check(pred)
 
     @commands.guild_only()
-    @commands.group(name="ticket")
+    @hybrid_group(name="ticket")
     async def ticket(self, ctx: commands.Context):
         """Commands for using the ticket system."""
 
@@ -462,9 +470,10 @@ class TicketTool(settings, commands.Cog):
 
     @decorator(enable_check=False, ticket_check=True, status="open", ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="add")
-    async def command_add(self, ctx: commands.Context, *members: discord.Member, reason: typing.Optional[str]="No reason provided."):
+    async def command_add(self, ctx: commands.Context, members: commands.Greedy[discord.Member], reason: typing.Optional[str]="No reason provided."):
         """Add a member to an existing ticket.
         """
+        members = list(members)
         ticket: Ticket = await self.get_ticket(ctx.channel)
         ticket.reason = reason
         members = [member for member in members]
@@ -473,9 +482,10 @@ class TicketTool(settings, commands.Cog):
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="remove")
-    async def command_remove(self, ctx: commands.Context, *members: discord.Member, reason: typing.Optional[str]="No reason provided."):
+    async def command_remove(self, ctx: commands.Context, members: commands.Greedy[discord.Member], reason: typing.Optional[str]="No reason provided."):
         """Remove a member to an existing ticket.
         """
+        members = list(members)
         ticket: Ticket = await self.get_ticket(ctx.channel)
         ticket.reason = reason
         members = [member for member in members]

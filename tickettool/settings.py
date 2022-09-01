@@ -3,7 +3,6 @@ if CogsUtils().is_dpy2:
     from .AAA3A_utils import Buttons, Dropdown  # isort:skip
 else:
     from dislash import ActionRow, Button, ButtonStyle, SelectMenu, SelectOption  # isort:skip
-
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
@@ -16,12 +15,20 @@ if CogsUtils().is_dpy2:  # To remove
 
 _ = Translator("TicketTool", __file__)
 
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
+
 @cog_i18n(_)
 class settings(commands.Cog):
 
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
-    @commands.group(name="setticket", aliases=["ticketset"])
+    @hybrid_group(name="setticket", aliases=["ticketset"])
     async def configuration(self, ctx: commands.Context):
         """Configure TicketTool for your server."""
         pass
@@ -283,7 +290,7 @@ class settings(commands.Cog):
         await ctx.tick()
 
     @configuration.command(aliases=["colour", "col", "embedcolor", "embedcolour"], usage="<color_or_'none'>")
-    async def color(self, ctx: commands.Context, *, color: typing.Optional[discord.Color]=None):
+    async def color(self, ctx: commands.Context, *, color: typing.Optional[discord.ext.commands.converter.ColorConverter]=None):
         """Set a colour for the embeds.
 
         ``color``: Color.
@@ -431,7 +438,7 @@ class settings(commands.Cog):
         await ctx.send(_("Rename Channel Dropdown state registered: {state}.").format(**locals()))
 
     @configuration.command(name="message")
-    async def message(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel]=None, message: typing.Optional[discord.Message]=None, *reason_options: EmojiLabelDescriptionValueConverter):
+    async def message(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], message: typing.Optional[discord.ext.commands.converter.MessageConverter], reason_options: commands.Greedy[EmojiLabelDescriptionValueConverter]):
         """Send a message with a button to open a ticket or dropdown with possible reasons.
         
         Example:
@@ -440,7 +447,8 @@ class settings(commands.Cog):
         """
         if channel is None:
             channel = ctx.channel
-        if reason_options == ():
+        reason_options = list(reason_options)
+        if reason_options == []:
             reason_options = None
         if message is not None and not message.author == ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the interaction to work.").format(**locals()))
@@ -516,7 +524,9 @@ class settings(commands.Cog):
     @commands.is_owner()
     @configuration.command(name="purge", hidden=True)
     async def command_purge(self, ctx: commands.Context, confirmation: typing.Optional[bool]=False):
-        """Purge all existing tickets in the config. Does not delete any channels. All commands associated with the tickets will no longer work.
+        """Purge all existing tickets in the config. Does not delete any channels.
+
+        All commands associated with the tickets will no longer work.
         """
         config = await self.bot.get_cog("TicketTool").get_config(ctx.guild)
         if not confirmation:

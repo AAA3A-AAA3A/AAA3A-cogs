@@ -17,6 +17,14 @@ from redbot.core import Config
 
 _ = Translator("MemberPrefix", __file__)
 
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
+
 @cog_i18n(_)
 class MemberPrefix(commands.Cog):
     """A cog to allow a member to choose custom prefixes, just for them!"""
@@ -104,9 +112,14 @@ class MemberPrefix(commands.Cog):
             self.cache_messages.append(ctx.message.id)
             await self.bot.invoke(ctx)
 
+    class StrConverter(commands.Converter):
+
+        async def convert(self, ctx: commands.Context, arg: str):
+            return arg
+
     @commands.guild_only()
-    @commands.command(aliases=["memberprefixes"])
-    async def memberprefix(self, ctx: commands.Context, *prefixes: str):
+    @hybrid_command(aliases=["memberprefixes"], invoke_without_command=True)
+    async def memberprefix(self, ctx: commands.Context, prefixes: commands.Greedy[StrConverter]):
         """Sets [botname]'s prefix(es) for you only.
         Warning: This is not additive. It will replace all current prefixes.
         The real prefixes will no longer work for you.
@@ -118,6 +131,7 @@ class MemberPrefix(commands.Cog):
         **Arguments:**
             - `<prefixes...>` - The prefixes the bot will respond for you only.
         """
+        prefixes = list(prefixes)
         if len(prefixes) == 0:
             await self.config.member(ctx.author).custom_prefixes.clear()
             await ctx.send(_("You now use this server or global prefixes.").format(**locals()))
@@ -196,3 +210,11 @@ class MemberPrefix(commands.Cog):
         ctx.prefix = invoked_prefix
         ctx.command = self.bot.all_commands.get(invoker)
         return ctx
+
+    @commands.guild_only()
+    @commands.guildowner_or_permissions(administrator=True)
+    @commands.command(hidden=True)
+    async def memberprefixpurge(self, ctx: commands.Context):
+        """Clear all members prefixes for this guild."""
+        await self.config.clear_all_members(guild=ctx.guild)
+        await ctx.tick()

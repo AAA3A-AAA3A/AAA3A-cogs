@@ -16,6 +16,14 @@ from copy import copy
 
 _ = Translator("Sudo", __file__)
 
+if CogsUtils().is_dpy2:
+    from functools import partial
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
+
 @cog_i18n(_)
 class Sudo(commands.Cog):
     """A cog to allow bot owners to be normal users in terms of permissions!"""
@@ -50,35 +58,42 @@ class Sudo(commands.Cog):
             return False
         return commands.check(pred)
 
+    @decorator(all_owner_ids=True, bot_owner_ids=True)
+    @hybrid_group()
+    async def sudo(self, ctx: commands.Context):
+        pass
+
     @decorator(all_owner_ids=True, bot_owner_ids=False)
-    @commands.command()
+    @sudo.command()
     async def su(self, ctx: commands.Context):
         """Sudo as the owner of the bot.
         """
         ctx.bot.owner_ids.add(ctx.author.id)
-        await ctx.tick()
+        await ctx.tick(message="Done")
 
     @decorator(all_owner_ids=False, bot_owner_ids=True)
-    @commands.command()
+    @sudo.command()
     async def unsu(self, ctx: commands.Context):
         """Unsudo as normal user.
         """
         ctx.bot.owner_ids.remove(ctx.author.id)
-        await ctx.tick()
+        await ctx.tick(message="Done")
 
     @decorator(all_owner_ids=True, bot_owner_ids=False)
-    @commands.command()
-    async def sudo(self, ctx: commands.Context, *, command: str):
+    @sudo.command(name="sudo")
+    async def _sudo(self, ctx: commands.Context, *, command: str):
         """Rise as the bot owner for the specified command only.
         """
         ctx.bot.owner_ids.add(ctx.author.id)
-        await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, message=ctx.message)
+        await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
         if ctx.bot.get_cog("Sudo") is not None:
             ctx.bot.owner_ids.remove(ctx.author.id)
+        if self.cogsutils.is_dpy2:
+            await ctx.defer()
         await ctx.tick()
 
     @decorator(all_owner_ids=True, bot_owner_ids=False)
-    @commands.command()
+    @sudo.command()
     async def sutimeout(
         self,
         ctx: commands.Context,
@@ -97,4 +112,4 @@ class Sudo(commands.Cog):
         await asyncio.sleep(sleep)
         if ctx.bot.get_cog("Sudo") is not None:
             ctx.bot.owner_ids.remove(ctx.author.id)
-        await ctx.tick()
+        await ctx.tick(message="Done")

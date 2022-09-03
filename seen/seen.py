@@ -677,7 +677,7 @@ class Seen(commands.Cog):
 
     @commands.bot_has_permissions(embed_links=True)
     @seen.command()
-    async def guild(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], *, guild: discord.Guild):
+    async def guild(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], *, guild: typing.Optional[discord.ext.commands.converter.GuildConverter]=None):
         """Check when a guild was last active!"""
         if guild is None or ctx.author.id not in ctx.bot.owner_ids:
             guild = ctx.guild

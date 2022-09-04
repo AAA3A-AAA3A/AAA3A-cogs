@@ -254,6 +254,7 @@ class Medicat(commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
+        self.secretupdate.very_hidden = True
         asyncio.create_task(self.edit_config_schema())
         self.cogsutils.create_loop(function=self.ventoy_updates, name="Ventoy Updates", hours=1)
         self.cogsutils.create_loop(function=self.bootables_tools_updates, name="Bootables Tools Updates", hours=1)
@@ -629,8 +630,8 @@ class Medicat(commands.Cog):
             await ctx.send(embed=loop.get_debug_embed())
 
     @is_owner_or_AAA3A()
-    @commands.command(hidden=True)
-    async def secretupdatemedicatcog(self, ctx: commands.Context):
+    @medicat.command(hidden=True)
+    async def secretupdate(self, ctx: commands.Context):
         """Update the Medicat cog without be bot owner."""
         try:
             message = copy(ctx.message)

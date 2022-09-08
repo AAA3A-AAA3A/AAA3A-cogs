@@ -62,8 +62,10 @@ class AutoTraceback(commands.Cog):
             - `[public]` - Whether to send the traceback to the current context. Leave blank to send to your DMs.
         """
         if ctx.bot._last_exception:
+            if self.cogsutils.is_dpy2:
+                await ctx.defer()
             _last_exception = ctx.bot._last_exception.split("\n")
-            _last_exception[0] = _last_exception[0] + ":\n"
+            _last_exception[0] = _last_exception[0] + (":\n" if not _last_exception[0].endswith(":") else "")
             _last_exception = "\n".join(_last_exception)
             _last_exception = self.cogsutils.replace_var_paths(_last_exception)
             if public:
@@ -86,7 +88,7 @@ class AutoTraceback(commands.Cog):
                         "Either you blocked me or you disabled DMs in this server."
                     )
                     return
-            await ctx.tick()
+            await ctx.tick(message="Done.")
         else:
             await ctx.send(_("No exception has occurred yet."))
 

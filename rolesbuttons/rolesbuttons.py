@@ -209,13 +209,12 @@ class RolesButtons(commands.Cog):
         else:
             await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).roles_buttons.set(config)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @rolesbuttons.command()
     async def bulk(self, ctx: commands.Context, message: discord.Message, roles_buttons: commands.Greedy[EmojiRoleConverter]):
         """Add roles-buttons to a message.
         """
-        roles_buttons = list(roles_buttons)
         if not message.author == ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the role-button to work.").format(**locals()))
             return
@@ -246,7 +245,7 @@ class RolesButtons(commands.Cog):
         else:
             await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).roles_buttons.set(config)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @rolesbuttons.command()
     async def remove(self, ctx: commands.Context, message: discord.Message, button: Emoji):
@@ -275,7 +274,7 @@ class RolesButtons(commands.Cog):
             else:
                 await message.edit(components=None)
         await self.config.guild(ctx.guild).roles_buttons.set(config)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @rolesbuttons.command()
     async def clear(self, ctx: commands.Context, message: discord.Message):
@@ -297,14 +296,14 @@ class RolesButtons(commands.Cog):
             pass
         del config[f"{message.channel.id}-{message.id}"]
         await self.config.guild(ctx.guild).roles_buttons.set(config)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @rolesbuttons.command(hidden=True)
     async def purge(self, ctx: commands.Context):
         """Clear all roles-buttons to a **guild**.
         """
         await self.config.guild(ctx.guild).roles_buttons.clear()
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     def get_buttons(self, config: typing.Dict, message: discord.Message):
         all_buttons = []

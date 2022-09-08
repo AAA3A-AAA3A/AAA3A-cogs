@@ -269,11 +269,11 @@ class settings(commands.Cog):
         """
         if dynamic_channel_name is None:
             await self.config.guild(ctx.guild).settings.dynamic_channel_name.clear()
-            await ctx.tick()
+            await ctx.tick(message="Done.")
             return
 
         await self.config.guild(ctx.guild).settings.dynamic_channel_name.set(dynamic_channel_name)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @configuration.command()
     async def custommessage(self, ctx: commands.Context, *, custom_message: typing.Optional[str]=None):
@@ -283,11 +283,11 @@ class settings(commands.Cog):
         """
         if custom_message is None:
             await self.config.guild(ctx.guild).settings.custom_message.clear()
-            await ctx.tick()
+            await ctx.tick(message="Done.")
             return
 
         await self.config.guild(ctx.guild).settings.custom_message.set(custom_message)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @configuration.command(aliases=["colour", "col", "embedcolor", "embedcolour"], usage="<color_or_'none'>")
     async def color(self, ctx: commands.Context, *, color: typing.Optional[discord.ext.commands.converter.ColorConverter]=None):
@@ -309,7 +309,7 @@ class settings(commands.Cog):
             embed.add_field(
                 name=_("Color:").format(**locals()),
                 value=f"{actual_color}")
-            message = await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
             return
 
         await self.config.guild(ctx.guild).settings.color.set(color.value)
@@ -324,7 +324,7 @@ class settings(commands.Cog):
         embed.add_field(
             name=_("Color:").format(**locals()),
             value=f"{actual_color}")
-        message = await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
     @configuration.command(aliases=["picture", "thumb", "link"], usage="<link_or_'none'>")
     async def thumbnail(self, ctx: commands.Context, *, link: typing.Optional[str]=None):
@@ -408,7 +408,7 @@ class settings(commands.Cog):
                 await self.config.guild(ctx.guild).settings.embed_button.image.clear()
             elif where == "placeholderdropdown":
                 await self.config.guild(ctx.guild).settings.embed_button.placeholder_dropdown.clear()
-            await ctx.tick()
+            await ctx.tick(message="Done.")
             return
 
         if where == "title":
@@ -419,7 +419,7 @@ class settings(commands.Cog):
             await self.config.guild(ctx.guild).settings.embed_button.image.set(text)
         elif where == "placeholderdropdown":
             await self.config.guild(ctx.guild).settings.embed_button.placeholder_dropdown.set(text)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @configuration.command(usage="<true_or_false>")
     async def renamechanneldropdown(self, ctx: commands.Context, state: bool):
@@ -447,7 +447,6 @@ class settings(commands.Cog):
         """
         if channel is None:
             channel = ctx.channel
-        reason_options = list(reason_options)
         if reason_options == []:
             reason_options = None
         if message is not None and not message.author == ctx.guild.me:
@@ -509,7 +508,7 @@ class settings(commands.Cog):
                     await message.edit(components=[dropdown])
                 dropdown_config[f"{channel.id}-{message.id}"] = [{"emoji": emoji if not hasattr(emoji, "id") else emoji.id, "label": label, "description": description, "value": value} for emoji, label, description, value in reason_options]
                 await self.config.guild(ctx.guild).dropdowns.set(dropdown_config)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     async def check_permissions_in_channel(self, permissions: typing.List[str], channel: discord.TextChannel):
         """Function to checks if the permissions are available in a guild.
@@ -538,11 +537,9 @@ class settings(commands.Cog):
             response = await CogsUtils().ConfirmationAsk(ctx, embed=embed)
             if not response:
                 return
-        count = 0
         to_remove = []
         data = await ctx.bot.get_cog("TicketTool").config.guild(ctx.guild).tickets.all()
-        for channel in data:
-            count += 1
+        for count, channel in enumerate(data, start=1):
             to_remove.append(channel)
         for channel in to_remove:
             del data[str(channel)]

@@ -60,7 +60,7 @@ class EditVoiceChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
     async def bitrate(self, ctx: commands.Context, channel: discord.VoiceChannel, bitrate: int):
@@ -81,7 +81,7 @@ class EditVoiceChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
     async def nsfw(self, ctx: commands.Context, channel: discord.VoiceChannel, nsfw: bool):
@@ -94,7 +94,7 @@ class EditVoiceChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
     async def userlimit(self, ctx: commands.Context, channel: discord.VoiceChannel, user_limit: int):
@@ -112,7 +112,7 @@ class EditVoiceChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
     async def position(self, ctx: commands.Context, channel: discord.VoiceChannel, *, position: int):
@@ -133,7 +133,7 @@ class EditVoiceChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
     async def syncpermissions(self, ctx: commands.Context, channel: discord.VoiceChannel, sync_permissions: bool):
@@ -146,7 +146,7 @@ class EditVoiceChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
     async def category(self, ctx: commands.Context, channel: discord.VoiceChannel, category: discord.CategoryChannel):
@@ -159,7 +159,7 @@ class EditVoiceChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
     async def videoqualitymode(self, ctx: commands.Context, channel: discord.VoiceChannel, video_quality_mode: commands.Literal["1", "2"]):
@@ -176,7 +176,7 @@ class EditVoiceChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
     async def delete(self, ctx: commands.Context, channel: discord.VoiceChannel, confirmation: typing.Optional[bool]=False):
@@ -197,4 +197,4 @@ class EditVoiceChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")

@@ -58,7 +58,7 @@ class EditRole(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @editrole.command(aliases=["color"])
     async def colour(self, ctx: commands.Context, role: discord.Role, colour: discord.Colour):
@@ -71,7 +71,7 @@ class EditRole(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @editrole.command()
     async def mentionable(self, ctx: commands.Context, role: discord.Role, mentionable: bool):
@@ -84,7 +84,7 @@ class EditRole(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @editrole.command()
     async def position(self, ctx: commands.Context, role: discord.Role, position: int):
@@ -107,7 +107,7 @@ class EditRole(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @editrole.command()
     async def permissions(self, ctx: commands.Context, role: discord.Role, permissions: int):
@@ -129,7 +129,7 @@ class EditRole(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @editrole.command()
     async def delete(self, ctx: commands.Context, role: discord.Role, confirmation: typing.Optional[bool]=False):
@@ -150,4 +150,4 @@ class EditRole(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")

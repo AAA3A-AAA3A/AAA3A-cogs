@@ -215,7 +215,7 @@ class ReactToCommand(commands.Cog):
             config[f"{message.channel.id}-{message.id}"] = {}
         config[f"{message.channel.id}-{message.id}"][f"{react}"] = command
         await self.config.guild(ctx.guild).react_commands.set(config)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @reacttocommand.command()
     async def remove(self, ctx: commands.Context, message: discord.Message, react: Emoji):
@@ -237,7 +237,7 @@ class ReactToCommand(commands.Cog):
         except discord.HTTPException:
             pass
         await self.config.guild(ctx.guild).react_commands.set(config)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @reacttocommand.command()
     async def clear(self, ctx: commands.Context, message: discord.Message):
@@ -254,11 +254,11 @@ class ReactToCommand(commands.Cog):
                 pass
         del config[f"{message.channel.id}-{message.id}"]
         await self.config.guild(ctx.guild).react_commands.set(config)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @reacttocommand.command(hidden=True)
     async def purge(self, ctx: commands.Context):
         """Clear all commands-reactions to a **guild**.
         """
         await self.config.guild(ctx.guild).react_commands.clear()
-        await ctx.tick()
+        await ctx.tick(message="Done.")

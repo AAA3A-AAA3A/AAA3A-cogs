@@ -62,7 +62,7 @@ class EditTextChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @edittextchannel.command()
     async def topic(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], *, topic: str):
@@ -77,7 +77,7 @@ class EditTextChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @edittextchannel.command()
     async def position(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], *, position: int):
@@ -100,7 +100,7 @@ class EditTextChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @edittextchannel.command()
     async def nsfw(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], nsfw: bool):
@@ -115,7 +115,7 @@ class EditTextChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @edittextchannel.command()
     async def syncpermissions(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], sync_permissions: bool):
@@ -130,7 +130,7 @@ class EditTextChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @edittextchannel.command()
     async def category(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], category: discord.CategoryChannel):
@@ -145,7 +145,7 @@ class EditTextChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @edittextchannel.command()
     async def slowmodedelay(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], slowmode_delay: int):
@@ -165,7 +165,7 @@ class EditTextChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @edittextchannel.command()
     async def type(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], type: commands.Literal["0", "5"]):
@@ -185,7 +185,7 @@ class EditTextChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @edittextchannel.command()
     async def defaultautoarchiveduration(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], default_auto_archive_duration: commands.Literal["60", "1440", "4320", "10080"]):
@@ -202,7 +202,7 @@ class EditTextChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")
 
     @edittextchannel.command()
     async def delete(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], confirmation: typing.Optional[bool]=False):
@@ -225,4 +225,4 @@ class EditTextChannel(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")

@@ -352,7 +352,7 @@ class TicketTool(settings, commands.Cog):
         ticket: Ticket = Ticket.instance(ctx, reason)
         await ticket.create()
         ctx.ticket = ticket
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="export")
@@ -369,7 +369,7 @@ class TicketTool(settings, commands.Cog):
             file = discord.File(io.BytesIO(transcript.encode()),
                                 filename=f"transcript-ticket-{ticket.id}.html")
         await ctx.send(_("Here is the html file of the transcript of all the messages in this ticket.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.").format(**locals()), file=file)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @decorator(enable_check=True, ticket_check=True, status="close", ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="open")
@@ -379,7 +379,7 @@ class TicketTool(settings, commands.Cog):
         ticket: Ticket = await self.get_ticket(ctx.channel)
         ticket.reason = reason
         await ticket.open(ctx.author)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @decorator(enable_check=False, ticket_check=True, status="open", ticket_owner=True, admin_role=True, support_role=True, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="close")
@@ -401,7 +401,7 @@ class TicketTool(settings, commands.Cog):
                 return
         ticket.reason = reason
         await ticket.close(ctx.author)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=True, admin_role=True, support_role=True, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="rename")
@@ -411,7 +411,7 @@ class TicketTool(settings, commands.Cog):
         ticket: Ticket = await self.get_ticket(ctx.channel)
         ticket.reason = reason
         await ticket.rename(new_name, ctx.author)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=False, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="delete")
@@ -444,7 +444,7 @@ class TicketTool(settings, commands.Cog):
         if member is None:
             member = ctx.author
         await ticket.claim_ticket(member, ctx.author)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=False, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=True, claim_staff=True, members=False)
     @ticket.command(name="unclaim")
@@ -454,7 +454,7 @@ class TicketTool(settings, commands.Cog):
         ticket: Ticket = await self.get_ticket(ctx.channel)
         ticket.reason = reason
         await ticket.unclaim_ticket(ticket.claim, ctx.author)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @decorator(enable_check=False, ticket_check=True, status="open", ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=False, members=False)
     @ticket.command(name="owner")
@@ -466,31 +466,29 @@ class TicketTool(settings, commands.Cog):
         if new_owner is None:
             new_owner = ctx.author
         await ticket.change_owner(new_owner, ctx.author)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @decorator(enable_check=False, ticket_check=True, status="open", ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="add")
     async def command_add(self, ctx: commands.Context, members: commands.Greedy[discord.Member], reason: typing.Optional[str]="No reason provided."):
         """Add a member to an existing ticket.
         """
-        members = list(members)
         ticket: Ticket = await self.get_ticket(ctx.channel)
         ticket.reason = reason
         members = [member for member in members]
         await ticket.add_member(members, ctx.author)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @decorator(enable_check=False, ticket_check=True, status=None, ticket_owner=True, admin_role=True, support_role=False, ticket_role=False, view_role=False, guild_owner=True, claim=None, claim_staff=True, members=False)
     @ticket.command(name="remove")
     async def command_remove(self, ctx: commands.Context, members: commands.Greedy[discord.Member], reason: typing.Optional[str]="No reason provided."):
         """Remove a member to an existing ticket.
         """
-        members = list(members)
         ticket: Ticket = await self.get_ticket(ctx.channel)
         ticket.reason = reason
         members = [member for member in members]
         await ticket.remove_member(members, ctx.author)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     if CogsUtils().is_dpy2:
         async def on_button_interaction(self, view: Buttons, interaction: discord.Interaction):

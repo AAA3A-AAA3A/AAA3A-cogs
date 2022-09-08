@@ -103,13 +103,12 @@ class UrlButtons(commands.Cog):
         else:
             await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).url_buttons.set(config)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @urlbuttons.command()
     async def bulk(self, ctx: commands.Context, message: discord.Message, url_buttons: commands.Greedy[EmojiUrlConverter]):
         """Add a url-button to a message.
         """
-        url_buttons = list(url_buttons)
         if not message.author == ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the url-button to work.").format(**locals()))
             return
@@ -136,7 +135,7 @@ class UrlButtons(commands.Cog):
         else:
             await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).url_buttons.set(config)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @urlbuttons.command()
     async def remove(self, ctx: commands.Context, message: discord.Message, button: Emoji):
@@ -165,7 +164,7 @@ class UrlButtons(commands.Cog):
             else:
                 await message.edit(components=None)
         await self.config.guild(ctx.guild).url_buttons.set(config)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @urlbuttons.command()
     async def clear(self, ctx: commands.Context, message: discord.Message):
@@ -187,14 +186,14 @@ class UrlButtons(commands.Cog):
             pass
         del config[f"{message.channel.id}-{message.id}"]
         await self.config.guild(ctx.guild).url_buttons.set(config)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @urlbuttons.command(hidden=True)
     async def purge(self, ctx: commands.Context):
         """Clear all url-buttons to a **guild**.
         """
         await self.config.guild(ctx.guild).url_buttons.clear()
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     def get_buttons(self, config: typing.Dict, message: discord.Message):
         all_buttons = []

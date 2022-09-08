@@ -67,8 +67,7 @@ class YAMLConverter(commands.Converter):
             raise discord.ext.commands.BadArgument(_("The argument `/button/modal` must be a list of TextInputs.").format(**locals()))
         required_arguments = ["label"]
         optional_arguments = ["style", "required", "default", "placeholder"]
-        count = 0
-        for input in argument_dict["modal"]:
+        for count, input in enumerate(argument_dict["modal"], start=1):
             count += 1
             for arg in required_arguments:
                 if arg not in input:
@@ -278,7 +277,7 @@ class DiscordModals(commands.Cog):
         modal = Modal(title=argument["title"], inputs=argument["modal"], function=self.send_embed_with_responses, custom_id=f"DiscordModals_{self.cogsutils.generate_key(number=10)}")
         config[f"{message.channel.id}-{message.id}"] = {"title": argument["title"], "button": view.to_dict_cogsutils(True), "channel": argument["channel"], "modal": modal.to_dict_cogsutils(True), "anonymous": argument["anonymous"], "messages": {"error": argument["messages"]["error"], "done": argument["messages"]["done"]}}
         await self.config.guild(ctx.guild).modals.set(config)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @discordmodals.command()
     async def remove(self, ctx: commands.Context, message: discord.Message):
@@ -297,11 +296,11 @@ class DiscordModals(commands.Cog):
             pass
         del config[f"{message.channel.id}-{message.id}"]
         await self.config.guild(ctx.guild).modals.set(config)
-        await ctx.tick()
+        await ctx.tick(message="Done.")
 
     @discordmodals.command(hidden=True)
     async def purge(self, ctx: commands.Context):
         """Clear all Modals to a **guild**.
         """
         await self.config.guild(ctx.guild).modals.clear()
-        await ctx.tick()
+        await ctx.tick(message="Done.")

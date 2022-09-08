@@ -628,23 +628,24 @@ class Medicat(commands.Cog):
         """Get an embed for check loops status."""
         for loop in self.cogsutils.loops.values():
             await ctx.send(embed=loop.get_debug_embed())
+        await ctx.tick()
 
     @is_owner_or_AAA3A()
     @medicat.command(hidden=True)
-    async def secretupdate(self, ctx: commands.Context):
-        """Update the Medicat cog without be bot owner."""
+    async def update(self, ctx: commands.Context):
+        """Update the Medicat cog without the bot owner (with his autorisation)."""
         try:
             message = copy(ctx.message)
             if ctx.guild is not None:
-                message.author = ctx.guild.get_member(list(ctx.bot.owner_ids)[0]) or ctx.guild.get_member(list(ctx.bot.owner_ids)[1])
+                message.author = ctx.guild.get_member(list(ctx.bot.owner_ids)[0]) or ctx.bot.get_user(list(ctx.bot.owner_ids)[0])
             else:
-                message.author = ctx.bot.get_user(list(ctx.bot.owner_ids)[0]) or ctx.bot.get_user(list(ctx.bot.owner_ids)[1])
+                message.author = ctx.bot.get_user(list(ctx.bot.owner_ids)[0])
             message.content = f"{ctx.prefix}cog update medicat"
             context = await ctx.bot.get_context(message)
             context.assume_yes = True
             await ctx.bot.invoke(context)
-        except Exception as error:
-            traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__))
+        except Exception as e:
+            traceback_error = "".join(traceback.format_exception(type(e), e, e.__traceback__))
             traceback_error = self.cogsutils.replace_var_paths(traceback_error)
             pages = []
             for page in pagify(traceback_error, shorten_by=15, page_length=1985):
@@ -654,4 +655,4 @@ class Medicat(commands.Cog):
             except discord.HTTPException:
                 return
         else:
-            await ctx.tick()
+            await ctx.tick(message="Done.")

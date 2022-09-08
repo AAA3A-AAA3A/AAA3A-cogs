@@ -67,7 +67,7 @@ class DiscordSearch(commands.Cog):
             await ctx.send_help()
             return
         try:
-            args = await SearchArgs().convert(ctx, list(args))
+            args = await SearchArgs().convert(ctx, args)
         except commands.BadArgument as e:
             await ctx.send(e)
             return

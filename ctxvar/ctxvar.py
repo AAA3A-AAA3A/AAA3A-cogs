@@ -103,12 +103,6 @@ class CtxVar(commands.Cog):
                         pass
             embeds.append(e)
 
-        l = len(embeds)
-        page = 0
-        for embed in embeds:
-            page += 1
-            embed.set_footer(text=_("Page {page}/{l}").format(**locals()))
-
         await Menu(pages=embeds).start(ctx)
 
     @ctxvar.command(name="dir")

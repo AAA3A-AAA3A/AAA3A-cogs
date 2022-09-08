@@ -131,7 +131,6 @@ class MemberPrefix(commands.Cog):
         **Arguments:**
             - `<prefixes...>` - The prefixes the bot will respond for you only.
         """
-        prefixes = list(prefixes)
         if len(prefixes) == 0:
             await self.config.member(ctx.author).custom_prefixes.clear()
             await ctx.send(_("You now use this server or global prefixes.").format(**locals()))
@@ -217,4 +216,4 @@ class MemberPrefix(commands.Cog):
     async def memberprefixpurge(self, ctx: commands.Context):
         """Clear all members prefixes for this guild."""
         await self.config.clear_all_members(guild=ctx.guild)
-        await ctx.tick()
+        await ctx.tick(message="Done.")

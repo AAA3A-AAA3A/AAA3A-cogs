@@ -254,7 +254,7 @@ class Medicat(commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
-        self.secretupdate.very_hidden = True
+        self.update.very_hidden = True
         asyncio.create_task(self.edit_config_schema())
         self.cogsutils.create_loop(function=self.ventoy_updates, name="Ventoy Updates", hours=1)
         self.cogsutils.create_loop(function=self.bootables_tools_updates, name="Bootables Tools Updates", hours=1)

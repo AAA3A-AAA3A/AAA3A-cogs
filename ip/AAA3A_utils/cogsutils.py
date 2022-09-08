@@ -238,7 +238,8 @@ class CogsUtils(commands.Cog):
         """
         self.close_logger()
         DevEnv.remove_dev_env_values(bot=self.bot, cog=self.cog)
-        for loop in self.loops:
+        loops = {name: value for name, value in self.loops.items()}
+        for loop in loops:
             self.loops[loop].stop_all()
         for view in self.views:
             view.stop()

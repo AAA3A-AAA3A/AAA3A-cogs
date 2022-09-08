@@ -136,6 +136,8 @@ class Loop():
                 await self.sleep_until_next()
 
     def maybe_stop(self):
+        if self.stop:
+            return True
         if self.stop_manually:
             self.stop_all()
         if self.limit_count is not None:
@@ -147,8 +149,6 @@ class Loop():
         if self.limit_exception:
             if self.iteration_exception >= self.limit_exception:
                 self.stop_all()
-        if self.stop:
-            return True
         return False
 
     def stop_all(self):

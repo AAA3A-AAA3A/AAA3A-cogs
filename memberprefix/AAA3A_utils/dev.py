@@ -401,7 +401,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                         bot.remove_dev_env_value(name)
                     except Exception:
                         pass
-        return _env
+                return _env
 
     @staticmethod
     def sanitize_output(ctx: commands.Context, input_: str) -> str:

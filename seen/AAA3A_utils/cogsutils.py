@@ -152,6 +152,8 @@ class CogsUtils(commands.Cog):
                 text = text.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
                 text = text.replace(os.environ["USERPROFILE"].replace("\\", "\\\\"), "{USERPROFILE}")
                 text = text.replace(os.environ["USERPROFILE"].replace("\\", "\\\\").lower(), "{USERPROFILE}")
+                text = text.replace(os.environ["USERPROFILE"].replace("\\", "/"), "{USERPROFILE}")
+                text = text.replace(os.environ["USERPROFILE"].replace("\\", "/").lower(), "{USERPROFILE}")
             if "HOME" in os.environ:
                 text = text.replace(os.environ["HOME"], "{HOME}")
                 text = text.replace(os.environ["HOME"].lower(), "{HOME}")
@@ -225,7 +227,10 @@ class CogsUtils(commands.Cog):
                 self.cog.log.debug("Error when adding the AAA3A_utils cog.", exc_info=e)
         AAA3A_utils = self.bot.get_cog("AAA3A_utils")
         if await AAA3A_utils.check_if_slash(self.cog):
-            await self.add_hybrid_commands()
+            try:
+                await self.add_hybrid_commands()
+            except Exception as e:
+                self.cog.log.error(f"Error when adding slash (hybrids) commands from the {self.cog.qualified_name} cog.", exc_info=e)
 
     def _end(self):
         """
@@ -233,7 +238,8 @@ class CogsUtils(commands.Cog):
         """
         self.close_logger()
         DevEnv.remove_dev_env_values(bot=self.bot, cog=self.cog)
-        for loop in self.loops:
+        loops = {name: value for name, value in self.loops.items()}
+        for loop in loops:
             self.loops[loop].stop_all()
         for view in self.views:
             view.stop()

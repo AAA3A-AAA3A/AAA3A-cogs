@@ -17,25 +17,24 @@ class Cog():
     def __init__(self, cog):
         self.cog = cog
 
+    def get_formatted_text(self, context: str):
+        s = "s" if len(self.cog.__authors__) > 1 else ""
+        text = f"{context}\n\n**Author{s}**: {humanize_list(self.cog.__authors__)}\n**Cog version**: {self.cog.__version__}"
+        if self.cog.qualified_name not in ["AAA3A_utils"]:
+            text += f"\n**Cog documentation**: https://aaa3a-cogs.readthedocs.io/en/latest/cog_{self.cog.qualified_name.lower()}.html\n**Translate my cogs**: https://crowdin.com/project/aaa3a-cogs"
+        return text
+
     def format_help_for_context(self, ctx: commands.Context):
         """Thanks Simbad!"""
         context = super(type(self.cog), self.cog).format_help_for_context(ctx)
-        s = "s" if len(self.cog.__authors__) > 1 else ""
-        text_help = f"{context}\n\n**Author{s}**: {humanize_list(self.cog.__authors__)}\n**Cog version**: {self.cog.__version__}"
-        if self.cog.qualified_name not in ["AAA3A_utils"]:
-            text_help = text_help + f"\n**Cog documentation**: https://aaa3a-cogs.readthedocs.io/en/latest/cog_{self.cog.qualified_name.lower()}.html\n**Translate my cogs**: https://crowdin.com/project/aaa3a-cogs"
-        return text_help
+        return self.get_formatted_text(context)
 
     def format_text_for_context(self, ctx: commands.Context, text: str, shortdoc: typing.Optional[bool]=False):
         text = text.replace("        ", "")
         context = super(type(ctx.command), ctx.command).format_text_for_context(ctx, text)
         if shortdoc:
             return context
-        s = "s" if len(self.cog.__authors__) > 1 else ""
-        text_help = f"{context}\n\n**Author{s}**: {humanize_list(self.cog.__authors__)}\n**Cog version**: {self.cog.__version__}"
-        if self.cog.qualified_name not in ["AAA3A_utils"]:
-            text_help = text_help + f"\n**Cog documentation**: https://aaa3a-cogs.readthedocs.io/en/latest/cog_{self.cog.qualified_name.lower()}.html\n**Translate my cogs**: https://crowdin.com/project/aaa3a-cogs"
-        return text_help
+        return self.get_formatted_text(context)
 
     def format_shortdoc_for_context(self, ctx: commands.Context):
         sh = super(type(ctx.command), ctx.command).short_doc
@@ -73,11 +72,11 @@ class Cog():
             await ctx.send(inline(message))
             asyncio.create_task(ctx.bot._delete_delay(ctx))
             self.cog.log.exception(f"Exception in {_type} command '{ctx.command.qualified_name}'.", exc_info=error.original)
-            exception_log = f"Exception in {_type} command '{ctx.command.qualified_name}'.\n"
+            exception_log = f"Exception in {_type} command '{ctx.command.qualified_name}':\n"
             exception_log += "".join(traceback.format_exception(type(error), error, error.__traceback__))
             exception_log = self.cog.cogsutils.replace_var_paths(exception_log)
             ctx.bot._last_exception = exception_log
-        elif isinstance(error, getattr(commands, "HybridCommandError", None)):
+        elif self.cog.cogsutils.is_dpy2 and isinstance(error, commands.HybridCommandError):
             _type = "[hybrid|slash]"
             message = f"Error in {_type} command '{ctx.command.qualified_name}'. Check your console or logs for details."
             if ctx.author.id in ctx.bot.owner_ids:
@@ -85,7 +84,7 @@ class Cog():
             await ctx.send(inline(message))
             asyncio.create_task(ctx.bot._delete_delay(ctx))
             self.cog.log.exception(f"Exception in {_type} command '{ctx.command.qualified_name}'.", exc_info=error.original)
-            exception_log = f"Exception in {_type} command '{ctx.command.qualified_name}'.\n"
+            exception_log = f"Exception in {_type} command '{ctx.command.qualified_name}':\n"
             exception_log += "".join(traceback.format_exception(type(error), error, error.__traceback__))
             exception_log = self.cog.cogsutils.replace_var_paths(exception_log)
             ctx.bot._last_exception = exception_log
@@ -102,7 +101,7 @@ class Cog():
         # for command in self.cog.walk_commands():
         #     setattr(command, 'format_text_for_context', self.format_text_for_context)
         #     setattr(command, 'format_shortdoc_for_context', self.format_shortdoc_for_context)
-        specials = ["_setup", "format_text_for_context", "format_shortdoc_for_context"]
+        specials = ["_setup", "get_formatted_text", "format_text_for_context", "format_shortdoc_for_context"]
         for attr in dir(self):
             if attr.startswith("__") and attr.endswith("__"):
                 continue

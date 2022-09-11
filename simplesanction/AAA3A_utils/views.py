@@ -123,7 +123,7 @@ class Buttons(discord.ui.View):
 class Dropdown(discord.ui.View):
     """Create Dropdown easily."""
 
-    def __init__(self, timeout: typing.Optional[float]=180, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[{}], disabled: typing.Optional[bool]=False, members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False, custom_id: typing.Optional[str]=f"CogsUtils_{generate_key(number=10)}"):
+    def __init__(self, timeout: typing.Optional[float]=180, placeholder: typing.Optional[str]="Choose an option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[{}], disabled: typing.Optional[bool]=False, members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False, custom_id: typing.Optional[str]=f"CogsUtils_{generate_key(number=10)}"):
         """label: str, value: str, description: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], default: bool"""
         self.dropdown_dict_instance = {"timeout": timeout, "placeholder": placeholder, "min_values": min_values, "max_values": max_values, "options": [o.copy() for o in options], "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity, "custom_id": custom_id}
         super().__init__(timeout=timeout)
@@ -137,7 +137,7 @@ class Dropdown(discord.ui.View):
         self.function = function
         self.function_args = function_args
         self.clear_items()
-        self.dropdown = Select(placeholder=placeholder, min_values=min_values, max_values=max_values, options=options, disabled=disabled, custom_id=custom_id)
+        self.dropdown: discord.ui.Select = Select(placeholder=placeholder, min_values=min_values, max_values=max_values, options=options, disabled=disabled, custom_id=custom_id)
         self.options = self.dropdown._options
         self.options_dict = self.dropdown.options_dict
         self.done = asyncio.Event()
@@ -156,7 +156,7 @@ class Dropdown(discord.ui.View):
         return cls(**dropdown_dict_instance)
 
     async def on_timeout(self):
-        self.dropdown.done.set()
+        self.done.set()
         self.stop()
 
     async def wait_result(self):
@@ -193,7 +193,6 @@ class Select(discord.ui.Select):
     def __init__(self, placeholder: typing.Optional[str]="Choose a option.", min_values: typing.Optional[int]=1, max_values: typing.Optional[int]=1, *, options: typing.Optional[typing.List]=[], disabled: typing.Optional[bool]=False, custom_id: typing.Optional[str]=f"CogsUtils_{generate_key(number=10)}"):
         self._options = []
         self.options_dict = []
-        self.done = asyncio.Event()
         for option_dict in options:
             if "label" not in option_dict and "emoji" not in option_dict:
                 option_dict["label"] = "Test"

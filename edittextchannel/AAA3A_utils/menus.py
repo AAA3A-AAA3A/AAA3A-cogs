@@ -8,11 +8,11 @@ import re
 
 from redbot.core.utils.chat_formatting import text_to_file
 from redbot.core.utils.menus import start_adding_reactions
-from redbot.core.utils.predicates import ReactionPredicate
+from redbot.core.utils.predicates import ReactionPredicate, MessagePredicate
 from redbot.vendored.discord.ext import menus
 
 if discord.version_info.major >= 2:
-    from .views import Buttons, Dropdown
+    from .views import Buttons, Dropdown, Modal
 
 __all__ = ["Reactions", "Menu"]
 
@@ -132,7 +132,7 @@ class Menu():
         self.delete_after_timeout: bool = delete_after_timeout
         self.way: typing.Literal["buttons", "reactions", "dropdown"] = way
         if controls is None:
-            controls = {"⏮️": "left_page", "◀️": "prev_page", "❌": "close_page", "▶️": "next_page", "⏭️": "right_page", "🔻": "send_all", "💾": "send_as_file"}
+            controls = {"⏮️": "left_page", "◀️": "prev_page", "❌": "close_page", "▶️": "next_page", "⏭️": "right_page", "🔻": "send_all", "📩": "send_interactive", "💾": "send_as_file"}
         self.controls: typing.Dict = controls.copy()
         self.check_owner: bool = check_owner
         self.members_authored: typing.List = members_authored
@@ -146,9 +146,13 @@ class Menu():
             for emoji, name in controls.items():
                 if name in ["left_page", "prev_page", "next_page", "right_page"]:
                     del self.controls[emoji]
-        if len(self.pages) > 3 or not all([isinstance(page, str) for page in self.pages]):
+        if not self.source.is_paginating() or len(self.pages) > 3 or not all([isinstance(page, str) for page in self.pages]):
             for emoji, name in controls.items():
                 if name in ["send_all"]:
+                    del self.controls[emoji]
+        if not self.source.is_paginating():
+            for emoji, name in controls.items():
+                if name in ["send_interactive"]:
                     del self.controls[emoji]
         if not all([isinstance(page, str) for page in self.pages]):
             for emoji, name in controls.items():
@@ -158,6 +162,7 @@ class Menu():
         self.message: discord.Message = None
         self.view: typing.Union[Buttons, Dropdown] = None
         self.current_page: int = page_start
+        self.is_done = asyncio.Event()
 
     async def start(self, ctx: commands.Context):
         """
@@ -170,6 +175,7 @@ class Menu():
         self.ctx = ctx
         if self.way == "buttons":
             self.view = Buttons(timeout=self.timeout, buttons=[{"emoji": str(e), "custom_id": str(n), "disabled": False} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+            self.view.add_item(discord.ui.Button(label=f"Page {self.current_page + 1}/{len(self.pages)}", row=1, custom_id="choose_page", disabled=False))
             await self.send_initial_message(self.ctx)
         elif self.way == "reactions":
             await self.send_initial_message(self.ctx)
@@ -203,13 +209,60 @@ class Menu():
                     self.current_page = self.source.get_max_pages() - 1
                 elif response == "send_all":
                     if len(self.pages) <= 3:
-                        for x in range(0, self.source.get_max_pages()):
-                            kwargs = await self.get_page(x)
+                        for x in range(0, len(self.pages)):
+                            current, kwargs = await self.get_page(x)
                             await ctx.send(**kwargs)
                     else:
                         await ctx.send_interactive(self.pages)
                     if self.way in ["buttons", "dropdown"]:
-                        await interaction.response.defer()
+                        try:
+                            await interaction.response.defer()
+                        except discord.errors.NotFound:
+                            pass
+                    continue
+                elif response == "send_interactive":
+                    async def send_interactive(timeout: typing.Optional[int]=15) -> typing.List[discord.Message]:
+                        ret = []
+                        for x in range(0, len(self.pages)):
+                            current, kwargs = await self.get_page(x)
+                            msg = await self.ctx.send(**kwargs)
+                            ret.append(msg)
+                            n_remaining = len(self.pages) - current
+                            if n_remaining > 0:
+                                if n_remaining == 1:
+                                    plural = ""
+                                    is_are = "is"
+                                else:
+                                    plural = "s"
+                                    is_are = "are"
+                                query = await self.ctx.send(f"There {is_are} still {n_remaining} message{plural} remaining. Type `more` to continue.")
+                                try:
+                                    resp = await self.ctx.bot.wait_for(
+                                        "message",
+                                        check=MessagePredicate.lower_equal_to("more", self.ctx),
+                                        timeout=timeout,
+                                    )
+                                except asyncio.TimeoutError:
+                                    try:
+                                        await query.delete()
+                                    except discord.HTTPException:
+                                        pass
+                                    break
+                                else:
+                                    try:
+                                        await self.ctx.channel.delete_messages((query, resp))
+                                    except (discord.HTTPException, AttributeError):
+                                        try:
+                                            await query.delete()
+                                        except discord.HTTPException:
+                                            pass
+                        return ret
+                    asyncio.create_task(send_interactive())
+                    if self.way in ["buttons", "dropdown"]:
+                        try:
+                            await interaction.response.defer()
+                        except discord.errors.NotFound:
+                            pass
                     continue
                 elif response == "send_as_file":
                     def cleanup_code(content):
@@ -222,10 +275,45 @@ class Menu():
                     all_text = "\n".join(all_text)
                     await ctx.send(file=text_to_file(all_text, filename=f"Menu_{self.message.channel.id}-{self.message.id}.txt"))
                     if self.way in ["buttons", "dropdown"]:
-                        await interaction.response.defer()
+                        try:
+                            await interaction.response.defer()
+                        except discord.errors.NotFound:
+                            pass
                     continue
-                kwargs = await self.get_page(self.current_page)
+                elif response == "choose_page":
+                    async def choose_page(view: Modal, interaction: discord.Interaction, values: typing.List):
+                        # Too late
+                        if self.is_done.is_set():
+                            await interaction.response.send_message(_("Too late. The Menu is already finished.").format(**locals()), ephemeral=True)
+                            return
+                        # Int
+                        try:
+                            page = int(values[0].value)
+                        except ValueError:
+                            await interaction.response.send_message(_("The page number must be an int.").format(**locals()), ephemeral=True)
+                            return
+                        # Min-Max
+                        max = len(self.pages)
+                        if not page >= 1 or not page <= max:
+                            await interaction.response.send_message(_("The page number must be between 1 and {max}.").format(**locals()), ephemeral=True)
+                            return
+                        # Edit
+                        self.current_page = page - 1
+                        current, kwargs = await self.get_page(self.current_page)
+                        self.view.children[-1].label = f"Page {current + 1}/{len(self.pages)}"
+                        kwargs["view"] = self.view
+                        try:
+                            await interaction.response.edit_message(**kwargs)
+                        except discord.errors.InteractionResponded:
+                            await self.message.edit(**kwargs)
+                    modal = Modal(title="Choose page", timeout=None, inputs=[{"label": "Page number", "placeholder": "Page number", "required": True, "max_length": 5}], members=[interaction.user.id], function=choose_page)
+                    await interaction.response.send_modal(modal)
+                    continue
+                current, kwargs = await self.get_page(self.current_page)
                 if self.way == "buttons" or self.way == "dropdown":
+                    if self.way == "buttons":
+                        self.view.children[-1].label = f"Page {current + 1}/{len(self.pages)}"
+                        kwargs["view"] = self.view
                     try:
                         await interaction.response.edit_message(**kwargs)
                     except discord.errors.InteractionResponded:
@@ -236,7 +324,7 @@ class Menu():
             await self.on_timeout()
 
     async def send_initial_message(self, ctx: commands.Context):
-        kwargs = await self.get_page(self.current_page)
+        current, kwargs = await self.get_page(self.current_page)
         if self.way in ["buttons", "dropdown"]:
             self.message = await ctx.send(**kwargs, view=self.view)
         else:
@@ -253,22 +341,29 @@ class Menu():
         except IndexError:
             self.current_page = 0
             page = await self.source.get_page(self.current_page)
+        current = self.pages.index(page)
         value = await self.source.format_page(self, page)
         if isinstance(value, typing.Dict):
-            return value
+            return current, value
         elif isinstance(value, str):
-            return {"content": value, "embed": None}
+            return current, {"content": value, "embed": None}
         elif isinstance(value, discord.Embed):
-            return {"embed": value, "content": None}
+            return current, {"embed": value, "content": None}
 
     async def on_timeout(self):
+        self.is_done.set()
         if self.delete_after_timeout:
             await self.message.delete()
         else:
             if self.way == "buttons":
-                self.view.stop()
-                view = Buttons(timeout=self.timeout, buttons=[{"emoji": str(e), "custom_id": str(n), "disabled": True} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+                view = Buttons(timeout=self.timeout, buttons=[], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+                view.clear_items()
+                view._children = self.view.children
+                for c in view.children:
+                    if hasattr(c, "disabled"):
+                        c.disabled = True
                 await self.message.edit(view=view)
+                self.view.stop()
             elif self.way == "reactions":
                 try:
                     await self.message.clear_reactions()
@@ -279,9 +374,11 @@ class Menu():
                     except discord.HTTPException:
                         pass
             elif self.way == "dropdown":
-                self.view.stop()
-                view = Dropdown(timeout=self.timeout, options=[{"emoji": str(e), "label": str(n).replace("_", " ").capitalize()} for e, n in self.controls.items()], disabled=True, members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+                view = Dropdown(timeout=self.timeout, options=[], disabled=False, members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+                view.dropdown._underlying.options = self.view.dropdown._underlying.options
+                view.dropdown.disabled = True
                 await self.message.edit(view=view)
+                self.view.stop()
 
     class _SimplePageSource(menus.ListPageSource):
 

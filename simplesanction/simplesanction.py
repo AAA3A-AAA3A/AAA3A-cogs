@@ -800,7 +800,7 @@ class SimpleSanction(settings, commands.Cog):
                 if not ctx.bot.get_cog("Mod"):
                     await ctx.send(_("The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`.").format(**locals()))
                 command = f"userinfo {user.id}"
-                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -827,7 +827,7 @@ class SimpleSanction(settings, commands.Cog):
                         command = f"warn 1 {user.id}"
                     else:
                         command = f"warn 1 {user.id} {reason}"
-                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -854,7 +854,7 @@ class SimpleSanction(settings, commands.Cog):
                         command = f"warn 5 {user.id}"
                     else:
                         command = f"warn 5 {user.id} {reason}"
-                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -881,7 +881,7 @@ class SimpleSanction(settings, commands.Cog):
                         command = f"warn 4 {user.id}"
                     else:
                         command = f"warn 4 {user.id} {reason}"
-                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -912,7 +912,7 @@ class SimpleSanction(settings, commands.Cog):
                         command = f"warn 5 {user.id} {duration}"
                     else:
                         command = f"warn 5 {user.id} {duration} {reason}"
-                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -939,7 +939,7 @@ class SimpleSanction(settings, commands.Cog):
                         command = f"warn 3 {user.id}"
                     else:
                         command = f"warn 3 {user.id} {reason}"
-                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -966,7 +966,7 @@ class SimpleSanction(settings, commands.Cog):
                         command = f"warn 2 {user.id}"
                     else:
                         command = f"warn 2 {user.id} {reason}"
-                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -987,7 +987,7 @@ class SimpleSanction(settings, commands.Cog):
                     command = f"mutechannel {user.id}"
                 else:
                     command = f"mutechannel {user.id}"
-                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -1018,7 +1018,7 @@ class SimpleSanction(settings, commands.Cog):
                         command = f"warn 2 {user.id} {duration}"
                     else:
                         command = f"warn 2 {user.id} {duration} {reason}"
-                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return
@@ -1043,7 +1043,7 @@ class SimpleSanction(settings, commands.Cog):
                     command = f"mutechannel {user.id} {duration}"
                 else:
                     command = f"mutechannel {user.id} {duration} {reason}"
-                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message)
+                await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix, message=ctx.message)
             reactions = ["✅"]
             start_adding_reactions(message, reactions)
             return

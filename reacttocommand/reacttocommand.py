@@ -126,7 +126,7 @@ class ReactToCommand(commands.Cog):
         if not permissions.read_message_history or not permissions.read_messages or not permissions.send_messages or not permissions.view_channel:
             return
         command = config[f"{payload.channel_id}-{payload.message_id}"][f"{payload.emoji}"]
-        context = await self.cogsutils.invoke_command(author=payload.member, channel=channel, command=command, message=message)
+        context = await self.cogsutils.invoke_command(author=payload.member, channel=channel, command=command, message=message, __is_mocked__=True)
         self.cache.append(context)
 
     @commands.Cog.listener()

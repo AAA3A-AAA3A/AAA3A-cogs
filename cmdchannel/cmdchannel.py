@@ -67,7 +67,7 @@ class CmdChannel(commands.Cog):
             return
 
         if ctx.author.id in ctx.bot.owner_ids:
-            await self.cogsutils.invoke_command(author=ctx.author, channel=channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message, dispatch_message=True)
+            await self.cogsutils.invoke_command(author=ctx.author, channel=channel, command=command, prefix=ctx.prefix, message=ctx.message, dispatch_message=True)
             if self.cogsutils.is_dpy2:
                 await ctx.defer()
             await ctx.tick()
@@ -99,7 +99,7 @@ class CmdChannel(commands.Cog):
                         await logschannel.send(embed=embed)
                 if actual_state_information:
                     await channel.send(_("The command issued in this channel is:\n```{command}```").format(**locals()))
-                await self.cogsutils.invoke_command(author=ctx.author, channel=channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message, dispatch_message=True)
+                await self.cogsutils.invoke_command(author=ctx.author, channel=channel, command=command, prefix=ctx.prefix, message=ctx.message, dispatch_message=True)
                 if actual_state_confirmation:
                     try:
                         await ctx.send(_("The `{command}` command has been launched in the {channel} channel. You can check if it worked.").format(**locals()))
@@ -135,7 +135,7 @@ class CmdChannel(commands.Cog):
         if ctx.bot.get_cog("Dev") is None:
             await ctx.send("To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing.")
             return
-        await self.cogsutils.invoke_command(author=user, channel=ctx.channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message, dispatch_message=True)
+        await self.cogsutils.invoke_command(author=user, channel=ctx.channel, command=command, prefix=ctx.prefix, message=ctx.message, dispatch_message=True)
         if self.cogsutils.is_dpy2:
             await ctx.defer()
         await ctx.tick()
@@ -160,7 +160,7 @@ class CmdChannel(commands.Cog):
             await ctx.send("To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing.")
             return
         
-        await self.cogsutils.invoke_command(author=user, channel=channel, command=command, prefix=ctx.prefix if not ctx.prefix == "/" else None, message=ctx.message, dispatch_message=True)
+        await self.cogsutils.invoke_command(author=user, channel=channel, command=command, prefix=ctx.prefix, message=ctx.message, dispatch_message=True)
         if self.cogsutils.is_dpy2:
             await ctx.defer()
         await ctx.tick()

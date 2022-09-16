@@ -1,5 +1,5 @@
 {
-    "author": ["AAA3A"],
+    "author": ["AAA3A", "Draper", "jack1142 (Jackenmen#6607)"],
     "name": "Sudo",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
     "short": "A cog to allow bot owners to be normal users in terms of permissions!",

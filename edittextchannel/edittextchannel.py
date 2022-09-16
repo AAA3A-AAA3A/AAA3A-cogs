@@ -50,6 +50,17 @@ class EditTextChannel(commands.Cog):
         pass
 
     @edittextchannel.command()
+    async def create(self, ctx: commands.Context, category: typing.Optional[discord.Category]=None, *, name: str):
+        """Create a text channel.
+        """
+        try:
+            await ctx.guild.create_text_channel(name=name, category=category, reason=f"{ctx.author} ({ctx.author.id}) has created the text channel #{name}.")
+        except discord.HTTPException:
+            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+        else:
+            await ctx.tick(message="Done.")
+
+    @edittextchannel.command()
     async def name(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], name: str):
         """Edit text channel name.
         """

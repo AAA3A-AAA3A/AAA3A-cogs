@@ -48,6 +48,17 @@ class EditRole(commands.Cog):
         pass
 
     @editrole.command()
+    async def create(self, ctx: commands.Context, colour: typing.Optional[discord.Colour]=None, *, name: str):
+        """Create a role.
+        """
+        try:
+            await ctx.guild.create_role(name=name, colour=colour, reason=f"{ctx.author} ({ctx.author.id}) has created the role {name}.")
+        except discord.HTTPException:
+            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+        else:
+            await ctx.tick(message="Done.")
+
+    @editrole.command()
     async def name(self, ctx: commands.Context, role: discord.Role, name: str):
         """Edit role name.
         """

@@ -50,6 +50,17 @@ class EditVoiceChannel(commands.Cog):
         pass
 
     @editvoicechannel.command()
+    async def create(self, ctx: commands.Context, category: typing.Optional[discord.Category]=None, *, name: str):
+        """Create a voice channel.
+        """
+        try:
+            await ctx.guild.create_voice_channel(name=name, category=category, reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{name}.")
+        except discord.HTTPException:
+            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+        else:
+            await ctx.tick(message="Done.")
+
+    @editvoicechannel.command()
     async def name(self, ctx: commands.Context, channel: discord.VoiceChannel, name: str):
         """Edit voice channel name.
         """

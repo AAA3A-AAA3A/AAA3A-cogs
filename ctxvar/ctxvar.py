@@ -106,7 +106,7 @@ class CtxVar(commands.Cog):
         await Menu(pages=embeds).start(ctx)
 
     @ctxvar.command(name="dir")
-    async def _dir(self, ctx: commands.Context, *, thing: str):
+    async def _dir(self, ctx: commands.Context, thing: str, search: typing.Optional[str]=None):
         """Display a list of all attributes of the provided object (debug not async)."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
@@ -133,7 +133,14 @@ class CtxVar(commands.Cog):
             return
 
         result = "[\n"
-        result += "\n".join([f"    '{attr}'," for attr in dir(object)])
+        if search is None:
+            result += "\n".join([f"    '{attr}'," for attr in dir(object)])
+        else:
+            result += "\n".join([f"    '{attr}'," for attr in dir(object) if search.lower() in attr.lower()])
+        if result[-1] == ",":
+            result = list(result)
+            del result[-1]
+            result = "".join(result)
         result += "\n]"
         result = self.cogsutils.replace_var_paths(Dev.sanitize_output(ctx, result))
 

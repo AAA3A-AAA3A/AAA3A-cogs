@@ -48,7 +48,7 @@ class EditRole(commands.Cog):
         pass
 
     @editrole.command()
-    async def create(self, ctx: commands.Context, colour: typing.Optional[discord.Colour]=None, *, name: str):
+    async def create(self, ctx: commands.Context, colour: typing.Optional[discord.ext.commands.converter.ColourConverter]=None, *, name: str):
         """Create a role.
         """
         try:

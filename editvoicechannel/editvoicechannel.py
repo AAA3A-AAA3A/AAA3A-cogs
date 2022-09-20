@@ -50,7 +50,7 @@ class EditVoiceChannel(commands.Cog):
         pass
 
     @editvoicechannel.command()
-    async def create(self, ctx: commands.Context, category: typing.Optional[discord.Category]=None, *, name: str):
+    async def create(self, ctx: commands.Context, category: typing.Optional[discord.CategoryChannel]=None, *, name: str):
         """Create a voice channel.
         """
         try:

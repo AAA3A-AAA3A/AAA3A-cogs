@@ -184,7 +184,7 @@ class SimpleSanction(settings, commands.Cog):
     @_sanction.command(name="00", aliases=["0", "sanction"], usage="[user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]")
     async def sanction_0(self, ctx: commands.Context, user: typing.Optional[discord.Member]=None, confirmation: typing.Optional[bool]=None, show_author: typing.Optional[bool]=None, finish_message: typing.Optional[bool]=None, fake_action: typing.Optional[bool]=False, delete_embed: typing.Optional[bool]=None, delete_message: typing.Optional[bool]=None, duration: typing.Optional[TimeDeltaConverter]=None, *, reason: str = None):
         """
-         - :information_source: Show info on a user.
+        - Sanction a user quickly and easily.
 
         Examples:
         - `[p]sanction 0 @user`

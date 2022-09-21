@@ -14,4 +14,4 @@ async def setup(bot: Red):
     await CogsUtils().add_cog(bot, cog)
     if not CogsUtils().is_dpy2:
         if not hasattr(bot, "slash"):
-            bot.slash = InteractionClient(bot)
+            bot.slash = InteractionClient(bot, sync_commands=False)

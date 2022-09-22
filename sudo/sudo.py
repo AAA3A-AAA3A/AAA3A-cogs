@@ -66,7 +66,7 @@ class Sudo(commands.Cog):
 
     def decorator(all_owner_ids: typing.Optional[bool], bot_owner_ids: typing.Optional[bool]):
         async def pred(ctx):
-            if ctx.interaction is None:
+            if getattr(ctx, "interaction", None) is None:
                 if ctx.command.parent is not None and ctx.command.parent.qualified_name == "Sudo":
                     return False
             if all_owner_ids:

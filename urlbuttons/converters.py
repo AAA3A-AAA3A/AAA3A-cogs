@@ -9,15 +9,14 @@ try:
     from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
 except ImportError:
     from emoji import EMOJI_DATA  # emoji>=2.0.0
-from redbot.core.commands import Context, EmojiConverter
 
 _ = Translator("UrlButtons", __file__)
 
-class Emoji(EmojiConverter):
-    async def convert(self, ctx: Context, argument: str):
+class Emoji(commands.EmojiConverter):
+    async def convert(self, ctx: commands.Context, argument: str):
         if argument in EMOJI_DATA:
             return argument
-        return str(await super().convert(ctx, argument))
+        return await super().convert(ctx, argument)
 
 class EmojiUrlConverter(discord.ext.commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> typing.Tuple[str, typing.Union[discord.PartialEmoji, str]]:

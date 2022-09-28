@@ -14,7 +14,6 @@ try:
     from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
 except ImportError:
     from emoji import EMOJI_DATA  # emoji>=2.0.0
-from redbot.core.commands import Context, EmojiConverter
 
 # Credits:
 # The idea for this cog came from @fulksayyan on the cogboard! (https://cogboard.discord.red/t/hired-will-pay-custom-reaction-commands/782)
@@ -33,11 +32,11 @@ else:
     hybrid_command = commands.command
     hybrid_group = commands.group
 
-class Emoji(EmojiConverter):
-    async def convert(self, ctx: Context, argument: str):
+class Emoji(commands.EmojiConverter):
+    async def convert(self, ctx: commands.Context, argument: str):
         if argument in EMOJI_DATA:
             return argument
-        return str(await super().convert(ctx, argument))
+        return await super().convert(ctx, argument)
 
 @cog_i18n(_)
 class ReactToCommand(commands.Cog):

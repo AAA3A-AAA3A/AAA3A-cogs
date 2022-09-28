@@ -9,16 +9,14 @@ try:
     from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
 except ImportError:
     from emoji import EMOJI_DATA  # emoji>=2.0.0
-from redbot.core.commands import Context, EmojiConverter
 
 _ = Translator("RolesButtons", __file__)
 
-class Emoji(EmojiConverter):
-    async def convert(self, ctx: Context, argument: str):
+class Emoji(commands.EmojiConverter):
+    async def convert(self, ctx: commands.Context, argument: str):
         if argument in EMOJI_DATA:
             return argument
-        return str(await super().convert(ctx, argument))
-
+        return await super().convert(ctx, argument)
 class RoleHierarchyConverter(discord.ext.commands.RoleConverter):
     """Similar to d.py's RoleConverter but only returns if we have already
     passed our hierarchy checks.

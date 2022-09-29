@@ -261,7 +261,10 @@ class RolesButtons(commands.Cog):
         if f"{button}" not in config[f"{message.channel.id}-{message.id}"]:
             await ctx.send(_("I wasn't watching for this button on this message.").format(**locals()))
             return
-        del config[f"{message.channel.id}-{message.id}"][f"{button}"]
+        if hasattr(button, 'id'):
+            del config[f"{message.channel.id}-{message.id}"][f"{button.id}"]
+        else:
+            del config[f"{message.channel.id}-{message.id}"][f"{button}"]
         if not config[f"{message.channel.id}-{message.id}"] == {}:
             if self.cogsutils.is_dpy2:
                 await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message), function=self.on_button_interaction, infinity=True))

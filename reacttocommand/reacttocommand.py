@@ -228,7 +228,10 @@ class ReactToCommand(commands.Cog):
         if f"{react}" not in config[f"{message.channel.id}-{message.id}"]:
             await ctx.send(_("I wasn't watching for this reaction on this message.").format(**locals()))
             return
-        del config[f"{message.channel.id}-{message.id}"][f"{react}"]
+        if hasattr(react, 'id'):
+            del config[f"{message.channel.id}-{message.id}"][f"{react.id}"]
+        else:
+            del config[f"{message.channel.id}-{message.id}"][f"{react}"]
         if config[f"{message.channel.id}-{message.id}"] == {}:
             del config[f"{message.channel.id}-{message.id}"]
         try:

@@ -148,10 +148,10 @@ class UrlButtons(commands.Cog):
         if f"{message.channel.id}-{message.id}" not in config:
             await ctx.send(_("No url-button is configured for this message.").format(**locals()))
             return
-        if f"{button}" not in config[f"{message.channel.id}-{message.id}"]:
+        if f"{getattr(button, 'id', button)}" not in config[f"{message.channel.id}-{message.id}"]:
             await ctx.send(_("I wasn't watching for this button on this message.").format(**locals()))
             return
-        if hasattr(button, 'id'):
+        if hasattr(button, "id"):
             del config[f"{message.channel.id}-{message.id}"][f"{button.id}"]
         else:
             del config[f"{message.channel.id}-{message.id}"][f"{button}"]

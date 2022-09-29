@@ -225,10 +225,10 @@ class ReactToCommand(commands.Cog):
         if f"{message.channel.id}-{message.id}" not in config:
             await ctx.send(_("No command-reaction is configured for this message.").format(**locals()))
             return
-        if f"{react}" not in config[f"{message.channel.id}-{message.id}"]:
+        if f"{getattr(react, 'id', react)}" not in config[f"{message.channel.id}-{message.id}"]:
             await ctx.send(_("I wasn't watching for this reaction on this message.").format(**locals()))
             return
-        if hasattr(react, 'id'):
+        if hasattr(react, "id"):
             del config[f"{message.channel.id}-{message.id}"][f"{react.id}"]
         else:
             del config[f"{message.channel.id}-{message.id}"][f"{react}"]

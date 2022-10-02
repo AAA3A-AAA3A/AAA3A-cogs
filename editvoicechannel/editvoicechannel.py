@@ -61,6 +61,19 @@ class EditVoiceChannel(commands.Cog):
             await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
+    async def clone(self, ctx: commands.Context, channel: discord.VoiceChannel, *, name: str):
+        """Clone a voice channel.
+        """
+        if not await self.check_voice_channel(ctx, channel):
+            return
+        try:
+            await channel.clone(name=name, reason=f"{ctx.author} ({ctx.author.id}) has cloned the voice channel #!{channel.name} ({channel.id}).")
+        except discord.HTTPException:
+            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+        else:
+            await ctx.tick(message="Done.")
+
+    @editvoicechannel.command()
     async def name(self, ctx: commands.Context, channel: discord.VoiceChannel, name: str):
         """Edit voice channel name.
         """
@@ -84,7 +97,7 @@ class EditVoiceChannel(commands.Cog):
         """
         if not await self.check_voice_channel(ctx, channel):
             return
-        if not bitrate > 7999 or not bitrate < ctx.guild.bitrate_limit + 1:
+        if not bitrate >= 8000 or not bitrate <= ctx.guild.bitrate_limit:
             await ctx.send_help()
             return
         try:
@@ -115,7 +128,7 @@ class EditVoiceChannel(commands.Cog):
         """
         if not await self.check_voice_channel(ctx, channel):
             return
-        if not user_limit > -1 or not user_limit < 100:
+        if not user_limit >= 0 or not user_limit <= 99:
             await ctx.send_help()
             return
         try:

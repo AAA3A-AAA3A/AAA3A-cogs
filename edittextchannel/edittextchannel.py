@@ -61,6 +61,21 @@ class EditTextChannel(commands.Cog):
             await ctx.tick(message="Done.")
 
     @edittextchannel.command()
+    async def clone(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], *, name: str):
+        """Clone a text channel.
+        """
+        if channel is None:
+            channel = ctx.channel
+        if not await self.check_text_channel(ctx, channel):
+            return
+        try:
+            await channel.clone(name=name, reason=f"{ctx.author} ({ctx.author.id}) has cloned the text channel #{channel.name} ({channel.id}).")
+        except discord.HTTPException:
+            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+        else:
+            await ctx.tick(message="Done.")
+
+    @edittextchannel.command()
     async def name(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], name: str):
         """Edit text channel name.
         """
@@ -168,7 +183,7 @@ class EditTextChannel(commands.Cog):
             channel = ctx.channel
         if not await self.check_text_channel(ctx, channel):
             return
-        if not slowmode_delay > 0 or not slowmode_delay < 21600:
+        if not slowmode_delay >= 0 or not slowmode_delay <= 21600:
             await ctx.send_help()
             return
         try:

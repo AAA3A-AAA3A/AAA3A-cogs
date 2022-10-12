@@ -193,10 +193,6 @@ class CmdChannel(commands.Cog):
         ``channel``: Text channel.
         You can also use "None" if you wish to remove the logging channel.
         """
-        if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
-            return
-
         if channel is None:
             await self.config.guild(ctx.guild).logschannel.clear()
             await ctx.send(_("Logging channel removed.").format(**locals()))
@@ -231,10 +227,6 @@ class CmdChannel(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
-        if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
-            return
-
         config = await self.config.guild(ctx.guild).all()
 
         actual_state_enabled = config["enabled_cmdchannel"]
@@ -251,10 +243,6 @@ class CmdChannel(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
-        if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
-            return
-
         config = await self.config.guild(ctx.guild).all()
 
         actual_state_confirmation = config["confirmation_cmdchannel"]
@@ -271,10 +259,6 @@ class CmdChannel(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
-        if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
-            return
-
         config = await self.config.guild(ctx.guild).all()
 
         actual_state_delete = config["deletemessage_cmdchannel"]
@@ -291,10 +275,6 @@ class CmdChannel(commands.Cog):
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
-        if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
-            return
-
         config = await self.config.guild(ctx.guild).all()
 
         actual_state_information = config["informationmessage_cmdchannel"]

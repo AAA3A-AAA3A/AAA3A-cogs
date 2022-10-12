@@ -22,7 +22,7 @@ def _(untranslated: str):
 class Reactions():
     """Create Reactions easily."""
 
-    def __init__(self, bot: Red, message: discord.Message, remove_reaction: typing.Optional[bool]=True, timeout: typing.Optional[float]=180, reactions: typing.Optional[typing.List]=["✅", "❌"], members: typing.Optional[typing.List]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
+    def __init__(self, bot: Red, message: discord.Message, remove_reaction: typing.Optional[bool]=True, timeout: typing.Optional[float]=180, reactions: typing.Optional[typing.List]=["✅", "❌"], members: typing.Optional[typing.Iterable[discord.Member]]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
         self.reactions_dict_instance = {"message": message, "timeout": timeout, "reactions": reactions, "members": members, "check": check, "function": function, "function_args": function_args, "infinity": infinity}
         self.bot = bot
         self.message = message
@@ -32,7 +32,7 @@ class Reactions():
         self.reaction_result = None
         self.user_result = None
         self.function_result = None
-        self.members = members
+        self.members = [getattr(member, "id", member) for member in members]
         self.check = check
         self.function = function
         self.function_args = function_args
@@ -88,12 +88,12 @@ class Reactions():
         if not str(reaction.emoji) in self.reactions:
             await remove_reaction(self.remove_reaction, self.message, reaction, user)
             return False
-        if self.check is not None:
-            if not self.check(reaction, user):
-                await remove_reaction(self.remove_reaction, self.message, reaction, user)
-                return False
         if self.members is not None:
             if user.id not in self.members:
+                await remove_reaction(self.remove_reaction, self.message, reaction, user)
+                return False
+        if self.check is not None:
+            if not self.check(reaction, user):
                 await remove_reaction(self.remove_reaction, self.message, reaction, user)
                 return False
         await remove_reaction(self.remove_reaction, self.message, reaction, user)
@@ -125,7 +125,7 @@ class Reactions():
 class Menu():
     """Create Menus easily."""
 
-    def __init__(self, pages: typing.List[typing.Union[typing.Dict[str, typing.Union[str, typing.Any]], discord.Embed, str]], timeout: typing.Optional[int]=180, delete_after_timeout: typing.Optional[bool]=False, way: typing.Optional[typing.Literal["buttons", "reactions", "dropdown"]]="buttons", controls: typing.Optional[typing.Dict]=None, page_start: typing.Optional[int]=0, check_owner: typing.Optional[bool]=True, members_authored: typing.Optional[typing.Iterable[discord.Member]]=[]):
+    def __init__(self, pages: typing.List[typing.Union[typing.Dict[str, typing.Union[str, typing.Any]], discord.Embed, str]], timeout: typing.Optional[int]=180, delete_after_timeout: typing.Optional[bool]=False, way: typing.Optional[typing.Literal["buttons", "reactions", "dropdown"]]="buttons", controls: typing.Optional[typing.Dict]=None, page_start: typing.Optional[int]=0, check_owner: typing.Optional[bool]=True, members: typing.Optional[typing.Iterable[discord.Member]]=[], box_language_py: typing.Optional[bool]=False):
         self.ctx: commands.Context = None
         self.pages: typing.List = pages
         self.timeout: int = timeout
@@ -135,15 +135,17 @@ class Menu():
             controls = {"⏮️": "left_page", "◀️": "prev_page", "❌": "close_page", "▶️": "next_page", "⏭️": "right_page", "🔻": "send_all", "📩": "send_interactive", "💾": "send_as_file"}
         self.controls: typing.Dict = controls.copy()
         self.check_owner: bool = check_owner
-        self.members_authored: typing.List = members_authored
+        self.members: typing.List = members
         if not discord.version_info.major >= 2 and self.way == "buttons" or not discord.version_info.major >= 2 and self.way == "dropdown":
             self.way = "reactions"
         if isinstance(self.pages, str):
-            self.pages = [box(page, "py") for page in pagify(self.pages, page_length=2000 - 10)]
+            self.pages = list(pagify(self.pages, page_length=2000 - 10))
+        if box_language_py:
+            self.pages = [box(page, "py") for page in self.pages]
         if not isinstance(self.pages[0], (typing.Dict, discord.Embed, str)):
             raise RuntimeError("Pages must be of type typing.Dict, discord.Embed or str.")
 
-        self.source = self._SimplePageSource(items=pages)
+        self.source = self._SimplePageSource(items=self.pages)
         if not self.source.is_paginating():
             for emoji, name in controls.items():
                 if name in ["left_page", "prev_page", "next_page", "right_page"]:
@@ -176,14 +178,23 @@ class Menu():
         """
         self.ctx = ctx
         if self.way == "buttons":
-            self.view = Buttons(timeout=self.timeout, buttons=[{"emoji": str(e), "custom_id": str(n), "disabled": False} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+            if self.members is None:
+                self.view = Buttons(timeout=self.timeout, buttons=[{"emoji": str(e), "custom_id": str(n), "disabled": False} for e, n in self.controls.items()], members=None, infinity=True)
+            else:
+                self.view = Buttons(timeout=self.timeout, buttons=[{"emoji": str(e), "custom_id": str(n), "disabled": False} for e, n in self.controls.items()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members], infinity=True)
             self.view.add_item(discord.ui.Button(label=f"Page {self.current_page + 1}/{len(self.pages)}", custom_id="choose_page", disabled=False))
             await self.send_initial_message(self.ctx)
         elif self.way == "reactions":
             await self.send_initial_message(self.ctx)
-            self.view = Reactions(bot=self.ctx.bot, message=self.message, remove_reaction=True, timeout=self.timeout, reactions=[str(e) for e in self.controls.keys()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+            if self.members is None:
+                self.view = Reactions(bot=self.ctx.bot, message=self.message, remove_reaction=True, timeout=self.timeout, reactions=[str(e) for e in self.controls.keys()], members=None, infinity=True)
+            else:
+                self.view = Reactions(bot=self.ctx.bot, message=self.message, remove_reaction=True, timeout=self.timeout, reactions=[str(e) for e in self.controls.keys()], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members], infinity=True)
         elif self.way == "dropdown":
-            self.view = Dropdown(timeout=self.timeout, options=[{"emoji": str(e), "label": str(n).replace("_", " ").capitalize()} for e, n in self.controls.items()], disabled=False, members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+            if self.members is None:
+                self.view = Dropdown(timeout=self.timeout, options=[{"emoji": str(e), "label": str(n).replace("_", " ").capitalize()} for e, n in self.controls.items()], disabled=False, members=None, infinity=True)
+            else:
+                self.view = Dropdown(timeout=self.timeout, options=[{"emoji": str(e), "label": str(n).replace("_", " ").capitalize()} for e, n in self.controls.items()], disabled=False, members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members], infinity=True)
             await self.send_initial_message(self.ctx)
         try:
             while True:
@@ -358,7 +369,7 @@ class Menu():
             await self.message.delete()
         else:
             if self.way == "buttons":
-                view = Buttons(timeout=self.timeout, buttons=[], members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+                view = Buttons(timeout=self.timeout, buttons=[], members=[], infinity=True)
                 view.clear_items()
                 view._children = self.view.children
                 for c in view.children:
@@ -376,7 +387,7 @@ class Menu():
                     except discord.HTTPException:
                         pass
             elif self.way == "dropdown":
-                view = Dropdown(timeout=self.timeout, options=[], disabled=False, members=[self.ctx.author.id] + list(self.ctx.bot.owner_ids) if self.check_owner else [] + [x.id for x in self.members_authored], infinity=True)
+                view = Dropdown(timeout=self.timeout, options=[], disabled=False, members=[], infinity=True)
                 view.dropdown._underlying.options = self.view.dropdown._underlying.options
                 view.dropdown.disabled = True
                 await self.message.edit(view=view)

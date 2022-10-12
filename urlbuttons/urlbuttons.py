@@ -108,9 +108,14 @@ class UrlButtons(commands.Cog):
     @urlbuttons.command()
     async def bulk(self, ctx: commands.Context, message: discord.Message, url_buttons: commands.Greedy[EmojiUrlConverter]):
         """Add a url-button to a message.
+
+        ```[p]urlbuttons bulk <message> :red_circle:|<https://github.com/Cog-Creators/Red-DiscordBot> :smiley:|<https://github.com/Cog-Creators/Red-SmileyBot> :green_circle:|<https://github.com/Cog-Creators/Green-DiscordBot>```
         """
         if not message.author == ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the url-button to work.").format(**locals()))
+            return
+        if len(url_buttons) == 0:
+            await ctx.send(_("You have not specified any valid url-button.").format(**locals()))
             return
         if getattr(ctx, "interaction", None) is None:
             try:
@@ -202,7 +207,13 @@ class UrlButtons(commands.Cog):
         all_buttons = []
         if self.cogsutils.is_dpy2:
             for button in config[f"{message.channel.id}-{message.id}"]:
-                all_buttons.append({"style": 5, "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": f"{button}", "url": config[f"{message.channel.id}-{message.id}"][f"{button}"]["url"]})
+                try:
+                    int(button)
+                except ValueError:
+                    b = button
+                else:
+                    b = str(self.bot.get_emoji(int(button)))
+                all_buttons.append({"style": 5, "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": f"{b}", "url": config[f"{message.channel.id}-{message.id}"][f"{button}"]["url"]})
         else:
             lists = []
             one_l = [button for button in config[f"{message.channel.id}-{message.id}"]]

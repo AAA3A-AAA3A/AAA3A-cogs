@@ -31,4 +31,4 @@ class EmojiUrlConverter(discord.ext.commands.Converter):
             url = url[1:-1]
         if not url.startswith("http"):
             raise discord.ext.commands.BadArgument(_("Url must start with `https` or `http`.").format(**locals()))
-        return url, emoji
+        return emoji, url

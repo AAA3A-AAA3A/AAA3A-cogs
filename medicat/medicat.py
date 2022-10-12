@@ -92,6 +92,10 @@ CUSTOM_COMMANDS = {
     "xy": {
         "title": _("X & Y").format(**locals()),
         "description": _("What is the context?\nIf you have any problems or would like to ask for help, please give information about what you are not able to do. Don't just say you don't understand how to make x software work, say where you are, what is wrong with it and what is the potential error. \nThank you for your understanding.").format(**locals())
+    },
+    "test": {
+        "title": _("Test!").format(**locals()),
+        "description": _("Test.").format(**locals())
     }
 }
 
@@ -280,7 +284,7 @@ class Medicat(commands.Cog):
         if CONFIG_SCHEMA < self.CONFIG_SCHEMA:
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
-        self.log.info(f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.__class__.__name__} cog.")
+        self.log.info(f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog.")
 
     if CogsUtils().is_dpy2:
         async def cog_unload(self):
@@ -478,20 +482,20 @@ class Medicat(commands.Cog):
         for name, text in CUSTOM_COMMANDS.items():
             try:
                 self.medicat.remove_command(name)
-                @self.medicat.command(name=name, help=text["title"])
-                async def CC(ctx: commands.Context):
+                async def CC(self, ctx: commands.Context):
                     embed: discord.Embed = discord.Embed()
                     embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
                     embed.set_footer(text="Medicat USB Official", icon_url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100")
                     embed.title = CUSTOM_COMMANDS[ctx.command.name]["title"]
                     embed.description = CUSTOM_COMMANDS[ctx.command.name]["description"]
                     await ctx.send(embed=embed)
-                command: commands.Command = CC
+                CC.__qualname__ = f"{self.qualified_name}.CC_{name}"
+                command: commands.Command = self.medicat.command(name=name, help=text["title"])(CC)
                 command.name = name
                 command.brief = text["title"]
                 command.description = text["title"]
                 command.callback.__doc__ = text["title"]
-                # command.cog = self
+                command.cog = self
                 self.bot.dispatch("command_add", command)
                 if self.bot.get_cog("permissions") is None:
                     command.requires.ready_event.set()
@@ -501,7 +505,7 @@ class Medicat(commands.Cog):
                     command.params = {}
                 setattr(self, f"CC_{name}", command)
             except Exception as e:
-                self.log.error(f"An error occurred while adding the `{name}` custom command.", exc_info=e)
+                self.log.error(f"An error occurred while adding the `medicat {name}` custom command.", exc_info=e)
             else:
                 cog_commands = list(self.__cog_commands__)
                 cog_commands.append(command)

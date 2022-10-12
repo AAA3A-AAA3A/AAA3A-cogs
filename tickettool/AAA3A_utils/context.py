@@ -1,7 +1,12 @@
 from redbot.core import commands  # isort:skip
+import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils import can_user_react_in
+if discord.version_info.major >= 2:
+    from redbot.core.utils import can_user_react_in
+else:
+    def can_user_react_in(obj: discord.abc.User, messageable: discord.abc.Messageable):
+        return messageable.permissions_for(obj).add_reactions
 
 __all__ = ["Context"]
 

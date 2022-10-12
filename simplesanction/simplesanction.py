@@ -431,13 +431,13 @@ class SimpleSanction(settings, commands.Cog):
                         await interaction.response.send_message(_("You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case.").format(**locals()), ephemeral=True)
             if actual_way == "buttons":
                 if self.cogsutils.is_dpy2:
-                    view = Buttons(timeout=actual_timeout, buttons=self.buttons_dict, members=[ctx.author.id] + list(ctx.bot.owner_ids), function=send_fake_epheremal, function_args={"fake_action": fake_action})
+                    view = Buttons(timeout=actual_timeout, buttons=self.buttons_dict, members=[ctx.author] + list(ctx.bot.owner_ids), function=send_fake_epheremal, function_args={"fake_action": fake_action})
                     message = await ctx.send(embed=embed, view=view)
                 else:
                     buttons, buttons_one, buttons_two, buttons_three = await utils.emojis(disabled=False)
                     message = await ctx.send(embed=embed, components=[buttons_one, buttons_two, buttons_three])
             elif actual_way == "dropdown":
-                view = Dropdown(timeout=actual_timeout, options=self.options_dict, members=[ctx.author.id] + list(ctx.bot.owner_ids), function=send_fake_epheremal, function_args={"fake_action": fake_action})
+                view = Dropdown(timeout=actual_timeout, options=self.options_dict, members=[ctx.author] + list(ctx.bot.owner_ids), function=send_fake_epheremal, function_args={"fake_action": fake_action})
                 message = await ctx.send(embed=embed, view=view)
             elif actual_way == "reactions":
                 message = await ctx.send(embed=embed)

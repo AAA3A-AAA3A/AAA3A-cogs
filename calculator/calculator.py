@@ -419,7 +419,7 @@ class Calculator(commands.Cog):
         expression = None
         result = None
         if self.cogsutils.is_dpy2:
-            view = Buttons(timeout=config["time_max"], buttons=self.buttons_dict, members=[ctx.author.id] + list(ctx.bot.owner_ids))
+            view = Buttons(timeout=config["time_max"], buttons=self.buttons_dict, members=[ctx.author] + list(ctx.bot.owner_ids))
             message = await ctx.send(embed=await self.get_embed(ctx, expression, result), view=view)
         else:
             buttons_one, buttons_two, buttons_three, buttons_four, buttons_five = await self.get_buttons(False)
@@ -483,7 +483,7 @@ class Calculator(commands.Cog):
                             expression = None
                     else:
                         expression = await self.input_formatter(expression, str(interaction.data["custom_id"]))
-                    view = Buttons(timeout=config["time_max"], buttons=self.buttons_dict, members=[ctx.author.id])
+                    view = Buttons(timeout=config["time_max"], buttons=self.buttons_dict, members=[ctx.author] + list(ctx.bot.owner_ids))
                     await interaction.response.edit_message(embed=await self.get_embed(ctx, expression, result), view=view)
             except TimeoutError:
                 view = Buttons(timeout=config["time_max"], buttons=self.disabled_buttons_dict, members=[])

@@ -1,4 +1,5 @@
 from redbot.core import commands  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -7,6 +8,8 @@ import traceback
 
 from redbot.core.utils.chat_formatting import humanize_list, inline
 
+from .context import Context
+
 __all__ = ["Cog"]
 
 def _(untranslated: str):
@@ -14,8 +17,29 @@ def _(untranslated: str):
 
 class Cog():
 
-    def __init__(self, cog):
+    def __init__(self, bot: Red):
+        self.bot = bot
+        self.cog = None
+
+    @classmethod
+    def _setup(cls, bot: Red, cog: commands.Cog):
+        """
+        Adding additional functionality to the cog.
+        """
+        # for command in self.cog.walk_commands():
+        #     setattr(command, 'format_text_for_context', self.format_text_for_context)
+        #     setattr(command, 'format_shortdoc_for_context', self.format_shortdoc_for_context)
+        specials = ["_setup", "get_formatted_text", "format_text_for_context", "format_shortdoc_for_context"]
+        self = cls(bot=bot)
         self.cog = cog
+        for attr in dir(self):
+            if attr.startswith("__") and attr.endswith("__"):
+                continue
+            if attr in specials:
+                continue
+            if not getattr(getattr(cog, attr, None), "__func__", "None1") == getattr(commands.Cog, attr, "None2"):
+                continue
+            setattr(cog, attr, getattr(self, attr))
 
     def get_formatted_text(self, context: str):
         s = "s" if len(self.cog.__authors__) > 1 else ""
@@ -58,6 +82,15 @@ class Cog():
         def cog_unload(self):
             self._end()
 
+    async def cog_before_invoke(self, ctx: commands.Context):
+        if self.cog is None:
+            return
+        context = await Context.from_context(ctx)
+        for index, arg in enumerate(ctx.args.copy()):
+            if isinstance(arg, commands.Context):
+                ctx.args[index] = context
+        return ctx
+
     async def cog_command_error(self, ctx: commands.Context, error: Exception):
         if self.cog is None:
             return
@@ -93,20 +126,3 @@ class Cog():
                 await ctx.send(inline("You are not allowed to execute this command in this context."), ephemeral=True)
         else:
             await ctx.bot.on_command_error(ctx=ctx, error=error, unhandled_by_cog=True)
-
-    def _setup(self):
-        """
-        Adding additional functionality to the cog.
-        """
-        # for command in self.cog.walk_commands():
-        #     setattr(command, 'format_text_for_context', self.format_text_for_context)
-        #     setattr(command, 'format_shortdoc_for_context', self.format_shortdoc_for_context)
-        specials = ["_setup", "get_formatted_text", "format_text_for_context", "format_shortdoc_for_context"]
-        for attr in dir(self):
-            if attr.startswith("__") and attr.endswith("__"):
-                continue
-            if attr in specials:
-                continue
-            if not getattr(getattr(self.cog, attr, None), "__func__", "None1") == getattr(commands.Cog, attr, "None2"):
-                continue
-            setattr(self.cog, attr, getattr(self, attr))

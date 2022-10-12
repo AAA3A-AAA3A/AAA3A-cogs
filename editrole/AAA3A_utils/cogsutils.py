@@ -193,10 +193,10 @@ class CogsUtils(commands.Cog):
         """
         if self.cog is None:
             return
-        self.cog.cogsutils = self
+        setattr(self.cog, "cogsutils", self)
         self.init_logger()
         DevEnv.add_dev_env_values(bot=self.bot, cog=self.cog)
-        Cog(self.cog)._setup()
+        Cog._setup(bot=self.bot, cog=self.cog)
         asyncio.create_task(self._await_setup())
 
     async def _await_setup(self):
@@ -277,8 +277,12 @@ class CogsUtils(commands.Cog):
                 file_handler.setLevel(logging.DEBUG)
                 file_handler.setFormatter(formatter)
                 self.cog.log.addHandler(file_handler)
+            return self.cog.log
         else:
-            return logging.getLogger(f"red.{self.repo_name}.{name}")
+            if not name.startswith("red."):
+                return logging.getLogger(f"red.{self.repo_name}.{name}")
+            else:
+                return logging.getLogger(f"{name}")
 
     def close_logger(self):
         """
@@ -540,11 +544,13 @@ class CogsUtils(commands.Cog):
         else:
             return True
 
-    async def invoke_command(self, author: discord.User, channel: discord.TextChannel, command: str, prefix: typing.Optional[str]=None, message: typing.Optional[discord.Message]=None, dispatch_message: typing.Optional[bool]=False, message_id: typing.Optional[str]="".join(choice(string.digits) for i in range(18)), timestamp: typing.Optional[datetime.datetime]=datetime.datetime.now()) -> typing.Union[commands.Context, discord.Message]:
+    async def invoke_command(self, author: discord.User, channel: discord.TextChannel, command: str, prefix: typing.Optional[str]=None, message: typing.Optional[discord.Message]=None, dispatch_message: typing.Optional[bool]=False, __is_mocked__: typing.Optional[bool]=False, message_id: typing.Optional[str]="".join(choice(string.digits) for i in range(18)), timestamp: typing.Optional[datetime.datetime]=datetime.datetime.now()) -> typing.Union[commands.Context, discord.Message]:
         """
         Invoke the specified command with the specified user in the specified channel.
         """
         bot = self.bot
+        if prefix == "/":  # For hybrid and slash commands.
+            prefix = None
         if prefix is None:
             prefixes = await bot.get_valid_prefixes(guild=channel.guild)
             prefix = prefixes[0] if len(prefixes) < 3 else prefixes[2]
@@ -561,6 +567,8 @@ class CogsUtils(commands.Cog):
         else:
             message = copy(message)
             message.author = author
+        if __is_mocked__:
+            message.__is_mocked__ = True
 
         message.content = content
         context = await bot.get_context(message)
@@ -572,6 +580,8 @@ class CogsUtils(commands.Cog):
             if MemberPrefix is not None:
                 if hasattr(MemberPrefix, "cache_messages"):
                     MemberPrefix.cache_messages.append(message.id)
+            if __is_mocked__:
+                context.__is_mocked__ = True
             await bot.invoke(context)
         else:
             if dispatch_message:

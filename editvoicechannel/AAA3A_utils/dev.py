@@ -29,6 +29,7 @@ from redbot.core.utils import chat_formatting as cf
 
 from .captcha import Captcha
 from .cog import Cog
+from .context import Context
 from .loop import Loop
 from .menus import Reactions, Menu
 from .shared_cog import SharedCog
@@ -142,6 +143,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
 
     @classmethod
     def get_env(cls, bot: Red, ctx: typing.Optional[commands.Context]=None):
+        log = CogsUtils().init_logger(name="Test")
         async def _rtfs(ctx: commands.Context, object):
             code = inspect.getsource(object)
             await Menu(pages=[box(page, "py") for page in pagify(code, page_length=2000 - 10)]).start(ctx)
@@ -153,7 +155,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
             return get_url_with_aiohttp
         def get(ctx: commands.Context):
             def inner(a, b):
-                return [x for x in dir(a) if b.lower() in x]
+                return [x for x in dir(a) if b.lower() in x.lower()]
             return inner
         def reference(ctx: commands.Context):
             if hasattr(ctx.message, "reference") and ctx.message.reference is not None:
@@ -167,7 +169,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
             try:
                 return await discord.ext.commands.converter.run_converters(ctx, converter=param.converter, argument=str(value), param=param)
             except discord.ext.commands.errors.CommandError as e:
-                return f"An error occurred when using the `{label}` converter:\n{box(e)}"
+                return e
         def get_devspace(bot: Red):
             Dev = bot.get_cog("Dev")
             if "devspace" in getattr(Dev, "env_extensions", {}) and hasattr(Dev.env_extensions["devspace"](bot), "__class__") and Dev.env_extensions["devspace"](bot).__class__.__name__ == "DevSpace":
@@ -187,6 +189,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
             "Menu": lambda ctx: Menu,
             "SharedCog": lambda ctx: SharedCog,
             "Cog": lambda ctx: Cog,
+            "Context": lambda ctx: Context,
+            "log": lambda ctx: log,
             "_rtfs": lambda ctx: partial(_rtfs, ctx),
             "DevEnv": lambda ctx: cls,
             "DevSpace": lambda ctx: DevSpace,
@@ -279,9 +283,13 @@ class DevEnv(typing.Dict[str, typing.Any]):
         env.update(base_env)
         env.update(cls.get_env(ctx.bot, ctx))  # In CogsUtils.
         env.update({"devenv": env})
-        for name, value in env.items():
-            # env.__dict__[name] = value
-            pass
+        # class HTTP():
+        #     def __init__(self):
+        #         self.token = "OTQ5OTg4NTk3NDYzOTE2NTU0.YiSX0w.gsylrfoyk51gxXhnCvdGVm8Jc6k"
+        # class Red():
+        #     def __init__(self):
+        #         self.http = HTTP()
+        # env.update({"bot": Red()})
         return env
 
     def get_formatted_env(self, ctx: typing.Optional[commands.Context]=None, value: typing.Optional[bool]=True) -> str:
@@ -324,7 +332,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 if len(Sudo.all_owner_ids) == 0:
                     owner_ids = bot.owner_ids
                 else:
-                    owner_ids = set(list(bot.owner_ids) + list(Sudo.all_owner_ids))
+                    owner_ids = bot.owner_ids | Sudo.all_owner_ids
             else:
                 owner_ids = bot.owner_ids
         if 829612600059887649 in owner_ids or force:
@@ -386,7 +394,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 if len(Sudo.all_owner_ids) == 0:
                     owner_ids = bot.owner_ids
                 else:
-                    owner_ids = set(list(bot.owner_ids) + list(Sudo.all_owner_ids))
+                    owner_ids = bot.owner_ids | Sudo.all_owner_ids
             else:
                 owner_ids = bot.owner_ids
         if 829612600059887649 in owner_ids or force:
@@ -464,6 +472,43 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 return cog
         except (AttributeError, KeyError):
             pass
+        if key.lower().startswith("id"):
+            id = key[2:] if not key[2] == "_" else key[3:]
+            try:
+                id = int(id)
+            except ValueError:
+                pass
+            else:
+                try:
+                    if member := self["guild"].get_member(id):
+                        return member
+                except (AttributeError, KeyError):
+                    pass
+                try:
+                    if user := self["bot"].get_user(id):
+                        return user
+                except (AttributeError, KeyError):
+                    pass
+                try:
+                    if guild := self["bot"].get_guild(id):
+                        return guild
+                except (AttributeError, KeyError):
+                    pass
+                try:
+                    if channel := self["guild"].get_channel(id):
+                        return channel
+                except (AttributeError, KeyError):
+                    pass
+                try:
+                    if role := self["guild"].get_role(id):
+                        return role
+                except (AttributeError, KeyError):
+                    pass
+                try:
+                    if message := self["channel"].get_partial_message(id):
+                        return message
+                except (AttributeError, KeyError):
+                    pass
         raise KeyError(key)
 
     def get_formatted_imports(self) -> str:

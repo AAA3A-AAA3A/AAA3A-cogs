@@ -32,7 +32,7 @@ class Reactions():
         self.reaction_result = None
         self.user_result = None
         self.function_result = None
-        self.members = [getattr(member, "id", member) for member in members]
+        self.members = members if members is None else [getattr(member, "id", member) for member in members]
         self.check = check
         self.function = function
         self.function_args = function_args

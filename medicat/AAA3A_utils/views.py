@@ -53,7 +53,7 @@ class Buttons(discord.ui.View):
         self.infinity = infinity
         self.interaction_result = None
         self.function_result = None
-        self.members = [getattr(member, "id", member) for member in members]
+        self.members = members if members is None else [getattr(member, "id", member) for member in members]
         self.check = check
         self.function = function
         self.function_args = function_args
@@ -132,7 +132,7 @@ class Dropdown(discord.ui.View):
         self.options_result = None
         self.function_result = None
         self.disabled = disabled
-        self.members = [getattr(member, "id", member) for member in members]
+        self.members = members if members is None else [getattr(member, "id", member) for member in members]
         self.check = check
         self.function = function
         self.function_args = function_args
@@ -219,7 +219,7 @@ class Modal(discord.ui.Modal):
         self.interaction_result = None
         self.inputs_result = None
         self.function_result = None
-        self.members = [getattr(member, "id", member) for member in members]
+        self.members = members if members is None else [getattr(member, "id", member) for member in members]
         self.check = check
         self.function = function
         self.function_args = function_args

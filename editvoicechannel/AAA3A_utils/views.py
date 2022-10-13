@@ -40,7 +40,7 @@ def generate_key(number: typing.Optional[int]=10, existing_keys: typing.Optional
 class Buttons(discord.ui.View):
     """Create Buttons easily."""
 
-    def __init__(self, timeout: typing.Optional[float]=180, buttons: typing.Optional[typing.List]=[{}], members: typing.Optional[typing.Iterable[discord.member]]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
+    def __init__(self, timeout: typing.Optional[float]=180, buttons: typing.Optional[typing.List]=[{}], members: typing.Optional[typing.Iterable[discord.Member]]=None, check: typing.Optional[typing.Any]=None, function: typing.Optional[typing.Any]=None, function_args: typing.Optional[typing.Dict]={}, infinity: typing.Optional[bool]=False):
         """style: ButtonStyle, label: Optional[str], disabled: bool, custom_id: Optional[str], url: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], row: Optional[int]"""
         for button_dict in buttons:
             if "url" in button_dict and button_dict["url"] is not None:
@@ -53,7 +53,7 @@ class Buttons(discord.ui.View):
         self.infinity = infinity
         self.interaction_result = None
         self.function_result = None
-        self.members = [getattr(member, "id", member) for member in members]
+        self.members = members if members is None else [getattr(member, "id", member) for member in members]
         self.check = check
         self.function = function
         self.function_args = function_args
@@ -132,7 +132,7 @@ class Dropdown(discord.ui.View):
         self.options_result = None
         self.function_result = None
         self.disabled = disabled
-        self.members = [getattr(member, "id", member) for member in members]
+        self.members = members if members is None else [getattr(member, "id", member) for member in members]
         self.check = check
         self.function = function
         self.function_args = function_args
@@ -219,7 +219,7 @@ class Modal(discord.ui.Modal):
         self.interaction_result = None
         self.inputs_result = None
         self.function_result = None
-        self.members = [getattr(member, "id", member) for member in members]
+        self.members = members if members is None else [getattr(member, "id", member) for member in members]
         self.check = check
         self.function = function
         self.function_args = function_args

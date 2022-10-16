@@ -11,7 +11,7 @@ else:
 
 import asyncio
 
-from .converters import EmojiLabelTextConverter
+from .converters import Emoji, EmojiLabelTextConverter
 
 from redbot.core import Config
 
@@ -73,6 +73,7 @@ class DropdownsTexts(commands.Cog):
                 return
             options = [option for option in view.options_dict if option["label"] == selected_options[0]]
             emoji = options[0]["emoji"]
+            emoji = str(getattr(emoji, "id", emoji))
             if f"{emoji}" not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
                 self.log.error(f"{emoji}")
                 return
@@ -118,7 +119,7 @@ class DropdownsTexts(commands.Cog):
         pass
 
     @dropdownstexts.command()
-    async def add(self, ctx: commands.Context, message: discord.Message, emoji: typing.Union[discord.Emoji, str], label: str, *, text: str):
+    async def add(self, ctx: commands.Context, message: discord.Message, emoji: Emoji, label: str, *, text: str):
         """Add a dropdown-text to a message.
         """
         if not message.author == ctx.guild.me:
@@ -248,7 +249,13 @@ class DropdownsTexts(commands.Cog):
         if self.cogsutils.is_dpy2:
             all_options = []
             for option in config[message]:
-                all_options.append({"label": config[message][option]["label"], "emoji": option})
+                try:
+                    int(option)
+                except ValueError:
+                    e = option
+                else:
+                    e = self.bot.get_emoji(int(option))
+                all_options.append({"label": config[message][option]["label"], "emoji": e})
             return all_options
         else:
             dropdown = SelectMenu(

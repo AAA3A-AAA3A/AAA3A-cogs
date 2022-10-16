@@ -75,9 +75,14 @@ class DropdownsTexts(commands.Cog):
             emoji = options[0]["emoji"]
             emoji = str(getattr(emoji, "id", emoji))
             if f"{emoji}" not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
-                self.log.error(f"{emoji}")
                 return
-            await interaction.response.send_message(config[f"{interaction.channel.id}-{interaction.message.id}"][f"{emoji}"]["text"], ephemeral=True)
+            if interaction.channel.permissions_for(interaction.guild.me).embed_links:
+                embed: discord.Embed = discord.Embed()
+                embed.title = config[f"{interaction.channel.id}-{interaction.message.id}"][f"{emoji}"]["label"]
+                embed.description = config[f"{interaction.channel.id}-{interaction.message.id}"][f"{emoji}"]["text"]
+                await interaction.response.send_message(embed=embed, ephemeral=True)
+            else:
+                await interaction.response.send_message(config[f"{interaction.channel.id}-{interaction.message.id}"][f"{emoji}"]["text"], ephemeral=True)
     else:
         @commands.Cog.listener()
         async def on_dropdown(self, inter: MessageInteraction):
@@ -96,9 +101,16 @@ class DropdownsTexts(commands.Cog):
                 return
             options = inter.select_menu.selected_options
             emoji = options[0].emoji
+            emoji = str(getattr(emoji, "id", emoji))
             if f"{emoji}" not in config[f"{inter.channel.id}-{inter.message.id}"]:
                 return
-            await inter.send(config[f"{inter.channel.id}-{inter.message.id}"][f"{emoji}"]["text"], ephemeral=True)
+            if inter.channel.permissions_for(inter.guild.me).embed_links:
+                embed: discord.Embed = discord.Embed()
+                embed.title = config[f"{inter.channel.id}-{inter.message.id}"][f"{emoji}"]["label"]
+                embed.description = config[f"{inter.channel.id}-{inter.message.id}"][f"{emoji}"]["text"]
+                await inter.send(embed=embed, ephemeral=True)
+            else:
+                await inter.send(config[f"{inter.channel.id}-{inter.message.id}"][f"{emoji}"]["text"], ephemeral=True)
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message):
@@ -134,6 +146,9 @@ class DropdownsTexts(commands.Cog):
         except discord.HTTPException:
             await ctx.send(_("The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
             return
+        if not self.cogsutils.is_dpy2 and hasattr(emoji, "id"):
+            await ctx.send(_("Custom emojis are not supported by Dislash for dropdown menu options. Please wait for Red 3.5 with dpy2.").format(**locals()))
+            return
         config = await self.config.guild(ctx.guild).dropdowns_texts.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
@@ -167,6 +182,9 @@ class DropdownsTexts(commands.Cog):
                 await ctx.message.add_reaction(emoji)
         except discord.HTTPException:
             await ctx.send(_("A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.").format(**locals()))
+            return
+        if not self.cogsutils.is_dpy2 and any([hasattr(emoji, "id") for emoji, label, text in dropdown_texts]):
+            await ctx.send(_("Custom emojis are not supported by Dislash for dropdown menu options. Please wait for Red 3.5 with dpy2.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).dropdowns_texts.all()
         if f"{message.channel.id}-{message.id}" not in config:
@@ -258,11 +276,19 @@ class DropdownsTexts(commands.Cog):
                 all_options.append({"label": config[message][option]["label"], "emoji": e})
             return all_options
         else:
+            options = []
+            for option in config[message]:
+                try:
+                    int(option)
+                except ValueError:
+                    options.append(SelectOption(label=config[message][option]["label"], value=config[message][option]["label"], emoji=option))
+                else:
+                    options.append(SelectOption(label=config[message][option]["label"], value=config[message][option]["label"], emoji=str(self.bot.get_emoji(option))))
             dropdown = SelectMenu(
                 custom_id=f"DropdownsTexts_{message}",
                 placeholder=_("Select an option."),
                 min_values=0,
                 max_values=1,
-                options=[SelectOption(label=config[message][option]["label"], value=config[message][option]["label"], emoji=option) for option in config[message]]
+                options=options
             )
             return dropdown

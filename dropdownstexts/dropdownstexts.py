@@ -101,7 +101,7 @@ class DropdownsTexts(commands.Cog):
                 return
             options = inter.select_menu.selected_options
             emoji = options[0].emoji
-            emoji = str(getattr(emoji, "id", emoji))
+            emoji = str(getattr(emoji, "id", emoji) or emoji)
             if f"{emoji}" not in config[f"{inter.channel.id}-{inter.message.id}"]:
                 return
             if inter.channel.permissions_for(inter.guild.me).embed_links:

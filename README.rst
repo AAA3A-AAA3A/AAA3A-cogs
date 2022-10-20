@@ -58,7 +58,7 @@ A cog to use a calculator directly in Discord, with buttons. You can also enter 
 
 **AntiRaid:**
 
-This cog allows you to prevent raids on your servers. If you give a person too many permissions, they can destroy everything by deleting each channel one by one. With this cog, the bot will delete all the roles (and therefore permissions) of the person if he deletes a channel (unless he is the server owner).
+This cog allows you to prevent raids on your servers. If you give a person too many permissions, they can destroy everything by deleting each channel one by one. With this cog, the bot will delete all the roles (and therefore permissions) of the person if they delete a channel (unless they are the server owner).
 
 **ClearChannel:**
 

@@ -799,7 +799,7 @@ msgstr ""
 
 #: \tickettool\tickettool.py:1228
 msgid ""
-"This member is an administrator for the ticket system. He will always have "
+"This member is an administrator for the ticket system. They will always have "
 "access to the ticket anyway. ({member})"
 msgstr ""
 
@@ -821,7 +821,7 @@ msgstr ""
 
 #: \tickettool\tickettool.py:1269
 msgid ""
-"This member is an administrator for the ticket system. He will always have "
+"This member is an administrator for the ticket system. They will always have "
 "access to the ticket. ({member})"
 msgstr ""
 

@@ -1246,7 +1246,7 @@ class Ticket:
                         await ticket.channel.send(_("This member is already the owner of this ticket. ({member})").format(**locals()))
                         continue
                 if member in admin_role_members:
-                    await ticket.channel.send(_("This member is an administrator for the ticket system. He will always have access to the ticket anyway. ({member})").format(**locals()))
+                    await ticket.channel.send(_("This member is an administrator for the ticket system. They will always have access to the ticket anyway. ({member})").format(**locals()))
                     continue
                 if member in ticket.members:
                     await ticket.channel.send(_("This member already has access to this ticket. ({member})").format(**locals()))
@@ -1287,7 +1287,7 @@ class Ticket:
                         await ticket.channel.send(_("You cannot remove the owner of this ticket. ({member})").format(**locals()))
                         continue
                 if member in admin_role_members:
-                    await ticket.channel.send(_("This member is an administrator for the ticket system. He will always have access to the ticket. ({member})").format(**locals()))
+                    await ticket.channel.send(_("This member is an administrator for the ticket system. They will always have access to the ticket. ({member})").format(**locals()))
                     continue
                 if member not in ticket.members and member not in support_role_members:
                     await ticket.channel.send(_("This member is not in the list of those authorised to access the ticket. ({member})").format(locals()))

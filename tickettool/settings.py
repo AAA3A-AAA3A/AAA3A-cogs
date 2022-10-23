@@ -305,8 +305,20 @@ class settings(commands.Cog):
     ):
         """Set the Dinamic Ticket Channel Name.
 
-        `{ticket.id}`, `{ticket.created_by.id}`, `{ticket.guild.id}`, {ticket.channel.mention}...
-        If, when creating the ticket, an error occurs with this name, another name will be used.
+        `{ticket_id}` - Ticket number
+        `{owner_display_name}` - user's nick or name
+        `{owner_name}` - user's name
+        `{owner_id}` - user's id
+        `{guild_name}` - guild's name
+        `{guild_id}` - guild's id
+        `{bot_display_name}` - bot's nick or name
+        `{bot_name}` - bot's name
+        `{bot_id}` - bot's id
+        `{shortdate}` - mm-dd
+        `{longdate}` - mm-dd-yyyy
+        `{time}` - hh-mm AM/PM according to bot host system time
+
+        If, when creating the ticket, an error occurs with this name, another name will be used automatically.
         """
         if dynamic_channel_name is None:
             await self.config.guild(ctx.guild).settings.dynamic_channel_name.clear()

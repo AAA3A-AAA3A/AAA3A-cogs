@@ -360,7 +360,7 @@ class TicketTool(settings, commands.Cog):
                 ticket.created_at,
                 action_type=action,
                 user=ticket.created_by,
-                moderator=ticket.created_by,
+                moderator=None,
                 reason=reason,
             )
             return case
@@ -1289,7 +1289,21 @@ class Ticket:
             reason=_("Creating the ticket {ticket.id}.").format(**locals()),
         )
         try:
-            name = config["dynamic_channel_name"].format(ticket=ticket).replace(" ", "-")
+            to_replace = {
+                "ticket_id": str(ticket.id),
+                "owner_display_name": ticket.owner.display_name,
+                "owner_name": ticket.owner.name,
+                "owner_id": str(ticket.owner.id),
+                "guild_name": ticket.guild.name,
+                "guild_id": ticket.guild.id,
+                "bot_display_name": ticket.guild.me.display_name,
+                "bot_name": ticket.bot.user.name,
+                "bot_id": str(ticket.bot.user.id),
+                "shortdate": ticket.created_at.strftime("%m-%d"),
+                "longdate": ticket.created_at.strftime("%m-%d-%Y"),
+                "time": ticket.created_at.strftime("%I-%M-%p")
+            }
+            name = config["dynamic_channel_name"].format(**to_replace).replace(" ", "-")
             ticket.channel = await ticket.guild.create_text_channel(
                 name,
                 overwrites=overwrites,

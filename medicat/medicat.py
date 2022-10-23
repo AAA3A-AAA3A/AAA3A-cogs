@@ -35,6 +35,8 @@ else:
     hybrid_command = commands.command
     hybrid_group = commands.group
 
+MEDICAT_LOGO = "https://images-ext-1.discordapp.net/external/jcitwwaYOx1ZjI5sMO9_lHqV-gBkJhqqEFsJDlIjOtY/%3Fsize%3D1024/https/cdn.discordapp.com/icons/829469886681972816/4dbbf4268a1d2bbc1334313ffadb1543.webp"
+
 MEDICAT_GUILD = 829469886681972816
 VENTOY_UPDATES_CHANNEL = 831224763162165278
 BOOTABLES_TOOLS_UPDATES_CHANNEL = 970043597481185301
@@ -662,11 +664,11 @@ class Medicat(commands.Cog):
                 async def CC(self, ctx: commands.Context):
                     embed: discord.Embed = discord.Embed()
                     embed.set_thumbnail(
-                        url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100"
+                        url=MEDICAT_LOGO
                     )
                     embed.set_footer(
                         text="Medicat USB Official",
-                        icon_url="https://cdn.discordapp.com/avatars/882914619847479296/22ec88463059ae49099ba1aaea790bc4.webp?size=100",
+                        icon_url=MEDICAT_LOGO
                     )
                     embed.title = CUSTOM_COMMANDS[ctx.command.name]["title"]
                     embed.description = CUSTOM_COMMANDS[ctx.command.name]["description"]

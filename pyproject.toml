@@ -1,0 +1,56 @@
+[tool.black]
+    line-length = 99
+    target-version = ['py38']
+    include = '\.py$'
+    exclude = '''
+    /(
+          \.eggs
+        | \.git
+        | \.hg
+        | \.mypy_cache
+        | \.tox
+        | \.venv
+        | _build
+        | buck-out
+        | build
+        | dist
+        | AAA3A_utils
+    )/
+    '''
+
+[tool.isort]
+    profile = 'black'
+    line_length = 99
+    atomic = true
+    src_paths = ["isort", "test"]
+    multi_line_output = 7
+    order_by_type = true
+    sections = ['FUTURE','STDLIB','FIRSTPARTY','THIRDPARTY','LOCALFOLDER']
+    known_third_party = ['discord', 'redbot']
+    known_first_party = [
+        'antinuke',
+        'autotraceback',
+        'calculator',
+        'clearchannel',
+        'ctxvar',
+        'discordedit',
+        'discordmodals',
+        'discordsearch',
+        'dropdownstexts',
+        'editfile',
+        'exportchannel',
+        'getloc',
+        'ip',
+        'medicat',
+        'memberprefix',
+        'reacttocommand',
+        'rolesbuttons',
+        'seen',
+        'simplesanction',
+        'sudo',
+        'tickettool',
+        'transferchannel',
+        'urlbuttons'
+    ]
+    skip = ['.gitignore']
+    skip_glob = ['.github/*', '.git/*', 'docs/*', 'AAA3A_utils/*']

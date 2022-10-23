@@ -220,6 +220,15 @@ class CogsUtils(commands.Cog):
         """
         await self.bot.wait_until_red_ready()
         try:
+            self.cog.__version__ = self.__version__ = await self.get_cog_version()
+        except (self.DownloaderNotLoaded, asyncio.TimeoutError, ValueError):
+            pass
+        except Exception as e:  # really doesn't matter if this fails so fine with debug level
+            self.cog.log.debug(
+                f"Something went wrong checking {self.cog.qualified_name} version.",
+                exc_info=e,
+            )
+        try:
             to_update, local_commit, online_commit = await self.to_update()
             if to_update:
                 self.cog.log.warning(
@@ -317,29 +326,71 @@ class CogsUtils(commands.Cog):
             handler.close()
         self.cog.log.handlers = []
 
-    async def to_update(self, cog_name: typing.Optional[str] = None):
-        if cog_name is None:
-            cog_name = self.cog.qualified_name
-        cog_name = cog_name.lower()
+    async def get_cog_version(self, cog: typing.Optional[typing.Union[commands.Cog, str]] = None):
+        if cog is None:
+            cog = self.cog
+        if isinstance(cog, str):
+            cog_name = cog.lower()
+        else:
+            cog_name = cog.qualified_name.lower()
 
         downloader = self.bot.get_cog("Downloader")
         if downloader is None:
-            raise self.DownloaderNotLoaded(
-                _("The cog downloader is not loaded.").format(**locals())
-            )
+            raise self.DownloaderNotLoaded("The cog downloader is not loaded.")
 
         if await self.bot._cog_mgr.find_cog(cog_name) is None:
-            raise ValueError(_("This cog was not found in any cog path."))
+            raise ValueError("This cog was not found in any cog path.")
+
+        from redbot.cogs.downloader.repo_manager import Repo, ProcessFormatter
+        repo = None
+        path = Path(inspect.getsourcefile(cog.__class__))
+        if not path.parent.parent == (await self.bot._cog_mgr.install_path()):
+            repo = Repo(name="", url="", branch="", commit="", folder_path=path.parent.parent)
+        else:
+            local = discord.utils.get(await downloader.installed_cogs(), name=cog_name)
+            if local is not None:
+                repo = local.repo
+        if repo is None:
+            raise ValueError("This cog is not installed on this bot with Downloader.")
+
+        exists, __ = repo._existing_git_repo()
+        if not exists:
+            raise ValueError(f"A git repo does not exist at path: {repo.folder_path}")
+        git_command = ProcessFormatter().format(
+            "git -C {path} rev-list HEAD --count {cog_name}", path=repo.folder_path, cog_name=cog_name
+        )
+        p = await repo._run(git_command)
+        if not p.returncode == 0:
+            raise asyncio.IncompleteReadError("No results could be retrieved from the git command.", None)
+        nb_commits = p.stdout.decode(encoding="utf-8").strip()
+        nb_commits = int(nb_commits)
+
+        version = 1.0 + (nb_commits / 10)
+
+        return version
+
+    async def to_update(self, cog: typing.Optional[typing.Union[commands.Cog, str]] = None):
+        if cog is None:
+            cog = self.cog
+        if isinstance(cog, str):
+            cog_name = cog.lower()
+        else:
+            cog_name = cog.qualified_name.lower()
+
+        downloader = self.bot.get_cog("Downloader")
+        if downloader is None:
+            raise self.DownloaderNotLoaded("The cog downloader is not loaded.")
+
+        if await self.bot._cog_mgr.find_cog(cog_name) is None:
+            raise ValueError("This cog was not found in any cog path.")
 
         local = discord.utils.get(await downloader.installed_cogs(), name=cog_name)
         if local is None:
-            raise ValueError(_("This cog is not installed on this bot.").format(**locals()))
+            raise ValueError("This cog is not installed on this bot with Downloader.")
         local_commit = local.commit
         repo = local.repo
         if repo is None:
-            raise ValueError(
-                _("This cog has not been installed from the cog Downloader.").format(**locals())
-            )
+            raise ValueError("This cog has not been installed from the cog Downloader.")
 
         repo_owner, repo_name, repo_branch = (
             re.compile(
@@ -355,9 +406,7 @@ class CogsUtils(commands.Cog):
             ) as r:
                 online = await r.json()
         if online is None or "object" not in online or "sha" not in online["object"]:
-            raise asyncio.IncompleteReadError(
-                _("No results could be retrieved from the git api.").format(**locals()), None
-            )
+            raise asyncio.IncompleteReadError("No results could be retrieved from the git api.", None)
         online_commit = online["object"]["sha"]
 
         return online_commit != local_commit, local_commit, online_commit

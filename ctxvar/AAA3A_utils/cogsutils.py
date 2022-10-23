@@ -365,7 +365,7 @@ class CogsUtils(commands.Cog):
         nb_commits = p.stdout.decode(encoding="utf-8").strip()
         nb_commits = int(nb_commits)
 
-        version = 1.0 + (nb_commits / 10)
+        version = round(1.0 + (nb_commits / 100), 2)
 
         return version
 

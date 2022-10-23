@@ -10,7 +10,6 @@ else:
     from dislash import user_command, message_command, slash_command, Option, OptionType
 
 import asyncio
-from copy import copy
 
 from discord.ext.commands import BadArgument
 

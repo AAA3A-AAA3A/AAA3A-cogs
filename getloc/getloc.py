@@ -82,7 +82,7 @@ class GetLoc(commands.Cog):
 
     @commands.cooldown(rate=3, per=3600, type=commands.BucketType.member)
     @hybrid_command()
-    async def getloc(self, ctx: commands.Context, with_map: typing.Optional[bool]=False, *, adress_or_coordinates: str):
+    async def getloc(self, ctx: commands.Context, with_map: typing.Optional[bool]=True, *, adress_or_coordinates: str):
         """Display information about a location.
         You can provide a full address or gps coordinates.
         """

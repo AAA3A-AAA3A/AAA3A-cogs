@@ -1,14 +1,14 @@
-.. _rolesbuttons:
-============
-RolesButtons
-============
+.. _dropdownstexts:
+==============
+DropdownsTexts
+==============
 
-This is the cog guide for the 'RolesButtons' cog. This guide contains the collection of commands which you can use in the cog.
+This is the cog guide for the 'DropdownsTexts' cog. This guide contains the collection of commands which you can use in the cog.
 Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` with your own prefix when you use these commands in Discord.
 
 .. note::
 
-    Ensure that you are up to date by running ``[p]cog update rolesbuttons``.
+    Ensure that you are up to date by running ``[p]cog update dropdownstexts``.
     If there is something missing, or something that needs improving in this documentation, feel free to create an issue `here <https://github.com/AAA3A-AAA3A/AAA3A-cogs/issues>`_.
     This documentation is auto-generated everytime this cog receives an update.
 
@@ -16,7 +16,7 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to have roles-buttons!
+A cog to have dropdowns-texts!
 
 --------
 Commands
@@ -24,23 +24,23 @@ Commands
 
 Here are all the commands included in this cog (6):
 
-* ``[p]rolesbuttons``
- Group of commands for use RolesButtons.
+* ``[p]dropdownstexts``
+ Group of commands for use DropdownsTexts.
 
-* ``[p]rolesbuttons add <message> <role> <emoji> ["1"|"2"|"3"|"4"=2] [text_button=None]``
- Add a role-button to a message.
+* ``[p]dropdownstexts add <message> <emoji> <label> <text>``
+ Add a dropdown-text to a message.
 
-* ``[p]rolesbuttons bulk <message> [roles_buttons]...``
- Add roles-buttons to a message.
+* ``[p]dropdownstexts bulk <message> [dropdown_texts...]``
+ Add dropdown-texts to a message.
 
-* ``[p]rolesbuttons clear <message>``
- Clear all roles-buttons to a message.
+* ``[p]dropdownstexts clear <message>``
+ Clear a dropdown-texts to a message.
 
-* ``[p]rolesbuttons purge``
- Clear all roles-buttons to a **guild**.
+* ``[p]dropdownstexts purge``
+ Clear all dropdowns-texts to a **guild**.
 
-* ``[p]rolesbuttons remove <message> <button>``
- Remove a role-button to a message.
+* ``[p]dropdownstexts remove <message> <emoji>``
+ Remove a dropdown-text to a message.
 
 ------------
 Installation
@@ -53,17 +53,17 @@ If you haven't added my repo before, lets add it first. We'll call it
 
     [p]repo add AAA3A-cogs https://github.com/AAA3A-AAA3A/AAA3A-cogs
 
-Now, we can install RolesButtons.
+Now, we can install DropdownsTexts.
 
 .. code-block:: ini
 
-    [p]cog install AAA3A-cogs rolesbuttons
+    [p]cog install AAA3A-cogs dropdownstexts
 
 Once it's installed, it is not loaded by default. Load it by running the following command:
 
 .. code-block:: ini
 
-    [p]load rolesbuttons
+    [p]load dropdownstexts
 
 ---------------
 Further Support

@@ -22,7 +22,7 @@ A cog to check when a member/role/channel/category/user/guild was last active!
 Commands
 --------
 
-Here are all the commands included in this cog (14):
+Here are all the commands included in this cog (17):
 
 * ``[p]seen ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] <object>``
  Check when a member/role/channel/category was last active!
@@ -42,6 +42,9 @@ Here are all the commands included in this cog (14):
 * ``[p]seen channel ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [channel=None]``
  Check when a channel was last active!
 
+* ``[p]seen configstats``
+ Get Config data stats.
+
 * ``[p]seen getloopstatus``
  Get an embed for check loop status.
 
@@ -54,11 +57,17 @@ Here are all the commands included in this cog (14):
 * ``[p]seen hackuser ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] <user_id>``
  Check when a old user was last active!
 
+* ``[p]seen ignoreme``
+ Asking Seen to ignore your actions.
+
+* ``[p]seen listener <state> ["message"|"message_edit"|"reaction_add"|"reaction_remove"]...``
+ Enable or disable a listener.
+
 * ``[p]seen member ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [member=None]``
  Check when a member was last active!
 
-* ``[p]seen purge ["user"|"member"|"role"|"channel"|"guild"=None]``
- Purge Config for a specified type ou all.
+* ``[p]seen purge <"all"|"user"|"member"|"role"|"channel"|"guild">``
+ Purge Config for a specified type or all.
 
 * ``[p]seen role ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [role=None]``
  Check when a role was last active!

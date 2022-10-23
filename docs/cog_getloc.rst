@@ -24,7 +24,7 @@ Commands
 
 Here are all the commands included in this cog (1):
 
-* ``[p]getloc <adress_or_coordinates>``
+* ``[p]getloc [with_map=True] <adress_or_coordinates>``
  Display information about a location.
 
 ------------

@@ -24,7 +24,7 @@ Commands
 
 Here are all the commands included in this cog (1):
 
-* ``[p]discordsearch [channel=None] [args...]``
+* ``[p]discordsearch [channel] [args]...``
  Search for a message on Discord in a channel.
 
 ------------

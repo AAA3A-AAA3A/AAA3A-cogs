@@ -22,46 +22,52 @@ This cog will only work on x server and therefore cannot be used by the general 
 Commands
 --------
 
-Here are all the commands included in this cog (13):
+Here are all the commands included in this cog (15):
 
-* ``[p]customtools``
- 
+* ``[p]medicat``
+ Commands of the Medicat cog.
 
-* ``[p]getlastbootablestoolsversions``
+* ``[p]medicat customtools``
+ How to add your own bootable tools (iso, wim, vhd) to Medicat USB?
+
+* ``[p]medicat getlastbootablestoolsversions``
  Get the latest versions of each Medicat USB bootable tool.
 
-* ``[p]getlastventoyversion``
+* ``[p]medicat getlastventoyversion``
  Get the latest version of Ventoy.
 
-* ``[p]howinstall``
- 
+* ``[p]medicat howinstall``
+ How do I install Medicat USB?
 
-* ``[p]kofi``
- 
+* ``[p]medicat kofi``
+ How to make a donation?
 
-* ``[p]medicatversion``
- 
+* ``[p]medicat medicatversion``
+ What is the latest version of Medicat USB?
 
-* ``[p]menus``
- 
+* ``[p]medicat menus``
+ How to download one of the menus?
 
-* ``[p]noiso``
- 
+* ``[p]medicat noiso``
+ How do I download the Medicat USB iso file?
 
-* ``[p]updateonly``
- 
+* ``[p]medicat test``
+ Test!
 
-* ``[p]usbvhd``
- 
+* ``[p]medicat updateonly``
+ How can I update Medicat USB without having to install all the files again?
 
-* ``[p]virus``
- 
+* ``[p]medicat usbvhd``
+ What is the difference between Medicat USB and Medicat VHD?
 
-* ``[p]whatmedicat``
- 
+* ``[p]medicat virus``
+ Why does my antivirus software blame Medicat?
 
-* ``[p]xy``
- 
+* ``[p]medicat whatmedicat``
+ What is Medicat USB?
+
+* ``[p]medicat xy``
+ X & Y
 
 ------------
 Installation

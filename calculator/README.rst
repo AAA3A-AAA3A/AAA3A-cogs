@@ -16,7 +16,7 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to do simple calculations from Discord with buttons!
+A cog to do calculations from Discord with buttons!
 
 --------
 Commands
@@ -24,7 +24,7 @@ Commands
 
 Here are all the commands included in this cog (1):
 
-* ``[p]calc [calculation=None]``
+* ``[p]calculate [calculation=None]``
  Calculate a simple expression.
 
 ------------

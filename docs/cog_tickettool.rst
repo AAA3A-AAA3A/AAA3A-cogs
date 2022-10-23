@@ -66,7 +66,7 @@ Here are all the commands included in this cog (37):
 * ``[p]setticket logschannel <text_channel_or_'none'>``
  Set a channel where events are registered.
 
-* ``[p]setticket message [channel=None] [message=None] [reason_options...]``
+* ``[p]setticket message [channel] [message] [reason_options]...``
  Send a message with a button to open a ticket or dropdown with possible reasons.
 
 * ``[p]setticket modlog <true_or_false>``
@@ -79,7 +79,7 @@ Here are all the commands included in this cog (37):
  Set a role for pings on ticket creation.
 
 * ``[p]setticket purge [confirmation=False]``
- Purge all existing tickets in the config. Does not delete any channels. All commands associated with the tickets will no longer work.
+ Purge all existing tickets in the config. Does not delete any channels.
 
 * ``[p]setticket renamechanneldropdown <true_or_false>``
  Enable or disable Rename Channel Dropdown.
@@ -102,7 +102,7 @@ Here are all the commands included in this cog (37):
 * ``[p]ticket``
  Commands for using the ticket system.
 
-* ``[p]ticket add [members...] [reason=No reason provided.]``
+* ``[p]ticket add [members]... [reason=No reason provided.]``
  Add a member to an existing ticket.
 
 * ``[p]ticket claim [member=None] [reason=No reason provided.]``
@@ -126,7 +126,7 @@ Here are all the commands included in this cog (37):
 * ``[p]ticket owner <new_owner> [reason=No reason provided.]``
  Change the owner of an existing ticket.
 
-* ``[p]ticket remove [members...] [reason=No reason provided.]``
+* ``[p]ticket remove [members]... [reason=No reason provided.]``
  Remove a member to an existing ticket.
 
 * ``[p]ticket rename <new_name> [reason=No reason provided.]``

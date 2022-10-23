@@ -2,6 +2,7 @@
 ==========
 UrlButtons
 ==========
+
 This is the cog guide for the 'UrlButtons' cog. This guide contains the collection of commands which you can use in the cog.
 Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` with your own prefix when you use these commands in Discord.
 
@@ -25,14 +26,19 @@ Here are all the commands included in this cog (6):
 
 * ``[p]urlbuttons``
  Group of commands for use UrlButtons.
+
 * ``[p]urlbuttons add <message> <url> <emoji> [text_button=None]``
  Add a url-button to a message.
-* ``[p]urlbuttons bulk <message> [url_buttons...]``
+
+* ``[p]urlbuttons bulk <message> [url_buttons]...``
  Add a url-button to a message.
+
 * ``[p]urlbuttons clear <message>``
  Clear all url-buttons to a message.
+
 * ``[p]urlbuttons purge``
  Clear all url-buttons to a **guild**.
+
 * ``[p]urlbuttons remove <message> <button>``
  Remove a url-button to a message.
 
@@ -63,6 +69,6 @@ Once it's installed, it is not loaded by default. Load it by running the followi
 Further Support
 ---------------
 
-For more support, head over to the `cog support server <https://discord.gg/GET4DVk>`_,
-You can ask in #support_othercogs by pinging me.
-You can also contact me by private message.
+Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
+Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
+Additionally, feel free to open an issue or pull request to this repo.

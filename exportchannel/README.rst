@@ -39,13 +39,13 @@ Here are all the commands included in this cog (8):
 * ``[p]exportchannel between [channel] <before> <after>``
  Export part of a channel's messages to an html file.
 
-* ``[p]exportchannel bot [channel] [bot=True]``
+* ``[p]exportchannel bot [channel] [bot=True] [limit=None]``
  Export part of a channel's messages to an html file.
 
 * ``[p]exportchannel messages [channel] <limit>``
  Export part of a channel's messages to an html file.
 
-* ``[p]exportchannel user [channel] <user>``
+* ``[p]exportchannel user [channel] <user> [limit=None]``
  Export part of a channel's messages to an html file.
 
 ------------

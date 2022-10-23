@@ -22,16 +22,19 @@ A cog to get the ip address of the bot!
 Commands
 --------
 
-Here are all the commands included in this cog (3):
+Here are all the commands included in this cog (4):
 
 * ``[p]ip``
+ Commands group for Ip.
+
+* ``[p]ip ip``
  Get the ip address of the bot.
 
-* ``[p]setportip <port>``
+* ``[p]ip setportip <port>``
  Set the port.
 
-* ``[p]website``
- Get the ip adress website.
+* ``[p]ip website``
+ Get the ip address website.
 
 ------------
 Installation

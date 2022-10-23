@@ -22,10 +22,19 @@ A cog to list and display the contents of all sub-functions of `ctx`!
 Commands
 --------
 
-Here are all the commands included in this cog (1):
+Here are all the commands included in this cog (4):
 
-* ``[p]ctxvar [message=None] [args]``
+* ``[p]ctxvar``
  
+
+* ``[p]ctxvar ctx [message=None] [args=None]``
+ Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes.
+
+* ``[p]ctxvar dir <thing> [search=None]``
+ Display a list of all attributes of the provided object (debug not async).
+
+* ``[p]ctxvar inspect [show_all] <thing>``
+ Execute `rich.help(obj=object, ...)` on the provided object (debug not async).
 
 ------------
 Installation

@@ -22,10 +22,31 @@ A cog to transfer all messages channel in a other channel!
 Commands
 --------
 
-Here are all the commands included in this cog (1):
+Here are all the commands included in this cog (8):
 
-* ``[p]transferchannel <source> <destination> <limit> <"embed"|"webhook"|"message">``
+* ``[p]transferchannel``
  Transfer all messages channel in a other channel. This might take a long time.
+
+* ``[p]transferchannel after <source> <destination> <"embeds"|"webhooks"|"messages"> <after>``
+ Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+
+* ``[p]transferchannel all <source> <destination> <"embeds"|"webhooks"|"messages">``
+ Transfer all messages channel in a other channel. This might take a long time.
+
+* ``[p]transferchannel before <source> <destination> <"embeds"|"webhooks"|"messages"> <before>``
+ Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+
+* ``[p]transferchannel between <source> <destination> <"embeds"|"webhooks"|"messages"> <before> <after>``
+ Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+
+* ``[p]transferchannel bot <source> <destination> <"embeds"|"webhooks"|"messages"> [bot=True] [limit=None]``
+ Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+
+* ``[p]transferchannel messages <source> <destination> <"embeds"|"webhooks"|"messages"> <limit>``
+ Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+
+* ``[p]transferchannel user <source> <destination> <"embeds"|"webhooks"|"messages"> <user> [limit=None]``
+ Transfer a part of a channel's messages channel in a other channel. This might take a long time.
 
 ------------
 Installation

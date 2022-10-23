@@ -22,10 +22,13 @@ A cog to sanction a user!
 Commands
 --------
 
-Here are all the commands included in this cog (23):
+Here are all the commands included in this cog (24):
 
 * ``[p]sanction [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
  Sanction a user quickly and easily.
+
+* ``[p]sanction 00 [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
+ - Sanction a user quickly and easily.
 
 * ``[p]sanction 01 [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
  - :information_source: Show info on a user.
@@ -61,7 +64,7 @@ Here are all the commands included in this cog (23):
  Configure SimpleSanction for your server.
 
 * ``[p]setsimplesanction color <color_or_'none'>``
- Set a colour fort the embed.
+ Set a colour for the embed.
 
 * ``[p]setsimplesanction confirmation <true_or_false>``
  Enable or disable Action Confirmation
@@ -82,7 +85,7 @@ Here are all the commands included in this cog (23):
  Enable or disable Show Author
 
 * ``[p]setsimplesanction thumbnail <link_or_'none'>``
- Set a thumbnail fort the embed.
+ Set a thumbnail for the embed.
 
 * ``[p]setsimplesanction timeout <seconds_number_or_`none`>``
  Choose the timeout

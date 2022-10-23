@@ -16,15 +16,16 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to display the error traceback of a command aomatically after the error!
+A cog to display the error traceback of a command automatically after the error!
 
 --------
 Commands
 --------
 
-Here are all the commands included in this cog (0):
+Here are all the commands included in this cog (1):
 
-
+* ``[p]traceback [public=False]``
+ Sends to the owner the last command exception that has occurred.
 
 ------------
 Installation

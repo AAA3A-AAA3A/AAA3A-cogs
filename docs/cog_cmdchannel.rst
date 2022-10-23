@@ -22,10 +22,22 @@ A cog to send the result of a command to another channel!
 Commands
 --------
 
-Here are all the commands included in this cog (21):
+Here are all the commands included in this cog (12):
 
-* ``[p]cmdchannel [guild=None] [channel=None] [command]``
+* ``[p]cmdchannel``
+ 
+
+* ``[p]cmdchannel channel <channel> <command>``
  Act as if the command had been typed in the channel of your choice.
+
+* ``[p]cmdchannel testvar``
+ Test variables.
+
+* ``[p]cmdchannel user <user> <command>``
+ Act as if the command had been typed by imitating the specified user.
+
+* ``[p]cmdchannel userchannel <user> [channel=None] <command>``
+ Act as if the command had been typed in the channel of your choice by imitating the specified user.
 
 * ``[p]cmdset``
  Configure Command for your server.
@@ -45,47 +57,8 @@ Here are all the commands included in this cog (21):
 * ``[p]cmdset cmdchannel information <true_or_false>``
  Enable or disable information message.
 
-* ``[p]cmdset cmduser``
- Configure CmdUser for your server.
-
-* ``[p]cmdset cmduser confirmation <true_or_false>``
- Enable or disable confirmation.
-
-* ``[p]cmdset cmduser delete <true_or_false>``
- Enable or disable message delete.
-
-* ``[p]cmdset cmduser enable <true_or_false>``
- Enable or disable CommandUser.
-
-* ``[p]cmdset cmduser information <true_or_false>``
- Enable or disable information message.
-
-* ``[p]cmdset cmduserchannel``
- Configure CmdUserChannel for your server.
-
-* ``[p]cmdset cmduserchannel confirmation <true_or_false>``
- Enable or disable confirmation.
-
-* ``[p]cmdset cmduserchannel delete <true_or_false>``
- Enable or disable message delete.
-
-* ``[p]cmdset cmduserchannel enable <true_or_false>``
- Enable or disable CommandUserChannel.
-
-* ``[p]cmdset cmduserchannel information <true_or_false>``
- Enable or disable information message.
-
 * ``[p]cmdset logschannel <text_channel_or_'none'>``
  Set a channel where events are registered.
-
-* ``[p]cmduser [user=None] [command]``
- Act as if the command had been typed by imitating the specified user.
-
-* ``[p]cmduserchannel [user=None] [channel=None] [command]``
- Act as if the command had been typed in the channel of your choice by imitating the specified user.
-
-* ``[p]testvar``
- Test variables.
 
 ------------
 Installation

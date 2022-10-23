@@ -27,10 +27,10 @@ Here are all the commands included in this cog (6):
 * ``[p]rolesbuttons``
  Group of commands for use RolesButtons.
 
-* ``[p]rolesbuttons add <message> <role> <emoji> [1|2|3|4=2] [text_button=None]``
+* ``[p]rolesbuttons add <message> <role> <emoji> ["1"|"2"|"3"|"4"=2] [text_button=None]``
  Add a role-button to a message.
 
-* ``[p]rolesbuttons bulk <message> [roles_buttons...]``
+* ``[p]rolesbuttons bulk <message> [roles_buttons]...``
  Add roles-buttons to a message.
 
 * ``[p]rolesbuttons clear <message>``

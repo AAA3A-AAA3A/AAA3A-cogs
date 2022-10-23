@@ -90,7 +90,7 @@ class EditFile(commands.Cog):
             with open(file=path, mode="rb") as file:
                 content = file.read()
             if line_span is not None:
-                lines = content.split(b"\n")[line_span[0] - 1 : line_span[1]]
+                lines = content.split(b"\n")[line_span[0] - 1: line_span[1]]
             else:
                 lines = content.split(b"\n")
             lines_without_count = lines

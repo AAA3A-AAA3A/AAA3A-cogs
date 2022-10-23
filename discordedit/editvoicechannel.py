@@ -8,12 +8,7 @@ import typing  # isort:skip
 if CogsUtils().is_dpy2:  # To remove
     setattr(commands, "Literal", typing.Literal)
 
-# Credits:
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
-
-_ = Translator("EditVoiceChannel", __file__)
+_ = Translator("DiscordEdit", __file__)
 
 if CogsUtils().is_dpy2:
     from functools import partial
@@ -27,7 +22,7 @@ else:
 class EditVoiceChannel(commands.Cog):
     """A cog to edit voice channels!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red):  # Never executed except manually.
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)

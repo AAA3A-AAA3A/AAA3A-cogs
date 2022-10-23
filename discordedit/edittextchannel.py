@@ -5,15 +5,16 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import datetime
+
+from redbot.core.commands.converter import get_timedelta_converter
+
+TimedeltaConverter = get_timedelta_converter(default_unit="s", maximum=datetime.timedelta(seconds=21600), minimum=datetime.timedelta(seconds=0))
+
 if CogsUtils().is_dpy2:  # To remove
     setattr(commands, "Literal", typing.Literal)
 
-# Credits:
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
-
-_ = Translator("EditTextChannel", __file__)
+_ = Translator("DiscordEdit", __file__)
 
 if CogsUtils().is_dpy2:
     from functools import partial
@@ -27,7 +28,7 @@ else:
 class EditTextChannel(commands.Cog):
     """A cog to edit text channels!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red):  # Never executed except manually.
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)
@@ -174,15 +175,16 @@ class EditTextChannel(commands.Cog):
             await ctx.tick(message="Done.")
 
     @edittextchannel.command()
-    async def slowmodedelay(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], slowmode_delay: int):
+    async def slowmodedelay(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], slowmode_delay: TimedeltaConverter):
         """Edit text channel slowmode delay.
 
-        Specifies the slowmode rate limit for user in this channel, in seconds. A value of 0 disables slowmode. The maximum value possible is 21600.
+        Specifies the slowmode rate limit for user in this channel, in seconds. A value of 0s disables slowmode. The maximum value possible is 21600s.
         """
         if channel is None:
             channel = ctx.channel
         if not await self.check_text_channel(ctx, channel):
             return
+        slowmode_delay = int(slowmode_delay.total_seconds())
         if not slowmode_delay >= 0 or not slowmode_delay <= 21600:
             await ctx.send_help()
             return

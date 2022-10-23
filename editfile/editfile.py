@@ -7,13 +7,12 @@ import discord  # isort:skip
 import inspect
 import io
 import os
-from os import listdir
-from pathlib import Path
 import re
 import typing
+from os import listdir
+from pathlib import Path
 
-from redbot.core import Config
-from redbot.core import data_manager
+from redbot.core import Config, data_manager
 from redbot.core.utils.chat_formatting import box, pagify
 
 if CogsUtils().is_dpy2:  # To remove
@@ -29,11 +28,13 @@ _ = Translator("EditFile", __file__)
 
 if CogsUtils().is_dpy2:
     from functools import partial
+
     hybrid_command = partial(commands.hybrid_command, with_app_command=False)
     hybrid_group = partial(commands.hybrid_group, with_app_command=False)
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
+
 
 @cog_i18n(_)
 class EditFile(commands.Cog):
@@ -48,12 +49,18 @@ class EditFile(commands.Cog):
     @commands.is_owner()
     @hybrid_group(aliases=["fileedit"])
     async def editfile(self, ctx: commands.Context):
-        """Commands group to get a file and replace it from its path.
-        """
+        """Commands group to get a file and replace it from its path."""
         pass
 
     @editfile.command()
-    async def get(self, ctx: commands.Context, menu: typing.Optional[bool]=False, show_line: typing.Optional[bool]=False, *, path: str):
+    async def get(
+        self,
+        ctx: commands.Context,
+        menu: typing.Optional[bool] = False,
+        show_line: typing.Optional[bool] = False,
+        *,
+        path: str,
+    ):
         """Get a file on the bot's host machine from its path.
         `#L10` or `#L10-L30` is supported.
         """
@@ -71,7 +78,11 @@ class EditFile(commands.Cog):
         try:
             size = os.path.getsize(path)
             if size <= 0:
-                await ctx.send(_("Cowardly refusing to read a file with no size stat. (it may be empty, endless or inaccessible).").format(**locals()))
+                await ctx.send(
+                    _(
+                        "Cowardly refusing to read a file with no size stat. (it may be empty, endless or inaccessible)."
+                    ).format(**locals())
+                )
                 return
             if size > 128 * (1024 ** 2):
                 await ctx.send(_("Cowardly refusing to read a file >128MB.").format(**locals()))
@@ -79,7 +90,7 @@ class EditFile(commands.Cog):
             with open(file=path, mode="rb") as file:
                 content = file.read()
             if line_span is not None:
-                lines = content.split(b"\n")[line_span[0] - 1:line_span[1]]
+                lines = content.split(b"\n")[line_span[0] - 1 : line_span[1]]
             else:
                 lines = content.split(b"\n")
             lines_without_count = lines
@@ -94,24 +105,41 @@ class EditFile(commands.Cog):
             await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
             return
         except IsADirectoryError:
-            await ctx.send(_("The path you specified refers to a directory, not a file.").format(**locals()))
+            await ctx.send(
+                _("The path you specified refers to a directory, not a file.").format(**locals())
+            )
             return
         path = Path(self.cogsutils.replace_var_paths(str(path)))
         if menu:
             len_lines = len(content.split(b"\n"))
-            line = f"#L1-L{len(lines)} (All)" if line_span is None else ("#L" + str(line_span[0]) + "-L" + str(line_span[1]) + f" / {len_lines}")
+            line = (
+                f"#L1-L{len(lines)} (All)"
+                if line_span is None
+                else ("#L" + str(line_span[0]) + "-L" + str(line_span[1]) + f" / {len_lines}")
+            )
             header = box(f"File {path}, line {line}.")
-            pages = [{"content": (header + box(p, lang="py")), "file": file} for p in pagify((b"\n".join(lines)).decode(encoding="utf-8"), page_length=2000 - len(header))]
+            pages = [
+                {"content": (header + box(p, lang="py")), "file": file}
+                for p in pagify(
+                    (b"\n".join(lines)).decode(encoding="utf-8"), page_length=2000 - len(header)
+                )
+            ]
             if len(pages) == 0:
                 len_lines = len(content.split(b"\n"))
-                await ctx.send(_("There are only {len_lines} lines in this file.").format(**locals()))
+                await ctx.send(
+                    _("There are only {len_lines} lines in this file.").format(**locals())
+                )
                 return
             await Menu(pages=pages, timeout=300, delete_after_timeout=None).start(ctx)
         else:
-            await ctx.send(_("Here are the contents of the file `{path}`.").format(**locals()), file=file)
+            await ctx.send(
+                _("Here are the contents of the file `{path}`.").format(**locals()), file=file
+            )
 
     @editfile.command()
-    async def replace(self, ctx: commands.Context, path: str, *, content: typing.Optional[str]=None):
+    async def replace(
+        self, ctx: commands.Context, path: str, *, content: typing.Optional[str] = None
+    ):
         """Replace a file on the bot's host machine from its path.
         `#L10` or `#L10-L30` is supported.
         """
@@ -131,22 +159,32 @@ class EditFile(commands.Cog):
                 old_file_content = file.read()
             try:
                 if line_span is not None:
-                    lines = old_file_content.split(b"\n")[line_span[0] - 1:line_span[1]]
+                    lines = old_file_content.split(b"\n")[line_span[0] - 1 : line_span[1]]
                 else:
                     lines = old_file_content.split(b"\n")
             except IndexError:
                 len_lines = len(old_file_content.split(b"\n"))
-                await ctx.send(_("There are only {len_lines} lines in this file.").format(**locals()))
+                await ctx.send(
+                    _("There are only {len_lines} lines in this file.").format(**locals())
+                )
                 return
             old_file = discord.File(fp=io.BytesIO(b"\n".join(lines)), filename=path.name)
         except FileNotFoundError:
-            await ctx.send(_("This original file cannot be found on the host machine.").format(**locals()))
+            await ctx.send(
+                _("This original file cannot be found on the host machine.").format(**locals())
+            )
             return
         except IsADirectoryError:
-            await ctx.send(_("The path you specified refers to a directory, not a file.").format(**locals()))
+            await ctx.send(
+                _("The path you specified refers to a directory, not a file.").format(**locals())
+            )
             return
         if content is None and ctx.message.attachments == []:
-            await ctx.send(_("You must send the command with an attachment that will be used to replace the original file.").format(**locals()))
+            await ctx.send(
+                _(
+                    "You must send the command with an attachment that will be used to replace the original file."
+                ).format(**locals())
+            )
             return
         if content is not None:
             # remove ```py\n```
@@ -158,18 +196,26 @@ class EditFile(commands.Cog):
         else:
             new_file_content = await ctx.message.attachments[0].read()
         if line_span is not None:
-            lines = old_file_content.split(b"\n")[:line_span[0] - 1] + new_file_content.split(b"\n") + old_file_content.split(b"\n")[line_span[1]:]
+            lines = (
+                old_file_content.split(b"\n")[: line_span[0] - 1]
+                + new_file_content.split(b"\n")
+                + old_file_content.split(b"\n")[line_span[1] :]
+            )
         else:
             lines = new_file_content.split(b"\n")
         with open(path, "wb") as file:
             file.write(b"\n".join(lines))
         path = Path(self.cogsutils.replace_var_paths(str(path)))
-        await ctx.send(_("This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly.").format(**locals()), file=old_file)
+        await ctx.send(
+            _(
+                "This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly."
+            ).format(**locals()),
+            file=old_file,
+        )
 
     @editfile.command()
     async def findcog(self, ctx: commands.Context, cog: str):
-        """Get a cog directory on the bot's host machine from its name.
-        """
+        """Get a cog directory on the bot's host machine from its name."""
         cog_obj = ctx.bot.get_cog(cog)
         if cog_obj is None:
             await ctx.send("Could not find a cog with this name.")
@@ -182,21 +228,36 @@ class EditFile(commands.Cog):
                 reason = "This cog does not store any data."
             else:
                 reason = "This cog had its data directory removed."
-        list_files = "\n".join([f"- {file}" for file in sorted(cog_path.iterdir(), key=lambda file: file.is_dir(), reverse=True) if file.is_file() and file.suffix == ".py"])
-        message = f"Cog path: {cog_path}\nData path: {cog_data_path or reason}" + "\n\n" + f"Files `.py`:\n{list_files}"
+        list_files = "\n".join(
+            [
+                f"- {file}"
+                for file in sorted(
+                    cog_path.iterdir(), key=lambda file: file.is_dir(), reverse=True
+                )
+                if file.is_file() and file.suffix == ".py"
+            ]
+        )
+        message = (
+            f"Cog path: {cog_path}\nData path: {cog_data_path or reason}"
+            + "\n\n"
+            + f"Files `.py`:\n{list_files}"
+        )
         message = self.cogsutils.replace_var_paths(message)
         await ctx.send(box(f"{message}"))
 
     @editfile.command()
     async def listdir(self, ctx: commands.Context, *, path: str):
-        """List all files/directories of a directory from its path.
-        """
+        """List all files/directories of a directory from its path."""
         path = Path(self.cogsutils.replace_var_paths(path, reverse=True))
         if not path.exists():
-            await ctx.send(_("This directory cannot be found on the host machine.").format(**locals()))
+            await ctx.send(
+                _("This directory cannot be found on the host machine.").format(**locals())
+            )
             return
         if not path.is_dir():
-            await ctx.send(_("The path you specified refers to a file, not a directory.").format(**locals()))
+            await ctx.send(
+                _("The path you specified refers to a file, not a directory.").format(**locals())
+            )
             return
         message = ""
         files = listdir(str(path))
@@ -217,33 +278,37 @@ class EditFile(commands.Cog):
 
     @editfile.command()
     async def rename(self, ctx: commands.Context, new_name: str, *, path: str):
-        """Rename a file.
-        """
+        """Rename a file."""
         path = Path(self.cogsutils.replace_var_paths(path))
         if not path.exists():
             await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
             return
         if not path.is_file() and path.is_dir():
-            await ctx.send(_("The path you specified refers to a directory, not a file.").format(**locals()))
+            await ctx.send(
+                _("The path you specified refers to a directory, not a file.").format(**locals())
+            )
             return
         try:
             path.rename(target=Path(f"{path.parent}") + f"{new_name}")
         except FileNotFoundError:
             await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
         except IsADirectoryError:
-            await ctx.send(_("The path you specified refers to a directory, not a file.").format(**locals()))
+            await ctx.send(
+                _("The path you specified refers to a directory, not a file.").format(**locals())
+            )
         else:
             await ctx.send(_("The `{path}` file has been deleted.").format(**locals()))
 
     @editfile.command()
     async def delete(self, ctx: commands.Context, *, path: str):
-        """Delete a file.
-        """
+        """Delete a file."""
         if not path.exists():
             await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
             return
         if not path.is_file() and path.is_dir():
-            await ctx.send(_("The path you specified refers to a directory, not a file.").format(**locals()))
+            await ctx.send(
+                _("The path you specified refers to a directory, not a file.").format(**locals())
+            )
             return
         path = Path(self.cogsutils.replace_var_paths(path))
         try:
@@ -251,6 +316,8 @@ class EditFile(commands.Cog):
         except FileNotFoundError:
             await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
         except IsADirectoryError:
-            await ctx.send(_("The path you specified refers to a directory, not a file.").format(**locals()))
+            await ctx.send(
+                _("The path you specified refers to a directory, not a file.").format(**locals())
+            )
         else:
             await ctx.send(_("The `{path}` file has been deleted.").format(**locals()))

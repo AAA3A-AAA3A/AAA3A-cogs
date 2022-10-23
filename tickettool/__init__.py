@@ -9,6 +9,7 @@ from .tickettool import TicketTool
 
 __red_end_user_data_statement__ = get_end_user_data_statement(file=__file__)
 
+
 async def setup(bot: Red):
     cog = TicketTool(bot)
     await CogsUtils().add_cog(bot, cog)

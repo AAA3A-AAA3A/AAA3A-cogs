@@ -18,14 +18,7 @@ from redbot.core import Config
 from redbot.core._diagnoser import IssueDiagnoser
 from redbot.core.bot import Red
 from redbot.core.data_manager import basic_config, config_file, instance_name, storage_type
-from redbot.core.utils.chat_formatting import (
-    bold,
-    box,
-    humanize_list,
-    humanize_timedelta,
-    pagify,
-    text_to_file,
-)  # NOQA
+from redbot.core.utils.chat_formatting import bold, box, humanize_list, humanize_timedelta, pagify, text_to_file  # NOQA
 from rich.console import Console
 from rich.table import Table
 

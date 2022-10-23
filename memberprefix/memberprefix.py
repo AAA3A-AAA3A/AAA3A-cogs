@@ -19,11 +19,13 @@ _ = Translator("MemberPrefix", __file__)
 
 if CogsUtils().is_dpy2:
     from functools import partial
+
     hybrid_command = partial(commands.hybrid_command, with_app_command=False)
     hybrid_group = partial(commands.hybrid_group, with_app_command=False)
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
+
 
 @cog_i18n(_)
 class MemberPrefix(commands.Cog):
@@ -53,15 +55,23 @@ class MemberPrefix(commands.Cog):
         self.cogsutils._setup()
 
     if CogsUtils().is_dpy2:
+
         async def cog_unload(self):
             self.bot.remove_before_invoke_hook(self.before_invoke)
             self.cogsutils._end()
+
     else:
+
         def cog_unload(self):
             self.bot.remove_before_invoke_hook(self.before_invoke)
             self.cogsutils._end()
 
-    async def red_delete_data_for_user(self, *, requester: typing.Literal["discord_deleted_user", "owner", "user", "user_strict"], user_id: int):
+    async def red_delete_data_for_user(
+        self,
+        *,
+        requester: typing.Literal["discord_deleted_user", "owner", "user", "user_strict"],
+        user_id: int,
+    ):
         """Delete all user chosen prefixes in all Config guilds."""
         if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
             return
@@ -105,7 +115,9 @@ class MemberPrefix(commands.Cog):
         else:
             prefixes = await self.bot.get_valid_prefixes(message.guild)
             return
-        ctx = await self.get_context_with_custom_prefixes(origin=message, prefixes=prefixes, cls=commands.context.Context)
+        ctx = await self.get_context_with_custom_prefixes(
+            origin=message, prefixes=prefixes, cls=commands.context.Context
+        )
         if ctx is None:
             return
         if ctx.valid:
@@ -113,7 +125,6 @@ class MemberPrefix(commands.Cog):
             await self.bot.invoke(ctx)
 
     class StrConverter(commands.Converter):
-
         async def convert(self, ctx: commands.Context, arg: str):
             return arg
 
@@ -136,10 +147,18 @@ class MemberPrefix(commands.Cog):
             await ctx.send(_("You now use this server or global prefixes.").format(**locals()))
             return
         if any(len(x) > 25 for x in prefixes):
-            await ctx.send(_("A prefix is above the maximal length (25 characters).\nThis is possible for global or per-server prefixes, but not for per-member prefixes.").format(**locals()))
+            await ctx.send(
+                _(
+                    "A prefix is above the maximal length (25 characters).\nThis is possible for global or per-server prefixes, but not for per-member prefixes."
+                ).format(**locals())
+            )
             return
         if any(prefix.startswith("/") for prefix in prefixes):
-            await ctx.send(_("Prefixes cannot start with `/`, as it conflicts with Discord's slash commands.").format(**locals()))
+            await ctx.send(
+                _(
+                    "Prefixes cannot start with `/`, as it conflicts with Discord's slash commands."
+                ).format(**locals())
+            )
             return
         await self.config.member(ctx.author).custom_prefixes.set(prefixes)
         if len(prefixes) == 1:
@@ -147,7 +166,9 @@ class MemberPrefix(commands.Cog):
         else:
             await ctx.send(_("Prefixes for you only set.").format(**locals()))
 
-    async def get_context_with_custom_prefixes(self, origin: discord.Message, prefixes: typing.List, *, cls=commands.context.Context):
+    async def get_context_with_custom_prefixes(
+        self, origin: discord.Message, prefixes: typing.List, *, cls=commands.context.Context
+    ):
         r"""|coro|
 
         Returns the invocation context from the message or interaction.

@@ -16,11 +16,13 @@ _ = Translator("Ip", __file__)
 
 if CogsUtils().is_dpy2:
     from functools import partial
+
     hybrid_command = partial(commands.hybrid_command, with_app_command=False)
     hybrid_group = partial(commands.hybrid_group, with_app_command=False)
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
+
 
 @cog_i18n(_)
 class Ip(commands.Cog):
@@ -66,12 +68,13 @@ class Ip(commands.Cog):
                 ip = r.headers["X-Client-IP"]  # Gives the "public IP" of the Bot client PC
         config = await self.config.all()
         port = config["port"]
-        await ctx.send(_("The Administrator Panel website is http://{ip}:{port}/.").format(**locals()))
+        await ctx.send(
+            _("The Administrator Panel website is http://{ip}:{port}/.").format(**locals())
+        )
 
     @ip_group.command(name="setportip", aliases=["ipportset"], usage="<port>")
     async def setportip(self, ctx: commands.Context, *, port):
-        """Set the port.
-        """
+        """Set the port."""
         config = await self.config.all()
 
         actual_port = config["port"]

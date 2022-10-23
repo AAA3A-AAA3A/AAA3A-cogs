@@ -12,11 +12,13 @@ _ = Translator("DiscordEdit", __file__)
 
 if CogsUtils().is_dpy2:
     from functools import partial
+
     hybrid_command = partial(commands.hybrid_command, with_app_command=False)
     hybrid_group = partial(commands.hybrid_group, with_app_command=False)
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
+
 
 @cog_i18n(_)
 class EditVoiceChannel(commands.Cog):
@@ -29,11 +31,26 @@ class EditVoiceChannel(commands.Cog):
         self.cogsutils._setup()
 
     async def check_voice_channel(self, ctx: commands.Context, channel: discord.VoiceChannel):
-        if not self.cogsutils.check_permissions_for(channel=channel, user=ctx.guild.me, check=["manage_channel"]):
-            await ctx.send(_("I can not let you edit the voice channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission.").format(**locals()))
+        if not self.cogsutils.check_permissions_for(
+            channel=channel, user=ctx.guild.me, check=["manage_channel"]
+        ):
+            await ctx.send(
+                _(
+                    "I can not let you edit the voice channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
+                ).format(**locals())
+            )
             return False
-        if not self.cogsutils.check_permissions_for(channel=channel, user=ctx.author, check=["manage_channel"]) and ctx.author.id not in ctx.bot.owner_ids:
-            await ctx.send(_("I can not edit the voice channel {channel.mention} ({channel.id}) because you don't have the `manage_channel` permission.").format(**locals()))
+        if (
+            not self.cogsutils.check_permissions_for(
+                channel=channel, user=ctx.author, check=["manage_channel"]
+            )
+            and ctx.author.id not in ctx.bot.owner_ids
+        ):
+            await ctx.send(
+                _(
+                    "I can not edit the voice channel {channel.mention} ({channel.id}) because you don't have the `manage_channel` permission."
+                ).format(**locals())
+            )
             return False
         return True
 
@@ -45,39 +62,64 @@ class EditVoiceChannel(commands.Cog):
         pass
 
     @editvoicechannel.command()
-    async def create(self, ctx: commands.Context, category: typing.Optional[discord.CategoryChannel]=None, *, name: str):
-        """Create a voice channel.
-        """
+    async def create(
+        self,
+        ctx: commands.Context,
+        category: typing.Optional[discord.CategoryChannel] = None,
+        *,
+        name: str,
+    ):
+        """Create a voice channel."""
         try:
-            await ctx.guild.create_voice_channel(name=name, category=category, reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{name}.")
+            await ctx.guild.create_voice_channel(
+                name=name,
+                category=category,
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{name}.",
+            )
         except discord.HTTPException:
-            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+            await ctx.send(
+                _(
+                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
+                ).format(**locals())
+            )
         else:
             await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
     async def clone(self, ctx: commands.Context, channel: discord.VoiceChannel, *, name: str):
-        """Clone a voice channel.
-        """
+        """Clone a voice channel."""
         if not await self.check_voice_channel(ctx, channel):
             return
         try:
-            await channel.clone(name=name, reason=f"{ctx.author} ({ctx.author.id}) has cloned the voice channel #!{channel.name} ({channel.id}).")
+            await channel.clone(
+                name=name,
+                reason=f"{ctx.author} ({ctx.author.id}) has cloned the voice channel #!{channel.name} ({channel.id}).",
+            )
         except discord.HTTPException:
-            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+            await ctx.send(
+                _(
+                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
+                ).format(**locals())
+            )
         else:
             await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
     async def name(self, ctx: commands.Context, channel: discord.VoiceChannel, name: str):
-        """Edit voice channel name.
-        """
+        """Edit voice channel name."""
         if not await self.check_voice_channel(ctx, channel):
             return
         try:
-            await channel.edit(name=name, reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).")
+            await channel.edit(
+                name=name,
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
+            )
         except discord.HTTPException:
-            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+            await ctx.send(
+                _(
+                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
+                ).format(**locals())
+            )
         else:
             await ctx.tick(message="Done.")
 
@@ -96,27 +138,42 @@ class EditVoiceChannel(commands.Cog):
             await ctx.send_help()
             return
         try:
-            await channel.edit(bitrate=bitrate, reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).")
+            await channel.edit(
+                bitrate=bitrate,
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
+            )
         except discord.HTTPException:
-            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+            await ctx.send(
+                _(
+                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
+                ).format(**locals())
+            )
         else:
             await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
     async def nsfw(self, ctx: commands.Context, channel: discord.VoiceChannel, nsfw: bool):
-        """Edit voice channel nsfw.
-        """
+        """Edit voice channel nsfw."""
         if not await self.check_voice_channel(ctx, channel):
             return
         try:
-            await channel.edit(nsfw=nsfw, reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).")
+            await channel.edit(
+                nsfw=nsfw,
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
+            )
         except discord.HTTPException:
-            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+            await ctx.send(
+                _(
+                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
+                ).format(**locals())
+            )
         else:
             await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
-    async def userlimit(self, ctx: commands.Context, channel: discord.VoiceChannel, user_limit: int):
+    async def userlimit(
+        self, ctx: commands.Context, channel: discord.VoiceChannel, user_limit: int
+    ):
         """Edit voice channel user limit.
 
         It must be a number between 0 and 99.
@@ -127,61 +184,107 @@ class EditVoiceChannel(commands.Cog):
             await ctx.send_help()
             return
         try:
-            await channel.edit(user_limit=user_limit, reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).")
+            await channel.edit(
+                user_limit=user_limit,
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
+            )
         except discord.HTTPException:
-            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+            await ctx.send(
+                _(
+                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
+                ).format(**locals())
+            )
         else:
             await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
-    async def position(self, ctx: commands.Context, channel: discord.VoiceChannel, *, position: int):
+    async def position(
+        self, ctx: commands.Context, channel: discord.VoiceChannel, *, position: int
+    ):
         """Edit voice channel position.
-        
+
         Warning: Only voice channels are taken into account. Channel 1 is the highest positioned voice channel.
         Channels cannot be moved to a position that takes them out of their current category.
         """
         if not await self.check_voice_channel(ctx, channel):
             return
-        max_guild_voice_channels_position = len([c for c in ctx.guild.channels if isinstance(c, discord.VoiceChannel)])
+        max_guild_voice_channels_position = len(
+            [c for c in ctx.guild.channels if isinstance(c, discord.VoiceChannel)]
+        )
         if not position > 0 or not position < max_guild_voice_channels_position + 1:
-            await ctx.send(_("The indicated position must be between 1 and {max_guild_voice_channels_position}.").format(**locals()))
+            await ctx.send(
+                _(
+                    "The indicated position must be between 1 and {max_guild_voice_channels_position}."
+                ).format(**locals())
+            )
             return
         position = position - 1
         try:
-            await channel.edit(position=position, reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel !{channel.name} ({channel.id}).")
+            await channel.edit(
+                position=position,
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel !{channel.name} ({channel.id}).",
+            )
         except discord.HTTPException:
-            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+            await ctx.send(
+                _(
+                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
+                ).format(**locals())
+            )
         else:
             await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
-    async def syncpermissions(self, ctx: commands.Context, channel: discord.VoiceChannel, sync_permissions: bool):
-        """Edit voice channel sync permissions.
-        """
+    async def syncpermissions(
+        self, ctx: commands.Context, channel: discord.VoiceChannel, sync_permissions: bool
+    ):
+        """Edit voice channel sync permissions."""
         if not await self.check_voice_channel(ctx, channel):
             return
         try:
-            await channel.edit(sync_permissions=sync_permissions, reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).")
+            await channel.edit(
+                sync_permissions=sync_permissions,
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
+            )
         except discord.HTTPException:
-            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+            await ctx.send(
+                _(
+                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
+                ).format(**locals())
+            )
         else:
             await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
-    async def category(self, ctx: commands.Context, channel: discord.VoiceChannel, category: discord.CategoryChannel):
-        """Edit voice channel category.
-        """
+    async def category(
+        self,
+        ctx: commands.Context,
+        channel: discord.VoiceChannel,
+        category: discord.CategoryChannel,
+    ):
+        """Edit voice channel category."""
         if not await self.check_voice_channel(ctx, channel):
             return
         try:
-            await channel.edit(category=category, reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).")
+            await channel.edit(
+                category=category,
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
+            )
         except discord.HTTPException:
-            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+            await ctx.send(
+                _(
+                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
+                ).format(**locals())
+            )
         else:
             await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
-    async def videoqualitymode(self, ctx: commands.Context, channel: discord.VoiceChannel, video_quality_mode: commands.Literal["1", "2"]):
+    async def videoqualitymode(
+        self,
+        ctx: commands.Context,
+        channel: discord.VoiceChannel,
+        video_quality_mode: commands.Literal["1", "2"],
+    ):
         """Edit voice channel video quality mode.
 
         auto = 1
@@ -191,29 +294,50 @@ class EditVoiceChannel(commands.Cog):
             return
         video_quality_mode = discord.VideoQualityMode(int(video_quality_mode))
         try:
-            await channel.edit(video_quality_mode=video_quality_mode, reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).")
+            await channel.edit(
+                video_quality_mode=video_quality_mode,
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
+            )
         except discord.HTTPException:
-            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+            await ctx.send(
+                _(
+                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
+                ).format(**locals())
+            )
         else:
             await ctx.tick(message="Done.")
 
     @editvoicechannel.command()
-    async def delete(self, ctx: commands.Context, channel: discord.VoiceChannel, confirmation: typing.Optional[bool]=False):
-        """Delete voice channel.
-        """
+    async def delete(
+        self,
+        ctx: commands.Context,
+        channel: discord.VoiceChannel,
+        confirmation: typing.Optional[bool] = False,
+    ):
+        """Delete voice channel."""
         if not await self.check_voice_channel(ctx, channel):
             return
         if not confirmation:
             embed: discord.Embed = discord.Embed()
             embed.title = _(":warning: - Delete voice channel").format(**locals())
-            embed.description = _("Do you really want to delete the voice channel {channel.mention} ({channel.id})?").format(**locals())
-            embed.color = 0xf00020
-            if not await self.cogsutils.ConfirmationAsk(ctx, text=f"{ctx.author.mention}", embed=embed):
+            embed.description = _(
+                "Do you really want to delete the voice channel {channel.mention} ({channel.id})?"
+            ).format(**locals())
+            embed.color = 0xF00020
+            if not await self.cogsutils.ConfirmationAsk(
+                ctx, text=f"{ctx.author.mention}", embed=embed
+            ):
                 await self.cogsutils.delete_message(ctx.message)
                 return
         try:
-            await channel.delete(reason=f"{ctx.author} ({ctx.author.id}) has deleted the voice channel #!{channel.name} ({channel.id}).")
+            await channel.delete(
+                reason=f"{ctx.author} ({ctx.author.id}) has deleted the voice channel #!{channel.name} ({channel.id})."
+            )
         except discord.HTTPException:
-            await ctx.send(_("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.").format(**locals()))
+            await ctx.send(
+                _(
+                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
+                ).format(**locals())
+            )
         else:
             await ctx.tick(message="Done.")

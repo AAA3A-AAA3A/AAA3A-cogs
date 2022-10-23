@@ -12,18 +12,26 @@ except ImportError:
 
 _ = Translator("RolesButtons", __file__)
 
+
 class Emoji(commands.EmojiConverter):
     async def convert(self, ctx: commands.Context, argument: str):
         if argument in EMOJI_DATA:
             return argument
         return await super().convert(ctx, argument)
 
+
 class EmojiLabelTextConverter(discord.ext.commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.Tuple[discord.Role, typing.Union[discord.PartialEmoji, str]]:
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Tuple[discord.Role, typing.Union[discord.PartialEmoji, str]]:
         arg_split = re.split(r";|,|\||-", argument)
         try:
             emoji, label, text = arg_split
         except Exception:
-            raise discord.ext.commands.BadArgument(_("Dropdown Text must be an emoji, followed by a label and a text, separated by either `;`, `,`, `|`, or `-`.").format(**locals()))
+            raise discord.ext.commands.BadArgument(
+                _(
+                    "Dropdown Text must be an emoji, followed by a label and a text, separated by either `;`, `,`, `|`, or `-`."
+                ).format(**locals())
+            )
         emoji = await Emoji().convert(ctx, emoji.strip())
         return emoji, label, text

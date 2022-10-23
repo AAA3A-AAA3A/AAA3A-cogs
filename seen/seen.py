@@ -8,10 +8,9 @@ import typing  # isort:skip
 import asyncio
 import datetime
 import time as _time
-
 from copy import deepcopy
 
-from redbot.core.utils.chat_formatting import pagify, box
+from redbot.core.utils.chat_formatting import box, pagify
 
 if CogsUtils().is_dpy2:  # To remove
     setattr(commands, "Literal", typing.Literal)
@@ -26,11 +25,13 @@ _ = Translator("Seen", __file__)
 
 if CogsUtils().is_dpy2:
     from functools import partial
+
     hybrid_command = partial(commands.hybrid_command, with_app_command=False)
     hybrid_group = partial(commands.hybrid_group, with_app_command=False)
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
+
 
 @cog_i18n(_)
 class Seen(commands.Cog):
@@ -54,14 +55,14 @@ class Seen(commands.Cog):
                 "message": True,
                 "message_edit": True,
                 "reaction_add": True,
-                "reaction_remove": True
-            }
+                "reaction_remove": True,
+            },
         }
         self.default_config = {
             "message": None,
             "message_edit": None,
             "reaction_add": None,
-            "reaction_remove": None
+            "reaction_remove": None,
         }
         self.config.register_global(**self.global_config)
         self.config.register_user(**self.default_config)
@@ -70,24 +71,43 @@ class Seen(commands.Cog):
         self.config.register_channel(**self.default_config)
         self.config.register_guild(**self.default_config)
 
-        self.cache = {"global": {}, "users": {}, "members": {}, "roles": {}, "channels": {}, "categories": {}, "guilds": {}, "existing_keys": []}
+        self.cache = {
+            "global": {},
+            "users": {},
+            "members": {},
+            "roles": {},
+            "channels": {},
+            "categories": {},
+            "guilds": {},
+            "existing_keys": [],
+        }
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
         self.purge.very_hidden = True
 
-        self.cogsutils.create_loop(function=self.save_to_config, name="Save Seen Config", minutes=1)
+        self.cogsutils.create_loop(
+            function=self.save_to_config, name="Save Seen Config", minutes=1
+        )
 
     if CogsUtils().is_dpy2:
+
         async def cog_unload(self):
             self.cogsutils._end()
             asyncio.create_task(self.save_to_config())
+
     else:
+
         def cog_unload(self):
             self.cogsutils._end()
             asyncio.create_task(self.save_to_config())
 
-    async def red_delete_data_for_user(self, *, requester: typing.Literal["discord_deleted_user", "owner", "user", "user_strict"], user_id: int):
+    async def red_delete_data_for_user(
+        self,
+        *,
+        requester: typing.Literal["discord_deleted_user", "owner", "user", "user_strict"],
+        user_id: int,
+    ):
         """Delete all Seen data for user, members, roles, channels, categories, guilds; if the user ID matches."""
         if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
             return
@@ -110,35 +130,81 @@ class Seen(commands.Cog):
             _roles_data = deepcopy(roles_data)
             for role in _roles_data:
                 for type, custom_id in _roles_data[role].items():
-                    if global_data[type].get(custom_id, {"action": {"member": None}})["action"]["member"] == user_id:
+                    if (
+                        global_data[type].get(custom_id, {"action": {"member": None}})["action"][
+                            "member"
+                        ]
+                        == user_id
+                    ):
                         roles_data[role][type] = None
         # Channels
         async with channel_group.all() as channels_data:
             _channels_data = deepcopy(channels_data)
             for channel in _channels_data:
                 for type, custom_id in _channels_data[channel].items():
-                    if global_data[type].get(custom_id, {"action": {"member": None}})["action"]["member"] == user_id:
+                    if (
+                        global_data[type].get(custom_id, {"action": {"member": None}})["action"][
+                            "member"
+                        ]
+                        == user_id
+                    ):
                         channels_data[channel][type] = None
         # Categories
         async with category_group.all() as categories_data:
             _categories_data = deepcopy(categories_data)
             for category in _categories_data:
                 for type, custom_id in _categories_data[category].items():
-                    if global_data[type].get(custom_id, {"action": {"member": None}})["action"]["member"] == user_id:
+                    if (
+                        global_data[type].get(custom_id, {"action": {"member": None}})["action"][
+                            "member"
+                        ]
+                        == user_id
+                    ):
                         categories_data[category][type] = None
         # Guilds
         async with guild_group.all() as guilds_data:
             _guilds_data = deepcopy(guilds_data)
             for guild in guilds_data:
                 for type, custom_id in _guilds_data[guild].items():
-                    if global_data[type].get(custom_id, {"action": {"member": None}})["action"]["member"] == user_id:
+                    if (
+                        global_data[type].get(custom_id, {"action": {"member": None}})["action"][
+                            "member"
+                        ]
+                        == user_id
+                    ):
                         guilds_data[guild][type] = None
 
-    def upsert_cache(self, time: _time, type: typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"], member: discord.Member, guild: discord.Guild, channel: discord.TextChannel, message: discord.Message, reaction: typing.Optional[str]=None):
+    def upsert_cache(
+        self,
+        time: _time,
+        type: typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"],
+        member: discord.Member,
+        guild: discord.Guild,
+        channel: discord.TextChannel,
+        message: discord.Message,
+        reaction: typing.Optional[str] = None,
+    ):
         if not isinstance(channel, discord.TextChannel):
             return
-        custom_id = self.cogsutils.generate_key(number=10, existing_keys=self.cache["existing_keys"], strings_used={"ascii_lowercase": True, "ascii_uppercase": True, "digits": True, "punctuation": False, "others": []})
-        data = {"seen": int(time), "action": {"message": [message.guild.id, message.channel.id, message.id], "member": member.id, "reaction": reaction}}
+        custom_id = self.cogsutils.generate_key(
+            number=10,
+            existing_keys=self.cache["existing_keys"],
+            strings_used={
+                "ascii_lowercase": True,
+                "ascii_uppercase": True,
+                "digits": True,
+                "punctuation": False,
+                "others": [],
+            },
+        )
+        data = {
+            "seen": int(time),
+            "action": {
+                "message": [message.guild.id, message.channel.id, message.id],
+                "member": member.id,
+                "reaction": reaction,
+            },
+        }
         if data["action"]["reaction"] is None:
             del data["action"]["reaction"]
         # Global (data)
@@ -184,9 +250,27 @@ class Seen(commands.Cog):
     async def save_to_config(self):
         cache = self.cache.copy()
         cache["existing_keys"] = []
-        if cache == {"global": {}, "users": {}, "members": {}, "roles": {}, "channels": {}, "categories": {}, "guilds": {}, "existing_keys": []}:
+        if cache == {
+            "global": {},
+            "users": {},
+            "members": {},
+            "roles": {},
+            "channels": {},
+            "categories": {},
+            "guilds": {},
+            "existing_keys": [],
+        }:
             return
-        self.cache = {"global": {}, "users": {}, "members": {}, "roles": {}, "channels": {}, "categories": {}, "guilds": {}, "existing_keys": self.cache["existing_keys"].copy()}
+        self.cache = {
+            "global": {},
+            "users": {},
+            "members": {},
+            "roles": {},
+            "channels": {},
+            "categories": {},
+            "guilds": {},
+            "existing_keys": self.cache["existing_keys"].copy(),
+        }
         user_group = self.config._get_base_group(self.config.USER)
         member_group = self.config._get_base_group(self.config.MEMBER)
         role_group = self.config._get_base_group(self.config.ROLE)
@@ -253,7 +337,7 @@ class Seen(commands.Cog):
         # Run Cleanup
         await self.cleanup()
 
-    async def cleanup(self, for_count: typing.Optional[bool]=False):
+    async def cleanup(self, for_count: typing.Optional[bool] = False):
         users_data = await self.config.all_users()
         members_data = await self.config.all_members()
         roles_data = await self.config.all_roles()
@@ -332,7 +416,9 @@ class Seen(commands.Cog):
             for type in _global_data:
                 for custom_id in _global_data[type]:
                     if not for_count:
-                        if custom_id not in self.cache["existing_keys"]:  # The action is no longer used by any data.
+                        if (
+                            custom_id not in self.cache["existing_keys"]
+                        ):  # The action is no longer used by any data.
                             try:
                                 del global_data[type][custom_id]
                             except IndexError:
@@ -340,9 +426,32 @@ class Seen(commands.Cog):
                     else:
                         global_count += 1
         if for_count:
-            return global_count, users_count, members_count, roles_count, channels_count, categories_count, guilds_count
+            return (
+                global_count,
+                users_count,
+                members_count,
+                roles_count,
+                channels_count,
+                categories_count,
+                guilds_count,
+            )
 
-    async def get_data_for(self, object: typing.Union[discord.User, discord.Member, discord.Role, discord.TextChannel, discord.CategoryChannel, discord.Guild], type: typing.Optional[typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], all_data_config: typing.Optional[typing.Dict]=None, all_data_cache: typing.Optional[typing.Dict]=None):
+    async def get_data_for(
+        self,
+        object: typing.Union[
+            discord.User,
+            discord.Member,
+            discord.Role,
+            discord.TextChannel,
+            discord.CategoryChannel,
+            discord.Guild,
+        ],
+        type: typing.Optional[
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+        ],
+        all_data_config: typing.Optional[typing.Dict] = None,
+        all_data_cache: typing.Optional[typing.Dict] = None,
+    ):
         global_data = await self.config.all()
         if not all([all_data_config is not None, all_data_cache is not None]):
             if isinstance(object, discord.User):
@@ -359,25 +468,76 @@ class Seen(commands.Cog):
                 all_data_cache = self.cache["channels"].get(object.guild.id, {}).get(object.id, {})
             elif isinstance(object, discord.CategoryChannel):
                 all_data_config = await self.config.channel(object).all()
-                all_data_cache = self.cache["categories"].get(object.guild.id, {}).get(object.id, {})
+                all_data_cache = (
+                    self.cache["categories"].get(object.guild.id, {}).get(object.id, {})
+                )
             elif isinstance(object, discord.Guild):
                 all_data_config = await self.config.guild(object).all()
                 all_data_cache = self.cache["guilds"].get(object.id, {})
             else:
                 return None
         if type is not None:
-            custom_ids = [custom_id for custom_id in [all_data_config.get(type, None), all_data_cache.get(type, None)] if custom_id is not None]
+            custom_ids = [
+                custom_id
+                for custom_id in [all_data_config.get(type, None), all_data_cache.get(type, None)]
+                if custom_id is not None
+            ]
             if len(custom_ids) == 0:
                 return
-            custom_id = sorted(custom_ids, key=lambda x: global_data[type].get(x, {}).get("seen") or self.cache["global"].get(type, {}).get(x, {}).get("seen"), reverse=True)[0]
+            custom_id = sorted(
+                custom_ids,
+                key=lambda x: global_data[type].get(x, {}).get("seen")
+                or self.cache["global"].get(type, {}).get(x, {}).get("seen"),
+                reverse=True,
+            )[0]
             data = global_data[type][custom_id]
             if data["seen"] is None or data["action"] is None:
                 return None
         else:
-            all_data_config = {x: all_data_config[x] for x in ["message", "message_edit", "reaction_add", "reaction_remove"] if all_data_config[x] is not None}
-            all_data_cache = {x: all_data_cache.get(x, None) for x in ["message", "message_edit", "reaction_add", "reaction_remove"] if all_data_cache.get(x, None) is not None}
-            all_data_config = [{"type": x, "seen": global_data[x].get(all_data_config[x], {"seen": None, "action": None})["seen"], "action": global_data[x].get(all_data_config[x], {"seen": None, "action": None})["action"]} for x in all_data_config if global_data[x].get(all_data_config[x], {"seen": None, "action": None})["seen"] is not None and global_data[x].get(all_data_config[x], {"seen": None, "action": None})["action"] is not None]
-            all_data_cache = [{"type": x, "seen": global_data[x].get(all_data_cache[x], {"seen": None, "action": None})["seen"], "action": global_data[x].get(all_data_cache[x], {"seen": None, "action": None})["action"]} for x in all_data_cache if global_data[x].get(all_data_cache[x], {"seen": None, "action": None})["seen"] is not None and global_data[x].get(all_data_cache[x], {"seen": None, "action": None})["action"] is not None]
+            all_data_config = {
+                x: all_data_config[x]
+                for x in ["message", "message_edit", "reaction_add", "reaction_remove"]
+                if all_data_config[x] is not None
+            }
+            all_data_cache = {
+                x: all_data_cache.get(x, None)
+                for x in ["message", "message_edit", "reaction_add", "reaction_remove"]
+                if all_data_cache.get(x, None) is not None
+            }
+            all_data_config = [
+                {
+                    "type": x,
+                    "seen": global_data[x].get(all_data_config[x], {"seen": None, "action": None})[
+                        "seen"
+                    ],
+                    "action": global_data[x].get(
+                        all_data_config[x], {"seen": None, "action": None}
+                    )["action"],
+                }
+                for x in all_data_config
+                if global_data[x].get(all_data_config[x], {"seen": None, "action": None})["seen"]
+                is not None
+                and global_data[x].get(all_data_config[x], {"seen": None, "action": None})[
+                    "action"
+                ]
+                is not None
+            ]
+            all_data_cache = [
+                {
+                    "type": x,
+                    "seen": global_data[x].get(all_data_cache[x], {"seen": None, "action": None})[
+                        "seen"
+                    ],
+                    "action": global_data[x].get(
+                        all_data_cache[x], {"seen": None, "action": None}
+                    )["action"],
+                }
+                for x in all_data_cache
+                if global_data[x].get(all_data_cache[x], {"seen": None, "action": None})["seen"]
+                is not None
+                and global_data[x].get(all_data_cache[x], {"seen": None, "action": None})["action"]
+                is not None
+            ]
             all_data = all_data_config + all_data_cache
             if len(all_data) == 0:
                 return None
@@ -413,19 +573,33 @@ class Seen(commands.Cog):
         guild_id, channel_id, message_id = tuple(message)
         message_link = f"https://discord.com/channels/{guild_id}/{channel_id}/{message_id}"
         if isinstance(object, discord.User):
-            member = getattr(self.bot.get_user(action["member"]), "display_name", None) or ("<@" + action["member"] + ">")
+            member = getattr(self.bot.get_user(action["member"]), "display_name", None) or (
+                "<@" + action["member"] + ">"
+            )
         elif isinstance(object, discord.Member):
-            member = getattr(object.guild.get_member(action["member"]), "display_name", None) or ("<@" + action["member"] + ">")
+            member = getattr(object.guild.get_member(action["member"]), "display_name", None) or (
+                "<@" + action["member"] + ">"
+            )
         elif isinstance(object, discord.Role):
-            member = getattr(object.guild.get_member(action["member"]), "display_name", None) or ("<@" + action["member"] + ">")
+            member = getattr(object.guild.get_member(action["member"]), "display_name", None) or (
+                "<@" + action["member"] + ">"
+            )
         elif isinstance(object, discord.TextChannel):
-            member = getattr(object.guild.get_member(action["member"]), "display_name", None) or ("<@" + action["member"] + ">")
+            member = getattr(object.guild.get_member(action["member"]), "display_name", None) or (
+                "<@" + action["member"] + ">"
+            )
         elif isinstance(object, discord.CategoryChannel):
-            member = getattr(object.guild.get_member(action["member"]), "display_name", None) or ("<@" + action["member"] + ">")
+            member = getattr(object.guild.get_member(action["member"]), "display_name", None) or (
+                "<@" + action["member"] + ">"
+            )
         elif isinstance(object, discord.Guild):
-            member = getattr(object.get_member(action["member"]), "display_name", None) or ("<@" + action["member"] + ">")
+            member = getattr(object.get_member(action["member"]), "display_name", None) or (
+                "<@" + action["member"] + ">"
+            )
         else:
-            member = getattr(self.bot.get_user(action["member"]), "display_name", None) or ("<@" + action["member"] + ">")
+            member = getattr(self.bot.get_user(action["member"]), "display_name", None) or (
+                "<@" + action["member"] + ">"
+            )
         reaction = action["reaction"] if "reaction" in action else None
         if type == "message":
             action = f"[This message]({message_link}) has been sent by @{member}."
@@ -437,7 +611,24 @@ class Seen(commands.Cog):
             action = f"The reaction {reaction} has been removed to the [this message]({message_link}) by @{member}."
         return time, seen, action
 
-    async def send_seen(self, ctx: commands.Context, object: typing.Union[discord.User, discord.Member, discord.Role, discord.TextChannel, discord.CategoryChannel, discord.Guild], type: typing.Optional[typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], all_data_config: typing.Optional[typing.Dict]=None, all_data_cache: typing.Optional[typing.Dict]=None):
+    async def send_seen(
+        self,
+        ctx: commands.Context,
+        object: typing.Union[
+            discord.User,
+            discord.Member,
+            discord.Role,
+            discord.TextChannel,
+            discord.CategoryChannel,
+            discord.Guild,
+        ],
+        type: typing.Optional[
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+        ],
+        show_details: typing.Optional[bool],
+        all_data_config: typing.Optional[typing.Dict] = None,
+        all_data_cache: typing.Optional[typing.Dict] = None,
+    ):
         async with ctx.typing():
             if isinstance(object, (discord.User, discord.Member)):
                 ignored_users = await self.config.ignored_users()
@@ -447,7 +638,12 @@ class Seen(commands.Cog):
                     embed.title = f"This {object.__class__.__name__.lower()} is in the ignored users list (`{ctx.prefix}seen ignoreme`)."
                     await ctx.send(embed=embed)
                     return
-            data = await self.get_data_for(type=type, object=object, all_data_config=all_data_config, all_data_cache=all_data_cache)
+            data = await self.get_data_for(
+                type=type,
+                object=object,
+                all_data_config=all_data_config,
+                all_data_cache=all_data_cache,
+            )
             if data is None:
                 embed = discord.Embed()
                 embed.color = discord.Color.red()
@@ -458,46 +654,104 @@ class Seen(commands.Cog):
             embed: discord.Embed = discord.Embed()
             embed.color = getattr(object, "color", discord.Color.green())
             if isinstance(object, discord.User):
-                embed.set_author(name=_("@{object.display_name} was seen {seen}.").format(**locals()), icon_url=object.display_avatar if self.cogsutils.is_dpy2 else object.avatar_url)
+                embed.set_author(
+                    name=_("@{object.display_name} was seen {seen}.").format(**locals()),
+                    icon_url=object.display_avatar
+                    if self.cogsutils.is_dpy2
+                    else object.avatar_url,
+                )
             elif isinstance(object, discord.Member):
-                embed.set_author(name=_("@{object.display_name} was seen {seen}.").format(**locals()), icon_url=object.display_avatar if self.cogsutils.is_dpy2 else object.avatar_url)
+                embed.set_author(
+                    name=_("@{object.display_name} was seen {seen}.").format(**locals()),
+                    icon_url=object.display_avatar
+                    if self.cogsutils.is_dpy2
+                    else object.avatar_url,
+                )
             elif isinstance(object, discord.Role):
-                embed.set_author(name=_("The role @&{object.name} was seen {seen}.").format(**locals()), icon_url=None)
+                embed.set_author(
+                    name=_("The role @&{object.name} was seen {seen}.").format(**locals()),
+                    icon_url=None,
+                )
             elif isinstance(object, discord.TextChannel):
-                embed.set_author(name=_("The text channel #{object.name} was seen {seen}.").format(**locals()), icon_url=None)
+                embed.set_author(
+                    name=_("The text channel #{object.name} was seen {seen}.").format(**locals()),
+                    icon_url=None,
+                )
             elif isinstance(object, discord.CategoryChannel):
-                embed.set_author(name=_("The category {object.name} was seen {seen}.").format(**locals()), icon_url=None)
+                embed.set_author(
+                    name=_("The category {object.name} was seen {seen}.").format(**locals()),
+                    icon_url=None,
+                )
             elif isinstance(object, discord.Guild):
-                embed.set_author(name=_("The guild {object.name} was seen {seen}.").format(**locals()), icon_url=object.icon if self.cogsutils.is_dpy2 else object.icon_url)
+                embed.set_author(
+                    name=_("The guild {object.name} was seen {seen}.").format(**locals()),
+                    icon_url=object.icon if self.cogsutils.is_dpy2 else object.icon_url,
+                )
             if show_details:
                 embed.description = action
                 embed.timestamp = datetime.datetime.fromtimestamp(time)
         await ctx.send(embed=embed)
 
-    async def send_board(self, ctx: commands.Context, object: typing.Literal["users", "members", "roles", "channels", "categories", "guilds"], type: typing.Optional[typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], reverse: typing.Optional[bool]=False):
+    async def send_board(
+        self,
+        ctx: commands.Context,
+        object: typing.Literal["users", "members", "roles", "channels", "categories", "guilds"],
+        type: typing.Optional[
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+        ],
+        reverse: typing.Optional[bool] = False,
+    ):
         async with ctx.typing():
             await self.save_to_config()
             if object == "users":
                 users = await self.config.all_users()
-                all_data = {ctx.bot.get_user(user): data for user, data in users.items() if ctx.bot.get_user(user) is not None}
+                all_data = {
+                    ctx.bot.get_user(user): data
+                    for user, data in users.items()
+                    if ctx.bot.get_user(user) is not None
+                }
             elif object == "members":
                 members = await self.config.all_members(ctx.guild)
-                all_data = {ctx.guild.get_member(member): data for member, data in members.items() if ctx.guild.get_member(member) is not None}
+                all_data = {
+                    ctx.guild.get_member(member): data
+                    for member, data in members.items()
+                    if ctx.guild.get_member(member) is not None
+                }
             elif object == "roles":
                 roles = await self.config.all_roles()
-                all_data = {ctx.guild.get_role(role): data for role, data in roles.items() if ctx.guild.get_role(role) is not None}
+                all_data = {
+                    ctx.guild.get_role(role): data
+                    for role, data in roles.items()
+                    if ctx.guild.get_role(role) is not None
+                }
             elif object == "channels":
                 channels = await self.config.all_channels()
-                all_data = {ctx.guild.get_channel(channel): data for channel, data in channels.items() if ctx.guild.get_channel(channel) is not None and ctx.guild.get_channel(channel).type == discord.ChannelType.text}
+                all_data = {
+                    ctx.guild.get_channel(channel): data
+                    for channel, data in channels.items()
+                    if ctx.guild.get_channel(channel) is not None
+                    and ctx.guild.get_channel(channel).type == discord.ChannelType.text
+                }
             elif object == "categories":
                 categories = await self.config.all_channels()
-                all_data = {ctx.guild.get_channel(category): data for category, data in categories.items() if ctx.guild.get_channel(category) is not None and ctx.guild.get_channel(category).type == discord.ChannelType.category}
+                all_data = {
+                    ctx.guild.get_channel(category): data
+                    for category, data in categories.items()
+                    if ctx.guild.get_channel(category) is not None
+                    and ctx.guild.get_channel(category).type == discord.ChannelType.category
+                }
             elif object == "guilds":
                 guilds = await self.config.all_guilds()
-                all_data = {ctx.bot.get_guild(guild): data for guild, data in guilds.items() if ctx.bot.get_guild(guild) is not None}
+                all_data = {
+                    ctx.bot.get_guild(guild): data
+                    for guild, data in guilds.items()
+                    if ctx.bot.get_guild(guild) is not None
+                }
             data = {}
             for x in all_data:
-                result = await self.get_data_for(type=type, object=x, all_data_config=all_data[x], all_data_cache={})
+                result = await self.get_data_for(
+                    type=type, object=x, all_data_config=all_data[x], all_data_cache={}
+                )
                 if result is None:
                     continue
                 time, seen, action = result
@@ -518,7 +772,9 @@ class Seen(commands.Cog):
             for x, y in sorted(data.items(), key=lambda x: x[1][0], reverse=not reverse):
                 count += 1
                 seen = y[1]
-                description.append(f"{(count) if not reverse else ((all_count + 1) - count)} - **{x}**: {seen}.")
+                description.append(
+                    f"{(count) if not reverse else ((all_count + 1) - count)} - **{x}**: {seen}."
+                )
             description = "\n".join(description)
             for text in pagify(description):
                 e = embed.copy()
@@ -537,16 +793,34 @@ class Seen(commands.Cog):
         if not message.author.bot:
             ctx: commands.Context = await self.bot.get_context(message)
             if ctx.valid:
-                if ctx.command.cog_name is not None and ctx.command.cog_name == "Seen":  # The commands of this cog will not be counted in order to measure its own absence for example.
+                if (
+                    ctx.command.cog_name is not None and ctx.command.cog_name == "Seen"
+                ):  # The commands of this cog will not be counted in order to measure its own absence for example.
                     return
-        if message.author.id == message.guild.me.id and len(message.embeds) == 1 and ("Seen".lower() in message.embeds[0].to_dict().get("author", {}).get("name", "").lower() or "Seen".lower() in message.embeds[0].to_dict().get("title", "").lower()):
+        if (
+            message.author.id == message.guild.me.id
+            and len(message.embeds) == 1
+            and (
+                "Seen".lower()
+                in message.embeds[0].to_dict().get("author", {}).get("name", "").lower()
+                or "Seen".lower() in message.embeds[0].to_dict().get("title", "").lower()
+            )
+        ):
             return
         ignored_users = await self.config.ignored_users()
         if message.author.id in ignored_users:
             return
         if not await self.config.listeners.message():
             return
-        self.upsert_cache(time=_time.time(), type="message", member=message.author, guild=message.guild, channel=message.channel, message=message, reaction=None)
+        self.upsert_cache(
+            time=_time.time(),
+            type="message",
+            member=message.author,
+            guild=message.guild,
+            channel=message.channel,
+            message=message,
+            reaction=None,
+        )
 
     @commands.Cog.listener()
     async def on_message_edit(self, before: discord.Message, after: discord.Message):
@@ -561,10 +835,20 @@ class Seen(commands.Cog):
             return
         if not await self.config.listeners.message_edit():
             return
-        self.upsert_cache(time=_time.time(), type="message_edit", member=after.author, guild=after.guild, channel=after.channel, message=after, reaction=None)
+        self.upsert_cache(
+            time=_time.time(),
+            type="message_edit",
+            member=after.author,
+            guild=after.guild,
+            channel=after.channel,
+            message=after,
+            reaction=None,
+        )
 
     @commands.Cog.listener()
-    async def on_reaction_add(self, reaction: discord.Reaction, user: typing.Union[discord.Member, discord.User]):
+    async def on_reaction_add(
+        self, reaction: discord.Reaction, user: typing.Union[discord.Member, discord.User]
+    ):
         if reaction.message.guild is None:
             return
         if not isinstance(user, discord.Member):
@@ -573,17 +857,29 @@ class Seen(commands.Cog):
             if not reaction.message.author.bot:
                 ctx: commands.Context = await self.bot.get_context(reaction.message)
                 if ctx.valid:
-                    if ctx.command.cog_name is not None and ctx.command.cog_name == "Seen":  # The commands of this cog will not be counted in order to measure its own absence for example.
+                    if (
+                        ctx.command.cog_name is not None and ctx.command.cog_name == "Seen"
+                    ):  # The commands of this cog will not be counted in order to measure its own absence for example.
                         return
         ignored_users = await self.config.ignored_users()
         if user.id in ignored_users:
             return
         if not await self.config.listeners.reaction_add():
             return
-        self.upsert_cache(time=_time.time(), type="reaction_add", member=user, guild=user.guild, channel=reaction.message.channel, message=reaction.message, reaction=str(reaction.emoji))
+        self.upsert_cache(
+            time=_time.time(),
+            type="reaction_add",
+            member=user,
+            guild=user.guild,
+            channel=reaction.message.channel,
+            message=reaction.message,
+            reaction=str(reaction.emoji),
+        )
 
     @commands.Cog.listener()
-    async def on_reaction_remove(self, reaction: discord.Reaction, user: typing.Union[discord.Member, discord.User]):
+    async def on_reaction_remove(
+        self, reaction: discord.Reaction, user: typing.Union[discord.Member, discord.User]
+    ):
         if reaction.message.guild is None:
             return
         if not isinstance(user, discord.Member):
@@ -593,12 +889,31 @@ class Seen(commands.Cog):
             return
         if not await self.config.listeners.reaction_remove():
             return
-        self.upsert_cache(time=_time.time(), type="reaction_remove", member=user, guild=user.guild, channel=reaction.message.channel, message=reaction.message, reaction=str(reaction.emoji))
+        self.upsert_cache(
+            time=_time.time(),
+            type="reaction_remove",
+            member=user,
+            guild=user.guild,
+            channel=reaction.message.channel,
+            message=reaction.message,
+            reaction=str(reaction.emoji),
+        )
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @hybrid_group(invoke_without_command=True)
-    async def seen(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], *, object: typing.Union[discord.Member, discord.Role, discord.TextChannel, discord.CategoryChannel]):
+    async def seen(
+        self,
+        ctx: commands.Context,
+        type: typing.Optional[
+            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+        ],
+        show_details: typing.Optional[bool],
+        *,
+        object: typing.Union[
+            discord.Member, discord.Role, discord.TextChannel, discord.CategoryChannel
+        ],
+    ):
         """Check when a member/role/channel/category was last active!"""
         if show_details is None:
             show_details = True
@@ -608,7 +923,16 @@ class Seen(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @seen.command()
-    async def member(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], *, member: typing.Optional[discord.Member]=None):
+    async def member(
+        self,
+        ctx: commands.Context,
+        type: typing.Optional[
+            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+        ],
+        show_details: typing.Optional[bool],
+        *,
+        member: typing.Optional[discord.Member] = None,
+    ):
         """Check when a member was last active!"""
         if member is None:
             member = ctx.author
@@ -620,7 +944,16 @@ class Seen(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @seen.command()
-    async def role(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], *, role: typing.Optional[discord.Role]=None):
+    async def role(
+        self,
+        ctx: commands.Context,
+        type: typing.Optional[
+            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+        ],
+        show_details: typing.Optional[bool],
+        *,
+        role: typing.Optional[discord.Role] = None,
+    ):
         """Check when a role was last active!"""
         if role is None:
             role = ctx.author.top_role
@@ -632,14 +965,24 @@ class Seen(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @seen.command()
-    async def channel(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], channel: typing.Optional[discord.TextChannel]=None):
+    async def channel(
+        self,
+        ctx: commands.Context,
+        type: typing.Optional[
+            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+        ],
+        show_details: typing.Optional[bool],
+        channel: typing.Optional[discord.TextChannel] = None,
+    ):
         """Check when a channel was last active!"""
         if channel is None:
             channel = ctx.channel
         if show_details is None:
             show_details = True
         if not channel.permissions_for(ctx.author).view_channel:
-            await ctx.send(_("You do not have permission to view this channel.").format(**locals()))
+            await ctx.send(
+                _("You do not have permission to view this channel.").format(**locals())
+            )
             return
         await self.send_seen(ctx, object=channel, type=type, show_details=show_details)
         await ctx.tick()
@@ -647,7 +990,15 @@ class Seen(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @seen.command()
-    async def category(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], category: typing.Optional[discord.CategoryChannel]=None):
+    async def category(
+        self,
+        ctx: commands.Context,
+        type: typing.Optional[
+            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+        ],
+        show_details: typing.Optional[bool],
+        category: typing.Optional[discord.CategoryChannel] = None,
+    ):
         """Check when a category was last active!"""
         if category is None:
             category = ctx.channel.category
@@ -656,8 +1007,17 @@ class Seen(commands.Cog):
                 return
         if show_details is None:
             show_details = True
-        if all([not channel.permissions_for(ctx.author).view_channel for channel in category.text_channels]):
-            await ctx.send(_("You do not have permission to view any of the channels in this category.").format(**locals()))
+        if all(
+            [
+                not channel.permissions_for(ctx.author).view_channel
+                for channel in category.text_channels
+            ]
+        ):
+            await ctx.send(
+                _(
+                    "You do not have permission to view any of the channels in this category."
+                ).format(**locals())
+            )
             return
         await self.send_seen(ctx, object=category, type=type, show_details=show_details)
         await ctx.tick()
@@ -666,18 +1026,44 @@ class Seen(commands.Cog):
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
     @seen.command(hidden=True)
-    async def hackmember(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], user: discord.User):
+    async def hackmember(
+        self,
+        ctx: commands.Context,
+        type: typing.Optional[
+            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+        ],
+        show_details: typing.Optional[bool],
+        user: discord.User,
+    ):
         """Check when a old member was last active!"""
         if show_details is None:
             show_details = True
-        all_data_config = await self.config.member_from_ids(guild_id=ctx.guild.id, member_id=user.id).all()
+        all_data_config = await self.config.member_from_ids(
+            guild_id=ctx.guild.id, member_id=user.id
+        ).all()
         all_data_cache = self.cache["members"].get(ctx.guild.id, {}).get(user.id, {})
-        await self.send_seen(ctx, object=user, type=type, show_details=show_details, all_data_config=all_data_config, all_data_cache=all_data_cache)
+        await self.send_seen(
+            ctx,
+            object=user,
+            type=type,
+            show_details=show_details,
+            all_data_config=all_data_config,
+            all_data_cache=all_data_cache,
+        )
         await ctx.tick()
 
     @commands.bot_has_permissions(embed_links=True)
     @seen.command()
-    async def guild(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], *, guild: typing.Optional[discord.ext.commands.converter.GuildConverter]=None):
+    async def guild(
+        self,
+        ctx: commands.Context,
+        type: typing.Optional[
+            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+        ],
+        show_details: typing.Optional[bool],
+        *,
+        guild: typing.Optional[discord.ext.commands.converter.GuildConverter] = None,
+    ):
         """Check when a guild was last active!"""
         if guild is None or ctx.author.id not in ctx.bot.owner_ids:
             guild = ctx.guild
@@ -689,7 +1075,16 @@ class Seen(commands.Cog):
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
     @seen.command(hidden=True)
-    async def user(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], *, user: typing.Optional[discord.User]=None):
+    async def user(
+        self,
+        ctx: commands.Context,
+        type: typing.Optional[
+            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+        ],
+        show_details: typing.Optional[bool],
+        *,
+        user: typing.Optional[discord.User] = None,
+    ):
         """Check when a user was last active!"""
         if user is None:
             user = ctx.author
@@ -701,7 +1096,15 @@ class Seen(commands.Cog):
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
     @seen.command(hidden=True)
-    async def hackuser(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], show_details: typing.Optional[bool], user_id: int):
+    async def hackuser(
+        self,
+        ctx: commands.Context,
+        type: typing.Optional[
+            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+        ],
+        show_details: typing.Optional[bool],
+        user_id: int,
+    ):
         """Check when a old user was last active!"""
         if show_details is None:
             show_details = True
@@ -715,7 +1118,17 @@ class Seen(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @seen.group(invoke_without_command=True)
-    async def board(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], object: typing.Optional[typing.Literal["members", "roles", "channels", "categories"]]="members", reverse: typing.Optional[bool]=False):
+    async def board(
+        self,
+        ctx: commands.Context,
+        type: typing.Optional[
+            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+        ],
+        object: typing.Optional[
+            typing.Literal["members", "roles", "channels", "categories"]
+        ] = "members",
+        reverse: typing.Optional[bool] = False,
+    ):
         """View a Seen Board for members/roles/channels/categories!"""
         await self.send_board(ctx, object=object, type=type, reverse=reverse)
         await ctx.tick()
@@ -723,7 +1136,14 @@ class Seen(commands.Cog):
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
     @board.command(name="guilds")
-    async def board_guilds(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], reverse: typing.Optional[bool]=False):
+    async def board_guilds(
+        self,
+        ctx: commands.Context,
+        type: typing.Optional[
+            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+        ],
+        reverse: typing.Optional[bool] = False,
+    ):
         """View a Seen Board for guilds!"""
         object = "guilds"
         await self.send_board(ctx, object=object, type=type, reverse=reverse)
@@ -732,7 +1152,14 @@ class Seen(commands.Cog):
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
     @board.command(name="users", hidden=True)
-    async def board_users(self, ctx: commands.Context, type: typing.Optional[commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]], reverse: typing.Optional[bool]=False):
+    async def board_users(
+        self,
+        ctx: commands.Context,
+        type: typing.Optional[
+            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+        ],
+        reverse: typing.Optional[bool] = False,
+    ):
         """View a Seen Board for users!"""
         object = "users"
         await self.send_board(ctx, object=object, type=type, reverse=reverse)
@@ -743,7 +1170,15 @@ class Seen(commands.Cog):
     async def configstats(self, ctx: commands.Context):
         """Get Config data stats."""
         async with ctx.typing():
-            global_count, users_count, members_count, roles_count, channels_count, categories_count, guilds_count = await self.cleanup(for_count=True)
+            (
+                global_count,
+                users_count,
+                members_count,
+                roles_count,
+                channels_count,
+                categories_count,
+                guilds_count,
+            ) = await self.cleanup(for_count=True)
             stats = {
                 "Global count": global_count,
                 "Users count": users_count,
@@ -751,7 +1186,7 @@ class Seen(commands.Cog):
                 "Roles count": roles_count,
                 "Channels count (+ categories channels)": channels_count,
                 "Categories count (+ text channels)": categories_count,
-                "Guilds count": guilds_count
+                "Guilds count": guilds_count,
             }
             stats = [f"{key}: {value}" for key, value in stats.items()]
             message = "--- Config Stats for Seen ---\n\n"
@@ -761,7 +1196,14 @@ class Seen(commands.Cog):
 
     @commands.is_owner()
     @seen.command()
-    async def listener(self, ctx: commands.Context, state: bool, types: commands.Greedy[typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]]):
+    async def listener(
+        self,
+        ctx: commands.Context,
+        state: bool,
+        types: commands.Greedy[
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+        ],
+    ):
         """Enable or disable a listener."""
         config = await self.config.listeners.all()
         for type in types:
@@ -793,7 +1235,11 @@ class Seen(commands.Cog):
 
     @commands.is_owner()
     @seen.command(hidden=True)
-    async def purge(self, ctx: commands.Context, type: commands.Literal["all", "user", "member", "role", "channel", "guild"]):
+    async def purge(
+        self,
+        ctx: commands.Context,
+        type: commands.Literal["all", "user", "member", "role", "channel", "guild"],
+    ):
         """Purge Config for a specified type or all."""
         if type == "all":
             await self.config.clear_all_users()

@@ -56,7 +56,7 @@ all_cogs = [
     "SimpleSanction",
     "Sudo",
     "TicketTool",
-    "TransferChannel"
+    "TransferChannel",
 ]
 cog_folders = []
 for cog in cogs:

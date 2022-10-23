@@ -17,6 +17,7 @@ _ = Translator("AutoTraceback", __file__)
 
 if CogsUtils().is_dpy2:
     from functools import partial
+
     hybrid_command = partial(commands.hybrid_command, with_app_command=False)
     hybrid_group = partial(commands.hybrid_group, with_app_command=False)
 else:
@@ -34,6 +35,8 @@ IGNORED_ERRORS = (
     commands.BadArgument,
     commands.BadBoolArgument,
 )
+
+
 @cog_i18n(_)
 class AutoTraceback(commands.Cog):
     """A cog to display the error traceback of a command automatically after the error!"""
@@ -65,7 +68,9 @@ class AutoTraceback(commands.Cog):
             if self.cogsutils.is_dpy2:
                 await ctx.defer()
             _last_exception = ctx.bot._last_exception.split("\n")
-            _last_exception[0] = _last_exception[0] + (":\n" if not _last_exception[0].endswith(":") else "")
+            _last_exception[0] = _last_exception[0] + (
+                ":\n" if not _last_exception[0].endswith(":") else ""
+            )
             _last_exception = "\n".join(_last_exception)
             _last_exception = self.cogsutils.replace_var_paths(_last_exception)
             if public:
@@ -98,7 +103,9 @@ class AutoTraceback(commands.Cog):
             return
         if isinstance(error, IGNORED_ERRORS):
             return
-        traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__))
+        traceback_error = "".join(
+            traceback.format_exception(type(error), error, error.__traceback__)
+        )
         traceback_error = self.cogsutils.replace_var_paths(traceback_error)
         pages = []
         for page in pagify(traceback_error, shorten_by=15, page_length=1985):

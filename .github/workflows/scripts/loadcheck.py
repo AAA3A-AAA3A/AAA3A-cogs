@@ -48,7 +48,7 @@ all_cogs = [
     "SimpleSanction",
     "Sudo",
     "TicketTool",
-    "TransferChannel"
+    "TransferChannel",
 ]
 cogs = []
 for cog in cogs:

@@ -4,6 +4,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
+
 if CogsUtils().is_dpy2:
     from .AAA3A_utils import Buttons  # isort:skip
 else:
@@ -13,10 +14,9 @@ import asyncio
 import datetime
 from math import *
 
-from TagScriptEngine import Interpreter, block
-
 from redbot.core import Config
 from redbot.core.utils.chat_formatting import box
+from TagScriptEngine import Interpreter, block
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
@@ -28,11 +28,13 @@ _ = Translator("Calculator", __file__)
 
 if CogsUtils().is_dpy2:
     from functools import partial
+
     hybrid_command = partial(commands.hybrid_command, with_app_command=False)
     hybrid_group = partial(commands.hybrid_group, with_app_command=False)
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
+
 
 @cog_i18n(_)
 class Calculator(commands.Cog):
@@ -48,7 +50,7 @@ class Calculator(commands.Cog):
         self.calculator_global = {
             "settings": {
                 "time_max": 180,
-                "color": 0x01d758,
+                "color": 0x01D758,
                 "thumbnail": "https://cdn.pixabay.com/photo/2017/07/06/17/13/calculator-2478633_960_720.png",
             },
         }
@@ -70,65 +72,139 @@ class Calculator(commands.Cog):
             "6": "⁶",
             "7": "⁷",
             "8": "⁸",
-            "9": "⁹"
+            "9": "⁹",
         }
 
         self.buttons_dict = [
-                                {"style": 2, "label": "1", "emoji": None, "custom_id": "1", "disabled": False},
-                                {"style": 2, "label": "2", "emoji": None, "custom_id": "2", "disabled": False},
-                                {"style": 2, "label": "3", "emoji": None, "custom_id": "3", "disabled": False},
-                                {"style": 1, "label": "x", "emoji": None, "custom_id": "x", "disabled": False},
-                                {"style": 4, "label": _("Exit").format(**locals()), "emoji": None, "custom_id": "exit_button", "disabled": False},
-                                {"style": 2, "label": "4", "emoji": None, "custom_id": "4", "disabled": False},
-                                {"style": 2, "label": "5", "emoji": None, "custom_id": "5", "disabled": False},
-                                {"style": 2, "label": "6", "emoji": None, "custom_id": "6", "disabled": False},
-                                {"style": 1, "label": "÷", "emoji": None, "custom_id": "÷", "disabled": False},
-                                {"style": 4, "label": "⌫", "emoji": None, "custom_id": "back_button", "disabled": False},
-                                {"style": 2, "label": "7", "emoji": None, "custom_id": "7", "disabled": False},
-                                {"style": 2, "label": "8", "emoji": None, "custom_id": "8", "disabled": False},
-                                {"style": 2, "label": "9", "emoji": None, "custom_id": "9", "disabled": False},
-                                {"style": 1, "label": "+", "emoji": None, "custom_id": "+", "disabled": False},
-                                {"style": 4, "label": _("Clear").format(**locals()), "emoji": None, "custom_id": "clear_button", "disabled": False},
-                                {"style": 2, "label": "00", "emoji": None, "custom_id": "00", "disabled": False},
-                                {"style": 2, "label": "0", "emoji": None, "custom_id": "0", "disabled": False},
-                                {"style": 2, "label": ".", "emoji": None, "custom_id": ".", "disabled": False},
-                                {"style": 1, "label": "-", "emoji": None, "custom_id": "-", "disabled": False},
-                                {"style": 3, "label": "=", "emoji": None, "custom_id": "result_button", "disabled": False},
-                                {"style": 2, "label": "(", "emoji": None, "custom_id": "(", "disabled": False},
-                                {"style": 2, "label": ")", "emoji": None, "custom_id": ")", "disabled": False},
-                                {"style": 2, "label": "√", "emoji": None, "custom_id": "√", "disabled": False},
-                                {"style": 3, "label": "<", "emoji": None, "custom_id": "left_button", "disabled": False},
-                                {"style": 3, "label": ">", "emoji": None, "custom_id": "right_button", "disabled": False}
-                            ]
+            {"style": 2, "label": "1", "emoji": None, "custom_id": "1", "disabled": False},
+            {"style": 2, "label": "2", "emoji": None, "custom_id": "2", "disabled": False},
+            {"style": 2, "label": "3", "emoji": None, "custom_id": "3", "disabled": False},
+            {"style": 1, "label": "x", "emoji": None, "custom_id": "x", "disabled": False},
+            {
+                "style": 4,
+                "label": _("Exit").format(**locals()),
+                "emoji": None,
+                "custom_id": "exit_button",
+                "disabled": False,
+            },
+            {"style": 2, "label": "4", "emoji": None, "custom_id": "4", "disabled": False},
+            {"style": 2, "label": "5", "emoji": None, "custom_id": "5", "disabled": False},
+            {"style": 2, "label": "6", "emoji": None, "custom_id": "6", "disabled": False},
+            {"style": 1, "label": "÷", "emoji": None, "custom_id": "÷", "disabled": False},
+            {
+                "style": 4,
+                "label": "⌫",
+                "emoji": None,
+                "custom_id": "back_button",
+                "disabled": False,
+            },
+            {"style": 2, "label": "7", "emoji": None, "custom_id": "7", "disabled": False},
+            {"style": 2, "label": "8", "emoji": None, "custom_id": "8", "disabled": False},
+            {"style": 2, "label": "9", "emoji": None, "custom_id": "9", "disabled": False},
+            {"style": 1, "label": "+", "emoji": None, "custom_id": "+", "disabled": False},
+            {
+                "style": 4,
+                "label": _("Clear").format(**locals()),
+                "emoji": None,
+                "custom_id": "clear_button",
+                "disabled": False,
+            },
+            {"style": 2, "label": "00", "emoji": None, "custom_id": "00", "disabled": False},
+            {"style": 2, "label": "0", "emoji": None, "custom_id": "0", "disabled": False},
+            {"style": 2, "label": ".", "emoji": None, "custom_id": ".", "disabled": False},
+            {"style": 1, "label": "-", "emoji": None, "custom_id": "-", "disabled": False},
+            {
+                "style": 3,
+                "label": "=",
+                "emoji": None,
+                "custom_id": "result_button",
+                "disabled": False,
+            },
+            {"style": 2, "label": "(", "emoji": None, "custom_id": "(", "disabled": False},
+            {"style": 2, "label": ")", "emoji": None, "custom_id": ")", "disabled": False},
+            {"style": 2, "label": "√", "emoji": None, "custom_id": "√", "disabled": False},
+            {
+                "style": 3,
+                "label": "<",
+                "emoji": None,
+                "custom_id": "left_button",
+                "disabled": False,
+            },
+            {
+                "style": 3,
+                "label": ">",
+                "emoji": None,
+                "custom_id": "right_button",
+                "disabled": False,
+            },
+        ]
         self.disabled_buttons_dict = [
-                                {"style": 2, "label": "1", "emoji": None, "custom_id": "1", "disabled": True},
-                                {"style": 2, "label": "2", "emoji": None, "custom_id": "2", "disabled": True},
-                                {"style": 2, "label": "3", "emoji": None, "custom_id": "3", "disabled": True},
-                                {"style": 1, "label": "x", "emoji": None, "custom_id": "x", "disabled": True},
-                                {"style": 4, "label": _("Exit").format(**locals()), "emoji": None, "custom_id": "exit_button", "disabled": True},
-                                {"style": 2, "label": "4", "emoji": None, "custom_id": "4", "disabled": True},
-                                {"style": 2, "label": "5", "emoji": None, "custom_id": "5", "disabled": True},
-                                {"style": 2, "label": "6", "emoji": None, "custom_id": "6", "disabled": True},
-                                {"style": 1, "label": "÷", "emoji": None, "custom_id": "÷", "disabled": True},
-                                {"style": 4, "label": "⌫", "emoji": None, "custom_id": "back_button", "disabled": True},
-                                {"style": 2, "label": "7", "emoji": None, "custom_id": "7", "disabled": True},
-                                {"style": 2, "label": "8", "emoji": None, "custom_id": "8", "disabled": True},
-                                {"style": 2, "label": "9", "emoji": None, "custom_id": "9", "disabled": True},
-                                {"style": 1, "label": "+", "emoji": None, "custom_id": "+", "disabled": True},
-                                {"style": 4, "label": _("Clear").format(**locals()), "emoji": None, "custom_id": "clear_button", "disabled": True},
-                                {"style": 2, "label": "00", "emoji": None, "custom_id": "00", "disabled": True},
-                                {"style": 2, "label": "0", "emoji": None, "custom_id": "0", "disabled": True},
-                                {"style": 2, "label": ".", "emoji": None, "custom_id": ".", "disabled": True},
-                                {"style": 1, "label": "-", "emoji": None, "custom_id": "-", "disabled": True},
-                                {"style": 3, "label": "=", "emoji": None, "custom_id": "result_button", "disabled": True},
-                                {"style": 2, "label": "(", "emoji": None, "custom_id": "(", "disabled": True},
-                                {"style": 2, "label": ")", "emoji": None, "custom_id": ")", "disabled": True},
-                                {"style": 2, "label": "√", "emoji": None, "custom_id": "√", "disabled": True},
-                                {"style": 3, "label": "<", "emoji": None, "custom_id": "left_button", "disabled": True},
-                                {"style": 3, "label": ">", "emoji": None, "custom_id": "right_button", "disabled": True}
-                            ]
+            {"style": 2, "label": "1", "emoji": None, "custom_id": "1", "disabled": True},
+            {"style": 2, "label": "2", "emoji": None, "custom_id": "2", "disabled": True},
+            {"style": 2, "label": "3", "emoji": None, "custom_id": "3", "disabled": True},
+            {"style": 1, "label": "x", "emoji": None, "custom_id": "x", "disabled": True},
+            {
+                "style": 4,
+                "label": _("Exit").format(**locals()),
+                "emoji": None,
+                "custom_id": "exit_button",
+                "disabled": True,
+            },
+            {"style": 2, "label": "4", "emoji": None, "custom_id": "4", "disabled": True},
+            {"style": 2, "label": "5", "emoji": None, "custom_id": "5", "disabled": True},
+            {"style": 2, "label": "6", "emoji": None, "custom_id": "6", "disabled": True},
+            {"style": 1, "label": "÷", "emoji": None, "custom_id": "÷", "disabled": True},
+            {
+                "style": 4,
+                "label": "⌫",
+                "emoji": None,
+                "custom_id": "back_button",
+                "disabled": True,
+            },
+            {"style": 2, "label": "7", "emoji": None, "custom_id": "7", "disabled": True},
+            {"style": 2, "label": "8", "emoji": None, "custom_id": "8", "disabled": True},
+            {"style": 2, "label": "9", "emoji": None, "custom_id": "9", "disabled": True},
+            {"style": 1, "label": "+", "emoji": None, "custom_id": "+", "disabled": True},
+            {
+                "style": 4,
+                "label": _("Clear").format(**locals()),
+                "emoji": None,
+                "custom_id": "clear_button",
+                "disabled": True,
+            },
+            {"style": 2, "label": "00", "emoji": None, "custom_id": "00", "disabled": True},
+            {"style": 2, "label": "0", "emoji": None, "custom_id": "0", "disabled": True},
+            {"style": 2, "label": ".", "emoji": None, "custom_id": ".", "disabled": True},
+            {"style": 1, "label": "-", "emoji": None, "custom_id": "-", "disabled": True},
+            {
+                "style": 3,
+                "label": "=",
+                "emoji": None,
+                "custom_id": "result_button",
+                "disabled": True,
+            },
+            {"style": 2, "label": "(", "emoji": None, "custom_id": "(", "disabled": True},
+            {"style": 2, "label": ")", "emoji": None, "custom_id": ")", "disabled": True},
+            {"style": 2, "label": "√", "emoji": None, "custom_id": "√", "disabled": True},
+            {
+                "style": 3,
+                "label": "<",
+                "emoji": None,
+                "custom_id": "left_button",
+                "disabled": True,
+            },
+            {
+                "style": 3,
+                "label": ">",
+                "emoji": None,
+                "custom_id": "right_button",
+                "disabled": True,
+            },
+        ]
 
-        self.history: typing.Dict[typing.Union[discord.Member, discord.User], typing.List[str]] = {}
+        self.history: typing.Dict[
+            typing.Union[discord.Member, discord.User], typing.List[str]
+        ] = {}
 
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
@@ -201,9 +277,19 @@ class Calculator(commands.Cog):
         embed.color = actual_color
         embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
         if ctx.guild:
-            embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon or "" if self.cogsutils.is_dpy2 else ctx.guild.icon_url or "")
+            embed.set_footer(
+                text=ctx.guild.name,
+                icon_url=ctx.guild.icon or ""
+                if self.cogsutils.is_dpy2
+                else ctx.guild.icon_url or "",
+            )
         else:
-            embed.set_footer(text=ctx.author.name, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
+            embed.set_footer(
+                text=ctx.author.name,
+                icon_url=ctx.author.display_avatar
+                if self.cogsutils.is_dpy2
+                else ctx.author.avatar_url,
+            )
         return embed
 
     async def input_formatter(self, expression: str, new: str):
@@ -223,193 +309,117 @@ class Calculator(commands.Cog):
     async def get_buttons(self, disabled: bool):
         buttons_one = ActionRow(
             Button(
-                style=ButtonStyle.grey,
-                label="1",
-                emoji=None,
-                custom_id="1",
-                disabled=disabled
+                style=ButtonStyle.grey, label="1", emoji=None, custom_id="1", disabled=disabled
             ),
             Button(
-                style=ButtonStyle.grey,
-                label="2",
-                emoji=None,
-                custom_id="2",
-                disabled=disabled
+                style=ButtonStyle.grey, label="2", emoji=None, custom_id="2", disabled=disabled
             ),
             Button(
-                style=ButtonStyle.grey,
-                label="3",
-                emoji=None,
-                custom_id="3",
-                disabled=disabled
+                style=ButtonStyle.grey, label="3", emoji=None, custom_id="3", disabled=disabled
             ),
             Button(
-                style=ButtonStyle.blurple,
-                label="x",
-                emoji=None,
-                custom_id="x",
-                disabled=disabled
+                style=ButtonStyle.blurple, label="x", emoji=None, custom_id="x", disabled=disabled
             ),
             Button(
                 style=ButtonStyle.red,
                 label=_("Exit").format(**locals()),
                 emoji=None,
                 custom_id="exit_button",
-                disabled=disabled
-            )
+                disabled=disabled,
+            ),
         )
         buttons_two = ActionRow(
             Button(
-                style=ButtonStyle.grey,
-                label="4",
-                emoji=None,
-                custom_id="4",
-                disabled=disabled
+                style=ButtonStyle.grey, label="4", emoji=None, custom_id="4", disabled=disabled
             ),
             Button(
-                style=ButtonStyle.grey,
-                label="5",
-                emoji=None,
-                custom_id="5",
-                disabled=disabled
+                style=ButtonStyle.grey, label="5", emoji=None, custom_id="5", disabled=disabled
             ),
             Button(
-                style=ButtonStyle.grey,
-                label="6",
-                emoji=None,
-                custom_id="6",
-                disabled=disabled
+                style=ButtonStyle.grey, label="6", emoji=None, custom_id="6", disabled=disabled
             ),
             Button(
-                style=ButtonStyle.blurple,
-                label="÷",
-                emoji=None,
-                custom_id="÷",
-                disabled=disabled
+                style=ButtonStyle.blurple, label="÷", emoji=None, custom_id="÷", disabled=disabled
             ),
             Button(
                 style=ButtonStyle.red,
                 label="⌫",
                 emoji=None,
                 custom_id="back_button",
-                disabled=disabled
-            )
+                disabled=disabled,
+            ),
         )
         buttons_three = ActionRow(
             Button(
-                style=ButtonStyle.grey,
-                label="7",
-                emoji=None,
-                custom_id="7",
-                disabled=disabled
+                style=ButtonStyle.grey, label="7", emoji=None, custom_id="7", disabled=disabled
             ),
             Button(
-                style=ButtonStyle.grey,
-                label="8",
-                emoji=None,
-                custom_id="8",
-                disabled=disabled
+                style=ButtonStyle.grey, label="8", emoji=None, custom_id="8", disabled=disabled
             ),
             Button(
-                style=ButtonStyle.grey,
-                label="9",
-                emoji=None,
-                custom_id="9",
-                disabled=disabled
+                style=ButtonStyle.grey, label="9", emoji=None, custom_id="9", disabled=disabled
             ),
             Button(
-                style=ButtonStyle.blurple,
-                label="+",
-                emoji=None,
-                custom_id="+",
-                disabled=disabled
+                style=ButtonStyle.blurple, label="+", emoji=None, custom_id="+", disabled=disabled
             ),
             Button(
                 style=ButtonStyle.red,
                 label=_("Clear").format(**locals()),
                 emoji=None,
                 custom_id="clear_button",
-                disabled=disabled
-            )
+                disabled=disabled,
+            ),
         )
         buttons_four = ActionRow(
             Button(
-                style=ButtonStyle.grey,
-                label="00",
-                emoji=None,
-                custom_id="00",
-                disabled=disabled
+                style=ButtonStyle.grey, label="00", emoji=None, custom_id="00", disabled=disabled
             ),
             Button(
-                style=ButtonStyle.grey,
-                label="0",
-                emoji=None,
-                custom_id="0",
-                disabled=disabled
+                style=ButtonStyle.grey, label="0", emoji=None, custom_id="0", disabled=disabled
             ),
             Button(
-                style=ButtonStyle.grey,
-                label=".",
-                emoji=None,
-                custom_id=".",
-                disabled=disabled
+                style=ButtonStyle.grey, label=".", emoji=None, custom_id=".", disabled=disabled
             ),
             Button(
-                style=ButtonStyle.blurple,
-                label="-",
-                emoji=None,
-                custom_id="-",
-                disabled=disabled
+                style=ButtonStyle.blurple, label="-", emoji=None, custom_id="-", disabled=disabled
             ),
             Button(
                 style=ButtonStyle.green,
                 label="=",
                 emoji=None,
                 custom_id="result_button",
-                disabled=disabled
-            )
+                disabled=disabled,
+            ),
         )
         buttons_five = ActionRow(
             Button(
-                style=ButtonStyle.grey,
-                label="(",
-                emoji=None,
-                custom_id="(",
-                disabled=disabled
+                style=ButtonStyle.grey, label="(", emoji=None, custom_id="(", disabled=disabled
             ),
             Button(
-                style=ButtonStyle.grey,
-                label=")",
-                emoji=None,
-                custom_id=")",
-                disabled=disabled
+                style=ButtonStyle.grey, label=")", emoji=None, custom_id=")", disabled=disabled
             ),
             Button(
-                style=ButtonStyle.grey,
-                label="√",
-                emoji=None,
-                custom_id="√",
-                disabled=disabled
+                style=ButtonStyle.grey, label="√", emoji=None, custom_id="√", disabled=disabled
             ),
             Button(
                 style=ButtonStyle.green,
                 label="<",
                 emoji=None,
                 custom_id="left_button",
-                disabled=disabled
+                disabled=disabled,
             ),
             Button(
                 style=ButtonStyle.green,
                 label=">",
                 emoji=None,
                 custom_id="right_button",
-                disabled=disabled
-            )
+                disabled=disabled,
+            ),
         )
         return buttons_one, buttons_two, buttons_three, buttons_four, buttons_five
 
     @hybrid_command(name="calculate", aliases=["calc"])
-    async def _calculate(self, ctx: commands.Context, calculation: typing.Optional[str]=None):
+    async def _calculate(self, ctx: commands.Context, calculation: typing.Optional[str] = None):
         """Calculate a simple expression."""
         config = await self.config.settings.all()
         if calculation is not None:
@@ -419,11 +429,26 @@ class Calculator(commands.Cog):
         expression = None
         result = None
         if self.cogsutils.is_dpy2:
-            view = Buttons(timeout=config["time_max"], buttons=self.buttons_dict, members=[ctx.author] + list(ctx.bot.owner_ids))
-            message = await ctx.send(embed=await self.get_embed(ctx, expression, result), view=view)
+            view = Buttons(
+                timeout=config["time_max"],
+                buttons=self.buttons_dict,
+                members=[ctx.author] + list(ctx.bot.owner_ids),
+            )
+            message = await ctx.send(
+                embed=await self.get_embed(ctx, expression, result), view=view
+            )
         else:
-            buttons_one, buttons_two, buttons_three, buttons_four, buttons_five = await self.get_buttons(False)
-            message = await ctx.send(embed=await self.get_embed(ctx, expression, result), components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five])
+            (
+                buttons_one,
+                buttons_two,
+                buttons_three,
+                buttons_four,
+                buttons_five,
+            ) = await self.get_buttons(False)
+            message = await ctx.send(
+                embed=await self.get_embed(ctx, expression, result),
+                components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five],
+            )
         if self.cogsutils.is_dpy2:
             try:
                 while True:
@@ -434,15 +459,26 @@ class Calculator(commands.Cog):
                         if not interaction.data["custom_id"] == "result_button":
                             expression = f"{result}|"
                             result = None
-                    if expression is None or expression == _("Error!").format(**locals()) or expression == "∞" or expression == "":
+                    if (
+                        expression is None
+                        or expression == _("Error!").format(**locals())
+                        or expression == "∞"
+                        or expression == ""
+                    ):
                         expression = "|"
                     if interaction.data["custom_id"] == "result_button":
                         result = f"{await self.calculate(expression)}"
                         if ctx.author not in self.history:
                             self.history[ctx.author] = []
-                        self.history[ctx.author].append((expression.replace("|", ""), result.replace("|", "")))
+                        self.history[ctx.author].append(
+                            (expression.replace("|", ""), result.replace("|", ""))
+                        )
                     elif interaction.data["custom_id"] == "exit_button":
-                        view = Buttons(timeout=config["time_max"], buttons=self.disabled_buttons_dict, members=[])
+                        view = Buttons(
+                            timeout=config["time_max"],
+                            buttons=self.disabled_buttons_dict,
+                            members=[],
+                        )
                         await message.edit(view=view)
                         return
                     elif interaction.data["custom_id"] == "clear_button":
@@ -482,38 +518,82 @@ class Calculator(commands.Cog):
                         if expression == "|":
                             expression = None
                     else:
-                        expression = await self.input_formatter(expression, str(interaction.data["custom_id"]))
-                    view = Buttons(timeout=config["time_max"], buttons=self.buttons_dict, members=[ctx.author] + list(ctx.bot.owner_ids))
-                    await interaction.response.edit_message(embed=await self.get_embed(ctx, expression, result), view=view)
+                        expression = await self.input_formatter(
+                            expression, str(interaction.data["custom_id"])
+                        )
+                    view = Buttons(
+                        timeout=config["time_max"],
+                        buttons=self.buttons_dict,
+                        members=[ctx.author] + list(ctx.bot.owner_ids),
+                    )
+                    await interaction.response.edit_message(
+                        embed=await self.get_embed(ctx, expression, result), view=view
+                    )
             except TimeoutError:
-                view = Buttons(timeout=config["time_max"], buttons=self.disabled_buttons_dict, members=[])
+                view = Buttons(
+                    timeout=config["time_max"], buttons=self.disabled_buttons_dict, members=[]
+                )
                 await message.edit(view=view)
                 return
         else:
+
             def check(inter):
-                return inter.guild == ctx.guild and inter.channel == ctx.channel and inter.message.id == message.id
+                return (
+                    inter.guild == ctx.guild
+                    and inter.channel == ctx.channel
+                    and inter.message.id == message.id
+                )
+
             try:
                 while True:
-                    inter = await ctx.wait_for_button_click(timeout=config["time_max"], check=check)
+                    inter = await ctx.wait_for_button_click(
+                        timeout=config["time_max"], check=check
+                    )
                     if not inter.author == ctx.author and ctx.author.id not in ctx.bot.owner_ids:
-                        await inter.respond(_("Only the author of the command `{ctx.prefix}{ctx.command.name}` can interact with this message.").format(**locals()), ephemeral=True)
+                        await inter.respond(
+                            _(
+                                "Only the author of the command `{ctx.prefix}{ctx.command.name}` can interact with this message."
+                            ).format(**locals()),
+                            ephemeral=True,
+                        )
                         continue
                     if result == _("Error!").format(**locals()) or result == "∞" or result == "":
                         result = None
                     if result is not None:
-                        if not inter.clicked_button.custom_id == "result_button":  
+                        if not inter.clicked_button.custom_id == "result_button":
                             expression = f"{result}|"
                             result = None
-                    if expression is None or expression == _("Error!").format(**locals()) or expression == "∞" or expression == "":
+                    if (
+                        expression is None
+                        or expression == _("Error!").format(**locals())
+                        or expression == "∞"
+                        or expression == ""
+                    ):
                         expression = "|"
                     if inter.clicked_button.custom_id == "result_button":
                         result = f"{await self.calculate(expression)}"
                         if ctx.author not in self.history:
                             self.history[ctx.author] = []
-                        self.history[ctx.author].append((expression.replace("|", ""), result.replace("|", "")))
+                        self.history[ctx.author].append(
+                            (expression.replace("|", ""), result.replace("|", ""))
+                        )
                     elif inter.clicked_button.custom_id == "exit_button":
-                        buttons_one, buttons_two, buttons_three, buttons_four, buttons_five = await self.get_buttons(True)
-                        await message.edit(components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five])
+                        (
+                            buttons_one,
+                            buttons_two,
+                            buttons_three,
+                            buttons_four,
+                            buttons_five,
+                        ) = await self.get_buttons(True)
+                        await message.edit(
+                            components=[
+                                buttons_one,
+                                buttons_two,
+                                buttons_three,
+                                buttons_four,
+                                buttons_five,
+                            ]
+                        )
                         await inter.reply(type=ResponseType.DeferredUpdateMessage)
                         return
                     elif inter.clicked_button.custom_id == "clear_button":
@@ -553,10 +633,26 @@ class Calculator(commands.Cog):
                         if expression == "|":
                             expression = None
                     else:
-                        expression = await self.input_formatter(expression, str(inter.clicked_button.custom_id))
+                        expression = await self.input_formatter(
+                            expression, str(inter.clicked_button.custom_id)
+                        )
                     await message.edit(embed=await self.get_embed(ctx, expression, result))
                     await inter.reply(type=ResponseType.DeferredUpdateMessage)
             except asyncio.TimeoutError:
-                buttons_one, buttons_two, buttons_three, buttons_four, buttons_five = await self.get_buttons(True)
-                await message.edit(components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five])
+                (
+                    buttons_one,
+                    buttons_two,
+                    buttons_three,
+                    buttons_four,
+                    buttons_five,
+                ) = await self.get_buttons(True)
+                await message.edit(
+                    components=[
+                        buttons_one,
+                        buttons_two,
+                        buttons_three,
+                        buttons_four,
+                        buttons_five,
+                    ]
+                )
                 return

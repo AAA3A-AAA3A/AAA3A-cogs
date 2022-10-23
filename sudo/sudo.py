@@ -34,11 +34,13 @@ _ = Translator("Sudo", __file__)
 
 if CogsUtils().is_dpy2:
     from functools import partial
+
     hybrid_command = partial(commands.hybrid_command, with_app_command=False)
     hybrid_group = partial(commands.hybrid_group, with_app_command=False)
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
+
 
 @cog_i18n(_)
 class Sudo(commands.Cog):
@@ -54,11 +56,14 @@ class Sudo(commands.Cog):
         self.cogsutils._setup()
 
     if CogsUtils().is_dpy2:
+
         async def cog_unload(self):
             self.bot.owner_ids.update(copy(self.all_owner_ids))
             self.all_owner_ids.clear()
             self.cogsutils._end()
+
     else:
+
         def cog_unload(self):
             self.bot.owner_ids.update(copy(self.all_owner_ids))
             self.all_owner_ids.clear()
@@ -70,12 +75,16 @@ class Sudo(commands.Cog):
                 if ctx.command.parent is not None and ctx.command.parent.qualified_name == "Sudo":
                     return False
             if all_owner_ids:
-                if ctx.author.id in ctx.bot.get_cog("Sudo").all_owner_ids and ctx.author.id not in ctx.bot.owner_ids:
+                if (
+                    ctx.author.id in ctx.bot.get_cog("Sudo").all_owner_ids
+                    and ctx.author.id not in ctx.bot.owner_ids
+                ):
                     return True
             if bot_owner_ids:
                 if ctx.author.id in ctx.bot.owner_ids:
                     return True
             return False
+
         return commands.check(pred)
 
     @decorator(all_owner_ids=True, bot_owner_ids=True)
@@ -87,16 +96,14 @@ class Sudo(commands.Cog):
     @decorator(all_owner_ids=True, bot_owner_ids=False)
     @Sudo.command(name="su")
     async def _su(self, ctx: commands.Context):
-        """Sudo as the owner of the bot.
-        """
+        """Sudo as the owner of the bot."""
         ctx.bot.owner_ids.add(ctx.author.id)
         await ctx.tick(message="Done.")
 
     @decorator(all_owner_ids=False, bot_owner_ids=True)
     @Sudo.command(name="unsu")
     async def _unsu(self, ctx: commands.Context):
-        """Unsudo as normal user.
-        """
+        """Unsudo as normal user."""
         ctx.bot.owner_ids.remove(ctx.author.id)
         if ctx.author.id not in self.all_owner_ids:
             self.all_owner_ids.add(ctx.author.id)
@@ -105,10 +112,15 @@ class Sudo(commands.Cog):
     @decorator(all_owner_ids=True, bot_owner_ids=False)
     @Sudo.command(name="sudo")
     async def _sudo(self, ctx: commands.Context, *, command: str):
-        """Rise as the bot owner for the specified command only.
-        """
+        """Rise as the bot owner for the specified command only."""
         ctx.bot.owner_ids.add(ctx.author.id)
-        await self.cogsutils.invoke_command(author=ctx.author, channel=ctx.channel, command=command, prefix=ctx.prefix, message=ctx.message)
+        await self.cogsutils.invoke_command(
+            author=ctx.author,
+            channel=ctx.channel,
+            command=command,
+            prefix=ctx.prefix,
+            message=ctx.message,
+        )
         if ctx.bot.get_cog("Sudo") is not None:
             try:
                 ctx.bot.owner_ids.remove(ctx.author.id)

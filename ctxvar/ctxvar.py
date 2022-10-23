@@ -6,16 +6,15 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import ast
-import inspect
-import rich
-import traceback
 import contextlib
+import inspect
 import io
+import traceback
 from contextvars import ContextVar
-
 from copy import copy
 
-from redbot.core.utils.chat_formatting import box, bold, pagify
+import rich
+from redbot.core.utils.chat_formatting import bold, box, pagify
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
@@ -27,11 +26,13 @@ _ = Translator("CtxVar", __file__)
 
 if CogsUtils().is_dpy2:
     from functools import partial
+
     hybrid_command = partial(commands.hybrid_command, with_app_command=False)
     hybrid_group = partial(commands.hybrid_group, with_app_command=False)
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
+
 
 @cog_i18n(_)
 class CtxVar(commands.Cog):
@@ -50,7 +51,12 @@ class CtxVar(commands.Cog):
         pass
 
     @ctxvar.command()
-    async def ctx(self, ctx: commands.Context, message: typing.Optional[discord.ext.commands.converter.MessageConverter]=None, args: typing.Optional[str]=None):
+    async def ctx(
+        self,
+        ctx: commands.Context,
+        message: typing.Optional[discord.ext.commands.converter.MessageConverter] = None,
+        args: typing.Optional[str] = None,
+    ):
         """Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
@@ -64,16 +70,24 @@ class CtxVar(commands.Cog):
             args = args.split(".")
             for arg in args:
                 if not hasattr(instance, arg):
-                    await ctx.send(_("The argument you specified is not a subclass of the instance.").format(**locals()))
+                    await ctx.send(
+                        _("The argument you specified is not a subclass of the instance.").format(
+                            **locals()
+                        )
+                    )
                     return
                 instance = getattr(instance, arg)
         if len(f"{bold(full_instance_name)}") > 256:
             full_instance_name = bold(full_instance_name[:248] + "|...")
         embed: discord.Embed = discord.Embed()
         embed.title = f"**{full_instance_name}**"
-        embed.description = _("Here are all the variables and their associated values that can be used in this instance class.").format(**locals())
-        embed.color = 0x01d758
-        embed.set_thumbnail(url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/2048px-Python-logo-notext.svg.png")
+        embed.description = _(
+            "Here are all the variables and their associated values that can be used in this instance class."
+        ).format(**locals())
+        embed.color = 0x01D758
+        embed.set_thumbnail(
+            url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/2048px-Python-logo-notext.svg.png"
+        )
         one_l = []
         for x in dir(instance):
             try:
@@ -97,7 +111,12 @@ class CtxVar(commands.Cog):
                         e.add_field(
                             inline=True,
                             name=f"{x}",
-                            value=box(self.cogsutils.replace_var_paths(Dev.sanitize_output(ctx, str(getattr(instance, x))[:100])), "py")
+                            value=box(
+                                self.cogsutils.replace_var_paths(
+                                    Dev.sanitize_output(ctx, str(getattr(instance, x))[:100])
+                                ),
+                                "py",
+                            ),
                         )
                     except Exception:
                         pass
@@ -106,7 +125,7 @@ class CtxVar(commands.Cog):
         await Menu(pages=embeds).start(ctx)
 
     @ctxvar.command(name="dir")
-    async def _dir(self, ctx: commands.Context, thing: str, search: typing.Optional[str]=None):
+    async def _dir(self, ctx: commands.Context, thing: str, search: typing.Optional[str] = None):
         """Display a list of all attributes of the provided object (debug not async)."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
@@ -136,7 +155,9 @@ class CtxVar(commands.Cog):
         if search is None:
             result += "\n".join([f"    '{attr}'," for attr in dir(object)])
         else:
-            result += "\n".join([f"    '{attr}'," for attr in dir(object) if search.lower() in attr.lower()])
+            result += "\n".join(
+                [f"    '{attr}'," for attr in dir(object) if search.lower() in attr.lower()]
+            )
         if result[-1] == ",":
             result = list(result)
             del result[-1]
@@ -144,10 +165,14 @@ class CtxVar(commands.Cog):
         result += "\n]"
         result = self.cogsutils.replace_var_paths(Dev.sanitize_output(ctx, result))
 
-        await Menu(pages=[box(page, "py") for page in pagify(result, page_length=2000 - 10)]).start(ctx)
+        await Menu(
+            pages=[box(page, "py") for page in pagify(result, page_length=2000 - 10)]
+        ).start(ctx)
 
     @ctxvar.command(name="inspect")
-    async def _inspect(self, ctx: commands.Context, show_all: typing.Optional[bool], *, thing: str):
+    async def _inspect(
+        self, ctx: commands.Context, show_all: typing.Optional[bool], *, thing: str
+    ):
         """Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
@@ -183,10 +208,36 @@ class CtxVar(commands.Cog):
         with io.StringIO() as file:
             console = rich.console.Console(file=file, **kwargs)
             if show_all:
-                rich.inspect(obj=object, title=repr(object), help=True, methods=True, docs=True, private=True, dunder=True, all=True, sort=True, value=True, console=console)
+                rich.inspect(
+                    obj=object,
+                    title=repr(object),
+                    help=True,
+                    methods=True,
+                    docs=True,
+                    private=True,
+                    dunder=True,
+                    all=True,
+                    sort=True,
+                    value=True,
+                    console=console,
+                )
             else:
-                rich.inspect(obj=object, title=repr(object), help=True, methods=False, docs=True, private=False, dunder=False, all=False, sort=True, value=True, console=console)
+                rich.inspect(
+                    obj=object,
+                    title=repr(object),
+                    help=True,
+                    methods=False,
+                    docs=True,
+                    private=False,
+                    dunder=False,
+                    all=False,
+                    sort=True,
+                    value=True,
+                    console=console,
+                )
             result = console.file.getvalue()
         result = self.cogsutils.replace_var_paths(Dev.sanitize_output(ctx, result))
 
-        await Menu(pages=[box(page, "py") for page in pagify(result.strip(), page_length=2000 - 10)]).start(ctx)
+        await Menu(
+            pages=[box(page, "py") for page in pagify(result.strip(), page_length=2000 - 10)]
+        ).start(ctx)

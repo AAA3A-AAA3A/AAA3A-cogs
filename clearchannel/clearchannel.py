@@ -15,11 +15,13 @@ _ = Translator("ClearChannel", __file__)
 
 if CogsUtils().is_dpy2:
     from functools import partial
+
     hybrid_command = partial(commands.hybrid_command, with_app_command=False)
     hybrid_group = partial(commands.hybrid_group, with_app_command=False)
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
+
 
 @cog_i18n(_)
 class ClearChannel(commands.Cog):
@@ -47,9 +49,7 @@ class ClearChannel(commands.Cog):
     @commands.guildowner()
     @commands.bot_has_permissions(manage_channels=True)
     @hybrid_command(name="clearchannel")
-    async def cleanup_channel(
-        self, ctx: commands.Context, confirmation: bool=False
-    ):
+    async def cleanup_channel(self, ctx: commands.Context, confirmation: bool = False):
         """Delete ALL messages from the current channel by duplicating it and then deleting it.
         For security reasons, only the server owner and the bot owner can use the command. Use the "permissions" tool for more options.
         """
@@ -64,18 +64,41 @@ class ClearChannel(commands.Cog):
         if not confirmation:
             embed: discord.Embed = discord.Embed()
             embed.title = _(":warning: - ClearChannel").format(**locals())
-            embed.description = _("Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?").format(**locals())
-            embed.color = 0xf00020
-            if not await self.cogsutils.ConfirmationAsk(ctx, text=f"{ctx.author.mention}", embed=embed):
+            embed.description = _(
+                "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?"
+            ).format(**locals())
+            embed.color = 0xF00020
+            if not await self.cogsutils.ConfirmationAsk(
+                ctx, text=f"{ctx.author.mention}", embed=embed
+            ):
                 await self.cogsutils.delete_message(ctx.message)
                 return
 
-        new_channel = await old_channel.clone(reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(**locals()))
+        new_channel = await old_channel.clone(
+            reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(
+                **locals()
+            )
+        )
         if actual_channel_delete:
-            await old_channel.delete(reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(**locals()))
+            await old_channel.delete(
+                reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(
+                    **locals()
+                )
+            )
         else:
-            await old_channel.edit(name=_("🗑️-Deleted-{old_channel.name}").format(**locals()), position=len(ctx.guild.channels), reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(**locals()))
-        await new_channel.edit(position=channel_position, reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(**locals()))
+            await old_channel.edit(
+                name=_("🗑️-Deleted-{old_channel.name}").format(**locals()),
+                position=len(ctx.guild.channels),
+                reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(
+                    **locals()
+                ),
+            )
+        await new_channel.edit(
+            position=channel_position,
+            reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(
+                **locals()
+            ),
+        )
         self.log.info(
             _("%s (%s) deleted ALL messages in channel %s (%s).").format(**locals()),
             ctx.author,
@@ -86,12 +109,24 @@ class ClearChannel(commands.Cog):
         if actual_first_message:
             embed: discord.Embed = discord.Embed()
             embed.title = _("ClearChannel").format(**locals())
-            embed.description = _("ALL the messages in this channel have been deleted...").format(**locals())
-            embed.color = 0xf00020
-            embed.set_author(name=ctx.author, url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url, icon_url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url)
+            embed.description = _("ALL the messages in this channel have been deleted...").format(
+                **locals()
+            )
+            embed.color = 0xF00020
+            embed.set_author(
+                name=ctx.author,
+                url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url,
+                icon_url=ctx.author.display_avatar
+                if self.cogsutils.is_dpy2
+                else ctx.author.avatar_url,
+            )
             message = await new_channel.send(embed=embed)
         if actual_author_dm:
-            await ctx.author.send(_("All messages in channel #{old_channel.name} ({old_channel.id}) have been deleted! You can find the new channel, with the same permissions: #{new_channel.name} ({new_channel.id}).").format(**locals()))
+            await ctx.author.send(
+                _(
+                    "All messages in channel #{old_channel.name} ({old_channel.id}) have been deleted! You can find the new channel, with the same permissions: #{new_channel.name} ({new_channel.id})."
+                ).format(**locals())
+            )
 
     @commands.guild_only()
     @commands.guildowner()
@@ -106,7 +141,9 @@ class ClearChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
+            await ctx.send(
+                _("Only the owner of this server can access these commands!").format(**locals())
+            )
             return
 
         config = await self.config.guild(ctx.guild).all()
@@ -126,7 +163,9 @@ class ClearChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
+            await ctx.send(
+                _("Only the owner of this server can access these commands!").format(**locals())
+            )
             return
 
         config = await self.config.guild(ctx.guild).all()
@@ -146,7 +185,9 @@ class ClearChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(_("Only the owner of this server can access these commands!").format(**locals()))
+            await ctx.send(
+                _("Only the owner of this server can access these commands!").format(**locals())
+            )
             return
 
         config = await self.config.guild(ctx.guild).all()

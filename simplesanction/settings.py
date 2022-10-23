@@ -11,15 +11,16 @@ _ = Translator("SimpleSanction", __file__)
 
 if CogsUtils().is_dpy2:
     from functools import partial
+
     hybrid_command = partial(commands.hybrid_command, with_app_command=False)
     hybrid_group = partial(commands.hybrid_group, with_app_command=False)
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
 
+
 @cog_i18n(_)
 class settings(commands.Cog):
-
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
     @hybrid_group(name="setsimplesanction", aliases=["simplesanctionset"])
@@ -27,8 +28,15 @@ class settings(commands.Cog):
         """Configure SimpleSanction for your server."""
         pass
 
-    @configuration.command(aliases=["colour", "col", "embedcolor", "embedcolour"], usage="<color_or_'none'>")
-    async def color(self, ctx: commands.Context, *, color: typing.Optional[discord.ext.commands.converter.ColorConverter]=None):
+    @configuration.command(
+        aliases=["colour", "col", "embedcolor", "embedcolour"], usage="<color_or_'none'>"
+    )
+    async def color(
+        self,
+        ctx: commands.Context,
+        *,
+        color: typing.Optional[discord.ext.commands.converter.ColorConverter] = None,
+    ):
         """Set a colour for the embed.
 
         ``color``: Color.
@@ -45,9 +53,7 @@ class settings(commands.Cog):
             embed.set_thumbnail(url=actual_thumbnail)
             embed.title = _("Configure the embed").format(**locals())
             embed.description = _("Reset color:").format(**locals())
-            embed.add_field(
-                name=_("Color:").format(**locals()),
-                value=f"{actual_color}")
+            embed.add_field(name=_("Color:").format(**locals()), value=f"{actual_color}")
             message = await ctx.send(embed=embed)
             return
 
@@ -60,13 +66,11 @@ class settings(commands.Cog):
         embed.description = _("Set color:").format(**locals())
         embed.color = actual_color
         embed.set_thumbnail(url=actual_thumbnail)
-        embed.add_field(
-            name=_("Color:").format(**locals()),
-            value=f"{actual_color}")
+        embed.add_field(name=_("Color:").format(**locals()), value=f"{actual_color}")
         message = await ctx.send(embed=embed)
 
     @configuration.command(aliases=["picture", "thumb", "link"], usage="<link_or_'none'>")
-    async def thumbnail(self, ctx: commands.Context, *, link: typing.Optional[str]=None):
+    async def thumbnail(self, ctx: commands.Context, *, link: typing.Optional[str] = None):
         """Set a thumbnail for the embed.
 
         ``link``: Thumbnail link.
@@ -83,9 +87,7 @@ class settings(commands.Cog):
             embed.description = _("Reset thumbnail:").format(**locals())
             embed.set_thumbnail(url=actual_thumbnail)
             embed.color = actual_color
-            embed.add_field(
-                name=_("Thumbnail:").format(**locals()),
-                value=f"{actual_thumbnail}")
+            embed.add_field(name=_("Thumbnail:").format(**locals()), value=f"{actual_thumbnail}")
             message = await ctx.send(embed=embed)
             return
 
@@ -98,9 +100,7 @@ class settings(commands.Cog):
         embed.description = _("Set thumbnail:").format(**locals())
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
-        embed.add_field(
-            name=_("Thumbnail:").format(**locals()),
-            value=f"{actual_thumbnail}")
+        embed.add_field(name=_("Thumbnail:").format(**locals()), value=f"{actual_thumbnail}")
         message = await ctx.send(embed=embed)
 
     @configuration.command(name="showauthor", aliases=["authorshow"], usage="<true_or_false>")
@@ -135,7 +135,9 @@ class settings(commands.Cog):
         await self.config.guild(ctx.guild).action_confirmation.set(state)
         await ctx.send(_("Action Confirmation state registered: {state}.").format(**locals()))
 
-    @configuration.command(name="finishmessage", aliases=["messagefinish"], usage="<true_or_false>")
+    @configuration.command(
+        name="finishmessage", aliases=["messagefinish"], usage="<true_or_false>"
+    )
     async def finishmessage(self, ctx: commands.Context, state: bool):
         """Enable or disable Finish Message
 
@@ -151,7 +153,9 @@ class settings(commands.Cog):
         await self.config.guild(ctx.guild).finish_message.set(state)
         await ctx.send(f"Finish Message state registered: {state}.")
 
-    @configuration.command(name="warnsystemuse", aliases=["usewarnsystem"], usage="<true_or_false>")
+    @configuration.command(
+        name="warnsystemuse", aliases=["usewarnsystem"], usage="<true_or_false>"
+    )
     async def warnsystemuse(self, ctx: commands.Context, state: bool):
         """Enable or disable Warn System Use
 
@@ -168,7 +172,9 @@ class settings(commands.Cog):
         await ctx.send(_("Warn System Use state registered: {state}.").format(**locals()))
 
     @configuration.command(name="way", aliases=["wayused"])
-    async def buttonsuse(self, ctx: commands.Context, way: commands.Literal["buttons", "dropdown", "reactions"]):
+    async def buttonsuse(
+        self, ctx: commands.Context, way: commands.Literal["buttons", "dropdown", "reactions"]
+    ):
         """Enable or disable Buttons Use
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -183,7 +189,9 @@ class settings(commands.Cog):
         await self.config.guild(ctx.guild).way.set(way)
         await ctx.send(f"Way registered: {way}.")
 
-    @configuration.command(name="reasonrequired", aliases=["requiredreason"], usage="<true_or_false>")
+    @configuration.command(
+        name="reasonrequired", aliases=["requiredreason"], usage="<true_or_false>"
+    )
     async def reasonrequired(self, ctx: commands.Context, state: bool):
         """Enable or disable Reason Requiered
 
@@ -215,7 +223,9 @@ class settings(commands.Cog):
         await self.config.guild(ctx.guild).delete_embed.set(state)
         await ctx.send(f"Delete Embed state registered: {state}.")
 
-    @configuration.command(name="deletemessage", aliases=["messagedelete"], usage="<true_or_false>")
+    @configuration.command(
+        name="deletemessage", aliases=["messagedelete"], usage="<true_or_false>"
+    )
     async def deletemessage(self, ctx: commands.Context, state: bool):
         """Enable or disable Delete Message
 
@@ -232,7 +242,7 @@ class settings(commands.Cog):
         await ctx.send(_("Delete Message state registered: {state}.").format(**locals()))
 
     @configuration.command(name="timeout", aliases=["time"], usage="<seconds_number_or_`none`>")
-    async def timeout(self, ctx: commands.Context, timeout: typing.Optional[int]=None):
+    async def timeout(self, ctx: commands.Context, timeout: typing.Optional[int] = None):
         """Choose the timeout
 
         Use a int. The default is 180 seconds.

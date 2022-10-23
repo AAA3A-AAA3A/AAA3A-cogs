@@ -23,12 +23,10 @@ Useful Links
     cog_clearchannel
     cog_cmdchannel
     cog_ctxvar
+    cog_discordedit
     cog_discordmodals
     cog_discordsearch
     cog_editfile
-    cog_editrole
-    cog_edittextchannel
-    cog_editvoicechannel
     cog_exportchannel
     cog_getloc
     cog_ip

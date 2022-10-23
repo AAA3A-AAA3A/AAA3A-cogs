@@ -7,6 +7,7 @@ import typing  # isort:skip
 
 import asyncio
 import datetime
+import io
 import time as _time
 from copy import deepcopy
 
@@ -112,18 +113,26 @@ class Seen(commands.Cog):
         if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
             return
         global_data = await self.config.all()
+        user_group = self.config._get_base_group(self.config.USER)
         member_group = self.config._get_base_group(self.config.MEMBER)
         role_group = self.config._get_base_group(self.config.ROLE)
         channel_group = self.config._get_base_group(self.config.CHANNEL)
         category_group = self.config._get_base_group(self.config.CHANNEL)
         guild_group = self.config._get_base_group(self.config.GUILD)
+        custom_ids = []
         # Users
-        await self.config.user_from_id(user_id).clear()
+        async with user_group.all() as users_data:
+            if str(user_id) in users_data:
+                for type, custom_id in users_data[str(user_id)].items():
+                    custom_ids.append(tuple([type, custom_id]))
+                del users_data[str(user_id)]
         # Members
         async with member_group.all() as members_data:
             _members_data = deepcopy(members_data)
             for guild in _members_data:
                 if str(user_id) in _members_data[guild]:
+                    for type, custom_id in members_data[guild][str(user_id)].items():
+                        custom_ids.append(tuple([type, custom_id]))
                     del members_data[guild][str(user_id)]
         # Roles
         async with role_group.all() as roles_data:
@@ -136,6 +145,7 @@ class Seen(commands.Cog):
                         ]
                         == user_id
                     ):
+                        custom_ids.append(tuple([type, roles_data[role][type]]))
                         roles_data[role][type] = None
         # Channels
         async with channel_group.all() as channels_data:
@@ -148,6 +158,7 @@ class Seen(commands.Cog):
                         ]
                         == user_id
                     ):
+                        custom_ids.append(tuple([type, channels_data[channel][type]]))
                         channels_data[channel][type] = None
         # Categories
         async with category_group.all() as categories_data:
@@ -160,6 +171,7 @@ class Seen(commands.Cog):
                         ]
                         == user_id
                     ):
+                        custom_ids.append(tuple([type, categories_data[category][type]]))
                         categories_data[category][type] = None
         # Guilds
         async with guild_group.all() as guilds_data:
@@ -172,7 +184,105 @@ class Seen(commands.Cog):
                         ]
                         == user_id
                     ):
+                        custom_ids.append(tuple([type, guilds_data[guild][type]]))
                         guilds_data[guild][type] = None
+        # Global
+        for type, custom_id in custom_ids:
+            try:
+                del global_data[type][custom_id]
+            except KeyError:
+                pass
+        await self.config.set(global_data)
+
+    async def red_get_data_for_user(self, *, user_id: int):
+        """Get all data about the user."""
+        data = {Config.GLOBAL: {}, Config.USER: {}, Config.MEMBER: {}, Config.ROLE: {}, Config.CHANNEL: {}, Config.GUILD: {}}
+        global_data = await self.config.all()
+        user_group = self.config._get_base_group(self.config.USER)
+        member_group = self.config._get_base_group(self.config.MEMBER)
+        role_group = self.config._get_base_group(self.config.ROLE)
+        channel_group = self.config._get_base_group(self.config.CHANNEL)
+        category_group = self.config._get_base_group(self.config.CHANNEL)
+        guild_group = self.config._get_base_group(self.config.GUILD)
+        custom_ids = []
+        # Users
+        async with user_group.all() as users_data:
+            if str(user_id) in users_data:
+                data[Config.USER] = {str(user_id): users_data[str(user_id)]}
+            for type, custom_id in users_data[str(user_id)].items():
+                custom_ids.append(tuple([type, custom_id]))
+        # Members
+        async with member_group.all() as members_data:
+            for guild in members_data:
+                if str(user_id) in members_data[guild]:
+                    data[Config.MEMBER][guild] = {str(user_id): members_data[guild][str(user_id)]}
+                    for type, custom_id in members_data[guild][str(user_id)].items():
+                        custom_ids.append(tuple([type, custom_id]))
+        # Roles
+        async with role_group.all() as roles_data:
+            for role in roles_data:
+                for type, custom_id in roles_data[role].items():
+                    if (
+                        global_data[type].get(custom_id, {"action": {"member": None}})["action"][
+                            "member"
+                        ]
+                        == user_id
+                    ):
+                        if role not in data[Config.ROLE]:
+                            data[Config.ROLE][role] = {}
+                        data[Config.ROLE][role][type] = roles_data[role][type]
+                        custom_ids.append(tuple([type, roles_data[role][type]]))
+        # Channels
+        async with channel_group.all() as channels_data:
+            for channel in channels_data:
+                for type, custom_id in channels_data[channel].items():
+                    if (
+                        global_data[type].get(custom_id, {"action": {"member": None}})["action"][
+                            "member"
+                        ]
+                        == user_id
+                    ):
+                        if channel not in data[Config.CHANNEL]:
+                            data[Config.CHANNEL][channel] = {}
+                        data[Config.CHANNEL][channel][type] = channels_data[channel][type]
+                        custom_ids.append(tuple([type, channels_data[channel][type]]))
+        # Categories
+        async with category_group.all() as categories_data:
+            for category in categories_data:
+                for type, custom_id in categories_data[category].items():
+                    if (
+                        global_data[type].get(custom_id, {"action": {"member": None}})["action"][
+                            "member"
+                        ]
+                        == user_id
+                    ):
+                        if channel not in data[Config.CHANNEL]:
+                            data[Config.CHANNEL][category] = {}
+                        data[Config.CHANNEL][category][type] = categories_data[category][type]
+                        custom_ids.append(tuple([type, categories_data[category][type]]))
+        # Guilds
+        async with guild_group.all() as guilds_data:
+            for guild in guilds_data:
+                for type, custom_id in guilds_data[guild].items():
+                    if (
+                        global_data[type].get(custom_id, {"action": {"member": None}})["action"][
+                            "member"
+                        ]
+                        == user_id
+                    ):
+                        if channel not in data[Config.GUILD]:
+                            data[Config.GUILD][guild] = {}
+                        data[Config.GUILD][guild][type] = guilds_data[guild][type]
+                        custom_ids.append(tuple([type, guilds_data[guild][type]]))
+        # Global
+        for type, custom_id in custom_ids:
+            d = global_data[type].get(custom_id, None)
+            if d is not None:
+                data[Config.GLOBAL][type] = {custom_id: d}
+        if data == {Config.GLOBAL: {}, Config.USER: {}, Config.MEMBER: {}, Config.ROLE: {}, Config.CHANNEL: {}, Config.GUILD: {}}:
+            return {}
+        file = io.BytesIO(str(data).encode(encoding="utf-8"))
+        return {f"{self.qualified_name}.json": file}
 
     def upsert_cache(
         self,
@@ -421,7 +531,7 @@ class Seen(commands.Cog):
                         ):  # The action is no longer used by any data.
                             try:
                                 del global_data[type][custom_id]
-                            except IndexError:
+                            except (IndexError, KeyError):
                                 pass
                     else:
                         global_count += 1

@@ -5,6 +5,8 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import io
+
 from copy import deepcopy
 
 from redbot.core import Config
@@ -85,6 +87,19 @@ class MemberPrefix(commands.Cog):
                     del members_data[guild][str(user_id)]
                 if members_data[guild] == {}:
                     del members_data[guild]
+
+    async def red_get_data_for_user(self, *, user_id: int):
+        """Get all data about the user."""
+        data = {Config.GLOBAL: {}, Config.USER: {}, Config.MEMBER: {}, Config.ROLE: {}, Config.CHANNEL: {}, Config.GUILD: {}}
+        member_group = self.config._get_base_group(self.config.MEMBER)
+        async with member_group.all() as members_data:
+            for guild in members_data:
+                if str(user_id) in members_data[guild]:
+                    data[Config.MEMBER][guild] = {str(user_id): members_data[guild][str(user_id)]}
+        if data == {Config.GLOBAL: {}, Config.USER: {}, Config.MEMBER: {}, Config.ROLE: {}, Config.CHANNEL: {}, Config.GUILD: {}}:
+            return {}
+        file = io.BytesIO(str(data).encode(encoding="utf-8"))
+        return {f"{self.qualified_name}.json": file}
 
     async def before_invoke(self, ctx: commands.Context) -> None:
         if ctx.guild is None:

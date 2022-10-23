@@ -16,7 +16,6 @@ from pathlib import Path
 from random import choice
 
 import aiohttp
-
 import redbot
 from redbot.core.data_manager import cog_data_path
 from redbot.core.utils.chat_formatting import box
@@ -29,18 +28,23 @@ from .dev import DevEnv
 from .loop import Loop
 from .menus import Reactions
 from .shared_cog import SharedCog
+
 if discord.version_info.major >= 2:
     from .views import Buttons, Dropdown, Modal
 
 __all__ = ["CogsUtils"]
 
+
 def _(untranslated: str):
     return untranslated
+
 
 class CogsUtils(commands.Cog):
     """Tools for AAA3A-cogs!"""
 
-    def __init__(self, cog: typing.Optional[commands.Cog]=None, bot: typing.Optional[Red]=None):
+    def __init__(
+        self, cog: typing.Optional[commands.Cog] = None, bot: typing.Optional[Red] = None
+    ):
         if cog is not None:
             if isinstance(cog, str):
                 cog = bot.get_cog(cog)
@@ -78,65 +82,70 @@ class CogsUtils(commands.Cog):
         self.views: typing.List[getattr(discord, "ui").View] = []
         self.repo_name: str = "AAA3A-cogs"
         self.all_cogs: typing.List = [
-                                        "AntiNuke",
-                                        "AutoTraceback",
-                                        "Calculator",
-                                        "ClearChannel",
-                                        "CmdChannel",
-                                        "CtxVar",
-                                        "DiscordModals",
-                                        "DiscordSearch",
-                                        "DropdownsTexts",
-                                        "EditFile",
-                                        "EditRole",
-                                        "EditTextChannel",
-                                        "EditVoiceChannel",
-                                        "ExportChannel",
-                                        "GetLoc",
-                                        "Ip",
-                                        "Medicat",  # Private cog, but public code.
-                                        "MemberPrefix",
-                                        "UrlButtons",
-                                        "ReactToCommand",
-                                        "RolesButtons",
-                                        "Seen",
-                                        "SimpleSanction",
-                                        "Sudo",
-                                        "TicketTool",
-                                        "TransferChannel"
-                                    ]
+            "AntiNuke",
+            "AutoTraceback",
+            "Calculator",
+            "ClearChannel",
+            "CmdChannel",
+            "CtxVar",
+            "DiscordModals",
+            "DiscordSearch",
+            "DropdownsTexts",
+            "EditFile",
+            "EditRole",
+            "EditTextChannel",
+            "EditVoiceChannel",
+            "ExportChannel",
+            "GetLoc",
+            "Ip",
+            "Medicat",  # Private cog, but public code.
+            "MemberPrefix",
+            "UrlButtons",
+            "ReactToCommand",
+            "RolesButtons",
+            "Seen",
+            "SimpleSanction",
+            "Sudo",
+            "TicketTool",
+            "TransferChannel",
+        ]
         self.all_cogs_dpy2: typing.List = [
-                                        "AntiNuke",
-                                        "AutoTraceback",
-                                        "Calculator",
-                                        "ClearChannel",
-                                        "CmdChannel",
-                                        "CtxVar",
-                                        "DiscordModals",
-                                        "DiscordSearch",
-                                        "DropdownsTexts",
-                                        "EditFile",
-                                        "EditRole",
-                                        "EditTextChannel",
-                                        "EditVoiceChannel",
-                                        "ExportChannel",
-                                        "GetLoc",
-                                        "Ip",
-                                        "Medicat",  # Private cog, but public code.
-                                        "MemberPrefix",
-                                        "UrlButtons",
-                                        "ReactToCommand",
-                                        "RolesButtons",
-                                        "Seen",
-                                        "SimpleSanction",
-                                        "Sudo",
-                                        "TicketTool",
-                                        "TransferChannel"
-                                    ]
+            "AntiNuke",
+            "AutoTraceback",
+            "Calculator",
+            "ClearChannel",
+            "CmdChannel",
+            "CtxVar",
+            "DiscordModals",
+            "DiscordSearch",
+            "DropdownsTexts",
+            "EditFile",
+            "EditRole",
+            "EditTextChannel",
+            "EditVoiceChannel",
+            "ExportChannel",
+            "GetLoc",
+            "Ip",
+            "Medicat",  # Private cog, but public code.
+            "MemberPrefix",
+            "UrlButtons",
+            "ReactToCommand",
+            "RolesButtons",
+            "Seen",
+            "SimpleSanction",
+            "Sudo",
+            "TicketTool",
+            "TransferChannel",
+        ]
         if self.cog is not None:
-            if self.cog.qualified_name in self.all_cogs and self.cog.qualified_name not in self.all_cogs_dpy2:
+            if (
+                self.cog.qualified_name in self.all_cogs
+                and self.cog.qualified_name not in self.all_cogs_dpy2
+            ):
                 if self.is_dpy2 or redbot.version_info >= redbot.VersionInfo.from_str("3.5.0"):
-                    raise RuntimeError(f"{self.cog.qualified_name} needs to be updated to run on dpy2/Red 3.5.0. It's best to use `[p]cog update` with no arguments to update all your cogs, which may be using new dpy2-specific methods.")
+                    raise RuntimeError(
+                        f"{self.cog.qualified_name} needs to be updated to run on dpy2/Red 3.5.0. It's best to use `[p]cog update` with no arguments to update all your cogs, which may be using new dpy2-specific methods."
+                    )
 
     @property
     def is_dpy2(self) -> bool:
@@ -145,15 +154,21 @@ class CogsUtils(commands.Cog):
         """
         return discord.version_info.major >= 2
 
-    def replace_var_paths(self, text: str, reverse: typing.Optional[bool]=False):
+    def replace_var_paths(self, text: str, reverse: typing.Optional[bool] = False):
         if not reverse:
             if "USERPROFILE" in os.environ:
                 text = text.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
                 text = text.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
-                text = text.replace(os.environ["USERPROFILE"].replace("\\", "\\\\"), "{USERPROFILE}")
-                text = text.replace(os.environ["USERPROFILE"].replace("\\", "\\\\").lower(), "{USERPROFILE}")
+                text = text.replace(
+                    os.environ["USERPROFILE"].replace("\\", "\\\\"), "{USERPROFILE}"
+                )
+                text = text.replace(
+                    os.environ["USERPROFILE"].replace("\\", "\\\\").lower(), "{USERPROFILE}"
+                )
                 text = text.replace(os.environ["USERPROFILE"].replace("\\", "/"), "{USERPROFILE}")
-                text = text.replace(os.environ["USERPROFILE"].replace("\\", "/").lower(), "{USERPROFILE}")
+                text = text.replace(
+                    os.environ["USERPROFILE"].replace("\\", "/").lower(), "{USERPROFILE}"
+                )
             if "HOME" in os.environ:
                 text = text.replace(os.environ["HOME"], "{HOME}")
                 text = text.replace(os.environ["HOME"].lower(), "{HOME}")
@@ -207,13 +222,18 @@ class CogsUtils(commands.Cog):
         try:
             to_update, local_commit, online_commit = await self.to_update()
             if to_update:
-                self.cog.log.warning(f"Your {self.cog.qualified_name} cog, from {self.repo_name}, is out of date. You can update your cogs with the 'cog update' command in Discord.")
+                self.cog.log.warning(
+                    f"Your {self.cog.qualified_name} cog, from {self.repo_name}, is out of date. You can update your cogs with the 'cog update' command in Discord."
+                )
             else:
                 self.cog.log.debug(f"{self.cog.qualified_name} cog is up to date.")
         except (self.DownloaderNotLoaded, asyncio.TimeoutError, ValueError):
             pass
         except Exception as e:  # really doesn't matter if this fails so fine with debug level
-            self.cog.log.debug(f"Something went wrong checking if {self.cog.qualified_name} cog is up to date.", exc_info=e)
+            self.cog.log.debug(
+                f"Something went wrong checking if {self.cog.qualified_name} cog is up to date.",
+                exc_info=e,
+            )
         if not self.cog.qualified_name == "AAA3A_utils":
             try:
                 self.bot.remove_command("getallfor")
@@ -230,7 +250,10 @@ class CogsUtils(commands.Cog):
             try:
                 await self.add_hybrid_commands()
             except Exception as e:
-                self.cog.log.error(f"Error when adding slash (hybrids) commands from the {self.cog.qualified_name} cog.", exc_info=e)
+                self.cog.log.error(
+                    f"Error when adding [hybrid|slash] commands from the {self.cog.qualified_name} cog.",
+                    exc_info=e,
+                )
 
     def _end(self):
         """
@@ -252,7 +275,7 @@ class CogsUtils(commands.Cog):
             else:
                 self.bot.remove_cog("AAA3A_utils")
 
-    def init_logger(self, name: typing.Optional[str]=None):
+    def init_logger(self, name: typing.Optional[str] = None):
         """
         Prepare the logger for the cog.
         Thanks to @laggron42 on GitHub! (https://github.com/laggron42/Laggron-utils/blob/master/laggron_utils/logging.py)
@@ -260,7 +283,9 @@ class CogsUtils(commands.Cog):
         if name is None:
             self.cog.log = logging.getLogger(f"red.{self.repo_name}.{self.cog.qualified_name}")
             formatter = logging.Formatter(
-                "[{asctime}] {levelname} [{name}] {message}", datefmt="%Y-%m-%d %H:%M:%S", style="{"
+                "[{asctime}] {levelname} [{name}] {message}",
+                datefmt="%Y-%m-%d %H:%M:%S",
+                style="{",
             )
             # logging to a log file
             # file is automatically created by the module, if the parent foler exists
@@ -292,14 +317,16 @@ class CogsUtils(commands.Cog):
             handler.close()
         self.cog.log.handlers = []
 
-    async def to_update(self, cog_name: typing.Optional[str]=None):
+    async def to_update(self, cog_name: typing.Optional[str] = None):
         if cog_name is None:
             cog_name = self.cog.qualified_name
         cog_name = cog_name.lower()
 
         downloader = self.bot.get_cog("Downloader")
         if downloader is None:
-            raise self.DownloaderNotLoaded(_("The cog downloader is not loaded.").format(**locals()))
+            raise self.DownloaderNotLoaded(
+                _("The cog downloader is not loaded.").format(**locals())
+            )
 
         if await self.bot._cog_mgr.find_cog(cog_name) is None:
             raise ValueError(_("This cog was not found in any cog path."))
@@ -310,20 +337,32 @@ class CogsUtils(commands.Cog):
         local_commit = local.commit
         repo = local.repo
         if repo is None:
-            raise ValueError(_("This cog has not been installed from the cog Downloader.").format(**locals()))
+            raise ValueError(
+                _("This cog has not been installed from the cog Downloader.").format(**locals())
+            )
 
-        repo_owner, repo_name, repo_branch = (re.compile(r"(?:https?:\/\/)?git(?:hub|lab).com\/(?P<repo_owner>[A-z0-9-_.]*)\/(?P<repo>[A-z0-9-_.]*)(?:\/tree\/(?P<repo_branch>[A-z0-9-_.]*))?", re.I).findall(repo.url))[0]
+        repo_owner, repo_name, repo_branch = (
+            re.compile(
+                r"(?:https?:\/\/)?git(?:hub|lab).com\/(?P<repo_owner>[A-z0-9-_.]*)\/(?P<repo>[A-z0-9-_.]*)(?:\/tree\/(?P<repo_branch>[A-z0-9-_.]*))?",
+                re.I,
+            ).findall(repo.url)
+        )[0]
         repo_branch = repo.branch
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}", timeout=3) as r:
+            async with session.get(
+                f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}",
+                timeout=3,
+            ) as r:
                 online = await r.json()
         if online is None or "object" not in online or "sha" not in online["object"]:
-            raise asyncio.IncompleteReadError(_("No results could be retrieved from the git api.").format(**locals()), None)
+            raise asyncio.IncompleteReadError(
+                _("No results could be retrieved from the git api.").format(**locals()), None
+            )
         online_commit = online["object"]["sha"]
 
         return online_commit != local_commit, local_commit, online_commit
 
-    async def add_hybrid_commands(self, cog: typing.Optional[commands.Cog]=None):
+    async def add_hybrid_commands(self, cog: typing.Optional[commands.Cog] = None):
         if cog is None:
             cog = self.cog
         if cog.qualified_name == "Medicat":
@@ -337,19 +376,30 @@ class CogsUtils(commands.Cog):
                 continue
             if isinstance(_object, discord.ext.commands.HybridGroup):
                 _object.with_app_command = True
-                guild_ids = getattr(_object.callback, '__discord_app_commands_default_guilds__', None)
-                guild_only = getattr(_object.callback, '__discord_app_commands_guild_only__', False)
-                default_permissions = getattr(_object.callback, '__discord_app_commands_default_permissions__', None)
-                nsfw = getattr(_object.callback, '__discord_app_commands_is_nsfw__', False)
+                guild_ids = getattr(
+                    _object.callback, "__discord_app_commands_default_guilds__", None
+                )
+                guild_only = getattr(
+                    _object.callback, "__discord_app_commands_guild_only__", False
+                )
+                default_permissions = getattr(
+                    _object.callback, "__discord_app_commands_default_permissions__", None
+                )
+                nsfw = getattr(_object.callback, "__discord_app_commands_is_nsfw__", False)
                 _object.app_command = discord.app_commands.Group(
                     name=_object._locale_name or _object.name,
-                    description=_object._locale_description or _object.description or _object.short_doc or '…',
+                    description=_object._locale_description
+                    or _object.description
+                    or _object.short_doc
+                    or "…",
                     guild_ids=guild_ids,
                     guild_only=guild_only,
                     default_permissions=default_permissions,
                     nsfw=nsfw,
                 )
-                _object.app_command.parent = _object.parent.app_command if _object.parent is not None else None
+                _object.app_command.parent = (
+                    _object.parent.app_command if _object.parent is not None else None
+                )
                 _object.app_command.module = _object.module
             elif isinstance(_object, discord.ext.commands.HybridCommand):
                 _object.with_app_command = True
@@ -368,7 +418,7 @@ class CogsUtils(commands.Cog):
                 self.bot.tree.remove_command(_object.app_command.name)
                 self.bot.tree.add_command(_object.app_command)
 
-    async def remove_hybrid_commands(self, cog: typing.Optional[commands.Cog]=None):
+    async def remove_hybrid_commands(self, cog: typing.Optional[commands.Cog] = None):
         if cog is None:
             cog = self.cog
         for _object in cog.walk_commands():
@@ -388,20 +438,25 @@ class CogsUtils(commands.Cog):
                 self.bot.tree.remove_command(_object.name)
 
     async def ConfirmationAsk(
-            self,
-            ctx: commands.Context,
-            text: typing.Optional[str]=None,
-            embed: typing.Optional[discord.Embed]=None,
-            file: typing.Optional[discord.File]=None,
-            timeout: typing.Optional[int]=60,
-            timeout_message: typing.Optional[str]=_("Timed out, please try again").format(**locals()),
-            way: typing.Optional[typing.Literal["buttons", "dropdown", "reactions", "message"]] = "buttons",
-            message: typing.Optional[discord.Message]=None,
-            put_reactions: typing.Optional[bool]=True,
-            delete_message: typing.Optional[bool]=True,
-            reactions: typing.Optional[typing.Iterable[typing.Union[str, discord.Emoji]]]=["✅", "❌"],
-            check_owner: typing.Optional[bool]=True,
-            members_authored: typing.Optional[typing.Iterable[discord.Member]]=[]):
+        self,
+        ctx: commands.Context,
+        text: typing.Optional[str] = None,
+        embed: typing.Optional[discord.Embed] = None,
+        file: typing.Optional[discord.File] = None,
+        timeout: typing.Optional[int] = 60,
+        timeout_message: typing.Optional[str] = _("Timed out, please try again").format(
+            **locals()
+        ),
+        way: typing.Optional[
+            typing.Literal["buttons", "dropdown", "reactions", "message"]
+        ] = "buttons",
+        message: typing.Optional[discord.Message] = None,
+        put_reactions: typing.Optional[bool] = True,
+        delete_message: typing.Optional[bool] = True,
+        reactions: typing.Optional[typing.Iterable[typing.Union[str, discord.Emoji]]] = ["✅", "❌"],
+        check_owner: typing.Optional[bool] = True,
+        members_authored: typing.Optional[typing.Iterable[discord.Member]] = [],
+    ):
         """
         Allow confirmation to be requested from the user, in the form of buttons/dropdown/reactions/message, with many additional options.
         """
@@ -410,13 +465,21 @@ class CogsUtils(commands.Cog):
         if message is None:
             if not text and not embed and not file:
                 if way == "buttons":
-                    text = _("To confirm the current action, please use the buttons below this message.").format(**locals())
+                    text = _(
+                        "To confirm the current action, please use the buttons below this message."
+                    ).format(**locals())
                 if way == "dropdown":
-                    text = _("To confirm the current action, please use the dropdown below this message.").format(**locals())
+                    text = _(
+                        "To confirm the current action, please use the dropdown below this message."
+                    ).format(**locals())
                 if way == "reactions":
-                    text = _("To confirm the current action, please use the reactions below this message.").format(**locals())
+                    text = _(
+                        "To confirm the current action, please use the reactions below this message."
+                    ).format(**locals())
                 if way == "message":
-                    text = _("To confirm the current action, please send yes/no in this channel.").format(**locals())
+                    text = _(
+                        "To confirm the current action, please send yes/no in this channel."
+                    ).format(**locals())
             if not way == "buttons" and not way == "dropdown":
                 message = await ctx.send(content=text, embed=embed, file=file)
         if way == "reactions":
@@ -426,7 +489,26 @@ class CogsUtils(commands.Cog):
                 except discord.HTTPException:
                     way = "message"
         if way == "buttons":
-            view = Buttons(timeout=timeout, buttons=[{"style": 3, "label": "Yes", "emoji": reactions[0], "custom_id": "ConfirmationAsk_Yes"}, {"style": 4, "label": "No", "emoji": reactions[1], "custom_id": "ConfirmationAsk_No"}], members=[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored])
+            view = Buttons(
+                timeout=timeout,
+                buttons=[
+                    {
+                        "style": 3,
+                        "label": "Yes",
+                        "emoji": reactions[0],
+                        "custom_id": "ConfirmationAsk_Yes",
+                    },
+                    {
+                        "style": 4,
+                        "label": "No",
+                        "emoji": reactions[1],
+                        "custom_id": "ConfirmationAsk_No",
+                    },
+                ],
+                members=[ctx.author.id] + list(ctx.bot.owner_ids)
+                if check_owner
+                else [] + [x.id for x in members_authored],
+            )
             message = await ctx.send(content=text, embed=embed, file=file, view=view)
             try:
                 interaction, function_result = await view.wait_result()
@@ -434,27 +516,116 @@ class CogsUtils(commands.Cog):
                     if delete_message:
                         await self.delete_message(message)
                     else:
-                        view = Buttons(timeout=timeout, buttons=[{"style": 3, "label": "Yes", "emoji": reactions[0], "custom_id": "ConfirmationAsk_Yes", "disabled": True}, {"style": 4, "label": "No", "emoji": reactions[1], "custom_id": "ConfirmationAsk_No", "disabled": True}], members=[[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored]])
+                        view = Buttons(
+                            timeout=timeout,
+                            buttons=[
+                                {
+                                    "style": 3,
+                                    "label": "Yes",
+                                    "emoji": reactions[0],
+                                    "custom_id": "ConfirmationAsk_Yes",
+                                    "disabled": True,
+                                },
+                                {
+                                    "style": 4,
+                                    "label": "No",
+                                    "emoji": reactions[1],
+                                    "custom_id": "ConfirmationAsk_No",
+                                    "disabled": True,
+                                },
+                            ],
+                            members=[
+                                [ctx.author.id] + list(ctx.bot.owner_ids)
+                                if check_owner
+                                else [] + [x.id for x in members_authored]
+                            ],
+                        )
                         await interaction.response.edit_message(view=view)
                     return True
                 elif str(interaction.data["custom_id"]) == "ConfirmationAsk_No":
                     if delete_message:
                         await self.delete_message(message)
                     else:
-                        view = Buttons(timeout=timeout, buttons=[{"style": 3, "label": "Yes", "emoji": reactions[0], "custom_id": "ConfirmationAsk_Yes", "disabled": True}, {"style": 4, "label": "No", "emoji": reactions[1], "custom_id": "ConfirmationAsk_No", "disabled": True}], members=[[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored]])
+                        view = Buttons(
+                            timeout=timeout,
+                            buttons=[
+                                {
+                                    "style": 3,
+                                    "label": "Yes",
+                                    "emoji": reactions[0],
+                                    "custom_id": "ConfirmationAsk_Yes",
+                                    "disabled": True,
+                                },
+                                {
+                                    "style": 4,
+                                    "label": "No",
+                                    "emoji": reactions[1],
+                                    "custom_id": "ConfirmationAsk_No",
+                                    "disabled": True,
+                                },
+                            ],
+                            members=[
+                                [ctx.author.id] + list(ctx.bot.owner_ids)
+                                if check_owner
+                                else [] + [x.id for x in members_authored]
+                            ],
+                        )
                         await interaction.response.edit_message(view=view)
                     return False
             except TimeoutError:
                 if delete_message:
                     await self.delete_message(message)
                 else:
-                    view = Buttons(timeout=timeout, buttons=[{"style": 3, "label": "Yes", "emoji": reactions[0], "custom_id": "ConfirmationAsk_Yes", "disabled": True}, {"style": 4, "label": "No", "emoji": reactions[1], "custom_id": "ConfirmationAsk_No", "disabled": True}], members=[[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored]])
+                    view = Buttons(
+                        timeout=timeout,
+                        buttons=[
+                            {
+                                "style": 3,
+                                "label": "Yes",
+                                "emoji": reactions[0],
+                                "custom_id": "ConfirmationAsk_Yes",
+                                "disabled": True,
+                            },
+                            {
+                                "style": 4,
+                                "label": "No",
+                                "emoji": reactions[1],
+                                "custom_id": "ConfirmationAsk_No",
+                                "disabled": True,
+                            },
+                        ],
+                        members=[
+                            [ctx.author.id] + list(ctx.bot.owner_ids)
+                            if check_owner
+                            else [] + [x.id for x in members_authored]
+                        ],
+                    )
                     await interaction.response.edit_message(view=view)
                 if timeout_message is not None:
                     await ctx.send(timeout_message)
                 return None
         if way == "dropdown":
-            view = Dropdown(timeout=timeout, options=[{"label": "Yes", "emoji": reactions[0], "value": "ConfirmationAsk_Yes", "disabled": False}, {"label": "No", "emoji": reactions[1], "value": "ConfirmationAsk_No", "disabled": False}], disabled=False, members=[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored])
+            view = Dropdown(
+                timeout=timeout,
+                options=[
+                    {
+                        "label": "Yes",
+                        "emoji": reactions[0],
+                        "value": "ConfirmationAsk_Yes",
+                        "disabled": False,
+                    },
+                    {
+                        "label": "No",
+                        "emoji": reactions[1],
+                        "value": "ConfirmationAsk_No",
+                        "disabled": False,
+                    },
+                ],
+                disabled=False,
+                members=[ctx.author.id] + list(ctx.bot.owner_ids)
+                if check_owner
+                else [] + [x.id for x in members_authored],
+            )
             message = await ctx.send(content=text, embed=embed, file=file, view=view)
             try:
                 interaction, values, function_result = await view.wait_result()
@@ -462,27 +633,96 @@ class CogsUtils(commands.Cog):
                     if delete_message:
                         await self.delete_message(message)
                     else:
-                        view = Dropdown(timeout=timeout, options=[{"label": "Yes", "emoji": reactions[0], "value": "ConfirmationAsk_Yes", "disabled": True}, {"label": "No", "emoji": reactions[1], "value": "ConfirmationAsk_No", "disabled": False}], disabled=True, members=[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored])
+                        view = Dropdown(
+                            timeout=timeout,
+                            options=[
+                                {
+                                    "label": "Yes",
+                                    "emoji": reactions[0],
+                                    "value": "ConfirmationAsk_Yes",
+                                    "disabled": True,
+                                },
+                                {
+                                    "label": "No",
+                                    "emoji": reactions[1],
+                                    "value": "ConfirmationAsk_No",
+                                    "disabled": False,
+                                },
+                            ],
+                            disabled=True,
+                            members=[ctx.author.id] + list(ctx.bot.owner_ids)
+                            if check_owner
+                            else [] + [x.id for x in members_authored],
+                        )
                         await interaction.response.edit_message(view=view)
                     return True
                 elif str(values[0]) == "ConfirmationAsk_No":
                     if delete_message:
                         await self.delete_message(message)
                     else:
-                        view = Dropdown(timeout=timeout, options=[{"label": "Yes", "emoji": reactions[0], "value": "ConfirmationAsk_Yes", "disabled": True}, {"label": "No", "emoji": reactions[1], "value": "ConfirmationAsk_No", "disabled": False}], disabled=True, members=[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored])
+                        view = Dropdown(
+                            timeout=timeout,
+                            options=[
+                                {
+                                    "label": "Yes",
+                                    "emoji": reactions[0],
+                                    "value": "ConfirmationAsk_Yes",
+                                    "disabled": True,
+                                },
+                                {
+                                    "label": "No",
+                                    "emoji": reactions[1],
+                                    "value": "ConfirmationAsk_No",
+                                    "disabled": False,
+                                },
+                            ],
+                            disabled=True,
+                            members=[ctx.author.id] + list(ctx.bot.owner_ids)
+                            if check_owner
+                            else [] + [x.id for x in members_authored],
+                        )
                         await interaction.response.edit_message(view=view)
                     return False
             except TimeoutError:
                 if delete_message:
                     await self.delete_message(message)
                 else:
-                    view = Dropdown(timeout=timeout, options=[{"label": "Yes", "emoji": reactions[0], "value": "ConfirmationAsk_Yes", "disabled": True}, {"label": "No", "emoji": reactions[1], "value": "ConfirmationAsk_No", "disabled": False}], disabled=True, members=[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored])
+                    view = Dropdown(
+                        timeout=timeout,
+                        options=[
+                            {
+                                "label": "Yes",
+                                "emoji": reactions[0],
+                                "value": "ConfirmationAsk_Yes",
+                                "disabled": True,
+                            },
+                            {
+                                "label": "No",
+                                "emoji": reactions[1],
+                                "value": "ConfirmationAsk_No",
+                                "disabled": False,
+                            },
+                        ],
+                        disabled=True,
+                        members=[ctx.author.id] + list(ctx.bot.owner_ids)
+                        if check_owner
+                        else [] + [x.id for x in members_authored],
+                    )
                     await interaction.response.edit_message(view=view)
                 if timeout_message is not None:
                     await ctx.send(timeout_message)
                 return None
         if way == "reactions":
-            view = Reactions(bot=ctx.bot, message=message, remove_reaction=False, timeout=timeout, reactions=reactions, members=[ctx.author.id] + list(ctx.bot.owner_ids) if check_owner else [] + [x.id for x in members_authored])
+            view = Reactions(
+                bot=ctx.bot,
+                message=message,
+                remove_reaction=False,
+                timeout=timeout,
+                reactions=reactions,
+                members=[ctx.author.id] + list(ctx.bot.owner_ids)
+                if check_owner
+                else [] + [x.id for x in members_authored],
+            )
             try:
                 reaction, user, function_result = await view.wait_result()
                 if str(reaction.emoji) == reactions[0]:
@@ -502,12 +742,25 @@ class CogsUtils(commands.Cog):
                     await ctx.send(timeout_message)
                 return None
         if way == "message":
+
             def check(msg):
                 if check_owner:
-                    return msg.author.id == ctx.author.id or msg.author.id in ctx.bot.owner_ids or msg.author.id in [x.id for x in members_authored] and msg.channel == ctx.channel and msg.content in ("yes", "y", "no", "n")
+                    return (
+                        msg.author.id == ctx.author.id
+                        or msg.author.id in ctx.bot.owner_ids
+                        or msg.author.id in [x.id for x in members_authored]
+                        and msg.channel == ctx.channel
+                        and msg.content in ("yes", "y", "no", "n")
+                    )
                 else:
-                    return msg.author.id == ctx.author.id or msg.author.id in [x.id for x in members_authored] and msg.channel == ctx.channel and msg.content in ("yes", "y", "no", "n")
+                    return (
+                        msg.author.id == ctx.author.id
+                        or msg.author.id in [x.id for x in members_authored]
+                        and msg.channel == ctx.channel
+                        and msg.content in ("yes", "y", "no", "n")
+                    )
                 # This makes sure nobody except the command sender can interact with the "menu"
+
             try:
                 end_reaction = False
                 msg = await ctx.bot.wait_for("message", timeout=timeout, check=check)
@@ -544,7 +797,18 @@ class CogsUtils(commands.Cog):
         else:
             return True
 
-    async def invoke_command(self, author: discord.User, channel: discord.TextChannel, command: str, prefix: typing.Optional[str]=None, message: typing.Optional[discord.Message]=None, dispatch_message: typing.Optional[bool]=False, __is_mocked__: typing.Optional[bool]=False, message_id: typing.Optional[str]="".join(choice(string.digits) for i in range(18)), timestamp: typing.Optional[datetime.datetime]=datetime.datetime.now()) -> typing.Union[commands.Context, discord.Message]:
+    async def invoke_command(
+        self,
+        author: discord.User,
+        channel: discord.TextChannel,
+        command: str,
+        prefix: typing.Optional[str] = None,
+        message: typing.Optional[discord.Message] = None,
+        dispatch_message: typing.Optional[bool] = False,
+        __is_mocked__: typing.Optional[bool] = False,
+        message_id: typing.Optional[str] = "".join(choice(string.digits) for i in range(18)),
+        timestamp: typing.Optional[datetime.datetime] = datetime.datetime.now(),
+    ) -> typing.Union[commands.Context, discord.Message]:
         """
         Invoke the specified command with the specified user in the specified channel.
         """
@@ -559,10 +823,36 @@ class CogsUtils(commands.Cog):
 
         if message is None:
             message_content = content
-            author_dict = {"id": f"{author.id}", "username": author.display_name, "avatar": author.avatar, 'avatar_decoration': None, 'discriminator': f"{author.discriminator}", "public_flags": author.public_flags, "bot": author.bot}
+            author_dict = {
+                "id": f"{author.id}",
+                "username": author.display_name,
+                "avatar": author.avatar,
+                "avatar_decoration": None,
+                "discriminator": f"{author.discriminator}",
+                "public_flags": author.public_flags,
+                "bot": author.bot,
+            }
             channel_id = channel.id
             timestamp = str(timestamp).replace(" ", "T") + "+00:00"
-            data = {"id": message_id, "type": 0, "content": message_content, "channel_id": f"{channel_id}", "author": author_dict, "attachments": [], "embeds": [], "mentions": [], "mention_roles": [], "pinned": False, "mention_everyone": False, "tts": False, "timestamp": timestamp, "edited_timestamp": None, "flags": 0, "components": [], "referenced_message": None}
+            data = {
+                "id": message_id,
+                "type": 0,
+                "content": message_content,
+                "channel_id": f"{channel_id}",
+                "author": author_dict,
+                "attachments": [],
+                "embeds": [],
+                "mentions": [],
+                "mention_roles": [],
+                "pinned": False,
+                "mention_everyone": False,
+                "tts": False,
+                "timestamp": timestamp,
+                "edited_timestamp": None,
+                "flags": 0,
+                "components": [],
+                "referenced_message": None,
+            }
             message = discord.Message(channel=channel, state=bot._connection, data=data)
         else:
             message = copy(message)
@@ -632,13 +922,15 @@ class CogsUtils(commands.Cog):
                     f"Embed size exceeds Discord limit of 6000 characters ({length})."
                 )
         except Exception as e:
-            raise commands.BadArgument(
-                f"An error has occurred.\n{e})."
-            )
+            raise commands.BadArgument(f"An error has occurred.\n{e}).")
         back = {"embed": embed, "content": content}
         return back
 
-    def datetime_to_timestamp(self, dt: datetime.datetime, format: typing.Literal["f", "F", "d", "D", "t", "T", "R"]="f") -> str:
+    def datetime_to_timestamp(
+        self,
+        dt: datetime.datetime,
+        format: typing.Literal["f", "F", "d", "D", "t", "T", "R"] = "f",
+    ) -> str:
         """
         Generate a Discord timestamp from a datetime object.
         <t:TIMESTAMP:FORMAT>
@@ -664,7 +956,12 @@ class CogsUtils(commands.Cog):
         t = str(int(dt.timestamp()))
         return f"<t:{t}:{format}>"
 
-    def check_permissions_for(self, channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.DMChannel], user: discord.User, check: typing.Union[typing.List, typing.Dict]):
+    def check_permissions_for(
+        self,
+        channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.DMChannel],
+        user: discord.User,
+        check: typing.Union[typing.List, typing.Dict],
+    ):
         """
         Check all permissions specified as an argument.
         """
@@ -686,25 +983,65 @@ class CogsUtils(commands.Cog):
                         return False
         return True
 
-    def create_loop(self, function, name: typing.Optional[str]=None, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, wait_raw: typing.Optional[bool]=False, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None, limit_exception: typing.Optional[int]=None):
+    def create_loop(
+        self,
+        function,
+        name: typing.Optional[str] = None,
+        days: typing.Optional[int] = 0,
+        hours: typing.Optional[int] = 0,
+        minutes: typing.Optional[int] = 0,
+        seconds: typing.Optional[int] = 0,
+        function_args: typing.Optional[typing.Dict] = {},
+        wait_raw: typing.Optional[bool] = False,
+        limit_count: typing.Optional[int] = None,
+        limit_date: typing.Optional[datetime.datetime] = None,
+        limit_exception: typing.Optional[int] = None,
+    ):
         """
         Create a loop like Loop, but with default values and loop object recording functionality.
         """
         if name is None:
             name = f"{self.cog.qualified_name}"
-        if datetime.timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds).total_seconds() == 0:
+        if (
+            datetime.timedelta(
+                days=days, hours=hours, minutes=minutes, seconds=seconds
+            ).total_seconds()
+            == 0
+        ):
             seconds = 900  # 15 minutes
-        loop = Loop(cogsutils=self, name=name, function=function, days=days, hours=hours, minutes=minutes, seconds=seconds, function_args=function_args, wait_raw=wait_raw, limit_count=limit_count, limit_date=limit_date, limit_exception=limit_exception)
+        loop = Loop(
+            cogsutils=self,
+            name=name,
+            function=function,
+            days=days,
+            hours=hours,
+            minutes=minutes,
+            seconds=seconds,
+            function_args=function_args,
+            wait_raw=wait_raw,
+            limit_count=limit_count,
+            limit_date=limit_date,
+            limit_exception=limit_exception,
+        )
         if f"{loop.name}" in self.loops:
             self.loops[f"{loop.name}"].stop_all()
         self.loops[f"{loop.name}"] = loop
         return loop
 
-    async def captcha(self, member: discord.Member, channel: discord.TextChannel, limit: typing.Optional[int]=3, timeout: typing.Optional[int]=60, why: typing.Optional[str]=""):
+    async def captcha(
+        self,
+        member: discord.Member,
+        channel: discord.TextChannel,
+        limit: typing.Optional[int] = 3,
+        timeout: typing.Optional[int] = 60,
+        why: typing.Optional[str] = "",
+    ):
         """
         Create a Captcha challenge like Captcha, but with default values.
         """
-        return await Captcha(cogsutils=self, member=member, channel=channel, limit=limit, timeout=timeout, why=why).realize_challenge()
+        return await Captcha(
+            cogsutils=self, member=member, channel=channel, limit=limit, timeout=timeout, why=why
+        ).realize_challenge()
 
     def get_all_repo_cogs_objects(self):
         """
@@ -714,7 +1051,10 @@ class CogsUtils(commands.Cog):
         for cog in self.bot.cogs.values():
             if hasattr(cog, "cogsutils"):
                 if getattr(cog.cogsutils, "repo_name", None) == "AAA3A-cogs":
-                    if f"{cog.qualified_name}" not in cogs or cogs[f"{cog.qualified_name}"] is None:
+                    if (
+                        f"{cog.qualified_name}" not in cogs
+                        or cogs[f"{cog.qualified_name}"] is None
+                    ):
                         cogs[f"{cog.qualified_name}"] = cog
         return cogs
 
@@ -765,7 +1105,18 @@ class CogsUtils(commands.Cog):
                 new_dict[e] = original_dict[e]
         return new_dict
 
-    def generate_key(self, number: typing.Optional[int]=10, existing_keys: typing.Optional[typing.Union[typing.List, typing.Set]]=[], strings_used: typing.Optional[typing.List]={"ascii_lowercase": True, "ascii_uppercase": False, "digits": True, "punctuation": False, "others": []}):
+    def generate_key(
+        self,
+        number: typing.Optional[int] = 10,
+        existing_keys: typing.Optional[typing.Union[typing.List, typing.Set]] = [],
+        strings_used: typing.Optional[typing.List] = {
+            "ascii_lowercase": True,
+            "ascii_uppercase": False,
+            "digits": True,
+            "punctuation": False,
+            "others": [],
+        },
+    ):
         """
         Generate a secret key, with the choice of characters, the number of characters and a list of existing keys.
         """
@@ -791,21 +1142,27 @@ class CogsUtils(commands.Cog):
             if key not in existing_keys:
                 return key
 
-    def await_function(self, function, function_args: typing.Optional[typing.Dict]={}):
+    def await_function(self, function, function_args: typing.Optional[typing.Dict] = {}):
         """
         Allow to use an asynchronous function, from a non-asynchronous function.
         """
-        task = asyncio.create_task(self.do_await_function(function=function, function_args=function_args))
+        task = asyncio.create_task(
+            self.do_await_function(function=function, function_args=function_args)
+        )
         return task
 
-    async def do_await_function(self, function, function_args: typing.Optional[typing.Dict]={}):
+    async def do_await_function(self, function, function_args: typing.Optional[typing.Dict] = {}):
         try:
             await function(**function_args)
         except Exception as e:
             if hasattr(self.cogsutils.cog, "log"):
-                self.cog.log.error(f"An error occurred with the {function.__name__} function.", exc_info=e)
+                self.cog.log.error(
+                    f"An error occurred with the {function.__name__} function.", exc_info=e
+                )
 
-    async def check_in_listener(self, output, allowed_by_whitelist_blacklist: typing.Optional[bool]=True):
+    async def check_in_listener(
+        self, output, allowed_by_whitelist_blacklist: typing.Optional[bool] = True
+    ):
         """
         Check all parameters for the output of any listener.
         Thanks to Jack! (https://discord.com/channels/133049272517001216/160386989819035648/825373605000511518)
@@ -822,7 +1179,9 @@ class CogsUtils(commands.Cog):
             # check whether the bot can send message in the given channel
             if output.channel is None:
                 raise discord.ext.commands.BadArgument()
-            if not self.check_permissions_for(channel=output.channel, user=output.guild.me, check=["send_messages"]):
+            if not self.check_permissions_for(
+                channel=output.channel, user=output.guild.me, check=["send_messages"]
+            ):
                 raise discord.ext.commands.BadArgument()
             # check whether the cog isn't disabled
             if self.cog is not None:
@@ -850,7 +1209,9 @@ class CogsUtils(commands.Cog):
             output.channel = output.guild.get_channel(output.channel_id)
             if output.channel is None:
                 raise discord.ext.commands.BadArgument()
-            if not self.check_permissions_for(channel=output.channel, user=output.guild.me, check=["send_messages"]):
+            if not self.check_permissions_for(
+                channel=output.channel, user=output.guild.me, check=["send_messages"]
+            ):
                 raise discord.ext.commands.BadArgument()
             # check whether the cog isn't disabled
             if self.cog is not None:
@@ -876,7 +1237,9 @@ class CogsUtils(commands.Cog):
                 # check whether the bot can send message in the given channel
                 if output.channel is None:
                     raise discord.ext.commands.BadArgument()
-                if not self.check_permissions_for(channel=output.channel, user=output.guild.me, check=["send_messages"]):
+                if not self.check_permissions_for(
+                    channel=output.channel, user=output.guild.me, check=["send_messages"]
+                ):
                     raise discord.ext.commands.BadArgument()
                 # check whether the cog isn't disabled
                 if self.cog is not None:
@@ -888,19 +1251,74 @@ class CogsUtils(commands.Cog):
                         raise discord.ext.commands.BadArgument()
         return
 
-    async def get_new_Config_with_modal(self, ctx: commands.Context, config: typing.Dict, all_config: typing.Optional[typing.Dict]={}, bypass_confirm: typing.Optional[bool]=False):
+    async def get_new_Config_with_modal(
+        self,
+        ctx: commands.Context,
+        config: typing.Dict,
+        all_config: typing.Optional[typing.Dict] = {},
+        bypass_confirm: typing.Optional[bool] = False,
+    ):
         # {"x": {"default": "", "value": "", "style": 1, "converter": None}, "all_config": {}}
         for input in config:
-            config[input]["param"] = discord.ext.commands.parameters.Parameter(name=input, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=config[input]["converter"])
+            config[input]["param"] = discord.ext.commands.parameters.Parameter(
+                name=input,
+                kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                annotation=config[input]["converter"],
+            )
         new_config = {}
-        view_button = Buttons(timeout=180, buttons=[{"label": "Configure", "emoji": "⚙️", "disabled": False}], members=[ctx.author.id])
-        message = await ctx.send(_("Click on the buttons below to fully set up the cog {self.cog.qualified_name}.").format(**locals()), view=view_button)
+        view_button = Buttons(
+            timeout=180,
+            buttons=[{"label": "Configure", "emoji": "⚙️", "disabled": False}],
+            members=[ctx.author.id],
+        )
+        message = await ctx.send(
+            _(
+                "Click on the buttons below to fully set up the cog {self.cog.qualified_name}."
+            ).format(**locals()),
+            view=view_button,
+        )
         try:
             interaction, function_result = await view_button.wait_result()
         except TimeoutError:
-            await message.edit(view=Buttons(timeout=None, buttons=[{"label": "Configure", "emoji": "⚙️", "disabled": True}]))
+            await message.edit(
+                view=Buttons(
+                    timeout=None, buttons=[{"label": "Configure", "emoji": "⚙️", "disabled": True}]
+                )
+            )
             return None
-        view_modal = Modal(title=f"{self.cog.qualified_name} Config", inputs=[{"label": (input.replace("_", " ").capitalize() + " (" + (('|'.join(f'"{v}"' if isinstance(v, str) else str(v) for v in config[input]["param"].converter.__args__)) if config[input]["param"].converter is typing.Literal else getattr(config[input]["param"].converter, "__name__", "")) + ")")[:44], "style": config[input]["style"], "placeholder": str(config[input]["default"]), "default": (str(config[input]["value"]) if not str(config[input]["value"]) == str(config[input]["default"]) else None), "required": False, "custom_id": f"CogsUtils_ModalConfig_{input}"} for input in config], custom_id=f"CogsUtils_ModalConfig_{self.cog.qualified_name}")
+        view_modal = Modal(
+            title=f"{self.cog.qualified_name} Config",
+            inputs=[
+                {
+                    "label": (
+                        input.replace("_", " ").capitalize()
+                        + " ("
+                        + (
+                            (
+                                "|".join(
+                                    f'"{v}"' if isinstance(v, str) else str(v)
+                                    for v in config[input]["param"].converter.__args__
+                                )
+                            )
+                            if config[input]["param"].converter is typing.Literal
+                            else getattr(config[input]["param"].converter, "__name__", "")
+                        )
+                        + ")"
+                    )[:44],
+                    "style": config[input]["style"],
+                    "placeholder": str(config[input]["default"]),
+                    "default": (
+                        str(config[input]["value"])
+                        if not str(config[input]["value"]) == str(config[input]["default"])
+                        else None
+                    ),
+                    "required": False,
+                    "custom_id": f"CogsUtils_ModalConfig_{input}",
+                }
+                for input in config
+            ],
+            custom_id=f"CogsUtils_ModalConfig_{self.cog.qualified_name}",
+        )
         await interaction.response.send_modal(view_modal)
         try:
             interaction, inputs, function_result = await view_modal.wait_result()
@@ -911,12 +1329,21 @@ class CogsUtils(commands.Cog):
             for input in inputs:
                 custom_id = input.custom_id.replace("CogsUtils_ModalConfig_", "")
                 if input.value == "":
-                    new_config[input.custom_id.replace("CogsUtils_ModalConfig_", "")] = config[custom_id]["default"]
+                    new_config[input.custom_id.replace("CogsUtils_ModalConfig_", "")] = config[
+                        custom_id
+                    ]["default"]
                     continue
                 try:
-                    value = await discord.ext.commands.converter.run_converters(ctx, converter=config[custom_id]["param"].converter, argument=str(input.value), param=config[custom_id]["param"])
+                    value = await discord.ext.commands.converter.run_converters(
+                        ctx,
+                        converter=config[custom_id]["param"].converter,
+                        argument=str(input.value),
+                        param=config[custom_id]["param"],
+                    )
                 except discord.ext.commands.errors.CommandError as e:
-                    await ctx.send(f"An error occurred when using the `{input.label}` converter:\n{box(e)}")
+                    await ctx.send(
+                        f"An error occurred when using the `{input.label}` converter:\n{box(e)}"
+                    )
                     return None
                 new_config[custom_id] = value
             for key, value in all_config.items():
@@ -925,7 +1352,9 @@ class CogsUtils(commands.Cog):
         await message.delete()
         if not bypass_confirm:
             embed: discord.Embed = discord.Embed()
-            embed.title = _("⚙️ Do you want to replace the entire Config of {self.cog.qualified_name} with what you specified?").format(**locals())
+            embed.title = _(
+                "⚙️ Do you want to replace the entire Config of {self.cog.qualified_name} with what you specified?"
+            ).format(**locals())
             if not await self.ConfirmationAsk(ctx, embed=embed):
                 return None
         return new_config
@@ -937,15 +1366,25 @@ class CogsUtils(commands.Cog):
         """
         downloader = self.bot.get_cog("Downloader")
         if downloader is not None:
-            poss_installed_path = (await downloader.cog_install_path()) / self.cog.qualified_name.lower()
+            poss_installed_path = (
+                await downloader.cog_install_path()
+            ) / self.cog.qualified_name.lower()
             if poss_installed_path.exists():
                 with contextlib.suppress(commands.ExtensionNotLoaded):
                     self.bot.unload_extension(self.cog.qualified_name.lower())
                     await self.bot.remove_loaded_package(self.cog.qualified_name.lower())
                 await downloader._delete_cog(poss_installed_path)
-            await downloader._remove_from_installed([discord.utils.get(await downloader.installed_cogs(), name=self.cog.qualified_name.lower())])
+            await downloader._remove_from_installed(
+                [
+                    discord.utils.get(
+                        await downloader.installed_cogs(), name=self.cog.qualified_name.lower()
+                    )
+                ]
+            )
         else:
-            raise self.DownloaderNotLoaded(_("The cog downloader is not loaded.").format(**locals()))
+            raise self.DownloaderNotLoaded(
+                _("The cog downloader is not loaded.").format(**locals())
+            )
 
     class DownloaderNotLoaded(Exception):
         pass

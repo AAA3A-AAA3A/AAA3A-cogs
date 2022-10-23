@@ -6,18 +6,18 @@ import datetime
 import math
 import time
 import traceback
-
 from io import StringIO
 
+from redbot.core.utils.chat_formatting import box, pagify
 from rich.console import Console
 from rich.table import Table
 
-from redbot.core.utils.chat_formatting import box, pagify
-
 __all__ = ["Loop"]
+
 
 def _(untranslated: str):
     return untranslated
+
 
 def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
     """
@@ -33,18 +33,36 @@ def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
     temp_console.print(*objects)
     return box(temp_console.file.getvalue(), lang=lang)  # type: ignore
 
-class Loop():
+
+class Loop:
     """
     Create a loop, with many features.
     Thanks to Vexed01 on GitHub! (https://github.com/Vexed01/Vex-Cogs/blob/master/timechannel/loop.py and https://github.com/Vexed01/vex-cog-utils/vexutils/loop.py)
     """
-    def __init__(self, cogsutils, name: str, function, days: typing.Optional[int]=0, hours: typing.Optional[int]=0, minutes: typing.Optional[int]=0, seconds: typing.Optional[int]=0, function_args: typing.Optional[typing.Dict]={}, wait_raw: typing.Optional[bool]=False, limit_count: typing.Optional[int]=None, limit_date: typing.Optional[datetime.datetime]=None, limit_exception: typing.Optional[int]=None) -> None:
+
+    def __init__(
+        self,
+        cogsutils,
+        name: str,
+        function,
+        days: typing.Optional[int] = 0,
+        hours: typing.Optional[int] = 0,
+        minutes: typing.Optional[int] = 0,
+        seconds: typing.Optional[int] = 0,
+        function_args: typing.Optional[typing.Dict] = {},
+        wait_raw: typing.Optional[bool] = False,
+        limit_count: typing.Optional[int] = None,
+        limit_date: typing.Optional[datetime.datetime] = None,
+        limit_exception: typing.Optional[int] = None,
+    ) -> None:
         self.cogsutils = cogsutils
 
         self.name: str = name
         self.function = function
         self.function_args = function_args
-        self.interval: float = datetime.timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds).total_seconds()
+        self.interval: float = datetime.timedelta(
+            days=days, hours=hours, minutes=minutes, seconds=seconds
+        ).total_seconds()
         self.wait_raw = wait_raw
         self.limit_count: int = limit_count
         self.limit_date: datetime.datetime = limit_date
@@ -81,7 +99,9 @@ class Loop():
         seconds_to_sleep = (next_iteration).total_seconds()
         if not self.interval <= 60:
             if hasattr(self.cogsutils.cog, "log"):
-                self.cogsutils.cog.log.debug(f"Sleeping for {seconds_to_sleep} seconds until {self.name} loop next iteration ({self.iteration_count + 1})...")
+                self.cogsutils.cog.log.debug(
+                    f"Sleeping for {seconds_to_sleep} seconds until {self.name} loop next iteration ({self.iteration_count + 1})..."
+                )
         await asyncio.sleep(seconds_to_sleep)
 
     async def loop(self) -> None:
@@ -99,16 +119,26 @@ class Loop():
                 total = round(end - start, 1)
                 if hasattr(self.cogsutils.cog, "log"):
                     if self.iteration_count == 1:
-                        self.cogsutils.cog.log.debug(f"{self.name} initial iteration finished in {total}s ({self.iteration_count}).")
+                        self.cogsutils.cog.log.debug(
+                            f"{self.name} initial iteration finished in {total}s ({self.iteration_count})."
+                        )
                     else:
                         if not self.interval <= 60:
-                            self.cogsutils.cog.log.debug(f"{self.name} iteration finished in {total}s ({self.iteration_count}).")
+                            self.cogsutils.cog.log.debug(
+                                f"{self.name} iteration finished in {total}s ({self.iteration_count})."
+                            )
             except Exception as e:
                 if hasattr(self.cogsutils.cog, "log"):
                     if self.iteration_count == 1:
-                        self.cogsutils.cog.log.exception(f"Something went wrong in the {self.name} loop ({self.iteration_count}).", exc_info=e)
+                        self.cogsutils.cog.log.exception(
+                            f"Something went wrong in the {self.name} loop ({self.iteration_count}).",
+                            exc_info=e,
+                        )
                     else:
-                        self.cogsutils.cog.log.exception(f"Something went wrong in the {self.name} loop iteration ({self.iteration_count}).", exc_info=e)
+                        self.cogsutils.cog.log.exception(
+                            f"Something went wrong in the {self.name} loop iteration ({self.iteration_count}).",
+                            exc_info=e,
+                        )
                 self.iteration_error(e)
             if self.maybe_stop():
                 return
@@ -117,14 +147,11 @@ class Loop():
                 assert self.next_iteration is not None
                 if float(self.interval) % float(3600) == 0:
                     self.next_iteration = self.next_iteration.replace(
-                        minute=0,
-                        second=0,
-                        microsecond=0
+                        minute=0, second=0, microsecond=0
                     )  # ensure further iterations are on the hour
                 elif float(self.interval) % float(60) == 0:
                     self.next_iteration = self.next_iteration.replace(
-                        second=0,
-                        microsecond=0
+                        second=0, microsecond=0
                     )  # ensure further iterations are on the minute
                 else:
                     self.next_iteration = self.next_iteration.replace(
@@ -144,7 +171,9 @@ class Loop():
             if self.iteration_count >= self.limit_count:
                 self.stop_all()
         if self.limit_date is not None:
-            if datetime.datetime.timestamp(datetime.datetime.now()) >= datetime.datetime.timestamp(self.limit_date):
+            if datetime.datetime.timestamp(datetime.datetime.now()) >= datetime.datetime.timestamp(
+                self.limit_date
+            ):
                 self.stop_all()
         if self.limit_exception:
             if self.iteration_exception >= self.limit_exception:
@@ -159,7 +188,9 @@ class Loop():
             if self.cogsutils.loops[f"{self.name}"] == self:
                 del self.cogsutils.loops[f"{self.name}"]
         if hasattr(self.cogsutils.cog, "log"):
-            self.cogsutils.cog.log.debug(f"{self.name} loop has been stopped after {self.iteration_count} iteration(s).")
+            self.cogsutils.cog.log.debug(
+                f"{self.name} loop has been stopped after {self.iteration_count} iteration(s)."
+            )
         return self
 
     def __repr__(self) -> str:
@@ -235,9 +266,19 @@ class Loop():
 
         if self.next_iteration and self.last_iteration:
             processed_table = Table("Key", "Value")
-            processed_table.add_row("Seconds until next", str((self.next_iteration - now).total_seconds()))
-            processed_table.add_row("Seconds since last", str((now - self.last_iteration).total_seconds()))
-            processed_table.add_row("Raw interval", str((self.next_iteration - now).total_seconds() + (now - self.last_iteration).total_seconds()))
+            processed_table.add_row(
+                "Seconds until next", str((self.next_iteration - now).total_seconds())
+            )
+            processed_table.add_row(
+                "Seconds since last", str((now - self.last_iteration).total_seconds())
+            )
+            processed_table.add_row(
+                "Raw interval",
+                str(
+                    (self.next_iteration - now).total_seconds()
+                    + (now - self.last_iteration).total_seconds()
+                ),
+            )
             processed_table_str = no_colour_rich_markup(processed_table)
         else:
             processed_table_str = "Loop hasn't started yet."
@@ -245,18 +286,22 @@ class Loop():
         datetime_table = Table("Key", "Value")
         datetime_table.add_row("Start date-time", str(self.start_datetime))
         datetime_table.add_row("Now date-time", str(now))
-        datetime_table.add_row("Runtime", (str(now - self.start_datetime) + "\n" + str((now - self.start_datetime).total_seconds()) + "s"))
+        datetime_table.add_row(
+            "Runtime",
+            (
+                str(now - self.start_datetime)
+                + "\n"
+                + str((now - self.start_datetime).total_seconds())
+                + "s"
+            ),
+        )
         datetime_table_str = no_colour_rich_markup(datetime_table)
 
         emoji = "✅" if self.integrity else "❌"
         embed: discord.Embed = discord.Embed(title=f"{self.name} Loop: `{emoji}`")
         embed.color = 0x00D26A if self.integrity else 0xF92F60
         embed.timestamp = now
-        embed.add_field(
-            name="Raw data",
-            value=raw_table_str,
-            inline=False
-        )
+        embed.add_field(name="Raw data", value=raw_table_str, inline=False)
         embed.add_field(
             name="Processed data",
             value=processed_table_str,

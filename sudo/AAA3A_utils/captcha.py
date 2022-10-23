@@ -4,23 +4,32 @@ import typing  # isort:skip
 import asyncio
 from io import StringIO
 
-from rich.console import Console
-
 from redbot.core.utils.chat_formatting import bold, box, error, warning
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
+from rich.console import Console
 
 __all__ = ["Captcha"]
+
 
 def _(untranslated: str):
     return untranslated
 
-class Captcha():
+
+class Captcha:
     """
     Captcha for an member in a text channel.
     Thanks to Kreusada for this code! (https://github.com/Kreusada/Kreusada-Cogs/blob/master/captcha/)
     """
 
-    def __init__(self, cogsutils, member: discord.Member, channel: discord.TextChannel, limit: typing.Optional[int]=3, timeout: typing.Optional[int]=60, why: typing.Optional[str]=""):
+    def __init__(
+        self,
+        cogsutils,
+        member: discord.Member,
+        channel: discord.TextChannel,
+        limit: typing.Optional[int] = 3,
+        timeout: typing.Optional[int] = 60,
+        why: typing.Optional[str] = "",
+    ):
         self.cogsutils = cogsutils
 
         self.member: discord.Member = member
@@ -75,7 +84,9 @@ class Captcha():
             raise self.MissingPermissions(e)
         except Exception as e:
             if hasattr(self.cogsutils.cog, "log"):
-                self.cogsutils.cog.log.error("An unsupported error occurred during the captcha.", exc_info=e)
+                self.cogsutils.cog.log.error(
+                    "An unsupported error occurred during the captcha.", exc_info=e
+                )
             raise self.OtherException(e)
         finally:
             if timeout:
@@ -87,8 +98,7 @@ class Captcha():
             return True
 
     async def try_challenging(self) -> bool:
-        """Do challenging in one function!
-        """
+        """Do challenging in one function!"""
         self.running = True
         try:
             received = await self.wait_for_action()
@@ -104,7 +114,9 @@ class Captcha():
                 try:
                     state = await self.verify(received.content)
                 except self.SameCodeError:
-                    error_message += error(bold(_("Code invalid. Do not copy and paste.").format(**locals())))
+                    error_message += error(
+                        bold(_("Code invalid. Do not copy and paste.").format(**locals()))
+                    )
                     state = False
                 else:
                     if not state:
@@ -120,7 +132,16 @@ class Captcha():
             self.running = False
 
     def generate_code(self, put_fake_espace: typing.Optional[bool] = True):
-        code = self.cogsutils.generate_key(number=8, existing_keys=[], strings_used={"ascii_lowercase": False, "ascii_uppercase": True, "digits": True, "punctuation": False})
+        code = self.cogsutils.generate_key(
+            number=8,
+            existing_keys=[],
+            strings_used={
+                "ascii_lowercase": False,
+                "ascii_uppercase": True,
+                "digits": True,
+                "punctuation": False,
+            },
+        )
         if put_fake_espace:
             code = self.escape_char.join(list(code))
         return code
@@ -130,20 +151,27 @@ class Captcha():
         Get the embed containing the captcha code.
         """
         embed_dict = {
-                        "embeds": [
-                            {
-                                "title": _("Captcha").format(**locals()) + _(" for {self.why}").format(**locals()) if not self.why == "" else "",
-                                "description": _("Please return me the following code:\n{box(str(self.code))}\nDo not copy and paste.").format(**locals()),
-                                "author": {
-                                    "name": f"{self.member.display_name}",
-                                    "icon_url": self.member.display_avatar if self.is_dpy2 else self.member.avatar_url
-                                },
-                                "footer": {
-                                    "text": _("Tries: {self.trynum} / Limit: {self.limit}").format(**locals())
-                                }
-                            }
-                        ]
-                    }
+            "embeds": [
+                {
+                    "title": _("Captcha").format(**locals())
+                    + _(" for {self.why}").format(**locals())
+                    if not self.why == ""
+                    else "",
+                    "description": _(
+                        "Please return me the following code:\n{box(str(self.code))}\nDo not copy and paste."
+                    ).format(**locals()),
+                    "author": {
+                        "name": f"{self.member.display_name}",
+                        "icon_url": self.member.display_avatar
+                        if self.is_dpy2
+                        else self.member.avatar_url,
+                    },
+                    "footer": {
+                        "text": _("Tries: {self.trynum} / Limit: {self.limit}").format(**locals())
+                    },
+                }
+            ]
+        }
         embed = self.cogsutils.get_embed(embed_dict)["embed"]
         return embed
 
@@ -159,9 +187,9 @@ class Captcha():
         embed = self.get_embed()
         try:
             self.message = await self.channel.send(
-                            embed=embed,
-                            delete_after=900,  # Delete after 15 minutes.
-                        )
+                embed=embed,
+                delete_after=900,  # Delete after 15 minutes.
+            )
         except discord.HTTPException:
             raise self.MissingPermissions("Cannot send message in verification channel.")
         try:
@@ -208,13 +236,14 @@ class Captcha():
     def _give_me_tasks(self) -> typing.List:
         def leave_check(u):
             return u.id == self.member.id
+
         return [
             asyncio.create_task(
                 self.cogsutils.bot.wait_for(
                     "reaction_add",
                     check=ReactionPredicate.with_emojis(
                         "🔁", message=self.message, user=self.member
-                    )
+                    ),
                 )
             ),
             asyncio.create_task(
@@ -223,10 +252,10 @@ class Captcha():
                     check=MessagePredicate.same_context(
                         channel=self.channel,
                         user=self.member,
-                    )
+                    ),
                 )
             ),
-            asyncio.create_task(self.cogsutils.bot.wait_for("user_remove", check=leave_check))
+            asyncio.create_task(self.cogsutils.bot.wait_for("user_remove", check=leave_check)),
         ]
 
     class MissingPermissions(Exception):

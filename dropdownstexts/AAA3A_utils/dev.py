@@ -6,6 +6,7 @@ import typing  # isort:skip
 import asyncio
 import builtins
 import datetime
+import functools
 import importlib
 import inspect
 import os
@@ -13,35 +14,36 @@ import re
 import sys
 import time
 import traceback
+from functools import partial
 from io import StringIO
 
 import aiohttp
-import functools
-from functools import partial
-import rich
-from rich.console import Console
-from rich.table import Table
-
 import redbot
-from redbot.core.utils.chat_formatting import box, pagify
+import rich
 from redbot.core import utils as redutils
 from redbot.core.utils import chat_formatting as cf
+from redbot.core.utils.chat_formatting import box, pagify
+from rich.console import Console
+from rich.table import Table
 
 from .captcha import Captcha
 from .cog import Cog
 from .context import Context
 from .loop import Loop
-from .menus import Reactions, Menu
+from .menus import Menu, Reactions
 from .shared_cog import SharedCog
+
 if discord.version_info.major >= 2:
-    from .views import Buttons, Dropdown, Select, Modal
+    from .views import Buttons, Dropdown, Modal, Select
 
 CogsUtils: typing.Any = None
 
 __all__ = ["DevSpace", "DevEnv"]
 
+
 def _(untranslated: str):
     return untranslated
+
 
 def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
     """
@@ -57,8 +59,8 @@ def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
     temp_console.print(*objects)
     return box(temp_console.file.getvalue(), lang=lang)  # type: ignore
 
-class DevSpace():
 
+class DevSpace:
     def __init__(self, **kwargs):
         self.__dict__.update(**kwargs)
 
@@ -121,58 +123,81 @@ class DevSpace():
     def values(self):
         return self.__dict__.values()
 
-    def get(self, key: str, _default: typing.Optional[typing.Any]=None):
+    def get(self, key: str, _default: typing.Optional[typing.Any] = None):
         return self.__dict__.get(key, _default)
 
-    def pop(self, key: str, _default: typing.Optional[typing.Any]=None):
+    def pop(self, key: str, _default: typing.Optional[typing.Any] = None):
         return self.__dict__.pop(key, _default)
 
     def popitem(self):
         return self.__dict__.popitem()
 
-    def _update_with_defaults(self, defaults: typing.Iterable[typing.Tuple[str, typing.Any]]) -> None:
+    def _update_with_defaults(
+        self, defaults: typing.Iterable[typing.Tuple[str, typing.Any]]
+    ) -> None:
         for key, value in defaults:
             self.__dict__.setdefault(key, value)
 
-class DevEnv(typing.Dict[str, typing.Any]):
 
+class DevEnv(typing.Dict[str, typing.Any]):
     def __init__(self, *args, **kwargs):
         # self.__dict__ = {}
         super().__init__(*args, **kwargs)
         self.imported: typing.List[str] = []
 
     @classmethod
-    def get_env(cls, bot: Red, ctx: typing.Optional[commands.Context]=None):
+    def get_env(cls, bot: Red, ctx: typing.Optional[commands.Context] = None):
         log = CogsUtils().init_logger(name="Test")
+
         async def _rtfs(ctx: commands.Context, object):
             code = inspect.getsource(object)
-            await Menu(pages=[box(page, "py") for page in pagify(code, page_length=2000 - 10)]).start(ctx)
+            await Menu(
+                pages=[box(page, "py") for page in pagify(code, page_length=2000 - 10)]
+            ).start(ctx)
+
         def get_url(ctx: commands.Context):
             async def get_url_with_aiohttp(url: str, **kwargs):
                 async with aiohttp.ClientSession() as session:
                     async with session.get(url=url, **kwargs) as r:
                         return r
+
             return get_url_with_aiohttp
+
         def get(ctx: commands.Context):
             def inner(a, b):
                 return [x for x in dir(a) if b.lower() in x.lower()]
+
             return inner
+
         def reference(ctx: commands.Context):
             if hasattr(ctx.message, "reference") and ctx.message.reference is not None:
                 msg = ctx.message.reference.resolved
                 if isinstance(msg, discord.Message):
                     return msg
+
         def _console_custom(ctx: commands.Context):
             return {"width": 80, "color_system": None}
-        async def run_converter(converter: typing.Any, value: str, label: typing.Optional[str]="test"):
-            param = discord.ext.commands.parameters.Parameter(name=label, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=converter)
+
+        async def run_converter(
+            converter: typing.Any, value: str, label: typing.Optional[str] = "test"
+        ):
+            param = discord.ext.commands.parameters.Parameter(
+                name=label, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=converter
+            )
             try:
-                return await discord.ext.commands.converter.run_converters(ctx, converter=param.converter, argument=str(value), param=param)
+                return await discord.ext.commands.converter.run_converters(
+                    ctx, converter=param.converter, argument=str(value), param=param
+                )
             except discord.ext.commands.errors.CommandError as e:
                 return e
+
         def get_devspace(bot: Red):
             Dev = bot.get_cog("Dev")
-            if "devspace" in getattr(Dev, "env_extensions", {}) and hasattr(Dev.env_extensions["devspace"](bot), "__class__") and Dev.env_extensions["devspace"](bot).__class__.__name__ == "DevSpace":
+            if (
+                "devspace" in getattr(Dev, "env_extensions", {})
+                and hasattr(Dev.env_extensions["devspace"](bot), "__class__")
+                and Dev.env_extensions["devspace"](bot).__class__.__name__ == "DevSpace"
+            ):
                 devspace = DevSpace(**Dev.env_extensions["devspace"](bot).__dict__)
                 Dev.env_extensions["devspace"] = lambda ctx: devspace
                 return lambda ctx: devspace
@@ -180,6 +205,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
             if hasattr(Dev, "env_extensions"):
                 Dev.env_extensions["devspace"] = lambda ctx: devspace
             return lambda ctx: devspace
+
         env = {
             # CogsUtils
             "CogsUtils": lambda ctx: CogsUtils,
@@ -195,8 +221,12 @@ class DevEnv(typing.Dict[str, typing.Any]):
             "DevEnv": lambda ctx: cls,
             "DevSpace": lambda ctx: DevSpace,
             "devspace": get_devspace(bot),
-            "Cogs": lambda ctx: CogsCommands.Cogs(bot=ctx.bot, Cog=CogsCommands.Cog, Command=CogsCommands.Command),
-            "Commands": lambda ctx: CogsCommands.Commands(bot=ctx.bot, Cog=CogsCommands.Cog, Command=CogsCommands.Command),
+            "Cogs": lambda ctx: CogsCommands.Cogs(
+                bot=ctx.bot, Cog=CogsCommands.Cog, Command=CogsCommands.Command
+            ),
+            "Commands": lambda ctx: CogsCommands.Commands(
+                bot=ctx.bot, Cog=CogsCommands.Cog, Command=CogsCommands.Command
+            ),
         }
         if discord.version_info.major >= 2:
             env.update(
@@ -292,11 +322,19 @@ class DevEnv(typing.Dict[str, typing.Any]):
         # env.update({"bot": Red()})
         return env
 
-    def get_formatted_env(self, ctx: typing.Optional[commands.Context]=None, value: typing.Optional[bool]=True) -> str:
+    def get_formatted_env(
+        self, ctx: typing.Optional[commands.Context] = None, value: typing.Optional[bool] = True
+    ) -> str:
         if value:
-            raw_table = Table("Key", "Value", title="------------------------------ DevEnv ------------------------------")
+            raw_table = Table(
+                "Key",
+                "Value",
+                title="------------------------------ DevEnv ------------------------------",
+            )
         else:
-            raw_table = Table("Key", title="------------------------------ DevEnv ------------------------------")
+            raw_table = Table(
+                "Key", title="------------------------------ DevEnv ------------------------------"
+            )
         for name, value in self.items():
             if name in self.imported:
                 continue
@@ -315,7 +353,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
         return pages
 
     @classmethod
-    def add_dev_env_values(cls, bot: Red, cog: commands.Cog, force: typing.Optional[bool]=False):
+    def add_dev_env_values(cls, bot: Red, cog: commands.Cog, force: typing.Optional[bool] = False):
         """
         If the bot owner is X, then add several values to the development environment, if they don't already exist.
         Even checks the id of the bot owner in the variable of my Sudo cog, if it's installed and loaded.
@@ -348,15 +386,19 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 except RuntimeError:
                     pass
                 except Exception as e:
-                    cog.log.error(f"Error when adding the value `{name}` to the development environment.", exc_info=e)
+                    cog.log.error(
+                        f"Error when adding the value `{name}` to the development environment.",
+                        exc_info=e,
+                    )
             Dev = bot.get_cog("Dev")
             if Dev is not None:
-                setattr(Dev, 'get_environment', cls.get_environment)
-                setattr(Dev, 'sanitize_output', cls.sanitize_output)
+                setattr(Dev, "get_environment", cls.get_environment)
+                setattr(Dev, "sanitize_output", cls.sanitize_output)
             RTFS = bot.get_cog("RTFS")
             if RTFS is not None:
                 try:
                     from rtfs import rtfs
+
                     class SourceSource(rtfs.SourceSource):
                         def format_page(self, menu, page):
                             try:
@@ -364,22 +406,31 @@ class DevEnv(typing.Dict[str, typing.Any]):
                                     if self.header.startswith("<"):
                                         return cog.cogsutils.replace_var_paths(self.header)
                                     return {}
-                                return cog.cogsutils.replace_var_paths(f"{self.header}\n{box(page, lang='py')}\nPage {menu.current_page + 1} / {self.get_max_pages()}")
+                                return cog.cogsutils.replace_var_paths(
+                                    f"{self.header}\n{box(page, lang='py')}\nPage {menu.current_page + 1} / {self.get_max_pages()}"
+                                )
                             except Exception as e:
                                 # since d.py menus likes to suppress all errors
                                 rtfs.LOG.debug("Exception in SourceSource", exc_info=e)
                                 raise
+
                     setattr(rtfs, "SourceSource", SourceSource)
                 except ImportError:
                     pass
-            funcs = [func for func in bot.extra_events["on_cog_add"] if func.__class__.__name__ == "DevEnv"]
+            funcs = [
+                func
+                for func in bot.extra_events["on_cog_add"]
+                if func.__class__.__name__ == "DevEnv"
+            ]
             for func in funcs:
                 del bot.extra_events["on_cog_add"][func]
             bot.add_listener(cls().on_cog_add)
             return _env
 
     @classmethod
-    def remove_dev_env_values(cls, bot: Red, cog: commands.Cog, force: typing.Optional[bool]=False):
+    def remove_dev_env_values(
+        cls, bot: Red, cog: commands.Cog, force: typing.Optional[bool] = False
+    ):
         """
         If the bot owner is X, then remove several values to the development environment, if they don't already exist.
         Even checks the id of the bot owner in the variable of my Sudo cog, if it's installed and loaded.
@@ -422,13 +473,14 @@ class DevEnv(typing.Dict[str, typing.Any]):
     async def on_cog_add(self, cog: commands.Cog):
         if cog.qualified_name == "Dev":
             if hasattr(cog, "get_environment"):
-                setattr(cog, 'get_environment', self.get_environment)
+                setattr(cog, "get_environment", self.get_environment)
             if hasattr(cog, "sanitize_output"):
                 setattr(cog, "sanitize_output", self.sanitize_output)
             return
         if cog.qualified_name == "RTFS":
             try:
                 from rtfs import rtfs
+
                 class SourceSource(rtfs.SourceSource):
                     def format_page(self, menu, page):
                         try:
@@ -436,11 +488,14 @@ class DevEnv(typing.Dict[str, typing.Any]):
                                 if self.header.startswith("<"):
                                     return CogsUtils().replace_var_paths(self.header)
                                 return {}
-                            return CogsUtils().replace_var_paths(f"{self.header}\n{box(page, lang='py')}\nPage {menu.current_page + 1} / {self.get_max_pages()}")
+                            return CogsUtils().replace_var_paths(
+                                f"{self.header}\n{box(page, lang='py')}\nPage {menu.current_page + 1} / {self.get_max_pages()}"
+                            )
                         except Exception as e:
                             # since d.py menus likes to suppress all errors
                             rtfs.LOG.debug("Exception in SourceSource", exc_info=e)
                             raise
+
                 setattr(rtfs, "SourceSource", SourceSource)
             except ImportError:
                 pass
@@ -450,8 +505,10 @@ class DevEnv(typing.Dict[str, typing.Any]):
             try:
                 from dev.dev import Exit
             except ImportError:
+
                 class Exit(BaseException):
                     pass
+
             raise Exit()
         try:
             # this is called implicitly after KeyError, but
@@ -519,114 +576,222 @@ class DevEnv(typing.Dict[str, typing.Any]):
         imported.clear()
         return message
 
-class CogsCommands():
 
+class CogsCommands:
     class Cog:
         def __init__(self, bot: Red, Cog, Command, cog: commands.Cog):
             self.bot = bot
             self.Cog = Cog
             self.Command = Command
             self.cog: commands.Cog = cog
+
         def _setup(self):
-            for attr in ["__len__", "__contains__", "__iter__", "__getitem__", "items", "keys", "values"]:
+            for attr in [
+                "__len__",
+                "__contains__",
+                "__iter__",
+                "__getitem__",
+                "items",
+                "keys",
+                "values",
+            ]:
                 if not hasattr(self, attr):
                     continue
                 setattr(self.cog, attr, getattr(self, attr))
+
         def __len__(self) -> int:
             cog = self.cog
-            source = {command.name: command.copy() for command in self.bot.all_commands.values() if getattr(command.cog, "qualified_name", None) == getattr(cog, "qualified_name", None)}
+            source = {
+                command.name: command.copy()
+                for command in self.bot.all_commands.values()
+                if getattr(command.cog, "qualified_name", None)
+                == getattr(cog, "qualified_name", None)
+            }
             return len(source)
+
         def __contains__(self, key: str) -> typing.Any:
             cog = self.cog
-            source = {command.name: command.copy() for command in self.bot.all_commands.values() if getattr(command.cog, "qualified_name", None) == getattr(cog, "qualified_name", None)}
+            source = {
+                command.name: command.copy()
+                for command in self.bot.all_commands.values()
+                if getattr(command.cog, "qualified_name", None)
+                == getattr(cog, "qualified_name", None)
+            }
             return key in source
+
         def __iter__(self) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
             cog = self.cog
-            source = {command.name: command.copy() for command in self.bot.all_commands.values() if getattr(command.cog, "qualified_name", None) == getattr(cog, "qualified_name", None)}
+            source = {
+                command.name: command.copy()
+                for command in self.bot.all_commands.values()
+                if getattr(command.cog, "qualified_name", None)
+                == getattr(cog, "qualified_name", None)
+            }
             items = source
             for value in items.values():
-                self.Command(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)._setup()
+                self.Command(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )._setup()
             yield from items.items()
+
         def __getitem__(self, key: str) -> typing.Any:
             cog = self.cog
-            source = {command.name: command.copy() for command in self.bot.all_commands.values() if getattr(command.cog, "qualified_name", None) == getattr(cog, "qualified_name", None)}
+            source = {
+                command.name: command.copy()
+                for command in self.bot.all_commands.values()
+                if getattr(command.cog, "qualified_name", None)
+                == getattr(cog, "qualified_name", None)
+            }
             item = source[key]
             self.Command(bot=self.bot, Cog=self.Cog, Command=self.Command, command=item)._setup()
             return item
+
         def items(self):
             cog = self.cog
-            source = {command.name: command.copy() for command in self.bot.all_commands.values() if getattr(command.cog, "qualified_name", None) == getattr(cog, "qualified_name", None)}
+            source = {
+                command.name: command.copy()
+                for command in self.bot.all_commands.values()
+                if getattr(command.cog, "qualified_name", None)
+                == getattr(cog, "qualified_name", None)
+            }
             items = source
             for value in items.values():
-                self.Command(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)._setup()
+                self.Command(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )._setup()
             return items
+
         def keys(self):
             cog = self.cog
-            source = {command.name: command.copy() for command in self.bot.all_commands.values() if getattr(command.cog, "qualified_name", None) == getattr(cog, "qualified_name", None)}
+            source = {
+                command.name: command.copy()
+                for command in self.bot.all_commands.values()
+                if getattr(command.cog, "qualified_name", None)
+                == getattr(cog, "qualified_name", None)
+            }
             keys = source.keys()
             return keys
+
         def values(self):
             cog = self.cog
-            source = {command.name: command.copy() for command in self.bot.all_commands.values() if getattr(command.cog, "qualified_name", None) == getattr(cog, "qualified_name", None)}
+            source = {
+                command.name: command.copy()
+                for command in self.bot.all_commands.values()
+                if getattr(command.cog, "qualified_name", None)
+                == getattr(cog, "qualified_name", None)
+            }
             values = source.values()
             for value in values:
-                self.Command(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)._setup()
+                self.Command(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )._setup()
             return values
 
     class Command:
-        def __init__(self, bot: Red, Cog, Command, command: typing.Union[commands.Command, commands.Group]):
+        def __init__(
+            self, bot: Red, Cog, Command, command: typing.Union[commands.Command, commands.Group]
+        ):
             self.bot = bot
             self.Cog = Cog
             self.Command = Command
             self.command: typing.Union[commands.Command, commands.Group] = command
+
         def _setup(self):
-            for attr in ["__len__", "__contains__", "__iter__", "__getitem__", "items", "keys", "values"]:
+            for attr in [
+                "__len__",
+                "__contains__",
+                "__iter__",
+                "__getitem__",
+                "items",
+                "keys",
+                "values",
+            ]:
                 if not hasattr(self, attr):
                     continue
                 setattr(self.command, attr, getattr(self, attr))
+
         def __len__(self) -> int:
             command = self.command
-            source = {c.name: c.copy() for c in self.bot.walk_commands() if getattr(c.parent, "qualified_name", None) == command.qualified_name}
+            source = {
+                c.name: c.copy()
+                for c in self.bot.walk_commands()
+                if getattr(c.parent, "qualified_name", None) == command.qualified_name
+            }
             return len(source)
+
         def __contains__(self, key: str) -> typing.Any:
             command = self.command
-            source = {c.name: c.copy() for c in self.bot.walk_commands() if getattr(c.parent, "qualified_name", None) == command.qualified_name}
+            source = {
+                c.name: c.copy()
+                for c in self.bot.walk_commands()
+                if getattr(c.parent, "qualified_name", None) == command.qualified_name
+            }
             return key in source
+
         def __iter__(self) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
             command = self.command
-            source = {c.name: c.copy() for c in self.bot.walk_commands() if getattr(c.parent, "qualified_name", None) == command.qualified_name}
+            source = {
+                c.name: c.copy()
+                for c in self.bot.walk_commands()
+                if getattr(c.parent, "qualified_name", None) == command.qualified_name
+            }
             items = source
             for value in items.values():
-                self.Command(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)._setup()
+                self.Command(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )._setup()
             yield from items.items()
+
         def __getitem__(self, key: str) -> typing.Any:
             command = self.command
-            source = {c.name: c.copy() for c in self.bot.walk_commands() if getattr(c.parent, "qualified_name", None) == command.qualified_name}
+            source = {
+                c.name: c.copy()
+                for c in self.bot.walk_commands()
+                if getattr(c.parent, "qualified_name", None) == command.qualified_name
+            }
             item = source[key]
             self.Command(bot=self.bot, Cog=self.Cog, Command=self.Command, command=item)._setup()
             return item
+
         def items(self):
             command = self.command
-            source = {c.name: c.copy() for c in self.bot.walk_commands() if getattr(c.parent, "qualified_name", None) == command.qualified_name}
+            source = {
+                c.name: c.copy()
+                for c in self.bot.walk_commands()
+                if getattr(c.parent, "qualified_name", None) == command.qualified_name
+            }
             items = source
             for value in items.values():
-                self.Command(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)._setup()
+                self.Command(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )._setup()
             return items
+
         def keys(self):
             command = self.command
-            source = {c.name: c.copy() for c in self.bot.walk_commands() if getattr(c.parent, "qualified_name", None) == command.qualified_name}
+            source = {
+                c.name: c.copy()
+                for c in self.bot.walk_commands()
+                if getattr(c.parent, "qualified_name", None) == command.qualified_name
+            }
             keys = source.keys()
             return keys
+
         def values(self):
             command = self.command
-            source = {c.name: c.copy() for c in self.bot.walk_commands() if getattr(c.parent, "qualified_name", None) == command.qualified_name}
+            source = {
+                c.name: c.copy()
+                for c in self.bot.walk_commands()
+                if getattr(c.parent, "qualified_name", None) == command.qualified_name
+            }
             values = source.values()
             for value in values:
-                self.Command(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)._setup()
+                self.Command(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )._setup()
             return values
 
-    class Cogs():
-
+    class Cogs:
         def __init__(self, bot: Red, Cog, Command):
             self.bot: Red = bot
             self.Cog = Cog
@@ -675,8 +840,7 @@ class CogsCommands():
                 self.Cog(bot=self.bot, Cog=self.Cog, Command=self.Command, cog=value)._setup()
             return values
 
-    class Commands():
-
+    class Commands:
         def __init__(self, bot: Red, Cog, Command):
             self.bot: Red = bot
             self.Cog = Cog
@@ -697,7 +861,9 @@ class CogsCommands():
             source = {command.name: command.copy() for command in self.bot.all_commands.values()}
             items = source.items()
             for name, value in items:
-                self.Command(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)._setup()
+                self.Command(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )._setup()
             yield from items
 
         def __getitem__(self, key: str) -> typing.Any:
@@ -710,7 +876,9 @@ class CogsCommands():
             source = {command.name: command.copy() for command in self.bot.all_commands.values()}
             items = source.items()
             for name, value in items:
-                self.Command(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)._setup()
+                self.Command(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )._setup()
             return items
 
         def keys(self):
@@ -722,5 +890,7 @@ class CogsCommands():
             source = {command.name: command.copy() for command in self.bot.all_commands.values()}
             values = source.values()
             for value in values:
-                self.Command(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)._setup()
+                self.Command(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )._setup()
             return values

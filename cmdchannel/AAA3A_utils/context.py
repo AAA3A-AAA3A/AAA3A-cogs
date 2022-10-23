@@ -5,13 +5,15 @@ import typing  # isort:skip
 if discord.version_info.major >= 2:
     from redbot.core.utils import can_user_react_in
 else:
+
     def can_user_react_in(obj: discord.abc.User, messageable: discord.abc.Messageable):
         return messageable.permissions_for(obj).add_reactions
 
+
 __all__ = ["Context"]
 
-class Context(commands.Context):
 
+class Context(commands.Context):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -20,7 +22,9 @@ class Context(commands.Context):
         """
         Adding additional functionality to the context.
         """
-        context = await ctx.bot.get_context(ctx.message if getattr(ctx, "interaction", None) is None else ctx.interaction, cls=cls)
+        context = await ctx.bot.get_context(
+            ctx.message if getattr(ctx, "interaction", None) is None else ctx.interaction, cls=cls
+        )
         attrs = [
             "args",
             "assume_yes",
@@ -50,7 +54,12 @@ class Context(commands.Context):
             setattr(context, attr, getattr(ctx, attr, None))
         return context
 
-    async def tick(self, *, message: typing.Optional[str]=None, reaction: typing.Optional[str]=commands.context.TICK) -> bool:
+    async def tick(
+        self,
+        *,
+        message: typing.Optional[str] = None,
+        reaction: typing.Optional[str] = commands.context.TICK,
+    ) -> bool:
         """Add a tick reaction to the command message.
 
         Keyword Arguments

@@ -7,26 +7,34 @@ import os
 import platform
 import sys
 import traceback
+from io import StringIO
 from pathlib import Path
 
 import pip
-from rich.table import Table
-from rich.console import Console
-from io import StringIO
-
 from redbot import version_info as red_version_info
 from redbot.cogs.downloader.converters import InstalledCog
 from redbot.cogs.downloader.repo_manager import Repo
+from redbot.core import Config
 from redbot.core._diagnoser import IssueDiagnoser
 from redbot.core.bot import Red
-from redbot.core import Config
 from redbot.core.data_manager import basic_config, config_file, instance_name, storage_type
-from redbot.core.utils.chat_formatting import bold, box, humanize_timedelta, pagify, text_to_file, humanize_list
+from redbot.core.utils.chat_formatting import (
+    bold,
+    box,
+    humanize_list,
+    humanize_timedelta,
+    pagify,
+    text_to_file,
+)  # NOQA
+from rich.console import Console
+from rich.table import Table
 
 __all__ = ["SharedCog"]
 
+
 def _(untranslated: str):
     return untranslated
+
 
 def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
     """
@@ -42,12 +50,14 @@ def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
     temp_console.print(*objects)
     return box(temp_console.file.getvalue(), lang=lang)  # type: ignore
 
-class StrConverter(commands.Converter):
 
+class StrConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, arg: str):
         return arg
 
+
 class SharedCog(commands.Cog, name="AAA3A_utils"):
+    """Commands to manage all the cogs in AAA3A-cogs repo!"""
 
     def __init__(self, bot: Red, CogsUtils):
         self.bot: Red = bot
@@ -56,7 +66,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             self,
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
-            cog_name=self.qualified_name
+            cog_name=self.qualified_name,
         )
         self.AAA3A_utils_global = {
             "cogs_with_slash": [],
@@ -67,20 +77,32 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         self.cogsutils._setup()
 
     async def check_if_slash(self, cog: commands.Cog):
+        if not self.cogsutils.is_dpy2:
+            return False
         if cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
             return False
         return cog.qualified_name in await self.config.cogs_with_slash()
 
     @commands.is_owner()
-    @commands.group()
+    @commands.group(hidden=True)
     async def AAA3A_utils(self, ctx: commands.Context):
+        """All commands to manage all the cogs in AAA3A-cogs repo."""
         pass
 
     @commands.is_owner()
     @AAA3A_utils.command()
     async def addslash(self, ctx: commands.Context, cogs: commands.Greedy[StrConverter]):
+        """Add slash commands for repo cogs."""
+        if not self.cogsutils.is_dpy2:
+            await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
+            return
         async with ctx.typing():
-            result = {"not_installed_or_loaded": [], "not_from_AAA3A-cogs": [], "already": [], "failed": []}
+            result = {
+                "not_installed_or_loaded": [],
+                "not_from_AAA3A-cogs": [],
+                "already": [],
+                "failed": [],
+            }
             config = await self.config.cogs_with_slash()
             for cog_name in list(set(cogs)):
                 cog = ctx.bot.get_cog(cog_name)
@@ -96,12 +118,20 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 try:
                     await self.cogsutils.add_hybrid_commands(cog=cog)
                 except Exception as e:
-                    self.log.error(f"Error when adding slash (hybrids) commands from the {cog.qualified_name} cog.", exc_info=e)
+                    self.log.error(
+                        f"Error when adding slash (hybrids) commands from the {cog.qualified_name} cog.",
+                        exc_info=e,
+                    )
                     result["failed"].append(cog.qualified_name)
                     continue
                 config.append(cog.qualified_name)
             await self.config.cogs_with_slash.set(config)
-        if result == {"not_installed_or_loaded": [], "not_from_AAA3A-cogs": [], "already": [], "failed": []}:
+        if result == {
+            "not_installed_or_loaded": [],
+            "not_from_AAA3A-cogs": [],
+            "already": [],
+            "failed": [],
+        }:
             await ctx.tick(message="Done.")
         else:
             message = ""
@@ -120,14 +150,25 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             if not result["failed"] == []:
                 items = result["failed"]
                 s = "s" if len(items) > 1 else ""
-                message += f"\n{bold(f'Failed cog{s}')} (Check the bot console.): {humanize_list(items)}"
+                message += (
+                    f"\n{bold(f'Failed cog{s}')} (Check the bot console.): {humanize_list(items)}"
+                )
             await ctx.send(message)
 
     @commands.is_owner()
     @AAA3A_utils.command()
     async def removeslash(self, ctx: commands.Context, cogs: commands.Greedy[StrConverter]):
+        """Remove slash commands for repo cogs."""
+        if not self.cogsutils.is_dpy2:
+            await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
+            return
         async with ctx.typing():
-            result = {"not_installed_or_loaded": [], "not_from_AAA3A-cogs": [], "already": [], "failed": []}
+            result = {
+                "not_installed_or_loaded": [],
+                "not_from_AAA3A-cogs": [],
+                "already": [],
+                "failed": [],
+            }
             config = await self.config.cogs_with_slash()
             for cog_name in list(set(cogs)):
                 cog = ctx.bot.get_cog(cog_name)
@@ -143,11 +184,19 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 try:
                     await self.cogsutils.remove_hybrid_commands(cog=cog)
                 except Exception as e:
-                    self.log.error(f"Error when removing slash (hybrids) commands from the {cog.qualified_name} cog.", exc_info=e)
+                    self.log.error(
+                        f"Error when removing slash (hybrids) commands from the {cog.qualified_name} cog.",
+                        exc_info=e,
+                    )
                     result["failed"].append(cog.qualified_name)
                 config.remove(cog.qualified_name)
             await self.config.cogs_with_slash.set(config)
-        if result == {"not_installed_or_loaded": [], "not_from_AAA3A-cogs": [], "already": [], "failed": []}:
+        if result == {
+            "not_installed_or_loaded": [],
+            "not_from_AAA3A-cogs": [],
+            "already": [],
+            "failed": [],
+        }:
             await ctx.tick(message="Done.")
         else:
             message = ""
@@ -166,12 +215,18 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             if not result["failed"] == []:
                 items = result["failed"]
                 s = "s" if len(items) > 1 else ""
-                message += f"\n{bold(f'Failed cog{s}')} (Check the bot console.): {humanize_list(items)}"
+                message += (
+                    f"\n{bold(f'Failed cog{s}')} (Check the bot console.): {humanize_list(items)}"
+                )
             await ctx.send(message)
 
     @commands.is_owner()
     @AAA3A_utils.command()
     async def clearslash(self, ctx: commands.Context):
+        """Remove slash commands for all repo cogs."""
+        if not self.cogsutils.is_dpy2:
+            await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
+            return
         config = await self.config.cogs_with_slash()
         for cog in self.cogsutils.get_all_repo_cogs_objects():
             if cog.qualified_name in config:
@@ -200,7 +255,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 commands.BadBoolArgument,
             )
             if ctx.cog is not None:
-                cog = ctx.cog.__class__.__name__
+                cog = ctx.cog.qualified_name
             else:
                 cog = "None"
             if ctx.command is None:
@@ -215,7 +270,9 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 return
             self.bot.last_exceptions_cogs["global"].append(error)
             if isinstance(error, commands.CommandError):
-                traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__))
+                traceback_error = "".join(
+                    traceback.format_exception(type(error), error, error.__traceback__)
+                )
             else:
                 traceback_error = f"Traceback (most recent call last): {error}"
             traceback_error = self.replace_var_paths(traceback_error)
@@ -229,7 +286,16 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
 
     @commands.is_owner()
     @AAA3A_utils.command()
-    async def getallfor(self, ctx: commands.Context, all: typing.Optional[typing.Literal["all", "ALL"]]=None, page: typing.Optional[int]=None, repo: typing.Optional[typing.Union[Repo, typing.Literal["AAA3A", "aaa3a"]]]=None, check_updates: typing.Optional[bool]=False, cog: typing.Optional[InstalledCog]=None, command: typing.Optional[str]=None):
+    async def getallfor(
+        self,
+        ctx: commands.Context,
+        all: typing.Optional[typing.Literal["all", "ALL"]] = None,
+        page: typing.Optional[int] = None,
+        repo: typing.Optional[typing.Union[Repo, typing.Literal["AAA3A", "aaa3a"]]] = None,
+        check_updates: typing.Optional[bool] = False,
+        cog: typing.Optional[InstalledCog] = None,
+        command: typing.Optional[str] = None,
+    ):
         """Get all the necessary information to get support on a bot/repo/cog/command.
         With a html file.
         """
@@ -258,7 +324,12 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             _commands = [object_command]
         downloader = ctx.bot.get_cog("Downloader")
         if downloader is None:
-            if self.cogsutils.ConfirmationAsk(ctx, _("The cog downloader is not loaded. I can't continue. Do you want me to do it?").format(**locals())):
+            if self.cogsutils.ConfirmationAsk(
+                ctx,
+                _(
+                    "The cog downloader is not loaded. I can't continue. Do you want me to do it?"
+                ).format(**locals()),
+            ):
                 await ctx.invoke(ctx.bot.get_command("load"), "downloader")
                 downloader = ctx.bot.get_cog("Downloader")
             else:
@@ -338,6 +409,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             or "None"
         )
         uptime = humanize_timedelta(timedelta=datetime.datetime.utcnow() - ctx.bot.uptime)
+
         async def can_run(command):
             try:
                 await command.can_run(ctx, check_all_parents=True, change_permission_state=False)
@@ -345,16 +417,20 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 return False
             else:
                 return True
+
         def get_aliases(command, original):
             if alias := list(command.aliases):
                 if original in alias:
                     alias.remove(original)
                     alias.append(command.name)
                 return alias
+
         def get_perms(command):
             final_perms = ""
+
             def neat_format(x):
                 return " ".join(i.capitalize() for i in x.replace("_", " ").split())
+
             user_perms = []
             if perms := getattr(command.requires, "user_perms"):
                 user_perms.extend(neat_format(i) for i, j in perms if j)
@@ -367,6 +443,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 if perms_list := ", ".join(neat_format(i) for i, j in perms if j):
                     final_perms += "Bot Permission(s): " + perms_list
             return final_perms
+
         def get_cooldowns(command):
             cooldowns = []
             if s := command._buckets._cooldown:
@@ -380,6 +457,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             if s := command._max_concurrency:
                 cooldowns.append(f"Max concurrent uses: {s.number} per {s.per.name.capitalize()}")
             return cooldowns
+
         async def get_diagnose(ctx, command):
             issue_diagnoser = IssueDiagnoser(ctx.bot, ctx, ctx.channel, ctx.author, command)
             await issue_diagnoser._prepare()
@@ -403,9 +481,10 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 diagnose_result.append(bold(_("Solution: ")) + result.resolution)
             diagnose_result.extend(issue_diagnoser._get_message_from_check_result(result))
             return diagnose_result
+
         async def get_all_config(cog: commands.Cog):
             config = {}
-            if not hasattr(cog, 'config'):
+            if not hasattr(cog, "config"):
                 return config
             try:
                 config["global"] = await cog.config.all()
@@ -417,6 +496,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             except Exception:
                 return config
             return config
+
         use_emojis = False
         check_emoji = "✅" if use_emojis else True
         cross_emoji = "❌" if use_emojis else False
@@ -438,33 +518,88 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         red_table.add_row("Data path", str(data_path))
         red_table.add_row("Metadata file", str(_config_file))
         red_table.add_row("Uptime", str(uptime))
-        red_table.add_row("Global prefixe(s)", str(await ctx.bot.get_valid_prefixes()).replace(f"{ctx.bot.user.id}", "{bot_id}"))
+        red_table.add_row(
+            "Global prefixe(s)",
+            str(await ctx.bot.get_valid_prefixes()).replace(f"{ctx.bot.user.id}", "{bot_id}"),
+        )
         if ctx.guild is not None:
-            if not await ctx.bot.get_valid_prefixes() == await ctx.bot.get_valid_prefixes(ctx.guild):
-                red_table.add_row("Guild prefixe(s)", str(await ctx.bot.get_valid_prefixes(ctx.guild)).replace(f"{ctx.bot.user.id}", "{bot_id}"))
+            if not await ctx.bot.get_valid_prefixes() == await ctx.bot.get_valid_prefixes(
+                ctx.guild
+            ):
+                red_table.add_row(
+                    "Guild prefixe(s)",
+                    str(await ctx.bot.get_valid_prefixes(ctx.guild)).replace(
+                        f"{ctx.bot.user.id}", "{bot_id}"
+                    ),
+                )
         raw_red_table_str = no_colour_rich_markup(red_table)
         ##################################################
         context_table = Table("Key", "Value", title="Context")
         context_table.add_row("Channel type", str(f"discord.{ctx.channel.__class__.__name__}"))
-        context_table.add_row("Bot permissions value (guild)", str(ctx.guild.me.guild_permissions.value if ctx.guild is not None else "Not in a guild."))
-        context_table.add_row("Bot permissions value (channel)", str(ctx.channel.permissions_for(ctx.guild.me).value if ctx.guild is not None else ctx.channel.permissions_for(ctx.bot.user).value))
-        context_table.add_row("User permissions value (guild)", str(ctx.author.guild_permissions.value if ctx.guild is not None else "Not in a guild."))
-        context_table.add_row("User permissions value (channel)", str(ctx.channel.permissions_for(ctx.author).value))
+        context_table.add_row(
+            "Bot permissions value (guild)",
+            str(
+                ctx.guild.me.guild_permissions.value
+                if ctx.guild is not None
+                else "Not in a guild."
+            ),
+        )
+        context_table.add_row(
+            "Bot permissions value (channel)",
+            str(
+                ctx.channel.permissions_for(ctx.guild.me).value
+                if ctx.guild is not None
+                else ctx.channel.permissions_for(ctx.bot.user).value
+            ),
+        )
+        context_table.add_row(
+            "User permissions value (guild)",
+            str(
+                ctx.author.guild_permissions.value if ctx.guild is not None else "Not in a guild."
+            ),
+        )
+        context_table.add_row(
+            "User permissions value (channel)", str(ctx.channel.permissions_for(ctx.author).value)
+        )
         raw_context_table_str = no_colour_rich_markup(context_table)
         ##################################################
         if repo is not None:
             raw_repo_table_str = []
             for repo in _repos:
                 if not check_updates:
-                    cogs_table = Table("Name", "Commit", "Loaded", "Pinned", title=f"Cogs installed for {repo.name}")
+                    cogs_table = Table(
+                        "Name",
+                        "Commit",
+                        "Loaded",
+                        "Pinned",
+                        title=f"Cogs installed for {repo.name}",
+                    )
                 else:
-                    cogs_table = Table("Name", "Commit", "Loaded", "Pinned", "To update", title=f"Cogs installed for {repo.name}")
+                    cogs_table = Table(
+                        "Name",
+                        "Commit",
+                        "Loaded",
+                        "Pinned",
+                        "To update",
+                        title=f"Cogs installed for {repo.name}",
+                    )
                 for _cog in installed_cogs[repo.name]:
                     _cog = await InstalledCog.convert(ctx, _cog)
                     if not check_updates:
-                        cogs_table.add_row(str(_cog.name), str(_cog.commit), str(check_emoji if _cog.name in loaded_cogs else cross_emoji), str(check_emoji if _cog.pinned else cross_emoji))
+                        cogs_table.add_row(
+                            str(_cog.name),
+                            str(_cog.commit),
+                            str(check_emoji if _cog.name in loaded_cogs else cross_emoji),
+                            str(check_emoji if _cog.pinned else cross_emoji),
+                        )
                     else:
-                        cogs_table.add_row(str(_cog.name), str(_cog.commit), str(check_emoji if _cog.name in loaded_cogs else cross_emoji), str(check_emoji if _cog.pinned else cross_emoji), str(check_emoji if _cog.name in to_update_cogs else cross_emoji))
+                        cogs_table.add_row(
+                            str(_cog.name),
+                            str(_cog.commit),
+                            str(check_emoji if _cog.name in loaded_cogs else cross_emoji),
+                            str(check_emoji if _cog.pinned else cross_emoji),
+                            str(check_emoji if _cog.name in to_update_cogs else cross_emoji),
+                        )
                 raw_repo_table_str.append(no_colour_rich_markup(cogs_table))
         else:
             raw_repo_table_str = None
@@ -497,9 +632,15 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 command_table.add_row("Qualified name", str(command.qualified_name))
                 command_table.add_row("Cog name", str(command.cog_name))
                 command_table.add_row("Short description", str(command.short_doc))
-                command_table.add_row("Syntax", str(f"{ctx.clean_prefix}{command.qualified_name} {command.signature}"))
+                command_table.add_row(
+                    "Syntax",
+                    str(f"{ctx.clean_prefix}{command.qualified_name} {command.signature}"),
+                )
                 command_table.add_row("Hidden", str(command.hidden))
-                command_table.add_row("Parents", str(command.full_parent_name if not command.full_parent_name == "" else None))
+                command_table.add_row(
+                    "Parents",
+                    str(command.full_parent_name if not command.full_parent_name == "" else None),
+                )
                 command_table.add_row("Can see", str(await command.can_see(ctx)))
                 command_table.add_row("Can run", str(await can_run(command)))
                 command_table.add_row("Params", str(command.clean_params))
@@ -518,11 +659,21 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                             command_table.add_row("", str(x).replace("✅", "").replace("❌", ""))
                 raw_command_table_str = no_colour_rich_markup(command_table)
                 raw_commands_table_str.append(raw_command_table_str)
-                cog = command.cog.__class__.__name__ if command.cog is not None else "None"
-                if hasattr(ctx.bot, "last_exceptions_cogs") and cog in ctx.bot.last_exceptions_cogs and command.qualified_name in ctx.bot.last_exceptions_cogs[cog]:
+                cog = command.cog.qualified_name if command.cog is not None else "None"
+                if (
+                    hasattr(ctx.bot, "last_exceptions_cogs")
+                    and cog in ctx.bot.last_exceptions_cogs
+                    and command.qualified_name in ctx.bot.last_exceptions_cogs[cog]
+                ):
                     raw_errors_table = []
                     error_table = Table("Last error recorded for this command")
-                    error_table.add_row(str(ctx.bot.last_exceptions_cogs[cog][command.qualified_name][len(ctx.bot.last_exceptions_cogs[cog][command.qualified_name]) - 1]))
+                    error_table.add_row(
+                        str(
+                            ctx.bot.last_exceptions_cogs[cog][command.qualified_name][
+                                len(ctx.bot.last_exceptions_cogs[cog][command.qualified_name]) - 1
+                            ]
+                        )
+                    )
                     raw_errors_table.append(no_colour_rich_markup(error_table))
                 else:
                     raw_errors_table = None
@@ -537,7 +688,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                     cog = value
                     break
             if cog is not None:
-                config_table = Table(f"All Config for {cog.__class__.__name__}")
+                config_table = Table(f"All Config for {cog.qualified_name}")
                 config_table.add_row(str(await get_all_config(cog)))
                 raw_config_table_str = no_colour_rich_markup(config_table)
             else:
@@ -547,14 +698,36 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         ##################################################
 
         response = [raw_os_table_str, raw_red_table_str, raw_context_table_str]
-        for x in [raw_repo_table_str, raw_cogs_table_str, raw_commands_table_str, raw_errors_table, raw_config_table_str]:
+        for x in [
+            raw_repo_table_str,
+            raw_cogs_table_str,
+            raw_commands_table_str,
+            raw_errors_table,
+            raw_config_table_str,
+        ]:
             if x is not None:
                 if isinstance(x, typing.List):
                     for y in x:
                         response.append(y)
                 elif isinstance(x, str):
                     response.append(x)
-        to_html = to_html_getallfor.replace("{AVATAR_URL}", str(ctx.bot.user.display_avatar) if self.cogsutils.is_dpy2 else str(ctx.bot.user.avatar_url)).replace("{BOT_NAME}", str(ctx.bot.user.name)).replace("{REPO_NAME}", str(getattr(_repos[0], "name", None) if all is None else "All")).replace("{COG_NAME}", str(getattr(_cogs[0], "name", None) if all is None else "All")).replace("{COMMAND_NAME}", str(getattr(_commands[0], "qualified_name", None) if all is None else "All"))
+        to_html = (
+            to_html_getallfor.replace(
+                "{AVATAR_URL}",
+                str(ctx.bot.user.display_avatar)
+                if self.cogsutils.is_dpy2
+                else str(ctx.bot.user.avatar_url),
+            )
+            .replace("{BOT_NAME}", str(ctx.bot.user.name))
+            .replace(
+                "{REPO_NAME}", str(getattr(_repos[0], "name", None) if all is None else "All")
+            )
+            .replace("{COG_NAME}", str(getattr(_cogs[0], "name", None) if all is None else "All"))
+            .replace(
+                "{COMMAND_NAME}",
+                str(getattr(_commands[0], "qualified_name", None) if all is None else "All"),
+            )
+        )
         message_html = message_html_getallfor
         end_html = end_html_getallfor
         try:
@@ -565,17 +738,40 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         for count_page, page in enumerate(response):
             if page is not None:
                 if count_page == 1:
-                    to_html += message_html.replace("{MESSAGE_CONTENT}", str(page).replace("```", "").replace("<", "&lt;").replace("\n", "<br>")).replace("{TIMESTAMP}", str(ctx.message.created_at.strftime("%b %d, %Y %I:%M %p")))
+                    to_html += message_html.replace(
+                        "{MESSAGE_CONTENT}",
+                        str(page).replace("```", "").replace("<", "&lt;").replace("\n", "<br>"),
+                    ).replace(
+                        "{TIMESTAMP}", str(ctx.message.created_at.strftime("%b %d, %Y %I:%M %p"))
+                    )
                 else:
-                    to_html += message_html.replace('    <div class="chatlog__messages">', '            </div>            <div class="chatlog__message ">').replace("{MESSAGE_CONTENT}", str(page).replace("```", "").replace("<", "&lt;").replace("\n", "<br>")).replace('<span class="chatlog__timestamp">{TIMESTAMP}</span>            ', "")
+                    to_html += (
+                        message_html.replace(
+                            '    <div class="chatlog__messages">',
+                            '            </div>            <div class="chatlog__message ">',
+                        )
+                        .replace(
+                            "{MESSAGE_CONTENT}",
+                            str(page)
+                            .replace("```", "")
+                            .replace("<", "&lt;")
+                            .replace("\n", "<br>"),
+                        )
+                        .replace(
+                            '<span class="chatlog__timestamp">{TIMESTAMP}</span>            ', ""
+                        )
+                    )
                 if all is None and "Config" not in page:
                     for p in pagify(page):
                         p = p.replace("```", "")
                         p = box(p)
                         await ctx.send(p)
         to_html += end_html
-        if self.cogsutils.check_permissions_for(channel=ctx.channel, user=ctx.me, check=["send_attachments"]):
+        if self.cogsutils.check_permissions_for(
+            channel=ctx.channel, user=ctx.me, check=["send_attachments"]
+        ):
             await ctx.send(file=text_to_file(text=to_html, filename="diagnostic.html"))
+
 
 to_html_getallfor = """
 <!--

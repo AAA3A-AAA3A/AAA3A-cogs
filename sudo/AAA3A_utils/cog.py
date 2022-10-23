@@ -12,11 +12,12 @@ from .context import Context
 
 __all__ = ["Cog"]
 
+
 def _(untranslated: str):
     return untranslated
 
-class Cog():
 
+class Cog:
     def __init__(self, bot: Red):
         self.bot = bot
         self.cog = None
@@ -29,7 +30,12 @@ class Cog():
         # for command in self.cog.walk_commands():
         #     setattr(command, 'format_text_for_context', self.format_text_for_context)
         #     setattr(command, 'format_shortdoc_for_context', self.format_shortdoc_for_context)
-        specials = ["_setup", "get_formatted_text", "format_text_for_context", "format_shortdoc_for_context"]
+        specials = [
+            "_setup",
+            "get_formatted_text",
+            "format_text_for_context",
+            "format_shortdoc_for_context",
+        ]
         self = cls(bot=bot)
         self.cog = cog
         for attr in dir(self):
@@ -37,7 +43,9 @@ class Cog():
                 continue
             if attr in specials:
                 continue
-            if not getattr(getattr(cog, attr, None), "__func__", "None1") == getattr(commands.Cog, attr, "None2"):
+            if not getattr(getattr(cog, attr, None), "__func__", "None1") == getattr(
+                commands.Cog, attr, "None2"
+            ):
                 continue
             setattr(cog, attr, getattr(self, attr))
 
@@ -53,7 +61,9 @@ class Cog():
         context = super(type(self.cog), self.cog).format_help_for_context(ctx)
         return self.get_formatted_text(context)
 
-    def format_text_for_context(self, ctx: commands.Context, text: str, shortdoc: typing.Optional[bool]=False):
+    def format_text_for_context(
+        self, ctx: commands.Context, text: str, shortdoc: typing.Optional[bool] = False
+    ):
         text = text.replace("        ", "")
         context = super(type(ctx.command), ctx.command).format_text_for_context(ctx, text)
         if shortdoc:
@@ -63,9 +73,19 @@ class Cog():
     def format_shortdoc_for_context(self, ctx: commands.Context):
         sh = super(type(ctx.command), ctx.command).short_doc
         try:
-            return super(type(ctx.command), ctx.command).format_text_for_context(ctx, sh, shortdoc=True) if sh else sh
+            return (
+                super(type(ctx.command), ctx.command).format_text_for_context(
+                    ctx, sh, shortdoc=True
+                )
+                if sh
+                else sh
+            )
         except Exception:
-            return super(type(ctx.command), ctx.command).format_text_for_context(ctx, sh) if sh else sh
+            return (
+                super(type(ctx.command), ctx.command).format_text_for_context(ctx, sh)
+                if sh
+                else sh
+            )
 
     async def red_delete_data_for_user(self, *args, **kwargs):
         """Nothing to delete."""
@@ -76,9 +96,12 @@ class Cog():
         return {}
 
     if discord.version_info.major >= 2:
+
         async def cog_unload(self):
             self._end()
+
     else:
+
         def cog_unload(self):
             self._end()
 
@@ -95,7 +118,9 @@ class Cog():
         if self.cog is None:
             return
         if isinstance(error, commands.CommandInvokeError):
-            if self.cog.cogsutils.is_dpy2 and isinstance(ctx.command, discord.ext.commands.HybridCommand):
+            if self.cog.cogsutils.is_dpy2 and isinstance(
+                ctx.command, discord.ext.commands.HybridCommand
+            ):
                 _type = "[hybrid|text]"
             else:
                 _type = "[text]"
@@ -104,9 +129,14 @@ class Cog():
                 message += "\nIf necessary, please inform the creator of the cog in which this command is located. Thank you."
             await ctx.send(inline(message))
             asyncio.create_task(ctx.bot._delete_delay(ctx))
-            self.cog.log.exception(f"Exception in {_type} command '{ctx.command.qualified_name}'.", exc_info=error.original)
+            self.cog.log.exception(
+                f"Exception in {_type} command '{ctx.command.qualified_name}'.",
+                exc_info=error.original,
+            )
             exception_log = f"Exception in {_type} command '{ctx.command.qualified_name}':\n"
-            exception_log += "".join(traceback.format_exception(type(error), error, error.__traceback__))
+            exception_log += "".join(
+                traceback.format_exception(type(error), error, error.__traceback__)
+            )
             exception_log = self.cog.cogsutils.replace_var_paths(exception_log)
             ctx.bot._last_exception = exception_log
         elif self.cog.cogsutils.is_dpy2 and isinstance(error, commands.HybridCommandError):
@@ -116,13 +146,21 @@ class Cog():
                 message += "\nIf necessary, please inform the creator of the cog in which this command is located. Thank you."
             await ctx.send(inline(message))
             asyncio.create_task(ctx.bot._delete_delay(ctx))
-            self.cog.log.exception(f"Exception in {_type} command '{ctx.command.qualified_name}'.", exc_info=error.original)
+            self.cog.log.exception(
+                f"Exception in {_type} command '{ctx.command.qualified_name}'.",
+                exc_info=error.original,
+            )
             exception_log = f"Exception in {_type} command '{ctx.command.qualified_name}':\n"
-            exception_log += "".join(traceback.format_exception(type(error), error, error.__traceback__))
+            exception_log += "".join(
+                traceback.format_exception(type(error), error, error.__traceback__)
+            )
             exception_log = self.cog.cogsutils.replace_var_paths(exception_log)
             ctx.bot._last_exception = exception_log
         elif isinstance(error, commands.CheckFailure):
             if getattr(ctx, "interaction", None) is not None:
-                await ctx.send(inline("You are not allowed to execute this command in this context."), ephemeral=True)
+                await ctx.send(
+                    inline("You are not allowed to execute this command in this context."),
+                    ephemeral=True,
+                )
         else:
             await ctx.bot.on_command_error(ctx=ctx, error=error, unhandled_by_cog=True)

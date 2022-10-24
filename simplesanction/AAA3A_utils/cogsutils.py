@@ -220,7 +220,8 @@ class CogsUtils(commands.Cog):
         """
         await self.bot.wait_until_red_ready()
         try:
-            self.cog.__version__ = self.__version__ = await self.get_cog_version()
+            nb_commits, version = await self.get_cog_version()
+            self.cog.__version__ = self.__version__ = version
         except (self.DownloaderNotLoaded, asyncio.TimeoutError, ValueError):
             pass
         except Exception as e:  # really doesn't matter if this fails so fine with debug level
@@ -367,7 +368,7 @@ class CogsUtils(commands.Cog):
 
         version = round(1.0 + (nb_commits / 100), 2)
 
-        return version
+        return nb_commits, version
 
     async def to_update(self, cog: typing.Optional[typing.Union[commands.Cog, str]] = None):
         if cog is None:
@@ -418,11 +419,22 @@ class CogsUtils(commands.Cog):
             if hasattr(cog, "CC_added"):
                 await cog.CC_added.wait()
         await self.remove_hybrid_commands(cog=cog)
+        AAA3A_utils = self.bot.get_cog("AAA3A_utils")
+        if AAA3A_utils is not None:
+            ignored_commands = await AAA3A_utils.config.ignored_slash_commands()
+        else:
+            ignored_commands = []
         for _object in cog.walk_commands():
             if getattr(_object, "app_command", None) is not discord.utils.MISSING:
                 continue
             if getattr(_object, "very_hidden", False):
                 continue
+            if _object.parent is None:
+                if _object.qualified_name in ignored_commands:
+                    continue
+            else:
+                if _object.parents[0].qualified_name in ignored_commands:
+                    continue
             if isinstance(_object, discord.ext.commands.HybridGroup):
                 _object.with_app_command = True
                 guild_ids = getattr(
@@ -455,9 +467,6 @@ class CogsUtils(commands.Cog):
                 _object.app_command = discord.ext.commands.hybrid.HybridAppCommand(_object)
             else:
                 continue
-            # if _object.app_command.parent is None:
-            #     group_parent = cog.__cog_app_commands_group__
-            #     _object.app_command = _object.app_command._copy_with(parent=group_parent, binding=cog)
             if _object.parent is not None:
                 if not _object.parent.invoke_without_command:
                     _object.checks.extend(_object.parent.checks)

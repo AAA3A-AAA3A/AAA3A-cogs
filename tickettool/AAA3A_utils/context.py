@@ -2,6 +2,10 @@ from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+from redbot.core.utils.chat_formatting import box
+
+from .menus import Menu
+
 if discord.version_info.major >= 2:
     from redbot.core.utils import can_user_react_in
 else:
@@ -76,3 +80,29 @@ class Context(commands.Context):
         if getattr(self, "interaction", None) is None and can_user_react_in(self.me, self.channel):
             message = None
         return await self.react_quietly(reaction, message=message)
+
+    async def send_interactive(self, messages: typing.Iterable[str], box_lang: str = None, timeout: int = 15) -> typing.List[discord.Message]:
+        """Send multiple messages interactively.
+
+        The user will be prompted for whether or not they would like to view
+        the next message, one at a time. They will also be notified of how
+        many messages are remaining on each prompt.
+
+        Parameters
+        ----------
+        messages : `iterable` of `str`
+            The messages to send.
+        box_lang : str
+            If specified, each message will be contained within a codeblock of
+            this language.
+        timeout : int
+            How long the user has to respond to the prompt before it times out.
+            After timing out, the bot deletes its prompt message.
+
+        """
+        if len(list(messages)) <= 5:
+            await super().send_interactive(messages=list(messages), box_lang=box_lang, timeout=timeout)
+        else:
+            if box_lang is not None:
+                messages = [box(message, lang=box_lang) for message in messages]
+            await Menu(pages=messages).start(self)

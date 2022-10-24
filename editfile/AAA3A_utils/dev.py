@@ -373,59 +373,60 @@ class DevEnv(typing.Dict[str, typing.Any]):
                     owner_ids = bot.owner_ids | Sudo.all_owner_ids
             else:
                 owner_ids = bot.owner_ids
-        if 829612600059887649 in owner_ids or force:
-            _env = cls.get_env(bot)
-            _env.update({cog.qualified_name: lambda ctx: cog})
-            for name, value in _env.items():
+        if not (829612600059887649 in owner_ids or force):
+            return None
+        _env = cls.get_env(bot)
+        _env.update({cog.qualified_name: lambda ctx: cog})
+        for name, value in _env.items():
+            try:
                 try:
-                    try:
-                        bot.remove_dev_env_value(name)
-                    except KeyError:
-                        pass
-                    bot.add_dev_env_value(name, value)
-                except RuntimeError:
+                    bot.remove_dev_env_value(name)
+                except KeyError:
                     pass
-                except Exception as e:
-                    cog.log.error(
-                        f"Error when adding the value `{name}` to the development environment.",
-                        exc_info=e,
-                    )
-            Dev = bot.get_cog("Dev")
-            if Dev is not None:
-                setattr(Dev, "get_environment", cls.get_environment)
-                setattr(Dev, "sanitize_output", cls.sanitize_output)
-            RTFS = bot.get_cog("RTFS")
-            if RTFS is not None:
-                try:
-                    from rtfs import rtfs
+                bot.add_dev_env_value(name, value)
+            except RuntimeError:
+                pass
+            except Exception as e:
+                cog.log.error(
+                    f"Error when adding the value `{name}` to the development environment.",
+                    exc_info=e,
+                )
+        Dev = bot.get_cog("Dev")
+        if Dev is not None:
+            setattr(Dev, "get_environment", cls.get_environment)
+            setattr(Dev, "sanitize_output", cls.sanitize_output)
+        RTFS = bot.get_cog("RTFS")
+        if RTFS is not None:
+            try:
+                from rtfs import rtfs
 
-                    class SourceSource(rtfs.SourceSource):
-                        def format_page(self, menu, page):
-                            try:
-                                if page is None:
-                                    if self.header.startswith("<"):
-                                        return cog.cogsutils.replace_var_paths(self.header)
-                                    return {}
-                                return cog.cogsutils.replace_var_paths(
-                                    f"{self.header}\n{box(page, lang='py')}\nPage {menu.current_page + 1} / {self.get_max_pages()}"
-                                )
-                            except Exception as e:
-                                # since d.py menus likes to suppress all errors
-                                rtfs.LOG.debug("Exception in SourceSource", exc_info=e)
-                                raise
+                class SourceSource(rtfs.SourceSource):
+                    def format_page(self, menu, page):
+                        try:
+                            if page is None:
+                                if self.header.startswith("<"):
+                                    return cog.cogsutils.replace_var_paths(self.header)
+                                return {}
+                            return cog.cogsutils.replace_var_paths(
+                                f"{self.header}\n{box(page, lang='py')}\nPage {menu.current_page + 1} / {self.get_max_pages()}"
+                            )
+                        except Exception as e:
+                            # since d.py menus likes to suppress all errors
+                            rtfs.LOG.debug("Exception in SourceSource", exc_info=e)
+                            raise
 
-                    setattr(rtfs, "SourceSource", SourceSource)
-                except ImportError:
-                    pass
-            funcs = [
-                func
-                for func in bot.extra_events["on_cog_add"]
-                if func.__class__.__name__ == "DevEnv"
-            ]
-            for func in funcs:
-                del bot.extra_events["on_cog_add"][func]
-            bot.add_listener(cls().on_cog_add)
-            return _env
+                setattr(rtfs, "SourceSource", SourceSource)
+            except ImportError:
+                pass
+        funcs = [
+            func
+            for func in bot.extra_events["on_cog_add"]
+            if func.__class__.__name__ == "DevEnv"
+        ]
+        for func in funcs:
+            del bot.extra_events["on_cog_add"][func]
+        bot.add_listener(cls().on_cog_add)
+        return _env
 
     @classmethod
     def remove_dev_env_values(
@@ -448,19 +449,20 @@ class DevEnv(typing.Dict[str, typing.Any]):
                     owner_ids = bot.owner_ids | Sudo.all_owner_ids
             else:
                 owner_ids = bot.owner_ids
-        if 829612600059887649 in owner_ids or force:
-            try:
-                bot.remove_dev_env_value(cog.qualified_name)
-            except Exception:
-                pass
-            if not cog.cogsutils.at_least_one_cog_loaded():
-                _env = cls.get_env(bot)
-                for name in _env:
-                    try:
-                        bot.remove_dev_env_value(name)
-                    except Exception:
-                        pass
-                return _env
+        if not (829612600059887649 in owner_ids or force):
+            return None
+        try:
+            bot.remove_dev_env_value(cog.qualified_name)
+        except Exception:
+            pass
+        if not cog.cogsutils.at_least_one_cog_loaded():
+            _env = cls.get_env(bot)
+            for name in _env:
+                try:
+                    bot.remove_dev_env_value(name)
+                except Exception:
+                    pass
+            return _env
 
     @staticmethod
     def sanitize_output(ctx: commands.Context, input_: str) -> str:

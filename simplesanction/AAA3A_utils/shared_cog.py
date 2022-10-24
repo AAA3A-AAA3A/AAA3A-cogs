@@ -70,6 +70,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         )
         self.AAA3A_utils_global = {
             "cogs_with_slash": [],
+            "ignored_slash_commands": []
         }
         self.config.register_global(**self.AAA3A_utils_global)
 
@@ -218,6 +219,122 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 message += (
                     f"\n{bold(f'Failed cog{s}')} (Check the bot console.): {humanize_list(items)}"
                 )
+            await ctx.send(message)
+
+    @commands.is_owner()
+    @AAA3A_utils.command()
+    async def addignoredslash(self, ctx: commands.Context, commands: commands.Greedy[StrConverter]):
+        """Add ignored slash commands."""
+        if not self.cogsutils.is_dpy2:
+            await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
+            return
+        async with ctx.typing():
+            result = {
+                "not_exist": [],
+                "not_from_AAA3A-cogs": [],
+                "not_root_commands": [],
+                "already": [],
+            }
+            config = await self.config.ignored_slash_commands()
+            for command_name in list(set(commands)):
+                command = ctx.bot.get_command(command_name)
+                if command is None:
+                    result["not_exist"].append(command_name)
+                    continue
+                if command.cog is None or command.cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
+                    result["not_from_AAA3A-cogs"].append(command.qualified_name)
+                    continue
+                if command.parent is not None:
+                    result["not_root_commands"].append(command.qualified_name)
+                    continue
+                if command.qualified_name in config:
+                    result["already"].append(command.qualified_name)
+                    continue
+                config.append(command.qualified_name)
+            await self.config.ignored_slash_commands.set(config)
+        if result == {
+            "not_exist": [],
+            "not_from_AAA3A-cogs": [],
+            "not_root_commands": [],
+            "already": [],
+        }:
+            await ctx.tick(message="Done.")
+        else:
+            message = ""
+            if not result["not_exist"] == []:
+                items = result["not_exist"]
+                s = "s" if len(items) > 1 else ""
+                message += f"\n{bold(f'Command{s} not existing')}: {humanize_list(items)}"
+            if not result["not_from_AAA3A-cogs"] == []:
+                items = result["not_from_AAA3A-cogs"]
+                s = "s" if len(items) > 1 else ""
+                message += f"\n{bold(f'Command{s} not from AAA3A-cogs')}: {humanize_list(items)}"
+            if not result["not_root_commands"] == []:
+                items = result["not_root_commands"]
+                s = "s" if len(items) > 1 else ""
+                message += f"\n{bold(f'Command{s} not in root')} (For technical reasons, sub-commands cannot be ignored.): {humanize_list(items)}"
+            if not result["already"] == []:
+                items = result["already"]
+                s = "s" if len(items) > 1 else ""
+                message += f"\n{bold(f'Command{s} already ignored')} (If they appear in Discord, you may have forgotten to sync.): {humanize_list(items)}"
+            await ctx.send(message)
+
+    @commands.is_owner()
+    @AAA3A_utils.command()
+    async def removeignoredslash(self, ctx: commands.Context, commands: commands.Greedy[StrConverter]):
+        """Add ignored slash commands."""
+        if not self.cogsutils.is_dpy2:
+            await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
+            return
+        async with ctx.typing():
+            result = {
+                "not_exist": [],
+                "not_from_AAA3A-cogs": [],
+                "not_root_commands": [],
+                "already": [],
+            }
+            config = await self.config.ignored_slash_commands()
+            for command_name in list(set(commands)):
+                command = ctx.bot.get_command(command_name)
+                if command is None:
+                    result["not_exist"].append(command_name)
+                    continue
+                if command.cog is None or command.cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
+                    result["not_from_AAA3A-cogs"].append(command.qualified_name)
+                    continue
+                if command.parent is not None:
+                    result["not_root_commands"].append(command.qualified_name)
+                    continue
+                if command.qualified_name not in config:
+                    result["already"].append(command.qualified_name)
+                    continue
+                config.remove(command.qualified_name)
+            await self.config.ignored_slash_commands.set(config)
+        if result == {
+            "not_exist": [],
+            "not_from_AAA3A-cogs": [],
+            "not_root_commands": [],
+            "already": [],
+        }:
+            await ctx.tick(message="Done.")
+        else:
+            message = ""
+            if not result["not_exist"] == []:
+                items = result["not_exist"]
+                s = "s" if len(items) > 1 else ""
+                message += f"\n{bold(f'Command{s} not existing')}: {humanize_list(items)}"
+            if not result["not_from_AAA3A-cogs"] == []:
+                items = result["not_from_AAA3A-cogs"]
+                s = "s" if len(items) > 1 else ""
+                message += f"\n{bold(f'Command{s} not from AAA3A-cogs')}: {humanize_list(items)}"
+            if not result["not_root_commands"] == []:
+                items = result["not_root_commands"]
+                s = "s" if len(items) > 1 else ""
+                message += f"\n{bold(f'Command{s} not in root')} (For technical reasons, sub-commands cannot be ignored.): {humanize_list(items)}"
+            if not result["already"] == []:
+                items = result["already"]
+                s = "s" if len(items) > 1 else ""
+                message += f"\n{bold(f'Command{s} already not ignored')} (If they don't appear in Discord, you may have forgotten to add slash commands or sync.): {humanize_list(items)}"
             await ctx.send(message)
 
     @commands.is_owner()

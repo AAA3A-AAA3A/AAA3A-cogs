@@ -75,7 +75,7 @@ class Calculator(commands.Cog):
             "9": "⁹",
         }
 
-        self.buttons_dict = [
+        self.normal_buttons_dict = [
             {"style": 2, "label": "1", "emoji": None, "custom_id": "1", "disabled": False},
             {"style": 2, "label": "2", "emoji": None, "custom_id": "2", "disabled": False},
             {"style": 2, "label": "3", "emoji": None, "custom_id": "3", "disabled": False},
@@ -109,7 +109,13 @@ class Calculator(commands.Cog):
                 "custom_id": "clear_button",
                 "disabled": False,
             },
-            {"style": 2, "label": "00", "emoji": None, "custom_id": "00", "disabled": False},
+            {
+                "style": 2,
+                "label": "📄",
+                "emoji": None,
+                "custom_id": "history_button",
+                "disabled": False,
+            },
             {"style": 2, "label": "0", "emoji": None, "custom_id": "0", "disabled": False},
             {"style": 2, "label": ".", "emoji": None, "custom_id": ".", "disabled": False},
             {"style": 1, "label": "-", "emoji": None, "custom_id": "-", "disabled": False},
@@ -122,7 +128,7 @@ class Calculator(commands.Cog):
             },
             {"style": 2, "label": "(", "emoji": None, "custom_id": "(", "disabled": False},
             {"style": 2, "label": ")", "emoji": None, "custom_id": ")", "disabled": False},
-            {"style": 2, "label": "√", "emoji": None, "custom_id": "√", "disabled": False},
+            {"style": 2, "label": None, "emoji": "🧑‍🔬", "custom_id": "mode_button", "disabled": False},
             {
                 "style": 3,
                 "label": "<",
@@ -138,7 +144,76 @@ class Calculator(commands.Cog):
                 "disabled": False,
             },
         ]
-        self.disabled_buttons_dict = [
+        self.scientist_buttons_dict = [
+            {"style": 2, "label": "e", "emoji": None, "custom_id": "e", "disabled": False},
+            {"style": 2, "label": "π", "emoji": None, "custom_id": "π", "disabled": False},
+            {"style": 2, "label": "|x|", "emoji": None, "custom_id": "abs", "disabled": False},
+            {"style": 1, "label": "x", "emoji": None, "custom_id": "x", "disabled": False},
+            {
+                "style": 4,
+                "label": _("Exit").format(**locals()),
+                "emoji": None,
+                "custom_id": "exit_button",
+                "disabled": False,
+            },
+            {"style": 2, "label": "X²", "emoji": None, "custom_id": "X²", "disabled": False},
+            {"style": 2, "label": "X³", "emoji": None, "custom_id": "X³", "disabled": False},
+            {"style": 2, "label": "Xˣ", "emoji": None, "custom_id": "Xˣ", "disabled": False},
+            {"style": 1, "label": "÷", "emoji": None, "custom_id": "÷", "disabled": False},
+            {
+                "style": 4,
+                "label": "⌫",
+                "emoji": None,
+                "custom_id": "back_button",
+                "disabled": False,
+            },
+            {"style": 2, "label": "cos", "emoji": None, "custom_id": "cos", "disabled": False},
+            {"style": 2, "label": "sin", "emoji": None, "custom_id": "sin", "disabled": False},
+            {"style": 2, "label": "tan", "emoji": None, "custom_id": "tan", "disabled": False},
+            {"style": 1, "label": "+", "emoji": None, "custom_id": "+", "disabled": False},
+            {
+                "style": 4,
+                "label": _("Clear").format(**locals()),
+                "emoji": None,
+                "custom_id": "clear_button",
+                "disabled": False,
+            },
+            {
+                "style": 2,
+                "label": "📄",
+                "emoji": None,
+                "custom_id": "history_button",
+                "disabled": False,
+            },
+            {"style": 2, "label": "In", "emoji": None, "custom_id": "In", "disabled": False},
+            {"style": 2, "label": "√", "emoji": None, "custom_id": "√", "disabled": False},
+            {"style": 1, "label": "-", "emoji": None, "custom_id": "-", "disabled": False},
+            {
+                "style": 3,
+                "label": "=",
+                "emoji": None,
+                "custom_id": "result_button",
+                "disabled": False,
+            },
+            {"style": 2, "label": "(", "emoji": None, "custom_id": "(", "disabled": False},
+            {"style": 2, "label": ")", "emoji": None, "custom_id": ")", "disabled": False},
+            {"style": 2, "label": None, "emoji": "👨‍🏫", "custom_id": "mode_button", "disabled": False},
+            {
+                "style": 3,
+                "label": "<",
+                "emoji": None,
+                "custom_id": "left_button",
+                "disabled": False,
+            },
+            {
+                "style": 3,
+                "label": ">",
+                "emoji": None,
+                "custom_id": "right_button",
+                "disabled": False,
+            },
+        ]
+        self.disabled_normal_buttons_dict = [
             {"style": 2, "label": "1", "emoji": None, "custom_id": "1", "disabled": True},
             {"style": 2, "label": "2", "emoji": None, "custom_id": "2", "disabled": True},
             {"style": 2, "label": "3", "emoji": None, "custom_id": "3", "disabled": True},
@@ -172,7 +247,13 @@ class Calculator(commands.Cog):
                 "custom_id": "clear_button",
                 "disabled": True,
             },
-            {"style": 2, "label": "00", "emoji": None, "custom_id": "00", "disabled": True},
+            {
+                "style": 2,
+                "label": "📄",
+                "emoji": None,
+                "custom_id": "history_button",
+                "disabled": True,
+            },
             {"style": 2, "label": "0", "emoji": None, "custom_id": "0", "disabled": True},
             {"style": 2, "label": ".", "emoji": None, "custom_id": ".", "disabled": True},
             {"style": 1, "label": "-", "emoji": None, "custom_id": "-", "disabled": True},
@@ -185,7 +266,76 @@ class Calculator(commands.Cog):
             },
             {"style": 2, "label": "(", "emoji": None, "custom_id": "(", "disabled": True},
             {"style": 2, "label": ")", "emoji": None, "custom_id": ")", "disabled": True},
+            {"style": 2, "label": None, "emoji": "🧑‍🔬", "custom_id": "mode_button", "disabled": True},
+            {
+                "style": 3,
+                "label": "<",
+                "emoji": None,
+                "custom_id": "left_button",
+                "disabled": True,
+            },
+            {
+                "style": 3,
+                "label": ">",
+                "emoji": None,
+                "custom_id": "right_button",
+                "disabled": True,
+            },
+        ]
+        self.disabled_scientist_buttons_dict = [
+            {"style": 2, "label": "e", "emoji": None, "custom_id": "e", "disabled": True},
+            {"style": 2, "label": "π", "emoji": None, "custom_id": "π", "disabled": True},
+            {"style": 2, "label": "|x|", "emoji": None, "custom_id": "abs", "disabled": True},
+            {"style": 1, "label": "x", "emoji": None, "custom_id": "x", "disabled": True},
+            {
+                "style": 4,
+                "label": _("Exit").format(**locals()),
+                "emoji": None,
+                "custom_id": "exit_button",
+                "disabled": True,
+            },
+            {"style": 2, "label": "X²", "emoji": None, "custom_id": "X²", "disabled": True},
+            {"style": 2, "label": "X³", "emoji": None, "custom_id": "X³", "disabled": True},
+            {"style": 2, "label": "Xˣ", "emoji": None, "custom_id": "Xˣ", "disabled": True},
+            {"style": 1, "label": "÷", "emoji": None, "custom_id": "÷", "disabled": True},
+            {
+                "style": 4,
+                "label": "⌫",
+                "emoji": None,
+                "custom_id": "back_button",
+                "disabled": True,
+            },
+            {"style": 2, "label": "cos", "emoji": None, "custom_id": "cos", "disabled": True},
+            {"style": 2, "label": "sin", "emoji": None, "custom_id": "sin", "disabled": True},
+            {"style": 2, "label": "tan", "emoji": None, "custom_id": "tan", "disabled": True},
+            {"style": 1, "label": "+", "emoji": None, "custom_id": "+", "disabled": True},
+            {
+                "style": 4,
+                "label": _("Clear").format(**locals()),
+                "emoji": None,
+                "custom_id": "clear_button",
+                "disabled": True,
+            },
+            {
+                "style": 2,
+                "label": "📄",
+                "emoji": None,
+                "custom_id": "history_button",
+                "disabled": True,
+            },
+            {"style": 2, "label": "In", "emoji": None, "custom_id": "In", "disabled": True},
             {"style": 2, "label": "√", "emoji": None, "custom_id": "√", "disabled": True},
+            {"style": 1, "label": "-", "emoji": None, "custom_id": "-", "disabled": True},
+            {
+                "style": 3,
+                "label": "=",
+                "emoji": None,
+                "custom_id": "result_button",
+                "disabled": True,
+            },
+            {"style": 2, "label": "(", "emoji": None, "custom_id": "(", "disabled": True},
+            {"style": 2, "label": ")", "emoji": None, "custom_id": ")", "disabled": True},
+            {"style": 2, "label": None, "emoji": "👨‍🏫", "custom_id": "mode_button", "disabled": True},
             {
                 "style": 3,
                 "label": "<",
@@ -254,7 +404,7 @@ class Calculator(commands.Cog):
             result = None
         if result is not None:
             result = f"{result}"
-        if result is None:
+        else:
             result = _("Error!").format(**locals())
         return result
 
@@ -267,12 +417,12 @@ class Calculator(commands.Cog):
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
         embed: discord.Embed = discord.Embed()
-        embed.title = _("Calculator").format(**locals())
+        embed.title = _("{ctx.me.display_name}'s Calculator").format(**locals())
         if result is None:
-            embed.description = box(f"{str(expression)}")
+            embed.description = box(f"{str(expression)}", lang="fix")
         else:
             expression = str(expression).replace("|", "")
-            embed.description = box(f"{str(expression)} = {str(result)}")
+            embed.description = box(f"> {str(expression)}", lang="fix") + box(f"= {str(result)}", lang="fix") + "\n"
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
         embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
@@ -301,7 +451,25 @@ class Calculator(commands.Cog):
             lst.remove("|")
         except Exception:
             index = 0
-        lst.insert(index, new)
+        if new in ["abs", "cos", "sin", "tan", "In", "√"]:
+            lst.insert(index, new + "(")
+            lst.insert(index + 1, ")")
+        elif new == 'X²':
+            lst.insert(index, "²")
+        elif new == 'X³':
+            lst.insert(index, "³")
+        elif new == 'Xˣ':
+            lst.insert(index, "^")
+        else:
+            if len(lst) > 1 and lst[index - 1] == "^":
+                try:
+                    lst.insert(index, self.x[new])
+                    lst.remove("^")
+                    index -= 1
+                except Exception:
+                    lst.insert(index, new)
+            else:
+                lst.insert(index, new)
         lst.insert(index + 1, "|")
         expression = "".join(lst)
         return expression
@@ -372,7 +540,11 @@ class Calculator(commands.Cog):
         )
         buttons_four = ActionRow(
             Button(
-                style=ButtonStyle.grey, label="00", emoji=None, custom_id="00", disabled=disabled
+                style=ButtonStyle.grey,
+                label="📄",
+                emoji=None,
+                custom_id="history_button",
+                disabled=disabled,
             ),
             Button(
                 style=ButtonStyle.grey, label="0", emoji=None, custom_id="0", disabled=disabled
@@ -423,15 +595,21 @@ class Calculator(commands.Cog):
         """Calculate a simple expression."""
         config = await self.config.settings.all()
         if calculation is not None:
-            result = await self.calculate(calculation)
+            result = f"{await self.calculate(calculation)}"
+            if ctx.author not in self.history:
+                self.history[ctx.author] = []
+            self.history[ctx.author].append(
+                (calculation.replace("|", ""), result.replace("|", ""))
+            )
             message = await ctx.send(embed=await self.get_embed(ctx, calculation, result))
             return
         expression = None
         result = None
+        is_normal = True
         if self.cogsutils.is_dpy2:
             view = Buttons(
                 timeout=config["time_max"],
-                buttons=self.buttons_dict,
+                buttons=self.normal_buttons_dict if is_normal else self.scientist_buttons_dict,
                 members=[ctx.author] + list(ctx.bot.owner_ids),
             )
             message = await ctx.send(
@@ -476,10 +654,10 @@ class Calculator(commands.Cog):
                     elif interaction.data["custom_id"] == "exit_button":
                         view = Buttons(
                             timeout=config["time_max"],
-                            buttons=self.disabled_buttons_dict,
+                            buttons=self.disabled_normal_buttons_dict if is_normal else self.disabled_scientist_buttons_dict,
                             members=[],
                         )
-                        await message.edit(view=view)
+                        await interaction.response.edit_message(view=view)
                         return
                     elif interaction.data["custom_id"] == "clear_button":
                         expression = None
@@ -517,13 +695,37 @@ class Calculator(commands.Cog):
                         expression = "".join(lst)
                         if expression == "|":
                             expression = None
+                    elif interaction.data["custom_id"] == "mode_button":
+                        is_normal = not is_normal
+                    elif interaction.data["custom_id"] == "history_button":
+                        embed: discord.Embed = discord.Embed()
+                        embed.title = f"{ctx.author.display_name}'s history"
+                        history = self.history.get(ctx.author, [])[-25:]
+                        history.reverse()
+                        if len(history) == 0:
+                            embed.description = _("Nothing in your history.").format(**locals())
+                        else:
+                            for count, entry in enumerate(history, start=0):
+                                all_count = list(range(1, len(self.history.get(ctx.author, [])) + 1))
+                                all_count.reverse()
+                                count = all_count[count]
+                                _expression, _result = entry
+                                embed.add_field(name=f"Entry {count}:", value=box(f"> {str(_expression)}", lang="fix") + box(f"= {str(_result)}", lang="fix") + "\n")
+                        await interaction.response.send_message(embed=embed, ephemeral=True)
+                        view = Buttons(
+                            timeout=config["time_max"],
+                            buttons=self.normal_buttons_dict if is_normal else self.scientist_buttons_dict,
+                            members=[ctx.author] + list(ctx.bot.owner_ids),
+                        )
+                        await interaction.message.edit(view=view)
+                        continue
                     else:
                         expression = await self.input_formatter(
                             expression, str(interaction.data["custom_id"])
                         )
                     view = Buttons(
                         timeout=config["time_max"],
-                        buttons=self.buttons_dict,
+                        buttons=self.normal_buttons_dict if is_normal else self.scientist_buttons_dict,
                         members=[ctx.author] + list(ctx.bot.owner_ids),
                     )
                     await interaction.response.edit_message(
@@ -531,7 +733,7 @@ class Calculator(commands.Cog):
                     )
             except TimeoutError:
                 view = Buttons(
-                    timeout=config["time_max"], buttons=self.disabled_buttons_dict, members=[]
+                    timeout=config["time_max"], buttons=self.disabled_normal_buttons_dict if is_normal else self.disabled_scientist_buttons_dict, members=[]
                 )
                 await message.edit(view=view)
                 return
@@ -632,6 +834,24 @@ class Calculator(commands.Cog):
                         expression = "".join(lst)
                         if expression == "|":
                             expression = None
+                    elif inter.clicked_button.custom_id == "mode_button":
+                        is_normal = not is_normal
+                    elif inter.clicked_button.custom_id == "history_button":
+                        embed: discord.Embed = discord.Embed()
+                        embed.title = f"{ctx.author.display_name}'s history"
+                        history = self.history.get(ctx.author, [])[-25:]
+                        history.reverse()
+                        if len(history) == 0:
+                            embed.description = _("Nothing in your history.").format(**locals())
+                        else:
+                            for count, entry in enumerate(history, start=0):
+                                all_count = list(range(1, len(self.history.get(ctx.author, [])) + 1))
+                                all_count.reverse()
+                                count = all_count[count]
+                                _expression, _result = entry
+                                embed.add_field(name=f"Entry {count}:", value=box(f"> {str(_expression)}", lang="fix") + box(f"= {str(_result)}", lang="fix") + "\n")
+                        await inter.respond(embed=embed, ephemeral=True)
+                        continue
                     else:
                         expression = await self.input_formatter(
                             expression, str(inter.clicked_button.custom_id)

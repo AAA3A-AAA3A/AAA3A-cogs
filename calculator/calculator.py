@@ -44,7 +44,7 @@ class Calculator(commands.Cog):
         self.bot: Red = bot
         self.config: Config = Config.get_conf(
             self,
-            identifier=905683670375,
+            identifier=205192943327321000143939875896557571750,  # 905683670375
             force_registration=True,
         )
         self.calculator_global = {
@@ -111,8 +111,8 @@ class Calculator(commands.Cog):
             },
             {
                 "style": 2,
-                "label": "📄",
-                "emoji": None,
+                "label": None,
+                "emoji": "📄",
                 "custom_id": "history_button",
                 "disabled": False,
             },
@@ -180,8 +180,8 @@ class Calculator(commands.Cog):
             },
             {
                 "style": 2,
-                "label": "📄",
-                "emoji": None,
+                "label": None,
+                "emoji": "📄",
                 "custom_id": "history_button",
                 "disabled": False,
             },
@@ -249,8 +249,8 @@ class Calculator(commands.Cog):
             },
             {
                 "style": 2,
-                "label": "📄",
-                "emoji": None,
+                "label": None,
+                "emoji": "📄",
                 "custom_id": "history_button",
                 "disabled": True,
             },
@@ -318,8 +318,8 @@ class Calculator(commands.Cog):
             },
             {
                 "style": 2,
-                "label": "📄",
-                "emoji": None,
+                "label": None,
+                "emoji": "📄",
                 "custom_id": "history_button",
                 "disabled": True,
             },

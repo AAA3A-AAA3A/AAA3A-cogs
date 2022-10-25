@@ -32,7 +32,7 @@ class ClearChannel(commands.Cog):
 
         self.config: Config = Config.get_conf(
             self,
-            identifier=837018163805,
+            identifier=205192943327321000143939875896557571750,  # 837018163805
             force_registration=True,
         )
         self.clearchannel_guild = {

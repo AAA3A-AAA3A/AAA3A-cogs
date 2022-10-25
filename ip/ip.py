@@ -33,7 +33,7 @@ class Ip(commands.Cog):
 
         self.config: Config = Config.get_conf(
             self,
-            identifier=969369062738,
+            identifier=205192943327321000143939875896557571750,  # 969369062738
             force_registration=True,
         )
         self.ip_global = {

@@ -45,7 +45,7 @@ class UrlButtons(commands.Cog):
 
         self.config: Config = Config.get_conf(
             self,
-            identifier=974269742704,
+            identifier=205192943327321000143939875896557571750,  # 974269742704
             force_registration=True,
         )
         self.url_buttons_guild = {

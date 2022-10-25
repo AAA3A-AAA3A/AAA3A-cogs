@@ -59,7 +59,7 @@ class SimpleSanction(settings, commands.Cog):
 
         self.config: Config = Config.get_conf(
             self,
-            identifier=793615829052,
+            identifier=205192943327321000143939875896557571750,  # 793615829052
             force_registration=True,
         )
         self.sanction_guild = {

@@ -34,7 +34,7 @@ class CmdChannel(commands.Cog):
 
         self.config: Config = Config.get_conf(
             self,
-            identifier=793502759720,
+            identifier=205192943327321000143939875896557571750,  # 793502759720
             force_registration=True,
         )
         self.cmd_guild = {

@@ -192,7 +192,7 @@ class DiscordModals(commands.Cog):
 
         self.config: Config = Config.get_conf(
             self,
-            identifier=897374386384,
+            identifier=205192943327321000143939875896557571750,  # 897374386384
             force_registration=True,
         )
         self.discordmodals_guild = {
@@ -204,7 +204,8 @@ class DiscordModals(commands.Cog):
         self.cogsutils._setup()
         self.purge.very_hidden = True
 
-        asyncio.create_task(self.load_buttons())
+    async def cog_load(self):
+        await self.load_buttons()
 
     async def load_buttons(self):
         all_guilds = await self.config.all_guilds()

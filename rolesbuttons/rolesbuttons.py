@@ -48,7 +48,7 @@ class RolesButtons(commands.Cog):
 
         self.config: Config = Config.get_conf(
             self,
-            identifier=370638632963,
+            identifier=205192943327321000143939875896557571750,  # 370638632963
             force_registration=True,
         )
         self.roles_buttons_guild = {
@@ -60,8 +60,9 @@ class RolesButtons(commands.Cog):
         self.cogsutils._setup()
         self.purge.very_hidden = True
 
+    async def cog_load(self):
         if self.cogsutils.is_dpy2:
-            asyncio.create_task(self.load_buttons())
+            await self.load_buttons()
 
     async def load_buttons(self):
         all_guilds = await self.config.all_guilds()

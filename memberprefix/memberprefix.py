@@ -38,7 +38,7 @@ class MemberPrefix(commands.Cog):
 
         self.config: Config = Config.get_conf(
             self,
-            identifier=647053803629,
+            identifier=205192943327321000143939875896557571750,  # 647053803629
             force_registration=True,
         )
         self.memberprefix_member = {

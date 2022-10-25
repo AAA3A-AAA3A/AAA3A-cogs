@@ -43,7 +43,7 @@ class Seen(commands.Cog):
 
         self.config: Config = Config.get_conf(
             self,
-            identifier=864398642893,
+            identifier=205192943327321000143939875896557571750,  # 864398642893
             force_registration=True,
         )
         self.global_config = {
@@ -87,6 +87,7 @@ class Seen(commands.Cog):
         self.cogsutils._setup()
         self.purge.very_hidden = True
 
+    async def cog_load(self):
         self.cogsutils.create_loop(
             function=self.save_to_config, name="Save Seen Config", minutes=1
         )
@@ -209,8 +210,8 @@ class Seen(commands.Cog):
         async with user_group.all() as users_data:
             if str(user_id) in users_data:
                 data[Config.USER] = {str(user_id): users_data[str(user_id)]}
-            for type, custom_id in users_data[str(user_id)].items():
-                custom_ids.append(tuple([type, custom_id]))
+                for type, custom_id in users_data[str(user_id)].items():
+                    custom_ids.append(tuple([type, custom_id]))
         # Members
         async with member_group.all() as members_data:
             for guild in members_data:
@@ -275,6 +276,8 @@ class Seen(commands.Cog):
                         data[Config.GUILD][guild][type] = guilds_data[guild][type]
                         custom_ids.append(tuple([type, guilds_data[guild][type]]))
         # Global
+        if user_id in global_data["ignored_users"]:
+            data[Config.GLOBAL]["ignored_users"] = [user_id]
         for type, custom_id in custom_ids:
             d = global_data[type].get(custom_id, None)
             if d is not None:

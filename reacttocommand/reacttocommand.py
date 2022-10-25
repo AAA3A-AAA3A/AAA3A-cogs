@@ -50,7 +50,7 @@ class ReactToCommand(commands.Cog):
 
         self.config: Config = Config.get_conf(
             self,
-            identifier=703485369742,
+            identifier=205192943327321000143939875896557571750,  # 703485369742
             force_registration=True,
         )
         self.CONFIG_SCHEMA = 2
@@ -67,9 +67,10 @@ class ReactToCommand(commands.Cog):
         self.cogsutils._setup()
         self.purge.very_hidden = True
 
-        asyncio.create_task(self.edit_config_schema())
-
         self.cache = []
+
+    async def cog_load(self):
+        await self.edit_config_schema()
 
     async def edit_config_schema(self):
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()

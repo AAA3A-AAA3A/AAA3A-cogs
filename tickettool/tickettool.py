@@ -47,7 +47,7 @@ class TicketTool(settings, commands.Cog):
 
         self.config: Config = Config.get_conf(
             self,
-            identifier=937480369417,
+            identifier=205192943327321000143939875896557571750,  # 937480369417
             force_registration=True,
         )
         self.ticket_guild = {
@@ -95,8 +95,9 @@ class TicketTool(settings, commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
+    async def cog_load(self):
         if self.cogsutils.is_dpy2:
-            asyncio.create_task(self.load_buttons())
+            await self.load_buttons()
 
     async def load_buttons(self):
         try:

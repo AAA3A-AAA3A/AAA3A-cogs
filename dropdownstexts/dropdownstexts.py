@@ -37,7 +37,7 @@ class DropdownsTexts(commands.Cog):
 
         self.config: Config = Config.get_conf(
             self,
-            identifier=985347935839,
+            identifier=205192943327321000143939875896557571750,  # 985347935839
             force_registration=True,
         )
         self.dropdowns_texts_guild = {
@@ -48,8 +48,9 @@ class DropdownsTexts(commands.Cog):
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
 
+    async def cog_load(self):
         if self.cogsutils.is_dpy2:
-            asyncio.create_task(self.load_dropdowns())
+            await self.load_dropdowns()
 
     async def load_dropdowns(self):
         all_guilds = await self.config.all_guilds()

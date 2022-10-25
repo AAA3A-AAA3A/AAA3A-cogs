@@ -20,6 +20,7 @@ from io import StringIO
 import aiohttp
 import redbot
 import rich
+from redbot.core import Config
 from redbot.core import utils as redutils
 from redbot.core.utils import chat_formatting as cf
 from redbot.core.utils.chat_formatting import box, pagify
@@ -245,6 +246,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "Red": lambda ctx: Red,
                 "redutils": lambda ctx: redutils,
                 "cf": lambda ctx: cf,
+                "Config": lambda ctx: Config,
                 "run_converter": lambda ctx: run_converter,
                 # Typing
                 "typing": lambda ctx: typing,

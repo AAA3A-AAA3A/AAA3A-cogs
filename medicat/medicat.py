@@ -251,7 +251,7 @@ class Medicat(commands.Cog):
 
         self.config: Config = Config.get_conf(
             self,
-            identifier=953864285308,
+            identifier=205192943327321000143939875896557571750,  # 953864285308
             force_registration=True,
         )
         self.CONFIG_SCHEMA = 2
@@ -289,13 +289,15 @@ class Medicat(commands.Cog):
         self.cogsutils._setup()
 
         self.update.very_hidden = True
-        asyncio.create_task(self.edit_config_schema())
+
+    async def cog_load(self):
+        await self.edit_config_schema()
         self.cogsutils.create_loop(function=self.ventoy_updates, name="Ventoy Updates", hours=1)
         self.cogsutils.create_loop(
             function=self.bootables_tools_updates, name="Bootables Tools Updates", hours=1
         )
         self.CC_added: asyncio.Event = asyncio.Event()
-        asyncio.create_task(self.add_custom_commands())
+        await self.add_custom_commands()
 
     async def edit_config_schema(self):
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()

@@ -14,7 +14,7 @@ with open(Path(__file__).parent / "info.json") as fp:
 
 async def setup(bot: Red):
     cog = DropdownsTexts(bot)
-    await CogsUtils().add_cog(bot, cog)
+    await cog.cogsutils.add_cog(bot)
     if not CogsUtils().is_dpy2:
         if not hasattr(bot, "slash"):
             bot.slash = InteractionClient(bot)

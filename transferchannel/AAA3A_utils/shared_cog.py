@@ -64,7 +64,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
 
         self.config: Config = Config.get_conf(
             self,
-            identifier=205192943327321000143939875896557571750,
+            identifier=205192943327321000143939875896557571750,  # int(hashlib.md5(("AAA3A-cogs").encode()).hexdigest(), 16)
             force_registration=True,
             cog_name=self.qualified_name,
         )

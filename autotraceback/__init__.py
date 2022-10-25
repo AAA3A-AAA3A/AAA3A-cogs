@@ -1,4 +1,3 @@
-from .AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import asyncio
 
@@ -18,7 +17,7 @@ async def setup_after_ready(bot):
     old_traceback = bot.get_command("traceback")
     if old_traceback:
         bot.remove_command(old_traceback.name)
-    await CogsUtils().add_cog(bot, cog)
+    await cog.cogsutils.add_cog(bot)
 
 
 async def setup(bot: Red):

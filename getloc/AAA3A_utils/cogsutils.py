@@ -6,6 +6,7 @@ import typing  # isort:skip
 import asyncio
 import contextlib
 import datetime
+import hashlib
 import inspect
 import logging
 import os
@@ -17,6 +18,7 @@ from random import choice
 
 import aiohttp
 import redbot
+from redbot.core import Config
 from redbot.core.data_manager import cog_data_path
 from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.menus import start_adding_reactions
@@ -189,17 +191,21 @@ class CogsUtils(commands.Cog):
                 text = text.replace("{USERNAME}".lower(), os.environ["USERNAME"])
         return text
 
-    async def add_cog(self, bot: Red, cog: commands.Cog):
+    async def add_cog(self, bot: Red, cog: typing.Optional[commands.Cog]=None):
         """
         Load a cog by checking whether the required function is awaitable or not.
         """
+        if cog is None:
+            cog = self.cog
+        await self.change_config_unique_identifier(cog=cog)
         value = bot.add_cog(cog)
         if inspect.isawaitable(value):
             cog = await value
         else:
             cog = value
-        if hasattr(cog, "initialize"):
-            await cog.initialize()
+        if not self.is_dpy2:
+            if hasattr(cog, "cog_load"):
+                await cog.cog_load()
         return cog
 
     def _setup(self):
@@ -256,14 +262,15 @@ class CogsUtils(commands.Cog):
             except Exception as e:
                 self.cog.log.debug("Error when adding the AAA3A_utils cog.", exc_info=e)
         AAA3A_utils = self.bot.get_cog("AAA3A_utils")
-        if await AAA3A_utils.check_if_slash(self.cog):
-            try:
-                await self.add_hybrid_commands()
-            except Exception as e:
-                self.cog.log.error(
-                    f"Error when adding [hybrid|slash] commands from the {self.cog.qualified_name} cog.",
-                    exc_info=e,
-                )
+        if AAA3A_utils is not None:
+            if await AAA3A_utils.check_if_slash(self.cog):
+                try:
+                    await self.add_hybrid_commands()
+                except Exception as e:
+                    self.cog.log.error(
+                        f"Error when adding [hybrid|slash] commands from the {self.cog.qualified_name} cog.",
+                        exc_info=e,
+                    )
 
     def _end(self):
         """
@@ -494,6 +501,78 @@ class CogsUtils(commands.Cog):
                 continue
             if _object.parent is None:
                 self.bot.tree.remove_command(_object.name)
+
+    async def change_config_unique_identifier(self, cog: typing.Optional[commands.Cog]=None):
+        try:
+            if not self.is_dpy2:
+                return False
+            if cog is None:
+                cog = self.cog
+            cogs_with_old_config_custom_ids = {
+                "AntiNuke": 947269490247,
+                "Calculator": 905683670375,
+                "ClearChannel": 837018163805,
+                "CmdChannel": 793502759720,
+                "DiscordModals": 897374386384,
+                "DropdownsTexts": 985347935839,
+                "Ip": 969369062738,
+                "Medicat": 953864285308,
+                "MemberPrefix": 647053803629,
+                "ReactToCommand": 703485369742,
+                "RolesButtons": 370638632963,
+                "Seen": 864398642893,
+                "SimpleSanction": 793615829052,
+                "TicketTool": 937480369417,
+                "UrlButtons": 974269742704,
+            }
+            if cog.qualified_name not in cogs_with_old_config_custom_ids:
+                return False
+            if not hasattr(cog, "config"):
+                return False
+            old_config: Config = Config.get_conf(cog, identifier=cogs_with_old_config_custom_ids[cog.qualified_name], force_registration=True)
+            new_config: Config = Config.get_conf(cog, identifier=205192943327321000143939875896557571750, force_registration=True)
+            old_config_all = {}
+            new_config_all = {}
+            for base_group in [old_config.GLOBAL, old_config.USER, old_config.MEMBER, old_config.ROLE, old_config.CHANNEL, old_config.GUILD]:
+                old_config_all[base_group] = await old_config._get_base_group(base_group).all()
+                if old_config_all[base_group] == {}:
+                    del old_config_all[base_group]
+                new_config_all[base_group] = await new_config._get_base_group(base_group).all()
+                if new_config_all[base_group] == {}:
+                    new_config_all[base_group] = new_config._defaults.get(base_group, None)
+                if new_config_all[base_group] is None:
+                    del new_config_all[base_group]
+            if old_config_all == old_config._defaults or not new_config_all == new_config._defaults:
+                return False
+            for base_group in [old_config.GLOBAL, old_config.USER, old_config.MEMBER, old_config.ROLE, old_config.CHANNEL, old_config.GUILD]:
+                data = old_config_all.get(base_group, {})
+                if data == {}:
+                    continue
+                if data == old_config._defaults.get(base_group, {}):
+                    continue
+                await new_config._get_base_group(base_group).set(data)
+            old_config_all = {}
+            new_config_all = {}
+            for base_group in [old_config.GLOBAL, old_config.USER, old_config.MEMBER, old_config.ROLE, old_config.CHANNEL, old_config.GUILD]:
+                old_config_all[base_group] = await old_config._get_base_group(base_group).all()
+                if old_config_all[base_group] == {}:
+                    del old_config_all[base_group]
+                new_config_all[base_group] = await new_config._get_base_group(base_group).all()
+                if new_config_all[base_group] == {}:
+                    new_config_all[base_group] = new_config._defaults.get(base_group, None)
+                if new_config_all[base_group] is None:
+                    del new_config_all[base_group]
+            await old_config.clear_all()
+        except Exception as e:
+            self.cog.log.error(
+                f"Error in the {self.cog.qualified_name} cog's Config unique identifier change.",
+                exc_info=e
+            )
+        else:
+            self.cog.log.info(
+                f"The Config unique identifier has been successfully modified for the {self.cog.qualified_name} cog."
+            )
+        return True, old_config, new_config
 
     async def ConfirmationAsk(
         self,

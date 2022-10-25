@@ -39,7 +39,7 @@ class AntiNuke(commands.Cog):
 
         self.config: Config = Config.get_conf(
             self,
-            identifier=947269490247,
+            identifier=205192943327321000143939875896557571750,  # 947269490247
             force_registration=True,
         )
         self.antinuke_guild = {

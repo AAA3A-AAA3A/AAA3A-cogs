@@ -177,7 +177,7 @@ class Seen(commands.Cog):
         # Guilds
         async with guild_group.all() as guilds_data:
             _guilds_data = deepcopy(guilds_data)
-            for guild in guilds_data:
+            for guild in _guilds_data:
                 for type, custom_id in _guilds_data[guild].items():
                     if (
                         global_data[type].get(custom_id, {"action": {"member": None}})["action"][

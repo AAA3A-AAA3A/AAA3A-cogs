@@ -302,7 +302,7 @@ class Medicat(commands.Cog):
     async def edit_config_schema(self):
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
         ALL_CONFIG_GLOBAL = await self.config.all()
-        if ALL_CONFIG_GLOBAL == self.medicat_global:
+        if ALL_CONFIG_GLOBAL == self.config._defaults[self.config.GLOBAL]:
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
             return

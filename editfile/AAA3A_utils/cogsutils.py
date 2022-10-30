@@ -504,8 +504,6 @@ class CogsUtils(commands.Cog):
 
     async def change_config_unique_identifier(self, cog: typing.Optional[commands.Cog]=None):
         try:
-            if not self.is_dpy2:
-                return False
             if cog is None:
                 cog = self.cog
             cogs_with_old_config_custom_ids = {

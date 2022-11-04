@@ -1342,8 +1342,10 @@ class Seen(commands.Cog):
     @seen.command(hidden=True)
     async def getloopstatus(self, ctx: commands.Context):
         """Get an embed for check loop status."""
+        embeds = []
         for loop in self.cogsutils.loops.values():
-            await ctx.send(embed=loop.get_debug_embed())
+            embeds.append(loop.get_debug_embed())
+        await Menu(pages=embeds).start(ctx)
         await ctx.tick()
 
     @commands.is_owner()

@@ -165,11 +165,17 @@ class GetLoc(commands.Cog):
                     latitude=localisation.latitude,
                     longitude=localisation.longitude,
                 )
-                file = discord.File(
-                    fp=map,
-                    filename="map.png",
-                    description=str(localisation.raw.get("display_name", None)),
-                )
+                if self.cogsutils.is_dpy2:
+                    file = discord.File(
+                        fp=map,
+                        filename="map.png",
+                        description=str(localisation.raw.get("display_name", None)),
+                    )
+                else:
+                    file = discord.File(
+                        fp=map,
+                        filename="map.png",
+                    )
             else:
                 file = None
 

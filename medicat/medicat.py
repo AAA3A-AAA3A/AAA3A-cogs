@@ -147,22 +147,22 @@ BOOTABLES_TOOLS = {
     "EaseUS Data Recovery Wizard": {
         "url": "https://www.fcportables.com/easeus-recovery-wizard-winpe/",
         "category": "USB\\Backup_and_Recovery\\",
-        "regex": r"EaseUS Data Recovery Wizard (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) WinPE",
+        "regex": r"EaseUS Data Recovery Wizard (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Build (\d*) WinPE \(x64\)",
     },
     "EaseUS Todo Backup": {
         "url": "https://www.fcportables.com/easeus-todo-backup-winpe/",
         "category": "USB\\Backup_and_Recovery\\",
-        "regex": r"EaseUS Todo Backup (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Build (\d*) Enterprise Technician WinPE",
+        "regex": r"EaseUS Todo Backup Home (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Build (\d*) WinPE",
     },
     "Macrium Reflect": {
         "url": "https://www.fcportables.com/macrium-reflect-rescue-winpe/",
         "category": "USB\\Backup_and_Recovery\\",
         "regex": r"Macrium Reflect (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Server Plus WinPE \(x64\)",
     },
-    "MiniTool ShadowMaker Pro Ultimate": {
+    "MiniTool ShadowMaker Business Deluxe": {
         "url": "https://www.fcportables.com/shadowmaker-pro/",
         "category": "USB\\Backup_and_Recovery\\",
-        "regex": r"Portable MiniTool ShadowMaker Pro Ultimate (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) \+ WinPE",
+        "regex": r"Portable MiniTool ShadowMaker Business Deluxe (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) \+ WinPE",
     },
     "MiniTool Power Data Recovery": {
         "url": "https://www.fcportables.com/minitool-data-recovery-winpe/",
@@ -265,7 +265,7 @@ class Medicat(commands.Cog):
                 "EaseUS Data Recovery Wizard": "15.2.0.0",
                 "EaseUS Todo Backup": "13.5.0",
                 "Macrium Reflect": "8.0.6758",
-                "MiniTool ShadowMaker Pro Ultimate": "3.6.1",
+                "MiniTool ShadowMaker Business Deluxe": "3.6.1",
                 "MiniTool Power Data Recovery": "10.2",
                 "Boot Repair Disk": "2021-12-16",
                 "EasyUEFI Technician": "4.9.2",

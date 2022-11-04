@@ -348,7 +348,9 @@ class Medicat(commands.Cog):
     async def ventoy_updates(
         self,
         channel: typing.Optional[discord.TextChannel] = None,
-        role: typing.Optional[discord.Role] = None,
+        ping_role: typing.Optional[bool] = True,
+        force: typing.Optional[bool] = False,
+        version: str = None,
     ):
         if channel is None:
             guild = self.bot.get_guild(MEDICAT_GUILD)
@@ -377,20 +379,33 @@ class Medicat(commands.Cog):
                 .replace("beta", ".dev")
             ),
         )
-
-        if last_ventoy_version >= VersionInfo.from_str(
-            str(ventoy_tags[len(ventoy_tags) - 1]["ref"])
-            .replace("refs/tags/v", "")
-            .replace("1.0.0", "1.0.")
-            .replace("beta", ".dev")
-        ):
+        if versions == []:
             return
-        await self.config.last_ventoy_version.set(
-            str(ventoy_tags[len(ventoy_tags) - 1]["ref"])
-            .replace("refs/tags/v", "")
-            .replace("1.0.0", "1.0.")
-            .replace("beta", ".dev")
-        )
+
+        if not force:
+            if last_ventoy_version >= VersionInfo.from_str(
+                str(versions[-1]["ref"])
+                .replace("refs/tags/v", "")
+                .replace("1.0.0", "1.0.")
+                .replace("beta", ".dev")
+            ):
+                return
+            await self.config.last_ventoy_version.set(
+                str(versions[-1]["ref"])
+                .replace("refs/tags/v", "")
+                .replace("1.0.0", "1.0.")
+                .replace("beta", ".dev")
+            )
+        elif version is not None:
+            for v in versions:
+                if str(v["ref"]).replace("refs/tags/", "").replace("v", "").replace("1.0.0", "1.0.").replace("beta", ".dev") == version:
+                    versions = [v]
+                    break
+            else:
+                await channel.send(_("This Ventoy version doesn't exists.").format(**locals()))
+                return
+        else:
+            versions = [versions[-1]]
 
         for version in versions:
             ventoy_tag_name = str(version["ref"]).replace("refs/tags/", "")
@@ -444,7 +459,7 @@ class Medicat(commands.Cog):
                 value=f"https://github.com/ventoy/Ventoy/releases/tag/{ventoy_version_str}",
                 inline=True,
             )
-            role = guild.get_role(VENTOY_UPDATES_ROLE) if role is None else role
+            role = guild.get_role(VENTOY_UPDATES_ROLE) if ping_role else None
             try:
                 hook: discord.Webhook = await self.cogsutils.get_hook(channel)
                 if self.cogsutils.is_dpy2:
@@ -509,7 +524,7 @@ class Medicat(commands.Cog):
     async def bootables_tools_updates(
         self,
         channel: typing.Optional[discord.TextChannel] = None,
-        role: typing.Optional[discord.Role] = None,
+        ping_role: typing.Optional[bool] = True,
     ):
         if channel is None:
             guild = self.bot.get_guild(MEDICAT_GUILD)
@@ -562,8 +577,9 @@ class Medicat(commands.Cog):
             embed.description = f"[View on FCportables!]({url})"
             embed.add_field(name="Old version:", value=last_tool_version_str, inline=True)
             embed.add_field(name="New version:", value=tool_version_str, inline=True)
+            embed.add_field(name="Category in Medicat USB:", value=BOOTABLES_TOOLS[tool]["category"], inline=False)
 
-            role = guild.get_role(BOOTABLES_TOOLS_UPDATE_ROLE) if role is None else role
+            role = guild.get_role(BOOTABLES_TOOLS_UPDATE_ROLE) if ping_role else role
             try:
                 hook: discord.Webhook = await self.cogsutils.get_hook(channel)
                 if self.cogsutils.is_dpy2:
@@ -633,6 +649,15 @@ class Medicat(commands.Cog):
             if ctx.guild is None:
                 return False
             if ctx.guild.id == MEDICAT_GUILD or ctx.guild.id == TEST_GUILD:
+                return True
+            else:
+                return False
+
+        return commands.check(pred)
+
+    def is_owner_or_AAA3A():
+        async def pred(ctx):
+            if ctx.author.id in ctx.bot.owner_ids or ctx.author.id == 829612600059887649:
                 return True
             else:
                 return False
@@ -713,114 +738,21 @@ class Medicat(commands.Cog):
         """Get the latest version of Ventoy."""
         try:
             async with ctx.typing():
-                async with aiohttp.ClientSession() as session:
-                    async with session.get(
-                        "https://api.github.com/repos/ventoy/Ventoy/git/refs/tags", timeout=3
-                    ) as r:
-                        ventoy_tags = await r.json()
-                versions = sorted(
-                    ventoy_tags,
-                    key=lambda ventoy_version: VersionInfo.from_str(
-                        str(ventoy_version["ref"])
-                        .replace("refs/tags/v", "")
-                        .replace("1.0.0", "1.0.")
-                        .replace("beta", ".dev")
-                    ),
-                )
-                version = versions[len(versions) - 1]
-                ventoy_tag_name = str(version["ref"]).replace("refs/tags/", "")
-                ventoy_version_str = (
-                    ventoy_tag_name.replace("v", "")
-                    .replace("1.0.0", "1.0.")
-                    .replace("beta", ".dev")
-                )
-
-                try:
-                    async with aiohttp.ClientSession() as session:
-                        async with session.get(
-                            f"https://api.github.com/repos/ventoy/Ventoy/releases/tags/{ventoy_tag_name}",
-                            timeout=3,
-                        ) as r:
-                            ventoy_tag_body = str((await r.json())["body"])
-                except Exception:
-                    ventoy_tag_body = None
-
-                if ventoy_tag_body is not None:
-                    ventoy_tag_body = ventoy_tag_body.split("\n")
-                    result = []
-                    for x in ventoy_tag_body:
-                        if (
-                            x
-                            == "See [https://www.ventoy.net/en/doc_news.html](https://www.ventoy.net/en/doc_news.html) for more details.\r"
-                        ):
-                            break
-                        if not x == "\r":
-                            result.append(x)
-                    ventoy_tag_body = "\n".join(result)
-                    changelog = box(ventoy_tag_body)
-                else:
-                    changelog = ""
+                await self.ventoy_updates(channel=ctx.channel, ping_role=False, force=True)
         except Exception:
             await ctx.send(_("An error has occurred. Please try again.").format(**locals()))
             return
-        embed: discord.Embed = discord.Embed()
-        embed.set_thumbnail(url="https://ventoy.net/static/img/ventoy.png?v=1")
-        embed.set_footer(
-            text="From official Ventoy.", icon_url="https://ventoy.net/static/img/ventoy.png?v=1"
-        )
-        embed.url = "https://www.ventoy.net/en/doc_news.html"
-        embed.title = f"Ventoy v{ventoy_version_str} has been released!"
-        embed.description = "New features:\n" + changelog
-        embed.add_field(
-            name="More details:", value="https://www.ventoy.net/en/doc_news.html", inline=True
-        )
-        embed.add_field(
-            name="Download this version:",
-            value=f"https://github.com/ventoy/Ventoy/releases/tag/{ventoy_version_str}",
-            inline=True,
-        )
+
+    @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
+    @medicat.command()
+    async def getventoyversion(self, ctx: commands.Context, version: str):
+        """Get a version of Ventoy."""
         try:
-            hook: discord.Webhook = await self.cogsutils.get_hook(ctx.channel)
-            if self.cogsutils.is_dpy2:
-                view = Buttons(
-                    timeout=None,
-                    buttons=[
-                        {
-                            "style": 5,
-                            "label": "View",
-                            "url": "https://www.ventoy.net/en/doc_news.html",
-                        }
-                    ],
-                    infinity=True,
-                )
-                await hook.send(
-                    embed=embed,
-                    username="Ventoy Updates",
-                    avatar_url="https://ventoy.net/static/img/ventoy.png?v=1",
-                    view=view,
-                )
-            else:
-                await hook.send(
-                    embed=embed,
-                    username="Ventoy Updates",
-                    avatar_url="https://ventoy.net/static/img/ventoy.png?v=1",
-                )
-        except (AttributeError, discord.errors.Forbidden):
-            if self.cogsutils.is_dpy2:
-                view = Buttons(
-                    timeout=None,
-                    buttons=[
-                        {
-                            "style": 5,
-                            "label": "View on Ventoy Official Website",
-                            "url": "https://www.ventoy.net/en/doc_news.html",
-                        }
-                    ],
-                    infinity=True,
-                )
-                await ctx.send(embed=embed, view=view)
-            else:
-                await ctx.send(embed=embed)
+            async with ctx.typing():
+                await self.ventoy_updates(channel=ctx.channel, ping_role=False, force=True, version=version)
+        except Exception:
+            await ctx.send(_("An error has occurred. Please try again.").format(**locals()))
+            return
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @medicat.command()
@@ -901,14 +833,62 @@ class Medicat(commands.Cog):
             else:
                 await ctx.send(embed=embed)
 
-    def is_owner_or_AAA3A():
-        async def pred(ctx):
-            if ctx.author.id in ctx.bot.owner_ids or ctx.author.id == 829612600059887649:
-                return True
-            else:
-                return False
-
-        return commands.check(pred)
+    @is_owner_or_AAA3A()
+    @medicat.command(hidden=True)
+    async def debuglastbootablestoolsversions(self, ctx: commands.Context, *, url: str):
+        """Get the debug for a FCportables's tool."""
+        async with ctx.typing():
+            try:
+                result = {"Settings": {"Found": False, "Name": None, "Url": None, "Category": None, "Regex": None}, "Web request": {"Web request url": None, "Web request status": None, "Web request result": None}, "Search for the tool name": {"Tool name line": None, "Tool name full": None}, "Find version": {"Regex used": None, "Result 1": None, "Result 2": None, "Result 3": None}}
+                tool = None
+                if url in BOOTABLES_TOOLS:
+                    tool = url
+                    url = BOOTABLES_TOOLS[tool]["url"]
+                else:
+                    if not url.startswith("https://www.fcportables.com/"):
+                        url = f"https://www.fcportables.com/{url}"
+                    if not url.endswith("/"):
+                        url += "/"
+                    for t in BOOTABLES_TOOLS:
+                        if BOOTABLES_TOOLS[t]["url"] == url:
+                            tool = t
+                            break
+                if tool is not None:
+                    result["Settings"]["Found"] = True
+                    result["Settings"]["Name"] = tool
+                    result["Settings"]["Url"] = BOOTABLES_TOOLS[tool]["url"]
+                    result["Settings"]["Category"] = BOOTABLES_TOOLS[tool]["category"]
+                    result["Settings"]["Regex"] = BOOTABLES_TOOLS[tool]["regex"]
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(url, timeout=3) as r:
+                        result["Web request"]["Web request url"] = r.url
+                        result["Web request"]["Web request status"] = r.status
+                        r = await r.text()
+                result["Web request"]["Web request result"] = list(r.split("\n"))[20:29]
+                for x in r.split("\n"):
+                    if '"headline":' in x and '<html lang="en-US">' not in x:
+                        break
+                result["Search for the tool name"]["Tool name line"] = x
+                x = x.replace('    "headline": "', "").replace('",', "")
+                result["Search for the tool name"]["Tool name full"] = x
+                if tool is not None:
+                    result["Find version"]["Regex used"] = BOOTABLES_TOOLS[tool]["regex"]
+                    regex = re.compile(BOOTABLES_TOOLS[tool]["regex"], re.I).findall(x)
+                    result["Find version"]["Result 1"] = regex
+                    regex = regex[0] if len(regex) > 0 else None
+                    result["Find version"]["Result 2"] = regex
+                    regex = (
+                        regex[0] if isinstance(regex, typing.Tuple) and len(regex) > 0 else regex
+                    )
+                    result["Find version"]["Result 3"] = regex
+            except Exception:
+                pass
+            message = ""
+            for x in result:
+                message += f"\n\n--------------- {x} ---------------"
+                for y, z in result[x].items():
+                    message += f"\n{y}: {z}"
+        await Menu(pages=message, box_language_py=True).start(ctx)
 
     @is_owner_or_AAA3A()
     @medicat.command(hidden=True)

@@ -1711,7 +1711,7 @@ class SimpleSanction(settings, commands.Cog):
                 # cancel_others=True prevents all on_click-functions under this function from working
                 # regardless of their checks
                 # reset_timeout=False makes the timer keep going after this function is called
-                await inter.reply(
+                await inter.respond(
                     _("You are not the author of this command.").format(**locals()), ephemeral=True
                 )
 
@@ -1719,7 +1719,7 @@ class SimpleSanction(settings, commands.Cog):
             async def on_userinfo_button(inter):
                 end_reaction = True
                 if fake_action:
-                    await inter.reply(
+                    await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
                         ).format(**locals()),
@@ -1746,7 +1746,7 @@ class SimpleSanction(settings, commands.Cog):
             async def on_warn_button(inter):
                 end_reaction = True
                 if fake_action:
-                    await inter.reply(
+                    await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
                         ).format(**locals()),
@@ -1773,7 +1773,7 @@ class SimpleSanction(settings, commands.Cog):
             async def on_ban_button(inter):
                 end_reaction = True
                 if fake_action:
-                    await inter.reply(
+                    await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
                         ).format(**locals()),
@@ -1800,7 +1800,7 @@ class SimpleSanction(settings, commands.Cog):
             async def on_softban_button(inter):
                 end_reaction = True
                 if fake_action:
-                    await inter.reply(
+                    await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
                         ).format(**locals()),
@@ -1827,7 +1827,7 @@ class SimpleSanction(settings, commands.Cog):
             async def on_tempban_button(inter):
                 end_reaction = True
                 if fake_action:
-                    await inter.reply(
+                    await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
                         ).format(**locals()),
@@ -1854,7 +1854,7 @@ class SimpleSanction(settings, commands.Cog):
             async def on_kick_button(inter):
                 end_reaction = True
                 if fake_action:
-                    await inter.reply(
+                    await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
                         ).format(**locals()),
@@ -1881,7 +1881,7 @@ class SimpleSanction(settings, commands.Cog):
             async def on_mute_button(inter):
                 end_reaction = True
                 if fake_action:
-                    await inter.reply(
+                    await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
                         ).format(**locals()),
@@ -1908,7 +1908,7 @@ class SimpleSanction(settings, commands.Cog):
             async def on_mutechannel_button(inter):
                 end_reaction = True
                 if fake_action:
-                    await inter.reply(
+                    await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
                         ).format(**locals()),
@@ -1935,7 +1935,7 @@ class SimpleSanction(settings, commands.Cog):
             async def on_tempmute_button(inter):
                 end_reaction = True
                 if fake_action:
-                    await inter.reply(
+                    await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
                         ).format(**locals()),
@@ -1962,7 +1962,7 @@ class SimpleSanction(settings, commands.Cog):
             async def on_tempmutechannel_button(inter):
                 end_reaction = True
                 if fake_action:
-                    await inter.reply(
+                    await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
                         ).format(**locals()),

@@ -796,7 +796,7 @@ class Calculator(commands.Cog):
                                 buttons_five,
                             ]
                         )
-                        await inter.reply(type=ResponseType.DeferredUpdateMessage)
+                        await inter.respond(type=ResponseType.DeferredUpdateMessage)
                         return
                     elif inter.clicked_button.custom_id == "clear_button":
                         expression = None
@@ -857,7 +857,7 @@ class Calculator(commands.Cog):
                             expression, str(inter.clicked_button.custom_id)
                         )
                     await message.edit(embed=await self.get_embed(ctx, expression, result))
-                    await inter.reply(type=ResponseType.DeferredUpdateMessage)
+                    await inter.respond(type=ResponseType.DeferredUpdateMessage)
             except asyncio.TimeoutError:
                 (
                     buttons_one,

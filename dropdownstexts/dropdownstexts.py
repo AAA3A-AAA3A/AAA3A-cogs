@@ -91,6 +91,7 @@ class DropdownsTexts(commands.Cog):
                 return
             config = await self.config.guild(interaction.guild).dropdowns_texts.all()
             if f"{interaction.channel.id}-{interaction.message.id}" not in config:
+                await interaction.response.send_message(_("This message is not in Config.").format(**locals()), ephemeral=True)
                 return
             options = [
                 option for option in view.options_dict if option["label"] == selected_options[0]
@@ -98,6 +99,7 @@ class DropdownsTexts(commands.Cog):
             emoji = options[0]["emoji"]
             emoji = str(getattr(emoji, "id", emoji))
             if f"{emoji}" not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
+                await interaction.response.send_message(_("This emoji is not in Config.").format(**locals()), ephemeral=True)
                 return
             if interaction.channel.permissions_for(interaction.guild.me).embed_links:
                 embed: discord.Embed = discord.Embed()
@@ -132,11 +134,13 @@ class DropdownsTexts(commands.Cog):
                 return
             config = await self.config.guild(inter.guild).dropdowns_texts.all()
             if f"{inter.channel.id}-{inter.message.id}" not in config:
+                await inter.respond(_("This message is not in Config.").format(**locals()), ephemeral=True)
                 return
             options = inter.select_menu.selected_options
             emoji = options[0].emoji
             emoji = str(getattr(emoji, "id", emoji) or emoji)
             if f"{emoji}" not in config[f"{inter.channel.id}-{inter.message.id}"]:
+                await inter.respond(_("This emoji is not in Config.").format(**locals()), ephemeral=True)
                 return
             if inter.channel.permissions_for(inter.guild.me).embed_links:
                 embed: discord.Embed = discord.Embed()
@@ -144,9 +148,9 @@ class DropdownsTexts(commands.Cog):
                 embed.description = config[f"{inter.channel.id}-{inter.message.id}"][f"{emoji}"][
                     "text"
                 ]
-                await inter.send(embed=embed, ephemeral=True)
+                await inter.respond(embed=embed, ephemeral=True)
             else:
-                await inter.send(
+                await inter.respond(
                     config[f"{inter.channel.id}-{inter.message.id}"][f"{emoji}"]["text"],
                     ephemeral=True,
                 )

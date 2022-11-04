@@ -109,6 +109,7 @@ class RolesButtons(commands.Cog):
                 return
             config = await self.config.guild(interaction.guild).roles_buttons.all()
             if f"{interaction.channel.id}-{interaction.message.id}" not in config:
+                await interaction.response.send_message(_("This message is not in Config.").format(**locals()), ephemeral=True)
                 return
             for _component in interaction.message.components:
                 for component in _component.to_dict()["components"]:
@@ -120,6 +121,7 @@ class RolesButtons(commands.Cog):
                         )
                         break
             if f"{emoji}" not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
+                await interaction.response.send_message(_("This emoji is not in Config.").format(**locals()), ephemeral=True)
                 return
             role = interaction.guild.get_role(
                 config[f"{interaction.channel.id}-{interaction.message.id}"][f"{emoji}"]["role"]
@@ -189,6 +191,7 @@ class RolesButtons(commands.Cog):
                 return
             config = await self.config.guild(guild).roles_buttons.all()
             if f"{inter.channel.id}-{inter.message.id}" not in config:
+                await inter.respond(_("This message is not in Config.").format(**locals()), ephemeral=True)
                 return
             if getattr(inter.component.emoji, "id", None):
                 inter.component.emoji = str(inter.component.emoji.id)
@@ -197,6 +200,7 @@ class RolesButtons(commands.Cog):
                     "\N{VARIATION SELECTOR-16}"
                 )
             if f"{inter.component.emoji}" not in config[f"{inter.channel.id}-{inter.message.id}"]:
+                await inter.respond(_("This emoji is not in Config.").format(**locals()), ephemeral=True)
                 return
             role = inter.guild.get_role(
                 config[f"{inter.channel.id}-{inter.message.id}"][f"{inter.component.emoji}"][

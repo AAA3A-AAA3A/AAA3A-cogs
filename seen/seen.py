@@ -1340,7 +1340,7 @@ class Seen(commands.Cog):
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
     @seen.command(hidden=True)
-    async def getloopstatus(self, ctx: commands.Context):
+    async def getdebugloopsstatus(self, ctx: commands.Context):
         """Get an embed for check loop status."""
         embeds = []
         for loop in self.cogsutils.loops.values():

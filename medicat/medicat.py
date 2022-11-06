@@ -122,7 +122,7 @@ CUSTOM_COMMANDS = {
     "wimvhd": {
         "title": _("Why doesn't Ventoy display Wim and VHD files?").format(**locals()),
         "description": _(
-            "You must download an additional plugin/file and place it in the `USB\\ventoy\\` folder (create it if necessary).\n**WimBoot Plugin (https://ventoy.net/en/plugin_wimboot.html):**\n- Download `ventoy_wimboot.img` file from <https://github.com/ventoy/wimiso/releases>.\n- Put the file under `ventoy` directory in the `ventoy partition` of the USB stick, that is `/ventoy/ventoy_wimboot.img` and that's all.\n\n**VhdBoot Plugin (<https://ventoy.net/en/plugin_vhdboot.html>):**\n- Download `ventoy_vhdboot.img` file from <https://github.com/ventoy/vhdiso/releases>.\n- Put the file under `ventoy` directory in the `ventoy` partition of the USB stick, that is `/ventoy/ventoy_vhdboot.img` and that's all."
+            "You must download an additional plugin/file and place it in the `USB\\ventoy\\` folder (create it if necessary).\n\n**WimBoot Plugin (https://ventoy.net/en/plugin_wimboot.html):**\n- Download `ventoy_wimboot.img` file from <https://github.com/ventoy/wimiso/releases>.\n- Put the file under `ventoy` directory in the `ventoy partition` of the USB stick, that is `/ventoy/ventoy_wimboot.img` and that's all.\n\n**VhdBoot Plugin (<https://ventoy.net/en/plugin_vhdboot.html>):**\n- Download `ventoy_vhdboot.img` file from <https://github.com/ventoy/vhdiso/releases>.\n- Put the file under `ventoy` directory in the `ventoy` partition of the USB stick, that is `/ventoy/ventoy_vhdboot.img` and that's all."
         ).format(**locals()),
     },
     "xy": {
@@ -738,6 +738,17 @@ class Medicat(commands.Cog):
         for name in CUSTOM_COMMANDS:
             self.medicat.remove_command(name)
 
+    @commands.Cog.listener()
+    async def on_message_without_command(self, message: discord.Message):
+        context = await self.bot.get_context(message)
+        if context.prefix is None:
+            return
+        command_name = context.message.content[len(str(context.prefix)):]
+        if command_name not in CUSTOM_COMMANDS:
+            return
+        await self.cogsutils.invoke_command(author=context.author, channel=context.channel, command=f"medicat {command_name}", prefix=context.prefix, message=context.message)
+        
+
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @medicat.command()
     async def getlastventoyversion(self, ctx: commands.Context):
@@ -898,7 +909,7 @@ class Medicat(commands.Cog):
 
     @is_owner_or_AAA3A()
     @medicat.command(hidden=True)
-    async def getloopsstatus(self, ctx: commands.Context):
+    async def getdebugloopsstatus(self, ctx: commands.Context):
         """Get an embed for check loops status."""
         embeds = []
         for loop in self.cogsutils.loops.values():

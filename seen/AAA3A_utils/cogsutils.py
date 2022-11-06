@@ -6,7 +6,6 @@ import typing  # isort:skip
 import asyncio
 import contextlib
 import datetime
-import hashlib
 import inspect
 import logging
 import os
@@ -81,7 +80,7 @@ class CogsUtils(commands.Cog):
                 del self.cog.__version__
             self.cog.__version__ = self.__version__
         self.loops: typing.Dict[str, Loop] = {}
-        self.views: typing.List[getattr(discord, "ui").View] = []
+        self.views: typing.List[getattr(getattr(discord, "ui", None), "View", None)] = []
         self.repo_name: str = "AAA3A-cogs"
         self.all_cogs: typing.List = [
             "AntiNuke",
@@ -200,9 +199,7 @@ class CogsUtils(commands.Cog):
         await self.change_config_unique_identifier(cog=cog)
         value = bot.add_cog(cog)
         if inspect.isawaitable(value):
-            cog = await value
-        else:
-            cog = value
+            await value
         if not self.is_dpy2:
             if hasattr(cog, "cog_load"):
                 await cog.cog_load()
@@ -307,18 +304,21 @@ class CogsUtils(commands.Cog):
             # logging to a log file
             # file is automatically created by the module, if the parent foler exists
             cog_path = cog_data_path(cog_instance=self.cog, raw_name=self.cog.qualified_name)
-            if cog_path.exists():
-                file_handler = RotatingFileHandler(
-                    stem=self.cog.qualified_name,
-                    directory=cog_path,
-                    maxBytes=1_000_0,
-                    backupCount=0,
-                    encoding="utf-8",
-                )
-                # file_handler.doRollover()
-                file_handler.setLevel(logging.DEBUG)
-                file_handler.setFormatter(formatter)
-                self.cog.log.addHandler(file_handler)
+            try:
+                if cog_path.exists():
+                    file_handler = RotatingFileHandler(
+                        stem=self.cog.qualified_name,
+                        directory=cog_path,
+                        maxBytes=1_000_0,
+                        backupCount=0,
+                        encoding="utf-8",
+                    )
+                    # file_handler.doRollover()
+                    file_handler.setLevel(logging.DEBUG)
+                    file_handler.setFormatter(formatter)
+                    self.cog.log.addHandler(file_handler)
+            except Exception as e:
+                self.cog.log.debug("Error when initiating the logger in a separate file.", exc_info=e)
             return self.cog.log
         else:
             if not name.startswith("red."):

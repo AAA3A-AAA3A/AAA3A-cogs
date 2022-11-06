@@ -3,9 +3,10 @@ import typing  # isort:skip
 
 import asyncio
 import string
+from functools import partial
 from random import choice
 
-__all__ = ["Buttons", "Dropdown", "Modal"]
+__all__ = ["Buttons", "Dropdown", "Select", "ChannelSelect", "MentionableSelect", "RoleSelect", "UserSelect", "Modal"]
 
 
 def _(untranslated: str):
@@ -166,7 +167,8 @@ class Dropdown(discord.ui.View):
         min_values: typing.Optional[int] = 1,
         max_values: typing.Optional[int] = 1,
         *,
-        options: typing.Optional[typing.List] = [{}],
+        _type: typing.Optional[discord.ComponentType] = discord.ComponentType.select,
+        options: typing.Optional[typing.Union[typing.List, discord.ComponentType, discord.ui.Select]] = [{}],
         disabled: typing.Optional[bool] = False,
         members: typing.Optional[typing.Iterable[discord.Member]] = None,
         check: typing.Optional[typing.Any] = None,
@@ -181,7 +183,8 @@ class Dropdown(discord.ui.View):
             "placeholder": placeholder,
             "min_values": min_values,
             "max_values": max_values,
-            "options": [o.copy() for o in options],
+            "_type": _type,
+            "options": [(o.copy() if hasattr(o, "copy") else o) for o in options],
             "members": members,
             "check": check,
             "function": function,
@@ -190,6 +193,7 @@ class Dropdown(discord.ui.View):
             "custom_id": custom_id,
         }
         super().__init__(timeout=timeout)
+        self._type = _type
         self.infinity = infinity
         self.interaction_result = None
         self.options_result = None
@@ -202,16 +206,67 @@ class Dropdown(discord.ui.View):
         self.function = function
         self.function_args = function_args
         self.clear_items()
-        self.dropdown: discord.ui.Select = Select(
-            placeholder=placeholder,
-            min_values=min_values,
-            max_values=max_values,
-            options=options,
-            disabled=disabled,
-            custom_id=custom_id,
-        )
-        self.options = self.dropdown._options
-        self.options_dict = self.dropdown.options_dict
+        self.options = []
+        self.options_dict = []
+        if _type is discord.ComponentType.select:
+            for option_dict in options:
+                if "label" not in option_dict and "emoji" not in option_dict:
+                    option_dict["label"] = "Test"
+                option = discord.SelectOption(**option_dict)
+                self.options.append(option)
+                self.options_dict.append(option_dict)
+            self.dropdown: discord.ui.Select = Select(
+                placeholder=placeholder,
+                min_values=min_values,
+                max_values=max_values,
+                options=self.options,
+                disabled=disabled,
+                custom_id=custom_id,
+            )
+        elif _type is discord.ComponentType.channel_select:
+            if options == [{}]:
+                options = None
+            self.dropdown: discord.ui.Select = ChannelSelect(
+                placeholder=placeholder,
+                min_values=min_values,
+                max_values=max_values,
+                channel_types=options,
+                disabled=disabled,
+                custom_id=custom_id,
+            )
+        elif _type is discord.ComponentType.mentionable_select:
+            self.dropdown: discord.ui.Select = MentionableSelect(
+                placeholder=placeholder,
+                min_values=min_values,
+                max_values=max_values,
+                disabled=disabled,
+                custom_id=custom_id,
+            )
+        elif _type is discord.ComponentType.role_select:
+            self.dropdown: discord.ui.Select = RoleSelect(
+                placeholder=placeholder,
+                min_values=min_values,
+                max_values=max_values,
+                disabled=disabled,
+                custom_id=custom_id,
+            )
+        elif _type is discord.ComponentType.user_select:
+            self.dropdown: discord.ui.Select = UserSelect(
+                placeholder=placeholder,
+                min_values=min_values,
+                max_values=max_values,
+                disabled=disabled,
+                custom_id=custom_id,
+            )
+        else:
+            self.dropdown: discord.ui.Select = _type(
+                placeholder=placeholder,
+                min_values=min_values,
+                max_values=max_values,
+                disabled=disabled,
+                custom_id=custom_id,
+            )
+            setattr(self.dropdown, "callback", partial(_Select.callback, self.dropdown))
         self.done = asyncio.Event()
         self.add_item(self.dropdown)
 
@@ -267,38 +322,121 @@ class Dropdown(discord.ui.View):
             self.stop()
 
 
-class Select(discord.ui.Select):
+class _Select():
+
+    async def callback(self, interaction: discord.Interaction):
+        if hasattr(self.view, "callback"):
+            await self.view.callback(interaction)
+        else:
+            super().callback(interaction)
+
+class Select(_Select, discord.ui.Select):
+
     def __init__(
         self,
-        placeholder: typing.Optional[str] = "Choose a option.",
+        placeholder: typing.Optional[str] = "Choose an option.",
         min_values: typing.Optional[int] = 1,
         max_values: typing.Optional[int] = 1,
         *,
         options: typing.Optional[typing.List] = [],
         disabled: typing.Optional[bool] = False,
         custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
+        row: typing.Optional[int] = None,
     ):
-        self._options = []
-        self.options_dict = []
-        for option_dict in options:
-            if "label" not in option_dict and "emoji" not in option_dict:
-                option_dict["label"] = "Test"
-            option = discord.SelectOption(**option_dict)
-            self._options.append(option)
-            self.options_dict.append(option_dict)
         super().__init__(
             custom_id=custom_id,
             placeholder=placeholder,
             min_values=min_values,
             max_values=max_values,
-            options=self._options,
+            options=options,
             disabled=disabled,
+            row=row,
+        )
+class ChannelSelect(_Select, discord.ui.ChannelSelect):
+
+    def __init__(
+        self,
+        placeholder: typing.Optional[str] = "Choose a channel.",
+        min_values: typing.Optional[int] = 1,
+        max_values: typing.Optional[int] = 1,
+        *,
+        channel_types: typing.Optional[discord.ChannelType] = [],
+        disabled: typing.Optional[bool] = False,
+        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
+        row: typing.Optional[int] = None,
+    ):
+        super().__init__(
+            custom_id=custom_id,
+            placeholder=placeholder,
+            min_values=min_values,
+            max_values=max_values,
+            channel_types=channel_types,
+            disabled=disabled,
+            row=row,
         )
 
-    async def callback(self, interaction: discord.Interaction):
-        if hasattr(self.view, "callback"):
-            await self.view.callback(interaction)
+class MentionableSelect(_Select, discord.ui.MentionableSelect):
 
+    def __init__(
+        self,
+        placeholder: typing.Optional[str] = "Choose an option.",
+        min_values: typing.Optional[int] = 1,
+        max_values: typing.Optional[int] = 1,
+        *,
+        disabled: typing.Optional[bool] = False,
+        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
+        row: typing.Optional[int] = None,
+    ):
+        super().__init__(
+            custom_id=custom_id,
+            placeholder=placeholder,
+            min_values=min_values,
+            max_values=max_values,
+            disabled=disabled,
+            row=row,
+        )
+
+class RoleSelect(_Select, discord.ui.RoleSelect):
+
+    def __init__(
+        self,
+        placeholder: typing.Optional[str] = "Choose a role.",
+        min_values: typing.Optional[int] = 1,
+        max_values: typing.Optional[int] = 1,
+        *,
+        disabled: typing.Optional[bool] = False,
+        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
+        row: typing.Optional[int] = None,
+    ):
+        super().__init__(
+            custom_id=custom_id,
+            placeholder=placeholder,
+            min_values=min_values,
+            max_values=max_values,
+            disabled=disabled,
+            row=row,
+        )
+
+class UserSelect(_Select, discord.ui.UserSelect):
+
+    def __init__(
+        self,
+        placeholder: typing.Optional[str] = "Choose an user.",
+        min_values: typing.Optional[int] = 1,
+        max_values: typing.Optional[int] = 1,
+        *,
+        disabled: typing.Optional[bool] = False,
+        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
+        row: typing.Optional[int] = None,
+    ):
+        super().__init__(
+            custom_id=custom_id,
+            placeholder=placeholder,
+            min_values=min_values,
+            max_values=max_values,
+            disabled=disabled,
+            row=row,
+        )
 
 class Modal(discord.ui.Modal):
     """Create Modal easily."""

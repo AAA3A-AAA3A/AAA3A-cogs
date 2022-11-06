@@ -8,7 +8,7 @@ from .menus import Menu, Reactions
 from .shared_cog import SharedCog
 
 if CogsUtils().is_dpy2:
-    from .views import Buttons, Dropdown, Modal, Select
+    from .views import Buttons, Dropdown, Select, ChannelSelect, MentionableSelect, RoleSelect, UserSelect, Modal
 
 __author__ = "AAA3A"
 __all__ = [
@@ -25,5 +25,9 @@ __all__ = [
     "Buttons",
     "Dropdown",
     "Select",
+    "ChannelSelect",
+    "MentionableSelect",
+    "RoleSelect",
+    "UserSelect",
     "Modal",
 ]

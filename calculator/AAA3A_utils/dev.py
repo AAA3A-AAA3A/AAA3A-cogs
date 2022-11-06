@@ -35,7 +35,7 @@ from .menus import Menu, Reactions
 from .shared_cog import SharedCog
 
 if discord.version_info.major >= 2:
-    from .views import Buttons, Dropdown, Modal, Select
+    from .views import Buttons, Dropdown, Select, ChannelSelect, MentionableSelect, RoleSelect, UserSelect, Modal
 
 CogsUtils: typing.Any = None
 
@@ -146,6 +146,13 @@ class DevEnv(typing.Dict[str, typing.Any]):
         super().__init__(*args, **kwargs)
         self.imported: typing.List[str] = []
 
+    @staticmethod
+    def sanitize_output(ctx: commands.Context, input_: str) -> str:
+        """Hides the bot's token from a string."""
+        token = ctx.bot.http.token
+        input_ = CogsUtils().replace_var_paths(input_)
+        return re.sub(re.escape(token), "[EXPUNGED]", input_, re.I)
+
     @classmethod
     def get_env(cls, bot: Red, ctx: typing.Optional[commands.Context] = None):
         log = CogsUtils().init_logger(name="Test")
@@ -235,6 +242,10 @@ class DevEnv(typing.Dict[str, typing.Any]):
                     "Buttons": lambda ctx: Buttons,
                     "Dropdown": lambda ctx: Dropdown,
                     "Select": lambda ctx: Select,
+                    "ChannelSelect": lambda ctx: ChannelSelect,
+                    "MentionableSelect": lambda ctx: MentionableSelect,
+                    "RoleSelect": lambda ctx: RoleSelect,
+                    "UserSelect": lambda ctx: UserSelect,
                     "Modal": lambda ctx: Modal,
                 }
             )
@@ -325,9 +336,9 @@ class DevEnv(typing.Dict[str, typing.Any]):
         return env
 
     def get_formatted_env(
-        self, ctx: typing.Optional[commands.Context] = None, value: typing.Optional[bool] = True
+        self, ctx: typing.Optional[commands.Context] = None, show_values: typing.Optional[bool] = True
     ) -> str:
-        if value:
+        if show_values:
             raw_table = Table(
                 "Key",
                 "Value",
@@ -340,12 +351,12 @@ class DevEnv(typing.Dict[str, typing.Any]):
         for name, value in self.items():
             if name in self.imported:
                 continue
-            if value:
+            if show_values:
                 raw_table.add_row(str(name), str(value))
             else:
                 raw_table.add_row(str(name))
         raw_table_str = no_colour_rich_markup(raw_table, lang="py")
-        raw_table_str = self.sanitize_output(ctx, raw_table_str)
+        raw_table_str = self.sanitize_output(self.get("ctx", ctx), raw_table_str)
         pages = []
         for page in pagify(raw_table_str, page_length=2000 - 10):
             page = "\n".join(page.split("\n")[1:-1])
@@ -353,6 +364,14 @@ class DevEnv(typing.Dict[str, typing.Any]):
         if ctx is not None:
             asyncio.create_task(Menu(pages=pages).start(ctx))
         return pages
+
+    def get_formatted_imports(self) -> str:
+        if not (imported := self.imported):
+            return ""
+        imported.sort()
+        message = "".join(f">>> import {import_}\n" for import_ in imported)
+        imported.clear()
+        return message
 
     @classmethod
     def add_dev_env_values(cls, bot: Red, cog: commands.Cog, force: typing.Optional[bool] = False):
@@ -466,13 +485,6 @@ class DevEnv(typing.Dict[str, typing.Any]):
                     pass
             return _env
 
-    @staticmethod
-    def sanitize_output(ctx: commands.Context, input_: str) -> str:
-        """Hides the bot's token from a string."""
-        token = ctx.bot.http.token
-        input_ = CogsUtils().replace_var_paths(input_)
-        return re.sub(re.escape(token), "[EXPUNGED]", input_, re.I)
-
     @commands.Cog.listener()
     async def on_cog_add(self, cog: commands.Cog):
         if cog.qualified_name == "Dev":
@@ -571,14 +583,6 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 except (AttributeError, KeyError):
                     pass
         raise KeyError(key)
-
-    def get_formatted_imports(self) -> str:
-        if not (imported := self.imported):
-            return ""
-        imported.sort()
-        message = "\n".join(f">>> import {import_}" for import_ in imported)
-        imported.clear()
-        return message
 
 
 class CogsCommands:

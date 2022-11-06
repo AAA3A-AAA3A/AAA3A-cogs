@@ -19,6 +19,7 @@ __all__ = ["Context"]
 
 class Context(commands.Context):
     def __init__(self, *args, **kwargs):
+        self.original_context: commands.Context = kwargs.pop("original_context", None)
         super().__init__(*args, **kwargs)
 
     @classmethod
@@ -29,34 +30,15 @@ class Context(commands.Context):
         context = await ctx.bot.get_context(
             ctx.message if getattr(ctx, "interaction", None) is None else ctx.interaction, cls=cls
         )
-        attrs = [
-            "args",
-            "assume_yes",
-            "author",
-            "channel",
-            "clean_prefix",
-            "command",
-            "current_argument",
-            "current_parameter",
-            "guild",
-            "interaction",
-            "invoked_parents",
-            "invoked_subcommand",
-            "invoked_with",
-            "kwargs",
-            "prefix",
-            "prefix",
-            "view",
-        ]
-        for attr in attrs:
-            if not hasattr(ctx, attr) or not hasattr(context, attr):
-                continue
-            if getattr(ctx, attr) is None or getattr(context, attr) is None:
-                continue
-            if getattr(ctx, attr, None) == getattr(context, attr, None):
-                continue
-            setattr(context, attr, getattr(ctx, attr, None))
+        context.original_context = ctx
+        delattr(ctx, "original_context")
+        context.__dict__.update(**ctx.__dict__)
         return context
+
+    def __setattr__(self, __name, __value):
+        super().__setattr__(__name, __value)
+        if getattr(self, "original_context", None) is not None:
+            self.original_context.__setattr__(__name, __value)
 
     async def tick(
         self,
@@ -80,6 +62,46 @@ class Context(commands.Context):
         if getattr(self, "interaction", None) is None and can_user_react_in(self.me, self.channel):
             message = None
         return await self.react_quietly(reaction, message=message)
+
+    async def send(self, content=None, **kwargs):
+        """Sends a message to the destination with the content given.
+
+        This acts the same as `discord.ext.commands.Context.send`, with
+        one added keyword argument as detailed below in *Other Parameters*.
+
+        Parameters
+        ----------
+        content : str
+            The content of the message to send.
+
+        Other Parameters
+        ----------------
+        filter : callable (`str`) -> `str`, optional
+            A function which is used to filter the ``content`` before
+            it is sent.
+            This must take a single `str` as an argument, and return
+            the processed `str`. When `None` is passed, ``content`` won't be touched.
+            Defaults to `None`.
+        **kwargs
+            See `discord.ext.commands.Context.send`.
+
+        Returns
+        -------
+        discord.Message
+            The message that was sent.
+
+        """
+        def _filter(content: str):
+            __filter = kwargs.pop("filter", None)
+            if __filter:
+                content = __filter(content)
+            try:
+                content = self.cog.cogsutils.replace_var_paths(content)
+            except AttributeError:
+                pass
+            return content
+        kwargs["filter"] = _filter
+        await super().send(content=content, **kwargs)
 
     async def send_interactive(self, messages: typing.Iterable[str], box_lang: str = None, timeout: int = 15) -> typing.List[discord.Message]:
         """Send multiple messages interactively.

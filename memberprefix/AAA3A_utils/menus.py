@@ -197,9 +197,11 @@ class Menu:
             and self.way == "dropdown"
         ):
             self.way = "reactions"
+        if not pages:
+            pages = ["Nothing to show."]
         if isinstance(self.pages, str):
             self.pages = list(pagify(self.pages, page_length=2000 - 10))
-        if box_language_py:
+        if box_language_py and all([isinstance(page, str) for page in self.pages]):
             self.pages = [box(page, "py") for page in self.pages]
         if not isinstance(self.pages[0], (typing.Dict, discord.Embed, str)):
             raise RuntimeError("Pages must be of type typing.Dict, discord.Embed or str.")
@@ -212,12 +214,11 @@ class Menu:
         if (
             not self.source.is_paginating()
             or len(self.pages) > 3
-            or not all([isinstance(page, str) for page in self.pages])
         ):
             for emoji, name in controls.items():
                 if name in ["send_all"]:
                     del self.controls[emoji]
-        if not self.source.is_paginating():
+        if not self.source.is_paginating() or len(self.pages) <= 3:
             for emoji, name in controls.items():
                 if name in ["send_interactive"]:
                     del self.controls[emoji]
@@ -346,12 +347,9 @@ class Menu:
                 elif response == "right_page":
                     self.current_page = self.source.get_max_pages() - 1
                 elif response == "send_all":
-                    if len(self.pages) <= 3:
-                        for x in range(0, len(self.pages)):
-                            current, kwargs = await self.get_page(x)
-                            await ctx.send(**kwargs)
-                    else:
-                        await ctx.send_interactive(self.pages)
+                    for x in range(0, len(self.pages)):
+                        current, kwargs = await self.get_page(x)
+                        await ctx.send(**kwargs)
                     if self.way in ["buttons", "dropdown"]:
                         try:
                             await interaction.response.defer()

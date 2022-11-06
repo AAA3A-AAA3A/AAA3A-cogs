@@ -11,6 +11,7 @@ from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
 from redbot.vendored.discord.ext import menus
 
+from .cogsutils import CogsUtils
 if discord.version_info.major >= 2:
     from .views import Buttons, Dropdown, Modal
 
@@ -340,7 +341,7 @@ class Menu:
                 elif response == "close_page":
                     if self.way == "buttons" or self.way == "dropdown":
                         self.view.stop()
-                    await self.message.delete()
+                    await CogsUtils().delete_message(self.message)
                     break
                 elif response == "next_page":
                     self.current_page += 1
@@ -532,7 +533,7 @@ class Menu:
     async def on_timeout(self):
         self.is_done.set()
         if self.delete_after_timeout:
-            await self.message.delete()
+            await CogsUtils().delete_message(self.message)
         else:
             if self.way == "buttons":
                 view = Buttons(timeout=self.timeout, buttons=[], members=[], infinity=True)

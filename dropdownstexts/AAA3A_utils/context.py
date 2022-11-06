@@ -101,7 +101,7 @@ class Context(commands.Context):
                 pass
             return content
         kwargs["filter"] = _filter
-        await super().send(content=content, **kwargs)
+        return await super().send(content=content, **kwargs)
 
     async def send_interactive(self, messages: typing.Iterable[str], box_lang: str = None, timeout: int = 15) -> typing.List[discord.Message]:
         """Send multiple messages interactively.

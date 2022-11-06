@@ -2,6 +2,7 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import asyncio
+import inspect
 import string
 from functools import partial
 from random import choice
@@ -208,7 +209,7 @@ class Dropdown(discord.ui.View):
         self.clear_items()
         self.options = []
         self.options_dict = []
-        if _type is discord.ComponentType.select:
+        if _type is discord.ComponentType.select or _type is Select:
             for option_dict in options:
                 if "label" not in option_dict and "emoji" not in option_dict:
                     option_dict["label"] = "Test"
@@ -223,7 +224,7 @@ class Dropdown(discord.ui.View):
                 disabled=disabled,
                 custom_id=custom_id,
             )
-        elif _type is discord.ComponentType.channel_select:
+        elif _type is discord.ComponentType.channel_select or _type is ChannelSelect:
             if options == [{}]:
                 options = None
             self.dropdown: discord.ui.Select = ChannelSelect(
@@ -234,7 +235,7 @@ class Dropdown(discord.ui.View):
                 disabled=disabled,
                 custom_id=custom_id,
             )
-        elif _type is discord.ComponentType.mentionable_select:
+        elif _type is discord.ComponentType.mentionable_select or type is MentionableSelect:
             self.dropdown: discord.ui.Select = MentionableSelect(
                 placeholder=placeholder,
                 min_values=min_values,
@@ -242,7 +243,7 @@ class Dropdown(discord.ui.View):
                 disabled=disabled,
                 custom_id=custom_id,
             )
-        elif _type is discord.ComponentType.role_select:
+        elif _type is discord.ComponentType.role_select or type is RoleSelect:
             self.dropdown: discord.ui.Select = RoleSelect(
                 placeholder=placeholder,
                 min_values=min_values,
@@ -250,7 +251,7 @@ class Dropdown(discord.ui.View):
                 disabled=disabled,
                 custom_id=custom_id,
             )
-        elif _type is discord.ComponentType.user_select:
+        elif _type is discord.ComponentType.user_select or _type is UserSelect:
             self.dropdown: discord.ui.Select = UserSelect(
                 placeholder=placeholder,
                 min_values=min_values,
@@ -259,13 +260,16 @@ class Dropdown(discord.ui.View):
                 custom_id=custom_id,
             )
         else:
-            self.dropdown: discord.ui.Select = _type(
-                placeholder=placeholder,
-                min_values=min_values,
-                max_values=max_values,
-                disabled=disabled,
-                custom_id=custom_id,
-            )
+            if inspect.isclass(_type):
+                self.dropdown: discord.ui.Select = _type(
+                    placeholder=placeholder,
+                    min_values=min_values,
+                    max_values=max_values,
+                    disabled=disabled,
+                    custom_id=custom_id,
+                )
+            else:
+                self.dropdown = _type
             setattr(self.dropdown, "callback", partial(_Select.callback, self.dropdown))
         self.done = asyncio.Event()
         self.add_item(self.dropdown)

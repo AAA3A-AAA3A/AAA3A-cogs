@@ -925,6 +925,8 @@ class CogsUtils(commands.Cog):
         Delete a message, ignoring any exceptions.
         Easier than putting these 3 lines at each message deletion for each cog.
         """
+        if message is None:
+            return None
         try:
             await message.delete()
         except discord.HTTPException:
@@ -1484,7 +1486,7 @@ class CogsUtils(commands.Cog):
             for key, value in all_config.items():
                 if key not in new_config:
                     new_config[key] = value
-        await message.delete()
+        await self.delete_message(message)
         if not bypass_confirm:
             embed: discord.Embed = discord.Embed()
             embed.title = _(

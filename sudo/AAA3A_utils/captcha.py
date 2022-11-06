@@ -2,11 +2,11 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import asyncio
-from io import StringIO
 
-from redbot.core.utils.chat_formatting import bold, box, error, warning
+from redbot.core.utils.chat_formatting import bold, error, warning
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
-from rich.console import Console
+
+from .cogsutils import CogsUtils
 
 __all__ = ["Captcha"]
 
@@ -74,11 +74,7 @@ class Captcha:
                     is_ok = False
                 else:
                     is_ok = True
-            if self.message is not None:
-                try:
-                    await self.message.delete()
-                except discord.HTTPException:
-                    pass
+            await CogsUtils().delete_message(self.message)
             failed = self.trynum > self.limit
         except self.MissingPermissions as e:
             raise self.MissingPermissions(e)
@@ -179,11 +175,7 @@ class Captcha:
         """
         Send a message with new code.
         """
-        if self.message is not None:
-            try:
-                await self.message.delete()
-            except discord.HTTPException:
-                pass
+        await CogsUtils().delete_message(self.message)
         embed = self.get_embed()
         try:
             self.message = await self.channel.send(

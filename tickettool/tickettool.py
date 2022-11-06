@@ -52,6 +52,7 @@ class TicketTool(settings, commands.Cog):
         )
         self.ticket_guild = {
             "settings": {
+        self.tickettool_global = {
                 "enable": False,
                 "logschannel": None,
                 "category_open": None,

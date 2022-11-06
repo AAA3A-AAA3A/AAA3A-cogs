@@ -119,6 +119,12 @@ CUSTOM_COMMANDS = {
             "Medicat USB contains tools to backup/restore data, to manage disks/partitions, to reset/bypass/find a Windows password, to use software with admin rights from a winPE, to do virus scans. In addition, it uses Ventoy, which allows you to add your own bootable tools with a simple copy and paste."
         ).format(**locals()),
     },
+    "wimvhd": {
+        "title": _("Why doesn't Ventoy display Wim and VHD files?").format(**locals()),
+        "description": _(
+            "You must download an additional plugin/file and place it in the `USB\\ventoy\\` folder (create it if necessary).\n**WimBoot Plugin (https://ventoy.net/en/plugin_wimboot.html):**\n- Download `ventoy_wimboot.img` file from <https://github.com/ventoy/wimiso/releases>.\n- Put the file under `ventoy` directory in the `ventoy partition` of the USB stick, that is `/ventoy/ventoy_wimboot.img` and that's all.\n\n**VhdBoot Plugin (<https://ventoy.net/en/plugin_vhdboot.html>):**\n- Download `ventoy_vhdboot.img` file from <https://github.com/ventoy/vhdiso/releases>.\n- Put the file under `ventoy` directory in the `ventoy` partition of the USB stick, that is `/ventoy/ventoy_vhdboot.img` and that's all."
+        ).format(**locals()),
+    },
     "xy": {
         "title": _("X & Y").format(**locals()),
         "description": _(

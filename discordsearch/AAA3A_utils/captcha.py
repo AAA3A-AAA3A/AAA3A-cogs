@@ -6,8 +6,6 @@ import asyncio
 from redbot.core.utils.chat_formatting import bold, error, warning
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
 
-from .cogsutils import CogsUtils
-
 __all__ = ["Captcha"]
 
 
@@ -74,7 +72,11 @@ class Captcha:
                     is_ok = False
                 else:
                     is_ok = True
-            await CogsUtils().delete_message(self.message)
+            if self.message is not None:
+                try:
+                    await self.message.delete()
+                except discord.HTTPException:
+                    pass
             failed = self.trynum > self.limit
         except self.MissingPermissions as e:
             raise self.MissingPermissions(e)
@@ -175,7 +177,11 @@ class Captcha:
         """
         Send a message with new code.
         """
-        await CogsUtils().delete_message(self.message)
+        if self.message is not None:
+            try:
+                await self.message.delete()
+            except discord.HTTPException:
+                pass
         embed = self.get_embed()
         try:
             self.message = await self.channel.send(

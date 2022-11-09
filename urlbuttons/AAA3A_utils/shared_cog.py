@@ -29,6 +29,8 @@ from redbot.core.utils.chat_formatting import (
 from rich.console import Console
 from rich.table import Table
 
+from .menus import Menu
+
 __all__ = ["SharedCog"]
 
 
@@ -353,6 +355,69 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         await self.cogsutils.remove_hybrid_commands(cog=cog)
         await ctx.tick(message="Done")
 
+    @commands.is_owner()
+    @AAA3A_utils.command()
+    async def resetconfig(self, ctx: commands.Context, cog: str, confirmation: typing.Optional[bool]=False):
+        cog = ctx.bot.get_cog(cog)
+        if cog is None:
+            await ctx.send(_("This cog is not installed or loaded.").format(**locals()))
+            return
+        if cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
+            await ctx.send(_("This cog is not a cog from AAA3A-cogs.").format(**locals()))
+            return
+        if not hasattr(cog, "config") or not isinstance(getattr(cog, "config"), Config):
+            await ctx.send(_("This cog does not use the Config.").format(**locals()))
+            return
+        if not confirmation:
+            embed: discord.Embed = discord.Embed()
+            embed.title = _(":warning: - Reset Config").format(**locals())
+            embed.description = _(
+                "Do you really want to remove ALL data saved with this cog?"
+            ).format(**locals())
+            embed.color = 0xF00020
+            if not await self.cogsutils.ConfirmationAsk(ctx, embed=embed):
+                await self.cogsutils.delete_message(ctx.message)
+                return
+        await getattr(cog, "config").clear_all()
+        await ctx.tick(message="Done.")
+
+    @commands.is_owner()
+    @AAA3A_utils.command()
+    async def getlogs(self, ctx: commands.Context, cog: str, level: typing.Optional[str]="all"):
+        cog = ctx.bot.get_cog(cog)
+        if cog is None:
+            await ctx.send(_("This cog is not installed or loaded.").format(**locals()))
+            return
+        if cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
+            await ctx.send(_("This cog is not a cog from AAA3A-cogs.").format(**locals()))
+            return
+        if not hasattr(cog, "logs") or not isinstance(getattr(cog, "logs"), typing.Dict):
+            await ctx.send(_("This cog does not have any log saved.").format(**locals()))
+            return
+        if not level == "all":
+            if cog.logs.get(level, None) is None or cog.logs.get(level, None) == []:
+                await ctx.send(_("This cog does not have any log saved for this level.").format(**locals()))
+                return
+        if level == "all":
+            data = []
+            for _level in cog.logs:
+                for log in cog.logs[_level]:
+                    data.append(log)
+        else:
+            data = list(cog.logs.get(level))
+        result = []
+        for log in data:
+            name = cog.log.name
+            time = log["time"]
+            asctime = time.strftime("%Y-%m-%d %H:%M:%S")
+            levelname = log["levelname"]
+            message = log["message"]
+            args = log["args"]
+            exc_info = log["exc_info"]
+            result.append(box(f"[{asctime}] {levelname} [{name}] {message}"[:2000 - 10], lang="py"))
+        await Menu(pages=result).start(ctx)
+        await ctx.tick(message="Done.")
+
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
         """
@@ -444,7 +509,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             if self.cogsutils.ConfirmationAsk(
                 ctx,
                 _(
-                    "The cog downloader is not loaded. I can't continue. Do you want me to do it?"
+                    "The Downloader cog cog is not loaded. I can't continue. Do you want me to do it?"
                 ).format(**locals()),
             ):
                 await ctx.invoke(ctx.bot.get_command("load"), "downloader")

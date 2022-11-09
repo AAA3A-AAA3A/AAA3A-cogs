@@ -12,6 +12,7 @@ import os
 import re
 import string
 from copy import copy
+from functools import partial
 from pathlib import Path
 from random import choice
 
@@ -294,17 +295,44 @@ class CogsUtils(commands.Cog):
         Prepare the logger for the cog.
         Thanks to @laggron42 on GitHub! (https://github.com/laggron42/Laggron-utils/blob/master/laggron_utils/logging.py)
         """
-        if name is None:
+        if name is None and self.cog is not None:
             self.cog.log = logging.getLogger(f"red.{self.repo_name}.{self.cog.qualified_name}")
-            formatter = logging.Formatter(
-                "[{asctime}] {levelname} [{name}] {message}",
-                datefmt="%Y-%m-%d %H:%M:%S",
-                style="{",
-            )
+
+            __log = partial(logging.Logger._log, self.cog.log)
+            def _log(level, msg, args, exc_info=None, extra=None, stack_info=False, stacklevel=1):
+                if self.cog is not None:
+                    if not hasattr(self.cog, "logs") or not isinstance(self.cog.logs, typing.Dict):
+                        self.cog.logs: typing.Dict[typing.Union[str, int], typing.Dict] = {}
+                    from logging import CRITICAL, DEBUG, ERROR, FATAL, INFO, WARN, WARNING
+                    VERBOSE = DEBUG - 3
+                    TRACE = DEBUG - 5
+                    levels = {
+                        CRITICAL: "CRITICAL",
+                        DEBUG: "DEBUG",
+                        ERROR: "ERROR",
+                        FATAL: "FATAL",
+                        INFO: "INFO",
+                        WARN: "WARN",
+                        WARNING: "WARNING",
+                        VERBOSE: "VERBOSE",
+                        TRACE: "TRACE"
+                    }
+                    _level = levels.get(level, str(level))
+                    if _level not in self.cog.logs:
+                        self.cog.logs[_level] = []
+                    self.cog.logs[_level].append({"time": datetime.datetime.now(), "level": level, "message": msg, "args": args, "exc_info": exc_info, "levelname": _level})
+                __log(level=level, msg=msg, args=args, exc_info=exc_info, extra=extra, stack_info=stack_info, stacklevel=stacklevel)
+            setattr(self.cog.log, "_log", _log)
+
             # logging to a log file
             # file is automatically created by the module, if the parent foler exists
-            cog_path = cog_data_path(cog_instance=self.cog, raw_name=self.cog.qualified_name)
             try:
+                cog_path = cog_data_path(cog_instance=self.cog, raw_name=self.cog.qualified_name)
+                formatter = logging.Formatter(
+                    "[{asctime}] {levelname} [{name}] {message}",
+                    datefmt="%Y-%m-%d %H:%M:%S",
+                    style="{",
+                )
                 if cog_path.exists():
                     file_handler = RotatingFileHandler(
                         stem=self.cog.qualified_name,
@@ -344,7 +372,7 @@ class CogsUtils(commands.Cog):
 
         downloader = self.bot.get_cog("Downloader")
         if downloader is None:
-            raise self.DownloaderNotLoaded("The cog downloader is not loaded.")
+            raise self.DownloaderNotLoaded("The Downloader cog is not loaded.")
 
         if await self.bot._cog_mgr.find_cog(cog_name) is None:
             raise ValueError("This cog was not found in any cog path.")
@@ -1520,7 +1548,7 @@ class CogsUtils(commands.Cog):
             )
         else:
             raise self.DownloaderNotLoaded(
-                _("The cog downloader is not loaded.").format(**locals())
+                _("The Downloader cog is not loaded.").format(**locals())
             )
 
     class DownloaderNotLoaded(Exception):

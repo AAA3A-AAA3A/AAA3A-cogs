@@ -440,12 +440,12 @@ class DevEnv(typing.Dict[str, typing.Any]):
             except ImportError:
                 pass
         funcs = [
-            func
-            for func in bot.extra_events["on_cog_add"]
+            i
+            for i, func in enumerate(bot.extra_events.get("on_cog_add", []))
             if func.__class__.__name__ == "DevEnv"
         ]
         for func in funcs:
-            del bot.extra_events["on_cog_add"][func]
+            del bot.extra_events.get("on_cog_add", [])[func]
         bot.add_listener(cls().on_cog_add)
         return _env
 

@@ -83,7 +83,7 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @editvoicechannel.command()
     async def clone(self, ctx: commands.Context, channel: discord.VoiceChannel, *, name: str):
@@ -102,7 +102,7 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @editvoicechannel.command()
     async def name(self, ctx: commands.Context, channel: discord.VoiceChannel, name: str):
@@ -121,7 +121,7 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @editvoicechannel.command()
     async def bitrate(self, ctx: commands.Context, channel: discord.VoiceChannel, bitrate: int):
@@ -149,7 +149,7 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @editvoicechannel.command()
     async def nsfw(self, ctx: commands.Context, channel: discord.VoiceChannel, nsfw: bool):
@@ -168,7 +168,7 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @editvoicechannel.command()
     async def userlimit(
@@ -195,7 +195,7 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @editvoicechannel.command()
     async def position(
@@ -231,7 +231,7 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @editvoicechannel.command()
     async def syncpermissions(
@@ -252,7 +252,7 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @editvoicechannel.command()
     async def category(
@@ -276,7 +276,7 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @editvoicechannel.command()
     async def videoqualitymode(
@@ -305,7 +305,7 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @editvoicechannel.command()
     async def delete(
@@ -340,4 +340,4 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()

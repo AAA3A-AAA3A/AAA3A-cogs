@@ -359,7 +359,7 @@ class RolesButtons(commands.Cog):
         else:
             await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).roles_buttons.set(config)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @rolesbuttons.command()
     async def bulk(
@@ -439,7 +439,7 @@ class RolesButtons(commands.Cog):
         else:
             await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).roles_buttons.set(config)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @rolesbuttons.command()
     async def remove(self, ctx: commands.Context, message: discord.Message, button: Emoji):
@@ -483,7 +483,7 @@ class RolesButtons(commands.Cog):
             else:
                 await message.edit(components=None)
         await self.config.guild(ctx.guild).roles_buttons.set(config)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @rolesbuttons.command()
     async def clear(self, ctx: commands.Context, message: discord.Message):
@@ -508,13 +508,13 @@ class RolesButtons(commands.Cog):
             pass
         del config[f"{message.channel.id}-{message.id}"]
         await self.config.guild(ctx.guild).roles_buttons.set(config)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @rolesbuttons.command(hidden=True)
     async def purge(self, ctx: commands.Context):
         """Clear all roles-buttons to a **guild**."""
         await self.config.guild(ctx.guild).roles_buttons.clear()
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     def get_buttons(self, config: typing.Dict, message: discord.Message):
         all_buttons = []

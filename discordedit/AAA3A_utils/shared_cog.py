@@ -135,7 +135,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             "already": [],
             "failed": [],
         }:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
         else:
             message = ""
             if not result["not_installed_or_loaded"] == []:
@@ -200,7 +200,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             "already": [],
             "failed": [],
         }:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
         else:
             message = ""
             if not result["not_installed_or_loaded"] == []:
@@ -260,7 +260,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             "not_root_commands": [],
             "already": [],
         }:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
         else:
             message = ""
             if not result["not_exist"] == []:
@@ -318,7 +318,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             "not_root_commands": [],
             "already": [],
         }:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
         else:
             message = ""
             if not result["not_exist"] == []:
@@ -400,7 +400,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 exc_info = "".join(traceback.format_exception(type(exc_info), exc_info, exc_info.__traceback__))
             result.append(box(self.cogsutils.replace_var_paths(f"[{asctime}] {levelname} [{name}] {message}\n{exc_info}")[:2000 - 10], lang="py"))
         await Menu(pages=result).start(ctx)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @commands.is_owner()
     @AAA3A_utils.command()
@@ -426,7 +426,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 await self.cogsutils.delete_message(ctx.message)
                 return
         await getattr(cog, "config").clear_all()
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):

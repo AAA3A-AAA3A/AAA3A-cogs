@@ -1322,7 +1322,7 @@ class Seen(commands.Cog):
         for type in types:
             config[type] = state
         await self.config.listeners.set(config)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @seen.command()
     async def ignoreme(self, ctx: commands.Context):
@@ -1335,7 +1335,7 @@ class Seen(commands.Cog):
         else:
             ignored_users.remove(user.id)
         await self.config.ignored_users.set(ignored_users)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
@@ -1373,4 +1373,4 @@ class Seen(commands.Cog):
                 await self.config.clear_all_channels()
             if type == "guild":
                 await self.config.clear_all_guilds()
-        await ctx.tick(message="Done.")
+        await ctx.tick()

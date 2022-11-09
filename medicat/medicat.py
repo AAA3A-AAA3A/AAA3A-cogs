@@ -948,4 +948,4 @@ class Medicat(commands.Cog):
             except discord.HTTPException:
                 return
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()

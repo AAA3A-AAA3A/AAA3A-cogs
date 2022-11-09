@@ -76,7 +76,7 @@ class EditRole(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @editrole.command()
     async def name(self, ctx: commands.Context, role: discord.Role, *, name: str):
@@ -95,7 +95,7 @@ class EditRole(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @editrole.command(aliases=["color"])
     async def colour(self, ctx: commands.Context, role: discord.Role, colour: discord.Colour):
@@ -114,7 +114,7 @@ class EditRole(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @editrole.command()
     async def mentionable(self, ctx: commands.Context, role: discord.Role, mentionable: bool):
@@ -133,7 +133,7 @@ class EditRole(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @editrole.command()
     async def position(self, ctx: commands.Context, role: discord.Role, position: int):
@@ -167,7 +167,7 @@ class EditRole(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @editrole.command()
     async def permissions(self, ctx: commands.Context, role: discord.Role, permissions: int):
@@ -200,7 +200,7 @@ class EditRole(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @editrole.command()
     async def delete(
@@ -235,4 +235,4 @@ class EditRole(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()

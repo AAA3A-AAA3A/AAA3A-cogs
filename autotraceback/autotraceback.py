@@ -93,7 +93,7 @@ class AutoTraceback(commands.Cog):
                         "Either you blocked me or you disabled DMs in this server."
                     )
                     return
-            await ctx.tick(message="Done.")
+            await ctx.tick()
         else:
             await ctx.send(_("No exception has occurred yet."))
 

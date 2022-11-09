@@ -130,7 +130,7 @@ class UrlButtons(commands.Cog):
         else:
             await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).url_buttons.set(config)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @urlbuttons.command()
     async def bulk(
@@ -190,7 +190,7 @@ class UrlButtons(commands.Cog):
         else:
             await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).url_buttons.set(config)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @urlbuttons.command()
     async def remove(self, ctx: commands.Context, message: discord.Message, button: Emoji):
@@ -229,7 +229,7 @@ class UrlButtons(commands.Cog):
             else:
                 await message.edit(components=None)
         await self.config.guild(ctx.guild).url_buttons.set(config)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @urlbuttons.command()
     async def clear(self, ctx: commands.Context, message: discord.Message):
@@ -254,13 +254,13 @@ class UrlButtons(commands.Cog):
             pass
         del config[f"{message.channel.id}-{message.id}"]
         await self.config.guild(ctx.guild).url_buttons.set(config)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @urlbuttons.command(hidden=True)
     async def purge(self, ctx: commands.Context):
         """Clear all url-buttons to a **guild**."""
         await self.config.guild(ctx.guild).url_buttons.clear()
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     def get_buttons(self, config: typing.Dict, message: discord.Message):
         all_buttons = []

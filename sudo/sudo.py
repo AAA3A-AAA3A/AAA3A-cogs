@@ -98,7 +98,7 @@ class Sudo(commands.Cog):
     async def _su(self, ctx: commands.Context):
         """Sudo as the owner of the bot."""
         ctx.bot.owner_ids.add(ctx.author.id)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @decorator(all_owner_ids=False, bot_owner_ids=True)
     @Sudo.command(name="unsu")
@@ -107,7 +107,7 @@ class Sudo(commands.Cog):
         ctx.bot.owner_ids.remove(ctx.author.id)
         if ctx.author.id not in self.all_owner_ids:
             self.all_owner_ids.add(ctx.author.id)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     @decorator(all_owner_ids=True, bot_owner_ids=False)
     @Sudo.command(name="sudo")
@@ -151,7 +151,7 @@ class Sudo(commands.Cog):
         await asyncio.sleep(sleep)
         if ctx.bot.get_cog("Sudo") is not None:
             ctx.bot.owner_ids.remove(ctx.author.id)
-        await ctx.tick(message="Done.")
+        await ctx.tick()
 
     # @decorator(all_owner_ids=True, bot_owner_ids=False)
     # @commands.command()

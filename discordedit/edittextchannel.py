@@ -93,7 +93,7 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @edittextchannel.command()
     async def clone(
@@ -116,7 +116,7 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @edittextchannel.command()
     async def name(
@@ -139,7 +139,7 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @edittextchannel.command()
     async def topic(
@@ -162,7 +162,7 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @edittextchannel.command()
     async def position(
@@ -204,7 +204,7 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @edittextchannel.command()
     async def nsfw(
@@ -227,7 +227,7 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @edittextchannel.command()
     async def syncpermissions(
@@ -253,7 +253,7 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @edittextchannel.command()
     async def category(
@@ -279,7 +279,7 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @edittextchannel.command()
     async def slowmodedelay(
@@ -312,7 +312,7 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @edittextchannel.command()
     async def type(
@@ -344,7 +344,7 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @edittextchannel.command()
     async def defaultautoarchiveduration(
@@ -373,7 +373,7 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()
 
     @edittextchannel.command()
     async def delete(
@@ -410,4 +410,4 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
         else:
-            await ctx.tick(message="Done.")
+            await ctx.tick()

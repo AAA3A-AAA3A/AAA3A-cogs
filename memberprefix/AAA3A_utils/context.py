@@ -20,6 +20,7 @@ __all__ = ["Context"]
 class Context(commands.Context):
     def __init__(self, *args, **kwargs):
         self.original_context: commands.Context = kwargs.pop("original_context", None)
+        self.len_messages = 0
         super().__init__(*args, **kwargs)
 
     @classmethod
@@ -59,8 +60,10 @@ class Context(commands.Context):
             :code:`True` if adding the reaction succeeded.
 
         """
-        if getattr(self, "interaction", None) is None and can_user_react_in(self.me, self.channel):
-            message = None
+        if getattr(self, "interaction", None) is not None and self.len_messages == 0:
+            message = "Done."
+        if not can_user_react_in(self.me, self.channel) and self.len_messages == 0:
+            message = "Done."
         return await self.react_quietly(reaction, message=message)
 
     async def send(self, content=None, **kwargs):
@@ -101,6 +104,7 @@ class Context(commands.Context):
                 pass
             return content
         kwargs["filter"] = _filter
+        self.len_messages += 1
         return await super().send(content=content, **kwargs)
 
     async def send_interactive(self, messages: typing.Iterable[str], box_lang: str = None, timeout: int = 15) -> typing.List[discord.Message]:

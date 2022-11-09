@@ -419,8 +419,9 @@ class Medicat(commands.Cog):
                 ventoy_tag_name.replace("v", "").replace("1.0.0", "1.0.").replace("beta", ".dev")
             )
             ventoy_version = VersionInfo.from_str(ventoy_version_str)
-            if last_ventoy_version >= ventoy_version:
-                continue
+            if not force:
+                if last_ventoy_version >= ventoy_version:
+                    continue
 
             try:
                 async with aiohttp.ClientSession() as session:
@@ -526,6 +527,7 @@ class Medicat(commands.Cog):
                     await message.publish()
                 except discord.HTTPException:
                     pass
+        return versions
 
     async def bootables_tools_updates(
         self,
@@ -757,6 +759,7 @@ class Medicat(commands.Cog):
         except Exception:
             await ctx.send(_("An error has occurred. Please try again.").format(**locals()))
             return
+        await ctx.tick()
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @medicat.command()
@@ -768,6 +771,7 @@ class Medicat(commands.Cog):
         except Exception:
             await ctx.send(_("An error has occurred. Please try again.").format(**locals()))
             return
+        await ctx.tick()
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @medicat.command()
@@ -847,6 +851,7 @@ class Medicat(commands.Cog):
                 await ctx.send(embed=embed, view=view)
             else:
                 await ctx.send(embed=embed)
+        await ctx.tick()
 
     @is_owner_or_AAA3A()
     @medicat.command(hidden=True)
@@ -904,6 +909,7 @@ class Medicat(commands.Cog):
                 for y, z in result[x].items():
                     message += f"\n{y}: {z}"
         await Menu(pages=message, box_language_py=True).start(ctx)
+        await ctx.tick()
 
     @is_owner_or_AAA3A()
     @medicat.command(hidden=True)

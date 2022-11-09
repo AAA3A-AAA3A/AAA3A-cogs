@@ -197,8 +197,8 @@ class Menu:
             and self.way == "dropdown"
         ):
             self.way = "reactions"
-        if not pages:
-            pages = ["Nothing to show."]
+        if not self.pages:
+            self.pages = ["Nothing to show."]
         if isinstance(self.pages, str):
             self.pages = list(pagify(self.pages, page_length=2000 - 10))
         if box_language_py and all([isinstance(page, str) for page in self.pages]):

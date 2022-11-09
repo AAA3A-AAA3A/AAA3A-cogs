@@ -394,6 +394,12 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         if not hasattr(cog, "logs") or not isinstance(getattr(cog, "logs"), typing.Dict):
             await ctx.send(_("This cog does not have any log saved.").format(**locals()))
             return
+        if level == "stats":
+            message = "---------- Logs Stats ----------"
+            for _level, logs in cog.logs.items():
+                message += f"\n{_level}: {len(logs)}"
+            await ctx.send(box(message, lang="py"))
+            return
         if not level == "all":
             if cog.logs.get(level, None) is None or cog.logs.get(level, None) == []:
                 await ctx.send(_("This cog does not have any log saved for this level.").format(**locals()))

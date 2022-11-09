@@ -656,8 +656,7 @@ class Medicat(commands.Cog):
                 return False
             if ctx.guild.id == MEDICAT_GUILD or ctx.guild.id == TEST_GUILD:
                 return True
-            else:
-                return False
+            return False
 
         return commands.check(pred)
 
@@ -665,8 +664,7 @@ class Medicat(commands.Cog):
         async def pred(ctx):
             if ctx.author.id in ctx.bot.owner_ids or ctx.author.id == 829612600059887649:
                 return True
-            else:
-                return False
+            return False
 
         return commands.check(pred)
 

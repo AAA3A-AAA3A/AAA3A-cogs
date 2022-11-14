@@ -251,7 +251,6 @@ class DropdownsTexts(commands.Cog):
         else:
             await message.edit(components=[self.get_dropdown(config, message)])
         await self.config.guild(ctx.guild).dropdowns_texts.set(config)
-        await ctx.tick()
 
     @dropdownstexts.command()
     async def bulk(
@@ -335,7 +334,6 @@ class DropdownsTexts(commands.Cog):
         else:
             await message.edit(components=[self.get_dropdown(config, message)])
         await self.config.guild(ctx.guild).dropdowns_texts.set(config)
-        await ctx.tick()
 
     @dropdownstexts.command()
     async def remove(
@@ -387,7 +385,6 @@ class DropdownsTexts(commands.Cog):
             else:
                 await message.edit(components=None)
         await self.config.guild(ctx.guild).dropdowns_texts.set(config)
-        await ctx.tick()
 
     @dropdownstexts.command()
     async def clear(self, ctx: commands.Context, message: discord.Message):
@@ -414,13 +411,11 @@ class DropdownsTexts(commands.Cog):
             pass
         del config[f"{message.channel.id}-{message.id}"]
         await self.config.guild(ctx.guild).dropdowns_texts.set(config)
-        await ctx.tick()
 
     @dropdownstexts.command(hidden=True)
     async def purge(self, ctx: commands.Context):
         """Clear all dropdowns-texts to a **guild**."""
         await self.config.guild(ctx.guild).dropdowns_texts.clear()
-        await ctx.tick()
 
     def get_dropdown(self, config: typing.Dict, message: typing.Union[discord.Message, str]):
         message = (

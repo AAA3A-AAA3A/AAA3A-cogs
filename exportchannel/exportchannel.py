@@ -118,7 +118,6 @@ class ExportChannel(commands.Cog):
             ).format(**locals()),
             file=file,
         )
-        await ctx.tick()
 
     @exportchannel.command()
     async def messages(
@@ -173,7 +172,6 @@ class ExportChannel(commands.Cog):
             ).format(**locals()),
             file=file,
         )
-        await ctx.tick()
 
     @exportchannel.command()
     async def before(
@@ -226,7 +224,6 @@ class ExportChannel(commands.Cog):
             ).format(**locals()),
             file=file,
         )
-        await ctx.tick()
 
     @exportchannel.command()
     async def after(
@@ -282,7 +279,6 @@ class ExportChannel(commands.Cog):
             ).format(**locals()),
             file=file,
         )
-        await ctx.tick()
 
     @exportchannel.command()
     async def between(
@@ -339,7 +335,6 @@ class ExportChannel(commands.Cog):
             ).format(**locals()),
             file=file,
         )
-        await ctx.tick()
 
     @exportchannel.command()
     async def user(
@@ -400,7 +395,6 @@ class ExportChannel(commands.Cog):
             ).format(**locals()),
             file=file,
         )
-        await ctx.tick()
 
     @exportchannel.command()
     async def bot(
@@ -457,4 +451,3 @@ class ExportChannel(commands.Cog):
             ).format(**locals()),
             file=file,
         )
-        await ctx.tick()

@@ -112,7 +112,18 @@ class Cog:
         for index, arg in enumerate(ctx.args.copy()):
             if isinstance(arg, commands.Context):
                 ctx.args[index] = context
+        context._typing = context.channel.typing()
+        await context._typing.__aenter__()
         return ctx
+
+    async def cog_after_invoke(self, ctx: commands.Context):
+        if self.cog is None:
+            return
+        context = await Context.from_context(ctx)
+        if hasattr(context, "_typing"):
+            if hasattr(context._typing, "task") and hasattr(context._typing.task, "cancel"):
+                context._typing.task.cancel()
+        await context.tick()
 
     async def cog_command_error(self, ctx: commands.Context, error: Exception):
         if self.cog is None:

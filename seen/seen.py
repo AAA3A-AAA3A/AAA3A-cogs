@@ -1031,7 +1031,6 @@ class Seen(commands.Cog):
         if show_details is None:
             show_details = True
         await self.send_seen(ctx, type=type, object=object, show_details=show_details)
-        await ctx.tick()
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
@@ -1052,7 +1051,6 @@ class Seen(commands.Cog):
         if show_details is None:
             show_details = True
         await self.send_seen(ctx, type=type, object=member, show_details=show_details)
-        await ctx.tick()
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
@@ -1073,7 +1071,6 @@ class Seen(commands.Cog):
         if show_details is None:
             show_details = True
         await self.send_seen(ctx, object=role, type=type, show_details=show_details)
-        await ctx.tick()
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
@@ -1098,7 +1095,6 @@ class Seen(commands.Cog):
             )
             return
         await self.send_seen(ctx, object=channel, type=type, show_details=show_details)
-        await ctx.tick()
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
@@ -1133,7 +1129,6 @@ class Seen(commands.Cog):
             )
             return
         await self.send_seen(ctx, object=category, type=type, show_details=show_details)
-        await ctx.tick()
 
     @commands.guild_only()
     @commands.is_owner()
@@ -1163,7 +1158,6 @@ class Seen(commands.Cog):
             all_data_config=all_data_config,
             all_data_cache=all_data_cache,
         )
-        await ctx.tick()
 
     @commands.bot_has_permissions(embed_links=True)
     @seen.command()
@@ -1183,7 +1177,6 @@ class Seen(commands.Cog):
         if show_details is None:
             show_details = True
         await self.send_seen(ctx, object=guild, type=type, show_details=show_details)
-        await ctx.tick()
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
@@ -1204,7 +1197,6 @@ class Seen(commands.Cog):
         if show_details is None:
             show_details = True
         await self.send_seen(ctx, object=user, type=type, show_details=show_details)
-        await ctx.tick()
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
@@ -1226,7 +1218,6 @@ class Seen(commands.Cog):
             await ctx.send(f'User "{user_id}" not found.')
             return
         await self.send_seen(ctx, object=user, type=type, show_details=show_details)
-        await ctx.tick()
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
@@ -1244,7 +1235,6 @@ class Seen(commands.Cog):
     ):
         """View a Seen Board for members/roles/channels/categories!"""
         await self.send_board(ctx, object=object, type=type, reverse=reverse)
-        await ctx.tick()
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
@@ -1260,7 +1250,6 @@ class Seen(commands.Cog):
         """View a Seen Board for guilds!"""
         object = "guilds"
         await self.send_board(ctx, object=object, type=type, reverse=reverse)
-        await ctx.tick()
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
@@ -1276,7 +1265,6 @@ class Seen(commands.Cog):
         """View a Seen Board for users!"""
         object = "users"
         await self.send_board(ctx, object=object, type=type, reverse=reverse)
-        await ctx.tick()
 
     @commands.is_owner()
     @seen.command()
@@ -1322,7 +1310,6 @@ class Seen(commands.Cog):
         for type in types:
             config[type] = state
         await self.config.listeners.set(config)
-        await ctx.tick()
 
     @seen.command()
     async def ignoreme(self, ctx: commands.Context):
@@ -1335,7 +1322,6 @@ class Seen(commands.Cog):
         else:
             ignored_users.remove(user.id)
         await self.config.ignored_users.set(ignored_users)
-        await ctx.tick()
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
@@ -1346,7 +1332,6 @@ class Seen(commands.Cog):
         for loop in self.cogsutils.loops.values():
             embeds.append(loop.get_debug_embed())
         await Menu(pages=embeds).start(ctx)
-        await ctx.tick()
 
     @commands.is_owner()
     @seen.command(hidden=True)
@@ -1373,4 +1358,3 @@ class Seen(commands.Cog):
                 await self.config.clear_all_channels()
             if type == "guild":
                 await self.config.clear_all_guilds()
-        await ctx.tick()

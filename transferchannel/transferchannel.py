@@ -220,7 +220,6 @@ class TransferChannel(commands.Cog):
                 "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
             ).format(**locals())
         )
-        await ctx.tick()
 
     @transferchannel.command()
     async def messages(
@@ -285,7 +284,6 @@ class TransferChannel(commands.Cog):
                 "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
             ).format(**locals())
         )
-        await ctx.tick()
 
     @transferchannel.command()
     async def before(
@@ -348,7 +346,6 @@ class TransferChannel(commands.Cog):
                 "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
             ).format(**locals())
         )
-        await ctx.tick()
 
     @transferchannel.command()
     async def after(
@@ -411,7 +408,6 @@ class TransferChannel(commands.Cog):
                 "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
             ).format(**locals())
         )
-        await ctx.tick()
 
     @transferchannel.command()
     async def between(
@@ -475,7 +471,6 @@ class TransferChannel(commands.Cog):
                 "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
             ).format(**locals())
         )
-        await ctx.tick()
 
     if CogsUtils().is_dpy2:
 
@@ -545,7 +540,6 @@ class TransferChannel(commands.Cog):
                     "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
                 ).format(**locals())
             )
-            await ctx.tick()
 
     @transferchannel.command()
     async def bot(
@@ -609,4 +603,3 @@ class TransferChannel(commands.Cog):
                 "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
             ).format(**locals())
         )
-        await ctx.tick()

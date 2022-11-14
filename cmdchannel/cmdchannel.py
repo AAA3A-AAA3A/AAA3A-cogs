@@ -81,7 +81,6 @@ class CmdChannel(commands.Cog):
             )
             if self.cogsutils.is_dpy2:
                 await ctx.defer()
-            await ctx.tick()
             return
 
         config = await self.config.guild(guild).all()
@@ -148,8 +147,6 @@ class CmdChannel(commands.Cog):
                     await ctx.defer()
                 if actual_state_deletemessage:
                     await self.cogsutils.delete_message(ctx.message)
-                else:
-                    await ctx.tick()
             else:
                 try:
                     await ctx.send(
@@ -208,7 +205,6 @@ class CmdChannel(commands.Cog):
         )
         if self.cogsutils.is_dpy2:
             await ctx.defer()
-        await ctx.tick()
 
     @commands.is_owner()
     @cmdchannel.command()
@@ -251,7 +247,6 @@ class CmdChannel(commands.Cog):
         )
         if self.cogsutils.is_dpy2:
             await ctx.defer()
-        await ctx.tick()
 
     @cmdchannel.command()
     async def testvar(self, ctx: commands.Context):

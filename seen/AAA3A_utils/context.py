@@ -64,6 +64,8 @@ class Context(commands.Context):
             message = "Done."
         if not can_user_react_in(self.me, self.channel) and self.len_messages == 0:
             message = "Done."
+        if getattr(self, "__is_mocked__", False):
+            message = None
         return await self.react_quietly(reaction, message=message)
 
     async def send(self, content=None, **kwargs):
@@ -94,17 +96,15 @@ class Context(commands.Context):
             The message that was sent.
 
         """
-        def _filter(content: str):
-            __filter = kwargs.pop("filter", None)
-            if __filter:
-                content = __filter(content)
+        if content is not None:
             try:
                 content = self.cog.cogsutils.replace_var_paths(content)
             except AttributeError:
                 pass
-            return content
-        kwargs["filter"] = _filter
         self.len_messages += 1
+        if hasattr(self, "_typing"):
+            if hasattr(self._typing, "task") and hasattr(self._typing.task, "cancel"):
+                self._typing.task.cancel()
         return await super().send(content=content, **kwargs)
 
     async def send_interactive(self, messages: typing.Iterable[str], box_lang: str = None, timeout: int = 15) -> typing.List[discord.Message]:

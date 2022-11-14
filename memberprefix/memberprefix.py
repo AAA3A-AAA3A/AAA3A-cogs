@@ -252,4 +252,3 @@ class MemberPrefix(commands.Cog):
     async def memberprefixpurge(self, ctx: commands.Context):
         """Clear all members prefixes for this guild."""
         await self.config.clear_all_members(guild=ctx.guild)
-        await ctx.tick()

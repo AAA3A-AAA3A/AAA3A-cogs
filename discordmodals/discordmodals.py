@@ -393,7 +393,6 @@ class DiscordModals(commands.Cog):
             },
         }
         await self.config.guild(ctx.guild).modals.set(config)
-        await ctx.tick()
 
     @discordmodals.command()
     async def remove(self, ctx: commands.Context, message: discord.Message):
@@ -415,10 +414,8 @@ class DiscordModals(commands.Cog):
             pass
         del config[f"{message.channel.id}-{message.id}"]
         await self.config.guild(ctx.guild).modals.set(config)
-        await ctx.tick()
 
     @discordmodals.command(hidden=True)
     async def purge(self, ctx: commands.Context):
         """Clear all Modals to a **guild**."""
         await self.config.guild(ctx.guild).modals.clear()
-        await ctx.tick()

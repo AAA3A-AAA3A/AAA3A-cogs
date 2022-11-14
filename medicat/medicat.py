@@ -759,7 +759,6 @@ class Medicat(commands.Cog):
         except Exception:
             await ctx.send(_("An error has occurred. Please try again.").format(**locals()))
             return
-        await ctx.tick()
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @medicat.command()
@@ -771,7 +770,6 @@ class Medicat(commands.Cog):
         except Exception:
             await ctx.send(_("An error has occurred. Please try again.").format(**locals()))
             return
-        await ctx.tick()
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @medicat.command()
@@ -851,7 +849,6 @@ class Medicat(commands.Cog):
                 await ctx.send(embed=embed, view=view)
             else:
                 await ctx.send(embed=embed)
-        await ctx.tick()
 
     @is_owner_or_AAA3A()
     @medicat.command(hidden=True)
@@ -909,7 +906,6 @@ class Medicat(commands.Cog):
                 for y, z in result[x].items():
                     message += f"\n{y}: {z}"
         await Menu(pages=message, box_language_py=True).start(ctx)
-        await ctx.tick()
 
     @is_owner_or_AAA3A()
     @medicat.command(hidden=True)
@@ -919,7 +915,6 @@ class Medicat(commands.Cog):
         for loop in self.cogsutils.loops.values():
             embeds.append(loop.get_debug_embed())
         await Menu(pages=embeds).start(ctx)
-        await ctx.tick()
 
     @is_owner_or_AAA3A()
     @medicat.command(hidden=True)
@@ -947,5 +942,3 @@ class Medicat(commands.Cog):
                 await Menu(pages=pages, timeout=30, delete_after_timeout=True).start(ctx)
             except discord.HTTPException:
                 return
-        else:
-            await ctx.tick()

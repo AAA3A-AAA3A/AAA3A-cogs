@@ -305,6 +305,10 @@ class Medicat(commands.Cog):
         self.CC_added: asyncio.Event = asyncio.Event()
         await self.add_custom_commands()
 
+    #async def cog_after_invoke(self, ctx: commands.Context):
+        #await ctx.send("Test")
+        #await context.tick()
+
     async def edit_config_schema(self):
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
         ALL_CONFIG_GLOBAL = await self.config.all()
@@ -743,10 +747,13 @@ class Medicat(commands.Cog):
         context = await self.bot.get_context(message)
         if context.prefix is None:
             return
-        command_name = context.message.content[len(str(context.prefix)):]
+        command = context.message.content[len(str(context.prefix)):]
+        if len(command.split(" ")) == 0:
+            return
+        command_name = command.split(" ")[0]
         if command_name not in CUSTOM_COMMANDS:
             return
-        await self.cogsutils.invoke_command(author=context.author, channel=context.channel, command=f"medicat {command_name}", prefix=context.prefix, message=context.message)
+        await self.cogsutils.invoke_command(author=context.author, channel=context.channel, command=f"medicat {command}", prefix=context.prefix, message=context.message)
         
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)

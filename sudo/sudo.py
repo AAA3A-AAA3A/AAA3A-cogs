@@ -18,6 +18,7 @@ from .AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
+import discord  # isort:skip
 import typing  # isort:skip
 
 import asyncio
@@ -48,12 +49,14 @@ class Sudo(commands.Cog):
 
     def __init__(self, bot: Red):
         self.bot: Red = bot
-        self.all_owner_ids = copy(self.bot.owner_ids)
-        self.bot.owner_ids.clear()
 
         self.__authors__ = ["AAA3A", "Draper", "jack1142 (Jackenmen#6607)"]
         self.cogsutils = CogsUtils(cog=self)
         self.cogsutils._setup()
+
+    async def cog_load(self):
+        self.all_owner_ids = copy(self.bot.owner_ids)
+        self.bot.owner_ids.clear()
 
     if CogsUtils().is_dpy2:
 
@@ -69,11 +72,21 @@ class Sudo(commands.Cog):
             self.all_owner_ids.clear()
             self.cogsutils._end()
 
+    @commands.Cog.listener()
+    async def on_message_without_command(self, message: discord.Message):
+        context = await self.bot.get_context(message)
+        if context.prefix is None:
+            return
+        command = context.message.content[len(str(context.prefix)):]
+        if len(command.split(" ")) == 0:
+            return
+        command_name = command.split(" ")[0]
+        if command_name not in ["su", "unsu", "sudo", "sutimeout"]:
+            return
+        await self.cogsutils.invoke_command(author=context.author, channel=context.channel, command=f"Sudo {command}", prefix=context.prefix, message=context.message)
+
     def decorator(all_owner_ids: typing.Optional[bool], bot_owner_ids: typing.Optional[bool]):
         async def pred(ctx):
-            if getattr(ctx, "interaction", None) is None:
-                if ctx.command.parent is not None and ctx.command.parent.qualified_name == "Sudo":
-                    return False
             if all_owner_ids:
                 if (
                     ctx.author.id in ctx.bot.get_cog("Sudo").all_owner_ids
@@ -88,10 +101,13 @@ class Sudo(commands.Cog):
         return commands.check(pred)
 
     @decorator(all_owner_ids=True, bot_owner_ids=True)
-    @hybrid_group(name="sudo", hidden=True)
+    @hybrid_group(name="Sudo", hidden=True, invoke_without_subcommand=False)
     async def Sudo(self, ctx: commands.Context):
         """Commands for Sudo cog."""
         pass
+        #await ctx.send(str(ctx.invoked_subcommand) + "\n" + str(ctx.subcommand_passed))
+        # if ctx.invoked_subcommand is None and await (self.decorator.__func__(all_owner_ids=True, bot_owner_ids=False)).predicate(ctx):
+        #     ctx.bot.dispatch("on_message_without_command", ctx.message)
 
     @decorator(all_owner_ids=True, bot_owner_ids=False)
     @Sudo.command(name="su")
@@ -148,41 +164,3 @@ class Sudo(commands.Cog):
         await asyncio.sleep(sleep)
         if ctx.bot.get_cog("Sudo") is not None:
             ctx.bot.owner_ids.remove(ctx.author.id)
-
-    # @decorator(all_owner_ids=True, bot_owner_ids=False)
-    # @commands.command()
-    # async def su(self, ctx: commands.Context):
-    #     """Sudo as the owner of the bot.
-    #     """
-    #     await ctx.invoke(ctx.bot.get_command(f"Sudo {ctx.command.name}"))
-
-    # @decorator(all_owner_ids=False, bot_owner_ids=True)
-    # @commands.command()
-    # async def unsu(self, ctx: commands.Context):
-    #     """Unsudo as normal user.
-    #     """
-    #     await ctx.invoke(ctx.bot.get_command(f"Sudo {ctx.command.name}"))
-
-    # @decorator(all_owner_ids=True, bot_owner_ids=False)
-    # @commands.command()
-    # async def sudo(self, ctx: commands.Context, *, command: str):
-    #     """Rise as the bot owner for the specified command only.
-    #     """
-    #     await ctx.invoke(ctx.bot.get_command(f"Sudo {ctx.command.name}"), **{"command": command})
-
-    # @decorator(all_owner_ids=True, bot_owner_ids=False)
-    # @commands.command()
-    # async def sutimeout(
-    #     self,
-    #     ctx: commands.Context,
-    #     *,
-    #     interval: commands.TimedeltaConverter(
-    #         minimum=datetime.timedelta(seconds=10),
-    #         maximum=datetime.timedelta(days=1),
-    #         default_unit="m",
-    #     ) = datetime.timedelta(minutes=5),
-    # ):
-    #     """Sudo as the owner of the bot for the specified timeout.
-    #     The time should be between 10 seconds and 1 day.
-    #     """
-    #     await ctx.invoke(ctx.bot.get_command(f"Sudo {ctx.command.name}"), **{"interval": interval})

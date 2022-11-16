@@ -483,7 +483,7 @@ class CogsUtils(commands.Cog):
                 )
                 nsfw = getattr(_object.callback, "__discord_app_commands_is_nsfw__", False)
                 _object.app_command = discord.app_commands.Group(
-                    name=_object._locale_name or _object.name,
+                    name=(_object._locale_name or _object.name).lower(),
                     description=_object._locale_description
                     or _object.description
                     or _object.short_doc
@@ -970,7 +970,7 @@ class CogsUtils(commands.Cog):
         prefix: typing.Optional[str] = None,
         message: typing.Optional[discord.Message] = None,
         dispatch_message: typing.Optional[bool] = False,
-        __is_mocked__: typing.Optional[bool] = False,
+        __is_mocked__: typing.Optional[bool] = True,
         message_id: typing.Optional[str] = "".join(choice(string.digits) for i in range(18)),
         timestamp: typing.Optional[datetime.datetime] = datetime.datetime.now(),
     ) -> typing.Union[commands.Context, discord.Message]:
@@ -1022,8 +1022,6 @@ class CogsUtils(commands.Cog):
         else:
             message = copy(message)
             message.author = author
-        if __is_mocked__:
-            message.__is_mocked__ = True
 
         message.content = content
         context = await bot.get_context(message)

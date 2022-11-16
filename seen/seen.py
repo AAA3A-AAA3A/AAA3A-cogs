@@ -742,67 +742,66 @@ class Seen(commands.Cog):
         all_data_config: typing.Optional[typing.Dict] = None,
         all_data_cache: typing.Optional[typing.Dict] = None,
     ):
-        async with ctx.typing():
-            if isinstance(object, (discord.User, discord.Member)):
-                ignored_users = await self.config.ignored_users()
-                if object.id in ignored_users:
-                    embed = discord.Embed()
-                    embed.color = discord.Color.red()
-                    embed.title = f"This {object.__class__.__name__.lower()} is in the ignored users list (`{ctx.prefix}seen ignoreme`)."
-                    await ctx.send(embed=embed)
-                    return
-            data = await self.get_data_for(
-                type=type,
-                object=object,
-                all_data_config=all_data_config,
-                all_data_cache=all_data_cache,
-            )
-            if data is None:
+        if isinstance(object, (discord.User, discord.Member)):
+            ignored_users = await self.config.ignored_users()
+            if object.id in ignored_users:
                 embed = discord.Embed()
                 embed.color = discord.Color.red()
-                embed.title = f"I haven't seen this {object.__class__.__name__.lower()} yet."
+                embed.title = f"This {object.__class__.__name__.lower()} is in the ignored users list (`{ctx.prefix}seen ignoreme`)."
                 await ctx.send(embed=embed)
                 return
-            time, seen, action = data
-            embed: discord.Embed = discord.Embed()
-            embed.color = getattr(object, "color", discord.Color.green())
-            if isinstance(object, discord.User):
-                embed.set_author(
-                    name=_("@{object.display_name} was seen {seen}.").format(**locals()),
-                    icon_url=object.display_avatar
-                    if self.cogsutils.is_dpy2
-                    else object.avatar_url,
-                )
-            elif isinstance(object, discord.Member):
-                embed.set_author(
-                    name=_("@{object.display_name} was seen {seen}.").format(**locals()),
-                    icon_url=object.display_avatar
-                    if self.cogsutils.is_dpy2
-                    else object.avatar_url,
-                )
-            elif isinstance(object, discord.Role):
-                embed.set_author(
-                    name=_("The role @&{object.name} was seen {seen}.").format(**locals()),
-                    icon_url=None,
-                )
-            elif isinstance(object, discord.TextChannel):
-                embed.set_author(
-                    name=_("The text channel #{object.name} was seen {seen}.").format(**locals()),
-                    icon_url=None,
-                )
-            elif isinstance(object, discord.CategoryChannel):
-                embed.set_author(
-                    name=_("The category {object.name} was seen {seen}.").format(**locals()),
-                    icon_url=None,
-                )
-            elif isinstance(object, discord.Guild):
-                embed.set_author(
-                    name=_("The guild {object.name} was seen {seen}.").format(**locals()),
-                    icon_url=object.icon if self.cogsutils.is_dpy2 else object.icon_url,
-                )
-            if show_details:
-                embed.description = action
-                embed.timestamp = datetime.datetime.fromtimestamp(time)
+        data = await self.get_data_for(
+            type=type,
+            object=object,
+            all_data_config=all_data_config,
+            all_data_cache=all_data_cache,
+        )
+        if data is None:
+            embed = discord.Embed()
+            embed.color = discord.Color.red()
+            embed.title = f"I haven't seen this {object.__class__.__name__.lower()} yet."
+            await ctx.send(embed=embed)
+            return
+        time, seen, action = data
+        embed: discord.Embed = discord.Embed()
+        embed.color = getattr(object, "color", discord.Color.green())
+        if isinstance(object, discord.User):
+            embed.set_author(
+                name=_("@{object.display_name} was seen {seen}.").format(**locals()),
+                icon_url=object.display_avatar
+                if self.cogsutils.is_dpy2
+                else object.avatar_url,
+            )
+        elif isinstance(object, discord.Member):
+            embed.set_author(
+                name=_("@{object.display_name} was seen {seen}.").format(**locals()),
+                icon_url=object.display_avatar
+                if self.cogsutils.is_dpy2
+                else object.avatar_url,
+            )
+        elif isinstance(object, discord.Role):
+            embed.set_author(
+                name=_("The role @&{object.name} was seen {seen}.").format(**locals()),
+                icon_url=None,
+            )
+        elif isinstance(object, discord.TextChannel):
+            embed.set_author(
+                name=_("The text channel #{object.name} was seen {seen}.").format(**locals()),
+                icon_url=None,
+            )
+        elif isinstance(object, discord.CategoryChannel):
+            embed.set_author(
+                name=_("The category {object.name} was seen {seen}.").format(**locals()),
+                icon_url=None,
+            )
+        elif isinstance(object, discord.Guild):
+            embed.set_author(
+                name=_("The guild {object.name} was seen {seen}.").format(**locals()),
+                icon_url=object.icon if self.cogsutils.is_dpy2 else object.icon_url,
+            )
+        if show_details:
+            embed.description = action
+            embed.timestamp = datetime.datetime.fromtimestamp(time)
         await ctx.send(embed=embed)
 
     async def send_board(
@@ -814,85 +813,84 @@ class Seen(commands.Cog):
         ],
         reverse: typing.Optional[bool] = False,
     ):
-        async with ctx.typing():
-            await self.save_to_config()
-            if object == "users":
-                users = await self.config.all_users()
-                all_data = {
-                    ctx.bot.get_user(user): data
-                    for user, data in users.items()
-                    if ctx.bot.get_user(user) is not None
-                }
-            elif object == "members":
-                members = await self.config.all_members(ctx.guild)
-                all_data = {
-                    ctx.guild.get_member(member): data
-                    for member, data in members.items()
-                    if ctx.guild.get_member(member) is not None
-                }
-            elif object == "roles":
-                roles = await self.config.all_roles()
-                all_data = {
-                    ctx.guild.get_role(role): data
-                    for role, data in roles.items()
-                    if ctx.guild.get_role(role) is not None
-                }
-            elif object == "channels":
-                channels = await self.config.all_channels()
-                all_data = {
-                    ctx.guild.get_channel(channel): data
-                    for channel, data in channels.items()
-                    if ctx.guild.get_channel(channel) is not None
-                    and ctx.guild.get_channel(channel).type == discord.ChannelType.text
-                }
-            elif object == "categories":
-                categories = await self.config.all_channels()
-                all_data = {
-                    ctx.guild.get_channel(category): data
-                    for category, data in categories.items()
-                    if ctx.guild.get_channel(category) is not None
-                    and ctx.guild.get_channel(category).type == discord.ChannelType.category
-                }
-            elif object == "guilds":
-                guilds = await self.config.all_guilds()
-                all_data = {
-                    ctx.bot.get_guild(guild): data
-                    for guild, data in guilds.items()
-                    if ctx.bot.get_guild(guild) is not None
-                }
-            data = {}
-            for x in all_data:
-                result = await self.get_data_for(
-                    type=type, object=x, all_data_config=all_data[x], all_data_cache={}
-                )
-                if result is None:
-                    continue
-                time, seen, action = result
-                data[x] = [time, seen]
-            if len(data) == 0:
-                embed = discord.Embed()
-                embed.color = discord.Color.red()
-                embed.title = f"I haven't seen any {object} yet."
-                await ctx.send(embed=embed)
-                return
-            embed: discord.Embed = discord.Embed()
-            embed.title = f"Seen Board for the {object.capitalize()}"
-            embed.timestamp = datetime.datetime.now()
-            embeds = []
-            description = []
-            count = 0
-            all_count = len(data)
-            for x, y in sorted(data.items(), key=lambda x: x[1][0], reverse=not reverse):
-                count += 1
-                seen = y[1]
-                description.append(
-                    f"{(count) if not reverse else ((all_count + 1) - count)} - **{x}**: {seen}."
-                )
-            description = "\n".join(description)
-            for text in pagify(description):
-                e = embed.copy()
-                e.description = text
-                embeds.append(e)
+        await self.save_to_config()
+        if object == "users":
+            users = await self.config.all_users()
+            all_data = {
+                ctx.bot.get_user(user): data
+                for user, data in users.items()
+                if ctx.bot.get_user(user) is not None
+            }
+        elif object == "members":
+            members = await self.config.all_members(ctx.guild)
+            all_data = {
+                ctx.guild.get_member(member): data
+                for member, data in members.items()
+                if ctx.guild.get_member(member) is not None
+            }
+        elif object == "roles":
+            roles = await self.config.all_roles()
+            all_data = {
+                ctx.guild.get_role(role): data
+                for role, data in roles.items()
+                if ctx.guild.get_role(role) is not None
+            }
+        elif object == "channels":
+            channels = await self.config.all_channels()
+            all_data = {
+                ctx.guild.get_channel(channel): data
+                for channel, data in channels.items()
+                if ctx.guild.get_channel(channel) is not None
+                and ctx.guild.get_channel(channel).type == discord.ChannelType.text
+            }
+        elif object == "categories":
+            categories = await self.config.all_channels()
+            all_data = {
+                ctx.guild.get_channel(category): data
+                for category, data in categories.items()
+                if ctx.guild.get_channel(category) is not None
+                and ctx.guild.get_channel(category).type == discord.ChannelType.category
+            }
+        elif object == "guilds":
+            guilds = await self.config.all_guilds()
+            all_data = {
+                ctx.bot.get_guild(guild): data
+                for guild, data in guilds.items()
+                if ctx.bot.get_guild(guild) is not None
+            }
+        data = {}
+        for x in all_data:
+            result = await self.get_data_for(
+                type=type, object=x, all_data_config=all_data[x], all_data_cache={}
+            )
+            if result is None:
+                continue
+            time, seen, action = result
+            data[x] = [time, seen]
+        if len(data) == 0:
+            embed = discord.Embed()
+            embed.color = discord.Color.red()
+            embed.title = f"I haven't seen any {object} yet."
+            await ctx.send(embed=embed)
+            return
+        embed: discord.Embed = discord.Embed()
+        embed.title = f"Seen Board for the {object.capitalize()}"
+        embed.timestamp = datetime.datetime.now()
+        embeds = []
+        description = []
+        count = 0
+        all_count = len(data)
+        for x, y in sorted(data.items(), key=lambda x: x[1][0], reverse=not reverse):
+            count += 1
+            seen = y[1]
+            description.append(
+                f"{(count) if not reverse else ((all_count + 1) - count)} - **{x}**: {seen}."
+            )
+        description = "\n".join(description)
+        for text in pagify(description):
+            e = embed.copy()
+            e.description = text
+            embeds.append(e)
         await Menu(pages=embeds).start(ctx)
 
     @commands.Cog.listener()
@@ -1270,29 +1268,28 @@ class Seen(commands.Cog):
     @seen.command()
     async def configstats(self, ctx: commands.Context):
         """Get Config data stats."""
-        async with ctx.typing():
-            (
-                global_count,
-                users_count,
-                members_count,
-                roles_count,
-                channels_count,
-                categories_count,
-                guilds_count,
-            ) = await self.cleanup(for_count=True)
-            stats = {
-                "Global count": global_count,
-                "Users count": users_count,
-                "Members count": members_count,
-                "Roles count": roles_count,
-                "Channels count (+ categories channels)": channels_count,
-                "Categories count (+ text channels)": categories_count,
-                "Guilds count": guilds_count,
-            }
-            stats = [f"{key}: {value}" for key, value in stats.items()]
-            message = "--- Config Stats for Seen ---\n\n"
-            message += "\n".join(stats)
-            message = box(message)
+        (
+            global_count,
+            users_count,
+            members_count,
+            roles_count,
+            channels_count,
+            categories_count,
+            guilds_count,
+        ) = await self.cleanup(for_count=True)
+        stats = {
+            "Global count": global_count,
+            "Users count": users_count,
+            "Members count": members_count,
+            "Roles count": roles_count,
+            "Channels count (+ categories channels)": channels_count,
+            "Categories count (+ text channels)": categories_count,
+            "Guilds count": guilds_count,
+        }
+        stats = [f"{key}: {value}" for key, value in stats.items()]
+        message = "--- Config Stats for Seen ---\n\n"
+        message += "\n".join(stats)
+        message = box(message)
         await ctx.send(message)
 
     @commands.is_owner()

@@ -177,44 +177,43 @@ class TransferChannel(commands.Cog):
             if ctx.author.id not in ctx.bot.owner_ids:
                 await ctx.send_help()
                 return
-        async with ctx.typing():
-            if not self.cogsutils.check_permissions_for(
-                channel=source,
-                user=source.guild.me,
-                check=["view_channel", "read_messages", "read_message_history"],
-            ):
+        if not self.cogsutils.check_permissions_for(
+            channel=source,
+            user=source.guild.me,
+            check=["view_channel", "read_messages", "read_message_history"],
+        ):
+            await ctx.send(
+                _(
+                    "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
+                ).format()
+            )
+            return
+        permissions = destination.permissions_for(destination.guild.me)
+        if way == "embed":
+            if not permissions.embed_links:
                 await ctx.send(
                     _(
-                        "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
-                    ).format()
+                        "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
+                    ).format(**locals())
                 )
                 return
-            permissions = destination.permissions_for(destination.guild.me)
-            if way == "embed":
-                if not permissions.embed_links:
-                    await ctx.send(
-                        _(
-                            "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
-                        ).format(**locals())
-                    )
-                    return
-            elif way == "webhook":
-                if not permissions.manage_webhooks:
-                    await ctx.send(
-                        _(
-                            "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
-                        ).format(**locals())
-                    )
-                    return
-            messages = await self.get_messages(channel=source)
-            messages = [message for message in messages if not message.id == ctx.message.id]
-            count_messages = len(messages)
-            if count_messages == 0:
-                await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
+        elif way == "webhook":
+            if not permissions.manage_webhooks:
+                await ctx.send(
+                    _(
+                        "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
+                    ).format(**locals())
+                )
                 return
-            await self.transfer_messages(
-                source=source, destination=destination, way=way, messages=messages
-            )
+        messages = await self.get_messages(channel=source)
+        messages = [message for message in messages if not message.id == ctx.message.id]
+        count_messages = len(messages)
+        if count_messages == 0:
+            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
+            return
+        await self.transfer_messages(
+            source=source, destination=destination, way=way, messages=messages
+        )
         await ctx.send(
             _(
                 "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
@@ -239,7 +238,256 @@ class TransferChannel(commands.Cog):
             if ctx.author.id not in ctx.bot.owner_ids:
                 await ctx.send_help()
                 return
-        async with ctx.typing():
+        if not self.cogsutils.check_permissions_for(
+            channel=source,
+            user=source.guild.me,
+            check=["view_channel", "read_messages", "read_message_history"],
+        ):
+            await ctx.send(
+                _(
+                    "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
+                ).format()
+            )
+            return
+        permissions = destination.permissions_for(destination.guild.me)
+        if way == "embed":
+            if not permissions.embed_links:
+                await ctx.send(
+                    _(
+                        "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
+                    ).format(**locals())
+                )
+                return
+        elif way == "webhook":
+            if not permissions.manage_webhooks:
+                await ctx.send(
+                    _(
+                        "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
+                    ).format(**locals())
+                )
+                return
+        messages = await self.get_messages(
+            channel=source, limit=limit if not source == ctx.channel else limit + 1
+        )
+        messages = [message for message in messages if not message.id == ctx.message.id]
+        count_messages = len(messages)
+        if count_messages == 0:
+            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
+            return
+        await self.transfer_messages(
+            source=source, destination=destination, way=way, messages=messages
+        )
+        await ctx.send(
+            _(
+                "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
+            ).format(**locals())
+        )
+
+    @transferchannel.command()
+    async def before(
+        self,
+        ctx: commands.Context,
+        source: discord.TextChannel,
+        destination: discord.TextChannel,
+        way: commands.Literal["embeds", "webhooks", "messages"],
+        before: discord.Message,
+    ):
+        """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+
+        Specify the before message (id or link).
+        Remember that transfering other users' messages in does not respect the TOS.
+        """
+        if ctx.guild is None:
+            if ctx.author.id not in ctx.bot.owner_ids:
+                await ctx.send_help()
+                return
+        if not self.cogsutils.check_permissions_for(
+            channel=source,
+            user=source.guild.me,
+            check=["view_channel", "read_messages", "read_message_history"],
+        ):
+            await ctx.send(
+                _(
+                    "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
+                ).format()
+            )
+            return
+        permissions = destination.permissions_for(destination.guild.me)
+        if way == "embed":
+            if not permissions.embed_links:
+                await ctx.send(
+                    _(
+                        "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
+                    ).format(**locals())
+                )
+                return
+        elif way == "webhook":
+            if not permissions.manage_webhooks:
+                await ctx.send(
+                    _(
+                        "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
+                    ).format(**locals())
+                )
+                return
+        messages = await self.get_messages(channel=source, before=before)
+        messages = [message for message in messages if not message.id == ctx.message.id]
+        count_messages = len(messages)
+        if count_messages == 0:
+            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
+            return
+        await self.transfer_messages(
+            source=source, destination=destination, way=way, messages=messages
+        )
+        await ctx.send(
+            _(
+                "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
+            ).format(**locals())
+        )
+
+    @transferchannel.command()
+    async def after(
+        self,
+        ctx: commands.Context,
+        source: discord.TextChannel,
+        destination: discord.TextChannel,
+        way: commands.Literal["embeds", "webhooks", "messages"],
+        after: discord.Message,
+    ):
+        """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+
+        Specify the after message (id or link).
+        Remember that transfering other users' messages in does not respect the TOS.
+        """
+        if ctx.guild is None:
+            if ctx.author.id not in ctx.bot.owner_ids:
+                await ctx.send_help()
+                return
+        if not self.cogsutils.check_permissions_for(
+            channel=source,
+            user=source.guild.me,
+            check=["view_channel", "read_messages", "read_message_history"],
+        ):
+            await ctx.send(
+                _(
+                    "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
+                ).format()
+            )
+            return
+        permissions = destination.permissions_for(destination.guild.me)
+        if way == "embed":
+            if not permissions.embed_links:
+                await ctx.send(
+                    _(
+                        "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
+                    ).format(**locals())
+                )
+                return
+        elif way == "webhook":
+            if not permissions.manage_webhooks:
+                await ctx.send(
+                    _(
+                        "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
+                    ).format(**locals())
+                )
+                return
+        messages = await self.get_messages(channel=source, after=after)
+        messages = [message for message in messages if not message.id == ctx.message.id]
+        count_messages = len(messages)
+        if count_messages == 0:
+            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
+            return
+        await self.transfer_messages(
+            source=source, destination=destination, way=way, messages=messages
+        )
+        await ctx.send(
+            _(
+                "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
+            ).format(**locals())
+        )
+
+    @transferchannel.command()
+    async def between(
+        self,
+        ctx: commands.Context,
+        source: discord.TextChannel,
+        destination: discord.TextChannel,
+        way: commands.Literal["embeds", "webhooks", "messages"],
+        before: discord.Message,
+        after: discord.Message,
+    ):
+        """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+
+        Specify the between messages (id or link).
+        Remember that transfering other users' messages in does not respect the TOS.
+        """
+        if ctx.guild is None:
+            if ctx.author.id not in ctx.bot.owner_ids:
+                await ctx.send_help()
+                return
+        if not self.cogsutils.check_permissions_for(
+            channel=source,
+            user=source.guild.me,
+            check=["view_channel", "read_messages", "read_message_history"],
+        ):
+            await ctx.send(
+                _(
+                    "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
+                ).format()
+            )
+            return
+        permissions = destination.permissions_for(destination.guild.me)
+        if way == "embed":
+            if not permissions.embed_links:
+                await ctx.send(
+                    _(
+                        "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
+                    ).format(**locals())
+                )
+                return
+        elif way == "webhook":
+            if not permissions.manage_webhooks:
+                await ctx.send(
+                    _(
+                        "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
+                    ).format(**locals())
+                )
+                return
+        messages = await self.get_messages(channel=source, before=before, after=after)
+        messages = [message for message in messages if not message.id == ctx.message.id]
+        count_messages = len(messages)
+        if count_messages == 0:
+            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
+            return
+        await self.transfer_messages(
+            source=source, destination=destination, way=way, messages=messages
+        )
+        await ctx.send(
+            _(
+                "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
+            ).format(**locals())
+        )
+
+    if CogsUtils().is_dpy2:
+
+        @transferchannel.command()
+        async def user(
+            self,
+            ctx: commands.Context,
+            source: discord.TextChannel,
+            destination: discord.TextChannel,
+            way: commands.Literal["embeds", "webhooks", "messages"],
+            user: discord.User,
+            limit: typing.Optional[int] = None,
+        ):
+            """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+
+            Specify the member (id, name or mention).
+            Remember that transfering other users' messages in does not respect the TOS.
+            """
+            if ctx.guild is None:
+                if ctx.author.id not in ctx.bot.owner_ids:
+                    await ctx.send_help()
+                    return
             if not self.cogsutils.check_permissions_for(
                 channel=source,
                 user=source.guild.me,
@@ -269,70 +517,10 @@ class TransferChannel(commands.Cog):
                     )
                     return
             messages = await self.get_messages(
-                channel=source, limit=limit if not source == ctx.channel else limit + 1
-            )
-            messages = [message for message in messages if not message.id == ctx.message.id]
-            count_messages = len(messages)
-            if count_messages == 0:
-                await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-                return
-            await self.transfer_messages(
-                source=source, destination=destination, way=way, messages=messages
-            )
-        await ctx.send(
-            _(
-                "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
-            ).format(**locals())
-        )
-
-    @transferchannel.command()
-    async def before(
-        self,
-        ctx: commands.Context,
-        source: discord.TextChannel,
-        destination: discord.TextChannel,
-        way: commands.Literal["embeds", "webhooks", "messages"],
-        before: discord.Message,
-    ):
-        """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
-
-        Specify the before message (id or link).
-        Remember that transfering other users' messages in does not respect the TOS.
-        """
-        if ctx.guild is None:
-            if ctx.author.id not in ctx.bot.owner_ids:
-                await ctx.send_help()
-                return
-        async with ctx.typing():
-            if not self.cogsutils.check_permissions_for(
                 channel=source,
-                user=source.guild.me,
-                check=["view_channel", "read_messages", "read_message_history"],
-            ):
-                await ctx.send(
-                    _(
-                        "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
-                    ).format()
-                )
-                return
-            permissions = destination.permissions_for(destination.guild.me)
-            if way == "embed":
-                if not permissions.embed_links:
-                    await ctx.send(
-                        _(
-                            "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
-                        ).format(**locals())
-                    )
-                    return
-            elif way == "webhook":
-                if not permissions.manage_webhooks:
-                    await ctx.send(
-                        _(
-                            "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
-                        ).format(**locals())
-                    )
-                    return
-            messages = await self.get_messages(channel=source, before=before)
+                user_id=user.id if isinstance(user, discord.Member) else user,
+                limit=limit,
+            )
             messages = [message for message in messages if not message.id == ctx.message.id]
             count_messages = len(messages)
             if count_messages == 0:
@@ -341,200 +529,6 @@ class TransferChannel(commands.Cog):
             await self.transfer_messages(
                 source=source, destination=destination, way=way, messages=messages
             )
-        await ctx.send(
-            _(
-                "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
-            ).format(**locals())
-        )
-
-    @transferchannel.command()
-    async def after(
-        self,
-        ctx: commands.Context,
-        source: discord.TextChannel,
-        destination: discord.TextChannel,
-        way: commands.Literal["embeds", "webhooks", "messages"],
-        after: discord.Message,
-    ):
-        """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
-
-        Specify the after message (id or link).
-        Remember that transfering other users' messages in does not respect the TOS.
-        """
-        if ctx.guild is None:
-            if ctx.author.id not in ctx.bot.owner_ids:
-                await ctx.send_help()
-                return
-        async with ctx.typing():
-            if not self.cogsutils.check_permissions_for(
-                channel=source,
-                user=source.guild.me,
-                check=["view_channel", "read_messages", "read_message_history"],
-            ):
-                await ctx.send(
-                    _(
-                        "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
-                    ).format()
-                )
-                return
-            permissions = destination.permissions_for(destination.guild.me)
-            if way == "embed":
-                if not permissions.embed_links:
-                    await ctx.send(
-                        _(
-                            "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
-                        ).format(**locals())
-                    )
-                    return
-            elif way == "webhook":
-                if not permissions.manage_webhooks:
-                    await ctx.send(
-                        _(
-                            "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
-                        ).format(**locals())
-                    )
-                    return
-            messages = await self.get_messages(channel=source, after=after)
-            messages = [message for message in messages if not message.id == ctx.message.id]
-            count_messages = len(messages)
-            if count_messages == 0:
-                await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-                return
-            await self.transfer_messages(
-                source=source, destination=destination, way=way, messages=messages
-            )
-        await ctx.send(
-            _(
-                "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
-            ).format(**locals())
-        )
-
-    @transferchannel.command()
-    async def between(
-        self,
-        ctx: commands.Context,
-        source: discord.TextChannel,
-        destination: discord.TextChannel,
-        way: commands.Literal["embeds", "webhooks", "messages"],
-        before: discord.Message,
-        after: discord.Message,
-    ):
-        """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
-
-        Specify the between messages (id or link).
-        Remember that transfering other users' messages in does not respect the TOS.
-        """
-        if ctx.guild is None:
-            if ctx.author.id not in ctx.bot.owner_ids:
-                await ctx.send_help()
-                return
-        async with ctx.typing():
-            if not self.cogsutils.check_permissions_for(
-                channel=source,
-                user=source.guild.me,
-                check=["view_channel", "read_messages", "read_message_history"],
-            ):
-                await ctx.send(
-                    _(
-                        "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
-                    ).format()
-                )
-                return
-            permissions = destination.permissions_for(destination.guild.me)
-            if way == "embed":
-                if not permissions.embed_links:
-                    await ctx.send(
-                        _(
-                            "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
-                        ).format(**locals())
-                    )
-                    return
-            elif way == "webhook":
-                if not permissions.manage_webhooks:
-                    await ctx.send(
-                        _(
-                            "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
-                        ).format(**locals())
-                    )
-                    return
-            messages = await self.get_messages(channel=source, before=before, after=after)
-            messages = [message for message in messages if not message.id == ctx.message.id]
-            count_messages = len(messages)
-            if count_messages == 0:
-                await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-                return
-            await self.transfer_messages(
-                source=source, destination=destination, way=way, messages=messages
-            )
-        await ctx.send(
-            _(
-                "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
-            ).format(**locals())
-        )
-
-    if CogsUtils().is_dpy2:
-
-        @transferchannel.command()
-        async def user(
-            self,
-            ctx: commands.Context,
-            source: discord.TextChannel,
-            destination: discord.TextChannel,
-            way: commands.Literal["embeds", "webhooks", "messages"],
-            user: discord.User,
-            limit: typing.Optional[int] = None,
-        ):
-            """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
-
-            Specify the member (id, name or mention).
-            Remember that transfering other users' messages in does not respect the TOS.
-            """
-            if ctx.guild is None:
-                if ctx.author.id not in ctx.bot.owner_ids:
-                    await ctx.send_help()
-                    return
-            async with ctx.typing():
-                if not self.cogsutils.check_permissions_for(
-                    channel=source,
-                    user=source.guild.me,
-                    check=["view_channel", "read_messages", "read_message_history"],
-                ):
-                    await ctx.send(
-                        _(
-                            "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
-                        ).format()
-                    )
-                    return
-                permissions = destination.permissions_for(destination.guild.me)
-                if way == "embed":
-                    if not permissions.embed_links:
-                        await ctx.send(
-                            _(
-                                "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
-                            ).format(**locals())
-                        )
-                        return
-                elif way == "webhook":
-                    if not permissions.manage_webhooks:
-                        await ctx.send(
-                            _(
-                                "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
-                            ).format(**locals())
-                        )
-                        return
-                messages = await self.get_messages(
-                    channel=source,
-                    user_id=user.id if isinstance(user, discord.Member) else user,
-                    limit=limit,
-                )
-                messages = [message for message in messages if not message.id == ctx.message.id]
-                count_messages = len(messages)
-                if count_messages == 0:
-                    await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-                    return
-                await self.transfer_messages(
-                    source=source, destination=destination, way=way, messages=messages
-                )
             await ctx.send(
                 _(
                     "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
@@ -560,44 +554,43 @@ class TransferChannel(commands.Cog):
             if ctx.author.id not in ctx.bot.owner_ids:
                 await ctx.send_help()
                 return
-        async with ctx.typing():
-            if not self.cogsutils.check_permissions_for(
-                channel=source,
-                user=source.guild.me,
-                check=["view_channel", "read_messages", "read_message_history"],
-            ):
+        if not self.cogsutils.check_permissions_for(
+            channel=source,
+            user=source.guild.me,
+            check=["view_channel", "read_messages", "read_message_history"],
+        ):
+            await ctx.send(
+                _(
+                    "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
+                ).format()
+            )
+            return
+        permissions = destination.permissions_for(destination.guild.me)
+        if way == "embed":
+            if not permissions.embed_links:
                 await ctx.send(
                     _(
-                        "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
-                    ).format()
+                        "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
+                    ).format(**locals())
                 )
                 return
-            permissions = destination.permissions_for(destination.guild.me)
-            if way == "embed":
-                if not permissions.embed_links:
-                    await ctx.send(
-                        _(
-                            "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
-                        ).format(**locals())
-                    )
-                    return
-            elif way == "webhook":
-                if not permissions.manage_webhooks:
-                    await ctx.send(
-                        _(
-                            "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
-                        ).format(**locals())
-                    )
-                    return
-            messages = await self.get_messages(channel=source, bot=bot, limit=limit)
-            messages = [message for message in messages if not message.id == ctx.message.id]
-            count_messages = len(messages)
-            if count_messages == 0:
-                await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
+        elif way == "webhook":
+            if not permissions.manage_webhooks:
+                await ctx.send(
+                    _(
+                        "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
+                    ).format(**locals())
+                )
                 return
-            await self.transfer_messages(
-                source=source, destination=destination, way=way, messages=messages
-            )
+        messages = await self.get_messages(channel=source, bot=bot, limit=limit)
+        messages = [message for message in messages if not message.id == ctx.message.id]
+        count_messages = len(messages)
+        if count_messages == 0:
+            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
+            return
+        await self.transfer_messages(
+            source=source, destination=destination, way=way, messages=messages
+        )
         await ctx.send(
             _(
                 "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."

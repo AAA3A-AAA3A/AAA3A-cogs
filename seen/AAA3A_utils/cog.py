@@ -19,8 +19,8 @@ def _(untranslated: str):
 
 class Cog:
     def __init__(self, bot: Red):
-        self.bot = bot
-        self.cog = None
+        self.bot: Red = bot
+        self.cog: commands.Cog = None
 
     @classmethod
     def _setup(cls, bot: Red, cog: commands.Cog):
@@ -98,22 +98,36 @@ class Cog:
     if discord.version_info.major >= 2:
 
         async def cog_unload(self):
-            self._end()
+            self.cog.cogsutils._end()
 
     else:
 
         def cog_unload(self):
-            self._end()
+            self.cog.cogsutils._end()
 
     async def cog_before_invoke(self, ctx: commands.Context):
         if self.cog is None:
             return
         context = await Context.from_context(ctx)
-        for index, arg in enumerate(ctx.args.copy()):
-            if isinstance(arg, commands.Context):
-                ctx.args[index] = context
+        if getattr(context, "interaction", None) is None:
+            for index, arg in enumerate(ctx.args.copy()):
+                if isinstance(arg, commands.Context):
+                    ctx.args[index] = context
+        else:
+            if context.command.__commands_is_hybrid__ and hasattr(context.command, "app_command"):
+                __do_call = getattr(context.command.app_command, "_do_call")
+                async def _do_call(interaction, params):
+                    await __do_call(interaction=context, params=params)
+                setattr(context.command.app_command, "_do_call", _do_call)
+            try:
+                await context.interaction.response.defer(ephemeral=False, thinking=True)
+            except discord.InteractionResponded:
+                pass
         context._typing = context.channel.typing()
-        await context._typing.__aenter__()
+        try:
+            await context._typing.__aenter__()
+        except discord.InteractionResponded:
+            pass
         return ctx
 
     async def cog_after_invoke(self, ctx: commands.Context):
@@ -123,7 +137,12 @@ class Cog:
         if hasattr(context, "_typing"):
             if hasattr(context._typing, "task") and hasattr(context._typing.task, "cancel"):
                 context._typing.task.cancel()
-        await context.tick()
+        if not ctx.command_failed:
+            await context.tick()
+        else:
+            await context.tick(reaction="❌")
+        # from .menus import Menu
+        # await Menu(pages=str("\n".join([str((x.function, x.frame)) for x in __import__("inspect").stack(30)])), box_language_py=True).start(context)
 
     async def cog_command_error(self, ctx: commands.Context, error: Exception):
         if self.cog is None:

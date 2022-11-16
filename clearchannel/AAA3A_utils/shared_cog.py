@@ -33,6 +33,15 @@ from .menus import Menu
 
 __all__ = ["SharedCog"]
 
+if discord.version_info.major >= 2:
+    from functools import partial
+
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
+
 
 def _(untranslated: str):
     return untranslated
@@ -87,15 +96,15 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         return cog.qualified_name in await self.config.cogs_with_slash()
 
     @commands.is_owner()
-    @commands.group(hidden=True)
+    @hybrid_group(name="AAA3A_utils", aliases=["aaa3a_utils"], hidden=True)
     async def AAA3A_utils(self, ctx: commands.Context):
-        """All commands to manage all the cogs in AAA3A-cogs repo."""
+        """All commands to manage all the cogs from AAA3A-cogs repo."""
         pass
 
     @commands.is_owner()
     @AAA3A_utils.command()
     async def addslash(self, ctx: commands.Context, cogs: commands.Greedy[StrConverter]):
-        """Add slash commands for repo cogs."""
+        """Add slash commands for a cog from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
             await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
             return
@@ -161,7 +170,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
     @commands.is_owner()
     @AAA3A_utils.command()
     async def removeslash(self, ctx: commands.Context, cogs: commands.Greedy[StrConverter]):
-        """Remove slash commands for repo cogs."""
+        """Remove slash commands for a cog from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
             await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
             return
@@ -226,7 +235,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
     @commands.is_owner()
     @AAA3A_utils.command()
     async def addignoredslash(self, ctx: commands.Context, commands: commands.Greedy[StrConverter]):
-        """Add ignored slash commands."""
+        """Add ignored slash commands for a cog from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
             await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
             return
@@ -284,7 +293,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
     @commands.is_owner()
     @AAA3A_utils.command()
     async def removeignoredslash(self, ctx: commands.Context, commands: commands.Greedy[StrConverter]):
-        """Add ignored slash commands."""
+        """Remove ignored slash commands for a cog from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
             await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
             return
@@ -342,7 +351,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
     @commands.is_owner()
     @AAA3A_utils.command()
     async def clearslash(self, ctx: commands.Context):
-        """Remove slash commands for all repo cogs."""
+        """Remove slash commands for all cogs from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
             await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
             return
@@ -502,7 +511,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         ctx: commands.Context,
         all: typing.Optional[typing.Literal["all", "ALL"]] = None,
         page: typing.Optional[int] = None,
-        repo: typing.Optional[typing.Union[Repo, typing.Literal["AAA3A", "aaa3a"]]] = None,
+        repo: str = None,
         check_updates: typing.Optional[bool] = False,
         cog: typing.Optional[InstalledCog] = None,
         command: typing.Optional[str] = None,
@@ -516,6 +525,12 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             command = None
             check_updates = False
         if repo is not None:
+            if not repo.lower() == "AAA3A".lower():
+                try:
+                    repo = await Repo.convert(ctx, repo)
+                except commands.CommandError as e:
+                    await ctx.send(str(e))
+                    return
             _repos = [repo]
         else:
             _repos = [None]

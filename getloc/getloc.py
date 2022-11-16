@@ -120,67 +120,66 @@ class GetLoc(commands.Cog):
         """Display information about a location.
         You can provide a full address or gps coordinates.
         """
-        async with ctx.typing():
-            start = time.monotonic()
-            loc = Nominatim(user_agent="GetLoc")
-            try:
-                localisation = loc.geocode(query=adress_or_coordinates, addressdetails=True)
-            except Exception:
-                await ctx.send(_("An error has occurred. Please try again.").format(**locals()))
-                return
-            if localisation is None:
-                await ctx.send(
-                    _(
-                        "The address or contact details you have provided do not lead to any results. Are you sure of your input?"
-                    ).format(**locals())
-                )
-                return
-            message = {
-                "Display Name": str(localisation.raw.get("display_name", None)),
-                "Longitude": str(localisation.raw.get("lon", None)),
-                "Latitude": str(localisation.raw.get("lat", None)),
-                "Country": str(localisation.raw["address"].get("country", None)),
-                "Country code": str(localisation.raw["address"].get("country_code", None)),
-                "Region": str(localisation.raw["address"].get("region", None)),
-                "State": str(localisation.raw["address"].get("state", None)),
-                "County": str(localisation.raw["address"].get("county", None)),
-                "Municipality": str(localisation.raw["address"].get("municipality", None)),
-                "City": str(localisation.raw["address"].get("city", None)),
-                "Post code": str(localisation.raw["address"].get("postcode", None)),
-                "Road": str(localisation.raw["address"].get("road", None)),
-            }
-            embed: discord.Embed = discord.Embed()
-            embed.title = "Location"
-            embed.set_thumbnail(
-                url="https://img.myloview.fr/papiers-peints/globe-terrestre-dessin-colore-700-218492153.jpg"
+        start = time.monotonic()
+        loc = Nominatim(user_agent="GetLoc")
+        try:
+            localisation = loc.geocode(query=adress_or_coordinates, addressdetails=True)
+        except Exception:
+            await ctx.send(_("An error has occurred. Please try again.").format(**locals()))
+            return
+        if localisation is None:
+            await ctx.send(
+                _(
+                    "The address or contact details you have provided do not lead to any results. Are you sure of your input?"
+                ).format(**locals())
             )
-            embed.description = "\n".join(
-                [f"**{name}**: {value}" for name, value in message.items()]
-            )
+            return
+        message = {
+            "Display Name": str(localisation.raw.get("display_name", None)),
+            "Longitude": str(localisation.raw.get("lon", None)),
+            "Latitude": str(localisation.raw.get("lat", None)),
+            "Country": str(localisation.raw["address"].get("country", None)),
+            "Country code": str(localisation.raw["address"].get("country_code", None)),
+            "Region": str(localisation.raw["address"].get("region", None)),
+            "State": str(localisation.raw["address"].get("state", None)),
+            "County": str(localisation.raw["address"].get("county", None)),
+            "Municipality": str(localisation.raw["address"].get("municipality", None)),
+            "City": str(localisation.raw["address"].get("city", None)),
+            "Post code": str(localisation.raw["address"].get("postcode", None)),
+            "Road": str(localisation.raw["address"].get("road", None)),
+        }
+        embed: discord.Embed = discord.Embed()
+        embed.title = "Location"
+        embed.set_thumbnail(
+            url="https://img.myloview.fr/papiers-peints/globe-terrestre-dessin-colore-700-218492153.jpg"
+        )
+        embed.description = "\n".join(
+            [f"**{name}**: {value}" for name, value in message.items()]
+        )
 
-            if with_map:
-                embed.set_image(url="attachment://map.png")
-                map = await self.get_map(
-                    title=message["City"] + ", " + message["Country"],
-                    latitude=localisation.latitude,
-                    longitude=localisation.longitude,
+        if with_map:
+            embed.set_image(url="attachment://map.png")
+            map = await self.get_map(
+                title=message["City"] + ", " + message["Country"],
+                latitude=localisation.latitude,
+                longitude=localisation.longitude,
+            )
+            if self.cogsutils.is_dpy2:
+                file = discord.File(
+                    fp=map,
+                    filename="map.png",
+                    description=str(localisation.raw.get("display_name", None)),
                 )
-                if self.cogsutils.is_dpy2:
-                    file = discord.File(
-                        fp=map,
-                        filename="map.png",
-                        description=str(localisation.raw.get("display_name", None)),
-                    )
-                else:
-                    file = discord.File(
-                        fp=map,
-                        filename="map.png",
-                    )
             else:
-                file = None
+                file = discord.File(
+                    fp=map,
+                    filename="map.png",
+                )
+        else:
+            file = None
 
-            end = time.monotonic()
-            embed.set_footer(text=f"Generated in {end - start}s.")
+        end = time.monotonic()
+        embed.set_footer(text=f"Generated in {end - start}s.")
 
         await ctx.reply(
             embed=embed, file=file, allowed_mentions=discord.AllowedMentions(replied_user=False)

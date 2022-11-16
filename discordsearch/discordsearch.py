@@ -134,42 +134,41 @@ class DiscordSearch(commands.Cog):
             bold("Limit:") + " " + f"{limit}",
         ]
         args_str = "\n".join(args_str)
-        async with ctx.typing():
-            start = monotonic()
-            messages: typing.List[discord.Message] = []
-            async for message in channel.history(
-                limit=limit, oldest_first=False, before=before, after=after
+        start = monotonic()
+        messages: typing.List[discord.Message] = []
+        async for message in channel.history(
+            limit=limit, oldest_first=False, before=before, after=after
+        ):
+            if authors is not None and message.author not in authors:
+                continue
+            if mentions is not None and not any(
+                [True for mention in message.mentions if mention in mentions]
             ):
-                if authors is not None and message.author not in authors:
-                    continue
-                if mentions is not None and not any(
-                    [True for mention in message.mentions if mention in mentions]
-                ):
-                    continue
-                if pinned is not None and not message.pinned == pinned:
-                    continue
-                if content is not None and not (
-                    content.lower() in message.content.lower()
-                    or any(
-                        [
-                            content.lower() in str(embed.to_dict()).lower()
-                            for embed in message.embeds
-                        ]
-                    )
-                ):
-                    continue
-                if regex is not None and regex.findall(message.content) == []:
-                    continue
-                if contains is not None:
-                    if "link" in contains:
-                        regex = URL_RE.findall(message.content.lower())
-                        if regex == []:
-                            continue
-                    if "embed" in contains and len(message.embeds) == 0:
+                continue
+            if pinned is not None and not message.pinned == pinned:
+                continue
+            if content is not None and not (
+                content.lower() in message.content.lower()
+                or any(
+                    [
+                        content.lower() in str(embed.to_dict()).lower()
+                        for embed in message.embeds
+                    ]
+                )
+            ):
+                continue
+            if regex is not None and regex.findall(message.content) == []:
+                continue
+            if contains is not None:
+                if "link" in contains:
+                    regex = URL_RE.findall(message.content.lower())
+                    if regex == []:
                         continue
-                    if "file" in contains and len(message.attachments) == 0:
-                        continue
-                messages.append(message)
+                if "embed" in contains and len(message.embeds) == 0:
+                    continue
+                if "file" in contains and len(message.attachments) == 0:
+                    continue
+            messages.append(message)
             embeds = []
             if len(messages) == 0:
                 not_found = True
@@ -253,75 +252,72 @@ class SearchArgs:
 
     async def convert(self, ctx: commands.Context, arguments):
         self.ctx = ctx
-        async with ctx.typing():
-            args = self.parse_arguments(arguments)
-            if args.authors is not None:
-                self.authors = []
-                for author in args.authors:
-                    author = await discord.ext.commands.MemberConverter().convert(ctx, author)
-                    if author is None:
-                        raise commands.BadArgument("`--author` must be a member.")
-                    self.authors.append(author)
+        args = self.parse_arguments(arguments)
+        if args.authors is not None:
+            self.authors = []
+            for author in args.authors:
+                author = await discord.ext.commands.MemberConverter().convert(ctx, author)
+                if author is None:
+                    raise commands.BadArgument("`--author` must be a member.")
+                self.authors.append(author)
+        else:
+            self.authors = None
+        if args.mentions is not None:
+            self.mentions = []
+            for mention in args.mentions:
+                mention = await discord.ext.commands.MemberConverter().convert(ctx, mention)
+                if mention is None:
+                    raise commands.BadArgument("`--mention` must be a member.")
+                self.mentions.append(mention)
+        else:
+            self.mentions = None
+        self.before = (
+            await self.DateConverter().convert(ctx, args.before)
+            if args.before is not None
+            else args.before
+        )
+        self.after = (
+            await self.DateConverter().convert(ctx, args.after)
+            if args.after is not None
+            else args.after
+        )
+        if args.pinned is not None:
+            args.pinned = str(args.pinned)
+            if args.pinned.lower() in ("true", "y", "yes"):
+                self.pinned = True
+            elif args.pinned.lower() in ("false", "n", "no"):
+                self.pinned = False
             else:
-                self.authors = None
-            if args.mentions is not None:
-                self.mentions = []
-                for mention in args.mentions:
-                    mention = await discord.ext.commands.MemberConverter().convert(ctx, mention)
-                    if mention is None:
-                        raise commands.BadArgument("`--mention` must be a member.")
-                    self.mentions.append(mention)
-            else:
-                self.mentions = None
-            self.before = (
-                await self.DateConverter().convert(ctx, args.before)
-                if args.before is not None
-                else args.before
-            )
-            self.after = (
-                await self.DateConverter().convert(ctx, args.after)
-                if args.after is not None
-                else args.after
-            )
-            if args.pinned is not None:
-                args.pinned = str(args.pinned)
-                if args.pinned.lower() in ("true", "y", "yes"):
-                    self.pinned = True
-                elif args.pinned.lower() in ("false", "n", "no"):
-                    self.pinned = False
-                else:
-                    raise commands.BadArgument("`--pinned` must be a bool.")
-            else:
-                self.pinned = args.pinned
-            self.content = "".join(args.content) if args.content is not None else args.content
-            if args.regex is not None:
-                try:
-                    self.regex = re.compile("".join(args.regex))
-                except Exception as e:
+                raise commands.BadArgument("`--pinned` must be a bool.")
+        else:
+            self.pinned = args.pinned
+        self.content = "".join(args.content) if args.content is not None else args.content
+        if args.regex is not None:
+            try:
+                self.regex = re.compile("".join(args.regex))
+            except Exception as e:
+                raise commands.BadArgument(f"`{args.regex}` is not a valid regex pattern.\n{e}")
+        else:
+            self.regex = None
+        if args.contains is not None:
+            self.contains = []
+            for contain in args.contains:
+                if contain.lower() not in ("link", "embed", "file"):
                     raise commands.BadArgument(
-                        _("`{args.regex}` is not a valid regex pattern.\n{e}").format(**locals())
+                        "`--contain` must be `link`, `embed` or `file`."
                     )
+                self.contains.append(contain.lower())
+        else:
+            self.contains = None
+        if args.limit is not None:
+            try:
+                self.limit = int(args.limit)
+            except ValueError:
+                raise commands.BadArgument("`--limit` must be a int.")
             else:
-                self.regex = None
-            if args.contains is not None:
-                self.contains = []
-                for contain in args.contains:
-                    if contain.lower() not in ("link", "embed", "file"):
-                        raise commands.BadArgument(
-                            "`--contain` must be `link`, `embed` or `file`."
-                        )
-                    self.contains.append(contain.lower())
-            else:
-                self.contains = None
-            if args.limit is not None:
-                try:
-                    self.limit = int(args.limit)
-                except ValueError:
-                    raise commands.BadArgument("`--limit` must be a int.")
-                else:
-                    self.limit = int(args.limit)
-            else:
-                self.limit = None
+                self.limit = int(args.limit)
+        else:
+            self.limit = None
         return self
 
     class DateConverter(commands.Converter):

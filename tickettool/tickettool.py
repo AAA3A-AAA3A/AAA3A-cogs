@@ -8,9 +8,8 @@ import typing  # isort:skip
 if CogsUtils().is_dpy2:
     from .AAA3A_utils import Buttons, Dropdown  # isort:skip
 else:
-    from dislash import ActionRow, Button, ButtonStyle, MessageInteraction  # isort:skip
+    from dislash import ActionRow, Button, ButtonStyle, MessageInteraction, ResponseType  # isort:skip
 
-import asyncio
 import datetime
 import io
 
@@ -820,62 +819,41 @@ class TicketTool(settings, commands.Cog):
     if CogsUtils().is_dpy2:
 
         async def on_button_interaction(self, view: Buttons, interaction: discord.Interaction):
+            permissions = interaction.channel.permissions_for(interaction.user)
+            if not permissions.read_messages and not permissions.send_messages:
+                return
+            permissions = interaction.channel.permissions_for(interaction.guild.me)
+            if not permissions.read_messages and not permissions.read_message_history:
+                return
+            await interaction.response.defer(ephemeral=True)
             if interaction.data["custom_id"] == "create_ticket_button":
-                permissions = interaction.channel.permissions_for(interaction.user)
-                if not permissions.read_messages and not permissions.send_messages:
-                    return
-                permissions = interaction.channel.permissions_for(interaction.guild.me)
-                if not permissions.read_messages and not permissions.read_message_history:
-                    return
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user, channel=interaction.channel, command="ticket create"
                 )
-                if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
-                    await interaction.response.send_message(
+                if not await ctx.command.can_run(ctx, change_permission_state=True):  # await discord.utils.async_all(check(ctx) for check in ctx.command.checks)
+                    await interaction.followup(
                         _("You are not allowed to execute this command."), ephemeral=True
                     )
                 else:
-                    await interaction.response.send_message(
+                    await interaction.followup(
                         _("You have chosen to create a ticket.").format(**locals()), ephemeral=True
                     )
             if interaction.data["custom_id"] == "close_ticket_button":
-                permissions = interaction.channel.permissions_for(interaction.user)
-                if not permissions.read_messages and not permissions.send_messages:
-                    return
-                permissions = interaction.channel.permissions_for(interaction.guild.me)
-                if not permissions.read_messages and not permissions.read_message_history:
-                    return
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user, channel=interaction.channel, command="ticket close"
                 )
-                if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
-                    await interaction.response.send_message(
-                        _("You are not allowed to execute this command."), ephemeral=True
-                    )
-                else:
-                    await interaction.response.send_message(
-                        _("You have chosen to close this ticket.").format(**locals()),
-                        ephemeral=True,
-                    )
+                await interaction.followup(
+                    _("You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command.").format(**locals()),
+                    ephemeral=True,
+                )
             if interaction.data["custom_id"] == "claim_ticket_button":
-                permissions = interaction.channel.permissions_for(interaction.user)
-                if not permissions.read_messages and not permissions.send_messages:
-                    return
-                permissions = interaction.channel.permissions_for(interaction.guild.me)
-                if not permissions.read_messages and not permissions.read_message_history:
-                    return
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user, channel=interaction.channel, command="ticket claim"
                 )
-                if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
-                    await interaction.response.send_message(
-                        _("You are not allowed to execute this command."), ephemeral=True
-                    )
-                else:
-                    await interaction.response.send_message(
-                        _("You have chosen to claim this ticket.").format(**locals()),
-                        ephemeral=True,
-                    )
+                await interaction.followup(
+                    _("You have chosen to claim this ticket. If this is not done, you do not have the necessary permissions to execute this command.").format(**locals()),
+                    ephemeral=True,
+                )
             return
 
         async def on_dropdown_interaction(
@@ -890,6 +868,7 @@ class TicketTool(settings, commands.Cog):
             permissions = interaction.channel.permissions_for(interaction.guild.me)
             if not permissions.read_messages and not permissions.read_message_history:
                 return
+            await interaction.response.defer(ephemeral=True)
             option = [option for option in view.dropdown._options if option.value == options[0]][0]
             reason = f"{option.emoji} - {option.label}"
             ctx = await self.cogsutils.invoke_command(
@@ -897,10 +876,8 @@ class TicketTool(settings, commands.Cog):
                 channel=interaction.channel,
                 command=f"ticket create {reason}",
             )
-            if not await discord.utils.async_all(
-                check(ctx) for check in ctx.command.checks
-            ) or not hasattr(ctx, "ticket"):
-                await interaction.response.send_message(
+            if not await ctx.command.can_run(ctx) or not hasattr(ctx, "ticket"):
+                await interaction.followup(
                     _("You are not allowed to execute this command."), ephemeral=True
                 )
             else:
@@ -919,7 +896,7 @@ class TicketTool(settings, commands.Cog):
                             )
                     except discord.HTTPException:
                         pass
-                await interaction.response.send_message(
+                await interaction.followup(
                     _("You have chosen to create a ticket with the reason `{reason}`.").format(
                         **locals()
                     ),
@@ -930,63 +907,41 @@ class TicketTool(settings, commands.Cog):
 
         @commands.Cog.listener()
         async def on_button_click(self, inter: MessageInteraction):
+            permissions = inter.channel.permissions_for(inter.author)
+            if not permissions.read_messages and not permissions.send_messages:
+                return
+            permissions = inter.channel.permissions_for(inter.guild.me)
+            if not permissions.read_messages and not permissions.read_message_history:
+                return
+            await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
             if inter.clicked_button.custom_id == "create_ticket_button":
-                permissions = inter.channel.permissions_for(inter.author)
-                if not permissions.read_messages and not permissions.send_messages:
-                    return
-                permissions = inter.channel.permissions_for(inter.guild.me)
-                if not permissions.read_messages and not permissions.read_message_history:
-                    return
                 ctx = await self.cogsutils.invoke_command(
                     author=inter.author, channel=inter.channel, command="ticket create"
                 )
-                if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
-                    await inter.create_response(
+                if not await ctx.command.can_run(ctx, change_permission_state=True):  # await discord.utils.async_all(check(ctx) for check in ctx.command.checks)
+                    await inter.followup(
                         _("You are not allowed to execute this command."), ephemeral=True
                     )
                 else:
-                    await inter.create_response(
+                    await inter.followup(
                         _("You have chosen to create a ticket.").format(**locals()), ephemeral=True
                     )
-            if inter.clicked_button.custom_id == "close_ticket_button":
-                permissions = inter.channel.permissions_for(inter.author)
-                if not permissions.read_messages and not permissions.send_messages:
-                    return
-                permissions = inter.channel.permissions_for(inter.guild.me)
-                if not permissions.read_messages and not permissions.read_message_history:
-                    return
+            elif inter.clicked_button.custom_id == "close_ticket_button":
                 ctx = await self.cogsutils.invoke_command(
                     author=inter.author, channel=inter.channel, command="ticket close"
                 )
-                if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
-                    await inter.create_response(
-                        _("You are not allowed to execute this command."), ephemeral=True
-                    )
-                else:
-                    await inter.create_response(
-                        _("You have chosen to close this ticket.").format(**locals()),
-                        ephemeral=True,
-                    )
-            if inter.clicked_button.custom_id == "claim_ticket_button":
-                permissions = inter.channel.permissions_for(inter.author)
-                if not permissions.read_messages and not permissions.send_messages:
-                    return
-                permissions = inter.channel.permissions_for(inter.guild.me)
-                if not permissions.read_messages and not permissions.read_message_history:
-                    return
+                await inter.followup(
+                    _("You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command.").format(**locals()),
+                    ephemeral=True,
+                )
+            elif inter.clicked_button.custom_id == "claim_ticket_button":
                 ctx = await self.cogsutils.invoke_command(
                     author=inter.author, channel=inter.channel, command="ticket claim"
                 )
-                commands.Command
-                if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
-                    await inter.create_response(
-                        _("You are not allowed to execute this command."), ephemeral=True
-                    )
-                else:
-                    await inter.create_response(
-                        _("You have chosen to claim this ticket.").format(**locals()),
-                        ephemeral=True,
-                    )
+                await inter.followup(
+                    _("You have chosen to claim this ticket. If this is not done, you do not have the necessary permissions to execute this command.").format(**locals()),
+                    ephemeral=True,
+                )
             return
 
         @commands.Cog.listener()
@@ -1001,14 +956,13 @@ class TicketTool(settings, commands.Cog):
             permissions = inter.channel.permissions_for(inter.guild.me)
             if not permissions.read_messages and not permissions.read_message_history:
                 return
+            await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
             option = inter.select_menu.selected_options[0]
             reason = f"{option.emoji} - {option.label}"
             ctx = await self.cogsutils.invoke_command(
                 author=inter.author, channel=inter.channel, command=f"ticket create {reason}"
             )
-            if not await discord.utils.async_all(
-                check(ctx) for check in ctx.command.checks
-            ) or not hasattr(ctx, "ticket"):
+            if not await ctx.command.can_run(ctx) or not hasattr(ctx, "ticket"):
                 await inter.create_response(
                     _("You are not allowed to execute this command."), ephemeral=True
                 )
@@ -1030,7 +984,7 @@ class TicketTool(settings, commands.Cog):
                             )
                     except discord.HTTPException:
                         pass
-                await inter.create_response(
+                await inter.followup(
                     _("You have chosen to create a ticket with the reason `{reason}`.").format(
                         **locals()
                     ),

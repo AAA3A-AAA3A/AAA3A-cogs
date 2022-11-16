@@ -61,8 +61,8 @@ class EditVoiceChannel(commands.Cog):
         """Commands for edit a voice channel."""
         pass
 
-    @editvoicechannel.command()
-    async def create(
+    @editvoicechannel.command(name="create")
+    async def editvoicechannel_create(
         self,
         ctx: commands.Context,
         category: typing.Optional[discord.CategoryChannel] = None,
@@ -83,8 +83,8 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @editvoicechannel.command()
-    async def clone(self, ctx: commands.Context, channel: discord.VoiceChannel, *, name: str):
+    @editvoicechannel.command(name="clone")
+    async def editvoicechannel_clone(self, ctx: commands.Context, channel: discord.VoiceChannel, *, name: str):
         """Clone a voice channel."""
         if not await self.check_voice_channel(ctx, channel):
             return
@@ -100,8 +100,8 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @editvoicechannel.command()
-    async def name(self, ctx: commands.Context, channel: discord.VoiceChannel, name: str):
+    @editvoicechannel.command(name="name")
+    async def editvoicechannel_name(self, ctx: commands.Context, channel: discord.VoiceChannel, name: str):
         """Edit voice channel name."""
         if not await self.check_voice_channel(ctx, channel):
             return
@@ -117,8 +117,8 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @editvoicechannel.command()
-    async def bitrate(self, ctx: commands.Context, channel: discord.VoiceChannel, bitrate: int):
+    @editvoicechannel.command(name="bitrate")
+    async def editvoicechannel_bitrate(self, ctx: commands.Context, channel: discord.VoiceChannel, bitrate: int):
         """Edit voice channel bitrate.
 
         It must be a number between 8000 and
@@ -143,8 +143,8 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @editvoicechannel.command()
-    async def nsfw(self, ctx: commands.Context, channel: discord.VoiceChannel, nsfw: bool):
+    @editvoicechannel.command(name="nsfw")
+    async def editvoicechannel_nsfw(self, ctx: commands.Context, channel: discord.VoiceChannel, nsfw: bool):
         """Edit voice channel nsfw."""
         if not await self.check_voice_channel(ctx, channel):
             return
@@ -160,8 +160,8 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @editvoicechannel.command()
-    async def userlimit(
+    @editvoicechannel.command(name="userlimit")
+    async def editvoicechannel_userlimit(
         self, ctx: commands.Context, channel: discord.VoiceChannel, user_limit: int
     ):
         """Edit voice channel user limit.
@@ -185,8 +185,8 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @editvoicechannel.command()
-    async def position(
+    @editvoicechannel.command(name="position")
+    async def editvoicechannel_position(
         self, ctx: commands.Context, channel: discord.VoiceChannel, *, position: int
     ):
         """Edit voice channel position.
@@ -219,8 +219,8 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @editvoicechannel.command()
-    async def syncpermissions(
+    @editvoicechannel.command(name="syncpermissions")
+    async def editvoicechannel_syncpermissions(
         self, ctx: commands.Context, channel: discord.VoiceChannel, sync_permissions: bool
     ):
         """Edit voice channel sync permissions."""
@@ -238,8 +238,8 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @editvoicechannel.command()
-    async def category(
+    @editvoicechannel.command(name="category")
+    async def editvoicechannel_scategory(
         self,
         ctx: commands.Context,
         channel: discord.VoiceChannel,
@@ -260,8 +260,8 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @editvoicechannel.command()
-    async def videoqualitymode(
+    @editvoicechannel.command(name="videoqualitymode")
+    async def editvoicechannel_videoqualitymode(
         self,
         ctx: commands.Context,
         channel: discord.VoiceChannel,
@@ -287,8 +287,8 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @editvoicechannel.command()
-    async def delete(
+    @editvoicechannel.command(name="delete")
+    async def editvoicechannel_delete(
         self,
         ctx: commands.Context,
         channel: discord.VoiceChannel,

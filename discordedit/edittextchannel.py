@@ -71,8 +71,8 @@ class EditTextChannel(commands.Cog):
         """Commands for edit a text channel."""
         pass
 
-    @edittextchannel.command()
-    async def create(
+    @edittextchannel.command(name="create")
+    async def edittextchannel_create(
         self,
         ctx: commands.Context,
         category: typing.Optional[discord.CategoryChannel] = None,
@@ -93,8 +93,8 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @edittextchannel.command()
-    async def clone(
+    @edittextchannel.command(name="clone")
+    async def edittextchannel_clone(
         self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], *, name: str
     ):
         """Clone a text channel."""
@@ -114,8 +114,8 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @edittextchannel.command()
-    async def name(
+    @edittextchannel.command(name="name")
+    async def edittextchannel_name(
         self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], name: str
     ):
         """Edit text channel name."""
@@ -135,8 +135,8 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @edittextchannel.command()
-    async def topic(
+    @edittextchannel.command(name="topic")
+    async def edittextchannel_topic(
         self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], *, topic: str
     ):
         """Edit text channel topic."""
@@ -156,8 +156,8 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @edittextchannel.command()
-    async def position(
+    @edittextchannel.command(name="position")
+    async def edittextchannel_position(
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
@@ -196,8 +196,8 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @edittextchannel.command()
-    async def nsfw(
+    @edittextchannel.command(name="nsfw")
+    async def edittextchannel_nsfw(
         self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], nsfw: bool
     ):
         """Edit text channel nsfw."""
@@ -217,8 +217,8 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @edittextchannel.command()
-    async def syncpermissions(
+    @edittextchannel.command(name="syncpermissions")
+    async def edittextchannel_syncpermissions(
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
@@ -241,8 +241,8 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @edittextchannel.command()
-    async def category(
+    @edittextchannel.command(name="category")
+    async def edittextchannel_category(
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
@@ -265,8 +265,8 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @edittextchannel.command()
-    async def slowmodedelay(
+    @edittextchannel.command(name="slowmodedelay")
+    async def edittextchannel_slowmodedelay(
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
@@ -296,8 +296,8 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @edittextchannel.command()
-    async def type(
+    @edittextchannel.command(name="type")
+    async def edittextchannel_type(
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
@@ -326,8 +326,8 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @edittextchannel.command()
-    async def defaultautoarchiveduration(
+    @edittextchannel.command(name="defaultautoarchiveduration")
+    async def edittextchannel_defaultautoarchiveduration(
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
@@ -353,8 +353,8 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
 
-    @edittextchannel.command()
-    async def delete(
+    @edittextchannel.command(name="delete")
+    async def edittextchannel_delete(
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],

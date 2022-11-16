@@ -54,8 +54,8 @@ class EditRole(commands.Cog):
         """Commands for edit a role."""
         pass
 
-    @editrole.command()
-    async def create(
+    @editrole.command(name="create")
+    async def editrole_create(
         self,
         ctx: commands.Context,
         colour: typing.Optional[discord.ext.commands.converter.ColourConverter] = None,
@@ -76,8 +76,8 @@ class EditRole(commands.Cog):
                 ).format(**locals())
             )
 
-    @editrole.command()
-    async def name(self, ctx: commands.Context, role: discord.Role, *, name: str):
+    @editrole.command(name="name")
+    async def editrole_name(self, ctx: commands.Context, role: discord.Role, *, name: str):
         """Edit role name."""
         if not await self.check_role(ctx, role):
             return
@@ -93,8 +93,8 @@ class EditRole(commands.Cog):
                 ).format(**locals())
             )
 
-    @editrole.command(aliases=["color"])
-    async def colour(self, ctx: commands.Context, role: discord.Role, colour: discord.Colour):
+    @editrole.command(name="colour", aliases=["color"])
+    async def editrole_colour(self, ctx: commands.Context, role: discord.Role, colour: discord.Colour):
         """Edit role colour."""
         if not await self.check_role(ctx, role):
             return
@@ -110,8 +110,8 @@ class EditRole(commands.Cog):
                 ).format(**locals())
             )
 
-    @editrole.command()
-    async def mentionable(self, ctx: commands.Context, role: discord.Role, mentionable: bool):
+    @editrole.command(name="mentionable")
+    async def editrole_mentionable(self, ctx: commands.Context, role: discord.Role, mentionable: bool):
         """Edit role mentionable."""
         if not await self.check_role(ctx, role):
             return
@@ -127,8 +127,8 @@ class EditRole(commands.Cog):
                 ).format(**locals())
             )
 
-    @editrole.command()
-    async def position(self, ctx: commands.Context, role: discord.Role, position: int):
+    @editrole.command(name="position")
+    async def editrole_position(self, ctx: commands.Context, role: discord.Role, position: int):
         """Edit role position.
 
         Warning: The role with a position 1 is the highest role in the Discord hierarchy.
@@ -159,8 +159,8 @@ class EditRole(commands.Cog):
                 ).format(**locals())
             )
 
-    @editrole.command()
-    async def permissions(self, ctx: commands.Context, role: discord.Role, permissions: int):
+    @editrole.command(name="permissions")
+    async def editrole_permissions(self, ctx: commands.Context, role: discord.Role, permissions: int):
         """Edit role permissions.
 
         Warning: You must use the permissions value in numbers (admnistrator=8).
@@ -190,8 +190,8 @@ class EditRole(commands.Cog):
                 ).format(**locals())
             )
 
-    @editrole.command()
-    async def delete(
+    @editrole.command(name="delete")
+    async def editrole_delete(
         self,
         ctx: commands.Context,
         role: discord.Role,

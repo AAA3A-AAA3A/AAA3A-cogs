@@ -178,7 +178,7 @@ class RolesButtons(commands.Cog):
     else:
 
         @commands.Cog.listener()
-        async def on_button_click(self, inter: discord.MessageInteraction):
+        async def on_button_click(self, inter: MessageInteraction):
             guild = inter.guild
             channel = inter.channel
             if inter.author is None:

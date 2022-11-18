@@ -8,7 +8,7 @@ import typing  # isort:skip
 if CogsUtils().is_dpy2:
     from .AAA3A_utils import Dropdown  # isort:skip
 else:
-    from dislash import SelectMenu, SelectOption, MessageInteraction  # isort:skip
+    from dislash import SelectMenu, SelectOption, MessageInteraction, ResponseType  # isort:skip
 
 from redbot.core import Config
 

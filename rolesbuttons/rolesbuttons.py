@@ -8,9 +8,7 @@ import typing  # isort:skip
 if CogsUtils().is_dpy2:
     from .AAA3A_utils import Buttons  # isort:skip
 else:
-    from dislash import ActionRow  # isort:skip
-
-import asyncio
+    from dislash import ActionRow, MessageInteraction, ResponseType  # isort:skip
 
 from redbot.core import Config
 
@@ -107,9 +105,11 @@ class RolesButtons(commands.Cog):
                 return
             if not interaction.data["custom_id"].startswith("roles_buttons"):
                 return
+            if not interaction.response.is_done():
+                await interaction.response.defer(ephemeral=True)
             config = await self.config.guild(interaction.guild).roles_buttons.all()
             if f"{interaction.channel.id}-{interaction.message.id}" not in config:
-                await interaction.response.send_message(_("This message is not in Config.").format(**locals()), ephemeral=True)
+                await interaction.followup(_("This message is not in Config.").format(**locals()), ephemeral=True)
                 return
             for _component in interaction.message.components:
                 for component in _component.to_dict()["components"]:
@@ -121,13 +121,13 @@ class RolesButtons(commands.Cog):
                         )
                         break
             if f"{emoji}" not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
-                await interaction.response.send_message(_("This emoji is not in Config.").format(**locals()), ephemeral=True)
+                await interaction.followup(_("This emoji is not in Config.").format(**locals()), ephemeral=True)
                 return
             role = interaction.guild.get_role(
                 config[f"{interaction.channel.id}-{interaction.message.id}"][f"{emoji}"]["role"]
             )
             if role is None:
-                await interaction.response.send_message(
+                await interaction.followup(
                     _(
                         "The role I have to put you in no longer exists. Please notify an administrator of this server."
                     ).format(**locals()),
@@ -143,7 +143,7 @@ class RolesButtons(commands.Cog):
                         ).format(**locals()),
                     )
                 except discord.HTTPException:
-                    await interaction.response.send_message(
+                    await interaction.followup(
                         _(
                             "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
                         ).format(**locals()),
@@ -151,7 +151,7 @@ class RolesButtons(commands.Cog):
                     )
                     return
                 else:
-                    await interaction.response.send_message(
+                    await interaction.followup(
                         _("You now have the role {role.mention} ({role.id}).").format(**locals()),
                         ephemeral=True,
                     )
@@ -162,7 +162,7 @@ class RolesButtons(commands.Cog):
                         reason=f"Role-button of {interaction.message.id} in {interaction.channel.id}.",
                     )
                 except discord.HTTPException:
-                    await interaction.response.send_message(
+                    await interaction.followup(
                         _(
                             "I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
                         ).format(**locals()),
@@ -170,7 +170,7 @@ class RolesButtons(commands.Cog):
                     )
                     return
                 else:
-                    await interaction.response.send_message(
+                    await interaction.followup(
                         _("I removed the role {role.mention} ({role.id}).").format(**locals()),
                         ephemeral=True,
                     )
@@ -178,7 +178,7 @@ class RolesButtons(commands.Cog):
     else:
 
         @commands.Cog.listener()
-        async def on_button_click(self, inter):
+        async def on_button_click(self, inter: discord.MessageInteraction):
             guild = inter.guild
             channel = inter.channel
             if inter.author is None:
@@ -189,9 +189,11 @@ class RolesButtons(commands.Cog):
                 return
             if not inter.component.custom_id.startswith("roles_buttons"):
                 return
+            if not inter.expired:
+                await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
             config = await self.config.guild(guild).roles_buttons.all()
             if f"{inter.channel.id}-{inter.message.id}" not in config:
-                await inter.respond(_("This message is not in Config.").format(**locals()), ephemeral=True)
+                await inter.followup(_("This message is not in Config.").format(**locals()), ephemeral=True)
                 return
             if getattr(inter.component.emoji, "id", None):
                 inter.component.emoji = str(inter.component.emoji.id)
@@ -200,7 +202,7 @@ class RolesButtons(commands.Cog):
                     "\N{VARIATION SELECTOR-16}"
                 )
             if f"{inter.component.emoji}" not in config[f"{inter.channel.id}-{inter.message.id}"]:
-                await inter.respond(_("This emoji is not in Config.").format(**locals()), ephemeral=True)
+                await inter.followup(_("This emoji is not in Config.").format(**locals()), ephemeral=True)
                 return
             role = inter.guild.get_role(
                 config[f"{inter.channel.id}-{inter.message.id}"][f"{inter.component.emoji}"][
@@ -208,7 +210,7 @@ class RolesButtons(commands.Cog):
                 ]
             )
             if role is None:
-                await inter.respond(
+                await inter.followup(
                     _(
                         "The role I have to put you in no longer exists. Please notify an administrator of this server."
                     ).format(**locals()),
@@ -224,7 +226,7 @@ class RolesButtons(commands.Cog):
                         ),
                     )
                 except discord.HTTPException:
-                    await inter.respond(
+                    await inter.followup(
                         _(
                             "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
                         ).format(**locals()),
@@ -232,17 +234,18 @@ class RolesButtons(commands.Cog):
                     )
                     return
                 else:
-                    await inter.respond(
+                    await inter.followup(
                         _("You now have the role {role.mention} ({role.id}).").format(**locals()),
                         ephemeral=True,
                     )
+                    return
             else:
                 try:
                     await inter.author.remove_roles(
                         role, reason=f"Role-button of {inter.message.id} in {channel.id}."
                     )
                 except discord.HTTPException:
-                    await inter.respond(
+                    await inter.followup(
                         _(
                             "I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
                         ).format(**locals()),
@@ -250,10 +253,11 @@ class RolesButtons(commands.Cog):
                     )
                     return
                 else:
-                    await inter.respond(
+                    await inter.followup(
                         _("I did remove the role {role.mention} ({role.id}).").format(**locals()),
                         ephemeral=True,
                     )
+                    return
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message):

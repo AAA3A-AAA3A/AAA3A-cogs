@@ -59,7 +59,7 @@ class UrlButtons(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message):
-        if not message.guild:
+        if message.guild is None:
             return
         config = await self.config.guild(message.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:

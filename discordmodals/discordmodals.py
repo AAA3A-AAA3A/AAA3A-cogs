@@ -248,11 +248,13 @@ class DiscordModals(commands.Cog):
         config = await self.config.guild(interaction.message.guild).modals()
         if f"{interaction.message.channel.id}-{interaction.message.id}" not in config:
             return
+        if not interaction.response.is_done():
+            await interaction.response.defer(ephemeral=True)
         config = config[f"{interaction.message.channel.id}-{interaction.message.id}"]
         try:
             channel = interaction.guild.get_channel(config["channel"])
             if channel is None:
-                await interaction.response.send_message(
+                await interaction.followup(
                     "The channel in which I was to send the results of this Modal no longer exists. Please notify an administrator of this server.",
                     ephemeral=True,
                 )
@@ -262,7 +264,7 @@ class DiscordModals(commands.Cog):
                 user=interaction.guild.me,
                 check=["embed_links", "send_messages", "view_channel"],
             ):
-                await interaction.response.send_message(
+                await interaction.followup(
                     "I don't have sufficient permissions in the destination channel (view channel, send messages, send embeds). Please notify an administrator of this server.",
                     ephemeral=True,
                 )
@@ -293,19 +295,17 @@ class DiscordModals(commands.Cog):
                 f"The Modal of the {interaction.message.guild.id}-{interaction.message.channel.id}-{interaction.message.id} message did not work properly.",
                 exc_info=e,
             )
-            await interaction.response.send_message(
+            await interaction.followup(
                 config["messages"]["error"] or "Sorry. An error has occurred.", ephemeral=True
             )
         else:
-            await interaction.response.send_message(
+            await interaction.followup(
                 config["messages"]["done"] or "Thank you for sending this Modal!", ephemeral=True
             )
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message):
-        try:
-            await self.cogsutils.check_in_listener(message, False)
-        except discord.ext.commands.BadArgument:
+        if message.guild is None:
             return
         config = await self.config.guild(message.guild).modals.all()
         if f"{message.channel.id}-{message.id}" not in config:

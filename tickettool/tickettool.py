@@ -235,6 +235,10 @@ class TicketTool(settings, commands.Cog):
                 config[key] = value
         if len(config["embed_button"]) == 0:
             config["embed_button"] = self.config._defaults[self.config.GUILD]["default_panel_settings"]["embed_button"]
+        else:
+            for key, value in self.config._defaults[self.config.GUILD]["default_panel_settings"]["embed_button"].items():
+                if key not in config:
+                    config[key] = value
         return config
 
     async def get_ticket(self, channel: discord.TextChannel):

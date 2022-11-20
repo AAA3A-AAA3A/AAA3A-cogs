@@ -256,7 +256,7 @@ class CogsUtils(commands.Cog):
                 else:
                     self.bot.remove_cog("AAA3A_utils")
                 cog = SharedCog(self.bot, CogsUtils)
-                await self.add_cog(bot=self.bot, cog=cog)
+                await cog.cogsutils.add_cog(bot=self.bot, cog=cog)
             except Exception as e:
                 self.cog.log.debug("Error when adding the AAA3A_utils cog.", exc_info=e)
         AAA3A_utils = self.bot.get_cog("AAA3A_utils")

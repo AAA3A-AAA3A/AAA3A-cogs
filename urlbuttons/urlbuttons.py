@@ -54,7 +54,7 @@ class UrlButtons(commands.Cog):
         self.config.register_guild(**self.url_buttons_guild)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.purge.very_hidden = True
+        self.purge.no_slash = True
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message):

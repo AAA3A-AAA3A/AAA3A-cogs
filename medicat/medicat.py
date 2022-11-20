@@ -292,7 +292,7 @@ class Medicat(commands.Cog):
         self.config.register_global(**self.medicat_global)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.update.very_hidden = True
+        self.update.no_slash = True
 
     @property
     def loops(self):

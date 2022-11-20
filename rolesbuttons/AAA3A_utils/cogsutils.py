@@ -479,7 +479,7 @@ class CogsUtils(commands.Cog):
         for _object in cog.walk_commands():
             if getattr(_object, "app_command", None) is not discord.utils.MISSING:
                 continue
-            if getattr(_object, "very_hidden", False):
+            if getattr(_object, "no_slash", False):
                 continue
             if _object.parent is None:
                 if _object.qualified_name in ignored_commands:
@@ -520,6 +520,8 @@ class CogsUtils(commands.Cog):
             else:
                 continue
             if _object.parent is not None:
+                if getattr(_object.parent, "no_slash", False):
+                    continue
                 if not _object.parent.invoke_without_command:
                     _object.checks.extend(_object.parent.checks)
                 _object.parent.app_command.remove_command(_object.app_command.name)
@@ -534,7 +536,7 @@ class CogsUtils(commands.Cog):
         for _object in cog.walk_commands():
             if getattr(_object, "app_command", None) is discord.utils.MISSING:
                 continue
-            if getattr(_object, "very_hidden", False):
+            if getattr(_object, "no_slash", False):
                 continue
             if isinstance(_object, discord.ext.commands.HybridGroup):
                 _object.with_app_command = False

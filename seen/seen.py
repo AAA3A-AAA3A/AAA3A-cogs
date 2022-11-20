@@ -84,7 +84,7 @@ class Seen(commands.Cog):
         }
 
         self.cogsutils = CogsUtils(cog=self)
-        self.purge.very_hidden = True
+        self.purge.no_slash = True
 
     @property
     def loops(self):

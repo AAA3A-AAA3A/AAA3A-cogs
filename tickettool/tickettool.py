@@ -101,7 +101,7 @@ class TicketTool(settings, commands.Cog):
         self.config.register_guild(**self.tickettool_guild)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.configuration.very_hidden = True
+        self.configuration.no_slash = True
 
     async def cog_load(self):
         await self.edit_config_schema()

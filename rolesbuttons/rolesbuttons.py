@@ -55,7 +55,7 @@ class RolesButtons(commands.Cog):
         self.config.register_guild(**self.roles_buttons_guild)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.purge.very_hidden = True
+        self.purge.no_slash = True
 
     async def cog_load(self):
         if self.cogsutils.is_dpy2:

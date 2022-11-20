@@ -886,7 +886,7 @@ class TicketTool(settings, commands.Cog):
                     panel = "main"
                 panels = await self.config.guild(interaction.guild).panels()
                 if panel not in panels:
-                    await interaction.followup.send("The panel for which this button was configured no longer exists.")
+                    await interaction.followup.send(_("The panel for which this button was configured no longer exists.").format(**locals()), ephemeral=True)
                     return
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user, channel=interaction.channel, command=f"ticket create {panel}"
@@ -934,12 +934,12 @@ class TicketTool(settings, commands.Cog):
                 await interaction.response.defer(ephemeral=True)
             dropdowns = await self.config.guild(interaction.guild).dropdowns()
             if f"{interaction.message.channel.id}-{interaction.message.id}" not in dropdowns:
-                await interaction.followup.send("This message is not in TicketTool config.")
+                await interaction.followup.send(_("This message is not in TicketTool config.").format(**locals()), ephemeral=True)
                 return
             panel = dropdowns[f"{interaction.message.channel.id}-{interaction.message.id}"][0].get("panel", "main")
             panels = await self.config.guild(interaction.guild).panels()
             if panel not in panels:
-                await interaction.followup.send("The panel for which this dropdown was configured no longer exists.")
+                await interaction.followup.send(_("The panel for which this dropdown was configured no longer exists.").format(**locals()), ephemeral=True)
                 return
             option = [option for option in view.options if option.value == options[0]][0]
             reason = f"{option.emoji} - {option.label}"
@@ -997,7 +997,7 @@ class TicketTool(settings, commands.Cog):
                     panel = "main"
                 panels = await self.config.guild(inter.guild).panels()
                 if panel not in panels:
-                    await inter.followup("The panel for which this button was configured no longer exists.")
+                    await inter.followup(_("The panel for which this button was configured no longer exists.").format(**locals()), ephemeral=True)
                     return
                 ctx = await self.cogsutils.invoke_command(
                     author=inter.author, channel=inter.channel, command=f"ticket create {panel}"
@@ -1044,12 +1044,12 @@ class TicketTool(settings, commands.Cog):
                 await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
             dropdowns = await self.config.guild(inter.guild).dropdowns()
             if f"{inter.message.channel.id}-{inter.message.id}" not in dropdowns:
-                await inter.followup("This message is not in TicketTool config.")
+                await inter.followup(_("This message is not in TicketTool Config.").format(**locals()), ephemeral=True)
                 return
             panel = dropdowns[f"{inter.message.channel.id}-{inter.message.id}"][0].get("panel", "main")
             panels = await self.config.guild(inter.guild).panels()
             if panel not in panels:
-                await inter.followup("The panel for which this button was configured no longer exists.")
+                await inter.followup(_("The panel for which this button was configured no longer exists.").format(**locals()), ephemeral=True)
                 return
             option = inter.select_menu.selected_options[0]
             reason = f"{option.emoji} - {option.label}"

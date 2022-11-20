@@ -1285,12 +1285,12 @@ class Seen(commands.Cog):
             "Users count": users_count,
             "Members count": members_count,
             "Roles count": roles_count,
-            "Channels count (+ categories channels)": channels_count,
+            "Text Channels count (+ categories channels)": channels_count,
             "Categories count (+ text channels)": categories_count,
             "Guilds count": guilds_count,
         }
         stats = [f"{key}: {value}" for key, value in stats.items()]
-        message = "--- Config Stats for Seen ---\n\n"
+        message = "---------- Config Stats for Seen ----------\n\n"
         message += "\n".join(stats)
         message = box(message)
         await ctx.send(message)

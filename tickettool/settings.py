@@ -709,21 +709,29 @@ class settings(commands.Cog):
                 await self.config.guild(ctx.guild).buttons.set(buttons_config)
             else:
                 dropdowns_config = await self.config.guild(ctx.guild).dropdowns.all()
+                all_options = []
+                for emoji, label, description, value in reason_options:
+                    try:
+                        int(emoji)
+                    except ValueError:
+                        e = emoji
+                    else:
+                        e = self.bot.get_emoji(int(emoji))
+                    all_options.append(
+                        {
+                            "label": label,
+                            "value": value,
+                            "description": description,
+                            "emoji": e,
+                            "default": False,
+                        }
+                    )
                 view = Dropdown(
                     timeout=None,
                     placeholder=config["embed_button"]["placeholder_dropdown"],
                     min_values=0,
                     max_values=1,
-                    options=[
-                        {
-                            "label": label,
-                            "value": value,
-                            "description": description,
-                            "emoji": emoji,
-                            "default": False,
-                        }
-                        for emoji, label, description, value in reason_options
-                    ],
+                    options=all_options,
                     function=self.on_dropdown_interaction,
                     infinity=True,
                     custom_id="create_ticket_dropdown",
@@ -774,18 +782,35 @@ class settings(commands.Cog):
                         )
                         return
                 dropdown_config = await self.config.guild(ctx.guild).dropdowns.all()
-                dropdown = SelectMenu(
-                    custom_id="create_ticket_dropdown",
-                    placeholder="Choose the reason for open a ticket.",
-                    min_values=0,
-                    max_values=1,
-                    options=[
-                        SelectOption(
-                            label=label, value=value, description=description, emoji=emoji
-                        )
-                        for emoji, label, description, value in reason_options
-                    ],
-                )
+                emoji = emoji if not hasattr(emoji, "id") else emoji.id
+                try:
+                    int(emoji)
+                except ValueError:
+                    dropdown = SelectMenu(
+                        custom_id="create_ticket_dropdown",
+                        placeholder="Choose the reason for open a ticket.",
+                        min_values=0,
+                        max_values=1,
+                        options=[
+                            SelectOption(
+                                label=label, value=value, description=description, emoji=emoji
+                            )
+                            for emoji, label, description, value in reason_options
+                        ],
+                    )
+                else:
+                    dropdown = SelectMenu(
+                        custom_id="create_ticket_dropdown",
+                        placeholder="Choose the reason for open a ticket.",
+                        min_values=0,
+                        max_values=1,
+                        options=[
+                            SelectOption(
+                                label=label, value=value, description=description, emoji=str(self.bot.get_emoji(emoji))
+                            )
+                            for emoji, label, description, value in reason_options
+                        ],
+                    )
                 if message is None:
                     message = await channel.send(embed=embed, components=[dropdown])
                 else:
@@ -793,7 +818,7 @@ class settings(commands.Cog):
                 dropdown_config[f"{channel.id}-{message.id}"] = [
                     {
                         "panel": panel,
-                        "emoji": emoji if not hasattr(emoji, "id") else emoji.id,
+                        "emoji": emoji,
                         "label": label,
                         "description": description,
                         "value": value,

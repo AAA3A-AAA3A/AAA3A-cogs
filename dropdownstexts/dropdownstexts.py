@@ -91,7 +91,7 @@ class DropdownsTexts(commands.Cog):
                 await interaction.response.defer(ephemeral=True)
             config = await self.config.guild(interaction.guild).dropdowns_texts.all()
             if f"{interaction.channel.id}-{interaction.message.id}" not in config:
-                await interaction.followup(_("This message is not in Config.").format(**locals()), ephemeral=True)
+                await interaction.followup.send(_("This message is not in Config.").format(**locals()), ephemeral=True)
                 return
             options = [
                 option for option in view.options_dict if option["label"] == selected_options[0]
@@ -99,7 +99,7 @@ class DropdownsTexts(commands.Cog):
             emoji = options[0]["emoji"]
             emoji = str(getattr(emoji, "id", emoji))
             if f"{emoji}" not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
-                await interaction.followup(_("This emoji is not in Config.").format(**locals()), ephemeral=True)
+                await interaction.followup.send(_("This emoji is not in Config.").format(**locals()), ephemeral=True)
                 return
             if interaction.channel.permissions_for(interaction.guild.me).embed_links:
                 embed: discord.Embed = discord.Embed()
@@ -109,9 +109,9 @@ class DropdownsTexts(commands.Cog):
                 embed.description = config[f"{interaction.channel.id}-{interaction.message.id}"][
                     f"{emoji}"
                 ]["text"]
-                await interaction.followup(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
             else:
-                await interaction.followup(
+                await interaction.followup.send(
                     config[f"{interaction.channel.id}-{interaction.message.id}"][f"{emoji}"][
                         "text"
                     ],

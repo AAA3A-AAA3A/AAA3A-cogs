@@ -72,19 +72,19 @@ class RolesButtons(commands.Cog):
                             buttons=[
                                 {
                                     "style": all_guilds[guild]["roles_buttons"][role_button][
-                                        f"{b}"
+                                        f"{emoji}"
                                     ]["style_button"]
                                     if "style_button"
-                                    in all_guilds[guild]["roles_buttons"][role_button][f"{b}"]
+                                    in all_guilds[guild]["roles_buttons"][role_button][f"{emoji}"]
                                     else 2,
                                     "label": all_guilds[guild]["roles_buttons"][role_button][
-                                        f"{b}"
+                                        f"{emoji}"
                                     ]["text_button"],
-                                    "emoji": f"{b}",
-                                    "custom_id": f"roles_buttons {b}",
+                                    "emoji": f"{emoji}",
+                                    "custom_id": f"roles_buttons {emoji}",
                                     "disabled": False,
                                 }
-                                for b in all_guilds[guild]["roles_buttons"][role_button]
+                                for emoji in all_guilds[guild]["roles_buttons"][role_button]
                             ],
                             function=self.on_button_interaction,
                             infinity=True,
@@ -108,7 +108,7 @@ class RolesButtons(commands.Cog):
                 await interaction.response.defer(ephemeral=True)
             config = await self.config.guild(interaction.guild).roles_buttons.all()
             if f"{interaction.channel.id}-{interaction.message.id}" not in config:
-                await interaction.followup(_("This message is not in Config.").format(**locals()), ephemeral=True)
+                await interaction.followup.send(_("This message is not in Config.").format(**locals()), ephemeral=True)
                 return
             for _component in interaction.message.components:
                 for component in _component.to_dict()["components"]:
@@ -120,13 +120,13 @@ class RolesButtons(commands.Cog):
                         )
                         break
             if f"{emoji}" not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
-                await interaction.followup(_("This emoji is not in Config.").format(**locals()), ephemeral=True)
+                await interaction.followup.send(_("This emoji is not in Config.").format(**locals()), ephemeral=True)
                 return
             role = interaction.guild.get_role(
                 config[f"{interaction.channel.id}-{interaction.message.id}"][f"{emoji}"]["role"]
             )
             if role is None:
-                await interaction.followup(
+                await interaction.followup.send(
                     _(
                         "The role I have to put you in no longer exists. Please notify an administrator of this server."
                     ).format(**locals()),
@@ -142,7 +142,7 @@ class RolesButtons(commands.Cog):
                         ).format(**locals()),
                     )
                 except discord.HTTPException:
-                    await interaction.followup(
+                    await interaction.followup.send(
                         _(
                             "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
                         ).format(**locals()),
@@ -150,7 +150,7 @@ class RolesButtons(commands.Cog):
                     )
                     return
                 else:
-                    await interaction.followup(
+                    await interaction.followup.send(
                         _("You now have the role {role.mention} ({role.id}).").format(**locals()),
                         ephemeral=True,
                     )
@@ -161,7 +161,7 @@ class RolesButtons(commands.Cog):
                         reason=f"Role-button of {interaction.message.id} in {interaction.channel.id}.",
                     )
                 except discord.HTTPException:
-                    await interaction.followup(
+                    await interaction.followup.send(
                         _(
                             "I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
                         ).format(**locals()),
@@ -169,7 +169,7 @@ class RolesButtons(commands.Cog):
                     )
                     return
                 else:
-                    await interaction.followup(
+                    await interaction.followup.send(
                         _("I removed the role {role.mention} ({role.id}).").format(**locals()),
                         ephemeral=True,
                     )
@@ -338,18 +338,11 @@ class RolesButtons(commands.Cog):
                 _("I can't do more than 25 roles-buttons for one message.").format(**locals())
             )
             return
-        if hasattr(emoji, "id"):
-            config[f"{message.channel.id}-{message.id}"][f"{emoji.id}"] = {
-                "role": role.id,
-                "style_button": int(style_button),
-                "text_button": text_button,
-            }
-        else:
-            config[f"{message.channel.id}-{message.id}"][f"{emoji}"] = {
-                "role": role.id,
-                "style_button": int(style_button),
-                "text_button": text_button,
-            }
+        config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = {
+            "role": role.id,
+            "style_button": int(style_button),
+            "text_button": text_button,
+        }
         if self.cogsutils.is_dpy2:
             await message.edit(
                 view=Buttons(
@@ -417,18 +410,11 @@ class RolesButtons(commands.Cog):
             )
             return
         for emoji, role in roles_buttons:
-            if hasattr(emoji, "id"):
-                config[f"{message.channel.id}-{message.id}"][f"{emoji.id}"] = {
-                    "role": role.id,
-                    "style_button": 2,
-                    "text_button": None,
-                }
-            else:
-                config[f"{message.channel.id}-{message.id}"][f"{emoji}"] = {
-                    "role": role.id,
-                    "style_button": 2,
-                    "text_button": None,
-                }
+            config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = {
+                "role": role.id,
+                "style_button": 2,
+                "text_button": None,
+            }
         if self.cogsutils.is_dpy2:
             await message.edit(
                 view=Buttons(
@@ -443,7 +429,7 @@ class RolesButtons(commands.Cog):
         await self.config.guild(ctx.guild).roles_buttons.set(config)
 
     @rolesbuttons.command()
-    async def remove(self, ctx: commands.Context, message: discord.Message, button: Emoji):
+    async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji):
         """Remove a role-button to a message."""
         if not message.author == ctx.guild.me:
             await ctx.send(
@@ -456,15 +442,12 @@ class RolesButtons(commands.Cog):
         if f"{message.channel.id}-{message.id}" not in config:
             await ctx.send(_("No role-button is configured for this message.").format(**locals()))
             return
-        if f"{getattr(button, 'id', button)}" not in config[f"{message.channel.id}-{message.id}"]:
+        if f"{getattr(emoji, 'id', emoji)}" not in config[f"{message.channel.id}-{message.id}"]:
             await ctx.send(
                 _("I wasn't watching for this button on this message.").format(**locals())
             )
             return
-        if hasattr(button, "id"):
-            del config[f"{message.channel.id}-{message.id}"][f"{button.id}"]
-        else:
-            del config[f"{message.channel.id}-{message.id}"][f"{button}"]
+        del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
         if not config[f"{message.channel.id}-{message.id}"] == {}:
             if self.cogsutils.is_dpy2:
                 await message.edit(

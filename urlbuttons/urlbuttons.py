@@ -112,16 +112,10 @@ class UrlButtons(commands.Cog):
                 _("I can't do more than 25 url-buttons for one message.").format(**locals())
             )
             return
-        if hasattr(emoji, "id"):
-            config[f"{message.channel.id}-{message.id}"][f"{emoji.id}"] = {
-                "url": url,
-                "text_button": text_button,
-            }
-        else:
-            config[f"{message.channel.id}-{message.id}"][f"{emoji}"] = {
-                "url": url,
-                "text_button": text_button,
-            }
+        config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = {
+            "url": url,
+            "text_button": text_button,
+        }
         if self.cogsutils.is_dpy2:
             await message.edit(
                 view=Buttons(timeout=None, buttons=self.get_buttons(config, message))
@@ -171,16 +165,10 @@ class UrlButtons(commands.Cog):
             )
             return
         for emoji, url in url_buttons:
-            if hasattr(emoji, "id"):
-                config[f"{message.channel.id}-{message.id}"][f"{emoji.id}"] = {
-                    "url": url,
-                    "text_button": None,
-                }
-            else:
-                config[f"{message.channel.id}-{message.id}"][f"{emoji}"] = {
-                    "url": url,
-                    "text_button": None,
-                }
+            config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = {
+                "url": url,
+                "text_button": None,
+            }
         if self.cogsutils.is_dpy2:
             await message.edit(
                 view=Buttons(timeout=None, buttons=self.get_buttons(config, message))
@@ -190,7 +178,7 @@ class UrlButtons(commands.Cog):
         await self.config.guild(ctx.guild).url_buttons.set(config)
 
     @urlbuttons.command()
-    async def remove(self, ctx: commands.Context, message: discord.Message, button: Emoji):
+    async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji):
         """Remove a url-button to a message."""
         if not message.author == ctx.guild.me:
             await ctx.send(
@@ -203,15 +191,12 @@ class UrlButtons(commands.Cog):
         if f"{message.channel.id}-{message.id}" not in config:
             await ctx.send(_("No url-button is configured for this message.").format(**locals()))
             return
-        if f"{getattr(button, 'id', button)}" not in config[f"{message.channel.id}-{message.id}"]:
+        if f"{getattr(emoji, 'id', emoji)}" not in config[f"{message.channel.id}-{message.id}"]:
             await ctx.send(
                 _("I wasn't watching for this button on this message.").format(**locals())
             )
             return
-        if hasattr(button, "id"):
-            del config[f"{message.channel.id}-{message.id}"][f"{button.id}"]
-        else:
-            del config[f"{message.channel.id}-{message.id}"][f"{button}"]
+        del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
         if not config[f"{message.channel.id}-{message.id}"] == {}:
             if self.cogsutils.is_dpy2:
                 await message.edit(

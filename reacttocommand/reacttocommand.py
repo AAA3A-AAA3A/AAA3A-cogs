@@ -8,7 +8,6 @@ import asyncio
 
 from redbot.core import Config
 from redbot.core.utils.chat_formatting import inline
-from redbot.core.utils.menus import start_adding_reactions
 
 try:
     from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
@@ -207,7 +206,7 @@ class ReactToCommand(commands.Cog):
 
     @reacttocommand.command()
     async def add(
-        self, ctx: commands.Context, message: discord.Message, react: Emoji, *, command: str
+        self, ctx: commands.Context, message: discord.Message, emoji: Emoji, *, command: str
     ):
         """Add a command-reaction to a message.
         There should be no prefix in the command.
@@ -235,7 +234,7 @@ class ReactToCommand(commands.Cog):
                 await ctx.send(_("You have not specified a correct command.").format(**locals()))
                 return
         try:
-            await start_adding_reactions(message, [react])
+            await ctx.message.add_reaction(emoji)
         except discord.HTTPException:
             await ctx.send(
                 _(
@@ -246,32 +245,28 @@ class ReactToCommand(commands.Cog):
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
-        config[f"{message.channel.id}-{message.id}"][f"{react}"] = command
+        config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = command
         await self.config.guild(ctx.guild).react_commands.set(config)
 
     @reacttocommand.command()
-    async def remove(self, ctx: commands.Context, message: discord.Message, react: Emoji):
+    async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji):
         """Remove a command-reaction to a message."""
-        await start_adding_reactions(message, [react])
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
             await ctx.send(
                 _("No command-reaction is configured for this message.").format(**locals())
             )
             return
-        if f"{getattr(react, 'id', react)}" not in config[f"{message.channel.id}-{message.id}"]:
+        if f"{getattr(emoji, 'id', emoji)}" not in config[f"{message.channel.id}-{message.id}"]:
             await ctx.send(
                 _("I wasn't watching for this reaction on this message.").format(**locals())
             )
             return
-        if hasattr(react, "id"):
-            del config[f"{message.channel.id}-{message.id}"][f"{react.id}"]
-        else:
-            del config[f"{message.channel.id}-{message.id}"][f"{react}"]
+        del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
         if config[f"{message.channel.id}-{message.id}"] == {}:
             del config[f"{message.channel.id}-{message.id}"]
         try:
-            await message.remove_reaction(f"{react}", ctx.guild.me)
+            await message.remove_reaction(f"{emoji}", ctx.guild.me)
         except discord.HTTPException:
             pass
         await self.config.guild(ctx.guild).react_commands.set(config)

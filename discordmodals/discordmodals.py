@@ -253,7 +253,7 @@ class DiscordModals(commands.Cog):
         try:
             channel = interaction.guild.get_channel(config["channel"])
             if channel is None:
-                await interaction.followup(
+                await interaction.followup.send(
                     "The channel in which I was to send the results of this Modal no longer exists. Please notify an administrator of this server.",
                     ephemeral=True,
                 )
@@ -263,7 +263,7 @@ class DiscordModals(commands.Cog):
                 user=interaction.guild.me,
                 check=["embed_links", "send_messages", "view_channel"],
             ):
-                await interaction.followup(
+                await interaction.followup.send(
                     "I don't have sufficient permissions in the destination channel (view channel, send messages, send embeds). Please notify an administrator of this server.",
                     ephemeral=True,
                 )
@@ -294,11 +294,11 @@ class DiscordModals(commands.Cog):
                 f"The Modal of the {interaction.message.guild.id}-{interaction.message.channel.id}-{interaction.message.id} message did not work properly.",
                 exc_info=e,
             )
-            await interaction.followup(
+            await interaction.followup.send(
                 config["messages"]["error"] or "Sorry. An error has occurred.", ephemeral=True
             )
         else:
-            await interaction.followup(
+            await interaction.followup.send(
                 config["messages"]["done"] or "Thank you for sending this Modal!", ephemeral=True
             )
 

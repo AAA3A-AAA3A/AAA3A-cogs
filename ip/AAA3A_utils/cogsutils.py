@@ -235,7 +235,7 @@ class CogsUtils(commands.Cog):
                 exc_info=e,
             )
         try:
-            to_update, local_commit, online_commit = await self.to_update()
+            to_update, local_commit, online_commit, online_commit_for_each_files = await self.to_update()
             if to_update:
                 self.cog.log.warning(
                     f"Your {self.cog.qualified_name} cog, from {self.repo_name}, is out of date. You can update your cogs with the 'cog update' command in Discord."
@@ -405,7 +405,7 @@ class CogsUtils(commands.Cog):
 
         return nb_commits, version
 
-    async def to_update(self, cog: typing.Optional[typing.Union[commands.Cog, str]] = None, local_commit: typing.Optional[str] = None):
+    async def to_update(self, cog: typing.Optional[typing.Union[commands.Cog, str]] = None, repo_url: typing.Optional[str] = None):
         if cog is None:
             cog = self.cog
         if isinstance(cog, str):
@@ -413,56 +413,80 @@ class CogsUtils(commands.Cog):
         else:
             cog_name = cog.qualified_name.lower()
 
-        downloader = self.bot.get_cog("Downloader")
-        if downloader is None:
-            raise self.DownloaderNotLoaded("The cog downloader is not loaded.")
+        if repo_url is None:
+            downloader = self.bot.get_cog("Downloader")
+            if downloader is None:
+                raise self.DownloaderNotLoaded("The cog downloader is not loaded.")
 
-        if await self.bot._cog_mgr.find_cog(cog_name) is None:
-            raise ValueError("This cog was not found in any cog path.")
+            if await self.bot._cog_mgr.find_cog(cog_name) is None:
+                raise ValueError("This cog was not found in any cog path.")
 
-        local = discord.utils.get(await downloader.installed_cogs(), name=cog_name)
-        if local is None:
-            raise ValueError("This cog is not installed on this bot with Downloader.")
-        if local_commit is None:
+            local = discord.utils.get(await downloader.installed_cogs(), name=cog_name)
+            if local is None:
+                raise ValueError("This cog is not installed on this bot with Downloader.")
             local_commit = local.commit
-        repo = local.repo
-        if repo is None:
-            raise ValueError("This cog has not been installed from the cog Downloader.")
+            repo = local.repo
+            if repo is None:
+                raise ValueError("This cog has not been installed from the cog Downloader.")
+            repo_url = repo.url
+        else:
+            cog = None
+            cog_name = None
 
-        repo_owner, repo_name, repo_branch = (
-            re.compile(
-                r"(?:https?:\/\/)?git(?:hub|lab).com\/(?P<repo_owner>[A-z0-9-_.]*)\/(?P<repo>[A-z0-9-_.]*)(?:\/tree\/(?P<repo_branch>[A-z0-9-_.]*))?",
-                re.I,
-            ).findall(repo.url)
-        )[0]
+        if isinstance(repo_url, str):
+            repo_owner, repo_name, repo_branch = (
+                re.compile(
+                    r"(?:https?:\/\/)?git(?:hub|lab).com\/(?P<repo_owner>[A-z0-9-_.]*)\/(?P<repo>[A-z0-9-_.]*)(?:\/tree\/(?P<repo_branch>[A-z0-9-_.]*))?",
+                    re.I,
+                ).findall(repo_url)
+            )[0]
+        else:
+            repo_owner, repo_name, repo_branch = repo_url
         repo_branch = repo.branch
         async with aiohttp.ClientSession() as session:
             async with session.get(
-                f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}",
+                f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents?ref={repo_branch}",  # f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}",
                 timeout=3,
             ) as r:
                 online = await r.json()
-        if online is None or not isinstance(online, typing.Dict) or "object" not in online or "sha" not in online["object"]:
+        if online is None or not isinstance(online, typing.List):
             raise asyncio.IncompleteReadError("No results could be retrieved from the git api.", None)
-        online_commit = online["object"]["sha"]
+        online_commit_for_each_files = {file["name"]: file["sha"] for file in online if file["type"] in ["dir", "file"]}
+        if cog is None and cog_name is None:
+            return online_commit_for_each_files
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                f"https://api.github.com/repos/{repo_owner}/{repo_name}/compare/{local_commit}...{online_commit}",
-                timeout=3,
-            ) as r:
-                compare = await r.json()
-        if compare is None or not isinstance(compare, typing.Dict) or "files" not in compare or not isinstance(compare["files"], typing.List):
+        if cog_name not in online_commit_for_each_files:
             raise asyncio.IncompleteReadError("No results could be retrieved from the git api.", None)
-        to_update = True
-        if len(compare["files"]) == 0:
-            to_update = False
-        files_diff = [file["filename"] for file in compare["files"]]
-        cogs_diff = [cog.split("/")[0] for cog in files_diff]
-        if cog_name not in cogs_diff:
-            to_update = False
+        online_commit = online["sha"]
 
-        return to_update, local_commit, online_commit
+        # async with aiohttp.ClientSession() as session:
+        #     async with session.get(
+        #         f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}",
+        #         timeout=3,
+        #     ) as r:
+        #         online = await r.json()
+        # if online is None or not isinstance(online, typing.Dict) or "object" not in online or "sha" not in online["object"]:
+        #     raise asyncio.IncompleteReadError("No results could be retrieved from the git api.", None)
+        # online_commit = online["object"]["sha"]
+
+        # async with aiohttp.ClientSession() as session:
+        #     async with session.get(
+        #         f"https://api.github.com/repos/{repo_owner}/{repo_name}/compare/{local_commit}...{online_commit}",
+        #         timeout=3,
+        #     ) as r:
+        #         compare = await r.json()
+        # if compare is None or not isinstance(compare, typing.Dict) or "files" not in compare or not isinstance(compare["files"], typing.List):
+        #     raise asyncio.IncompleteReadError("No results could be retrieved from the git api.", None)
+        # to_update = True
+        # if len(compare["files"]) == 0:
+        #     to_update = False
+        # files_diff = [file["filename"] for file in compare["files"]]
+        # cogs_diff = [cog.split("/")[0] for cog in files_diff]
+        # if cog_name not in cogs_diff:
+        #     to_update = False
+        to_update = local_commit != online_commit
+
+        return to_update, local_commit, online_commit, online_commit_for_each_files
 
     async def add_hybrid_commands(self, cog: typing.Optional[commands.Cog] = None):
         if cog is None:

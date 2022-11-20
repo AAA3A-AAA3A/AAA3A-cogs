@@ -882,24 +882,24 @@ class TicketTool(settings, commands.Cog):
                     panel = "main"
                 panels = await self.config.guild(interaction.guild).panels()
                 if panel not in panels:
-                    await interaction.followup("The panel for which this button was configured no longer exists.")
+                    await interaction.followup.send("The panel for which this button was configured no longer exists.")
                     return
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user, channel=interaction.channel, command=f"ticket create {panel}"
                 )
                 if not await ctx.command.can_run(ctx, change_permission_state=True):  # await discord.utils.async_all(check(ctx) for check in ctx.command.checks)
-                    await interaction.followup(
+                    await interaction.followup.send(
                         _("You are not allowed to execute this command."), ephemeral=True
                     )
                 else:
-                    await interaction.followup(
+                    await interaction.followup.send(
                         _("You have chosen to create a ticket.").format(**locals()), ephemeral=True
                     )
             if interaction.data["custom_id"] == "close_ticket_button":
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user, channel=interaction.channel, command="ticket close"
                 )
-                await interaction.followup(
+                await interaction.followup.send(
                     _("You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command.").format(**locals()),
                     ephemeral=True,
                 )
@@ -907,7 +907,7 @@ class TicketTool(settings, commands.Cog):
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user, channel=interaction.channel, command="ticket claim"
                 )
-                await interaction.followup(
+                await interaction.followup.send(
                     _("You have chosen to claim this ticket. If this is not done, you do not have the necessary permissions to execute this command.").format(**locals()),
                     ephemeral=True,
                 )
@@ -930,14 +930,14 @@ class TicketTool(settings, commands.Cog):
                 await interaction.response.defer(ephemeral=True)
             dropdowns = await self.config.guild(interaction.guild).dropdowns()
             if f"{interaction.message.channel.id}-{interaction.message.id}" not in dropdowns:
-                await interaction.followup("This message is not in TicketTool config.")
+                await interaction.followup.send("This message is not in TicketTool config.")
                 return
-            panel = dropdowns[f"{interaction.message.channel.id}-{interaction.message.id}"].get("panel", "main")
+            panel = dropdowns[f"{interaction.message.channel.id}-{interaction.message.id}"][0].get("panel", "main")
             panels = await self.config.guild(interaction.guild).panels()
             if panel not in panels:
-                await interaction.followup("The panel for which this dropdown was configured no longer exists.")
+                await interaction.followup.send("The panel for which this dropdown was configured no longer exists.")
                 return
-            option = [option for option in view.dropdown._options if option.value == options[0]][0]
+            option = [option for option in view.options if option.value == options[0]][0]
             reason = f"{option.emoji} - {option.label}"
             ctx = await self.cogsutils.invoke_command(
                 author=interaction.user,
@@ -947,7 +947,7 @@ class TicketTool(settings, commands.Cog):
             if not await discord.utils.async_all(
                 check(ctx) for check in ctx.command.checks
             ) or not hasattr(ctx, "ticket"):
-                await interaction.followup(
+                await interaction.followup.send(
                     _("You are not allowed to execute this command."), ephemeral=True
                 )
                 return
@@ -966,7 +966,7 @@ class TicketTool(settings, commands.Cog):
                         )
                 except discord.HTTPException:
                     pass
-            await interaction.followup(
+            await interaction.followup.send(
                 _("You have chosen to create a ticket with the reason `{reason}`.").format(
                     **locals()
                 ),
@@ -1042,7 +1042,7 @@ class TicketTool(settings, commands.Cog):
             if f"{inter.message.channel.id}-{inter.message.id}" not in dropdowns:
                 await inter.followup("This message is not in TicketTool config.")
                 return
-            panel = dropdowns[f"{inter.message.channel.id}-{inter.message.id}"].get("panel", "main")
+            panel = dropdowns[f"{inter.message.channel.id}-{inter.message.id}"][0].get("panel", "main")
             panels = await self.config.guild(inter.guild).panels()
             if panel not in panels:
                 await inter.followup("The panel for which this button was configured no longer exists.")

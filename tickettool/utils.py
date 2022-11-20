@@ -1,11 +1,14 @@
-import re
-from errno import EXDEV
-from operator import truth
-
 import discord  # isort:skip
 import typing  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
+
+import re
+
+try:
+    from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
+except ImportError:
+    from emoji import EMOJI_DATA  # emoji>=2.0.0
 
 
 _ = Translator("TicketTool", __file__)
@@ -71,6 +74,14 @@ class utils:
         return overwrites
 
 
+class Emoji(commands.EmojiConverter):
+    async def convert(self, ctx: commands.Context, argument: str):
+        argument = argument.strip("\N{VARIATION SELECTOR-16}")
+        if argument in EMOJI_DATA:
+            return argument
+        return await super().convert(ctx, argument)
+
+
 class EmojiLabelDescriptionValueConverter(discord.ext.commands.Converter):
     async def convert(
         self, ctx: commands.Context, argument: str
@@ -93,9 +104,6 @@ class EmojiLabelDescriptionValueConverter(discord.ext.commands.Converter):
                     "Emoji Label must be a emoji followed by an string, and optionnaly by a description and a value (for rename ticket channel), separated by either `;`, `,`, `|`, or `-`."
                 ).format(**locals())
             )
-        try:
-            emoji = await commands.PartialEmojiConverter().convert(ctx, emoji.strip())
-        except commands.BadArgument:
-            emoji = str(emoji)
+        emoji = await Emoji().convert(ctx, emoji)
         label = str(label)
         return emoji, label, description, value

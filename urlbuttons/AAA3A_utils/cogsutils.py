@@ -223,8 +223,6 @@ class CogsUtils(commands.Cog):
         Adds dev environment values, slash commands add Views.
         """
         await self.bot.wait_until_red_ready()
-        # if hasattr(self, "cog_loaded"):
-        #     await self.cog_loaded.wait()
         DevEnv.add_dev_env_values(bot=self.bot, cog=self.cog)
         try:
             nb_commits, version = await self.get_cog_version()
@@ -253,7 +251,6 @@ class CogsUtils(commands.Cog):
             )
         if not self.cog.qualified_name == "AAA3A_utils":
             try:
-                self.bot.remove_command("getallfor")
                 if self.is_dpy2:
                     await self.bot.remove_cog("AAA3A_utils")
                 else:

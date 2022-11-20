@@ -86,7 +86,6 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         self.config.register_global(**self.AAA3A_utils_global)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     async def check_if_slash(self, cog: commands.Cog):
         if not self.cogsutils.is_dpy2:

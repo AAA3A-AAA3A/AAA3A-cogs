@@ -13,7 +13,7 @@ _ = Translator("TicketTool", __file__)
 
 class utils:
     async def get_overwrites(self, ticket):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
+        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
         overwrites = {
             ticket.owner: discord.PermissionOverwrite(
                 view_channel=True,

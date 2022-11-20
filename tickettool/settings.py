@@ -1,4 +1,5 @@
 from .AAA3A_utils import CogsUtils  # isort:skip
+from .AAA3A_utils import Menu  # isort:skip
 
 if CogsUtils().is_dpy2:
     from .AAA3A_utils import Buttons, Dropdown  # isort:skip
@@ -26,8 +27,20 @@ else:
     hybrid_group = commands.group
 
 
+class PanelConverter(commands.Converter):
+
+    async def convert(self, ctx: commands.Context, arg: str):
+        if len(arg) > 10:
+            raise commands.BadArgument(_("This panel does not exist.").format(**locals()))
+        panels = await ctx.bot.get_cog("TicketTool").config.guild(ctx.guild).panels()
+        if arg.lower() not in panels:
+            raise commands.BadArgument(_("This panel does not exist.").format(**locals()))
+        return arg.lower()
+
+
 @cog_i18n(_)
 class settings(commands.Cog):
+
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
     @hybrid_group(name="setticket", aliases=["ticketset"])
@@ -35,13 +48,99 @@ class settings(commands.Cog):
         """Configure TicketTool for your server."""
         pass
 
+    @configuration.command(aliases=["addprofile"])
+    async def profileadd(self, ctx: commands.Context, panel: str):
+        """Create a new panel with defaults settings."""
+        if len(panel) > 10:
+            await ctx.send(_("The name of a panel must be less than or equal to 10 characters.").format(**locals()))
+            return
+        panels = await self.config.guild(ctx.guild).panels()
+        if panel in panels:
+            await ctx.send(_("This panel already exists.").format(**locals()))
+            return
+        await self.config.guild(ctx.guild).panels.set_raw(panel, value=self.config._defaults[self.config.GUILD]["default_panel_settings"]) 
+
+    @configuration.command(aliases=["cloneprofile"])
+    async def profileclone(self, ctx: commands.Context, old_panel: PanelConverter, panel: str):
+        """Clone an existing panel with his settings."""
+        if len(panel) > 10:
+            await ctx.send(_("The name of a panel must be less than or equal to 10 characters.").format(**locals()))
+            return
+        panels = await self.config.guild(ctx.guild).panels()
+        if panel in panels:
+            await ctx.send(_("This panel already exists.").format(**locals()))
+            return
+        await self.config.guild(ctx.guild).panels.set_raw(panel, value=await self.config.guild(ctx.guild).panels.get_raw(old_panel))
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "last_nb", value=0)
+
+    @configuration.command(aliases=["removeprofile"])
+    async def profileremove(self, ctx: commands.Context, panel: PanelConverter, confirmation: typing.Optional[bool]=False):
+        """Remove an existing panel."""
+        config = await self.get_config(ctx.guild, panel)
+        if not confirmation:
+            embed: discord.Embed = discord.Embed()
+            embed.title = _(
+                "Do you really want to remove this panel?"
+            ).format(**locals())
+            embed.description = _(
+                "All tickets associated with this panel will be removed from the Config, but the channels will still exist. Commands related to the tickets will no longer work."
+            ).format(**locals())
+            embed.color = config["color"]
+            response = await self.cogsutils.ConfirmationAsk(ctx, embed=embed)
+            if not response:
+                return
+        await self.config.guild(ctx.guild).panels.clear_raw(panel)
+        data = await self.config.guild(ctx.guild).tickets.all()
+        to_remove = []
+        for channel in data:
+            if data[channel].get("panel", "main") == panel:
+                to_remove.append(channel)
+        for channel in to_remove:
+            try:
+                del data[channel]
+            except KeyError:
+                pass
+        await self.config.guild(ctx.guild).tickets.set(data)
+
+    @configuration.command(aliases=["renameprofile"])
+    async def profilerename(self, ctx: commands.Context, old_panel: PanelConverter, panel: str):
+        """Clone an existing panel with his settings."""
+        if len(panel) > 10:
+            await ctx.send(_("The name of a panel must be less than or equal to 10 characters.").format(**locals()))
+            return
+        panels = await self.config.guild(ctx.guild).panels()
+        if panel in panels:
+            await ctx.send(_("A panel with this name already exists.").format(**locals()))
+            return
+        await self.config.guild(ctx.guild).panels.set_raw(panel, value=await self.config.guild(ctx.guild).get_raw(old_panel))
+        await self.config.guild(ctx.guild).panels.clear_raw(old_panel)
+        data = await self.config.guild(ctx.guild).tickets.all()
+        to_edit = []
+        for channel in data:
+            if data[channel]["panel"] == old_panel:
+                to_edit.append(channel)
+        for channel in to_edit:
+            try:
+                data[channel]["panel"] = panel
+            except KeyError:
+                pass
+        await self.config.guild(ctx.guild).tickets.set(data)
+
+    @configuration.command(aliases=["listprofiles"])
+    async def profileslist(self, ctx: commands.Context):
+        """List the existing panels."""
+        panels = await self.config.guild(ctx.guild).panels()
+        message = "---------- Profiles in TicketTool ----------\n\n"
+        message += "\n".join([f"- {panel}" for panel in panels])
+        await Menu(pages=message, box_language_py=True).start(ctx)
+
     @configuration.command(name="enable", usage="<true_or_false>")
-    async def enable(self, ctx: commands.Context, state: bool):
+    async def enable(self, ctx: commands.Context, panel: PanelConverter, state: bool):
         """Enable or disable Ticket System
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
-        config = await self.config.guild(ctx.guild).settings.all()
+        config = await self.get_config(ctx.guild, panel)
 
         if (
             config["category_open"] is None
@@ -64,7 +163,7 @@ class settings(commands.Cog):
             await ctx.send(_("Ticket System is already set on {state}.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).settings.enable.set(state)
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "enable", value=state)
         await ctx.send(_("Ticket System state registered: {state}.").format(**locals()))
 
     @configuration.command(
@@ -72,7 +171,7 @@ class settings(commands.Cog):
         usage="<text_channel_or_'none'>",
     )
     async def logschannel(
-        self, ctx: commands.Context, *, channel: typing.Optional[discord.TextChannel] = None
+        self, ctx: commands.Context, panel: PanelConverter, *, channel: typing.Optional[discord.TextChannel] = None
     ):
         """Set a channel where events are registered.
 
@@ -80,7 +179,7 @@ class settings(commands.Cog):
         You can also use "None" if you wish to remove the logging channel.
         """
         if channel is None:
-            await self.config.guild(ctx.guild).settings.logschannel.clear()
+            await self.config.guild(ctx.guild).panels.clear_raw(panel, "logschannel")
             await ctx.send(_("Logging channel removed.").format(**locals()))
             return
 
@@ -102,12 +201,12 @@ class settings(commands.Cog):
             )
             return
 
-        await self.config.guild(ctx.guild).settings.logschannel.set(channel.id)
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "logschannel", value=channel.id)
         await ctx.send(_("Logging channel registered: {channel.mention}.").format(**locals()))
 
     @configuration.command(usage="<category_or_'none'>")
     async def categoryopen(
-        self, ctx: commands.Context, *, category: typing.Optional[discord.CategoryChannel] = None
+        self, ctx: commands.Context, panel: PanelConverter, *, category: typing.Optional[discord.CategoryChannel] = None
     ):
         """Set a category where open tickets are created.
 
@@ -115,16 +214,16 @@ class settings(commands.Cog):
         You can also use "None" if you wish to remove the open category.
         """
         if category is None:
-            await self.config.guild(ctx.guild).settings.category_open.clear()
+            await self.config.guild(ctx.guild).panels.clear_raw(panel, "category_open")
             await ctx.send(_("Category Open removed.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).settings.category_open.set(category.id)
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "category_open", value=category.id)
         await ctx.send(_("Category Open registered: {category.name}.").format(**locals()))
 
     @configuration.command(usage="<category_or_'none'>")
     async def categoryclose(
-        self, ctx: commands.Context, *, category: typing.Optional[discord.CategoryChannel] = None
+        self, ctx: commands.Context, panel: PanelConverter, *, category: typing.Optional[discord.CategoryChannel] = None
     ):
         """Set a category where close tickets are created.
 
@@ -132,16 +231,16 @@ class settings(commands.Cog):
         You can also use "None" if you wish to remove the close category.
         """
         if category is None:
-            await self.config.guild(ctx.guild).settings.category_close.clear()
+            await self.config.guild(ctx.guild).panels.clear_raw(panel, "category_close")
             await ctx.send(_("Category Close removed.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).settings.category_close.set(category.id)
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "category_close", value=category.id)
         await ctx.send(_("Category Close registered: {category.name}.").format(**locals()))
 
     @configuration.command(usage="<role_or_'none'>")
     async def adminrole(
-        self, ctx: commands.Context, *, role: typing.Optional[discord.Role] = None
+        self, ctx: commands.Context, panel: PanelConverter, *, role: typing.Optional[discord.Role] = None
     ):
         """Set a role for administrators of the ticket system.
 
@@ -149,16 +248,16 @@ class settings(commands.Cog):
         You can also use "None" if you wish to remove the admin role.
         """
         if role is None:
-            await self.config.guild(ctx.guild).settings.admin_role.clear()
+            await self.config.guild(ctx.guild).panels.clear_raw(panel, "admin_role")
             await ctx.send(_("Admin Role removed.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).settings.admin_role.set(role.id)
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "admin_role", value=role.id)
         await ctx.send(_("Admin Role registered: {role.name}.").format(**locals()))
 
     @configuration.command(usage="<role_or_'none'>")
     async def supportrole(
-        self, ctx: commands.Context, *, role: typing.Optional[discord.Role] = None
+        self, ctx: commands.Context, panel: PanelConverter, *, role: typing.Optional[discord.Role] = None
     ):
         """Set a role for helpers of the ticket system.
 
@@ -166,16 +265,16 @@ class settings(commands.Cog):
         You can also use "None" if you wish to remove the support role.
         """
         if role is None:
-            await self.config.guild(ctx.guild).settings.support_role.clear()
+            await self.config.guild(ctx.guild).panels.clear_raw(panel, "support_role")
             await ctx.send(_("Support Role removed.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).settings.support_role.set(role.id)
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "support_role", value=role.id)
         await ctx.send(_("Support Role registered: {role.name}.").format(**locals()))
 
     @configuration.command(usage="<role_or_'none'>")
     async def ticketrole(
-        self, ctx: commands.Context, *, role: typing.Optional[discord.Role] = None
+        self, ctx: commands.Context, panel: PanelConverter, *, role: typing.Optional[discord.Role] = None
     ):
         """Set a role for creaters of a ticket.
 
@@ -183,47 +282,47 @@ class settings(commands.Cog):
         You can also use "None" if you wish to remove the ticket role.
         """
         if role is None:
-            await self.config.guild(ctx.guild).settings.ticket_role.clear()
+            await self.config.guild(ctx.guild).panels.clear_raw(panel, "ticket_role")
             await ctx.send(_("Ticket Role removed.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).settings.ticket_role.set(role.id)
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "ticket_role", value=role.id)
         await ctx.send(_("Ticket Role registered: {role.name}.").format(**locals()))
 
     @configuration.command(usage="<role_or_'none'>")
-    async def viewrole(self, ctx: commands.Context, *, role: typing.Optional[discord.Role] = None):
+    async def viewrole(self, ctx: commands.Context, panel: PanelConverter, *, role: typing.Optional[discord.Role] = None):
         """Set a role for viewers of tickets.
 
         ``role``: Role.
         You can also use "None" if you wish to remove the view role.
         """
         if role is None:
-            await self.config.guild(ctx.guild).settings.view_role.clear()
+            await self.config.guild(ctx.guild).panels.clear_raw(panel, "view_role")
             await ctx.send(_("View Role removed.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).settings.view_role.set(role.id)
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "view_role", value=role.id)
         await ctx.send(_("View Role registered: {role.name}.").format(**locals()))
 
     @configuration.command(usage="<role_or_'none'>")
-    async def pingrole(self, ctx: commands.Context, *, role: typing.Optional[discord.Role] = None):
+    async def pingrole(self, ctx: commands.Context, panel: PanelConverter, *, role: typing.Optional[discord.Role] = None):
         """Set a role for pings on ticket creation.
 
         ``role``: Role.
         You can also use "None" if you wish to remove the ping role.
         """
         if role is None:
-            await self.config.guild(ctx.guild).settings.ping_role.clear()
+            await self.config.guild(ctx.guild).panels.clear_raw(panel, "ping_role")
             await ctx.send(_("Ping Role removed.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).settings.ping_role.set(role.id)
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "ping_role", value=role.id)
         await ctx.send(_("Ping Role registered: {role.name}.").format(**locals()))
 
     @configuration.command(usage="<int>")
-    async def nbmax(self, ctx: commands.Context, nb_max: int):
+    async def nbmax(self, ctx: commands.Context, panel: PanelConverter, nb_max: int):
         """Max Number of tickets for a member."""
-        config = await self.config.guild(ctx.guild).settings.all()
+        config = await self.get_config(ctx.guild, panel)
 
         actual_nb_max = config["nb_max"]
         if actual_nb_max is nb_max:
@@ -232,76 +331,93 @@ class settings(commands.Cog):
             )
             return
 
-        await self.config.guild(ctx.guild).settings.nb_max.set(nb_max)
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "nb_max", value=nb_max)
         await ctx.send(_("Max Number of tickets registered: {nb_max}.").format(**locals()))
 
     @configuration.command(usage="<true_or_false>")
-    async def modlog(self, ctx: commands.Context, state: bool):
+    async def modlog(self, ctx: commands.Context, panel: PanelConverter, state: bool):
         """Enable or disable Modlog.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
-        config = await self.config.guild(ctx.guild).settings.all()
+        config = await self.get_config(ctx.guild, panel)
 
         actual_create_modlog = config["create_modlog"]
         if actual_create_modlog is state:
             await ctx.send(_("Modlog is already set on {state}.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).settings.create_modlog.set(state)
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "create_modlog", value=state)
         await ctx.send(_("Modlog state registered: {state}.").format(**locals()))
 
     @configuration.command(usage="<true_or_false>")
-    async def closeonleave(self, ctx: commands.Context, state: bool):
+    async def closeonleave(self, ctx: commands.Context, panel: PanelConverter, state: bool):
         """Enable or disable Close on Leave.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
-        config = await self.config.guild(ctx.guild).settings.all()
+        config = await self.get_config(ctx.guild, panel)
 
         actual_close_on_leave = config["close_on_leave"]
         if actual_close_on_leave is state:
             await ctx.send(_("Close on Leave is already set on {state}.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).settings.close_on_leave.set(state)
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "close_on_leave", value=state)
         await ctx.send(_("Close on Leave state registered: {state}.").format(**locals()))
 
     @configuration.command(usage="<true_or_false>")
-    async def createonreact(self, ctx: commands.Context, state: bool):
+    async def createonreact(self, ctx: commands.Context, panel: PanelConverter, state: bool):
         """Enable or disable Create on React.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
+        Remember that this feature will only work for the `main` profile!
         """
-        config = await self.config.guild(ctx.guild).settings.all()
+        config = await self.get_config(ctx.guild, panel)
 
         actual_create_on_react = config["create_on_react"]
         if actual_create_on_react is state:
             await ctx.send(_("Create on React is already set on {state}.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).settings.create_on_react.set(state)
-        await ctx.send(_("Create on React state registered: {state}.").format(**locals()))
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "create_on_react", value=state)
+        await ctx.send(_("Create on React state registered: {state}. Remember that this feature will only work for the `main` profile!").format(**locals()))
 
     @configuration.command(usage="<true_or_false>")
-    async def usercanclose(self, ctx: commands.Context, state: bool):
+    async def usercanclose(self, ctx: commands.Context, panel: PanelConverter, state: bool):
         """Enable or disable User Can Close.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
-        config = await self.config.guild(ctx.guild).settings.all()
+        config = await self.get_config(ctx.guild, panel)
 
         actual_user_can_close = config["user_can_close"]
         if actual_user_can_close is state:
             await ctx.send(_("User Can Close is already set on {state}.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).settings.user_can_close.set(state)
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "user_can_close", value=state)
         await ctx.send(_("User Can Close state registered: {state}.").format(**locals()))
+
+    @configuration.command(usage="<true_or_false>")
+    async def deleteonclose(self, ctx: commands.Context, panel: PanelConverter, state: bool):
+        """Enable or disable Delete On Close.
+
+        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
+        """
+        config = await self.get_config(ctx.guild, panel)
+
+        actual_delete_on_close = config["delete_on_close"]
+        if actual_delete_on_close is state:
+            await ctx.send(_("Delete On Close is already set on {state}.").format(**locals()))
+            return
+
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "delete_on_close", value=state)
+        await ctx.send(_("Delete On Close state registered: {state}.").format(**locals()))
 
     @configuration.command()
     async def dynamicchannelname(
-        self, ctx: commands.Context, dynamic_channel_name: typing.Optional[str] = None
+        self, ctx: commands.Context, panel: PanelConverter, dynamic_channel_name: typing.Optional[str] = None
     ):
         """Set the Dinamic Ticket Channel Name.
 
@@ -321,28 +437,39 @@ class settings(commands.Cog):
         If, when creating the ticket, an error occurs with this name, another name will be used automatically.
         """
         if dynamic_channel_name is None:
-            await self.config.guild(ctx.guild).settings.dynamic_channel_name.clear()
-            await ctx.tick(message="Done.")
+            await self.config.guild(ctx.guild).panels.clear_raw(panel, "dynamic_channel_name")
+            
             return
 
-        await self.config.guild(ctx.guild).settings.dynamic_channel_name.set(dynamic_channel_name)
-        await ctx.tick(message="Done.")
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "dynamic_channel_name", value=dynamic_channel_name)
+        
 
     @configuration.command()
     async def custommessage(
-        self, ctx: commands.Context, *, custom_message: typing.Optional[str] = None
+        self, ctx: commands.Context, panel: PanelConverter, *, custom_message: typing.Optional[str] = None
     ):
         """Set the Custom Message.
 
-        `{ticket.id}`, `{ticket.created_by.display_name}`, `{ticket.guild.name}`...
+        `{ticket_id}` - Ticket number
+        `{owner_display_name}` - user's nick or name
+        `{owner_name}` - user's name
+        `{owner_id}` - user's id
+        `{guild_name}` - guild's name
+        `{guild_id}` - guild's id
+        `{bot_display_name}` - bot's nick or name
+        `{bot_name}` - bot's name
+        `{bot_id}` - bot's id
+        `{shortdate}` - mm-dd
+        `{longdate}` - mm-dd-yyyy
+        `{time}` - hh-mm AM/PM according to bot host system time
         """
         if custom_message is None:
-            await self.config.guild(ctx.guild).settings.custom_message.clear()
-            await ctx.tick(message="Done.")
+            await self.config.guild(ctx.guild).panels.clear_raw(panel, "custom_message")
+            
             return
 
-        await self.config.guild(ctx.guild).settings.custom_message.set(custom_message)
-        await ctx.tick(message="Done.")
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "custom_message", value=custom_message)
+        
 
     @configuration.command(
         aliases=["colour", "col", "embedcolor", "embedcolour"], usage="<color_or_'none'>"
@@ -350,6 +477,7 @@ class settings(commands.Cog):
     async def color(
         self,
         ctx: commands.Context,
+        panel: PanelConverter,
         *,
         color: typing.Optional[discord.ext.commands.converter.ColorConverter] = None,
     ):
@@ -359,8 +487,8 @@ class settings(commands.Cog):
         You can also use "None" if you wish to reset the color.
         """
         if color is None:
-            await self.config.guild(ctx.guild).settings.color.clear()
-            config = await self.config.guild(ctx.guild).settings.all()
+            await self.config.guild(ctx.guild).panels.clear_raw(panel, "color")
+            config = await self.config.guild(ctx.guild).panels.get_raw(panel)
             actual_color = config["color"]
             actual_thumbnail = config["thumbnail"]
             embed: discord.Embed = discord.Embed()
@@ -372,8 +500,8 @@ class settings(commands.Cog):
             await ctx.send(embed=embed)
             return
 
-        await self.config.guild(ctx.guild).settings.color.set(color.value)
-        config = await self.config.guild(ctx.guild).settings.all()
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "color", value=color.value)
+        config = await self.config.guild(ctx.guild).panels.get_raw(panel)
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
         embed: discord.Embed = discord.Embed()
@@ -385,15 +513,15 @@ class settings(commands.Cog):
         await ctx.send(embed=embed)
 
     @configuration.command(aliases=["picture", "thumb", "link"], usage="<link_or_'none'>")
-    async def thumbnail(self, ctx: commands.Context, *, link: typing.Optional[str] = None):
+    async def thumbnail(self, ctx: commands.Context, panel: PanelConverter, *, link: typing.Optional[str] = None):
         """Set a thumbnail for the embeds.
 
         ``link``: Thumbnail link.
         You can also use "None" if you wish to reset the thumbnail.
         """
         if link is None:
-            await self.config.guild(ctx.guild).settings.thumbnail.clear()
-            config = await self.config.guild(ctx.guild).settings.all()
+            await self.config.guild(ctx.guild).panels.clear_raw(panel, "thumbnail")
+            config = await self.config.guild(ctx.guild).panels.get_raw(panel)
             actual_thumbnail = config["thumbnail"]
             actual_color = config["color"]
             embed: discord.Embed = discord.Embed()
@@ -405,8 +533,8 @@ class settings(commands.Cog):
             await ctx.send(embed=embed)
             return
 
-        await self.config.guild(ctx.guild).settings.thumbnail.set(link)
-        config = await self.config.guild(ctx.guild).settings.all()
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "thumbnail", value=link)
+        config = await self.config.guild(ctx.guild).panels.get_raw(panel)
         actual_thumbnail = config["thumbnail"]
         actual_color = config["color"]
         embed: discord.Embed = discord.Embed()
@@ -418,41 +546,42 @@ class settings(commands.Cog):
         await ctx.send(embed=embed)
 
     @configuration.command(name="auditlogs", aliases=["logsaudit"], usage="<true_or_false>")
-    async def showauthor(self, ctx: commands.Context, state: bool):
+    async def showauthor(self, ctx: commands.Context, panel: PanelConverter, state: bool):
         """Make the author of each action concerning a ticket appear in the server logs.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
-        config = await self.config.guild(ctx.guild).settings.all()
+        config = await self.get_config(ctx.guild, panel)
 
         actual_audit_logs = config["audit_logs"]
         if actual_audit_logs is state:
             await ctx.send(_("Audit Logs is already set on {state}.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).settings.audit_logs.set(state)
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "audit_logs", value=state)
         await ctx.send(_("Audit Logs state registered: {state}.").format(**locals()))
 
     @configuration.command(name="closeconfirmation", aliases=["confirm"], usage="<true_or_false>")
-    async def confirmation(self, ctx: commands.Context, state: bool):
+    async def confirmation(self, ctx: commands.Context, panel: PanelConverter, state: bool):
         """Enable or disable Close Confirmation.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
-        config = await self.config.guild(ctx.guild).settings.all()
+        config = await self.get_config(ctx.guild, panel)
 
         actual_close_confirmation = config["close_confirmation"]
         if actual_close_confirmation is state:
             await ctx.send(_("Close Confirmation is already set on {state}.").format(**locals()))
             return
 
-        await self.config.guild(ctx.guild).settings.close_confirmation.set(state)
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "close_confirmation", value=state)
         await ctx.send(_("Close Confirmation state registered: {state}.").format(**locals()))
 
     @configuration.command(aliases=["buttonembed"])
     async def embedbutton(
         self,
         ctx: commands.Context,
+        panel: PanelConverter,
         where: commands.Literal["title", "description", "image", "placeholderdropdown"],
         *,
         text: typing.Optional[str] = None,
@@ -460,35 +589,35 @@ class settings(commands.Cog):
         """Set the settings for the button embed."""
         if text is None:
             if where == "title":
-                await self.config.guild(ctx.guild).settings.embed_button.title.clear()
+                await self.config.guild(ctx.guild).panels.clear_raw(panel, "embed_button", "title")
             elif where == "description":
-                await self.config.guild(ctx.guild).settings.embed_button.description.clear()
+                await self.config.guild(ctx.guild).panels.clear_raw(panel, "embed_button", "description")
             elif where == "image":
-                await self.config.guild(ctx.guild).settings.embed_button.image.clear()
+                await self.config.guild(ctx.guild).panels.clear_raw(panel, "embed_button", "image")
             elif where == "placeholderdropdown":
                 await self.config.guild(
                     ctx.guild
-                ).settings.embed_button.placeholder_dropdown.clear()
-            await ctx.tick(message="Done.")
+                ).panels.clear_raw(panel, "embed_button", "placeholder_dropdown")
+            
             return
 
         if where == "title":
-            await self.config.guild(ctx.guild).settings.embed_button.title.set(text)
+            await self.config.guild(ctx.guild).panels.set_raw(panel, "embed_button", "title", value=text)
         elif where == "description":
-            await self.config.guild(ctx.guild).settings.embed_button.description.set(text)
+            await self.config.guild(ctx.guild).panels.set_raw(panel, "embed_button", "description", value=text)
         elif where == "image":
-            await self.config.guild(ctx.guild).settings.embed_button.image.set(text)
+            await self.config.guild(ctx.guild).panels.set_raw(panel, "embed_button", "image", value=text)
         elif where == "placeholderdropdown":
-            await self.config.guild(ctx.guild).settings.embed_button.placeholder_dropdown.set(text)
-        await ctx.tick(message="Done.")
+            await self.config.guild(ctx.guild).panels.set_raw(panel, "embed_button", "placeholder_dropdown", value=text)
+        
 
     @configuration.command(usage="<true_or_false>")
-    async def renamechanneldropdown(self, ctx: commands.Context, state: bool):
+    async def renamechanneldropdown(self, ctx: commands.Context, panel: PanelConverter, state: bool):
         """Enable or disable Rename Channel Dropdown.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
-        config = await self.config.guild(ctx.guild).settings.all()
+        config = await self.get_config(ctx.guild, panel)
 
         actual_rename_channel_dropdown = config["embed_button"]["rename_channel_dropdown"]
         if actual_rename_channel_dropdown is state:
@@ -497,13 +626,14 @@ class settings(commands.Cog):
             )
             return
 
-        await self.config.guild(ctx.guild).settings.embed_button.rename_channel_dropdown.set(state)
+        await self.config.guild(ctx.guild).panels.set_raw(panel, "embed_button", "rename_channel_dropdown", value=state)
         await ctx.send(_("Rename Channel Dropdown state registered: {state}.").format(**locals()))
 
     @configuration.command(name="message")
     async def message(
         self,
         ctx: commands.Context,
+        panel: PanelConverter,
         channel: typing.Optional[discord.TextChannel],
         message: typing.Optional[discord.ext.commands.converter.MessageConverter],
         reason_options: commands.Greedy[EmojiLabelDescriptionValueConverter],
@@ -525,7 +655,7 @@ class settings(commands.Cog):
                 )
             )
             return
-        config = await self.config.guild(ctx.guild).settings.all()
+        config = await self.get_config(ctx.guild, panel)
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
         embed: discord.Embed = discord.Embed()
@@ -545,6 +675,7 @@ class settings(commands.Cog):
         )
         if self.cogsutils.is_dpy2:
             if reason_options is None:
+                buttons_config = await self.config.guild(ctx.guild).buttons.all()
                 view = Buttons(
                     timeout=None,
                     buttons=[
@@ -560,11 +691,13 @@ class settings(commands.Cog):
                     infinity=True,
                 )
                 if message is None:
-                    await channel.send(embed=embed, view=view)
+                    message = await channel.send(embed=embed, view=view)
                 else:
                     await message.edit(view=view)
+                buttons_config[f"{message.channel.id}-{message.id}"] = {"panel": panel}
+                await self.config.guild(ctx.guild).buttons.set(buttons_config)
             else:
-                dropdown_config = await self.config.guild(ctx.guild).dropdowns.all()
+                dropdowns_config = await self.config.guild(ctx.guild).dropdowns.all()
                 view = Dropdown(
                     timeout=None,
                     placeholder=config["embed_button"]["placeholder_dropdown"],
@@ -588,8 +721,9 @@ class settings(commands.Cog):
                     message = await channel.send(embed=embed, view=view)
                 else:
                     await message.edit(view=view)
-                dropdown_config[f"{channel.id}-{message.id}"] = [
+                dropdowns_config[f"{channel.id}-{message.id}"] = [
                     {
+                        "panel": panel,
                         "emoji": emoji if not hasattr(emoji, "id") else emoji.id,
                         "label": label,
                         "description": description,
@@ -597,9 +731,10 @@ class settings(commands.Cog):
                     }
                     for emoji, label, description, value in reason_options
                 ]
-                await self.config.guild(ctx.guild).dropdowns.set(dropdown_config)
+                await self.config.guild(ctx.guild).dropdowns.set(dropdowns_config)
         else:
             if reason_options is None:
+                buttons_config = await self.config.guild(ctx.guild).buttons.all()
                 button = ActionRow(
                     Button(
                         style=ButtonStyle.grey,
@@ -610,9 +745,11 @@ class settings(commands.Cog):
                     )
                 )
                 if message is None:
-                    await channel.send(embed=embed, components=[button])
+                    message = await channel.send(embed=embed, components=[button])
                 else:
                     await message.edit(components=[button])
+                buttons_config[f"{message.channel.id}-{message.id}"] = {"panel": panel}
+                await self.config.guild(ctx.guild).buttons.set(buttons_config)
             else:
                 dropdown_config = await self.config.guild(ctx.guild).dropdowns.all()
                 dropdown = SelectMenu(
@@ -633,6 +770,7 @@ class settings(commands.Cog):
                     await message.edit(components=[dropdown])
                 dropdown_config[f"{channel.id}-{message.id}"] = [
                     {
+                        "panel": panel,
                         "emoji": emoji if not hasattr(emoji, "id") else emoji.id,
                         "label": label,
                         "description": description,
@@ -641,7 +779,6 @@ class settings(commands.Cog):
                     for emoji, label, description, value in reason_options
                 ]
                 await self.config.guild(ctx.guild).dropdowns.set(dropdown_config)
-        await ctx.tick(message="Done.")
 
     async def check_permissions_in_channel(
         self, permissions: typing.List[str], channel: discord.TextChannel
@@ -658,13 +795,12 @@ class settings(commands.Cog):
     @commands.is_owner()
     @configuration.command(name="purge", hidden=True)
     async def command_purge(
-        self, ctx: commands.Context, confirmation: typing.Optional[bool] = False
+        self, ctx: commands.Context, panel: typing.Optional[PanelConverter]=None, confirmation: typing.Optional[bool] = False
     ):
         """Purge all existing tickets in the config. Does not delete any channels.
 
         All commands associated with the tickets will no longer work.
         """
-        config = await self.bot.get_cog("TicketTool").get_config(ctx.guild)
         if not confirmation:
             embed: discord.Embed = discord.Embed()
             embed.title = _("Do you really want to purge all the tickets in the config?").format(
@@ -673,7 +809,7 @@ class settings(commands.Cog):
             embed.description = _(
                 "Does not delete any channels. All commands associated with the tickets will no longer work."
             ).format(**locals())
-            embed.color = config["color"]
+            embed.color = 0x01D758
             embed.set_author(
                 name=ctx.author.name,
                 url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url,
@@ -686,8 +822,13 @@ class settings(commands.Cog):
                 return
         to_remove = []
         data = await ctx.bot.get_cog("TicketTool").config.guild(ctx.guild).tickets.all()
-        for count, channel in enumerate(data, start=1):
+        for channel in data:
+            ticket = await self.get_ticket(channel)
+            if panel is not None:
+                if not ticket.panel == panel:
+                    continue
             to_remove.append(channel)
+        count = len(to_remove)
         for channel in to_remove:
             del data[str(channel)]
         await ctx.bot.get_cog("TicketTool").config.guild(ctx.guild).tickets.set(data)

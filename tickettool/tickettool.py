@@ -10,6 +10,7 @@ if CogsUtils().is_dpy2:
 else:
     from dislash import ActionRow, Button, ButtonStyle, MessageInteraction, ResponseType  # isort:skip
 
+from copy import deepcopy
 import datetime
 import io
 
@@ -49,8 +50,13 @@ class TicketTool(settings, commands.Cog):
             identifier=205192943327321000143939875896557571750,  # 937480369417
             force_registration=True,
         )
-        self.ticket_guild = {
-            "settings": {
+        self.CONFIG_SCHEMA = 2
+        self.tickettool_global = {
+            "CONFIG_SCHEMA": None,
+        }
+        self.tickettool_guild = {
+            "panels": {},
+            "default_panel_settings": {
                 "enable": False,
                 "logschannel": None,
                 "category_open": None,
@@ -65,6 +71,7 @@ class TicketTool(settings, commands.Cog):
                 "close_on_leave": False,
                 "create_on_react": False,
                 "user_can_close": True,
+                "delete_on_close": False,
                 "color": 0x01D758,
                 "thumbnail": "http://www.quidd.it/wp-content/uploads/2017/10/Ticket-add-icon.png",
                 "audit_logs": False,
@@ -87,16 +94,50 @@ class TicketTool(settings, commands.Cog):
                 },
             },
             "tickets": {},
+            "buttons": {},
             "dropdowns": {},
         }
-        self.config.register_guild(**self.ticket_guild)
+        self.config.register_global(**self.tickettool_global)
+        self.config.register_guild(**self.tickettool_guild)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
+        self.configuration.very_hidden = True
 
     async def cog_load(self):
+        await self.edit_config_schema()
         if self.cogsutils.is_dpy2:
             await self.load_buttons()
+
+    async def edit_config_schema(self):
+        CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
+        if CONFIG_SCHEMA is None:
+            CONFIG_SCHEMA = 1
+            await self.config.CONFIG_SCHEMA(CONFIG_SCHEMA)
+        if CONFIG_SCHEMA == self.CONFIG_SCHEMA:
+            return
+        if CONFIG_SCHEMA == 1:
+            guild_group = self.config._get_base_group(self.config.GUILD)
+            async with guild_group.all() as guilds_data:
+                _guilds_data = deepcopy(guilds_data)
+                for guild in _guilds_data:
+                    if "settings" not in _guilds_data[guild]:
+                        continue
+                    if "main" in _guilds_data[guild].get("panels", []):
+                        continue
+                    if "panels" not in guilds_data[guild]:
+                        guilds_data[guild]["panels"] = {}
+                    guilds_data[guild]["panels"]["main"] = self.config._defaults[self.config.GUILD]["default_panel_settings"]
+                    for key, value in _guilds_data[guild]["settings"].items():
+                        guilds_data[guild]["panels"]["main"][key] = value
+                    del guilds_data[guild]["settings"]
+            CONFIG_SCHEMA = 2
+            await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
+        if CONFIG_SCHEMA < self.CONFIG_SCHEMA:
+            CONFIG_SCHEMA = self.CONFIG_SCHEMA
+            await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
+        self.log.info(
+            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog."
+        )
 
     async def load_buttons(self):
         try:
@@ -171,8 +212,8 @@ class TicketTool(settings, commands.Cog):
                         exc_info=e,
                     )
 
-    async def get_config(self, guild: discord.Guild):
-        config = await self.config.guild(guild).settings.all()
+    async def get_config(self, guild: discord.Guild, panel: str):
+        config = await self.config.guild(guild).panels.get_raw(panel)
         if config["logschannel"] is not None:
             config["logschannel"] = guild.get_channel(config["logschannel"])
         if config["category_open"] is not None:
@@ -189,6 +230,11 @@ class TicketTool(settings, commands.Cog):
             config["view_role"] = guild.get_role(config["view_role"])
         if config["ping_role"] is not None:
             config["ping_role"] = guild.get_role(config["ping_role"])
+        for key, value in self.config._defaults[self.config.GUILD]["default_panel_settings"].items():
+            if key not in config:
+                config[key] = value
+        if len(config["embed_button"]) == 0:
+            config["embed_button"] = self.config._defaults[self.config.GUILD]["default_panel_settings"]["embed_button"]
         return config
 
     async def get_ticket(self, channel: discord.TextChannel):
@@ -197,12 +243,14 @@ class TicketTool(settings, commands.Cog):
             json = config[str(channel.id)]
         else:
             return None
+        if "panel" not in json:
+            json["panel"] = "main"
         ticket: Ticket = Ticket.from_json(json, self.bot)
         ticket.bot = self.bot
-        ticket.guild = ticket.bot.get_guild(ticket.guild)
+        ticket.guild = ticket.bot.get_guild(ticket.guild) or ticket.guild
         ticket.owner = ticket.guild.get_member(ticket.owner) or ticket.owner
-        ticket.channel = ticket.guild.get_channel(ticket.channel)
-        ticket.claim = ticket.guild.get_member(ticket.claim)
+        ticket.channel = ticket.guild.get_channel(ticket.channel) or ticket.channel
+        ticket.claim = ticket.guild.get_member(ticket.claim) or ticket.claim
         ticket.created_by = ticket.guild.get_member(ticket.created_by) or ticket.created_by
         ticket.opened_by = ticket.guild.get_member(ticket.opened_by) or ticket.opened_by
         ticket.closed_by = ticket.guild.get_member(ticket.closed_by) or ticket.closed_by
@@ -229,12 +277,13 @@ class TicketTool(settings, commands.Cog):
     async def get_audit_reason(
         self,
         guild: discord.Guild,
+        panel: str,
         author: typing.Optional[discord.Member] = None,
         reason: typing.Optional[str] = None,
     ):
         if reason is None:
             reason = _("Action taken for the ticket system.").format(**locals())
-        config = await self.get_config(guild)
+        config = await self.get_config(guild, panel)
         if author is None or not config["audit_logs"]:
             return f"{reason}"
         else:
@@ -243,7 +292,7 @@ class TicketTool(settings, commands.Cog):
     async def get_embed_important(
         self, ticket, more: bool, author: discord.Member, title: str, description: str
     ):
-        config = await self.get_config(ticket.guild)
+        config = await self.get_config(ticket.guild, ticket.panel)
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
         embed: discord.Embed = discord.Embed()
@@ -263,7 +312,7 @@ class TicketTool(settings, commands.Cog):
             if self.cogsutils.is_dpy2
             else ticket.guild.icon_url or "",
         )
-        embed.add_field(inline=True, name=_("Ticket ID:").format(**locals()), value=f"{ticket.id}")
+        embed.add_field(inline=True, name=_("Ticket ID:").format(**locals()), value=f"[{ticket.panel}] {ticket.id}")
         embed.add_field(
             inline=True,
             name=_("Owned by:").format(**locals()),
@@ -305,10 +354,10 @@ class TicketTool(settings, commands.Cog):
         return embed
 
     async def get_embed_action(self, ticket, author: discord.Member, action: str):
-        config = await self.get_config(ticket.guild)
+        config = await self.get_config(ticket.guild, ticket.panel)
         actual_color = config["color"]
         embed: discord.Embed = discord.Embed()
-        embed.title = _("Ticket {ticket.id} - Action taken").format(**locals())
+        embed.title = _("Ticket [{ticket.panel}] {ticket.id} - Action taken").format(**locals())
         embed.description = f"{action}"
         embed.color = actual_color
         embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
@@ -328,8 +377,8 @@ class TicketTool(settings, commands.Cog):
         )
         return embed
 
-    async def check_limit(self, member: discord.Member):
-        config = await self.get_config(member.guild)
+    async def check_limit(self, member: discord.Member, panel: str):
+        config = await self.get_config(member.guild, panel)
         data = await self.config.guild(member.guild).tickets.all()
         to_remove = []
         count = 1
@@ -337,6 +386,8 @@ class TicketTool(settings, commands.Cog):
             channel = member.guild.get_channel(int(id))
             if channel is not None:
                 ticket: Ticket = await self.get_ticket(channel)
+                if not ticket.panel == panel:
+                    continue
                 if ticket.created_by == member and ticket.status == "open":
                     count += 1
             else:
@@ -352,7 +403,7 @@ class TicketTool(settings, commands.Cog):
             return True
 
     async def create_modlog(self, ticket, action: str, reason: str):
-        config = await self.get_config(ticket.guild)
+        config = await self.get_config(ticket.guild, ticket.panel)
         if config["create_modlog"]:
             case = await modlog.create_case(
                 ticket.bot,
@@ -367,7 +418,6 @@ class TicketTool(settings, commands.Cog):
         return
 
     def decorator(
-        enable_check: typing.Optional[bool] = False,
         ticket_check: typing.Optional[bool] = False,
         status: typing.Optional[str] = None,
         ticket_owner: typing.Optional[bool] = False,
@@ -381,14 +431,11 @@ class TicketTool(settings, commands.Cog):
         members: typing.Optional[bool] = False,
     ):
         async def pred(ctx):
-            config = await ctx.bot.get_cog("TicketTool").get_config(ctx.guild)
-            if enable_check:
-                if not config["enable"]:
-                    return False
             if ticket_check:
                 ticket: Ticket = await ctx.bot.get_cog("TicketTool").get_ticket(ctx.channel)
                 if ticket is None:
                     return False
+                config = await ctx.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
                 if status is not None:
                     if not ticket.status == status:
                         return False
@@ -432,6 +479,16 @@ class TicketTool(settings, commands.Cog):
 
         return commands.check(pred)
 
+    class PanelConverter(commands.Converter):
+
+        async def convert(self, ctx: commands.Context, arg: str):
+            if len(arg) > 10:
+                raise commands.BadArgument(_("This panel does not exist.").format(**locals()))
+            panels = await ctx.bot.get_cog("TicketTool").config.guild(ctx.guild).panels()
+            if arg.lower() not in panels:
+                raise commands.BadArgument(_("This panel does not exist.").format(**locals()))
+            return arg.lower()
+
     @commands.guild_only()
     @hybrid_group(name="ticket")
     async def ticket(self, ctx: commands.Context):
@@ -439,17 +496,20 @@ class TicketTool(settings, commands.Cog):
 
     @ticket.command(name="create")
     async def command_create(
-        self, ctx: commands.Context, *, reason: typing.Optional[str] = "No reason provided."
+        self, ctx: commands.Context, panel: typing.Optional[PanelConverter]="main", *, reason: typing.Optional[str] = "No reason provided."
     ):
         """Create a ticket."""
-        config = await self.get_config(ctx.guild)
-        limit = config["nb_max"]
+        panels = await self.config.guild(ctx.guild).panels()
+        if panel not in panels:
+            await ctx.send(_("This panel does not exist.").format(**locals()))
+            return
+        config = await self.get_config(ctx.guild, panel)
         category_open = config["category_open"]
         category_close = config["category_close"]
         if not config["enable"]:
             await ctx.send(
                 _(
-                    "The ticket system is not activated on this server. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it."
+                    "The ticket system is not enabled on this server. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it."
                 ).format(**locals())
             )
             return
@@ -460,7 +520,7 @@ class TicketTool(settings, commands.Cog):
                 ).format(**locals())
             )
             return
-        if not await self.check_limit(ctx.author):
+        if not await self.check_limit(ctx.author, panel):
             await ctx.send(
                 _("Sorry. You have already reached the limit of {limit} open tickets.").format(
                     **locals()
@@ -477,13 +537,11 @@ class TicketTool(settings, commands.Cog):
                 ).format(**locals())
             )
             return
-        ticket: Ticket = Ticket.instance(ctx, reason)
+        ticket: Ticket = Ticket.instance(ctx, panel, reason)
         await ticket.create()
         ctx.ticket = ticket
-        await ctx.tick(message="Done.")
 
     @decorator(
-        enable_check=False,
         ticket_check=True,
         status=None,
         ticket_owner=True,
@@ -516,7 +574,7 @@ class TicketTool(settings, commands.Cog):
             )
         if transcript is not None:
             file = discord.File(
-                io.BytesIO(transcript.encode()), filename=f"transcript-ticket-{ticket.id}.html"
+                io.BytesIO(transcript.encode()), filename=f"transcript-ticket-{ticket.panel}-{ticket.id}.html"
             )
         await ctx.send(
             _(
@@ -524,10 +582,8 @@ class TicketTool(settings, commands.Cog):
             ).format(**locals()),
             file=file,
         )
-        await ctx.tick(message="Done.")
 
     @decorator(
-        enable_check=True,
         ticket_check=True,
         status="close",
         ticket_owner=True,
@@ -546,12 +602,14 @@ class TicketTool(settings, commands.Cog):
     ):
         """Open an existing ticket."""
         ticket: Ticket = await self.get_ticket(ctx.channel)
+        config = await ctx.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
+        if not config["enable"]:
+            await ctx.send(_("The ticket system is not enabled on this server.").format(**locals()))
+            return
         ticket.reason = reason
         await ticket.open(ctx.author)
-        await ctx.tick(message="Done.")
 
     @decorator(
-        enable_check=False,
         ticket_check=True,
         status="open",
         ticket_owner=True,
@@ -574,9 +632,12 @@ class TicketTool(settings, commands.Cog):
     ):
         """Close an existing ticket."""
         ticket: Ticket = await self.get_ticket(ctx.channel)
-        config = await self.get_config(ticket.guild)
+        config = await self.get_config(ticket.guild, ticket.panel)
+        if config["delete_on_close"]:
+            await self.command_delete(ctx, confirmation=confirmation, reason=reason)
+            return
         if confirmation is None:
-            config = await self.get_config(ticket.guild)
+            config = await self.get_config(ticket.guild, ticket.panel)
             confirmation = not config["close_confirmation"]
         if not confirmation:
             embed: discord.Embed = discord.Embed()
@@ -596,10 +657,8 @@ class TicketTool(settings, commands.Cog):
                 return
         ticket.reason = reason
         await ticket.close(ctx.author)
-        await ctx.tick(message="Done.")
 
     @decorator(
-        enable_check=False,
         ticket_check=True,
         status=None,
         ticket_owner=True,
@@ -624,10 +683,8 @@ class TicketTool(settings, commands.Cog):
         ticket: Ticket = await self.get_ticket(ctx.channel)
         ticket.reason = reason
         await ticket.rename(new_name, ctx.author)
-        await ctx.tick(message="Done.")
 
     @decorator(
-        enable_check=False,
         ticket_check=True,
         status=None,
         ticket_owner=False,
@@ -653,7 +710,7 @@ class TicketTool(settings, commands.Cog):
         (Attachments are not supported, as they are saved with their Discord link)
         """
         ticket: Ticket = await self.get_ticket(ctx.channel)
-        config = await self.get_config(ticket.guild)
+        config = await self.get_config(ticket.guild, ticket.panel)
         if not confirmation:
             embed: discord.Embed = discord.Embed()
             embed.title = _(
@@ -677,7 +734,6 @@ class TicketTool(settings, commands.Cog):
         await ticket.delete(ctx.author)
 
     @decorator(
-        enable_check=False,
         ticket_check=True,
         status="open",
         ticket_owner=False,
@@ -704,10 +760,8 @@ class TicketTool(settings, commands.Cog):
         if member is None:
             member = ctx.author
         await ticket.claim_ticket(member, ctx.author)
-        await ctx.tick(message="Done.")
 
     @decorator(
-        enable_check=False,
         ticket_check=True,
         status=None,
         ticket_owner=False,
@@ -728,10 +782,8 @@ class TicketTool(settings, commands.Cog):
         ticket: Ticket = await self.get_ticket(ctx.channel)
         ticket.reason = reason
         await ticket.unclaim_ticket(ticket.claim, ctx.author)
-        await ctx.tick(message="Done.")
 
     @decorator(
-        enable_check=False,
         ticket_check=True,
         status="open",
         ticket_owner=True,
@@ -758,10 +810,8 @@ class TicketTool(settings, commands.Cog):
         if new_owner is None:
             new_owner = ctx.author
         await ticket.change_owner(new_owner, ctx.author)
-        await ctx.tick(message="Done.")
 
     @decorator(
-        enable_check=False,
         ticket_check=True,
         status="open",
         ticket_owner=True,
@@ -786,10 +836,8 @@ class TicketTool(settings, commands.Cog):
         ticket.reason = reason
         members = [member for member in members]
         await ticket.add_member(members, ctx.author)
-        await ctx.tick(message="Done.")
 
     @decorator(
-        enable_check=False,
         ticket_check=True,
         status=None,
         ticket_owner=True,
@@ -814,7 +862,6 @@ class TicketTool(settings, commands.Cog):
         ticket.reason = reason
         members = [member for member in members]
         await ticket.remove_member(members, ctx.author)
-        await ctx.tick(message="Done.")
 
     if CogsUtils().is_dpy2:
 
@@ -825,10 +872,20 @@ class TicketTool(settings, commands.Cog):
             permissions = interaction.channel.permissions_for(interaction.guild.me)
             if not permissions.read_messages and not permissions.read_message_history:
                 return
-            await interaction.response.defer(ephemeral=True)
+            if not interaction.response.is_done():
+                await interaction.response.defer(ephemeral=True)
             if interaction.data["custom_id"] == "create_ticket_button":
+                buttons = await self.config.guild(interaction.guild).buttons.all()
+                if f"{interaction.message.channel.id}-{interaction.message.id}" in buttons:
+                    panel = buttons[f"{interaction.message.channel.id}-{interaction.message.id}"]["panel"]
+                else:
+                    panel = "main"
+                panels = await self.config.guild(interaction.guild).panels()
+                if panel not in panels:
+                    await interaction.followup("The panel for which this button was configured no longer exists.")
+                    return
                 ctx = await self.cogsutils.invoke_command(
-                    author=interaction.user, channel=interaction.channel, command="ticket create"
+                    author=interaction.user, channel=interaction.channel, command=f"ticket create {panel}"
                 )
                 if not await ctx.command.can_run(ctx, change_permission_state=True):  # await discord.utils.async_all(check(ctx) for check in ctx.command.checks)
                     await interaction.followup(
@@ -860,7 +917,8 @@ class TicketTool(settings, commands.Cog):
             self, view: Dropdown, interaction: discord.Interaction, options: typing.List
         ):
             if len(options) == 0:
-                await interaction.response.defer()
+                if not interaction.response.is_done():
+                    await interaction.response.defer()
                 return
             permissions = interaction.channel.permissions_for(interaction.user)
             if not permissions.read_messages and not permissions.send_messages:
@@ -868,40 +926,52 @@ class TicketTool(settings, commands.Cog):
             permissions = interaction.channel.permissions_for(interaction.guild.me)
             if not permissions.read_messages and not permissions.read_message_history:
                 return
-            await interaction.response.defer(ephemeral=True)
+            if not interaction.response.is_done():
+                await interaction.response.defer(ephemeral=True)
+            dropdowns = await self.config.guild(interaction.guild).dropdowns()
+            if f"{interaction.message.channel.id}-{interaction.message.id}" not in dropdowns:
+                await interaction.followup("This message is not in TicketTool config.")
+                return
+            panel = dropdowns[f"{interaction.message.channel.id}-{interaction.message.id}"].get("panel", "main")
+            panels = await self.config.guild(interaction.guild).panels()
+            if panel not in panels:
+                await interaction.followup("The panel for which this dropdown was configured no longer exists.")
+                return
             option = [option for option in view.dropdown._options if option.value == options[0]][0]
             reason = f"{option.emoji} - {option.label}"
             ctx = await self.cogsutils.invoke_command(
                 author=interaction.user,
                 channel=interaction.channel,
-                command=f"ticket create {reason}",
+                command=f"ticket create {panel} {reason}",
             )
-            if not await ctx.command.can_run(ctx) or not hasattr(ctx, "ticket"):
+            if not await discord.utils.async_all(
+                check(ctx) for check in ctx.command.checks
+            ) or not hasattr(ctx, "ticket"):
                 await interaction.followup(
                     _("You are not allowed to execute this command."), ephemeral=True
                 )
-            else:
-                config = await self.get_config(interaction.guild)
-                if config["embed_button"]["rename_channel_dropdown"]:
-                    try:
-                        ticket: Ticket = await self.get_ticket(
-                            ctx.guild.get_channel(ctx.ticket.channel)
+                return
+            config = await self.get_config(interaction.guild, panel)
+            if config["embed_button"]["rename_channel_dropdown"]:
+                try:
+                    ticket: Ticket = await self.get_ticket(
+                        ctx.guild.get_channel(ctx.ticket.channel)
+                    )
+                    if ticket is not None:
+                        await ticket.rename(
+                            new_name=f"{option.emoji}-{option.value}_{interaction.user.id}".replace(
+                                " ", "-"
+                            ),
+                            author=None,
                         )
-                        if ticket is not None:
-                            await ticket.rename(
-                                new_name=f"{option.emoji}-{option.value}_{interaction.user.id}".replace(
-                                    " ", "-"
-                                ),
-                                author=None,
-                            )
-                    except discord.HTTPException:
-                        pass
-                await interaction.followup(
-                    _("You have chosen to create a ticket with the reason `{reason}`.").format(
-                        **locals()
-                    ),
-                    ephemeral=True,
-                )
+                except discord.HTTPException:
+                    pass
+            await interaction.followup(
+                _("You have chosen to create a ticket with the reason `{reason}`.").format(
+                    **locals()
+                ),
+                ephemeral=True,
+            )
 
     else:
 
@@ -913,10 +983,20 @@ class TicketTool(settings, commands.Cog):
             permissions = inter.channel.permissions_for(inter.guild.me)
             if not permissions.read_messages and not permissions.read_message_history:
                 return
-            await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
+            if not inter.expired:
+                await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
             if inter.clicked_button.custom_id == "create_ticket_button":
+                buttons = await self.config.guild(inter.guild).buttons.all()
+                if f"{inter.message.channel.id}-{inter.message.id}" in buttons:
+                    panel = buttons[f"{inter.message.channel.id}-{inter.message.id}"]["panel"]
+                else:
+                    panel = "main"
+                panels = await self.config.guild(inter.guild).panels()
+                if panel not in panels:
+                    await inter.followup("The panel for which this button was configured no longer exists.")
+                    return
                 ctx = await self.cogsutils.invoke_command(
-                    author=inter.author, channel=inter.channel, command="ticket create"
+                    author=inter.author, channel=inter.channel, command=f"ticket create {panel}"
                 )
                 if not await ctx.command.can_run(ctx, change_permission_state=True):  # await discord.utils.async_all(check(ctx) for check in ctx.command.checks)
                     await inter.followup(
@@ -956,40 +1036,52 @@ class TicketTool(settings, commands.Cog):
             permissions = inter.channel.permissions_for(inter.guild.me)
             if not permissions.read_messages and not permissions.read_message_history:
                 return
-            await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
+            if not inter.expired:
+                await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
+            dropdowns = await self.config.guild(inter.guild).dropdowns()
+            if f"{inter.message.channel.id}-{inter.message.id}" not in dropdowns:
+                await inter.followup("This message is not in TicketTool config.")
+                return
+            panel = dropdowns[f"{inter.message.channel.id}-{inter.message.id}"].get("panel", "main")
+            panels = await self.config.guild(inter.guild).panels()
+            if panel not in panels:
+                await inter.followup("The panel for which this button was configured no longer exists.")
+                return
             option = inter.select_menu.selected_options[0]
             reason = f"{option.emoji} - {option.label}"
             ctx = await self.cogsutils.invoke_command(
-                author=inter.author, channel=inter.channel, command=f"ticket create {reason}"
+                author=inter.author, channel=inter.channel, command=f"ticket create {panel} {reason}"
             )
-            if not await ctx.command.can_run(ctx) or not hasattr(ctx, "ticket"):
-                await inter.create_response(
+            if not await discord.utils.async_all(
+                check(ctx) for check in ctx.command.checks
+            ) or not hasattr(ctx, "ticket"):
+                await inter.followup(
                     _("You are not allowed to execute this command."), ephemeral=True
                 )
-            else:
-                config = await self.get_config(inter.guild)
-                if config["embed_button"]["rename_channel_dropdown"]:
-                    try:
-                        ticket: Ticket = await self.get_ticket(
-                            ctx.guild.get_channel(ctx.ticket.channel)
+                return
+            config = await self.get_config(inter.guild, panel)
+            if config["embed_button"]["rename_channel_dropdown"]:
+                try:
+                    ticket: Ticket = await self.get_ticket(
+                        ctx.guild.get_channel(ctx.ticket.channel)
+                    )
+                    if ticket is not None:
+                        await ticket.rename(
+                            new_name=(
+                                f"{option.emoji}-{option.value}_{inter.author.id}".replace(
+                                    " ", "-"
+                                )
+                            )[:99],
+                            author=None,
                         )
-                        if ticket is not None:
-                            await ticket.rename(
-                                new_name=(
-                                    f"{option.emoji}-{option.value}_{inter.author.id}".replace(
-                                        " ", "-"
-                                    )
-                                )[:99],
-                                author=None,
-                            )
-                    except discord.HTTPException:
-                        pass
-                await inter.followup(
-                    _("You have chosen to create a ticket with the reason `{reason}`.").format(
-                        **locals()
-                    ),
-                    ephemeral=True,
-                )
+                except discord.HTTPException:
+                    pass
+            await inter.followup(
+                _("You have chosen to create a ticket with the reason `{reason}`.").format(
+                    **locals()
+                ),
+                ephemeral=True,
+            )
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -1000,7 +1092,7 @@ class TicketTool(settings, commands.Cog):
         member = guild.get_member(payload.user_id)
         if member == guild.me or member.bot:
             return
-        config = await self.get_config(guild)
+        config = await self.get_config(guild, "main")
         if config["enable"]:
             if config["create_on_react"]:
                 if str(payload.emoji) == str("🎟️"):
@@ -1017,7 +1109,7 @@ class TicketTool(settings, commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message):
-        if not message.guild:
+        if message.guild is None:
             return
         config = await self.config.guild(message.guild).dropdowns.all()
         if f"{message.channel.id}-{message.id}" not in config:
@@ -1039,15 +1131,15 @@ class TicketTool(settings, commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member):
-        config = await self.get_config(member.guild)
         data = await self.config.guild(member.guild).tickets.all()
-        if config["close_on_leave"]:
-            for channel in data:
-                channel = member.guild.get_channel(int(channel))
-                ticket: Ticket = await self.get_ticket(channel)
-                if isinstance(ticket.owner, int):
-                    continue
-                if ticket.owner == member and ticket.status == "open":
+        for channel in data:
+            channel = member.guild.get_channel(int(channel))
+            if channel is None:
+                continue
+            ticket: Ticket = await self.get_ticket(channel)
+            config = await self.get_config(ticket.guild, ticket.panel)
+            if config["close_on_leave"]:
+                if getattr(ticket.owner, "id", ticket.owner) == member.id and ticket.status == "open":
                     await ticket.close(ticket.guild.me)
         return
 
@@ -1079,6 +1171,7 @@ class Ticket:
         logs_messages,
         save_data,
         first_message,
+        panel,
     ):
         self.bot: Red = bot
         self.id: int = id
@@ -1102,10 +1195,12 @@ class Ticket:
         self.logs_messages: bool = logs_messages
         self.save_data: bool = save_data
         self.first_message: discord.Message = first_message
+        self.panel: str = panel
 
     @staticmethod
     def instance(
         ctx: commands.Context,
+        panel: str,
         reason: typing.Optional[str] = _("No reason provided.").format(**locals()),
     ):
         ticket: Ticket = Ticket(
@@ -1131,6 +1226,7 @@ class Ticket:
             logs_messages=True,
             save_data=True,
             first_message=None,
+            panel=panel,
         )
         return ticket
 
@@ -1159,6 +1255,7 @@ class Ticket:
             logs_messages=json["logs_messages"],
             save_data=json["save_data"],
             first_message=json["first_message"],
+            panel=json["panel"],
         )
         return ticket
 
@@ -1171,7 +1268,7 @@ class Ticket:
         ticket.bot = None
         if ticket.owner is not None:
             ticket.owner = (
-                int(ticket.owner.id) if not isinstance(ticket.owner, int) else int(ticket.owner)
+                int(getattr(ticket.owner, "id", ticket.owner))
             )
         if ticket.guild is not None:
             ticket.guild = int(ticket.guild.id)
@@ -1232,7 +1329,7 @@ class Ticket:
         return data
 
     async def create(ticket):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
+        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
         logschannel = config["logschannel"]
         overwrites = await utils().get_overwrites(ticket)
         emoji_open = config["emoji_open"]
@@ -1240,6 +1337,7 @@ class Ticket:
         ticket.id = config["last_nb"] + 1
         reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
             guild=ticket.guild,
+            panel=ticket.panel,
             author=ticket.created_by,
             reason=_("Creating the ticket {ticket.id}.").format(**locals()),
         )
@@ -1285,104 +1383,115 @@ class Ticket:
         await ticket.channel.edit(topic=topic)
         if config["create_modlog"]:
             await ticket.bot.get_cog("TicketTool").create_modlog(ticket, "ticket_created", reason)
-        if ticket.logs_messages:
-            if CogsUtils().is_dpy2:
-                view = Buttons(
-                    timeout=None,
-                    buttons=[
-                        {
-                            "style": 2,
-                            "label": _("Close").format(**locals()),
-                            "emoji": "🔒",
-                            "custom_id": "close_ticket_button",
-                            "disabled": False,
-                        },
-                        {
-                            "style": 2,
-                            "label": _("Claim").format(**locals()),
-                            "emoji": "🙋‍♂️",
-                            "custom_id": "claim_ticket_button",
-                            "disabled": False,
-                        },
-                    ],
-                    function=ticket.bot.get_cog("TicketTool").on_button_interaction,
-                    infinity=True,
-                )
-            else:
-                buttons = ActionRow(
-                    Button(
-                        style=ButtonStyle.grey,
-                        label=_("Close").format(**locals()),
-                        emoji="🔒",
-                        custom_id="close_ticket_button",
-                        disabled=False,
-                    ),
-                    Button(
-                        style=ButtonStyle.grey,
-                        label=_("Claim").format(**locals()),
-                        emoji="🙋‍♂️",
-                        custom_id="claim_ticket_button",
-                        disabled=False,
-                    ),
-                )
-            if ping_role is not None:
-                optionnal_ping = f" ||{ping_role.mention}||"
-            else:
-                optionnal_ping = ""
+        if CogsUtils().is_dpy2:
+            view = Buttons(
+                timeout=None,
+                buttons=[
+                    {
+                        "style": 2,
+                        "label": _("Close").format(**locals()),
+                        "emoji": "🔒",
+                        "custom_id": "close_ticket_button",
+                        "disabled": False,
+                    },
+                    {
+                        "style": 2,
+                        "label": _("Claim").format(**locals()),
+                        "emoji": "🙋‍♂️",
+                        "custom_id": "claim_ticket_button",
+                        "disabled": False,
+                    },
+                ],
+                function=ticket.bot.get_cog("TicketTool").on_button_interaction,
+                infinity=True,
+            )
+        else:
+            buttons = ActionRow(
+                Button(
+                    style=ButtonStyle.grey,
+                    label=_("Close").format(**locals()),
+                    emoji="🔒",
+                    custom_id="close_ticket_button",
+                    disabled=False,
+                ),
+                Button(
+                    style=ButtonStyle.grey,
+                    label=_("Claim").format(**locals()),
+                    emoji="🙋‍♂️",
+                    custom_id="claim_ticket_button",
+                    disabled=False,
+                ),
+            )
+        if ping_role is not None:
+            optionnal_ping = f" ||{ping_role.mention}||"
+        else:
+            optionnal_ping = ""
+        embed = await ticket.bot.get_cog("TicketTool").get_embed_important(
+            ticket,
+            False,
+            author=ticket.created_by,
+            title=_("Ticket Created").format(**locals()),
+            description=_("Thank you for creating a ticket on this server!").format(
+                **locals()
+            ),
+        )
+        if CogsUtils().is_dpy2:
+            ticket.first_message = await ticket.channel.send(
+                f"{ticket.created_by.mention}{optionnal_ping}",
+                embed=embed,
+                view=view,
+                allowed_mentions=discord.AllowedMentions(users=True, roles=True),
+            )
+        else:
+            ticket.first_message = await ticket.channel.send(
+                f"{ticket.created_by.mention}{optionnal_ping}",
+                embed=embed,
+                components=[buttons],
+                allowed_mentions=discord.AllowedMentions(users=True, roles=True),
+            )
+        if config["custom_message"] is not None:
+            try:
+                embed: discord.Embed = discord.Embed()
+                embed.title = "Custom Message"
+                to_replace = {
+                    "ticket_id": str(ticket.id),
+                    "owner_display_name": ticket.owner.display_name,
+                    "owner_name": ticket.owner.name,
+                    "owner_id": str(ticket.owner.id),
+                    "guild_name": ticket.guild.name,
+                    "guild_id": ticket.guild.id,
+                    "bot_display_name": ticket.guild.me.display_name,
+                    "bot_name": ticket.bot.user.name,
+                    "bot_id": str(ticket.bot.user.id),
+                    "shortdate": ticket.created_at.strftime("%m-%d"),
+                    "longdate": ticket.created_at.strftime("%m-%d-%Y"),
+                    "time": ticket.created_at.strftime("%I-%M-%p")
+                }
+                embed.description = config["custom_message"].format(**to_replace)
+                await ticket.channel.send(embed=embed)
+            except (KeyError, AttributeError, discord.HTTPException):
+                pass
+        if logschannel is not None:
             embed = await ticket.bot.get_cog("TicketTool").get_embed_important(
                 ticket,
-                False,
+                True,
                 author=ticket.created_by,
                 title=_("Ticket Created").format(**locals()),
-                description=_("Thank you for creating a ticket on this server!").format(
+                description=_("The ticket was created by {ticket.created_by}.").format(
                     **locals()
                 ),
             )
-            if CogsUtils().is_dpy2:
-                ticket.first_message = await ticket.channel.send(
-                    f"{ticket.created_by.mention}{optionnal_ping}",
-                    embed=embed,
-                    view=view,
-                    allowed_mentions=discord.AllowedMentions(users=True, roles=True),
-                )
-            else:
-                ticket.first_message = await ticket.channel.send(
-                    f"{ticket.created_by.mention}{optionnal_ping}",
-                    embed=embed,
-                    components=[buttons],
-                    allowed_mentions=discord.AllowedMentions(users=True, roles=True),
-                )
-            if config["custom_message"] is not None:
-                try:
-                    embed: discord.Embed = discord.Embed()
-                    embed.title = "Custom Message"
-                    embed.description = config["custom_message"].format(ticket=ticket)
-                    await ticket.channel.send(embed=embed)
-                except (KeyError, AttributeError, discord.HTTPException):
-                    pass
-            if logschannel is not None:
-                embed = await ticket.bot.get_cog("TicketTool").get_embed_important(
-                    ticket,
-                    True,
-                    author=ticket.created_by,
-                    title=_("Ticket Created").format(**locals()),
-                    description=_("The ticket was created by {ticket.created_by}.").format(
-                        **locals()
-                    ),
-                )
-                await logschannel.send(
-                    _("Report on the creation of the ticket {ticket.id}.").format(**locals()),
-                    embed=embed,
-                )
-        await ticket.bot.get_cog("TicketTool").config.guild(ticket.guild).settings.last_nb.set(
-            ticket.id
-        )
+            await logschannel.send(
+                _("Report on the creation of the ticket {ticket.id}.").format(**locals()),
+                embed=embed,
+            )
         if config["ticket_role"] is not None:
             if ticket.owner:
                 try:
                     await ticket.owner.add_roles(config["ticket_role"], reason=reason)
                 except discord.HTTPException:
                     pass
+        await ticket.bot.get_cog("TicketTool").config.guild(ticket.guild).panels.set_raw(ticket.panel, "last_nb", value=ticket.id)
         await ticket.save()
         return ticket
 
@@ -1402,15 +1511,16 @@ class Ticket:
                 )
             if transcript is not None:
                 transcript_file = discord.File(
-                    io.BytesIO(transcript.encode()), filename=f"transcript-ticket-{ticket.id}.html"
+                    io.BytesIO(transcript.encode()), filename=f"transcript-ticket-{ticket.panel}-{ticket.id}.html"
                 )
                 return transcript_file
         return None
 
     async def open(ticket, author: typing.Optional[discord.Member] = None):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
+        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
         reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
             guild=ticket.guild,
+            panel=ticket.panel,
             author=author,
             reason=_("Opening the ticket {ticket.id}.").format(**locals()),
         )
@@ -1500,9 +1610,9 @@ class Ticket:
         return ticket
 
     async def close(ticket, author: typing.Optional[discord.Member] = None):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
+        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
         reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
-            guild=ticket.guild, author=author, reason=f"Closing the ticket {ticket.id}."
+            guild=ticket.guild, panel=ticket.panel, author=author, reason=f"Closing the ticket {ticket.id}."
         )
         logschannel = config["logschannel"]
         emoji_open = config["emoji_open"]
@@ -1588,6 +1698,7 @@ class Ticket:
     async def rename(ticket, new_name: str, author: typing.Optional[discord.Member] = None):
         reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
             guild=ticket.guild,
+            panel=ticket.panel,
             author=author,
             reason=_(
                 "Renaming the ticket {ticket.id}. (`{ticket.channel.name}` to `{new_name}`)"
@@ -1608,10 +1719,11 @@ class Ticket:
         return ticket
 
     async def delete(ticket, author: typing.Optional[discord.Member] = None):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
+        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
         logschannel = config["logschannel"]
         reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
             guild=ticket.guild,
+            panel=ticket.panel,
             author=author,
             reason=_("Deleting the ticket {ticket.id}.").format(**locals()),
         )
@@ -1667,9 +1779,10 @@ class Ticket:
     async def claim_ticket(
         ticket, member: discord.Member, author: typing.Optional[discord.Member] = None
     ):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
+        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
         reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
             guild=ticket.guild,
+            panel=ticket.panel,
             author=author,
             reason=_("Claiming the ticket {ticket.id}.").format(**locals()),
         )
@@ -1758,9 +1871,10 @@ class Ticket:
     async def unclaim_ticket(
         ticket, member: discord.Member, author: typing.Optional[discord.Member] = None
     ):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
+        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
         reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
             guild=ticket.guild,
+            panel=ticket.panel,
             author=author,
             reason=_("Claiming the ticket {ticket.id}.").format(**locals()),
         )
@@ -1841,9 +1955,10 @@ class Ticket:
     async def change_owner(
         ticket, member: discord.Member, author: typing.Optional[discord.Member] = None
     ):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
+        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
         reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
             guild=ticket.guild,
+            panel=ticket.panel,
             author=author,
             reason=_("Changing owner of the ticket {ticket.id}.").format(**locals()),
         )
@@ -1889,9 +2004,10 @@ class Ticket:
         members: typing.List[discord.Member],
         author: typing.Optional[discord.Member] = None,
     ):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
+        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
         reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
             guild=ticket.guild,
+            panel=ticket.panel,
             author=author,
             reason=_("Adding a member to the ticket {ticket.id}.").format(**locals()),
         )
@@ -1947,9 +2063,10 @@ class Ticket:
         members: typing.List[discord.Member],
         author: typing.Optional[discord.Member] = None,
     ):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild)
+        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
         reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
             guild=ticket.guild,
+            panel=ticket.panel,
             author=author,
             reason=_("Removing a member to the ticket {ticket.id}.").format(**locals()),
         )

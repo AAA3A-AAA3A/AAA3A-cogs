@@ -44,7 +44,6 @@ class DropdownsTexts(commands.Cog):
         self.config.register_guild(**self.dropdowns_texts_guild)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     async def cog_load(self):
         if self.cogsutils.is_dpy2:

@@ -43,7 +43,6 @@ class ClearChannel(commands.Cog):
         self.config.register_guild(**self.clearchannel_guild)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     @commands.guild_only()
     @commands.guildowner()

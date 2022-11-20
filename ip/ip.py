@@ -42,7 +42,6 @@ class Ip(commands.Cog):
         self.config.register_global(**self.ip_global)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     @commands.is_owner()
     @hybrid_group(name="ip")

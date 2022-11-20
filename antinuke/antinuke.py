@@ -57,7 +57,6 @@ class AntiNuke(commands.Cog):
         self.config.register_member(**self.antinuke_member)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     async def red_delete_data_for_user(
         self,

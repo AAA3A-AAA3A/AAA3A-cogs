@@ -40,7 +40,6 @@ class TransferChannel(commands.Cog):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     def embed_from_msg(self, message: discord.Message) -> discord.Embed:
         content = message.content

@@ -35,7 +35,6 @@ class ExportChannel(commands.Cog):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     async def get_messages(
         self,

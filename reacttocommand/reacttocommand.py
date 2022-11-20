@@ -65,7 +65,6 @@ class ReactToCommand(commands.Cog):
         self.config.register_guild(**self.reacttocommand_guild)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
         self.purge.very_hidden = True
 
         self.cache = []

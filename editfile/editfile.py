@@ -44,7 +44,6 @@ class EditFile(commands.Cog):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     @commands.is_owner()
     @hybrid_group(aliases=["fileedit"])

@@ -254,7 +254,6 @@ class SimpleSanction(settings, commands.Cog):
         ]
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     if not CogsUtils().is_dpy2:
 

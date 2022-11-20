@@ -42,12 +42,12 @@ class CtxVar(commands.Cog):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True, add_reactions=True)
     @hybrid_group()
     async def ctxvar(self, ctx: commands.Context):
+        """Commands for CtxVar."""
         pass
 
     @ctxvar.command()

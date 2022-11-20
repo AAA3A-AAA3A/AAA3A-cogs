@@ -47,10 +47,10 @@ class CmdChannel(commands.Cog):
         self.config.register_guild(**self.cmd_guild)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     @hybrid_group()
     async def cmdchannel(self, ctx: commands.Context):
+        """Commands for CmdChannel."""
         pass
 
     @commands.mod()

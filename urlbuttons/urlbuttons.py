@@ -54,7 +54,6 @@ class UrlButtons(commands.Cog):
         self.config.register_guild(**self.url_buttons_guild)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
         self.purge.very_hidden = True
 
     @commands.Cog.listener()

@@ -357,7 +357,6 @@ class Calculator(commands.Cog):
         ] = {}
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     async def calculate(self, expression: str):
         lst = list(expression)

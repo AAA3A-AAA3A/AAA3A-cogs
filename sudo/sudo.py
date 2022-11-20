@@ -52,7 +52,6 @@ class Sudo(commands.Cog):
 
         self.__authors__ = ["AAA3A", "Draper", "jack1142 (Jackenmen#6607)"]
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     async def cog_load(self):
         self.all_owner_ids = copy(self.bot.owner_ids)

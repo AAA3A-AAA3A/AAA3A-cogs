@@ -84,8 +84,11 @@ class Seen(commands.Cog):
         }
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
         self.purge.very_hidden = True
+
+    @property
+    def loops(self):
+        return list(self.cogsutils.loops.values())
 
     async def cog_load(self):
         self.cogsutils.create_loop(

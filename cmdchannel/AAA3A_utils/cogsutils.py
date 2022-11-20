@@ -201,6 +201,7 @@ class CogsUtils(commands.Cog):
         value = bot.add_cog(cog)
         if inspect.isawaitable(value):
             await value
+        self._setup()
         if not self.is_dpy2:
             if hasattr(cog, "cog_load"):
                 await cog.cog_load()
@@ -214,7 +215,6 @@ class CogsUtils(commands.Cog):
             return
         setattr(self.cog, "cogsutils", self)
         self.init_logger()
-        DevEnv.add_dev_env_values(bot=self.bot, cog=self.cog)
         Cog._setup(bot=self.bot, cog=self.cog)
         asyncio.create_task(self._await_setup())
 
@@ -223,6 +223,9 @@ class CogsUtils(commands.Cog):
         Adds dev environment values, slash commands add Views.
         """
         await self.bot.wait_until_red_ready()
+        # if hasattr(self, "cog_loaded"):
+        #     await self.cog_loaded.wait()
+        DevEnv.add_dev_env_values(bot=self.bot, cog=self.cog)
         try:
             nb_commits, version = await self.get_cog_version()
             self.cog.__version__ = self.__version__ = version
@@ -405,7 +408,7 @@ class CogsUtils(commands.Cog):
 
         return nb_commits, version
 
-    async def to_update(self, cog: typing.Optional[typing.Union[commands.Cog, str]] = None):
+    async def to_update(self, cog: typing.Optional[typing.Union[commands.Cog, str]] = None, local_commit: typing.Optional[str] = None):
         if cog is None:
             cog = self.cog
         if isinstance(cog, str):
@@ -423,7 +426,8 @@ class CogsUtils(commands.Cog):
         local = discord.utils.get(await downloader.installed_cogs(), name=cog_name)
         if local is None:
             raise ValueError("This cog is not installed on this bot with Downloader.")
-        local_commit = local.commit
+        if local_commit is None:
+            local_commit = local.commit
         repo = local.repo
         if repo is None:
             raise ValueError("This cog has not been installed from the cog Downloader.")
@@ -441,11 +445,27 @@ class CogsUtils(commands.Cog):
                 timeout=3,
             ) as r:
                 online = await r.json()
-        if online is None or "object" not in online or "sha" not in online["object"]:
+        if online is None or not isinstance(online, typing.Dict) or "object" not in online or "sha" not in online["object"]:
             raise asyncio.IncompleteReadError("No results could be retrieved from the git api.", None)
         online_commit = online["object"]["sha"]
 
-        return online_commit != local_commit, local_commit, online_commit
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                f"https://api.github.com/repos/{repo_owner}/{repo_name}/compare/{local_commit}...{online_commit}",
+                timeout=3,
+            ) as r:
+                compare = await r.json()
+        if compare is None or not isinstance(compare, typing.Dict) or "files" not in compare or not isinstance(compare["files"], typing.List):
+            raise asyncio.IncompleteReadError("No results could be retrieved from the git api.", None)
+        to_update = True
+        if len(compare["files"]) == 0:
+            to_update = False
+        files_diff = [file["filename"] for file in compare["files"]]
+        cogs_diff = [cog.split("/")[0] for cog in files_diff]
+        if cog_name not in cogs_diff:
+            to_update = False
+
+        return to_update, local_commit, online_commit
 
     async def add_hybrid_commands(self, cog: typing.Optional[commands.Cog] = None):
         if cog is None:

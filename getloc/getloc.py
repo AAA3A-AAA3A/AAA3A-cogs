@@ -39,7 +39,6 @@ class GetLoc(commands.Cog):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     async def get_map(self, title: str, latitude: float, longitude: float):
         fig = plt.figure(figsize=(7, 6))

@@ -38,7 +38,6 @@ class EditTextChannel(commands.Cog):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     async def check_text_channel(self, ctx: commands.Context, channel: discord.TextChannel):
         if not self.cogsutils.check_permissions_for(

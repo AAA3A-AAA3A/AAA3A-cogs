@@ -44,7 +44,6 @@ class DiscordSearch(commands.Cog):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)

@@ -201,7 +201,6 @@ class DiscordModals(commands.Cog):
         self.config.register_guild(**self.discordmodals_guild)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
         self.purge.very_hidden = True
 
     async def cog_load(self):

@@ -28,7 +28,6 @@ class EditVoiceChannel(commands.Cog):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     async def check_voice_channel(self, ctx: commands.Context, channel: discord.VoiceChannel):
         if not self.cogsutils.check_permissions_for(

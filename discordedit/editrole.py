@@ -25,7 +25,6 @@ class EditRole(commands.Cog):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     async def check_role(self, ctx: commands.Context, role: discord.Role):
         if not ctx.guild.me.top_role > role:

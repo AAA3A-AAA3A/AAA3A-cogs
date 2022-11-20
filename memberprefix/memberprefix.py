@@ -54,7 +54,6 @@ class MemberPrefix(commands.Cog):
         self.bot.before_invoke(self.before_invoke)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()
 
     if CogsUtils().is_dpy2:
 

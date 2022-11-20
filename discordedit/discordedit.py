@@ -32,4 +32,3 @@ class DiscordEdit(EditRole, EditTextChannel, EditVoiceChannel, commands.Cog):
         self.bot: Red = bot
 
         self.cogsutils = CogsUtils(cog=self)
-        self.cogsutils._setup()

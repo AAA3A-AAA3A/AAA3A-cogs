@@ -188,7 +188,7 @@ class RolesButtons(commands.Cog):
                 return
             if not inter.component.custom_id.startswith("roles_buttons"):
                 return
-            if not inter.expired:
+            if not getattr(inter, "_sent", False):
                 await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
             config = await self.config.guild(guild).roles_buttons.all()
             if f"{inter.channel.id}-{inter.message.id}" not in config:

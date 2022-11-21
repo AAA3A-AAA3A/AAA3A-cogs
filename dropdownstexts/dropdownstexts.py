@@ -132,7 +132,7 @@ class DropdownsTexts(commands.Cog):
                 return
             if len(inter.select_menu.selected_options) == 0:
                 return
-            if not inter.expired:
+            if not getattr(inter, "_sent", False):
                 await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
             config = await self.config.guild(inter.guild).dropdowns_texts.all()
             if f"{inter.channel.id}-{inter.message.id}" not in config:

@@ -987,7 +987,7 @@ class TicketTool(settings, commands.Cog):
             permissions = inter.channel.permissions_for(inter.guild.me)
             if not permissions.read_messages and not permissions.read_message_history:
                 return
-            if not inter.expired:
+            if not getattr(inter, "_sent", False):
                 await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
             if inter.clicked_button.custom_id == "create_ticket_button":
                 buttons = await self.config.guild(inter.guild).buttons.all()
@@ -1040,7 +1040,7 @@ class TicketTool(settings, commands.Cog):
             permissions = inter.channel.permissions_for(inter.guild.me)
             if not permissions.read_messages and not permissions.read_message_history:
                 return
-            if not inter.expired:
+            if not getattr(inter, "_sent", False):
                 await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
             dropdowns = await self.config.guild(inter.guild).dropdowns()
             if f"{inter.message.channel.id}-{inter.message.id}" not in dropdowns:

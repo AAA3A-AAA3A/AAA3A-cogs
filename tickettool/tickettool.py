@@ -987,8 +987,11 @@ class TicketTool(settings, commands.Cog):
             permissions = inter.channel.permissions_for(inter.guild.me)
             if not permissions.read_messages and not permissions.read_message_history:
                 return
-            if not getattr(inter, "_sent", False):
-                await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
+            if not getattr(inter, "_sent", False) and not inter.expired:
+                try:
+                    await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
+                except discord.HTTPException:
+                    pass
             if inter.clicked_button.custom_id == "create_ticket_button":
                 buttons = await self.config.guild(inter.guild).buttons.all()
                 if f"{inter.message.channel.id}-{inter.message.id}" in buttons:
@@ -1040,8 +1043,11 @@ class TicketTool(settings, commands.Cog):
             permissions = inter.channel.permissions_for(inter.guild.me)
             if not permissions.read_messages and not permissions.read_message_history:
                 return
-            if not getattr(inter, "_sent", False):
-                await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
+            if not getattr(inter, "_sent", False) and not inter.expired:
+                try:
+                    await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
+                except discord.HTTPException:
+                    pass
             dropdowns = await self.config.guild(inter.guild).dropdowns()
             if f"{inter.message.channel.id}-{inter.message.id}" not in dropdowns:
                 await inter.followup(_("This message is not in TicketTool Config.").format(**locals()), ephemeral=True)
@@ -1088,15 +1094,19 @@ class TicketTool(settings, commands.Cog):
             )
 
     @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload):
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
         if not payload.guild_id:
             return
-        guild = payload.member.guild
+        guild = self.bot.get_guild(payload.guild_id)
         channel = guild.get_channel(payload.channel_id)
         member = guild.get_member(payload.user_id)
         if member == guild.me or member.bot:
             return
-        config = await self.get_config(guild, "main")
+        panel = "main"
+        panels = await self.config.guild(guild).panels()
+        if panel not in panels:
+            return
+        config = await self.get_config(guild, panel)
         if config["enable"]:
             if config["create_on_react"]:
                 if str(payload.emoji) == str("🎟️"):

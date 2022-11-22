@@ -188,8 +188,11 @@ class RolesButtons(commands.Cog):
                 return
             if not inter.component.custom_id.startswith("roles_buttons"):
                 return
-            if not getattr(inter, "_sent", False):
-                await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
+            if not getattr(inter, "_sent", False) and not inter.expired:
+                try:
+                    await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
+                except discord.HTTPException:
+                    pass
             config = await self.config.guild(guild).roles_buttons.all()
             if f"{inter.channel.id}-{inter.message.id}" not in config:
                 await inter.followup(_("This message is not in Config.").format(**locals()), ephemeral=True)

@@ -132,8 +132,11 @@ class DropdownsTexts(commands.Cog):
                 return
             if len(inter.select_menu.selected_options) == 0:
                 return
-            if not getattr(inter, "_sent", False):
-                await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
+            if not getattr(inter, "_sent", False) and not inter.expired:
+                try:
+                    await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
+                except discord.HTTPException:
+                    pass
             config = await self.config.guild(inter.guild).dropdowns_texts.all()
             if f"{inter.channel.id}-{inter.message.id}" not in config:
                 await inter.followup(_("This message is not in Config.").format(**locals()), ephemeral=True)

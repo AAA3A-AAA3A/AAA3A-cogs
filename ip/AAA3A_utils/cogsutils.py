@@ -442,10 +442,10 @@ class CogsUtils(commands.Cog):
             )[0]
         else:
             repo_owner, repo_name, repo_branch = repo_url
-        repo_branch = repo.branch
+            repo_branch = repo_branch or repo.branch
         async with aiohttp.ClientSession() as session:
             async with session.get(
-                f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents?ref={repo_branch}",  # f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}",
+                (f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents?ref={repo_branch}" if repo_branch else f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents"),  # f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}",
                 timeout=3,
             ) as r:
                 online = await r.json()
@@ -457,7 +457,7 @@ class CogsUtils(commands.Cog):
 
         if cog_name not in online_commit_for_each_files:
             raise asyncio.IncompleteReadError("No results could be retrieved from the git api.", None)
-        online_commit = online["sha"]
+        online_commit = online_commit_for_each_files[cog_name]
 
         # async with aiohttp.ClientSession() as session:
         #     async with session.get(

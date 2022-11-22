@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-08-07 20:34+0200\n"
+"POT-Creation-Date: 2022-11-22 19:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,87 +11,146 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: \transferchannel\transferchannel.py:29
+#: transferchannel\transferchannel.py:37
 #, docstring
-msgid ""
-"Similar to d.py's TextChannelConverter but only returns if we have already\n"
-"    passed our hierarchy checks and find in all guilds.\n"
-"    "
+msgid "A cog to transfer all messages channel in a other channel!"
 msgstr ""
 
-#: \transferchannel\transferchannel.py:41
-msgid "You must have permissions to manage this server to use this command."
+#: transferchannel\transferchannel.py:128
+msgid "**Author:** {message.author.mention} ({message.author.id})"
 msgstr ""
 
-#: \transferchannel\transferchannel.py:44
-msgid ""
-"I need to have all the following permissions for the {channel.mention} channel ({channel.id}).\n"
-"`read_messages`, `read_message_history`, `send_messages` and `view_channel`."
-msgstr ""
-
-#: \transferchannel\transferchannel.py:47
-msgid "This channel cannot be found."
-msgstr ""
-
-#: \transferchannel\transferchannel.py:54
-msgid ""
-"This channel cannot be found. If this channel is in another Discord server, "
-"please give the id of a valid text channel."
-msgstr ""
-
-#: \transferchannel\transferchannel.py:56
-msgid ""
-"The specified channel must be a text channel in a server where the bot is "
-"located."
-msgstr ""
-
-#: \transferchannel\transferchannel.py:59
-msgid ""
-"I need to have all the following permissions for the {channel.name} channel ({channel.id}) in {destination.guild.name} ({destination.guild.id}).\n"
-"`read_messages`, `read_message_history`, `send_messages` and `view_channel`."
-msgstr ""
-
-#: \transferchannel\transferchannel.py:76
-#, docstring
-msgid ""
-"\n"
-"        Transfer all messages channel in a other channel. This might take a long time.\n"
-"        You can specify the id of a channel from another server.\n"
-"\n"
-"        `source` is partial name or ID of the source channel\n"
-"        `destination` is partial name or ID of the destination channel\n"
-"        `way` is the used way\n"
-"          - `embed` Do you want to transfer the message as an embed?\n"
-"          - `webhook` Do you want to send the messages with webhooks (name and avatar of the original author)?\n"
-"          - `message`Do you want to transfer the message as a simple message?\n"
-"        "
-msgstr ""
-
-#: \transferchannel\transferchannel.py:90
-msgid ""
-"I need to have all the following permissions for the {destination.name} channel ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n"
-"`embed_links`."
-msgstr ""
-
-#: \transferchannel\transferchannel.py:94
-msgid ""
-"I need to have all the following permissions for the {destination.name} channel ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n"
-"`manage_channels`"
-msgstr ""
-
-#: \transferchannel\transferchannel.py:121
-msgid "**Author:** {message.author}({message.author.id}"
-msgstr ""
-
-#: \transferchannel\transferchannel.py:122
+#: transferchannel\transferchannel.py:131
 msgid "**Channel:** <#{message.channel.id}>"
 msgstr ""
 
-#: \transferchannel\transferchannel.py:123
-msgid "**Time(UTC):** {isoformat}"
+#: transferchannel\transferchannel.py:132
+msgid "**Time (UTC):** {iso_format}"
 msgstr ""
 
-#: \transferchannel\transferchannel.py:131
+#: transferchannel\transferchannel.py:171
+#, docstring
 msgid ""
-"{count} messages transfered from {source.mention} to {destination.mention}."
+"Transfer all messages channel in a other channel. This might take a long time.\n"
+"\n"
+"        Remember that transfering other users' messages in does not respect the TOS.\n"
+"        "
+msgstr ""
+
+#: transferchannel\transferchannel.py:185
+#: transferchannel\transferchannel.py:246
+#: transferchannel\transferchannel.py:309
+#: transferchannel\transferchannel.py:370
+#: transferchannel\transferchannel.py:432
+#: transferchannel\transferchannel.py:496
+#: transferchannel\transferchannel.py:562
+msgid ""
+"Sorry, I can't read the content of the messages in {source.mention} "
+"({source.id})."
+msgstr ""
+
+#: transferchannel\transferchannel.py:194
+#: transferchannel\transferchannel.py:255
+#: transferchannel\transferchannel.py:318
+#: transferchannel\transferchannel.py:379
+#: transferchannel\transferchannel.py:441
+#: transferchannel\transferchannel.py:505
+#: transferchannel\transferchannel.py:571
+msgid ""
+"I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n"
+"`embed_links`."
+msgstr ""
+
+#: transferchannel\transferchannel.py:202
+#: transferchannel\transferchannel.py:263
+#: transferchannel\transferchannel.py:326
+#: transferchannel\transferchannel.py:387
+#: transferchannel\transferchannel.py:449
+#: transferchannel\transferchannel.py:513
+#: transferchannel\transferchannel.py:579
+msgid ""
+"I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n"
+"`manage_channels`"
+msgstr ""
+
+#: transferchannel\transferchannel.py:211
+#: transferchannel\transferchannel.py:274
+#: transferchannel\transferchannel.py:335
+#: transferchannel\transferchannel.py:396
+#: transferchannel\transferchannel.py:458
+#: transferchannel\transferchannel.py:526
+#: transferchannel\transferchannel.py:588
+msgid "Sorry. I could not find any message."
+msgstr ""
+
+#: transferchannel\transferchannel.py:217
+#: transferchannel\transferchannel.py:280
+#: transferchannel\transferchannel.py:341
+#: transferchannel\transferchannel.py:402
+#: transferchannel\transferchannel.py:464
+#: transferchannel\transferchannel.py:532
+#: transferchannel\transferchannel.py:594
+msgid ""
+"There are {count_messages} transfered messages from {source.mention} to "
+"{destination.mention}."
+msgstr ""
+
+#: transferchannel\transferchannel.py:231
+#, docstring
+msgid ""
+"Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"
+"\n"
+"        Specify the number of messages since the end of the channel.\n"
+"        Remember that transfering other users' messages in does not respect the TOS.\n"
+"        "
+msgstr ""
+
+#: transferchannel\transferchannel.py:294
+#, docstring
+msgid ""
+"Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"
+"\n"
+"        Specify the before message (id or link).\n"
+"        Remember that transfering other users' messages in does not respect the TOS.\n"
+"        "
+msgstr ""
+
+#: transferchannel\transferchannel.py:355
+#, docstring
+msgid ""
+"Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"
+"\n"
+"        Specify the after message (id or link).\n"
+"        Remember that transfering other users' messages in does not respect the TOS.\n"
+"        "
+msgstr ""
+
+#: transferchannel\transferchannel.py:417
+#, docstring
+msgid ""
+"Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"
+"\n"
+"        Specify the between messages (id or link).\n"
+"        Remember that transfering other users' messages in does not respect the TOS.\n"
+"        "
+msgstr ""
+
+#: transferchannel\transferchannel.py:481
+#, docstring
+msgid ""
+"Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"
+"\n"
+"            Specify the member (id, name or mention).\n"
+"            Remember that transfering other users' messages in does not respect the TOS.\n"
+"            "
+msgstr ""
+
+#: transferchannel\transferchannel.py:547
+#, docstring
+msgid ""
+"Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"
+"\n"
+"        Specify the bool option.\n"
+"        Remember that transfering other users' messages in does not respect the TOS.\n"
+"        "
 msgstr ""

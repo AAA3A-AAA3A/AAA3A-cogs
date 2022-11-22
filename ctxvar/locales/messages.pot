@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-08-07 20:34+0200\n"
+"POT-Creation-Date: 2022-11-22 19:44+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,21 +11,37 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: \ctxvar\ctxvar.py:21
+#: ctxvar\ctxvar.py:39
 #, docstring
 msgid "A cog to list and display the contents of all sub-functions of `ctx`!"
 msgstr ""
 
-#: \ctxvar\ctxvar.py:39
+#: ctxvar\ctxvar.py:60
+#, docstring
+msgid ""
+"Display a list of all attributes and their values of the 'ctx' class "
+"instance or its sub-attributes."
+msgstr ""
+
+#: ctxvar\ctxvar.py:74
 msgid "The argument you specified is not a subclass of the instance."
 msgstr ""
 
-#: \ctxvar\ctxvar.py:48
+#: ctxvar\ctxvar.py:84
 msgid ""
 "Here are all the variables and their associated values that can be used in "
-"this class."
+"this instance class."
 msgstr ""
 
-#: \ctxvar\ctxvar.py:83
-msgid "Page {page}/{l}"
+#: ctxvar\ctxvar.py:129
+#, docstring
+msgid ""
+"Display a list of all attributes of the provided object (debug not async)."
+msgstr ""
+
+#: ctxvar\ctxvar.py:176
+#, docstring
+msgid ""
+"Execute `rich.help(obj=object, ...)` on the provided object (debug not "
+"async)."
 msgstr ""

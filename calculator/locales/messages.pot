@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-08-07 20:34+0200\n"
+"POT-Creation-Date: 2022-11-22 19:44+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,45 +11,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: \calculator\calculator.py:30
+#: calculator\calculator.py:41
 #, docstring
-msgid "A cog to do simple calculations from Discord with buttons!"
+msgid "A cog to do calculations from Discord with buttons!"
 msgstr ""
 
-#: \calculator\calculator.py:72
-#: \calculator\calculator.py:99
-#: \calculator\calculator.py:241
+#: calculator\calculator.py:85 calculator\calculator.py:154
+#: calculator\calculator.py:223 calculator\calculator.py:292
+#: calculator\calculator.py:492
 msgid "Exit"
 msgstr ""
 
-#: \calculator\calculator.py:82
-#: \calculator\calculator.py:109
-#: \calculator\calculator.py:315
+#: calculator\calculator.py:107 calculator\calculator.py:176
+#: calculator\calculator.py:245 calculator\calculator.py:314
+#: calculator\calculator.py:534
 msgid "Clear"
 msgstr ""
 
-#: \calculator\calculator.py:172
-#: \calculator\calculator.py:416
-#: \calculator\calculator.py:428
-#: \calculator\calculator.py:457
-#: \calculator\calculator.py:471
-#: \calculator\calculator.py:489
-#: \calculator\calculator.py:501
-#: \calculator\calculator.py:530
-#: \calculator\calculator.py:544
+#: calculator\calculator.py:407 calculator\calculator.py:633
+#: calculator\calculator.py:641 calculator\calculator.py:761
+#: calculator\calculator.py:769
 msgid "Error!"
 msgstr ""
 
-#: \calculator\calculator.py:184
-msgid "Calculator"
+#: calculator\calculator.py:419
+msgid "{ctx.me.display_name}'s Calculator"
 msgstr ""
 
-#: \calculator\calculator.py:399
-#, docstring
-msgid "Calculate a simple expression."
+#: calculator\calculator.py:705 calculator\calculator.py:847
+msgid "Nothing in your history."
 msgstr ""
 
-#: \calculator\calculator.py:487
+#: calculator\calculator.py:755
 msgid ""
 "Only the author of the command `{ctx.prefix}{ctx.command.name}` can interact"
 " with this message."

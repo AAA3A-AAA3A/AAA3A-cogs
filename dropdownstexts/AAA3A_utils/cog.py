@@ -108,11 +108,22 @@ class Cog:
     async def cog_before_invoke(self, ctx: commands.Context):
         if self.cog is None:
             return
+        if isinstance(ctx.command, commands.Group):
+            view = ctx.view
+            previous = view.index
+            view.skip_ws()
+            trigger = view.get_word()
+            invoked_subcommand = ctx.command.all_commands.get(trigger, None)
+            view.index = previous
+            if invoked_subcommand is not None or not ctx.command.invoke_without_command:
+                return
         context = await Context.from_context(ctx)
         if getattr(context, "interaction", None) is None:
             for index, arg in enumerate(ctx.args.copy()):
                 if isinstance(arg, commands.Context):
                     ctx.args[index] = context
+            context._typing = context.channel.typing()
+            await context._typing.__aenter__()
         else:
             if context.command.__commands_is_hybrid__ and hasattr(context.command, "app_command"):
                 __do_call = getattr(context.command.app_command, "_do_call")
@@ -123,16 +134,19 @@ class Cog:
                 await context.interaction.response.defer(ephemeral=False, thinking=True)
             except discord.InteractionResponded:
                 pass
-        context._typing = context.channel.typing()
-        try:
-            await context._typing.__aenter__()
-        except discord.InteractionResponded:
-            pass
-        return ctx
+            context._typing = context.channel.typing()
+            try:
+                await context._typing.__aenter__()
+            except discord.InteractionResponded:
+                pass
+        return context
 
-    async def cog_after_invoke(self, ctx: commands.Context):
+    async def cog_after_invoke(self, ctx: commands.Context, force: typing.Optional[bool] = False):
         if self.cog is None:
             return
+        if isinstance(ctx.command, commands.Group):
+            if ctx.invoked_subcommand is not None or not ctx.command.invoke_without_command:
+                return
         context = await Context.from_context(ctx)
         if hasattr(context, "_typing"):
             if hasattr(context._typing, "task") and hasattr(context._typing.task, "cancel"):
@@ -143,6 +157,7 @@ class Cog:
             await context.tick(reaction="❌")
         # from .menus import Menu
         # await Menu(pages=str("\n".join([str((x.function, x.frame)) for x in __import__("inspect").stack(30)])), box_language_py=True).start(context)
+        return context
 
     async def cog_command_error(self, ctx: commands.Context, error: Exception):
         if self.cog is None:

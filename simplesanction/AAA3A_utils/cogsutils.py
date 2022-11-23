@@ -191,10 +191,12 @@ class CogsUtils(commands.Cog):
                 text = text.replace("{USERNAME}".lower(), os.environ["USERNAME"])
         return text
 
-    async def add_cog(self, bot: Red, cog: typing.Optional[commands.Cog]=None):
+    async def add_cog(self, bot: typing.Optional[Red]=None, cog: typing.Optional[commands.Cog]=None):
         """
         Load a cog by checking whether the required function is awaitable or not.
         """
+        if bot is None:
+            bot = self.bot
         if cog is None:
             cog = self.cog
         await self.change_config_unique_identifier(cog=cog)

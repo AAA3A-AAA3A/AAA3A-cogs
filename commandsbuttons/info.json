@@ -1,0 +1,14 @@
+{
+    "author": ["AAA3A"],
+    "name": "CommandsButtons",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
+    "short": "A cog to allow a user to execute a command by clicking on a button!",
+    "description": "Have you ever wanted to allow a user to execute a command by clicking on a button? Then this cog is for you!",
+    "tags": [
+        "command",
+        "button",
+        "react"
+    ],
+    "requirements": ["dislash.py", "emoji"],
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

@@ -78,8 +78,8 @@ class UrlButtons(commands.Cog):
         self,
         ctx: commands.Context,
         message: discord.Message,
-        url: str,
         emoji: Emoji,
+        url: str,
         *,
         text_button: typing.Optional[str] = None,
     ):

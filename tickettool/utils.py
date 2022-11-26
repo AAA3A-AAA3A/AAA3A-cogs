@@ -76,6 +76,7 @@ class utils:
 
 class Emoji(commands.EmojiConverter):
     async def convert(self, ctx: commands.Context, argument: str):
+        argument = str(argument)
         argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument

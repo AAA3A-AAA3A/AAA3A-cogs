@@ -35,6 +35,7 @@ else:
 
 class Emoji(commands.EmojiConverter):
     async def convert(self, ctx: commands.Context, argument: str):
+        argument = str(argument)
         argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument
@@ -106,8 +107,6 @@ class ReactToCommand(commands.Cog):
         payload.member = guild.get_member(payload.user_id)
         if payload.member is None:
             return
-        if guild is None:
-            return
         if payload.member.bot:
             return
         if await self.bot.cog_disabled_in_guild(self, guild):
@@ -115,16 +114,13 @@ class ReactToCommand(commands.Cog):
         config = await self.config.guild(guild).react_commands.all()
         if f"{payload.channel_id}-{payload.message_id}" not in config:
             return
-        if getattr(payload.emoji, "id", None):
-            payload.emoji = str(payload.emoji.id)
-        else:
-            payload.emoji = str(payload.emoji).strip("\N{VARIATION SELECTOR-16}")
+        emoji = f"{getattr(Emoji().convert(payload.emoji), 'id', Emoji().convert(payload.emoji))}"
         message = await channel.fetch_message(payload.message_id)
         try:
-            await message.remove_reaction(f"{payload.emoji}", payload.member)
+            await message.remove_reaction(emoji, payload.member)
         except discord.HTTPException:
             pass
-        if f"{payload.emoji}" not in config[f"{payload.channel_id}-{payload.message_id}"]:
+        if emoji not in config[f"{payload.channel_id}-{payload.message_id}"]:
             return
         permissions = channel.permissions_for(payload.member)
         if (
@@ -134,7 +130,7 @@ class ReactToCommand(commands.Cog):
             or not permissions.view_channel
         ):
             return
-        command = config[f"{payload.channel_id}-{payload.message_id}"][f"{payload.emoji}"]
+        command = config[f"{payload.channel_id}-{payload.message_id}"][emoji]
         context = await self.cogsutils.invoke_command(
             author=payload.member,
             channel=channel,
@@ -156,7 +152,7 @@ class ReactToCommand(commands.Cog):
         self.cache.remove(ctx)
         if isinstance(error, commands.CommandInvokeError):
             await asyncio.sleep(0.7)
-            self.log.exception(
+            self.log.error(
                 f"This exception in the '{ctx.command.qualified_name}' command may have been triggered by the use of ReactToCommand. Check that the same error occurs with the text command, before reporting it.",
                 exc_info=None,
             )
@@ -176,23 +172,30 @@ class ReactToCommand(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent) -> None:
         guild = self.bot.get_guild(payload.guild_id)
+        if guild is None:
+            return
+        channel = guild.get_channel(payload.channel_id)
         payload.member = guild.get_member(payload.user_id)
         if payload.member is None:
-            return
-        if guild is None:
             return
         if not payload.member.id == guild.me.id:
             return
         config = await self.config.guild(guild).react_commands.all()
         if f"{payload.channel_id}-{payload.message_id}" not in config:
             return
-        if getattr(payload.emoji, "id", None):
-            payload.emoji = str(payload.emoji.id)
-        else:
-            payload.emoji = str(payload.emoji).strip("\N{VARIATION SELECTOR-16}")
-        if f"{payload.emoji}" not in config[f"{payload.channel_id}-{payload.message_id}"]:
+        emoji = payload.emoji
+        class FakeContext:
+            def __init__(self, bot: Red, author: discord.Member, guild: discord.Guild, channel: discord.TextChannel):
+                self.bot = bot
+                self.author = author
+                self.guild = guild
+                self.channel = channel
+        fake_context = FakeContext(self.bot, payload.member, guild, channel)
+        emoji = await Emoji().convert(fake_context, emoji)
+        emoji = f"{getattr(emoji, 'id', emoji)}"
+        if emoji not in config[f"{payload.channel_id}-{payload.message_id}"]:
             return
-        del config[f"{payload.channel_id}-{payload.message_id}"][f"{payload.emoji}"]
+        del config[f"{payload.channel_id}-{payload.message_id}"][emoji]
         if config[f"{payload.channel_id}-{payload.message_id}"] == {}:
             del config[f"{payload.channel_id}-{payload.message_id}"]
         await self.config.guild(guild).react_commands.set(config)
@@ -233,15 +236,16 @@ class ReactToCommand(commands.Cog):
             if not new_ctx.valid:
                 await ctx.send(_("You have not specified a correct command.").format(**locals()))
                 return
-        try:
-            await ctx.message.add_reaction(emoji)
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "An error has occurred. It is possible that the emoji you provided is invalid."
-                ).format(**locals())
-            )
-            return
+        if getattr(ctx, "interaction", None) is None:
+            try:
+                await ctx.message.add_reaction(emoji)
+            except discord.HTTPException:
+                await ctx.send(
+                    _(
+                        "An error has occurred. It is possible that the emoji you provided is invalid."
+                    ).format(**locals())
+                )
+                return
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}

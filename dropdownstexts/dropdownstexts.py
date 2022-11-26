@@ -97,7 +97,16 @@ class DropdownsTexts(commands.Cog):
                 option for option in view.options_dict if option["label"] == selected_options[0]
             ]
             emoji = options[0]["emoji"]
-            emoji = str(getattr(emoji, "id", emoji))
+            class FakeContext:
+                def __init__(self, bot: Red, author: discord.Member, guild: discord.Guild, channel: discord.TextChannel):
+                    self.bot = bot
+                    self.author = author
+                    self.guild = guild
+                    self.channel = channel
+            fake_context = FakeContext(self.bot, interaction.user, interaction.guild, interaction.channel)
+            emoji = await Emoji().convert(fake_context, emoji)
+            emoji = await Emoji().convert(interaction, emoji)
+            emoji = f"{getattr(emoji, 'id', emoji)}"
             if f"{emoji}" not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
                 await interaction.followup.send(_("This emoji is not in Config.").format(**locals()), ephemeral=True)
                 return
@@ -143,7 +152,16 @@ class DropdownsTexts(commands.Cog):
                 return
             options = inter.select_menu.selected_options
             emoji = options[0].emoji
-            emoji = str(getattr(emoji, "id", emoji) or emoji)
+            class FakeContext:
+                def __init__(self, bot: Red, author: discord.Member, guild: discord.Guild, channel: discord.TextChannel):
+                    self.bot = bot
+                    self.author = author
+                    self.guild = guild
+                    self.channel = channel
+            fake_context = FakeContext(self.bot, inter.author, inter.guild, inter.channel)
+            emoji = await Emoji().convert(fake_context, emoji)
+            emoji = await Emoji().convert(inter, emoji)
+            emoji = f"{getattr(emoji, 'id', emoji)}"
             if f"{emoji}" not in config[f"{inter.channel.id}-{inter.message.id}"]:
                 await inter.followup(_("This emoji is not in Config.").format(**locals()), ephemeral=True)
                 return

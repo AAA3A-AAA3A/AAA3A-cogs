@@ -119,11 +119,20 @@ class RolesButtons(commands.Cog):
                             else str(component["emoji"]["id"])
                         )
                         break
-            if f"{emoji}" not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
+            class FakeContext:
+                def __init__(self, bot: Red, author: discord.Member, guild: discord.Guild, channel: discord.TextChannel):
+                    self.bot = bot
+                    self.author = author
+                    self.guild = guild
+                    self.channel = channel
+            fake_context = FakeContext(self.bot, interaction.user, interaction.guild, interaction.channel)
+            emoji = await Emoji().convert(fake_context, emoji)
+            emoji = f"{getattr(emoji, 'id', emoji)}"
+            if emoji not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
                 await interaction.followup.send(_("This emoji is not in Config.").format(**locals()), ephemeral=True)
                 return
             role = interaction.guild.get_role(
-                config[f"{interaction.channel.id}-{interaction.message.id}"][f"{emoji}"]["role"]
+                config[f"{interaction.channel.id}-{interaction.message.id}"][emoji]["role"]
             )
             if role is None:
                 await interaction.followup.send(
@@ -197,17 +206,21 @@ class RolesButtons(commands.Cog):
             if f"{inter.channel.id}-{inter.message.id}" not in config:
                 await inter.followup(_("This message is not in Config.").format(**locals()), ephemeral=True)
                 return
-            if getattr(inter.component.emoji, "id", None):
-                inter.component.emoji = str(inter.component.emoji.id)
-            else:
-                inter.component.emoji = str(inter.component.emoji).strip(
-                    "\N{VARIATION SELECTOR-16}"
-                )
-            if f"{inter.component.emoji}" not in config[f"{inter.channel.id}-{inter.message.id}"]:
+            emoji = inter.component.emoji
+            class FakeContext:
+                def __init__(self, bot: Red, author: discord.Member, guild: discord.Guild, channel: discord.TextChannel):
+                    self.bot = bot
+                    self.author = author
+                    self.guild = guild
+                    self.channel = channel
+            fake_context = FakeContext(self.bot, inter.author, inter.guild, inter.channel)
+            emoji = await Emoji().convert(fake_context, emoji)
+            emoji = f"{getattr(emoji, 'id', emoji)}"
+            if emoji not in config[f"{inter.channel.id}-{inter.message.id}"]:
                 await inter.followup(_("This emoji is not in Config.").format(**locals()), ephemeral=True)
                 return
             role = inter.guild.get_role(
-                config[f"{inter.channel.id}-{inter.message.id}"][f"{inter.component.emoji}"][
+                config[f"{inter.channel.id}-{inter.message.id}"][emoji][
                     "role"
                 ]
             )
@@ -284,8 +297,8 @@ class RolesButtons(commands.Cog):
         self,
         ctx: commands.Context,
         message: discord.Message,
-        role: discord.Role,
         emoji: Emoji,
+        role: discord.Role,
         style_button: typing.Optional[commands.Literal["1", "2", "3", "4"]] = "2",
         *,
         text_button: typing.Optional[str] = None,

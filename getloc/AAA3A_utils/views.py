@@ -145,6 +145,12 @@ class Buttons(discord.ui.View):
         self.done.set()
         self.stop()
 
+    async def on_error(self, interaction: discord.Interaction, error: Exception, item) -> None:
+        if not interaction.response.is_done():
+            await interaction.response.defer(ephemeral=True)
+        await interaction.followup.send("Sorry. An error has occurred.", ephemeral=True)
+        discord.ui.view._log.error("Ignoring exception in view %r for item %r.", self, item, exc_info=error)
+
     async def wait_result(self):
         self.done = asyncio.Event()
         await self.done.wait()
@@ -289,6 +295,12 @@ class Dropdown(discord.ui.View):
     async def on_timeout(self):
         self.done.set()
         self.stop()
+
+    async def on_error(self, interaction: discord.Interaction, error: Exception, item) -> None:
+        if not interaction.response.is_done():
+            await interaction.response.defer(ephemeral=True)
+        await interaction.followup.send("Sorry. An error has occurred.", ephemeral=True)
+        discord.ui.view._log.error("Ignoring exception in view %r for item %r.", self, item, exc_info=error)
 
     async def wait_result(self):
         self.done = asyncio.Event()

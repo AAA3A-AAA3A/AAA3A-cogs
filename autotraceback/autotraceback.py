@@ -80,6 +80,8 @@ class AutoTraceback(commands.Cog):
                     await Menu(pages=pages, timeout=180, delete_after_timeout=False).start(ctx)
                 except discord.HTTPException:
                     pass
+                else:
+                    return
             for page in pagify(_last_exception, shorten_by=15, page_length=1985):
                 try:
                     await ctx.author.send(box(page, lang="py"))
@@ -88,7 +90,7 @@ class AutoTraceback(commands.Cog):
                         "I couldn't send the traceback message to you in DM. "
                         "Either you blocked me or you disabled DMs in this server."
                     )
-                    return
+                return
         else:
             await ctx.send(_("No exception has occurred yet."))
 

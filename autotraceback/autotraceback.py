@@ -64,8 +64,6 @@ class AutoTraceback(commands.Cog):
             - `[public]` - Whether to send the traceback to the current context. Leave blank to send to your DMs.
         """
         if ctx.bot._last_exception:
-            if self.cogsutils.is_dpy2:
-                await ctx.defer()
             _last_exception = ctx.bot._last_exception.split("\n")
             _last_exception[0] = _last_exception[0] + (
                 ":\n" if not _last_exception[0].endswith(":") else ""

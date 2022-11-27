@@ -100,24 +100,27 @@ class Sudo(commands.Cog):
         return commands.check(pred)
 
     @decorator(all_owner_ids=True, bot_owner_ids=True)
-    @hybrid_group(name="Sudo", hidden=True, invoke_without_subcommand=False)
+    @hybrid_group(name="SudO", hidden=False)
     async def Sudo(self, ctx: commands.Context):
-        """Commands for Sudo cog."""
+        """Use `[p]su`, `[p]unsu`, `[p]sudo` and `[p]sutimeout`."""
         pass
-        #await ctx.send(str(ctx.invoked_subcommand) + "\n" + str(ctx.subcommand_passed))
-        # if ctx.invoked_subcommand is None and await (self.decorator.__func__(all_owner_ids=True, bot_owner_ids=False)).predicate(ctx):
-        #     ctx.bot.dispatch("on_message_without_command", ctx.message)
 
     @decorator(all_owner_ids=True, bot_owner_ids=False)
     @Sudo.command(name="su")
     async def _su(self, ctx: commands.Context):
-        """Sudo as the owner of the bot."""
+        """Sudo as the owner of the bot.
+
+        Use `[p]su`!
+        """
         ctx.bot.owner_ids.add(ctx.author.id)
 
     @decorator(all_owner_ids=False, bot_owner_ids=True)
     @Sudo.command(name="unsu")
     async def _unsu(self, ctx: commands.Context):
-        """Unsudo as normal user."""
+        """Unsudo as normal user.
+
+        Use `[p]unsu`!
+        """
         ctx.bot.owner_ids.remove(ctx.author.id)
         if ctx.author.id not in self.all_owner_ids:
             self.all_owner_ids.add(ctx.author.id)
@@ -125,7 +128,10 @@ class Sudo(commands.Cog):
     @decorator(all_owner_ids=True, bot_owner_ids=False)
     @Sudo.command(name="sudo")
     async def _sudo(self, ctx: commands.Context, *, command: str):
-        """Rise as the bot owner for the specified command only."""
+        """Rise as the bot owner for the specified command only.
+
+        Use `[p]sudo`!
+        """
         ctx.bot.owner_ids.add(ctx.author.id)
         await self.cogsutils.invoke_command(
             author=ctx.author,
@@ -157,6 +163,8 @@ class Sudo(commands.Cog):
     ):
         """Sudo as the owner of the bot for the specified timeout.
         The time should be between 10 seconds and 1 day.
+
+        Use `[p]sutimeout`!
         """
         sleep = interval.total_seconds()
         ctx.bot.owner_ids.add(ctx.author.id)

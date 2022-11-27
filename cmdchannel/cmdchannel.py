@@ -18,8 +18,8 @@ _ = Translator("CmdChannel", __file__)
 if CogsUtils().is_dpy2:
     from functools import partial
 
-    hybrid_command = partial(commands.hybrid_command, with_app_command=True)
-    hybrid_group = partial(commands.hybrid_group, with_app_command=True)
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
@@ -48,9 +48,23 @@ class CmdChannel(commands.Cog):
 
         self.cogsutils = CogsUtils(cog=self)
 
-    @hybrid_group()
+    @commands.Cog.listener()
+    async def on_message_without_command(self, message: discord.Message):
+        context = await self.bot.get_context(message)
+        if context.prefix is None:
+            return
+        command = context.message.content[len(str(context.prefix)):]
+        if len(command.split(" ")) == 0:
+            return
+        command_name = command.split(" ")[0]
+        if command_name not in ["cmdchannel", "cmduser", "cmduserchannel"]:
+            return
+        command = command[3:]
+        await self.cogsutils.invoke_command(author=context.author, channel=context.channel, command=f"CmdchanneL {command}", prefix=context.prefix, message=context.message)
+
+    @hybrid_group(name="CmdchanneL", hidden=False)
     async def cmdchannel(self, ctx: commands.Context):
-        """Commands for CmdChannel."""
+        """Use `[p]cmdchannel`, `[p]cmduser` and `[p]cmduserchannel`."""
         pass
 
     @commands.mod()
@@ -59,6 +73,8 @@ class CmdChannel(commands.Cog):
         """Act as if the command had been typed in the channel of your choice.
         The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.
         If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).
+
+        Use `[p]cmdchannel`!
         """
         guild = channel.guild
         if ctx.author not in guild.members:
@@ -187,6 +203,8 @@ class CmdChannel(commands.Cog):
         """Act as if the command had been typed by imitating the specified user.
         The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.
         If you do not specify a user, the author will be used.
+
+        Use `[p]cmduser`!
         """
         if user is None:
             user = ctx.author
@@ -219,6 +237,8 @@ class CmdChannel(commands.Cog):
         """Act as if the command had been typed in the channel of your choice by imitating the specified user.
         The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.
         If you do not specify a user, the author will be used.
+
+        Use `[p]cmduserchannel`!
         """
         if user is None:
             user = ctx.author

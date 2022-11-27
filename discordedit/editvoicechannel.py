@@ -5,6 +5,8 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+from redbot.core.utils.chat_formatting import box
+
 if CogsUtils().is_dpy2:  # To remove
     setattr(commands, "Literal", typing.Literal)
 
@@ -29,9 +31,21 @@ class EditVoiceChannel(commands.Cog):
 
         self.cogsutils = CogsUtils(cog=self)
 
+    async def send_error(self, ctx: commands.Context, error: discord.HTTPException):
+        error = box(str(error), lang="py")
+        await ctx.send(
+            _(
+                "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+            ).format(**locals())
+        )
+
     async def check_voice_channel(self, ctx: commands.Context, channel: discord.VoiceChannel):
-        if not self.cogsutils.check_permissions_for(
-            channel=channel, user=ctx.guild.me, check=["manage_channel"]
+        if (
+            not self.cogsutils.check_permissions_for(
+                channel=channel, user=ctx.author, check=["manage_channel"]
+            )
+            and not ctx.author.id == ctx.guild.owner.id
+            and ctx.author.id not in ctx.bot.owner_ids
         ):
             await ctx.send(
                 _(
@@ -39,11 +53,8 @@ class EditVoiceChannel(commands.Cog):
                 ).format(**locals())
             )
             return False
-        if (
-            not self.cogsutils.check_permissions_for(
-                channel=channel, user=ctx.author, check=["manage_channel"]
-            )
-            and ctx.author.id not in ctx.bot.owner_ids
+        if not self.cogsutils.check_permissions_for(
+            channel=channel, user=ctx.guild.me, check=["manage_channel"]
         ):
             await ctx.send(
                 _(
@@ -75,12 +86,8 @@ class EditVoiceChannel(commands.Cog):
                 category=category,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{name}.",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @editvoicechannel.command(name="clone")
     async def editvoicechannel_clone(self, ctx: commands.Context, channel: discord.VoiceChannel, *, name: str):
@@ -92,12 +99,40 @@ class EditVoiceChannel(commands.Cog):
                 name=name,
                 reason=f"{ctx.author} ({ctx.author.id}) has cloned the voice channel #!{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
+
+    @editvoicechannel.command(name="invite")
+    async def editvoicechannel_invite(
+        self,
+        ctx: commands.Context,
+        channel: discord.VoiceChannel,
+        max_age: typing.Optional[float] = None,
+        max_uses: typing.Optional[int] = None,
+        temporary: typing.Optional[bool] = False,
+        unique: typing.Optional[bool] = True,
+    ):
+        """Create an invite for a voice channel.
+
+        `max_age`: How long the invite should last in days. If it's 0 then the invite doesn't expire.
+        `max_uses`: How many uses the invite could be used for. If it's 0 then there are unlimited uses.
+        `temporary`: Denotes that the invite grants temporary membership (i.e. they get kicked after they disconnect).
+        `unique`: Indicates if a unique invite URL should be created. Defaults to True. If this is set to False then it will return a previously created invite.
+        """
+        if not await self.check_voice_channel(ctx, channel):
+            return
+        try:
+            invite = await channel.create_invite(
+                max_age=(max_age or 0) * 86400,
+                max_uses=max_uses,
+                temporary=temporary,
+                unique=unique,
+                reason=f"{ctx.author} ({ctx.author.id}) has create an invite for the voice channel #{channel.name} ({channel.id}).",
             )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
+        else:
+            await ctx.send(invite.url)
 
     @editvoicechannel.command(name="name")
     async def editvoicechannel_name(self, ctx: commands.Context, channel: discord.VoiceChannel, name: str):
@@ -109,12 +144,8 @@ class EditVoiceChannel(commands.Cog):
                 name=name,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @editvoicechannel.command(name="bitrate")
     async def editvoicechannel_bitrate(self, ctx: commands.Context, channel: discord.VoiceChannel, bitrate: int):
@@ -135,12 +166,8 @@ class EditVoiceChannel(commands.Cog):
                 bitrate=bitrate,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @editvoicechannel.command(name="nsfw")
     async def editvoicechannel_nsfw(self, ctx: commands.Context, channel: discord.VoiceChannel, nsfw: bool):
@@ -152,15 +179,11 @@ class EditVoiceChannel(commands.Cog):
                 nsfw=nsfw,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @editvoicechannel.command(name="userlimit")
-    async def editvoicechannel_userlimit(
+    async def editvoicechannel_user_limit(
         self, ctx: commands.Context, channel: discord.VoiceChannel, user_limit: int
     ):
         """Edit voice channel user limit.
@@ -177,12 +200,8 @@ class EditVoiceChannel(commands.Cog):
                 user_limit=user_limit,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @editvoicechannel.command(name="position")
     async def editvoicechannel_position(
@@ -211,15 +230,11 @@ class EditVoiceChannel(commands.Cog):
                 position=position,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel !{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @editvoicechannel.command(name="syncpermissions")
-    async def editvoicechannel_syncpermissions(
+    async def editvoicechannel_sync_permissions(
         self, ctx: commands.Context, channel: discord.VoiceChannel, sync_permissions: bool
     ):
         """Edit voice channel sync permissions."""
@@ -230,15 +245,11 @@ class EditVoiceChannel(commands.Cog):
                 sync_permissions=sync_permissions,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @editvoicechannel.command(name="category")
-    async def editvoicechannel_scategory(
+    async def editvoicechannel_category(
         self,
         ctx: commands.Context,
         channel: discord.VoiceChannel,
@@ -252,15 +263,11 @@ class EditVoiceChannel(commands.Cog):
                 category=category,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @editvoicechannel.command(name="videoqualitymode")
-    async def editvoicechannel_videoqualitymode(
+    async def editvoicechannel_video_quality_mode(
         self,
         ctx: commands.Context,
         channel: discord.VoiceChannel,
@@ -279,12 +286,8 @@ class EditVoiceChannel(commands.Cog):
                 video_quality_mode=video_quality_mode,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @editvoicechannel.command(name="delete")
     async def editvoicechannel_delete(
@@ -312,9 +315,5 @@ class EditVoiceChannel(commands.Cog):
             await channel.delete(
                 reason=f"{ctx.author} ({ctx.author.id}) has deleted the voice channel #!{channel.name} ({channel.id})."
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)

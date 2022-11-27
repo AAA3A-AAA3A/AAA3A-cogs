@@ -8,6 +8,7 @@ import typing  # isort:skip
 import datetime
 
 from redbot.core.commands.converter import get_timedelta_converter
+from redbot.core.utils.chat_formatting import box
 
 TimedeltaConverter = get_timedelta_converter(
     default_unit="s",
@@ -39,9 +40,21 @@ class EditTextChannel(commands.Cog):
 
         self.cogsutils = CogsUtils(cog=self)
 
+    async def send_error(self, ctx: commands.Context, error: discord.HTTPException):
+        error = box(str(error), lang="py")
+        await ctx.send(
+            _(
+                "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+            ).format(**locals())
+        )
+
     async def check_text_channel(self, ctx: commands.Context, channel: discord.TextChannel):
-        if not self.cogsutils.check_permissions_for(
-            channel=channel, user=ctx.guild.me, check=["manage_channel"]
+        if (
+            not self.cogsutils.check_permissions_for(
+                channel=channel, user=ctx.author, check=["manage_channel"]
+            )
+            and not ctx.author.id == ctx.guild.owner.id
+            and ctx.author.id not in ctx.bot.owner_ids
         ):
             await ctx.send(
                 _(
@@ -49,11 +62,8 @@ class EditTextChannel(commands.Cog):
                 ).format(**locals())
             )
             return False
-        if (
-            not self.cogsutils.check_permissions_for(
-                channel=channel, user=ctx.author, check=["manage_channel"]
-            )
-            and ctx.author.id not in ctx.bot.owner_ids
+        if not self.cogsutils.check_permissions_for(
+            channel=channel, user=ctx.guild.me, check=["manage_channel"]
         ):
             await ctx.send(
                 _(
@@ -85,12 +95,8 @@ class EditTextChannel(commands.Cog):
                 category=category,
                 reason=f"{ctx.author} ({ctx.author.id}) has created the text channel #{name}.",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @edittextchannel.command(name="clone")
     async def edittextchannel_clone(
@@ -106,12 +112,42 @@ class EditTextChannel(commands.Cog):
                 name=name,
                 reason=f"{ctx.author} ({ctx.author.id}) has cloned the text channel #{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
+
+    @edittextchannel.command(name="invite")
+    async def edittextchannel_invite(
+        self,
+        ctx: commands.Context,
+        channel: typing.Optional[discord.TextChannel],
+        max_age: typing.Optional[float] = None,
+        max_uses: typing.Optional[int] = None,
+        temporary: typing.Optional[bool] = False,
+        unique: typing.Optional[bool] = True,
+    ):
+        """Create an invite for a text channel.
+
+        `max_age`: How long the invite should last in days. If it's 0 then the invite doesn't expire.
+        `max_uses`: How many uses the invite could be used for. If it's 0 then there are unlimited uses.
+        `temporary`: Denotes that the invite grants temporary membership (i.e. they get kicked after they disconnect).
+        `unique`: Indicates if a unique invite URL should be created. Defaults to True. If this is set to False then it will return a previously created invite.
+        """
+        if channel is None:
+            channel = ctx.channel
+        if not await self.check_text_channel(ctx, channel):
+            return
+        try:
+            invite = await channel.create_invite(
+                max_age=(max_age or 0) * 86400,
+                max_uses=max_uses,
+                temporary=temporary,
+                unique=unique,
+                reason=f"{ctx.author} ({ctx.author.id}) has create an invite for the text channel #{channel.name} ({channel.id}).",
             )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
+        else:
+            await ctx.send(invite.url)
 
     @edittextchannel.command(name="name")
     async def edittextchannel_name(
@@ -127,12 +163,8 @@ class EditTextChannel(commands.Cog):
                 name=name,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @edittextchannel.command(name="topic")
     async def edittextchannel_topic(
@@ -148,12 +180,8 @@ class EditTextChannel(commands.Cog):
                 topic=topic,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @edittextchannel.command(name="position")
     async def edittextchannel_position(
@@ -188,12 +216,8 @@ class EditTextChannel(commands.Cog):
                 position=position,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @edittextchannel.command(name="nsfw")
     async def edittextchannel_nsfw(
@@ -209,15 +233,11 @@ class EditTextChannel(commands.Cog):
                 nsfw=nsfw,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @edittextchannel.command(name="syncpermissions")
-    async def edittextchannel_syncpermissions(
+    async def edittextchannel_sync_permissions(
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
@@ -233,12 +253,8 @@ class EditTextChannel(commands.Cog):
                 sync_permissions=sync_permissions,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @edittextchannel.command(name="category")
     async def edittextchannel_category(
@@ -257,15 +273,11 @@ class EditTextChannel(commands.Cog):
                 category=category,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @edittextchannel.command(name="slowmodedelay")
-    async def edittextchannel_slowmodedelay(
+    async def edittextchannel_slowmode_delay(
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
@@ -288,12 +300,8 @@ class EditTextChannel(commands.Cog):
                 slowmode_delay=slowmode_delay,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @edittextchannel.command(name="type")
     async def edittextchannel_type(
@@ -318,15 +326,11 @@ class EditTextChannel(commands.Cog):
                 type=type,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @edittextchannel.command(name="defaultautoarchiveduration")
-    async def edittextchannel_defaultautoarchiveduration(
+    async def edittextchannel_default_auto_archive_duration(
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
@@ -345,12 +349,8 @@ class EditTextChannel(commands.Cog):
                 default_auto_archive_duration=int(default_auto_archive_duration),
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
 
     @edittextchannel.command(name="delete")
     async def edittextchannel_delete(
@@ -380,9 +380,5 @@ class EditTextChannel(commands.Cog):
             await channel.delete(
                 reason=f"{ctx.author} ({ctx.author.id}) has deleted the text channel #{channel.name} ({channel.id})."
             )
-        except discord.HTTPException:
-            await ctx.send(
-                _(
-                    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
-                ).format(**locals())
-            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)

@@ -3,6 +3,7 @@ from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 
+from .editguild import EditGuild
 from .editrole import EditRole
 from .edittextchannel import EditTextChannel
 from .editvoicechannel import EditVoiceChannel
@@ -25,7 +26,7 @@ else:
 
 
 @cog_i18n(_)
-class DiscordEdit(EditRole, EditTextChannel, EditVoiceChannel, commands.Cog):
+class DiscordEdit(EditGuild, EditRole, EditTextChannel, EditVoiceChannel, commands.Cog):
     """A cog to edit Discord default objects!"""
 
     def __init__(self, bot: Red):

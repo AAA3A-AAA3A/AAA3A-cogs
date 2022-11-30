@@ -62,7 +62,7 @@ class CmdChannel(commands.Cog):
         command = command[3:]
         await self.cogsutils.invoke_command(author=context.author, channel=context.channel, command=f"CmdchanneL {command}", prefix=context.prefix, message=context.message)
 
-    @hybrid_group(name="CmdchanneL", hidden=False)
+    @hybrid_group(name="CmdchanneL", aliases=["cmdmock"], hidden=False)
     async def cmdchannel(self, ctx: commands.Context):
         """Use `[p]cmdchannel`, `[p]cmduser` and `[p]cmduserchannel`."""
         pass

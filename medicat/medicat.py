@@ -35,7 +35,7 @@ else:
     hybrid_command = commands.command
     hybrid_group = commands.group
 
-MEDICAT_LOGO = "https://images-ext-1.discordapp.net/external/jcitwwaYOx1ZjI5sMO9_lHqV-gBkJhqqEFsJDlIjOtY/%3Fsize%3D1024/https/cdn.discordapp.com/icons/829469886681972816/4dbbf4268a1d2bbc1334313ffadb1543.webp"
+MEDICAT_LOGO = "https://images-ext-2.discordapp.net/external/0edYhL298g57XPSKCqHN2dpkAP_dZLuH2nV4Q1V_Mt0/%3Fsize%3D1024/https/cdn.discordapp.com/icons/829469886681972816/daf101c0c15e8c4ad6a2a293a2b138fe.webp"
 
 MEDICAT_GUILD = 829469886681972816
 VENTOY_UPDATES_CHANNEL = 831224763162165278
@@ -301,9 +301,7 @@ class Medicat(commands.Cog):
     async def cog_load(self):
         await self.edit_config_schema()
         self.cogsutils.create_loop(function=self.ventoy_updates, name="Ventoy Updates", hours=1)
-        self.cogsutils.create_loop(
-            function=self.bootables_tools_updates, name="Bootables Tools Updates", hours=1
-        )
+        self.cogsutils.create_loop(function=self.bootables_tools_updates, name="Bootables Tools Updates", hours=1)
         self.CC_added: asyncio.Event = asyncio.Event()
         await self.add_custom_commands()
 
@@ -719,10 +717,9 @@ class Medicat(commands.Cog):
                 self.bot.dispatch("command_add", command)
                 if self.bot.get_cog("permissions") is None:
                     command.requires.ready_event.set()
-                # setattr(command, "format_text_for_context", self.cogsutils.format_text_to_context)
-                # setattr(command, "format_shortdoc_for_context", self.cogsutils.allow_forformat_shortdoc_for_context)
                 if self.cogsutils.is_dpy2:
-                    command.params = {}
+                    if "ctx" in command.params:
+                        del command.params["ctx"]
                 setattr(self, f"CC_{name}", command)
             except Exception as e:
                 self.log.error(

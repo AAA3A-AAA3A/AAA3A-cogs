@@ -13,7 +13,8 @@ from rich.console import Console
 from rich.table import Table
 
 from .menus import Menu
-from .views import Buttons, Modal
+if discord.version_info.major >= 2:
+    from .views import Buttons, Modal
 
 __all__ = ["Settings"]
 

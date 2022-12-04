@@ -19,7 +19,7 @@ def _(untranslated: str):
     return untranslated
 
 
-def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
+def no_colour_rich_markup(*objects: typing.Any, lang: str = "", no_box: typing.Optional[bool] = False) -> str:
     """
     Slimmed down version of rich_markup which ensure no colours (/ANSI) can exist
     https://github.com/Cog-Creators/Red-DiscordBot/pull/5538/files (Kowlin)
@@ -31,6 +31,8 @@ def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
         width=80,
     )
     temp_console.print(*objects)
+    if no_box:
+        return temp_console.file.getvalue()
     return box(temp_console.file.getvalue(), lang=lang)  # type: ignore
 
 
@@ -49,17 +51,18 @@ class Loop:
         hours: typing.Optional[int] = 0,
         minutes: typing.Optional[int] = 0,
         seconds: typing.Optional[int] = 0,
-        function_args: typing.Optional[typing.Dict] = {},
+        function_kwargs: typing.Optional[typing.Dict] = {},
         wait_raw: typing.Optional[bool] = False,
         limit_count: typing.Optional[int] = None,
         limit_date: typing.Optional[datetime.datetime] = None,
         limit_exception: typing.Optional[int] = None,
+        start_now: typing.Optional[bool] = True,
     ) -> None:
         self.cogsutils = cogsutils
 
         self.name: str = name
         self.function = function
-        self.function_args = function_args
+        self.function_kwargs = function_kwargs
         self.interval: float = datetime.timedelta(
             days=days, hours=hours, minutes=minutes, seconds=seconds
         ).total_seconds()
@@ -81,14 +84,12 @@ class Loop:
         self.last_exc_raw: typing.Optional[BaseException] = None
         self.stop: bool = False
 
-        self.loop = self.cogsutils.bot.loop.create_task(self.loop())
+        self.task = None
+        if start_now:
+            self.start()
 
-    async def start(self):
-        if self.cogsutils.is_dpy2:
-            async with self.cogsutils.bot:
-                self.cogsutils.bot.loop.create_task(self.loop())
-        else:
-            self.cogsutils.bot.loop.create_task(self.loop())
+    def start(self):
+        self.task = self.cogsutils.bot.loop.create_task(self.loop())
 
     async def wait_until_iteration(self) -> None:
         """Sleep during the raw interval."""
@@ -113,7 +114,7 @@ class Loop:
             try:
                 start = time.monotonic()
                 self.iteration_start()
-                self.last_result = await self.function(**self.function_args)
+                self.last_result = await self.function(**self.function_kwargs)
                 self.iteration_finish()
                 end = time.monotonic()
                 total = round(end - start, 1)
@@ -183,7 +184,7 @@ class Loop:
     def stop_all(self):
         self.stop = True
         self.next_iteration = None
-        self.loop.cancel()
+        self.task.cancel()
         if f"{self.name}" in self.cogsutils.loops:
             if self.cogsutils.loops[f"{self.name}"] == self:
                 del self.cogsutils.loops[f"{self.name}"]
@@ -262,7 +263,7 @@ class Loop:
         raw_table.add_row("currently_running", str(self.currently_running))
         raw_table.add_row("last_iteration", str(self.last_iteration))
         raw_table.add_row("next_iteration", str(self.next_iteration))
-        raw_table_str = no_colour_rich_markup(raw_table)
+        raw_table_str = no_colour_rich_markup(raw_table, lang="py")
 
         if self.next_iteration and self.last_iteration:
             processed_table = Table("Key", "Value")
@@ -279,7 +280,7 @@ class Loop:
                     + (now - self.last_iteration).total_seconds()
                 ),
             )
-            processed_table_str = no_colour_rich_markup(processed_table)
+            processed_table_str = no_colour_rich_markup(processed_table, lang="py")
         else:
             processed_table_str = "Loop hasn't started yet."
 
@@ -295,7 +296,7 @@ class Loop:
                 + "s"
             ),
         )
-        datetime_table_str = no_colour_rich_markup(datetime_table)
+        datetime_table_str = no_colour_rich_markup(datetime_table, lang="py")
 
         emoji = "✅" if self.integrity else "❌"
         embed: discord.Embed = discord.Embed(title=f"{self.name} Loop: `{emoji}`")

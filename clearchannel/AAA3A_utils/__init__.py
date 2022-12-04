@@ -5,6 +5,7 @@ from .context import Context
 from .dev import DevEnv, DevSpace
 from .loop import Loop
 from .menus import Menu, Reactions
+from .settings import Settings
 from .shared_cog import SharedCog
 
 if CogsUtils().is_dpy2:
@@ -13,15 +14,17 @@ if CogsUtils().is_dpy2:
 __author__ = "AAA3A"
 __all__ = [
     "CogsUtils",
-    "Cog",
-    "DevSpace",
-    "DevEnv",
     "Loop",
     "SharedCog",
-    "Reactions",
+    "DevEnv",
+    "DevSpace",
+    "Cog",
     "Menu",
-    "Captcha",
     "Context",
+    "Settings",
+    "Captcha",
+    "Reactions",
+
     "Buttons",
     "Dropdown",
     "Select",

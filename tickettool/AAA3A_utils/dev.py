@@ -32,6 +32,7 @@ from .cog import Cog
 from .context import Context
 from .loop import Loop
 from .menus import Menu, Reactions
+from .settings import Settings
 from .shared_cog import SharedCog
 
 if discord.version_info.major >= 2:
@@ -46,7 +47,7 @@ def _(untranslated: str):
     return untranslated
 
 
-def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
+def no_colour_rich_markup(*objects: typing.Any, lang: str = "", no_box: typing.Optional[bool] = False) -> str:
     """
     Slimmed down version of rich_markup which ensure no colours (/ANSI) can exist
     https://github.com/Cog-Creators/Red-DiscordBot/pull/5538/files (Kowlin)
@@ -58,6 +59,8 @@ def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
         width=80,
     )
     temp_console.print(*objects)
+    if no_box:
+        return temp_console.file.getvalue()
     return box(temp_console.file.getvalue(), lang=lang)  # type: ignore
 
 
@@ -159,9 +162,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
 
         async def _rtfs(ctx: commands.Context, object):
             code = inspect.getsource(object)
-            await Menu(
-                pages=[box(page, "py") for page in pagify(code, page_length=2000 - 10)]
-            ).start(ctx)
+            await Menu(pages=code).start(ctx)
 
         def get_url(ctx: commands.Context):
             async def get_url_with_aiohttp(url: str, **kwargs):
@@ -224,6 +225,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
             "SharedCog": lambda ctx: SharedCog,
             "Cog": lambda ctx: Cog,
             "Context": lambda ctx: Context,
+            "Settings": lambda ctx: Settings,
             "log": lambda ctx: log,
             "_rtfs": lambda ctx: partial(_rtfs, ctx),
             "DevEnv": lambda ctx: cls,
@@ -414,31 +416,10 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 )
         Dev = bot.get_cog("Dev")
         if Dev is not None:
-            setattr(Dev, "get_environment", cls.get_environment)
-            setattr(Dev, "sanitize_output", cls.sanitize_output)
+            asyncio.create_task(cls().on_cog_add(Dev))
         RTFS = bot.get_cog("RTFS")
         if RTFS is not None:
-            try:
-                from rtfs import rtfs
-
-                class SourceSource(rtfs.SourceSource):
-                    def format_page(self, menu, page):
-                        try:
-                            if page is None:
-                                if self.header.startswith("<"):
-                                    return cog.cogsutils.replace_var_paths(self.header)
-                                return {}
-                            return cog.cogsutils.replace_var_paths(
-                                f"{self.header}\n{box(page, lang='py')}\nPage {menu.current_page + 1} / {self.get_max_pages()}"
-                            )
-                        except Exception as e:
-                            # since d.py menus likes to suppress all errors
-                            rtfs.LOG.debug("Exception in SourceSource", exc_info=e)
-                            raise
-
-                setattr(rtfs, "SourceSource", SourceSource)
-            except ImportError:
-                pass
+            asyncio.create_task(cls().on_cog_add(RTFS))
         funcs = [
             i
             for i, func in enumerate(bot.extra_events.get("on_cog_add", []))
@@ -492,7 +473,10 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 setattr(cog, "get_environment", self.get_environment)
             if hasattr(cog, "sanitize_output"):
                 setattr(cog, "sanitize_output", self.sanitize_output)
-            return
+            c = Cog(None)
+            c.cog = cog
+            setattr(cog, "cog_before_invoke", c.cog_before_invoke)
+            setattr(cog, "cog_after_invoke", c.cog_after_invoke)
         if cog.qualified_name == "RTFS":
             try:
                 from rtfs import rtfs

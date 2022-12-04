@@ -259,6 +259,8 @@ class CogsUtils(commands.Cog):
                 await cog.cogsutils.add_cog(bot=self.bot, cog=cog)
             except Exception as e:
                 self.cog.log.debug("Error when adding the AAA3A_utils cog.", exc_info=e)
+        if hasattr(self.cog, "settings") and hasattr(self.cog.settings, "commands_added"):
+            await self.cog.settings.commands_added.wait()
         AAA3A_utils = self.bot.get_cog("AAA3A_utils")
         if AAA3A_utils is not None:
             if await AAA3A_utils.check_if_slash(self.cog):
@@ -358,6 +360,8 @@ class CogsUtils(commands.Cog):
         """
         Closes the files for the logger of a cog.
         """
+        if not hasattr(self.cog, "log") or not isinstance(self.cog.log, logging.Logger):
+            return
         for handler in self.cog.log.handlers:
             handler.close()
         self.cog.log.handlers = []
@@ -991,7 +995,7 @@ class CogsUtils(commands.Cog):
                         await ctx.send(timeout_message)
                     return None
 
-    async def delete_message(self, message: discord.Message):
+    async def delete_message(self, message: discord.Message, delay: typing.Optional[float] = None) -> bool:
         """
         Delete a message, ignoring any exceptions.
         Easier than putting these 3 lines at each message deletion for each cog.
@@ -999,7 +1003,9 @@ class CogsUtils(commands.Cog):
         if message is None:
             return None
         try:
-            await message.delete()
+            await message.delete(delay=delay)
+        except discord.NotFound:  # Already deleted.
+            return True
         except discord.HTTPException:
             return False
         else:
@@ -1197,7 +1203,7 @@ class CogsUtils(commands.Cog):
         hours: typing.Optional[int] = 0,
         minutes: typing.Optional[int] = 0,
         seconds: typing.Optional[int] = 0,
-        function_args: typing.Optional[typing.Dict] = {},
+        function_kwargs: typing.Optional[typing.Dict] = {},
         wait_raw: typing.Optional[bool] = False,
         limit_count: typing.Optional[int] = None,
         limit_date: typing.Optional[datetime.datetime] = None,
@@ -1223,7 +1229,7 @@ class CogsUtils(commands.Cog):
             hours=hours,
             minutes=minutes,
             seconds=seconds,
-            function_args=function_args,
+            function_kwargs=function_kwargs,
             wait_raw=wait_raw,
             limit_count=limit_count,
             limit_date=limit_date,
@@ -1348,18 +1354,18 @@ class CogsUtils(commands.Cog):
             if key not in existing_keys:
                 return key
 
-    def await_function(self, function, function_args: typing.Optional[typing.Dict] = {}):
+    def await_function(self, function, function_kwargs: typing.Optional[typing.Dict] = {}):
         """
         Allow to use an asynchronous function, from a non-asynchronous function.
         """
         task = asyncio.create_task(
-            self.do_await_function(function=function, function_args=function_args)
+            self.do_await_function(function=function, function_kwargs=function_kwargs)
         )
         return task
 
-    async def do_await_function(self, function, function_args: typing.Optional[typing.Dict] = {}):
+    async def do_await_function(self, function, function_kwargs: typing.Optional[typing.Dict] = {}):
         try:
-            await function(**function_args)
+            await function(**function_kwargs)
         except Exception as e:
             if hasattr(self.cogsutils.cog, "log"):
                 self.cog.log.error(
@@ -1456,114 +1462,6 @@ class CogsUtils(commands.Cog):
                     if not await self.bot.allowed_by_whitelist_blacklist(output.author):
                         raise discord.ext.commands.BadArgument()
         return
-
-    async def get_new_Config_with_modal(
-        self,
-        ctx: commands.Context,
-        config: typing.Dict,
-        all_config: typing.Optional[typing.Dict] = {},
-        bypass_confirm: typing.Optional[bool] = False,
-    ):
-        # {"x": {"default": "", "value": "", "style": 1, "converter": None}, "all_config": {}}
-        for input in config:
-            config[input]["param"] = discord.ext.commands.parameters.Parameter(
-                name=input,
-                kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
-                annotation=config[input]["converter"],
-            )
-        new_config = {}
-        view_button = Buttons(
-            timeout=180,
-            buttons=[{"label": "Configure", "emoji": "⚙️", "disabled": False}],
-            members=[ctx.author.id],
-        )
-        message = await ctx.send(
-            _(
-                "Click on the buttons below to fully set up the cog {self.cog.qualified_name}."
-            ).format(**locals()),
-            view=view_button,
-        )
-        try:
-            interaction, function_result = await view_button.wait_result()
-        except TimeoutError:
-            await message.edit(
-                view=Buttons(
-                    timeout=None, buttons=[{"label": "Configure", "emoji": "⚙️", "disabled": True}]
-                )
-            )
-            return None
-        view_modal = Modal(
-            title=f"{self.cog.qualified_name} Config",
-            inputs=[
-                {
-                    "label": (
-                        input.replace("_", " ").capitalize()
-                        + " ("
-                        + (
-                            (
-                                "|".join(
-                                    f'"{v}"' if isinstance(v, str) else str(v)
-                                    for v in config[input]["param"].converter.__args__
-                                )
-                            )
-                            if config[input]["param"].converter is typing.Literal
-                            else getattr(config[input]["param"].converter, "__name__", "")
-                        )
-                        + ")"
-                    )[:44],
-                    "style": config[input]["style"],
-                    "placeholder": str(config[input]["default"]),
-                    "default": (
-                        str(config[input]["value"])
-                        if not str(config[input]["value"]) == str(config[input]["default"])
-                        else None
-                    ),
-                    "required": False,
-                    "custom_id": f"CogsUtils_ModalConfig_{input}",
-                }
-                for input in config
-            ],
-            custom_id=f"CogsUtils_ModalConfig_{self.cog.qualified_name}",
-        )
-        await interaction.response.send_modal(view_modal)
-        try:
-            interaction, inputs, function_result = await view_modal.wait_result()
-        except TimeoutError:
-            return None
-        await interaction.response.defer()
-        async with ctx.typing():
-            for input in inputs:
-                custom_id = input.custom_id.replace("CogsUtils_ModalConfig_", "")
-                if input.value == "":
-                    new_config[input.custom_id.replace("CogsUtils_ModalConfig_", "")] = config[
-                        custom_id
-                    ]["default"]
-                    continue
-                try:
-                    value = await discord.ext.commands.converter.run_converters(
-                        ctx,
-                        converter=config[custom_id]["param"].converter,
-                        argument=str(input.value),
-                        param=config[custom_id]["param"],
-                    )
-                except discord.ext.commands.errors.CommandError as e:
-                    await ctx.send(
-                        f"An error occurred when using the `{input.label}` converter:\n{box(e)}"
-                    )
-                    return None
-                new_config[custom_id] = value
-            for key, value in all_config.items():
-                if key not in new_config:
-                    new_config[key] = value
-        await self.delete_message(message)
-        if not bypass_confirm:
-            embed: discord.Embed = discord.Embed()
-            embed.title = _(
-                "⚙️ Do you want to replace the entire Config of {self.cog.qualified_name} with what you specified?"
-            ).format(**locals())
-            if not await self.ConfirmationAsk(ctx, embed=embed):
-                return None
-        return new_config
 
     async def autodestruction(self):
         """

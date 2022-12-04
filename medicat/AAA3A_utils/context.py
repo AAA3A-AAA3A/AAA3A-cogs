@@ -16,30 +16,49 @@ else:
 
 __all__ = ["Context"]
 
+# class Context(commands.Context):
+#     def __init__(self, *args, **kwargs):
+#         self.original_context: commands.Context = kwargs.pop("original_context", None)
+#         self.len_messages = 0
+#         super().__init__(*args, **kwargs)
 
-class Context(commands.Context):
-    def __init__(self, *args, **kwargs):
-        self.original_context: commands.Context = kwargs.pop("original_context", None)
+#     @classmethod
+#     async def from_context(cls, ctx: commands.Context):
+#         """
+#         Adding additional functionality to the context.
+#         """
+#         context = await ctx.bot.get_context(
+#             ctx.message if getattr(ctx, "interaction", None) is None else ctx.interaction, cls=cls
+#         )
+#         context.original_context = ctx
+#         delattr(ctx, "original_context")
+#         context.__dict__.update(**ctx.__dict__)
+#         return context
+
+
+class Context():
+    def __init__(self, original_context: commands.Context):
+        self.original_context: commands.Context = original_context
         self.len_messages = 0
-        super().__init__(*args, **kwargs)
 
     @classmethod
     async def from_context(cls, ctx: commands.Context):
         """
         Adding additional functionality to the context.
         """
-        context = await ctx.bot.get_context(
-            ctx.message if getattr(ctx, "interaction", None) is None else ctx.interaction, cls=cls
-        )
-        context.original_context = ctx
-        delattr(ctx, "original_context")
-        context.__dict__.update(**ctx.__dict__)
+        context = cls(ctx)
         return context
 
+    def __getattr__(self, __name):
+        return getattr(self.original_context, __name)
+
     def __setattr__(self, __name, __value):
-        super().__setattr__(__name, __value)
-        if getattr(self, "original_context", None) is not None:
-            self.original_context.__setattr__(__name, __value)
+        if __name in ["original_context", "len_messages"]:
+            return super().__setattr__(__name, __value)
+        return self.original_context.__setattr__(__name, __value)
+        # super().__setattr__(__name, __value)
+        # if getattr(self, "original_context", None) is not None:
+        #     self.original_context.__setattr__(__name, __value)
 
     async def tick(
         self,
@@ -67,7 +86,7 @@ class Context(commands.Context):
                 message = "Done."
             if getattr(self, "__is_mocked__", False):
                 message = None
-        return await self.react_quietly(reaction, message=message)
+        return await self.original_context.react_quietly(reaction, message=message)
 
     async def send(self, content=None, **kwargs):
         """Sends a message to the destination with the content given.
@@ -106,7 +125,7 @@ class Context(commands.Context):
         if hasattr(self, "_typing"):
             if hasattr(self._typing, "task") and hasattr(self._typing.task, "cancel"):
                 self._typing.task.cancel()
-        return await super().send(content=content, **kwargs)
+        return await self.original_context.send(content=content, **kwargs)
 
     async def send_interactive(self, messages: typing.Iterable[str], box_lang: str = None, timeout: int = 15) -> typing.List[discord.Message]:
         """Send multiple messages interactively.
@@ -127,9 +146,11 @@ class Context(commands.Context):
             After timing out, the bot deletes its prompt message.
 
         """
-        if len(list(messages)) <= 5:
-            await super().send_interactive(messages=list(messages), box_lang=box_lang, timeout=timeout)
+        messages = list(messages)
+        if len(messages) <= 1:
+            return await self.original_context.send_interactive(messages=messages, box_lang=box_lang, timeout=timeout)
         else:
             if box_lang is not None:
                 messages = [box(message, lang=box_lang) for message in messages]
             await Menu(pages=messages).start(self)
+            return []

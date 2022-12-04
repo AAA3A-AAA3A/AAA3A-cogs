@@ -61,7 +61,7 @@ class Buttons(discord.ui.View):
         members: typing.Optional[typing.Iterable[discord.Member]] = None,
         check: typing.Optional[typing.Any] = None,
         function: typing.Optional[typing.Any] = None,
-        function_args: typing.Optional[typing.Dict] = {},
+        function_kwargs: typing.Optional[typing.Dict] = {},
         infinity: typing.Optional[bool] = False,
     ):
         """style: ButtonStyle, label: Optional[str], disabled: bool, custom_id: Optional[str], url: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], row: Optional[int]"""
@@ -77,7 +77,7 @@ class Buttons(discord.ui.View):
             "members": members,
             "check": check,
             "function": function,
-            "function_args": function_args,
+            "function_kwargs": function_kwargs,
             "infinity": infinity,
         }
         super().__init__(timeout=timeout)
@@ -89,7 +89,7 @@ class Buttons(discord.ui.View):
         )
         self.check = check
         self.function = function
-        self.function_args = function_args
+        self.function_kwargs = function_kwargs
         self.clear_items()
         self.buttons = []
         self.buttons_dict = []
@@ -135,7 +135,7 @@ class Buttons(discord.ui.View):
                 return True
         self.interaction_result = interaction
         if self.function is not None:
-            self.function_result = await self.function(self, interaction, **self.function_args)
+            self.function_result = await self.function(self, interaction, **self.function_kwargs)
         self.done.set()
         if not self.infinity:
             self.stop()
@@ -180,7 +180,7 @@ class Dropdown(discord.ui.View):
         members: typing.Optional[typing.Iterable[discord.Member]] = None,
         check: typing.Optional[typing.Any] = None,
         function: typing.Optional[typing.Any] = None,
-        function_args: typing.Optional[typing.Dict] = {},
+        function_kwargs: typing.Optional[typing.Dict] = {},
         infinity: typing.Optional[bool] = False,
         custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
     ):
@@ -195,7 +195,7 @@ class Dropdown(discord.ui.View):
             "members": members,
             "check": check,
             "function": function,
-            "function_args": function_args,
+            "function_kwargs": function_kwargs,
             "infinity": infinity,
             "custom_id": custom_id,
         }
@@ -211,7 +211,7 @@ class Dropdown(discord.ui.View):
         )
         self.check = check
         self.function = function
-        self.function_args = function_args
+        self.function_kwargs = function_kwargs
         self.clear_items()
         self.options = []
         self.options_dict = []
@@ -331,7 +331,7 @@ class Dropdown(discord.ui.View):
         self.options_result = self.dropdown.values
         if self.function is not None:
             self.function_result = await self.function(
-                self, interaction, self.dropdown.values, **self.function_args
+                self, interaction, self.dropdown.values, **self.function_kwargs
             )
         self.done.set()
         if not self.infinity:
@@ -465,7 +465,7 @@ class Modal(discord.ui.Modal):
         members: typing.Optional[typing.Iterable[discord.Member]] = None,
         check: typing.Optional[typing.Any] = None,
         function: typing.Optional[typing.Any] = None,
-        function_args: typing.Optional[typing.Dict] = {},
+        function_kwargs: typing.Optional[typing.Dict] = {},
         custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
     ):
         """label: str, style: TextStyle, custom_id: str, placeholder: Optional[str], default: Optional[str], required: bool, min_length: Optional[int], max_length: Optional[int], row: Optional[int]"""
@@ -479,7 +479,7 @@ class Modal(discord.ui.Modal):
             "members": members,
             "check": check,
             "function": function,
-            "function_args": function_args,
+            "function_kwargs": function_kwargs,
             "custom_id": custom_id,
         }
         super().__init__(title=title, timeout=timeout, custom_id=custom_id)
@@ -492,7 +492,7 @@ class Modal(discord.ui.Modal):
         )
         self.check = check
         self.function = function
-        self.function_args = function_args
+        self.function_kwargs = function_kwargs
         self.inputs = []
         self.inputs_dict = []
         self.done = asyncio.Event()
@@ -536,7 +536,7 @@ class Modal(discord.ui.Modal):
         self.inputs_result = self.inputs
         if self.function is not None:
             self.function_result = await self.function(
-                self, self.interaction_result, self.inputs_result, **self.function_args
+                self, self.interaction_result, self.inputs_result, **self.function_kwargs
             )
         self.done.set()
         self.stop()

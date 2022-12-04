@@ -47,7 +47,7 @@ def _(untranslated: str):
     return untranslated
 
 
-def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
+def no_colour_rich_markup(*objects: typing.Any, lang: str = "", no_box: typing.Optional[bool] = False) -> str:
     """
     Slimmed down version of rich_markup which ensure no colours (/ANSI) can exist
     https://github.com/Cog-Creators/Red-DiscordBot/pull/5538/files (Kowlin)
@@ -59,6 +59,8 @@ def no_colour_rich_markup(*objects: typing.Any, lang: str = "") -> str:
         width=80,
     )
     temp_console.print(*objects)
+    if no_box:
+        return temp_console.file.getvalue()
     return box(temp_console.file.getvalue(), lang=lang)  # type: ignore
 
 

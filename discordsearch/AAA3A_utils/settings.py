@@ -53,6 +53,15 @@ class Settings():
 
     def __init__(self, bot: Red, cog: commands.Cog, config: Config, group: str, settings: typing.Dict[str, typing.Dict[str, typing.Any]], global_path: typing.Optional[typing.List] = [], use_profiles_system: typing.Optional[bool] = False, can_edit: typing.Optional[bool] = True, commands_group: typing.Optional[typing.Union[commands.Group, str]] = None):
         # {"enable": {"path": ["settings", "enabled"], "converter": bool, "command_name": "enable", "label": "Enable", "description": "Enable the system.", "usage": "enable", "style": 1}}
+        self.bot = bot
+        self.cog = cog
+        self.config = config
+        self.group = group
+        self.global_path = global_path
+        self.use_profiles_system = use_profiles_system
+        self.can_edit = can_edit
+        self.commands_group = commands_group
+        self.commands_added = asyncio.Event()
         for setting in settings:
             if "path" not in settings[setting]:
                 settings[setting]["path"] = [setting]
@@ -87,16 +96,7 @@ class Settings():
                 else:
                     if isinstance(settings[setting]["style"], int):
                         settings[setting]["style"] = discord.TextStyle(settings[setting]["style"])
-        self.bot = bot
-        self.cog = cog
-        self.config = config
-        self.group = group
         self.settings = settings
-        self.global_path = global_path
-        self.use_profiles_system = use_profiles_system
-        self.can_edit = can_edit
-        self.commands_group = commands_group
-        self.commands_added = asyncio.Event()
 
     async def add_commands(self, force: typing.Optional[bool] = False):
 

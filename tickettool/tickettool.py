@@ -56,7 +56,7 @@ class TicketTool(settings, commands.Cog):
         }
         self.tickettool_guild = {
             "panels": {},
-            "default_panel_settings": {
+            "default_profile_settings": {
                 "enable": False,
                 "logschannel": None,
                 "category_open": None,
@@ -126,7 +126,7 @@ class TicketTool(settings, commands.Cog):
                         continue
                     if "panels" not in guilds_data[guild]:
                         guilds_data[guild]["panels"] = {}
-                    guilds_data[guild]["panels"]["main"] = self.config._defaults[self.config.GUILD]["default_panel_settings"]
+                    guilds_data[guild]["panels"]["main"] = self.config._defaults[self.config.GUILD]["default_profile_settings"]
                     for key, value in _guilds_data[guild]["settings"].items():
                         guilds_data[guild]["panels"]["main"][key] = value
                     del guilds_data[guild]["settings"]
@@ -230,13 +230,13 @@ class TicketTool(settings, commands.Cog):
             config["view_role"] = guild.get_role(config["view_role"])
         if config["ping_role"] is not None:
             config["ping_role"] = guild.get_role(config["ping_role"])
-        for key, value in self.config._defaults[self.config.GUILD]["default_panel_settings"].items():
+        for key, value in self.config._defaults[self.config.GUILD]["default_profile_settings"].items():
             if key not in config:
                 config[key] = value
         if len(config["embed_button"]) == 0:
-            config["embed_button"] = self.config._defaults[self.config.GUILD]["default_panel_settings"]["embed_button"]
+            config["embed_button"] = self.config._defaults[self.config.GUILD]["default_profile_settings"]["embed_button"]
         else:
-            for key, value in self.config._defaults[self.config.GUILD]["default_panel_settings"]["embed_button"].items():
+            for key, value in self.config._defaults[self.config.GUILD]["default_profile_settings"]["embed_button"].items():
                 if key not in config:
                     config[key] = value
         return config

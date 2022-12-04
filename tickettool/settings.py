@@ -58,7 +58,7 @@ class settings(commands.Cog):
         if panel in panels:
             await ctx.send(_("This panel already exists.").format(**locals()))
             return
-        await self.config.guild(ctx.guild).panels.set_raw(panel, value=self.config._defaults[self.config.GUILD]["default_panel_settings"]) 
+        await self.config.guild(ctx.guild).panels.set_raw(panel, value=self.config._defaults[self.config.GUILD]["default_profile_settings"]) 
 
     @configuration.command(aliases=["cloneprofile"])
     async def profileclone(self, ctx: commands.Context, old_panel: PanelConverter, panel: str):

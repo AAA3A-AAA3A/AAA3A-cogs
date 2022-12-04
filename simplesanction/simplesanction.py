@@ -1040,7 +1040,7 @@ class SimpleSanction(settings, commands.Cog):
                         buttons=self.buttons_dict,
                         members=[ctx.author] + list(ctx.bot.owner_ids),
                         function=send_fake_epheremal,
-                        function_args={"fake_action": fake_action},
+                        function_kwargs={"fake_action": fake_action},
                     )
                     message = await ctx.send(embed=embed, view=view)
                 else:
@@ -1056,7 +1056,7 @@ class SimpleSanction(settings, commands.Cog):
                     options=self.options_dict,
                     members=[ctx.author] + list(ctx.bot.owner_ids),
                     function=send_fake_epheremal,
-                    function_args={"fake_action": fake_action},
+                    function_kwargs={"fake_action": fake_action},
                 )
                 message = await ctx.send(embed=embed, view=view)
             elif actual_way == "reactions":

@@ -799,7 +799,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                         "Commit",
                         "Loaded",
                         "Pinned",
-                        title=f"Cogs installed for {repo.name}",
+                        title=f"Cogs installed from {repo.name}",
                     )
                 else:
                     cogs_table = Table(
@@ -808,7 +808,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                         "Loaded",
                         "Pinned",
                         "To update",
-                        title=f"Cogs installed for {repo.name}",
+                        title=f"Cogs installed from {repo.name}",
                     )
                 for _cog in installed_cogs[repo.name]:
                     _cog = await InstalledCog.convert(ctx, _cog)

@@ -198,6 +198,8 @@ class CogsUtils(commands.Cog):
         if cog is None:
             cog = self.cog
         await self.change_config_unique_identifier(cog=cog)
+        if hasattr(cog, "cogsutils"):
+            cog.cogsutils.init_logger()
         value = bot.add_cog(cog)
         if inspect.isawaitable(value):
             await value
@@ -298,6 +300,8 @@ class CogsUtils(commands.Cog):
         Thanks to @laggron42 on GitHub! (https://github.com/laggron42/Laggron-utils/blob/master/laggron_utils/logging.py)
         """
         if name is None and self.cog is not None:
+            if hasattr(self.cog, "log") and (isinstance(self.cog.log, partial) or isinstance(self.cog.log, logging.Logger)):
+                return self.cog.log
             self.cog.log = logging.getLogger(f"red.{self.repo_name}.{self.cog.qualified_name}")
 
             __log = partial(logging.Logger._log, self.cog.log)
@@ -542,9 +546,11 @@ class CogsUtils(commands.Cog):
                     _object.parent.app_command if _object.parent is not None else None
                 )
                 _object.app_command.module = _object.module
+                _object.app_command.description = _object.app_command.description[:100]
             elif isinstance(_object, discord.ext.commands.HybridCommand):
                 _object.with_app_command = True
                 _object.app_command = discord.ext.commands.hybrid.HybridAppCommand(_object)
+                _object.app_command.description = _object.app_command.description[:100]
             else:
                 continue
             if _object.parent is not None:

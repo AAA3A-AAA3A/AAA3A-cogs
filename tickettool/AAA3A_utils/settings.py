@@ -68,7 +68,7 @@ class Settings():
             if "converter" not in settings[setting]:
                 settings[setting]["converter"] = bool
             if "command_name" not in settings[setting]:
-                settings[setting]["command_name"] = setting
+                settings[setting]["command_name"] = setting.replace("_", "").lower()
             if "label" not in settings[setting]:
                 settings[setting]["label"] = setting.replace("_", " ").capitalize()
             if "description" not in settings[setting]:
@@ -85,6 +85,8 @@ class Settings():
                     settings[setting]["usage"] = usage.lower()
                 else:
                     settings[setting]["usage"] = setting.replace(" ", "_").lower()
+            if "no_slash" not in settings[setting]:
+                settings[setting]["no_slash"] = False
             settings[setting]["param"] = discord.ext.commands.parameters.Parameter(
                 name=setting,
                 kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
@@ -125,7 +127,7 @@ class Settings():
             cog_commands.append(commands_group)
             self.cog.__cog_commands__ = tuple(cog_commands)
             self.commands_group = commands_group
-        setattr(self, f"{name}", commands_group)
+            setattr(self, f"{name}", commands_group)
 
         class ProfileConverter(commands.Converter):
             async def convert(_self, ctx: commands.Context, arg: str):
@@ -179,7 +181,7 @@ class Settings():
                 """List the existing profiles."""
                 await self.list_profiles(ctx)
         to_add = {"showsettings": show_settings, "modalconfig": modal_config, "profileadd": add_profile, "profileclone": clone_profile, "profileremove": remove_profile, "profilerename": rename_profile, "profileslist": list_profiles}
-        aliases = {"profileadd": ["addprofile"], "profileclone": ["cloneprofile"], "profileremove": ["removeprofile"], "profilerename": ["renameprofile"], "profileslist": ["listprofiles"]}
+        aliases = {"modalconfig": ["configmodal"], "profileadd": ["addprofile"], "profileclone": ["cloneprofile"], "profileremove": ["removeprofile"], "profilerename": ["renameprofile"], "profileslist": ["listprofiles"]}
         if not self.use_profiles_system:
             for name in ["profileadd", "profileclone", "profileremove", "profilerename", "profileslist"]:
                 try:
@@ -227,10 +229,12 @@ class Settings():
                         await self.command(ctx, key=setting, value=value, profile=profile)
                 command.__qualname__ = f"{self.cog.qualified_name}.settings_{name}"
                 command: commands.Command = self.commands_group.command(name=name, usage=(f"[value]" if not self.use_profiles_system else f"<profile> [value]"), help=_help)(command)
+                if self.settings[setting]["no_slash"]:
+                    command.no_slash = True
 
                 command.name = name
                 # command.brief = _help
-                command.description = _help
+                # command.description = _help
                 command.callback.__doc__ = _help
                 command.cog = self.cog
                 self.bot.dispatch("command_add", command)
@@ -272,7 +276,7 @@ class Settings():
                 object = ctx.author
         if value is not discord.utils.MISSING:
             try:
-                await self.set_raw(key=key, value=value, object=object, profile=profile)
+                await self.set_raw(key=key, value=getattr(value, "id", None) or getattr(value, "value", None) or value, object=object, profile=profile)
             except self.NotExistingPanel:
                 await ctx.send("This profile don't exist.")
                 return
@@ -394,7 +398,7 @@ class Settings():
         if not with_dev:
             raw_table = Table("Key", "Default", "Value", "Converter")
             for value in values:
-                raw_table.add_row(value, repr(values[value]["default"]), repr(values[value]["value"]), str((("|".join(f'"{v}"' if isinstance(v, str) else str(v)for v in self.settings[value]["param"].converter.__args__)) if self.settings[value]["param"].converter is typing.Literal else getattr(self.settings[value]["param"].converter, "__name__", ""))))
+                raw_table.add_row(value.replace("_", " ").capitalize().replace(" ", ""), repr(values[value]["default"]), repr(values[value]["value"]), str((("|".join(f'"{v}"' if isinstance(v, str) else str(v)for v in self.settings[value]["param"].converter.__args__)) if self.settings[value]["param"].converter is typing.Literal else getattr(self.settings[value]["param"].converter, "__name__", ""))))
         else:
             raw_table = Table("Key", "Default", "Value", "Converter", "Path")
             for value in values:
@@ -451,7 +455,7 @@ class Settings():
                             c = config.get(x, {})
                     c[self.settings[custom_id]["path"][-1]] = values[custom_id]["default"]
                     continue
-                if input.value == values[custom_id]["value"]:
+                if (getattr(input.value, "id", None) or getattr(input.value, "value", None) or input.value) == values[custom_id]["value"]:
                     continue
                 try:
                     value = await discord.ext.commands.converter.run_converters(
@@ -465,13 +469,15 @@ class Settings():
                         f"An error occurred when using the `{input.label}` converter:\n{box(e, lang='py')}"
                     )
                     return None
+                if (getattr(value, "id", None) or getattr(value, "value", None) or value) == values[custom_id]["value"]:
+                    continue
                 assert self.settings[custom_id]["path"]
                 if len(self.settings[custom_id]["path"]) == 1:
                     c = config
                 else:
                     for x in self.settings[custom_id]["path"][:-1]:
                         c = config.get(x, {})
-                c[self.settings[custom_id]["path"][-1]] = value
+                c[self.settings[custom_id]["path"][-1]] = getattr(value, "id", None) or getattr(value, "value", None) or value
 
         async def on_button(view: Buttons, interaction: discord.Interaction, config: typing.Dict, three_l: typing.Dict):
             if not interaction.data["custom_id"].startswith("Settings_ModalConfig_configure"):

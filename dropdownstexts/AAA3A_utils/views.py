@@ -118,6 +118,9 @@ class Buttons(discord.ui.View):
 
     @classmethod
     def from_dict_cogsutils(cls, buttons_dict_instance: typing.Dict):
+        if "function_args" in buttons_dict_instance:
+            buttons_dict_instance["function_kwargs"] = buttons_dict_instance["function_args"]
+            del buttons_dict_instance["function_args"]
         return cls(**buttons_dict_instance)
 
     async def interaction_check(self, interaction: discord.Interaction):
@@ -290,6 +293,9 @@ class Dropdown(discord.ui.View):
 
     @classmethod
     def from_dict_cogsutils(cls, dropdown_dict_instance: typing.Dict):
+        if "function_args" in dropdown_dict_instance:
+            dropdown_dict_instance["function_kwargs"] = dropdown_dict_instance["function_args"]
+            del dropdown_dict_instance["function_args"]
         return cls(**dropdown_dict_instance)
 
     async def on_timeout(self):
@@ -517,6 +523,9 @@ class Modal(discord.ui.Modal):
 
     @classmethod
     def from_dict_cogsutils(cls, modal_dict_instance: typing.Dict):
+        if "function_args" in modal_dict_instance:
+            modal_dict_instance["function_kwargs"] = modal_dict_instance["function_args"]
+            del modal_dict_instance["function_args"]
         return cls(**modal_dict_instance)
 
     async def on_submit(self, interaction: discord.Interaction):

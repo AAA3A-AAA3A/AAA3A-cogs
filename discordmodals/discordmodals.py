@@ -157,6 +157,10 @@ class YAMLConverter(commands.Converter):
                 input["default"] = ""
             if "placeholder" not in input or input["placeholder"] == "None":
                 input["placeholder"] = ""
+            if "min_length" not in input or input["min_length"] == "None":
+                input["min_length"] = None
+            if "max_length" not in input or input["max_length"] == "None":
+                input["max_length"] = None
         # channel
         if "channel" in argument_dict:
             argument_dict["channel"] = str(argument_dict["channel"])
@@ -340,13 +344,15 @@ class DiscordModals(commands.Cog):
             required: True
             default: None
             placeholder: None
-        channel: général # id, mention, name
+            min_length: None
+            max_length: None
+        channel: general # id, mention, name
         anonymous: False
         messages:
           error: Error!
           done: Form submitted.
         ```
-        The `style`, `emoji`, `default`, `placeholder`, `channel`, `required`, `anonymous` and `messages` are not required.
+        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous` and `messages` are not required.
         """
         if not message.author == ctx.guild.me:
             await ctx.send(

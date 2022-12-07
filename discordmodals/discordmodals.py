@@ -6,8 +6,6 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import asyncio
-
 import yaml
 from redbot.core import Config
 

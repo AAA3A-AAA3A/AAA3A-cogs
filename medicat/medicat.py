@@ -710,8 +710,8 @@ class Medicat(commands.Cog):
                 CC.__qualname__ = f"{self.qualified_name}.CC_{name}"
                 command: commands.Command = self.medicat.command(name=name, help=text["title"])(CC)
                 command.name = name
-                command.brief = text["title"]
-                command.description = text["title"]
+                # command.brief = text["title"]
+                # command.description = text["title"]
                 command.callback.__doc__ = text["title"]
                 command.cog = self
                 self.bot.dispatch("command_add", command)

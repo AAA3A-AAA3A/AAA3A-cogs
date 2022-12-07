@@ -48,7 +48,7 @@ class DiscordSearch(commands.Cog):
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
     @commands.cooldown(rate=3, per=30, type=commands.BucketType.user)
-    @commands.command(name="discordsearch", aliases=["dsearch"])
+    @hybrid_command(name="discordsearch", aliases=["dsearch"])
     async def discordsearch(
         self,
         ctx: commands.Context,

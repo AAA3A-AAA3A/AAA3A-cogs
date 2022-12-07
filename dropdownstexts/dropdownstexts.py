@@ -25,6 +25,15 @@ if CogsUtils().is_dpy2:  # To remove
 
 _ = Translator("DropdownsTexts", __file__)
 
+if CogsUtils().is_dpy2:
+    from functools import partial
+
+    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
+    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+else:
+    hybrid_command = commands.command
+    hybrid_group = commands.group
+
 
 @cog_i18n(_)
 class DropdownsTexts(commands.Cog):
@@ -190,7 +199,7 @@ class DropdownsTexts(commands.Cog):
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_messages=True)
-    @commands.group()
+    @hybrid_group()
     async def dropdownstexts(self, ctx: commands.Context):
         """Group of commands for use DropdownsTexts."""
         pass
@@ -282,7 +291,7 @@ class DropdownsTexts(commands.Cog):
         self,
         ctx: commands.Context,
         message: discord.Message,
-        *dropdown_texts: EmojiLabelTextConverter,
+        dropdown_texts: commands.Greedy[EmojiLabelTextConverter],
     ):
         """Add dropdown-texts to a message."""
         if not message.author == ctx.guild.me:
@@ -365,7 +374,7 @@ class DropdownsTexts(commands.Cog):
         self,
         ctx: commands.Context,
         message: discord.Message,
-        emoji: typing.Union[discord.Emoji, str],
+        emoji: Emoji,
     ):
         """Remove a dropdown-text to a message."""
         if not message.author == ctx.guild.me:
@@ -381,12 +390,12 @@ class DropdownsTexts(commands.Cog):
                 _("No dropdown-texts is configured for this message.").format(**locals())
             )
             return
-        if f"{emoji}" not in config[f"{message.channel.id}-{message.id}"]:
+        if f"{getattr(emoji, 'id', emoji)}" not in config[f"{message.channel.id}-{message.id}"]:
             await ctx.send(
                 _("I wasn't watching for this dropdown-text on this message.").format(**locals())
             )
             return
-        del config[f"{message.channel.id}-{message.id}"][f"{emoji}"]
+        del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
         if not config[f"{message.channel.id}-{message.id}"] == {}:
             if self.cogsutils.is_dpy2:
                 await message.edit(

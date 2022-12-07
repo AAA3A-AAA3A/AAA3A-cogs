@@ -115,8 +115,8 @@ class Settings():
             commands_group.__qualname__ = f"{self.cog.qualified_name}.{name}"
             commands_group: commands.Group = commands.admin_or_permissions(administrator=True)(hybrid_group(name=name, aliases=aliases, help=_help)(commands_group))
             commands_group.name = name
-            commands_group.brief = _help
-            commands_group.description = _help
+            # commands_group.brief = _help
+            # commands_group.description = _help
             commands_group.callback.__doc__ = _help
             commands_group.cog = self.cog
             if self.cog.cogsutils.is_dpy2:

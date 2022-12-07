@@ -39,7 +39,8 @@ __all__ = ["Context"]
 class Context():
     def __init__(self, original_context: commands.Context):
         self.original_context: commands.Context = original_context
-        self.len_messages = 0
+        if not hasattr(self, "len_messages"):
+            self.len_messages = 0
 
     @classmethod
     async def from_context(cls, ctx: commands.Context):
@@ -53,7 +54,7 @@ class Context():
         return getattr(self.original_context, __name)
 
     def __setattr__(self, __name, __value):
-        if __name in ["original_context", "len_messages"]:
+        if __name in ["original_context"]:
             return super().__setattr__(__name, __value)
         return self.original_context.__setattr__(__name, __value)
         # super().__setattr__(__name, __value)

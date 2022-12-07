@@ -1,4 +1,4 @@
-from .AAA3A_utils import CogsUtils  # isort:skip
+from .AAA3A_utils import CogsUtils, Settings  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -101,10 +101,32 @@ class TicketTool(settings, commands.Cog):
         self.config.register_guild(**self.tickettool_guild)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.configuration.no_slash = True
+
+        _settings = {
+            "enable": {"path": ["enable"], "converter": bool, "description": "Enable the system."},
+            "logschannel": {"path": ["logschannel"], "converter": discord.TextChannel, "description": "Set the channel where the logs will be saved."},
+            "category_open": {"path": ["category_open"], "converter": discord.CategoryChannel, "description": "Set the category where the opened tickets will be."},
+            "category_close": {"path": ["category_close"], "converter": discord.CategoryChannel, "description": "Set the category where the closed tickets will be."},
+            "admin_role": {"path": ["admin_role"], "converter": discord.Role, "description": "Users with this role will have full permissions for tickets, but will not be able to set up the cog."},
+            "support_role": {"path": ["support_role"], "converter": discord.Role, "description": "Users with this role will be able to participate and claim the ticket."},
+            "view_role": {"path": ["support_role"], "converter": discord.Role, "description": "Users with this role will only be able to read messages from the ticket, but not send them."},
+            "ping_role": {"path": ["ping_role"], "converter": discord.Role, "description": "This role will be pinged automatically when the ticket is created, but does not give any additional permissions."},
+            "dynamic_channel_name": {"path": ["dynamic_channel_name"], "converter": str, "description": "Set the template that will be used to name the channel when creating a ticket.\n\n`{ticket_id}` - Ticket number\n`{owner_display_name}` - user's nick or name\n`{owner_name}` - user's name\n`{owner_id}` - user's id\n`{guild_name}` - guild's name\n`{guild_id}` - guild's id\n`{bot_display_name}` - bot's nick or name\n`{bot_name}` - bot's name\n`{bot_id}` - bot's id\n`{shortdate}` - mm-dd\n`{longdate}` - mm-dd-yyyy\n`{time}` - hh-mm AM/PM according to bot host system time\n\nIf, when creating the ticket, an error occurs with this name, another name will be used automatically."},
+            "nb_max": {"path": ["nb_max"], "converter": int, "description": "Sets the maximum number of open tickets a user can have on the system at any one time (for the profile only)."},
+            "custom_message": {"path": ["custom_message"], "converter": str, "description": "This message will be sent in the ticket channel when the ticket is opened.\n\n`{ticket_id}` - Ticket number\n`{owner_display_name}` - user's nick or name\n`{owner_name}` - user's name\n`{owner_id}` - user's id\n`{guild_name}` - guild's name\n`{guild_id}` - guild's id\n`{bot_display_name}` - bot's nick or name\n`{bot_name}` - bot's name\n`{bot_id}` - bot's id\n`{shortdate}` - mm-dd\n`{longdate}` - mm-dd-yyyy\n`{time}` - hh-mm AM/PM according to bot host system time", "style": 2},
+            "user_can_close": {"path": ["user_can_close"], "converter": bool, "description": "Can the author of the ticket, if he/she does not have a role set up for the system, close the ticket himself?"},
+            "close_confirmation": {"path": ["close_confirmation"], "converter": bool, "description": "Should the bot ask for confirmation before closing the ticket (deletion will necessarily have a confirmation)?"},
+            "close_on_leave": {"path": ["close_on_leave"], "converter": bool, "description": "If a user leaves the server, will all their open tickets be closed?\n\nIf the user then returns to the server, even if their ticket is still open, the bot will not automatically add them to the ticket."},
+            "delete_on_close": {"path": ["delete_on_close"], "converter": bool, "description": "Does closing the ticket directly delete it (with confirmation)?"},
+            "modlog": {"path": ["create_modlog"], "converter": bool, "description": "Does the bot create an action in the bot modlog when a ticket is created?"},
+            "audit_logs": {"path": ["audit_logs"], "converter": bool, "description": "On all requests to the Discord api regarding the ticket (channel modification), does the bot send the name and id of the user who requested the action as the reason?", "no_slash": True},
+            "create_on_react": {"path": ["create_on_react"], "converter": bool, "description": "Create a ticket when the reaction 🎟️ is set on any message on the server."},
+        }
+        self.settings = Settings(bot=self.bot, cog=self, config=self.config, group=self.config.GUILD, settings=_settings, global_path=["panels"], use_profiles_system=True, can_edit=True, commands_group=self.configuration)
 
     async def cog_load(self):
         await self.edit_config_schema()
+        await self.settings.add_commands()
         if self.cogsutils.is_dpy2:
             await self.load_buttons()
 

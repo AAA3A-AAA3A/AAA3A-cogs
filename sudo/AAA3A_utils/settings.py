@@ -87,7 +87,7 @@ class Settings():
                     settings[setting]["usage"] = setting.replace(" ", "_").lower()
             if "no_slash" not in settings[setting]:
                 settings[setting]["no_slash"] = False
-            if self.cogsutils.is_dpy2:
+            if self.cog.cogsutils.is_dpy2:
                 settings[setting]["param"] = discord.ext.commands.parameters.Parameter(
                     name=setting,
                     kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,

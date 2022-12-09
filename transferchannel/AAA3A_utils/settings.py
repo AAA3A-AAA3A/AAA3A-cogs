@@ -75,7 +75,7 @@ class Settings():
                 label = settings[setting]["label"]
                 settings[setting]["description"] = f"Set `{label}`."
             if "usage" not in settings[setting]:
-                if settings[setting]["converter"] in discord.ext.commands.converter.CONVERTER_MAPPING:
+                if self.cog.cogsutils.is_dpy2 and settings[setting]["converter"] in discord.ext.commands.converter.CONVERTER_MAPPING:
                     x = settings[setting]["converter"].__name__.replace(" ", "_")
                     usage = x[0]
                     for y in x[1:]:
@@ -87,11 +87,18 @@ class Settings():
                     settings[setting]["usage"] = setting.replace(" ", "_").lower()
             if "no_slash" not in settings[setting]:
                 settings[setting]["no_slash"] = False
-            settings[setting]["param"] = discord.ext.commands.parameters.Parameter(
-                name=setting,
-                kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
-                annotation=settings[setting]["converter"],
-            )
+            if self.cogsutils.is_dpy2:
+                settings[setting]["param"] = discord.ext.commands.parameters.Parameter(
+                    name=setting,
+                    kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                    annotation=settings[setting]["converter"],
+                )
+            else:
+                settings[setting]["param"] = inspect.Parameter(
+                    name=setting,
+                    kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                    annotation=settings[setting]["converter"],
+                )
             if self.cog.cogsutils.is_dpy2:
                 if "style" not in settings[setting]:
                     settings[setting]["style"] = discord.TextStyle.short
@@ -458,12 +465,20 @@ class Settings():
                 if (getattr(input.value, "id", None) or getattr(input.value, "value", None) or input.value) == values[custom_id]["value"]:
                     continue
                 try:
-                    value = await discord.ext.commands.converter.run_converters(
-                        ctx,
-                        converter=self.settings[custom_id]["param"].converter,
-                        argument=str(input.value),
-                        param=self.settings[custom_id]["param"],
-                    )
+                    if self.cog.cogsutils.is_dpu2:
+                        value = await discord.ext.commands.converter.run_converters(
+                            ctx,
+                            converter=self.settings[custom_id]["param"].converter,
+                            argument=str(input.value),
+                            param=self.settings[custom_id]["param"],
+                        )
+                    else:
+                        value = await ctx.command.do_conversion(
+                            ctx,
+                            converter=self.settings[custom_id]["param"].converter,
+                            argument=str(input.value),
+                            param=self.settings[custom_id]["param"],
+                        )
                 except discord.ext.commands.errors.CommandError as e:
                     await ctx.send(
                         f"An error occurred when using the `{input.label}` converter:\n{box(e, lang='py')}"

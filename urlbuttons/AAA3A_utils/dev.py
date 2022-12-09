@@ -162,7 +162,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
 
         async def _rtfs(ctx: commands.Context, object):
             code = inspect.getsource(object)
-            await Menu(pages=code).start(ctx)
+            await Menu(pages=code).start(ctx, box_language_python=True)
 
         def get_url(ctx: commands.Context):
             async def get_url_with_aiohttp(url: str, **kwargs):
@@ -190,15 +190,26 @@ class DevEnv(typing.Dict[str, typing.Any]):
         async def run_converter(
             converter: typing.Any, value: str, label: typing.Optional[str] = "test"
         ):
-            param = discord.ext.commands.parameters.Parameter(
-                name=label, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=converter
-            )
-            try:
-                return await discord.ext.commands.converter.run_converters(
-                    ctx, converter=param.converter, argument=str(value), param=param
+            if CogsUtils().is_dpy2:
+                param = discord.ext.commands.parameters.Parameter(
+                    name=label, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=converter
                 )
-            except commands.CommandError as e:
-                return e
+                try:
+                    return await discord.ext.commands.converter.run_converters(
+                        ctx, converter=param.converter, argument=str(value), param=param
+                    )
+                except commands.CommandError as e:
+                    return e
+            else:
+                param = inspect.Parameter(
+                    name=label, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=converter
+                )
+                try:
+                    return await ctx.command.do_conversion(
+                        ctx, converter=converter, argument=str(value), param=param
+                    )
+                except commands.CommandError as e:
+                    return e
 
         def get_devspace(bot: Red):
             Dev = bot.get_cog("Dev")

@@ -48,6 +48,22 @@ def no_colour_rich_markup(*objects: typing.Any, lang: str = "", no_box: typing.O
         return temp_console.file.getvalue()
     return box(temp_console.file.getvalue(), lang=lang)  # type: ignore
 
+if not hasattr(discord.utils, "MISSING"):
+    class _MissingSentinel:
+        __slots__ = ()
+
+        def __eq__(self, other) -> bool:
+            return False
+
+        def __bool__(self) -> bool:
+            return False
+
+        def __hash__(self) -> int:
+            return 0
+
+        def __repr__(self):
+            return '...'
+    discord.utils.MISSING = _MissingSentinel()
 
 class Settings():
 

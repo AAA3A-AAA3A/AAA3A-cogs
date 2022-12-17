@@ -20,6 +20,7 @@ from io import StringIO
 import aiohttp
 import redbot
 import rich
+import logging
 from redbot.core import Config
 from redbot.core import utils as redutils
 from redbot.core.utils import chat_formatting as cf
@@ -164,19 +165,10 @@ class DevEnv(typing.Dict[str, typing.Any]):
             code = inspect.getsource(object)
             await Menu(pages=code, box_language_py=True).start(ctx)
 
-        def get_url(ctx: commands.Context):
-            async def get_url_with_aiohttp(url: str, **kwargs):
-                async with aiohttp.ClientSession() as session:
-                    async with session.get(url=url, **kwargs) as r:
-                        return r
-
-            return get_url_with_aiohttp
-
-        def get(ctx: commands.Context):
-            def inner(a, b):
-                return [x for x in dir(a) if b.lower() in x.lower()]
-
-            return inner
+        async def get_url(url: str, **kwargs):
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url=url, **kwargs) as r:
+                    return r
 
         def reference(ctx: commands.Context):
             if hasattr(ctx.message, "reference") and ctx.message.reference is not None:
@@ -186,6 +178,43 @@ class DevEnv(typing.Dict[str, typing.Any]):
 
         def _console_custom(ctx: commands.Context):
             return {"width": 80, "color_system": None}
+
+        def get(a, b: typing.Optional[str] = "", startswith: typing.Optional[str] = ""):
+            return [x for x in dir(a) if b.lower() in x.lower() and x.lower().startswith(startswith.lower())]
+
+        def get_internal(ctx: commands.Context):
+            def _get_internal(name: typing.Literal["events", "listeners", "loggers", "parsers"], b: typing.Optional[str] = "", startswith: typing.Optional[str] = ""):
+                result = {}
+                if name == "events":
+                    if b == "":
+                        result = ctx.bot.extra_events
+                    else:
+                        return ctx.bot.extra_events[b]
+                elif name == "listeners":
+                    if b == "":
+                        result = ctx.bot._listeners
+                    else:
+                        return ctx.bot._listeners[b]
+                elif name == "loggers":
+                    result = logging.Logger.manager.loggerDict
+                elif name == "parsers":
+                    result = ctx.bot._get_websocket(0)._discord_parsers
+                result = {name: value for name, value in result.items() if b.lower() in name.lower() and name.lower().startswith(startswith.lower())}
+                return result
+            return _get_internal
+
+        def set_loggers_level(level: typing.Optional[str] = logging.DEBUG, loggers: typing.Optional[typing.List] = None, exclusions: typing.Optional[typing.List] = None, b: typing.Optional[str] = "", startswith: typing.Optional[str] = ""):
+            __loggers = logging.Logger.manager.loggerDict
+            if loggers is not None:
+                _loggers = [logger for name, logger in __loggers.items() if name in loggers and isinstance(logger, logging.Logger)]
+            else:
+                _loggers = [logger for logger in __loggers.values() if isinstance(logger, logging.Logger)]
+            _loggers = [logger for logger in _loggers if b.lower() in logger.name and logger.name.lower().startswith(startswith.lower())]
+            if exclusions is not None:
+                _loggers = [logger for logger in _loggers if logger.name not in exclusions]
+            for logger in _loggers:
+                logger.setLevel(level)
+            return len(_loggers)
 
         async def run_converter(
             converter: typing.Any, value: str, label: typing.Optional[str] = "test"
@@ -272,11 +301,17 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "cf": lambda ctx: cf,
                 "Config": lambda ctx: Config,
                 "run_converter": lambda ctx: run_converter,
+                "Route": lambda ctx: discord.http.Route,
+                "websocket": lambda ctx: ctx.bot._get_websocket(0),
+                "get_internal": get_internal,
+                "set_loggers_level": lambda ctx: set_loggers_level,
                 # Typing
                 "typing": lambda ctx: typing,
                 # Inspect
                 "inspect": lambda ctx: inspect,
                 "gs": lambda ctx: inspect.getsource,
+                # logging
+                "logging": lambda ctx: logging,
                 # Date & Time
                 "datetime": lambda ctx: datetime,
                 "time": lambda ctx: time,
@@ -285,9 +320,9 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "sys": lambda ctx: sys,
                 # Aiohttp
                 "session": lambda ctx: aiohttp.ClientSession(),
-                "get_url": get_url,
+                "get_url": lambda ctx: get_url,
                 # Search attr
-                "get": get,
+                "get": lambda ctx: get,
                 # `reference`
                 "reference": reference,
                 # No color (Dev cog from fluffy-cogs in mobile).
@@ -577,6 +612,11 @@ class DevEnv(typing.Dict[str, typing.Any]):
                         return message
                 except (AttributeError, KeyError):
                     pass
+        try:
+            if value := self["devspace"].get(key):
+                return value
+        except (AttributeError, KeyError):
+            pass
         raise KeyError(key)
 
 

@@ -425,7 +425,7 @@ class Settings():
         else:
             raw_table = Table("Key", "Default", "Value", "Converter", "Path")
             for value in values:
-                raw_table.add_row(value, repr(values[value]["default"]), repr(values[value]["value"]), str((("|".join(f'"{v}"' if isinstance(v, str) else str(v)for v in self.settings[value]["param"].converter.__args__)) if self.settings[value]["param"].converter is typing.Literal else getattr(self.settings[value]["param"].converter, "__name__", ""))), (str([self.group] + self.global_path + self.settings[value]["path"]) if not self.use_profiles_system else str([self.group] + self.global_path + [profile] + self.settings[value]["path"])))
+                raw_table.add_row(value.replace("_", " ").capitalize().replace(" ", ""), repr(values[value]["default"]), repr(values[value]["value"]), str((("|".join(f'"{v}"' if isinstance(v, str) else str(v)for v in self.settings[value]["param"].converter.__args__)) if self.settings[value]["param"].converter is typing.Literal else getattr(self.settings[value]["param"].converter, "__name__", ""))), (str([self.group] + self.global_path + self.settings[value]["path"]) if not self.use_profiles_system else str([self.group] + self.global_path + [profile] + self.settings[value]["path"])))
         raw_table_str = no_colour_rich_markup(raw_table, no_box=True)
         message += raw_table_str
         await Menu(pages=message, box_language_py=True).start(ctx)
@@ -710,19 +710,20 @@ class Settings():
                 default = default.get(x, {})
             if default == {}:
                 default = discord.utils.MISSING
-            if not self.use_profiles_system:
-                value = await data.get_raw(*self.global_path, *self.settings[setting]["path"])
-            else:
-                try:
-                    profiles = await data.get_raw(*self.global_path)
-                except KeyError:
-                    profiles = {}
-                try:
-                    profiles[profile]
-                except KeyError:
-                    raise self.NotExistingPanel(profile)
-                value = await data.get_raw(*self.global_path, profile, *self.settings[setting]["path"])
-            if value == {}:
+            try:
+                if not self.use_profiles_system:
+                    value = await data.get_raw(*self.global_path, *self.settings[setting]["path"])
+                else:
+                    try:
+                        profiles = await data.get_raw(*self.global_path)
+                    except KeyError:
+                        profiles = {}
+                    try:
+                        profiles[profile]
+                    except KeyError:
+                        raise self.NotExistingPanel(profile)
+                    value = await data.get_raw(*self.global_path, profile, *self.settings[setting]["path"])
+            except KeyError:
                 value = discord.utils.MISSING
             result[setting] = {"default": default, "value": value}
         return result

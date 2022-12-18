@@ -71,31 +71,30 @@ class CommandsButtons(commands.Cog):
         for guild in all_guilds:
             for role_button in all_guilds[guild]["commands_buttons"]:
                 try:
-                    self.bot.add_view(
-                        Buttons(
-                            timeout=None,
-                            buttons=[
-                                {
-                                    "style": all_guilds[guild]["commands_buttons"][role_button][
-                                        f"{emoji}"
-                                    ]["style_button"]
-                                    if "style_button"
-                                    in all_guilds[guild]["commands_buttons"][role_button][f"{emoji}"]
-                                    else 2,
-                                    "label": all_guilds[guild]["commands_buttons"][role_button][
-                                        f"{emoji}"
-                                    ]["text_button"],
-                                    "emoji": f"{emoji}",
-                                    "custom_id": f"commands_buttons {emoji}",
-                                    "disabled": False,
-                                }
-                                for emoji in all_guilds[guild]["commands_buttons"][role_button]
-                            ],
-                            function=self.on_button_interaction,
-                            infinity=True,
-                        ),
-                        message_id=int((str(role_button).split("-"))[1]),
+                    view = Buttons(
+                        timeout=None,
+                        buttons=[
+                            {
+                                "style": all_guilds[guild]["commands_buttons"][role_button][
+                                    f"{emoji}"
+                                ]["style_button"]
+                                if "style_button"
+                                in all_guilds[guild]["commands_buttons"][role_button][f"{emoji}"]
+                                else 2,
+                                "label": all_guilds[guild]["commands_buttons"][role_button][
+                                    f"{emoji}"
+                                ]["text_button"],
+                                "emoji": f"{emoji}",
+                                "custom_id": f"commands_buttons {emoji}",
+                                "disabled": False,
+                            }
+                            for emoji in all_guilds[guild]["commands_buttons"][role_button]
+                        ],
+                        function=self.on_button_interaction,
+                        infinity=True,
                     )
+                    self.bot.add_view(view, message_id=int((str(role_button).split("-"))[1]))
+                    self.cogsutils.views.append(view)
                 except Exception as e:
                     self.log.error(
                         f"The Button View could not be added correctly for the {guild}-{role_button} message.",

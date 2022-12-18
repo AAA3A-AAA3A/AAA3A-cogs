@@ -215,10 +215,9 @@ class DiscordModals(commands.Cog):
                 try:
                     button = all_guilds[guild]["modals"][modal]["button"]
                     button["function"] = self.send_modal
-                    self.bot.add_view(
-                        Buttons.from_dict_cogsutils(button),
-                        message_id=int((str(modal).split("-"))[1]),
-                    )
+                    view = Buttons.from_dict_cogsutils(button)
+                    self.bot.add_view(view, message_id=int((str(modal).split("-"))[1]))
+                    self.cogsutils.views.append(view)
                 except Exception as e:
                     self.log.error(
                         f"The Button View could not be added correctly for the {guild}-{modal} message.",

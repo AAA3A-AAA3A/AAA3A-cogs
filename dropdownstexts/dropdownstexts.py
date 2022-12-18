@@ -64,19 +64,18 @@ class DropdownsTexts(commands.Cog):
             config = all_guilds[guild]["dropdowns_texts"]
             for dropdown_text in all_guilds[guild]["dropdowns_texts"]:
                 try:
-                    self.bot.add_view(
-                        Dropdown(
-                            timeout=None,
-                            placeholder=_("Select an option."),
-                            min_values=0,
-                            max_values=1,
-                            options=self.get_dropdown(config, dropdown_text),
-                            function=self.on_dropdown_interaction,
-                            infinity=True,
-                            custom_id=f"DropdownsTexts_{dropdown_text}",
-                        ),
-                        message_id=int((str(dropdown_text).split("-"))[1]),
+                    view = Dropdown(
+                        timeout=None,
+                        placeholder=_("Select an option."),
+                        min_values=0,
+                        max_values=1,
+                        options=self.get_dropdown(config, dropdown_text),
+                        function=self.on_dropdown_interaction,
+                        infinity=True,
+                        custom_id=f"DropdownsTexts_{dropdown_text}",
                     )
+                    self.bot.add_view(view, message_id=int((str(dropdown_text).split("-"))[1]))
+                    self.cogsutils.views.append(view)
                 except Exception as e:
                     self.log.error(
                         f"The Dropdown View could not be added correctly for the {guild}-{dropdown_text} message.",

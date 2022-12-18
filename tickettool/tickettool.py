@@ -6,7 +6,7 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 if CogsUtils().is_dpy2:
-    from .AAA3A_utils import Buttons, Dropdown  # isort:skip
+    from .AAA3A_utils import Buttons, Dropdown, Modal  # isort:skip
 else:
     from dislash import ActionRow, Button, ButtonStyle, MessageInteraction, ResponseType  # isort:skip
 
@@ -163,71 +163,70 @@ class TicketTool(settings, commands.Cog):
 
     async def load_buttons(self):
         try:
-            self.bot.add_view(
-                Buttons(
-                    timeout=None,
-                    buttons=[
-                        {
-                            "style": 2,
-                            "label": _("Create ticket").format(**locals()),
-                            "emoji": "🎟️",
-                            "custom_id": "create_ticket_button",
-                            "disabled": False,
-                        }
-                    ],
-                    function=self.on_button_interaction,
-                    infinity=True,
-                )
+            view = Buttons(
+                timeout=None,
+                buttons=[
+                    {
+                        "style": 2,
+                        "label": _("Create ticket").format(**locals()),
+                        "emoji": "🎟️",
+                        "custom_id": "create_ticket_button",
+                        "disabled": False,
+                    }
+                ],
+                function=self.on_button_interaction,
+                infinity=True,
             )
-            self.bot.add_view(
-                Buttons(
-                    timeout=None,
-                    buttons=[
-                        {
-                            "style": 2,
-                            "label": _("Close").format(**locals()),
-                            "emoji": "🔒",
-                            "custom_id": "close_ticket_button",
-                            "disabled": False,
-                        },
-                        {
-                            "style": 2,
-                            "label": _("Claim").format(**locals()),
-                            "emoji": "🙋‍♂️",
-                            "custom_id": "claim_ticket_button",
-                            "disabled": False,
-                        },
-                    ],
-                    function=self.on_button_interaction,
-                    infinity=True,
-                )
+            self.bot.add_view(view)
+            self.cogsutils.views.append(view)
+            view = Buttons(
+                timeout=None,
+                buttons=[
+                    {
+                        "style": 2,
+                        "label": _("Close").format(**locals()),
+                        "emoji": "🔒",
+                        "custom_id": "close_ticket_button",
+                        "disabled": False,
+                    },
+                    {
+                        "style": 2,
+                        "label": _("Claim").format(**locals()),
+                        "emoji": "🙋‍♂️",
+                        "custom_id": "claim_ticket_button",
+                        "disabled": False,
+                    },
+                ],
+                function=self.on_button_interaction,
+                infinity=True,
             )
+            self.bot.add_view(view)
+            self.cogsutils.views.append(view)
         except Exception as e:
             self.log.error(f"The Buttons View could not be added correctly.", exc_info=e)
         all_guilds = await self.config.all_guilds()
         for guild in all_guilds:
             for dropdown in all_guilds[guild]["dropdowns"]:
                 try:
-                    self.bot.add_view(
-                        Dropdown(
-                            timeout=None,
-                            placeholder="Choose the reason for open a ticket.",
-                            options=[
-                                {
-                                    "label": reason_option["label"],
-                                    "value": reason_option.get("value", reason_option["label"]),
-                                    "description": reason_option.get("description", None),
-                                    "emoji": reason_option["emoji"],
-                                    "default": False,
-                                }
-                                for reason_option in all_guilds[guild]["dropdowns"][dropdown]
-                            ],
-                            function=self.on_dropdown_interaction,
-                            infinity=True,
-                            custom_id="create_ticket_dropdown",
-                        ),
-                        message_id=int((str(dropdown).split("-"))[1]),
+                    view = Dropdown(
+                        timeout=None,
+                        placeholder="Choose the reason for open a ticket.",
+                        options=[
+                            {
+                                "label": reason_option["label"],
+                                "value": reason_option.get("value", reason_option["label"]),
+                                "description": reason_option.get("description", None),
+                                "emoji": reason_option["emoji"],
+                                "default": False,
+                            }
+                            for reason_option in all_guilds[guild]["dropdowns"][dropdown]
+                        ],
+                        function=self.on_dropdown_interaction,
+                        infinity=True,
+                        custom_id="create_ticket_dropdown",
                     )
+                    self.bot.add_view(view, message_id=int((str(dropdown).split("-"))[1]))
+                    self.cogsutils.views.append(view)
                 except Exception as e:
                     self.log.error(
                         f"The Dropdown View could not be added correctly for the {guild}-{dropdown} message.",
@@ -898,7 +897,7 @@ class TicketTool(settings, commands.Cog):
             permissions = interaction.channel.permissions_for(interaction.guild.me)
             if not permissions.read_messages and not permissions.read_message_history:
                 return
-            if not interaction.response.is_done():
+            if not interaction.response.is_done() and not interaction.data["custom_id"] == "create_ticket_button":
                 await interaction.response.defer(ephemeral=True)
             if interaction.data["custom_id"] == "create_ticket_button":
                 buttons = await self.config.guild(interaction.guild).buttons.all()
@@ -906,12 +905,23 @@ class TicketTool(settings, commands.Cog):
                     panel = buttons[f"{interaction.message.channel.id}-{interaction.message.id}"]["panel"]
                 else:
                     panel = "main"
+                modal = Modal(title="Create a Ticket", inputs=[{"label": "Panel", "style": discord.TextStyle.short, "default": "main", "max_length": 10, "required": True}, {"label": "Why are you creating this ticket?", "style": discord.TextStyle.long, "max_length": 1000, "required": False, "placeholder": "No reason provided."}])
+                await interaction.response.send_modal(modal)
+                try:
+                    interaction, inputs, function_result = await modal.wait_result()
+                except TimeoutError:
+                    return
+                else:
+                    if not interaction.response.is_done():
+                        await interaction.response.defer(ephemeral=True)
+                panel = inputs[0].value
+                reason = inputs[1].value or ""
                 panels = await self.config.guild(interaction.guild).panels()
                 if panel not in panels:
                     await interaction.followup.send(_("The panel for which this button was configured no longer exists.").format(**locals()), ephemeral=True)
                     return
                 ctx = await self.cogsutils.invoke_command(
-                    author=interaction.user, channel=interaction.channel, command=f"ticket create {panel}"
+                    author=interaction.user, channel=interaction.channel, command=f"ticket create {panel}" + (f" {reason}" if not reason == "" else "")
                 )
                 if not await ctx.command.can_run(ctx, change_permission_state=True):  # await discord.utils.async_all(check(ctx) for check in ctx.command.checks)
                     await interaction.followup.send(

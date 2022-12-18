@@ -93,17 +93,6 @@ class settings(commands.Cog):
         )
         if self.cogsutils.is_dpy2:
             if reason_options is None:
-                if getattr(ctx, "interaction", None) is None:
-                    try:
-                        for emoji, label, description, value in reason_options[:19]:
-                            await ctx.message.add_reaction(emoji)
-                    except discord.HTTPException:
-                        await ctx.send(
-                            _(
-                                "A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
-                            ).format(**locals())
-                        )
-                        return
                 buttons_config = await self.config.guild(ctx.guild).buttons.all()
                 view = Buttons(
                     timeout=None,
@@ -126,6 +115,17 @@ class settings(commands.Cog):
                 buttons_config[f"{message.channel.id}-{message.id}"] = {"panel": panel}
                 await self.config.guild(ctx.guild).buttons.set(buttons_config)
             else:
+                if getattr(ctx, "interaction", None) is None:
+                    try:
+                        for emoji, label, description, value in reason_options[:19]:
+                            await ctx.message.add_reaction(emoji)
+                    except discord.HTTPException:
+                        await ctx.send(
+                            _(
+                                "A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+                            ).format(**locals())
+                        )
+                        return
                 dropdowns_config = await self.config.guild(ctx.guild).dropdowns.all()
                 all_options = []
                 for emoji, label, description, value in reason_options:

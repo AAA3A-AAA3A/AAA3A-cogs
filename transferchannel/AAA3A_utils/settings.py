@@ -239,19 +239,20 @@ class Settings():
                 self.commands_group.remove_command(name)
                 _help = self.settings[setting]["description"]
                 _help += "\n\nIf you do not specify a value, the default value will be restored.\nDev: " + repr(self.settings[setting]["converter"])
+                _usage = self.settings[setting]["usage"]
 
                 if not self.use_profiles_system:
                     async def command(_self, ctx: commands.Context, value: typing.Optional[self.settings[setting]["converter"]] = None):
                         if value is None:
                             value = discord.utils.MISSING
-                        await self.command(ctx, key=setting, value=value)
+                        await self.command(ctx, key=None, value=value)
                 else:
                     async def command(_self, ctx: commands.Context, profile: ProfileConverter, value: typing.Optional[self.settings[setting]["converter"]] = None):
                         if value is None:
                             value = discord.utils.MISSING
-                        await self.command(ctx, key=setting, value=value, profile=profile)
+                        await self.command(ctx, key=None, value=value, profile=profile)
                 command.__qualname__ = f"{self.cog.qualified_name}.settings_{name}"
-                command: commands.Command = self.commands_group.command(name=name, usage=(f"[value]" if not self.use_profiles_system else f"<profile> [value]"), help=_help)(command)
+                command: commands.Command = self.commands_group.command(name=name, usage=(f"[{_usage}]" if not self.use_profiles_system else f"<profile> [{_usage}]"), help=_help)(command)
                 if self.settings[setting]["no_slash"]:
                     command.no_slash = True
 
@@ -279,9 +280,9 @@ class Settings():
                 if self.settings[setting]["command_name"] == ctx.command.name:
                     key = setting
                     break
-        if key is None:
-            await ctx.send("No setting found.")
-            return
+            else:
+                await ctx.send("No setting found.")
+                return
         if value is None:
             value = ctx.kwargs["value"]
         if object is None:
@@ -632,7 +633,7 @@ class Settings():
                 raise self.NotExistingPanel(profile)
             await data.set_raw(*self.global_path, profile, *setting["path"], value=value)
 
-    async def clear_raw(self, key: str, value: typing.Any, object: typing.Optional[typing.Union[discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User]] = None, profile: typing.Optional[str] = None):
+    async def clear_raw(self, key: str, object: typing.Optional[typing.Union[discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User]] = None, profile: typing.Optional[str] = None):
         if key not in self.settings:
             raise KeyError(key)
         data = self.get_data(object)
@@ -724,7 +725,7 @@ class Settings():
                         raise self.NotExistingPanel(profile)
                     value = await data.get_raw(*self.global_path, profile, *self.settings[setting]["path"])
             except KeyError:
-                value = discord.utils.MISSING
+                value = default
             result[setting] = {"default": default, "value": value}
         return result
 

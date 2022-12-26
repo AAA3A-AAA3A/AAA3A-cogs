@@ -488,6 +488,7 @@ class Medicat(commands.Cog):
                         avatar_url="https://ventoy.net/static/img/ventoy.png?v=1",
                         view=view,
                         allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
+                        wait=True,
                     )
                 else:
                     message: discord.Message = await hook.send(
@@ -496,6 +497,7 @@ class Medicat(commands.Cog):
                         username="Ventoy Updates",
                         avatar_url="https://ventoy.net/static/img/ventoy.png?v=1",
                         allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
+                        wait=True,
                     )
             except (AttributeError, discord.errors.Forbidden):
                 if self.cogsutils.is_dpy2:
@@ -609,6 +611,7 @@ class Medicat(commands.Cog):
                         avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg",
                         view=view,
                         allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
+                        wait=True,
                     )
                 else:
                     message: discord.Message = await hook.send(
@@ -617,6 +620,7 @@ class Medicat(commands.Cog):
                         username="Bootables Tools Updates",
                         avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg",
                         allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
+                        wait=True,
                     )
             except (AttributeError, discord.errors.Forbidden):
                 if self.cogsutils.is_dpy2:

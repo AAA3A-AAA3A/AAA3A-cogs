@@ -618,7 +618,17 @@ class DevEnv(typing.Dict[str, typing.Any]):
         except (AttributeError, KeyError):
             pass
         if attr := getattr(discord, key, None):
+            self.imported.append(f"discord.{key}")
             return attr
+        if attr := getattr(typing, key, None):
+            self.imported.append(f"typing.{key}")
+            return attr
+        try:
+            if attr := getattr(self["AAA3A_utils"].cogsutils, key, None):
+                self.imported.append(f"AAA3A_utils.cogsutils.CogsUtils.{key}")
+                return attr
+        except (AttributeError, KeyError):
+            pass
         raise KeyError(key)
 
 

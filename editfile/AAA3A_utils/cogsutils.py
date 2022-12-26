@@ -661,9 +661,7 @@ class CogsUtils(commands.Cog):
     async def ConfirmationAsk(
         self,
         ctx: commands.Context,
-        text: typing.Optional[str] = None,
-        embed: typing.Optional[discord.Embed] = None,
-        file: typing.Optional[discord.File] = None,
+        *args,
         timeout: typing.Optional[int] = 60,
         timeout_message: typing.Optional[str] = _("Timed out, please try again").format(
             **locals()
@@ -677,6 +675,7 @@ class CogsUtils(commands.Cog):
         reactions: typing.Optional[typing.Iterable[typing.Union[str, discord.Emoji]]] = ["✅", "❌"],
         check_owner: typing.Optional[bool] = True,
         members_authored: typing.Optional[typing.Iterable[discord.Member]] = [],
+        **kwargs,
     ):
         """
         Allow confirmation to be requested from the user, in the form of buttons/dropdown/reactions/message, with many additional options.
@@ -684,7 +683,7 @@ class CogsUtils(commands.Cog):
         if (way == "buttons" or way == "dropdown") and not self.is_dpy2:
             way = "reactions"
         if message is None:
-            if not text and not embed and not file:
+            if "content" not in kwargs and "embed" not in kwargs:
                 if way == "buttons":
                     text = _(
                         "To confirm the current action, please use the buttons below this message."
@@ -702,7 +701,7 @@ class CogsUtils(commands.Cog):
                         "To confirm the current action, please send yes/no in this channel."
                     ).format(**locals())
             if not way == "buttons" and not way == "dropdown":
-                message = await ctx.send(content=text, embed=embed, file=file)
+                message = await ctx.send(*args, **kwargs)
         if way == "reactions":
             if put_reactions:
                 try:
@@ -730,7 +729,7 @@ class CogsUtils(commands.Cog):
                 if check_owner
                 else [] + [x.id for x in members_authored],
             )
-            message = await ctx.send(content=text, embed=embed, file=file, view=view)
+            message = await ctx.send(*args, **kwargs, view=view)
             try:
                 interaction, function_result = await view.wait_result()
                 if str(interaction.data["custom_id"]) == "ConfirmationAsk_Yes":
@@ -847,7 +846,7 @@ class CogsUtils(commands.Cog):
                 if check_owner
                 else [] + [x.id for x in members_authored],
             )
-            message = await ctx.send(content=text, embed=embed, file=file, view=view)
+            message = await ctx.send(*args, **kwargs, view=view)
             try:
                 interaction, values, function_result = await view.wait_result()
                 if str(values[0]) == "ConfirmationAsk_Yes":

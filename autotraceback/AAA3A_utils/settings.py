@@ -319,7 +319,7 @@ class Settings():
         if profile in profiles:
             await ctx.send(_("This profile already exists.").format(**locals()))
             return
-        await data.set_raw(*self.global_path, profile, value=self.config._defaults[self.group]["default_panel_settings"]) 
+        await data.set_raw(*self.global_path, profile, value=self.config._defaults[self.group]["default_profile_settings"]) 
 
     async def clone_profile(self, ctx: commands.Context, old_profile: str, profile: str):
         if len(profile) > 10:
@@ -421,11 +421,11 @@ class Settings():
         if not with_dev:
             raw_table = Table("Key", "Default", "Value", "Converter")
             for value in values:
-                raw_table.add_row(value.replace("_", " ").capitalize().replace(" ", ""), repr(values[value]["default"]), repr(values[value]["value"]), str((("|".join(f'"{v}"' if isinstance(v, str) else str(v)for v in self.settings[value]["param"].converter.__args__)) if self.settings[value]["param"].converter is typing.Literal else getattr(self.settings[value]["param"].converter, "__name__", ""))))
+                raw_table.add_row(value.replace("_", " ").capitalize().replace(" ", ""), repr(values[value]["default"]), repr(values[value]["value"]), str((("|".join(f'"{v}"' if isinstance(v, str) else str(v)for v in self.settings[value]["converter"].__args__)) if self.settings[value]["converter"] is typing.Literal else getattr(self.settings[value]["converter"], "__name__", ""))))
         else:
             raw_table = Table("Key", "Default", "Value", "Converter", "Path")
             for value in values:
-                raw_table.add_row(value.replace("_", " ").capitalize().replace(" ", ""), repr(values[value]["default"]), repr(values[value]["value"]), str((("|".join(f'"{v}"' if isinstance(v, str) else str(v)for v in self.settings[value]["param"].converter.__args__)) if self.settings[value]["param"].converter is typing.Literal else getattr(self.settings[value]["param"].converter, "__name__", ""))), (str([self.group] + self.global_path + self.settings[value]["path"]) if not self.use_profiles_system else str([self.group] + self.global_path + [profile] + self.settings[value]["path"])))
+                raw_table.add_row(value.replace("_", " ").capitalize().replace(" ", ""), repr(values[value]["default"]), repr(values[value]["value"]), str((("|".join(f'"{v}"' if isinstance(v, str) else str(v)for v in self.settings[value]["converter"].__args__)) if self.settings[value]["converter"] is typing.Literal else getattr(self.settings[value]["converter"], "__name__", ""))), (str([self.group] + self.global_path + self.settings[value]["path"]) if not self.use_profiles_system else str([self.group] + self.global_path + [profile] + self.settings[value]["path"])))
         raw_table_str = no_colour_rich_markup(raw_table, no_box=True)
         message += raw_table_str
         await Menu(pages=message, box_language_py=True).start(ctx)
@@ -484,14 +484,14 @@ class Settings():
                     if self.cog.cogsutils.is_dpu2:
                         value = await discord.ext.commands.converter.run_converters(
                             ctx,
-                            converter=self.settings[custom_id]["param"].converter,
+                            converter=self.settings[custom_id]["converter"],
                             argument=str(input.value),
                             param=self.settings[custom_id]["param"],
                         )
                     else:
                         value = await ctx.command.do_conversion(
                             ctx,
-                            converter=self.settings[custom_id]["param"].converter,
+                            converter=self.settings[custom_id]["converter"],
                             argument=str(input.value),
                             param=self.settings[custom_id]["param"],
                         )
@@ -543,11 +543,11 @@ class Settings():
                                     (
                                         "|".join(
                                             f'"{v}"' if isinstance(v, str) else str(v)
-                                            for v in self.settings[setting]["param"].converter.__args__
+                                            for v in self.settings[setting]["converter"].__args__
                                         )
                                     )
-                                    if self.settings[setting]["param"].converter is typing.Literal
-                                    else getattr(self.settings[setting]["param"].converter, "__name__", "")
+                                    if self.settings[setting]["converter"] is typing.Literal
+                                    else getattr(self.settings[setting]["converter"], "__name__", "")
                                 )
                                 + ")"
                             )[:44],

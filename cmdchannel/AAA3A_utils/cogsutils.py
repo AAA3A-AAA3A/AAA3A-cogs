@@ -285,6 +285,11 @@ class CogsUtils(commands.Cog):
             self.loops[loop].stop_all()
         for view in self.views:
             view.stop()
+            try:
+                self.bot.persistent_views.remove(view)
+            except ValueError:
+                pass
+        self.views.clear()
         asyncio.create_task(self._await_end())
 
     async def _await_end(self):

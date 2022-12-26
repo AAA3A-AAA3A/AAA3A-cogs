@@ -617,6 +617,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 return value
         except (AttributeError, KeyError):
             pass
+        if attr := getattr(discord, key, None):
+            return attr
         raise KeyError(key)
 
 

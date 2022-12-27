@@ -22,6 +22,14 @@ else:
     hybrid_group = commands.group
 
 
+class PermissionConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, arg: str):
+        permissions = [key for key, value in dict(discord.Permissions.all_channel()).items() if value]
+        if arg not in permissions:
+            raise commands.BadArgument("This permission is invalid.")
+        return arg
+
+
 @cog_i18n(_)
 class EditVoiceChannel(commands.Cog):
     """A cog to edit voice channels!"""
@@ -289,6 +297,76 @@ class EditVoiceChannel(commands.Cog):
         except discord.HTTPException as e:
             await self.send_error(ctx, e)
 
+    @editvoicechannel.command(name="permissions", aliases=["overwrites", "perms"])
+    async def editvoicechannel_permissions(
+        self,
+        ctx: commands.Context,
+        channel: discord.VoiceChannel,
+        permission: PermissionConverter,
+        true_or_false: typing.Optional[bool],
+        roles_or_users: commands.Greedy[typing.Union[discord.Member, discord.Role, str]],
+    ):
+        """Edit voice channel permissions/overwrites.
+
+        create_instant_invite
+        manage_channels
+        add_reactions
+        priority_speaker
+        stream
+        read_messages
+        send_messages
+        send_tts_messages
+        manage_messages
+        embed_links
+        attach_files
+        read_message_history
+        mention_everyone
+        external_emojis
+        connect
+        speak
+        mute_members
+        deafen_members
+        move_members
+        use_voice_activation
+        manage_roles
+        manage_webhooks
+        use_application_commands
+        request_to_speak
+        manage_threads
+        create_public_threads
+        create_private_threads
+        external_stickers
+        send_messages_in_threads
+        """
+        if not await self.check_voice_channel(ctx, channel):
+            return
+        targets = list(roles_or_users)
+        for r in roles_or_users:
+            if isinstance(r, str):
+                if r == "everyone":
+                    targets.remove(r)
+                    targets.append(ctx.guild.default_role)
+                else:
+                    targets.remove(r)
+        if not targets:
+            return await ctx.send(
+                _("You need to provide a role or user you want to edit permissions for.")
+            )
+        overwrites = channel.overwrites
+        for target in targets:
+            if target in overwrites:
+                overwrites[target].update(**{permission: true_or_false})
+            else:
+                perm = discord.PermissionOverwrite(**{permission: true_or_false})
+                overwrites[target] = perm
+        try:
+            await channel.edit(
+                overwrites=overwrites,
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #{channel.name} ({channel.id}).",
+            )
+        except discord.HTTPException as e:
+            await self.send_error(ctx, e)
+
     @editvoicechannel.command(name="delete")
     async def editvoicechannel_delete(
         self,
@@ -307,7 +385,7 @@ class EditVoiceChannel(commands.Cog):
             ).format(**locals())
             embed.color = 0xF00020
             if not await self.cogsutils.ConfirmationAsk(
-                ctx, text=f"{ctx.author.mention}", embed=embed
+                ctx, content=f"{ctx.author.mention}", embed=embed
             ):
                 await self.cogsutils.delete_message(ctx.message)
                 return

@@ -193,7 +193,7 @@ class EditRole(commands.Cog):
             ).format(**locals())
             embed.color = 0xF00020
             if not await self.cogsutils.ConfirmationAsk(
-                ctx, text=f"{ctx.author.mention}", embed=embed
+                ctx, content=f"{ctx.author.mention}", embed=embed
             ):
                 await self.cogsutils.delete_message(ctx.message)
                 return

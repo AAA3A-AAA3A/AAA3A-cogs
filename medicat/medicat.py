@@ -54,11 +54,17 @@ TEST_CHANNEL = 905737223348047914
 
 CUSTOM_COMMANDS = {
     "customtools": {
-        "title": _("How to add your own bootable tools (iso, wim, vhd) to Medicat USB?").format(
+        "title": _("Can I add my own bootable tools (iso, wim, vhd) or PortableApps softwares to Medicat USB?").format(
             **locals()
         ),
         "description": _(
-            "To add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\nThen you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template."
+            "Please feel free to modify MediCat to YOUR individual needs! 😄\nTo add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\nThen you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template.\nAbsolutely, I encourage it!"
+        ).format(**locals()),
+    },
+    "free": {
+        "title": _("Is Medicat free?").format(**locals()),
+        "description": _(
+            "Absolutely. I will never charge money for MediCat, or accept donations. However, feel free to share your ideas, questions, and concerns in this thread. That's how you can give back. 🙂"
         ).format(**locals()),
     },
     "howinstall": {
@@ -85,10 +91,24 @@ CUSTOM_COMMANDS = {
             "Here are the latest links to download the latest versions of the menus:\n- Jayro's Lockîck: \n<https://mega.nz/file/ZtpwEDhR#4bCjUDri2hhUlCgv8Y1EmZVyUnGyhqZjCo0fazXLzqY>\n- AAA3A's Backup: \n<https://mega.nz/file/s8hATRbZ#C28qA8HWKi_xikC6AUG46DiXKIG2Qjl__-4MOl6SI7w>\n- AAA3A's Partition: \n<https://mega.nz/file/w8oFkKYQ#5BbIf7K6pyxYDlE6L4efPqtHUWtCMmx_kta_QHejhpk>\nHere is also a link that should never change to access the same folder containing all the menus: \n<https://mega.nz/folder/FtRCgLQL#KTq897WQiXCJT8OQ3cT9Tg>"
         ).format(**locals()),
     },
+    "minios": {
+        "title": _("Can I install Mini Windows 10 as my main OS?").format(**locals()),
+        "description": _(
+            "No, it doesn't work like that. It's a WinPE image (Windows Pre-install Environment) that runs in memory. It's primary use is to troubleshoot a troublesome PC."
+        ).format(**locals()),
+    },
     "noiso": {
         "title": _("How do I download the Medicat USB iso file?").format(**locals()),
         "description": _(
             "Medicat USB is not available as an iso file.\nPreviously, Medicat USB was available as an iso file. Now it uses Ventoy to run. It is currently impossible to put Ventoy and therefore Medicat USB in an iso file, or at least not without difficulties."
+        ).format(**locals()),
+    },
+    "portableapps": {
+        "title": _("Can I run the PortableApps on my current PC without booting up MediCat?").format(
+            **locals()
+        ),
+        "description": _(
+            "Yes, just mount the MediCat USB, and open Start.exe to launch the platform. These are the same exact apps that get loaded within Mini Windows 10. So if you update them, they will show up updated in Mini Windows 10 as well."
         ).format(**locals()),
     },
     "updateonly": {
@@ -117,6 +137,12 @@ CUSTOM_COMMANDS = {
         "title": _("What is Medicat USB?").format(**locals()),
         "description": _(
             "Medicat USB contains tools to backup/restore data, to manage disks/partitions, to reset/bypass/find a Windows password, to use software with admin rights from a winPE, to do virus scans. In addition, it uses Ventoy, which allows you to add your own bootable tools with a simple copy and paste."
+        ).format(**locals()),
+    },
+    "whenupdate": {
+        "title": _("How often will Medicat be updated?").format(**locals()),
+        "description": _(
+            "MediCat USB is now a rolling release, so will be regularly updated with major releases, and minor updates as needed (Typically monthly or bi-monthly). The links here will always be the latest version. The PortableApps are easily updatable by the user, once they have been 'burned' to USB."
         ).format(**locals()),
     },
     "wimvhd": {

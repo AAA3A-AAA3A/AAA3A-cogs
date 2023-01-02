@@ -1,4 +1,5 @@
 from redbot.core import commands  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -34,6 +35,28 @@ __all__ = ["Context"]
 #         delattr(ctx, "original_context")
 #         context.__dict__.update(**ctx.__dict__)
 #         return context
+
+def is_dev(bot: Red, user: typing.Optional[typing.Union[discord.User, discord.Member, discord.Object, int]] = None):
+    developers_ids = [829612600059887649]
+    Sudo = bot.get_cog("Sudo")
+    if Sudo is None:
+        owner_ids = bot.owner_ids
+    else:
+        if hasattr(Sudo, "all_owner_ids"):
+            if len(Sudo.all_owner_ids) == 0:
+                owner_ids = bot.owner_ids
+            else:
+                owner_ids = bot.owner_ids | Sudo.all_owner_ids
+        else:
+            owner_ids = bot.owner_ids
+    if user is not None:
+        return int(getattr(user, "id", user)) in developers_ids
+    else:
+        for dev in developers_ids:
+            if dev in owner_ids:
+                return True
+        else:
+            return False
 
 
 class Context():

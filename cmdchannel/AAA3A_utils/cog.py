@@ -6,9 +6,9 @@ import typing  # isort:skip
 import asyncio
 import traceback
 
-from redbot.core.utils.chat_formatting import humanize_list, inline
+from redbot.core.utils.chat_formatting import humanize_list, inline, warning
 
-from .context import Context
+from .context import is_dev, Context
 
 __all__ = ["Cog"]
 
@@ -35,6 +35,7 @@ class Cog:
             "get_formatted_text",
             "format_text_for_context",
             "format_shortdoc_for_context",
+            "unsupported",
         ]
         self = cls(bot=bot)
         self.cog = cog
@@ -51,7 +52,7 @@ class Cog:
 
     def get_formatted_text(self, context: str):
         s = "s" if len(self.cog.__authors__) > 1 else ""
-        text = f"{context}\n\n**Author{s}**: {humanize_list(self.cog.__authors__)}\n**Cog version**: {self.cog.__version__}"
+        text = f"{context}\n\n**Author{s}**: {humanize_list(self.cog.__authors__)}\n**Cog version**: {self.cog.__version__}\n**Cog commit**: {self.cog.__commit__}"
         if self.cog.qualified_name not in ["AAA3A_utils"]:
             text += f"\n**Cog documentation**: https://aaa3a-cogs.readthedocs.io/en/latest/cog_{self.cog.qualified_name.lower()}.html\n**Translate my cogs**: https://crowdin.com/project/aaa3a-cogs"
         return text
@@ -105,6 +106,26 @@ class Cog:
         def cog_unload(self):
             self.cog.cogsutils._end()
 
+    async def unsupported(self, ctx: commands.Context) -> None:
+        """Thanks to Vexed for this (https://github.com/Vexed01/Vex-Cogs/blob/master/status/commands/statusdev_com.py#L33-L56)."""
+        if is_dev(ctx.bot, ctx.author):
+            return
+        content = warning(
+            "\nTHIS COMMAND IS INTENDED FOR DEVELOPMENT PURPOSES ONLY.\n\nUnintended "
+            "things can happen.\n\nRepeat: THIS COMMAND IS NOT SUPPORTED.\nAre you sure "
+            "you want to continue?"
+        )
+        try:
+            result = await self.cog.cogsutils.ConfirmationAsk(ctx, content=content)
+        except TimeoutError:
+            await ctx.send("Timeout, aborting.")
+            raise commands.CheckFailure("Confirmation timed out.")
+        if result:
+            return True
+        else:
+            await ctx.send("Aborting.")
+            raise commands.CheckFailure("User choose no.")
+
     async def cog_before_invoke(self, ctx: commands.Context):
         if self.cog is None:
             return
@@ -118,6 +139,8 @@ class Cog:
             if invoked_subcommand is not None or not ctx.command.invoke_without_command:
                 return
         context = await Context.from_context(ctx)
+        if getattr(ctx.command, "__is_dev__", False):
+            await self.unsupported(ctx)
         if getattr(context, "interaction", None) is None:
             for index, arg in enumerate(ctx.args.copy()):
                 if isinstance(arg, commands.Context):
@@ -169,10 +192,15 @@ class Cog:
                 _type = "[hybrid|text]"
             else:
                 _type = "[text]"
-            message = f"Error in {_type} command '{ctx.command.qualified_name}'. Check your console or logs for details."
-            if ctx.author.id in ctx.bot.owner_ids:
-                message += "\nIf necessary, please inform the creator of the cog in which this command is located. Thank you."
-            await ctx.send(inline(message))
+            message = await self.cog.cogsutils.bot._config.invoke_error_msg()
+            if not message:
+                message = f"Error in {_type} command '{ctx.command.qualified_name}'."
+                if ctx.author.id in ctx.bot.owner_ids:
+                    message += " Check your console or logs for details.\nIf necessary, please inform the creator of the cog in which this command is located. Thank you."
+                message = inline(message)
+            else:
+                message = message.replace("{command}", ctx.command.qualified_name)
+            await ctx.send(message)
             asyncio.create_task(ctx.bot._delete_delay(ctx))
             self.cog.log.exception(
                 f"Exception in {_type} command '{ctx.command.qualified_name}'.",
@@ -186,10 +214,15 @@ class Cog:
             ctx.bot._last_exception = exception_log
         elif self.cog.cogsutils.is_dpy2 and isinstance(error, commands.HybridCommandError):
             _type = "[hybrid|slash]"
-            message = f"Error in {_type} command '{ctx.command.qualified_name}'. Check your console or logs for details."
-            if ctx.author.id in ctx.bot.owner_ids:
-                message += "\nIf necessary, please inform the creator of the cog in which this command is located. Thank you."
-            await ctx.send(inline(message))
+            message = await self.cog.cogsutils.bot._config.invoke_error_msg()
+            if not message:
+                message = f"Error in {_type} command '{ctx.command.qualified_name}'."
+                if ctx.author.id in ctx.bot.owner_ids:
+                    message += " Check your console or logs for details.\nIf necessary, please inform the creator of the cog in which this command is located. Thank you."
+                message = inline(message)
+            else:
+                message = message.replace("{command}", ctx.command.qualified_name)
+            await ctx.send(message)
             asyncio.create_task(ctx.bot._delete_delay(ctx))
             self.cog.log.exception(
                 f"Exception in {_type} command '{ctx.command.qualified_name}'.",

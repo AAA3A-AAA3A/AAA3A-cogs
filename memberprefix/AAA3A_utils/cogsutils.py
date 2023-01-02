@@ -20,7 +20,6 @@ import aiohttp
 import redbot
 from redbot.core import Config
 from redbot.core.data_manager import cog_data_path
-from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.logging import RotatingFileHandler
 
@@ -32,7 +31,7 @@ from .menus import Reactions
 from .shared_cog import SharedCog
 
 if discord.version_info.major >= 2:
-    from .views import Buttons, Dropdown, Modal
+    from .views import Buttons, Dropdown
 
 __all__ = ["CogsUtils"]
 
@@ -61,6 +60,7 @@ class CogsUtils(commands.Cog):
             self.bot: Red = None
         self.__authors__ = ["AAA3A"]
         self.__version__ = 1.0
+        self.__commit__ = ""
         if self.cog is not None:
             if hasattr(self.cog, "__authors__"):
                 if isinstance(self.cog.__authors__, typing.List):
@@ -227,8 +227,10 @@ class CogsUtils(commands.Cog):
         await self.bot.wait_until_red_ready()
         DevEnv.add_dev_env_values(bot=self.bot, cog=self.cog)
         try:
-            nb_commits, version = await self.get_cog_version()
-            self.cog.__version__ = self.__version__ = version
+            nb_commits, version, commit = await self.get_cog_version()
+            if self.__version__ == 1.0:
+                self.cog.__version__ = self.__version__ = version
+            self.cog.__commit__ = self.__commit__ = commit
         except (self.DownloaderNotLoaded, asyncio.TimeoutError, ValueError):
             pass
         except Exception as e:  # really doesn't matter if this fails so fine with debug level
@@ -244,7 +246,7 @@ class CogsUtils(commands.Cog):
                 )
             else:
                 self.cog.log.debug(f"{self.cog.qualified_name} cog is up to date.")
-        except (self.DownloaderNotLoaded, asyncio.TimeoutError, ValueError):
+        except (self.DownloaderNotLoaded, asyncio.TimeoutError, ValueError, asyncio.LimitOverrunError):
             pass
         except Exception as e:  # really doesn't matter if this fails so fine with debug level
             self.cog.log.debug(
@@ -394,6 +396,7 @@ class CogsUtils(commands.Cog):
         repo = None
         path = Path(inspect.getsourcefile(cog.__class__))
         if not path.parent.parent == (await self.bot._cog_mgr.install_path()):
+            local = None
             repo = Repo(name="", url="", branch="", commit="", folder_path=path.parent.parent)
         else:
             local = discord.utils.get(await downloader.installed_cogs(), name=cog_name)
@@ -416,7 +419,19 @@ class CogsUtils(commands.Cog):
 
         version = round(1.0 + (nb_commits / 100), 2)
 
-        return nb_commits, version
+        if local is not None:
+            commit = local.commit
+        else:
+            git_command = ProcessFormatter().format(
+                "git -C {path} log HEAD -1 {cog_name}", path=repo.folder_path, cog_name=cog_name
+            )
+            p = await repo._run(git_command)
+            if not p.returncode == 0:
+                raise asyncio.IncompleteReadError("No results could be retrieved from the git command.", None)
+            commit = p.stdout.decode(encoding="utf-8").strip()
+            commit = commit.split("\n")[0][7:]
+
+        return nb_commits, version, commit
 
     async def to_update(self, cog: typing.Optional[typing.Union[commands.Cog, str]] = None, repo_url: typing.Optional[str] = None):
         if cog is None:
@@ -462,6 +477,8 @@ class CogsUtils(commands.Cog):
                 timeout=3,
             ) as r:
                 online = await r.json()
+        if isinstance(online, typing.Dict) and "message" in online and "API rate limit exceeded" in online["message"]:
+            raise asyncio.LimitOverrunError("API rate limit exceeded.", 47)
         if online is None or not isinstance(online, typing.List):
             raise asyncio.IncompleteReadError("No results could be retrieved from the git api.", None)
         online_commit_for_each_files = {file["name"]: file["sha"] for file in online if file["type"] in ["dir", "file"]}

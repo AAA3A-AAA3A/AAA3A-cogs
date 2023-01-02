@@ -28,6 +28,7 @@ from redbot.core.utils.chat_formatting import box, pagify
 from rich.console import Console
 from rich.table import Table
 
+from .context import is_dev
 from .captcha import Captcha
 from .cog import Cog
 from .context import Context
@@ -145,6 +146,8 @@ class DevSpace:
 
 
 class DevEnv(typing.Dict[str, typing.Any]):
+    is_dev = is_dev
+
     def __init__(self, *args, **kwargs):
         # self.__dict__ = {}
         super().__init__(*args, **kwargs)
@@ -431,18 +434,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
         CogsUtils = cog.cogsutils.__class__
         if cog.qualified_name == "AAA3A_utils":
             return
-        Sudo = bot.get_cog("Sudo")
-        if Sudo is None:
-            owner_ids = bot.owner_ids
-        else:
-            if hasattr(Sudo, "all_owner_ids"):
-                if len(Sudo.all_owner_ids) == 0:
-                    owner_ids = bot.owner_ids
-                else:
-                    owner_ids = bot.owner_ids | Sudo.all_owner_ids
-            else:
-                owner_ids = bot.owner_ids
-        if not (829612600059887649 in owner_ids or force):
+        if not (is_dev(bot) or force):
             return None
         _env = cls.get_env(bot)
         _env.update({cog.qualified_name: lambda ctx: cog})
@@ -486,18 +478,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
         """
         if cog.qualified_name == "AAA3A_utils":
             return
-        Sudo = bot.get_cog("Sudo")
-        if Sudo is None:
-            owner_ids = bot.owner_ids
-        else:
-            if hasattr(Sudo, "all_owner_ids"):
-                if len(Sudo.all_owner_ids) == 0:
-                    owner_ids = bot.owner_ids
-                else:
-                    owner_ids = bot.owner_ids | Sudo.all_owner_ids
-            else:
-                owner_ids = bot.owner_ids
-        if not (829612600059887649 in owner_ids or force):
+        if not (is_dev(bot) or force):
             return None
         try:
             bot.remove_dev_env_value(cog.qualified_name)
@@ -571,9 +552,11 @@ class DevEnv(typing.Dict[str, typing.Any]):
             self[key] = module
             return module
         try:
+            if "bot" not in self:
+                raise KeyError("bot")
             if cog := self["bot"].get_cog(key):
                 return cog
-        except (AttributeError, KeyError):
+        except (KeyError, AttributeError):
             pass
         if key.lower().startswith("id"):
             id = key[2:] if not key[2] == "_" else key[3:]
@@ -583,39 +566,53 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 pass
             else:
                 try:
+                    if "guild" not in self:
+                        raise KeyError("guild")
                     if member := self["guild"].get_member(id):
                         return member
-                except (AttributeError, KeyError):
+                except (KeyError, AttributeError):
                     pass
                 try:
+                    if "bot" not in self:
+                        raise KeyError("bot")
                     if user := self["bot"].get_user(id):
                         return user
-                except (AttributeError, KeyError):
+                except (KeyError, AttributeError):
                     pass
                 try:
+                    if "bot" not in self:
+                        raise KeyError("bot")
                     if guild := self["bot"].get_guild(id):
                         return guild
-                except (AttributeError, KeyError):
+                except (KeyError, AttributeError):
                     pass
                 try:
+                    if "guild" not in self:
+                        raise KeyError("guild")
                     if channel := self["guild"].get_channel(id):
                         return channel
-                except (AttributeError, KeyError):
+                except (KeyError, AttributeError):
                     pass
                 try:
+                    if "guild" not in self:
+                        raise KeyError("guild")
                     if role := self["guild"].get_role(id):
                         return role
-                except (AttributeError, KeyError):
+                except (KeyError, AttributeError):
                     pass
                 try:
+                    if "channel" not in self:
+                        raise KeyError("channel")
                     if message := self["channel"].get_partial_message(id):
                         return message
-                except (AttributeError, KeyError):
+                except (KeyError, AttributeError):
                     pass
         try:
+            if "devspace" not in self:
+                raise KeyError("devspace")
             if value := self["devspace"].get(key):
                 return value
-        except (AttributeError, KeyError):
+        except (KeyError, AttributeError):
             pass
         if attr := getattr(discord, key, None):
             self.imported.append(f"discord.{key}")
@@ -624,10 +621,12 @@ class DevEnv(typing.Dict[str, typing.Any]):
             self.imported.append(f"typing.{key}")
             return attr
         try:
-            if attr := getattr(self["AAA3A_utils"].cogsutils, key, None):
+            if "bot" not in self:
+                raise KeyError("bot")
+            if attr := getattr(self["bot"].get_cog("AAA3A_utils").cogsutils, key, None):
                 self.imported.append(f"AAA3A_utils.cogsutils.CogsUtils.{key}")
                 return attr
-        except (AttributeError, KeyError):
+        except (KeyError, AttributeError):
             pass
         raise KeyError(key)
 

@@ -887,7 +887,7 @@ class Seen(commands.Cog):
             count += 1
             seen = y[1]
             description.append(
-                f"{(count) if not reverse else ((all_count + 1) - count)} - **{x}**: {seen}."
+                f"{(count) if not reverse else ((all_count + 1) - count)} - **{getattr(x, 'display_name', getattr(x, 'name', x))}**: {seen}."
             )
         description = "\n".join(description)
         for text in pagify(description):

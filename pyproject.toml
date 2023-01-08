@@ -6,6 +6,7 @@
     /(
           \.eggs
         | \.git
+        | \.vscode
         | \.hg
         | \.mypy_cache
         | \.tox
@@ -53,4 +54,4 @@
         'urlbuttons'
     ]
     skip = ['.gitignore']
-    skip_glob = ['.github/*', '.git/*', 'docs/*', 'AAA3A_utils/*']
+    skip_glob = ['.github/*', '.git/*', '.vscode/*', 'docs/*', 'AAA3A_utils/*']

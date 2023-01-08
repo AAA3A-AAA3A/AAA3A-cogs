@@ -124,15 +124,13 @@ class GetLoc(commands.Cog):
         try:
             localisation = loc.geocode(query=adress_or_coordinates, addressdetails=True)
         except Exception:
-            await ctx.send(_("An error has occurred. Please try again.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again.").format(**locals()))
         if localisation is None:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailurectx.send(
                 _(
                     "The address or contact details you have provided do not lead to any results. Are you sure of your input?"
                 ).format(**locals())
             )
-            return
         message = {
             "Display Name": str(localisation.raw.get("display_name", None)),
             "Longitude": str(localisation.raw.get("lon", None)),

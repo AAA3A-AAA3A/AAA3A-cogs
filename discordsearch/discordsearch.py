@@ -104,8 +104,7 @@ class DiscordSearch(commands.Cog):
                 ]
             ]
         ):
-            await ctx.send("You must provide at least one parameter.")
-            return
+            raise commands.UserFeedbackCheckFailure(_("You must provide at least one parameter.").format(**locals()))
         args_str = [
             underline("--- Settings of search ---"),
             bold("Authors:")

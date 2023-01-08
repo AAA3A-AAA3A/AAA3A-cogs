@@ -1091,10 +1091,9 @@ class Seen(commands.Cog):
         if show_details is None:
             show_details = True
         if not channel.permissions_for(ctx.author).view_channel:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("You do not have permission to view this channel.").format(**locals())
             )
-            return
         await self.send_seen(ctx, object=channel, type=type, show_details=show_details)
 
     @commands.guild_only()
@@ -1123,12 +1122,11 @@ class Seen(commands.Cog):
                 for channel in category.text_channels
             ]
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "You do not have permission to view any of the channels in this category."
                 ).format(**locals())
             )
-            return
         await self.send_seen(ctx, object=category, type=type, show_details=show_details)
 
     @commands.guild_only()
@@ -1216,8 +1214,7 @@ class Seen(commands.Cog):
             show_details = True
         user = await ctx.bot.fetch_user(user_id)
         if user is None:
-            await ctx.send(f'User "{user_id}" not found.')
-            return
+            raise commands.UserFeedbackCheckFailure(f'User "{user_id}" not found.')
         await self.send_seen(ctx, object=user, type=type, show_details=show_details)
 
     @commands.guild_only()

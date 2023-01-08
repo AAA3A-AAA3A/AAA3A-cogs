@@ -140,7 +140,7 @@ class ClearChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("Only the owner of this server can access these commands!").format(**locals())
             )
             return
@@ -162,7 +162,7 @@ class ClearChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("Only the owner of this server can access these commands!").format(**locals())
             )
             return
@@ -184,7 +184,7 @@ class ClearChannel(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("Only the owner of this server can access these commands!").format(**locals())
             )
             return

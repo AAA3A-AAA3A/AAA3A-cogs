@@ -927,7 +927,6 @@ class SimpleSanction(settings, commands.Cog):
         actual_show_author = config["show_author"]
         actual_action_confirmation = config["action_confirmation"]
         actual_finish_message = config["finish_message"]
-        actual_warn_system_use = config["warn_system_use"]
         actual_way = config["way"]
         if actual_way == "dropdown" and not self.cogsutils.is_dpy2:
             actual_way = "buttons"
@@ -977,8 +976,7 @@ class SimpleSanction(settings, commands.Cog):
                 await self.cogsutils.delete_message(msg)
                 user = pred.result
             except asyncio.TimeoutError:
-                await ctx.send(_("Timed out, please try again.").format(**locals()))
-                return
+                raise commands.UserFeedbackCheckFailure(_("Timed out, please try again.").format(**locals()))
 
         if action is None:
             embed: discord.Embed = discord.Embed()

@@ -83,18 +83,16 @@ class ExportChannel(commands.Cog):
             user=ctx.me,
             check=["view_channel", "read_messages", "read_message_history"],
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
                 ).format()
             )
-            return
         messages = await self.get_messages(channel=channel)
         messages = [message for message in messages if not message.id == ctx.message.id]
         count_messages = len(messages)
         if count_messages == 0:
-            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
         if self.cogsutils.is_dpy2:
             transcript = await chat_exporter.raw_export(
                 channel=channel,
@@ -134,20 +132,18 @@ class ExportChannel(commands.Cog):
             user=ctx.me,
             check=["view_channel", "read_messages", "read_message_history"],
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
                 ).format()
             )
-            return
         messages = await self.get_messages(
             channel=channel, limit=limit if not channel == ctx.channel else limit + 1
         )
         messages = [message for message in messages if not message.id == ctx.message.id]
         count_messages = len(messages)
         if count_messages == 0:
-            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
         if self.cogsutils.is_dpy2:
             transcript = await chat_exporter.raw_export(
                 channel=channel,
@@ -190,12 +186,11 @@ class ExportChannel(commands.Cog):
             user=ctx.me,
             check=["view_channel", "read_messages", "read_message_history"],
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
                 ).format()
             )
-            return
         messages = await self.get_messages(channel=channel, before=before)
         messages = [message for message in messages if not message.id == ctx.message.id]
         count_messages = len(messages)
@@ -241,18 +236,16 @@ class ExportChannel(commands.Cog):
             user=ctx.me,
             check=["view_channel", "read_messages", "read_message_history"],
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
                 ).format()
             )
-            return
         messages = await self.get_messages(channel=channel, after=after)
         messages = [message for message in messages if not message.id == ctx.message.id]
         count_messages = len(messages)
         if count_messages == 0:
-            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
         if self.cogsutils.is_dpy2:
             transcript = await chat_exporter.raw_export(
                 channel=channel,
@@ -296,18 +289,16 @@ class ExportChannel(commands.Cog):
             user=ctx.me,
             check=["view_channel", "read_messages", "read_message_history"],
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
                 ).format()
             )
-            return
         messages = await self.get_messages(channel=channel, before=before, after=after)
         messages = [message for message in messages if not message.id == ctx.message.id]
         count_messages = len(messages)
         if count_messages == 0:
-            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
         if self.cogsutils.is_dpy2:
             transcript = await chat_exporter.raw_export(
                 channel=channel,
@@ -351,12 +342,11 @@ class ExportChannel(commands.Cog):
             user=ctx.me,
             check=["view_channel", "read_messages", "read_message_history"],
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
                 ).format()
             )
-            return
         messages = await self.get_messages(
             channel=channel,
             user_id=user.id if isinstance(user, discord.Member) else user,
@@ -365,8 +355,7 @@ class ExportChannel(commands.Cog):
         messages = [message for message in messages if not message.id == ctx.message.id]
         count_messages = len(messages)
         if count_messages == 0:
-            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
         if self.cogsutils.is_dpy2:
             transcript = await chat_exporter.raw_export(
                 channel=channel,
@@ -410,18 +399,16 @@ class ExportChannel(commands.Cog):
             user=ctx.me,
             check=["view_channel", "read_messages", "read_message_history"],
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
                 ).format()
             )
-            return
         messages = await self.get_messages(channel=channel, bot=bot, limit=limit)
         messages = [message for message in messages if not message.id == ctx.message.id]
         count_messages = len(messages)
         if count_messages == 0:
-            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
         if self.cogsutils.is_dpy2:
             transcript = await chat_exporter.raw_export(
                 channel=channel,

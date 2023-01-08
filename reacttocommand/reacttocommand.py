@@ -223,29 +223,26 @@ class ReactToCommand(commands.Cog):
             or not permissions.read_messages
             or not permissions.view_channel
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to add reactions and to see the messages in that channel."
                 ).format(**locals())
             )
-            return
         if not ctx.prefix == "/":
             msg = ctx.message
             msg.content = f"{ctx.prefix}{command}"
             new_ctx = await ctx.bot.get_context(msg)
             if not new_ctx.valid:
-                await ctx.send(_("You have not specified a correct command.").format(**locals()))
-                return
+                raise commands.UserFeedbackCheckFailure(_("You have not specified a correct command.").format(**locals()))
         if getattr(ctx, "interaction", None) is None:
             try:
                 await ctx.message.add_reaction(emoji)
             except discord.HTTPException:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "An error has occurred. It is possible that the emoji you provided is invalid."
                     ).format(**locals())
                 )
-                return
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
@@ -257,15 +254,13 @@ class ReactToCommand(commands.Cog):
         """Remove a command-reaction to a message."""
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("No command-reaction is configured for this message.").format(**locals())
             )
-            return
         if f"{getattr(emoji, 'id', emoji)}" not in config[f"{message.channel.id}-{message.id}"]:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I wasn't watching for this reaction on this message.").format(**locals())
             )
-            return
         del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
         if config[f"{message.channel.id}-{message.id}"] == {}:
             del config[f"{message.channel.id}-{message.id}"]
@@ -280,10 +275,9 @@ class ReactToCommand(commands.Cog):
         """Clear all commands-reactions to a message."""
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("No command-reaction is configured for this message.").format(**locals())
             )
-            return
         for react in config[f"{message.channel.id}-{message.id}"]:
             try:
                 await message.remove_reaction(f"{react}", ctx.guild.me)

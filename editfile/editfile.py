@@ -65,8 +65,7 @@ class EditFile(commands.Cog):
         """
         match = re.compile(r"(?:\.\/+)?(.+?)(?:#L?(\d+)(?:\-L?(\d+))?)?$").search(path)
         if match is None:
-            await ctx.send(_("Couldn't parse this input.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Couldn't parse this input.").format(**locals()))
         path = match.group(1)
         line_span = None
         if match.group(2) is not None:
@@ -77,15 +76,13 @@ class EditFile(commands.Cog):
         try:
             size = os.path.getsize(path)
             if size <= 0:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "Cowardly refusing to read a file with no size stat. (it may be empty, endless or inaccessible)."
                     ).format(**locals())
                 )
-                return
             if size > 128 * (1024 ** 2):
-                await ctx.send(_("Cowardly refusing to read a file >128MB.").format(**locals()))
-                return
+                raise commands.UserFeedbackCheckFailure(_("Cowardly refusing to read a file >128MB.").format(**locals()))
             with open(file=path, mode="rb") as file:
                 content = file.read()
             if line_span is not None:
@@ -101,13 +98,11 @@ class EditFile(commands.Cog):
                     lines.append(f"{count}: ".encode(encoding="utf-8") + line)
             file = discord.File(fp=io.BytesIO(b"\n".join(lines_without_count)), filename=path.name)
         except FileNotFoundError:
-            await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("This file cannot be found on the host machine.").format(**locals()))
         except IsADirectoryError:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("The path you specified refers to a directory, not a file.").format(**locals())
             )
-            return
         path = Path(self.cogsutils.replace_var_paths(str(path)))
         if menu:
             len_lines = len(content.split(b"\n"))
@@ -125,10 +120,9 @@ class EditFile(commands.Cog):
             ]
             if len(pages) == 0:
                 len_lines = len(content.split(b"\n"))
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _("There are only {len_lines} lines in this file.").format(**locals())
                 )
-                return
             await Menu(pages=pages, timeout=300, delete_after_timeout=None).start(ctx)
         else:
             await ctx.send(
@@ -145,8 +139,7 @@ class EditFile(commands.Cog):
         line_span = None
         match = re.compile(r"(?:\.\/+)?(.+?)(?:#L?(\d+)(?:\-L?(\d+))?)?$").search(path)
         if match is None:
-            await ctx.send(_("Couldn't parse this input.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Couldn't parse this input.").format(**locals()))
         path = match.group(1)
         if match.group(2):
             start = int(match.group(2))
@@ -163,28 +156,24 @@ class EditFile(commands.Cog):
                     lines = old_file_content.split(b"\n")
             except IndexError:
                 len_lines = len(old_file_content.split(b"\n"))
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _("There are only {len_lines} lines in this file.").format(**locals())
                 )
-                return
             old_file = discord.File(fp=io.BytesIO(b"\n".join(lines)), filename=path.name)
         except FileNotFoundError:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("This original file cannot be found on the host machine.").format(**locals())
             )
-            return
         except IsADirectoryError:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("The path you specified refers to a directory, not a file.").format(**locals())
             )
-            return
         if content is None and ctx.message.attachments == []:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "You must send the command with an attachment that will be used to replace the original file."
                 ).format(**locals())
             )
-            return
         if content is not None:
             # remove ```py\n```
             if content.startswith("```") and content.endswith("```"):
@@ -249,15 +238,13 @@ class EditFile(commands.Cog):
         """List all files/directories of a directory from its path."""
         path = Path(self.cogsutils.replace_var_paths(path, reverse=True))
         if not path.exists():
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("This directory cannot be found on the host machine.").format(**locals())
             )
-            return
         if not path.is_dir():
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("The path you specified refers to a file, not a directory.").format(**locals())
             )
-            return
         message = ""
         files = listdir(str(path))
         files = sorted(files, key=lambda file: (path / file).is_dir(), reverse=True)
@@ -280,43 +267,37 @@ class EditFile(commands.Cog):
         """Rename a file."""
         path = Path(self.cogsutils.replace_var_paths(path))
         if not path.exists():
-            await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("This file cannot be found on the host machine.").format(**locals()))
         if not path.is_file() and path.is_dir():
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("The path you specified refers to a directory, not a file.").format(**locals())
             )
-            return
         try:
             path.rename(target=Path(f"{path.parent}") + f"{new_name}")
         except FileNotFoundError:
-            await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
+            raise commands.UserFeedbackCheckFailure(_("This file cannot be found on the host machine.").format(**locals()))
         except IsADirectoryError:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("The path you specified refers to a directory, not a file.").format(**locals())
             )
-        else:
-            await ctx.send(_("The `{path}` file has been deleted.").format(**locals()))
+        await ctx.send(_("The `{path}` file has been deleted.").format(**locals()))
 
     @editfile.command()
     async def delete(self, ctx: commands.Context, *, path: str):
         """Delete a file."""
         if not path.exists():
-            await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("This file cannot be found on the host machine.").format(**locals()))
         if not path.is_file() and path.is_dir():
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("The path you specified refers to a directory, not a file.").format(**locals())
             )
-            return
         path = Path(self.cogsutils.replace_var_paths(path))
         try:
             path.unlink()
         except FileNotFoundError:
-            await ctx.send(_("This file cannot be found on the host machine.").format(**locals()))
+            raise commands.UserFeedbackCheckFailure(_("This file cannot be found on the host machine.").format(**locals()))
         except IsADirectoryError:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("The path you specified refers to a directory, not a file.").format(**locals())
             )
-        else:
-            await ctx.send(_("The `{path}` file has been deleted.").format(**locals()))
+        await ctx.send(_("The `{path}` file has been deleted.").format(**locals()))

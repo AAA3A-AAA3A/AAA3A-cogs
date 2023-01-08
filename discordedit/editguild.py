@@ -30,6 +30,8 @@ else:
     hybrid_command = commands.command
     hybrid_group = commands.group
 
+ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+
 
 @cog_i18n(_)
 class EditGuild(commands.Cog):
@@ -40,17 +42,9 @@ class EditGuild(commands.Cog):
 
         self.cogsutils = CogsUtils(cog=self)
 
-    async def send_error(self, ctx: commands.Context, error: discord.HTTPException):
-        error = box(str(error), lang="py")
-        await ctx.send(
-            _(
-                "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
-            ).format(**locals())
-        )
-
     @commands.guild_only()
     @commands.admin_or_permissions(manage_guild=True)
-    #@commands.bot_has_guild_permissions(manage_guild=True)
+    @commands.bot_has_guild_permissions(manage_guild=True)
     @hybrid_group()
     async def editguild(self, ctx: commands.Context):
         """Commands for edit a guild."""
@@ -68,7 +62,7 @@ class EditGuild(commands.Cog):
         try:
             guild = await ctx.bot.create_guild(name=name, code=template_code)
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
         else:
             channel = None
             for c in guild.channels:
@@ -91,7 +85,7 @@ class EditGuild(commands.Cog):
             guild = await ctx.bot.create_guild(name=name, code=template.code)
             await template.delete()
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
         else:
             channel = None
             for c in guild.channels:
@@ -114,7 +108,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editguild.command(name="description")
     async def editguild_description(
@@ -128,7 +122,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editguild.command(name="community")
     async def editguild_community(
@@ -142,7 +136,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editguild.command(name="afkchannel")
     async def editguild_afk_channel(
@@ -156,7 +150,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editguild.command(name="afktimeout")
     async def editguild_afk_timeout(
@@ -170,7 +164,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @commands.is_owner()
     @editguild.command(name="owner")
@@ -197,7 +191,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editguild.command(name="verificationlevel")
     async def editguild_verification_level(
@@ -211,7 +205,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editguild.command(name="defaultnotifications", aliases=["notificationslevel"])
     async def editguild_default_notifications(
@@ -226,7 +220,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editguild.command(name="explicitcontentfilter")
     async def editguild_explicit_content_filter(
@@ -240,7 +234,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editguild.command(name="vanitycode")
     async def editguild_vanity_code(
@@ -254,7 +248,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editguild.command(name="systemchannel")
     async def editguild_system_channel(
@@ -268,7 +262,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editguild.command(name="systemchannelflags")
     async def editguild_system_channel_flags(
@@ -284,7 +278,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     class LocaleConverter(commands.Converter):
         async def convert(self, ctx: commands.Context, arg: str):
@@ -337,7 +331,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editguild.command(name="ruleschannel")
     async def editguild_rules_channel(
@@ -351,7 +345,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editguild.command(name="publicupdateschannel")
     async def editguild_public_updates_channel(
@@ -365,7 +359,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editguild.command(name="premiumprogressbarenabled")
     async def editguild_premium_progress_bar_enabled(
@@ -379,7 +373,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editguild.command(name="discoverable")
     async def editguild_discoverable(
@@ -393,7 +387,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editguild.command(name="invitesdisabled")
     async def editguild_invites_disabled(
@@ -407,7 +401,7 @@ class EditGuild(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @commands.is_owner()
     @editguild.command(name="delete")
@@ -433,4 +427,4 @@ class EditGuild(commands.Cog):
         try:
             await guild.delete()
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))

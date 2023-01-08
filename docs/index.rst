@@ -14,6 +14,15 @@ Useful Links
 * `Github Repository <https://github.com/AAA3A-AAA3A/AAA3A-cogs>`_
 
 .. toctree::
+    :caption: Repository
+    :maxdepth: 2
+
+    repo_installation
+    repo_license
+    repo_support
+    repo_telemetry
+
+.. toctree::
     :caption: Cogs documentations
     :maxdepth: 1
 
@@ -40,11 +49,3 @@ Useful Links
     cog_tickettool
     cog_transferchannel
     cog_urlbuttons
-
-.. toctree::
-    :caption: Repository
-    :maxdepth: 2
-
-    repo_installation
-    repo_license
-    repo_support

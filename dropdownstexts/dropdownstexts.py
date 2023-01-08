@@ -215,12 +215,11 @@ class DropdownsTexts(commands.Cog):
     ):
         """Add a dropdown-text to a message."""
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.").format(
                     **locals()
                 )
             )
-            return
         permissions = message.channel.permissions_for(ctx.guild.me)
         if (
             not permissions.add_reactions
@@ -228,36 +227,32 @@ class DropdownsTexts(commands.Cog):
             or not permissions.read_messages
             or not permissions.view_channel
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
                 ).format(**locals())
             )
-            return
         try:
             await ctx.message.add_reaction(emoji)
         except discord.HTTPException:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
                 ).format(**locals())
             )
-            return
         if not self.cogsutils.is_dpy2 and hasattr(emoji, "id"):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Custom emojis are not supported by Dislash for dropdown menu options. Please wait for Red 3.5 with dpy2."
                 ).format(**locals())
             )
-            return
         config = await self.config.guild(ctx.guild).dropdowns_texts.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) > 25:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I can't do more than 25 dropdown-texts for one message.").format(**locals())
             )
-            return
         if hasattr(emoji, "id"):
             config[f"{message.channel.id}-{message.id}"][f"{emoji.id}"] = {
                 "label": label,
@@ -307,39 +302,35 @@ class DropdownsTexts(commands.Cog):
             or not permissions.read_messages
             or not permissions.view_channel
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
                 ).format(**locals())
             )
-            return
         try:
             for emoji, label, text in dropdown_texts[:19]:
                 await ctx.message.add_reaction(emoji)
         except discord.HTTPException:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
                 ).format(**locals())
             )
-            return
         if not self.cogsutils.is_dpy2 and any(
             [hasattr(emoji, "id") for emoji, label, text in dropdown_texts]
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Custom emojis are not supported by Dislash for dropdown menu options. Please wait for Red 3.5 with dpy2."
                 ).format(**locals())
             )
-            return
         config = await self.config.guild(ctx.guild).dropdowns_texts.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) + len(dropdown_texts) > 25:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I can't do more than 25 dropdown-texts for one message.").format(**locals())
             )
-            return
         for emoji, label, text in dropdown_texts:
             if hasattr(emoji, "id"):
                 config[f"{message.channel.id}-{message.id}"][f"{emoji.id}"] = {
@@ -377,23 +368,20 @@ class DropdownsTexts(commands.Cog):
     ):
         """Remove a dropdown-text to a message."""
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.").format(
                     **locals()
                 )
             )
-            return
         config = await self.config.guild(ctx.guild).dropdowns_texts.all()
         if f"{message.channel.id}-{message.id}" not in config:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("No dropdown-texts is configured for this message.").format(**locals())
             )
-            return
         if f"{getattr(emoji, 'id', emoji)}" not in config[f"{message.channel.id}-{message.id}"]:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I wasn't watching for this dropdown-text on this message.").format(**locals())
             )
-            return
         del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
         if not config[f"{message.channel.id}-{message.id}"] == {}:
             if self.cogsutils.is_dpy2:
@@ -423,18 +411,16 @@ class DropdownsTexts(commands.Cog):
     async def clear(self, ctx: commands.Context, message: discord.Message):
         """Clear a dropdown-texts to a message."""
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.").format(
                     **locals()
                 )
             )
-            return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("No dropdown-texts is configured for this message.").format(**locals())
             )
-            return
         try:
             if self.cogsutils.is_dpy2:
                 await message.edit(view=None)

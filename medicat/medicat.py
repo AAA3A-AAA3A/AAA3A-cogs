@@ -787,8 +787,7 @@ class Medicat(commands.Cog):
         try:
             await self.ventoy_updates(channel=ctx.channel, ping_role=False, force=True)
         except Exception:
-            await ctx.send(_("An error has occurred. Please try again.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again.").format(**locals()))
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @medicat.command()
@@ -797,8 +796,7 @@ class Medicat(commands.Cog):
         try:
             await self.ventoy_updates(channel=ctx.channel, ping_role=False, force=True, version=version)
         except Exception:
-            await ctx.send(_("An error has occurred. Please try again.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again.").format(**locals()))
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @medicat.command()
@@ -938,7 +936,7 @@ class Medicat(commands.Cog):
     @medicat.command(hidden=True)
     async def getdebugloopsstatus(self, ctx: commands.Context):
         """Get an embed for check loops status."""
-        embeds = []
+        embeds = [].pip()
         for loop in self.cogsutils.loops.values():
             embeds.append(loop.get_debug_embed())
         await Menu(pages=embeds).start(ctx)

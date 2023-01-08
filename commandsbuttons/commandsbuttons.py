@@ -264,12 +264,11 @@ class CommandsButtons(commands.Cog):
         `red`: 4
         """
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the command-button to work.").format(
                     **locals()
                 )
             )
-            return
         permissions = message.channel.permissions_for(ctx.guild.me)
         if (
             not permissions.add_reactions
@@ -277,37 +276,33 @@ class CommandsButtons(commands.Cog):
             or not permissions.read_messages
             or not permissions.view_channel
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
                 ).format(**locals())
-            )
             return
         if not ctx.prefix == "/":
             msg = ctx.message
             msg.content = f"{ctx.prefix}{command}"
             new_ctx = await ctx.bot.get_context(msg)
             if not new_ctx.valid:
-                await ctx.send(_("You have not specified a correct command.").format(**locals()))
-                return
+                raise commands.UserFeedbackCheckFailure(_("You have not specified a correct command.").format(**locals()))
         if getattr(ctx, "interaction", None) is None:
             try:
                 await ctx.message.add_reaction(emoji)
             except discord.HTTPException:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
                     ).format(**locals())
                 )
-                return
         config = await self.config.guild(ctx.guild).commands_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) > 25:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I can't do more than 25 commands-buttons for one message.").format(**locals())
             )
-            return
         config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = {
             "command": command,
             "style_button": int(style_button),
@@ -338,14 +333,14 @@ class CommandsButtons(commands.Cog):
         ```[p]commandsbuttons bulk <message> ":reaction1:|ping" ":reaction2:|ping" :reaction3:|ping"```
         """
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the command-button to work.").format(
                     **locals()
                 )
             )
             return
         if len(commands_buttons) == 0:
-            await ctx.send(_("You have not specified any valid command-button.").format(**locals()))
+            raise commands.UserFeedbackCheckFailure(_("You have not specified any valid command-button.").format(**locals()))
             return
         permissions = message.channel.permissions_for(ctx.guild.me)
         if (
@@ -354,7 +349,7 @@ class CommandsButtons(commands.Cog):
             or not permissions.read_messages
             or not permissions.view_channel
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
                 ).format(**locals())
@@ -365,7 +360,7 @@ class CommandsButtons(commands.Cog):
                 for emoji, command in commands_buttons[:19]:
                     await ctx.message.add_reaction(emoji)
             except discord.HTTPException:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
                     ).format(**locals())
@@ -375,7 +370,7 @@ class CommandsButtons(commands.Cog):
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) + len(commands_buttons) > 25:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I can't do more than 25 roles-buttons for one message.").format(**locals())
             )
             return
@@ -402,21 +397,18 @@ class CommandsButtons(commands.Cog):
     async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji):
         """Remove a command-button to a message."""
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the command-button to work.").format(
                     **locals()
                 )
             )
-            return
         config = await self.config.guild(ctx.guild).commands_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
-            await ctx.send(_("No command-button is configured for this message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("No command-button is configured for this message.").format(**locals()))
         if f"{getattr(emoji, 'id', emoji)}" not in config[f"{message.channel.id}-{message.id}"]:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I wasn't watching for this button on this message.").format(**locals())
             )
-            return
         del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
         if not config[f"{message.channel.id}-{message.id}"] == {}:
             if self.cogsutils.is_dpy2:
@@ -442,16 +434,14 @@ class CommandsButtons(commands.Cog):
     async def clear(self, ctx: commands.Context, message: discord.Message):
         """Clear all commands-buttons to a message."""
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.").format(
                     **locals()
                 )
             )
-            return
         config = await self.config.guild(ctx.guild).commands_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
-            await ctx.send(_("No command-button is configured for this message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("No command-button is configured for this message.").format(**locals()))
         try:
             if self.cogsutils.is_dpy2:
                 await message.edit(view=None)

@@ -84,7 +84,7 @@ class AutoTraceback(commands.Cog):
                 try:
                     await ctx.author.send(box(page, lang="py"))
                 except discord.HTTPException:
-                    await ctx.channel.send(
+                    raise commands.UserFeedbackCheckFailure(
                         "I couldn't send the traceback message to you in DM. "
                         "Either you blocked me or you disabled DMs in this server."
                     )

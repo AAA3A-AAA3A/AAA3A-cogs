@@ -181,35 +181,31 @@ class TransferChannel(commands.Cog):
             user=source.guild.me,
             check=["view_channel", "read_messages", "read_message_history"],
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
                 ).format()
             )
-            return
         permissions = destination.permissions_for(destination.guild.me)
         if way == "embed":
             if not permissions.embed_links:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
                     ).format(**locals())
                 )
-                return
         elif way == "webhook":
             if not permissions.manage_webhooks:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
                     ).format(**locals())
                 )
-                return
         messages = await self.get_messages(channel=source)
         messages = [message for message in messages if not message.id == ctx.message.id]
         count_messages = len(messages)
         if count_messages == 0:
-            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
         await self.transfer_messages(
             source=source, destination=destination, way=way, messages=messages
         )
@@ -242,37 +238,33 @@ class TransferChannel(commands.Cog):
             user=source.guild.me,
             check=["view_channel", "read_messages", "read_message_history"],
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
                 ).format()
             )
-            return
         permissions = destination.permissions_for(destination.guild.me)
         if way == "embed":
             if not permissions.embed_links:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
                     ).format(**locals())
                 )
-                return
         elif way == "webhook":
             if not permissions.manage_webhooks:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
                     ).format(**locals())
                 )
-                return
         messages = await self.get_messages(
             channel=source, limit=limit if not source == ctx.channel else limit + 1
         )
         messages = [message for message in messages if not message.id == ctx.message.id]
         count_messages = len(messages)
         if count_messages == 0:
-            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
         await self.transfer_messages(
             source=source, destination=destination, way=way, messages=messages
         )
@@ -305,29 +297,26 @@ class TransferChannel(commands.Cog):
             user=source.guild.me,
             check=["view_channel", "read_messages", "read_message_history"],
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
                 ).format()
             )
-            return
         permissions = destination.permissions_for(destination.guild.me)
         if way == "embed":
             if not permissions.embed_links:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
                     ).format(**locals())
                 )
-                return
         elif way == "webhook":
             if not permissions.manage_webhooks:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
                     ).format(**locals())
                 )
-                return
         messages = await self.get_messages(channel=source, before=before)
         messages = [message for message in messages if not message.id == ctx.message.id]
         count_messages = len(messages)
@@ -366,35 +355,31 @@ class TransferChannel(commands.Cog):
             user=source.guild.me,
             check=["view_channel", "read_messages", "read_message_history"],
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
                 ).format()
             )
-            return
         permissions = destination.permissions_for(destination.guild.me)
         if way == "embed":
             if not permissions.embed_links:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
                     ).format(**locals())
                 )
-                return
         elif way == "webhook":
             if not permissions.manage_webhooks:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
                     ).format(**locals())
                 )
-                return
         messages = await self.get_messages(channel=source, after=after)
         messages = [message for message in messages if not message.id == ctx.message.id]
         count_messages = len(messages)
         if count_messages == 0:
-            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
         await self.transfer_messages(
             source=source, destination=destination, way=way, messages=messages
         )
@@ -428,35 +413,31 @@ class TransferChannel(commands.Cog):
             user=source.guild.me,
             check=["view_channel", "read_messages", "read_message_history"],
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
                 ).format()
             )
-            return
         permissions = destination.permissions_for(destination.guild.me)
         if way == "embed":
             if not permissions.embed_links:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
                     ).format(**locals())
                 )
-                return
         elif way == "webhook":
             if not permissions.manage_webhooks:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
                     ).format(**locals())
                 )
-                return
         messages = await self.get_messages(channel=source, before=before, after=after)
         messages = [message for message in messages if not message.id == ctx.message.id]
         count_messages = len(messages)
         if count_messages == 0:
-            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
         await self.transfer_messages(
             source=source, destination=destination, way=way, messages=messages
         )
@@ -492,29 +473,26 @@ class TransferChannel(commands.Cog):
                 user=source.guild.me,
                 check=["view_channel", "read_messages", "read_message_history"],
             ):
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
                     ).format()
                 )
-                return
             permissions = destination.permissions_for(destination.guild.me)
             if way == "embed":
                 if not permissions.embed_links:
-                    await ctx.send(
+                    raise commands.UserFeedbackCheckFailure(
                         _(
                             "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
                         ).format(**locals())
                     )
-                    return
             elif way == "webhook":
                 if not permissions.manage_webhooks:
-                    await ctx.send(
+                    raise commands.UserFeedbackCheckFailure(
                         _(
                             "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
                         ).format(**locals())
                     )
-                    return
             messages = await self.get_messages(
                 channel=source,
                 user_id=user.id if isinstance(user, discord.Member) else user,
@@ -523,8 +501,7 @@ class TransferChannel(commands.Cog):
             messages = [message for message in messages if not message.id == ctx.message.id]
             count_messages = len(messages)
             if count_messages == 0:
-                await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-                return
+                raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
             await self.transfer_messages(
                 source=source, destination=destination, way=way, messages=messages
             )
@@ -558,35 +535,31 @@ class TransferChannel(commands.Cog):
             user=source.guild.me,
             check=["view_channel", "read_messages", "read_message_history"],
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
                 ).format()
             )
-            return
         permissions = destination.permissions_for(destination.guild.me)
         if way == "embed":
             if not permissions.embed_links:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
                     ).format(**locals())
                 )
-                return
         elif way == "webhook":
             if not permissions.manage_webhooks:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
                     ).format(**locals())
                 )
-                return
         messages = await self.get_messages(channel=source, bot=bot, limit=limit)
         messages = [message for message in messages if not message.id == ctx.message.id]
         count_messages = len(messages)
         if count_messages == 0:
-            await ctx.send(_("Sorry. I could not find any message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
         await self.transfer_messages(
             source=source, destination=destination, way=way, messages=messages
         )

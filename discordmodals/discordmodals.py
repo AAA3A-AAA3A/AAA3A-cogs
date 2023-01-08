@@ -352,16 +352,14 @@ class DiscordModals(commands.Cog):
         The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous` and `messages` are not required.
         """
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the button to work.").format(
                     **locals()
                 )
             )
-            return
         config = await self.config.guild(ctx.guild).modals.all()
         if f"{message.channel.id}-{message.id}" in config:
-            await ctx.send(_("This message already has a Modal.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("This message already has a Modal.").format(**locals()))
         try:
             argument["button"][
                 "custom_id"
@@ -371,12 +369,11 @@ class DiscordModals(commands.Cog):
             )
             await message.edit(view=view)
         except discord.HTTPException:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry. An error occurred when I tried to put the button on the message."
                 ).format(**locals())
             )
-            return
         modal = Modal(
             title=argument["title"],
             inputs=argument["modal"],
@@ -400,16 +397,14 @@ class DiscordModals(commands.Cog):
     async def remove(self, ctx: commands.Context, message: discord.Message):
         """Remove a Modal to a message."""
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the Modal to work.").format(
                     **locals()
                 )
             )
-            return
         config = await self.config.guild(ctx.guild).modals.all()
         if f"{message.channel.id}-{message.id}" not in config:
-            await ctx.send(_("No Modal is configured for this message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("No Modal is configured for this message.").format(**locals()))
         try:
             await message.edit(view=None)
         except discord.HTTPException:

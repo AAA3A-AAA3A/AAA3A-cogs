@@ -78,10 +78,9 @@ class CmdChannel(commands.Cog):
         """
         guild = channel.guild
         if ctx.author not in guild.members:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("To send commands to another server, you must be there.").format(**locals())
             )
-            return
         if not command and not ctx.message.embeds and not ctx.message.attachments:
             await ctx.send_help()
             return
@@ -209,10 +208,9 @@ class CmdChannel(commands.Cog):
         if user is None:
             user = ctx.author
         if ctx.bot.get_cog("Dev") is None:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
             )
-            return
         await self.cogsutils.invoke_command(
             author=user,
             channel=ctx.channel,
@@ -246,16 +244,14 @@ class CmdChannel(commands.Cog):
             channel = ctx.channel
         if channel.guild is not None:
             if ctx.author not in channel.guild.members:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _("To send commands to another server, you must be there.").format(**locals())
                 )
-                return
             user = channel.guild.get_member(user.id) or user
         if ctx.bot.get_cog("Dev") is None:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
             )
-            return
 
         await self.cogsutils.invoke_command(
             author=user,
@@ -312,12 +308,11 @@ class CmdChannel(commands.Cog):
             channel,
         )
         if needperm:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "The bot does not have at least one of the following permissions in this channel: `embed_links`, `read_messages`, `read_message_history`, `send_messages`, `attach_files`."
                 )
             ).format(**locals())
-            return
 
         await self.config.guild(ctx.guild).logschannel.set(channel.id)
         await ctx.send(_("Logging channel registered: {channel.mention}.").format(**locals()))

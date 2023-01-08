@@ -18,6 +18,8 @@ else:
     hybrid_command = commands.command
     hybrid_group = commands.group
 
+ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+
 
 @cog_i18n(_)
 class EditRole(commands.Cog):
@@ -28,31 +30,21 @@ class EditRole(commands.Cog):
 
         self.cogsutils = CogsUtils(cog=self)
 
-    async def send_error(self, ctx: commands.Context, error: discord.HTTPException):
-        error = box(str(error), lang="py")
-        await ctx.send(
-            _(
-                "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
-            ).format(**locals())
-        )
-
     async def check_role(self, ctx: commands.Context, role: discord.Role):
         if not ctx.author.top_role > role and not ctx.author.id == ctx.guild.owner.id and ctx.author.id not in ctx.bot.owner_ids:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "I can not let you edit {role.mention} ({role.id}) because that role is higher than or equal to your highest role in the Discord hierarchy."
                 ).format(**locals()),
                 allowed_mentions=None,
             )
-            return False
         if not ctx.guild.me.top_role > role:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "I can not edit {role.mention} ({role.id}) because that role is higher than or equal to my highest role in the Discord hierarchy."
                 ).format(**locals()),
                 allowed_mentions=None,
             )
-            return False
         return True
 
     @commands.guild_only()
@@ -79,46 +71,43 @@ class EditRole(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has created the role {name}.",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editrole.command(name="name")
     async def editrole_name(self, ctx: commands.Context, role: discord.Role, *, name: str):
         """Edit role name."""
-        if not await self.check_role(ctx, role):
-            return
+        await self.check_role(ctx, role)
         try:
             await role.edit(
                 name=name,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editrole.command(name="colour", aliases=["color"])
     async def editrole_colour(self, ctx: commands.Context, role: discord.Role, colour: discord.Colour):
         """Edit role colour."""
-        if not await self.check_role(ctx, role):
-            return
+        await self.check_role(ctx, role)
         try:
             await role.edit(
                 colour=colour,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editrole.command(name="mentionable")
     async def editrole_mentionable(self, ctx: commands.Context, role: discord.Role, mentionable: bool):
         """Edit role mentionable."""
-        if not await self.check_role(ctx, role):
-            return
+        await self.check_role(ctx, role)
         try:
             await role.edit(
                 mentionable=mentionable,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editrole.command(name="position")
     async def editrole_position(self, ctx: commands.Context, role: discord.Role, position: int):
@@ -126,8 +115,7 @@ class EditRole(commands.Cog):
 
         Warning: The role with a position 1 is the highest role in the Discord hierarchy.
         """
-        if not await self.check_role(ctx, role):
-            return
+        await self.check_role(ctx, role)
         max_guild_roles_position = len(ctx.guild.roles)
         if not position > 0 or not position < max_guild_roles_position + 1:
             await ctx.send(
@@ -146,7 +134,7 @@ class EditRole(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editrole.command(name="permissions")
     async def editrole_permissions(self, ctx: commands.Context, role: discord.Role, permissions: int):
@@ -155,8 +143,7 @@ class EditRole(commands.Cog):
         Warning: You must use the permissions value in numbers (admnistrator=8).
         You can use: https://discordapi.com/permissions.html
         """
-        if not await self.check_role(ctx, role):
-            return
+        await self.check_role(ctx, role)
         permissions_none = discord.Permissions.none().value
         permissions_all = discord.Permissions.all().value
         if not permissions > permissions_none or not permissions < permissions_all:
@@ -173,7 +160,7 @@ class EditRole(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).",
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
 
     @editrole.command(name="delete")
     async def editrole_delete(
@@ -183,8 +170,7 @@ class EditRole(commands.Cog):
         confirmation: typing.Optional[bool] = False,
     ):
         """Delete role."""
-        if not await self.check_role(ctx, role):
-            return
+        await self.check_role(ctx, role)
         if not confirmation:
             embed: discord.Embed = discord.Embed()
             embed.title = _(":warning: - Delete role").format(**locals())
@@ -202,4 +188,4 @@ class EditRole(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has deleted the role {role.name} ({role.id})."
             )
         except discord.HTTPException as e:
-            await self.send_error(ctx, e)
+            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))

@@ -6,11 +6,9 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import ast
-import contextlib
 import inspect
 import io
 import traceback
-from contextvars import ContextVar
 from copy import copy
 
 import rich
@@ -60,8 +58,7 @@ class CtxVar(commands.Cog):
         """Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
-            await ctx.send("The cog Dev must be loaded, to make sure you know what you are doing.")
-            return
+            raise commands.UserFeedbackCheckFailure("The cog Dev must be loaded, to make sure you know what you are doing.")
         if message is None:
             message = ctx.message
         instance = await ctx.bot.get_context(message)
@@ -70,12 +67,11 @@ class CtxVar(commands.Cog):
             args = args.split(".")
             for arg in args:
                 if not hasattr(instance, arg):
-                    await ctx.send(
+                    raise commands.UserFeedbackCheckFailure(
                         _("The argument you specified is not a subclass of the instance.").format(
                             **locals()
                         )
                     )
-                    return
                 instance = getattr(instance, arg)
         if len(f"{bold(full_instance_name)}") > 256:
             full_instance_name = bold(full_instance_name[:248] + "|...")
@@ -129,8 +125,7 @@ class CtxVar(commands.Cog):
         """Display a list of all attributes of the provided object (debug not async)."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
-            await ctx.send("The cog Dev must be loaded, to make sure you know what you are doing.")
-            return
+            raise commands.UserFeedbackCheckFailure("The cog Dev must be loaded, to make sure you know what you are doing.")
         thing = Dev.cleanup_code(thing)
         env = Dev.get_environment(ctx)
         env["getattr_static"] = inspect.getattr_static
@@ -145,11 +140,9 @@ class CtxVar(commands.Cog):
                 tree = ast.fix_missing_locations(tree)
             object = eval(compile(tree, "<dir>", "eval"), env)
         except NameError:
-            await ctx.send(f"I couldn't find any cog, command, or object named `{thing}`.")
-            return
+            raise commands.UserFeedbackCheckFailure(f"I couldn't find any cog, command, or object named `{thing}`.")
         except Exception as e:
-            await ctx.send(box("".join(traceback.format_exception_only(type(e), e)), lang="py"))
-            return
+            raise commands.UserFeedbackCheckFailure(box("".join(traceback.format_exception_only(type(e), e)), lang="py"))
 
         result = "[\n"
         if search is None:
@@ -176,8 +169,7 @@ class CtxVar(commands.Cog):
         """Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
-            await ctx.send("The cog Dev must be loaded, to make sure you know what you are doing.")
-            return
+            raise commands.UserFeedbackCheckFailure("The cog Dev must be loaded, to make sure you know what you are doing.")
         thing = Dev.cleanup_code(thing)
         env = Dev.get_environment(ctx)
         env["getattr_static"] = inspect.getattr_static
@@ -192,11 +184,9 @@ class CtxVar(commands.Cog):
                 tree = ast.fix_missing_locations(tree)
             object = eval(compile(tree, "<dir>", "eval"), env)
         except NameError:
-            await ctx.send(f"I couldn't find any cog, command, or object named `{thing}`.")
-            return
+            raise commands.UserFeedbackCheckFailure(f"I couldn't find any cog, command, or object named `{thing}`.")
         except Exception as e:
-            await ctx.send(box("".join(traceback.format_exception_only(type(e), e)), lang="py"))
-            return
+            raise commands.UserFeedbackCheckFailure(box("".join(traceback.format_exception_only(type(e), e)), lang="py"))
 
         kwargs: typing.Dict[str, typing.Any] = {
             "width": 80,

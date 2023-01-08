@@ -85,33 +85,29 @@ class UrlButtons(commands.Cog):
     ):
         """Add a url-button to a message."""
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the url-button to work.").format(
                     **locals()
                 )
             )
-            return
         if getattr(ctx, "interaction", None) is None:
             try:
                 await ctx.message.add_reaction(emoji)
             except discord.HTTPException:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
                     ).format(**locals())
                 )
-                return
         if not url.startswith("http"):
-            await ctx.send(_("Url must start with `https` or `http`.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Url must start with `https` or `http`.").format(**locals()))
         config = await self.config.guild(ctx.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) >= 25:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I can't do more than 25 url-buttons for one message.").format(**locals())
             )
-            return
         config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = {
             "url": url,
             "text_button": text_button,
@@ -136,34 +132,30 @@ class UrlButtons(commands.Cog):
         ```[p]urlbuttons bulk <message> :red_circle:|<https://github.com/Cog-Creators/Red-DiscordBot> :smiley:|<https://github.com/Cog-Creators/Red-SmileyBot> :green_circle:|<https://github.com/Cog-Creators/Green-DiscordBot>```
         """
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the url-button to work.").format(
                     **locals()
                 )
             )
-            return
         if len(url_buttons) == 0:
-            await ctx.send(_("You have not specified any valid url-button.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("You have not specified any valid url-button.").format(**locals()))
         if getattr(ctx, "interaction", None) is None:
             try:
                 for emoji, url in url_buttons:
                     await ctx.message.add_reaction(emoji)
             except discord.HTTPException:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
                     ).format(**locals())
                 )
-                return
         config = await self.config.guild(ctx.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) + len(url_buttons) >= 25:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I can't do more than 25 url-buttons for one message.").format(**locals())
             )
-            return
         for emoji, url in url_buttons:
             config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = {
                 "url": url,
@@ -181,21 +173,18 @@ class UrlButtons(commands.Cog):
     async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji):
         """Remove a url-button to a message."""
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.").format(
                     **locals()
                 )
             )
-            return
         config = await self.config.guild(ctx.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
-            await ctx.send(_("No url-button is configured for this message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("No url-button is configured for this message.").format(**locals()))
         if f"{getattr(emoji, 'id', emoji)}" not in config[f"{message.channel.id}-{message.id}"]:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I wasn't watching for this button on this message.").format(**locals())
             )
-            return
         del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
         if not config[f"{message.channel.id}-{message.id}"] == {}:
             if self.cogsutils.is_dpy2:
@@ -216,16 +205,14 @@ class UrlButtons(commands.Cog):
     async def clear(self, ctx: commands.Context, message: discord.Message):
         """Clear all url-buttons to a message."""
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the url-button to work.").format(
                     **locals()
                 )
             )
-            return
         config = await self.config.guild(ctx.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
-            await ctx.send(_("No role-button is configured for this message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("No role-button is configured for this message.").format(**locals()))
         try:
             if self.cogsutils.is_dpy2:
                 await message.edit(view=None)

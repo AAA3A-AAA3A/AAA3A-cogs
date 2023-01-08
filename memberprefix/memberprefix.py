@@ -158,22 +158,19 @@ class MemberPrefix(commands.Cog):
         """
         if len(prefixes) == 0:
             await self.config.member(ctx.author).custom_prefixes.clear()
-            await ctx.send(_("You now use this server or global prefixes.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("You now use this server or global prefixes.").format(**locals()))
         if any(len(x) > 25 for x in prefixes):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "A prefix is above the maximal length (25 characters).\nThis is possible for global or per-server prefixes, but not for per-member prefixes."
                 ).format(**locals())
             )
-            return
         if any(prefix.startswith("/") for prefix in prefixes):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "Prefixes cannot start with `/`, as it conflicts with Discord's slash commands."
                 ).format(**locals())
             )
-            return
         await self.config.member(ctx.author).custom_prefixes.set(prefixes)
         if len(prefixes) == 1:
             await ctx.send(_("Prefix for you only set.").format(**locals()))

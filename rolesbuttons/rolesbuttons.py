@@ -316,12 +316,11 @@ class RolesButtons(commands.Cog):
         `red`: 4
         """
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.").format(
                     **locals()
                 )
             )
-            return
         permissions = message.channel.permissions_for(ctx.guild.me)
         if (
             not permissions.add_reactions
@@ -329,30 +328,27 @@ class RolesButtons(commands.Cog):
             or not permissions.read_messages
             or not permissions.view_channel
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
                 ).format(**locals())
             )
-            return
         if getattr(ctx, "interaction", None) is None:
             try:
                 await ctx.message.add_reaction(emoji)
             except discord.HTTPException:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
                     ).format(**locals())
                 )
-                return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) > 25:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I can't do more than 25 roles-buttons for one message.").format(**locals())
             )
-            return
         config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = {
             "role": role.id,
             "style_button": int(style_button),
@@ -383,15 +379,13 @@ class RolesButtons(commands.Cog):
         ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```
         """
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.").format(
                     **locals()
                 )
             )
-            return
         if len(roles_buttons) == 0:
-            await ctx.send(_("You have not specified any valid role-button.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("You have not specified any valid role-button.").format(**locals()))
         permissions = message.channel.permissions_for(ctx.guild.me)
         if (
             not permissions.add_reactions
@@ -399,31 +393,28 @@ class RolesButtons(commands.Cog):
             or not permissions.read_messages
             or not permissions.view_channel
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
                 ).format(**locals())
             )
-            return
         if getattr(ctx, "interaction", None) is None:
             try:
                 for emoji, role in roles_buttons[:19]:
                     await ctx.message.add_reaction(emoji)
             except discord.HTTPException:
-                await ctx.send(
+                raise commands.UserFeedbackCheckFailure(
                     _(
                         "A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
                     ).format(**locals())
                 )
-                return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) + len(roles_buttons) > 25:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I can't do more than 25 roles-buttons for one message.").format(**locals())
             )
-            return
         for emoji, role in roles_buttons:
             config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = {
                 "role": role.id,
@@ -447,21 +438,18 @@ class RolesButtons(commands.Cog):
     async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji):
         """Remove a role-button to a message."""
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.").format(
                     **locals()
                 )
             )
-            return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
-            await ctx.send(_("No role-button is configured for this message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("No role-button is configured for this message.").format(**locals()))
         if f"{getattr(emoji, 'id', emoji)}" not in config[f"{message.channel.id}-{message.id}"]:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I wasn't watching for this button on this message.").format(**locals())
             )
-            return
         del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
         if not config[f"{message.channel.id}-{message.id}"] == {}:
             if self.cogsutils.is_dpy2:
@@ -487,16 +475,14 @@ class RolesButtons(commands.Cog):
     async def clear(self, ctx: commands.Context, message: discord.Message):
         """Clear all roles-buttons to a message."""
         if not message.author == ctx.guild.me:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.").format(
                     **locals()
                 )
             )
-            return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
-            await ctx.send(_("No role-button is configured for this message.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("No role-button is configured for this message.").format(**locals()))
         try:
             if self.cogsutils.is_dpy2:
                 await message.edit(view=None)

@@ -270,8 +270,9 @@ class TicketTool(settings, commands.Cog):
             return None
         if "panel" not in json:
             json["panel"] = "main"
-        ticket: Ticket = Ticket.from_json(json, self.bot)
+        ticket: Ticket = Ticket.from_json(json, self.bot, self)
         ticket.bot = self.bot
+        ticket.cog = self
         ticket.guild = ticket.bot.get_guild(ticket.guild) or ticket.guild
         ticket.owner = ticket.guild.get_member(ticket.owner) or ticket.owner
         ticket.channel = ticket.guild.get_channel(ticket.channel) or ticket.channel
@@ -526,42 +527,37 @@ class TicketTool(settings, commands.Cog):
         """Create a ticket."""
         panels = await self.config.guild(ctx.guild).panels()
         if panel not in panels:
-            await ctx.send(_("This panel does not exist.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("This panel does not exist.").format(**locals()))
         config = await self.get_config(ctx.guild, panel)
         category_open = config["category_open"]
         category_close = config["category_close"]
         if not config["enable"]:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "The ticket system is not enabled on this server. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it."
                 ).format(**locals())
             )
-            return
         if category_open is None or category_close is None:
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "The category `open` or the category `close` have not been configured. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it."
                 ).format(**locals())
             )
-            return
         if not await self.check_limit(ctx.author, panel):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("Sorry. You have already reached the limit of {limit} open tickets.").format(
                     **locals()
                 )
             )
-            return
         if (
             not category_open.permissions_for(ctx.guild.me).manage_channels
             or not category_close.permissions_for(ctx.guild.me).manage_channels
         ):
-            await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "The bot does not have `manage_channels` permission on the 'open' and 'close' categories to allow the ticket system to function properly. Please notify an administrator of this server."
                 ).format(**locals())
             )
-            return
         ticket: Ticket = Ticket.instance(ctx, panel, reason)
         await ticket.create()
         ctx.ticket = ticket
@@ -585,7 +581,7 @@ class TicketTool(settings, commands.Cog):
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         """
         ticket: Ticket = await self.get_ticket(ctx.channel)
-        if ticket.bot.get_cog("TicketTool").cogsutils.is_dpy2:
+        if ticket.cog.cogsutils.is_dpy2:
             transcript = await chat_exporter.export(
                 channel=ticket.channel,
                 limit=None,
@@ -629,8 +625,7 @@ class TicketTool(settings, commands.Cog):
         ticket: Ticket = await self.get_ticket(ctx.channel)
         config = await ctx.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
         if not config["enable"]:
-            await ctx.send(_("The ticket system is not enabled on this server.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("The ticket system is not enabled on this server.").format(**locals()))
         ticket.reason = reason
         await ticket.open(ctx.author)
 
@@ -1196,6 +1191,7 @@ class Ticket:
     def __init__(
         self,
         bot,
+        cog,
         id,
         owner,
         guild,
@@ -1220,6 +1216,7 @@ class Ticket:
         panel,
     ):
         self.bot: Red = bot
+        self.cog: commands.Cog = cog
         self.id: int = id
         self.owner: discord.Member = owner
         self.guild: discord.Guild = guild
@@ -1251,6 +1248,7 @@ class Ticket:
     ):
         ticket: Ticket = Ticket(
             bot=ctx.bot,
+            cog=ctx.cog,
             id=None,
             owner=ctx.author,
             guild=ctx.guild,
@@ -1277,9 +1275,10 @@ class Ticket:
         return ticket
 
     @staticmethod
-    def from_json(json: dict, bot: Red):
+    def from_json(json: dict, bot: Red, cog: commands.Cog):
         ticket: Ticket = Ticket(
             bot=bot,
+            cog=cog,
             id=json["id"],
             owner=json["owner"],
             guild=json["guild"],
@@ -1309,9 +1308,11 @@ class Ticket:
         if not ticket.save_data:
             return
         bot = ticket.bot
+        cog = ticket.cog
         guild = ticket.guild
         channel = ticket.channel
         ticket.bot = None
+        ticket.cog = None
         if ticket.owner is not None:
             ticket.owner = (
                 int(getattr(ticket.owner, "id", ticket.owner))
@@ -1369,19 +1370,19 @@ class Ticket:
         if ticket.first_message is not None:
             ticket.first_message = int(ticket.first_message.id)
         json = ticket.__dict__
-        data = await bot.get_cog("TicketTool").config.guild(guild).tickets.all()
+        data = await cog.config.guild(guild).tickets.all()
         data[str(channel.id)] = json
-        await bot.get_cog("TicketTool").config.guild(guild).tickets.set(data)
+        await cog.config.guild(guild).tickets.set(data)
         return data
 
     async def create(ticket):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
+        config = await ticket.cog.get_config(ticket.guild, ticket.panel)
         logschannel = config["logschannel"]
         overwrites = await utils().get_overwrites(ticket)
         emoji_open = config["emoji_open"]
         ping_role = config["ping_role"]
         ticket.id = config["last_nb"] + 1
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
+        reason = await ticket.cog.get_audit_reason(
             guild=ticket.guild,
             panel=ticket.panel,
             author=ticket.created_by,
@@ -1428,7 +1429,7 @@ class Ticket:
         ).format(**locals())
         await ticket.channel.edit(topic=topic)
         if config["create_modlog"]:
-            await ticket.bot.get_cog("TicketTool").create_modlog(ticket, "ticket_created", reason)
+            await ticket.cog.create_modlog(ticket, "ticket_created", reason)
         if CogsUtils().is_dpy2:
             view = Buttons(
                 timeout=None,
@@ -1448,7 +1449,7 @@ class Ticket:
                         "disabled": False,
                     },
                 ],
-                function=ticket.bot.get_cog("TicketTool").on_button_interaction,
+                function=ticket.cog.on_button_interaction,
                 infinity=True,
             )
         else:
@@ -1472,7 +1473,7 @@ class Ticket:
             optionnal_ping = f" ||{ping_role.mention}||"
         else:
             optionnal_ping = ""
-        embed = await ticket.bot.get_cog("TicketTool").get_embed_important(
+        embed = await ticket.cog.get_embed_important(
             ticket,
             False,
             author=ticket.created_by,
@@ -1518,7 +1519,7 @@ class Ticket:
             except (KeyError, AttributeError, discord.HTTPException):
                 pass
         if logschannel is not None:
-            embed = await ticket.bot.get_cog("TicketTool").get_embed_important(
+            embed = await ticket.cog.get_embed_important(
                 ticket,
                 True,
                 author=ticket.created_by,
@@ -1537,13 +1538,13 @@ class Ticket:
                     await ticket.owner.add_roles(config["ticket_role"], reason=reason)
                 except discord.HTTPException:
                     pass
-        await ticket.bot.get_cog("TicketTool").config.guild(ticket.guild).panels.set_raw(ticket.panel, "last_nb", value=ticket.id)
+        await ticket.cog.config.guild(ticket.guild).panels.set_raw(ticket.panel, "last_nb", value=ticket.id)
         await ticket.save()
         return ticket
 
     async def export(ticket):
         if ticket.channel:
-            if ticket.bot.get_cog("TicketTool").cogsutils.is_dpy2:
+            if ticket.cog.cogsutils.is_dpy2:
                 transcript = await chat_exporter.export(
                     channel=ticket.channel,
                     limit=None,
@@ -1563,8 +1564,8 @@ class Ticket:
         return None
 
     async def open(ticket, author: typing.Optional[discord.Member] = None):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
+        config = await ticket.cog.get_config(ticket.guild, ticket.panel)
+        reason = await ticket.cog.get_audit_reason(
             guild=ticket.guild,
             panel=ticket.panel,
             author=author,
@@ -1583,12 +1584,12 @@ class Ticket:
         new_name = f"{emoji_open}-{new_name}"
         await ticket.channel.edit(name=new_name, category=config["category_open"], reason=reason)
         if ticket.logs_messages:
-            embed = await ticket.bot.get_cog("TicketTool").get_embed_action(
+            embed = await ticket.cog.get_embed_action(
                 ticket, author=ticket.opened_by, action=_("Ticket Opened").format(**locals())
             )
             await ticket.channel.send(embed=embed)
             if logschannel is not None:
-                embed = await ticket.bot.get_cog("TicketTool").get_embed_important(
+                embed = await ticket.cog.get_embed_important(
                     ticket,
                     True,
                     author=ticket.opened_by,
@@ -1622,7 +1623,7 @@ class Ticket:
                                 "disabled": False,
                             },
                         ],
-                        function=ticket.bot.get_cog("TicketTool").on_button_interaction,
+                        function=ticket.cog.on_button_interaction,
                         infinity=True,
                     )
                     ticket.first_message = await ticket.channel.fetch_message(
@@ -1656,8 +1657,8 @@ class Ticket:
         return ticket
 
     async def close(ticket, author: typing.Optional[discord.Member] = None):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
+        config = await ticket.cog.get_config(ticket.guild, ticket.panel)
+        reason = await ticket.cog.get_audit_reason(
             guild=ticket.guild, panel=ticket.panel, author=author, reason=f"Closing the ticket {ticket.id}."
         )
         logschannel = config["logschannel"]
@@ -1671,12 +1672,12 @@ class Ticket:
         new_name = f"{emoji_close}-{new_name}"
         await ticket.channel.edit(name=new_name, category=config["category_close"], reason=reason)
         if ticket.logs_messages:
-            embed = await ticket.bot.get_cog("TicketTool").get_embed_action(
+            embed = await ticket.cog.get_embed_action(
                 ticket, author=ticket.closed_by, action="Ticket Closed"
             )
             await ticket.channel.send(embed=embed)
             if logschannel is not None:
-                embed = await ticket.bot.get_cog("TicketTool").get_embed_important(
+                embed = await ticket.cog.get_embed_important(
                     ticket,
                     True,
                     author=ticket.closed_by,
@@ -1708,7 +1709,7 @@ class Ticket:
                                 "disabled": True,
                             },
                         ],
-                        function=ticket.bot.get_cog("TicketTool").on_button_interaction,
+                        function=ticket.cog.on_button_interaction,
                         infinity=True,
                     )
                     ticket.first_message = await ticket.channel.fetch_message(
@@ -1742,7 +1743,7 @@ class Ticket:
         return ticket
 
     async def rename(ticket, new_name: str, author: typing.Optional[discord.Member] = None):
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
+        reason = await ticket.cog.get_audit_reason(
             guild=ticket.guild,
             panel=ticket.panel,
             author=author,
@@ -1755,7 +1756,7 @@ class Ticket:
             ticket.renamed_by = author
             ticket.renamed_at = datetime.datetime.now()
             if ticket.logs_messages:
-                embed = await ticket.bot.get_cog("TicketTool").get_embed_action(
+                embed = await ticket.cog.get_embed_action(
                     ticket,
                     author=ticket.renamed_by,
                     action=_("Ticket Renamed.").format(**locals()),
@@ -1765,9 +1766,9 @@ class Ticket:
         return ticket
 
     async def delete(ticket, author: typing.Optional[discord.Member] = None):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
+        config = await ticket.cog.get_config(ticket.guild, ticket.panel)
         logschannel = config["logschannel"]
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
+        reason = await ticket.cog.get_audit_reason(
             guild=ticket.guild,
             panel=ticket.panel,
             author=author,
@@ -1777,7 +1778,7 @@ class Ticket:
         ticket.deleted_at = datetime.datetime.now()
         if ticket.logs_messages:
             if logschannel is not None:
-                embed = await ticket.bot.get_cog("TicketTool").get_embed_important(
+                embed = await ticket.cog.get_embed_important(
                     ticket,
                     True,
                     author=ticket.deleted_by,
@@ -1787,7 +1788,7 @@ class Ticket:
                     ),
                 )
                 try:
-                    if ticket.bot.get_cog("TicketTool").cogsutils.is_dpy2:
+                    if ticket.cog.cogsutils.is_dpy2:
                         transcript = await chat_exporter.export(
                             channel=ticket.channel,
                             limit=None,
@@ -1814,27 +1815,26 @@ class Ticket:
                     file=file,
                 )
         await ticket.channel.delete(reason=reason)
-        data = await ticket.bot.get_cog("TicketTool").config.guild(ticket.guild).tickets.all()
+        data = await ticket.cog.config.guild(ticket.guild).tickets.all()
         try:
             del data[str(ticket.channel.id)]
         except KeyError:
             pass
-        await ticket.bot.get_cog("TicketTool").config.guild(ticket.guild).tickets.set(data)
+        await ticket.cog.config.guild(ticket.guild).tickets.set(data)
         return ticket
 
     async def claim_ticket(
         ticket, member: discord.Member, author: typing.Optional[discord.Member] = None
     ):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
+        config = await ticket.cog.get_config(ticket.guild, ticket.panel)
+        reason = await ticket.cog.get_audit_reason(
             guild=ticket.guild,
             panel=ticket.panel,
             author=author,
             reason=_("Claiming the ticket {ticket.id}.").format(**locals()),
         )
         if member.bot:
-            await ticket.channel.send(_("A bot cannot claim a ticket.").format(**locals()))
-            return
+            raise commands.UserFeedbackCheckFailure(_("A bot cannot claim a ticket.").format(**locals()))
         ticket.claim = member
         topic = _(
             "🎟️ Ticket ID: {ticket.id}\n"
@@ -1881,7 +1881,7 @@ class Ticket:
                                 "disabled": True,
                             },
                         ],
-                        function=ticket.bot.get_cog("TicketTool").on_button_interaction,
+                        function=ticket.cog.on_button_interaction,
                         infinity=True,
                     )
                     ticket.first_message = await ticket.channel.fetch_message(
@@ -1917,8 +1917,8 @@ class Ticket:
     async def unclaim_ticket(
         ticket, member: discord.Member, author: typing.Optional[discord.Member] = None
     ):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
+        config = await ticket.cog.get_config(ticket.guild, ticket.panel)
+        reason = await ticket.cog.get_audit_reason(
             guild=ticket.guild,
             panel=ticket.panel,
             author=author,
@@ -1965,7 +1965,7 @@ class Ticket:
                                 "disabled": True,
                             },
                         ],
-                        function=ticket.bot.get_cog("TicketTool").on_button_interaction,
+                        function=ticket.cog.on_button_interaction,
                         infinity=True,
                     )
                     ticket.first_message = await ticket.channel.fetch_message(
@@ -2001,18 +2001,17 @@ class Ticket:
     async def change_owner(
         ticket, member: discord.Member, author: typing.Optional[discord.Member] = None
     ):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
+        config = await ticket.cog.get_config(ticket.guild, ticket.panel)
+        reason = await ticket.cog.get_audit_reason(
             guild=ticket.guild,
             panel=ticket.panel,
             author=author,
             reason=_("Changing owner of the ticket {ticket.id}.").format(**locals()),
         )
         if member.bot:
-            await ticket.channel.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("You cannot transfer ownership of a ticket to a bot.").format(**locals())
             )
-            return
         if not isinstance(ticket.owner, int):
             if config["ticket_role"] is not None:
                 try:
@@ -2038,7 +2037,7 @@ class Ticket:
             except discord.HTTPException:
                 pass
         if ticket.logs_messages:
-            embed = await ticket.bot.get_cog("TicketTool").get_embed_action(
+            embed = await ticket.cog.get_embed_action(
                 ticket, author=author, action=_("Owner Modified.").format(**locals())
             )
             await ticket.channel.send(embed=embed)
@@ -2050,8 +2049,8 @@ class Ticket:
         members: typing.List[discord.Member],
         author: typing.Optional[discord.Member] = None,
     ):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
+        config = await ticket.cog.get_config(ticket.guild, ticket.panel)
+        reason = await ticket.cog.get_audit_reason(
             guild=ticket.guild,
             panel=ticket.panel,
             author=author,
@@ -2065,32 +2064,28 @@ class Ticket:
         for member in members:
             if author is not None:
                 if member.bot:
-                    await ticket.channel.send(
+                    raise commands.UserFeedbackCheckFailure(
                         _("You cannot add a bot to a ticket. ({member})").format(**locals())
                     )
-                    continue
                 if not isinstance(ticket.owner, int):
                     if member == ticket.owner:
-                        await ticket.channel.send(
+                        raise commands.UserFeedbackCheckFailure(
                             _(
                                 "This member is already the owner of this ticket. ({member})"
                             ).format(**locals())
                         )
-                        continue
                 if member in admin_role_members:
-                    await ticket.channel.send(
+                    raise commands.UserFeedbackCheckFailure(
                         _(
                             "This member is an administrator for the ticket system. They will always have access to the ticket anyway. ({member})"
                         ).format(**locals())
                     )
-                    continue
                 if member in ticket.members:
-                    await ticket.channel.send(
+                    raise commands.UserFeedbackCheckFailure(
                         _("This member already has access to this ticket. ({member})").format(
                             **locals()
                         )
                     )
-                    continue
             if member not in ticket.members:
                 ticket.members.append(member)
             overwrites[member] = discord.PermissionOverwrite(
@@ -2109,8 +2104,8 @@ class Ticket:
         members: typing.List[discord.Member],
         author: typing.Optional[discord.Member] = None,
     ):
-        config = await ticket.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
-        reason = await ticket.bot.get_cog("TicketTool").get_audit_reason(
+        config = await ticket.cog.get_config(ticket.guild, ticket.panel)
+        reason = await ticket.cog.get_audit_reason(
             guild=ticket.guild,
             panel=ticket.panel,
             author=author,
@@ -2127,32 +2122,28 @@ class Ticket:
         for member in members:
             if author is not None:
                 if member.bot:
-                    await ticket.channel.send(
+                    raise commands.UserFeedbackCheckFailure(
                         _("You cannot remove a bot to a ticket ({member}).").format(locals())
                     )
-                    continue
                 if not isinstance(ticket.owner, int):
                     if member == ticket.owner:
-                        await ticket.channel.send(
+                        raise commands.UserFeedbackCheckFailure(
                             _("You cannot remove the owner of this ticket. ({member})").format(
                                 **locals()
                             )
                         )
-                        continue
                 if member in admin_role_members:
-                    await ticket.channel.send(
+                    raise commands.UserFeedbackCheckFailure(
                         _(
                             "This member is an administrator for the ticket system. They will always have access to the ticket. ({member})"
                         ).format(**locals())
                     )
-                    continue
                 if member not in ticket.members and member not in support_role_members:
-                    await ticket.channel.send(
+                    raise commands.UserFeedbackCheckFailure(
                         _(
                             "This member is not in the list of those authorised to access the ticket. ({member})"
                         ).format(locals())
                     )
-                    continue
             if member in ticket.members:
                 ticket.members.remove(member)
             if member in support_role_members:

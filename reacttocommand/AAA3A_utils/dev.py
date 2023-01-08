@@ -34,6 +34,10 @@ from .cog import Cog
 from .context import Context
 from .loop import Loop
 from .menus import Menu, Reactions
+try:
+    from .sentry import SentryHelper
+except ImportError:
+    SentryHelper = None
 from .settings import Settings
 from .shared_cog import SharedCog
 
@@ -269,6 +273,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
             "Cog": lambda ctx: Cog,
             "Context": lambda ctx: Context,
             "Settings": lambda ctx: Settings,
+            "SentryHelper": lambda ctx: SentryHelper,
             "log": lambda ctx: log,
             "_rtfs": lambda ctx: partial(_rtfs, ctx),
             "DevEnv": lambda ctx: cls,

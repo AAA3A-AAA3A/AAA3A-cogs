@@ -9,6 +9,6 @@
         "message",
         "channel"
     ],
-    "requirements": ["dateparser"],
+    "requirements": ["sentry_sdk", "dateparser"],
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

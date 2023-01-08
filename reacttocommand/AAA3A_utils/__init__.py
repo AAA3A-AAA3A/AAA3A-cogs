@@ -5,6 +5,10 @@ from .context import Context
 from .dev import DevEnv, DevSpace
 from .loop import Loop
 from .menus import Menu, Reactions
+try:
+    from .sentry import SentryHelper
+except ImportError:
+    SentryHelper = None
 from .settings import Settings
 from .shared_cog import SharedCog
 
@@ -22,9 +26,9 @@ __all__ = [
     "Menu",
     "Context",
     "Settings",
+    "SentryHelper",
     "Captcha",
     "Reactions",
-
     "Buttons",
     "Dropdown",
     "Select",

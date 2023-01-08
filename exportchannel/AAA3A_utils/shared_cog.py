@@ -1,4 +1,6 @@
 from redbot.core import commands  # isort:skip
+from redbot.core.bot import Red  # isort:skip
+from redbot.core import Config  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -14,9 +16,7 @@ import pip
 from redbot import version_info as red_version_info
 from redbot.cogs.downloader.converters import InstalledCog
 from redbot.cogs.downloader.repo_manager import Repo
-from redbot.core import Config
 from redbot.core._diagnoser import IssueDiagnoser
-from redbot.core.bot import Red
 from redbot.core.data_manager import basic_config, config_file, instance_name, storage_type
 from redbot.core.utils.chat_formatting import (
     bold,
@@ -30,6 +30,10 @@ from rich.console import Console
 from rich.table import Table
 
 from .menus import Menu
+try:
+    from .sentry import SentryHelper
+except ImportError:
+    SentryHelper = None
 
 __all__ = ["SharedCog"]
 
@@ -83,11 +87,19 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         )
         self.AAA3A_utils_global = {
             "cogs_with_slash": [],
-            "ignored_slash_commands": []
+            "ignored_slash_commands": [],
+            "sentry": {},
         }
         self.config.register_global(**self.AAA3A_utils_global)
 
         self.cogsutils = CogsUtils(cog=self)
+        self.sentry = None
+        self.telemetrywithsentry.__is_dev__ = True
+        self.senderrorwithsentry.__is_dev__ = True
+
+    async def cog_load(self):
+        if SentryHelper is not None:
+            self.sentry = SentryHelper(self)
 
     async def check_if_slash(self, cog: commands.Cog):
         if not self.cogsutils.is_dpy2:
@@ -363,7 +375,6 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         config.clear()
         await self.config.cogs_with_slash.set(config)
         await self.cogsutils.remove_hybrid_commands(cog=cog)
-        await ctx.tick(message="Done")
 
     @commands.is_owner()
     @AAA3A_utils.command()
@@ -411,7 +422,6 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 exc_info = "".join(traceback.format_exception(type(exc_info), exc_info, exc_info.__traceback__))
             result.append(box(self.cogsutils.replace_var_paths(f"[{asctime}] {levelname} [{name}] {message}\n{exc_info}")[:2000 - 10], lang="py"))
         await Menu(pages=result).start(ctx)
-        await ctx.tick()
 
     @commands.is_owner()
     @AAA3A_utils.command()
@@ -428,7 +438,6 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         for loop in cog.cogsutils.loops.values():
             embeds.append(loop.get_debug_embed())
         await Menu(pages=embeds).start(ctx)
-        await ctx.tick()
 
     @commands.is_owner()
     @AAA3A_utils.command()
@@ -455,7 +464,23 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 await self.cogsutils.delete_message(ctx.message)
                 return
         await getattr(cog, "config").clear_all()
-        await ctx.tick()
+
+    @commands.is_owner()
+    @AAA3A_utils.command(hidden=True)
+    async def telemetrywithsentry(self, ctx: commands.Context, state: bool):
+        """Enable or disable Telemetry with Sentry for all cogs from AAA3A-cogs."""
+        await self.config.sentry.sentry_enabled.set(state)
+
+    @commands.is_owner()
+    @AAA3A_utils.command(hidden=True)
+    async def senderrorwithsentry(self, ctx: commands.Context, error: str):
+        """Send a recent error to the developer of AAA3A's cogs with Sentry (use the code given when the error has been triggered)."""
+        if error not in self.sentry.last_errors:
+            await ctx.send(_("This error does not exist."))
+            return
+        e = self.sentry.last_errors.pop(error)
+        event_id = await self.sentry.send_command_error(e["ctx"], e["error"], manually=True)
+        await ctx.send(_("The error was successfully sent with the event id {event_id}.").format(**locals()))
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):

@@ -9,6 +9,6 @@
         "activity",
         "time"
     ],
-    "requirements": [],
+    "requirements": ["sentry_sdk"],
     "end_user_data_statement": "This cog records the time the user last participated and the message they acted on (sending a message, modifying a message in the cache, adding a reaction to a message in the cache and deleting a reaction to a message in the cache). The user can at any time issue the command `[p]seen ignoreme` to cause this cog to ignore all its next actions and delete the previously stored data."
 }

@@ -10,6 +10,6 @@
         "ban",
         "quick"
     ],
-    "requirements": ["dislash.py"],
+    "requirements": ["sentry_sdk", "dislash.py"],
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

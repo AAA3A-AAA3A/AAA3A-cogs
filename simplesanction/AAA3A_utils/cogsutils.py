@@ -158,35 +158,41 @@ class CogsUtils(commands.Cog):
         if not reverse:
             if "USERPROFILE" in os.environ:
                 text = text.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
-                text = text.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}")
+                text = text.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}".lower())
                 text = text.replace(
                     os.environ["USERPROFILE"].replace("\\", "\\\\"), "{USERPROFILE}"
                 )
                 text = text.replace(
-                    os.environ["USERPROFILE"].replace("\\", "\\\\").lower(), "{USERPROFILE}"
+                    os.environ["USERPROFILE"].replace("\\", "\\\\").lower(), "{USERPROFILE}.lower("
                 )
                 text = text.replace(os.environ["USERPROFILE"].replace("\\", "/"), "{USERPROFILE}")
                 text = text.replace(
-                    os.environ["USERPROFILE"].replace("\\", "/").lower(), "{USERPROFILE}"
+                    os.environ["USERPROFILE"].replace("\\", "/").lower(), "{USERPROFILE}".lower()
                 )
             if "HOME" in os.environ:
                 text = text.replace(os.environ["HOME"], "{HOME}")
-                text = text.replace(os.environ["HOME"].lower(), "{HOME}")
+                text = text.replace(os.environ["HOME"].lower(), "{HOME}".lower())
                 text = text.replace(os.environ["HOME"].replace("\\", "\\\\"), "{HOME}")
-                text = text.replace(os.environ["HOME"].replace("\\", "\\\\").lower(), "{HOME}")
+                text = text.replace(os.environ["HOME"].replace("\\", "\\\\").lower(), "{HOME}".lower())
             if "USERNAME" in os.environ:
                 text = text.replace(os.environ["USERNAME"], "{USERNAME}")
-                text = text.replace(os.environ["USERNAME"].lower(), "{USERNAME}")
+                text = text.replace(os.environ["USERNAME"].lower(), "{USERNAME}".lower())
+            if "COMPUTERNAME" in os.environ:
+                text = text.replace(os.environ["COMPUTERNAME"], "{COMPUTERNAME}")
+                text = text.replace(os.environ["COMPUTERNAME"].lower(), "{COMPUTERNAME}".lower())
         else:
             if "USERPROFILE" in os.environ:
                 text = text.replace("{USERPROFILE}", os.environ["USERPROFILE"])
-                text = text.replace("{USERPROFILE}".lower(), os.environ["USERPROFILE"])
+                text = text.replace("{USERPROFILE}".lower(), os.environ["USERPROFILE"].lower())
             if "HOME" in os.environ:
                 text = text.replace("{HOME}", os.environ["HOME"])
-                text = text.replace("{HOME}".lower(), os.environ["HOME"])
+                text = text.replace("{HOME}".lower(), os.environ["HOME"].lower())
             if "USERNAME" in os.environ:
                 text = text.replace("{USERNAME}", os.environ["USERNAME"])
-                text = text.replace("{USERNAME}".lower(), os.environ["USERNAME"])
+                text = text.replace("{USERNAME}".lower(), os.environ["USERNAME"].lower())
+            if "COMPUTERNAME" in os.environ:
+                text = text.replace("{COMPUTERNAME}", os.environ["COMPUTERNAME"])
+                text = text.replace("{COMPUTERNAME}".lower(), os.environ["COMPUTERNAME"].lower())
         return text
 
     async def add_cog(self, bot: typing.Optional[Red]=None, cog: typing.Optional[commands.Cog]=None):
@@ -255,11 +261,17 @@ class CogsUtils(commands.Cog):
             )
         if not self.cog.qualified_name == "AAA3A_utils":
             try:
+                old_cog = self.bot.get_cog("AAA3A_utils")
                 if self.is_dpy2:
                     await self.bot.remove_cog("AAA3A_utils")
                 else:
                     self.bot.remove_cog("AAA3A_utils")
                 cog = SharedCog(self.bot, CogsUtils)
+                try:
+                    cog.sentry = old_cog.sentry
+                    cog.cogsutils.loops = old_cog.cogsutils.loops
+                except AttributeError:
+                    pass
                 await cog.cogsutils.add_cog(bot=self.bot, cog=cog)
             except Exception as e:
                 self.cog.log.debug("Error when adding the AAA3A_utils cog.", exc_info=e)
@@ -275,6 +287,7 @@ class CogsUtils(commands.Cog):
                         f"Error when adding [hybrid|slash] commands from the {self.cog.qualified_name} cog.",
                         exc_info=e,
                     )
+            await AAA3A_utils.sentry.maybe_send_owners(self.cog)
 
     def _end(self):
         """
@@ -292,6 +305,9 @@ class CogsUtils(commands.Cog):
             except ValueError:
                 pass
         self.views.clear()
+        AAA3A_utils = self.bot.get_cog("AAA3A_utils")
+        if getattr(AAA3A_utils, "sentry", None) is not None:
+            AAA3A_utils.sentry.cog_unload(self.cog)
         asyncio.create_task(self._await_end())
 
     async def _await_end(self):
@@ -1288,6 +1304,8 @@ class CogsUtils(commands.Cog):
         """
         cogs = {}
         for cog in self.bot.cogs.values():
+            if cog.qualified_name in ["CogGuide"]:
+                continue
             if hasattr(cog, "cogsutils"):
                 if getattr(cog.cogsutils, "repo_name", None) == "AAA3A-cogs":
                     if (

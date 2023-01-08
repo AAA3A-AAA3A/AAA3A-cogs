@@ -9,6 +9,6 @@
         "button",
         "react"
     ],
-    "requirements": ["dislash.py", "emoji"],
+    "requirements": ["sentry_sdk", "dislash.py", "emoji"],
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

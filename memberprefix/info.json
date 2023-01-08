@@ -9,6 +9,6 @@
         "custom",
         "member"
     ],
-    "requirements": [],
+    "requirements": ["sentry_sdk"],
     "end_user_data_statement": "This cog only records the different prefixes chosen by each member."
 }

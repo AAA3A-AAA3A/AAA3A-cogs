@@ -9,6 +9,6 @@
         "latitude",
         "longitude"
     ],
-    "requirements": ["geopy", "basemap", "matplotlib", "numpy"],
+    "requirements": ["sentry_sdk", "geopy", "basemap", "matplotlib", "numpy"],
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

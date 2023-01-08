@@ -9,6 +9,6 @@
         "host",
         "machine"
     ],
-    "requirements": ["requests"],
+    "requirements": ["sentry_sdk", "requests"],
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

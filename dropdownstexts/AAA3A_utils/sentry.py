@@ -302,7 +302,8 @@ class SentryHelper:
     async def maybe_send_owners(self, cog: commands.Cog):
         if not self.ready.is_set():
             await self.ready.wait()
-        return  # Not send automatically errors tp Sentry for the moment.
+        if self.cog is None or not hasattr(self.cog, "telemetrywithsentry") or getattr(self.cog.setelemetrywithsentry, "__is_dev__", False):
+            return  # Not send automatically errors tp Sentry for the moment.
         if not await self.config.sentry.master_msg_sent():
             self.dont_send_reminders = True
             await self.config.sentry.master_msg_sent.set(True)

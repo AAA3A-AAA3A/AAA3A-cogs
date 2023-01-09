@@ -95,7 +95,6 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         self.cogsutils = CogsUtils(cog=self)
         self.sentry = None
         self.telemetrywithsentry.__is_dev__ = True
-        self.senderrorwithsentry.__is_dev__ = True
 
     async def cog_load(self):
         if SentryHelper is not None:

@@ -269,6 +269,8 @@ class CogsUtils(commands.Cog):
                 cog = SharedCog(self.bot, CogsUtils)
                 try:
                     cog.sentry = old_cog.sentry
+                    if cog.sentry is not None:
+                        cog.sentry.cog = cog
                     cog.cogsutils.loops = old_cog.cogsutils.loops
                 except AttributeError:
                     pass

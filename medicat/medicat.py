@@ -489,7 +489,7 @@ class Medicat(commands.Cog):
             )
             embed.add_field(
                 name="Download this version:",
-                value=f"https://github.com/ventoy/Ventoy/releases/tag/{ventoy_version_str}",
+                value=f"https://github.com/ventoy/Ventoy/releases/tag/{ventoy_tag_name}",
                 inline=True,
             )
             role = guild.get_role(VENTOY_UPDATES_ROLE) if ping_role else None

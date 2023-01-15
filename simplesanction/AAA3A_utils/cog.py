@@ -314,7 +314,7 @@ class Cog:
             "POST /channels/{channel.id}/followers": ["MANAGE_WEBHOOKS"],
             "POST /channels/{channel.id}/typing": ["VIEW_CHANNEL", "SEND_MESSAGES"],
             "GET /channels/{channel.id}/pins": ["VIEW_CHANNEL", "VIEW_MESSAGE_HISTORY"],
-            "PUT /channels/{channel.id}/pins": ["MANAGE_MESSAGES"],
+            "PUT /channels/{channel.id}/pins/{message.id}": ["MANAGE_MESSAGES"],
             "DELETE /channels/{channel.id}/pins/{message.id}": ["MANAGE_MESSAGES"],
             "POST /channels/{channel.id}/messages/{message.id}/threads": ["CREATE_PUBLIC_THREADS"],
             "POST /channels/{channel.id}/threads": ["CREATE_PUBLIC_THREADS", "CREATE_PRIVATE_THREADS", "SEND_MESSAGES"],

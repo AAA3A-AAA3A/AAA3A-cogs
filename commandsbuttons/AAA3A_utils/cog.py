@@ -310,11 +310,10 @@ class Cog:
             "POST /channels/{channel.id}/followers": ["MANAGE_WEBHOOKS"],
             "POST /channels/{channel.id}/typing": ["VIEW_CHANNEL", "SEND_MESSAGES"],
             "GET /channels/{channel.id}/pins": ["VIEW_CHANNEL", "VIEW_MESSAGE_HISTORY"],
-            "GET /channels/{channel.id}/pins": ["MANAGE_MESSAGES"],
+            "PUT /channels/{channel.id}/pins": ["MANAGE_MESSAGES"],
             "DELETE /channels/{channel.id}/pins/{message.id}": ["MANAGE_MESSAGES"],
             "POST /channels/{channel.id}/messages/{message.id}/threads": ["CREATE_PUBLIC_THREADS"],
-            "POST /channels/{channel.id}/threads": ["CREATE_PUBLIC_THREADS", "CREATE_PRIVATE_THREADS"],
-            "POST /channels/{channel.id}/threads": ["SEND_MESSAGES"],
+            "POST /channels/{channel.id}/threads": ["CREATE_PUBLIC_THREADS", "CREATE_PRIVATE_THREADS", "SEND_MESSAGES"],
             "PUT /channels/{channel.id}/thread-members/@me": [],
             "DELETE /channels/{channel.id}/thread-members/@me": [],
             "DELETE /channels/{channel.id}/thread-members/{user.id}": ["MANAGE_THREADS"],
@@ -424,6 +423,8 @@ class Cog:
         }
         class FakeObject:
             id = "{snowflake}"
+            token = "{token}"
+            code = "{code}"
         class FakeDict(dict):
             def __getitem__(self, *args, **kwargs):
                 return FakeObject()
@@ -434,6 +435,8 @@ class Cog:
         permissions = {}
         for permission in _permissions:
             if not permission.lower() in discord.Permissions.VALID_FLAGS:
+                continue
+            if getattr((ctx.bot_permissions if self.cog.cogsutils.is_dpy2 else ctx.channel.permissions_for(ctx.me)), permission.lower()):
                 continue
             permissions[permission.lower()] = True
         if len(permissions) == 0:

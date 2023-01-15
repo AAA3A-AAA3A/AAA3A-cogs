@@ -424,6 +424,8 @@ class Cog:
         }
         class FakeObject:
             id = "{snowflake}"
+            token = "{token}"
+            code = "{code}"
         class FakeDict(dict):
             def __getitem__(self, *args, **kwargs):
                 return FakeObject()

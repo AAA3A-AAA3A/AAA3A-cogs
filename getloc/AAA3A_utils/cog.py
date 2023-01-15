@@ -196,7 +196,7 @@ class Cog:
                 no_sentry = True
         if isinstance(error, (commands.CommandInvokeError, commands.HybridCommandError)):  # Error can be changed into `commands.BotMissingPermissions` or not.
             if isinstance(error.original, discord.Forbidden):
-                e = self.verbose_forbidden_exception(ctx, error)
+                e = self.verbose_forbidden_exception(ctx, error.original)
                 if e is not None:
                     error = e
         if isinstance(error, commands.CommandInvokeError):

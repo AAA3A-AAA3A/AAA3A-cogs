@@ -273,12 +273,16 @@ class Cog:
                 message = error.message
                 message = warning(message)
                 await ctx.send(message)
-        await ctx.bot.on_command_error(ctx=ctx, error=error, unhandled_by_cog=True)
+        else:
+            await ctx.bot.on_command_error(ctx=ctx, error=error, unhandled_by_cog=True)
 
     def verbose_forbidden_exception(self, ctx: commands.Context, error: discord.Forbidden):
+        if not isinstance(error, discord.Forbidden):
+            return ValueError(error)
         method = error.response.request_info.method
         url = str(error.response.request_info.url)
         url = url[len(discord.http.Route.BASE):]
+        url = url.split("/")[0]
         url = re.sub(r"\b\d{17,20}\b", "{snowflake}", url)
         key = f"{method.upper()} {url}"
         end_points = {

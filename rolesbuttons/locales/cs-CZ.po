@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
 "POT-Creation-Date: 2022-11-22 19:45+0100\n"
-"PO-Revision-Date: 2022-11-22 21:35\n"
+"PO-Revision-Date: 2023-01-15 14:04\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
 "MIME-Version: 1.0\n"
@@ -146,7 +146,7 @@ msgid "You have not specified any valid role-button."
 msgstr "Nezadali jste žádné platné tlačítko rolí."
 
 #: rolesbuttons\rolesbuttons.py:402
-msgid "A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr ""
 
 #: rolesbuttons\rolesbuttons.py:436

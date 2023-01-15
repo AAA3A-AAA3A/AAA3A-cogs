@@ -197,7 +197,7 @@ class Cog:
         if isinstance(error, (commands.CommandInvokeError, commands.HybridCommandError)):  # Error can be changed into `commands.BotMissingPermissions` or not.
             if isinstance(error.original, discord.Forbidden):
                 e = self.verbose_forbidden_exception(ctx, error.original)
-                if e is not None:
+                if e is not None and isinstance(e, commands.BotMissingPermissions):
                     error = e
         if isinstance(error, commands.CommandInvokeError):
             uuid = uuid4().hex
@@ -262,7 +262,7 @@ class Cog:
             ctx.bot._last_exception = exception_log
             if not no_sentry:
                 await AAA3A_utils.sentry.send_command_error(ctx, error)
-        elif isinstance(error, commands.CheckFailure):
+        elif isinstance(error, commands.CheckFailure) and not isinstance(error, commands.BotMissingPermissions):
             if getattr(ctx, "interaction", None) is not None:
                 await ctx.send(
                     inline("You are not allowed to execute this command in this context."),
@@ -282,7 +282,7 @@ class Cog:
         method = error.response.request_info.method
         url = str(error.response.request_info.url)
         url = url[len(discord.http.Route.BASE):]
-        url = url.split("/")[0]
+        url = url.split("?")[0]
         url = re.sub(r"\b\d{17,20}\b", "{snowflake}", url)
         key = f"{method.upper()} {url}"
         end_points = {
@@ -427,8 +427,10 @@ class Cog:
         }
         class FakeObject:
             id = "{snowflake}"
-            token = "{token}"
-            code = "{code}"
+            token = "{snowflake}"
+            code = "{snowflake}"
+            def __str__(self):
+                return "{snowflake}"
         class FakeDict(dict):
             def __getitem__(self, *args, **kwargs):
                 return FakeObject()

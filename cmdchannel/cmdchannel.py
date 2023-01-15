@@ -53,14 +53,20 @@ class CmdChannel(commands.Cog):
         context = await self.bot.get_context(message)
         if context.prefix is None:
             return
-        command = context.message.content[len(str(context.prefix)):]
+        command = context.message.content[len(str(context.prefix)) :]
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
         if command_name not in ["cmdchannel", "cmduser", "cmduserchannel"]:
             return
         command = command[3:]
-        await self.cogsutils.invoke_command(author=context.author, channel=context.channel, command=f"CmdchanneL {command}", prefix=context.prefix, message=context.message)
+        await self.cogsutils.invoke_command(
+            author=context.author,
+            channel=context.channel,
+            command=f"CmdchanneL {command}",
+            prefix=context.prefix,
+            message=context.message,
+        )
 
     @hybrid_group(name="CmdchanneL", aliases=["cmdmock"], hidden=False)
     async def cmdchannel(self, ctx: commands.Context):
@@ -79,7 +85,7 @@ class CmdChannel(commands.Cog):
         guild = channel.guild
         if ctx.author not in guild.members:
             raise commands.UserFeedbackCheckFailure(
-                _("To send commands to another server, you must be there.").format(**locals())
+                _("To send commands to another server, you must be there.")
             )
         if not command and not ctx.message.embeds and not ctx.message.attachments:
             await ctx.send_help()
@@ -114,11 +120,9 @@ class CmdChannel(commands.Cog):
                         description=f"CmdChannel - Command used: {command}",
                         colour=cmd_colour,
                     )
-                    embed.add_field(
-                        name=(_("Imitated user").format(**locals())), value=ctx.author.mention
-                    )
-                    embed.add_field(name=(_("Channel").format(**locals())), value=channel.mention)
-                    embed.add_field(name=(_("Can Run").format(**locals())), value=str(can_run))
+                    embed.add_field(name=(_("Imitated user")), value=ctx.author.mention)
+                    embed.add_field(name=(_("Channel")), value=channel.mention)
+                    embed.add_field(name=(_("Can Run")), value=str(can_run))
                     author_title = _("{ctx.author} ({ctx.author.id}) - Used a Command").format(
                         **locals()
                     )
@@ -178,15 +182,11 @@ class CmdChannel(commands.Cog):
         else:
             try:
                 await ctx.author.send(
-                    _(
-                        "CommandChannel have been disabled by an administrator of this server."
-                    ).format(**locals())
+                    _("CommandChannel have been disabled by an administrator of this server.")
                 )
             except discord.Forbidden:
                 await ctx.send(
-                    _(
-                        "CommandChannel have been disabled by an administrator of this server."
-                    ).format(**locals())
+                    _("CommandChannel have been disabled by an administrator of this server.")
                 )
             return
 
@@ -209,7 +209,9 @@ class CmdChannel(commands.Cog):
             user = ctx.author
         if ctx.bot.get_cog("Dev") is None:
             raise commands.UserFeedbackCheckFailure(
-                "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
+                _(
+                    "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
+                )
             )
         await self.cogsutils.invoke_command(
             author=user,
@@ -245,12 +247,14 @@ class CmdChannel(commands.Cog):
         if channel.guild is not None:
             if ctx.author not in channel.guild.members:
                 raise commands.UserFeedbackCheckFailure(
-                    _("To send commands to another server, you must be there.").format(**locals())
+                    _("To send commands to another server, you must be there.")
                 )
             user = channel.guild.get_member(user.id) or user
         if ctx.bot.get_cog("Dev") is None:
             raise commands.UserFeedbackCheckFailure(
-                "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
+                _(
+                    "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
+                )
             )
 
         await self.cogsutils.invoke_command(
@@ -268,10 +272,10 @@ class CmdChannel(commands.Cog):
     async def testvar(self, ctx: commands.Context):
         """Test variables."""
         embed: discord.Embed = discord.Embed()
-        embed.title = _("Testvar").format(**locals())
-        embed.description = _("Variables:").format(**locals())
-        embed.add_field(name=_("Author:").format(**locals()), value=f"{ctx.author}")
-        embed.add_field(name=_("Channel:").format(**locals()), value=f"{ctx.channel}")
+        embed.title = _("Testvar")
+        embed.description = _("Variables:")
+        embed.add_field(name=_("Author:"), value=f"{ctx.author}")
+        embed.add_field(name=_("Channel:"), value=f"{ctx.channel}")
         await ctx.send(embed=embed)
 
     @commands.guild_only()
@@ -294,7 +298,7 @@ class CmdChannel(commands.Cog):
         """
         if channel is None:
             await self.config.guild(ctx.guild).logschannel.clear()
-            await ctx.send(_("Logging channel removed.").format(**locals()))
+            await ctx.send(_("Logging channel removed."))
             return
 
         needperm = await self.check_permissions_in_channel(
@@ -312,7 +316,7 @@ class CmdChannel(commands.Cog):
                 _(
                     "The bot does not have at least one of the following permissions in this channel: `embed_links`, `read_messages`, `read_message_history`, `send_messages`, `attach_files`."
                 )
-            ).format(**locals())
+            )
 
         await self.config.guild(ctx.guild).logschannel.set(channel.id)
         await ctx.send(_("Logging channel registered: {channel.mention}.").format(**locals()))

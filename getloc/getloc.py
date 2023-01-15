@@ -124,12 +124,12 @@ class GetLoc(commands.Cog):
         try:
             localisation = loc.geocode(query=adress_or_coordinates, addressdetails=True)
         except Exception:
-            raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again.").format(**locals()))
+            raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again."))
         if localisation is None:
             raise commands.UserFeedbackCheckFailurectx.send(
                 _(
                     "The address or contact details you have provided do not lead to any results. Are you sure of your input?"
-                ).format(**locals())
+                )
             )
         message = {
             "Display Name": str(localisation.raw.get("display_name", None)),
@@ -150,9 +150,7 @@ class GetLoc(commands.Cog):
         embed.set_thumbnail(
             url="https://img.myloview.fr/papiers-peints/globe-terrestre-dessin-colore-700-218492153.jpg"
         )
-        embed.description = "\n".join(
-            [f"**{name}**: {value}" for name, value in message.items()]
-        )
+        embed.description = "\n".join([f"**{name}**: {value}" for name, value in message.items()])
 
         if with_map:
             embed.set_image(url="attachment://map.png")

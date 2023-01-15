@@ -34,7 +34,7 @@ Here are all the commands included in this cog (24):
  - :information_source: Show info on a user.
 
 * ``[p]sanction 02 [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
- - :warning: Set a simple warning on a user.
+ - ⚠️ Set a simple warning on a user.
 
 * ``[p]sanction 03 [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
  - :hammer: Ban the member from the server.

@@ -24,14 +24,6 @@ else:
 ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
 
 
-class PermissionConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, arg: str):
-        permissions = [key for key, value in dict(discord.Permissions.all_channel()).items() if value]
-        if arg not in permissions:
-            raise commands.BadArgument("This permission is invalid.")
-        return arg
-
-
 @cog_i18n(_)
 class EditVoiceChannel(commands.Cog):
     """A cog to edit voice channels!"""
@@ -87,10 +79,14 @@ class EditVoiceChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{name}.",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @editvoicechannel.command(name="clone")
-    async def editvoicechannel_clone(self, ctx: commands.Context, channel: discord.VoiceChannel, *, name: str):
+    async def editvoicechannel_clone(
+        self, ctx: commands.Context, channel: discord.VoiceChannel, *, name: str
+    ):
         """Clone a voice channel."""
         await self.check_voice_channel(ctx, channel)
         try:
@@ -99,7 +95,9 @@ class EditVoiceChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has cloned the voice channel #!{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @editvoicechannel.command(name="invite")
     async def editvoicechannel_invite(
@@ -128,12 +126,16 @@ class EditVoiceChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has create an invite for the voice channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
         else:
             await ctx.send(invite.url)
 
     @editvoicechannel.command(name="name")
-    async def editvoicechannel_name(self, ctx: commands.Context, channel: discord.VoiceChannel, name: str):
+    async def editvoicechannel_name(
+        self, ctx: commands.Context, channel: discord.VoiceChannel, name: str
+    ):
         """Edit voice channel name."""
         await self.check_voice_channel(ctx, channel)
         try:
@@ -142,10 +144,14 @@ class EditVoiceChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @editvoicechannel.command(name="bitrate")
-    async def editvoicechannel_bitrate(self, ctx: commands.Context, channel: discord.VoiceChannel, bitrate: int):
+    async def editvoicechannel_bitrate(
+        self, ctx: commands.Context, channel: discord.VoiceChannel, bitrate: int
+    ):
         """Edit voice channel bitrate.
 
         It must be a number between 8000 and
@@ -163,10 +169,14 @@ class EditVoiceChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @editvoicechannel.command(name="nsfw")
-    async def editvoicechannel_nsfw(self, ctx: commands.Context, channel: discord.VoiceChannel, nsfw: bool):
+    async def editvoicechannel_nsfw(
+        self, ctx: commands.Context, channel: discord.VoiceChannel, nsfw: bool
+    ):
         """Edit voice channel nsfw."""
         await self.check_voice_channel(ctx, channel)
         try:
@@ -175,7 +185,9 @@ class EditVoiceChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @editvoicechannel.command(name="userlimit")
     async def editvoicechannel_user_limit(
@@ -195,11 +207,29 @@ class EditVoiceChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
+
+    class PositionConverter(commands.Converter):
+        async def convert(self, ctx: commands.Context, arg: str):
+            try:
+                position = int(arg)
+            except ValueError:
+                raise commands.BadArgument("The position must be an integer.")
+            max_guild_text_channels_position = len(
+                [c for c in ctx.guild.channels if isinstance(c, discord.TextChannel)]
+            )
+            if not position > 0 or not position < max_guild_text_channels_position + 1:
+                raise commands.BadArgument(
+                    f"The indicated position must be between 1 and {max_guild_text_channels_position}."
+                )
+            position = position - 1
+            return position
 
     @editvoicechannel.command(name="position")
     async def editvoicechannel_position(
-        self, ctx: commands.Context, channel: discord.VoiceChannel, *, position: int
+        self, ctx: commands.Context, channel: discord.VoiceChannel, *, position: PositionConverter
     ):
         """Edit voice channel position.
 
@@ -207,24 +237,15 @@ class EditVoiceChannel(commands.Cog):
         Channels cannot be moved to a position that takes them out of their current category.
         """
         await self.check_voice_channel(ctx, channel)
-        max_guild_voice_channels_position = len(
-            [c for c in ctx.guild.channels if isinstance(c, discord.VoiceChannel)]
-        )
-        if not position > 0 or not position < max_guild_voice_channels_position + 1:
-            await ctx.send(
-                _(
-                    "The indicated position must be between 1 and {max_guild_voice_channels_position}."
-                ).format(**locals())
-            )
-            return
-        position = position - 1
         try:
             await channel.edit(
                 position=position,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel !{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @editvoicechannel.command(name="syncpermissions")
     async def editvoicechannel_sync_permissions(
@@ -238,7 +259,9 @@ class EditVoiceChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @editvoicechannel.command(name="category")
     async def editvoicechannel_category(
@@ -255,7 +278,9 @@ class EditVoiceChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @editvoicechannel.command(name="videoqualitymode")
     async def editvoicechannel_video_quality_mode(
@@ -277,7 +302,18 @@ class EditVoiceChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
+
+    class PermissionConverter(commands.Converter):
+        async def convert(self, ctx: commands.Context, arg: str):
+            permissions = [
+                key for key, value in dict(discord.Permissions.all_channel()).items() if value
+            ]
+            if arg not in permissions:
+                raise commands.BadArgument(_("This permission is invalid."))
+            return arg
 
     @editvoicechannel.command(name="permissions", aliases=["overwrites", "perms"])
     async def editvoicechannel_permissions(
@@ -346,7 +382,9 @@ class EditVoiceChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @editvoicechannel.command(name="delete")
     async def editvoicechannel_delete(
@@ -359,7 +397,7 @@ class EditVoiceChannel(commands.Cog):
         await self.check_voice_channel(ctx, channel)
         if not confirmation:
             embed: discord.Embed = discord.Embed()
-            embed.title = _(":warning: - Delete voice channel").format(**locals())
+            embed.title = _("⚠️ - Delete voice channel")
             embed.description = _(
                 "Do you really want to delete the voice channel {channel.mention} ({channel.id})?"
             ).format(**locals())
@@ -374,4 +412,6 @@ class EditVoiceChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has deleted the voice channel #!{channel.name} ({channel.id})."
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )

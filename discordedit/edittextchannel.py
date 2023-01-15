@@ -33,13 +33,6 @@ else:
 ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
 
 
-class PermissionConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, arg: str):
-        permissions = [key for key, value in dict(discord.Permissions.all_channel()).items() if value]
-        if arg not in permissions:
-            raise commands.BadArgument("This permission is invalid.")
-        return arg
-
 @cog_i18n(_)
 class EditTextChannel(commands.Cog):
     """A cog to edit text channels!"""
@@ -95,7 +88,9 @@ class EditTextChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has created the text channel #{name}.",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @edittextchannel.command(name="clone")
     async def edittextchannel_clone(
@@ -111,7 +106,9 @@ class EditTextChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has cloned the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @edittextchannel.command(name="invite")
     async def edittextchannel_invite(
@@ -142,7 +139,9 @@ class EditTextChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has create an invite for the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
         else:
             await ctx.send(invite.url)
 
@@ -160,7 +159,9 @@ class EditTextChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @edittextchannel.command(name="topic")
     async def edittextchannel_topic(
@@ -176,7 +177,25 @@ class EditTextChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
+
+    class PositionConverter(commands.Converter):
+        async def convert(self, ctx: commands.Context, arg: str):
+            try:
+                position = int(arg)
+            except ValueError:
+                raise commands.BadArgument("The position must be an integer.")
+            max_guild_text_channels_position = len(
+                [c for c in ctx.guild.channels if isinstance(c, discord.TextChannel)]
+            )
+            if not position > 0 or not position < max_guild_text_channels_position + 1:
+                raise commands.BadArgument(
+                    f"The indicated position must be between 1 and {max_guild_text_channels_position}."
+                )
+            position = position - 1
+            return position
 
     @edittextchannel.command(name="position")
     async def edittextchannel_position(
@@ -184,7 +203,7 @@ class EditTextChannel(commands.Cog):
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
         *,
-        position: int,
+        position: PositionConverter,
     ):
         """Edit text channel position.
 
@@ -194,24 +213,15 @@ class EditTextChannel(commands.Cog):
         if channel is None:
             channel = ctx.channel
         await self.check_text_channel(ctx, channel)
-        max_guild_text_channels_position = len(
-            [c for c in ctx.guild.channels if isinstance(c, discord.TextChannel)]
-        )
-        if not position > 0 or not position < max_guild_text_channels_position + 1:
-            await ctx.send(
-                _(
-                    "The indicated position must be between 1 and {max_guild_text_channels_position}."
-                ).format(**locals())
-            )
-            return
-        position = position - 1
         try:
             await channel.edit(
                 position=position,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @edittextchannel.command(name="nsfw")
     async def edittextchannel_nsfw(
@@ -227,7 +237,9 @@ class EditTextChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @edittextchannel.command(name="syncpermissions")
     async def edittextchannel_sync_permissions(
@@ -246,7 +258,9 @@ class EditTextChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @edittextchannel.command(name="category")
     async def edittextchannel_category(
@@ -265,7 +279,9 @@ class EditTextChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @edittextchannel.command(name="slowmodedelay")
     async def edittextchannel_slowmode_delay(
@@ -291,7 +307,9 @@ class EditTextChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @edittextchannel.command(name="type")
     async def edittextchannel_type(
@@ -316,7 +334,9 @@ class EditTextChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @edittextchannel.command(name="defaultautoarchiveduration")
     async def edittextchannel_default_auto_archive_duration(
@@ -338,7 +358,18 @@ class EditTextChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
+
+    class PermissionConverter(commands.Converter):
+        async def convert(self, ctx: commands.Context, arg: str):
+            permissions = [
+                key for key, value in dict(discord.Permissions.all_channel()).items() if value
+            ]
+            if arg not in permissions:
+                raise commands.BadArgument(_("This permission is invalid."))
+            return arg
 
     @edittextchannel.command(name="permissions", aliases=["overwrites", "perms"])
     async def edittextchannel_permissions(
@@ -393,7 +424,7 @@ class EditTextChannel(commands.Cog):
                 else:
                     targets.remove(r)
         if not targets:
-            return await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _("You need to provide a role or user you want to edit permissions for")
             )
         overwrites = channel.overwrites
@@ -409,7 +440,9 @@ class EditTextChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
 
     @edittextchannel.command(name="delete")
     async def edittextchannel_delete(
@@ -424,7 +457,7 @@ class EditTextChannel(commands.Cog):
         await self.check_text_channel(ctx, channel)
         if not confirmation:
             embed: discord.Embed = discord.Embed()
-            embed.title = _(":warning: - Delete text channel").format(**locals())
+            embed.title = _("⚠️ - Delete text channel")
             embed.description = _(
                 "Do you really want to delete the text channel {channel.mention} ({channel.id})?"
             ).format(**locals())
@@ -439,4 +472,6 @@ class EditTextChannel(commands.Cog):
                 reason=f"{ctx.author} ({ctx.author.id}) has deleted the text channel #{channel.name} ({channel.id})."
             )
         except discord.HTTPException as e:
-            raise commands.UserFeedbackCheckFailure(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )

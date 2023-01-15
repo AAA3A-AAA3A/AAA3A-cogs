@@ -104,7 +104,7 @@ class DiscordSearch(commands.Cog):
                 ]
             ]
         ):
-            raise commands.UserFeedbackCheckFailure(_("You must provide at least one parameter.").format(**locals()))
+            raise commands.UserFeedbackCheckFailure(_("You must provide at least one parameter."))
         args_str = [
             underline("--- Settings of search ---"),
             bold("Authors:")
@@ -148,10 +148,7 @@ class DiscordSearch(commands.Cog):
             if content is not None and not (
                 content.lower() in message.content.lower()
                 or any(
-                    [
-                        content.lower() in str(embed.to_dict()).lower()
-                        for embed in message.embeds
-                    ]
+                    [content.lower() in str(embed.to_dict()).lower() for embed in message.embeds]
                 )
             ):
                 continue
@@ -194,7 +191,7 @@ class DiscordSearch(commands.Cog):
                     )
                     embed.add_field(
                         name="Embed(s):",
-                        value="Look at the original message."
+                        value=_("Look at the original message.")
                         if len(message.embeds) > 0
                         else "None",
                         inline=False,
@@ -210,8 +207,8 @@ class DiscordSearch(commands.Cog):
                     embeds.append(embed)
             else:
                 embed: discord.Embed = discord.Embed()
-                embed.title = f"Search in #{channel.name} ({channel.id})"
-                embed.add_field(name="Result:", value="Sorry, I could not find any results.")
+                embed.title = _("Search in #{channel.name} ({channel.id})").format(**locals())
+                embed.add_field(name="Result:", value=_("Sorry, I could not find any results."))
                 embed.timestamp = datetime.datetime.now()
                 embed.set_thumbnail(
                     url="https://us.123rf.com/450wm/sommersby/sommersby1610/sommersby161000062/66918773-recherche-ic%C3%B4ne-plate-recherche-ic%C3%B4ne-conception-recherche-ic%C3%B4ne-web-vecteur-loupe.jpg"
@@ -224,7 +221,9 @@ class DiscordSearch(commands.Cog):
             end = monotonic()
             total = round(end - start, 1)
             for embed in embeds:
-                embed.title = f"Search in #{channel.name} ({channel.id}) in {total}s"
+                embed.title = f_("Search in #{channel.name} ({channel.id}) in {total}s").format(
+                    **locals()
+                )
         await Menu(pages=embeds).start(ctx)
 
 
@@ -301,9 +300,7 @@ class SearchArgs:
             self.contains = []
             for contain in args.contains:
                 if contain.lower() not in ("link", "embed", "file"):
-                    raise commands.BadArgument(
-                        "`--contain` must be `link`, `embed` or `file`."
-                    )
+                    raise commands.BadArgument("`--contain` must be `link`, `embed` or `file`.")
                 self.contains.append(contain.lower())
         else:
             self.contains = None
@@ -324,5 +321,5 @@ class SearchArgs:
         async def convert(self, ctx: commands.Context, arg: str) -> datetime.datetime:
             parsed = dateparser.parse(arg)
             if parsed is None:
-                raise commands.BadArgument("Unrecognized date/time.")
+                raise commands.BadArgument(_("Unrecognized date/time."))
             return parsed

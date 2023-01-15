@@ -27,19 +27,17 @@ else:
 
 
 class PanelConverter(commands.Converter):
-
     async def convert(self, ctx: commands.Context, arg: str):
         if len(arg) > 10:
-            raise commands.BadArgument(_("This panel does not exist.").format(**locals()))
+            raise commands.BadArgument(_("This panel does not exist."))
         panels = await ctx.bot.get_cog("TicketTool").config.guild(ctx.guild).panels()
         if arg.lower() not in panels:
-            raise commands.BadArgument(_("This panel does not exist.").format(**locals()))
+            raise commands.BadArgument(_("This panel does not exist."))
         return arg.lower()
 
 
 @cog_i18n(_)
 class settings(commands.Cog):
-
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
     @hybrid_group(name="settickettool", aliases=["tickettoolset"])
@@ -99,7 +97,7 @@ class settings(commands.Cog):
                     buttons=[
                         {
                             "style": 2,
-                            "label": _("Create ticket").format(**locals()),
+                            "label": _("Create ticket"),
                             "emoji": "🎟️",
                             "custom_id": "create_ticket_button",
                             "disabled": False,
@@ -122,8 +120,8 @@ class settings(commands.Cog):
                     except discord.HTTPException:
                         await ctx.send(
                             _(
-                                "A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
-                            ).format(**locals())
+                                "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+                            )
                         )
                         return
                 dropdowns_config = await self.config.guild(ctx.guild).dropdowns.all()
@@ -196,8 +194,8 @@ class settings(commands.Cog):
                     except discord.HTTPException:
                         await ctx.send(
                             _(
-                                "A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
-                            ).format(**locals())
+                                "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+                            )
                         )
                         return
                 dropdown_config = await self.config.guild(ctx.guild).dropdowns.all()
@@ -215,15 +213,18 @@ class settings(commands.Cog):
                     else:
                         all_options.append(
                             SelectOption(
-                                label=label, value=value, description=description, emoji=str(self.bot.get_emoji(emoji))
+                                label=label,
+                                value=value,
+                                description=description,
+                                emoji=str(self.bot.get_emoji(emoji)),
                             )
                         )
                 dropdown = SelectMenu(
                     custom_id="create_ticket_dropdown",
-                    placeholder="Choose the reason for open a ticket.",
+                    placeholder=_("Choose the reason for open a ticket."),
                     min_values=0,
                     max_values=1,
-                    options=all_options
+                    options=all_options,
                 )
                 if message is None:
                     message = await channel.send(embed=embed, components=[dropdown])

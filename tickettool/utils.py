@@ -102,8 +102,8 @@ class EmojiLabelDescriptionValueConverter(discord.ext.commands.Converter):
         except Exception:
             raise discord.ext.commands.BadArgument(
                 _(
-                    "Emoji Label must be a emoji followed by an string, and optionnaly by a description and a value (for rename ticket channel), separated by either `;`, `,`, `|`, or `-`."
-                ).format(**locals())
+                    "Emoji Label must be An emoji followed by an string, and optionnaly by a description and a value (for rename ticket channel), separated by either `;`, `,`, `|`, or `-`."
+                )
             )
         emoji = await Emoji().convert(ctx, emoji)
         label = str(label)

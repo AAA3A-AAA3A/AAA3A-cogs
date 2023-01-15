@@ -19,7 +19,7 @@ from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate
 
 from .settings import settings
-from .utils import Timeout_or_Cancel, utils
+from .utils import utils
 
 # Credits:
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
@@ -273,7 +273,7 @@ class SimpleSanction(settings, commands.Cog):
                 await inter.respond(
                     _(
                         "An error has occurred in your interaction. Please try to use the real command instead of this contextual menu."
-                    ).format(**locals()),
+                    ),
                     ephemeral=True,
                 )
 
@@ -295,7 +295,7 @@ class SimpleSanction(settings, commands.Cog):
                 await inter.respond(
                     _(
                         "An error has occurred in your interaction. Please try to use the real command instead of this contextual menu."
-                    ).format(**locals()),
+                    ),
                     ephemeral=True,
                 )
 
@@ -372,7 +372,7 @@ class SimpleSanction(settings, commands.Cog):
                 await inter.respond(
                     _(
                         "An error has occurred in this interaction. Please try to use the real command instead of this contextual menu."
-                    ).format(**locals()),
+                    ),
                     ephemeral=True,
                 )
 
@@ -536,7 +536,7 @@ class SimpleSanction(settings, commands.Cog):
         reason: str = None,
     ):
         """
-         - :warning: Set a simple warning on a user.
+         - ⚠️ Set a simple warning on a user.
 
         Examples:
         - `[p]sanction 2 @user not`: Warn for no reason
@@ -955,10 +955,10 @@ class SimpleSanction(settings, commands.Cog):
                 pass
         if user is None:
             embed: discord.Embed = discord.Embed()
-            embed.title = _("Sanctioning a member").format(**locals())
+            embed.title = _("Sanctioning a member")
             embed.description = _(
                 "Which member do you want to sanction? (Set `cancel` to cancel.)"
-            ).format(**locals())
+            )
             embed.color = actual_color
             message = await ctx.send(embed=embed)
             try:
@@ -976,11 +976,11 @@ class SimpleSanction(settings, commands.Cog):
                 await self.cogsutils.delete_message(msg)
                 user = pred.result
             except asyncio.TimeoutError:
-                raise commands.UserFeedbackCheckFailure(_("Timed out, please try again.").format(**locals()))
+                raise commands.UserFeedbackCheckFailure(_("Timed out, please try again."))
 
         if action is None:
             embed: discord.Embed = discord.Embed()
-            embed.title = _("Sanctioning a member").format(**locals())
+            embed.title = _("Sanctioning a member")
             embed.description = _(
                 "This tool allows you to easily sanction a server member.\nUser mention: {user.mention} - User ID: {user.id}"
             ).format(**locals())
@@ -1001,22 +1001,20 @@ class SimpleSanction(settings, commands.Cog):
             embed.add_field(
                 inline=False,
                 name="Possible actions:",
-                value=f":information_source: UserInfo - :warning: Warn - :hammer: Ban - :repeat_one: SoftBan - :dash: TempBan\n:boot: Kick - :mute: Mute - :punch: MuteChannel - :hourglass_flowing_sand: TempMute\n:hourglass: TempMuteChannel - :x: Cancel",
+                value=f"ℹ️ UserInfo - ⚠️ Warn - 🔨 Ban - 🔂 SoftBan - 💨 TempBan\n👢 Kick - 🔇 Mute - 👊 MuteChannel - ⏳ TempMute\n⌛ TempMuteChannel - ❌ Cancel",
             )
             if reason == "not":
                 embed.add_field(
                     inline=False,
-                    name=_("Reason:").format(**locals()),
+                    name=_("Reason:"),
                     value=_("The reason was not given and will not be asked later."),
-                ).format(**locals())
+                )
             else:
                 if reason is not None:
-                    embed.add_field(
-                        inline=False, name=_("Reason:").format(**locals()), value=f"{reason}"
-                    )
+                    embed.add_field(inline=False, name=_("Reason:"), value=f"{reason}")
             if duration is not None:
                 embed.add_field(
-                    inline=False, name="Duration:", value=f"{parse_timedelta(duration)}"
+                    inline=False, name=_("Duration:"), value=f"{parse_timedelta(duration)}"
                 )
             if self.cogsutils.is_dpy2:
 
@@ -1027,7 +1025,7 @@ class SimpleSanction(settings, commands.Cog):
                         await interaction.response.send_message(
                             _(
                                 "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                            ).format(**locals()),
+                            ),
                             ephemeral=True,
                         )
 
@@ -1708,9 +1706,7 @@ class SimpleSanction(settings, commands.Cog):
                 # cancel_others=True prevents all on_click-functions under this function from working
                 # regardless of their checks
                 # reset_timeout=False makes the timer keep going after this function is called
-                await inter.respond(
-                    _("You are not the author of this command.").format(**locals()), ephemeral=True
-                )
+                await inter.respond(_("You are not the author of this command."), ephemeral=True)
 
             @on_click.matching_id("userinfo_button")
             async def on_userinfo_button(inter):
@@ -1719,7 +1715,7 @@ class SimpleSanction(settings, commands.Cog):
                     await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ).format(**locals()),
+                        ),
                         ephemeral=True,
                     )
                 action = 1
@@ -1746,7 +1742,7 @@ class SimpleSanction(settings, commands.Cog):
                     await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ).format(**locals()),
+                        ),
                         ephemeral=True,
                     )
                 action = 2
@@ -1773,7 +1769,7 @@ class SimpleSanction(settings, commands.Cog):
                     await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ).format(**locals()),
+                        ),
                         ephemeral=True,
                     )
                 action = 3
@@ -1800,7 +1796,7 @@ class SimpleSanction(settings, commands.Cog):
                     await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ).format(**locals()),
+                        ),
                         ephemeral=True,
                     )
                 action = 4
@@ -1827,7 +1823,7 @@ class SimpleSanction(settings, commands.Cog):
                     await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ).format(**locals()),
+                        ),
                         ephemeral=True,
                     )
                 action = 5
@@ -1854,7 +1850,7 @@ class SimpleSanction(settings, commands.Cog):
                     await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ).format(**locals()),
+                        ),
                         ephemeral=True,
                     )
                 action = 6
@@ -1881,7 +1877,7 @@ class SimpleSanction(settings, commands.Cog):
                     await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ).format(**locals()),
+                        ),
                         ephemeral=True,
                     )
                 action = 7
@@ -1908,7 +1904,7 @@ class SimpleSanction(settings, commands.Cog):
                     await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ).format(**locals()),
+                        ),
                         ephemeral=True,
                     )
                 action = 8
@@ -1935,7 +1931,7 @@ class SimpleSanction(settings, commands.Cog):
                     await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ).format(**locals()),
+                        ),
                         ephemeral=True,
                     )
                 action = 9
@@ -1962,7 +1958,7 @@ class SimpleSanction(settings, commands.Cog):
                     await inter.respond(
                         _(
                             "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ).format(**locals()),
+                        ),
                         ephemeral=True,
                     )
                 action = 10
@@ -2052,7 +2048,7 @@ class SimpleSanction(settings, commands.Cog):
             message = await utils.finish_message(
                 ctx,
                 finish_message,
-                _("Sanctioning a member - :information_source: UserInfo").format(**locals()),
+                _("Sanctioning a member - ℹ️ UserInfo"),
                 _("Here is the information about the user {user.name}!").format(**locals()),
                 actual_thumbnail,
                 actual_color,
@@ -2064,9 +2060,7 @@ class SimpleSanction(settings, commands.Cog):
             if not fake_action:
                 if not ctx.bot.get_cog("Mod"):
                     await ctx.send(
-                        _(
-                            "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`."
-                        ).format(**locals())
+                        _("The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`.")
                     )
                 command = f"userinfo {user.id}"
                 await self.cogsutils.invoke_command(
@@ -2086,20 +2080,18 @@ class SimpleSanction(settings, commands.Cog):
                     ctx,
                     reason,
                     actual_reason_required,
-                    _("Sanctioning a member - :warning: Warn").format(**locals()),
-                    _(
-                        "Why do you want warn {user}? (Set `cancel` to cancel or `not` for none)"
-                    ).format(**locals()),
+                    _("Sanctioning a member - ⚠️ Warn").format(**locals()),
+                    _("Why do you want warn {user}? (Set `cancel` to cancel or `not` for none)"),
                     actual_color,
                     user,
                     actual_timeout,
                 )
-            except Timeout_or_Cancel:
+            except TimeoutError:
                 return
             confirmation = await utils.confirmation_ask(
                 ctx,
                 confirmation,
-                _("Sanctioning a member - :warning: Warn").format(**locals()),
+                _("Sanctioning a member - ⚠️ Warn"),
                 _("Do you really want to warn {user}?").format(**locals()),
                 actual_color,
                 user,
@@ -2112,7 +2104,7 @@ class SimpleSanction(settings, commands.Cog):
             message = await utils.finish_message(
                 ctx,
                 finish_message,
-                _("Sanctioning a member - :warning: Warn").format(**locals()),
+                _("Sanctioning a member - ⚠️ Warn"),
                 _("The user {user} has been received a warning!").format(**locals()),
                 actual_thumbnail,
                 actual_color,
@@ -2127,7 +2119,7 @@ class SimpleSanction(settings, commands.Cog):
                         await ctx.send(
                             _(
                                 "The cog Warnings is not loaded. To load it, do `{ctx.prefix}load warnings`. You can also install/load the WarnSystem cog."
-                            ).format(**locals())
+                            )
                         )
                     if reason == "not":
                         command = "warn {user.id} The reason was not given."
@@ -2155,7 +2147,7 @@ class SimpleSanction(settings, commands.Cog):
                     ctx,
                     reason,
                     actual_reason_required,
-                    _("Sanctioning a member - :hammer: Ban").format(**locals()),
+                    _("Sanctioning a member - 🔨 Ban"),
                     _(
                         "Why do you want to ban {user}? (Set `cancel` to cancel or `not` to none)"
                     ).format(**locals()),
@@ -2163,12 +2155,12 @@ class SimpleSanction(settings, commands.Cog):
                     user,
                     actual_timeout,
                 )
-            except Timeout_or_Cancel:
+            except TimeoutError:
                 return
             confirmation = await utils.confirmation_ask(
                 ctx,
                 confirmation,
-                _("Sanctioning a member - :hammer: Ban").format(**locals()),
+                _("Sanctioning a member - 🔨 Ban"),
                 _("Do you really want to ban {user}?").format(**locals()),
                 actual_color,
                 user,
@@ -2181,7 +2173,7 @@ class SimpleSanction(settings, commands.Cog):
             message = await utils.finish_message(
                 ctx,
                 finish_message,
-                _("Sanctioning a member - :hammer: Ban").format(**locals()),
+                _("Sanctioning a member - 🔨 Ban"),
                 _("The user {user} has been banned!").format(**locals()),
                 actual_thumbnail,
                 actual_color,
@@ -2224,7 +2216,7 @@ class SimpleSanction(settings, commands.Cog):
                     ctx,
                     reason,
                     actual_reason_required,
-                    _("Sanctioning a member - :repeat_one: SoftBan").format(**locals()),
+                    _("Sanctioning a member - 🔂 SoftBan"),
                     _(
                         "Why do you want to softban {user}? (Set `cancel` to cancel or `not` to none)"
                     ).format(**locals()),
@@ -2232,12 +2224,12 @@ class SimpleSanction(settings, commands.Cog):
                     user,
                     actual_timeout,
                 )
-            except Timeout_or_Cancel:
+            except TimeoutError:
                 return
             confirmation = await utils.confirmation_ask(
                 ctx,
                 confirmation,
-                _("Sanctioning a member - :repeat_one: SoftBan").format(**locals()),
+                _("Sanctioning a member - 🔂 SoftBan"),
                 _("Do you really want to softban {user}?").format(**locals()),
                 actual_color,
                 user,
@@ -2250,7 +2242,7 @@ class SimpleSanction(settings, commands.Cog):
             message = await utils.finish_message(
                 ctx,
                 finish_message,
-                _("Sanctioning a member - :repeat_one: SoftBan").format(**locals()),
+                _("Sanctioning a member - 🔂 SoftBan"),
                 _("The user {user} has been softbanned!").format(**locals()),
                 actual_thumbnail,
                 actual_color,
@@ -2292,7 +2284,7 @@ class SimpleSanction(settings, commands.Cog):
                 duration = await utils.duration_ask(
                     ctx,
                     duration,
-                    _("Sanctioning a member - :dash: TempBan").format(**locals()),
+                    _("Sanctioning a member - 💨 TempBan"),
                     _("How long do you want to tempban {user}? (Set `cancel` to cancel)").format(
                         **locals()
                     ),
@@ -2300,14 +2292,14 @@ class SimpleSanction(settings, commands.Cog):
                     user,
                     actual_timeout,
                 )
-            except Timeout_or_Cancel:
+            except TimeoutError:
                 return
             try:
                 reason = await utils.reason_ask(
                     ctx,
                     reason,
                     actual_reason_required,
-                    _("Sanctioning a member - :dash: TempBan").format(**locals()),
+                    _("Sanctioning a member - 💨 TempBan"),
                     _(
                         "Why do you want to tempban {user}? (Set `cancel` to cancel or `not` to none)"
                     ).format(**locals()),
@@ -2315,12 +2307,12 @@ class SimpleSanction(settings, commands.Cog):
                     user,
                     actual_timeout,
                 )
-            except Timeout_or_Cancel:
+            except TimeoutError:
                 return
             confirmation = await utils.confirmation_ask(
                 ctx,
                 confirmation,
-                _("Sanctioning a member - :dash: TempBan"),
+                _("Sanctioning a member - 💨 TempBan"),
                 _("Do you really want to tempban {user}?").format(**locals()),
                 actual_color,
                 user,
@@ -2333,7 +2325,7 @@ class SimpleSanction(settings, commands.Cog):
             message = await utils.finish_message(
                 ctx,
                 finish_message,
-                _("Sanctioning a member - :dash: TempBan"),
+                _("Sanctioning a member - 💨 TempBan"),
                 _("The user {user} has been tempban!").format(**locals()),
                 actual_thumbnail,
                 actual_color,
@@ -2376,7 +2368,7 @@ class SimpleSanction(settings, commands.Cog):
                     ctx,
                     reason,
                     actual_reason_required,
-                    _("Sanctioning a member - :boot: Kick").format(**locals()),
+                    _("Sanctioning a member - 👢 Kick"),
                     _(
                         "Why do you want to kick {user}? (Set `cancel` to cancel or `not` to none)"
                     ).format(**locals()),
@@ -2384,12 +2376,12 @@ class SimpleSanction(settings, commands.Cog):
                     user,
                     actual_timeout,
                 )
-            except Timeout_or_Cancel:
+            except TimeoutError:
                 return
             confirmation = await utils.confirmation_ask(
                 ctx,
                 confirmation,
-                _("Sanctioning a member - :boot: Kick").format(**locals()),
+                _("Sanctioning a member - 👢 Kick"),
                 _(
                     "Why do you want to kick {user}? (Set `cancel` to cancel or `not` to none)"
                 ).format(**locals()),
@@ -2404,7 +2396,7 @@ class SimpleSanction(settings, commands.Cog):
             message = await utils.finish_message(
                 ctx,
                 finish_message,
-                _("Sanctioning a member - :boot: Kick").format(**locals()),
+                _("Sanctioning a member - 👢 Kick"),
                 _("The user {user} has been kicked!").format(**locals()),
                 actual_thumbnail,
                 actual_color,
@@ -2447,7 +2439,7 @@ class SimpleSanction(settings, commands.Cog):
                     ctx,
                     reason,
                     actual_reason_required,
-                    _("Sanctioning a member - :mute: Mute").format(**locals()),
+                    _("Sanctioning a member - 🔇 Mute"),
                     _(
                         "Why do you want to mute {user}? (Set `cancel` to cancel or `not` to none)"
                     ).format(**locals()),
@@ -2455,12 +2447,12 @@ class SimpleSanction(settings, commands.Cog):
                     user,
                     actual_timeout,
                 )
-            except Timeout_or_Cancel:
+            except TimeoutError:
                 return
             confirmation = await utils.confirmation_ask(
                 ctx,
                 confirmation,
-                _("Sanctioning a member - :mute: Mute").format(**locals()),
+                _("Sanctioning a member - 🔇 Mute"),
                 _("Do you really want to mute {user}?").format(**locals()),
                 actual_color,
                 user,
@@ -2473,7 +2465,7 @@ class SimpleSanction(settings, commands.Cog):
             message = await utils.finish_message(
                 ctx,
                 finish_message,
-                _("Sanctioning a member - :mute: Mute").format(**locals()),
+                _("Sanctioning a member - 🔇 Mute"),
                 _("The user {user} has been muted!").format(**locals()),
                 actual_thumbnail,
                 actual_color,
@@ -2516,7 +2508,7 @@ class SimpleSanction(settings, commands.Cog):
                     ctx,
                     reason,
                     actual_reason_required,
-                    _("Sanctioning a member - :punch: MuteChannel").format(**locals()),
+                    _("Sanctioning a member - 👊 MuteChannel"),
                     _(
                         "Why do you want to mute {user} in {ctx.channel.mention}? (Set `cancel` to cancel or `not` to none)"
                     ).format(**locals()),
@@ -2524,12 +2516,12 @@ class SimpleSanction(settings, commands.Cog):
                     user,
                     actual_timeout,
                 )
-            except Timeout_or_Cancel:
+            except TimeoutError:
                 return
             confirmation = await utils.confirmation_ask(
                 ctx,
                 confirmation,
-                _("Sanctioning a member - :punch: MuteChannel").format(**locals()),
+                _("Sanctioning a member - 👊 MuteChannel"),
                 _("Do you really want to mute {user} in {ctx.channel.mention}?").format(
                     **locals()
                 ),
@@ -2544,7 +2536,7 @@ class SimpleSanction(settings, commands.Cog):
             message = await utils.finish_message(
                 ctx,
                 finish_message,
-                _("Sanctioning a member - :punch: MuteChannel").format(**locals()),
+                _("Sanctioning a member - 👊 MuteChannel"),
                 _("The user {user} has been muted in #{ctx.channel.name}!").format(**locals()),
                 actual_thumbnail,
                 actual_color,
@@ -2580,9 +2572,7 @@ class SimpleSanction(settings, commands.Cog):
                 duration = await utils.duration_ask(
                     ctx,
                     duration,
-                    _("Sanctioning a member - :hourglass_flowing_sand: TempMute").format(
-                        **locals()
-                    ),
+                    _("Sanctioning a member - ⏳ TempMute"),
                     _("How long do you want to tempmute {user}? (Set `cancel` to cancel)").format(
                         **locals()
                     ),
@@ -2590,16 +2580,14 @@ class SimpleSanction(settings, commands.Cog):
                     user,
                     actual_timeout,
                 )
-            except Timeout_or_Cancel:
+            except TimeoutError:
                 return
             try:
                 reason = await utils.reason_ask(
                     ctx,
                     reason,
                     actual_reason_required,
-                    _("Sanctioning a member - :hourglass_flowing_sand: TempMute").format(
-                        **locals()
-                    ),
+                    _("Sanctioning a member - ⏳ TempMute"),
                     _(
                         "Why do you want to tempmute {user}? (Set `cancel` to cancel or `not` to none)"
                     ).format(**locals()),
@@ -2607,12 +2595,12 @@ class SimpleSanction(settings, commands.Cog):
                     user,
                     actual_timeout,
                 )
-            except Timeout_or_Cancel:
+            except TimeoutError:
                 return
             confirmation = await utils.confirmation_ask(
                 ctx,
                 confirmation,
-                _("Sanctioning a member - :hourglass_flowing_sand: TempMute").format(**locals()),
+                _("Sanctioning a member - ⏳ TempMute"),
                 _("Do you really want to tempmute {user}?").format(**locals()),
                 actual_color,
                 user,
@@ -2625,7 +2613,7 @@ class SimpleSanction(settings, commands.Cog):
             message = await utils.finish_message(
                 ctx,
                 finish_message,
-                _("Sanctioning a member - :hourglass_flowing_sand: TempMute").format(**locals()),
+                _("Sanctioning a member - ⏳ TempMute"),
                 _("The user {user} has been tempmuted!").format(**locals()),
                 actual_thumbnail,
                 actual_color,
@@ -2667,7 +2655,7 @@ class SimpleSanction(settings, commands.Cog):
                 duration = await utils.duration_ask(
                     ctx,
                     duration,
-                    _("Sanctioning a member - :hourglass: TempMuteChannel").format(**locals()),
+                    _("Sanctioning a member - ⌛ TempMuteChannel"),
                     _(
                         "How long do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` to cancel)"
                     ).format(**locals()),
@@ -2675,14 +2663,14 @@ class SimpleSanction(settings, commands.Cog):
                     user,
                     actual_timeout,
                 )
-            except Timeout_or_Cancel:
+            except TimeoutError:
                 return
             try:
                 reason = await utils.reason_ask(
                     ctx,
                     reason,
                     actual_reason_required,
-                    _("Sanctioning a member - :hourglass: TempMuteChannel").format(**locals()),
+                    _("Sanctioning a member - ⌛ TempMuteChannel"),
                     _(
                         "Why do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` to cancel or `not` to none)"
                     ).format(**locals()),
@@ -2690,12 +2678,12 @@ class SimpleSanction(settings, commands.Cog):
                     user,
                     actual_timeout,
                 )
-            except Timeout_or_Cancel:
+            except TimeoutError:
                 return
             confirmation = await utils.confirmation_ask(
                 ctx,
                 confirmation,
-                _("Sanctioning a member - :hourglass: TempMuteChannel").format(**locals()),
+                _("Sanctioning a member - ⌛ TempMuteChannel"),
                 _("Do you really want to tempmute {user} in {ctx.channel.mention}?").format(
                     **locals()
                 ),
@@ -2710,7 +2698,7 @@ class SimpleSanction(settings, commands.Cog):
             message = await utils.finish_message(
                 ctx,
                 finish_message,
-                _("Sanctioning a member - :hourglass: TempMuteChannel").format(**locals()),
+                _("Sanctioning a member - ⌛ TempMuteChannel"),
                 _("The user {user} has been tempmuted in #{ctx.channel.name}!").format(**locals()),
                 actual_thumbnail,
                 actual_color,

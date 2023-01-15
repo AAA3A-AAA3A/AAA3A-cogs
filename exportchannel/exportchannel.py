@@ -26,6 +26,8 @@ else:
     hybrid_command = commands.command
     hybrid_group = commands.group
 
+RESULT_MESSAGE = "Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nThere are {count_messages} exported messages.\nRemember that exporting other users' messages from Discord does not respect the TOS."
+
 
 @cog_i18n(_)
 class ExportChannel(commands.Cog):
@@ -36,8 +38,21 @@ class ExportChannel(commands.Cog):
 
         self.cogsutils = CogsUtils(cog=self)
 
+    async def check_channel(self, ctx: commands.Context, channel: discord.TextChannel):
+        if not self.cogsutils.check_permissions_for(
+            channel=channel,
+            user=ctx.me,
+            check=["view_channel", "read_messages", "read_message_history"],
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
+                ).format()
+            )
+
     async def get_messages(
         self,
+        ctx: commands.Context,
         channel: discord.TextChannel,
         number: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
@@ -59,7 +74,30 @@ class ExportChannel(commands.Cog):
             messages.append(message)
             if number is not None and number <= len(messages):
                 break
-        return messages
+        messages = [message for message in messages if not message.id == ctx.message.id]
+        count_messages = len(messages)
+        if count_messages == 0:
+            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message."))
+        return count_messages, messages
+
+    async def export_messages(self, ctx: commands.Context, channel: discord.TextChannel, **kwargs):
+        count_messages, messages = await self.get_messages(ctx, channel=channel, **kwargs)
+        if self.cogsutils.is_dpy2:
+            transcript = await chat_exporter.raw_export(
+                channel=channel,
+                messages=messages,
+                tz_info="UTC",
+                guild=channel.guild,
+                bot=ctx.bot,
+            )
+        else:
+            transcript = await chat_exporter.raw_export(
+                channel=channel, messages=messages, guild=channel.guild
+            )
+        file = discord.File(
+            io.BytesIO(transcript.encode()), filename=f"transcript-{channel.id}.html"
+        )
+        return count_messages, messages, file
 
     @commands.guild_only()
     @commands.guildowner_or_permissions(administrator=True)
@@ -78,42 +116,9 @@ class ExportChannel(commands.Cog):
         """
         if channel is None:
             channel = ctx.channel
-        if not self.cogsutils.check_permissions_for(
-            channel=channel,
-            user=ctx.me,
-            check=["view_channel", "read_messages", "read_message_history"],
-        ):
-            raise commands.UserFeedbackCheckFailure(
-                _(
-                    "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
-                ).format()
-            )
-        messages = await self.get_messages(channel=channel)
-        messages = [message for message in messages if not message.id == ctx.message.id]
-        count_messages = len(messages)
-        if count_messages == 0:
-            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
-        if self.cogsutils.is_dpy2:
-            transcript = await chat_exporter.raw_export(
-                channel=channel,
-                messages=messages,
-                tz_info="UTC",
-                guild=channel.guild,
-                bot=ctx.bot,
-            )
-        else:
-            transcript = await chat_exporter.raw_export(
-                channel=channel, messages=messages, guild=channel.guild
-            )
-        file = discord.File(
-            io.BytesIO(transcript.encode()), filename=f"transcript-{channel.id}.html"
-        )
-        await ctx.send(
-            _(
-                "Here is the html file of the transcript of all the messages in the channel {channel.mention} ({channel.id}).\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nThere are {count_messages} exported messages.\nRemember that exporting other users' messages from Discord does not respect the TOS."
-            ).format(**locals()),
-            file=file,
-        )
+        await self.check_channel(ctx, channel)
+        count_messages, messages, file = await self.export_messages(ctx, channel=channel)
+        await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
 
     @exportchannel.command()
     async def messages(
@@ -127,44 +132,11 @@ class ExportChannel(commands.Cog):
         """
         if channel is None:
             channel = ctx.channel
-        if not self.cogsutils.check_permissions_for(
-            channel=channel,
-            user=ctx.me,
-            check=["view_channel", "read_messages", "read_message_history"],
-        ):
-            raise commands.UserFeedbackCheckFailure(
-                _(
-                    "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
-                ).format()
-            )
-        messages = await self.get_messages(
-            channel=channel, limit=limit if not channel == ctx.channel else limit + 1
+        await self.check_channel(ctx, channel)
+        count_messages, messages, file = await self.export_messages(
+            ctx, channel=channel, limit=limit if not channel == ctx.channel else limit + 1
         )
-        messages = [message for message in messages if not message.id == ctx.message.id]
-        count_messages = len(messages)
-        if count_messages == 0:
-            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
-        if self.cogsutils.is_dpy2:
-            transcript = await chat_exporter.raw_export(
-                channel=channel,
-                messages=messages,
-                tz_info="UTC",
-                guild=channel.guild,
-                bot=ctx.bot,
-            )
-        else:
-            transcript = await chat_exporter.raw_export(
-                channel=channel, messages=messages, guild=channel.guild
-            )
-        file = discord.File(
-            io.BytesIO(transcript.encode()), filename=f"transcript-{channel.id}.html"
-        )
-        await ctx.send(
-            _(
-                "Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nRemember that exporting other users' messages from Discord does not respect the TOS."
-            ).format(**locals()),
-            file=file,
-        )
+        await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
 
     @exportchannel.command()
     async def before(
@@ -181,40 +153,11 @@ class ExportChannel(commands.Cog):
         """
         if channel is None:
             channel = ctx.channel
-        if not self.cogsutils.check_permissions_for(
-            channel=channel,
-            user=ctx.me,
-            check=["view_channel", "read_messages", "read_message_history"],
-        ):
-            raise commands.UserFeedbackCheckFailure(
-                _(
-                    "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
-                ).format()
-            )
-        messages = await self.get_messages(channel=channel, before=before)
-        messages = [message for message in messages if not message.id == ctx.message.id]
-        count_messages = len(messages)
-        if self.cogsutils.is_dpy2:
-            transcript = await chat_exporter.raw_export(
-                channel=channel,
-                messages=messages,
-                tz_info="UTC",
-                guild=channel.guild,
-                bot=ctx.bot,
-            )
-        else:
-            transcript = await chat_exporter.raw_export(
-                channel=channel, messages=messages, guild=channel.guild
-            )
-        file = discord.File(
-            io.BytesIO(transcript.encode()), filename=f"transcript-{channel.id}.html"
+        await self.check_channel(ctx, channel)
+        count_messages, messages, file = await self.export_messages(
+            ctx, channel=channel, before=before
         )
-        await ctx.send(
-            _(
-                "Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nRemember that exporting other users' messages from Discord does not respect the TOS."
-            ).format(**locals()),
-            file=file,
-        )
+        await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
 
     @exportchannel.command()
     async def after(
@@ -231,42 +174,11 @@ class ExportChannel(commands.Cog):
         """
         if channel is None:
             channel = ctx.channel
-        if not self.cogsutils.check_permissions_for(
-            channel=channel,
-            user=ctx.me,
-            check=["view_channel", "read_messages", "read_message_history"],
-        ):
-            raise commands.UserFeedbackCheckFailure(
-                _(
-                    "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
-                ).format()
-            )
-        messages = await self.get_messages(channel=channel, after=after)
-        messages = [message for message in messages if not message.id == ctx.message.id]
-        count_messages = len(messages)
-        if count_messages == 0:
-            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
-        if self.cogsutils.is_dpy2:
-            transcript = await chat_exporter.raw_export(
-                channel=channel,
-                messages=messages,
-                tz_info="UTC",
-                guild=channel.guild,
-                bot=ctx.bot,
-            )
-        else:
-            transcript = await chat_exporter.raw_export(
-                channel=channel, messages=messages, guild=channel.guild
-            )
-        file = discord.File(
-            io.BytesIO(transcript.encode()), filename=f"transcript-{channel.id}.html"
+        await self.check_channel(ctx, channel)
+        count_messages, messages, file = await self.export_messages(
+            ctx, channel=channel, after=after
         )
-        await ctx.send(
-            _(
-                "Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nRemember that exporting other users' messages from Discord does not respect the TOS."
-            ).format(**locals()),
-            file=file,
-        )
+        await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
 
     @exportchannel.command()
     async def between(
@@ -284,42 +196,11 @@ class ExportChannel(commands.Cog):
         """
         if channel is None:
             channel = ctx.channel
-        if not self.cogsutils.check_permissions_for(
-            channel=channel,
-            user=ctx.me,
-            check=["view_channel", "read_messages", "read_message_history"],
-        ):
-            raise commands.UserFeedbackCheckFailure(
-                _(
-                    "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
-                ).format()
-            )
-        messages = await self.get_messages(channel=channel, before=before, after=after)
-        messages = [message for message in messages if not message.id == ctx.message.id]
-        count_messages = len(messages)
-        if count_messages == 0:
-            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
-        if self.cogsutils.is_dpy2:
-            transcript = await chat_exporter.raw_export(
-                channel=channel,
-                messages=messages,
-                tz_info="UTC",
-                guild=channel.guild,
-                bot=ctx.bot,
-            )
-        else:
-            transcript = await chat_exporter.raw_export(
-                channel=channel, messages=messages, guild=channel.guild
-            )
-        file = discord.File(
-            io.BytesIO(transcript.encode()), filename=f"transcript-{channel.id}.html"
+        await self.check_channel(ctx, channel)
+        count_messages, messages, file = await self.export_messages(
+            ctx, channel=channel, before=before, after=after
         )
-        await ctx.send(
-            _(
-                "Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nRemember that exporting other users' messages from Discord does not respect the TOS."
-            ).format(**locals()),
-            file=file,
-        )
+        await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
 
     @exportchannel.command()
     async def user(
@@ -337,46 +218,14 @@ class ExportChannel(commands.Cog):
         """
         if channel is None:
             channel = ctx.channel
-        if not self.cogsutils.check_permissions_for(
-            channel=channel,
-            user=ctx.me,
-            check=["view_channel", "read_messages", "read_message_history"],
-        ):
-            raise commands.UserFeedbackCheckFailure(
-                _(
-                    "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
-                ).format()
-            )
-        messages = await self.get_messages(
+        await self.check_channel(ctx, channel)
+        count_messages, messages, file = await self.export_messages(
+            ctx,
             channel=channel,
             user_id=user.id if isinstance(user, discord.Member) else user,
             limit=limit,
         )
-        messages = [message for message in messages if not message.id == ctx.message.id]
-        count_messages = len(messages)
-        if count_messages == 0:
-            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
-        if self.cogsutils.is_dpy2:
-            transcript = await chat_exporter.raw_export(
-                channel=channel,
-                messages=messages,
-                tz_info="UTC",
-                guild=channel.guild,
-                bot=ctx.bot,
-            )
-        else:
-            transcript = await chat_exporter.raw_export(
-                channel=channel, messages=messages, guild=channel.guild
-            )
-        file = discord.File(
-            io.BytesIO(transcript.encode()), filename=f"transcript-{channel.id}.html"
-        )
-        await ctx.send(
-            _(
-                "Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nRemember that exporting other users' messages from Discord does not respect the TOS."
-            ).format(**locals()),
-            file=file,
-        )
+        await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
 
     @exportchannel.command()
     async def bot(
@@ -394,39 +243,8 @@ class ExportChannel(commands.Cog):
         """
         if channel is None:
             channel = ctx.channel
-        if not self.cogsutils.check_permissions_for(
-            channel=channel,
-            user=ctx.me,
-            check=["view_channel", "read_messages", "read_message_history"],
-        ):
-            raise commands.UserFeedbackCheckFailure(
-                _(
-                    "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
-                ).format()
-            )
-        messages = await self.get_messages(channel=channel, bot=bot, limit=limit)
-        messages = [message for message in messages if not message.id == ctx.message.id]
-        count_messages = len(messages)
-        if count_messages == 0:
-            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message.").format(**locals()))
-        if self.cogsutils.is_dpy2:
-            transcript = await chat_exporter.raw_export(
-                channel=channel,
-                messages=messages,
-                tz_info="UTC",
-                guild=channel.guild,
-                bot=ctx.bot,
-            )
-        else:
-            transcript = await chat_exporter.raw_export(
-                channel=channel, messages=messages, guild=channel.guild
-            )
-        file = discord.File(
-            io.BytesIO(transcript.encode()), filename=f"transcript-{channel.id}.html"
+        await self.check_channel(ctx, channel)
+        count_messages, messages, file = await self.export_messages(
+            ctx, channel=channel, bot=bot, limit=limit
         )
-        await ctx.send(
-            _(
-                "Here is the html file of the transcript of part the messages in the channel {channel.mention} ({channel.id}).\nThere are {count_messages} exported messages.\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nRemember that exporting other users' messages from Discord does not respect the TOS."
-            ).format(**locals()),
-            file=file,
-        )
+        await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)

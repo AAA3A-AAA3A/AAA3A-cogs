@@ -51,9 +51,9 @@ class settings(commands.Cog):
             embed: discord.Embed = discord.Embed()
             embed.color = actual_color
             embed.set_thumbnail(url=actual_thumbnail)
-            embed.title = _("Configure the embed").format(**locals())
-            embed.description = _("Reset color:").format(**locals())
-            embed.add_field(name=_("Color:").format(**locals()), value=f"{actual_color}")
+            embed.title = _("Configure the embed")
+            embed.description = _("Reset color:")
+            embed.add_field(name=_("Color:"), value=f"{actual_color}")
             message = await ctx.send(embed=embed)
             return
 
@@ -62,11 +62,11 @@ class settings(commands.Cog):
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
         embed: discord.Embed = discord.Embed()
-        embed.title = _("Configure the embed").format(**locals())
-        embed.description = _("Set color:").format(**locals())
+        embed.title = _("Configure the embed")
+        embed.description = _("Set color:")
         embed.color = actual_color
         embed.set_thumbnail(url=actual_thumbnail)
-        embed.add_field(name=_("Color:").format(**locals()), value=f"{actual_color}")
+        embed.add_field(name=_("Color:"), value=f"{actual_color}")
         message = await ctx.send(embed=embed)
 
     @configuration.command(aliases=["picture", "thumb", "link"], usage="<link_or_'none'>")
@@ -83,11 +83,11 @@ class settings(commands.Cog):
             actual_thumbnail = config["thumbnail"]
             actual_color = config["color"]
             embed: discord.Embed = discord.Embed()
-            embed.title = _("Configure the embed").format(**locals())
-            embed.description = _("Reset thumbnail:").format(**locals())
+            embed.title = _("Configure the embed")
+            embed.description = _("Reset thumbnail:")
             embed.set_thumbnail(url=actual_thumbnail)
             embed.color = actual_color
-            embed.add_field(name=_("Thumbnail:").format(**locals()), value=f"{actual_thumbnail}")
+            embed.add_field(name=_("Thumbnail:"), value=f"{actual_thumbnail}")
             message = await ctx.send(embed=embed)
             return
 
@@ -96,11 +96,11 @@ class settings(commands.Cog):
         actual_thumbnail = config["thumbnail"]
         actual_color = config["color"]
         embed: discord.Embed = discord.Embed()
-        embed.title = _("Configure the embed").format(**locals())
-        embed.description = _("Set thumbnail:").format(**locals())
+        embed.title = _("Configure the embed")
+        embed.description = _("Set thumbnail:")
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
-        embed.add_field(name=_("Thumbnail:").format(**locals()), value=f"{actual_thumbnail}")
+        embed.add_field(name=_("Thumbnail:"), value=f"{actual_thumbnail}")
         message = await ctx.send(embed=embed)
 
     @configuration.command(name="showauthor", aliases=["authorshow"], usage="<true_or_false>")
@@ -252,7 +252,7 @@ class settings(commands.Cog):
         actual_timeout = config["timeout"]
         if timeout is None:
             await self.config.guild(ctx.guild).timeout.clear()
-            await ctx.send(_("Timeout restored.").format(**locals()))
+            await ctx.send(_("Timeout restored."))
             return
         if actual_timeout is timeout:
             await ctx.send(_("Timeout is already set on {timeout}.").format(**locals()))

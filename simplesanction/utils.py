@@ -1,12 +1,10 @@
 from .AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 
 import asyncio
 
 from redbot.core.commands.converter import parse_timedelta
-from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate
 
 if not CogsUtils().is_dpy2:
@@ -15,7 +13,7 @@ if not CogsUtils().is_dpy2:
 _ = Translator("SimpleSanction", __file__)
 
 
-class utils(commands.Cog):
+class utils:
     async def emojis(disabled: bool):
         buttons = [
             "userinfo_button",
@@ -140,7 +138,7 @@ class utils(commands.Cog):
                     if msg.content.lower() == "cancel":
                         await CogsUtils().delete_message(message)
                         await CogsUtils().delete_message(msg)
-                        raise Timeout_or_Cancel
+                        raise TimeoutError()
                     if msg.content.lower() == "not":
                         reason = "not"
                         return reason
@@ -150,8 +148,8 @@ class utils(commands.Cog):
                         reason = msg.content
                         return reason
                 except asyncio.TimeoutError:
-                    await ctx.send(_("Timed out, please try again.").format(**locals()))
-                    raise Timeout_or_Cancel
+                    await ctx.send(_("Timed out, please try again."))
+                    raise TimeoutError()
             else:
                 reason = "not"
                 return reason
@@ -180,14 +178,14 @@ class utils(commands.Cog):
                 if msg.content.lower() == "cancel":
                     await CogsUtils().delete_message(message)
                     await CogsUtils().delete_message(msg)
-                    raise Timeout_or_Cancel
+                    raise TimeoutError()
                 await CogsUtils().delete_message(message)
                 await CogsUtils().delete_message(msg)
                 duration = msg.content
                 return duration
             except asyncio.TimeoutError:
-                await ctx.send(_("Timed out, please try again.").format(**locals()))
-                raise Timeout_or_Cancel
+                await ctx.send(_("Timed out, please try again."))
+                raise TimeoutError()
         else:
             return duration
 
@@ -208,7 +206,7 @@ class utils(commands.Cog):
                 embed.add_field(
                     inline=False,
                     name="Reason:",
-                    value=_("The reason was not given.").format(**locals()),
+                    value=_("The reason was not given."),
                 )
             else:
                 embed.add_field(inline=False, name="Reason:", value=f"{reason}")
@@ -216,14 +214,14 @@ class utils(commands.Cog):
                 if not duration == "Infinity":
                     embed.add_field(
                         inline=False,
-                        name=_("Duration:").format(**locals()),
+                        name=_("Duration:"),
                         value=f"{parse_timedelta(duration)}",
                     )
                 else:
                     embed.add_field(
                         inline=False,
-                        name=_("Duration:").format(**locals()),
-                        value=_("Infinity").format(**locals()),
+                        name=_("Duration:"),
+                        value=_("Infinity"),
                     )
             return await CogsUtils(bot=ctx.bot).ConfirmationAsk(ctx=ctx, embed=embed)
 
@@ -267,24 +265,18 @@ class utils(commands.Cog):
                 ),
             )
             if reason is not None:
-                embed.add_field(name=_("Reason:").format(**locals()), value=f"{reason}")
+                embed.add_field(name=_("Reason:"), value=f"{reason}")
             if duration is not None:
                 if not duration == "Infinity":
                     embed.add_field(
                         inline=False,
-                        name=_("Duration:").format(**locals()),
+                        name=_("Duration:"),
                         value=f"{parse_timedelta(duration)}",
                     )
                 else:
                     embed.add_field(
                         inline=False,
-                        name=_("Duration:").format(**locals()),
-                        value=_("Infinity").format(**locals()),
+                        name=_("Duration:"),
+                        value=_("Infinity"),
                     )
             return await ctx.send(embed=embed)
-
-
-class Timeout_or_Cancel(Exception):
-    """An error raised in case the user respond not or cancel."""
-
-    pass

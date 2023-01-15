@@ -184,12 +184,20 @@ class ReactToCommand(commands.Cog):
         if f"{payload.channel_id}-{payload.message_id}" not in config:
             return
         emoji = payload.emoji
+
         class FakeContext:
-            def __init__(self, bot: Red, author: discord.Member, guild: discord.Guild, channel: discord.TextChannel):
+            def __init__(
+                self,
+                bot: Red,
+                author: discord.Member,
+                guild: discord.Guild,
+                channel: discord.TextChannel,
+            ):
                 self.bot = bot
                 self.author = author
                 self.guild = guild
                 self.channel = channel
+
         fake_context = FakeContext(self.bot, payload.member, guild, channel)
         emoji = await Emoji().convert(fake_context, emoji)
         emoji = f"{getattr(emoji, 'id', emoji)}"
@@ -226,14 +234,16 @@ class ReactToCommand(commands.Cog):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to add reactions and to see the messages in that channel."
-                ).format(**locals())
+                )
             )
         if not ctx.prefix == "/":
             msg = ctx.message
             msg.content = f"{ctx.prefix}{command}"
             new_ctx = await ctx.bot.get_context(msg)
             if not new_ctx.valid:
-                raise commands.UserFeedbackCheckFailure(_("You have not specified a correct command.").format(**locals()))
+                raise commands.UserFeedbackCheckFailure(
+                    _("You have not specified a correct command.")
+                )
         if getattr(ctx, "interaction", None) is None:
             try:
                 await ctx.message.add_reaction(emoji)
@@ -241,7 +251,7 @@ class ReactToCommand(commands.Cog):
                 raise commands.UserFeedbackCheckFailure(
                     _(
                         "An error has occurred. It is possible that the emoji you provided is invalid."
-                    ).format(**locals())
+                    )
                 )
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
@@ -255,11 +265,11 @@ class ReactToCommand(commands.Cog):
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
-                _("No command-reaction is configured for this message.").format(**locals())
+                _("No command-reaction is configured for this message.")
             )
         if f"{getattr(emoji, 'id', emoji)}" not in config[f"{message.channel.id}-{message.id}"]:
             raise commands.UserFeedbackCheckFailure(
-                _("I wasn't watching for this reaction on this message.").format(**locals())
+                _("I wasn't watching for this reaction on this message.")
             )
         del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
         if config[f"{message.channel.id}-{message.id}"] == {}:
@@ -276,7 +286,7 @@ class ReactToCommand(commands.Cog):
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
-                _("No command-reaction is configured for this message.").format(**locals())
+                _("No command-reaction is configured for this message.")
             )
         for react in config[f"{message.channel.id}-{message.id}"]:
             try:

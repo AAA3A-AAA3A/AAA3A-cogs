@@ -17,7 +17,7 @@ msgid "A cog to transfer all messages channel in a other channel!"
 msgstr ""
 
 #: clearchannel\clearchannel.py:65
-msgid ":warning: - ClearChannel"
+msgid "⚠️ - ClearChannel"
 msgstr ""
 
 #: clearchannel\clearchannel.py:66

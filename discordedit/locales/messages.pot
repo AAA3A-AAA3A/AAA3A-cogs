@@ -109,7 +109,7 @@ msgid "Delete role."
 msgstr ""
 
 #: discordedit\editrole.py:204
-msgid ":warning: - Delete role"
+msgid "⚠️ - Delete role"
 msgstr ""
 
 #: discordedit\editrole.py:205
@@ -219,7 +219,7 @@ msgid "Delete text channel."
 msgstr ""
 
 #: discordedit\edittextchannel.py:369
-msgid ":warning: - Delete text channel"
+msgid "⚠️ - Delete text channel"
 msgstr ""
 
 #: discordedit\edittextchannel.py:370
@@ -328,7 +328,7 @@ msgid "Delete voice channel."
 msgstr ""
 
 #: discordedit\editvoicechannel.py:301
-msgid ":warning: - Delete voice channel"
+msgid "⚠️ - Delete voice channel"
 msgstr ""
 
 #: discordedit\editvoicechannel.py:302

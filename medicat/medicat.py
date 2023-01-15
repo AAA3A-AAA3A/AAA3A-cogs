@@ -54,9 +54,9 @@ TEST_CHANNEL = 905737223348047914
 
 CUSTOM_COMMANDS = {
     "customtools": {
-        "title": _("Can I add my own bootable tools (iso, wim, vhd) or PortableApps softwares to Medicat USB?").format(
-            **locals()
-        ),
+        "title": _(
+            "Can I add my own bootable tools (iso, wim, vhd) or PortableApps softwares to Medicat USB?"
+        ).format(**locals()),
         "description": _(
             "Please feel free to modify MediCat to YOUR individual needs! 😄\nTo add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\nThen you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template.\nAbsolutely, I encourage it!"
         ).format(**locals()),
@@ -104,9 +104,9 @@ CUSTOM_COMMANDS = {
         ).format(**locals()),
     },
     "portableapps": {
-        "title": _("Can I run the PortableApps on my current PC without booting up MediCat?").format(
-            **locals()
-        ),
+        "title": _(
+            "Can I run the PortableApps on my current PC without booting up MediCat?"
+        ).format(**locals()),
         "description": _(
             "Yes, just mount the MediCat USB, and open Start.exe to launch the platform. These are the same exact apps that get loaded within Mini Windows 10. So if you update them, they will show up updated in Mini Windows 10 as well."
         ).format(**locals()),
@@ -327,7 +327,9 @@ class Medicat(commands.Cog):
     async def cog_load(self):
         await self.edit_config_schema()
         self.cogsutils.create_loop(function=self.ventoy_updates, name="Ventoy Updates", hours=1)
-        self.cogsutils.create_loop(function=self.bootables_tools_updates, name="Bootables Tools Updates", hours=1)
+        self.cogsutils.create_loop(
+            function=self.bootables_tools_updates, name="Bootables Tools Updates", hours=1
+        )
         self.CC_added: asyncio.Event = asyncio.Event()
         await self.add_custom_commands()
 
@@ -430,7 +432,14 @@ class Medicat(commands.Cog):
             )
         elif version is not None:
             for v in versions:
-                if str(v["ref"]).replace("refs/tags/", "").replace("v", "").replace("1.0.0", "1.0.").replace("beta", ".dev") == version:
+                if (
+                    str(v["ref"])
+                    .replace("refs/tags/", "")
+                    .replace("v", "")
+                    .replace("1.0.0", "1.0.")
+                    .replace("beta", ".dev")
+                    == version
+                ):
                     versions = [v]
                     break
             else:
@@ -482,7 +491,7 @@ class Medicat(commands.Cog):
                 icon_url="https://ventoy.net/static/img/ventoy.png?v=1",
             )
             embed.url = "https://www.ventoy.net/en/doc_news.html"
-            embed.title = f"Ventoy v{ventoy_version_str} has been released!"
+            embed.title = _("Ventoy v{ventoy_version_str} has been released!").format(**locals())
             embed.description = "New features:\n" + changelog
             embed.add_field(
                 name="More details:", value="https://www.ventoy.net/en/doc_news.html", inline=True
@@ -501,7 +510,7 @@ class Medicat(commands.Cog):
                         buttons=[
                             {
                                 "style": 5,
-                                "label": "View on Ventoy Official Website",
+                                "label": _("View on Ventoy Official Website"),
                                 "url": "https://www.ventoy.net/en/doc_news.html",
                             }
                         ],
@@ -532,7 +541,7 @@ class Medicat(commands.Cog):
                         buttons=[
                             {
                                 "style": 5,
-                                "label": "View on Ventoy Official Website",
+                                "label": _("View on Ventoy Official Website"),
                                 "url": "https://www.ventoy.net/en/doc_news.html",
                             }
                         ],
@@ -609,13 +618,17 @@ class Medicat(commands.Cog):
                 icon_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg",
             )
             embed.url = url
-            embed.title = f"{tool} now has a new version!"
+            embed.title = _("{tool} now has a new version!").format(**locals())
             embed.description = f"[View on FCportables!]({url})"
             embed.add_field(name="Old version:", value=last_tool_version_str, inline=True)
             embed.add_field(name="New version:", value=tool_version_str, inline=True)
-            embed.add_field(name="Category in Medicat USB:", value=BOOTABLES_TOOLS[tool]["category"], inline=False)
+            embed.add_field(
+                name="Category in Medicat USB:",
+                value=BOOTABLES_TOOLS[tool]["category"],
+                inline=False,
+            )
 
-            role = guild.get_role(BOOTABLES_TOOLS_UPDATE_ROLE) if ping_role else role
+            role = guild.get_role(BOOTABLES_TOOLS_UPDATE_ROLE) if ping_role else None
             try:
                 hook: discord.Webhook = await self.cogsutils.get_hook(channel)
                 if self.cogsutils.is_dpy2:
@@ -624,7 +637,7 @@ class Medicat(commands.Cog):
                         buttons=[
                             {
                                 "style": 5,
-                                "label": "View on FCportables Official Website",
+                                "label": _("View on FCportables Official Website"),
                                 "url": url,
                             }
                         ],
@@ -655,7 +668,7 @@ class Medicat(commands.Cog):
                         buttons=[
                             {
                                 "style": 5,
-                                "label": "View on FCportables Official Website",
+                                "label": _("View on FCportables Official Website"),
                                 "url": url,
                             }
                         ],
@@ -726,13 +739,8 @@ class Medicat(commands.Cog):
 
                 async def CC(self, ctx: commands.Context):
                     embed: discord.Embed = discord.Embed()
-                    embed.set_thumbnail(
-                        url=MEDICAT_LOGO
-                    )
-                    embed.set_footer(
-                        text="Medicat USB Official",
-                        icon_url=MEDICAT_LOGO
-                    )
+                    embed.set_thumbnail(url=MEDICAT_LOGO)
+                    embed.set_footer(text="Medicat USB Official", icon_url=MEDICAT_LOGO)
                     embed.title = CUSTOM_COMMANDS[ctx.command.name]["title"]
                     embed.description = CUSTOM_COMMANDS[ctx.command.name]["description"]
                     await ctx.send(embed=embed)
@@ -772,13 +780,19 @@ class Medicat(commands.Cog):
         context = await self.bot.get_context(message)
         if context.prefix is None:
             return
-        command = context.message.content[len(str(context.prefix)):]
+        command = context.message.content[len(str(context.prefix)) :]
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
         if command_name not in CUSTOM_COMMANDS:
             return
-        await self.cogsutils.invoke_command(author=context.author, channel=context.channel, command=f"medicat {command}", prefix=context.prefix, message=context.message)
+        await self.cogsutils.invoke_command(
+            author=context.author,
+            channel=context.channel,
+            command=f"medicat {command}",
+            prefix=context.prefix,
+            message=context.message,
+        )
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @medicat.command()
@@ -787,16 +801,22 @@ class Medicat(commands.Cog):
         try:
             await self.ventoy_updates(channel=ctx.channel, ping_role=False, force=True)
         except Exception:
-            raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again.").format(**locals()))
+            raise commands.UserFeedbackCheckFailure(
+                _("An error has occurred. Please try again.").format(**locals())
+            )
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @medicat.command()
     async def getventoyversion(self, ctx: commands.Context, version: str):
         """Get a version of Ventoy."""
         try:
-            await self.ventoy_updates(channel=ctx.channel, ping_role=False, force=True, version=version)
+            await self.ventoy_updates(
+                channel=ctx.channel, ping_role=False, force=True, version=version
+            )
         except Exception:
-            raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again.").format(**locals()))
+            raise commands.UserFeedbackCheckFailure(
+                _("An error has occurred. Please try again.").format(**locals())
+            )
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @medicat.command()
@@ -814,9 +834,7 @@ class Medicat(commands.Cog):
                 x = x.replace('    "headline": "', "").replace('",', "")
                 regex = re.compile(BOOTABLES_TOOLS[tool]["regex"], re.I).findall(x)
                 regex = regex[0] if len(regex) > 0 else None
-                regex = (
-                    regex[0] if isinstance(regex, typing.Tuple) and len(regex) > 0 else regex
-                )
+                regex = regex[0] if isinstance(regex, typing.Tuple) and len(regex) > 0 else regex
                 result[tool] = regex
             except asyncio.TimeoutError:
                 result[tool] = None
@@ -881,7 +899,27 @@ class Medicat(commands.Cog):
     async def debuglastbootablestoolsversions(self, ctx: commands.Context, *, url: str):
         """Get the debug for a FCportables's tool."""
         try:
-            result = {"Settings": {"Found": False, "Name": None, "Url": None, "Category": None, "Regex": None}, "Web request": {"Web request url": None, "Web request status": None, "Web request result": None}, "Search for the tool name": {"Tool name line": None, "Tool name full": None}, "Find version": {"Regex used": None, "Result 1": None, "Result 2": None, "Result 3": None}}
+            result = {
+                "Settings": {
+                    "Found": False,
+                    "Name": None,
+                    "Url": None,
+                    "Category": None,
+                    "Regex": None,
+                },
+                "Web request": {
+                    "Web request url": None,
+                    "Web request status": None,
+                    "Web request result": None,
+                },
+                "Search for the tool name": {"Tool name line": None, "Tool name full": None},
+                "Find version": {
+                    "Regex used": None,
+                    "Result 1": None,
+                    "Result 2": None,
+                    "Result 3": None,
+                },
+            }
             tool = None
             if url in BOOTABLES_TOOLS:
                 tool = url
@@ -919,9 +957,7 @@ class Medicat(commands.Cog):
                 result["Find version"]["Result 1"] = regex
                 regex = regex[0] if len(regex) > 0 else None
                 result["Find version"]["Result 2"] = regex
-                regex = (
-                    regex[0] if isinstance(regex, typing.Tuple) and len(regex) > 0 else regex
-                )
+                regex = regex[0] if isinstance(regex, typing.Tuple) and len(regex) > 0 else regex
                 result["Find version"]["Result 3"] = regex
         except Exception:
             pass

@@ -33,14 +33,12 @@ class EmojiUrlConverter(discord.ext.commands.Converter):
             raise discord.ext.commands.BadArgument(
                 _(
                     "Emoji Url must be an emoji followed by a url separated by either `;`, `,`, `|`, or `-`."
-                ).format(**locals())
+                )
             )
         emoji = await Emoji().convert(ctx, emoji.strip())
         url = str(url)
         if url.startswith("<") and url.endswith(">"):
             url = url[1:-1]
         if not url.startswith("http"):
-            raise discord.ext.commands.BadArgument(
-                _("Url must start with `https` or `http`.").format(**locals())
-            )
+            raise discord.ext.commands.BadArgument(_("Url must start with `https` or `http`."))
         return emoji, url

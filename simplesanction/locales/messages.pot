@@ -270,7 +270,7 @@ msgstr ""
 #, docstring
 msgid ""
 "\n"
-"         - :warning: Set a simple warning on a user.\n"
+"         - ⚠️ Set a simple warning on a user.\n"
 "\n"
 "        Examples:\n"
 "        - `[p]sanction 2 @user not`: Warn for no reason\n"
@@ -452,7 +452,7 @@ msgstr ""
 
 #: simplesanction\simplesanction.py:2091 simplesanction\simplesanction.py:2104
 #: simplesanction\simplesanction.py:2117
-msgid "Sanctioning a member - :warning: Warn"
+msgid "Sanctioning a member - ⚠️ Warn"
 msgstr ""
 
 #: simplesanction\simplesanction.py:2092

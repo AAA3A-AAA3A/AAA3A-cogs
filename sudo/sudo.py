@@ -76,13 +76,19 @@ class Sudo(commands.Cog):
         context = await self.bot.get_context(message)
         if context.prefix is None:
             return
-        command = context.message.content[len(str(context.prefix)):]
+        command = context.message.content[len(str(context.prefix)) :]
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
         if command_name not in ["su", "unsu", "sudo", "sutimeout"]:
             return
-        await self.cogsutils.invoke_command(author=context.author, channel=context.channel, command=f"SudO {command}", prefix=context.prefix, message=context.message)
+        await self.cogsutils.invoke_command(
+            author=context.author,
+            channel=context.channel,
+            command=f"SudO {command}",
+            prefix=context.prefix,
+            message=context.message,
+        )
 
     def decorator(all_owner_ids: typing.Optional[bool], bot_owner_ids: typing.Optional[bool]):
         async def pred(ctx):

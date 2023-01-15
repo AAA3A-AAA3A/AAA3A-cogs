@@ -152,7 +152,7 @@ msgstr ""
 
 #: rolesbuttons\rolesbuttons.py:402
 msgid ""
-"A emoji you selected seems invalid. Check that it is an emoji. If you have "
+"An emoji you selected seems invalid. Check that it is an emoji. If you have "
 "Nitro, you may have used a custom emoji from another server."
 msgstr ""
 

@@ -200,7 +200,14 @@ class Seen(commands.Cog):
 
     async def red_get_data_for_user(self, *, user_id: int):
         """Get all data about the user."""
-        data = {Config.GLOBAL: {}, Config.USER: {}, Config.MEMBER: {}, Config.ROLE: {}, Config.CHANNEL: {}, Config.GUILD: {}}
+        data = {
+            Config.GLOBAL: {},
+            Config.USER: {},
+            Config.MEMBER: {},
+            Config.ROLE: {},
+            Config.CHANNEL: {},
+            Config.GUILD: {},
+        }
         global_data = await self.config.all()
         user_group = self.config._get_base_group(self.config.USER)
         member_group = self.config._get_base_group(self.config.MEMBER)
@@ -285,7 +292,14 @@ class Seen(commands.Cog):
             d = global_data[type].get(custom_id, None)
             if d is not None:
                 data[Config.GLOBAL][type] = {custom_id: d}
-        if data == {Config.GLOBAL: {}, Config.USER: {}, Config.MEMBER: {}, Config.ROLE: {}, Config.CHANNEL: {}, Config.GUILD: {}}:
+        if data == {
+            Config.GLOBAL: {},
+            Config.USER: {},
+            Config.MEMBER: {},
+            Config.ROLE: {},
+            Config.CHANNEL: {},
+            Config.GUILD: {},
+        }:
             return {}
         file = io.BytesIO(str(data).encode(encoding="utf-8"))
         return {f"{self.qualified_name}.json": file}
@@ -771,16 +785,12 @@ class Seen(commands.Cog):
         if isinstance(object, discord.User):
             embed.set_author(
                 name=_("@{object.display_name} was seen {seen}.").format(**locals()),
-                icon_url=object.display_avatar
-                if self.cogsutils.is_dpy2
-                else object.avatar_url,
+                icon_url=object.display_avatar if self.cogsutils.is_dpy2 else object.avatar_url,
             )
         elif isinstance(object, discord.Member):
             embed.set_author(
                 name=_("@{object.display_name} was seen {seen}.").format(**locals()),
-                icon_url=object.display_avatar
-                if self.cogsutils.is_dpy2
-                else object.avatar_url,
+                icon_url=object.display_avatar if self.cogsutils.is_dpy2 else object.avatar_url,
             )
         elif isinstance(object, discord.Role):
             embed.set_author(
@@ -1092,7 +1102,7 @@ class Seen(commands.Cog):
             show_details = True
         if not channel.permissions_for(ctx.author).view_channel:
             raise commands.UserFeedbackCheckFailure(
-                _("You do not have permission to view this channel.").format(**locals())
+                _("You do not have permission to view this channel.")
             )
         await self.send_seen(ctx, object=channel, type=type, show_details=show_details)
 
@@ -1123,9 +1133,7 @@ class Seen(commands.Cog):
             ]
         ):
             raise commands.UserFeedbackCheckFailure(
-                _(
-                    "You do not have permission to view any of the channels in this category."
-                ).format(**locals())
+                _("You do not have permission to view any of the channels in this category.")
             )
         await self.send_seen(ctx, object=category, type=type, show_details=show_details)
 

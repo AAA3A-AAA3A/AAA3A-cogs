@@ -6,7 +6,6 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import io
-
 from copy import deepcopy
 
 from redbot.core import Config
@@ -89,13 +88,27 @@ class MemberPrefix(commands.Cog):
 
     async def red_get_data_for_user(self, *, user_id: int):
         """Get all data about the user."""
-        data = {Config.GLOBAL: {}, Config.USER: {}, Config.MEMBER: {}, Config.ROLE: {}, Config.CHANNEL: {}, Config.GUILD: {}}
+        data = {
+            Config.GLOBAL: {},
+            Config.USER: {},
+            Config.MEMBER: {},
+            Config.ROLE: {},
+            Config.CHANNEL: {},
+            Config.GUILD: {},
+        }
         member_group = self.config._get_base_group(self.config.MEMBER)
         async with member_group.all() as members_data:
             for guild in members_data:
                 if str(user_id) in members_data[guild]:
                     data[Config.MEMBER][guild] = {str(user_id): members_data[guild][str(user_id)]}
-        if data == {Config.GLOBAL: {}, Config.USER: {}, Config.MEMBER: {}, Config.ROLE: {}, Config.CHANNEL: {}, Config.GUILD: {}}:
+        if data == {
+            Config.GLOBAL: {},
+            Config.USER: {},
+            Config.MEMBER: {},
+            Config.ROLE: {},
+            Config.CHANNEL: {},
+            Config.GUILD: {},
+        }:
             return {}
         file = io.BytesIO(str(data).encode(encoding="utf-8"))
         return {f"{self.qualified_name}.json": file}
@@ -158,24 +171,24 @@ class MemberPrefix(commands.Cog):
         """
         if len(prefixes) == 0:
             await self.config.member(ctx.author).custom_prefixes.clear()
-            raise commands.UserFeedbackCheckFailure(_("You now use this server or global prefixes.").format(**locals()))
+            raise commands.UserFeedbackCheckFailure(
+                _("You now use this server or global prefixes.")
+            )
         if any(len(x) > 25 for x in prefixes):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "A prefix is above the maximal length (25 characters).\nThis is possible for global or per-server prefixes, but not for per-member prefixes."
-                ).format(**locals())
+                )
             )
         if any(prefix.startswith("/") for prefix in prefixes):
             raise commands.UserFeedbackCheckFailure(
-                _(
-                    "Prefixes cannot start with `/`, as it conflicts with Discord's slash commands."
-                ).format(**locals())
+                _("Prefixes cannot start with `/`, as it conflicts with Discord's slash commands.")
             )
         await self.config.member(ctx.author).custom_prefixes.set(prefixes)
         if len(prefixes) == 1:
-            await ctx.send(_("Prefix for you only set.").format(**locals()))
+            await ctx.send(_("Prefix for you only set."))
         else:
-            await ctx.send(_("Prefixes for you only set.").format(**locals()))
+            await ctx.send(_("Prefixes for you only set."))
 
     async def get_context_with_custom_prefixes(
         self, origin: discord.Message, prefixes: typing.List, *, cls=commands.context.Context

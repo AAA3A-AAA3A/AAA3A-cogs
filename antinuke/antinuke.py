@@ -6,7 +6,6 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import io
-
 from copy import deepcopy
 from typing import List, Optional, Tuple, Union
 
@@ -80,13 +79,27 @@ class AntiNuke(commands.Cog):
 
     async def red_get_data_for_user(self, *, user_id: int):
         """Get all data about the user."""
-        data = {Config.GLOBAL: {}, Config.USER: {}, Config.MEMBER: {}, Config.ROLE: {}, Config.CHANNEL: {}, Config.GUILD: {}}
+        data = {
+            Config.GLOBAL: {},
+            Config.USER: {},
+            Config.MEMBER: {},
+            Config.ROLE: {},
+            Config.CHANNEL: {},
+            Config.GUILD: {},
+        }
         member_group = self.config._get_base_group(self.config.MEMBER)
         async with member_group.all() as members_data:
             for guild in members_data:
                 if str(user_id) in members_data[guild]:
                     data[Config.MEMBER][guild] = {str(user_id): members_data[guild][str(user_id)]}
-        if data == {Config.GLOBAL: {}, Config.USER: {}, Config.MEMBER: {}, Config.ROLE: {}, Config.CHANNEL: {}, Config.GUILD: {}}:
+        if data == {
+            Config.GLOBAL: {},
+            Config.USER: {},
+            Config.MEMBER: {},
+            Config.ROLE: {},
+            Config.CHANNEL: {},
+            Config.GUILD: {},
+        }:
             return {}
         file = io.BytesIO(str(data).encode(encoding="utf-8"))
         return {f"{self.qualified_name}.json": file}
@@ -222,14 +235,12 @@ class AntiNuke(commands.Cog):
         You can also use "None" if you wish to remove the logging channel.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(
-                _("Only the owner of this server can access these commands!").format(**locals())
-            )
+            await ctx.send(_("Only the owner of this server can access these commands!"))
             return
 
         if channel is None:
             await self.config.guild(ctx.guild).logschannel.clear()
-            await ctx.send(_("Logging channel removed.").format(**locals()))
+            await ctx.send(_("Logging channel removed."))
             return
 
         needperm = await self.check_permissions_in_channel(
@@ -246,12 +257,12 @@ class AntiNuke(commands.Cog):
             await ctx.send(
                 _(
                     "The bot does not have at least one of the following permissions in this channel: `embed_links`, `read_messages`, `read_message_history`, `send_messages`, `attach_files`."
-                ).format(**locals())
+                )
             )
             return
 
         await self.config.guild(ctx.guild).logschannel.set(channel.id)
-        await ctx.send(_("Logging channel registered: {channel.mention}.").format(**locals()))
+        await ctx.send(_("Logging channel registered: {channel.mention}."))
 
     async def check_permissions_in_channel(
         self, permissions: List[str], channel: discord.TextChannel
@@ -272,9 +283,7 @@ class AntiNuke(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(
-                _("Only the owner of this server can access these commands!").format(**locals())
-            )
+            await ctx.send(_("Only the owner of this server can access these commands!"))
             return
 
         config = await self.config.guild(ctx.guild).all()
@@ -293,9 +302,7 @@ class AntiNuke(commands.Cog):
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(
-                _("Only the owner of this server can access these commands!").format(**locals())
-            )
+            await ctx.send(_("Only the owner of this server can access these commands!"))
             return
 
         config = await self.config.guild(ctx.guild).all()
@@ -316,9 +323,7 @@ class AntiNuke(commands.Cog):
         `0' to disable this protection.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(
-                _("Only the owner of this server can access these commands!").format(**locals())
-            )
+            await ctx.send(_("Only the owner of this server can access these commands!"))
             return
 
         await self.config.guild(ctx.guild).number_detected_member.set(int)
@@ -332,9 +337,7 @@ class AntiNuke(commands.Cog):
         `0' to disable this protection.
         """
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(
-                _("Only the owner of this server can access these commands!").format(**locals())
-            )
+            await ctx.send(_("Only the owner of this server can access these commands!"))
             return
 
         await self.config.guild(ctx.guild).number_detected_bot.set(int)
@@ -346,9 +349,7 @@ class AntiNuke(commands.Cog):
     ):
         """Reset number detected for a user."""
         if not ctx.author.id == ctx.guild.owner.id:
-            await ctx.send(
-                _("Only the owner of this server can access these commands!").format(**locals())
-            )
+            await ctx.send(_("Only the owner of this server can access these commands!"))
             return
 
         config = await self.config.member(user).all()

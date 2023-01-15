@@ -33,7 +33,7 @@ class EmojiLabelTextConverter(discord.ext.commands.Converter):
             raise discord.ext.commands.BadArgument(
                 _(
                     "Dropdown Text must be an emoji, followed by a label and a text, separated by either `;`, `,`, `|`, or `-`."
-                ).format(**locals())
+                )
             )
         emoji = await Emoji().convert(ctx, emoji.strip())
         return emoji, label, text

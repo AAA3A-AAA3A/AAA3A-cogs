@@ -62,7 +62,7 @@ class ClearChannel(commands.Cog):
 
         if not confirmation:
             embed: discord.Embed = discord.Embed()
-            embed.title = _(":warning: - ClearChannel").format(**locals())
+            embed.title = _("⚠️ - ClearChannel")
             embed.description = _(
                 "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?"
             ).format(**locals())
@@ -108,9 +108,7 @@ class ClearChannel(commands.Cog):
         if actual_first_message:
             embed: discord.Embed = discord.Embed()
             embed.title = _("ClearChannel").format(**locals())
-            embed.description = _("ALL the messages in this channel have been deleted...").format(
-                **locals()
-            )
+            embed.description = _("ALL the messages in this channel have been deleted...")
             embed.color = 0xF00020
             embed.set_author(
                 name=ctx.author,
@@ -119,7 +117,7 @@ class ClearChannel(commands.Cog):
                 if self.cogsutils.is_dpy2
                 else ctx.author.avatar_url,
             )
-            message = await new_channel.send(embed=embed)
+            await new_channel.send(embed=embed)
         if actual_author_dm:
             await ctx.author.send(
                 _(
@@ -141,9 +139,8 @@ class ClearChannel(commands.Cog):
         """
         if not ctx.author.id == ctx.guild.owner.id:
             raise commands.UserFeedbackCheckFailure(
-                _("Only the owner of this server can access these commands!").format(**locals())
+                _("Only the owner of this server can access these commands!")
             )
-            return
 
         config = await self.config.guild(ctx.guild).all()
 
@@ -163,9 +160,8 @@ class ClearChannel(commands.Cog):
         """
         if not ctx.author.id == ctx.guild.owner.id:
             raise commands.UserFeedbackCheckFailure(
-                _("Only the owner of this server can access these commands!").format(**locals())
+                _("Only the owner of this server can access these commands!")
             )
-            return
 
         config = await self.config.guild(ctx.guild).all()
 
@@ -175,7 +171,7 @@ class ClearChannel(commands.Cog):
             return
 
         await self.config.guild(ctx.guild).first_message.set(state)
-        await ctx.send(f"First Message state registered: {state}.")
+        await ctx.send(_("First Message state registered: {state}.").format(**locals()))
 
     @configuration.command(name="authordm", aliases=["dmauthor"], usage="<true_or_false>")
     async def authordm(self, ctx: commands.Context, state: bool):
@@ -185,9 +181,8 @@ class ClearChannel(commands.Cog):
         """
         if not ctx.author.id == ctx.guild.owner.id:
             raise commands.UserFeedbackCheckFailure(
-                _("Only the owner of this server can access these commands!").format(**locals())
+                _("Only the owner of this server can access these commands!")
             )
-            return
 
         config = await self.config.guild(ctx.guild).all()
 

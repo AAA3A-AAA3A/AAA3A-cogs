@@ -97,16 +97,16 @@ class UrlButtons(commands.Cog):
                 raise commands.UserFeedbackCheckFailure(
                     _(
                         "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
-                    ).format(**locals())
+                    )
                 )
         if not url.startswith("http"):
-            raise commands.UserFeedbackCheckFailure(_("Url must start with `https` or `http`.").format(**locals()))
+            raise commands.UserFeedbackCheckFailure(_("Url must start with `https` or `http`."))
         config = await self.config.guild(ctx.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) >= 25:
             raise commands.UserFeedbackCheckFailure(
-                _("I can't do more than 25 url-buttons for one message.").format(**locals())
+                _("I can't do more than 25 url-buttons for one message.")
             )
         config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = {
             "url": url,
@@ -138,7 +138,9 @@ class UrlButtons(commands.Cog):
                 )
             )
         if len(url_buttons) == 0:
-            raise commands.UserFeedbackCheckFailure(_("You have not specified any valid url-button.").format(**locals()))
+            raise commands.UserFeedbackCheckFailure(
+                _("You have not specified any valid url-button.")
+            )
         if getattr(ctx, "interaction", None) is None:
             try:
                 for emoji, url in url_buttons:
@@ -146,15 +148,15 @@ class UrlButtons(commands.Cog):
             except discord.HTTPException:
                 raise commands.UserFeedbackCheckFailure(
                     _(
-                        "A emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
-                    ).format(**locals())
+                        "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+                    )
                 )
         config = await self.config.guild(ctx.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) + len(url_buttons) >= 25:
             raise commands.UserFeedbackCheckFailure(
-                _("I can't do more than 25 url-buttons for one message.").format(**locals())
+                _("I can't do more than 25 url-buttons for one message.")
             )
         for emoji, url in url_buttons:
             config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = {
@@ -174,16 +176,16 @@ class UrlButtons(commands.Cog):
         """Remove a url-button to a message."""
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.").format(
-                    **locals()
-                )
+                _("I have to be the author of the message for the role-button to work.")
             )
         config = await self.config.guild(ctx.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
-            raise commands.UserFeedbackCheckFailure(_("No url-button is configured for this message.").format(**locals()))
+            raise commands.UserFeedbackCheckFailure(
+                _("No url-button is configured for this message.")
+            )
         if f"{getattr(emoji, 'id', emoji)}" not in config[f"{message.channel.id}-{message.id}"]:
             raise commands.UserFeedbackCheckFailure(
-                _("I wasn't watching for this button on this message.").format(**locals())
+                _("I wasn't watching for this button on this message.")
             )
         del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
         if not config[f"{message.channel.id}-{message.id}"] == {}:
@@ -212,7 +214,9 @@ class UrlButtons(commands.Cog):
             )
         config = await self.config.guild(ctx.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
-            raise commands.UserFeedbackCheckFailure(_("No role-button is configured for this message.").format(**locals()))
+            raise commands.UserFeedbackCheckFailure(
+                _("No role-button is configured for this message.")
+            )
         try:
             if self.cogsutils.is_dpy2:
                 await message.edit(view=None)

@@ -58,7 +58,9 @@ class CtxVar(commands.Cog):
         """Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
-            raise commands.UserFeedbackCheckFailure("The cog Dev must be loaded, to make sure you know what you are doing.")
+            raise commands.UserFeedbackCheckFailure(
+                _("The cog Dev must be loaded, to make sure you know what you are doing.")
+            )
         if message is None:
             message = ctx.message
         instance = await ctx.bot.get_context(message)
@@ -68,9 +70,7 @@ class CtxVar(commands.Cog):
             for arg in args:
                 if not hasattr(instance, arg):
                     raise commands.UserFeedbackCheckFailure(
-                        _("The argument you specified is not a subclass of the instance.").format(
-                            **locals()
-                        )
+                        _("The argument you specified is not a subclass of the instance.")
                     )
                 instance = getattr(instance, arg)
         if len(f"{bold(full_instance_name)}") > 256:
@@ -78,8 +78,10 @@ class CtxVar(commands.Cog):
         embed: discord.Embed = discord.Embed()
         embed.title = f"**{full_instance_name}**"
         embed.description = _(
-            "Here are all the variables and their associated values that can be used in this instance class."
-        ).format(**locals())
+            _(
+                "Here are all the variables and their associated values that can be used in this instance class."
+            )
+        )
         embed.color = 0x01D758
         embed.set_thumbnail(
             url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/2048px-Python-logo-notext.svg.png"
@@ -125,7 +127,9 @@ class CtxVar(commands.Cog):
         """Display a list of all attributes of the provided object (debug not async)."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
-            raise commands.UserFeedbackCheckFailure("The cog Dev must be loaded, to make sure you know what you are doing.")
+            raise commands.UserFeedbackCheckFailure(
+                _("The cog Dev must be loaded, to make sure you know what you are doing.")
+            )
         thing = Dev.cleanup_code(thing)
         env = Dev.get_environment(ctx)
         env["getattr_static"] = inspect.getattr_static
@@ -140,9 +144,15 @@ class CtxVar(commands.Cog):
                 tree = ast.fix_missing_locations(tree)
             object = eval(compile(tree, "<dir>", "eval"), env)
         except NameError:
-            raise commands.UserFeedbackCheckFailure(f"I couldn't find any cog, command, or object named `{thing}`.")
+            raise commands.UserFeedbackCheckFailure(
+                _("I couldn't find any cog, command, or object named `{thing}`.").format(
+                    **locals()
+                )
+            )
         except Exception as e:
-            raise commands.UserFeedbackCheckFailure(box("".join(traceback.format_exception_only(type(e), e)), lang="py"))
+            raise commands.UserFeedbackCheckFailure(
+                box("".join(traceback.format_exception_only(type(e), e)), lang="py")
+            )
 
         result = "[\n"
         if search is None:
@@ -169,7 +179,9 @@ class CtxVar(commands.Cog):
         """Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
-            raise commands.UserFeedbackCheckFailure("The cog Dev must be loaded, to make sure you know what you are doing.")
+            raise commands.UserFeedbackCheckFailure(
+                _("The cog Dev must be loaded, to make sure you know what you are doing.")
+            )
         thing = Dev.cleanup_code(thing)
         env = Dev.get_environment(ctx)
         env["getattr_static"] = inspect.getattr_static
@@ -184,9 +196,15 @@ class CtxVar(commands.Cog):
                 tree = ast.fix_missing_locations(tree)
             object = eval(compile(tree, "<dir>", "eval"), env)
         except NameError:
-            raise commands.UserFeedbackCheckFailure(f"I couldn't find any cog, command, or object named `{thing}`.")
+            raise commands.UserFeedbackCheckFailure(
+                _("I couldn't find any cog, command, or object named `{thing}`.").format(
+                    **locals()
+                )
+            )
         except Exception as e:
-            raise commands.UserFeedbackCheckFailure(box("".join(traceback.format_exception_only(type(e), e)), lang="py"))
+            raise commands.UserFeedbackCheckFailure(
+                box("".join(traceback.format_exception_only(type(e), e)), lang="py")
+            )
 
         kwargs: typing.Dict[str, typing.Any] = {
             "width": 80,

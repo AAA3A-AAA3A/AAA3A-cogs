@@ -34,7 +34,7 @@ class YAMLConverter(commands.Converter):
             raise discord.ext.commands.BadArgument(
                 _(
                     "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)"
-                ).format(**locals())
+                )
             )
         # general
         required_arguments = ["title", "button", "modal"]
@@ -90,7 +90,7 @@ class YAMLConverter(commands.Converter):
         # modal
         if not isinstance(argument_dict["modal"], typing.List):
             raise discord.ext.commands.BadArgument(
-                _("The argument `/button/modal` must be a list of TextInputs.").format(**locals())
+                _("The argument `/button/modal` must be a list of TextInputs.")
             )
         required_arguments = ["label"]
         optional_arguments = ["style", "required", "default", "placeholder"]
@@ -239,7 +239,7 @@ class DiscordModals(commands.Cog):
             )
             if not interaction.response.is_done():
                 await interaction.response.send_message(
-                    "Sorry. An error has occurred.", ephemeral=True
+                    _("Sorry. An error has occurred."), ephemeral=True
                 )
 
     async def send_embed_with_responses(
@@ -255,7 +255,9 @@ class DiscordModals(commands.Cog):
             channel = interaction.guild.get_channel(config["channel"])
             if channel is None:
                 await interaction.followup.send(
-                    "The channel in which I was to send the results of this Modal no longer exists. Please notify an administrator of this server.",
+                    _(
+                        "The channel in which I was to send the results of this Modal no longer exists. Please notify an administrator of this server."
+                    ),
                     ephemeral=True,
                 )
                 return
@@ -265,7 +267,9 @@ class DiscordModals(commands.Cog):
                 check=["embed_links", "send_messages", "view_channel"],
             ):
                 await interaction.followup.send(
-                    "I don't have sufficient permissions in the destination channel (view channel, send messages, send embeds). Please notify an administrator of this server.",
+                    _(
+                        "I don't have sufficient permissions in the destination channel (view channel, send messages, send embeds). Please notify an administrator of this server."
+                    ),
                     ephemeral=True,
                 )
                 return
@@ -296,11 +300,12 @@ class DiscordModals(commands.Cog):
                 exc_info=e,
             )
             await interaction.followup.send(
-                config["messages"]["error"] or "Sorry. An error has occurred.", ephemeral=True
+                config["messages"]["error"] or _("Sorry. An error has occurred."), ephemeral=True
             )
         else:
             await interaction.followup.send(
-                config["messages"]["done"] or "Thank you for sending this Modal!", ephemeral=True
+                config["messages"]["done"] or _("Thank you for sending this Modal!"),
+                ephemeral=True,
             )
 
     @commands.Cog.listener()
@@ -353,13 +358,11 @@ class DiscordModals(commands.Cog):
         """
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the button to work.").format(
-                    **locals()
-                )
+                _("I have to be the author of the message for the button to work.")
             )
         config = await self.config.guild(ctx.guild).modals.all()
         if f"{message.channel.id}-{message.id}" in config:
-            raise commands.UserFeedbackCheckFailure(_("This message already has a Modal.").format(**locals()))
+            raise commands.UserFeedbackCheckFailure(_("This message already has a Modal."))
         try:
             argument["button"][
                 "custom_id"
@@ -370,9 +373,7 @@ class DiscordModals(commands.Cog):
             await message.edit(view=view)
         except discord.HTTPException:
             raise commands.UserFeedbackCheckFailure(
-                _(
-                    "Sorry. An error occurred when I tried to put the button on the message."
-                ).format(**locals())
+                _("Sorry. An error occurred when I tried to put the button on the message.")
             )
         modal = Modal(
             title=argument["title"],
@@ -398,13 +399,11 @@ class DiscordModals(commands.Cog):
         """Remove a Modal to a message."""
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the Modal to work.").format(
-                    **locals()
-                )
+                _("I have to be the author of the message for the Modal to work.")
             )
         config = await self.config.guild(ctx.guild).modals.all()
         if f"{message.channel.id}-{message.id}" not in config:
-            raise commands.UserFeedbackCheckFailure(_("No Modal is configured for this message.").format(**locals()))
+            raise commands.UserFeedbackCheckFailure(_("No Modal is configured for this message."))
         try:
             await message.edit(view=None)
         except discord.HTTPException:

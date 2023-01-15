@@ -81,7 +81,7 @@ class EmojiRoleConverter(discord.ext.commands.Converter):
             raise discord.ext.commands.BadArgument(
                 _(
                     "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
-                ).format(**locals())
+                )
             )
         emoji = await Emoji().convert(ctx, emoji.strip())
         role = await RoleHierarchyConverter().convert(ctx, role.strip())

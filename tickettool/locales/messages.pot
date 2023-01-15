@@ -503,7 +503,7 @@ msgstr ""
 
 #: tickettool\settings.py:684 tickettool\settings.py:780
 msgid ""
-"A emoji you selected seems invalid. Check that it is an emoji. If you have "
+"An emoji you selected seems invalid. Check that it is an emoji. If you have "
 "Nitro, you may have used a custom emoji from another server."
 msgstr ""
 
@@ -907,7 +907,7 @@ msgstr ""
 
 #: tickettool\utils.py:103
 msgid ""
-"Emoji Label must be a emoji followed by an string, and optionnaly by a "
+"Emoji Label must be An emoji followed by an string, and optionnaly by a "
 "description and a value (for rename ticket channel), separated by either "
 "`;`, `,`, `|`, or `-`."
 msgstr ""

@@ -307,12 +307,12 @@ class CogsUtils(commands.Cog):
             except ValueError:
                 pass
         self.views.clear()
-        AAA3A_utils = self.bot.get_cog("AAA3A_utils")
-        if getattr(AAA3A_utils, "sentry", None) is not None:
-            AAA3A_utils.sentry.cog_unload(self.cog)
         asyncio.create_task(self._await_end())
 
     async def _await_end(self):
+        AAA3A_utils = self.bot.get_cog("AAA3A_utils")
+        if getattr(AAA3A_utils, "sentry", None) is not None:
+            await AAA3A_utils.sentry.cog_unload(self.cog)
         if not self.at_least_one_cog_loaded:
             if self.is_dpy2:
                 await self.bot.remove_cog("AAA3A_utils")

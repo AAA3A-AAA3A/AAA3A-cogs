@@ -182,10 +182,10 @@ class SentryHelper:
                 SNOWFLAKE_REGEX, lambda m: "SHORTENED-ID-" + str(int(m.group()) >> 22)[-4:], s
             )
             s = re.sub(
-                IP_V4_REGEX, lambda m: "IP_V4", s
+                IP_V4_REGEX, "IP_V4", s
             )
             s = re.sub(
-                IP_V6_REGEX, lambda m: "IP_V6" + str(int(m.group()) >> 22)[-4:], s
+                IP_V6_REGEX, "IP_V6", s
             )
             return re.sub(INVITE_URL_RE, "DISCORD-INVITE-LINK", s)
 

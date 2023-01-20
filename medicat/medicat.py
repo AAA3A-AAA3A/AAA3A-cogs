@@ -401,14 +401,14 @@ class Medicat(commands.Cog):
 
         async with aiohttp.ClientSession() as session:
             async with session.get(
-                "https://api.github.com/repos/ventoy/Ventoy/git/refs/tags", timeout=3
+                "https://api.github.com/repos/ventoy/ventoy/releases", timeout=3
             ) as r:
                 ventoy_tags = await r.json()
         versions = sorted(
             ventoy_tags,
             key=lambda ventoy_version: VersionInfo.from_str(
-                str(ventoy_version["ref"])
-                .replace("refs/tags/v", "")
+                str(ventoy_version["tag_name"])
+                .replace("v", "")
                 .replace("1.0.0", "1.0.")
                 .replace("beta", ".dev")
             ),
@@ -418,23 +418,22 @@ class Medicat(commands.Cog):
 
         if not force:
             if last_ventoy_version >= VersionInfo.from_str(
-                str(versions[-1]["ref"])
-                .replace("refs/tags/v", "")
+                str(versions[-1]["tag_name"])
+                .replace("v", "")
                 .replace("1.0.0", "1.0.")
                 .replace("beta", ".dev")
             ):
                 return
             await self.config.last_ventoy_version.set(
-                str(versions[-1]["ref"])
-                .replace("refs/tags/v", "")
+                str(versions[-1]["tag_name"])
+                .replace("v", "")
                 .replace("1.0.0", "1.0.")
                 .replace("beta", ".dev")
             )
         elif version is not None:
             for v in versions:
                 if (
-                    str(v["ref"])
-                    .replace("refs/tags/", "")
+                    str(v["tag_name"])
                     .replace("v", "")
                     .replace("1.0.0", "1.0.")
                     .replace("beta", ".dev")
@@ -449,7 +448,7 @@ class Medicat(commands.Cog):
             versions = [versions[-1]]
 
         for version in versions:
-            ventoy_tag_name = str(version["ref"]).replace("refs/tags/", "")
+            ventoy_tag_name = str(version["tag_name"]).replace("v", "")
             ventoy_version_str = (
                 ventoy_tag_name.replace("v", "").replace("1.0.0", "1.0.").replace("beta", ".dev")
             )
@@ -458,31 +457,20 @@ class Medicat(commands.Cog):
                 if last_ventoy_version >= ventoy_version:
                     continue
 
-            try:
-                async with aiohttp.ClientSession() as session:
-                    async with session.get(
-                        f"https://api.github.com/repos/ventoy/Ventoy/releases/tags/{ventoy_tag_name}",
-                        timeout=3,
-                    ) as r:
-                        ventoy_tag_body = str((await r.json())["body"])
-            except Exception:
-                ventoy_tag_body = None
+            ventoy_tag_body = str(version["body"])
 
-            if ventoy_tag_body is not None:
-                ventoy_tag_body = ventoy_tag_body.split("\n")
-                result = []
-                for x in ventoy_tag_body:
-                    if (
-                        x
-                        == "See [https://www.ventoy.net/en/doc_news.html](https://www.ventoy.net/en/doc_news.html) for more details.\r"
-                    ):
-                        break
-                    if not x == "\r":
-                        result.append(x)
-                ventoy_tag_body = "\n".join(result)
-                changelog = box(ventoy_tag_body)
-            else:
-                changelog = ""
+            ventoy_tag_body = ventoy_tag_body.split("\n")
+            result = []
+            for x in ventoy_tag_body:
+                if (
+                    x
+                    == "See [https://www.ventoy.net/en/doc_news.html](https://www.ventoy.net/en/doc_news.html) for more details.\r"
+                ):
+                    break
+                if not x == "\r":
+                    result.append(x)
+            ventoy_tag_body = "\n".join(result)
+            changelog = box(ventoy_tag_body)
 
             embed: discord.Embed = discord.Embed()
             embed.set_thumbnail(url="https://ventoy.net/static/img/ventoy.png?v=1")

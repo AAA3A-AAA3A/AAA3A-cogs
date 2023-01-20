@@ -236,18 +236,19 @@ class Settings():
         if self.can_edit or force:
             for setting in self.settings:
                 name = self.settings[setting]["command_name"]
+                _converter = self.settings[setting]["converter"]
                 self.commands_group.remove_command(name)
                 _help = self.settings[setting]["description"]
-                _help += "\n\nIf you do not specify a value, the default value will be restored.\nDev: " + repr(self.settings[setting]["converter"])
+                _help += "\n\nIf you do not specify a value, the default value will be restored.\nDev: " + repr(_converter)
                 _usage = self.settings[setting]["usage"]
 
                 if not self.use_profiles_system:
-                    async def command(_self, ctx: commands.Context, *, value: typing.Optional[self.settings[setting]["converter"]] = None):
+                    async def command(_self, ctx: commands.Context, *, value: typing.Optional[_converter] = None):
                         if value is None:
                             value = discord.utils.MISSING
                         await self.command(ctx, key=None, value=value)
                 else:
-                    async def command(_self, ctx: commands.Context, profile: ProfileConverter, *, value: typing.Optional[self.settings[setting]["converter"]] = None):
+                    async def command(_self, ctx: commands.Context, profile: ProfileConverter, *, value: typing.Optional[_converter] = None):
                         if value is None:
                             value = discord.utils.MISSING
                         await self.command(ctx, key=None, value=value, profile=profile)
@@ -320,7 +321,7 @@ class Settings():
         if profile in profiles:
             await ctx.send(_("This profile already exists."))
             return
-        await data.set_raw(*self.global_path, profile, value=self.config._defaults[self.group]["default_profile_settings"]) 
+        await data.set_raw(*self.global_path, profile, value=self.config._defaults[self.group]["default_profile_settings"])
 
     async def clone_profile(self, ctx: commands.Context, old_profile: str, profile: str):
         if len(profile) > 10:
@@ -366,12 +367,12 @@ class Settings():
 
     async def rename_profile(self, ctx: commands.Context, old_profile: str, profile: str):
         if len(profile) > 10:
-            await ctx.send(_("The name of a profile must be less than or equal to 10 characters.")
+            await ctx.send(_("The name of a profile must be less than or equal to 10 characters."))
             return
         data = self.get_data(ctx=ctx)
         profiles = await data.get_raw(*self.global_path)
         if profile in profiles:
-            await ctx.send(_("A panel with this name already exists.")
+            await ctx.send(_("A panel with this name already exists."))
             return
         await data.set_raw(*self.global_path, profile, value=await data.get_raw(*self.global_path, old_profile))
         await data.clear_raw(*self.global_path, old_profile)

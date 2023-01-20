@@ -50,9 +50,11 @@ class MemberPrefix(commands.Cog):
         self.config.register_global(**self.memberprefix_global)
 
         self.cache_messages = []
-        self.bot.before_invoke(self.before_invoke)
 
         self.cogsutils = CogsUtils(cog=self)
+
+    async def cog_load(self):
+        self.bot.before_invoke(self.before_invoke)
 
     if CogsUtils().is_dpy2:
 
@@ -124,7 +126,7 @@ class MemberPrefix(commands.Cog):
         if ctx.message.id in self.cache_messages:
             self.cache_messages.remove(ctx.message.id)
             return
-        raise discord.ext.commands.CheckFailure()
+        raise commands.CheckFailure()
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:

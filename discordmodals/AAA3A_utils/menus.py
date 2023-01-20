@@ -439,7 +439,7 @@ class Menu:
                         # Too late
                         if self.is_done.is_set():
                             await interaction.response.send_message(
-                                _("Too late. The Menu is already finished.").format(**locals()),
+                                _("Too late. The Menu is already finished."),
                                 ephemeral=True,
                             )
                             return
@@ -448,7 +448,7 @@ class Menu:
                             page = int(values[0].value)
                         except ValueError:
                             await interaction.response.send_message(
-                                _("The page number must be an int.").format(**locals()),
+                                _("The page number must be an int."),
                                 ephemeral=True,
                             )
                             return
@@ -456,9 +456,7 @@ class Menu:
                         max = len(self.pages)
                         if not page >= 1 or not page <= max:
                             await interaction.response.send_message(
-                                _("The page number must be between 1 and {max}.").format(
-                                    **locals()
-                                ),
+                                _("The page number must be between 1 and {max}.").format(max=max),
                                 ephemeral=True,
                             )
                             return

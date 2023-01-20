@@ -698,9 +698,7 @@ class CogsUtils(commands.Cog):
         ctx: commands.Context,
         *args,
         timeout: typing.Optional[int] = 60,
-        timeout_message: typing.Optional[str] = _("Timed out, please try again").format(
-            **locals()
-        ),
+        timeout_message: typing.Optional[str] = _("Timed out, please try again"),
         way: typing.Optional[
             typing.Literal["buttons", "dropdown", "reactions", "message"]
         ] = "buttons",
@@ -720,21 +718,22 @@ class CogsUtils(commands.Cog):
         if message is None:
             if "content" not in kwargs and "embed" not in kwargs:
                 if way == "buttons":
-                    text = _(
+                    content = _(
                         "To confirm the current action, please use the buttons below this message."
-                    ).format(**locals())
+                    )
                 if way == "dropdown":
-                    text = _(
+                    content = _(
                         "To confirm the current action, please use the dropdown below this message."
-                    ).format(**locals())
+                    )
                 if way == "reactions":
-                    text = _(
+                    content = _(
                         "To confirm the current action, please use the reactions below this message."
-                    ).format(**locals())
+                    )
                 if way == "message":
-                    text = _(
+                    content = _(
                         "To confirm the current action, please send yes/no in this channel."
-                    ).format(**locals())
+                    )
+                kwargs["content"] = content
             if not way == "buttons" and not way == "dropdown":
                 message = await ctx.send(*args, **kwargs)
         if way == "reactions":
@@ -1515,26 +1514,26 @@ class CogsUtils(commands.Cog):
         Cog self-destruct.
         Will of course never be used, just a test.
         """
-        downloader = self.bot.get_cog("Downloader")
-        if downloader is not None:
+        Downloader = self.bot.get_cog("Downloader")
+        if Downloader is not None:
             poss_installed_path = (
-                await downloader.cog_install_path()
+                await Downloader.cog_install_path()
             ) / self.cog.qualified_name.lower()
             if poss_installed_path.exists():
                 with contextlib.suppress(commands.ExtensionNotLoaded):
                     self.bot.unload_extension(self.cog.qualified_name.lower())
                     await self.bot.remove_loaded_package(self.cog.qualified_name.lower())
-                await downloader._delete_cog(poss_installed_path)
-            await downloader._remove_from_installed(
+                await Downloader._delete_cog(poss_installed_path)
+            await Downloader._remove_from_installed(
                 [
                     discord.utils.get(
-                        await downloader.installed_cogs(), name=self.cog.qualified_name.lower()
+                        await Downloader.installed_cogs(), name=self.cog.qualified_name.lower()
                     )
                 ]
             )
         else:
             raise self.DownloaderNotLoaded(
-                _("The Downloader cog is not loaded.").format(**locals())
+                "The Downloader cog is not loaded."
             )
 
     class DownloaderNotLoaded(Exception):

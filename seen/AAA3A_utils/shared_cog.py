@@ -25,7 +25,7 @@ from redbot.core.utils.chat_formatting import (
     humanize_timedelta,
     pagify,
     text_to_file,
-)  # NOQA
+)
 from rich.console import Console
 from rich.table import Table
 
@@ -381,13 +381,13 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         """Get logs for a cog from AAA3A-cogs"""
         cog = ctx.bot.get_cog(cog)
         if cog is None:
-            await ctx.send(_("This cog is not installed or loaded.").format(**locals()))
+            await ctx.send(_("This cog is not installed or loaded."))
             return
         if cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
-            await ctx.send(_("This cog is not a cog from AAA3A-cogs.").format(**locals()))
+            await ctx.send(_("This cog is not a cog from AAA3A-cogs."))
             return
         if not hasattr(cog, "logs") or not isinstance(getattr(cog, "logs"), typing.Dict):
-            await ctx.send(_("This cog does not have any log saved.").format(**locals()))
+            await ctx.send(_("This cog does not have any log saved."))
             return
         if level == "stats":
             message = "---------- Logs Stats ----------"
@@ -397,7 +397,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             return
         if not level == "all":
             if cog.logs.get(level, None) is None or cog.logs.get(level, None) == []:
-                await ctx.send(_("This cog does not have any log saved for this level.").format(**locals()))
+                await ctx.send(_("This cog does not have any log saved for this level."))
                 return
         if level == "all":
             data = []
@@ -428,10 +428,10 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         """Get debug loops status for a cog from AAA3A-cogs."""
         cog = ctx.bot.get_cog(cog)
         if cog is None:
-            await ctx.send(_("This cog is not installed or loaded.").format(**locals()))
+            await ctx.send(_("This cog is not installed or loaded."))
             return
         if cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
-            await ctx.send(_("This cog is not a cog from AAA3A-cogs.").format(**locals()))
+            await ctx.send(_("This cog is not a cog from AAA3A-cogs."))
             return
         embeds = []
         for loop in cog.cogsutils.loops.values():
@@ -444,20 +444,20 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         """Reset Config for a cog from AAA3A-cogs."""
         cog = ctx.bot.get_cog(cog)
         if cog is None:
-            await ctx.send(_("This cog is not installed or loaded.").format(**locals()))
+            await ctx.send(_("This cog is not installed or loaded."))
             return
         if cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
-            await ctx.send(_("This cog is not a cog from AAA3A-cogs.").format(**locals()))
+            await ctx.send(_("This cog is not a cog from AAA3A-cogs."))
             return
         if not hasattr(cog, "config") or not isinstance(getattr(cog, "config"), Config):
-            await ctx.send(_("This cog does not use the Config.").format(**locals()))
+            await ctx.send(_("This cog does not use the Config."))
             return
         if not confirmation:
             embed: discord.Embed = discord.Embed()
-            embed.title = _(":warning: - Reset Config").format(**locals())
+            embed.title = _("⚠️ - Reset Config")
             embed.description = _(
                 "Do you really want to remove ALL data saved with this cog?"
-            ).format(**locals())
+            )
             embed.color = 0xF00020
             if not await self.cogsutils.ConfirmationAsk(ctx, embed=embed):
                 await self.cogsutils.delete_message(ctx.message)
@@ -467,19 +467,25 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
     @commands.is_owner()
     @AAA3A_utils.command(hidden=True)
     async def telemetrywithsentry(self, ctx: commands.Context, state: bool):
-        """Enable or disable Telemetry with Sentry for all cogs from AAA3A-cogs."""
+        """Enable or disable Telemetry with Sentry for all cogs from AAA3A-cogs.
+
+        More details: https://aaa3a-cogs.readthedocs.io/en/latest/repo_telemetry.html
+        """
         await self.config.sentry.sentry_enabled.set(state)
 
     @commands.is_owner()
     @AAA3A_utils.command(hidden=True)
     async def senderrorwithsentry(self, ctx: commands.Context, error: str):
-        """Send a recent error to the developer of AAA3A's cogs with Sentry (use the code given when the error has been triggered)."""
+        """Send a recent error to the developer of AAA3A's cogs with Sentry (use the code given when the error has been triggered).
+
+        More details: https://aaa3a-cogs.readthedocs.io/en/latest/repo_telemetry.html
+        """
         if error not in self.sentry.last_errors:
             await ctx.send(_("This error does not exist."))
             return
         e = self.sentry.last_errors.pop(error)
         event_id = await self.sentry.send_command_error(e["ctx"], e["error"], manually=True)
-        await ctx.send(_("The error was successfully sent with the event id {event_id}.").format(**locals()))
+        await ctx.send(_("The error was successfully sent with the event id {event_id}.").format(event_id=event_id))
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
@@ -570,7 +576,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         if command is not None:
             object_command = ctx.bot.get_command(_commands[0])
             if object_command is None:
-                await ctx.send(_("The command `{command}` does not exist.").format(**locals()))
+                await ctx.send(_("The command `{command}` does not exist."))
                 return
             _commands = [object_command]
         downloader = ctx.bot.get_cog("Downloader")
@@ -579,7 +585,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 ctx,
                 _(
                     "The Downloader cog cog is not loaded. I can't continue. Do you want me to do it?"
-                ).format(**locals()),
+                ),
             ):
                 await ctx.invoke(ctx.bot.get_command("load"), "downloader")
                 downloader = ctx.bot.get_cog("Downloader")
@@ -590,7 +596,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         if repo is not None:
             rp = _repos[0]
             if not isinstance(rp, Repo) and not "AAA3A".lower() in rp.lower():
-                await ctx.send(_("Repo by the name `{rp}` does not exist.").format(**locals()))
+                await ctx.send(_("Repo by the name `{rp}` does not exist.").format(rp=rp))
                 return
             if not isinstance(repo, Repo):
                 found = False
@@ -600,7 +606,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                         found = True
                         break
                 if not found:
-                    await ctx.send(_("Repo by the name `{rp}` does not exist.").format(**locals()))
+                    await ctx.send(_("Repo by the name `{rp}` does not exist.").format(rp=rp))
                     return
             if check_updates:
                 cogs_to_check, failed = await downloader._get_cogs_to_check(repos={_repos[0]})

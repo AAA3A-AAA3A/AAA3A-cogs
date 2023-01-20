@@ -155,7 +155,7 @@ class Settings():
         class ProfileConverter(commands.Converter):
             async def convert(_self, ctx: commands.Context, arg: str):
                 if len(arg) > 10:
-                    raise commands.BadArgument(_("This profile does not exist.").format(**locals()))
+                    raise commands.BadArgument(_("This profile does not exist."))
                 if self.group == Config.GLOBAL:
                     object = None
                 elif self.group == Config.GUILD:
@@ -171,7 +171,7 @@ class Settings():
                 data = self.get_data(object)
                 profiles = await data.get_raw(*self.global_path)
                 if arg.lower() not in profiles:
-                    raise commands.BadArgument(_("This profile does not exist.").format(**locals()))
+                    raise commands.BadArgument(_("This profile does not exist."))
                 return arg.lower()
 
         if not self.use_profiles_system:
@@ -242,12 +242,12 @@ class Settings():
                 _usage = self.settings[setting]["usage"]
 
                 if not self.use_profiles_system:
-                    async def command(_self, ctx: commands.Context, value: typing.Optional[self.settings[setting]["converter"]] = None):
+                    async def command(_self, ctx: commands.Context, *, value: typing.Optional[self.settings[setting]["converter"]] = None):
                         if value is None:
                             value = discord.utils.MISSING
                         await self.command(ctx, key=None, value=value)
                 else:
-                    async def command(_self, ctx: commands.Context, profile: ProfileConverter, value: typing.Optional[self.settings[setting]["converter"]] = None):
+                    async def command(_self, ctx: commands.Context, profile: ProfileConverter, *, value: typing.Optional[self.settings[setting]["converter"]] = None):
                         if value is None:
                             value = discord.utils.MISSING
                         await self.command(ctx, key=None, value=value, profile=profile)
@@ -313,23 +313,23 @@ class Settings():
 
     async def add_profile(self, ctx: commands.Context, profile: str):
         if len(profile) > 10:
-            await ctx.send(_("The name of a profile must be less than or equal to 10 characters.").format(**locals()))
+            await ctx.send(_("The name of a profile must be less than or equal to 10 characters."))
             return
         data = self.get_data(ctx=ctx)
         profiles = await data.get_raw(*self.global_path)
         if profile in profiles:
-            await ctx.send(_("This profile already exists.").format(**locals()))
+            await ctx.send(_("This profile already exists."))
             return
         await data.set_raw(*self.global_path, profile, value=self.config._defaults[self.group]["default_profile_settings"]) 
 
     async def clone_profile(self, ctx: commands.Context, old_profile: str, profile: str):
         if len(profile) > 10:
-            await ctx.send(_("The name of a profile must be less than or equal to 10 characters.").format(**locals()))
+            await ctx.send(_("The name of a profile must be less than or equal to 10 characters."))
             return
         data = self.get_data(ctx=ctx)
         profiles = await data.get_raw(*self.global_path)
         if profile in profiles:
-            await ctx.send(_("This profile already exists.").format(**locals()))
+            await ctx.send(_("This profile already exists."))
             return
         await data.set_raw(*self.global_path, profile, value=await data.get_raw(*self.global_path, old_profile))
         if self.cog.qualified_name == "TicketTool":
@@ -340,11 +340,11 @@ class Settings():
             embed: discord.Embed = discord.Embed()
             embed.title = _(
                 "Do you really want to remove this profile?"
-            ).format(**locals())
+            )
             if self.cog.qualified_name == "TicketTool":
                 embed.description = _(
                     "All tickets associated with this profile will be removed from the Config, but the channels will still exist. Commands related to the tickets will no longer work."
-                ).format(**locals())
+                )
             embed.color = 0xF00020
             response = await self.cog.cogsutils.ConfirmationAsk(ctx, embed=embed)
             if not response:
@@ -366,12 +366,12 @@ class Settings():
 
     async def rename_profile(self, ctx: commands.Context, old_profile: str, profile: str):
         if len(profile) > 10:
-            await ctx.send(_("The name of a profile must be less than or equal to 10 characters.").format(**locals()))
+            await ctx.send(_("The name of a profile must be less than or equal to 10 characters.")
             return
         data = self.get_data(ctx=ctx)
         profiles = await data.get_raw(*self.global_path)
         if profile in profiles:
-            await ctx.send(_("A panel with this name already exists.").format(**locals()))
+            await ctx.send(_("A panel with this name already exists.")
             return
         await data.set_raw(*self.global_path, profile, value=await data.get_raw(*self.global_path, old_profile))
         await data.clear_raw(*self.global_path, old_profile)
@@ -521,8 +521,8 @@ class Settings():
                 if not confirmation:
                     embed: discord.Embed = discord.Embed()
                     embed.title = _(
-                        "⚙️ Do you want to replace the entire Config of {self.cog.qualified_name} with what you specified?"
-                    ).format(**locals())
+                        "⚙️ Do you want to replace the entire Config of {cog.qualified_name} with what you specified?"
+                    ).format(cog=self.cog)
                     if await self.cog.cogsutils.ConfirmationAsk(ctx, embed=embed):
                         if not self.use_profiles_system:
                             config = await data.set_raw(*self.global_path, value=config)
@@ -583,8 +583,8 @@ class Settings():
         )
         message = await ctx.send(
             _(
-                "Click on the buttons below to fully set up the cog {self.cog.qualified_name}."
-            ).format(**locals()),
+                "Click on the buttons below to fully set up the cog {cog.qualified_name}."
+            ).format(cog=self.cog),
             view=view_button,
         )
         await view_button.wait()

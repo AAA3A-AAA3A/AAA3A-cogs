@@ -113,7 +113,7 @@ class Captcha:
                     state = await self.verify(received.content)
                 except self.SameCodeError:
                     error_message += error(
-                        bold(_("Code invalid. Do not copy and paste.").format(**locals()))
+                        bold(_("Code invalid. Do not copy and paste."))
                     )
                     state = False
                 else:
@@ -151,13 +151,13 @@ class Captcha:
         embed_dict = {
             "embeds": [
                 {
-                    "title": _("Captcha").format(**locals())
-                    + _(" for {self.why}").format(**locals())
+                    "title": _("Captcha")
+                    + _(" for {why}").format(why=self.why)
                     if not self.why == ""
                     else "",
                     "description": _(
                         "Please return me the following code:\n{box(str(self.code))}\nDo not copy and paste."
-                    ).format(**locals()),
+                    ),
                     "author": {
                         "name": f"{self.member.display_name}",
                         "icon_url": self.member.display_avatar
@@ -165,7 +165,7 @@ class Captcha:
                         else self.member.avatar_url,
                     },
                     "footer": {
-                        "text": _("Tries: {self.trynum} / Limit: {self.limit}").format(**locals())
+                        "text": _("Tries: {self.trynum} / Limit: {self.limit}").format(trynum=self.trynum, limit=self.limit)
                     },
                 }
             ]

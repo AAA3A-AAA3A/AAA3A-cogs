@@ -154,7 +154,7 @@ class MemberPrefix(commands.Cog):
             await self.bot.invoke(ctx)
 
     class StrConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, arg: str):
+        async def convert(self, ctx: commands.Context, argument: str):
             return arg
 
     @commands.guild_only()

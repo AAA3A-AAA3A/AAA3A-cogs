@@ -212,9 +212,9 @@ class EditVoiceChannel(commands.Cog):
             )
 
     class PositionConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, arg: str):
+        async def convert(self, ctx: commands.Context, argument: str):
             try:
-                position = int(arg)
+                position = int(argument)
             except ValueError:
                 raise commands.BadArgument("The position must be an integer.")
             max_guild_text_channels_position = len(
@@ -307,13 +307,13 @@ class EditVoiceChannel(commands.Cog):
             )
 
     class PermissionConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, arg: str):
+        async def convert(self, ctx: commands.Context, argument: str):
             permissions = [
                 key for key, value in dict(discord.Permissions.all_channel()).items() if value
             ]
-            if arg not in permissions:
+            if argument not in permissions:
                 raise commands.BadArgument(_("This permission is invalid."))
-            return arg
+            return argument
 
     @editvoicechannel.command(name="permissions", aliases=["overwrites", "perms"])
     async def editvoicechannel_permissions(

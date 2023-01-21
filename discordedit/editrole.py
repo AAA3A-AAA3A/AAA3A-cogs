@@ -126,9 +126,9 @@ class EditRole(commands.Cog):
             )
 
     class PositionConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, arg: str):
+        async def convert(self, ctx: commands.Context, argument: str):
             try:
-                position = int(arg)
+                position = int(argument)
             except ValueError:
                 raise commands.BadArgument(_("The position must be an integer."))
             max_guild_roles_position = len(ctx.guild.roles)
@@ -164,9 +164,9 @@ class EditRole(commands.Cog):
             )
 
     class PermissionsConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, arg: str):
+        async def convert(self, ctx: commands.Context, argument: str):
             try:
-                permissions = int(arg)
+                permissions = int(argument)
             except ValueError:
                 raise commands.BadArgument(_("The permissions must be an integer."))
             permissions_none = discord.Permissions.none().value

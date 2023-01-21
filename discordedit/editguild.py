@@ -299,9 +299,9 @@ class EditGuild(commands.Cog):
             )
 
     class LocaleConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, arg: str):
+        async def convert(self, ctx: commands.Context, argument: str):
             try:
-                return discord.Locale(arg)
+                return discord.Locale(argument)
             except ValueError:
                 raise commands.BadArgument(
                     _("Converting to `Locale` failed for parameter `preferred_locale`.")

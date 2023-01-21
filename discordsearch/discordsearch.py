@@ -32,8 +32,8 @@ else:
 
 
 class StrConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, arg: str):
-        return arg
+    async def convert(self, ctx: commands.Context, argument: str):
+        return argument
 
 
 @cog_i18n(_)
@@ -318,8 +318,8 @@ class SearchArgs:
     class DateConverter(commands.Converter):
         """Date converter which uses dateparser.parse()."""
 
-        async def convert(self, ctx: commands.Context, arg: str) -> datetime.datetime:
-            parsed = dateparser.parse(arg)
+        async def convert(self, ctx: commands.Context, argument: str) -> datetime.datetime:
+            parsed = dateparser.parse(argument)
             if parsed is None:
                 raise commands.BadArgument(_("Unrecognized date/time."))
             return parsed

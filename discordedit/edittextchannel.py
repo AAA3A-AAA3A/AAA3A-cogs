@@ -182,7 +182,7 @@ class EditTextChannel(commands.Cog):
             )
 
     class PositionConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, arg: str):
+        async def convert(self, ):
             try:
                 position = int(arg)
             except ValueError:
@@ -363,13 +363,13 @@ class EditTextChannel(commands.Cog):
             )
 
     class PermissionConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, arg: str):
+        async def convert(self, ctx: commands.Context, argument: str):
             permissions = [
                 key for key, value in dict(discord.Permissions.all_channel()).items() if value
             ]
-            if arg not in permissions:
+            if argument not in permissions:
                 raise commands.BadArgument(_("This permission is invalid."))
-            return arg
+            return argument
 
     @edittextchannel.command(name="permissions", aliases=["overwrites", "perms"])
     async def edittextchannel_permissions(

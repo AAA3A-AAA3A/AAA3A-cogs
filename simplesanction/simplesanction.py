@@ -42,10 +42,10 @@ else:
 
 
 class TimeDeltaConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, arg: str):
-        delta = parse_timedelta(arg)
+    async def convert(self, ctx: commands.Context, argument: str):
+        delta = parse_timedelta(argument)
         if delta is not None:
-            return arg
+            return argument
         else:
             raise BadArgument()
 

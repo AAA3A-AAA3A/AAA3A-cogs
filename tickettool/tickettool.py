@@ -596,13 +596,13 @@ class TicketTool(settings, commands.Cog):
         return commands.check(pred)
 
     class PanelConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, arg: str):
-            if len(arg) > 10:
+        async def convert(self, ctx: commands.Context, argument: str):
+            if len(argument) > 10:
                 raise commands.BadArgument(_("This panel does not exist."))
             panels = await ctx.bot.get_cog("TicketTool").config.guild(ctx.guild).panels()
-            if arg.lower() not in panels:
+            if argument.lower() not in panels:
                 raise commands.BadArgument(_("This panel does not exist."))
-            return arg.lower()
+            return argument.lower()
 
     @commands.guild_only()
     @hybrid_group(name="ticket")

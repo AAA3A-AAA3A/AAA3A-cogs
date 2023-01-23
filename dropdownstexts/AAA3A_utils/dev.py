@@ -81,7 +81,7 @@ class DevSpace:
         return f"<{self.__class__.__name__} {' '.join(items)}>"
 
     def __eq__(self, other: object) -> bool:
-        if isinstance(self, DevSpace) and isinstance(other, DevSpace):
+        if isinstance(self, self.__class__) and isinstance(other, self.__class__):
             return self.__dict__ == other.__dict__
         return NotImplemented
 

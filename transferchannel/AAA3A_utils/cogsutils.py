@@ -473,7 +473,7 @@ class CogsUtils(commands.Cog):
             local_commit = local.commit
             repo = local.repo
             if repo is None:
-                raise ValueError("This cog has not been installed from the cog Downloader.")
+                raise ValueError("This cog is not installed on this bot with Downloader.")
             repo_url = repo.url
         else:
             cog = None
@@ -498,13 +498,13 @@ class CogsUtils(commands.Cog):
         if isinstance(online, typing.Dict) and "message" in online and "API rate limit exceeded" in online["message"]:
             raise asyncio.LimitOverrunError("API rate limit exceeded.", 47)
         if online is None or not isinstance(online, typing.List):
-            raise asyncio.IncompleteReadError("No results could be retrieved from the git api.", None)
+            raise asyncio.IncompleteReadError("No results could be retrieved from the git API.", None)
         online_commit_for_each_files = {file["name"]: file["sha"] for file in online if file["type"] in ["dir", "file"]}
         if cog is None and cog_name is None:
             return online_commit_for_each_files
 
         if cog_name not in online_commit_for_each_files:
-            raise asyncio.IncompleteReadError("No results could be retrieved from the git api.", None)
+            raise asyncio.IncompleteReadError("No results could be retrieved from the git API.", None)
         online_commit = online_commit_for_each_files[cog_name]
 
         # async with aiohttp.ClientSession() as session:

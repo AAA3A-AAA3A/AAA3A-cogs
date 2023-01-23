@@ -194,7 +194,7 @@ class Cog:
         if AAA3A_utils is not None:
             if getattr(AAA3A_utils, "sentry", None) is not None:
                 no_sentry = True
-        if isinstance(error, (commands.CommandInvokeError, commands.HybridCommandError)):  # Error can be changed into `commands.BotMissingPermissions` or not.
+        if isinstance(error, (commands.CommandInvokeError)) or (self.cog.cogsutil.is_dpy2 and isinstance(error, commands.HybridCommandError)):  # Error can be changed into `commands.BotMissingPermissions` or not.
             if isinstance(error.original, discord.Forbidden):
                 e = self.verbose_forbidden_exception(ctx, error.original)
                 if e is not None and isinstance(e, commands.BotMissingPermissions):

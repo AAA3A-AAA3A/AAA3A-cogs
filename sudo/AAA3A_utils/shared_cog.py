@@ -69,8 +69,8 @@ def no_colour_rich_markup(*objects: typing.Any, lang: str = "", no_box: typing.O
 
 
 class StrConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, arg: str):
-        return arg
+    async def convert(self, ctx: commands.Context, argument: str):
+        return argument
 
 
 class SharedCog(commands.Cog, name="AAA3A_utils"):

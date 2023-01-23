@@ -193,7 +193,7 @@ class Cog:
         no_sentry = False
         AAA3A_utils = ctx.bot.get_cog("AAA3A_utils")
         if AAA3A_utils is not None:
-            if getattr(AAA3A_utils, "sentry", None) is not None:
+            if getattr(AAA3A_utils, "sentry", None) is None:
                 no_sentry = True
         is_command_error = False
         if isinstance(error, commands.CommandInvokeError):

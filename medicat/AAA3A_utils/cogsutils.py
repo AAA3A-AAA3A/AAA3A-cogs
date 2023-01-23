@@ -235,8 +235,8 @@ class CogsUtils(commands.Cog):
         try:
             nb_commits, version, commit = await self.get_cog_version()
             if self.__version__ == 1.0:
-                self.cog.__version__ = self.__version__ = version
-            self.cog.__commit__ = self.__commit__ = commit
+                self.cog.__version__ = version
+            self.cog.__commit__ = commit
         except (self.DownloaderNotLoaded, asyncio.TimeoutError, ValueError):
             pass
         except Exception as e:  # really doesn't matter if this fails so fine with debug level
@@ -268,8 +268,8 @@ class CogsUtils(commands.Cog):
                     self.bot.remove_cog("AAA3A_utils")
                 cog = SharedCog(self.bot, CogsUtils)
                 try:
-                    cog.sentry = old_cog.sentry
-                    if cog.sentry is not None:
+                    if getattr(cog, "sentry", None) is not None:
+                        cog.sentry = old_cog.sentry
                         cog.sentry.cog = cog
                     cog.cogsutils.loops = old_cog.cogsutils.loops
                 except AttributeError:

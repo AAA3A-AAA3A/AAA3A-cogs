@@ -97,7 +97,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         self.telemetrywithsentry.__is_dev__ = True
 
     async def cog_load(self):
-        if SentryHelper is not None:
+        if self.sentry is not None:
             self.sentry = SentryHelper(self)
 
     async def check_if_slash(self, cog: commands.Cog):

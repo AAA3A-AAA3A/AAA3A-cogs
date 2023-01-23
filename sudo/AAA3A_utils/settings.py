@@ -4,6 +4,7 @@ import typing  # isort:skip
 
 import asyncio
 import inspect
+import json
 from io import StringIO
 
 from redbot.core import Config
@@ -16,7 +17,7 @@ from .menus import Menu
 if discord.version_info.major >= 2:
     from .views import Buttons, Modal
 
-__all__ = ["Settings"]
+__all__ = ["Settings", "CustomMessageConverter"]
 
 if discord.version_info.major >= 2:
     from functools import partial
@@ -65,6 +66,135 @@ if not hasattr(discord.utils, "MISSING"):
             return '...'
     discord.utils.MISSING = _MissingSentinel()
 
+
+class CustomMessageConverter(commands.Converter, dict):
+    def __init__(self, **kwargs):
+        if "embed" in kwargs:
+            kwargs["embed"] = discord.Embed.from_dict(kwargs["embed"])
+        self.__dict__.clear()
+        self.__dict__.update(**kwargs)
+
+    async def convert(self, ctx: commands.Context, argument: str):
+        if not argument.startswith("{"):
+            # If argument is not a JSON, convert it with MessageConverter.
+            try:
+                message = await commands.MessageConverter().convert(ctx, argument)
+            except commands.BadArgument:
+                raise
+            kwargs = {key: getattr(message, key) for key in ["content", "embeds"] if getattr(message, key)}
+        else:
+            try:
+                kwargs = json.loads(argument)
+            except json.JSONDecodeError:
+                raise commands.BadArgument(_("Invalid JSON format."))
+        if not isinstance(kwargs, typing.Dict):
+            raise commands.BadArgument(_("Invalid type, expected `dict`."))
+        if "embeds" in kwargs:
+            if len(kwargs["embeds"]) == 0:
+                del kwargs["embeds"]
+            elif len(kwargs["embeds"]) == 1 and "embed" not in kwargs:
+                kwargs["embed"] = kwargs["embeds"][0]
+                del kwargs["embeds"]
+            else:
+                raise commands.BadArgument(_("`embeds` field is not supported."))
+        for x in ["attachments", "files"]:
+            if x in kwargs:
+                del kwargs[x]
+        for x in kwargs:
+            if x not in ["content", "embed"]:
+                raise commands.BadArgument(_("`{x}` field is not supported.").format(x=x))
+        if "content" not in kwargs and "embed" not in kwargs:
+            raise commands.BadArgument(_("Missing `content` or `embed` field."))
+        if "embed" in kwargs:
+            embed = kwargs["embed"]
+            if not isinstance(embed, discord.Embed):
+                if not isinstance(embed, (typing.Dict)):
+                    raise commands.BadArgument(_("Invalid type for `embed`, expected `dict`."))
+                for x in embed:
+                    if embed[x] is None:
+                        del embed[x]
+                    elif isinstance(embed[x], typing.Dict):
+                        for y in embed[x]:
+                            if embed[x][y] is None:
+                                del embed[x][y]
+                try:
+                    embed = discord.Embed.from_dict(embed)
+                except Exception:
+                    pass
+            if not embed:
+                raise commands.BadArgument(_("Missing fields in `embed` field."))
+            length = len(embed)
+            if length > 6000:
+                raise commands.BadArgument(_("Embed size exceeds Discord limit of 6000 characters, provided one of {length}.").format(length=length))
+            kwargs["embed"] = embed
+        # Attempt to send message.
+        try:
+            message = await ctx.send(**kwargs)
+        except discord.HTTPException as e:
+            raise commands.BadArgument(_("Invalid message params (error when sending message).\n{e}").format(e=e))
+        self.__dict__.update(**kwargs)
+        return self
+
+    def to_dict(self) -> dict:
+        kwargs = self.__dict__
+        if "embed" in kwargs:
+            kwargs["embed"] = kwargs["embed"].to_dict()
+        return kwargs
+
+    # Copied from `AAA3A_utils.dev.DevSpace`.
+    def __repr__(self) -> str:
+        items = [f"{k}={v!r}" for k, v in self.__dict__.items()]
+        if len(items) == 0:
+            return f"<{self.__class__.__name__} [Nothing]>"
+        return f"<{self.__class__.__name__} {' '.join(items)}>"
+    def __eq__(self, other: object) -> bool:
+        if isinstance(self, self.__class__) and isinstance(other, self.__class__):
+            return self.__dict__ == other.__dict__
+        return NotImplemented
+    def __len__(self) -> int:
+        return len(self.__dict__)
+    def __contains__(self, key: str) -> typing.Any:
+        return key in self.__dict__
+    def __iter__(self) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
+        yield from self.__dict__.items()
+    def __reversed__(self) -> typing.Dict:
+        return self.__dict__.__reversed__()
+    def __getattr__(self, attr: str) -> typing.Any:
+        raise AttributeError(attr)
+    def __setattr__(self, attr: str, value: typing.Any) -> None:
+        self.__dict__[attr] = value
+    def __delattr__(self, attr: str) -> None:
+        del self.__dict__[attr]
+    def __getitem__(self, key: str) -> typing.Any:
+        return self.__dict__[key]
+    def __setitem__(self, key: str, value: typing.Any) -> None:
+        self.__dict__[key] = value
+    def __delitem__(self, key: str) -> None:
+        del self.__dict__[key]
+    def clear(self) -> None:
+        self.__dict__.clear()
+    def update(self, **kwargs) -> None:
+        self.__dict__.update(**kwargs)
+    def copy(self):
+        return self.__class__(**self.__dict__)
+    def items(self):
+        return self.__dict__.items()
+    def keys(self):
+        return self.__dict__.keys()
+    def values(self):
+        return self.__dict__.values()
+    def get(self, key: str, _default: typing.Optional[typing.Any] = None):
+        return self.__dict__.get(key, _default)
+    def pop(self, key: str, _default: typing.Optional[typing.Any] = None):
+        return self.__dict__.pop(key, _default)
+    def popitem(self):
+        return self.__dict__.popitem()
+    def _update_with_defaults(
+        self, defaults: typing.Iterable[typing.Tuple[str, typing.Any]]
+    ) -> None:
+        for key, value in defaults:
+            self.__dict__.setdefault(key, value)
+
 class Settings():
 
     def __init__(self, bot: Red, cog: commands.Cog, config: Config, group: str, settings: typing.Dict[str, typing.Dict[str, typing.Any]], global_path: typing.Optional[typing.List] = [], use_profiles_system: typing.Optional[bool] = False, can_edit: typing.Optional[bool] = True, commands_group: typing.Optional[typing.Union[commands.Group, str]] = None):
@@ -77,6 +207,7 @@ class Settings():
         self.use_profiles_system = use_profiles_system
         self.can_edit = can_edit
         self.commands_group = commands_group
+        self.commands = {}
         self.commands_added = asyncio.Event()
         for setting in settings:
             if "path" not in settings[setting]:
@@ -153,8 +284,8 @@ class Settings():
             setattr(self, f"{name}", commands_group)
 
         class ProfileConverter(commands.Converter):
-            async def convert(_self, ctx: commands.Context, arg: str):
-                if len(arg) > 10:
+            async def convert(_self, ctx: commands.Context, argument: str):
+                if len(argument) > 10:
                     raise commands.BadArgument(_("This profile does not exist."))
                 if self.group == Config.GLOBAL:
                     object = None
@@ -170,9 +301,9 @@ class Settings():
                     object = ctx.author
                 data = self.get_data(object)
                 profiles = await data.get_raw(*self.global_path)
-                if arg.lower() not in profiles:
+                if argument.lower() not in profiles:
                     raise commands.BadArgument(_("This profile does not exist."))
-                return arg.lower()
+                return argument.lower()
 
         if not self.use_profiles_system:
             async def show_settings(_self, ctx: commands.Context, with_dev: typing.Optional[bool] = False):
@@ -232,6 +363,7 @@ class Settings():
             cog_commands = list(self.cog.__cog_commands__)
             cog_commands.append(command)
             self.cog.__cog_commands__ = tuple(cog_commands)
+            self.commands[f"_{name}"] = command
 
         if self.can_edit or force:
             for setting in self.settings:
@@ -272,6 +404,7 @@ class Settings():
                 cog_commands = list(self.cog.__cog_commands__)
                 cog_commands.append(command)
                 self.cog.__cog_commands__ = tuple(cog_commands)
+                self.commands[f"{name}"] = command
 
         self.commands_added.set()
 

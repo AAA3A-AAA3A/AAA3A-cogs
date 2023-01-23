@@ -187,57 +187,39 @@ class Cog:
         return context
 
     async def cog_command_error(self, ctx: commands.Context, error: Exception):
-        if self.cog is None:
+        if self.cog is None or not hasattr(self.cog, "cogsutils"):
+            await ctx.bot.on_command_error(ctx=ctx, error=error, unhandled_by_cog=True)
             return
         no_sentry = False
         AAA3A_utils = ctx.bot.get_cog("AAA3A_utils")
         if AAA3A_utils is not None:
             if getattr(AAA3A_utils, "sentry", None) is not None:
                 no_sentry = True
-        if isinstance(error, (commands.CommandInvokeError)) or (self.cog.cogsutils.is_dpy2 and isinstance(error, commands.HybridCommandError)):  # Error can be changed into `commands.BotMissingPermissions` or not.
-            if isinstance(error.original, discord.Forbidden):
+        is_command_error = False
+        if isinstance(error, commands.CommandInvokeError):
+            is_command_error = True
+        elif self.cog.cogsutils.is_dpy2 and isinstance(error, commands.HybridCommandError):
+            is_command_error = True
+
+        if is_command_error:
+            if isinstance(error.original, discord.Forbidden):  # Error can be changed into `commands.BotMissingPermissions` or not.
                 e = self.verbose_forbidden_exception(ctx, error.original)
                 if e is not None and isinstance(e, commands.BotMissingPermissions):
                     error = e
-        if isinstance(error, commands.CommandInvokeError):
             uuid = uuid4().hex
             if not no_sentry:
                 AAA3A_utils.sentry.last_errors[uuid] = {"ctx": ctx, "error": error}
             if self.cog.cogsutils.is_dpy2 and isinstance(
                 ctx.command, discord.ext.commands.HybridCommand
             ):
-                _type = "[hybrid|text]"
+                if getattr(ctx, "interaction", None) is None:
+                    _type = "[hybrid|text]"
+                else:
+                    _type = "[hybrid|slash]"
+            elif getattr(ctx, "interaction", None) is not None:
+                _type = "[slash]"
             else:
                 _type = "[text]"
-            message = await self.cog.cogsutils.bot._config.invoke_error_msg()
-            if not message:
-                message = f"Error in {_type} command '{ctx.command.qualified_name}'."
-                if ctx.author.id in ctx.bot.owner_ids:
-                    message += " Check your console or logs for details. If necessary, please inform the creator of the cog in which this command is located. Thank you."
-                message = inline(message)
-            else:
-                message = message.replace("{command}", ctx.command.qualified_name)
-            if not no_sentry and not AAA3A_utils.sentry.sentry_enabled and not getattr(AAA3A_utils.senderrorwithsentry, "__is_dev__", False):
-                message += "\n" + inline(f"You can send this error to the developer by running the following command:\n{ctx.prefix}AAA3A_utils senderrorwithsentry {uuid}")
-            await ctx.send(message)
-            asyncio.create_task(ctx.bot._delete_delay(ctx))
-            self.cog.log.exception(
-                f"Exception in {_type} command '{ctx.command.qualified_name}'.",
-                exc_info=error.original,
-            )
-            exception_log = f"Exception in {_type} command '{ctx.command.qualified_name}':\n"
-            exception_log += "".join(
-                traceback.format_exception(type(error), error, error.__traceback__)
-            )
-            exception_log = self.cog.cogsutils.replace_var_paths(exception_log)
-            ctx.bot._last_exception = exception_log
-            if not no_sentry:
-                await AAA3A_utils.sentry.send_command_error(ctx, error)
-        elif self.cog.cogsutils.is_dpy2 and isinstance(error, commands.HybridCommandError):
-            uuid = uuid4().hex
-            if not no_sentry:
-                AAA3A_utils.sentry.last_errors[uuid] = {"ctx": ctx, "error": error}
-            _type = "[hybrid|slash]"
             message = await self.cog.cogsutils.bot._config.invoke_error_msg()
             if not message:
                 message = f"Error in {_type} command '{ctx.command.qualified_name}'."

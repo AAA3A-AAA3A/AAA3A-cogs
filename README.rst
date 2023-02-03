@@ -56,7 +56,7 @@ There is a possibility to imitate a user and also the user and the channel at th
 
 A cog to use a calculator directly in Discord, with buttons. You can also enter the calculation directly as an argument to the command. Buttons allow parentheses, square roots (with parentheses required), moving around the expression, deleting the last character...
 
-**AntiRaid:**
+**AntiNuke:**
 
 This cog allows you to prevent raids on your servers. If you give a person too many permissions, they can destroy everything by deleting each channel one by one. With this cog, the bot will delete all the roles (and therefore permissions) of the person if they delete a channel (unless they are the server owner).
 

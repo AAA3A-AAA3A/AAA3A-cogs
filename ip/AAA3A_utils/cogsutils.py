@@ -299,6 +299,8 @@ class CogsUtils(commands.Cog):
         DevEnv.remove_dev_env_values(bot=self.bot, cog=self.cog)
         loops = {name: value for name, value in self.loops.items()}
         for loop in loops:
+            if self.cog.qualified_name == "AAA3A_utils" and loop == "Sentry Helper":
+                continue
             self.loops[loop].stop_all()
         for view in self.views:
             view.stop()
@@ -314,6 +316,10 @@ class CogsUtils(commands.Cog):
         if getattr(AAA3A_utils, "sentry", None) is not None:
             await AAA3A_utils.sentry.cog_unload(self.cog)
         if not self.at_least_one_cog_loaded:
+            try:
+                del AAA3A_utils.cogsutils.loops["Sentry Helper"]
+            except ValueError:
+                pass
             if self.is_dpy2:
                 await self.bot.remove_cog("AAA3A_utils")
             else:

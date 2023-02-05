@@ -451,10 +451,10 @@ class Settings():
             return
         data = self.get_data(ctx=ctx)
         profiles = await data.get_raw(*self.global_path)
-        if profile in profiles:
+        if profile.lower() in profiles:
             await ctx.send(_("This profile already exists."))
             return
-        await data.set_raw(*self.global_path, profile, value=self.config._defaults[self.group]["default_profile_settings"])
+        await data.set_raw(*self.global_path, profile.lower(), value=self.config._defaults[self.group]["default_profile_settings"])
 
     async def clone_profile(self, ctx: commands.Context, old_profile: str, profile: str):
         if len(profile) > 10:

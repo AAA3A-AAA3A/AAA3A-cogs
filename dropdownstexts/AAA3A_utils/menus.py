@@ -169,6 +169,7 @@ class Menu:
         page_start: typing.Optional[int] = 0,
         check_owner: typing.Optional[bool] = True,
         members: typing.Optional[typing.Iterable[discord.Member]] = [],
+        ephemeral: typing.Optional[bool] = False,
         box_language_py: typing.Optional[bool] = False,
     ):
         self.ctx: commands.Context = None
@@ -190,11 +191,10 @@ class Menu:
         self.controls: typing.Dict = controls.copy()
         self.check_owner: bool = check_owner
         self.members: typing.List = members
+        self.ephemeral = ephemeral
         if (
             not discord.version_info.major >= 2
-            and self.way == "buttons"
-            or not discord.version_info.major >= 2
-            and self.way == "dropdown"
+            and self.way in ["buttons", "dropdown"]
         ):
             self.way = "reactions"
         if not self.pages:
@@ -502,6 +502,8 @@ class Menu:
 
     async def send_initial_message(self, ctx: commands.Context):
         current, kwargs = await self.get_page(self.current_page)
+        if self.ephemeral and getattr(self.ctx, "interaction", None) is not None:
+            kwargs["ephemeral"] = True
         if self.way in ["buttons", "dropdown"]:
             self.message = await ctx.send(**kwargs, view=self.view)
         else:

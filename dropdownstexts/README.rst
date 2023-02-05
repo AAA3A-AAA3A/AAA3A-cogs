@@ -30,7 +30,7 @@ Here are all the commands included in this cog (6):
 * ``[p]dropdownstexts add <message> <emoji> <label> <text>``
  Add a dropdown-text to a message.
 
-* ``[p]dropdownstexts bulk <message> [dropdown_texts...]``
+* ``[p]dropdownstexts bulk <message> [dropdown_texts]...``
  Add dropdown-texts to a message.
 
 * ``[p]dropdownstexts clear <message>``
@@ -72,3 +72,9 @@ Further Support
 Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
 Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
 Additionally, feel free to open an issue or pull request to this repo.
+
+------
+Credit
+------
+
+Thanks to Kreusada for the Python code to automatically generate this documentation!

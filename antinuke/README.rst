@@ -40,7 +40,7 @@ Here are all the commands included in this cog (7):
  Number Detected - Member
 
 * ``[p]setantinuke resetuser <int>``
- Reset number detected for a user
+ Reset number detected for a user.
 
 * ``[p]setantinuke userdm <true_or_false>``
  Enable or disable User DM.
@@ -75,3 +75,9 @@ Further Support
 Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
 Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
 Additionally, feel free to open an issue or pull request to this repo.
+
+------
+Credit
+------
+
+Thanks to Kreusada for the Python code to automatically generate this documentation!

@@ -22,82 +22,88 @@ A cog to manage a ticket system!
 Commands
 --------
 
-Here are all the commands included in this cog (37):
+Here are all the commands included in this cog (39):
 
-* ``[p]setticket``
+* ``[p]settickettool``
  Configure TicketTool for your server.
 
-* ``[p]setticket adminrole <role_or_'none'>``
- Set a role for administrators of the ticket system.
+* ``[p]settickettool adminrole <profile> [role]``
+ Users with this role will have full permissions for tickets, but will not be able to set up the cog.
 
-* ``[p]setticket auditlogs <true_or_false>``
- Make the author of each action concerning a ticket appear in the server logs.
+* ``[p]settickettool auditlogs <profile> [audit_logs]``
+ On all requests to the Discord api regarding the ticket (channel modification), does the bot send the name and id of the user who requested the action as the reason?
 
-* ``[p]setticket categoryclose <category_or_'none'>``
- Set a category where close tickets are created.
+* ``[p]settickettool categoryclose <profile> [category channel]``
+ Set the category where the closed tickets will be.
 
-* ``[p]setticket categoryopen <category_or_'none'>``
- Set a category where open tickets are created.
+* ``[p]settickettool categoryopen <profile> [category channel]``
+ Set the category where the opened tickets will be.
 
-* ``[p]setticket closeconfirmation <true_or_false>``
- Enable or disable Close Confirmation.
+* ``[p]settickettool closeconfirmation <profile> [close_confirmation]``
+ Should the bot ask for confirmation before closing the ticket (deletion will necessarily have a confirmation)?
 
-* ``[p]setticket closeonleave <true_or_false>``
- Enable or disable Close on Leave.
+* ``[p]settickettool closeonleave <profile> [close_on_leave]``
+ If a user leaves the server, will all their open tickets be closed?
 
-* ``[p]setticket color <color_or_'none'>``
- Set a colour for the embeds.
+* ``[p]settickettool createonreact <profile> [create_on_react]``
+ Create a ticket when the reaction 🎟️ is set on any message on the server.
 
-* ``[p]setticket createonreact <true_or_false>``
- Enable or disable Create on React.
+* ``[p]settickettool custommessage <profile> [custom_message]``
+ This message will be sent in the ticket channel when the ticket is opened.
 
-* ``[p]setticket custommessage [custom_message=None]``
- Set the Custom Message.
+* ``[p]settickettool deleteonclose <profile> [delete_on_close]``
+ Does closing the ticket directly delete it (with confirmation)?
 
-* ``[p]setticket dynamicchannelname [dynamic_channel_name=None]``
- Set the Dinamic Ticket Channel Name.
+* ``[p]settickettool dynamicchannelname <profile> [dynamic_channel_name]``
+ Set the template that will be used to name the channel when creating a ticket.
 
-* ``[p]setticket embedbutton <"title"|"description"|"image"|"placeholderdropdown"> [text=None]``
- Set the settings for the button embed.
+* ``[p]settickettool enable <profile> [enable]``
+ Enable the system.
 
-* ``[p]setticket enable <true_or_false>``
- Enable or disable Ticket System
+* ``[p]settickettool logschannel <profile> [text channel]``
+ Set the channel where the logs will be saved.
 
-* ``[p]setticket logschannel <text_channel_or_'none'>``
- Set a channel where events are registered.
-
-* ``[p]setticket message [channel] [message] [reason_options]...``
+* ``[p]settickettool message <panel> [channel] [message] [reason_options]...``
  Send a message with a button to open a ticket or dropdown with possible reasons.
 
-* ``[p]setticket modlog <true_or_false>``
- Enable or disable Modlog.
+* ``[p]settickettool modalconfig <profile> [confirmation=False]``
+ Set all settings for the cog with a Discord Modal.
 
-* ``[p]setticket nbmax <int>``
- Max Number of tickets for a member.
+* ``[p]settickettool modlog <profile> [modlog]``
+ Does the bot create an action in the bot modlog when a ticket is created?
 
-* ``[p]setticket pingrole <role_or_'none'>``
- Set a role for pings on ticket creation.
+* ``[p]settickettool nbmax <profile> [nb_max]``
+ Sets the maximum number of open tickets a user can have on the system at any one time (for the profile only).
 
-* ``[p]setticket purge [confirmation=False]``
- Purge all existing tickets in the config. Does not delete any channels.
+* ``[p]settickettool pingrole <profile> [role]``
+ This role will be pinged automatically when the ticket is created, but does not give any additional permissions.
 
-* ``[p]setticket renamechanneldropdown <true_or_false>``
- Enable or disable Rename Channel Dropdown.
+* ``[p]settickettool profileadd <profile>``
+ Create a new profile with defaults settings.
 
-* ``[p]setticket supportrole <role_or_'none'>``
- Set a role for helpers of the ticket system.
+* ``[p]settickettool profileclone <old_profile> <profile>``
+ Clone an existing profile with his settings.
 
-* ``[p]setticket thumbnail <link_or_'none'>``
- Set a thumbnail for the embeds.
+* ``[p]settickettool profileremove <profile> [confirmation=False]``
+ Remove an existing profile.
 
-* ``[p]setticket ticketrole <role_or_'none'>``
- Set a role for creaters of a ticket.
+* ``[p]settickettool profilerename <old_profile> <profile>``
+ Clone an existing profile with his settings.
 
-* ``[p]setticket usercanclose <true_or_false>``
- Enable or disable User Can Close.
+* ``[p]settickettool profileslist``
+ List the existing profiles.
 
-* ``[p]setticket viewrole <role_or_'none'>``
- Set a role for viewers of tickets.
+* ``[p]settickettool showsettings <profile> [with_dev=False]``
+ Show all settings for the cog with defaults and values.
+
+* ``[p]settickettool supportrole <profile> [role]``
+ Users with this role will be able to participate and claim the ticket.
+
+* ``[p]settickettool usercanclose <profile> [user_can_close]``
+ Can the author of the ticket, if he/she does not have a role set up for the system, close the ticket himself?
+
+* ``[p]settickettool viewrole <profile> [role]``
+ Users with this role will only be able to read messages from the ticket, but not send them.
 
 * ``[p]ticket``
  Commands for using the ticket system.
@@ -111,7 +117,7 @@ Here are all the commands included in this cog (37):
 * ``[p]ticket close [confirmation=None] [reason=No reason provided.]``
  Close an existing ticket.
 
-* ``[p]ticket create [reason=No reason provided.]``
+* ``[p]ticket create [panel=main] [reason=No reason provided.]``
  Create a ticket.
 
 * ``[p]ticket delete [confirmation=False] [reason=No reason provided.]``
@@ -165,3 +171,9 @@ Further Support
 Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
 Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
 Additionally, feel free to open an issue or pull request to this repo.
+
+------
+Credit
+------
+
+Thanks to Kreusada for the Python code to automatically generate this documentation!

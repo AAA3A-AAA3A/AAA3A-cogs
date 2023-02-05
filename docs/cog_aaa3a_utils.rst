@@ -22,22 +22,43 @@ Commands to manage all the cogs in AAA3A-cogs repo!
 Commands
 --------
 
-Here are all the commands included in this cog (5):
+Here are all the commands included in this cog (12):
 
 * ``[p]AAA3A_utils``
- All commands to manage all the cogs in AAA3A-cogs repo.
+ All commands to manage all the cogs from AAA3A-cogs repo.
+
+* ``[p]AAA3A_utils addignoredslash [commands]...``
+ Add ignored slash commands for a cog from AAA3A-cogs.
 
 * ``[p]AAA3A_utils addslash [cogs]...``
- Add slash commands for repo cogs.
+ Add slash commands for a cog from AAA3A-cogs.
 
 * ``[p]AAA3A_utils clearslash``
- Remove slash commands for all repo cogs.
+ Remove slash commands for all cogs from AAA3A-cogs.
 
 * ``[p]AAA3A_utils getallfor ["all"|"ALL"=None] [page=None] [repo=None] [check_updates=False] [cog=None] [command=None]``
  Get all the necessary information to get support on a bot/repo/cog/command.
 
+* ``[p]AAA3A_utils getdebugloopsstatus <cog>``
+ Get debug loops status for a cog from AAA3A-cogs.
+
+* ``[p]AAA3A_utils getlogs <cog> [level=all]``
+ Get logs for a cog from AAA3A-cogs
+
+* ``[p]AAA3A_utils removeignoredslash [commands]...``
+ Remove ignored slash commands for a cog from AAA3A-cogs.
+
 * ``[p]AAA3A_utils removeslash [cogs]...``
- Remove slash commands for repo cogs.
+ Remove slash commands for a cog from AAA3A-cogs.
+
+* ``[p]AAA3A_utils resetconfig <cog> [confirmation=False]``
+ Reset Config for a cog from AAA3A-cogs.
+
+* ``[p]AAA3A_utils senderrorwithsentry <error>``
+ Send a recent error to the developer of AAA3A's cogs with Sentry (use the code given when the error has been triggered).
+
+* ``[p]AAA3A_utils telemetrywithsentry <state>``
+ Enable or disable Telemetry with Sentry for all cogs from AAA3A-cogs.
 
 ------------
 Installation
@@ -69,3 +90,9 @@ Further Support
 Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
 Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
 Additionally, feel free to open an issue or pull request to this repo.
+
+------
+Credit
+------
+
+Thanks to Kreusada for the Python code to automatically generate this documentation!

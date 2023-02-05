@@ -22,7 +22,73 @@ A cog to edit Discord default objects!
 Commands
 --------
 
-Here are all the commands included in this cog (33):
+Here are all the commands included in this cog (59):
+
+* ``[p]editguild``
+ Commands for edit a guild.
+
+* ``[p]editguild afkchannel [afk_channel=None]``
+ Edit guild afkchannel.
+
+* ``[p]editguild afktimeout <afk_timeout>``
+ Edit guild afktimeout.
+
+* ``[p]editguild clone <name>``
+ Clone a text channel.
+
+* ``[p]editguild community <community>``
+ Edit guild community state.
+
+* ``[p]editguild create <name> [template_code=None]``
+ Create a guild with the bot as owner.
+
+* ``[p]editguild defaultnotifications <"0"|"1">``
+ Edit guild notification level.
+
+* ``[p]editguild delete [confirmation=False]``
+ Delete guild (if the bot is owner).
+
+* ``[p]editguild description [description=None]``
+ Edit guild description.
+
+* ``[p]editguild discoverable <discoverable>``
+ Edit guild discoverable state.
+
+* ``[p]editguild explicitcontentfilter <explicit_content_filter>``
+ Edit guild explicit content filter.
+
+* ``[p]editguild invitesdisabled <invites_disabled>``
+ Edit guild invites disabled state.
+
+* ``[p]editguild name <name>``
+ Edit guild name.
+
+* ``[p]editguild owner <owner> [confirmation=False]``
+ Edit guild owner (if the bot is bot owner).
+
+* ``[p]editguild preferredlocale <preferred_locale>``
+ Edit guild preferred locale.
+
+* ``[p]editguild premiumprogressbarenabled <premium_progress_bar_enabled>``
+ Edit guild premium progress bar enabled.
+
+* ``[p]editguild publicupdateschannel [public_updates_channel=None]``
+ Edit guild public updates channel.
+
+* ``[p]editguild ruleschannel [rules_channel=None]``
+ Edit guild rules channel.
+
+* ``[p]editguild systemchannel [system_channel=None]``
+ Edit guild system channel.
+
+* ``[p]editguild systemchannelflags <system_channel_flags>``
+ Edit guild system channel flags.
+
+* ``[p]editguild vanitycode <vanity_code>``
+ Edit guild vanity code.
+
+* ``[p]editguild verificationlevel <verification_level>``
+ Edit guild verification level.
 
 * ``[p]editrole``
  Commands for edit a role.
@@ -66,11 +132,17 @@ Here are all the commands included in this cog (33):
 * ``[p]edittextchannel delete [channel] [confirmation=False]``
  Delete text channel.
 
+* ``[p]edittextchannel invite [channel] [max_age=None] [max_uses=None] [temporary=False] [unique=True]``
+ Create an invite for a text channel.
+
 * ``[p]edittextchannel name [channel] <name>``
  Edit text channel name.
 
 * ``[p]edittextchannel nsfw [channel] <nsfw>``
  Edit text channel nsfw.
+
+* ``[p]edittextchannel permissions [channel] <permission> [true_or_false] [roles_or_users]...``
+ Edit text channel permissions/overwrites.
 
 * ``[p]edittextchannel position [channel] <position>``
  Edit text channel position.
@@ -105,11 +177,17 @@ Here are all the commands included in this cog (33):
 * ``[p]editvoicechannel delete <channel> [confirmation=False]``
  Delete voice channel.
 
+* ``[p]editvoicechannel invite <channel> [max_age=None] [max_uses=None] [temporary=False] [unique=True]``
+ Create an invite for a voice channel.
+
 * ``[p]editvoicechannel name <channel> <name>``
  Edit voice channel name.
 
 * ``[p]editvoicechannel nsfw <channel> <nsfw>``
  Edit voice channel nsfw.
+
+* ``[p]editvoicechannel permissions <channel> <permission> [true_or_false] [roles_or_users]...``
+ Edit voice channel permissions/overwrites.
 
 * ``[p]editvoicechannel position <channel> <position>``
  Edit voice channel position.
@@ -153,3 +231,9 @@ Further Support
 Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
 Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
 Additionally, feel free to open an issue or pull request to this repo.
+
+------
+Credit
+------
+
+Thanks to Kreusada for the Python code to automatically generate this documentation!

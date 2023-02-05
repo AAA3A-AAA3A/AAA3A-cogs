@@ -27,7 +27,7 @@ Here are all the commands included in this cog (6):
 * ``[p]rolesbuttons``
  Group of commands for use RolesButtons.
 
-* ``[p]rolesbuttons add <message> <role> <emoji> ["1"|"2"|"3"|"4"=2] [text_button=None]``
+* ``[p]rolesbuttons add <message> <emoji> <role> ["1"|"2"|"3"|"4"=2] [text_button=None]``
  Add a role-button to a message.
 
 * ``[p]rolesbuttons bulk <message> [roles_buttons]...``
@@ -39,7 +39,7 @@ Here are all the commands included in this cog (6):
 * ``[p]rolesbuttons purge``
  Clear all roles-buttons to a **guild**.
 
-* ``[p]rolesbuttons remove <message> <button>``
+* ``[p]rolesbuttons remove <message> <emoji>``
  Remove a role-button to a message.
 
 ------------
@@ -72,3 +72,9 @@ Further Support
 Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
 Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
 Additionally, feel free to open an issue or pull request to this repo.
+
+------
+Credit
+------
+
+Thanks to Kreusada for the Python code to automatically generate this documentation!

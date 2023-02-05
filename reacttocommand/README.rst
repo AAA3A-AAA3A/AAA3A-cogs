@@ -27,7 +27,7 @@ Here are all the commands included in this cog (5):
 * ``[p]reacttocommand``
  Group of commands for use ReactToCommand.
 
-* ``[p]reacttocommand add <message> <react> <command>``
+* ``[p]reacttocommand add <message> <emoji> <command>``
  Add a command-reaction to a message.
 
 * ``[p]reacttocommand clear <message>``
@@ -36,7 +36,7 @@ Here are all the commands included in this cog (5):
 * ``[p]reacttocommand purge``
  Clear all commands-reactions to a **guild**.
 
-* ``[p]reacttocommand remove <message> <react>``
+* ``[p]reacttocommand remove <message> <emoji>``
  Remove a command-reaction to a message.
 
 ------------
@@ -69,3 +69,9 @@ Further Support
 Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
 Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
 Additionally, feel free to open an issue or pull request to this repo.
+
+------
+Credit
+------
+
+Thanks to Kreusada for the Python code to automatically generate this documentation!

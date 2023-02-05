@@ -22,19 +22,25 @@ This cog will only work on x server and therefore cannot be used by the general 
 Commands
 --------
 
-Here are all the commands included in this cog (15):
+Here are all the commands included in this cog (21):
 
 * ``[p]medicat``
  Commands of the Medicat cog.
 
 * ``[p]medicat customtools``
- How to add your own bootable tools (iso, wim, vhd) to Medicat USB?
+ Can I add my own bootable tools (iso, wim, vhd) or PortableApps softwares to Medicat USB?
+
+* ``[p]medicat free``
+ Is Medicat free?
 
 * ``[p]medicat getlastbootablestoolsversions``
  Get the latest versions of each Medicat USB bootable tool.
 
 * ``[p]medicat getlastventoyversion``
  Get the latest version of Ventoy.
+
+* ``[p]medicat getventoyversion <version>``
+ Get a version of Ventoy.
 
 * ``[p]medicat howinstall``
  How do I install Medicat USB?
@@ -48,8 +54,14 @@ Here are all the commands included in this cog (15):
 * ``[p]medicat menus``
  How to download one of the menus?
 
+* ``[p]medicat minios``
+ Can I install Mini Windows 10 as my main OS?
+
 * ``[p]medicat noiso``
  How do I download the Medicat USB iso file?
+
+* ``[p]medicat portableapps``
+ Can I run the PortableApps on my current PC without booting up MediCat?
 
 * ``[p]medicat test``
  Test!
@@ -65,6 +77,12 @@ Here are all the commands included in this cog (15):
 
 * ``[p]medicat whatmedicat``
  What is Medicat USB?
+
+* ``[p]medicat whenupdate``
+ How often will Medicat be updated?
+
+* ``[p]medicat wimvhd``
+ Why doesn't Ventoy display Wim and VHD files?
 
 * ``[p]medicat xy``
  X & Y
@@ -99,3 +117,9 @@ Further Support
 Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
 Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
 Additionally, feel free to open an issue or pull request to this repo.
+
+------
+Credit
+------
+
+Thanks to Kreusada for the Python code to automatically generate this documentation!

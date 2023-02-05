@@ -27,7 +27,7 @@ Here are all the commands included in this cog (6):
 * ``[p]urlbuttons``
  Group of commands for use UrlButtons.
 
-* ``[p]urlbuttons add <message> <url> <emoji> [text_button=None]``
+* ``[p]urlbuttons add <message> <emoji> <url> [text_button=None]``
  Add a url-button to a message.
 
 * ``[p]urlbuttons bulk <message> [url_buttons]...``
@@ -39,7 +39,7 @@ Here are all the commands included in this cog (6):
 * ``[p]urlbuttons purge``
  Clear all url-buttons to a **guild**.
 
-* ``[p]urlbuttons remove <message> <button>``
+* ``[p]urlbuttons remove <message> <emoji>``
  Remove a url-button to a message.
 
 ------------
@@ -72,3 +72,9 @@ Further Support
 Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
 Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
 Additionally, feel free to open an issue or pull request to this repo.
+
+------
+Credit
+------
+
+Thanks to Kreusada for the Python code to automatically generate this documentation!

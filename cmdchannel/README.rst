@@ -24,19 +24,19 @@ Commands
 
 Here are all the commands included in this cog (12):
 
-* ``[p]cmdchannel``
- 
+* ``[p]CmdchanneL``
+ Use `[p]cmdchannel`, `[p]cmduser` and `[p]cmduserchannel`.
 
-* ``[p]cmdchannel channel <channel> <command>``
+* ``[p]CmdchanneL channel <channel> <command>``
  Act as if the command had been typed in the channel of your choice.
 
-* ``[p]cmdchannel testvar``
+* ``[p]CmdchanneL testvar``
  Test variables.
 
-* ``[p]cmdchannel user <user> <command>``
+* ``[p]CmdchanneL user <user> <command>``
  Act as if the command had been typed by imitating the specified user.
 
-* ``[p]cmdchannel userchannel <user> [channel=None] <command>``
+* ``[p]CmdchanneL userchannel <user> [channel=None] <command>``
  Act as if the command had been typed in the channel of your choice by imitating the specified user.
 
 * ``[p]cmdset``
@@ -90,3 +90,9 @@ Further Support
 Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
 Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
 Additionally, feel free to open an issue or pull request to this repo.
+
+------
+Credit
+------
+
+Thanks to Kreusada for the Python code to automatically generate this documentation!

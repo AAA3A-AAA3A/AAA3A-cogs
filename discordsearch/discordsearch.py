@@ -221,7 +221,7 @@ class DiscordSearch(commands.Cog):
             end = monotonic()
             total = round(end - start, 1)
             for embed in embeds:
-                embed.title = f_("Search in #{channel.name} ({channel.id}) in {total}s").format(
+                embed.title = _("Search in #{channel.name} ({channel.id}) in {total}s").format(
                     **locals()
                 )
         await Menu(pages=embeds).start(ctx)

@@ -43,7 +43,6 @@ class AutoTraceback(commands.Cog):
 
     def __init__(self, bot: Red):
         self.bot: Red = bot
-        super().__init__()
 
         self.cogsutils = CogsUtils(cog=self)
 

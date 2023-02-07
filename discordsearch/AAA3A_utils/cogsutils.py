@@ -293,7 +293,7 @@ class CogsUtils(commands.Cog):
 
     def _end(self):
         """
-        Removes dev environment values, slash commands add Views.
+        Removes dev environment values, slash commands and Views.
         """
         self.close_logger()
         DevEnv.remove_dev_env_values(bot=self.bot, cog=self.cog)
@@ -317,7 +317,7 @@ class CogsUtils(commands.Cog):
             await AAA3A_utils.sentry.cog_unload(self.cog)
         if not self.at_least_one_cog_loaded:
             try:
-                del AAA3A_utils.cogsutils.loops["Sentry Helper"]
+                AAA3A_utils.cogsutils.loops["Sentry Helper"].stop_all()
             except ValueError:
                 pass
             if self.is_dpy2:

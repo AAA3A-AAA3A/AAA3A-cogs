@@ -284,8 +284,7 @@ class DropdownsTexts(commands.Cog):
                 "text": text,
             }
         if self.cogsutils.is_dpy2:
-            await message.edit(
-                view=Dropdown(
+            view = Dropdown(
                     timeout=None,
                     placeholder=_("Select an option."),
                     min_values=0,
@@ -295,7 +294,8 @@ class DropdownsTexts(commands.Cog):
                     infinity=True,
                     custom_id=f"DropdownsTexts_{message.channel.id}-{message.id}",
                 )
-            )
+            await message.edit(view=view)
+            self.cogsutils.views.append(view)
         else:
             await message.edit(components=[self.get_dropdown(config, message)])
         await self.config.guild(ctx.guild).dropdowns_texts.set(config)
@@ -360,8 +360,7 @@ class DropdownsTexts(commands.Cog):
                     "text": text,
                 }
         if self.cogsutils.is_dpy2:
-            await message.edit(
-                view=Dropdown(
+            view = Dropdown(
                     timeout=None,
                     placeholder=_("Select an option."),
                     min_values=0,
@@ -371,7 +370,8 @@ class DropdownsTexts(commands.Cog):
                     infinity=True,
                     custom_id=f"DropdownsTexts_{message.channel.id}-{message.id}",
                 )
-            )
+            await message.edit(view=view)
+            self.cogsutils.views.append(view)
         else:
             await message.edit(components=[self.get_dropdown(config, message)])
         await self.config.guild(ctx.guild).dropdowns_texts.set(config)

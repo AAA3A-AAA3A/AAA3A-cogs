@@ -373,14 +373,14 @@ class RolesButtons(commands.Cog):
             "text_button": text_button,
         }
         if self.cogsutils.is_dpy2:
-            await message.edit(
-                view=Buttons(
+            view = Buttons(
                     timeout=None,
                     buttons=self.get_buttons(config, message),
                     function=self.on_button_interaction,
                     infinity=True,
                 )
-            )
+            await message.edit(view=view)
+            self.cogsutils.views.append(view)
         else:
             await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).roles_buttons.set(config)
@@ -442,14 +442,14 @@ class RolesButtons(commands.Cog):
                 "text_button": None,
             }
         if self.cogsutils.is_dpy2:
-            await message.edit(
-                view=Buttons(
+            view = Buttons(
                     timeout=None,
                     buttons=self.get_buttons(config, message),
                     function=self.on_button_interaction,
                     infinity=True,
                 )
-            )
+            await message.edit(view=view)
+            self.cogsutils.views.append(view)
         else:
             await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).roles_buttons.set(config)

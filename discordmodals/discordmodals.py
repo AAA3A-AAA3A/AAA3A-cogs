@@ -371,6 +371,7 @@ class DiscordModals(commands.Cog):
                 timeout=None, buttons=[argument["button"]], function=self.send_modal, infinity=True
             )
             await message.edit(view=view)
+            self.cogsutils.views.append(view)
         except discord.HTTPException:
             raise commands.UserFeedbackCheckFailure(
                 _("Sorry. An error occurred when I tried to put the button on the message.")

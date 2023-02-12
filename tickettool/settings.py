@@ -110,6 +110,7 @@ class settings(commands.Cog):
                     message = await channel.send(embed=embed, view=view)
                 else:
                     await message.edit(view=view)
+                self.cogsutils.views.append(view)
                 buttons_config[f"{message.channel.id}-{message.id}"] = {"panel": panel}
                 await self.config.guild(ctx.guild).buttons.set(buttons_config)
             else:
@@ -157,6 +158,7 @@ class settings(commands.Cog):
                     message = await channel.send(embed=embed, view=view)
                 else:
                     await message.edit(view=view)
+                self.cogsutils.views.append(view)
                 dropdowns_config[f"{channel.id}-{message.id}"] = [
                     {
                         "panel": panel,

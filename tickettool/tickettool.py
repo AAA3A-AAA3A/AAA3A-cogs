@@ -92,7 +92,7 @@ class TicketTool(settings, commands.Cog):
                     "description": _(
                         "To get help on this server or to make an order for example, you can create a ticket.\n"
                         "Just use the command `{prefix}ticket create` or click on the button below.\n"
-                        "You can then use the `{prefix}ticket` subcommand to manage your ticket."
+                        "You can then use the `{prefix}ticket` subcommands to manage your ticket."
                     ),
                     "image": None,
                     "placeholder_dropdown": "Choose the reason to open a ticket.",
@@ -323,6 +323,9 @@ class TicketTool(settings, commands.Cog):
 
     async def get_config(self, guild: discord.Guild, panel: str):
         config = await self.config.guild(guild).panels.get_raw(panel)
+        for key, value in self.config._defaults[Config.GUILD]["default_profile_settings"].items():
+            if key not in config:
+                config[key] = value
         if config["logschannel"] is not None:
             config["logschannel"] = guild.get_channel(config["logschannel"])
         if config["category_open"] is not None:
@@ -1650,6 +1653,7 @@ class Ticket:
                 components=[buttons],
                 allowed_mentions=discord.AllowedMentions(users=True, roles=True),
             )
+        self.cogsutils.views.append(view)
         if config["custom_message"] is not None:
             try:
                 embed: discord.Embed = discord.Embed()

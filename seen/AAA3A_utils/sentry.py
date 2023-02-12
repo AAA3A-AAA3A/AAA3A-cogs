@@ -179,7 +179,7 @@ class SentryHelper:
                 String with IDs shortened
             """
             s = re.sub(
-                SNOWFLAKE_REGEX, lambda m: "SHORTENED-ID-" + str(int(m.group()) >> 22)[-4:], s
+                SNOWFLAKE_REGEX, lambda m: "[SHORTENED-ID-" + str(int(m.group()) >> 22)[-4:] + "]", s
             )
             s = re.sub(
                 IP_V4_REGEX, "IP_V4", s
@@ -187,7 +187,7 @@ class SentryHelper:
             s = re.sub(
                 IP_V6_REGEX, "IP_V6", s
             )
-            return re.sub(INVITE_URL_RE, "DISCORD-INVITE-LINK", s)
+            return re.sub(INVITE_URL_RE, "[DISCORD-INVITE-LINK]", s)
 
         def recursive_replace(d: typing.Union[typing.Dict[str, typing.Any], typing.List, str], token: str) -> typing.Union[dict, str]:
             """Recursively replace text in keys and values of a dictionary.
@@ -204,7 +204,7 @@ class SentryHelper:
             """
             if isinstance(d, dict):
                 return {
-                    self.cogsutils.replace_var_paths(regex_stuff(k.replace(token, "BOT-TOKEN")))
+                    self.cogsutils.replace_var_paths(regex_stuff(k.replace(token, "[BOT-TOKEN]")))
                     if isinstance(k, str)
                     else k: recursive_replace(v, token)
                     for k, v in d.items()
@@ -216,7 +216,7 @@ class SentryHelper:
                     else recursive_replace(i, token)
                     for i in d
                 ]
-            return self.cogsutils.replace_var_paths(regex_stuff(d.replace(token, "{BOT_TOKEN}"))) if isinstance(d, str) else d
+            return self.cogsutils.replace_var_paths(regex_stuff(d.replace(token, "[BOT_TOKEN]"))) if isinstance(d, str) else d
 
         token = self.bot.http.token
 

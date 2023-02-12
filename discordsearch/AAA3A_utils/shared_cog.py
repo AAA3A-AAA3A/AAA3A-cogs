@@ -485,7 +485,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             return
         e = self.sentry.last_errors.pop(error)
         event_id = await self.sentry.send_command_error(e["ctx"], e["error"], manually=True)
-        await ctx.send(_("The error was successfully sent with the event id {event_id}.").format(event_id=event_id))
+        await ctx.send(_("The error was successfully sent with the event id `{event_id}`.").format(event_id=event_id))
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):

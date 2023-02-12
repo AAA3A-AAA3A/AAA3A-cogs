@@ -168,17 +168,21 @@ class Loop:
             return True
         if self.stop_manually:
             self.stop_all()
+            return True
         if self.limit_count is not None:
             if self.iteration_count >= self.limit_count:
                 self.stop_all()
+                return True
         if self.limit_date is not None:
             if datetime.datetime.timestamp(datetime.datetime.now()) >= datetime.datetime.timestamp(
                 self.limit_date
             ):
                 self.stop_all()
+                return True
         if self.limit_exception:
             if self.iteration_exception >= self.limit_exception:
                 self.stop_all()
+                return True
         return False
 
     def stop_all(self):

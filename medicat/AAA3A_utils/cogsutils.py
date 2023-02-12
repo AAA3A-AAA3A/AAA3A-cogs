@@ -555,7 +555,7 @@ class CogsUtils(commands.Cog):
         else:
             ignored_commands = []
         for _object in cog.walk_commands():
-            if getattr(_object, "app_command", None) is not discord.utils.MISSING:
+            if getattr(_object, "app_command", discord.utils.MISSING) is not discord.utils.MISSING:
                 continue
             if getattr(_object, "no_slash", False):
                 continue
@@ -614,7 +614,7 @@ class CogsUtils(commands.Cog):
         if cog is None:
             cog = self.cog
         for _object in cog.walk_commands():
-            if getattr(_object, "app_command", None) is discord.utils.MISSING:
+            if getattr(_object, "app_command", discord.utils.MISSING) is discord.utils.MISSING:
                 continue
             if getattr(_object, "no_slash", False):
                 continue

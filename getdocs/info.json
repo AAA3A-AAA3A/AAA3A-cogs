@@ -3,7 +3,7 @@
     "name": "CtxVar",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\n**Use `python -m pip install playwright` and `python -m playwright install` in your bot env!**",
     "short": "A cog to get and display Sphinx docs!",
-    "description": "A cog to get and display Sphinx docs.",
+    "description": "A cog to get and display Sphinx docs. Only `discord.py` for the moment.",
     "tags": [
         "dpy",
         "python",

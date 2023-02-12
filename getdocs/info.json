@@ -1,0 +1,16 @@
+{
+    "author": ["AAA3A", "amurinbot"],
+    "name": "CtxVar",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\n**Use `python -m pip install playwright` and `python -m playwright install` in your bot env!**",
+    "short": "A cog to get and display Sphinx docs!",
+    "description": "A cog to get and display Sphinx docs.",
+    "tags": [
+        "dpy",
+        "python",
+        "coding",
+        "docs"
+    ],
+    "requirements": ["playwright", "sphobjinv", "humanfriendly", "sentry_sdk"],
+    "min_bot_version": "3.5.0.dev1",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

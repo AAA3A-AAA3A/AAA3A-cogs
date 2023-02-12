@@ -97,6 +97,7 @@ class CogsUtils(commands.Cog):
             "DropdownsTexts",
             "EditFile",
             "ExportChannel",
+            "GetDocs",
             "GetLoc",
             "Ip",
             "Medicat",  # Private cog, but public code.
@@ -124,6 +125,7 @@ class CogsUtils(commands.Cog):
             "DropdownsTexts",
             "EditFile",
             "ExportChannel",
+            "GetDocs",
             "GetLoc",
             "Ip",
             "Medicat",  # Private cog, but public code.

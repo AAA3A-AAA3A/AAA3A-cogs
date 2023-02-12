@@ -244,17 +244,17 @@ class Cog:
             ctx.bot._last_exception = exception_log
             if not no_sentry:
                 await AAA3A_utils.sentry.send_command_error(ctx, error)
+        elif isinstance(error, commands.UserFeedbackCheckFailure):
+            if error.message:
+                message = error.message
+                message = warning(message)
+                await ctx.send(message)
         elif isinstance(error, commands.CheckFailure) and not isinstance(error, commands.BotMissingPermissions):
             if getattr(ctx, "interaction", None) is not None:
                 await ctx.send(
                     inline("You are not allowed to execute this command in this context."),
                     ephemeral=True,
                 )
-        elif isinstance(error, commands.UserFeedbackCheckFailure):
-            if error.message:
-                message = error.message
-                message = warning(message)
-                await ctx.send(message)
         else:
             await ctx.bot.on_command_error(ctx=ctx, error=error, unhandled_by_cog=True)
 

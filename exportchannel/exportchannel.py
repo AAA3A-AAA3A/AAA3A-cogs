@@ -118,7 +118,15 @@ class ExportChannel(commands.Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, messages, file = await self.export_messages(ctx, channel=channel)
-        await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
+        message = await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
+        embed = discord.Embed(
+            title="Transcript Link",
+            description=(
+                f"[Click here to view the transcript.](https://mahto.id/chat-exporter?url={message.attachments[0].url})"
+            ),
+            colour=discord.Colour.green(),
+        )
+        await message.edit(embed=embed)
 
     @exportchannel.command()
     async def messages(
@@ -136,7 +144,15 @@ class ExportChannel(commands.Cog):
         count_messages, messages, file = await self.export_messages(
             ctx, channel=channel, limit=limit if not channel == ctx.channel else limit + 1
         )
-        await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
+        message = await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
+        embed = discord.Embed(
+            title="Transcript Link",
+            description=(
+                f"[Click here to view the transcript.](https://mahto.id/chat-exporter?url={message.attachments[0].url})"
+            ),
+            colour=discord.Colour.green(),
+        )
+        await message.edit(embed=embed)
 
     @exportchannel.command()
     async def before(
@@ -157,7 +173,15 @@ class ExportChannel(commands.Cog):
         count_messages, messages, file = await self.export_messages(
             ctx, channel=channel, before=before
         )
-        await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
+        message = await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
+        embed = discord.Embed(
+            title="Transcript Link",
+            description=(
+                f"[Click here to view the transcript.](https://mahto.id/chat-exporter?url={message.attachments[0].url})"
+            ),
+            colour=discord.Colour.green(),
+        )
+        await message.edit(embed=embed)
 
     @exportchannel.command()
     async def after(
@@ -178,7 +202,15 @@ class ExportChannel(commands.Cog):
         count_messages, messages, file = await self.export_messages(
             ctx, channel=channel, after=after
         )
-        await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
+        message = await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
+        embed = discord.Embed(
+            title="Transcript Link",
+            description=(
+                f"[Click here to view the transcript.](https://mahto.id/chat-exporter?url={message.attachments[0].url})"
+            ),
+            colour=discord.Colour.green(),
+        )
+        await message.edit(embed=embed)
 
     @exportchannel.command()
     async def between(
@@ -200,7 +232,15 @@ class ExportChannel(commands.Cog):
         count_messages, messages, file = await self.export_messages(
             ctx, channel=channel, before=before, after=after
         )
-        await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
+        message = await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
+        embed = discord.Embed(
+            title="Transcript Link",
+            description=(
+                f"[Click here to view the transcript.](https://mahto.id/chat-exporter?url={message.attachments[0].url})"
+            ),
+            colour=discord.Colour.green(),
+        )
+        await message.edit(embed=embed)
 
     @exportchannel.command()
     async def user(
@@ -225,7 +265,15 @@ class ExportChannel(commands.Cog):
             user_id=user.id if isinstance(user, discord.Member) else user,
             limit=limit,
         )
-        await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
+        message = await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
+        embed = discord.Embed(
+            title="Transcript Link",
+            description=(
+                f"[Click here to view the transcript.](https://mahto.id/chat-exporter?url={message.attachments[0].url})"
+            ),
+            colour=discord.Colour.green(),
+        )
+        await message.edit(embed=embed)
 
     @exportchannel.command()
     async def bot(
@@ -247,4 +295,12 @@ class ExportChannel(commands.Cog):
         count_messages, messages, file = await self.export_messages(
             ctx, channel=channel, bot=bot, limit=limit
         )
-        await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
+        message = await ctx.send(_(RESULT_MESSAGE).format(**locals()), file=file)
+        embed = discord.Embed(
+            title="Transcript Link",
+            description=(
+                f"[Click here to view the transcript.](https://mahto.id/chat-exporter?url={message.attachments[0].url})"
+            ),
+            colour=discord.Colour.green(),
+        )
+        await message.edit(embed=embed)

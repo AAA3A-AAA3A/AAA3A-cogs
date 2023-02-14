@@ -1,4 +1,4 @@
-from .AAA3A_utils import CogsUtils, Settings  # isort:skip
+wfrom .AAA3A_utils import CogsUtils, Settings  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -694,12 +694,20 @@ class TicketTool(settings, commands.Cog):
                 io.BytesIO(transcript.encode()),
                 filename=f"transcript-ticket-{ticket.panel}-{ticket.id}.html",
             )
-        await ctx.send(
+        message = await ctx.send(
             _(
                 "Here is the html file of the transcript of all the messages in this ticket.\nPlease note: all attachments and user avatars are saved with the Discord link in this file."
             ),
             file=file,
         )
+        embed = discord.Embed(
+            title="Transcript Link",
+            description=(
+                f"[Click here to view the transcript.](https://mahto.id/chat-exporter?url={message.attachments[0].url})"
+            ),
+            colour=discord.Colour.green(),
+        )
+        await message.edit(embed=embed)
 
     @decorator(
         ticket_check=True,
@@ -1971,11 +1979,19 @@ class Ticket:
                     )
                 else:
                     file = None
-                await logschannel.send(
+                message = await logschannel.send(
                     _("Report on the deletion of the ticket {ticket.id}.").format(**locals()),
                     embed=embed,
                     file=file,
                 )
+                embed = discord.Embed(
+                    title="Transcript Link",
+                    description=(
+                        f"[Click here to view the transcript.](https://mahto.id/chat-exporter?url={message.attachments[0].url})"
+                    ),
+                    colour=discord.Colour.green(),
+                )
+                await logschannel.send(embed=embed)
         await ticket.channel.delete(reason=reason)
         data = await ticket.cog.config.guild(ticket.guild).tickets.all()
         try:

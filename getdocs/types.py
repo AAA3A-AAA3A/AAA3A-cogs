@@ -4,6 +4,8 @@ import typing  # isort:skip
 from dataclasses import dataclass
 from humanfriendly import format_timespan
 
+from redbot.core.utils.chat_formatting import pagify
+
 
 @dataclass(frozen=True)
 class RTFSItem:
@@ -12,16 +14,18 @@ class RTFSItem:
 
 
 class RTFSResults:
-    def __init__(self, source, results: set[str, str, bool]) -> None:
+    def __init__(self, source, results: typing.Set) -> None:  # set[str, str, bool]
         self.source = source
         self.results: typing.List[RTFSItem] = results
 
     def __list__(self):
         return self.results
 
-    def to_embed(self):
-        description = "\n".join(f"[`{result.name}`]({result.url})" for result in self.results[:10])
-        embed = discord.Embed(description=description[:5000 - 1], color=discord.Color.green())
+    def to_embed(self, limit: typing.Optional[int] = None):
+        if limit is None:
+            limit = 10
+        description = "\n".join(f"[`{result.name}`]({result.url})" for result in self.results[:limit])
+        embed = discord.Embed(description=list(pagify(description, page_length=4000))[0], color=discord.Color.green())
         embed.set_author(
             name=f"{self.source.name} Documentation",
             icon_url=self.source.icon_url,
@@ -30,7 +34,7 @@ class RTFSResults:
 
 
 class SearchResults:
-    def __init__(self, source, results: set[str, str, bool], query_time: int) -> None:
+    def __init__(self, source, results: typing.Set, query_time: int) -> None:  # set[str, str, bool]
         self.source = source
         self.results = results
         self.query_time = query_time
@@ -38,11 +42,13 @@ class SearchResults:
     def __list__(self):
         return self.results
 
-    def to_embed(self):
+    def to_embed(self, limit: typing.Optional[int] = None):
+        if limit is None:
+            limit = 10
         description = "\n".join(
-            f"[`{name}`]({url})" for name, _, url, _ in self.results[:10]
+            f"[`{name}`]({url})" for name, _, url, _ in self.results[:limit]
         )
-        embed = discord.Embed(description=description[:5000 - 1], color=discord.Color.green())
+        embed = discord.Embed(description=list(pagify(description, page_length=4000))[0], color=discord.Color.green())
         embed.set_author(
             name=f"{self.source.name} Documentation",
             icon_url=self.source.icon_url,
@@ -79,10 +85,10 @@ class Documentation:
     def to_embed(self):
         description = f"```py\n{self.full_name}\n```\n{self.description}".strip()
         embed = discord.Embed(
-            title=self.name, url=self.url, description=description[:5000 - 1], color=discord.Color.green()
+            title=self.name, url=self.url, description=list(pagify(description, page_length=4000))[0], color=discord.Color.green()
         )
         embed.set_author(
-            name=f"Documentation for {self.source.name}",
+            name=f"{self.source.name} Documentation",
             icon_url=self.source.icon_url,
         )
         field_limit = 1024

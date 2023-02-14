@@ -5,21 +5,25 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import aiohttp
 import asyncio
 import functools
 import time
 from fuzzywuzzy import fuzz
-from playwright._impl._api_types import TimeoutError as PlaywrightTimeoutError
-from playwright.async_api import async_playwright
+# from playwright._impl._api_types import TimeoutError as PlaywrightTimeoutError
+# from playwright.async_api import async_playwright
 from urllib.parse import ParseResult, urljoin, urlparse
 from bs4 import BeautifulSoup, SoupStrainer, Tag
 from sphobjinv import DataObjStr, Inventory
 
 from .types import SearchResults, Documentation, Attribute
-from .view import DocsView
+
+if CogsUtils().is_dpy2:
+    from .view import DocsView
 
 # Credits:
-# Thanks to amurinbot on GitHub for a big part of the code (https://github.com/amyrinbot/bot/blob/main/modules/util/scraping/documentation/discord_py.py)!
+# Thanks to amurinbot on GitHub for a part of the code (https://github.com/amyrinbot/bot/blob/main/modules/util/scraping/documentation/discord_py.py)!
+# Thanks to @Lemon for the idea of this code (show me @Lambda bot in dpy server)!
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
 # Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
@@ -36,33 +40,66 @@ else:
     hybrid_group = commands.group
 
 BASE_URLS = {
-    "discord.py": {"url": "https://discordpy.readthedocs.io/en/stable/", "icon_url": "https://cdn.discordapp.com/attachments/381963689470984203/1068553303908155442/sW87z7N.png"}
+    "discord.py": {"url": "https://discordpy.readthedocs.io/en/stable/", "icon_url": "https://cdn.discordapp.com/attachments/381963689470984203/1068553303908155442/sW87z7N.png", "aliases": ["dpy"]},
+    "redbot": {"url": "https://docs.discord.red/en/stable/", "icon_url": "https://media.discordapp.net/attachments/133251234164375552/1074432427201663086/a_aab012f3206eb514cac0432182e9e9ec.png", "aliases": ["red"]},
+    "python": {"url": "https://docs.python.org/3/", "icon_url": "https://assets.stickpng.com/images/5848152fcef1014c0b5e4967.png", "aliases": ["py"]},
+    "aiohttp": {"url": "https://docs.aiohttp.org/en/stable/", "icon_url": "https://docs.aiohttp.org/en/stable/_static/aiohttp-plain.svg"},
+    "requests": {"url": "https://requests.readthedocs.io/en/latest/", "icon_url": "https://requests.readthedocs.io/en/latest/_static/requests-sidebar.png"},
+    "pillow": {"url": "https://pillow.readthedocs.io/en/stable/", "icon_url": "https://pillow.readthedocs.io/en/stable/_static/pillow-logo-dark-text.png"},
+    # "numpy": {"url": "https://numpy.org/doc/stable/", "icon_url": "https://numpy.org/doc/stable/_static/numpylogo.svg"},
+    # "matplotlib": {"url": "https://matplotlib.org/stable/index.html", "icon_url": "https://matplotlib.org/stable/_static/images/logo2.svg"},
+    "asyncpg": {"url": "https://magicstack.github.io/asyncpg/current/", "icon_url": None},
+    # "pygame": {"url": "https://pygame.readthedocs.io/en/latest/", "icon_url": "https://camo.githubusercontent.com/1971c0a4f776fb5351c765c37e59630c83cabd52/68747470733a2f2f7777772e707967616d652e6f72672f696d616765732f6c6f676f2e706e67"}
 }
 
 
 class SourceConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str):
         if argument.lower() not in BASE_URLS:
-            raise commands.UserFeedbackCheckFailure(_("The source doesn't exist."))
+            found = False
+            for name, data in BASE_URLS.items():
+                if argument.lower() in data.get("aliases", []):
+                    argument = name
+                    found = True
+            if not found:
+                raise commands.UserFeedbackCheckFailure(_("The source doesn't exist."))
         return argument.lower()
 
 
 @cog_i18n(_)
 class GetDocs(commands.Cog):
-    """A cog to get and display Sphinx docs!"""
+    """A cog to get and display Sphinx docs! Only `discord.py`, `redbot`, `python`, `aiohttp`, `request`, `asyncpg` and `pillow` for the moment."""
 
     def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.documentations: typing.Dict[str, Source] = {}
 
+        # self._playwright = None
+        # self._browser = None
+        # self._bcontext = None
+        self._session: aiohttp.ClientSession = None
+
         self.__authors__ = ["AAA3A", "amurinbot"]
         self.cogsutils = CogsUtils(cog=self)
 
     async def cog_load(self):
+        # self._playwright = await async_playwright().start()
+        # self._browser = await self._playwright.chromium.launch()
+        # self._bcontext = await self._browser.new_context()
+        self._session = aiohttp.ClientSession()
         for source in BASE_URLS:
             self.documentations[source] = Source(self, name=source, url=BASE_URLS[source]["url"], icon_url=BASE_URLS[source]["icon_url"])
-            await self.documentations[source].load()
+            asyncio.create_task(self.documentations[source].load())
+
+    if CogsUtils().is_dpy2:
+        async def cog_unload(self):
+            if self._session is not None:
+                self._session.close()
+    else:
+        def cog_unload(self):
+            if self._session is not None:
+                self._session.close()
 
     @hybrid_command(aliases=["getdoc", "docs", "documentations"])
     async def getdocs(self, ctx: commands.Context, source: typing.Optional[SourceConverter], *, query: str):
@@ -78,30 +115,52 @@ class GetDocs(commands.Cog):
             source = "discord.py"
         source = self.documentations[source]
         try:
-            await DocsView(ctx, query=query, source=source).start()
+            if self.cogsutils.is_dpy2:
+                await DocsView(ctx, query=query, source=source).start()
+            else:
+                results = await source.search(query, limit=25, exclude_std=True)
+                if not results or not results.results:
+                    raise RuntimeError("No results found.")
+                doc = None
+                i = 0
+                doc = await source.get_documentation(results.results[0][0])
+                while doc is None and i < len(results.results):
+                    doc = await source.get_documentation(results.results[i][0])
+                    if doc is not None:
+                        break
+                    i += 1
+                if doc is None:
+                    raise RuntimeError("No results found.")
+                embed = doc.to_embed()
+                content = None
+                if source._docs_caching_task is not None and source._docs_caching_task.currently_running:
+                    content = "⚠️ The documentation cache is not yet fully built, building now."
+                await ctx.send(content=content, embed=embed)
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))
 
     @hybrid_command()
-    async def rtfm(self, ctx: commands.Context, source: typing.Optional[SourceConverter], *, query: str):
+    async def rtfm(self, ctx: commands.Context, source: typing.Optional[SourceConverter], limit: typing.Optional[int], with_std: typing.Optional[bool], *, query: str):
         """Show all attributes matching your search.
 
            The name must be exact, or else rtfm is invoked instead.
 
            Arguments:
            - `source`: The name of the documentation to use. Defaults to `discord.py`.
+           - `limit`: The limit of objects to be sent.
+           - `with_std`: Also display links to non-API documentation.
            - `query`: Your search.
         """
         if source is None:
             source = "discord.py"
         source = self.documentations[source]
         try:
-            result = await source.search(query, exclude_std=True)
+            result = await source.search(query, exclude_std=not with_std)
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if result is None or not result.results:
             raise commands.UserFeedbackCheckFailure(_("No results found."))
-        await ctx.send(embed=result.to_embed())
+        await ctx.send(embed=result.to_embed(limit=limit))
 
 
 class Source:
@@ -114,15 +173,6 @@ class Source:
 
         self._rtfm_cache_url: str = urljoin(url, "objects.inv")
         self._rtfs_commit: typing.Optional[str] = None
-        self._rtfs_repo = (
-            "discord.py",
-            "https://dpy.gh.amyr.in",
-            "discord",
-        )
-        self._pages = {}
-        self._playwright = None
-        self._browser = None
-        self._bcontext = None
 
         self._rtfm_caching_task = None
         self._docs_caching_task = None
@@ -131,13 +181,12 @@ class Source:
 
         self._rtfm_cache: typing.List = None
         self._docs_cache: typing.List[Documentation] = []
+        self._result_docs_cache: typing.Dict[str, Documentation] = {}
         # self._rtfs_cache: typing.List = []
 
     async def load(self):
         self._rtfm_caching_task = self.cog.cogsutils.create_loop(self._build_rtfm_cache, name=f"{self.name}: Build RTFM Cache", limit_count=1)
-        self._playwright = await async_playwright().start()
-        self._browser = self.browser = await self._playwright.chromium.launch()
-        self._bcontext = await self.browser.new_context()
+        await asyncio.sleep(3)
         if not self._docs_cache:
             self._docs_caching_task = self.cog.cogsutils.create_loop(self._build_docs_cache, name=f"{self.name}: Build Documentations Cache", limit_count=1)
         # if not self._rtfs_cache:
@@ -149,63 +198,86 @@ class Source:
 
     async def _build_rtfm_cache(self, recache: bool = False):
         if self._rtfm_cache is not None and not recache:
-            return
+            return self._rtfm_cache
         self.cog.log.debug(f"{self.name}: Starting RTFM caching...")
         partial = functools.partial(Inventory, url=self._rtfm_cache_url)
         loop = asyncio.get_running_loop()
         self._rtfm_cache = await loop.run_in_executor(None, partial)
         self.cog.log.debug(f"{self.name}: RTFM cache built.")
+        return self._rtfm_cache
 
     async def _build_docs_cache(self, recache: bool = False) -> typing.Dict[str, typing.List[Documentation]]:
         if self._docs_cache and not recache:
-            return
+            return self._result_docs_cache
         if recache:
             self._docs_cache = []
+            self._result_docs_cache = {}
         self.cog.log.debug(f"{self.name}: Starting Documentations caching...")
 
-        def bs4(content: str) -> typing.List[set[str, str]]:
-            soup = BeautifulSoup(content, "lxml")
-
-            manual_section = soup.find("section", id="manuals")
-            manual_lis = manual_section.find_all("li", class_="toctree-l1")
-            manual_as = [manual_li.find("a") for manual_li in manual_lis]
-            return [
-                (manual.text, self.url + (manual.get("href")))
-                for manual in manual_as
-            ]
-
-        content = await self._get_html(self.url, "manuals")
-        manuals = bs4(content)
+        # def bs4(content: str) -> typing.List[typing.Set]:  # typing.List[set[str, str]]
+        #     soup = BeautifulSoup(content, "lxml")
+        #     if self.name == "discord.py":
+        #         manual_section = soup.find("section", id="manuals")
+        #     else:
+        #         manual_section = soup.find("section")
+        #     if manual_section is None:
+        #         raise RuntimeError()
+        #     manual_lis = manual_section.find_all("li", class_="toctree-l1")
+        #     manual_as = [manual_li.find("a") for manual_li in manual_lis]
+        #     manuals = [
+        #         (manual.text, self.url + (manual.get("href")))
+        #         for manual in manual_as
+        #     ]
+        #     return manuals
+        # if self.name == "discord.py":
+        #     content = await self._get_html(self.url)
+        #     try:
+        #         manuals = bs4(content)
+        #     except RuntimeError:
+        #         return
+        while self._rtfm_cache is None:
+            if self._rtfm_caching_task is None or self._rtfm_caching_task.currently_running:
+                return
+            await asyncio.sleep(1)
+        _manuals = set([obj.uri.split("#")[0] for obj in self._rtfm_cache.objects if obj.domain != "std"])
+        manuals = []
+        for manual in _manuals:
+            if manual.endswith("#$"):
+                manual = manual[:-2]
+            manuals.append((manual, self.url + manual))    
+    
         for name, _ in manuals:
             self._docs_caching_progress[name] = None
-        results: typing.Dict[str, typing.List[Documentation]] = {}
         for name, manual in manuals:
             try:
                 documentations = await self._get_all_manual_documentations(manual)
-                if name not in results.keys():
-                    results[name] = []
-                results[name].append(documentations)
+                if name not in self._result_docs_cache.keys():
+                    self._result_docs_cache[name] = []
+                self._result_docs_cache[name].append(documentations)
                 for documentation in documentations:
                     self._docs_cache.append(documentation)
                 self._docs_caching_progress[name] = True
-                self.cog.log.trace(f"{self.name}: `{name}` documentation added to documentation cache.")
+                if self.cog.cogsutils.is_dpy2:
+                    self.cog.log.trace(f"{self.name}: `{name}` documentation added to documentation cache.")
             except Exception as e:
-                self.cog.log.error(f"{self.name}: Error occured while trying to cache `{name}` documentation.", exc_info=e)
+                self.cog.log.debug(f"{self.name}: Error occured while trying to cache `{name}` documentation.", exc_info=e)
                 self._docs_caching_progress[name] = e
-        amount = sum(name in results.keys() for name, _ in manuals)
+        amount = sum(name in self._result_docs_cache.keys() for name, _ in manuals)
         self.cog.log.debug(f"{self.name}: Successfully cached {amount}/{len(manuals)} Documentations.")
-        return results
+        return self._result_docs_cache
 
-    async def _get_html(self, url: str, id: str, timeout: int = 0, wait: bool = True) -> str:
-        page = await self._bcontext.new_page()
-        await page.goto(url)
-        if wait:
-            try:
-                await page.wait_for_load_state("networkidle", timeout=timeout)
-            except PlaywrightTimeoutError:
-                pass
-        self._pages[id] = page
-        return await page.content()
+    async def _get_html(self, url: str, timeout: int = 0, wait: bool = True) -> str:
+        # page = await self.cog._bcontext.new_page()
+        # await page.goto(url)
+        # if wait:
+        #     try:
+        #         await page.wait_for_load_state("networkidle", timeout=timeout)
+        #     except PlaywrightTimeoutError:
+        #         pass
+        # content = await page.content()
+        async with self.cog._session.request("GET", url, timeout=timeout) as r:
+            content = await r.text()
+        return content
 
     def _get_text(self, element: Tag, parsed_url: ParseResult, template: str = "[`{}`]({})"):
         if isinstance(element, Tag) and element.name == "a":
@@ -224,7 +296,10 @@ class Source:
         return text
 
     def _get_documentation(self, element: Tag, page_url: str) -> Documentation:
-        url = element.find("a", class_="headerlink").get("href", None)
+        try:
+            url = element.find("a", class_="headerlink").get("href", None)
+        except AttributeError:
+            return
         full_url = urljoin(page_url, url)
         parsed_url = urlparse(full_url)
 
@@ -237,7 +312,7 @@ class Source:
         examples = []
 
         def format_attributes(item: Tag) -> typing.List[Attribute]:
-            results: set[str, str] = []
+            results: typing.Set = []  # set[str, str]
             items = item.find_all("li", class_="py-attribute-table-entry")
             for item in items:
                 name = " ".join(x.text for x in item.contents).strip()
@@ -260,7 +335,7 @@ class Source:
         if supported_operations := documentation.find(
             "div", class_="operations", recursive=False
         ):
-            items: typing.List[set[str, str]] = []
+            items: typing.List[typing.Set] = []  # typing.List[set[str, str]]
             for supported_operation in supported_operations.findChildren(
                 "dl", class_="describe"
             ):
@@ -323,11 +398,12 @@ class Source:
             strainer = SoupStrainer("dl")
             soup = BeautifulSoup(content, "lxml", parse_only=strainer)
             return soup.find_all("dt", class_="sig sig-object py")
-        elements = bs4(await self._get_html(url, url))
+        elements = bs4(await self._get_html(url))
         results = []
         for element in elements:
             result = self._get_documentation(element, url)
-            results.append(result)
+            if result is not None:
+                results.append(result)
         return results
 
     #######################
@@ -340,7 +416,7 @@ class Source:
         limit: typing.Optional[int] = None,
         exclude_std: bool = False,
     ) -> SearchResults:
-        if self._rtfm_caching_task.currently_running:
+        if self._rtfm_cache is None or (self._rtfm_caching_task is not None and self._rtfm_caching_task.currently_running):
             raise RuntimeError(_("RTFM caching isn't finished."))
         start = time.monotonic()
 
@@ -356,7 +432,7 @@ class Source:
             if obj.domain == "std":
                 name = f"{obj.role}: {name}"
             if self._rtfm_cache.project == "discord.py":
-                name = name.replace("discord.ext.commands.", "").replace("discord.", "")
+                name = name.replace("discord.", "")  # .replace("discord.ext.commands.", "")
             return name, original_name or name
 
         def build_uri(obj: DataObjStr) -> str:
@@ -380,7 +456,9 @@ class Source:
         return SearchResults(self, results=results[:limit], query_time=int(end - start))
 
     async def get_documentation(self, name: str) -> Documentation:
-        if self._docs_caching_task.currently_running:
-            raise RuntimeError(_("Documentations cache is not yet built, building now."))
+        # if self._docs_caching_task is not None and self._docs_caching_task.currently_running:
+        #     raise RuntimeError(_("Documentations cache is not yet built, building now."))
+        if self.name == "discord.py":
+            name = f"discord.{name}"
         result = discord.utils.get(self._docs_cache, name=name)
         return result

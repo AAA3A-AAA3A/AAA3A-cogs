@@ -2,7 +2,7 @@ from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import box
+from redbot.core.utils.chat_formatting import box, pagify
 
 from .types import SearchResults
 
@@ -94,6 +94,38 @@ class DocsView(discord.ui.View):
             self._message = await self.ctx.send(content=content, embed=embed, view=self)
         else:
             self._message = await self._message.edit(content=content, embed=embed)
+
+    async def show_parameters(self, interaction: discord.Interaction) -> None:
+        if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
+            await interaction.response.send_message(
+                "You are not allowed to use this interaction.", ephemeral=True
+            )
+            return
+        if not self._current:
+            return await interaction.response.send_message(
+                "Current variable is somehow empty, so attributes aren't loaded.",
+                ephemeral=True,
+            )
+        if "Parameters" not in self._current.fields:
+            return await interaction.response.send_message(
+                "There are no attributes available for this option.",
+                ephemeral=True,
+            )
+        await interaction.response.defer()
+        if not self._current.name == self._message.embeds[0].title:  # back
+            await self._update(self._current.name)
+            return
+
+        field = self._current.fields["Parameters"]
+        field_limit = 5500
+        if len(field) > field_limit:
+            field = list(pagify(field, page_length=field_limit - 6))[0] + "..."
+        embed = discord.Embed(
+                title="Parameters:",
+                description=field,
+                color=discord.Color.green(),
+        )
+        self._message = await self._message.edit(embed=embed)
 
     async def show_examples(self, interaction: discord.Interaction) -> None:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
@@ -203,14 +235,19 @@ class DocsView(discord.ui.View):
             raise RuntimeError("No results found.")
         select = DocsSelect(self, results)
         self.add_item(select)
+        parameters_button = discord.ui.Button(
+            label="Show Parameters", custom_id="show_parameters", style=discord.ButtonStyle.grey
+        )
+        parameters_button.callback = self.show_parameters
+        self.add_item(parameters_button)
         example_button = discord.ui.Button(
-            label="Show Examples", custom_id="show_ex", style=discord.ButtonStyle.grey
+            label="Show Examples", custom_id="show_examples", style=discord.ButtonStyle.grey
         )
         example_button.callback = self.show_examples
         self.add_item(example_button)
         attributes_button = discord.ui.Button(
             label="Show Attributes",
-            custom_id="show_attr",
+            custom_id="show_attributes",
             style=discord.ButtonStyle.grey,
         )
         attributes_button.callback = self.show_attributes

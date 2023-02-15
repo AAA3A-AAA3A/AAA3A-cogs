@@ -49,7 +49,8 @@ BASE_URLS = {
     # "numpy": {"url": "https://numpy.org/doc/stable/", "icon_url": "https://numpy.org/doc/stable/_static/numpylogo.svg"},
     # "matplotlib": {"url": "https://matplotlib.org/stable/index.html", "icon_url": "https://matplotlib.org/stable/_static/images/logo2.svg"},
     "asyncpg": {"url": "https://magicstack.github.io/asyncpg/current/", "icon_url": None},
-    # "pygame": {"url": "https://pygame.readthedocs.io/en/latest/", "icon_url": "https://camo.githubusercontent.com/1971c0a4f776fb5351c765c37e59630c83cabd52/68747470733a2f2f7777772e707967616d652e6f72672f696d616765732f6c6f676f2e706e67"}
+    # "pygame": {"url": "https://pygame.readthedocs.io/en/latest/", "icon_url": "https://camo.githubusercontent.com/1971c0a4f776fb5351c765c37e59630c83cabd52/68747470733a2f2f7777772e707967616d652e6f72672f696d616765732f6c6f676f2e706e67"},
+    "psutil": {"url": "https://psutil.readthedocs.io/en/latest/", "icon_url": None},
 }
 
 

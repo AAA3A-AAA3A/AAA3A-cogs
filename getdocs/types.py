@@ -94,6 +94,6 @@ class Documentation:
         field_limit = 1024
         for name, field in self.fields.items():
             if len(field) > field_limit:
-                field = list(pagify(field, page_length=field_limit - 6))[0] + "..."
+                field = list(pagify(field, page_length=field_limit - 6))[0] + "\n..."
             embed.add_field(name=name, value=field, inline=False)
         return embed

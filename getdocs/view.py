@@ -75,13 +75,18 @@ class DocsView(discord.ui.View):
             i += 1
         if doc is None:
             raise RuntimeError("No results found.")
+        parameters_button: discord.ui.Button = discord.utils.get(
+            self.children, custom_id="show_parameters"
+        )
+        if parameters_button:
+            parameters_button.disabled = "Parameters" not in doc.fields
         examples_button: discord.ui.Button = discord.utils.get(
-            self.children, custom_id="show_ex"
+            self.children, custom_id="show_examples"
         )
         if examples_button:
             examples_button.disabled = not bool(doc.examples)
         attributes_button: discord.ui.Button = discord.utils.get(
-            self.children, custom_id="show_attr"
+            self.children, custom_id="show_attributes"
         )
         if attributes_button:
             attributes_button.disabled = not bool(doc.attributes)
@@ -119,7 +124,7 @@ class DocsView(discord.ui.View):
         field = self._current.fields["Parameters"]
         field_limit = 5500
         if len(field) > field_limit:
-            field = list(pagify(field, page_length=field_limit - 6))[0] + "..."
+            field = list(pagify(field, page_length=field_limit - 6))[0] + "\n..."
         embed = discord.Embed(
                 title="Parameters:",
                 description=field,

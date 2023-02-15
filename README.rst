@@ -113,6 +113,8 @@ Credits
 
 * Thanks to Nado on Discord and Flame for giving me the solution to fix my repo, which Downloader could not update anymore!
 
+* Thanks to amyrinbot on GitHub for a part of the GetDocs cog's code!
+
 -------
 LICENSE
 -------

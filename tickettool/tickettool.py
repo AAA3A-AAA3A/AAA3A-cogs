@@ -1661,7 +1661,7 @@ class Ticket:
                 components=[buttons],
                 allowed_mentions=discord.AllowedMentions(users=True, roles=True),
             )
-        self.cogsutils.views.append(view)
+        ticket.cog.cogsutils.views.append(view)
         if config["custom_message"] is not None:
             try:
                 embed: discord.Embed = discord.Embed()

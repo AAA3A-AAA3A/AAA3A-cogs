@@ -117,7 +117,7 @@ class DocsView(discord.ui.View):
                 ephemeral=True,
             )
         await interaction.response.defer()
-        if not self._current.name == self._message.embeds[0].title:  # back
+        if self._message.embeds[0].title == "Parameters:":  # back
             await self._update(self._current.name)
             return
 
@@ -149,7 +149,7 @@ class DocsView(discord.ui.View):
                 ephemeral=True,
             )
         await interaction.response.defer()
-        if not self._current.name == self._message.embeds[0].title:  # back
+        if self._message.embeds[0].title.startswith("Example") and self._message.embeds[0].title.endswith(":"):  # back
             await self._update(self._current.name)
             return
 
@@ -180,41 +180,24 @@ class DocsView(discord.ui.View):
                 ephemeral=True,
             )
         await interaction.response.defer()
-        if not self._current.name == self._message.embeds[0].title:  # back
+        if self._message.embeds[0].title in [x.title() + ":" for x in self._current.attributes.keys()]:  # back
             await self._update(self._current.name)
             return
 
-        def format_attribute(name: str, url: str):
-            return f"[{name}]({url})"
-        def comprehend_attributes(attributes: typing.List[str]) -> str:
-            formatted_attributes = [
-                format_attribute(name, url) for name, url in attributes
-            ]
-            return "\n".join(
-                f"> {attribute}" for attribute in formatted_attributes[:limit]
-            )
-
+        def format_attribute(name: str, role: str, url: str, description: str):
+            return (f"{role} " if role is not None else "") + f"[{name}]({url})" + (f"\n> {description}" if description is not None else "")
         embeds = []
         for name, attributes in self._current.attributes.items():
-            limit = 4096  # maximum embed description limit
-            attrs = []
+            formatted_attributes = []
             for attribute in attributes:
-                if not attrs:
-                    attrs.append([])
-                new_attrs = attrs[-1] + [attribute]
-                new_text = comprehend_attributes(new_attrs)
-                if len(new_text) > limit:
-                    attrs.append([])
-                attrs[-1].append(attribute)
-            for _attrs in attrs:
-                embed = discord.Embed(
-                    title=name.title(),
-                    description="\n".join(
-                        format_attribute(name, url) for name, url in _attrs
-                    )[:5000 - 1],
-                    color=discord.Color.green(),
-                )
-                embeds.append(embed)
+                formatted_attributes.append(format_attribute(attribute, attributes[attribute]["role"], attributes[attribute]["url"], attributes[attribute]["description"]))
+            description = "\n".join(formatted_attributes)
+            embed = discord.Embed(
+                title=name.title() + ":",
+                description=list(pagify(description, page_length=4000))[0],
+                color=discord.Color.green(),
+            )
+            embeds.append(embed)
         self._message = await self._message.edit(embeds=embeds)
 
     async def close_page(self, interaction: discord.Interaction) -> None:

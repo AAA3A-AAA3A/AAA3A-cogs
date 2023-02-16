@@ -13,7 +13,7 @@ from fuzzywuzzy import fuzz
 # from playwright._impl._api_types import TimeoutError as PlaywrightTimeoutError
 # from playwright.async_api import async_playwright
 from urllib.parse import ParseResult, urljoin, urlparse
-from bs4 import BeautifulSoup, SoupStrainer, Tag
+from bs4 import BeautifulSoup, SoupStrainer, Tag, ResultSet
 from sphobjinv import DataObjStr, Inventory
 
 from .types import SearchResults, Documentation, Attribute
@@ -22,7 +22,7 @@ if CogsUtils().is_dpy2:
     from .view import DocsView
 
 # Credits:
-# Thanks to amurinbot on GitHub for a part of the code (https://github.com/amyrinbot/bot/blob/main/modules/util/scraping/documentation/discord_py.py)!
+# Thanks to amyrinbot on GitHub for a part of the code (https://github.com/amyrinbot/bot/blob/main/modules/util/scraping/documentation/discord_py.py)!
 # Thanks to @Lemon for the idea of this code (show me @Lambda bot in dpy server)!
 # Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
 # Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
@@ -81,7 +81,7 @@ class GetDocs(commands.Cog):
         # self._bcontext = None
         self._session: aiohttp.ClientSession = None
 
-        self.__authors__ = ["AAA3A", "amurinbot"]
+        self.__authors__ = ["AAA3A", "amyrinbot"]
         self.cogsutils = CogsUtils(cog=self)
 
     async def cog_load(self):
@@ -95,12 +95,14 @@ class GetDocs(commands.Cog):
 
     if CogsUtils().is_dpy2:
         async def cog_unload(self):
+            self.cogsutils._end()
             if self._session is not None:
-                self._session.close()
+                await self._session.close()
     else:
         def cog_unload(self):
+            self.cogsutils._end()
             if self._session is not None:
-                self._session.close()
+                asyncio.create_task(self._session.close())
 
     @hybrid_command(aliases=["getdoc", "docs", "documentations"])
     async def getdocs(self, ctx: commands.Context, source: typing.Optional[SourceConverter], *, query: str):
@@ -187,7 +189,8 @@ class Source:
 
     async def load(self):
         self._rtfm_caching_task = self.cog.cogsutils.create_loop(self._build_rtfm_cache, name=f"{self.name}: Build RTFM Cache", limit_count=1)
-        await asyncio.sleep(3)
+        while self._rtfm_cache is None or (self._rtfm_caching_task is not None and self._rtfm_caching_task.currently_running):
+            await asyncio.sleep(1)
         if not self._docs_cache:
             self._docs_caching_task = self.cog.cogsutils.create_loop(self._build_docs_cache, name=f"{self.name}: Build Documentations Cache", limit_count=1)
         # if not self._rtfs_cache:
@@ -236,17 +239,13 @@ class Source:
         #         manuals = bs4(content)
         #     except RuntimeError:
         #         return
-        while self._rtfm_cache is None:
-            if self._rtfm_caching_task is None or self._rtfm_caching_task.currently_running:
-                return
-            await asyncio.sleep(1)
         _manuals = set([obj.uri.split("#")[0] for obj in self._rtfm_cache.objects if obj.domain != "std"])
         manuals = []
         for manual in _manuals:
             if manual.endswith("#$"):
                 manual = manual[:-2]
-            manuals.append((manual, self.url + manual))    
-    
+            manuals.append((manual, self.url + manual))
+
         for name, _ in manuals:
             self._docs_caching_progress[name] = None
         for name, manual in manuals:
@@ -254,7 +253,7 @@ class Source:
                 documentations = await self._get_all_manual_documentations(manual)
                 if name not in self._result_docs_cache.keys():
                     self._result_docs_cache[name] = []
-                self._result_docs_cache[name].append(documentations)
+                self._result_docs_cache[name] = documentations
                 for documentation in documentations:
                     self._docs_cache.append(documentation)
                 self._docs_caching_progress[name] = True
@@ -303,35 +302,54 @@ class Source:
             return
         full_url = urljoin(page_url, url)
         parsed_url = urlparse(full_url)
-
         parent = element.parent
-
         full_name = element.text
         name = element.attrs.get("id")
         documentation = parent.find("dd")
         description = []
         examples = []
 
-        def format_attributes(item: Tag) -> typing.List[Attribute]:
-            results: typing.Set = []  # set[str, str]
-            items = item.find_all("li", class_="py-attribute-table-entry")
+        def format_attributes(items: Tag) -> typing.List[Attribute]:
+            results: typing.Dict[str, typing.Dict[str, str]] = {}
             for item in items:
-                name = " ".join(x.text for x in item.contents).strip()
-                href = item.find("a").get("href")
+                infos = " ".join(x.text for x in item.contents).strip().split("\n")
+                name = infos[0].replace("¶", "").strip().split("(")[0]
+                if item.attrs.get("class") == ["py", "property"]:
+                    name = name[8:]
+                    role = None
+                elif item.attrs.get("class") == ["py", "method"]:
+                    if name.startswith("async with "):
+                        name = name[10:]
+                        role = "async with"
+                    elif name.startswith("async for ... in "):
+                        name = name[16:]
+                        role = "async for ... in"
+                    elif name.startswith("await "):
+                        name = name[5:]
+                        role = "await"
+                    else:
+                        role = None
+                else:
+                    role = None
+                if (item.attrs.get("class") == ["py", "attribute"] or item.attrs.get("class") == ["py", "property"]) and len(infos) > 1:
+                    description = [x.strip() for x in infos][1]
+                else:
+                    description = None
+                href = item.find("span", class_="sig-name descname").get("href")
                 url = urljoin(full_url, href)
-                results.append((name, url))
+                results[name] = {"role": role, "url": url, "description": description}
             return results
-
         attributes: typing.Dict[str, typing.List[Attribute]] = {}
-        attribute_list = parent.find("div", class_="py-attribute-table")
+        attribute_list = documentation.find_all("dl", class_="py attribute")
         if attribute_list:
-            items = attribute_list.findChildren(
-                "div", class_="py-attribute-table-column"
-            )
-            if items:
-                attributes["attributes"] = format_attributes(items[0])
-                if len(items) >= 2:
-                    attributes["methods"] = format_attributes(items[1])
+            attributes["attributes"] = format_attributes(attribute_list)
+        property_list = documentation.find_all("dl", class_="py property")
+        if property_list:
+            attributes["properties"] = format_attributes(property_list)
+        methods_list = documentation.find_all("dl", class_="py method")
+        if methods_list:
+            attributes["methods"] = format_attributes(methods_list)
+
         fields = {}
         if supported_operations := documentation.find(
             "div", class_="operations", recursive=False
@@ -367,8 +385,6 @@ class Source:
                 fields[key] = "\n".join("".join(element) for element in elements)
         for child in documentation.find_all("p", recursive=False):
             child: Tag = child
-            # this is to stop getting the description after examples,
-            # because those are too large, no idea if this will actually works
             if child.attrs.get("class"):
                 break
             elements = []
@@ -376,10 +392,12 @@ class Source:
                 text = self._get_text(element, parsed_url)
                 elements.append(text)
             description.append("".join(elements))
-        for child in documentation.find_all("div", class_=["highlight-python3", "highlight-default"], recursive=False):
+        for child in documentation.find_all("div", class_=["highlight-python3", "highlight-default", "highlight"], recursive=False):
             examples.append(child.find("pre").text)
-        if version_modified := documentation.find("span", class_="versionmodified"):
-            description.append(f"*{version_modified.text}*")
+        if version_modified := documentation.find("div", class_="versionchanged"):
+            _version_modified = [f"*{x}*" for x in self._get_text(version_modified, parsed_url).split("\n") if not x == ""]
+            version_modified = "\n".join(_version_modified)
+            description.append(version_modified)
         description = "\n\n".join(description).replace("Example:", "").strip()
         full_name = full_name.replace("¶", "").strip()
         url = parsed_url.geturl()
@@ -398,7 +416,12 @@ class Source:
         def bs4(content: str):
             strainer = SoupStrainer("dl")
             soup = BeautifulSoup(content, "lxml", parse_only=strainer)
-            return soup.find_all("dt", class_="sig sig-object py")
+            if self._rtfm_cache is not None and (self._rtfm_caching_task is None or not self._rtfm_caching_task.currently_running):
+                e1 = soup.find_all("dt", id=[x.name for x in self._rtfm_cache.objects])
+            else:
+                e1 = ResultSet(strainer)
+            e2 = soup.find_all("dt", class_="sig sig-object py")
+            return ResultSet(strainer, set(e1 + e2))
         elements = bs4(await self._get_html(url))
         results = []
         for element in elements:

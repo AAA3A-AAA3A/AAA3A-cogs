@@ -1654,6 +1654,7 @@ class Ticket:
                 view=view,
                 allowed_mentions=discord.AllowedMentions(users=True, roles=True),
             )
+            ticket.cog.cogsutils.views.append(view)
         else:
             ticket.first_message = await ticket.channel.send(
                 f"{ticket.created_by.mention}{optionnal_ping}",
@@ -1661,7 +1662,6 @@ class Ticket:
                 components=[buttons],
                 allowed_mentions=discord.AllowedMentions(users=True, roles=True),
             )
-        ticket.cog.cogsutils.views.append(view)
         if config["custom_message"] is not None:
             try:
                 embed: discord.Embed = discord.Embed()

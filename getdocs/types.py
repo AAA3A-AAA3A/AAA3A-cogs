@@ -24,7 +24,7 @@ class RTFSResults:
     def to_embed(self, limit: typing.Optional[int] = None):
         if limit is None:
             limit = 10
-        description = "\n".join(f"[`{result.name}`]({result.url})" for result in self.results[:limit])
+        description = "\n".join(f"• [`{result.name}`]({result.url})" for result in self.results[:limit])
         embed = discord.Embed(description=list(pagify(description, page_length=4000))[0], color=discord.Color.green())
         embed.set_author(
             name=f"{self.source.name} Documentation",
@@ -46,7 +46,7 @@ class SearchResults:
         if limit is None:
             limit = 10
         description = "\n".join(
-            f"[`{name}`]({url})" for name, _, url, _ in self.results[:limit]
+            f"• [`{name}`]({url})" for name, _, url, _ in self.results[:limit]
         )
         embed = discord.Embed(description=list(pagify(description, page_length=4000))[0], color=discord.Color.green())
         embed.set_author(

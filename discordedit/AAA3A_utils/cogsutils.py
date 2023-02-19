@@ -23,7 +23,6 @@ from redbot.core.data_manager import cog_data_path
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.logging import RotatingFileHandler
 
-from .captcha import Captcha
 from .cog import Cog
 from .dev import DevEnv
 from .loop import Loop
@@ -248,9 +247,9 @@ class CogsUtils(commands.Cog):
             )
         try:
             to_update, local_commit, online_commit, online_commit_for_each_files = await self.to_update()
-            if to_update:
+            if to_update and False:
                 self.cog.log.warning(
-                    f"Your {self.cog.qualified_name} cog, from {self.repo_name}, is out of date. You can update your cogs with the 'cog update' command in Discord."
+                    f"Your {self.cog.qualified_name} cog, from {self.repo_name}, is out of date. You can update your cogs with the '[p]cog update' command in Discord."
                 )
             else:
                 self.cog.log.debug(f"{self.cog.qualified_name} cog is up to date.")
@@ -273,6 +272,7 @@ class CogsUtils(commands.Cog):
                     if getattr(cog, "sentry", None) is not None:
                         cog.sentry = old_cog.sentry
                         cog.sentry.cog = cog
+                        cog.sentry.cogsutils = cog.cogsutils
                     cog.cogsutils.loops = old_cog.cogsutils.loops
                 except AttributeError:
                     pass
@@ -317,7 +317,7 @@ class CogsUtils(commands.Cog):
         AAA3A_utils = self.bot.get_cog("AAA3A_utils")
         if getattr(AAA3A_utils, "sentry", None) is not None:
             await AAA3A_utils.sentry.cog_unload(self.cog)
-        if not self.at_least_one_cog_loaded:
+        if not self.at_least_one_cog_loaded():
             try:
                 AAA3A_utils.cogsutils.loops["Sentry Helper"].stop_all()
             except ValueError:
@@ -542,7 +542,7 @@ class CogsUtils(commands.Cog):
         #     to_update = False
         to_update = local_commit != online_commit
 
-        return to_update, local_commit, online_commit, online_commit_for_each_files
+        return to_update, local_commit, online_commit  # , online_commit_for_each_files
 
     async def add_hybrid_commands(self, cog: typing.Optional[commands.Cog] = None):
         if cog is None:
@@ -1291,21 +1291,6 @@ class CogsUtils(commands.Cog):
             self.loops[f"{loop.name}"].stop_all()
         self.loops[f"{loop.name}"] = loop
         return loop
-
-    async def captcha(
-        self,
-        member: discord.Member,
-        channel: discord.TextChannel,
-        limit: typing.Optional[int] = 3,
-        timeout: typing.Optional[int] = 60,
-        why: typing.Optional[str] = "",
-    ):
-        """
-        Create a Captcha challenge like Captcha, but with default values.
-        """
-        return await Captcha(
-            cogsutils=self, member=member, channel=channel, limit=limit, timeout=timeout, why=why
-        ).realize_challenge()
 
     def get_all_repo_cogs_objects(self):
         """

@@ -336,6 +336,11 @@ class Settings():
                 await self.list_profiles(ctx)
         to_add = {"showsettings": show_settings, "modalconfig": modal_config, "profileadd": add_profile, "profileclone": clone_profile, "profileremove": remove_profile, "profilerename": rename_profile, "profileslist": list_profiles}
         aliases = {"modalconfig": ["configmodal"], "profileadd": ["addprofile"], "profileclone": ["cloneprofile"], "profileremove": ["removeprofile"], "profilerename": ["renameprofile"], "profileslist": ["listprofiles"]}
+        if not self.cog.cogsutils.is_dpy2:
+            try:
+                del to_add["modalconfig"]
+            except KeyError:
+                pass
         if not self.use_profiles_system:
             for name in ["profileadd", "profileclone", "profileremove", "profilerename", "profileslist"]:
                 try:

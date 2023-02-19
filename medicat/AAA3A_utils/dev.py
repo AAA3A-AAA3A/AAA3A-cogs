@@ -29,7 +29,6 @@ from rich.console import Console
 from rich.table import Table
 
 from .context import is_dev
-from .captcha import Captcha
 from .cog import Cog
 from .context import Context
 from .loop import Loop
@@ -266,7 +265,6 @@ class DevEnv(typing.Dict[str, typing.Any]):
             # CogsUtils
             "CogsUtils": lambda ctx: CogsUtils,
             "Loop": lambda ctx: Loop,
-            "Captcha": lambda ctx: Captcha,
             "Reactions": lambda ctx: Reactions,
             "Menu": lambda ctx: Menu,
             "SharedCog": lambda ctx: SharedCog,

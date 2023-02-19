@@ -1,4 +1,3 @@
-from .captcha import Captcha
 from .cog import Cog
 from .cogsutils import CogsUtils
 from .context import Context
@@ -27,7 +26,6 @@ __all__ = [
     "Context",
     "Settings",
     "SentryHelper",
-    "Captcha",
     "Reactions",
     "Buttons",
     "Dropdown",

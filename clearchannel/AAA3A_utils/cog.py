@@ -159,7 +159,7 @@ class Cog:
                 setattr(context.command.app_command, "_do_call", _do_call)
             try:
                 await context.interaction.response.defer(ephemeral=False, thinking=True)
-            except discord.InteractionResponded:
+            except (discord.InteractionResponded, discord.NotFound):
                 pass
             context._typing = context.channel.typing()
             try:

@@ -269,7 +269,7 @@ class CogsUtils(commands.Cog):
                     self.bot.remove_cog("AAA3A_utils")
                 cog = SharedCog(self.bot, CogsUtils)
                 try:
-                    if getattr(cog, "sentry", None) is not None:
+                    if getattr(old_cog, "sentry", None) is not None:
                         cog.sentry = old_cog.sentry
                         cog.sentry.cog = cog
                         cog.sentry.cogsutils = cog.cogsutils
@@ -550,14 +550,14 @@ class CogsUtils(commands.Cog):
         if cog.qualified_name == "Medicat":
             if hasattr(cog, "CC_added"):
                 await cog.CC_added.wait()
-        await self.remove_hybrid_commands(cog=cog)
+        # await self.remove_hybrid_commands(cog=cog)
         AAA3A_utils = self.bot.get_cog("AAA3A_utils")
         if AAA3A_utils is not None:
             ignored_commands = await AAA3A_utils.config.ignored_slash_commands()
         else:
             ignored_commands = []
         for _object in cog.walk_commands():
-            if getattr(_object, "app_command", discord.utils.MISSING) is not discord.utils.MISSING:
+            if getattr(_object, "app_command", None) is not None:
                 continue
             if getattr(_object, "no_slash", False):
                 continue
@@ -599,8 +599,13 @@ class CogsUtils(commands.Cog):
                 _object.with_app_command = True
                 _object.app_command = discord.ext.commands.hybrid.HybridAppCommand(_object)
                 _object.app_command.description = _object.app_command.description[:100]
+                for param in _object.app_command._params:
+                    if hasattr(self.cog, f"{_object.name}_{param}_autocomplete"):
+                        setattr(self.cog, f"{_object.name}_{param}_autocomplete", _object.autocomplete(param)(getattr(self.cog, f"{_object.name}_{param}_autocomplete")))
             else:
                 continue
+            if hasattr(self.cog, "_cogsutils_add_hybrid_commands"):
+                await self.cog._cogsutils_add_hybrid_commands(_object)
             if _object.parent is not None:
                 if getattr(_object.parent, "no_slash", False):
                     continue
@@ -616,16 +621,16 @@ class CogsUtils(commands.Cog):
         if cog is None:
             cog = self.cog
         for _object in cog.walk_commands():
-            if getattr(_object, "app_command", discord.utils.MISSING) is discord.utils.MISSING:
+            if getattr(_object, "app_command", None) is None:
                 continue
             if getattr(_object, "no_slash", False):
                 continue
             if isinstance(_object, discord.ext.commands.HybridGroup):
                 _object.with_app_command = False
-                _object.app_command = discord.utils.MISSING
+                _object.app_command = None
             elif isinstance(_object, discord.ext.commands.HybridCommand):
                 _object.with_app_command = False
-                _object.app_command = discord.utils.MISSING
+                _object.app_command = None
             else:
                 continue
             if _object.parent is None:

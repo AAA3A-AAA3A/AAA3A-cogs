@@ -9,12 +9,13 @@ import aiohttp
 import asyncio
 import functools
 import time
+# from aiolimiter import AsyncLimiter
 from fuzzywuzzy import fuzz
 # from playwright._impl._api_types import TimeoutError as PlaywrightTimeoutError
 # from playwright.async_api import async_playwright
 from urllib.parse import ParseResult, urljoin, urlparse
 from bs4 import BeautifulSoup, SoupStrainer, Tag, ResultSet, NavigableString
-from sphobjinv import DataObjStr, Inventory
+from sphobjinv import Inventory, DataObjStr
 
 from .types import SearchResults, Documentation, Attribute
 
@@ -63,6 +64,18 @@ BASE_URLS = {
     "starlite": {"url": "https://starliteproject.dev/", "icon_url": "https://preview.redd.it/2veaqsnz2uf81.png?width=1280&format=png&auto=webp&s=8d7c84d4ec435fc102c14f3f2534ee2c3e5c1cae"},
 }
 
+async def run_blocking_func(func: typing.Callable, *args, **kwargs):
+    partial = functools.partial(func, *args, **kwargs)
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(None, partial)
+def executor(executor=None):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            return run_blocking_func(func, *args, **kwargs)
+        return wrapper
+    return decorator
+
 
 class SourceConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str):
@@ -86,12 +99,14 @@ class GetDocs(commands.Cog):
 
         self.documentations: typing.Dict[str, Source] = {}
         self._docs_stats: typing.Dict[str, int] = {"GLOBAL": {"manuals": 0, "documentations": 0}}
+        self._load_time = None
         self._caching_time: typing.Dict[str, int] = {"GLOBAL": 0}
 
         # self._playwright = None
         # self._browser = None
         # self._bcontext = None
         self._session: aiohttp.ClientSession = None
+        # self._rate_limit = AsyncLimiter(100, 30)
 
         self.__authors__ = ["AAA3A", "amyrinbot"]
         self.cogsutils = CogsUtils(cog=self)
@@ -100,6 +115,7 @@ class GetDocs(commands.Cog):
         # self._playwright = await async_playwright().start()
         # self._browser = await self._playwright.chromium.launch()
         # self._bcontext = await self._browser.new_context()
+        self._load_time = time.monotonic()
         self._session = aiohttp.ClientSession()
         for source in BASE_URLS:
             self.documentations[source] = Source(self, name=source, url=BASE_URLS[source]["url"], icon_url=BASE_URLS[source]["icon_url"])
@@ -117,7 +133,7 @@ class GetDocs(commands.Cog):
                 asyncio.create_task(self._session.close())
 
     @hybrid_command(aliases=["getdoc", "docs", "documentations"])
-    async def getdocs(self, ctx: commands.Context, source: typing.Optional[SourceConverter], *, query: str):
+    async def getdocs(self, ctx: commands.Context, source: typing.Optional[SourceConverter] = "discord.py", *, query: typing.Optional[str] = None):
         """View rich documentation for a specific node/query.
 
            The name must be exact, or else rtfm is invoked instead.
@@ -126,9 +142,20 @@ class GetDocs(commands.Cog):
            - `source`: The name of the documentation to use. Defaults to `discord.py`.
            - `query`: The documentation node/query.
         """
-        if source is None:
-            source = "discord.py"
         source = self.documentations[source]
+        if query is None:
+            embed = discord.Embed(description=source.url)
+            embed.set_author(
+                name=f"{source.name} Documentation",
+                icon_url=source.icon_url,
+            )
+            if self.cogsutils.is_dpy2:
+                view = discord.ui.View()
+                view.add_item(discord.ui.Button(label="Click to view", url=source.url))
+                await ctx.send(embed=embed)
+            else:
+                await ctx.send(embed=embed)
+            return
         try:
             if self.cogsutils.is_dpy2:
                 await DocsView(ctx, query=query, source=source).start()
@@ -155,7 +182,7 @@ class GetDocs(commands.Cog):
             raise commands.UserFeedbackCheckFailure(str(e))
 
     @hybrid_command()
-    async def rtfm(self, ctx: commands.Context, source: typing.Optional[SourceConverter], limit: typing.Optional[int], with_std: typing.Optional[bool], *, query: str):
+    async def rtfm(self, ctx: commands.Context, source: typing.Optional[SourceConverter] = "discord.py", limit: typing.Optional[int] = 10, with_std: typing.Optional[bool] = True, *, query: typing.Optional[str] = None):
         """Show all attributes matching your search.
 
            The name must be exact, or else rtfm is invoked instead.
@@ -166,16 +193,60 @@ class GetDocs(commands.Cog):
            - `with_std`: Also display links to non-API documentation.
            - `query`: Your search.
         """
-        if source is None:
-            source = "discord.py"
         source = self.documentations[source]
         try:
-            result = await source.search(query, exclude_std=not with_std)
+            result = await source.search(query, limit=limit, exclude_std=not with_std)
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if result is None or not result.results:
             raise commands.UserFeedbackCheckFailure(_("No results found."))
-        await ctx.send(embed=result.to_embed(limit=limit))
+        await ctx.send(embed=result.to_embed())
+
+    if CogsUtils().is_dpy2:
+        async def _cogsutils_add_hybrid_commands(self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]):
+            if command.app_command is None:
+                return
+            if not isinstance(command, commands.HybridCommand):
+                return
+            if "source" in command.app_command._params:
+                command.app_command._params["source"].required = True
+                command.app_command._params["source"].default = "discord.py"
+                command.app_command._params["source"].choices = [discord.app_commands.Choice(name=source, value=source) for source in list(self.documentations.keys())]
+            if "query" in command.app_command._params:
+                command.app_command._params["query"].required = True
+            _params1 = command.app_command._params.copy()
+            _params2 = list(command.app_command._params.keys())
+            _params2 = sorted(_params2, key=lambda x: _params1[x].required, reverse=True)
+            _params3 = {key: _params1[key] for key in _params2}
+            command.app_command._params = _params3
+
+        async def query_autocomplete(self, interaction: discord.Interaction, current: str, exclude_std: bool) -> typing.List[discord.app_commands.Choice[str]]:
+            source = None
+            if "source" in interaction.namespace:
+                if interaction.namespace.source:
+                    try:
+                        await SourceConverter().convert(interaction, interaction.namespace.source)
+                    except commands.BadArgument:
+                        pass
+                    else:
+                        source = interaction.namespace.source
+            source = source or "discord.py"
+            source = self.documentations[source]
+            if not current:
+                return [discord.app_commands.Choice(name=name, value=name) for name in source._raw_rtfm_cache_with_std[:25]]
+            matches = await source.search(current, limit=25, exclude_std=exclude_std, with_raw_search=True)
+            return [discord.app_commands.Choice(name=name, value=name) for name in matches]
+
+        # @getdocs.autocomplete("query")
+        async def getdocs_query_autocomplete(self, interaction: discord.Interaction, current: str) -> typing.List[discord.app_commands.Choice[str]]:
+            return await self.query_autocomplete(interaction, current, exclude_std=True)
+
+        # @rtfm.autocomplete("query")
+        async def rtfm_query_autocomplete(self, interaction: discord.Interaction, current: str) -> typing.List[discord.app_commands.Choice[str]]:
+            exclude_std = False
+            if "with_std" in interaction.namespace:
+                exclude_std = not interaction.namespace.with_std
+            return await self.query_autocomplete(interaction, current, exclude_std=exclude_std)
 
 
 class Source:
@@ -194,10 +265,16 @@ class Source:
         self._docs_caching_progress: typing.Dict[str, typing.Optional[typing.Union[bool, Exception]]] = {}
         # self._rtfs_caching_task = None
 
-        self._rtfm_cache: typing.List = None
+        self._rtfm_cache: Inventory = None
+        self._raw_rtfm_cache_with_std: typing.List[str] = []
+        self._raw_rtfm_cache_without_std: typing.List[str] = []
         self._docs_cache: typing.List[Documentation] = []
         self._result_docs_cache: typing.Dict[str, Documentation] = {}
         # self._rtfs_cache: typing.List = []
+
+    ###################
+    # Building caches #
+    ###################
 
     async def load(self):
         self._rtfm_caching_task = self.cog.cogsutils.create_loop(self._build_rtfm_cache, name=f"{self.name}: Build RTFM Cache", limit_count=1)
@@ -208,10 +285,6 @@ class Source:
         # if not self._rtfs_cache:
             # self._rtfs_caching_task = self.cog.cogsutils.create_loop(self._build_rtfs_cache, name=f"{self.name}: Build RTFS Cache", limit_count=1)
 
-    ###################
-    # Building caches #
-    ###################
-
     async def _build_rtfm_cache(self, recache: bool = False):
         if self._rtfm_cache is not None and not recache:
             return self._rtfm_cache
@@ -219,6 +292,11 @@ class Source:
         partial = functools.partial(Inventory, url=self._rtfm_cache_url)
         loop = asyncio.get_running_loop()
         self._rtfm_cache = await loop.run_in_executor(None, partial)
+        for item in self._rtfm_cache.objects:
+            self._raw_rtfm_cache_with_std.append(item.name)
+        for item in self._rtfm_cache.objects:
+            if not item.domain == "std":
+                self._raw_rtfm_cache_without_std.append(item.name)
         self.cog.log.debug(f"{self.name}: RTFM cache built.")
         return self._rtfm_cache
 
@@ -237,9 +315,10 @@ class Source:
             if manual.endswith("#$"):
                 manual = manual[:-2]
             manuals.append((manual, self.url + manual))
+        if self.name == "python":
+            manual = "tutorial/datastructures.html"
+            manuals.append((manual, self.url + manual))
 
-        for name, _ in manuals:
-            self._docs_caching_progress[name] = None
         for name, manual in manuals:
             try:
                 documentations = await self._get_all_manual_documentations(manual)
@@ -258,11 +337,13 @@ class Source:
         end = time.monotonic()
         duration = int(end - start)
         self.cog._caching_time[self.name] = duration
-        self.cog._caching_time["GLOBAL"] += duration
+        if len(self.cog.cogsutils.loops) == 1:
+            self.cog._caching_time["GLOBAL"] += end - self.cog._load_time
         self.cog.log.debug(f"{self.name}: Successfully cached {amount} Documentations/{len(manuals)} manuals.")
         return self._docs_cache
 
     async def _get_html(self, url: str, timeout: int = 0) -> str:
+        # async with self.cog._rate_limit:
         async with self.cog._session.request("GET", url, timeout=timeout) as r:
             content = await r.text(encoding="utf-8")
         return content
@@ -292,27 +373,43 @@ class Source:
             if is_valid(elem, "code"):
                 return f"`{elem.text}`"
 
-        if isinstance(element, Tag) and (result := parse_element(element)):
-            return result  # , "a"
+        if isinstance(element, Tag):
+            result = parse_element(element)
+            if result is not None:
+                return result
         text = []
         for element in element.contents:
-            # if isinstance(element, Tag):
-            #     if result := parse_element(element):
-            #         text.append(result)
-            #         continue
             text.append(element.text)
         return " ".join(text)
 
+    @executor()
     def _get_documentation(self, element: Tag, page_url: str) -> Documentation:
-        try:
-            url = element.find("a", class_="headerlink").get("href", None)
-        except AttributeError:
-            return
+        full_name = element.text
+        if full_name.endswith("[source]"):
+            full_name = full_name[:-8]
+        if self.name == "discord.py" and page_url == self.url + "tutorial/datastructures.html":
+            name = full_name.strip("\n").split("(")[0]
+            if discord.utils.get(self._rtfm_cache.objects, name=name) is None:
+                _object = DataObjStr(
+                    name=name,
+                    domain="py",
+                    role="method",
+                    priority='1',
+                    uri=page_url[len(self.url):] + "#$",
+                    dispname='-'
+                )
+                setattr(_object, "fake", True)
+                self._rtfm_cache.objects.append(_object)
+            url = f"#{name}"
+        else:
+            name = element.attrs.get("id")
+            try:
+                url = element.find("a", class_="headerlink").get("href", None)
+            except AttributeError:
+                return
         full_url = urljoin(page_url, url)
         parsed_url = urlparse(full_url)
         parent = element.parent
-        full_name = element.text
-        name = element.attrs.get("id")
         documentation = parent.find("dd")
 
         # Fields
@@ -350,7 +447,7 @@ class Source:
                         text = self._get_text(element, parsed_url)
                         texts.append(text.replace("\n", " "))
                     elements.append(texts)
-                fields[key] = "\n".join(("• " if key in ["Parameters", "Raises"] else "") + "".join(element) for element in elements)
+                fields[key] = "\n".join(("• " if key in ["Parameters", "Raises"] and element[0].startswith("**") else "") + "".join(element) for element in elements)
 
         # Description
         description = []
@@ -492,6 +589,7 @@ class Source:
         )
 
     async def _get_all_manual_documentations(self, url: str) -> typing.List[Documentation]:
+        @executor()
         def bs4(content: str):
             strainer = SoupStrainer("dl")
             soup = BeautifulSoup(content, "lxml", parse_only=strainer)
@@ -501,10 +599,10 @@ class Source:
                 e1 = ResultSet(strainer)
             e2 = soup.find_all("dt", class_="sig sig-object py")
             return ResultSet(strainer, set(e1 + e2))
-        elements = bs4(await self._get_html(url))
+        elements = await bs4(await self._get_html(url))
         results = []
         for element in elements:
-            result = self._get_documentation(element, url)
+            result = await self._get_documentation(element, url)
             if result is not None:
                 results.append(result)
         return results
@@ -518,10 +616,26 @@ class Source:
         query: str,
         limit: typing.Optional[int] = None,
         exclude_std: bool = False,
+        with_raw_search: bool = False,
     ) -> SearchResults:
         if self._rtfm_cache is None or (self._rtfm_caching_task is not None and self._rtfm_caching_task.currently_running):
             raise RuntimeError(_("RTFM caching isn't finished."))
         start = time.monotonic()
+
+        if with_raw_search:
+            if exclude_std:
+                matches = sorted(
+                    self._raw_rtfm_cache_without_std,
+                    key=lambda name: fuzz.ratio(query, name),
+                    reverse=True,
+                )
+            else:
+                matches = sorted(
+                    self._raw_rtfm_cache_with_std,
+                    key=lambda name: fuzz.ratio(query, name),
+                    reverse=True,
+            )
+            return matches[:limit]
 
         def get_name(obj: DataObjStr) -> str:
             name = (
@@ -535,7 +649,8 @@ class Source:
             if obj.domain == "std":
                 name = f"{obj.role}: {name}"
             if self._rtfm_cache.project == "discord.py":
-                name = name.replace("discord.", "")  # .replace("discord.ext.commands.", "")
+                if name.startswith("discord."):
+                    name = name[8:]  # .replace("discord.ext.commands.", "")
             return name, original_name or name
 
         def build_uri(obj: DataObjStr) -> str:
@@ -553,6 +668,7 @@ class Source:
             (*get_name(item), build_uri(item), bool(item.domain == "std"))
             for item in matches
         ]
+        results = [result for result in results if not result[2].startswith("c-api/")]
         if exclude_std:
             results = [result for result in results if not result[3]]
         end = time.monotonic()

@@ -315,17 +315,18 @@ class CogsUtils(commands.Cog):
 
     async def _await_end(self):
         AAA3A_utils = self.bot.get_cog("AAA3A_utils")
-        if getattr(AAA3A_utils, "sentry", None) is not None:
-            await AAA3A_utils.sentry.cog_unload(self.cog)
-        if not self.at_least_one_cog_loaded():
-            try:
-                AAA3A_utils.cogsutils.loops["Sentry Helper"].stop_all()
-            except ValueError:
-                pass
-            if self.is_dpy2:
-                await self.bot.remove_cog("AAA3A_utils")
-            else:
-                self.bot.remove_cog("AAA3A_utils")
+        if AAA3A_utils is not None:
+            if getattr(AAA3A_utils, "sentry", None) is not None:
+                await AAA3A_utils.sentry.cog_unload(self.cog)
+            if not self.at_least_one_cog_loaded():
+                try:
+                    AAA3A_utils.cogsutils.loops["Sentry Helper"].stop_all()
+                except ValueError:
+                    pass
+                if self.is_dpy2:
+                    await self.bot.remove_cog("AAA3A_utils")
+                else:
+                    self.bot.remove_cog("AAA3A_utils")
 
     def init_logger(self, name: typing.Optional[str] = None):
         """
@@ -600,12 +601,12 @@ class CogsUtils(commands.Cog):
                 _object.app_command = discord.ext.commands.hybrid.HybridAppCommand(_object)
                 _object.app_command.description = _object.app_command.description[:100]
                 for param in _object.app_command._params:
-                    if hasattr(self.cog, f"{_object.name}_{param}_autocomplete"):
-                        setattr(self.cog, f"{_object.name}_{param}_autocomplete", _object.autocomplete(param)(getattr(self.cog, f"{_object.name}_{param}_autocomplete")))
+                    if hasattr(cog, f"{_object.name}_{param}_autocomplete"):
+                        setattr(cog, f"{_object.name}_{param}_autocomplete", _object.autocomplete(param)(getattr(cog, f"{_object.name}_{param}_autocomplete")))
             else:
                 continue
-            if hasattr(self.cog, "_cogsutils_add_hybrid_commands"):
-                await self.cog._cogsutils_add_hybrid_commands(_object)
+            if hasattr(cog, "_cogsutils_add_hybrid_commands"):
+                await cog._cogsutils_add_hybrid_commands(_object)
             if _object.parent is not None:
                 if getattr(_object.parent, "no_slash", False):
                     continue

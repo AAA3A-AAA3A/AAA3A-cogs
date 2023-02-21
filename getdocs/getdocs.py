@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils import CogsUtils  # isort:skip
+﻿from .AAA3A_utils import CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -8,6 +8,7 @@ import typing  # isort:skip
 import aiohttp
 import asyncio
 import functools
+import random
 import time
 # from aiolimiter import AsyncLimiter
 from fuzzywuzzy import fuzz
@@ -17,7 +18,7 @@ from urllib.parse import ParseResult, urljoin, urlparse
 from bs4 import BeautifulSoup, SoupStrainer, Tag, ResultSet, NavigableString
 from sphobjinv import Inventory, DataObjStr
 
-from .types import SearchResults, Documentation, Attribute
+from .types import SearchResults, Documentation, Parameters, Examples, Attribute, Attributes
 
 if CogsUtils().is_dpy2:
     from .view import DocsView
@@ -140,7 +141,7 @@ class GetDocs(commands.Cog):
 
            Arguments:
            - `source`: The name of the documentation to use. Defaults to `discord.py`.
-           - `query`: The documentation node/query.
+           - `query`: The documentation node/query. (`random` for get a random documentation)
         """
         source = self.documentations[source]
         if query is None:
@@ -155,6 +156,10 @@ class GetDocs(commands.Cog):
                 await ctx.send(embed=embed)
             else:
                 await ctx.send(embed=embed)
+            return
+        if query == "random":
+            choice: Documentation = random.choice(source._docs_cache)
+            await ctx.send(embed=choice.to_embed())
             return
         try:
             if self.cogsutils.is_dpy2:
@@ -200,7 +205,11 @@ class GetDocs(commands.Cog):
             raise commands.UserFeedbackCheckFailure(str(e))
         if result is None or not result.results:
             raise commands.UserFeedbackCheckFailure(_("No results found."))
-        await ctx.send(embed=result.to_embed())
+        embeds = result.to_embeds()
+        if len(embeds) == 1:
+            await ctx.send(embed=embeds[0])
+        else:
+            await Menu(pages=embeds).start(ctx)
 
     if CogsUtils().is_dpy2:
         async def _cogsutils_add_hybrid_commands(self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]):
@@ -258,7 +267,7 @@ class Source:
         self.icon_url: typing.Optional[str] = icon_url
 
         self._rtfm_cache_url: str = urljoin(url, "objects.inv")
-        self._rtfs_commit: typing.Optional[str] = None
+        # self._rtfs_commit: typing.Optional[str] = None
 
         self._rtfm_caching_task = None
         self._docs_caching_task = None
@@ -317,7 +326,7 @@ class Source:
             manuals.append((manual, self.url + manual))
         if self.name == "python":
             manual = "tutorial/datastructures.html"
-            manuals.append((manual, self.url + manual))
+            manuals.insert(0, (manual, self.url + manual))
 
         for name, manual in manuals:
             try:
@@ -337,8 +346,9 @@ class Source:
         end = time.monotonic()
         duration = int(end - start)
         self.cog._caching_time[self.name] = duration
-        if len(self.cog.cogsutils.loops) == 1:
-            self.cog._caching_time["GLOBAL"] += end - self.cog._load_time
+        total_duration = end - self.cog._load_time
+        if total_duration > self.cog._caching_time["GLOBAL"]:
+            self.cog._caching_time["GLOBAL"] = total_duration
         self.cog.log.debug(f"{self.name}: Successfully cached {amount} Documentations/{len(manuals)} manuals.")
         return self._docs_cache
 
@@ -385,6 +395,7 @@ class Source:
     @executor()
     def _get_documentation(self, element: Tag, page_url: str) -> Documentation:
         full_name = element.text
+        full_name = full_name.replace("¶", "").strip()
         if full_name.endswith("[source]"):
             full_name = full_name[:-8]
         if self.name == "discord.py" and page_url == self.url + "tutorial/datastructures.html":
@@ -400,17 +411,55 @@ class Source:
                 )
                 setattr(_object, "fake", True)
                 self._rtfm_cache.objects.append(_object)
-            url = f"#{name}"
+            _url = f"#{name}"
         else:
             name = element.attrs.get("id")
             try:
-                url = element.find("a", class_="headerlink").get("href", None)
+                _url = element.find("a", class_="headerlink").get("href", None)
             except AttributeError:
                 return
-        full_url = urljoin(page_url, url)
+        full_url = urljoin(page_url, _url)
         parsed_url = urlparse(full_url)
+        url = parsed_url.geturl()
         parent = element.parent
         documentation = parent.find("dd")
+
+        # Description
+        description = []
+        for child in documentation.children:
+            child: Tag = child
+            if child.name == "div":
+                break
+            if isinstance(child, NavigableString):
+                continue
+            if child.attrs.get("class") is not None and not (child.name == "ul" and child.attrs.get("class") == ["simple"]):
+                break
+            if child.name == "p":
+                elements = []
+                for element in child.contents:
+                    text = self._get_text(element, parsed_url)
+                    elements.append(text)
+                description.append("".join(elements))
+            elif child.name == "ul" and child.attrs.get("class") == ["simple"]:
+                _elements = []
+                for _child in child.find_all("p"):
+                    elements = []
+                    for element in _child.contents:
+                        text = self._get_text(element, parsed_url)
+                        elements.append(text)
+                    _elements.append("• " + "".join(elements))
+                try:
+                    x = description[-1]
+                    del description[-1]
+                except IndexError:
+                    x = ""
+                description.append(f"{x}\n" + "\n".join(_elements))
+        description = "\n\n".join(description).replace("Example:", "").strip()
+
+        # Examples
+        examples = Examples()
+        for child in documentation.find_all("div", class_=["highlight-python3", "highlight-default", "highlight"], recursive=False):
+            examples.append(child.find("pre").text)
 
         # Fields
         fields = {}
@@ -449,37 +498,19 @@ class Source:
                     elements.append(texts)
                 fields[key] = "\n".join(("• " if key in ["Parameters", "Raises"] and element[0].startswith("**") else "") + "".join(element) for element in elements)
 
-        # Description
-        description = []
-        for child in documentation.children:
-            child: Tag = child
-            if child.name == "div":
-                break
-            if isinstance(child, NavigableString):
-                continue
-            if child.attrs.get("class") is not None and not (child.name == "ul" and child.attrs.get("class") == ["simple"]):
-                break
-            if child.name == "p":
-                elements = []
-                for element in child.contents:
-                    text = self._get_text(element, parsed_url)
-                    elements.append(text)
-                description.append("".join(elements))
-            elif child.name == "ul" and child.attrs.get("class") == ["simple"]:
-                _elements = []
-                for _child in child.find_all("p"):
-                    elements = []
-                    for element in _child.contents:
-                        text = self._get_text(element, parsed_url)
-                        elements.append(text)
-                    _elements.append("• " + "".join(elements))
-                try:
-                    x = description[-1]
-                    del description[-1]
-                except IndexError:
-                    x = ""
-                description.append(f"{x}\n" + "\n".join(_elements))
-        description = "\n\n".join(description).replace("Example:", "").strip()
+        # Parameters
+        parameters = Parameters()
+        if "Parameters" in fields:
+            _parameters: str = fields.pop("Parameters")
+            _parameters = _parameters.strip("• ").split("\n• ")
+            for _parameter in _parameters:
+                if len(_parameter.split(" – ")) > 1:
+                    key = _parameter.split(" – ")[0]
+                    value = "".join(_parameter.split(" – ")[1:]).strip()
+                else:
+                    key = _parameter.split(": ")[0]
+                    value = "".join(_parameter.split(": ")[1:]).strip()
+                parameters[key] = value
 
         # Versions changes
         versions_changes = []
@@ -519,11 +550,6 @@ class Source:
             versions_changes = "\n".join(versions_changes)
             fields["Versions Changes"] = versions_changes
 
-        # Examples
-        examples = []
-        for child in documentation.find_all("div", class_=["highlight-python3", "highlight-default", "highlight"], recursive=False):
-            examples.append(child.find("pre").text)
-
         # Attributes
         def format_attributes(items: Tag) -> typing.List[Attribute]:
             results: typing.Dict[str, typing.Dict[str, str]] = {}
@@ -562,28 +588,34 @@ class Source:
                 else:
                     href = ""
                 url = urljoin(full_url, href)
-                results[name] = {"role": role, "url": url, "description": description}
+                results[name] = Attribute(name=name, role=role, url=url, description=description)
             return results
         attributes: typing.Dict[str, typing.List[Attribute]] = {}
         attribute_list = documentation.find_all("dl", class_="py attribute")
         if attribute_list:
             attributes["attributes"] = format_attributes(attribute_list)
+        else:
+            attributes["attributes"] = []
         property_list = documentation.find_all("dl", class_="py property")
         if property_list:
             attributes["properties"] = format_attributes(property_list)
+        else:
+            attributes["properties"] = []
         methods_list = documentation.find_all("dl", class_="py method")
         if methods_list:
             attributes["methods"] = format_attributes(methods_list)
+        else:
+            attributes["methods"] = []
+        attributes = Attributes(**attributes)
 
-        full_name = full_name.replace("¶", "").strip()
-        url = parsed_url.geturl()
         return Documentation(
             self,
             name=name,
+            url=url,
             full_name=full_name,
             description=description,
+            parameters=parameters,
             examples=examples,
-            url=url,
             fields=fields,
             attributes=attributes,
         )

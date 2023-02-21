@@ -1,10 +1,9 @@
 from redbot.core import commands  # isort:skip
 import discord  # isort:skip
-import typing  # isort:skip
 
 from redbot.core.utils.chat_formatting import box, pagify
 
-from .types import SearchResults
+from .types import SearchResults, Documentation
 
 
 class DocsSelectOption(discord.SelectOption):
@@ -43,11 +42,11 @@ class DocsView(discord.ui.View):
         source,
     ):
         super().__init__(timeout=60 * 5)
-        self.ctx = ctx
-        self.query = query
+        self.ctx: commands.Context = ctx
+        self.query: str = query
         self.source = source
         self._message: discord.Message = None
-        self._current = None
+        self._current: Documentation = None
 
     async def _callback(
         self, interaction: discord.Interaction, option: discord.SelectOption
@@ -71,7 +70,7 @@ class DocsView(discord.ui.View):
     async def _update(self, name: str):
         doc = None
         i = 0
-        doc = self.source.get_documentation(name)
+        doc: Documentation = self.source.get_documentation(name)
         while doc is None and i < len(self.results.results):
             doc = self.source.get_documentation(self.results.results[i][0])
             if doc is not None:
@@ -83,7 +82,7 @@ class DocsView(discord.ui.View):
             self.children, custom_id="show_parameters"
         )
         if parameters_button:
-            parameters_button.disabled = "Parameters" not in doc.fields
+            parameters_button.disabled = not doc.parameters
         examples_button: discord.ui.Button = discord.utils.get(
             self.children, custom_id="show_examples"
         )
@@ -94,6 +93,7 @@ class DocsView(discord.ui.View):
         )
         if attributes_button:
             attributes_button.disabled = not bool(doc.attributes)
+
         # Attributes pagination
         back_button: discord.ui.Button = discord.utils.get(
             self.children, custom_id="back_button"
@@ -105,6 +105,7 @@ class DocsView(discord.ui.View):
         )
         if next_button:
             self.remove_item(next_button)
+
         self._current = doc
         embed = doc.to_embed()
         content = None
@@ -121,7 +122,7 @@ class DocsView(discord.ui.View):
                 "Current variable is somehow empty, so attributes aren't loaded.",
                 ephemeral=True,
             )
-        if "Parameters" not in self._current.fields:
+        if not self._current.parameters:
             return await interaction.response.send_message(
                 "There are no attributes available for this option.",
                 ephemeral=True,
@@ -143,24 +144,10 @@ class DocsView(discord.ui.View):
         if next_button:
             self.remove_item(next_button)
 
-        description = self._current.fields["Parameters"]
-        pages = list(pagify(description, page_length=4000, delims=["\n• "]))
-        if len(pages) == 1:
-            embed = discord.Embed(
-                    title="Parameters:",
-                    description=description,
-                    color=discord.Color.green(),
-            )
-            self._message = await self._message.edit(embed=embed)
+        embeds = self._current.parameters.to_embeds()
+        if len(embeds) == 1:
+            self._message = await self._message.edit(embed=embeds[0])
         else:
-            embeds = []
-            for i, page in enumerate(pages, start=1):
-                embed = discord.Embed(
-                        title=f"Parameters {i}:",
-                        description=page,
-                        color=discord.Color.green(),
-                )
-                embeds.append(embed)
             async def _back_button(interaction: discord.Interaction):
                 await interaction.response.defer()
                 current = discord.utils.get(embeds, title=self._message.embeds[0].title)
@@ -220,14 +207,7 @@ class DocsView(discord.ui.View):
         if next_button:
             self.remove_item(next_button)
 
-        embeds = []
-        for i, example in enumerate(self._current.examples, start=1):
-            embed = discord.Embed(
-                title=f"Example {i}:" if len(self._current.examples) > 1 else "Example:",
-                description=box(example, lang="py"),
-                color=discord.Color.green(),
-            )
-            embeds.append(embed)
+        embeds = self._current.examples.to_embeds()
         self._message = await self._message.edit(embeds=embeds, view=self)
 
     async def show_attributes(self, interaction: discord.Interaction) -> None:
@@ -242,7 +222,7 @@ class DocsView(discord.ui.View):
                 ephemeral=True,
             )
         await interaction.response.defer()
-        if self._message.embeds[0].title.startswith(tuple([x.title() for x in self._current.attributes.keys()])):  # back
+        if self._message.embeds[0].title.startswith(tuple([x.title() for x in self._current.attributes.__dataclass_fields__.keys()])):  # back
             await self._update(self._current.name)
             return
 
@@ -258,30 +238,7 @@ class DocsView(discord.ui.View):
         if next_button:
             self.remove_item(next_button)
 
-        def format_attribute(name: str, role: str, url: str, description: str, show_description: typing.Optional[bool] = True):
-            return "• " + (f"{role} " if role is not None else "") + f"[{name}]({url})" + (f"\n> {description}" if description is not None and show_description else "")
-        embeds = []
-        for name, attributes in self._current.attributes.items():
-            formatted_attributes = []
-            for attribute in attributes:
-                formatted_attributes.append(format_attribute(attribute, attributes[attribute]["role"], attributes[attribute]["url"], attributes[attribute]["description"]))
-            description = "\n".join(formatted_attributes)
-            pages = list(pagify(description, page_length=4000, delims=["\n• "]))
-            if len(pages) == 1:
-                embed = discord.Embed(
-                    title=name.title() + ":",
-                    description=description,
-                    color=discord.Color.green(),
-                )
-                embeds.append(embed)
-            else:
-                for i, page in enumerate(pages, start=1):
-                    embed = discord.Embed(
-                        title=name.title() + f" {i}:",
-                        description=page,
-                        color=discord.Color.green(),
-                    )
-                    embeds.append(embed)
+        embeds = self._current.attributes.to_embeds()
         if sum(len(embed) for embed in embeds) > 6000:
             async def _back_button(interaction: discord.Interaction):
                 await interaction.response.defer()

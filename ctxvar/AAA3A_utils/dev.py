@@ -1,7 +1,8 @@
-from redbot.core import commands  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
+
+# import typing_extensions  # isort:skip
 
 import asyncio
 import builtins
@@ -9,6 +10,7 @@ import datetime
 import functools
 import importlib
 import inspect
+import logging
 import os
 import re
 import sys
@@ -20,7 +22,6 @@ from io import StringIO
 import aiohttp
 import redbot
 import rich
-import logging
 from redbot.core import Config
 from redbot.core import utils as redutils
 from redbot.core.utils import chat_formatting as cf
@@ -28,11 +29,11 @@ from redbot.core.utils.chat_formatting import box, pagify
 from rich.console import Console
 from rich.table import Table
 
-from .context import is_dev
 from .cog import Cog
-from .context import Context
+from .context import Context, is_dev
 from .loop import Loop
 from .menus import Menu, Reactions
+
 try:
     from .sentry import SentryHelper
 except ImportError:
@@ -41,18 +42,29 @@ from .settings import Settings
 from .shared_cog import SharedCog
 
 if discord.version_info.major >= 2:
-    from .views import Buttons, Dropdown, Select, ChannelSelect, MentionableSelect, RoleSelect, UserSelect, Modal
+    from .views import (
+        Buttons,
+        ChannelSelect,
+        Dropdown,
+        MentionableSelect,
+        Modal,
+        RoleSelect,
+        Select,
+        UserSelect,
+    )  # NOQA
 
 CogsUtils: typing.Any = None
 
 __all__ = ["DevSpace", "DevEnv"]
 
 
-def _(untranslated: str):
+def _(untranslated: str) -> str:
     return untranslated
 
 
-def no_colour_rich_markup(*objects: typing.Any, lang: str = "", no_box: typing.Optional[bool] = False) -> str:
+def no_colour_rich_markup(
+    *objects: typing.Any, lang: str = "", no_box: typing.Optional[bool] = False
+) -> str:
     """
     Slimmed down version of rich_markup which ensure no colours (/ANSI) can exist
     https://github.com/Cog-Creators/Red-DiscordBot/pull/5538/files (Kowlin)
@@ -70,7 +82,7 @@ def no_colour_rich_markup(*objects: typing.Any, lang: str = "", no_box: typing.O
 
 
 class DevSpace:
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         self.__dict__.update(**kwargs)
 
     def __repr__(self) -> str:
@@ -120,7 +132,7 @@ class DevSpace:
     def update(self, **kwargs) -> None:
         self.__dict__.update(**kwargs)
 
-    def copy(self):
+    def copy(self) -> typing.Any:  # typing_extensions.Self
         return self.__class__(**self.__dict__)
 
     def items(self):
@@ -132,13 +144,13 @@ class DevSpace:
     def values(self):
         return self.__dict__.values()
 
-    def get(self, key: str, _default: typing.Optional[typing.Any] = None):
+    def get(self, key: str, _default: typing.Optional[typing.Any] = None) -> typing.Any:
         return self.__dict__.get(key, _default)
 
-    def pop(self, key: str, _default: typing.Optional[typing.Any] = None):
+    def pop(self, key: str, _default: typing.Optional[typing.Any] = None) -> typing.Any:
         return self.__dict__.pop(key, _default)
 
-    def popitem(self):
+    def popitem(self) -> typing.Any:
         return self.__dict__.popitem()
 
     def _update_with_defaults(
@@ -151,7 +163,7 @@ class DevSpace:
 class DevEnv(typing.Dict[str, typing.Any]):
     is_dev = is_dev
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         # self.__dict__ = {}
         super().__init__(*args, **kwargs)
         self.imported: typing.List[str] = []
@@ -164,7 +176,9 @@ class DevEnv(typing.Dict[str, typing.Any]):
         return re.sub(re.escape(token), "[EXPUNGED]", input_, re.I)
 
     @classmethod
-    def get_env(cls, bot: Red, ctx: typing.Optional[commands.Context] = None):
+    def get_env(
+        cls, bot: Red, ctx: typing.Optional[commands.Context] = None
+    ) -> typing.Dict[str, typing.Any]:
         log = CogsUtils().init_logger(name="Test")
 
         async def _rtfs(ctx: commands.Context, object):
@@ -186,36 +200,68 @@ class DevEnv(typing.Dict[str, typing.Any]):
             return {"width": 80, "color_system": None}
 
         def get(a, b: typing.Optional[str] = "", startswith: typing.Optional[str] = ""):
-            return [x for x in dir(a) if b.lower() in x.lower() and x.lower().startswith(startswith.lower())]
+            return [
+                x
+                for x in dir(a)
+                if b.lower() in x.lower() and x.lower().startswith(startswith.lower())
+            ]
 
         def get_internal(ctx: commands.Context):
-            def _get_internal(name: typing.Literal["events", "listeners", "loggers", "parsers"], b: typing.Optional[str] = "", startswith: typing.Optional[str] = ""):
-                result = {}
+            def _get_internal(
+                name: typing.Literal["events", "listeners", "loggers", "parsers", "converters"],
+                b: typing.Optional[str] = "",
+                startswith: typing.Optional[str] = "",
+            ):
                 if name == "events":
                     if b == "":
-                        result = ctx.bot.extra_events
+                        result = ctx.bot.extra_events.copy()
                     else:
                         return ctx.bot.extra_events[b]
                 elif name == "listeners":
                     if b == "":
-                        result = ctx.bot._listeners
+                        result = ctx.bot._listeners.copy()
                     else:
                         return ctx.bot._listeners[b]
                 elif name == "loggers":
-                    result = logging.Logger.manager.loggerDict
+                    result = logging.Logger.manager.loggerDict.copy()
                 elif name == "parsers":
-                    result = ctx.bot._get_websocket(0)._discord_parsers
-                result = {name: value for name, value in result.items() if b.lower() in name.lower() and name.lower().startswith(startswith.lower())}
+                    result = ctx.bot._get_websocket(0)._discord_parsers.copy()
+                elif name == "converters":
+                    result = discord.ext.commands.converter.CONVERTER_MAPPING.copy()
+                else:
+                    raise ValueError(name)
+                result = {
+                    name: value
+                    for name, value in result.items()
+                    if b.lower() in name.lower() and name.lower().startswith(startswith.lower())
+                }
                 return result
+
             return _get_internal
 
-        def set_loggers_level(level: typing.Optional[str] = logging.DEBUG, loggers: typing.Optional[typing.List] = None, exclusions: typing.Optional[typing.List] = None, b: typing.Optional[str] = "", startswith: typing.Optional[str] = ""):
+        def set_loggers_level(
+            level: typing.Optional[str] = logging.DEBUG,
+            loggers: typing.Optional[typing.List] = None,
+            exclusions: typing.Optional[typing.List] = None,
+            b: typing.Optional[str] = "",
+            startswith: typing.Optional[str] = "",
+        ):
             __loggers = logging.Logger.manager.loggerDict
             if loggers is not None:
-                _loggers = [logger for name, logger in __loggers.items() if name in loggers and isinstance(logger, logging.Logger)]
+                _loggers = [
+                    logger
+                    for name, logger in __loggers.items()
+                    if name in loggers and isinstance(logger, logging.Logger)
+                ]
             else:
-                _loggers = [logger for logger in __loggers.values() if isinstance(logger, logging.Logger)]
-            _loggers = [logger for logger in _loggers if b.lower() in logger.name and logger.name.lower().startswith(startswith.lower())]
+                _loggers = [
+                    logger for logger in __loggers.values() if isinstance(logger, logging.Logger)
+                ]
+            _loggers = [
+                logger
+                for logger in _loggers
+                if b.lower() in logger.name and logger.name.lower().startswith(startswith.lower())
+            ]
             if exclusions is not None:
                 _loggers = [logger for logger in _loggers if logger.name not in exclusions]
             for logger in _loggers:
@@ -356,7 +402,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
         return _env
 
     @classmethod
-    def get_environment(cls, ctx: commands.Context):
+    def get_environment(cls, ctx: commands.Context) -> typing.Dict[str, typing.Any]:
         env = cls(  # In Dev cog from Zeph.
             **{
                 "me": ctx.me,
@@ -390,7 +436,9 @@ class DevEnv(typing.Dict[str, typing.Any]):
         return env
 
     def get_formatted_env(
-        self, ctx: typing.Optional[commands.Context] = None, show_values: typing.Optional[bool] = True
+        self,
+        ctx: typing.Optional[commands.Context] = None,
+        show_values: typing.Optional[bool] = True,
     ) -> str:
         if show_values:
             raw_table = Table(
@@ -428,7 +476,9 @@ class DevEnv(typing.Dict[str, typing.Any]):
         return message
 
     @classmethod
-    def add_dev_env_values(cls, bot: Red, cog: commands.Cog, force: typing.Optional[bool] = False):
+    def add_dev_env_values(
+        cls, bot: Red, cog: commands.Cog, force: typing.Optional[bool] = False
+    ) -> typing.Dict[str, typing.Any]:
         """
         If the bot owner is X, then add several values to the development environment, if they don't already exist.
         Even checks the id of the bot owner in the variable of my Sudo cog, if it's installed and loaded.
@@ -474,7 +524,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
     @classmethod
     def remove_dev_env_values(
         cls, bot: Red, cog: commands.Cog, force: typing.Optional[bool] = False
-    ):
+    ) -> typing.Optional[typing.Dict[str, typing.Any]]:
         """
         If the bot owner is X, then remove several values to the development environment, if they don't already exist.
         Even checks the id of the bot owner in the variable of my Sudo cog, if it's installed and loaded.
@@ -497,7 +547,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
             return _env
 
     @commands.Cog.listener()
-    async def on_cog_add(self, cog: commands.Cog):
+    async def on_cog_add(self, cog: commands.Cog) -> None:
         if cog.qualified_name == "Dev":
             if hasattr(cog, "get_environment"):
                 setattr(cog, "get_environment", self.get_environment)
@@ -530,7 +580,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
             except ImportError:
                 pass
 
-    def __missing__(self, key: str):
+    def __missing__(self, key: str) -> typing.Any:
         if key in ("exit", "quit"):
             try:
                 from dev.dev import Exit
@@ -635,13 +685,12 @@ class DevEnv(typing.Dict[str, typing.Any]):
 
 
 class CogsCommands:
-
     class Cog(commands.Cog):
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs) -> None:
             super().__init__(*args, **kwargs)
 
         @classmethod
-        def _setup(cls, bot: Red, Cog, Command, cog):
+        def _setup(cls, bot: Red, Cog, Command, cog) -> typing.Any:  # typing_extensions.Self
             c = cls()
             c.__dict__ = cog.__dict__
             c.__cog_name__ = cog.__cog_name__
@@ -666,7 +715,7 @@ class CogsCommands:
             }
             return len(source)
 
-        def __contains__(self, key: str) -> typing.Any:
+        def __contains__(self, key: str) -> bool:
             cog = self
             source = {
                 command.name: command
@@ -687,7 +736,9 @@ class CogsCommands:
             _items = source
             items = {}
             for key, value in _items.items():
-                items[key] = self.Command._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)
+                items[key] = self.Command._setup(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )
             yield from items.items()
 
         def __getitem__(self, key: str) -> typing.Any:
@@ -699,7 +750,9 @@ class CogsCommands:
                 == getattr(cog, "qualified_name", None)
             }
             _item = source[key]
-            item = self.Command._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, command=_item)
+            item = self.Command._setup(
+                bot=self.bot, Cog=self.Cog, Command=self.Command, command=_item
+            )
             return item
 
         def items(self):
@@ -713,7 +766,9 @@ class CogsCommands:
             _items = source
             items = {}
             for key, value in _items.items():
-                items[key] = self.Command._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)
+                items[key] = self.Command._setup(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )
             return items
 
         def keys(self):
@@ -738,7 +793,9 @@ class CogsCommands:
             _items = source
             items = {}
             for key, value in _items.items():
-                items[key] = self.Command._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)
+                items[key] = self.Command._setup(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )
             values = items.values()
             return values
 
@@ -747,7 +804,7 @@ class CogsCommands:
             super().__init__(func=func, *args, **kwargs)
 
         @classmethod
-        def _setup(cls, bot: Red, Cog, Command, command):
+        def _setup(cls, bot: Red, Cog, Command, command) -> typing.Any:  # typing_extensions.Self
             c = cls(command.callback)
             c.__dict__ = command.__dict__
             c.bot = bot
@@ -762,7 +819,11 @@ class CogsCommands:
             return super().__repr__()
 
         def __eq__(self, other) -> bool:
-            return isinstance(other, commands.Command) and other.qualified_name == self.qualified_name and other.callback == self.callback
+            return (
+                isinstance(other, commands.Command)
+                and other.qualified_name == self.qualified_name
+                and other.callback == self.callback
+            )
 
         def __len__(self) -> int:
             command = self
@@ -773,7 +834,7 @@ class CogsCommands:
             }
             return len(source)
 
-        def __contains__(self, key: str) -> typing.Any:
+        def __contains__(self, key: str) -> bool:
             command = self
             source = {
                 c.name: c
@@ -792,7 +853,9 @@ class CogsCommands:
             _items = source
             items = {}
             for key, value in _items.items():
-                items[key] = self.Command._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)
+                items[key] = self.Command._setup(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )
             yield from items.items()
 
         def __getitem__(self, key: str) -> typing.Any:
@@ -803,7 +866,9 @@ class CogsCommands:
                 if getattr(c.parent, "qualified_name", None) == command.qualified_name
             }
             _item = source[key]
-            item = self.Command._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, command=_item)
+            item = self.Command._setup(
+                bot=self.bot, Cog=self.Cog, Command=self.Command, command=_item
+            )
             return item
 
         def items(self):
@@ -816,7 +881,9 @@ class CogsCommands:
             _items = source
             items = {}
             for key, value in _items.items():
-                items[key] = self.Command._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)
+                items[key] = self.Command._setup(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )
             return items
 
         def keys(self):
@@ -839,12 +906,14 @@ class CogsCommands:
             _items = source
             items = {}
             for key, value in _items.items():
-                items[key] = self.Command._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)
+                items[key] = self.Command._setup(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )
             values = items.values()
             return values
 
     class Cogs:
-        def __init__(self, bot: Red, Cog, Command):
+        def __init__(self, bot: Red, Cog, Command) -> None:
             self.bot: Red = bot
             self.Cog = Cog
             self.Command = Command
@@ -856,7 +925,7 @@ class CogsCommands:
             source = {cog.qualified_name: cog for cog in self.bot.cogs.values()}
             return len(source)
 
-        def __contains__(self, key: str) -> typing.Any:
+        def __contains__(self, key: str) -> bool:
             source = {cog.qualified_name: cog for cog in self.bot.cogs.values()}
             return key in source
 
@@ -865,7 +934,9 @@ class CogsCommands:
             _items = source.items()
             items = {}
             for key, value in _items:
-                items[key] = self.Cog._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, cog=value)
+                items[key] = self.Cog._setup(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, cog=value
+                )
             yield from items
 
         def __getitem__(self, key: str) -> typing.Any:
@@ -879,7 +950,9 @@ class CogsCommands:
             _items = source.items()
             items = {}
             for key, value in _items:
-                items[key] = self.Cog._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, cog=value)
+                items[key] = self.Cog._setup(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, cog=value
+                )
             return items
 
         def keys(self):
@@ -892,12 +965,14 @@ class CogsCommands:
             _items = source.items()
             items = {}
             for key, value in _items:
-                items[key] = self.Cog._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, cog=value)
+                items[key] = self.Cog._setup(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, cog=value
+                )
             values = items.values()
             return values
 
     class Commands:
-        def __init__(self, bot: Red, Cog, Command):
+        def __init__(self, bot: Red, Cog, Command) -> None:
             self.bot: Red = bot
             self.Cog = Cog
             self.Command = Command
@@ -909,7 +984,7 @@ class CogsCommands:
             source = {command.name: command for command in self.bot.all_commands.values()}
             return len(source)
 
-        def __contains__(self, key: str) -> typing.Any:
+        def __contains__(self, key: str) -> bool:
             source = {command.name: command for command in self.bot.all_commands.values()}
             return key in source
 
@@ -918,13 +993,17 @@ class CogsCommands:
             _items = source.items()
             items = {}
             for key, value in _items.items():
-                items[key] = self.Command._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)
+                items[key] = self.Command._setup(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )
             yield from items
 
         def __getitem__(self, key: str) -> typing.Any:
             source = {command.name: command for command in self.bot.all_commands.values()}
             _item = source[key]
-            item = self.Command._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, command=_item)
+            item = self.Command._setup(
+                bot=self.bot, Cog=self.Cog, Command=self.Command, command=_item
+            )
             return item
 
         def items(self):
@@ -932,7 +1011,9 @@ class CogsCommands:
             _items = source.items()
             items = {}
             for key, value in _items.items():
-                items[key] = self.Command._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)
+                items[key] = self.Command._setup(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )
             return items
 
         def keys(self):
@@ -945,6 +1026,8 @@ class CogsCommands:
             _items = source.items()
             items = {}
             for key, value in _items.items():
-                items[key] = self.Command._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, command=value)
+                items[key] = self.Command._setup(
+                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                )
             values = items.values()
             return values

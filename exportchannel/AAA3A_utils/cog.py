@@ -6,27 +6,26 @@ import typing  # isort:skip
 import asyncio
 import re
 import traceback
-
 from uuid import uuid4
 
 from redbot.core.utils.chat_formatting import humanize_list, inline, warning
 
-from .context import is_dev, Context
+from .context import Context, is_dev
 
 __all__ = ["Cog"]
 
 
-def _(untranslated: str):
+def _(untranslated: str) -> str:
     return untranslated
 
 
 class Cog:
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
         self.cog: commands.Cog = None
 
     @classmethod
-    def _setup(cls, bot: Red, cog: commands.Cog):
+    def _setup(cls, bot: Red, cog: commands.Cog) -> None:
         """
         Adding additional functionality to the cog.
         """
@@ -54,28 +53,28 @@ class Cog:
                 continue
             setattr(cog, attr, getattr(self, attr))
 
-    def get_formatted_text(self, context: str):
+    def get_formatted_text(self, context: str) -> str:
         s = "s" if len(self.cog.__authors__) > 1 else ""
         text = f"{context}\n\n**Author{s}**: {humanize_list(self.cog.__authors__)}\n**Cog version**: {self.cog.__version__}\n**Cog commit**: {self.cog.__commit__}"
         if self.cog.qualified_name not in ["AAA3A_utils"]:
             text += f"\n**Cog documentation**: https://aaa3a-cogs.readthedocs.io/en/latest/cog_{self.cog.qualified_name.lower()}.html\n**Translate my cogs**: https://crowdin.com/project/aaa3a-cogs"
         return text
 
-    def format_help_for_context(self, ctx: commands.Context):
+    def format_help_for_context(self, ctx: commands.Context) -> str:
         """Thanks Simbad!"""
         context = super(type(self.cog), self.cog).format_help_for_context(ctx)
         return self.get_formatted_text(context)
 
     def format_text_for_context(
         self, ctx: commands.Context, text: str, shortdoc: typing.Optional[bool] = False
-    ):
+    ) -> str:
         text = text.replace("        ", "")
         context = super(type(ctx.command), ctx.command).format_text_for_context(ctx, text)
         if shortdoc:
             return context
         return self.get_formatted_text(context)
 
-    def format_shortdoc_for_context(self, ctx: commands.Context):
+    def format_shortdoc_for_context(self, ctx: commands.Context) -> str:
         sh = super(type(ctx.command), ctx.command).short_doc
         try:
             return (
@@ -92,7 +91,7 @@ class Cog:
                 else sh
             )
 
-    async def red_delete_data_for_user(self, *args, **kwargs):
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
         """Nothing to delete."""
         return
 
@@ -102,12 +101,12 @@ class Cog:
 
     if discord.version_info.major >= 2:
 
-        async def cog_unload(self):
+        async def cog_unload(self) -> None:
             self.cog.cogsutils._end()
 
     else:
 
-        def cog_unload(self):
+        def cog_unload(self) -> None:
             self.cog.cogsutils._end()
 
     async def unsupported(self, ctx: commands.Context) -> None:
@@ -130,7 +129,7 @@ class Cog:
             await ctx.send("Aborting.")
             raise commands.CheckFailure("User choose no.")
 
-    async def cog_before_invoke(self, ctx: commands.Context):
+    async def cog_before_invoke(self, ctx: commands.Context) -> None:
         if self.cog is None:
             return
         if isinstance(ctx.command, commands.Group):
@@ -154,8 +153,10 @@ class Cog:
         else:
             if context.command.__commands_is_hybrid__ and hasattr(context.command, "app_command"):
                 __do_call = getattr(context.command.app_command, "_do_call")
+
                 async def _do_call(interaction, params):
                     await __do_call(interaction=context, params=params)
+
                 setattr(context.command.app_command, "_do_call", _do_call)
             try:
                 await context.interaction.response.defer(ephemeral=False, thinking=True)
@@ -168,7 +169,7 @@ class Cog:
                 pass
         return context
 
-    async def cog_after_invoke(self, ctx: commands.Context, force: typing.Optional[bool] = False):
+    async def cog_after_invoke(self, ctx: commands.Context) -> None:
         if self.cog is None:
             return
         if isinstance(ctx.command, commands.Group):
@@ -186,7 +187,7 @@ class Cog:
         # await Menu(pages=str("\n".join([str((x.function, x.frame)) for x in __import__("inspect").stack(30)])), box_language_py=True).start(context)
         return context
 
-    async def cog_command_error(self, ctx: commands.Context, error: Exception):
+    async def cog_command_error(self, ctx: commands.Context, error: Exception) -> None:
         if self.cog is None or not hasattr(self.cog, "cogsutils"):
             await ctx.bot.on_command_error(ctx=ctx, error=error, unhandled_by_cog=True)
             return
@@ -202,7 +203,9 @@ class Cog:
             is_command_error = True
 
         if is_command_error:
-            if isinstance(error.original, discord.Forbidden):  # Error can be changed into `commands.BotMissingPermissions` or not.
+            if isinstance(
+                error.original, discord.Forbidden
+            ):  # Error can be changed into `commands.BotMissingPermissions` or not.
                 e = self.verbose_forbidden_exception(ctx, error.original)
                 if e is not None and isinstance(e, commands.BotMissingPermissions):
                     error = e
@@ -228,8 +231,14 @@ class Cog:
                 message = inline(message)
             else:
                 message = message.replace("{command}", ctx.command.qualified_name)
-            if not no_sentry and not AAA3A_utils.sentry.sentry_enabled and not getattr(AAA3A_utils.senderrorwithsentry, "__is_dev__", False):
-                message += "\n" + inline(f"You can send this error to the developer by running the following command:\n{ctx.prefix}AAA3A_utils senderrorwithsentry {uuid}")
+            if (
+                not no_sentry
+                and not AAA3A_utils.sentry.sentry_enabled
+                and not getattr(AAA3A_utils.senderrorwithsentry, "__is_dev__", False)
+            ):
+                message += "\n" + inline(
+                    f"You can send this error to the developer by running the following command:\n{ctx.prefix}AAA3A_utils senderrorwithsentry {uuid}"
+                )
             await ctx.send(message)
             asyncio.create_task(ctx.bot._delete_delay(ctx))
             self.cog.log.exception(
@@ -249,7 +258,9 @@ class Cog:
                 message = error.message
                 message = warning(message)
                 await ctx.send(message)
-        elif isinstance(error, commands.CheckFailure) and not isinstance(error, commands.BotMissingPermissions):
+        elif isinstance(error, commands.CheckFailure) and not isinstance(
+            error, commands.BotMissingPermissions
+        ):
             if getattr(ctx, "interaction", None) is not None:
                 await ctx.send(
                     inline("You are not allowed to execute this command in this context."),
@@ -258,37 +269,64 @@ class Cog:
         else:
             await ctx.bot.on_command_error(ctx=ctx, error=error, unhandled_by_cog=True)
 
-    def verbose_forbidden_exception(self, ctx: commands.Context, error: discord.Forbidden):
+    def verbose_forbidden_exception(self, ctx: commands.Context, error: discord.Forbidden) -> None:
         if not isinstance(error, discord.Forbidden):
             return ValueError(error)
         method = error.response.request_info.method
         url = str(error.response.request_info.url)
-        url = url[len(discord.http.Route.BASE):]
+        url = url[len(discord.http.Route.BASE) :]
         url = url.split("?")[0]
         url = re.sub(r"\b\d{17,20}\b", "{snowflake}", url)
         key = f"{method.upper()} {url}"
         end_points = {
             "GET /guilds/{guild.id}/audit-logs": ["VIEW_AUDIT_LOG"],
             "GET /guilds/{guild.id}/auto-moderation/rules": ["MANAGE_GUILD"],
-            "GET /guilds/{guild.id}/auto-moderation/rules/{auto_moderation_rule.id}": ["MANAGE_GUILD"],
+            "GET /guilds/{guild.id}/auto-moderation/rules/{auto_moderation_rule.id}": [
+                "MANAGE_GUILD"
+            ],
             "POST /guilds/{guild.id}/auto-moderation/rules": ["MANAGE_GUILD"],
-            "PATCH /guilds/{guild.id}/auto-moderation/rules/{auto_moderation_rule.id}": ["MANAGE_GUILD"],
-            "DELETE /guilds/{guild.id}/auto-moderation/rules/{auto_moderation_rule.id}": ["MANAGE_GUILD"],
+            "PATCH /guilds/{guild.id}/auto-moderation/rules/{auto_moderation_rule.id}": [
+                "MANAGE_GUILD"
+            ],
+            "DELETE /guilds/{guild.id}/auto-moderation/rules/{auto_moderation_rule.id}": [
+                "MANAGE_GUILD"
+            ],
             "PATCH /channels/{channel.id}": ["MANAGE_CHANNELS"],  # &! MANAGE_THREADS
             "DELETE /channels/{channel.id}": ["MANAGE_CHANNELS"],  # &! MANAGE_THREADS
-            "GET /channels/{channel.id}/messages": ["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"],  # empty messages list
-            "GET /channels/{channel.id}/messages/{message.id}": ["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"],
-            "POST /channels/{channel.id}/messages": ["VIEW_CHANNEL", "SEND_MESSAGES"],  # [SEND_TTS_MESSAGES (tts), READ_MESSAGE_HISTORY (reply)]
-            "POST /channels/{channel.id}/messages/{message.id}/crosspost": ["MANAGE_MESSAGES"],  # not own message
-            "PUT /channels/{channel.id}/messages/{message.id}/reactions/{emoji}/@me": ["ADD_REACTIONS"],
+            "GET /channels/{channel.id}/messages": [
+                "VIEW_CHANNEL",
+                "READ_MESSAGE_HISTORY",
+            ],  # empty messages list
+            "GET /channels/{channel.id}/messages/{message.id}": [
+                "VIEW_CHANNEL",
+                "READ_MESSAGE_HISTORY",
+            ],
+            "POST /channels/{channel.id}/messages": [
+                "VIEW_CHANNEL",
+                "SEND_MESSAGES",
+            ],  # [SEND_TTS_MESSAGES (tts), READ_MESSAGE_HISTORY (reply)]
+            "POST /channels/{channel.id}/messages/{message.id}/crosspost": [
+                "MANAGE_MESSAGES"
+            ],  # not own message
+            "PUT /channels/{channel.id}/messages/{message.id}/reactions/{emoji}/@me": [
+                "ADD_REACTIONS"
+            ],
             "DELETE /channels/{channel.id}/messages/{message.id}/reactions/{emoji}/@me": [],
-            "DELETE /channels/{channel.id}/messages/{message.id}/reactions/{emoji}/{user.id}": ["MANAGE_MESSAGES"],
+            "DELETE /channels/{channel.id}/messages/{message.id}/reactions/{emoji}/{user.id}": [
+                "MANAGE_MESSAGES"
+            ],
             "GET /channels/{channel.id}/messages/{message.id}/reactions/{emoji}": [],
             "DELETE /channels/{channel.id}/messages/{message.id}/reactions": ["MANAGE_MESSAGES"],
-            "DELETE /channels/{channel.id}/messages/{message.id}/reactions/{emoji}": ["MANAGE_MESSAGES"],
+            "DELETE /channels/{channel.id}/messages/{message.id}/reactions/{emoji}": [
+                "MANAGE_MESSAGES"
+            ],
             "PATCH /channels/{channel.id}/messages/{message.id}": [],
             "DELETE /channels/{channel.id}/messages/{message.id}": ["MANAGE_MESSAGES"],
-            "POST /channels/{channel.id}/messages/bulk-delete": ["VIEW_CHANNEL", "READ_MESSAGE_HISTORY", "MANAGE_MESSAGES"],
+            "POST /channels/{channel.id}/messages/bulk-delete": [
+                "VIEW_CHANNEL",
+                "READ_MESSAGE_HISTORY",
+                "MANAGE_MESSAGES",
+            ],
             "PUT /channels/{channel.id}/permissions/{overwrite.id}": ["MANAGE_ROLES"],
             "GET /channels/{channel.id}/invites": ["MANAGE_CHANNELS"],
             "POST /channels/{channel.id}/invites": ["CREATE_INSTANT_INVITE"],
@@ -299,15 +337,29 @@ class Cog:
             "PUT /channels/{channel.id}/pins/{message.id}": ["MANAGE_MESSAGES"],
             "DELETE /channels/{channel.id}/pins/{message.id}": ["MANAGE_MESSAGES"],
             "POST /channels/{channel.id}/messages/{message.id}/threads": ["CREATE_PUBLIC_THREADS"],
-            "POST /channels/{channel.id}/threads": ["CREATE_PUBLIC_THREADS", "CREATE_PRIVATE_THREADS", "SEND_MESSAGES"],
+            "POST /channels/{channel.id}/threads": [
+                "CREATE_PUBLIC_THREADS",
+                "CREATE_PRIVATE_THREADS",
+                "SEND_MESSAGES",
+            ],
             "PUT /channels/{channel.id}/thread-members/@me": [],
             "DELETE /channels/{channel.id}/thread-members/@me": [],
             "DELETE /channels/{channel.id}/thread-members/{user.id}": ["MANAGE_THREADS"],
             "GET /channels/{channel.id}/thread-members/{user.id}": [],
             "GET /channels/{channel.id}/thread-members": [],
-            "GET /channels/{channel.id}/threads/archived/public": ["VIEW_CHANNEl", "READ_MESSAGE_HISTORY"],
-            "GET /channels/{channel.id}/threads/archived/private": ["VIEW_CHANNEL", "READ_MESSAGE_HISTORY", "MANAGE_THREADS"],
-            "GET /channels/{channel.id}/users/@me/threads/archived/private": ["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"],
+            "GET /channels/{channel.id}/threads/archived/public": [
+                "VIEW_CHANNEl",
+                "READ_MESSAGE_HISTORY",
+            ],
+            "GET /channels/{channel.id}/threads/archived/private": [
+                "VIEW_CHANNEL",
+                "READ_MESSAGE_HISTORY",
+                "MANAGE_THREADS",
+            ],
+            "GET /channels/{channel.id}/users/@me/threads/archived/private": [
+                "VIEW_CHANNEL",
+                "READ_MESSAGE_HISTORY",
+            ],
             "GET /guilds/{guild.id}/emojis": [],
             "GET /guilds/{guild.id}/emojis/{emoji.id}": [],
             "POST /guilds/{guild.id}/emojis": ["MANAGE_EMOJIS_AND_STICKERS"],
@@ -357,8 +409,12 @@ class Cog:
             "GET /guilds/{guild.id}/scheduled-events": [],
             "POST /guilds/{guild.id}/scheduled-events": ["MANAGE_EVENTS"],
             "GET /guilds/{guild.id}/scheduled-events/{guild_scheduled_event.id}": [],
-            "PATCH /guilds/{guild.id}/scheduled-events/{guild_scheduled_event.id}": ["MANAGE_EVENTS"],
-            "DELETE /guilds/{guild.id}/scheduled-events/{guild_scheduled_event.id}": ["MANAGE_EVENTS"],
+            "PATCH /guilds/{guild.id}/scheduled-events/{guild_scheduled_event.id}": [
+                "MANAGE_EVENTS"
+            ],
+            "DELETE /guilds/{guild.id}/scheduled-events/{guild_scheduled_event.id}": [
+                "MANAGE_EVENTS"
+            ],
             "GET /guilds/{guild.id}/scheduled-events/{guild_scheduled_event.id}/users": [],
             "GET /guilds/templates/{template.code}": [],
             "POST /guilds/templates/{template.code}": [],
@@ -407,15 +463,19 @@ class Cog:
             "PATCH /webhooks/{webhook.id}/{webhook.token}/messages/{message.id}": [],
             "DELETE /webhooks/{webhook.id}/{webhook.token}/messages/{message.id}": [],
         }
+
         class FakeObject:
-            id = "{snowflake}"
-            token = "{snowflake}"
-            code = "{snowflake}"
+            id: str = "{snowflake}"
+            token: str = "{snowflake}"
+            code: str = "{snowflake}"
+
             def __str__(self):
                 return "{snowflake}"
+
         class FakeDict(dict):
             def __getitem__(self, *args, **kwargs):
                 return FakeObject()
+
         end_points = {_key.format_map(FakeDict()): _value for _key, _value in end_points.items()}
         if key not in end_points:
             return None
@@ -424,7 +484,14 @@ class Cog:
         for permission in _permissions:
             if not permission.lower() in discord.Permissions.VALID_FLAGS:
                 continue
-            if getattr((ctx.bot_permissions if self.cog.cogsutils.is_dpy2 else ctx.channel.permissions_for(ctx.me)), permission.lower()):
+            if getattr(
+                (
+                    ctx.bot_permissions
+                    if self.cog.cogsutils.is_dpy2
+                    else ctx.channel.permissions_for(ctx.me)
+                ),
+                permission.lower(),
+            ):
                 continue
             permissions[permission.lower()] = True
         if len(permissions) == 0:

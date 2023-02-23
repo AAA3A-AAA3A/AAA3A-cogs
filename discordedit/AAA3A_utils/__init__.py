@@ -4,6 +4,7 @@ from .context import Context
 from .dev import DevEnv, DevSpace
 from .loop import Loop
 from .menus import Menu, Reactions
+
 try:
     from .sentry import SentryHelper
 except ImportError:
@@ -12,7 +13,16 @@ from .settings import Settings
 from .shared_cog import SharedCog
 
 if CogsUtils().is_dpy2:
-    from .views import Buttons, Dropdown, Select, ChannelSelect, MentionableSelect, RoleSelect, UserSelect, Modal
+    from .views import (
+        Buttons,
+        ChannelSelect,
+        Dropdown,
+        MentionableSelect,
+        Modal,
+        RoleSelect,
+        Select,
+        UserSelect,
+    )  # NOQA
 
 __author__ = "AAA3A"
 __all__ = [

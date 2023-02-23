@@ -1,6 +1,8 @@
 import discord  # isort:skip
 import typing  # isort:skip
 
+# import typing_extensions  # isort:skip
+
 import asyncio
 import datetime
 import math
@@ -15,11 +17,13 @@ from rich.table import Table
 __all__ = ["Loop"]
 
 
-def _(untranslated: str):
+def _(untranslated: str) -> str:
     return untranslated
 
 
-def no_colour_rich_markup(*objects: typing.Any, lang: str = "", no_box: typing.Optional[bool] = False) -> str:
+def no_colour_rich_markup(
+    *objects: typing.Any, lang: str = "", no_box: typing.Optional[bool] = False
+) -> str:
     """
     Slimmed down version of rich_markup which ensure no colours (/ANSI) can exist
     https://github.com/Cog-Creators/Red-DiscordBot/pull/5538/files (Kowlin)
@@ -46,12 +50,12 @@ class Loop:
         self,
         cogsutils,
         name: str,
-        function,
+        function: typing.Callable,
         days: typing.Optional[int] = 0,
         hours: typing.Optional[int] = 0,
         minutes: typing.Optional[int] = 0,
         seconds: typing.Optional[int] = 0,
-        function_kwargs: typing.Optional[typing.Dict] = {},
+        function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = {},
         wait_raw: typing.Optional[bool] = False,
         limit_count: typing.Optional[int] = None,
         limit_date: typing.Optional[datetime.datetime] = None,
@@ -61,12 +65,12 @@ class Loop:
         self.cogsutils = cogsutils
 
         self.name: str = name
-        self.function = function
-        self.function_kwargs = function_kwargs
+        self.function: typing.Callable = function
+        self.function_kwargs: typing.Dict[str, typing.Any] = function_kwargs
         self.interval: float = datetime.timedelta(
             days=days, hours=hours, minutes=minutes, seconds=seconds
         ).total_seconds()
-        self.wait_raw = wait_raw
+        self.wait_raw: bool = wait_raw
         self.limit_count: int = limit_count
         self.limit_date: datetime.datetime = limit_date
         self.limit_exception: int = limit_exception
@@ -78,18 +82,19 @@ class Loop:
         self.next_iteration: typing.Optional[datetime.datetime] = None
         self.currently_running: bool = False  # whether the function is running
         self.iteration_count: int = 0
-        self.last_result = None
+        self.last_result: typing.Optional[typing.Any] = None
         self.iteration_exception: int = 0
         self.last_exc: str = "No exception has occurred yet."
         self.last_exc_raw: typing.Optional[BaseException] = None
         self.stop: bool = False
 
-        self.task = None
+        self.task: typing.Optional[asyncio.Task] = None
         if start_now:
             self.start()
 
-    def start(self):
+    def start(self) -> typing.Any:  # typing_extensions.Self
         self.task = self.cogsutils.bot.loop.create_task(self.loop())
+        return self
 
     async def wait_until_iteration(self) -> None:
         """Sleep during the raw interval."""
@@ -163,7 +168,7 @@ class Loop:
             else:
                 await self.sleep_until_next()
 
-    def maybe_stop(self):
+    def maybe_stop(self) -> bool:
         if self.stop:
             return True
         if self.stop_manually:
@@ -185,7 +190,7 @@ class Loop:
                 return True
         return False
 
-    def stop_all(self):
+    def stop_all(self) -> typing.Any:  # typing_extensions.Self
         self.stop = True
         self.next_iteration = None
         self.task.cancel()

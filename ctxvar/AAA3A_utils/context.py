@@ -3,6 +3,8 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+# import typing_extensions  # isort:skip
+
 from redbot.core.utils.chat_formatting import box
 
 from .menus import Menu
@@ -36,7 +38,11 @@ __all__ = ["Context"]
 #         context.__dict__.update(**ctx.__dict__)
 #         return context
 
-def is_dev(bot: Red, user: typing.Optional[typing.Union[discord.User, discord.Member, discord.Object, int]] = None):
+
+def is_dev(
+    bot: Red,
+    user: typing.Optional[typing.Union[discord.User, discord.Member, discord.Object, int]] = None,
+) -> bool:
     developers_ids = [829612600059887649]
     Sudo = bot.get_cog("Sudo")
     if Sudo is None:
@@ -59,24 +65,24 @@ def is_dev(bot: Red, user: typing.Optional[typing.Union[discord.User, discord.Me
             return False
 
 
-class Context():
-    def __init__(self, original_context: commands.Context):
+class Context:
+    def __init__(self, original_context: commands.Context) -> None:
         self.original_context: commands.Context = original_context
         if not hasattr(self, "len_messages"):
-            self.len_messages = 0
+            self.len_messages: int = 0
 
     @classmethod
-    async def from_context(cls, ctx: commands.Context):
+    async def from_context(cls, ctx: commands.Context) -> typing.Any:  # typing_extensions.Self
         """
         Adding additional functionality to the context.
         """
         context = cls(ctx)
         return context
 
-    def __getattr__(self, __name):
+    def __getattr__(self, __name) -> typing.Any:
         return getattr(self.original_context, __name)
 
-    def __setattr__(self, __name, __value):
+    def __setattr__(self, __name, __value) -> None:
         if __name in ["original_context"]:
             return super().__setattr__(__name, __value)
         return self.original_context.__setattr__(__name, __value)
@@ -113,7 +119,7 @@ class Context():
                 message = None
         return await self.original_context.react_quietly(reaction, message=message)
 
-    async def send(self, content=None, **kwargs):
+    async def send(self, content=None, **kwargs) -> discord.Message:
         """Sends a message to the destination with the content given.
 
         This acts the same as `discord.ext.commands.Context.send`, with
@@ -152,7 +158,9 @@ class Context():
                 self._typing.task.cancel()
         return await self.original_context.send(content=content, **kwargs)
 
-    async def send_interactive(self, messages: typing.Iterable[str], box_lang: str = None, timeout: int = 15) -> typing.List[discord.Message]:
+    async def send_interactive(
+        self, messages: typing.Iterable[str], box_lang: str = None, timeout: int = 15
+    ) -> typing.List[discord.Message]:
         """Send multiple messages interactively.
 
         The user will be prompted for whether or not they would like to view
@@ -173,7 +181,9 @@ class Context():
         """
         messages = list(messages)
         if len(messages) <= 1:
-            return await self.original_context.send_interactive(messages=messages, box_lang=box_lang, timeout=timeout)
+            return await self.original_context.send_interactive(
+                messages=messages, box_lang=box_lang, timeout=timeout
+            )
         else:
             if box_lang is not None:
                 messages = [box(message, lang=box_lang) for message in messages]

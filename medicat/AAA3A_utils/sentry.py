@@ -6,22 +6,25 @@ import discord  # isort:skip
 
 import asyncio
 import re
-
 from uuid import uuid4
-import sentry_sdk
 
+import sentry_sdk
 from redbot.core import __version__ as red_version
 from redbot.core.utils.common_filters import INVITE_URL_RE
 
 SNOWFLAKE_REGEX = r"\b\d{17,20}\b"
-IP_V4_REGEX = r"(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}"
+IP_V4_REGEX = (
+    r"(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}"
+)
 IP_V6_REGEX = r"(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))"
 
-SENTRY_DSN = "https://d67f82abaf0a4b4eb95016f4aa414e5d@o4504401396695040.ingest.sentry.io/4504401415897088"
+SENTRY_DSN = (
+    "https://d67f82abaf0a4b4eb95016f4aa414e5d@o4504401396695040.ingest.sentry.io/4504401415897088"
+)
 
 # Thanks to Vexed for all this file (https://github.com/Vexed01/vex-cog-utils/blob/ba8adb3d270c968bc7ff3e3b977ac90ff752dca3/vexcogutils/sentry.py)!
 
-# This is copied from the source code, but still true.
+# This is copied from the source code, but maybe true soon.
 """ # SENTRY IS OPT-IN
 #
 # When a bot owner installes their first cog of mine, they will recieve a DM asking if they would
@@ -42,7 +45,12 @@ SENTRY_DSN = "https://d67f82abaf0a4b4eb95016f4aa414e5d@o4504401396695040.ingest.
 #
 # """
 
-SENTRY_MASTER_MSG = (
+
+def _(untranslated: str) -> str:
+    return untranslated
+
+
+SENTRY_MASTER_MSG = _(
     "Hey there! This looks like the first time you're using AAA3A's cogs (or you just updated to "
     "a version which supports this). To help make this cog, and all my others, as good "
     "and bug-free as possible, I have **opt-in** telemetry and error reporting __which affects "
@@ -56,8 +64,12 @@ SENTRY_MASTER_MSG = (
     "run the command `[p]AAA3A_utils telemetrywithsentry True`. `[p]` is your prefix.**\nNo data is collected "
     "relating to command usage."
 )
-SENTRY_REMINDER_ON = "Hey there! You just installed AAA3A's {} cog. This is a reminder that you previously enabled telemetry and error reporting, which applies to all of my cogs, and this one is no different.\n\nI would like to emphasise again that a best effort it made to remove sensitive data. You can see <https://aaa3a-cogs.readthedocs.io/en/latest/repo_telemetry.html> for more details and change your choice at any time with the `[p]AAA3A_utils telemetrywithsentry False` command, applying to all my cogs."
-SENTRY_REMINDER_OFF = "Hey there! You just installed AAA3A's {} cog. This is a reminder that you previously chose not to enable telemetry and error reporting, which is also available in this cog. I hope you don't mind this reminder.\n\nI would like to emphasise again that a best effort it made to remove sensitive data. You can see <https://aaa3a-cogs.readthedocs.io/en/latest/repo_telemetry.html> for more details and change your choice at any time with the `[p]AAA3A_utils telemetrywithsentry True` command, applying to all my cogs."
+SENTRY_REMINDER_ON = _(
+    "Hey there! You just installed AAA3A's {} cog. This is a reminder that you previously enabled telemetry and error reporting, which applies to all of my cogs, and this one is no different.\n\nI would like to emphasise again that a best effort it made to remove sensitive data. You can see <https://aaa3a-cogs.readthedocs.io/en/latest/repo_telemetry.html> for more details and change your choice at any time with the `[p]AAA3A_utils telemetrywithsentry False` command, applying to all my cogs."
+)
+SENTRY_REMINDER_OFF = _(
+    "Hey there! You just installed AAA3A's {} cog. This is a reminder that you previously chose not to enable telemetry and error reporting, which is also available in this cog. I hope you don't mind this reminder.\n\nI would like to emphasise again that a best effort it made to remove sensitive data. You can see <https://aaa3a-cogs.readthedocs.io/en/latest/repo_telemetry.html> for more details and change your choice at any time with the `[p]AAA3A_utils telemetrywithsentry True` command, applying to all my cogs."
+)
 
 __all__ = ["SentryHelper"]
 
@@ -69,28 +81,34 @@ class SentryHelper:
         self.cog: commands.Cog = cog
         self.cogsutils = cog.cogsutils
         self.bot: Red = cog.cogsutils.bot
-        self.last_errors = {}
+        self.last_errors: typing.Dict[str, typing.Dict[str, typing.Union[commands.Context, Exception]]] = {}
 
         self.sentry_enabled: typing.Optional[bool] = None
-        self.send_reminders: typing.Optional[bool] = True
+        self.send_reminders: bool = True
         self.uuid: typing.Optional[str] = None
         self.hubs: typing.Dict[str, sentry_sdk.Hub] = {}
 
         self.config: Config = cog.config
-        self.sentry_global = {
+        self.sentry_global: typing.Dict[str, typing.Dict[str, typing.Union[int, bool, typing.Optional[str], typing.List[str]]]] = {
             "sentry": {
-                "version": 1, "sentry_enabled": False, "master_msg_sent": False, "uuid": None, "cogs_notified": []
+                "version": 1,
+                "sentry_enabled": False,
+                "master_msg_sent": False,
+                "uuid": None,
+                "cogs_notified": [],
             }
         }
         self.config.register_global(**self.sentry_global)
 
         asyncio.create_task(self._async_init())
-        self.cogsutils.create_loop(function=self.periodic_session_restart, name="Sentry Helper", hours=1)
+        self.cogsutils.create_loop(
+            function=self.periodic_session_restart, name="Sentry Helper", hours=1
+        )
 
-        self.dont_send_reminders = False
+        self.dont_send_reminders: bool = False
         self.ready: asyncio.Event = asyncio.Event()
 
-    async def _async_init(self):
+    async def _async_init(self) -> None:
         sentry_enabled = await self.config.sentry.sentry_enabled()
         self.sentry_enabled = sentry_enabled
         # always set it, really doesn't do much
@@ -108,7 +126,12 @@ class SentryHelper:
             hub.end_session()
             hub.start_session()
 
-    async def send_command_error(self, ctx: commands.Context, error: commands.CommandError, manually: typing.Optional[bool] = False):
+    async def send_command_error(
+        self,
+        ctx: commands.Context,
+        error: commands.CommandError,
+        manually: typing.Optional[bool] = False,
+    ) -> typing.Optional[typing.Union[str, bool]]:
         try:
             if ctx.cog is None:
                 return
@@ -131,9 +154,7 @@ class SentryHelper:
                 return False
             message = f"Error in {_type} command '{ctx.command.qualified_name}'."
             with hub:
-                hub.add_breadcrumb(
-                    category="command", message=message
-                )
+                hub.add_breadcrumb(category="command", message=message)
                 try:
                     e = error.original  # type:ignore
                 except AttributeError:
@@ -146,7 +167,7 @@ class SentryHelper:
             self.cog.log.error("Sending an error to Sentry failed.", exc_info=e)
             return False
 
-    def remove_sensitive_data(self, event: dict, hint: dict) -> dict:
+    def remove_sensitive_data(self, event: dict, hint: dict) -> typing.Dict:
         """Remove sensitive data from the event. This should only be used by the Sentry SDK.
         This has two main parts:
         1) Remove any mentions of the bot's token
@@ -179,17 +200,17 @@ class SentryHelper:
                 String with IDs shortened
             """
             s = re.sub(
-                SNOWFLAKE_REGEX, lambda m: "[SHORTENED-ID-" + str(int(m.group()) >> 22)[-4:] + "]", s
+                SNOWFLAKE_REGEX,
+                lambda m: "[SHORTENED-ID-" + str(int(m.group()) >> 22)[-4:] + "]",
+                s,
             )
-            s = re.sub(
-                IP_V4_REGEX, "IP_V4", s
-            )
-            s = re.sub(
-                IP_V6_REGEX, "IP_V6", s
-            )
+            s = re.sub(IP_V4_REGEX, "IP_V4", s)
+            s = re.sub(IP_V6_REGEX, "IP_V6", s)
             return re.sub(INVITE_URL_RE, "[DISCORD-INVITE-LINK]", s)
 
-        def recursive_replace(d: typing.Union[typing.Dict[str, typing.Any], typing.List, str], token: str) -> typing.Union[dict, str]:
+        def recursive_replace(
+            d: typing.Union[typing.Dict[str, typing.Any], typing.List, str], token: str
+        ) -> typing.Union[dict, str]:
             """Recursively replace text in keys and values of a dictionary.
             Parameters
             ----------
@@ -211,12 +232,18 @@ class SentryHelper:
                 }
             if isinstance(d, list):
                 return [
-                    self.cogsutils.replace_var_paths(regex_stuff(recursive_replace(i, token)))  # type:ignore
+                    self.cogsutils.replace_var_paths(
+                        regex_stuff(recursive_replace(i, token))
+                    )  # type:ignore
                     if isinstance(i, str)
                     else recursive_replace(i, token)
                     for i in d
                 ]
-            return self.cogsutils.replace_var_paths(regex_stuff(d.replace(token, "[BOT_TOKEN]"))) if isinstance(d, str) else d
+            return (
+                self.cogsutils.replace_var_paths(regex_stuff(d.replace(token, "[BOT_TOKEN]")))
+                if isinstance(d, str)
+                else d
+            )
 
         token = self.bot.http.token
 
@@ -239,7 +266,9 @@ class SentryHelper:
         for hub in self.hubs.values():
             hub.end_session()
 
-    async def get_sentry_hub(self, cog: commands.Cog, force: typing.Optional[bool] = False) -> sentry_sdk.Hub:
+    async def get_sentry_hub(
+        self, cog: commands.Cog, force: typing.Optional[bool] = False
+    ) -> sentry_sdk.Hub:
         """Get a Sentry Hub and Client for a DSN. Each cog should have it's own hub.
         Returns
         -------
@@ -299,10 +328,14 @@ class SentryHelper:
         del self.hubs[cog.qualified_name]
         return hub
 
-    async def maybe_send_owners(self, cog: commands.Cog):
+    async def maybe_send_owners(self, cog: commands.Cog) -> None:
         if not self.ready.is_set():
             await self.ready.wait()
-        if self.cog is None or not hasattr(self.cog, "telemetrywithsentry") or getattr(self.cog.telemetrywithsentry, "__is_dev__", False):
+        if (
+            self.cog is None
+            or not hasattr(self.cog, "telemetrywithsentry")
+            or getattr(self.cog.telemetrywithsentry, "__is_dev__", False)
+        ):
             return  # Not send automatically errors tp Sentry for the moment.
         if not await self.config.sentry.master_msg_sent():
             self.dont_send_reminders = True

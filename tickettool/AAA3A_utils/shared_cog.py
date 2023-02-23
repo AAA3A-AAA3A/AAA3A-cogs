@@ -5,8 +5,10 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import datetime
+import inspect
 import os
 import platform
+import re
 import sys
 import traceback
 from io import StringIO
@@ -25,11 +27,12 @@ from redbot.core.utils.chat_formatting import (
     humanize_timedelta,
     pagify,
     text_to_file,
-)
+)  # NOQA
 from rich.console import Console
 from rich.table import Table
 
 from .menus import Menu
+
 try:
     from .sentry import SentryHelper
 except ImportError:
@@ -47,11 +50,13 @@ else:
     hybrid_group = commands.group
 
 
-def _(untranslated: str):
+def _(untranslated: str) -> str:
     return untranslated
 
 
-def no_colour_rich_markup(*objects: typing.Any, lang: str = "", no_box: typing.Optional[bool] = False) -> str:
+def no_colour_rich_markup(
+    *objects: typing.Any, lang: str = "", no_box: typing.Optional[bool] = False
+) -> str:
     """
     Slimmed down version of rich_markup which ensure no colours (/ANSI) can exist
     https://github.com/Cog-Creators/Red-DiscordBot/pull/5538/files (Kowlin)
@@ -69,14 +74,14 @@ def no_colour_rich_markup(*objects: typing.Any, lang: str = "", no_box: typing.O
 
 
 class StrConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str):
+    async def convert(self, ctx: commands.Context, argument: str) -> str:
         return argument
 
 
 class SharedCog(commands.Cog, name="AAA3A_utils"):
     """Commands to manage all the cogs in AAA3A-cogs repo!"""
 
-    def __init__(self, bot: Red, CogsUtils):
+    def __init__(self, bot: Red, CogsUtils) -> None:
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
@@ -85,7 +90,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             force_registration=True,
             cog_name=self.qualified_name,
         )
-        self.AAA3A_utils_global = {
+        self.AAA3A_utils_global: typing.Dict[str, typing.Union[typing.List[str], typing.Dict[str, typing.Dict[str, typing.Union[int, bool, typing.Optional[str], typing.List[str]]]]]] = {
             "cogs_with_slash": [],
             "ignored_slash_commands": [],
             "sentry": {},
@@ -93,14 +98,14 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         self.config.register_global(**self.AAA3A_utils_global)
 
         self.cogsutils = CogsUtils(cog=self)
-        self.sentry = None
-        self.telemetrywithsentry.__is_dev__ = True
+        self.sentry: SentryHelper = None
+        self.telemetrywithsentry.__is_dev__: bool = True
 
-    async def cog_load(self):
+    async def cog_load(self) -> None:
         if self.sentry is None:
             self.sentry = SentryHelper(self)
 
-    async def check_if_slash(self, cog: commands.Cog):
+    async def check_if_slash(self, cog: commands.Cog) -> bool:
         if not self.cogsutils.is_dpy2:
             return False
         if cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
@@ -109,13 +114,13 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
 
     @commands.is_owner()
     @hybrid_group(name="AAA3A_utils", aliases=["aaa3a_utils"], hidden=True)
-    async def AAA3A_utils(self, ctx: commands.Context):
+    async def AAA3A_utils(self, ctx: commands.Context) -> None:
         """All commands to manage all the cogs from AAA3A-cogs repo."""
         pass
 
     @commands.is_owner()
     @AAA3A_utils.command()
-    async def addslash(self, ctx: commands.Context, cogs: commands.Greedy[StrConverter]):
+    async def addslash(self, ctx: commands.Context, cogs: commands.Greedy[StrConverter]) -> None:
         """Add slash commands for a cog from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
             await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
@@ -181,7 +186,9 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
 
     @commands.is_owner()
     @AAA3A_utils.command()
-    async def removeslash(self, ctx: commands.Context, cogs: commands.Greedy[StrConverter]):
+    async def removeslash(
+        self, ctx: commands.Context, cogs: commands.Greedy[StrConverter]
+    ) -> None:
         """Remove slash commands for a cog from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
             await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
@@ -246,7 +253,9 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
 
     @commands.is_owner()
     @AAA3A_utils.command()
-    async def addignoredslash(self, ctx: commands.Context, commands: commands.Greedy[StrConverter]):
+    async def addignoredslash(
+        self, ctx: commands.Context, commands: commands.Greedy[StrConverter]
+    ) -> None:
         """Add ignored slash commands for a cog from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
             await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
@@ -264,7 +273,10 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 if command is None:
                     result["not_exist"].append(command_name)
                     continue
-                if command.cog is None or command.cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
+                if (
+                    command.cog is None
+                    or command.cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects()
+                ):
                     result["not_from_AAA3A-cogs"].append(command.qualified_name)
                     continue
                 if command.parent is not None:
@@ -304,7 +316,9 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
 
     @commands.is_owner()
     @AAA3A_utils.command()
-    async def removeignoredslash(self, ctx: commands.Context, commands: commands.Greedy[StrConverter]):
+    async def removeignoredslash(
+        self, ctx: commands.Context, commands: commands.Greedy[StrConverter]
+    ) -> None:
         """Remove ignored slash commands for a cog from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
             await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
@@ -322,7 +336,10 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 if command is None:
                     result["not_exist"].append(command_name)
                     continue
-                if command.cog is None or command.cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
+                if (
+                    command.cog is None
+                    or command.cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects()
+                ):
                     result["not_from_AAA3A-cogs"].append(command.qualified_name)
                     continue
                 if command.parent is not None:
@@ -362,7 +379,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
 
     @commands.is_owner()
     @AAA3A_utils.command()
-    async def clearslash(self, ctx: commands.Context):
+    async def clearslash(self, ctx: commands.Context) -> None:
         """Remove slash commands for all cogs from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
             await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
@@ -377,7 +394,9 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
 
     @commands.is_owner()
     @AAA3A_utils.command()
-    async def getlogs(self, ctx: commands.Context, cog: str, level: typing.Optional[str]="all"):
+    async def getlogs(
+        self, ctx: commands.Context, cog: str, level: typing.Optional[str] = "all"
+    ) -> None:
         """Get logs for a cog from AAA3A-cogs"""
         cog = ctx.bot.get_cog(cog)
         if cog is None:
@@ -413,18 +432,27 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             asctime = time.strftime("%Y-%m-%d %H:%M:%S")
             levelname = log["levelname"]
             message = log["message"]
-            args = log["args"]
+            # args = log["args"]
             exc_info = log["exc_info"]
             if exc_info is None:
                 exc_info = ""
             else:
-                exc_info = "".join(traceback.format_exception(type(exc_info), exc_info, exc_info.__traceback__))
-            result.append(box(self.cogsutils.replace_var_paths(f"[{asctime}] {levelname} [{name}] {message}\n{exc_info}")[:2000 - 10], lang="py"))
+                exc_info = "".join(
+                    traceback.format_exception(type(exc_info), exc_info, exc_info.__traceback__)
+                )
+            result.append(
+                box(
+                    self.cogsutils.replace_var_paths(
+                        f"[{asctime}] {levelname} [{name}] {message}\n{exc_info}"
+                    )[: 2000 - 10],
+                    lang="py",
+                )
+            )
         await Menu(pages=result).start(ctx)
 
     @commands.is_owner()
     @AAA3A_utils.command()
-    async def getdebugloopsstatus(self, ctx: commands.Context, cog: str):
+    async def getdebugloopsstatus(self, ctx: commands.Context, cog: str) -> None:
         """Get debug loops status for a cog from AAA3A-cogs."""
         cog = ctx.bot.get_cog(cog)
         if cog is None:
@@ -440,7 +468,9 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
 
     @commands.is_owner()
     @AAA3A_utils.command()
-    async def resetconfig(self, ctx: commands.Context, cog: str, confirmation: typing.Optional[bool]=False):
+    async def resetconfig(
+        self, ctx: commands.Context, cog: str, confirmation: typing.Optional[bool] = False
+    ) -> None:
         """Reset Config for a cog from AAA3A-cogs."""
         cog = ctx.bot.get_cog(cog)
         if cog is None:
@@ -455,9 +485,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         if not confirmation:
             embed: discord.Embed = discord.Embed()
             embed.title = _("⚠️ - Reset Config")
-            embed.description = _(
-                "Do you really want to remove ALL data saved with this cog?"
-            )
+            embed.description = _("Do you really want to remove ALL data saved with this cog?")
             embed.color = 0xF00020
             if not await self.cogsutils.ConfirmationAsk(ctx, embed=embed):
                 await self.cogsutils.delete_message(ctx.message)
@@ -466,7 +494,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
 
     @commands.is_owner()
     @AAA3A_utils.command(hidden=True)
-    async def telemetrywithsentry(self, ctx: commands.Context, state: bool):
+    async def telemetrywithsentry(self, ctx: commands.Context, state: bool) -> None:
         """Enable or disable Telemetry with Sentry for all cogs from AAA3A-cogs.
 
         More details: https://aaa3a-cogs.readthedocs.io/en/latest/repo_telemetry.html
@@ -475,7 +503,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
 
     @commands.is_owner()
     @AAA3A_utils.command(hidden=True)
-    async def senderrorwithsentry(self, ctx: commands.Context, error: str):
+    async def senderrorwithsentry(self, ctx: commands.Context, error: str) -> None:
         """Send a recent error to the developer of AAA3A's cogs with Sentry (use the code given when the error has been triggered).
 
         More details: https://aaa3a-cogs.readthedocs.io/en/latest/repo_telemetry.html
@@ -485,10 +513,83 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             return
         e = self.sentry.last_errors.pop(error)
         event_id = await self.sentry.send_command_error(e["ctx"], e["error"], manually=True)
-        await ctx.send(_("The error was successfully sent with the event id `{event_id}`.").format(event_id=event_id))
+        await ctx.send(
+            _("The error was successfully sent with the event id `{event_id}`.").format(
+                event_id=event_id
+            )
+        )
+
+    if discord.version_info.major >= 2:
+        @commands.is_owner()
+        @AAA3A_utils.command()
+        async def flags(self, ctx: commands.Context, *, content: str) -> None:
+            """Use any command with flags."""
+            msg: discord.Message = ctx.message
+            msg.content = ctx.prefix + content
+            context: commands.Context = await ctx.bot.get_context(msg)
+            if context.command is None or not context.valid:
+                raise commands.UserFeedbackCheckFailure(_("This command doen't exist."))
+            command: commands.Command = context.command
+
+            async def _parse_arguments():
+                context.args = [context] if command.cog is None else [command.cog, context]
+                context.kwargs = {}
+                view = context.view
+                iterator = iter(command.params.items())
+                params = {}
+                for name, param in iterator:
+                    # if param.kind == param.POSITIONAL_ONLY:
+                    context.current_parameter = param
+                    params[name] = param
+                class FlagsConverter(commands.FlagConverter, prefix="--", delimiter=" "):
+                    pass
+                for name, param in params.items():
+                    flag = discord.ext.commands.flags.Flag(name=name, attribute=name, aliases=[], annotation=param.annotation, default=param.default if not param.default == inspect._empty else discord.utils.MISSING, max_args=1, override=False)
+                    FlagsConverter.__commands_flags__[name] = flag
+
+                keys = [re.escape(k) for k in FlagsConverter.__commands_flags__]
+                keys = sorted(keys, key=len, reverse=True)
+                joined = '|'.join(keys)
+                prefix = FlagsConverter.__commands_flag_prefix__
+                delimiter = FlagsConverter.__commands_flag_delimiter__
+                regex_flags = re.IGNORECASE
+                pattern = re.compile(f'(({re.escape(prefix)})(?P<flag>{joined}){re.escape(delimiter)})', regex_flags)
+                FlagsConverter.__commands_flag_regex__ = pattern
+
+                converter = FlagsConverter
+                param = discord.ext.commands.parameters.Parameter(name="Flags", kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=converter)
+                result1 = await discord.ext.commands.converter.run_converters(context, converter, context.message.content[len(context.prefix):], param)
+                result2 = result1.get_flags()
+                context.kwargs = {name: getattr(result1, name, params[name].default) for name in result2.keys()}
+                if not command.ignore_extra and not view.eof:
+                    raise commands.TooManyArguments('Too many arguments passed to ' + command.qualified_name)
+
+            # Copied from dpy.
+            if not command.enabled:
+                raise commands.DisabledCommand(f"{command.name} command is disabled.")
+            if not await self.can_run(context, change_permission_state=True):
+                raise commands.CheckFailure(f"The check functions for command {command.qualified_name} failed.")
+            if command._max_concurrency is not None:
+                await command._max_concurrency.acquire(ctx)
+            try:
+                if command.cooldown_after_parsing:
+                    await _parse_arguments()
+                    command._prepare_cooldowns(ctx)
+                else:
+                    command._prepare_cooldowns(ctx)
+                    await _parse_arguments()
+                await command.call_before_hooks(ctx)
+            except Exception:
+                if command._max_concurrency is not None:
+                    await command._max_concurrency.release(ctx)
+                raise
+            context.invoked_subcommand = None
+            context.subcommand_passed = None
+            injected = discord.ext.commands.core.hooked_wrapped_callback(command, context, command.callback)  # type: ignore
+            await injected(*context.args, **context.kwargs)
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
+    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError) -> None:
         """
         Record all exceptions generated by commands by cog and by command in `bot.last_exceptions_cogs`.
         All my cogs will add this listener if it doesn't exist, so I need to record this in a common variable. Also, this may be useful to others.
@@ -546,7 +647,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         check_updates: typing.Optional[bool] = False,
         cog: typing.Optional[InstalledCog] = None,
         command: typing.Optional[str] = None,
-    ):
+    ) -> None:
         """Get all the necessary information to get support on a bot/repo/cog/command.
         With a html file.
         """

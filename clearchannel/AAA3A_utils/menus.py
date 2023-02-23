@@ -3,6 +3,8 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+# import typing_extensions  # isort:skip
+
 import asyncio
 import re
 
@@ -17,7 +19,7 @@ if discord.version_info.major >= 2:
 __all__ = ["Reactions", "Menu"]
 
 
-def _(untranslated: str):
+def _(untranslated: str) -> str:
     return untranslated
 
 
@@ -29,15 +31,15 @@ class Reactions:
         bot: Red,
         message: discord.Message,
         remove_reaction: typing.Optional[bool] = True,
-        timeout: typing.Optional[float] = 180,
+        timeout: typing.Optional[int] = 180,
         reactions: typing.Optional[typing.List] = ["✅", "❌"],
         members: typing.Optional[typing.Iterable[discord.Member]] = None,
-        check: typing.Optional[typing.Any] = None,
-        function: typing.Optional[typing.Any] = None,
+        check: typing.Optional[typing.Callable] = None,
+        function: typing.Optional[typing.Callable] = None,
         function_args: typing.Optional[typing.Dict] = {},
         infinity: typing.Optional[bool] = False,
-    ):
-        self.reactions_dict_instance = {
+    ) -> None:
+        self.reactions_dict_instance: typing.Dict[str, typing.Any] = {
             "message": message,
             "timeout": timeout,
             "reactions": reactions,
@@ -47,26 +49,28 @@ class Reactions:
             "function_args": function_args,
             "infinity": infinity,
         }
-        self.bot = bot
-        self.message = message
-        self.remove_reaction = remove_reaction
-        self.timeout = timeout
-        self.infinity = infinity
-        self.reaction_result = None
-        self.user_result = None
-        self.function_result = None
-        self.members = (
+        self.bot: Red = bot
+        self.message: discord.Message = message
+        self.remove_reaction: bool = remove_reaction
+        self.timeout: int = timeout
+        self.infinity: bool = infinity
+        self.reaction_result: typing.Union[str, discord.PartialEmoji] = None
+        self.user_result: discord.User = None
+        self.function_result: typing.Optional[typing.Any] = None
+        self.members: typing.Optional[typing.List[int]] = (
             members if members is None else [getattr(member, "id", member) for member in members]
         )
-        self.check = check
-        self.function = function
-        self.function_args = function_args
-        self.reactions = reactions
-        self.done = asyncio.Event()
-        self.r = False
+        self.check: typing.Optional[typing.Callable] = check
+        self.function: typing.Optional[typing.Callable] = function
+        self.function_args: typing.Optional[typing.Dict[str, typing.Any]] = function_args
+        self.reactions: typing.List[str] = reactions
+        self.r: bool = False
+        self.done: asyncio.Event = asyncio.Event()
         asyncio.create_task(self.wait())
 
-    def to_dict_cogsutils(self, for_Config: typing.Optional[bool] = False):
+    def to_dict_cogsutils(
+        self, for_Config: typing.Optional[bool] = False
+    ) -> typing.Dict[str, typing.Any]:
         reactions_dict_instance = self.reactions_dict_instance
         if for_Config:
             reactions_dict_instance["bot"] = None
@@ -77,10 +81,12 @@ class Reactions:
         return reactions_dict_instance
 
     @classmethod
-    def from_dict_cogsutils(cls, reactions_dict_instance: typing.Dict):
+    def from_dict_cogsutils(
+        cls, reactions_dict_instance: typing.Dict
+    ) -> typing.Any:  # typing_extensions.Self
         return cls(**reactions_dict_instance)
 
-    async def wait(self):
+    async def wait(self) -> None:
         if not self.r:
             await start_adding_reactions(self.message, self.reactions)
             self.r = True
@@ -103,13 +109,13 @@ class Reactions:
         except TimeoutError:
             await self.on_timeout()
 
-    async def reaction_check(self, reaction: discord.Reaction, user: discord.User):
+    async def reaction_check(self, reaction: discord.Reaction, user: discord.User) -> bool:
         async def remove_reaction(
             remove_reaction,
             message: discord.Message,
             reaction: discord.Reaction,
             user: discord.User,
-        ):
+        ) -> None:
             if remove_reaction:
                 try:
                     await message.remove_reaction(emoji=reaction, member=user)
@@ -138,10 +144,14 @@ class Reactions:
         else:
             return False
 
-    async def on_timeout(self):
+    async def on_timeout(self) -> None:
         self.done.set()
 
-    async def wait_result(self):
+    async def wait_result(
+        self,
+    ) -> typing.Tuple[
+        typing.Union[discord.PartialEmoji, str], discord.User, typing.Optional[typing.Any]
+    ]:
         self.done = asyncio.Event()
         await self.done.wait()
         reaction, user, function_result = self.get_result()
@@ -150,7 +160,11 @@ class Reactions:
         self.reaction_result, self.user_result, self.function_result = None, None, None
         return reaction, user, function_result
 
-    def get_result(self):
+    def get_result(
+        self,
+    ) -> typing.Tuple[
+        typing.Union[discord.PartialEmoji, str], discord.User, typing.Optional[typing.Any]
+    ]:
         return self.reaction_result, self.user_result, self.function_result
 
 
@@ -171,50 +185,44 @@ class Menu:
         members: typing.Optional[typing.Iterable[discord.Member]] = [],
         ephemeral: typing.Optional[bool] = False,
         box_language_py: typing.Optional[bool] = False,
-    ):
+    ) -> None:
         self.ctx: commands.Context = None
-        self.pages: typing.List = pages
+        self.pages: typing.List[typing.Union[str, discord.Embed, typing.Dict[str, typing.Any]]] = pages
         self.timeout: int = timeout
         self.delete_after_timeout: bool = delete_after_timeout
         self.way: typing.Literal["buttons", "reactions", "dropdown"] = way
         if controls is None:
-            controls = {
+            controls: typing.Dict[str, str] = {
                 "⏮️": "left_page",
                 "◀️": "prev_page",
-                "❌": "close_page",
+                "✖️": "close_page",
                 "▶️": "next_page",
                 "⏭️": "right_page",
                 "🔻": "send_all",
                 "📩": "send_interactive",
                 "💾": "send_as_file",
             }
-        self.controls: typing.Dict = controls.copy()
+        self.controls: typing.Dict[str, str] = controls.copy()
         self.check_owner: bool = check_owner
         self.members: typing.List = members
-        self.ephemeral = ephemeral
-        if (
-            not discord.version_info.major >= 2
-            and self.way in ["buttons", "dropdown"]
-        ):
-            self.way = "reactions"
+        self.ephemeral: bool = ephemeral
+        if not discord.version_info.major >= 2 and self.way in ["buttons", "dropdown"]:
+            self.way: typing.Literal["buttons", "reactions", "dropdown"] = "reactions"
         if not self.pages:
-            self.pages = ["Nothing to show."]
+            self.pages: typing.List[str] = ["Nothing to show."]
         if isinstance(self.pages, str):
-            self.pages = list(pagify(self.pages, page_length=2000 - 10))
+            self.pages: typing.List[str] = list(pagify(self.pages, page_length=2000 - 10))
         if box_language_py and all([isinstance(page, str) for page in self.pages]):
-            self.pages = [box(page, "py") for page in self.pages]
+            self.pages: typing.List[str] = [box(page, "py") for page in self.pages]
         if not isinstance(self.pages[0], (typing.Dict, discord.Embed, str)):
             raise RuntimeError("Pages must be of type typing.Dict, discord.Embed or str.")
 
-        self.source = self._SimplePageSource(items=self.pages)
+        self.source: self._SimplePageSource = self._SimplePageSource(items=self.pages)
         if not self.source.is_paginating():
             for emoji, name in controls.items():
                 if name in ["left_page", "prev_page", "next_page", "right_page"]:
                     del self.controls[emoji]
-        if (
-            not self.source.is_paginating()
-            or len(self.pages) > 3
-        ):
+        if not self.source.is_paginating() or len(self.pages) > 3:
             for emoji, name in controls.items():
                 if name in ["send_all"]:
                     del self.controls[emoji]
@@ -232,7 +240,7 @@ class Menu:
         self.current_page: int = page_start
         self.is_done = asyncio.Event()
 
-    async def start(self, ctx: commands.Context):
+    async def start(self, ctx: commands.Context) -> None:
         """
         Used to start the menu displaying the first page requested.
         Parameters
@@ -500,7 +508,7 @@ class Menu:
         except TimeoutError:
             await self.on_timeout()
 
-    async def send_initial_message(self, ctx: commands.Context):
+    async def send_initial_message(self, ctx: commands.Context) -> discord.Message:
         current, kwargs = await self.get_page(self.current_page)
         if self.ephemeral and getattr(self.ctx, "interaction", None) is not None:
             kwargs["ephemeral"] = True
@@ -514,7 +522,9 @@ class Menu:
                     del page["file"]
         return self.message
 
-    async def get_page(self, page_num: int):
+    async def get_page(
+        self, page_num: int
+    ) -> typing.Dict[str, typing.Union[str, discord.Embed, typing.Any]]:
         try:
             page = await self.source.get_page(page_num)
         except IndexError:
@@ -522,10 +532,14 @@ class Menu:
             page = await self.source.get_page(self.current_page)
         current = self.pages.index(page)
         value = await self.source.format_page(self, page)
+
         def replace_var_paths(text: str):
-            if self.ctx.bot.get_cog("AAA3A_utils") is None or not hasattr(self.ctx.bot.get_cog("AAA3A_utils"), "cogsutils"):
+            if self.ctx.bot.get_cog("AAA3A_utils") is None or not hasattr(
+                self.ctx.bot.get_cog("AAA3A_utils"), "cogsutils"
+            ):
                 return text
             return self.ctx.bot.get_cog("AAA3A_utils").cogsutils.replace_var_paths(text)
+
         if isinstance(value, typing.Dict):
             if "content" in value:
                 value["content"] = replace_var_paths(value["content"])
@@ -536,7 +550,7 @@ class Menu:
         elif isinstance(value, discord.Embed):
             return current, {"embed": value, "content": None}
 
-    async def on_timeout(self):
+    async def on_timeout(self) -> None:
         self.is_done.set()
         if self.delete_after_timeout:
             await self.message.delete()
@@ -576,7 +590,7 @@ class Menu:
                     typing.Dict[str, typing.Union[str, discord.Embed]], discord.Embed, str
                 ]
             ],
-        ):
+        ) -> None:
             super().__init__(items, per_page=1)
 
         async def format_page(

@@ -1,16 +1,27 @@
 import discord  # isort:skip
 import typing  # isort:skip
 
+# import typing_extensions  # isort:skip
+
 import asyncio
 import inspect
 import string
 from functools import partial
 from random import choice
 
-__all__ = ["Buttons", "Dropdown", "Select", "ChannelSelect", "MentionableSelect", "RoleSelect", "UserSelect", "Modal"]
+__all__ = [
+    "Buttons",
+    "Dropdown",
+    "Select",
+    "ChannelSelect",
+    "MentionableSelect",
+    "RoleSelect",
+    "UserSelect",
+    "Modal",
+]
 
 
-def _(untranslated: str):
+def _(untranslated: str) -> str:
     return untranslated
 
 
@@ -24,7 +35,7 @@ def generate_key(
         "punctuation": False,
         "others": [],
     },
-):  # same in CogsUtils
+) -> str:  # same in CogsUtils
     """
     Generate a secret key, with the choice of characters, the number of characters and a list of existing keys.
     """
@@ -56,14 +67,14 @@ class Buttons(discord.ui.View):
 
     def __init__(
         self,
-        timeout: typing.Optional[float] = 180,
+        timeout: typing.Optional[int] = 180,
         buttons: typing.Optional[typing.List] = [{}],
         members: typing.Optional[typing.Iterable[discord.Member]] = None,
-        check: typing.Optional[typing.Any] = None,
-        function: typing.Optional[typing.Any] = None,
-        function_kwargs: typing.Optional[typing.Dict] = {},
+        check: typing.Optional[typing.Callable] = None,
+        function: typing.Optional[typing.Callable] = None,
+        function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = {},
         infinity: typing.Optional[bool] = False,
-    ):
+    ) -> None:
         """style: ButtonStyle, label: Optional[str], disabled: bool, custom_id: Optional[str], url: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], row: Optional[int]"""
         for button_dict in buttons:
             if "url" in button_dict and button_dict["url"] is not None:
@@ -71,7 +82,7 @@ class Buttons(discord.ui.View):
                 continue
             if "custom_id" not in button_dict:
                 button_dict["custom_id"] = "CogsUtils" + "_" + generate_key(number=10)
-        self.buttons_dict_instance = {
+        self.buttons_dict_instance: typing.Dict[str, typing.Any] = {
             "timeout": timeout,
             "buttons": [b.copy() for b in buttons],
             "members": members,
@@ -81,19 +92,18 @@ class Buttons(discord.ui.View):
             "infinity": infinity,
         }
         super().__init__(timeout=timeout)
-        self.infinity = infinity
-        self.interaction_result = None
-        self.function_result = None
-        self.members = (
+        self.infinity: bool = infinity
+        self.interaction_result: typing.Optional[discord.Interaction] = None
+        self.function_result: typing.Optional[typing.Any] = None
+        self.members: typing.Optional[typing.List[int]] = (
             members if members is None else [getattr(member, "id", member) for member in members]
         )
-        self.check = check
-        self.function = function
-        self.function_kwargs = function_kwargs
+        self.check: typing.Optional[typing.Callable] = check
+        self.function: typing.Optional[typing.Callable] = function
+        self.function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = function_kwargs
         self.clear_items()
-        self.buttons = []
-        self.buttons_dict = []
-        self.done = asyncio.Event()
+        self.buttons: typing.List[discord.ui.Button] = []
+        self.buttons_dict: typing.List[typing.Dict[str, typing.Any]] = []
         for button_dict in buttons:
             if "style" not in button_dict:
                 button_dict["style"] = discord.ButtonStyle(2)
@@ -108,8 +118,11 @@ class Buttons(discord.ui.View):
             self.add_item(button)
             self.buttons.append(button)
             self.buttons_dict.append(button_dict)
+        self.add_item(self.dropdown)
 
-    def to_dict_cogsutils(self, for_Config: typing.Optional[bool] = False):
+    def to_dict_cogsutils(
+        self, for_Config: typing.Optional[bool] = False
+    ) -> typing.Dict[str, typing.Any]:
         buttons_dict_instance = self.buttons_dict_instance
         if for_Config:
             buttons_dict_instance["check"] = None
@@ -117,13 +130,15 @@ class Buttons(discord.ui.View):
         return buttons_dict_instance
 
     @classmethod
-    def from_dict_cogsutils(cls, buttons_dict_instance: typing.Dict):
+    def from_dict_cogsutils(
+        cls, buttons_dict_instance: typing.Dict
+    ) -> typing.Any:  # typing_extensions.Self
         if "function_args" in buttons_dict_instance:
             buttons_dict_instance["function_kwargs"] = buttons_dict_instance["function_args"]
             del buttons_dict_instance["function_args"]
         return cls(**buttons_dict_instance)
 
-    async def interaction_check(self, interaction: discord.Interaction):
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if self.members is not None:
             if interaction.user.id not in self.members:
                 await interaction.response.send_message(
@@ -144,7 +159,7 @@ class Buttons(discord.ui.View):
             self.stop()
         return True
 
-    async def on_timeout(self):
+    async def on_timeout(self) -> None:
         self.done.set()
         self.stop()
 
@@ -152,9 +167,11 @@ class Buttons(discord.ui.View):
         if not interaction.response.is_done():
             await interaction.response.defer(ephemeral=True)
         await interaction.followup.send("Sorry. An error has occurred.", ephemeral=True)
-        discord.ui.view._log.error("Ignoring exception in view %r for item %r.", self, item, exc_info=error)
+        discord.ui.view._log.error(
+            "Ignoring exception in view %r for item %r.", self, item, exc_info=error
+        )
 
-    async def wait_result(self):
+    async def wait_result(self) -> typing.Tuple[discord.Interaction, typing.Optional[typing.Any]]:
         self.done = asyncio.Event()
         await self.done.wait()
         interaction, function_result = self.get_result()
@@ -163,7 +180,7 @@ class Buttons(discord.ui.View):
         self.interaction_result, self.function_result = None, None
         return interaction, function_result
 
-    def get_result(self):
+    def get_result(self) -> typing.Tuple[discord.Interaction, typing.Optional[typing.Any]]:
         return self.interaction_result, self.function_result
 
 
@@ -172,29 +189,33 @@ class Dropdown(discord.ui.View):
 
     def __init__(
         self,
-        timeout: typing.Optional[float] = 180,
+        timeout: typing.Optional[int] = 180,
         placeholder: typing.Optional[str] = "Choose an option.",
         min_values: typing.Optional[int] = 1,
         max_values: typing.Optional[int] = 1,
         *,
         _type: typing.Optional[discord.ComponentType] = discord.ComponentType.select,
-        options: typing.Optional[typing.Union[typing.List, discord.ComponentType, discord.ui.Select]] = [{}],
+        options: typing.Optional[
+            typing.Union[typing.List, discord.ComponentType, discord.ui.Select]
+        ] = [{}],
         disabled: typing.Optional[bool] = False,
         members: typing.Optional[typing.Iterable[discord.Member]] = None,
-        check: typing.Optional[typing.Any] = None,
-        function: typing.Optional[typing.Any] = None,
-        function_kwargs: typing.Optional[typing.Dict] = {},
+        check: typing.Optional[typing.Callable] = None,
+        function: typing.Optional[typing.Callable] = None,
+        function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = {},
         infinity: typing.Optional[bool] = False,
         custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
-    ):
+    ) -> None:
         """label: str, value: str, description: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], default: bool"""
-        self.dropdown_dict_instance = {
+        self.dropdown_dict_instance: typing.Dict[str, typing.Any] = {
             "timeout": timeout,
             "placeholder": placeholder,
             "min_values": min_values,
             "max_values": max_values,
             "_type": _type,
-            "options": ([(o.copy() if hasattr(o, "copy") else o) for o in options]) if isinstance(options, typing.List) else options,
+            "options": ([(o.copy() if hasattr(o, "copy") else o) for o in options])
+            if isinstance(options, typing.List)
+            else options,
             "members": members,
             "check": check,
             "function": function,
@@ -203,21 +224,21 @@ class Dropdown(discord.ui.View):
             "custom_id": custom_id,
         }
         super().__init__(timeout=timeout)
-        self._type = _type
-        self.infinity = infinity
-        self.interaction_result = None
-        self.options_result = None
-        self.function_result = None
-        self.disabled = disabled
-        self.members = (
+        self._type: discord.ComponentType = _type
+        self.infinity: bool = infinity
+        self.interaction_result: typing.Optional[discord.Interaction] = None
+        self.options_result: typing.Optional[typing.List[str]] = None
+        self.function_result: typing.Optional[typing.Any] = None
+        self.disabled: bool = disabled
+        self.members: typing.Optional[typing.List[int]] = (
             members if members is None else [getattr(member, "id", member) for member in members]
         )
-        self.check = check
-        self.function = function
-        self.function_kwargs = function_kwargs
+        self.check: typing.Optional[typing.Callable] = check
+        self.function: typing.Optional[typing.Callable] = function
+        self.function_kwargstyping.Optional[typing.Dict[str, typing.Any]] = function_kwargs
         self.clear_items()
-        self.options = []
-        self.options_dict = []
+        self.options: typing.List[discord.SelectOption] = []
+        self.options_dict: typing.List[typing.Dict[str, typing.Any]] = []
         if _type is discord.ComponentType.select or _type is Select:
             for option_dict in options:
                 if "label" not in option_dict and "emoji" not in option_dict:
@@ -280,10 +301,12 @@ class Dropdown(discord.ui.View):
             else:
                 self.dropdown = _type
             setattr(self.dropdown, "callback", partial(_Select.callback, self.dropdown))
-        self.done = asyncio.Event()
         self.add_item(self.dropdown)
+        self.done: asyncio.Event = asyncio.Event()
 
-    def to_dict_cogsutils(self, for_Config: typing.Optional[bool] = False):
+    def to_dict_cogsutils(
+        self, for_Config: typing.Optional[bool] = False
+    ) -> typing.Dict[str, typing.Any]:
         dropdown_dict_instance = self.dropdown_dict_instance
         if for_Config:
             dropdown_dict_instance["members"] = None
@@ -292,13 +315,15 @@ class Dropdown(discord.ui.View):
         return dropdown_dict_instance
 
     @classmethod
-    def from_dict_cogsutils(cls, dropdown_dict_instance: typing.Dict):
+    def from_dict_cogsutils(
+        cls, dropdown_dict_instance: typing.Dict
+    ) -> typing.Any:  # typing_extensions.Self
         if "function_args" in dropdown_dict_instance:
             dropdown_dict_instance["function_kwargs"] = dropdown_dict_instance["function_args"]
             del dropdown_dict_instance["function_args"]
         return cls(**dropdown_dict_instance)
 
-    async def on_timeout(self):
+    async def on_timeout(self) -> None:
         self.done.set()
         self.stop()
 
@@ -306,9 +331,13 @@ class Dropdown(discord.ui.View):
         if not interaction.response.is_done():
             await interaction.response.defer(ephemeral=True)
         await interaction.followup.send("Sorry. An error has occurred.", ephemeral=True)
-        discord.ui.view._log.error("Ignoring exception in view %r for item %r.", self, item, exc_info=error)
+        discord.ui.view._log.error(
+            "Ignoring exception in view %r for item %r.", self, item, exc_info=error
+        )
 
-    async def wait_result(self):
+    async def wait_result(
+        self,
+    ) -> typing.Tuple[discord.Interaction, typing.List[str], typing.Optional[typing.Any]]:
         self.done = asyncio.Event()
         await self.done.wait()
         interaction, options, function_result = self.get_result()
@@ -317,10 +346,12 @@ class Dropdown(discord.ui.View):
         self.interaction_result, self.options_result, self.function_result = None, None, None
         return interaction, options, function_result
 
-    def get_result(self):
+    def get_result(
+        self,
+    ) -> typing.Tuple[discord.Interaction, typing.List[str], typing.Optional[typing.Any]]:
         return self.interaction_result, self.options_result, self.function_result
 
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: discord.Interaction) -> None:
         if self.members is not None:
             if interaction.user.id not in self.members:
                 await interaction.response.send_message(
@@ -344,16 +375,15 @@ class Dropdown(discord.ui.View):
             self.stop()
 
 
-class _Select():
-
-    async def callback(self, interaction: discord.Interaction):
+class _Select:
+    async def callback(self, interaction: discord.Interaction) -> None:
         if hasattr(self.view, "callback"):
             await self.view.callback(interaction)
         else:
             super().callback(interaction)
 
-class Select(_Select, discord.ui.Select):
 
+class Select(_Select, discord.ui.Select):
     def __init__(
         self,
         placeholder: typing.Optional[str] = "Choose an option.",
@@ -364,7 +394,7 @@ class Select(_Select, discord.ui.Select):
         disabled: typing.Optional[bool] = False,
         custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
         row: typing.Optional[int] = None,
-    ):
+    ) -> None:
         super().__init__(
             custom_id=custom_id,
             placeholder=placeholder,
@@ -374,8 +404,9 @@ class Select(_Select, discord.ui.Select):
             disabled=disabled,
             row=row,
         )
-class ChannelSelect(_Select, discord.ui.ChannelSelect):
 
+
+class ChannelSelect(_Select, discord.ui.ChannelSelect):
     def __init__(
         self,
         placeholder: typing.Optional[str] = "Choose a channel.",
@@ -386,7 +417,7 @@ class ChannelSelect(_Select, discord.ui.ChannelSelect):
         disabled: typing.Optional[bool] = False,
         custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
         row: typing.Optional[int] = None,
-    ):
+    ) -> None:
         super().__init__(
             custom_id=custom_id,
             placeholder=placeholder,
@@ -397,8 +428,8 @@ class ChannelSelect(_Select, discord.ui.ChannelSelect):
             row=row,
         )
 
-class MentionableSelect(_Select, discord.ui.MentionableSelect):
 
+class MentionableSelect(_Select, discord.ui.MentionableSelect):
     def __init__(
         self,
         placeholder: typing.Optional[str] = "Choose an option.",
@@ -408,7 +439,7 @@ class MentionableSelect(_Select, discord.ui.MentionableSelect):
         disabled: typing.Optional[bool] = False,
         custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
         row: typing.Optional[int] = None,
-    ):
+    ) -> None:
         super().__init__(
             custom_id=custom_id,
             placeholder=placeholder,
@@ -418,8 +449,8 @@ class MentionableSelect(_Select, discord.ui.MentionableSelect):
             row=row,
         )
 
-class RoleSelect(_Select, discord.ui.RoleSelect):
 
+class RoleSelect(_Select, discord.ui.RoleSelect):
     def __init__(
         self,
         placeholder: typing.Optional[str] = "Choose a role.",
@@ -429,7 +460,7 @@ class RoleSelect(_Select, discord.ui.RoleSelect):
         disabled: typing.Optional[bool] = False,
         custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
         row: typing.Optional[int] = None,
-    ):
+    ) -> None:
         super().__init__(
             custom_id=custom_id,
             placeholder=placeholder,
@@ -439,8 +470,8 @@ class RoleSelect(_Select, discord.ui.RoleSelect):
             row=row,
         )
 
-class UserSelect(_Select, discord.ui.UserSelect):
 
+class UserSelect(_Select, discord.ui.UserSelect):
     def __init__(
         self,
         placeholder: typing.Optional[str] = "Choose an user.",
@@ -450,7 +481,7 @@ class UserSelect(_Select, discord.ui.UserSelect):
         disabled: typing.Optional[bool] = False,
         custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
         row: typing.Optional[int] = None,
-    ):
+    ) -> None:
         super().__init__(
             custom_id=custom_id,
             placeholder=placeholder,
@@ -459,6 +490,7 @@ class UserSelect(_Select, discord.ui.UserSelect):
             disabled=disabled,
             row=row,
         )
+
 
 class Modal(discord.ui.Modal):
     """Create Modal easily."""
@@ -469,11 +501,11 @@ class Modal(discord.ui.Modal):
         timeout: typing.Optional[float] = None,
         inputs: typing.Optional[typing.List] = [{}],
         members: typing.Optional[typing.Iterable[discord.Member]] = None,
-        check: typing.Optional[typing.Any] = None,
-        function: typing.Optional[typing.Any] = None,
-        function_kwargs: typing.Optional[typing.Dict] = {},
+        check: typing.Optional[typing.Callable] = None,
+        function: typing.Optional[typing.Callable] = None,
+        function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = {},
         custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
-    ):
+    ) -> None:
         """label: str, style: TextStyle, custom_id: str, placeholder: Optional[str], default: Optional[str], required: bool, min_length: Optional[int], max_length: Optional[int], row: Optional[int]"""
         for input_dict in inputs:
             if "custom_id" not in input_dict:
@@ -489,31 +521,33 @@ class Modal(discord.ui.Modal):
             "custom_id": custom_id,
         }
         super().__init__(title=title, timeout=timeout, custom_id=custom_id)
-        self.title = title
-        self.interaction_result = None
-        self.inputs_result = None
-        self.function_result = None
-        self.members = (
+        self.title: str = title
+        self.interaction_result: typing.Optional[discord.Interaction] = None
+        self.inputs_result: typing.Optional[typing.List[discord.ui.TextInput]] = None
+        self.function_result: typing.Optional[typing.Any] = None
+        self.members: typing.Optional[typing.List[int]] = (
             members if members is None else [getattr(member, "id", member) for member in members]
         )
-        self.check = check
-        self.function = function
-        self.function_kwargs = function_kwargs
-        self.inputs = []
-        self.inputs_dict = []
-        self.done = asyncio.Event()
+        self.check: typing.Optional[typing.Callable] = check
+        self.function: typing.Optional[typing.Callable] = function
+        self.function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = function_kwargs
+        self.inputs: typing.List[discord.ui.TextInput] = []
+        self.inputs_dict: typing.List[typing.Dict[str, typing.Any]] = []
         for input_dict in inputs:
             if "label" not in input_dict:
                 input_dict["label"] = "Test"
             if "style" in input_dict:
                 if isinstance(input_dict["style"], int):
-                    input_dict["style"] = discord.ui.text_input.TextStyle(input_dict["style"])
-            input = discord.ui.text_input.TextInput(**input_dict)
+                    input_dict["style"] = discord.TextStyle(input_dict["style"])
+            input = discord.ui.TextInput(**input_dict)
             self.add_item(input)
             self.inputs.append(input)
             self.inputs_dict.append(input_dict)
+        self.done: asyncio.Event = asyncio.Event()
 
-    def to_dict_cogsutils(self, for_Config: typing.Optional[bool] = False):
+    def to_dict_cogsutils(
+        self, for_Config: typing.Optional[bool] = False
+    ) -> typing.Dict[str, typing.Any]:
         modal_dict_instance = self.modal_dict_instance
         if for_Config:
             modal_dict_instance["members"] = None
@@ -522,13 +556,15 @@ class Modal(discord.ui.Modal):
         return modal_dict_instance
 
     @classmethod
-    def from_dict_cogsutils(cls, modal_dict_instance: typing.Dict):
+    def from_dict_cogsutils(
+        cls, modal_dict_instance: typing.Dict
+    ) -> typing.Any:  # typing_extensions.Self
         if "function_args" in modal_dict_instance:
             modal_dict_instance["function_kwargs"] = modal_dict_instance["function_args"]
             del modal_dict_instance["function_args"]
         return cls(**modal_dict_instance)
 
-    async def on_submit(self, interaction: discord.Interaction):
+    async def on_submit(self, interaction: discord.Interaction) -> None:
         if self.members is not None:
             if interaction.user.id not in self.members:
                 await interaction.response.send_message(
@@ -550,11 +586,15 @@ class Modal(discord.ui.Modal):
         self.done.set()
         self.stop()
 
-    async def on_timeout(self):
+    async def on_timeout(self) -> None:
         self.done.set()
         self.stop()
 
-    async def wait_result(self):
+    async def wait_result(
+        self,
+    ) -> typing.Tuple[
+        discord.Interaction, typing.List[discord.ui.TextInput], typing.Optional[typing.Any]
+    ]:
         self.done = asyncio.Event()
         await self.done.wait()
         interaction, inputs_result, function_result = self.get_result()
@@ -563,5 +603,9 @@ class Modal(discord.ui.Modal):
         self.interaction_result, self.inputs_result, self.function_result = None, None, None
         return interaction, inputs_result, function_result
 
-    def get_result(self):
+    def get_result(
+        self,
+    ) -> typing.Tuple[
+        discord.Interaction, typing.List[discord.ui.TextInput], typing.Optional[typing.Any]
+    ]:
         return self.interaction_result, self.inputs_result, self.function_result

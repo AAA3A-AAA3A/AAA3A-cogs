@@ -1,6 +1,9 @@
 from redbot.core import commands  # isort:skip
+import redbot  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
+
+# import typing_extensions  # isort:skip
 
 import asyncio
 import inspect
@@ -14,6 +17,7 @@ from rich.console import Console
 from rich.table import Table
 
 from .menus import Menu
+
 if discord.version_info.major >= 2:
     from .views import Buttons, Modal
 
@@ -29,11 +33,13 @@ else:
     hybrid_group = commands.group
 
 
-def _(untranslated: str):
+def _(untranslated: str) -> str:
     return untranslated
 
 
-def no_colour_rich_markup(*objects: typing.Any, lang: str = "", no_box: typing.Optional[bool] = False) -> str:
+def no_colour_rich_markup(
+    *objects: typing.Any, lang: str = "", no_box: typing.Optional[bool] = False
+) -> str:
     """
     Slimmed down version of rich_markup which ensure no colours (/ANSI) can exist
     https://github.com/Cog-Creators/Red-DiscordBot/pull/5538/files (Kowlin)
@@ -49,7 +55,9 @@ def no_colour_rich_markup(*objects: typing.Any, lang: str = "", no_box: typing.O
         return temp_console.file.getvalue()
     return box(temp_console.file.getvalue(), lang=lang)  # type: ignore
 
+
 if not hasattr(discord.utils, "MISSING"):
+
     class _MissingSentinel:
         __slots__ = ()
 
@@ -63,25 +71,32 @@ if not hasattr(discord.utils, "MISSING"):
             return 0
 
         def __repr__(self):
-            return '...'
+            return "..."
+
     discord.utils.MISSING = _MissingSentinel()
 
 
 class CustomMessageConverter(commands.Converter, dict):
-    def __init__(self, **kwargs):
-        if "embed" in kwargs:
+    def __init__(self, **kwargs) -> None:
+        if "embed" in kwargs and not isinstance(kwargs["embed"], discord.Embed):
             kwargs["embed"] = discord.Embed.from_dict(kwargs["embed"])
         self.__dict__.clear()
         self.__dict__.update(**kwargs)
 
-    async def convert(self, ctx: commands.Context, argument: str):
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Any:  # typing_extensions.Self
         if not argument.startswith("{"):
             # If argument is not a JSON, convert it with MessageConverter.
             try:
                 message = await commands.MessageConverter().convert(ctx, argument)
             except commands.BadArgument:
                 raise
-            kwargs = {key: getattr(message, key) for key in ["content", "embeds"] if getattr(message, key)}
+            kwargs = {
+                key: getattr(message, key)
+                for key in ["content", "embeds"]
+                if getattr(message, key)
+            }
         else:
             try:
                 kwargs = json.loads(argument)
@@ -125,17 +140,49 @@ class CustomMessageConverter(commands.Converter, dict):
                 raise commands.BadArgument(_("Missing fields in `embed` field."))
             length = len(embed)
             if length > 6000:
-                raise commands.BadArgument(_("Embed size exceeds Discord limit of 6000 characters, provided one of {length}.").format(length=length))
+                raise commands.BadArgument(
+                    _(
+                        "Embed size exceeds Discord limit of 6000 characters, provided one of {length}."
+                    ).format(length=length)
+                )
             kwargs["embed"] = embed
         # Attempt to send message.
         try:
             message = await ctx.send(**kwargs)
         except discord.HTTPException as e:
-            raise commands.BadArgument(_("Invalid message params (error when sending message).\n{e}").format(e=e))
+            raise commands.BadArgument(
+                _("Invalid message params (error when sending message).\n{e}").format(e=e)
+            )
         self.__dict__.update(**kwargs)
         return self
 
-    def to_dict(self) -> dict:
+    async def send_message(self, ctx: commands.Context, channel: typing.Optional[discord.abc.Messageable] = None, **kwargs):
+        if channel is None:
+            channel = ctx
+        _kwargs = self.__dict__.copy()
+        if (env := kwargs.pop("env", None)) is not None:
+            class _Env(typing.Dict):
+                def __getitem__(self, key: str):
+                    return env.__getitem__(key)
+
+                def __missing__(self, key: str):
+                    return "{" + f"{key}" + "}"
+            _env = _Env()
+            if "content" in _kwargs and _kwargs["content"] is not None:
+                _kwargs["content"] = _kwargs["content"].format_map(_env)
+            if "embed" in _kwargs and _kwargs["embed"] is not None:
+                embed = _kwargs["embed"].copy()
+                if embed.title is not None:
+                    embed.title = embed.title.format_map(_env)
+                if embed.description is not None:
+                    embed.description = embed.description.format_map(_env)
+                if getattr(embed, "_author", None) is not None:
+                    embed._author["name"] = embed._author["name"].format_map(_env)
+                _kwargs["embed"] = embed
+        _kwargs.update(**kwargs)
+        return await channel.send(**_kwargs)
+
+    def to_dict(self) -> typing.Dict[str, typing.Any]:
         kwargs = self.__dict__
         if "embed" in kwargs:
             kwargs["embed"] = kwargs["embed"].to_dict()
@@ -147,68 +194,100 @@ class CustomMessageConverter(commands.Converter, dict):
         if len(items) == 0:
             return f"<{self.__class__.__name__} [Nothing]>"
         return f"<{self.__class__.__name__} {' '.join(items)}>"
+
     def __eq__(self, other: object) -> bool:
         if isinstance(self, self.__class__) and isinstance(other, self.__class__):
             return self.__dict__ == other.__dict__
         return NotImplemented
+
     def __len__(self) -> int:
         return len(self.__dict__)
-    def __contains__(self, key: str) -> typing.Any:
+
+    def __contains__(self, key: str) -> bool:
         return key in self.__dict__
+
     def __iter__(self) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
         yield from self.__dict__.items()
+
     def __reversed__(self) -> typing.Dict:
         return self.__dict__.__reversed__()
+
     def __getattr__(self, attr: str) -> typing.Any:
         raise AttributeError(attr)
+
     def __setattr__(self, attr: str, value: typing.Any) -> None:
         self.__dict__[attr] = value
+
     def __delattr__(self, attr: str) -> None:
         del self.__dict__[attr]
+
     def __getitem__(self, key: str) -> typing.Any:
         return self.__dict__[key]
+
     def __setitem__(self, key: str, value: typing.Any) -> None:
         self.__dict__[key] = value
+
     def __delitem__(self, key: str) -> None:
         del self.__dict__[key]
+
     def clear(self) -> None:
         self.__dict__.clear()
+
     def update(self, **kwargs) -> None:
         self.__dict__.update(**kwargs)
-    def copy(self):
+
+    def copy(self) -> typing.Any:  # typing_extensions.Self
         return self.__class__(**self.__dict__)
+
     def items(self):
         return self.__dict__.items()
+
     def keys(self):
         return self.__dict__.keys()
+
     def values(self):
         return self.__dict__.values()
-    def get(self, key: str, _default: typing.Optional[typing.Any] = None):
+
+    def get(self, key: str, _default: typing.Optional[typing.Any] = None) -> typing.Any:
         return self.__dict__.get(key, _default)
-    def pop(self, key: str, _default: typing.Optional[typing.Any] = None):
+
+    def pop(self, key: str, _default: typing.Optional[typing.Any] = None) -> typing.Any:
         return self.__dict__.pop(key, _default)
-    def popitem(self):
+
+    def popitem(self) -> typing.Any:
         return self.__dict__.popitem()
+
     def _update_with_defaults(
         self, defaults: typing.Iterable[typing.Tuple[str, typing.Any]]
     ) -> None:
         for key, value in defaults:
             self.__dict__.setdefault(key, value)
 
-class Settings():
 
-    def __init__(self, bot: Red, cog: commands.Cog, config: Config, group: str, settings: typing.Dict[str, typing.Dict[str, typing.Any]], global_path: typing.Optional[typing.List] = [], use_profiles_system: typing.Optional[bool] = False, can_edit: typing.Optional[bool] = True, commands_group: typing.Optional[typing.Union[commands.Group, str]] = None):
+class Settings:
+    def __init__(
+        self,
+        bot: Red,
+        cog: commands.Cog,
+        config: Config,
+        group: str,
+        settings: typing.Dict[str, typing.Dict[str, typing.Any]],
+        global_path: typing.List = [],
+        use_profiles_system: typing.Optional[bool] = False,
+        can_edit: bool = True,
+        commands_group: typing.Optional[typing.Union[commands.Group, str]] = None,
+    ) -> None:
         # {"enable": {"path": ["settings", "enabled"], "converter": bool, "command_name": "enable", "label": "Enable", "description": "Enable the system.", "usage": "enable", "style": 1}}
-        self.bot = bot
-        self.cog = cog
-        self.config = config
-        self.group = group
-        self.global_path = global_path
-        self.use_profiles_system = use_profiles_system
-        self.can_edit = can_edit
-        self.commands_group = commands_group
-        self.commands = {}
-        self.commands_added = asyncio.Event()
+        self.bot: Red = bot
+        self.cog: commands.Cog = cog
+        self.config: Config = config
+        self.group: str = group
+        self.global_path: typing.List[str] = global_path
+        self.use_profiles_system: bool = use_profiles_system
+        self.can_edit: bool = can_edit
+        self.commands_group: commands.Group = commands_group
+        self.commands: typing.Dict[str, commands.Command] = {}
+        self.commands_added: asyncio.Event = asyncio.Event()
         for setting in settings:
             if "path" not in settings[setting]:
                 settings[setting]["path"] = [setting]
@@ -222,7 +301,11 @@ class Settings():
                 label = settings[setting]["label"]
                 settings[setting]["description"] = f"Set `{label}`."
             if "usage" not in settings[setting]:
-                if self.cog.cogsutils.is_dpy2 and settings[setting]["converter"] in discord.ext.commands.converter.CONVERTER_MAPPING:
+                if (
+                    self.cog.cogsutils.is_dpy2
+                    and settings[setting]["converter"]
+                    in discord.ext.commands.converter.CONVERTER_MAPPING
+                ):
                     x = settings[setting]["converter"].__name__.replace(" ", "_")
                     usage = x[0]
                     for y in x[1:]:
@@ -252,13 +335,26 @@ class Settings():
                 else:
                     if isinstance(settings[setting]["style"], int):
                         settings[setting]["style"] = discord.TextStyle(settings[setting]["style"])
-        self.settings = settings
+        self.settings: typing.Dict[str, typing.Dict[str, typing.Any]] = settings
 
-    async def add_commands(self, force: typing.Optional[bool] = False):
+    async def add_commands(self, force: typing.Optional[bool] = False) -> None:
 
         if not isinstance(self.commands_group, commands.Group):
-            name = "set" + (self.commands_group if isinstance(self.commands_group, str) else self.cog.qualified_name.lower())
-            aliases = [((self.commands_group if isinstance(self.commands_group, str) else self.cog.qualified_name.lower()) + "set")]
+            name = "set" + (
+                self.commands_group
+                if isinstance(self.commands_group, str)
+                else self.cog.qualified_name.lower()
+            )
+            aliases = [
+                (
+                    (
+                        self.commands_group
+                        if isinstance(self.commands_group, str)
+                        else self.cog.qualified_name.lower()
+                    )
+                    + "set"
+                )
+            ]
             _help = f"Commands to edit {self.cog.qualified_name}'s settings."
             if force:
                 self.bot.remove_command(name)
@@ -267,7 +363,9 @@ class Settings():
                 pass
 
             commands_group.__qualname__ = f"{self.cog.qualified_name}.{name}"
-            commands_group: commands.Group = commands.admin_or_permissions(administrator=True)(hybrid_group(name=name, aliases=aliases, help=_help)(commands_group))
+            commands_group: commands.Group = commands.admin_or_permissions(administrator=True)(
+                hybrid_group(name=name, aliases=aliases, help=_help)(commands_group)
+            )
             commands_group.name = name
             # commands_group.brief = _help
             # commands_group.description = _help
@@ -306,56 +404,108 @@ class Settings():
                 return argument.lower()
 
         if not self.use_profiles_system:
-            async def show_settings(_self, ctx: commands.Context, with_dev: typing.Optional[bool] = False):
+
+            async def show_settings(
+                _self, ctx: commands.Context, with_dev: typing.Optional[bool] = False
+            ):
                 """Show all settings for the cog with defaults and values."""
                 await self.show_settings(ctx, with_dev=with_dev)
-            async def modal_config(_self, ctx: commands.Context, confirmation: typing.Optional[bool] = False):
+
+            async def modal_config(
+                _self, ctx: commands.Context, confirmation: typing.Optional[bool] = False
+            ):
                 """Set all settings for the cog with a Discord Modal."""
                 await self.send_modal(ctx, confirmation=confirmation)
+
+            to_add = {"showsettings": show_settings, "modalconfig": modal_config}
         else:
-            async def show_settings(_self, ctx: commands.Context, profile: ProfileConverter, with_dev: typing.Optional[bool] = False):
+
+            async def show_settings(
+                _self,
+                ctx: commands.Context,
+                profile: ProfileConverter,
+                with_dev: typing.Optional[bool] = False,
+            ):
                 """Show all settings for the cog with defaults and values."""
                 await self.show_settings(ctx, profile=profile, with_dev=with_dev)
-            async def modal_config(_self, ctx: commands.Context, profile: ProfileConverter, confirmation: typing.Optional[bool] = False):
+
+            async def modal_config(
+                _self,
+                ctx: commands.Context,
+                profile: ProfileConverter,
+                confirmation: typing.Optional[bool] = False,
+            ):
                 """Set all settings for the cog with a Discord Modal."""
                 await self.send_modal(ctx, profile=profile, confirmation=confirmation)
+
             async def add_profile(_self, ctx: commands.Context, profile: str):
                 """Create a new profile with defaults settings."""
                 await self.add_profile(ctx, profile=profile)
-            async def clone_profile(_self, ctx: commands.Context, old_profile: ProfileConverter, profile: str):
+
+            async def clone_profile(
+                _self, ctx: commands.Context, old_profile: ProfileConverter, profile: str
+            ):
                 """Clone an existing profile with his settings."""
                 await self.clone_profile(ctx, old_profile=old_profile, profile=profile)
-            async def remove_profile(_self, ctx: commands.Context, profile: ProfileConverter, confirmation: typing.Optional[bool]=False):
+
+            async def remove_profile(
+                _self,
+                ctx: commands.Context,
+                profile: ProfileConverter,
+                confirmation: typing.Optional[bool] = False,
+            ):
                 """Remove an existing profile."""
                 await self.remove_profile(ctx, profile=profile, confirmation=confirmation)
-            async def rename_profile(_self, ctx: commands.Context, old_profile: ProfileConverter, profile: str):
+
+            async def rename_profile(
+                _self, ctx: commands.Context, old_profile: ProfileConverter, profile: str
+            ):
                 """Clone an existing profile with his settings."""
                 await self.rename_profile(ctx, old_profile=old_profile, profile=profile)
+
             async def list_profiles(_self, ctx: commands.Context):
                 """List the existing profiles."""
                 await self.list_profiles(ctx)
-        to_add = {"showsettings": show_settings, "modalconfig": modal_config, "profileadd": add_profile, "profileclone": clone_profile, "profileremove": remove_profile, "profilerename": rename_profile, "profileslist": list_profiles}
-        aliases = {"modalconfig": ["configmodal"], "profileadd": ["addprofile"], "profileclone": ["cloneprofile"], "profileremove": ["removeprofile"], "profilerename": ["renameprofile"], "profileslist": ["listprofiles"]}
+
+            to_add = {
+                "showsettings": show_settings,
+                "modalconfig": modal_config,
+                "profileadd": add_profile,
+                "profileclone": clone_profile,
+                "profileremove": remove_profile,
+                "profilerename": rename_profile,
+                "profileslist": list_profiles,
+            }
+        aliases = {
+            "modalconfig": ["configmodal"],
+            "profileadd": ["addprofile"],
+            "profileclone": ["cloneprofile"],
+            "profileremove": ["removeprofile"],
+            "profilerename": ["renameprofile"],
+            "profileslist": ["listprofiles"],
+        }
         if not self.cog.cogsutils.is_dpy2:
             try:
                 del to_add["modalconfig"]
             except KeyError:
                 pass
-        if not self.use_profiles_system:
-            for name in ["profileadd", "profileclone", "profileremove", "profilerename", "profileslist"]:
-                try:
-                    del to_add[name]
-                except KeyError:
-                    pass
         if not (self.can_edit or force):
-            for name in ["modalconfig", "profileadd", "profileclone", "profileremove", "profilerename"]:
+            for name in [
+                "modalconfig",
+                "profileadd",
+                "profileclone",
+                "profileremove",
+                "profilerename",
+            ]:
                 try:
                     del to_add[name]
                 except KeyError:
                     pass
         for name, command in to_add.items():
             command.__qualname__ = f"{self.cog.qualified_name}.settings_{name}"
-            command: commands.Command = self.commands_group.command(name=name, aliases=aliases.get(name, []))(command)
+            command: commands.Command = self.commands_group.command(
+                name=name, aliases=aliases.get(name, [])
+            )(command)
             command.name = name
             command.cog = self.cog
             self.bot.dispatch("command_add", command)
@@ -376,21 +526,42 @@ class Settings():
                 _converter = self.settings[setting]["converter"]
                 self.commands_group.remove_command(name)
                 _help = self.settings[setting]["description"]
-                _help += "\n\nIf you do not specify a value, the default value will be restored.\nDev: " + repr(_converter)
+                _help += (
+                    "\n\nIf you do not specify a value, the default value will be restored.\nDev: "
+                    + repr(_converter)
+                )
                 _usage = self.settings[setting]["usage"]
 
                 if not self.use_profiles_system:
-                    async def command(_self, ctx: commands.Context, *, value: typing.Optional[_converter] = None):
+
+                    async def command(
+                        _self, ctx: commands.Context, *, value: typing.Optional[_converter] = None
+                    ):
                         if value is None:
                             value = discord.utils.MISSING
                         await self.command(ctx, key=None, value=value)
+
                 else:
-                    async def command(_self, ctx: commands.Context, profile: ProfileConverter, *, value: typing.Optional[_converter] = None):
+
+                    async def command(
+                        _self,
+                        ctx: commands.Context,
+                        profile: ProfileConverter,
+                        *,
+                        value: typing.Optional[_converter] = None,
+                    ):
                         if value is None:
                             value = discord.utils.MISSING
                         await self.command(ctx, key=None, value=value, profile=profile)
+
                 command.__qualname__ = f"{self.cog.qualified_name}.settings_{name}"
-                command: commands.Command = self.commands_group.command(name=name, usage=(f"[{_usage}]" if not self.use_profiles_system else f"<profile> [{_usage}]"), help=_help)(command)
+                command: commands.Command = self.commands_group.command(
+                    name=name,
+                    usage=(
+                        f"[{_usage}]" if not self.use_profiles_system else f"<profile> [{_usage}]"
+                    ),
+                    help=_help,
+                )(command)
                 if self.settings[setting]["no_slash"]:
                     command.no_slash = True
 
@@ -413,7 +584,18 @@ class Settings():
 
         self.commands_added.set()
 
-    async def command(self, ctx: commands.Context, key: typing.Optional[str] = None, value: typing.Optional[typing.Any] = None, object: typing.Optional[typing.Union[discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User]] = None, profile: typing.Optional[str] = None):
+    async def command(
+        self,
+        ctx: commands.Context,
+        key: typing.Optional[str] = None,
+        value: typing.Optional[typing.Any] = None,
+        object: typing.Optional[
+            typing.Union[
+                discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User
+            ]
+        ] = None,
+        profile: typing.Optional[str] = None,
+    ) -> None:
         if key is None:
             for setting in self.settings:
                 if self.settings[setting]["command_name"] == ctx.command.name:
@@ -439,7 +621,12 @@ class Settings():
                 object = ctx.author
         if value is not discord.utils.MISSING:
             try:
-                await self.set_raw(key=key, value=getattr(value, "id", None) or getattr(value, "value", None) or value, object=object, profile=profile)
+                await self.set_raw(
+                    key=key,
+                    value=getattr(value, "id", None) or getattr(value, "value", None) or value,
+                    object=object,
+                    profile=profile,
+                )
             except self.NotExistingPanel:
                 await ctx.send("This profile don't exist.")
                 return
@@ -450,7 +637,7 @@ class Settings():
                 await ctx.send("This profile don't exist.")
                 return
 
-    async def add_profile(self, ctx: commands.Context, profile: str):
+    async def add_profile(self, ctx: commands.Context, profile: str) -> None:
         if len(profile) > 10:
             await ctx.send(_("The name of a profile must be less than or equal to 10 characters."))
             return
@@ -459,9 +646,13 @@ class Settings():
         if profile.lower() in profiles:
             await ctx.send(_("This profile already exists."))
             return
-        await data.set_raw(*self.global_path, profile.lower(), value=self.config._defaults[self.group]["default_profile_settings"])
+        await data.set_raw(
+            *self.global_path,
+            profile.lower(),
+            value=self.config._defaults[self.group]["default_profile_settings"],
+        )
 
-    async def clone_profile(self, ctx: commands.Context, old_profile: str, profile: str):
+    async def clone_profile(self, ctx: commands.Context, old_profile: str, profile: str) -> None:
         if len(profile) > 10:
             await ctx.send(_("The name of a profile must be less than or equal to 10 characters."))
             return
@@ -470,16 +661,18 @@ class Settings():
         if profile in profiles:
             await ctx.send(_("This profile already exists."))
             return
-        await data.set_raw(*self.global_path, profile, value=await data.get_raw(*self.global_path, old_profile))
+        await data.set_raw(
+            *self.global_path, profile, value=await data.get_raw(*self.global_path, old_profile)
+        )
         if self.cog.qualified_name == "TicketTool":
             await data.set_raw(*self.global_path, profile, "last_nb", value=0)
 
-    async def remove_profile(self, ctx: commands.Context, profile: str, confirmation: typing.Optional[bool]=False):
+    async def remove_profile(
+        self, ctx: commands.Context, profile: str, confirmation: typing.Optional[bool] = False
+    ) -> None:
         if not confirmation:
             embed: discord.Embed = discord.Embed()
-            embed.title = _(
-                "Do you really want to remove this profile?"
-            )
+            embed.title = _("Do you really want to remove this profile?")
             if self.cog.qualified_name == "TicketTool":
                 embed.description = _(
                     "All tickets associated with this profile will be removed from the Config, but the channels will still exist. Commands related to the tickets will no longer work."
@@ -503,7 +696,7 @@ class Settings():
                     pass
             await self.cog.config.guild(ctx.guild).tickets.set(data)
 
-    async def rename_profile(self, ctx: commands.Context, old_profile: str, profile: str):
+    async def rename_profile(self, ctx: commands.Context, old_profile: str, profile: str) -> None:
         if len(profile) > 10:
             await ctx.send(_("The name of a profile must be less than or equal to 10 characters."))
             return
@@ -512,7 +705,9 @@ class Settings():
         if profile in profiles:
             await ctx.send(_("A panel with this name already exists."))
             return
-        await data.set_raw(*self.global_path, profile, value=await data.get_raw(*self.global_path, old_profile))
+        await data.set_raw(
+            *self.global_path, profile, value=await data.get_raw(*self.global_path, old_profile)
+        )
         await data.clear_raw(*self.global_path, old_profile)
         if self.cog.qualified_name == "TicketTool":
             data = await self.cog.config.guild(ctx.guild).tickets.all()
@@ -527,7 +722,7 @@ class Settings():
                     pass
             await self.cog.config.guild(ctx.guild).tickets.set(data)
 
-    async def list_profiles(self, ctx: commands.Context):
+    async def list_profiles(self, ctx: commands.Context) -> None:
         """List the existing profiles."""
         data = self.get_data(ctx=ctx)
         profiles = await data.get_raw(*self.global_path)
@@ -535,7 +730,17 @@ class Settings():
         message += "\n".join([f"- {profile}" for profile in profiles])
         await Menu(pages=message, box_language_py=True).start(ctx)
 
-    async def show_settings(self, ctx: commands.Context, object: typing.Optional[typing.Union[discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User]] = None, profile: typing.Optional[str] = None, with_dev: typing.Optional[bool] = False):
+    async def show_settings(
+        self,
+        ctx: commands.Context,
+        object: typing.Optional[
+            typing.Union[
+                discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User
+            ]
+        ] = None,
+        profile: typing.Optional[str] = None,
+        with_dev: typing.Optional[bool] = False,
+    ) -> None:
         if object is None:
             if self.group == Config.GLOBAL:
                 object = None
@@ -561,16 +766,68 @@ class Settings():
         if not with_dev:
             raw_table = Table("Key", "Default", "Value", "Converter")
             for value in values:
-                raw_table.add_row(value.replace("_", " ").capitalize().replace(" ", ""), repr(values[value]["default"]), repr(values[value]["value"]), str((("|".join(f'"{v}"' if isinstance(v, str) else str(v)for v in self.settings[value]["converter"].__args__)) if self.settings[value]["converter"] is typing.Literal else getattr(self.settings[value]["converter"], "__name__", ""))))
+                raw_table.add_row(
+                    value.replace("_", " ").title().replace(" ", ""),
+                    repr(values[value]["default"]),
+                    repr(values[value]["value"]),
+                    str(
+                        (
+                            (
+                                "|".join(
+                                    f'"{v}"' if isinstance(v, str) else str(v)
+                                    for v in self.settings[value]["converter"].__args__
+                                )
+                            )
+                            if self.settings[value]["converter"] is typing.Literal
+                            else getattr(self.settings[value]["converter"], "__name__", "")
+                        )
+                    ),
+                )
         else:
             raw_table = Table("Key", "Default", "Value", "Converter", "Path")
             for value in values:
-                raw_table.add_row(value.replace("_", " ").capitalize().replace(" ", ""), repr(values[value]["default"]), repr(values[value]["value"]), str((("|".join(f'"{v}"' if isinstance(v, str) else str(v)for v in self.settings[value]["converter"].__args__)) if self.settings[value]["converter"] is typing.Literal else getattr(self.settings[value]["converter"], "__name__", ""))), (str([self.group] + self.global_path + self.settings[value]["path"]) if not self.use_profiles_system else str([self.group] + self.global_path + [profile] + self.settings[value]["path"])))
+                raw_table.add_row(
+                    value.replace("_", " ").title().replace(" ", ""),
+                    repr(values[value]["default"]),
+                    repr(values[value]["value"]),
+                    str(
+                        (
+                            (
+                                "|".join(
+                                    f'"{v}"' if isinstance(v, str) else str(v)
+                                    for v in self.settings[value]["converter"].__args__
+                                )
+                            )
+                            if self.settings[value]["converter"] is typing.Literal
+                            else getattr(self.settings[value]["converter"], "__name__", "")
+                        )
+                    ),
+                    (
+                        str([self.group] + self.global_path + self.settings[value]["path"])
+                        if not self.use_profiles_system
+                        else str(
+                            [self.group]
+                            + self.global_path
+                            + [profile]
+                            + self.settings[value]["path"]
+                        )
+                    ),
+                )
         raw_table_str = no_colour_rich_markup(raw_table, no_box=True)
         message += raw_table_str
         await Menu(pages=message, box_language_py=True).start(ctx)
 
-    async def send_modal(self, ctx: commands.Context, object: typing.Optional[typing.Union[discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User]] = None, profile: typing.Optional[str] = None, confirmation: typing.Optional[bool] = False):
+    async def send_modal(
+        self,
+        ctx: commands.Context,
+        object: typing.Optional[
+            typing.Union[
+                discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User
+            ]
+        ] = None,
+        profile: typing.Optional[str] = None,
+        confirmation: typing.Optional[bool] = False,
+    ) -> None:
         if not self.cog.cogsutils.is_dpy2:
             raise RuntimeError()
         if object is None:
@@ -604,7 +861,9 @@ class Settings():
         for i, l in enumerate(two_l, start=1):
             three_l[i] = l
 
-        async def on_modal(view: Modal, interaction: discord.Interaction, inputs: typing.List, config: typing.Dict):
+        async def on_modal(
+            view: Modal, interaction: discord.Interaction, inputs: typing.List, config: typing.Dict
+        ):
             if not interaction.response.is_done():
                 await interaction.response.defer()
             for input in inputs:
@@ -618,7 +877,11 @@ class Settings():
                             c = config.get(x, {})
                     c[self.settings[custom_id]["path"][-1]] = values[custom_id]["default"]
                     continue
-                if (getattr(input.value, "id", None) or getattr(input.value, "value", None) or input.value) == values[custom_id]["value"]:
+                if (
+                    getattr(input.value, "id", None)
+                    or getattr(input.value, "value", None)
+                    or input.value
+                ) == values[custom_id]["value"]:
                     continue
                 try:
                     if self.cog.cogsutils.is_dpu2:
@@ -640,7 +903,9 @@ class Settings():
                         f"An error occurred when using the `{input.label}` converter:\n{box(e, lang='py')}"
                     )
                     return None
-                if (getattr(value, "id", None) or getattr(value, "value", None) or value) == values[custom_id]["value"]:
+                if (
+                    getattr(value, "id", None) or getattr(value, "value", None) or value
+                ) == values[custom_id]["value"]:
                     continue
                 assert self.settings[custom_id]["path"]
                 if len(self.settings[custom_id]["path"]) == 1:
@@ -648,9 +913,16 @@ class Settings():
                 else:
                     for x in self.settings[custom_id]["path"][:-1]:
                         c = config.get(x, {})
-                c[self.settings[custom_id]["path"][-1]] = getattr(value, "id", None) or getattr(value, "value", None) or value
+                c[self.settings[custom_id]["path"][-1]] = (
+                    getattr(value, "id", None) or getattr(value, "value", None) or value
+                )
 
-        async def on_button(view: Buttons, interaction: discord.Interaction, config: typing.Dict, three_l: typing.Dict):
+        async def on_button(
+            view: Buttons,
+            interaction: discord.Interaction,
+            config: typing.Dict,
+            three_l: typing.Dict,
+        ):
             if not interaction.data["custom_id"].startswith("Settings_ModalConfig_configure"):
                 if not interaction.response.is_done():
                     await interaction.response.defer()
@@ -687,7 +959,9 @@ class Settings():
                                         )
                                     )
                                     if self.settings[setting]["converter"] is typing.Literal
-                                    else getattr(self.settings[setting]["converter"], "__name__", "")
+                                    else getattr(
+                                        self.settings[setting]["converter"], "__name__", ""
+                                    )
                                 )
                                 + ")"
                             )[:44],
@@ -695,7 +969,8 @@ class Settings():
                             "placeholder": str(values[setting]["default"]),
                             "default": (
                                 str(values[setting]["value"])
-                                if not str(values[setting]["value"]) == str(values[setting]["default"])
+                                if not str(values[setting]["value"])
+                                == str(values[setting]["default"])
                                 else None
                             ),
                             "required": False,
@@ -709,9 +984,38 @@ class Settings():
                 )
                 await interaction.response.send_modal(view_modal)
 
-        buttons = [{"label": "Cancel", "emoji": "❌", "style": 4, "disabled": False, "custom_id": "Settings_ModalConfig_cancel"}, {"label": "Save", "emoji": "✅", "style": 3, "disabled": False, "custom_id": "Settings_ModalConfig_done"}, {"label": "View", "emoji": "🔍", "style": 1, "disabled": False, "custom_id": "Settings_ModalConfig_view"}]
+        buttons = [
+            {
+                "label": "Cancel",
+                "emoji": "❌",
+                "style": 4,
+                "disabled": False,
+                "custom_id": "Settings_ModalConfig_cancel",
+            },
+            {
+                "label": "Save",
+                "emoji": "✅",
+                "style": 3,
+                "disabled": False,
+                "custom_id": "Settings_ModalConfig_done",
+            },
+            {
+                "label": "View",
+                "emoji": "🔍",
+                "style": 1,
+                "disabled": False,
+                "custom_id": "Settings_ModalConfig_view",
+            },
+        ]
         for i in three_l:
-            buttons.append({"label": f"Configure {i}", "emoji": "⚙️", "disabled": False, "custom_id": f"Settings_ModalConfig_configure_{i}"})
+            buttons.append(
+                {
+                    "label": f"Configure {i}",
+                    "emoji": "⚙️",
+                    "disabled": False,
+                    "custom_id": f"Settings_ModalConfig_configure_{i}",
+                }
+            )
         view_button = Buttons(
             timeout=360,
             buttons=buttons,
@@ -721,22 +1025,27 @@ class Settings():
             infinity=True,
         )
         message = await ctx.send(
-            _(
-                "Click on the buttons below to fully set up the cog {cog.qualified_name}."
-            ).format(cog=self.cog),
+            _("Click on the buttons below to fully set up the cog {cog.qualified_name}.").format(
+                cog=self.cog
+            ),
             view=view_button,
         )
         await view_button.wait()
         for i, button in enumerate(buttons):
             buttons[i]["disabled"] = True
-        await message.edit(
-            view=Buttons(
-                timeout=None, buttons=buttons
-            )
-        )
+        await message.edit(view=Buttons(timeout=None, buttons=buttons))
         return config
 
-    async def get_raw(self, key: str, object: typing.Optional[typing.Union[discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User]] = None, profile: typing.Optional[str] = None):
+    async def get_raw(
+        self,
+        key: str,
+        object: typing.Optional[
+            typing.Union[
+                discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User
+            ]
+        ] = None,
+        profile: typing.Optional[str] = None,
+    ) -> typing.Any:
         if key not in self.settings:
             raise KeyError(key)
         data = self.get_data(object)
@@ -754,7 +1063,17 @@ class Settings():
                 raise self.NotExistingPanel(profile)
             return await data.get_raw(*self.global_path, profile, *setting["path"])
 
-    async def set_raw(self, key: str, value: typing.Any, object: typing.Optional[typing.Union[discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User]] = None, profile: typing.Optional[str] = None):
+    async def set_raw(
+        self,
+        key: str,
+        value: typing.Any,
+        object: typing.Optional[
+            typing.Union[
+                discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User
+            ]
+        ] = None,
+        profile: typing.Optional[str] = None,
+    ) -> None:
         if key not in self.settings:
             raise KeyError(key)
         data = self.get_data(object)
@@ -772,7 +1091,16 @@ class Settings():
                 raise self.NotExistingPanel(profile)
             await data.set_raw(*self.global_path, profile, *setting["path"], value=value)
 
-    async def clear_raw(self, key: str, object: typing.Optional[typing.Union[discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User]] = None, profile: typing.Optional[str] = None):
+    async def clear_raw(
+        self,
+        key: str,
+        object: typing.Optional[
+            typing.Union[
+                discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User
+            ]
+        ] = None,
+        profile: typing.Optional[str] = None,
+    ) -> None:
         if key not in self.settings:
             raise KeyError(key)
         data = self.get_data(object)
@@ -790,7 +1118,15 @@ class Settings():
                 raise self.NotExistingPanel(profile)
             await data.clear_raw(*self.global_path, profile, *setting["path"])
 
-    def get_data(self, object: typing.Optional[typing.Union[discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User]] = None, ctx: typing.Optional[commands.Context] = None):
+    def get_data(
+        self,
+        object: typing.Optional[
+            typing.Union[
+                discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User
+            ]
+        ] = None,
+        ctx: typing.Optional[commands.Context] = None,
+    ) -> redbot.core.config.Group:
         if object is None and ctx is not None:
             if self.group == Config.GLOBAL:
                 object = None
@@ -836,7 +1172,15 @@ class Settings():
             return self.config.custom(self.group if object is None else object)
         return data
 
-    async def get_values(self, object: typing.Optional[typing.Union[discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User]] = None, profile: typing.Optional[str] = None):
+    async def get_values(
+        self,
+        object: typing.Optional[
+            typing.Union[
+                discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User
+            ]
+        ] = None,
+        profile: typing.Optional[str] = None,
+    ) -> typing.Dict[str, typing.Dict[str, typing.Any]]:
         result = {}
         data = self.get_data(object)
         for setting in self.settings:
@@ -862,7 +1206,9 @@ class Settings():
                         profiles[profile]
                     except KeyError:
                         raise self.NotExistingPanel(profile)
-                    value = await data.get_raw(*self.global_path, profile, *self.settings[setting]["path"])
+                    value = await data.get_raw(
+                        *self.global_path, profile, *self.settings[setting]["path"]
+                    )
             except KeyError:
                 value = default
             result[setting] = {"default": default, "value": value}

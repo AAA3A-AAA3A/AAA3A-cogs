@@ -40,7 +40,7 @@ class ClearChannel(commands.Cog):
             "channel_delete": True,
             "first_message": True,
             "author_dm": False,
-            "custom_message": None,
+            "custom_message": {},
         }
         self.config.register_guild(**self.clearchannel_guild)
 
@@ -128,7 +128,7 @@ class ClearChannel(commands.Cog):
             f"{ctx.author} ({ctx.author.id}) deleted ALL messages in channel {old_channel.name} ({old_channel.id})."
         ),
         if config["first_message"]:
-            if config["custom_message"] is None:
+            if not config["custom_message"]:
                 embed: discord.Embed = discord.Embed()
                 embed.title = _("ClearChannel")
                 embed.description = _("ALL the messages in this channel have been deleted...")
@@ -146,7 +146,7 @@ class ClearChannel(commands.Cog):
                     "user_name": ctx.author.display_name if self.cogsutils.is_dpy2 else ctx.author.name,
                     "icon_url": ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url
                 }
-                await CustomMessageConverter(config["custom_message"]).send_message(ctx, channel=new_channel, env=env)
+                await CustomMessageConverter(**config["custom_message"]).send_message(ctx, channel=new_channel, env=env)
         if config["author_dm"]:
             await ctx.author.send(
                 _(

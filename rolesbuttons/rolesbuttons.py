@@ -144,57 +144,61 @@ class RolesButtons(commands.Cog):
             if emoji not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
                 await interaction.followup.send(_("This emoji is not in Config."), ephemeral=True)
                 return
-            role = interaction.guild.get_role(
-                config[f"{interaction.channel.id}-{interaction.message.id}"][emoji]["role"]
-            )
-            if role is None:
-                await interaction.followup.send(
-                    _(
-                        "The role I have to put you in no longer exists. Please notify an administrator of this server."
-                    ),
-                    ephemeral=True,
-                )
-                return
-            if role not in interaction.user.roles:
-                try:
-                    await interaction.user.add_roles(
-                        role,
-                        reason=_(
-                            "Role-button of {interaction.message.id} in {interaction.channel.id}."
-                        ).format(interaction=interaction),
-                    )
-                except discord.HTTPException:
+            try:
+                roles = config[f"{interaction.channel.id}-{interaction.message.id}"][emoji]["roles"]
+            except ValueError:
+                role = config[f"{interaction.channel.id}-{interaction.message.id}"][emoji]["role"]
+                roles = [role]
+            for role_id in roles:
+                role = interaction.guild.get_role(role_id)
+                if role is None:
                     await interaction.followup.send(
                         _(
-                            "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
-                        ).format(role=role),
+                            f"At least one of a role ({role_id}) I have to put you in no longer exists. Please notify an administrator of this server."
+                        ),
                         ephemeral=True,
                     )
                     return
+                if roles[0] not in interaction.user.roles:
+                    try:
+                        await interaction.user.add_roles(
+                            role,
+                            reason=_(
+                                "Role-button of {interaction.message.id} in {interaction.channel.id}."
+                            ).format(interaction=interaction),
+                        )
+                    except discord.HTTPException:
+                        await interaction.followup.send(
+                            _(
+                                "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
+                            ).format(role=role),
+                            ephemeral=True,
+                        )
+                        return
+                    else:
+                        await interaction.followup.send(
+                            _("You now have the role {role.mention} ({role.id}).").format(role=role),
+                            ephemeral=True,
+                        )
                 else:
-                    await interaction.followup.send(
-                        _("You now have the role {role.mention} ({role.id}).").format(role=role),
-                        ephemeral=True,
-                    )
-            else:
-                try:
-                    await interaction.user.remove_roles(
-                        role,
-                        reason=f"Role-button of {interaction.message.id} in {interaction.channel.id}.",
-                    )
-                except discord.HTTPException:
-                    await interaction.followup.send(
-                        _(
-                            "I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
-                        ).format(role=role),
-                        ephemeral=True,
-                    )
-                    return
-                else:
-                    await interaction.followup.send(
-                        _("I removed the role {role.mention} ({role.id}).").format(role=role),
-                        ephemeral=True,
-                    )
+                    try:
+                        await interaction.user.remove_roles(
+                            role,
+                            reason=f"Role-button of {interaction.message.id} in {interaction.channel.id}.",
+                        )
+                    except discord.HTTPException:
+                        await interaction.followup.send(
+                            _(
+                                "I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
+                            ).format(role=role),
+                            ephemeral=True,
+                        )
+                        return
+                    else:
+                        await interaction.followup.send(
+                            _("I removed the role {role.mention} ({role.id}).").format(role=role),
+                            ephemeral=True,
+                        )
 
     else:
 
@@ -240,58 +244,62 @@ class RolesButtons(commands.Cog):
             if emoji not in config[f"{inter.channel.id}-{inter.message.id}"]:
                 await inter.followup(_("This emoji is not in Config."), ephemeral=True)
                 return
-            role = inter.guild.get_role(
-                config[f"{inter.channel.id}-{inter.message.id}"][emoji]["role"]
-            )
-            if role is None:
-                await inter.followup(
-                    _(
-                        "The role I have to put you in no longer exists. Please notify an administrator of this server."
-                    ),
-                    ephemeral=True,
-                )
-                return
-            if role not in inter.author.roles:
-                try:
-                    await inter.author.add_roles(
-                        role,
-                        reason=_("Role-button of {inter.message.id} in {channel.id}.").format(
-                            inter=inter, channel=channel
+            try:
+                roles = config[f"{inter.channel.id}-{inter.message.id}"][emoji]["roles"]
+            except ValueError:
+                role = config[f"{inter.channel.id}-{inter.message.id}"][emoji]["role"]
+                roles = [role]
+            for role_id in roles:
+                role = inter.guild.get_role(role_id)
+                if role is None:
+                    await inter.followup(
+                        _(
+                            f"At least one of a role ({role_id}) I have to put you in no longer exists. Please notify an administrator of this server."
                         ),
-                    )
-                except discord.HTTPException:
-                    await inter.followup(
-                        _(
-                            "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
-                        ).format(role=role),
                         ephemeral=True,
                     )
                     return
+                if role not in inter.author.roles:
+                    try:
+                        await inter.author.add_roles(
+                            role,
+                            reason=_("Role-button of {inter.message.id} in {channel.id}.").format(
+                                inter=inter, channel=channel
+                            ),
+                        )
+                    except discord.HTTPException:
+                        await inter.followup(
+                            _(
+                                "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
+                            ).format(role=role),
+                            ephemeral=True,
+                        )
+                        return
+                    else:
+                        await inter.followup(
+                            _("You now have the role {role.mention} ({role.id}).").format(role=role),
+                            ephemeral=True,
+                        )
+                        return
                 else:
-                    await inter.followup(
-                        _("You now have the role {role.mention} ({role.id}).").format(role=role),
-                        ephemeral=True,
-                    )
-                    return
-            else:
-                try:
-                    await inter.author.remove_roles(
-                        role, reason=f"Role-button of {inter.message.id} in {channel.id}."
-                    )
-                except discord.HTTPException:
-                    await inter.followup(
-                        _(
-                            "I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
-                        ).format(role=role),
-                        ephemeral=True,
-                    )
-                    return
-                else:
-                    await inter.followup(
-                        _("I did remove the role {role.mention} ({role.id}).").format(role=role),
-                        ephemeral=True,
-                    )
-                    return
+                    try:
+                        await inter.author.remove_roles(
+                            role, reason=f"Role-button of {inter.message.id} in {channel.id}."
+                        )
+                    except discord.HTTPException:
+                        await inter.followup(
+                            _(
+                                "I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
+                            ).format(role=role),
+                            ephemeral=True,
+                        )
+                        return
+                    else:
+                        await inter.followup(
+                            _("I did remove the role {role.mention} ({role.id}).").format(role=role),
+                            ephemeral=True,
+                        )
+                        return
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message) -> None:
@@ -317,7 +325,7 @@ class RolesButtons(commands.Cog):
         ctx: commands.Context,
         message: discord.Message,
         emoji: Emoji,
-        role: discord.Role,
+        roles: commands.Greedy[discord.Role],
         style_button: typing.Optional[commands.Literal["1", "2", "3", "4"]] = "2",
         *,
         text_button: typing.Optional[str] = None,
@@ -368,7 +376,7 @@ class RolesButtons(commands.Cog):
                 _("I can't do more than 25 roles-buttons for one message.")
             )
         config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = {
-            "role": role.id,
+            "roles": [role.id for role in set(roles)],
             "style_button": int(style_button),
             "text_button": text_button,
         }
@@ -435,7 +443,7 @@ class RolesButtons(commands.Cog):
             )
         for emoji, role in roles_buttons:
             config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = {
-                "role": role.id,
+                "roles": [role.id],
                 "style_button": 2,
                 "text_button": None,
             }

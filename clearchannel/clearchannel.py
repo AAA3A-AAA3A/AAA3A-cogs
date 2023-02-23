@@ -5,9 +5,9 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from .AAA3A_utils.settings import CustomMessageConverter
-
 from redbot.core import Config
+
+from .AAA3A_utils.settings import CustomMessageConverter
 
 # Credits:
 # General repo credits.
@@ -135,7 +135,9 @@ class ClearChannel(commands.Cog):
                 embed.color = 0xF00020
                 embed.set_author(
                     name=ctx.author.display_name if self.cogsutils.is_dpy2 else ctx.author.name,
-                    url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url,
+                    url=ctx.author.display_avatar
+                    if self.cogsutils.is_dpy2
+                    else ctx.author.avatar_url,
                     icon_url=ctx.author.display_avatar
                     if self.cogsutils.is_dpy2
                     else ctx.author.avatar_url,
@@ -143,10 +145,16 @@ class ClearChannel(commands.Cog):
                 await new_channel.send(embed=embed)
             else:
                 env = {
-                    "user_name": ctx.author.display_name if self.cogsutils.is_dpy2 else ctx.author.name,
-                    "icon_url": ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url
+                    "user_name": ctx.author.display_name
+                    if self.cogsutils.is_dpy2
+                    else ctx.author.name,
+                    "icon_url": ctx.author.display_avatar
+                    if self.cogsutils.is_dpy2
+                    else ctx.author.avatar_url,
                 }
-                await CustomMessageConverter(**config["custom_message"]).send_message(ctx, channel=new_channel, env=env)
+                await CustomMessageConverter(**config["custom_message"]).send_message(
+                    ctx, channel=new_channel, env=env
+                )
         if config["author_dm"]:
             await ctx.author.send(
                 _(

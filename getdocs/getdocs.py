@@ -194,7 +194,10 @@ class GetDocs(commands.Cog):
             if self._session is not None:
                 asyncio.create_task(self._session.close())
 
-    @hybrid_command(aliases=["getdoc", "docs", "documentations"])
+    @hybrid_group(
+        aliases=["getdoc", "docs", "documentations"],
+        invoke_without_command=True,
+    )
     async def getdocs(
         self,
         ctx: commands.Context,
@@ -255,8 +258,18 @@ class GetDocs(commands.Cog):
                 await ctx.send(content=content, embed=embed)
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))
+        
+    @getdocs.command(name="list")
+    async def getdocs_list(self, ctx: commands.Context):
+        """
+        Shows a list of all the possible sources.
+        """
+        keys = ', '.join([f'`{key}`' for key in BASE_URLS.keys()])
+        embed = discord.Embed(color=await ctx.embed_color())
+        embed.description = keys
+        await ctx.send(embed=embed)
 
-    @hybrid_command()
+    @hybrid_group(invoke_without_command=True)
     async def rtfm(
         self,
         ctx: commands.Context,
@@ -351,6 +364,16 @@ class GetDocs(commands.Cog):
             if "with_std" in interaction.namespace:
                 exclude_std = not interaction.namespace.with_std
             return await self.query_autocomplete(interaction, current, exclude_std=exclude_std)
+        
+    @rtfm.command(name="list")
+    async def rtfm_list(self, ctx: commands.Context):
+        """
+        Shows a list of all the possible sources.
+        """
+        keys = ', '.join([f'`{key}`' for key in BASE_URLS.keys()])
+        embed = discord.Embed(color=await ctx.embed_color())
+        embed.description = keys
+        await ctx.send(embed=embed)
 
 
 class Source:

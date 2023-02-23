@@ -5,6 +5,8 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+from .AAA3A_utils.settings import CustomMessageConverter
+
 from redbot.core import Config
 
 # Credits:
@@ -38,6 +40,7 @@ class ClearChannel(commands.Cog):
             "channel_delete": True,
             "first_message": True,
             "author_dm": False,
+            "custom_message": None,
         }
         self.config.register_guild(**self.clearchannel_guild)
 
@@ -61,6 +64,11 @@ class ClearChannel(commands.Cog):
                 "converter": bool,
                 "description": "If this option is enabled, the bot will try to send a dm to the author of the order to confirm that everything went well.",
             },
+            "custom_message": {
+                "path": ["custom_message"],
+                "converter": CustomMessageConverter,
+                "description": "Specify a custom message to be sent from the link of another message or a json (https://discohook.org/ for example).\n\nUse `{name}` or `{icon_url}` for the user.",
+            },
         }
         self.settings: Settings = Settings(
             bot=self.bot,
@@ -73,6 +81,9 @@ class ClearChannel(commands.Cog):
             can_edit=True,
             commands_group=self.configuration,
         )
+
+    async def cog_load(self):
+        await self.settings.add_commands()
 
     @commands.guild_only()
     @commands.guildowner()
@@ -117,18 +128,25 @@ class ClearChannel(commands.Cog):
             f"{ctx.author} ({ctx.author.id}) deleted ALL messages in channel {old_channel.name} ({old_channel.id})."
         ),
         if config["first_message"]:
-            embed: discord.Embed = discord.Embed()
-            embed.title = _("ClearChannel")
-            embed.description = _("ALL the messages in this channel have been deleted...")
-            embed.color = 0xF00020
-            embed.set_author(
-                name=ctx.author,
-                url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url,
-                icon_url=ctx.author.display_avatar
-                if self.cogsutils.is_dpy2
-                else ctx.author.avatar_url,
-            )
-            await new_channel.send(embed=embed)
+            if config["custom_message"] is None:
+                embed: discord.Embed = discord.Embed()
+                embed.title = _("ClearChannel")
+                embed.description = _("ALL the messages in this channel have been deleted...")
+                embed.color = 0xF00020
+                embed.set_author(
+                    name=ctx.author.display_name if self.cogsutils.is_dpy2 else ctx.author.name,
+                    url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url,
+                    icon_url=ctx.author.display_avatar
+                    if self.cogsutils.is_dpy2
+                    else ctx.author.avatar_url,
+                )
+                await new_channel.send(embed=embed)
+            else:
+                env = {
+                    "user_name": ctx.author.display_name if self.cogsutils.is_dpy2 else ctx.author.name,
+                    "icon_url": ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url
+                }
+                await CustomMessageConverter(config["custom_message"]).send_message(ctx, channel=new_channel, env=env)
         if config["author_dm"]:
             await ctx.author.send(
                 _(

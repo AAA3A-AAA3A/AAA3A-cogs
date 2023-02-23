@@ -1,4 +1,5 @@
-﻿from .AAA3A_utils import CogsUtils, Menu  # isort:skip
+﻿from types import TracebackType
+from .AAA3A_utils import CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -41,8 +42,10 @@ if CogsUtils().is_dpy2:
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
+    
+CT = typing.TypeVar("CT", bound=typing.Callable[..., typing.Any]) # defined CT as a type variable that is bound to a callable that can take any argument and return any value.
 
-BASE_URLS = {
+BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
     "discord.py": {
         "url": "https://discordpy.readthedocs.io/en/stable/",
         "icon_url": "https://cdn.discordapp.com/attachments/381963689470984203/1068553303908155442/sW87z7N.png",
@@ -114,16 +117,16 @@ BASE_URLS = {
 }
 
 
-async def run_blocking_func(func: typing.Callable, *args, **kwargs):
+async def run_blocking_func(func: typing.Callable[..., typing.Any], *args: typing.Any, **kwargs: typing.Any) -> typing.Any:
     partial = functools.partial(func, *args, **kwargs)
     loop = asyncio.get_running_loop()
     return await loop.run_in_executor(None, partial)
 
 
-def executor(executor=None):
-    def decorator(func):
+def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
+    def decorator(func: CT) -> CT:
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: typing.Any, **kwargs: typing.Any):
             return run_blocking_func(func, *args, **kwargs)
 
         return wrapper
@@ -132,7 +135,7 @@ def executor(executor=None):
 
 
 class SourceConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str):
+    async def convert(self, ctx: commands.Context, argument: str) -> str:
         if argument.lower() not in BASE_URLS:
             found = False
             for name, data in BASE_URLS.items():
@@ -148,7 +151,7 @@ class SourceConverter(commands.Converter):
 class GetDocs(commands.Cog):
     """A cog to get and display Sphinx docs! Use `[p]listsources` to get a list of all the available sources."""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
         self.documentations: typing.Dict[str, Source] = {}
@@ -165,7 +168,7 @@ class GetDocs(commands.Cog):
         self.__authors__: typing.List[str] = ["AAA3A", "amyrinbot"]
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
-    async def cog_load(self):
+    async def cog_load(self) -> None:
         # self._playwright = await async_playwright().start()
         # self._browser = await self._playwright.chromium.launch()
         # self._bcontext = await self._browser.new_context()
@@ -182,14 +185,14 @@ class GetDocs(commands.Cog):
 
     if CogsUtils().is_dpy2:
 
-        async def cog_unload(self):
+        async def cog_unload(self) -> None:
             self.cogsutils._end()
             if self._session is not None:
                 await self._session.close()
 
     else:
 
-        def cog_unload(self):
+        def cog_unload(self) -> None:
             self.cogsutils._end()
             if self._session is not None:
                 asyncio.create_task(self._session.close())
@@ -203,7 +206,7 @@ class GetDocs(commands.Cog):
         source: typing.Optional[SourceConverter] = "discord.py",
         *,
         query: typing.Optional[str] = None,
-    ):
+    ) -> None:
         """View rich documentation for a specific node/query.
 
         The name must be exact, or else rtfm is invoked instead.
@@ -267,7 +270,7 @@ class GetDocs(commands.Cog):
         with_std: typing.Optional[bool] = True,
         *,
         query: typing.Optional[str] = None,
-    ):
+    ) -> None:
         """Show all attributes matching your search.
 
         The name must be exact, or else rtfm is invoked instead.
@@ -295,7 +298,7 @@ class GetDocs(commands.Cog):
 
         async def _cogsutils_add_hybrid_commands(
             self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]
-        ):
+        ) -> None:
             if command.app_command is None:
                 return
             if not isinstance(command, commands.HybridCommand):
@@ -358,7 +361,7 @@ class GetDocs(commands.Cog):
         name="listsources", 
         aliases=["listdocsources", "listrtfmsources", "listsource"]
     )
-    async def _source_list(self, ctx: commands.Context):
+    async def _source_list(self, ctx: commands.Context) -> None:
         """
         Shows a list of all the possible sources.
         """
@@ -372,7 +375,7 @@ class GetDocs(commands.Cog):
 
 
 class Source:
-    def __init__(self, cog: GetDocs, name: str, url: str, icon_url: typing.Optional[str] = None):
+    def __init__(self, cog: GetDocs, name: str, url: str, icon_url: typing.Optional[str] = None) -> None:
         self.cog: GetDocs = cog
         self.name: str = name
         self.url: str = url
@@ -394,12 +397,23 @@ class Source:
         self._docs_cache: typing.List[Documentation] = []
         self._result_docs_cache: typing.Dict[str, Documentation] = {}
         # self._rtfs_cache: typing.List = []
+        
+    async def __aenter__(self) -> "Source":
+        return self
+    
+    async def __aexit__(
+        self,
+        exc_type: typing.Optional[type],
+        exc: typing.Optional[Exception],
+        traceback: typing.Optional[TracebackType],
+    ) -> typing.Literal[False]:
+        return False
 
     ###################
     # Building caches #
     ###################
 
-    async def load(self):
+    async def load(self) -> None:
         self._rtfm_caching_task = self.cog.cogsutils.create_loop(
             self._build_rtfm_cache, name=f"{self.name}: Build RTFM Cache", limit_count=1
         )
@@ -416,7 +430,7 @@ class Source:
         # if not self._rtfs_cache:
         # self._rtfs_caching_task = self.cog.cogsutils.create_loop(self._build_rtfs_cache, name=f"{self.name}: Build RTFS Cache", limit_count=1)
 
-    async def _build_rtfm_cache(self, recache: bool = False):
+    async def _build_rtfm_cache(self, recache: bool = False) -> Inventory:
         if self._rtfm_cache is not None and not recache:
             return self._rtfm_cache
         self.cog.log.debug(f"{self.name}: Starting RTFM caching...")
@@ -491,7 +505,7 @@ class Source:
             content = await r.text(encoding="utf-8")
         return content
 
-    def _get_text(self, element: Tag, parsed_url: ParseResult, template: str = "[`{}`]({})"):
+    def _get_text(self, element: Tag, parsed_url: ParseResult, template: str = "[`{}`]({})") -> str:
         if not hasattr(element, "contents"):
             element.contents = [element]
 

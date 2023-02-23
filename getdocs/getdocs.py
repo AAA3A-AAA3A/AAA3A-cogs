@@ -4,7 +4,6 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
-from types import TracebackType  # isort:skip
 
 import asyncio
 import functools

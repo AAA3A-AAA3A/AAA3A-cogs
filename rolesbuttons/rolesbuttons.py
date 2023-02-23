@@ -159,7 +159,7 @@ class RolesButtons(commands.Cog):
                         ephemeral=True,
                     )
                     return
-                if roles[0] not in interaction.user.roles:
+                if interaction.guild.get_role(roles[0]) not in interaction.user.roles:
                     try:
                         await interaction.user.add_roles(
                             role,
@@ -259,7 +259,7 @@ class RolesButtons(commands.Cog):
                         ephemeral=True,
                     )
                     return
-                if role not in inter.author.roles:
+                if inter.guild.get_role(roles[0]) not in inter.author.roles:
                     try:
                         await inter.author.add_roles(
                             role,

@@ -118,7 +118,7 @@ class Buttons(discord.ui.View):
             self.add_item(button)
             self.buttons.append(button)
             self.buttons_dict.append(button_dict)
-        self.add_item(self.dropdown)
+        self.done: asyncio.Event = asyncio.Event()
 
     def to_dict_cogsutils(
         self, for_Config: typing.Optional[bool] = False

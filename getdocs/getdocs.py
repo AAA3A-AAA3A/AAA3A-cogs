@@ -397,17 +397,6 @@ class Source:
         self._docs_cache: typing.List[Documentation] = []
         self._result_docs_cache: typing.Dict[str, Documentation] = {}
         # self._rtfs_cache: typing.List = []
-        
-    async def __aenter__(self) -> "Source":
-        return self
-    
-    async def __aexit__(
-        self,
-        exc_type: typing.Optional[type],
-        exc: typing.Optional[Exception],
-        traceback: typing.Optional[TracebackType],
-    ) -> typing.Literal[False]:
-        return False
 
     ###################
     # Building caches #

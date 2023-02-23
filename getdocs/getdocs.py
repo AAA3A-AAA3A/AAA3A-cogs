@@ -1,10 +1,10 @@
-﻿from types import TracebackType
-from .AAA3A_utils import CogsUtils, Menu  # isort:skip
+﻿from .AAA3A_utils import CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
+from types import TracebackType  # isort:skip
 
 import asyncio
 import functools
@@ -30,7 +30,7 @@ if CogsUtils().is_dpy2:
 # Credits:
 # General repo credits.
 # Thanks to amyrinbot on GitHub for a part of the code (https://github.com/amyrinbot/bot/blob/main/modules/util/scraping/documentation/discord_py.py)!
-# Thanks to @Lemon for the idea of this code (showed me @Lambda bot in the dpy server, and gave me many ideas and documentations links)!
+# Thanks to @Lemon for the idea of this code (showed me @Lambda bot in the dpy server), for the documentations links, and for many ideas and suggestions!
 
 _ = Translator("GetDocs", __file__)
 
@@ -42,8 +42,8 @@ if CogsUtils().is_dpy2:
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
-    
-CT = typing.TypeVar("CT", bound=typing.Callable[..., typing.Any]) # defined CT as a type variable that is bound to a callable that can take any argument and return any value.
+
+CT = typing.TypeVar("CT", bound=typing.Callable[..., typing.Any])  # defined CT as a type variable that is bound to a callable that can take any argument and return any value.
 
 BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
     "discord.py": {
@@ -207,7 +207,8 @@ class GetDocs(commands.Cog):
         *,
         query: typing.Optional[str] = None,
     ) -> None:
-        """View rich documentation for a specific node/query.
+        """
+        View rich documentation for a specific node/query.
 
         The name must be exact, or else rtfm is invoked instead.
 
@@ -271,7 +272,8 @@ class GetDocs(commands.Cog):
         *,
         query: typing.Optional[str] = None,
     ) -> None:
-        """Show all attributes matching your search.
+        """
+        Show all attributes matching your search.
 
         The name must be exact, or else rtfm is invoked instead.
 
@@ -356,20 +358,20 @@ class GetDocs(commands.Cog):
             if "with_std" in interaction.namespace:
                 exclude_std = not interaction.namespace.with_std
             return await self.query_autocomplete(interaction, current, exclude_std=exclude_std)
-        
+
     @hybrid_command(
-        name="listsources", 
+        name="listsources",
         aliases=["listdocsources", "listrtfmsources", "listsource"]
     )
     async def _source_list(self, ctx: commands.Context) -> None:
         """
-        Shows a list of all the possible sources.
+        Shows a list of all the available sources.
         """
         keys: str = ", ".join(
             [f"`{key}`" for key in BASE_URLS.keys()]
         )
-        embed = discord.Embed(color=await ctx.embed_color())
-        embed.title = "Sources"
+        embed = discord.Embed(color=discord.Color.green())
+        embed.title = "GetDocs Sources"
         embed.description = keys
         await ctx.send(embed=embed)
 
@@ -397,10 +399,10 @@ class Source:
         self._docs_cache: typing.List[Documentation] = []
         self._result_docs_cache: typing.Dict[str, Documentation] = {}
         # self._rtfs_cache: typing.List = []
-        
+
     async def __aenter__(self) -> "Source":
         return self
-    
+
     async def __aexit__(
         self,
         exc_type: typing.Optional[type],
@@ -554,7 +556,7 @@ class Source:
                     domain="py",
                     role="method",
                     priority="1",
-                    uri=page_url[len(self.url) :] + "#$",
+                    uri=page_url[len(self.url):] + "#$",
                     dispname="-",
                 )
                 setattr(_object, "fake", True)

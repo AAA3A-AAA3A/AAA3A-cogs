@@ -148,7 +148,9 @@ class MemberPrefix(commands.Cog):
         )
         if ctx is None:
             ctx = await self.get_context_with_custom_prefixes(
-                origin=message, prefixes=[f"<@{self.bot.user.id}> ", f"<@!{self.bot.user.id}> "], cls=commands.context.Context
+                origin=message,
+                prefixes=[f"<@{self.bot.user.id}> ", f"<@!{self.bot.user.id}> "],
+                cls=commands.context.Context,
             )
             if ctx is not None and ctx.valid and ctx.command == self.memberprefix:
                 self.cache_messages.append(ctx.message.id)
@@ -164,7 +166,9 @@ class MemberPrefix(commands.Cog):
 
     @commands.guild_only()
     @hybrid_command(aliases=["memberprefixes"], invoke_without_command=True)
-    async def memberprefix(self, ctx: commands.Context, prefixes: commands.Greedy[StrConverter]) -> None:
+    async def memberprefix(
+        self, ctx: commands.Context, prefixes: commands.Greedy[StrConverter]
+    ) -> None:
         """Sets [botname]'s prefix(es) for you only.
         Warning: This is not additive. It will replace all current prefixes.
         The real prefixes will no longer work for you.

@@ -20,14 +20,7 @@ from redbot.cogs.downloader.converters import InstalledCog
 from redbot.cogs.downloader.repo_manager import Repo
 from redbot.core._diagnoser import IssueDiagnoser
 from redbot.core.data_manager import basic_config, config_file, instance_name, storage_type
-from redbot.core.utils.chat_formatting import (
-    bold,
-    box,
-    humanize_list,
-    humanize_timedelta,
-    pagify,
-    text_to_file,
-)  # NOQA
+from redbot.core.utils.chat_formatting import bold, box, humanize_list, humanize_timedelta, pagify, text_to_file  # NOQA
 from rich.console import Console
 from rich.table import Table
 

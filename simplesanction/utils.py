@@ -157,7 +157,9 @@ class utils:
         else:
             return reason
 
-    async def duration_ask(ctx, duration, title, description, actual_color, user, actual_timeout) -> str:
+    async def duration_ask(
+        ctx, duration, title, description, actual_color, user, actual_timeout
+    ) -> str:
         if duration is None:
             embed: discord.Embed = discord.Embed()
             embed.title = f"{title}"

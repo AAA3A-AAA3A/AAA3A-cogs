@@ -282,15 +282,15 @@ class DropdownsTexts(commands.Cog):
             }
         if self.cogsutils.is_dpy2:
             view = Dropdown(
-                    timeout=None,
-                    placeholder=_("Select an option."),
-                    min_values=0,
-                    max_values=1,
-                    options=self.get_dropdown(config, message),
-                    function=self.on_dropdown_interaction,
-                    infinity=True,
-                    custom_id=f"DropdownsTexts_{message.channel.id}-{message.id}",
-                )
+                timeout=None,
+                placeholder=_("Select an option."),
+                min_values=0,
+                max_values=1,
+                options=self.get_dropdown(config, message),
+                function=self.on_dropdown_interaction,
+                infinity=True,
+                custom_id=f"DropdownsTexts_{message.channel.id}-{message.id}",
+            )
             await message.edit(view=view)
             self.cogsutils.views.append(view)
         else:
@@ -358,15 +358,15 @@ class DropdownsTexts(commands.Cog):
                 }
         if self.cogsutils.is_dpy2:
             view = Dropdown(
-                    timeout=None,
-                    placeholder=_("Select an option."),
-                    min_values=0,
-                    max_values=1,
-                    options=self.get_dropdown(config, message),
-                    function=self.on_dropdown_interaction,
-                    infinity=True,
-                    custom_id=f"DropdownsTexts_{message.channel.id}-{message.id}",
-                )
+                timeout=None,
+                placeholder=_("Select an option."),
+                min_values=0,
+                max_values=1,
+                options=self.get_dropdown(config, message),
+                function=self.on_dropdown_interaction,
+                infinity=True,
+                custom_id=f"DropdownsTexts_{message.channel.id}-{message.id}",
+            )
             await message.edit(view=view)
             self.cogsutils.views.append(view)
         else:

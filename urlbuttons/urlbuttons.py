@@ -43,7 +43,9 @@ class UrlButtons(commands.Cog):
             identifier=205192943327321000143939875896557571750,  # 974269742704
             force_registration=True,
         )
-        self.url_buttons_guild: typing.Dict[str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]] = {
+        self.url_buttons_guild: typing.Dict[
+            str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]
+        ] = {
             "url_buttons": {},
         }
         self.config.register_guild(**self.url_buttons_guild)
@@ -215,7 +217,9 @@ class UrlButtons(commands.Cog):
         """Clear all url-buttons to a **guild**."""
         await self.config.guild(ctx.guild).url_buttons.clear()
 
-    def get_buttons(self, config: typing.Dict, message: discord.Message) -> typing.List[typing.Dict[str, str]]:
+    def get_buttons(
+        self, config: typing.Dict, message: discord.Message
+    ) -> typing.List[typing.Dict[str, str]]:
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()
             for button in config[f"{message.channel.id}-{message.id}"]:
@@ -225,7 +229,15 @@ class UrlButtons(commands.Cog):
                     b = button
                 else:
                     b = str(self.bot.get_emoji(int(button)))
-                view.add_item(discord.ui.Button(emoji=b, label=config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], url=config[f"{message.channel.id}-{message.id}"][f"{button}"]["url"]))
+                view.add_item(
+                    discord.ui.Button(
+                        emoji=b,
+                        label=config[f"{message.channel.id}-{message.id}"][f"{button}"][
+                            "text_button"
+                        ],
+                        url=config[f"{message.channel.id}-{message.id}"][f"{button}"]["url"],
+                    )
+                )
             return view
         else:
             all_buttons = []

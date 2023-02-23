@@ -43,7 +43,9 @@ class ClearChannel(commands.Cog):
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
-        _settings: typing.Dict[str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]] = {
+        _settings: typing.Dict[
+            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
+        ] = {
             "delete_channel": {
                 "path": ["channel_delete"],
                 "converter": bool,
@@ -58,7 +60,7 @@ class ClearChannel(commands.Cog):
                 "path": ["author_dm"],
                 "converter": bool,
                 "description": "If this option is enabled, the bot will try to send a dm to the author of the order to confirm that everything went well.",
-            }
+            },
         }
         self.settings: Settings = Settings(
             bot=self.bot,
@@ -100,9 +102,7 @@ class ClearChannel(commands.Cog):
         reason = _("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(ctx=ctx)
         new_channel = await old_channel.clone(reason=reason)
         if config["channel_delete"]:
-            await old_channel.delete(
-                reason=reason
-            )
+            await old_channel.delete(reason=reason)
         else:
             await old_channel.edit(
                 name=_("🗑️-Deleted-{old_channel.name}").format(old_channel=old_channel),
@@ -113,7 +113,9 @@ class ClearChannel(commands.Cog):
             position=channel_position,
             reason=reason,
         )
-        self.log.info(f"{ctx.author} ({ctx.author.id}) deleted ALL messages in channel {old_channel.name} ({old_channel.id})."),
+        self.log.info(
+            f"{ctx.author} ({ctx.author.id}) deleted ALL messages in channel {old_channel.name} ({old_channel.id})."
+        ),
         if config["first_message"]:
             embed: discord.Embed = discord.Embed()
             embed.title = _("ClearChannel")

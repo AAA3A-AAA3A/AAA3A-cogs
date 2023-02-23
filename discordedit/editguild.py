@@ -420,7 +420,9 @@ class EditGuild(commands.Cog):
             )
 
     @editguild.command(name="invitesdisabled")
-    async def editguild_invites_disabled(self, ctx: commands.Context, invites_disabled: bool) -> None:
+    async def editguild_invites_disabled(
+        self, ctx: commands.Context, invites_disabled: bool
+    ) -> None:
         """Edit guild invites disabled state."""
         guild = ctx.guild
         try:

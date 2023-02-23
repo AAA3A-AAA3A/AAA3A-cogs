@@ -2,8 +2,8 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 from dataclasses import dataclass
-from humanfriendly import format_timespan
 
+from humanfriendly import format_timespan
 from redbot.core.utils.chat_formatting import box, pagify
 
 

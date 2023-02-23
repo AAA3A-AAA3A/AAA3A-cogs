@@ -127,7 +127,9 @@ class Calculator(commands.Cog):
             result = _("Error!")
         return result
 
-    async def get_embed(self, ctx: commands.Context, expression: str, result: str) -> discord.Embed:
+    async def get_embed(
+        self, ctx: commands.Context, expression: str, result: str
+    ) -> discord.Embed:
         if expression == "":
             expression = None
         if expression is None:
@@ -314,7 +316,9 @@ class Calculator(commands.Cog):
         return buttons_one, buttons_two, buttons_three, buttons_four, buttons_five
 
     @hybrid_command(name="calculate", aliases=["calc"])
-    async def _calculate(self, ctx: commands.Context, calculation: typing.Optional[str] = None) -> None:
+    async def _calculate(
+        self, ctx: commands.Context, calculation: typing.Optional[str] = None
+    ) -> None:
         """Calculate a simple expression."""
         config = await self.config.settings.all()
         if calculation is not None:
@@ -343,6 +347,7 @@ class Calculator(commands.Cog):
             embed=await self.get_embed(ctx, expression, result),
             components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five],
         )
+
         def check(inter):
             return (
                 inter.guild == ctx.guild
@@ -352,9 +357,7 @@ class Calculator(commands.Cog):
 
         try:
             while True:
-                inter = await ctx.wait_for_button_click(
-                    timeout=config["time_max"], check=check
-                )
+                inter = await ctx.wait_for_button_click(timeout=config["time_max"], check=check)
                 if not inter.author == ctx.author and ctx.author.id not in ctx.bot.owner_ids:
                     await inter.respond(
                         _(
@@ -452,9 +455,7 @@ class Calculator(commands.Cog):
                         embed.description = _("Nothing in your history.")
                     else:
                         for count, entry in enumerate(history, start=0):
-                            all_count = list(
-                                range(1, len(self.history.get(ctx.author, [])) + 1)
-                            )
+                            all_count = list(range(1, len(self.history.get(ctx.author, [])) + 1))
                             all_count.reverse()
                             count = all_count[count]
                             _expression, _result = entry

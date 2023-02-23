@@ -25,7 +25,9 @@ else:
 
 
 class YAMLConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.Dict[str, typing.Union[str, bool, typing.Dict, typing.List]]:
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Dict[str, typing.Union[str, bool, typing.Dict, typing.List]]:
         try:
             argument_dict = yaml.safe_load(argument)
         except Exception:
@@ -40,9 +42,7 @@ class YAMLConverter(commands.Converter):
         for arg in required_arguments:
             if arg not in argument_dict:
                 raise discord.ext.commands.BadArgument(
-                    _("The argument `/{arg}` is required in the root in the YAML.").format(
-                        arg=arg
-                    )
+                    _("The argument `/{arg}` is required in the root in the YAML.").format(arg=arg)
                 )
         for arg in argument_dict:
             if arg not in required_arguments + optional_arguments:
@@ -191,7 +191,9 @@ class DiscordModals(commands.Cog):
             identifier=205192943327321000143939875896557571750,  # 897374386384
             force_registration=True,
         )
-        self.discordmodals_guild: typing.Dict[str, typing.Dict[str, typing.Dict[str, typing.Any]]] = {
+        self.discordmodals_guild: typing.Dict[
+            str, typing.Dict[str, typing.Dict[str, typing.Any]]
+        ] = {
             "modals": {},
         }
         self.config.register_guild(**self.discordmodals_guild)

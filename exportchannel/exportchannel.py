@@ -79,7 +79,9 @@ class ExportChannel(commands.Cog):
             raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message."))
         return count_messages, messages
 
-    async def export_messages(self, ctx: commands.Context, channel: discord.TextChannel, **kwargs) -> typing.Union[int, typing.List[discord.Message], discord.File]:
+    async def export_messages(
+        self, ctx: commands.Context, channel: discord.TextChannel, **kwargs
+    ) -> typing.Union[int, typing.List[discord.Message], discord.File]:
         count_messages, messages = await self.get_messages(ctx, channel=channel, **kwargs)
         if self.cogsutils.is_dpy2:
             transcript = await chat_exporter.raw_export(
@@ -117,7 +119,9 @@ class ExportChannel(commands.Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, messages, file = await self.export_messages(ctx, channel=channel)
-        message = await ctx.send(_(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file)
+        message = await ctx.send(
+            _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
+        )
         embed = discord.Embed(
             title="Transcript Link",
             description=LINK_MESSAGE.format(message=message),
@@ -141,7 +145,9 @@ class ExportChannel(commands.Cog):
         count_messages, messages, file = await self.export_messages(
             ctx, channel=channel, limit=limit if not channel == ctx.channel else limit + 1
         )
-        message = await ctx.send(_(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file)
+        message = await ctx.send(
+            _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
+        )
         embed = discord.Embed(
             title="Transcript Link",
             description=LINK_MESSAGE.format(message=message),
@@ -168,7 +174,9 @@ class ExportChannel(commands.Cog):
         count_messages, messages, file = await self.export_messages(
             ctx, channel=channel, before=before
         )
-        message = await ctx.send(_(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file)
+        message = await ctx.send(
+            _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
+        )
         embed = discord.Embed(
             title="Transcript Link",
             description=LINK_MESSAGE.format(message=message),
@@ -195,7 +203,9 @@ class ExportChannel(commands.Cog):
         count_messages, messages, file = await self.export_messages(
             ctx, channel=channel, after=after
         )
-        message = await ctx.send(_(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file)
+        message = await ctx.send(
+            _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
+        )
         embed = discord.Embed(
             title="Transcript Link",
             description=LINK_MESSAGE.format(message=message),
@@ -223,7 +233,9 @@ class ExportChannel(commands.Cog):
         count_messages, messages, file = await self.export_messages(
             ctx, channel=channel, before=before, after=after
         )
-        message = await ctx.send(_(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file)
+        message = await ctx.send(
+            _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
+        )
         embed = discord.Embed(
             title="Transcript Link",
             description=LINK_MESSAGE.format(message=message),
@@ -254,7 +266,9 @@ class ExportChannel(commands.Cog):
             user_id=user.id if isinstance(user, discord.Member) else user,
             limit=limit,
         )
-        message = await ctx.send(_(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file)
+        message = await ctx.send(
+            _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
+        )
         embed = discord.Embed(
             title="Transcript Link",
             description=LINK_MESSAGE.format(message=message),
@@ -282,7 +296,9 @@ class ExportChannel(commands.Cog):
         count_messages, messages, file = await self.export_messages(
             ctx, channel=channel, bot=bot, limit=limit
         )
-        message = await ctx.send(_(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file)
+        message = await ctx.send(
+            _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
+        )
         embed = discord.Embed(
             title="Transcript Link",
             description=LINK_MESSAGE.format(message=message),

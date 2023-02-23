@@ -42,16 +42,7 @@ from .settings import Settings
 from .shared_cog import SharedCog
 
 if discord.version_info.major >= 2:
-    from .views import (
-        Buttons,
-        ChannelSelect,
-        Dropdown,
-        MentionableSelect,
-        Modal,
-        RoleSelect,
-        Select,
-        UserSelect,
-    )  # NOQA
+    from .views import Buttons, ChannelSelect, Dropdown, MentionableSelect, Modal, RoleSelect, Select, UserSelect  # NOQA
 
 CogsUtils: typing.Any = None
 

@@ -253,9 +253,7 @@ class CalculatorView(discord.ui.View):
                 embed.description = _("Nothing in your history.")
             else:
                 for count, entry in enumerate(history, start=0):
-                    all_count = list(
-                        range(1, len(self.cog.history.get(self.ctx.author, [])) + 1)
-                    )
+                    all_count = list(range(1, len(self.cog.history.get(self.ctx.author, [])) + 1))
                     all_count.reverse()
                     count = all_count[count]
                     _expression, _result = entry
@@ -294,4 +292,6 @@ class CalculatorView(discord.ui.View):
         self.clear_items()
         for button in current_buttons:
             self.add_item(button)
-        self._message = await self.ctx.send(embed=await self.cog.get_embed(self.ctx, self._expression, self._result), view=self)
+        self._message = await self.ctx.send(
+            embed=await self.cog.get_embed(self.ctx, self._expression, self._result), view=self
+        )

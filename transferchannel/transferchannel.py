@@ -135,9 +135,7 @@ class TransferChannel(commands.Cog):
         messages = [message for message in messages if not message.id == ctx.message.id]
         count_messages = len(messages)
         if count_messages == 0:
-            raise commands.UserFeedbackCheckFailure(
-                _("Sorry. I could not find any message.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message."))
         return count_messages, messages
 
     async def transfer_messages(
@@ -225,7 +223,11 @@ class TransferChannel(commands.Cog):
         count_messages, messages = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way
         )
-        await ctx.send(_(RESULT_MESSAGE).format(count_messages=count_messages, source=source, destination=destination))
+        await ctx.send(
+            _(RESULT_MESSAGE).format(
+                count_messages=count_messages, source=source, destination=destination
+            )
+        )
 
     @transferchannel.command()
     async def messages(
@@ -281,7 +283,11 @@ class TransferChannel(commands.Cog):
         count_messages, messages = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, before=before
         )
-        await ctx.send(_(RESULT_MESSAGE).format(count_messages=count_messages, source=source, destination=destination))
+        await ctx.send(
+            _(RESULT_MESSAGE).format(
+                count_messages=count_messages, source=source, destination=destination
+            )
+        )
 
     @transferchannel.command()
     async def after(
@@ -305,7 +311,11 @@ class TransferChannel(commands.Cog):
         count_messages, messages = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, after=after
         )
-        await ctx.send(_(RESULT_MESSAGE).format(count_messages=count_messages, source=source, destination=destination))
+        await ctx.send(
+            _(RESULT_MESSAGE).format(
+                count_messages=count_messages, source=source, destination=destination
+            )
+        )
 
     @transferchannel.command()
     async def between(
@@ -330,7 +340,11 @@ class TransferChannel(commands.Cog):
         count_messages, messages = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, before=before, after=after
         )
-        await ctx.send(_(RESULT_MESSAGE).format(count_messages=count_messages, source=source, destination=destination))
+        await ctx.send(
+            _(RESULT_MESSAGE).format(
+                count_messages=count_messages, source=source, destination=destination
+            )
+        )
 
     if CogsUtils().is_dpy2:
 
@@ -362,7 +376,11 @@ class TransferChannel(commands.Cog):
                 user_id=user.id if isinstance(user, discord.Member) else user,
                 limit=limit,
             )
-            await ctx.send(_(RESULT_MESSAGE).format(count_messages=count_messages, source=source, destination=destination))
+            await ctx.send(
+                _(RESULT_MESSAGE).format(
+                    count_messages=count_messages, source=source, destination=destination
+                )
+            )
 
     @transferchannel.command()
     async def bot(
@@ -387,4 +405,8 @@ class TransferChannel(commands.Cog):
         count_messages, messages = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, bot=bot, limit=limit
         )
-        await ctx.send(_(RESULT_MESSAGE).format(count_messages=count_messages, source=source, destination=destination))
+        await ctx.send(
+            _(RESULT_MESSAGE).format(
+                count_messages=count_messages, source=source, destination=destination
+            )
+        )

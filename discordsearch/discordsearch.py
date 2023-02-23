@@ -4,6 +4,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
+
 # import typing_extensions  # isort:skip
 
 import argparse
@@ -220,7 +221,9 @@ class DiscordSearch(commands.Cog):
             end = monotonic()
             total = round(end - start, 1)
             for embed in embeds:
-                embed.title = _("Search in #{channel.name} ({channel.id}) in {total}s").format(channel=channel, total=total)
+                embed.title = _("Search in #{channel.name} ({channel.id}) in {total}s").format(
+                    channel=channel, total=total
+                )
         await Menu(pages=embeds).start(ctx)
 
 
@@ -244,7 +247,9 @@ class SearchArgs:
 
         return parser.parse_args(arguments)
 
-    async def convert(self, ctx: commands.Context, arguments) -> typing.Any:  # typing_extensions.Self
+    async def convert(
+        self, ctx: commands.Context, arguments
+    ) -> typing.Any:  # typing_extensions.Self
         self.ctx = ctx
         args = self.parse_arguments(arguments)
         if args.authors is not None:

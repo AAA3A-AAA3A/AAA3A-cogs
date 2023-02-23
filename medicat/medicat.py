@@ -13,10 +13,10 @@ import asyncio
 import json
 import re
 import traceback
-from bs4 import BeautifulSoup
 from copy import copy
 
 import aiohttp
+from bs4 import BeautifulSoup
 from redbot import VersionInfo
 from redbot.core import Config
 from redbot.core.utils.chat_formatting import bold, box, pagify
@@ -104,17 +104,13 @@ CUSTOM_COMMANDS = {
         ),
     },
     "portableapps": {
-        "title": _(
-            "Can I run the PortableApps on my current PC without booting up MediCat?"
-        ),
+        "title": _("Can I run the PortableApps on my current PC without booting up MediCat?"),
         "description": _(
             "Yes, just mount the MediCat USB, and open Start.exe to launch the platform. These are the same exact apps that get loaded within Mini Windows 10. So if you update them, they will show up updated in Mini Windows 10 as well."
         ),
     },
     "updateonly": {
-        "title": _(
-            "How can I update Medicat USB without having to install all the files again?"
-        ),
+        "title": _("How can I update Medicat USB without having to install all the files again?"),
         "description": _(
             "For the time being, you are in any case obliged to download all Medicat USB files again to update it. However, if you only want to keep your previous personal changes, you can save them somewhere and reproduce them on the new instance of the bootable USB stick.\nFor Medicat USB 22.06, @AAA3A is currently coding an update only script for Medicat USB, in batch. It will be downloaded with only the necessary files and will however only work from one version to another, after being prepared in advance."
         ),
@@ -285,7 +281,9 @@ class Medicat(commands.Cog):
             force_registration=True,
         )
         self.CONFIG_SCHEMA: int = 2
-        self.medicat_global: typing.Dict[str, typing.Union[typing.Optional[int], str, typing.Dict[str, str]]] = {
+        self.medicat_global: typing.Dict[
+            str, typing.Union[typing.Optional[int], str, typing.Dict[str, str]]
+        ] = {
             "CONFIG_SCHEMA": None,
             "last_ventoy_version": "1.0.74",
             "last_bootables_tools_versions": {
@@ -326,7 +324,11 @@ class Medicat(commands.Cog):
 
     async def cog_load(self) -> None:
         global MEDICAT_ICON
-        MEDICAT_ICON = (await self.bot.fetch_invite("medicat")).guild.icon.url if self.cogsutils.is_dpy2 else (await self.bot.fetch_invite("medicat")).guild.icon_url
+        MEDICAT_ICON = (
+            (await self.bot.fetch_invite("medicat")).guild.icon.url
+            if self.cogsutils.is_dpy2
+            else (await self.bot.fetch_invite("medicat")).guild.icon_url
+        )
         await self.edit_config_schema()
         self._session = aiohttp.ClientSession()
         self.cogsutils.create_loop(function=self.ventoy_updates, name="Ventoy Updates", hours=1)
@@ -485,7 +487,9 @@ class Medicat(commands.Cog):
                 icon_url="https://ventoy.net/static/img/ventoy.png?v=1",
             )
             embed.url = "https://www.ventoy.net/en/doc_news.html"
-            embed.title = _("Ventoy v{ventoy_version_str} has been released!").format(ventoy_version_str=ventoy_version_str)
+            embed.title = _("Ventoy v{ventoy_version_str} has been released!").format(
+                ventoy_version_str=ventoy_version_str
+            )
             embed.description = _("New features:") + "\n" + changelog
             embed.add_field(
                 name="More details:", value="https://www.ventoy.net/en/doc_news.html", inline=True
@@ -500,7 +504,13 @@ class Medicat(commands.Cog):
                 hook: discord.Webhook = await self.cogsutils.get_hook(channel)
                 if self.cogsutils.is_dpy2:
                     view = discord.ui.View()
-                    view.add_item(discord.ui.Button(label=_("View on Ventoy Official Website"), url="https://www.ventoy.net/en/doc_news.html", style=discord.ButtonStyle(5)))
+                    view.add_item(
+                        discord.ui.Button(
+                            label=_("View on Ventoy Official Website"),
+                            url="https://www.ventoy.net/en/doc_news.html",
+                            style=discord.ButtonStyle(5),
+                        )
+                    )
                     message: discord.Message = await hook.send(
                         content=role.mention if role is not None else None,
                         embed=embed,
@@ -522,7 +532,13 @@ class Medicat(commands.Cog):
             except (AttributeError, discord.errors.Forbidden):
                 if self.cogsutils.is_dpy2:
                     view = discord.ui.View()
-                    view.add_item(discord.ui.Button(label=_("View on Ventoy Official Website"), url="https://www.ventoy.net/en/doc_news.html", style=discord.ButtonStyle(5)))
+                    view.add_item(
+                        discord.ui.Button(
+                            label=_("View on Ventoy Official Website"),
+                            url="https://www.ventoy.net/en/doc_news.html",
+                            style=discord.ButtonStyle(5),
+                        )
+                    )
                     message: discord.Message = await channel.send(
                         content=role.mention if role is not None else None,
                         embed=embed,
@@ -611,7 +627,13 @@ class Medicat(commands.Cog):
                 hook: discord.Webhook = await self.cogsutils.get_hook(channel)
                 if self.cogsutils.is_dpy2:
                     view = discord.ui.View()
-                    view.add_item(discord.ui.Button(label=_("View on FCportables Official Website"), url=url, style=discord.ButtonStyle(5)))
+                    view.add_item(
+                        discord.ui.Button(
+                            label=_("View on FCportables Official Website"),
+                            url=url,
+                            style=discord.ButtonStyle(5),
+                        )
+                    )
                     message: discord.Message = await hook.send(
                         content=role.mention if role is not None else None,
                         embed=embed,
@@ -633,7 +655,13 @@ class Medicat(commands.Cog):
             except (AttributeError, discord.errors.Forbidden):
                 if self.cogsutils.is_dpy2:
                     view = discord.ui.View()
-                    view.add_item(discord.ui.Button(label=_("View on FCportables Official Website"), url=url, style=discord.ButtonStyle(5)))
+                    view.add_item(
+                        discord.ui.Button(
+                            label=_("View on FCportables Official Website"),
+                            url=url,
+                            style=discord.ButtonStyle(5),
+                        )
+                    )
                     message: discord.Message = await channel.send(
                         content=role.mention if role is not None else None,
                         embed=embed,
@@ -742,7 +770,7 @@ class Medicat(commands.Cog):
         context = await self.bot.get_context(message)
         if context.prefix is None:
             return
-        command = context.message.content[len(str(context.prefix)):]
+        command = context.message.content[len(str(context.prefix)) :]
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
@@ -763,9 +791,7 @@ class Medicat(commands.Cog):
         try:
             await self.ventoy_updates(channel=ctx.channel, ping_role=False, force=True)
         except Exception:
-            raise commands.UserFeedbackCheckFailure(
-                _("An error has occurred. Please try again.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again."))
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @medicat.command()
@@ -776,9 +802,7 @@ class Medicat(commands.Cog):
                 channel=ctx.channel, ping_role=False, force=True, version=version
             )
         except Exception:
-            raise commands.UserFeedbackCheckFailure(
-                _("An error has occurred. Please try again.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again."))
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @medicat.command()

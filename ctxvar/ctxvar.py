@@ -121,7 +121,9 @@ class CtxVar(commands.Cog):
         await Menu(pages=embeds).start(ctx)
 
     @ctxvar.command(name="dir")
-    async def _dir(self, ctx: commands.Context, thing: str, search: typing.Optional[str] = None) -> None:
+    async def _dir(
+        self, ctx: commands.Context, thing: str, search: typing.Optional[str] = None
+    ) -> None:
         """Display a list of all attributes of the provided object (debug not async)."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:

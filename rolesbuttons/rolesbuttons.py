@@ -47,7 +47,9 @@ class RolesButtons(commands.Cog):
             identifier=205192943327321000143939875896557571750,  # 370638632963
             force_registration=True,
         )
-        self.roles_buttons_guild: typing.Dict[str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]] = {
+        self.roles_buttons_guild: typing.Dict[
+            str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]
+        ] = {
             "roles_buttons": {},
         }
         self.config.register_guild(**self.roles_buttons_guild)
@@ -96,7 +98,9 @@ class RolesButtons(commands.Cog):
 
     if CogsUtils().is_dpy2:
 
-        async def on_button_interaction(self, view: Buttons, interaction: discord.Interaction) -> None:
+        async def on_button_interaction(
+            self, view: Buttons, interaction: discord.Interaction
+        ) -> None:
             if await self.bot.cog_disabled_in_guild(self, interaction.guild):
                 return
             if not interaction.data["custom_id"].startswith("roles_buttons"):
@@ -370,11 +374,11 @@ class RolesButtons(commands.Cog):
         }
         if self.cogsutils.is_dpy2:
             view = Buttons(
-                    timeout=None,
-                    buttons=self.get_buttons(config, message),
-                    function=self.on_button_interaction,
-                    infinity=True,
-                )
+                timeout=None,
+                buttons=self.get_buttons(config, message),
+                function=self.on_button_interaction,
+                infinity=True,
+            )
             await message.edit(view=view)
             self.cogsutils.views.append(view)
         else:
@@ -437,11 +441,11 @@ class RolesButtons(commands.Cog):
             }
         if self.cogsutils.is_dpy2:
             view = Buttons(
-                    timeout=None,
-                    buttons=self.get_buttons(config, message),
-                    function=self.on_button_interaction,
-                    infinity=True,
-                )
+                timeout=None,
+                buttons=self.get_buttons(config, message),
+                function=self.on_button_interaction,
+                infinity=True,
+            )
             await message.edit(view=view)
             self.cogsutils.views.append(view)
         else:

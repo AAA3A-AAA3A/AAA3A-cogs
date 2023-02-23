@@ -33,7 +33,9 @@ else:
 
 
 class Emoji(commands.EmojiConverter):
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.Union[discord.PartialEmoji, str]:
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Union[discord.PartialEmoji, str]:
         argument = str(argument)
         argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
@@ -57,7 +59,9 @@ class ReactToCommand(commands.Cog):
         self.reacttocommand_global: typing.Dict[str, typing.Optional[int]] = {
             "CONFIG_SCHEMA": None,
         }
-        self.reacttocommand_guild: typing.Dict[str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]] = {
+        self.reacttocommand_guild: typing.Dict[
+            str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]
+        ] = {
             "react_commands": {},
         }
         self.config.register_global(**self.reacttocommand_global)

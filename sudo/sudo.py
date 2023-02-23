@@ -76,7 +76,7 @@ class Sudo(commands.Cog):
         context = await self.bot.get_context(message)
         if context.prefix is None:
             return
-        command = context.message.content[len(str(context.prefix)):]
+        command = context.message.content[len(str(context.prefix)) :]
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]

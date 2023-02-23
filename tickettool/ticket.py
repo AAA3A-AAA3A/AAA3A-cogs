@@ -4,6 +4,7 @@ from redbot.core.i18n import Translator  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
+
 # import typing_extensions  # isort:skip
 
 if CogsUtils().is_dpy2:
@@ -16,8 +17,9 @@ else:
     )  # isort:skip
 
 import datetime
-import chat_exporter
 import io
+
+import chat_exporter
 
 from .utils import utils
 
@@ -359,7 +361,9 @@ class Ticket:
                 True,
                 author=ticket.created_by,
                 title=_("Ticket Created"),
-                description=_("The ticket was created by {ticket.created_by}.").format(ticket=ticket),
+                description=_("The ticket was created by {ticket.created_by}.").format(
+                    ticket=ticket
+                ),
             )
             await logschannel.send(
                 _("Report on the creation of the ticket {ticket.id}.").format(ticket=ticket),
@@ -399,7 +403,9 @@ class Ticket:
                 return transcript_file
         return None
 
-    async def open(ticket, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+    async def open(
+        ticket, author: typing.Optional[discord.Member] = None
+    ) -> typing.Any:  # typing_extensions.Self
         config = await ticket.cog.get_config(ticket.guild, ticket.panel)
         reason = await ticket.cog.get_audit_reason(
             guild=ticket.guild,
@@ -492,7 +498,9 @@ class Ticket:
         await ticket.save()
         return ticket
 
-    async def close(ticket, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+    async def close(
+        ticket, author: typing.Optional[discord.Member] = None
+    ) -> typing.Any:  # typing_extensions.Self
         config = await ticket.cog.get_config(ticket.guild, ticket.panel)
         reason = await ticket.cog.get_audit_reason(
             guild=ticket.guild,
@@ -581,7 +589,9 @@ class Ticket:
         await ticket.save()
         return ticket
 
-    async def rename(ticket, new_name: str, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+    async def rename(
+        ticket, new_name: str, author: typing.Optional[discord.Member] = None
+    ) -> typing.Any:  # typing_extensions.Self
         reason = await ticket.cog.get_audit_reason(
             guild=ticket.guild,
             panel=ticket.panel,
@@ -604,7 +614,9 @@ class Ticket:
             await ticket.save()
         return ticket
 
-    async def delete(ticket, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+    async def delete(
+        ticket, author: typing.Optional[discord.Member] = None
+    ) -> typing.Any:  # typing_extensions.Self
         config = await ticket.cog.get_config(ticket.guild, ticket.panel)
         logschannel = config["logschannel"]
         reason = await ticket.cog.get_audit_reason(
@@ -901,7 +913,7 @@ class Ticket:
             guild=ticket.guild,
             panel=ticket.panel,
             author=author,
-            reason=_("Adding a member to the ticket {ticket.id}.").format(ticket=ticket)
+            reason=_("Adding a member to the ticket {ticket.id}.").format(ticket=ticket),
         )
         if config["admin_role"] is not None:
             admin_role_members = config["admin_role"].members
@@ -929,7 +941,9 @@ class Ticket:
                     )
                 if member in ticket.members:
                     raise commands.UserFeedbackCheckFailure(
-                        _("This member already has access to this ticket. ({member})").format(member=member)
+                        _("This member already has access to this ticket. ({member})").format(
+                            member=member
+                        )
                     )
             if member not in ticket.members:
                 ticket.members.append(member)
@@ -973,7 +987,9 @@ class Ticket:
                 if not isinstance(ticket.owner, int):
                     if member == ticket.owner:
                         raise commands.UserFeedbackCheckFailure(
-                            _("You cannot remove the owner of this ticket. ({member})").format(member=member)
+                            _("You cannot remove the owner of this ticket. ({member})").format(
+                                member=member
+                            )
                         )
                 if member in admin_role_members:
                     raise commands.UserFeedbackCheckFailure(

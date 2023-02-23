@@ -42,7 +42,9 @@ class EditTextChannel(commands.Cog):
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
-    async def check_text_channel(self, ctx: commands.Context, channel: discord.TextChannel) -> bool:
+    async def check_text_channel(
+        self, ctx: commands.Context, channel: discord.TextChannel
+    ) -> bool:
         if (
             not self.cogsutils.check_permissions_for(
                 channel=channel, user=ctx.author, check=["manage_channel"]

@@ -14,7 +14,9 @@ _ = Translator("UrlButtons", __file__)
 
 
 class Emoji(commands.EmojiConverter):
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.Union[discord.PartialEmoji, str]:
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Union[discord.PartialEmoji, str]:
         argument = str(argument)
         argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:

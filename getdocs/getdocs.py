@@ -5,20 +5,23 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import aiohttp
 import asyncio
 import functools
 import random
 import time
-# from aiolimiter import AsyncLimiter
-from fuzzywuzzy import fuzz
+
 # from playwright._impl._api_types import TimeoutError as PlaywrightTimeoutError
 # from playwright.async_api import async_playwright
 from urllib.parse import ParseResult, urljoin, urlparse
-from bs4 import BeautifulSoup, SoupStrainer, Tag, ResultSet, NavigableString
-from sphobjinv import Inventory, DataObjStr
 
-from .types import SearchResults, Documentation, Parameters, Examples, Attribute, Attributes
+import aiohttp
+from bs4 import BeautifulSoup, NavigableString, ResultSet, SoupStrainer, Tag
+
+# from aiolimiter import AsyncLimiter
+from fuzzywuzzy import fuzz
+from sphobjinv import DataObjStr, Inventory
+
+from .types import Attribute, Attributes, Documentation, Examples, Parameters, SearchResults
 
 if CogsUtils().is_dpy2:
     from .view import DocsView
@@ -40,40 +43,91 @@ else:
     hybrid_group = commands.group
 
 BASE_URLS = {
-    "discord.py": {"url": "https://discordpy.readthedocs.io/en/stable/", "icon_url": "https://cdn.discordapp.com/attachments/381963689470984203/1068553303908155442/sW87z7N.png", "aliases": ["dpy"]},
-    "redbot": {"url": "https://docs.discord.red/en/stable/", "icon_url": "https://media.discordapp.net/attachments/133251234164375552/1074432427201663086/a_aab012f3206eb514cac0432182e9e9ec.png", "aliases": ["red"]},
-    "python": {"url": "https://docs.python.org/3/", "icon_url": "https://assets.stickpng.com/images/5848152fcef1014c0b5e4967.png", "aliases": ["py"]},
-    "aiohttp": {"url": "https://docs.aiohttp.org/en/stable/", "icon_url": "https://docs.aiohttp.org/en/v3.7.3/_static/aiohttp-icon-128x128.png"},
-    "requests": {"url": "https://requests.readthedocs.io/en/latest/", "icon_url": "https://requests.readthedocs.io/en/latest/_static/requests-sidebar.png"},
-    "slashtags": {"url": "https://phen-cogs.readthedocs.io/en/latest/", "icon_url": "https://i.imgur.com/dIOX12K.png"},
-
+    "discord.py": {
+        "url": "https://discordpy.readthedocs.io/en/stable/",
+        "icon_url": "https://cdn.discordapp.com/attachments/381963689470984203/1068553303908155442/sW87z7N.png",
+        "aliases": ["dpy"],
+    },
+    "redbot": {
+        "url": "https://docs.discord.red/en/stable/",
+        "icon_url": "https://media.discordapp.net/attachments/133251234164375552/1074432427201663086/a_aab012f3206eb514cac0432182e9e9ec.png",
+        "aliases": ["red"],
+    },
+    "python": {
+        "url": "https://docs.python.org/3/",
+        "icon_url": "https://assets.stickpng.com/images/5848152fcef1014c0b5e4967.png",
+        "aliases": ["py"],
+    },
+    "aiohttp": {
+        "url": "https://docs.aiohttp.org/en/stable/",
+        "icon_url": "https://docs.aiohttp.org/en/v3.7.3/_static/aiohttp-icon-128x128.png",
+    },
+    "requests": {
+        "url": "https://requests.readthedocs.io/en/latest/",
+        "icon_url": "https://requests.readthedocs.io/en/latest/_static/requests-sidebar.png",
+    },
+    "slashtags": {
+        "url": "https://phen-cogs.readthedocs.io/en/latest/",
+        "icon_url": "https://i.imgur.com/dIOX12K.png",
+    },
     "psutil": {"url": "https://psutil.readthedocs.io/en/latest/", "icon_url": None},
-    "pillow": {"url": "https://pillow.readthedocs.io/en/stable/", "icon_url": "https://pillow.readthedocs.io/en/stable/_static/pillow-logo-dark-text.png"},
-    "numpy": {"url": "https://numpy.org/doc/stable/", "icon_url": "https://www.google.com/url?sa=i&url=https%3A%2F%2Frphabet.github.io%2Fposts%2Fpython_numpy_loop%2F&psig=AOvVaw1WvAODE50upYEYKVF68d8s&ust=1676914473120000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCLiMo66Pov0CFQAAAAAdAAAAABAJ"},
-    "matplotlib": {"url": "https://matplotlib.org/stable/", "icon_url": "https://matplotlib.org/2.1.2/_static/logo2.png"},
+    "pillow": {
+        "url": "https://pillow.readthedocs.io/en/stable/",
+        "icon_url": "https://pillow.readthedocs.io/en/stable/_static/pillow-logo-dark-text.png",
+    },
+    "numpy": {
+        "url": "https://numpy.org/doc/stable/",
+        "icon_url": "https://www.google.com/url?sa=i&url=https%3A%2F%2Frphabet.github.io%2Fposts%2Fpython_numpy_loop%2F&psig=AOvVaw1WvAODE50upYEYKVF68d8s&ust=1676914473120000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCLiMo66Pov0CFQAAAAAdAAAAABAJ",
+    },
+    "matplotlib": {
+        "url": "https://matplotlib.org/stable/",
+        "icon_url": "https://matplotlib.org/2.1.2/_static/logo2.png",
+    },
     "asyncpg": {"url": "https://magicstack.github.io/asyncpg/current/", "icon_url": None},
     "sqlite": {"url": "https://pysqlite.readthedocs.io/en/latest/", "icon_url": None},
-    "websockets": {"url": "https://websockets.readthedocs.io/en/latest/", "icon_url": "https://repository-images.githubusercontent.com/9113587/aa03b380-afdb-11eb-8e88-2c7542e1670f"},
+    "websockets": {
+        "url": "https://websockets.readthedocs.io/en/latest/",
+        "icon_url": "https://repository-images.githubusercontent.com/9113587/aa03b380-afdb-11eb-8e88-2c7542e1670f",
+    },
     "mango": {"url": "https://pymongo.readthedocs.io/en/latest/", "icon_url": None},
-    "redis": {"url": "https://redis-py.readthedocs.io/en/stable/", "icon_url": "https://blog.loginradius.com/static/4eda1ce5a0f541d97fdf27cd88bf2a49/03979/index.png"},
-
+    "redis": {
+        "url": "https://redis-py.readthedocs.io/en/stable/",
+        "icon_url": "https://blog.loginradius.com/static/4eda1ce5a0f541d97fdf27cd88bf2a49/03979/index.png",
+    },
     "aiomysql": {"url": "https://aiomysql.readthedocs.io/en/stable/", "icon_url": None},
-    "flask": {"url": "https://flask.palletsprojects.com/", "icon_url": "https://flask.palletsprojects.com/en/2.2.x/_images/flask-logo.png"},
-    "motor": {"url": "https://motor.readthedocs.io/en/stable/", "icon_url": "https://motor.readthedocs.io/en/stable/_images/motor.png"},
-    "sphinx": {"url": "https://www.sphinx-doc.org/en/master/", "icon_url": "https://www.sphinx-doc.org/en/master/_static/sphinxheader.png"},
-    "starlite": {"url": "https://starliteproject.dev/", "icon_url": "https://preview.redd.it/2veaqsnz2uf81.png?width=1280&format=png&auto=webp&s=8d7c84d4ec435fc102c14f3f2534ee2c3e5c1cae"},
+    "flask": {
+        "url": "https://flask.palletsprojects.com/",
+        "icon_url": "https://flask.palletsprojects.com/en/2.2.x/_images/flask-logo.png",
+    },
+    "motor": {
+        "url": "https://motor.readthedocs.io/en/stable/",
+        "icon_url": "https://motor.readthedocs.io/en/stable/_images/motor.png",
+    },
+    "sphinx": {
+        "url": "https://www.sphinx-doc.org/en/master/",
+        "icon_url": "https://www.sphinx-doc.org/en/master/_static/sphinxheader.png",
+    },
+    "starlite": {
+        "url": "https://starliteproject.dev/",
+        "icon_url": "https://preview.redd.it/2veaqsnz2uf81.png?width=1280&format=png&auto=webp&s=8d7c84d4ec435fc102c14f3f2534ee2c3e5c1cae",
+    },
 }
+
 
 async def run_blocking_func(func: typing.Callable, *args, **kwargs):
     partial = functools.partial(func, *args, **kwargs)
     loop = asyncio.get_running_loop()
     return await loop.run_in_executor(None, partial)
+
+
 def executor(executor=None):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             return run_blocking_func(func, *args, **kwargs)
+
         return wrapper
+
     return decorator
 
 
@@ -118,29 +172,43 @@ class GetDocs(commands.Cog):
         self._load_time = time.monotonic()
         self._session = aiohttp.ClientSession()
         for source in BASE_URLS:
-            self.documentations[source] = Source(self, name=source, url=BASE_URLS[source]["url"], icon_url=BASE_URLS[source]["icon_url"])
+            self.documentations[source] = Source(
+                self,
+                name=source,
+                url=BASE_URLS[source]["url"],
+                icon_url=BASE_URLS[source]["icon_url"],
+            )
             asyncio.create_task(self.documentations[source].load())
 
     if CogsUtils().is_dpy2:
+
         async def cog_unload(self):
             self.cogsutils._end()
             if self._session is not None:
                 await self._session.close()
+
     else:
+
         def cog_unload(self):
             self.cogsutils._end()
             if self._session is not None:
                 asyncio.create_task(self._session.close())
 
     @hybrid_command(aliases=["getdoc", "docs", "documentations"])
-    async def getdocs(self, ctx: commands.Context, source: typing.Optional[SourceConverter] = "discord.py", *, query: typing.Optional[str] = None):
+    async def getdocs(
+        self,
+        ctx: commands.Context,
+        source: typing.Optional[SourceConverter] = "discord.py",
+        *,
+        query: typing.Optional[str] = None,
+    ):
         """View rich documentation for a specific node/query.
 
-           The name must be exact, or else rtfm is invoked instead.
+        The name must be exact, or else rtfm is invoked instead.
 
-           Arguments:
-           - `source`: The name of the documentation to use. Defaults to `discord.py`.
-           - `query`: The documentation node/query. (`random` to get a random documentation)
+        Arguments:
+        - `source`: The name of the documentation to use. Defaults to `discord.py`.
+        - `query`: The documentation node/query. (`random` to get a random documentation)
         """
         source = self.documentations[source]
         if query is None:
@@ -179,23 +247,34 @@ class GetDocs(commands.Cog):
                     raise RuntimeError("No results found.")
                 embed = doc.to_embed()
                 content = None
-                if source._docs_caching_task is not None and source._docs_caching_task.currently_running:
+                if (
+                    source._docs_caching_task is not None
+                    and source._docs_caching_task.currently_running
+                ):
                     content = "⚠️ The documentation cache is not yet fully built, building now."
                 await ctx.send(content=content, embed=embed)
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))
 
     @hybrid_command()
-    async def rtfm(self, ctx: commands.Context, source: typing.Optional[SourceConverter] = "discord.py", limit: typing.Optional[int] = 10, with_std: typing.Optional[bool] = True, *, query: typing.Optional[str] = None):
+    async def rtfm(
+        self,
+        ctx: commands.Context,
+        source: typing.Optional[SourceConverter] = "discord.py",
+        limit: typing.Optional[int] = 10,
+        with_std: typing.Optional[bool] = True,
+        *,
+        query: typing.Optional[str] = None,
+    ):
         """Show all attributes matching your search.
 
-           The name must be exact, or else rtfm is invoked instead.
+        The name must be exact, or else rtfm is invoked instead.
 
-           Arguments:
-           - `source`: The name of the documentation to use. Defaults to `discord.py`.
-           - `limit`: The limit of objects to be sent.
-           - `with_std`: Also display links to non-API documentation.
-           - `query`: Your search.
+        Arguments:
+        - `source`: The name of the documentation to use. Defaults to `discord.py`.
+        - `limit`: The limit of objects to be sent.
+        - `with_std`: Also display links to non-API documentation.
+        - `query`: Your search.
         """
         source = self.documentations[source]
         try:
@@ -211,7 +290,10 @@ class GetDocs(commands.Cog):
             await Menu(pages=embeds).start(ctx)
 
     if CogsUtils().is_dpy2:
-        async def _cogsutils_add_hybrid_commands(self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]):
+
+        async def _cogsutils_add_hybrid_commands(
+            self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]
+        ):
             if command.app_command is None:
                 return
             if not isinstance(command, commands.HybridCommand):
@@ -219,7 +301,10 @@ class GetDocs(commands.Cog):
             if "source" in command.app_command._params:
                 command.app_command._params["source"].required = True
                 command.app_command._params["source"].default = "discord.py"
-                command.app_command._params["source"].choices = [discord.app_commands.Choice(name=source, value=source) for source in list(self.documentations.keys())]
+                command.app_command._params["source"].choices = [
+                    discord.app_commands.Choice(name=source, value=source)
+                    for source in list(self.documentations.keys())
+                ]
             if "query" in command.app_command._params:
                 command.app_command._params["query"].required = True
             _params1 = command.app_command._params.copy()
@@ -228,7 +313,9 @@ class GetDocs(commands.Cog):
             _params3 = {key: _params1[key] for key in _params2}
             command.app_command._params = _params3
 
-        async def query_autocomplete(self, interaction: discord.Interaction, current: str, exclude_std: bool) -> typing.List[discord.app_commands.Choice[str]]:
+        async def query_autocomplete(
+            self, interaction: discord.Interaction, current: str, exclude_std: bool
+        ) -> typing.List[discord.app_commands.Choice[str]]:
             source = None
             if "source" in interaction.namespace:
                 if interaction.namespace.source:
@@ -241,16 +328,25 @@ class GetDocs(commands.Cog):
             source = source or "discord.py"
             source = self.documentations[source]
             if not current:
-                return [discord.app_commands.Choice(name=name, value=name) for name in source._raw_rtfm_cache_with_std[:25]]
-            matches = await source.search(current, limit=25, exclude_std=exclude_std, with_raw_search=True)
+                return [
+                    discord.app_commands.Choice(name=name, value=name)
+                    for name in source._raw_rtfm_cache_with_std[:25]
+                ]
+            matches = await source.search(
+                current, limit=25, exclude_std=exclude_std, with_raw_search=True
+            )
             return [discord.app_commands.Choice(name=name, value=name) for name in matches]
 
         # @getdocs.autocomplete("query")
-        async def getdocs_query_autocomplete(self, interaction: discord.Interaction, current: str) -> typing.List[discord.app_commands.Choice[str]]:
+        async def getdocs_query_autocomplete(
+            self, interaction: discord.Interaction, current: str
+        ) -> typing.List[discord.app_commands.Choice[str]]:
             return await self.query_autocomplete(interaction, current, exclude_std=True)
 
         # @rtfm.autocomplete("query")
-        async def rtfm_query_autocomplete(self, interaction: discord.Interaction, current: str) -> typing.List[discord.app_commands.Choice[str]]:
+        async def rtfm_query_autocomplete(
+            self, interaction: discord.Interaction, current: str
+        ) -> typing.List[discord.app_commands.Choice[str]]:
             exclude_std = False
             if "with_std" in interaction.namespace:
                 exclude_std = not interaction.namespace.with_std
@@ -258,7 +354,6 @@ class GetDocs(commands.Cog):
 
 
 class Source:
-
     def __init__(self, cog: GetDocs, name: str, url: str, icon_url: typing.Optional[str] = None):
         self.cog: GetDocs = cog
         self.name: str = name
@@ -270,7 +365,9 @@ class Source:
 
         self._rtfm_caching_task = None
         self._docs_caching_task = None
-        self._docs_caching_progress: typing.Dict[str, typing.Optional[typing.Union[bool, Exception]]] = {}
+        self._docs_caching_progress: typing.Dict[
+            str, typing.Optional[typing.Union[bool, Exception]]
+        ] = {}
         # self._rtfs_caching_task = None
 
         self._rtfm_cache: Inventory = None
@@ -285,13 +382,21 @@ class Source:
     ###################
 
     async def load(self):
-        self._rtfm_caching_task = self.cog.cogsutils.create_loop(self._build_rtfm_cache, name=f"{self.name}: Build RTFM Cache", limit_count=1)
-        while self._rtfm_cache is None or (self._rtfm_caching_task is not None and self._rtfm_caching_task.currently_running):
+        self._rtfm_caching_task = self.cog.cogsutils.create_loop(
+            self._build_rtfm_cache, name=f"{self.name}: Build RTFM Cache", limit_count=1
+        )
+        while self._rtfm_cache is None or (
+            self._rtfm_caching_task is not None and self._rtfm_caching_task.currently_running
+        ):
             await asyncio.sleep(1)
         if not self._docs_cache:
-            self._docs_caching_task = self.cog.cogsutils.create_loop(self._build_docs_cache, name=f"{self.name}: Build Documentations Cache", limit_count=1)
+            self._docs_caching_task = self.cog.cogsutils.create_loop(
+                self._build_docs_cache,
+                name=f"{self.name}: Build Documentations Cache",
+                limit_count=1,
+            )
         # if not self._rtfs_cache:
-            # self._rtfs_caching_task = self.cog.cogsutils.create_loop(self._build_rtfs_cache, name=f"{self.name}: Build RTFS Cache", limit_count=1)
+        # self._rtfs_caching_task = self.cog.cogsutils.create_loop(self._build_rtfs_cache, name=f"{self.name}: Build RTFS Cache", limit_count=1)
 
     async def _build_rtfm_cache(self, recache: bool = False):
         if self._rtfm_cache is not None and not recache:
@@ -308,7 +413,9 @@ class Source:
         self.cog.log.debug(f"{self.name}: RTFM cache built.")
         return self._rtfm_cache
 
-    async def _build_docs_cache(self, recache: bool = False) -> typing.Dict[str, typing.List[Documentation]]:
+    async def _build_docs_cache(
+        self, recache: bool = False
+    ) -> typing.Dict[str, typing.List[Documentation]]:
         if self._docs_cache and not recache:
             return self._docs_cache
         self._docs_cache = []
@@ -317,7 +424,9 @@ class Source:
         start = time.monotonic()
         self.cog._docs_stats[self.name] = {"manuals": 0, "documentations": 0}
 
-        _manuals = set([obj.uri.split("#")[0] for obj in self._rtfm_cache.objects if obj.domain != "std"])
+        _manuals = set(
+            [obj.uri.split("#")[0] for obj in self._rtfm_cache.objects if obj.domain != "std"]
+        )
         manuals = []
         for manual in _manuals:
             if manual.endswith("#$"):
@@ -337,9 +446,14 @@ class Source:
                 self.cog._docs_stats[self.name]["manuals"] += 1
                 self.cog._docs_stats["GLOBAL"]["manuals"] += 1
                 if self.cog.cogsutils.is_dpy2:
-                    self.cog.log.trace(f"{self.name}: `{name}` documentation added to documentation cache.")
+                    self.cog.log.trace(
+                        f"{self.name}: `{name}` documentation added to documentation cache."
+                    )
             except Exception as e:
-                self.cog.log.debug(f"{self.name}: Error occured while trying to cache `{name}` documentation.", exc_info=e)
+                self.cog.log.debug(
+                    f"{self.name}: Error occured while trying to cache `{name}` documentation.",
+                    exc_info=e,
+                )
                 self._docs_caching_progress[name] = e
         amount = len(self._docs_cache)
         end = time.monotonic()
@@ -348,7 +462,9 @@ class Source:
         total_duration = end - self.cog._load_time
         if total_duration > self.cog._caching_time["GLOBAL"]:
             self.cog._caching_time["GLOBAL"] = total_duration
-        self.cog.log.debug(f"{self.name}: Successfully cached {amount} Documentations/{len(manuals)} manuals.")
+        self.cog.log.debug(
+            f"{self.name}: Successfully cached {amount} Documentations/{len(manuals)} manuals."
+        )
         return self._docs_cache
 
     async def _get_html(self, url: str, timeout: int = 0) -> str:
@@ -368,6 +484,7 @@ class Source:
                 elif only is None and elem.name == name:
                     return True
                 return False
+
             if is_valid(elem, "a"):
                 tag_name = elem.text
                 tag_href = elem["href"]
@@ -404,9 +521,9 @@ class Source:
                     name=name,
                     domain="py",
                     role="method",
-                    priority='1',
-                    uri=page_url[len(self.url):] + "#$",
-                    dispname='-'
+                    priority="1",
+                    uri=page_url[len(self.url) :] + "#$",
+                    dispname="-",
                 )
                 setattr(_object, "fake", True)
                 self._rtfm_cache.objects.append(_object)
@@ -431,7 +548,9 @@ class Source:
                 break
             if isinstance(child, NavigableString):
                 continue
-            if child.attrs.get("class") is not None and not (child.name == "ul" and child.attrs.get("class") == ["simple"]):
+            if child.attrs.get("class") is not None and not (
+                child.name == "ul" and child.attrs.get("class") == ["simple"]
+            ):
                 break
             if child.name == "p":
                 elements = []
@@ -457,24 +576,22 @@ class Source:
 
         # Examples
         examples = Examples()
-        for child in documentation.find_all("div", class_=["highlight-python3", "highlight-default", "highlight"], recursive=False):
+        for child in documentation.find_all(
+            "div", class_=["highlight-python3", "highlight-default", "highlight"], recursive=False
+        ):
             examples.append(child.find("pre").text)
 
         # Fields
         fields = {}
-        if supported_operations := documentation.find(
-            "div", class_="operations", recursive=False
-        ):
+        if supported_operations := documentation.find("div", class_="operations", recursive=False):
             items: typing.List[typing.Set] = []  # typing.List[set[str, str]]
-            for supported_operation in supported_operations.findChildren(
-                "dl", class_="describe"
-            ):
-                operation = supported_operation.find(
-                    "span", class_="descname"
-                ).text.strip()
-                desc = self._get_text(
-                    supported_operation.find("dd", recursive=False), parsed_url
-                ).strip().split("\n")[0]
+            for supported_operation in supported_operations.findChildren("dl", class_="describe"):
+                operation = supported_operation.find("span", class_="descname").text.strip()
+                desc = (
+                    self._get_text(supported_operation.find("dd", recursive=False), parsed_url)
+                    .strip()
+                    .split("\n")[0]
+                )
                 items.append((operation, desc))
             if items:
                 fields["Supported Operations"] = "\n".join(
@@ -487,7 +604,9 @@ class Source:
                 if "class" not in field.attrs:
                     continue
                 key = field.text
-                values: typing.List[Tag] = [x for x in field.next_siblings if isinstance(x, Tag)][0].find_all("p")
+                values: typing.List[Tag] = [x for x in field.next_siblings if isinstance(x, Tag)][
+                    0
+                ].find_all("p")
                 elements: typing.List[typing.List[str]] = []
                 for value in values:
                     texts = []
@@ -495,7 +614,15 @@ class Source:
                         text = self._get_text(element, parsed_url)
                         texts.append(text.replace("\n", " "))
                     elements.append(texts)
-                fields[key] = "\n".join(("• " if key in ["Parameters", "Raises"] and element[0].startswith("**") else "") + "".join(element) for element in elements)
+                fields[key] = "\n".join(
+                    (
+                        "• "
+                        if key in ["Parameters", "Raises"] and element[0].startswith("**")
+                        else ""
+                    )
+                    + "".join(element)
+                    for element in elements
+                )
 
         # Parameters
         parameters = Parameters()
@@ -518,9 +645,15 @@ class Source:
             child: Tag = child
             if isinstance(child, NavigableString):
                 continue
-            if child.attrs.get("class") is not None and child.attrs.get("class") == ["sig", "sig-object"]:
+            if child.attrs.get("class") is not None and child.attrs.get("class") == [
+                "sig",
+                "sig-object",
+            ]:
                 break
-            if child.name == "div" and (child.attrs.get("class") == ["versionchanged"] or child.attrs.get("class") == ["versionadded"]):
+            if child.name == "div" and (
+                child.attrs.get("class") == ["versionchanged"]
+                or child.attrs.get("class") == ["versionadded"]
+            ):
                 _child = child.find("p")
                 elements = []
                 for element in _child.contents:
@@ -578,7 +711,10 @@ class Source:
                         role = None
                 else:
                     role = None
-                if (item.attrs.get("class") == ["py", "attribute"] or item.attrs.get("class") == ["py", "property"]) and len(infos) > 1:
+                if (
+                    item.attrs.get("class") == ["py", "attribute"]
+                    or item.attrs.get("class") == ["py", "property"]
+                ) and len(infos) > 1:
                     description = [x.strip() for x in infos][1]
                 else:
                     description = None
@@ -589,6 +725,7 @@ class Source:
                 url = urljoin(full_url, href)
                 results[name] = Attribute(name=name, role=role, url=url, description=description)
             return results
+
         attributes: typing.Dict[str, typing.List[Attribute]] = {}
         attribute_list = documentation.find_all("dl", class_="py attribute")
         if attribute_list:
@@ -624,12 +761,15 @@ class Source:
         def bs4(content: str):
             strainer = SoupStrainer("dl")
             soup = BeautifulSoup(content, "lxml", parse_only=strainer)
-            if self._rtfm_cache is not None and (self._rtfm_caching_task is None or not self._rtfm_caching_task.currently_running):
+            if self._rtfm_cache is not None and (
+                self._rtfm_caching_task is None or not self._rtfm_caching_task.currently_running
+            ):
                 e1 = soup.find_all("dt", id=[x.name for x in self._rtfm_cache.objects])
             else:
                 e1 = ResultSet(strainer)
             e2 = soup.find_all("dt", class_="sig sig-object py")
             return ResultSet(strainer, set(e1 + e2))
+
         elements = await bs4(await self._get_html(url))
         results = []
         for element in elements:
@@ -649,7 +789,9 @@ class Source:
         exclude_std: bool = False,
         with_raw_search: bool = False,
     ) -> SearchResults:
-        if self._rtfm_cache is None or (self._rtfm_caching_task is not None and self._rtfm_caching_task.currently_running):
+        if self._rtfm_cache is None or (
+            self._rtfm_caching_task is not None and self._rtfm_caching_task.currently_running
+        ):
             raise RuntimeError(_("RTFM caching isn't finished."))
         start = time.monotonic()
 
@@ -670,11 +812,7 @@ class Source:
 
         def get_name(obj: DataObjStr) -> str:
             name = (
-                obj.name
-                if obj.name
-                else obj.dispname
-                if obj.dispname not in ["-", None]
-                else None
+                obj.name if obj.name else obj.dispname if obj.dispname not in ["-", None] else None
             )
             original_name = name
             if obj.domain == "std":
@@ -696,8 +834,7 @@ class Source:
             reverse=True,
         )
         results = [
-            (*get_name(item), build_uri(item), bool(item.domain == "std"))
-            for item in matches
+            (*get_name(item), build_uri(item), bool(item.domain == "std")) for item in matches
         ]
         results = [result for result in results if not result[2].startswith("c-api/")]
         if exclude_std:

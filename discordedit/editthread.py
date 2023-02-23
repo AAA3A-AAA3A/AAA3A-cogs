@@ -38,8 +38,11 @@ else:
 
 ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
 
+
 class Emoji(commands.EmojiConverter):
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.Union[discord.PartialEmoji, str]:
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Union[discord.PartialEmoji, str]:
         argument = str(argument)
         argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
@@ -191,7 +194,10 @@ class EditThread(commands.Cog):
 
     @editthread.command(name="autoarchiveduration")
     async def editthread_auto_archive_duration(
-        self, ctx: commands.Context, thread: discord.Thread, auto_archive_duration: commands.Literal["60", "1440", "4320", "10080"]
+        self,
+        ctx: commands.Context,
+        thread: discord.Thread,
+        auto_archive_duration: commands.Literal["60", "1440", "4320", "10080"],
     ) -> None:
         """Edit thread auto archive duration."""
         await self.check_thread(ctx, thread)
@@ -243,7 +249,10 @@ class EditThread(commands.Cog):
 
     @editthread.command(name="appliedtags")
     async def editthread_applied_tags(
-        self, ctx: commands.Context, thread: discord.Thread, applied_tags: commands.Greedy[ForumTagConverter]
+        self,
+        ctx: commands.Context,
+        thread: discord.Thread,
+        applied_tags: commands.Greedy[ForumTagConverter],
     ) -> None:
         """Edit thread applied tags.
 

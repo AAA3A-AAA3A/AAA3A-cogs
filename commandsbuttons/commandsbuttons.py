@@ -50,7 +50,9 @@ class CommandsButtons(commands.Cog):
             identifier=205192943327321000143939875896557571750,  # 370638632963
             force_registration=True,
         )
-        self.commands_buttons_guild: typing.Dict[str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]] = {
+        self.commands_buttons_guild: typing.Dict[
+            str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]
+        ] = {
             "commands_buttons": {},
         }
         self.config.register_guild(**self.commands_buttons_guild)
@@ -101,7 +103,9 @@ class CommandsButtons(commands.Cog):
 
     if CogsUtils().is_dpy2:
 
-        async def on_button_interaction(self, view: Buttons, interaction: discord.Interaction) -> None:
+        async def on_button_interaction(
+            self, view: Buttons, interaction: discord.Interaction
+        ) -> None:
             if await self.bot.cog_disabled_in_guild(self, interaction.guild):
                 return
             if not interaction.data["custom_id"].startswith("commands_buttons"):
@@ -334,11 +338,11 @@ class CommandsButtons(commands.Cog):
         }
         if self.cogsutils.is_dpy2:
             view = Buttons(
-                    timeout=None,
-                    buttons=self.get_buttons(config, message),
-                    function=self.on_button_interaction,
-                    infinity=True,
-                )
+                timeout=None,
+                buttons=self.get_buttons(config, message),
+                function=self.on_button_interaction,
+                infinity=True,
+            )
             await message.edit(view=view)
             self.cogsutils.views.append(view)
         else:
@@ -402,11 +406,11 @@ class CommandsButtons(commands.Cog):
             }
         if self.cogsutils.is_dpy2:
             view = Buttons(
-                    timeout=None,
-                    buttons=self.get_buttons(config, message),
-                    function=self.on_button_interaction,
-                    infinity=True,
-                )
+                timeout=None,
+                buttons=self.get_buttons(config, message),
+                function=self.on_button_interaction,
+                infinity=True,
+            )
             await message.edit(view=view)
             self.cogsutils.views.append(view)
         else:
@@ -477,7 +481,9 @@ class CommandsButtons(commands.Cog):
         """Clear all commands-buttons to a **guild**."""
         await self.config.guild(ctx.guild).commands_buttons.clear()
 
-    def get_buttons(self, config: typing.Dict, message: discord.Message) -> typing.List[typing.Dict[str, str]]:
+    def get_buttons(
+        self, config: typing.Dict, message: discord.Message
+    ) -> typing.List[typing.Dict[str, str]]:
         all_buttons = []
         if self.cogsutils.is_dpy2:
             for button in config[f"{message.channel.id}-{message.id}"]:

@@ -14,10 +14,10 @@ else:
     )  # isort:skip
 
 import datetime
-import chat_exporter
 import io
 from copy import deepcopy
 
+import chat_exporter
 from redbot.core import Config, modlog
 
 from .settings import settings
@@ -55,7 +55,20 @@ class TicketTool(settings, commands.Cog):
         self.tickettool_global: typing.Dict[str, typing.Optional[int]] = {
             "CONFIG_SCHEMA": None,
         }
-        self.tickettool_guild: typing.Dict[str, typing.Union[typing.Dict[str, typing.Dict[str, typing.Union[bool, str, typing.Optional[str], typing.Optional[int]]]], typing.Dict[str, typing.Union[bool, str, typing.Optional[str], typing.Optional[int]]]]] = {
+        self.tickettool_guild: typing.Dict[
+            str,
+            typing.Union[
+                typing.Dict[
+                    str,
+                    typing.Dict[
+                        str, typing.Union[bool, str, typing.Optional[str], typing.Optional[int]]
+                    ],
+                ],
+                typing.Dict[
+                    str, typing.Union[bool, str, typing.Optional[str], typing.Optional[int]]
+                ],
+            ],
+        ] = {
             "panels": {},
             "default_profile_settings": {
                 "enable": False,
@@ -103,7 +116,9 @@ class TicketTool(settings, commands.Cog):
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
-        _settings: typing.Dict[str, typing.Dict[str, typing.Union[typing.List[str], typing.Any, str]]] = {
+        _settings: typing.Dict[
+            str, typing.Dict[str, typing.Union[typing.List[str], typing.Any, str]]
+        ] = {
             "enable": {"path": ["enable"], "converter": bool, "description": "Enable the system."},
             "logschannel": {
                 "path": ["logschannel"],
@@ -516,7 +531,9 @@ class TicketTool(settings, commands.Cog):
         else:
             return True
 
-    async def create_modlog(self, ticket, action: str, reason: str) -> typing.Optional[modlog.Case]:
+    async def create_modlog(
+        self, ticket, action: str, reason: str
+    ) -> typing.Optional[modlog.Case]:
         config = await self.get_config(ticket.guild, ticket.panel)
         if config["create_modlog"]:
             case = await modlog.create_case(
@@ -988,7 +1005,9 @@ class TicketTool(settings, commands.Cog):
 
     if CogsUtils().is_dpy2:
 
-        async def on_button_interaction(self, view: Buttons, interaction: discord.Interaction) -> None:
+        async def on_button_interaction(
+            self, view: Buttons, interaction: discord.Interaction
+        ) -> None:
             permissions = interaction.channel.permissions_for(interaction.user)
             if not permissions.read_messages and not permissions.send_messages:
                 return
@@ -1186,9 +1205,7 @@ class TicketTool(settings, commands.Cog):
                         _("You are not allowed to execute this command."), ephemeral=True
                     )
                 else:
-                    await inter.followup(
-                        _("You have chosen to create a ticket."), ephemeral=True
-                    )
+                    await inter.followup(_("You have chosen to create a ticket."), ephemeral=True)
             elif inter.clicked_button.custom_id == "close_ticket_button":
                 ctx = await self.cogsutils.invoke_command(
                     author=inter.author, channel=inter.channel, command="ticket close"

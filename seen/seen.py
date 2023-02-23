@@ -44,7 +44,12 @@ class Seen(commands.Cog):
             identifier=205192943327321000143939875896557571750,  # 864398642893
             force_registration=True,
         )
-        self.global_config: typing.Dict[str, typing.Union[typing.Dict[str, typing.Union[typing.Dict[str, str], bool]], typing.List[int]]] = {
+        self.global_config: typing.Dict[
+            str,
+            typing.Union[
+                typing.Dict[str, typing.Union[typing.Dict[str, str], bool]], typing.List[int]
+            ],
+        ] = {
             "message": {},
             "message_edit": {},
             "reaction_add": {},
@@ -70,7 +75,12 @@ class Seen(commands.Cog):
         self.config.register_channel(**self.default_config)
         self.config.register_guild(**self.default_config)
 
-        self.cache: typing.Dict[str, typing.Union[typing.Dict[str, typing.Union[typing.Dict[str, str], str]], typing.List[str]]] = {
+        self.cache: typing.Dict[
+            str,
+            typing.Union[
+                typing.Dict[str, typing.Union[typing.Dict[str, str], str]], typing.List[str]
+            ],
+        ] = {
             "global": {},
             "users": {},
             "members": {},
@@ -587,13 +597,17 @@ class Seen(commands.Cog):
                 all_data_cache = self.cache["users"].get(_object.id, {})
             elif isinstance(_object, discord.Member):
                 all_data_config = await self.config.member(_object).all()
-                all_data_cache = self.cache["members"].get(_object.guild.id, {}).get(_object.id, {})
+                all_data_cache = (
+                    self.cache["members"].get(_object.guild.id, {}).get(_object.id, {})
+                )
             elif isinstance(_object, discord.Role):
                 all_data_config = await self.config.role(_object).all()
                 all_data_cache = self.cache["roles"].get(_object.guild.id, {}).get(_object.id, {})
             elif isinstance(_object, discord.TextChannel):
                 all_data_config = await self.config.channel(_object).all()
-                all_data_cache = self.cache["channels"].get(_object.guild.id, {}).get(_object.id, {})
+                all_data_cache = (
+                    self.cache["channels"].get(_object.guild.id, {}).get(_object.id, {})
+                )
             elif isinstance(_object, discord.CategoryChannel):
                 all_data_config = await self.config.channel(_object).all()
                 all_data_cache = (
@@ -607,7 +621,10 @@ class Seen(commands.Cog):
         if _type is not None:
             custom_ids = [
                 custom_id
-                for custom_id in [all_data_config.get(_type, None), all_data_cache.get(_type, None)]
+                for custom_id in [
+                    all_data_config.get(_type, None),
+                    all_data_cache.get(_type, None),
+                ]
                 if custom_id is not None
             ]
             if len(custom_ids) == 0:
@@ -782,32 +799,44 @@ class Seen(commands.Cog):
         embed.color = getattr(_object, "color", discord.Color.green())
         if isinstance(_object, discord.User):
             embed.set_author(
-                name=_("@{_object.display_name} was seen {seen}.").format(_object=_object, seen=seen),
+                name=_("@{_object.display_name} was seen {seen}.").format(
+                    _object=_object, seen=seen
+                ),
                 icon_url=_object.display_avatar if self.cogsutils.is_dpy2 else _object.avatar_url,
             )
         elif isinstance(_object, discord.Member):
             embed.set_author(
-                name=_("@{_object.display_name} was seen {seen}.").format(_object=_object, seen=seen),
+                name=_("@{_object.display_name} was seen {seen}.").format(
+                    _object=_object, seen=seen
+                ),
                 icon_url=_object.display_avatar if self.cogsutils.is_dpy2 else _object.avatar_url,
             )
         elif isinstance(_object, discord.Role):
             embed.set_author(
-                name=_("The role @&{_object.name} was seen {seen}.").format(_object=_object, seen=seen),
+                name=_("The role @&{_object.name} was seen {seen}.").format(
+                    _object=_object, seen=seen
+                ),
                 icon_url=None,
             )
         elif isinstance(_object, discord.TextChannel):
             embed.set_author(
-                name=_("The text channel #{_object.name} was seen {seen}.").format(_object=_object, seen=seen),
+                name=_("The text channel #{_object.name} was seen {seen}.").format(
+                    _object=_object, seen=seen
+                ),
                 icon_url=None,
             )
         elif isinstance(_object, discord.CategoryChannel):
             embed.set_author(
-                name=_("The category {_object.name} was seen {seen}.").format(_object=_object, seen=seen),
+                name=_("The category {_object.name} was seen {seen}.").format(
+                    _object=_object, seen=seen
+                ),
                 icon_url=None,
             )
         elif isinstance(_object, discord.Guild):
             embed.set_author(
-                name=_("The guild {_object.name} was seen {seen}.").format(_object=_object, seen=seen),
+                name=_("The guild {_object.name} was seen {seen}.").format(
+                    _object=_object, seen=seen
+                ),
                 icon_url=_object.icon if self.cogsutils.is_dpy2 else _object.icon_url,
             )
         if show_details:

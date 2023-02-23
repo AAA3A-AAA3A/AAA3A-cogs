@@ -2,7 +2,7 @@ from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from .types import SearchResults, Documentation
+from .types import Documentation, SearchResults
 
 
 class DocsSelectOption(discord.SelectOption):
@@ -47,7 +47,9 @@ class DocsView(discord.ui.View):
 
         self._message: discord.Message = None
         self._current: Documentation = None
-        self._mode: typing.Literal["documentation", "parameters", "examples", "attributes"] = "documentation"
+        self._mode: typing.Literal[
+            "documentation", "parameters", "examples", "attributes"
+        ] = "documentation"
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
@@ -94,21 +96,20 @@ class DocsView(discord.ui.View):
             attributes_button.disabled = not bool(doc.attributes)
 
         # Attributes pagination
-        back_button: discord.ui.Button = discord.utils.get(
-            self.children, custom_id="back_button"
-        )
+        back_button: discord.ui.Button = discord.utils.get(self.children, custom_id="back_button")
         if back_button:
             self.remove_item(back_button)
-        next_button: discord.ui.Button = discord.utils.get(
-            self.children, custom_id="next_button"
-        )
+        next_button: discord.ui.Button = discord.utils.get(self.children, custom_id="next_button")
         if next_button:
             self.remove_item(next_button)
 
         self._current = doc
         embed = doc.to_embed()
         content = None
-        if self.source._docs_caching_task is not None and self.source._docs_caching_task.currently_running:
+        if (
+            self.source._docs_caching_task is not None
+            and self.source._docs_caching_task.currently_running
+        ):
             content = "⚠️ The documentation cache is not yet fully built, building now."
         if self._message is None:
             self._message = await self.ctx.send(content=content, embed=embed, view=self)
@@ -122,8 +123,12 @@ class DocsView(discord.ui.View):
         await interaction.response.defer()
         await self._update(option.original_name)
 
-    @discord.ui.button(style=discord.ButtonStyle.grey, label="Show Parameters", custom_id="show_parameters", row=1)
-    async def show_parameters(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    @discord.ui.button(
+        style=discord.ButtonStyle.grey, label="Show Parameters", custom_id="show_parameters", row=1
+    )
+    async def show_parameters(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         if not self._current:
             return await interaction.response.send_message(
                 "Current variable is somehow empty, so attributes aren't loaded.",
@@ -135,19 +140,17 @@ class DocsView(discord.ui.View):
                 ephemeral=True,
             )
         await interaction.response.defer()
-        if self._mode == "parameters":  # back / self._message.embeds[0].title.startswith("Parameters")
+        if (
+            self._mode == "parameters"
+        ):  # back / self._message.embeds[0].title.startswith("Parameters")
             await self._update(self._current.name)
             return
 
         # Attributes pagination
-        back_button: discord.ui.Button = discord.utils.get(
-            self.children, custom_id="back_button"
-        )
+        back_button: discord.ui.Button = discord.utils.get(self.children, custom_id="back_button")
         if back_button:
             self.remove_item(back_button)
-        next_button: discord.ui.Button = discord.utils.get(
-            self.children, custom_id="next_button"
-        )
+        next_button: discord.ui.Button = discord.utils.get(self.children, custom_id="next_button")
         if next_button:
             self.remove_item(next_button)
 
@@ -155,11 +158,13 @@ class DocsView(discord.ui.View):
         if len(embeds) == 1:
             self._message = await self._message.edit(embed=embeds[0])
         else:
+
             async def _back_button(interaction: discord.Interaction):
                 await interaction.response.defer()
                 current = discord.utils.get(embeds, title=self._message.embeds[0].title)
                 current_embed = embeds[current - 1]
                 self._message = await self._message.edit(embed=current_embed)
+
             async def _next_button(interaction: discord.Interaction):
                 await interaction.response.defer()
                 current = discord.utils.get(embeds, title=self._message.embeds[0].title)
@@ -168,6 +173,7 @@ class DocsView(discord.ui.View):
                 except IndexError:
                     current_embed = embeds[0]
                 self._message = await self._message.edit(embed=current_embed)
+
             back_button = discord.ui.Button(
                 emoji="◀️",
                 custom_id="back_button",
@@ -187,8 +193,12 @@ class DocsView(discord.ui.View):
             self._message = await self._message.edit(embed=embeds[0], view=self)
             self._mode = "parameters"
 
-    @discord.ui.button(style=discord.ButtonStyle.grey, label="Show Examples", custom_id="show_examples", row=1)
-    async def show_examples(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    @discord.ui.button(
+        style=discord.ButtonStyle.grey, label="Show Examples", custom_id="show_examples", row=1
+    )
+    async def show_examples(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         if not self._current:
             return await interaction.response.send_message(
                 "Current variable is somehow empty, so examples aren't loaded.",
@@ -200,19 +210,17 @@ class DocsView(discord.ui.View):
                 ephemeral=True,
             )
         await interaction.response.defer()
-        if self._mode == "examples":  # back / self._message.embeds[0].title.startswith("Example") and self._message.embeds[0].title.endswith(":")
+        if (
+            self._mode == "examples"
+        ):  # back / self._message.embeds[0].title.startswith("Example") and self._message.embeds[0].title.endswith(":")
             await self._update(self._current.name)
             return
 
         # Attributes pagination
-        back_button: discord.ui.Button = discord.utils.get(
-            self.children, custom_id="back_button"
-        )
+        back_button: discord.ui.Button = discord.utils.get(self.children, custom_id="back_button")
         if back_button:
             self.remove_item(back_button)
-        next_button: discord.ui.Button = discord.utils.get(
-            self.children, custom_id="next_button"
-        )
+        next_button: discord.ui.Button = discord.utils.get(self.children, custom_id="next_button")
         if next_button:
             self.remove_item(next_button)
 
@@ -220,8 +228,12 @@ class DocsView(discord.ui.View):
         self._message = await self._message.edit(embeds=embeds, view=self)
         self._mode = "examples"
 
-    @discord.ui.button(style=discord.ButtonStyle.grey, label="Show Attributes", custom_id="show_attributes", row=1)
-    async def show_attributes(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    @discord.ui.button(
+        style=discord.ButtonStyle.grey, label="Show Attributes", custom_id="show_attributes", row=1
+    )
+    async def show_attributes(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         if not self._current:
             return await interaction.response.send_message(
                 "Current variable is somehow empty, so attributes aren't loaded.",
@@ -233,30 +245,30 @@ class DocsView(discord.ui.View):
                 ephemeral=True,
             )
         await interaction.response.defer()
-        if self._mode == "attributes":  # back / self._message.embeds[0].title.startswith(tuple([x.title() for x in self._current.attributes.__dataclass_fields__.keys()]))
+        if (
+            self._mode == "attributes"
+        ):  # back / self._message.embeds[0].title.startswith(tuple([x.title() for x in self._current.attributes.__dataclass_fields__.keys()]))
             await self._update(self._current.name)
             return
 
         # Attributes pagination
-        back_button: discord.ui.Button = discord.utils.get(
-            self.children, custom_id="back_button"
-        )
+        back_button: discord.ui.Button = discord.utils.get(self.children, custom_id="back_button")
         if back_button:
             self.remove_item(back_button)
-        next_button: discord.ui.Button = discord.utils.get(
-            self.children, custom_id="next_button"
-        )
+        next_button: discord.ui.Button = discord.utils.get(self.children, custom_id="next_button")
         if next_button:
             self.remove_item(next_button)
 
         embeds = self._current.attributes.to_embeds()
         if sum(len(embed) for embed in embeds) > 6000:
+
             async def _back_button(interaction: discord.Interaction):
                 await interaction.response.defer()
                 current = discord.utils.get(embeds, title=self._message.embeds[0].title)
                 current = embeds.index(current)
                 current_embed = embeds[current - 1]
                 self._message = await self._message.edit(embed=current_embed)
+
             async def _next_button(interaction: discord.Interaction):
                 await interaction.response.defer()
                 current = discord.utils.get(embeds, title=self._message.embeds[0].title)
@@ -266,6 +278,7 @@ class DocsView(discord.ui.View):
                 except IndexError:
                     current_embed = embeds[0]
                 self._message = await self._message.edit(embed=current_embed)
+
             back_button = discord.ui.Button(
                 emoji="◀️",
                 custom_id="back_button",
@@ -288,7 +301,9 @@ class DocsView(discord.ui.View):
         self._mode = "attributes"
 
     @discord.ui.button(style=discord.ButtonStyle.grey, emoji="❌", custom_id="close_page", row=2)
-    async def close_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    async def close_page(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:

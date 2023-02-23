@@ -33,7 +33,9 @@ class EditVoiceChannel(commands.Cog):
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
-    async def check_voice_channel(self, ctx: commands.Context, channel: discord.VoiceChannel) -> bool:
+    async def check_voice_channel(
+        self, ctx: commands.Context, channel: discord.VoiceChannel
+    ) -> bool:
         if (
             not self.cogsutils.check_permissions_for(
                 channel=channel, user=ctx.author, check=["manage_channel"]

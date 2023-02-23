@@ -34,7 +34,9 @@ class CmdChannel(commands.Cog):
             identifier=205192943327321000143939875896557571750,  # 793502759720
             force_registration=True,
         )
-        self.cmd_guild: typing.Dict[str, typing.Union[typing.Optional[discord.TextChannel], bool]] = {
+        self.cmd_guild: typing.Dict[
+            str, typing.Union[typing.Optional[discord.TextChannel], bool]
+        ] = {
             "logschannel": None,  # The channel for logs.
             "enabled_cmdchannel": True,  # Enable the possibility of commands.
             "confirmation_cmdchannel": False,  # Enable the confirmation.
@@ -52,7 +54,7 @@ class CmdChannel(commands.Cog):
         context = await self.bot.get_context(message)
         if context.prefix is None:
             return
-        command = context.message.content[len(str(context.prefix)):]
+        command = context.message.content[len(str(context.prefix)) :]
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
@@ -74,7 +76,9 @@ class CmdChannel(commands.Cog):
 
     @commands.mod()
     @cmdchannel.command()
-    async def channel(self, ctx: commands.Context, channel: discord.TextChannel, *, command: str) -> None:
+    async def channel(
+        self, ctx: commands.Context, channel: discord.TextChannel, *, command: str
+    ) -> None:
         """Act as if the command had been typed in the channel of your choice.
         The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.
         If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).

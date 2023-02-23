@@ -1453,7 +1453,7 @@ class CogsUtils(commands.Cog):
 
     async def check_in_listener(
         self, output, allowed_by_whitelist_blacklist: typing.Optional[bool] = True
-    ) -> boool:
+    ) -> bool:
         """
         Check all parameters for the output of any listener.
         Thanks to Jack! (https://discord.com/channels/133049272517001216/160386989819035648/825373605000511518)

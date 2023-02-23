@@ -21,6 +21,9 @@ from .menus import Menu
 if discord.version_info.major >= 2:
     from .views import Buttons, Modal
 
+if discord.version_info.major >= 2:  # To remove
+    setattr(commands, "Literal", typing.Literal)
+
 __all__ = ["Settings", "CustomMessageConverter"]
 
 if discord.version_info.major >= 2:
@@ -177,7 +180,12 @@ class CustomMessageConverter(commands.Converter, dict):
                 if embed.description is not None:
                     embed.description = embed.description.format_map(_env)
                 if getattr(embed, "_author", None) is not None:
-                    embed._author["name"] = embed._author["name"].format_map(_env)
+                    if "name" in embed._author:
+                        embed._author["name"] = embed._author["name"].format_map(_env)
+                    if "icon_url" in embed._author:
+                        embed._author["icon_url"] = embed._author["icon_url"].format_map(_env)
+                if getattr(embed, "_footer", None) is not None and "text" in embed._footer:
+                    embed._footer["text"] = embed._footer["text"].format_map(_env)
                 _kwargs["embed"] = embed
         _kwargs.update(**kwargs)
         return await channel.send(**_kwargs)
@@ -405,6 +413,18 @@ class Settings:
 
         if not self.use_profiles_system:
 
+            async def reset_setting(
+                _self, ctx: commands.Context, setting: str
+            ):
+                """Reset a setting."""
+                for _setting in self.settings:
+                    if self.settings[_setting]["command_name"] == setting:
+                        key = _setting
+                        break
+                else:
+                    raise commands.UserFeedbackCheckFailure(_("No setting found."))
+                await self.command(ctx, key=key, value=discord.utils.MISSING)
+
             async def show_settings(
                 _self, ctx: commands.Context, with_dev: typing.Optional[bool] = False
             ):
@@ -417,8 +437,20 @@ class Settings:
                 """Set all settings for the cog with a Discord Modal."""
                 await self.send_modal(ctx, confirmation=confirmation)
 
-            to_add = {"showsettings": show_settings, "modalconfig": modal_config}
+            to_add = {"resetsetting": reset_setting, "showsettings": show_settings, "modalconfig": modal_config}
         else:
+
+            async def reset_setting(
+                _self, ctx: commands.Context, profile: ProfileConverter, setting: str
+            ):
+                """Reset a setting."""
+                for _setting in self.settings:
+                    if self.settings[_setting]["command_name"] == setting:
+                        key = _setting
+                        break
+                else:
+                    raise commands.UserFeedbackCheckFailure(_("No setting found."))
+                await self.command(ctx, key=key, value=discord.utils.MISSING, profile=profile)
 
             async def show_settings(
                 _self,
@@ -468,6 +500,7 @@ class Settings:
                 await self.list_profiles(ctx)
 
             to_add = {
+                "resetsetting": reset_setting,
                 "showsettings": show_settings,
                 "modalconfig": modal_config,
                 "profileadd": add_profile,
@@ -491,6 +524,7 @@ class Settings:
                 pass
         if not (self.can_edit or force):
             for name in [
+                "resetsetting",
                 "modalconfig",
                 "profileadd",
                 "profileclone",
@@ -526,19 +560,14 @@ class Settings:
                 _converter = self.settings[setting]["converter"]
                 self.commands_group.remove_command(name)
                 _help = self.settings[setting]["description"]
-                _help += (
-                    "\n\nIf you do not specify a value, the default value will be restored.\nDev: "
-                    + repr(_converter)
-                )
+                _help += f"\n\nDev: {repr(_converter)}"
                 _usage = self.settings[setting]["usage"]
 
                 if not self.use_profiles_system:
 
                     async def command(
-                        _self, ctx: commands.Context, *, value: typing.Optional[_converter] = None
+                        _self, ctx: commands.Context, *, value: _converter
                     ):
-                        if value is None:
-                            value = discord.utils.MISSING
                         await self.command(ctx, key=None, value=value)
 
                 else:
@@ -548,10 +577,8 @@ class Settings:
                         ctx: commands.Context,
                         profile: ProfileConverter,
                         *,
-                        value: typing.Optional[_converter] = None,
+                        value: _converter
                     ):
-                        if value is None:
-                            value = discord.utils.MISSING
                         await self.command(ctx, key=None, value=value, profile=profile)
 
                 command.__qualname__ = f"{self.cog.qualified_name}.settings_{name}"
@@ -602,8 +629,7 @@ class Settings:
                     key = setting
                     break
             else:
-                await ctx.send("No setting found.")
-                return
+                raise commands.UserFeedbackCheckFailure(_("No setting found."))
         if value is None:
             value = ctx.kwargs["value"]
         if object is None:
@@ -620,6 +646,8 @@ class Settings:
             elif self.group == Config.USER:
                 object = ctx.author
         if value is not discord.utils.MISSING:
+            if isinstance(value, CustomMessageConverter):
+                value = value.to_dict()
             try:
                 await self.set_raw(
                     key=key,

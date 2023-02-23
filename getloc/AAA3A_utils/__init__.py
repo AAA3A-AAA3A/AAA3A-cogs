@@ -13,7 +13,16 @@ from .settings import Settings
 from .shared_cog import SharedCog
 
 if CogsUtils().is_dpy2:
-    from .views import Buttons, ChannelSelect, Dropdown, MentionableSelect, Modal, RoleSelect, Select, UserSelect  # NOQA
+    from .views import (
+        Buttons,
+        ChannelSelect,
+        Dropdown,
+        MentionableSelect,
+        Modal,
+        RoleSelect,
+        Select,
+        UserSelect,
+    )  # NOQA
 
 __author__ = "AAA3A"
 __all__ = [

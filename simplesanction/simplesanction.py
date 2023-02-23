@@ -14,7 +14,7 @@ import asyncio
 
 from discord.ext.commands import BadArgument
 from redbot.core import Config
-from redbot.core.commands.converter import parse_timedelta
+from redbot.core.commands.converter import parse_timedelta, timedelta
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate
 
@@ -22,12 +22,10 @@ from .settings import settings
 from .utils import utils
 
 # Credits:
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
+# General repo credits.
 # Thanks to Laggrons-dumb's WarnSystem cog (https://github.com/laggron42/Laggrons-Dumb-Cogs/tree/v3/warnsystem) for giving me some ideas and code for subcommands for a main command!
-# Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel!
+# Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
 # Thanks to @Aikaterna on the Redbot support server for help on displaying the main command help menu and other commands!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
 _ = Translator("SimpleSanction", __file__)
 
@@ -42,7 +40,7 @@ else:
 
 
 class TimeDeltaConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str):
+    async def convert(self, ctx: commands.Context, argument: str) -> timedelta:
         delta = parse_timedelta(argument)
         if delta is not None:
             return argument
@@ -54,7 +52,7 @@ class TimeDeltaConverter(commands.Converter):
 class SimpleSanction(settings, commands.Cog):
     """A cog to sanction a user!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
@@ -62,7 +60,7 @@ class SimpleSanction(settings, commands.Cog):
             identifier=205192943327321000143939875896557571750,  # 793615829052
             force_registration=True,
         )
-        self.sanction_guild = {
+        self.sanction_guild: typing.Dict[str, typing.Union[str, bool, int]] = {
             "color": 0xF00020,
             "thumbnail": "https://i.imgur.com/Bl62rGd.png",
             "show_author": True,
@@ -77,7 +75,7 @@ class SimpleSanction(settings, commands.Cog):
         }
         self.config.register_guild(**self.sanction_guild)
 
-        self.buttons_dict = [
+        self.buttons_dict: typing.List[typing.Dict[str, typing.Union[int, str, bool]]] = [
             {
                 "style": 2,
                 "label": "UserInfo",
@@ -156,7 +154,7 @@ class SimpleSanction(settings, commands.Cog):
                 "disabled": False,
             },
         ]
-        self.disabled_buttons_dict = [
+        self.disabled_buttons_dict: typing.List[typing.Dict[str, typing.Union[int, str, bool]]] = [
             {
                 "style": 2,
                 "label": "UserInfo",
@@ -235,7 +233,7 @@ class SimpleSanction(settings, commands.Cog):
                 "disabled": True,
             },
         ]
-        self.options_dict = [
+        self.options_dict: typing.List[typing.Dict[str, typing.Union[int, str]]] = [
             {"label": "UserInfo", "emoji": "ℹ️", "value": "SimpleSanction_userinfo_button"},
             {"label": "Warn", "emoji": "⚠️", "value": "SimpleSanction_warn_button"},
             {"label": "Ban", "emoji": "🔨", "value": "SimpleSanction_ban_button"},
@@ -253,12 +251,12 @@ class SimpleSanction(settings, commands.Cog):
             {"label": "Close", "emoji": "❌", "value": "SimpleSanction_close_button"},
         ]
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     if not CogsUtils().is_dpy2:
 
         @user_command(name="Sanction user")
-        async def sanctionusermenu(self, inter):
+        async def sanctionusermenu(self, inter) -> None:
             try:
                 await self.cogsutils.invoke_command(
                     author=inter.author, channel=inter.channel, command=f"sanction {inter.user.id}"
@@ -266,7 +264,7 @@ class SimpleSanction(settings, commands.Cog):
                 await inter.respond(
                     _(
                         "You have chosen to sanction {inter.user.mention} ({inter.user.id}) in {inter.channel.mention}."
-                    ).format(**locals()),
+                    ).format(inter=inter),
                     ephemeral=True,
                 )
             except Exception:
@@ -278,7 +276,7 @@ class SimpleSanction(settings, commands.Cog):
                 )
 
         @message_command(name="Sanction author")
-        async def sanctionmessagemenu(self, inter):
+        async def sanctionmessagemenu(self, inter) -> None:
             try:
                 await self.cogsutils.invoke_command(
                     author=inter.author,
@@ -288,7 +286,7 @@ class SimpleSanction(settings, commands.Cog):
                 await inter.respond(
                     _(
                         "You have chosen to sanction {inter.message.author.mention} ({inter.message.author.id}) in {inter.channel.mention}."
-                    ).format(**locals()),
+                    ).format(inter=inter),
                     ephemeral=True,
                 )
             except Exception:
@@ -345,7 +343,7 @@ class SimpleSanction(settings, commands.Cog):
             finish_message: typing.Optional[bool] = "",
             fake_action: typing.Optional[bool] = "",
             args: typing.Optional[str] = "",
-        ):
+        ) -> None:
             try:
                 if not confirmation == "":
                     confirmation = f" {confirmation}"
@@ -365,7 +363,7 @@ class SimpleSanction(settings, commands.Cog):
                 await inter.respond(
                     _(
                         "You have chosen to sanction {user.mention} ({user.id}) in {inter.channel.mention}."
-                    ).format(**locals()),
+                    ).format(inter=inter),
                     ephemeral=True,
                 )
             except Exception:
@@ -398,7 +396,7 @@ class SimpleSanction(settings, commands.Cog):
         duration: typing.Optional[TimeDeltaConverter] = None,
         *,
         reason: str = None,
-    ):
+    ) -> None:
         """
         Sanction a user quickly and easily.
 
@@ -450,7 +448,7 @@ class SimpleSanction(settings, commands.Cog):
         duration: typing.Optional[TimeDeltaConverter] = None,
         *,
         reason: str = None,
-    ):
+    ) -> None:
         """
         - Sanction a user quickly and easily.
 
@@ -492,7 +490,7 @@ class SimpleSanction(settings, commands.Cog):
         duration: typing.Optional[TimeDeltaConverter] = None,
         *,
         reason: str = None,
-    ):
+    ) -> None:
         """
          - :information_source: Show info on a user.
 
@@ -534,7 +532,7 @@ class SimpleSanction(settings, commands.Cog):
         duration: typing.Optional[TimeDeltaConverter] = None,
         *,
         reason: str = None,
-    ):
+    ) -> None:
         """
          - ⚠️ Set a simple warning on a user.
 
@@ -576,7 +574,7 @@ class SimpleSanction(settings, commands.Cog):
         duration: typing.Optional[TimeDeltaConverter] = None,
         *,
         reason: str = None,
-    ):
+    ) -> None:
         """
          - :hammer: Ban the member from the server.
 
@@ -620,7 +618,7 @@ class SimpleSanction(settings, commands.Cog):
         duration: typing.Optional[TimeDeltaConverter] = None,
         *,
         reason: str = None,
-    ):
+    ) -> None:
         """
          - :repeat_one: Softban the member from the server.
 
@@ -664,7 +662,7 @@ class SimpleSanction(settings, commands.Cog):
         duration: typing.Optional[TimeDeltaConverter] = None,
         *,
         reason: str = None,
-    ):
+    ) -> None:
         """
          - :dash: Tempban the member from the server.
 
@@ -710,7 +708,7 @@ class SimpleSanction(settings, commands.Cog):
         duration: typing.Optional[TimeDeltaConverter] = None,
         *,
         reason: str = None,
-    ):
+    ) -> None:
         """
          - :boot: Kick the member from the server.
 
@@ -752,7 +750,7 @@ class SimpleSanction(settings, commands.Cog):
         duration: typing.Optional[TimeDeltaConverter] = None,
         *,
         reason: str = None,
-    ):
+    ) -> None:
         """
          - :mute: Mute the user in all channels, including voice channels.
 
@@ -794,7 +792,7 @@ class SimpleSanction(settings, commands.Cog):
         duration: typing.Optional[TimeDeltaConverter] = None,
         *,
         reason: str = None,
-    ):
+    ) -> None:
         """
          - :punch: Mute the user in this channel.
 
@@ -836,7 +834,7 @@ class SimpleSanction(settings, commands.Cog):
         duration: typing.Optional[TimeDeltaConverter] = None,
         *,
         reason: str = None,
-    ):
+    ) -> None:
         """
          - :hourglass_flowing_sand: TempMute the user in all channels, including voice channels.
 
@@ -880,7 +878,7 @@ class SimpleSanction(settings, commands.Cog):
         duration: typing.Optional[TimeDeltaConverter] = None,
         *,
         reason: str = None,
-    ):
+    ) -> None:
         """
          - :hourglass: TempMute the user in this channel.
 
@@ -919,7 +917,7 @@ class SimpleSanction(settings, commands.Cog):
         delete_message: typing.Optional[bool] = None,
         duration: typing.Optional[TimeDeltaConverter] = None,
         reason: str = None,
-    ):
+    ) -> None:
         """Sanction a user quickly and easily."""
         config = await self.config.guild(ctx.guild).all()
         actual_thumbnail = config["thumbnail"]
@@ -983,7 +981,7 @@ class SimpleSanction(settings, commands.Cog):
             embed.title = _("Sanctioning a member")
             embed.description = _(
                 "This tool allows you to easily sanction a server member.\nUser mention: {user.mention} - User ID: {user.id}"
-            ).format(**locals())
+            ).format(user=user)
             embed.set_thumbnail(url=actual_thumbnail)
             embed.color = actual_color
             embed.set_author(
@@ -2029,7 +2027,7 @@ class SimpleSanction(settings, commands.Cog):
         delete_message: typing.Optional[bool] = None,
         duration: typing.Optional[TimeDeltaConverter] = None,
         reason: str = None,
-    ):
+    ) -> None:
         config = await self.config.guild(ctx.guild).all()
         actual_thumbnail = config["thumbnail"]
         actual_color = config["color"]
@@ -2049,7 +2047,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 finish_message,
                 _("Sanctioning a member - ℹ️ UserInfo"),
-                _("Here is the information about the user {user.name}!").format(**locals()),
+                _("Here is the information about the user {user.name}!").format(user=user),
                 actual_thumbnail,
                 actual_color,
                 user,
@@ -2060,7 +2058,7 @@ class SimpleSanction(settings, commands.Cog):
             if not fake_action:
                 if not ctx.bot.get_cog("Mod"):
                     await ctx.send(
-                        _("The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`.")
+                        _("The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`.").format(ctx=ctx)
                     )
                 command = f"userinfo {user.id}"
                 await self.cogsutils.invoke_command(
@@ -2080,8 +2078,8 @@ class SimpleSanction(settings, commands.Cog):
                     ctx,
                     reason,
                     actual_reason_required,
-                    _("Sanctioning a member - ⚠️ Warn").format(**locals()),
-                    _("Why do you want warn {user}? (Set `cancel` to cancel or `not` for none)"),
+                    _("Sanctioning a member - ⚠️ Warn"),
+                    _("Why do you want warn {user}? (Set `cancel` to cancel or `not` for none)").format(user=user),
                     actual_color,
                     user,
                     actual_timeout,
@@ -2092,7 +2090,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 confirmation,
                 _("Sanctioning a member - ⚠️ Warn"),
-                _("Do you really want to warn {user}?").format(**locals()),
+                _("Do you really want to warn {user}?").format(user=user),
                 actual_color,
                 user,
                 reason,
@@ -2105,7 +2103,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 finish_message,
                 _("Sanctioning a member - ⚠️ Warn"),
-                _("The user {user} has been received a warning!").format(**locals()),
+                _("The user {user} has been received a warning!").format(user=user),
                 actual_thumbnail,
                 actual_color,
                 user,
@@ -2118,13 +2116,13 @@ class SimpleSanction(settings, commands.Cog):
                     if not ctx.bot.get_cog("Warnings"):
                         await ctx.send(
                             _(
-                                "The cog Warnings is not loaded. To load it, do `{ctx.prefix}load warnings`. You can also install/load the WarnSystem cog."
+                                "The cog Warnings is not loaded. To load it, do `{ctx.prefix}load warnings`. You can also install/load the WarnSystem cog.".format(ctx=ctx)
                             )
                         )
                     if reason == "not":
-                        command = "warn {user.id} The reason was not given."
+                        command = f"warn {user.id} The reason was not given."
                     else:
-                        command = "warn {user.id} {reason}"
+                        command = f"warn {user.id} {reason}"
                 else:
                     if reason == "not":
                         command = f"warn 1 {user.id}"
@@ -2150,7 +2148,7 @@ class SimpleSanction(settings, commands.Cog):
                     _("Sanctioning a member - 🔨 Ban"),
                     _(
                         "Why do you want to ban {user}? (Set `cancel` to cancel or `not` to none)"
-                    ).format(**locals()),
+                    ).format(user=user),
                     actual_color,
                     user,
                     actual_timeout,
@@ -2161,7 +2159,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 confirmation,
                 _("Sanctioning a member - 🔨 Ban"),
-                _("Do you really want to ban {user}?").format(**locals()),
+                _("Do you really want to ban {user}?").format(user=user),
                 actual_color,
                 user,
                 reason,
@@ -2174,7 +2172,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 finish_message,
                 _("Sanctioning a member - 🔨 Ban"),
-                _("The user {user} has been banned!").format(**locals()),
+                _("The user {user} has been banned!").format(user=user),
                 actual_thumbnail,
                 actual_color,
                 user,
@@ -2188,7 +2186,7 @@ class SimpleSanction(settings, commands.Cog):
                         await ctx.send(
                             _(
                                 "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`. You can also install/load the WarnSystem cog."
-                            ).format(**locals())
+                            ).format(ctx=ctx))
                         )
                     if reason == "not":
                         command = f"ban {user.id}"
@@ -2219,7 +2217,7 @@ class SimpleSanction(settings, commands.Cog):
                     _("Sanctioning a member - 🔂 SoftBan"),
                     _(
                         "Why do you want to softban {user}? (Set `cancel` to cancel or `not` to none)"
-                    ).format(**locals()),
+                    ).format(user=user),
                     actual_color,
                     user,
                     actual_timeout,
@@ -2230,7 +2228,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 confirmation,
                 _("Sanctioning a member - 🔂 SoftBan"),
-                _("Do you really want to softban {user}?").format(**locals()),
+                _("Do you really want to softban {user}?").format(user=user),
                 actual_color,
                 user,
                 reason,
@@ -2243,7 +2241,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 finish_message,
                 _("Sanctioning a member - 🔂 SoftBan"),
-                _("The user {user} has been softbanned!").format(**locals()),
+                _("The user {user} has been softbanned!").format(user=user),
                 actual_thumbnail,
                 actual_color,
                 user,
@@ -2257,7 +2255,7 @@ class SimpleSanction(settings, commands.Cog):
                         await ctx.send(
                             _(
                                 "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`. You can also install/load the WarnSystem cog."
-                            ).format(**locals())
+                            ).format(ctx=ctx)
                         )
                     if reason == "not":
                         command = f"softban {user.id}"
@@ -2286,7 +2284,7 @@ class SimpleSanction(settings, commands.Cog):
                     duration,
                     _("Sanctioning a member - 💨 TempBan"),
                     _("How long do you want to tempban {user}? (Set `cancel` to cancel)").format(
-                        **locals()
+                        user=user
                     ),
                     actual_color,
                     user,
@@ -2302,7 +2300,7 @@ class SimpleSanction(settings, commands.Cog):
                     _("Sanctioning a member - 💨 TempBan"),
                     _(
                         "Why do you want to tempban {user}? (Set `cancel` to cancel or `not` to none)"
-                    ).format(**locals()),
+                    ).format(user=user),
                     actual_color,
                     user,
                     actual_timeout,
@@ -2313,7 +2311,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 confirmation,
                 _("Sanctioning a member - 💨 TempBan"),
-                _("Do you really want to tempban {user}?").format(**locals()),
+                _("Do you really want to tempban {user}?").format(user=user),
                 actual_color,
                 user,
                 reason,
@@ -2326,7 +2324,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 finish_message,
                 _("Sanctioning a member - 💨 TempBan"),
-                _("The user {user} has been tempban!").format(**locals()),
+                _("The user {user} has been tempban!").format(user=user),
                 actual_thumbnail,
                 actual_color,
                 user,
@@ -2340,7 +2338,7 @@ class SimpleSanction(settings, commands.Cog):
                         await ctx.send(
                             _(
                                 "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`. You can also install/load the WarnSystem cog."
-                            ).format(**locals())
+                            ).format(ctx=ctx)
                         )
                     if reason == "not":
                         command = f"tempban {user.id} {duration}"
@@ -2371,7 +2369,7 @@ class SimpleSanction(settings, commands.Cog):
                     _("Sanctioning a member - 👢 Kick"),
                     _(
                         "Why do you want to kick {user}? (Set `cancel` to cancel or `not` to none)"
-                    ).format(**locals()),
+                    ).format(user=user),
                     actual_color,
                     user,
                     actual_timeout,
@@ -2384,7 +2382,7 @@ class SimpleSanction(settings, commands.Cog):
                 _("Sanctioning a member - 👢 Kick"),
                 _(
                     "Why do you want to kick {user}? (Set `cancel` to cancel or `not` to none)"
-                ).format(**locals()),
+                ).format(user=user),
                 actual_color,
                 user,
                 reason,
@@ -2397,7 +2395,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 finish_message,
                 _("Sanctioning a member - 👢 Kick"),
-                _("The user {user} has been kicked!").format(**locals()),
+                _("The user {user} has been kicked!").format(user=user),
                 actual_thumbnail,
                 actual_color,
                 user,
@@ -2411,7 +2409,7 @@ class SimpleSanction(settings, commands.Cog):
                         await ctx.send(
                             _(
                                 "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`. You can also install/load the WarnSystem cog."
-                            ).format(**locals())
+                            ).format(ctx=ctx)
                         )
                     if reason == "not":
                         command = f"kick {user.id}"
@@ -2442,7 +2440,7 @@ class SimpleSanction(settings, commands.Cog):
                     _("Sanctioning a member - 🔇 Mute"),
                     _(
                         "Why do you want to mute {user}? (Set `cancel` to cancel or `not` to none)"
-                    ).format(**locals()),
+                    ).format(user=user),
                     actual_color,
                     user,
                     actual_timeout,
@@ -2453,7 +2451,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 confirmation,
                 _("Sanctioning a member - 🔇 Mute"),
-                _("Do you really want to mute {user}?").format(**locals()),
+                _("Do you really want to mute {user}?").format(user=user),
                 actual_color,
                 user,
                 reason,
@@ -2466,7 +2464,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 finish_message,
                 _("Sanctioning a member - 🔇 Mute"),
-                _("The user {user} has been muted!").format(**locals()),
+                _("The user {user} has been muted!").format(user=user),
                 actual_thumbnail,
                 actual_color,
                 user,
@@ -2480,7 +2478,7 @@ class SimpleSanction(settings, commands.Cog):
                         await ctx.send(
                             _(
                                 "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`. You can also install/load the WarnSystem cog."
-                            ).format(**locals())
+                            ).format(ctx=ctx)
                         )
                     if reason == "not":
                         command = f"mute {user.id}"
@@ -2511,7 +2509,7 @@ class SimpleSanction(settings, commands.Cog):
                     _("Sanctioning a member - 👊 MuteChannel"),
                     _(
                         "Why do you want to mute {user} in {ctx.channel.mention}? (Set `cancel` to cancel or `not` to none)"
-                    ).format(**locals()),
+                    ).format(user=user, ctx=ctx),
                     actual_color,
                     user,
                     actual_timeout,
@@ -2523,7 +2521,7 @@ class SimpleSanction(settings, commands.Cog):
                 confirmation,
                 _("Sanctioning a member - 👊 MuteChannel"),
                 _("Do you really want to mute {user} in {ctx.channel.mention}?").format(
-                    **locals()
+                    user=user, ctx=ctx
                 ),
                 actual_color,
                 user,
@@ -2537,7 +2535,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 finish_message,
                 _("Sanctioning a member - 👊 MuteChannel"),
-                _("The user {user} has been muted in #{ctx.channel.name}!").format(**locals()),
+                _("The user {user} has been muted in #{ctx.channel.name}!").format(user=user, ctx=ctx),
                 actual_thumbnail,
                 actual_color,
                 user,
@@ -2550,7 +2548,7 @@ class SimpleSanction(settings, commands.Cog):
                     await ctx.send(
                         _(
                             "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`."
-                        ).format(**locals())
+                        ).format(ctx=ctx)
                     )
                 if reason == "not":
                     command = f"mutechannel {user.id}"
@@ -2573,9 +2571,7 @@ class SimpleSanction(settings, commands.Cog):
                     ctx,
                     duration,
                     _("Sanctioning a member - ⏳ TempMute"),
-                    _("How long do you want to tempmute {user}? (Set `cancel` to cancel)").format(
-                        **locals()
-                    ),
+                    _("How long do you want to tempmute {user}? (Set `cancel` to cancel)").format(user=user),
                     actual_color,
                     user,
                     actual_timeout,
@@ -2590,7 +2586,7 @@ class SimpleSanction(settings, commands.Cog):
                     _("Sanctioning a member - ⏳ TempMute"),
                     _(
                         "Why do you want to tempmute {user}? (Set `cancel` to cancel or `not` to none)"
-                    ).format(**locals()),
+                    ).format(user=user),
                     actual_color,
                     user,
                     actual_timeout,
@@ -2601,7 +2597,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 confirmation,
                 _("Sanctioning a member - ⏳ TempMute"),
-                _("Do you really want to tempmute {user}?").format(**locals()),
+                _("Do you really want to tempmute {user}?").format(user=user),
                 actual_color,
                 user,
                 reason,
@@ -2614,7 +2610,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 finish_message,
                 _("Sanctioning a member - ⏳ TempMute"),
-                _("The user {user} has been tempmuted!").format(**locals()),
+                _("The user {user} has been tempmuted!").format(user=user),
                 actual_thumbnail,
                 actual_color,
                 user,
@@ -2628,7 +2624,7 @@ class SimpleSanction(settings, commands.Cog):
                         await ctx.send(
                             _(
                                 "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`. You can also install/load the WarnSystem cog."
-                            ).format(**locals())
+                            ).format(ctx=ctx)
                         )
                     if reason == "not":
                         command = f"mute {user.id} {duration}"
@@ -2658,7 +2654,7 @@ class SimpleSanction(settings, commands.Cog):
                     _("Sanctioning a member - ⌛ TempMuteChannel"),
                     _(
                         "How long do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` to cancel)"
-                    ).format(**locals()),
+                    ).format(user=user, ctx=ctx),
                     actual_color,
                     user,
                     actual_timeout,
@@ -2673,7 +2669,7 @@ class SimpleSanction(settings, commands.Cog):
                     _("Sanctioning a member - ⌛ TempMuteChannel"),
                     _(
                         "Why do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` to cancel or `not` to none)"
-                    ).format(**locals()),
+                    ).format(user=user, ctx=ctx),
                     actual_color,
                     user,
                     actual_timeout,
@@ -2684,9 +2680,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 confirmation,
                 _("Sanctioning a member - ⌛ TempMuteChannel"),
-                _("Do you really want to tempmute {user} in {ctx.channel.mention}?").format(
-                    **locals()
-                ),
+                _("Do you really want to tempmute {user} in {ctx.channel.mention}?").format(user=user, ctx=ctx),
                 actual_color,
                 user,
                 reason,
@@ -2699,7 +2693,7 @@ class SimpleSanction(settings, commands.Cog):
                 ctx,
                 finish_message,
                 _("Sanctioning a member - ⌛ TempMuteChannel"),
-                _("The user {user} has been tempmuted in #{ctx.channel.name}!").format(**locals()),
+                _("The user {user} has been tempmuted in #{ctx.channel.name}!").format(user=user, ctx=ctx),
                 actual_thumbnail,
                 actual_color,
                 user,
@@ -2712,7 +2706,7 @@ class SimpleSanction(settings, commands.Cog):
                     await ctx.send(
                         _(
                             "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`."
-                        ).format(**locals())
+                        ).format(ctx=ctx)
                     )
                 if reason == "not":
                     command = f"mutechannel {user.id} {duration}"

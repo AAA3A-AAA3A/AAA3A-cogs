@@ -1,21 +1,20 @@
 from redbot.core import commands  # isort:skip
 import discord  # isort:skip
-
-from redbot.core.utils.chat_formatting import box, pagify
+import typing  # isort:skip
 
 from .types import SearchResults, Documentation
 
 
 class DocsSelectOption(discord.SelectOption):
     def __init__(self, original_name: str, *args, **kwargs) -> None:
-        self.original_name = original_name
+        self.original_name: str = original_name
         super().__init__(*args, **kwargs)
 
 
 class DocsSelect(discord.ui.Select):
-    def __init__(self, parent: discord.ui.View, results: SearchResults):
-        self._parent = parent
-        self.texts = {}
+    def __init__(self, parent: discord.ui.View, results: SearchResults) -> None:
+        self._parent: discord.ui.View = parent
+        self.texts: typing.Dict[str, typing.Tuple[str, str]] = {}
         for name, original_name, url, _ in results.results:
             if name not in self.texts.keys():
                 self.texts[name] = url, original_name
@@ -29,7 +28,7 @@ class DocsSelect(discord.ui.Select):
             row=0,
         )
 
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: discord.Interaction) -> None:
         option = discord.utils.get(self._options, label=self.values[0])
         await self._parent._callback(interaction, option)
 
@@ -40,19 +39,15 @@ class DocsView(discord.ui.View):
         ctx: commands.Context,
         query: str,
         source,
-    ):
+    ) -> None:
         super().__init__(timeout=60 * 5)
         self.ctx: commands.Context = ctx
         self.query: str = query
         self.source = source
+
         self._message: discord.Message = None
         self._current: Documentation = None
-
-    async def _callback(
-        self, interaction: discord.Interaction, option: discord.SelectOption
-    ):
-        await interaction.response.defer()
-        await self._update(option.original_name)
+        self._mode: typing.Literal["documentation", "parameters", "examples", "attributes"] = "documentation"
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
@@ -64,10 +59,14 @@ class DocsView(discord.ui.View):
 
     async def on_timeout(self) -> None:
         for child in self.children:
-            child.disabled = True
-        await self._message.edit(view=self)
+            if not child.style == discord.ButtonStyle.url:
+                child.disabled = True
+        try:
+            await self._message.edit(view=self)
+        except discord.HTTPException:
+            pass
 
-    async def _update(self, name: str):
+    async def _update(self, name: str) -> None:
         doc = None
         i = 0
         doc: Documentation = self.source.get_documentation(name)
@@ -115,8 +114,16 @@ class DocsView(discord.ui.View):
             self._message = await self.ctx.send(content=content, embed=embed, view=self)
         else:
             self._message = await self._message.edit(content=content, embed=embed)
+        self._mode = "documentation"
 
-    async def show_parameters(self, interaction: discord.Interaction) -> None:
+    async def _callback(
+        self, interaction: discord.Interaction, option: discord.SelectOption
+    ) -> None:
+        await interaction.response.defer()
+        await self._update(option.original_name)
+
+    @discord.ui.button(style=discord.ButtonStyle.grey, label="Show Parameters", custom_id="show_parameters", row=1)
+    async def show_parameters(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if not self._current:
             return await interaction.response.send_message(
                 "Current variable is somehow empty, so attributes aren't loaded.",
@@ -128,7 +135,7 @@ class DocsView(discord.ui.View):
                 ephemeral=True,
             )
         await interaction.response.defer()
-        if self._message.embeds[0].title.startswith("Parameters"):  # back
+        if self._mode == "parameters":  # back / self._message.embeds[0].title.startswith("Parameters")
             await self._update(self._current.name)
             return
 
@@ -178,8 +185,10 @@ class DocsView(discord.ui.View):
             next_button.callback = _next_button
             self.add_item(next_button)
             self._message = await self._message.edit(embed=embeds[0], view=self)
+            self._mode = "parameters"
 
-    async def show_examples(self, interaction: discord.Interaction) -> None:
+    @discord.ui.button(style=discord.ButtonStyle.grey, label="Show Examples", custom_id="show_examples", row=1)
+    async def show_examples(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if not self._current:
             return await interaction.response.send_message(
                 "Current variable is somehow empty, so examples aren't loaded.",
@@ -191,7 +200,7 @@ class DocsView(discord.ui.View):
                 ephemeral=True,
             )
         await interaction.response.defer()
-        if self._message.embeds[0].title.startswith("Example") and self._message.embeds[0].title.endswith(":"):  # back
+        if self._mode == "examples":  # back / self._message.embeds[0].title.startswith("Example") and self._message.embeds[0].title.endswith(":")
             await self._update(self._current.name)
             return
 
@@ -209,8 +218,10 @@ class DocsView(discord.ui.View):
 
         embeds = self._current.examples.to_embeds()
         self._message = await self._message.edit(embeds=embeds, view=self)
+        self._mode = "examples"
 
-    async def show_attributes(self, interaction: discord.Interaction) -> None:
+    @discord.ui.button(style=discord.ButtonStyle.grey, label="Show Attributes", custom_id="show_attributes", row=1)
+    async def show_attributes(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if not self._current:
             return await interaction.response.send_message(
                 "Current variable is somehow empty, so attributes aren't loaded.",
@@ -222,7 +233,7 @@ class DocsView(discord.ui.View):
                 ephemeral=True,
             )
         await interaction.response.defer()
-        if self._message.embeds[0].title.startswith(tuple([x.title() for x in self._current.attributes.__dataclass_fields__.keys()])):  # back
+        if self._mode == "attributes":  # back / self._message.embeds[0].title.startswith(tuple([x.title() for x in self._current.attributes.__dataclass_fields__.keys()]))
             await self._update(self._current.name)
             return
 
@@ -274,8 +285,10 @@ class DocsView(discord.ui.View):
             self._message = await self._message.edit(embed=embeds[0], view=self)
         else:
             self._message = await self._message.edit(embeds=embeds)
+        self._mode = "attributes"
 
-    async def close_page(self, interaction: discord.Interaction) -> None:
+    @discord.ui.button(style=discord.ButtonStyle.grey, emoji="❌", custom_id="close_page", row=2)
+    async def close_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:
@@ -286,37 +299,11 @@ class DocsView(discord.ui.View):
         except discord.HTTPException:
             pass
 
-    async def start(self):
+    async def start(self) -> None:
         results = await self.source.search(self.query, limit=25, exclude_std=True)
         self.results = results
         if not results or not results.results:
             raise RuntimeError("No results found.")
         select = DocsSelect(self, results)
         self.add_item(select)
-        parameters_button = discord.ui.Button(
-            label="Show Parameters", custom_id="show_parameters", style=discord.ButtonStyle.grey, row=1
-        )
-        parameters_button.callback = self.show_parameters
-        self.add_item(parameters_button)
-        example_button = discord.ui.Button(
-            label="Show Examples", custom_id="show_examples", style=discord.ButtonStyle.grey, row=1
-        )
-        example_button.callback = self.show_examples
-        self.add_item(example_button)
-        attributes_button = discord.ui.Button(
-            label="Show Attributes",
-            custom_id="show_attributes",
-            style=discord.ButtonStyle.grey,
-            row=1,
-        )
-        attributes_button.callback = self.show_attributes
-        self.add_item(attributes_button)
-        close_button = discord.ui.Button(
-            emoji="❌",
-            custom_id="close_page",
-            style=discord.ButtonStyle.grey,
-            row=2,
-        )
-        close_button.callback = self.close_page
-        self.add_item(close_button)
         await self._update(results.results[0][1])

@@ -7,15 +7,11 @@ import typing  # isort:skip
 
 import io
 from copy import deepcopy
-from typing import List, Optional, Tuple, Union
 
 from redbot.core import Config
 
 # Credits:
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to TrustyJAID for the code (a bit modified to work here and to improve as needed) for the log messages sent! (https://github.com/TrustyJAID/Trusty-cogs/tree/master/extendedmodlog)
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+# General repo credits.
 
 _ = Translator("AntiNuke", __file__)
 
@@ -33,7 +29,7 @@ else:
 class AntiNuke(commands.Cog):
     """A cog to remove all permissions from a person who deletes a channel!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
@@ -41,28 +37,28 @@ class AntiNuke(commands.Cog):
             identifier=205192943327321000143939875896557571750,  # 947269490247
             force_registration=True,
         )
-        self.antinuke_guild = {
+        self.antinuke_guild: typing.Dict[str, typing.Union[bool, int]] = {
             "logschannel": None,  # The channel for logs.
             "enabled": False,  # Enable the possibility.
             "user_dm": True,  # Enable the user dm.
             "number_detected_member": 1,  # Number.
             "number_detected_bot": 1,  # Number.
         }
-        self.antinuke_member = {
+        self.antinuke_member: typing.Dict[str, typing.Union[int, typing.List[int]]] = {
             "count": 0,  # The count of channel's deletes.
             "old_roles": [],  # The roles to be handed in if it wasn't a nuke.
         }
         self.config.register_guild(**self.antinuke_guild)
         self.config.register_member(**self.antinuke_member)
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     async def red_delete_data_for_user(
         self,
         *,
         requester: typing.Literal["discord_deleted_user", "owner", "user", "user_strict"],
         user_id: int,
-    ):
+    ) -> None:
         """Delete actions count and old roles, if the requester is `discord_deleted_user` or `owner`."""
         if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
             return
@@ -77,7 +73,7 @@ class AntiNuke(commands.Cog):
                 if members_data[guild] == {}:
                     del members_data[guild]
 
-    async def red_get_data_for_user(self, *, user_id: int):
+    async def red_get_data_for_user(self, *, user_id: int) -> typing.Dict[str, io.BytesIO]:
         """Get all data about the user."""
         data = {
             Config.GLOBAL: {},
@@ -105,7 +101,7 @@ class AntiNuke(commands.Cog):
         return {f"{self.qualified_name}.json": file}
 
     @commands.Cog.listener()
-    async def on_guild_channel_delete(self, old_channel: discord.abc.GuildChannel):
+    async def on_guild_channel_delete(self, old_channel: discord.abc.GuildChannel) -> None:
         """Remove all permissions from a user if they delete a channel."""
         config = await self.config.guild(old_channel.guild).all()
         logschannel = config["logschannel"]
@@ -150,8 +146,8 @@ class AntiNuke(commands.Cog):
                     try:
                         await perp.send(
                             _(
-                                "All your roles have been taken away because you have deleted channel #{old_channel}.\nYour former roles: {rolelist_name}"
-                            ).format(**locals())
+                                "All your roles have been taken away because you have deleted channel #{old_channel}.\nYour previous roles: {rolelist_name}"
+                            ).format(old_channel=old_channel, rolelist_name=rolelist_name)
                         )
                     except Exception:
                         pass
@@ -163,7 +159,7 @@ class AntiNuke(commands.Cog):
                                 role,
                                 reason=_(
                                     "All roles in {perp} ({perp.id}) roles have been removed as a result of the antinuke system being triggered on this server."
-                                ).format(**locals()),
+                                ).format(perp=perp),
                             )
                         except Exception:
                             pass
@@ -172,10 +168,10 @@ class AntiNuke(commands.Cog):
                     embed: discord.Embed = discord.Embed()
                     embed.title = _(
                         "The user {perp.name}#{perp.discriminator} has deleted the channel #{old_channel.name}!"
-                    ).format(**locals())
+                    ).format(perp=perp, old_channel=old_channel)
                     embed.description = _(
                         "To prevent him from doing anything else, I took away as many roles as my current permissions would allow.\nUser mention: {perp.mention} - User ID: {perp.id}"
-                    ).format(**locals())
+                    ).format(perp=perp)
                     embed.color = discord.Colour.dark_teal()
                     embed.set_author(
                         name=perp,
@@ -186,9 +182,7 @@ class AntiNuke(commands.Cog):
                     )
                     embed.add_field(
                         inline=False,
-                        name=_("Before I intervened, the user had the following roles:").format(
-                            **locals()
-                        ),
+                        name=_("Before I intervened, the user had the following roles:"),
                         value=rolelist_mention,
                     )
                     logschannel = self.bot.get_channel(logschannel)
@@ -202,9 +196,9 @@ class AntiNuke(commands.Cog):
     async def get_audit_log_reason(
         self,
         guild: discord.Guild,
-        target: Union[discord.abc.GuildChannel, discord.Member, discord.Role],
+        target: typing.Union[discord.abc.GuildChannel, discord.Member, discord.Role],
         action: discord.AuditLogAction,
-    ) -> Tuple[Optional[discord.abc.User], Optional[str]]:
+    ) -> typing.Tuple[typing.Optional[discord.abc.User], typing.Optional[str]]:
         perp = None
         reason = None
         if guild.me.guild_permissions.view_audit_log:
@@ -219,7 +213,7 @@ class AntiNuke(commands.Cog):
     @commands.guild_only()
     @commands.guildowner()
     @hybrid_group(name="setantinuke", aliases=["antinukeset"])
-    async def configuration(self, ctx: commands.Context):
+    async def configuration(self, ctx: commands.Context) -> None:
         """Configure AntiNuke for your server."""
 
     @configuration.command(
@@ -228,7 +222,7 @@ class AntiNuke(commands.Cog):
     )
     async def logschannel(
         self, ctx: commands.Context, *, channel: typing.Optional[discord.TextChannel] = None
-    ):
+    ) -> None:
         """Set a channel where events are registered.
 
         ``channel``: Text channel.
@@ -262,11 +256,11 @@ class AntiNuke(commands.Cog):
             return
 
         await self.config.guild(ctx.guild).logschannel.set(channel.id)
-        await ctx.send(_("Logging channel registered: {channel.mention}."))
+        await ctx.send(_("Logging channel registered: {channel.mention}.").format(channel=channel))
 
     async def check_permissions_in_channel(
-        self, permissions: List[str], channel: discord.TextChannel
-    ):
+        self, permissions: typing.List[str], channel: discord.TextChannel
+    ) -> None:
         """Function to checks if the permissions are available in a guild.
         This will return a list of the missing permissions.
         """
@@ -277,7 +271,7 @@ class AntiNuke(commands.Cog):
         ]
 
     @configuration.command(name="enable", aliases=["activate"], usage="<true_or_false>")
-    async def enable(self, ctx: commands.Context, state: bool):
+    async def enable(self, ctx: commands.Context, state: bool) -> None:
         """Enable or disable AntiNuke.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -289,14 +283,14 @@ class AntiNuke(commands.Cog):
         config = await self.config.guild(ctx.guild).all()
         actual_state_enabled = config["enabled"]
         if actual_state_enabled is state:
-            await ctx.send(_("AntiNuke is already set on {state}.").format(**locals()))
+            await ctx.send(_("AntiNuke is already set on {state}.").format(state=state))
             return
 
         await self.config.guild(ctx.guild).enabled.set(state)
-        await ctx.send(_("AntiNuke state registered: {state}.").format(**locals()))
+        await ctx.send(_("AntiNuke state registered: {state}.").format(state=state))
 
     @configuration.command(name="userdm", aliases=["dm"], usage="<true_or_false>")
-    async def userdm(self, ctx: commands.Context, state: bool):
+    async def userdm(self, ctx: commands.Context, state: bool) -> None:
         """Enable or disable User DM.
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -309,14 +303,14 @@ class AntiNuke(commands.Cog):
 
         actual_state_user_dm = config["user_dm"]
         if actual_state_user_dm is state:
-            await ctx.send(_("User DM is already set on {state}.").format(**locals()))
+            await ctx.send(_("User DM is already set on {state}.").format(state=state))
             return
 
         await self.config.guild(ctx.guild).user_dm.set(state)
-        await ctx.send(_("User DM state registered: {state}.").format(**locals()))
+        await ctx.send(_("User DM state registered: {state}.").format(state=state))
 
-    @configuration.command(name="nbmember", aliases=["membernb"], usage="<int>")
-    async def nbmember(self, ctx: commands.Context, int: int):
+    @configuration.command(name="nbmember", aliases=["membernb"], usage="<nb>")
+    async def nbmember(self, ctx: commands.Context, nb: int) -> None:
         """Number Detected - Member
 
         Before action, how many deleted channels should be detected?
@@ -326,11 +320,11 @@ class AntiNuke(commands.Cog):
             await ctx.send(_("Only the owner of this server can access these commands!"))
             return
 
-        await self.config.guild(ctx.guild).number_detected_member.set(int)
-        await ctx.send(_("Number Detected - Member registered: {int}.").format(**locals()))
+        await self.config.guild(ctx.guild).number_detected_member.set(nb)
+        await ctx.send(_("Number Detected - Member registered: {nb}.").format(nb=nb))
 
-    @configuration.command(name="nbbot", aliases=["botsnb"], usage="<int>")
-    async def nbbot(self, ctx: commands.Context, int: int):
+    @configuration.command(name="nbbot", aliases=["botsnb"], usage="<nb>")
+    async def nbbot(self, ctx: commands.Context, nb: int) -> None:
         """Number Detected - Bot
 
         Before action, how many deleted channels should be detected?
@@ -340,13 +334,13 @@ class AntiNuke(commands.Cog):
             await ctx.send(_("Only the owner of this server can access these commands!"))
             return
 
-        await self.config.guild(ctx.guild).number_detected_bot.set(int)
-        await ctx.send(_("Number Detected - Bot registered: {int}.").format(**locals()))
+        await self.config.guild(ctx.guild).number_detected_bot.set(nb)
+        await ctx.send(_("Number Detected - Bot registered: {nb}.").format(nb=nb))
 
     @configuration.command(name="resetuser", aliases=["userreset"], usage="<int>")
     async def resetuser(
         self, ctx: commands.Context, user: discord.Member, give_roles: bool = False
-    ):
+    ) -> None:
         """Reset number detected for a user."""
         if not ctx.author.id == ctx.guild.owner.id:
             await ctx.send(_("Only the owner of this server can access these commands!"))
@@ -368,10 +362,10 @@ class AntiNuke(commands.Cog):
                     *old_roles,
                     reason=_(
                         "All former roles of {user} ({user.id}) have been restored at the request of the server owner."
-                    ).format(**locals()),
+                    ).format(user=user),
                 )
-                await ctx.send(_("Restored roles for {user.name} ({user.id}).").format(**locals()))
+                await ctx.send(_("Restored roles for {user.name} ({user.id}).").format(user=user))
 
         await self.config.member(user).count.clear()
         await self.config.member(user).old_roles.clear()
-        await ctx.send(_("Count reset for {user.name} ({user.id}).").format(**locals()))
+        await ctx.send(_("Count reset for {user.name} ({user.id}).").format(user=user))

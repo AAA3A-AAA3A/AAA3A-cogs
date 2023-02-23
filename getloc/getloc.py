@@ -6,6 +6,7 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import io
+import logging
 import time
 
 import matplotlib.pyplot as plt
@@ -14,10 +15,8 @@ from geopy import Nominatim
 from mpl_toolkits.basemap import Basemap
 
 # Credits:
+# General repo credits.
 # Thanks to this tutorial (https://makersportal.com/blog/2018/8/16/rotating-globe-in-python-using-basemap-toolkit) for the map!
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
 _ = Translator("GetLoc", __file__)
 
@@ -35,13 +34,15 @@ else:
 class GetLoc(commands.Cog):
     """A cog to display information about a location based on its address or geographical coordinates!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
-    async def get_map(self, title: str, latitude: float, longitude: float):
-        fig = plt.figure(figsize=(7, 6))
+    async def get_map(self, title: str, latitude: float, longitude: float) -> io.BytesIO:
+        if "pyproj" in logging.Logger.manager.loggerDict:
+            logging.Logger.manager.loggerDict["pyproj"].setLevel(logging.INFO)
+        # fig = plt.figure(figsize=(7, 6))
         # set perspective angle
         lat_viewing_angle = latitude
         lon_viewing_angle = longitude
@@ -115,11 +116,11 @@ class GetLoc(commands.Cog):
         with_map: typing.Optional[bool] = True,
         *,
         adress_or_coordinates: str,
-    ):
+    ) -> None:
         """Display information about a location.
         You can provide a full address or gps coordinates.
         """
-        start = time.monotonic()
+        start: float = time.monotonic()
         loc = Nominatim(user_agent="GetLoc")
         try:
             localisation = loc.geocode(query=adress_or_coordinates, addressdetails=True)
@@ -173,7 +174,7 @@ class GetLoc(commands.Cog):
         else:
             file = None
 
-        end = time.monotonic()
+        end: float = time.monotonic()
         embed.set_footer(text=f"Generated in {end - start}s.")
 
         await ctx.reply(

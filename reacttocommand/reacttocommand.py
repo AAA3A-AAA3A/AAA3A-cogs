@@ -3,6 +3,7 @@ from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
+import typing  # isort:skip
 
 import asyncio
 
@@ -15,11 +16,9 @@ except ImportError:
     from emoji import EMOJI_DATA  # emoji>=2.0.0
 
 # Credits:
+# General repo credits.
 # The idea for this cog came from @fulksayyan on the cogboard! (https://cogboard.discord.red/t/hired-will-pay-custom-reaction-commands/782)
-# Thanks to Kuro for the emoji converter!(https://canary.discord.com/channels/133049272517001216/133251234164375552/1014520590239019048)
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+# Thanks to Kuro for the emoji converter (https://canary.discord.com/channels/133049272517001216/133251234164375552/1014520590239019048)!
 
 _ = Translator("ReactToCommand", __file__)
 
@@ -34,7 +33,7 @@ else:
 
 
 class Emoji(commands.EmojiConverter):
-    async def convert(self, ctx: commands.Context, argument: str):
+    async def convert(self, ctx: commands.Context, argument: str) -> typing.Union[discord.PartialEmoji, str]:
         argument = str(argument)
         argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
@@ -46,7 +45,7 @@ class Emoji(commands.EmojiConverter):
 class ReactToCommand(commands.Cog):
     """A cog to allow a user to execute a command by clicking on a reaction!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
@@ -55,24 +54,24 @@ class ReactToCommand(commands.Cog):
             force_registration=True,
         )
         self.CONFIG_SCHEMA = 2
-        self.reacttocommand_global = {
+        self.reacttocommand_global: typing.Dict[str, typing.Optional[int]] = {
             "CONFIG_SCHEMA": None,
         }
-        self.reacttocommand_guild = {
+        self.reacttocommand_guild: typing.Dict[str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]] = {
             "react_commands": {},
         }
         self.config.register_global(**self.reacttocommand_global)
         self.config.register_guild(**self.reacttocommand_guild)
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
         self.purge.no_slash = True
 
-        self.cache = []
+        self.cache: typing.List[commands.Context] = []
 
-    async def cog_load(self):
+    async def cog_load(self) -> None:
         await self.edit_config_schema()
 
-    async def edit_config_schema(self):
+    async def edit_config_schema(self) -> None:
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
         ALL_CONFIG_GUILD = await self.config.all()
         if ALL_CONFIG_GUILD == self.reacttocommand_guild:
@@ -141,12 +140,12 @@ class ReactToCommand(commands.Cog):
         self.cache.append(context)
 
     @commands.Cog.listener()
-    async def on_command_completion(self, ctx: commands.Context):
+    async def on_command_completion(self, ctx: commands.Context) -> None:
         if ctx in self.cache:
             self.cache.remove(ctx)
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: commands.Context, error: Exception):
+    async def on_command_error(self, ctx: commands.Context, error: Exception) -> None:
         if ctx not in self.cache:
             return
         self.cache.remove(ctx)
@@ -160,7 +159,7 @@ class ReactToCommand(commands.Cog):
             await ctx.send(inline(message))
 
     @commands.Cog.listener()
-    async def on_message_delete(self, message: discord.Message):
+    async def on_message_delete(self, message: discord.Message) -> None:
         if message.guild is None:
             return
         config = await self.config.guild(message.guild).react_commands.all()
@@ -193,10 +192,10 @@ class ReactToCommand(commands.Cog):
                 guild: discord.Guild,
                 channel: discord.TextChannel,
             ):
-                self.bot = bot
-                self.author = author
-                self.guild = guild
-                self.channel = channel
+                self.bot: Red = bot
+                self.author: discord.Member = author
+                self.guild: discord.Guild = guild
+                self.channel: discord.TextChannel = channel
 
         fake_context = FakeContext(self.bot, payload.member, guild, channel)
         emoji = await Emoji().convert(fake_context, emoji)
@@ -211,14 +210,14 @@ class ReactToCommand(commands.Cog):
     @commands.guild_only()
     @commands.is_owner()
     @hybrid_group(aliases=["rtc"])
-    async def reacttocommand(self, ctx: commands.Context):
+    async def reacttocommand(self, ctx: commands.Context) -> None:
         """Group of commands for use ReactToCommand."""
         pass
 
     @reacttocommand.command()
     async def add(
         self, ctx: commands.Context, message: discord.Message, emoji: Emoji, *, command: str
-    ):
+    ) -> None:
         """Add a command-reaction to a message.
         There should be no prefix in the command.
         The command will be invoked with the permissions of the user who clicked on the reaction.
@@ -260,7 +259,7 @@ class ReactToCommand(commands.Cog):
         await self.config.guild(ctx.guild).react_commands.set(config)
 
     @reacttocommand.command()
-    async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji):
+    async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji) -> None:
         """Remove a command-reaction to a message."""
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
@@ -281,7 +280,7 @@ class ReactToCommand(commands.Cog):
         await self.config.guild(ctx.guild).react_commands.set(config)
 
     @reacttocommand.command()
-    async def clear(self, ctx: commands.Context, message: discord.Message):
+    async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
         """Clear all commands-reactions to a message."""
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
@@ -297,6 +296,6 @@ class ReactToCommand(commands.Cog):
         await self.config.guild(ctx.guild).react_commands.set(config)
 
     @reacttocommand.command(hidden=True)
-    async def purge(self, ctx: commands.Context):
+    async def purge(self, ctx: commands.Context) -> None:
         """Clear all commands-reactions to a **guild**."""
         await self.config.guild(ctx.guild).react_commands.clear()

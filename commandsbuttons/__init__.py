@@ -10,7 +10,7 @@ from .commandsbuttons import CommandsButtons
 __red_end_user_data_statement__ = get_end_user_data_statement(file=__file__)
 
 
-async def setup(bot: Red):
+async def setup(bot: Red) -> None:
     cog = CommandsButtons(bot)
     await cog.cogsutils.add_cog(bot)
     if not CogsUtils().is_dpy2:

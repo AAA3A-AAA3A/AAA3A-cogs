@@ -8,10 +8,7 @@ import traceback
 from redbot.core.utils.chat_formatting import box, pagify
 
 # Credits:
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel.
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+# General repo credits.
 
 _ = Translator("AutoTraceback", __file__)
 
@@ -41,14 +38,14 @@ IGNORED_ERRORS = (
 class AutoTraceback(commands.Cog):
     """A cog to display the error traceback of a command automatically after the error!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.is_owner()
     @hybrid_command()
-    async def traceback(self, ctx: commands.Context, public: bool = False):
+    async def traceback(self, ctx: commands.Context, public: bool = False) -> None:
         """Sends to the owner the last command exception that has occurred.
 
         If public (yes is specified), it will be sent to the chat instead.
@@ -92,7 +89,7 @@ class AutoTraceback(commands.Cog):
             await ctx.send(_("No exception has occurred yet."))
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
+    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError) -> None:
         if ctx.author.id not in ctx.bot.owner_ids:
             return
         if isinstance(error, IGNORED_ERRORS):
@@ -107,5 +104,4 @@ class AutoTraceback(commands.Cog):
         try:
             await Menu(pages=pages, timeout=180, delete_after_timeout=False).start(ctx)
         except discord.HTTPException:
-            return
-        return
+            pass

@@ -26,10 +26,8 @@ import datetime
 from copy import copy
 
 # Credits:
+# General repo credits.
 # The idea for this cog came from Jack and Draper! This PR will take time, so I'm making it. If one day this one is integrated into Red, this cog may make it easier to manage. (https://github.com/Cog-Creators/Red-DiscordBot/pull/5419)
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
 _ = Translator("Sudo", __file__)
 
@@ -50,8 +48,8 @@ class Sudo(commands.Cog):
     def __init__(self, bot: Red):
         self.bot: Red = bot
 
-        self.__authors__ = ["AAA3A", "Draper", "jack1142 (Jackenmen#6607)"]
-        self.cogsutils = CogsUtils(cog=self)
+        self.__authors__: typing.List[str] = ["AAA3A", "Draper", "jack1142 (Jackenmen#6607)"]
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     async def cog_load(self):
         self.all_owner_ids = copy(self.bot.owner_ids)
@@ -73,10 +71,12 @@ class Sudo(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message):
+        if message.webhook_id is not None or message.author.bot:
+            return
         context = await self.bot.get_context(message)
         if context.prefix is None:
             return
-        command = context.message.content[len(str(context.prefix)) :]
+        command = context.message.content[len(str(context.prefix)):]
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]

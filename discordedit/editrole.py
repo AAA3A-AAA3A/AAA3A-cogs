@@ -25,12 +25,12 @@ ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions 
 class EditRole(commands.Cog):
     """A cog to edit roles!"""
 
-    def __init__(self, bot: Red):  # Never performed except manually.
+    def __init__(self, bot: Red) -> None:  # Never performed except manually.
         self.bot: Red = bot
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
-    async def check_role(self, ctx: commands.Context, role: discord.Role):
+    async def check_role(self, ctx: commands.Context, role: discord.Role) -> bool:
         if (
             not ctx.author.top_role > role
             and not ctx.author.id == ctx.guild.owner.id
@@ -39,14 +39,14 @@ class EditRole(commands.Cog):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "I can not let you edit {role.mention} ({role.id}) because that role is higher than or equal to your highest role in the Discord hierarchy."
-                ).format(**locals()),
+                ).format(role=role),
                 allowed_mentions=None,
             )
         if not ctx.guild.me.top_role > role:
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "I can not edit {role.mention} ({role.id}) because that role is higher than or equal to my highest role in the Discord hierarchy."
-                ).format(**locals()),
+                ).format(role=role),
                 allowed_mentions=None,
             )
         return True
@@ -55,7 +55,7 @@ class EditRole(commands.Cog):
     @commands.admin_or_permissions(manage_roles=True)
     @commands.bot_has_guild_permissions(manage_roles=True)
     @hybrid_group()
-    async def editrole(self, ctx: commands.Context):
+    async def editrole(self, ctx: commands.Context) -> None:
         """Commands for edit a role."""
         pass
 
@@ -66,7 +66,7 @@ class EditRole(commands.Cog):
         colour: typing.Optional[discord.ext.commands.converter.ColourConverter] = None,
         *,
         name: str,
-    ):
+    ) -> None:
         """Create a role."""
         try:
             await ctx.guild.create_role(
@@ -80,7 +80,7 @@ class EditRole(commands.Cog):
             )
 
     @editrole.command(name="name")
-    async def editrole_name(self, ctx: commands.Context, role: discord.Role, *, name: str):
+    async def editrole_name(self, ctx: commands.Context, role: discord.Role, *, name: str) -> None:
         """Edit role name."""
         await self.check_role(ctx, role)
         try:
@@ -96,7 +96,7 @@ class EditRole(commands.Cog):
     @editrole.command(name="colour", aliases=["color"])
     async def editrole_colour(
         self, ctx: commands.Context, role: discord.Role, colour: discord.Colour
-    ):
+    ) -> None:
         """Edit role colour."""
         await self.check_role(ctx, role)
         try:
@@ -112,7 +112,7 @@ class EditRole(commands.Cog):
     @editrole.command(name="mentionable")
     async def editrole_mentionable(
         self, ctx: commands.Context, role: discord.Role, mentionable: bool
-    ):
+    ) -> None:
         """Edit role mentionable."""
         await self.check_role(ctx, role)
         try:
@@ -126,7 +126,7 @@ class EditRole(commands.Cog):
             )
 
     class PositionConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, argument: str):
+        async def convert(self, ctx: commands.Context, argument: str) -> int:
             try:
                 position = int(argument)
             except ValueError:
@@ -136,7 +136,7 @@ class EditRole(commands.Cog):
                 raise commands.BadArgument(
                     _(
                         "The indicated position must be between 1 and {max_guild_roles_position}."
-                    ).format(**locals())
+                    ).format(max_guild_roles_position=max_guild_roles_position)
                 )
             l = [x for x in range(0, max_guild_roles_position - 1)]
             l.reverse()
@@ -147,7 +147,7 @@ class EditRole(commands.Cog):
     @editrole.command(name="position")
     async def editrole_position(
         self, ctx: commands.Context, role: discord.Role, position: PositionConverter
-    ):
+    ) -> None:
         """Edit role position.
 
         Warning: The role with a position 1 is the highest role in the Discord hierarchy.
@@ -164,7 +164,7 @@ class EditRole(commands.Cog):
             )
 
     class PermissionsConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, argument: str):
+        async def convert(self, ctx: commands.Context, argument: str) -> discord.Permissions:
             try:
                 permissions = int(argument)
             except ValueError:
@@ -175,7 +175,7 @@ class EditRole(commands.Cog):
                 raise commands.BadArgument(
                     _(
                         "The indicated permissions value must be between {permissions_none} and {permissions_all}."
-                    ).format(**locals())
+                    ).format(permissions_none=permissions_none, permissions_all=permissions_all)
                 )
             permissions = discord.Permissions(permissions=permissions)
             return permissions
@@ -183,7 +183,7 @@ class EditRole(commands.Cog):
     @editrole.command(name="permissions")
     async def editrole_permissions(
         self, ctx: commands.Context, role: discord.Role, permissions: PermissionsConverter
-    ):
+    ) -> None:
         """Edit role permissions.
 
         Warning: You must use the permissions value in numbers (admnistrator=8).
@@ -206,15 +206,15 @@ class EditRole(commands.Cog):
         ctx: commands.Context,
         role: discord.Role,
         confirmation: typing.Optional[bool] = False,
-    ):
-        """Delete role."""
+    ) -> None:
+        """Delete a role."""
         await self.check_role(ctx, role)
         if not confirmation:
             embed: discord.Embed = discord.Embed()
             embed.title = _("⚠️ - Delete role")
             embed.description = _(
                 "Do you really want to delete the role {role.mention} ({role.id})?"
-            ).format(**locals())
+            ).format(role=role)
             embed.color = 0xF00020
             if not await self.cogsutils.ConfirmationAsk(
                 ctx, content=f"{ctx.author.mention}", embed=embed

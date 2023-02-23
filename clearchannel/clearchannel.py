@@ -1,15 +1,14 @@
-from .AAA3A_utils import CogsUtils  # isort:skip
+from .AAA3A_utils import CogsUtils, Settings  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
+import typing  # isort:skip
 
 from redbot.core import Config
 
 # Credits:
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+# General repo credits.
 
 _ = Translator("ClearChannel", __file__)
 
@@ -27,7 +26,7 @@ else:
 class ClearChannel(commands.Cog):
     """A cog to transfer all messages channel in a other channel!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
@@ -42,21 +41,46 @@ class ClearChannel(commands.Cog):
         }
         self.config.register_guild(**self.clearchannel_guild)
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
+
+        _settings: typing.Dict[str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]] = {
+            "delete_channel": {
+                "path": ["channel_delete"],
+                "converter": bool,
+                "description": "If this option is disabled, the bot will not delete the original channel: it will duplicate it as normal, but move it to the end of the server's channel list.",
+            },
+            "first_message": {
+                "path": ["first_message"],
+                "converter": bool,
+                "description": "If this option is enabled, the bot will send a message to the emptied channel to inform that it has been emptied.",
+            },
+            "dm_author": {
+                "path": ["author_dm"],
+                "converter": bool,
+                "description": "If this option is enabled, the bot will try to send a dm to the author of the order to confirm that everything went well.",
+            }
+        }
+        self.settings: Settings = Settings(
+            bot=self.bot,
+            cog=self,
+            config=self.config,
+            group=self.config.GUILD,
+            settings=_settings,
+            global_path=[],
+            use_profiles_system=False,
+            can_edit=True,
+            commands_group=self.configuration,
+        )
 
     @commands.guild_only()
     @commands.guildowner()
     @commands.bot_has_permissions(manage_channels=True)
     @hybrid_command(name="clearchannel")
-    async def cleanup_channel(self, ctx: commands.Context, confirmation: bool = False):
+    async def cleanup_channel(self, ctx: commands.Context, confirmation: bool = False) -> None:
         """Delete ALL messages from the current channel by duplicating it and then deleting it.
         For security reasons, only the server owner and the bot owner can use the command. Use the "permissions" tool for more options.
         """
         config = await self.config.guild(ctx.guild).all()
-        actual_author_dm = config["author_dm"]
-        actual_channel_delete = config["channel_delete"]
-        actual_first_message = config["first_message"]
-
         old_channel = ctx.channel
         channel_position = old_channel.position
 
@@ -65,7 +89,7 @@ class ClearChannel(commands.Cog):
             embed.title = _("⚠️ - ClearChannel")
             embed.description = _(
                 "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?"
-            ).format(**locals())
+            ).format(old_channel=old_channel)
             embed.color = 0xF00020
             if not await self.cogsutils.ConfirmationAsk(
                 ctx, content=f"{ctx.author.mention}", embed=embed
@@ -73,41 +97,26 @@ class ClearChannel(commands.Cog):
                 await self.cogsutils.delete_message(ctx.message)
                 return
 
-        new_channel = await old_channel.clone(
-            reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(
-                **locals()
-            )
-        )
-        if actual_channel_delete:
+        reason = _("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(ctx=ctx)
+        new_channel = await old_channel.clone(reason=reason)
+        if config["channel_delete"]:
             await old_channel.delete(
-                reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(
-                    **locals()
-                )
+                reason=reason
             )
         else:
             await old_channel.edit(
-                name=_("🗑️-Deleted-{old_channel.name}").format(**locals()),
+                name=_("🗑️-Deleted-{old_channel.name}").format(old_channel=old_channel),
                 position=len(ctx.guild.channels),
-                reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(
-                    **locals()
-                ),
+                reason=reason,
             )
         await new_channel.edit(
             position=channel_position,
-            reason=_("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(
-                **locals()
-            ),
+            reason=reason,
         )
-        self.log.info(
-            _("%s (%s) deleted ALL messages in channel %s (%s).").format(**locals()),
-            ctx.author,
-            ctx.author.id,
-            ctx.channel,
-            ctx.channel.id,
-        )
-        if actual_first_message:
+        self.log.info(f"{ctx.author} ({ctx.author.id}) deleted ALL messages in channel {old_channel.name} ({old_channel.id})."),
+        if config["first_message"]:
             embed: discord.Embed = discord.Embed()
-            embed.title = _("ClearChannel").format(**locals())
+            embed.title = _("ClearChannel")
             embed.description = _("ALL the messages in this channel have been deleted...")
             embed.color = 0xF00020
             embed.set_author(
@@ -118,78 +127,16 @@ class ClearChannel(commands.Cog):
                 else ctx.author.avatar_url,
             )
             await new_channel.send(embed=embed)
-        if actual_author_dm:
+        if config["author_dm"]:
             await ctx.author.send(
                 _(
                     "All messages in channel #{old_channel.name} ({old_channel.id}) have been deleted! You can find the new channel, with the same permissions: #{new_channel.name} ({new_channel.id})."
-                ).format(**locals())
+                ).format(old_channel=old_channel, new_channel=new_channel)
             )
 
     @commands.guild_only()
     @commands.guildowner()
     @hybrid_group(name="setclearchannel", aliases=["clearchannelset"])
-    async def configuration(self, ctx: commands.Context):
+    async def configuration(self, ctx: commands.Context) -> None:
         """Configure ClearChannel for your server."""
-
-    @configuration.command(name="channeldelete", aliases=["delete"], usage="<true_or_false>")
-    async def channeldelete(self, ctx: commands.Context, state: bool):
-        """Enable or disable Channel Delete
-        If this option is enabled, the bot will not delete the original channel: it will duplicate it as normal, but move it to the end of the server's channel list.
-        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
-        """
-        if not ctx.author.id == ctx.guild.owner.id:
-            raise commands.UserFeedbackCheckFailure(
-                _("Only the owner of this server can access these commands!")
-            )
-
-        config = await self.config.guild(ctx.guild).all()
-
-        actual_channel_delete = config["channel_delete"]
-        if actual_channel_delete is state:
-            await ctx.send(_("Channel Delete is already set on {state}.").format(**locals()))
-            return
-
-        await self.config.guild(ctx.guild).channel_delete.set(state)
-        await ctx.send(_("Channel Delete state registered: {state}.").format(**locals()))
-
-    @configuration.command(name="firstmessage", aliases=["message"], usage="<true_or_false>")
-    async def firstmessage(self, ctx: commands.Context, state: bool):
-        """Enable or disable First Message
-        If this option is enabled, the bot will send a message to the emptied channel to warn that it has been emptied.
-        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
-        """
-        if not ctx.author.id == ctx.guild.owner.id:
-            raise commands.UserFeedbackCheckFailure(
-                _("Only the owner of this server can access these commands!")
-            )
-
-        config = await self.config.guild(ctx.guild).all()
-
-        actual_first_message = config["first_message"]
-        if actual_first_message is state:
-            await ctx.send(_("First Message is already set on {state}.").format(**locals()))
-            return
-
-        await self.config.guild(ctx.guild).first_message.set(state)
-        await ctx.send(_("First Message state registered: {state}.").format(**locals()))
-
-    @configuration.command(name="authordm", aliases=["dmauthor"], usage="<true_or_false>")
-    async def authordm(self, ctx: commands.Context, state: bool):
-        """Enable or disable Author dm
-        If this option is enabled, the bot will try to send a dm to the author of the order to confirm that everything went well.
-        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
-        """
-        if not ctx.author.id == ctx.guild.owner.id:
-            raise commands.UserFeedbackCheckFailure(
-                _("Only the owner of this server can access these commands!")
-            )
-
-        config = await self.config.guild(ctx.guild).all()
-
-        actual_author_dm = config["author_dm"]
-        if actual_author_dm is state:
-            await ctx.send(_("Author dm is already set on {state}.").format(**locals()))
-            return
-
-        await self.config.guild(ctx.guild).author_dm.set(state)
-        await ctx.send(_("Author dm state registered: {state}.").format(**locals()))
+        pass

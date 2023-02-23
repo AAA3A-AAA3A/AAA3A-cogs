@@ -37,12 +37,12 @@ ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions 
 class EditTextChannel(commands.Cog):
     """A cog to edit text channels!"""
 
-    def __init__(self, bot: Red):  # Never executed except manually.
+    def __init__(self, bot: Red) -> None:  # Never executed except manually.
         self.bot: Red = bot
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
-    async def check_text_channel(self, ctx: commands.Context, channel: discord.TextChannel):
+    async def check_text_channel(self, ctx: commands.Context, channel: discord.TextChannel) -> bool:
         if (
             not self.cogsutils.check_permissions_for(
                 channel=channel, user=ctx.author, check=["manage_channel"]
@@ -53,7 +53,7 @@ class EditTextChannel(commands.Cog):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "I can not let you edit the text channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
-                ).format(**locals())
+                ).format(channel=channel)
             )
         if not self.cogsutils.check_permissions_for(
             channel=channel, user=ctx.guild.me, check=["manage_channel"]
@@ -61,14 +61,14 @@ class EditTextChannel(commands.Cog):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "I can not edit the text channel {channel.mention} ({channel.id}) because you don't have the `manage_channel` permission."
-                ).format(**locals())
+                ).format(channel=channel)
             )
         return True
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_channels=True)
     @hybrid_group()
-    async def edittextchannel(self, ctx: commands.Context):
+    async def edittextchannel(self, ctx: commands.Context) -> None:
         """Commands for edit a text channel."""
         pass
 
@@ -79,7 +79,7 @@ class EditTextChannel(commands.Cog):
         category: typing.Optional[discord.CategoryChannel] = None,
         *,
         name: str,
-    ):
+    ) -> None:
         """Create a text channel."""
         try:
             await ctx.guild.create_text_channel(
@@ -95,7 +95,7 @@ class EditTextChannel(commands.Cog):
     @edittextchannel.command(name="clone")
     async def edittextchannel_clone(
         self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], *, name: str
-    ):
+    ) -> None:
         """Clone a text channel."""
         if channel is None:
             channel = ctx.channel
@@ -119,7 +119,7 @@ class EditTextChannel(commands.Cog):
         max_uses: typing.Optional[int] = None,
         temporary: typing.Optional[bool] = False,
         unique: typing.Optional[bool] = True,
-    ):
+    ) -> None:
         """Create an invite for a text channel.
 
         `max_age`: How long the invite should last in days. If it's 0 then the invite doesn't expire.
@@ -148,7 +148,7 @@ class EditTextChannel(commands.Cog):
     @edittextchannel.command(name="name")
     async def edittextchannel_name(
         self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], name: str
-    ):
+    ) -> None:
         """Edit text channel name."""
         if channel is None:
             channel = ctx.channel
@@ -166,7 +166,7 @@ class EditTextChannel(commands.Cog):
     @edittextchannel.command(name="topic")
     async def edittextchannel_topic(
         self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], *, topic: str
-    ):
+    ) -> None:
         """Edit text channel topic."""
         if channel is None:
             channel = ctx.channel
@@ -182,9 +182,9 @@ class EditTextChannel(commands.Cog):
             )
 
     class PositionConverter(commands.Converter):
-        async def convert(self, ):
+        async def convert(self, ctx: commands.Context, argument: str) -> int:
             try:
-                position = int(arg)
+                position = int(argument)
             except ValueError:
                 raise commands.BadArgument("The position must be an integer.")
             max_guild_text_channels_position = len(
@@ -204,7 +204,7 @@ class EditTextChannel(commands.Cog):
         channel: typing.Optional[discord.TextChannel],
         *,
         position: PositionConverter,
-    ):
+    ) -> None:
         """Edit text channel position.
 
         Warning: Only text channels are taken into account. Channel 1 is the highest positioned text channel.
@@ -226,7 +226,7 @@ class EditTextChannel(commands.Cog):
     @edittextchannel.command(name="nsfw")
     async def edittextchannel_nsfw(
         self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], nsfw: bool
-    ):
+    ) -> None:
         """Edit text channel nsfw."""
         if channel is None:
             channel = ctx.channel
@@ -247,7 +247,7 @@ class EditTextChannel(commands.Cog):
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
         sync_permissions: bool,
-    ):
+    ) -> None:
         """Edit text channel syncpermissions with category."""
         if channel is None:
             channel = ctx.channel
@@ -268,7 +268,7 @@ class EditTextChannel(commands.Cog):
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
         category: discord.CategoryChannel,
-    ):
+    ) -> None:
         """Edit text channel category."""
         if channel is None:
             channel = ctx.channel
@@ -289,7 +289,7 @@ class EditTextChannel(commands.Cog):
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
         slowmode_delay: TimedeltaConverter,
-    ):
+    ) -> None:
         """Edit text channel slowmode delay.
 
         Specifies the slowmode rate limit for user in this channel, in seconds. A value of 0s disables slowmode. The maximum value possible is 21600s.
@@ -317,7 +317,7 @@ class EditTextChannel(commands.Cog):
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
         type: commands.Literal["0", "5"],
-    ):
+    ) -> None:
         """Edit text channel type.
 
         `text`: 0
@@ -344,7 +344,7 @@ class EditTextChannel(commands.Cog):
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
         default_auto_archive_duration: commands.Literal["60", "1440", "4320", "10080"],
-    ):
+    ) -> None:
         """Edit text channel default auto archive duration.
 
         The new default auto archive duration in minutes for threads created in this channel. Must be one of `60`, `1440`, `4320`, or `10080`.
@@ -363,7 +363,7 @@ class EditTextChannel(commands.Cog):
             )
 
     class PermissionConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, argument: str):
+        async def convert(self, ctx: commands.Context, argument: str) -> str:
             permissions = [
                 key for key, value in dict(discord.Permissions.all_channel()).items() if value
             ]
@@ -379,7 +379,7 @@ class EditTextChannel(commands.Cog):
         permission: PermissionConverter,
         true_or_false: typing.Optional[bool],
         roles_or_users: commands.Greedy[typing.Union[discord.Member, discord.Role, str]],
-    ):
+    ) -> None:
         """Edit text channel permissions/overwrites.
 
         create_instant_invite
@@ -450,8 +450,8 @@ class EditTextChannel(commands.Cog):
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
         confirmation: typing.Optional[bool] = False,
-    ):
-        """Delete text channel."""
+    ) -> None:
+        """Delete a text channel."""
         if channel is None:
             channel = ctx.channel
         await self.check_text_channel(ctx, channel)
@@ -460,7 +460,7 @@ class EditTextChannel(commands.Cog):
             embed.title = _("⚠️ - Delete text channel")
             embed.description = _(
                 "Do you really want to delete the text channel {channel.mention} ({channel.id})?"
-            ).format(**locals())
+            ).format(channel=channel)
             embed.color = 0xF00020
             if not await self.cogsutils.ConfirmationAsk(
                 ctx, content=f"{ctx.author.mention}", embed=embed

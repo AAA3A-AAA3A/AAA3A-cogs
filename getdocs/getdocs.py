@@ -24,11 +24,9 @@ if CogsUtils().is_dpy2:
     from .view import DocsView
 
 # Credits:
+# General repo credits.
 # Thanks to amyrinbot on GitHub for a part of the code (https://github.com/amyrinbot/bot/blob/main/modules/util/scraping/documentation/discord_py.py)!
 # Thanks to @Lemon for the idea of this code (show me @Lambda bot in dpy server, and give me many ideas and documentations links)!
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
 _ = Translator("GetDocs", __file__)
 
@@ -47,6 +45,7 @@ BASE_URLS = {
     "python": {"url": "https://docs.python.org/3/", "icon_url": "https://assets.stickpng.com/images/5848152fcef1014c0b5e4967.png", "aliases": ["py"]},
     "aiohttp": {"url": "https://docs.aiohttp.org/en/stable/", "icon_url": "https://docs.aiohttp.org/en/v3.7.3/_static/aiohttp-icon-128x128.png"},
     "requests": {"url": "https://requests.readthedocs.io/en/latest/", "icon_url": "https://requests.readthedocs.io/en/latest/_static/requests-sidebar.png"},
+    "slashtags": {"url": "https://phen-cogs.readthedocs.io/en/latest/", "icon_url": "https://i.imgur.com/dIOX12K.png"},
 
     "psutil": {"url": "https://psutil.readthedocs.io/en/latest/", "icon_url": None},
     "pillow": {"url": "https://pillow.readthedocs.io/en/stable/", "icon_url": "https://pillow.readthedocs.io/en/stable/_static/pillow-logo-dark-text.png"},
@@ -93,14 +92,14 @@ class SourceConverter(commands.Converter):
 
 @cog_i18n(_)
 class GetDocs(commands.Cog):
-    """A cog to get and display Sphinx docs! Only `discord.py`, `redbot`, `python`, `aiohttp`, `requests`, `psutil`, `pillow`, `numpy`, `matplotlib`, `asyncpg`, `sqlite`, `websockets`, `mango`, `redis`, `aiomysql`, `flask`, `motor`, `sphinx` and `starlite`."""
+    """A cog to get and display Sphinx docs! Only `discord.py`, `redbot`, `python`, `aiohttp`, `requests`, `slashtags` (cog by Phen for Red), `psutil`, `pillow`, `numpy`, `matplotlib`, `asyncpg`, `sqlite`, `websockets`, `mango`, `redis`, `aiomysql`, `flask`, `motor`, `sphinx` and `starlite`."""
 
     def __init__(self, bot: Red):
         self.bot: Red = bot
 
         self.documentations: typing.Dict[str, Source] = {}
         self._docs_stats: typing.Dict[str, int] = {"GLOBAL": {"manuals": 0, "documentations": 0}}
-        self._load_time = None
+        self._load_time: float = None
         self._caching_time: typing.Dict[str, int] = {"GLOBAL": 0}
 
         # self._playwright = None
@@ -109,8 +108,8 @@ class GetDocs(commands.Cog):
         self._session: aiohttp.ClientSession = None
         # self._rate_limit = AsyncLimiter(100, 30)
 
-        self.__authors__ = ["AAA3A", "amyrinbot"]
-        self.cogsutils = CogsUtils(cog=self)
+        self.__authors__: typing.List[str] = ["AAA3A", "amyrinbot"]
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     async def cog_load(self):
         # self._playwright = await async_playwright().start()
@@ -141,7 +140,7 @@ class GetDocs(commands.Cog):
 
            Arguments:
            - `source`: The name of the documentation to use. Defaults to `discord.py`.
-           - `query`: The documentation node/query. (`random` for get a random documentation)
+           - `query`: The documentation node/query. (`random` to get a random documentation)
         """
         source = self.documentations[source]
         if query is None:
@@ -261,7 +260,7 @@ class GetDocs(commands.Cog):
 class Source:
 
     def __init__(self, cog: GetDocs, name: str, url: str, icon_url: typing.Optional[str] = None):
-        self.cog = cog
+        self.cog: GetDocs = cog
         self.name: str = name
         self.url: str = url
         self.icon_url: typing.Optional[str] = icon_url
@@ -354,7 +353,7 @@ class Source:
 
     async def _get_html(self, url: str, timeout: int = 0) -> str:
         # async with self.cog._rate_limit:
-        async with self.cog._session.request("GET", url, timeout=timeout) as r:
+        async with self.cog._session.get(url, timeout=timeout) as r:
             content = await r.text(encoding="utf-8")
         return content
 
@@ -666,7 +665,7 @@ class Source:
                     self._raw_rtfm_cache_with_std,
                     key=lambda name: fuzz.ratio(query, name),
                     reverse=True,
-            )
+                )
             return matches[:limit]
 
         def get_name(obj: DataObjStr) -> str:

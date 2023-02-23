@@ -1,6 +1,7 @@
 from .AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
+import typing  # isort:skip
 
 import asyncio
 
@@ -14,7 +15,7 @@ _ = Translator("SimpleSanction", __file__)
 
 
 class utils:
-    async def emojis(disabled: bool):
+    async def emojis(disabled: bool) -> typing.Tuple:
         buttons = [
             "userinfo_button",
             "warn_button",
@@ -115,7 +116,7 @@ class utils:
 
     async def reason_ask(
         ctx, reason, actual_reason_required, title, description, actual_color, user, actual_timeout
-    ):
+    ) -> str:
         if reason is None:
             if actual_reason_required:
                 embed: discord.Embed = discord.Embed()
@@ -156,7 +157,7 @@ class utils:
         else:
             return reason
 
-    async def duration_ask(ctx, duration, title, description, actual_color, user, actual_timeout):
+    async def duration_ask(ctx, duration, title, description, actual_color, user, actual_timeout) -> str:
         if duration is None:
             embed: discord.Embed = discord.Embed()
             embed.title = f"{title}"
@@ -191,7 +192,7 @@ class utils:
 
     async def confirmation_ask(
         ctx, confirmation, title, description, actual_color, user, reason, duration, actual_timeout
-    ):
+    ) -> bool:
         if confirmation:
             embed: discord.Embed = discord.Embed()
             embed.title = f"{title}"
@@ -236,13 +237,13 @@ class utils:
         show_author,
         duration,
         reason,
-    ):
+    ) -> discord.Message:
         if finish_message:
             embed: discord.Embed = discord.Embed()
             embed.title = f"{title}"
             embed.description = _(
                 "This tool allows you to easily sanction a server member.\nUser mention: {user.mention} - User ID: {user.id}"
-            ).format(**locals())
+            ).format(user=user)
             embed.set_thumbnail(url=actual_thumbnail)
             embed.color = actual_color
             embed.set_author(
@@ -260,9 +261,7 @@ class utils:
             embed.add_field(
                 inline=False,
                 name=f"{description}",
-                value=_("If an error has occurred, it will be displayed below.").format(
-                    **locals()
-                ),
+                value=_("If an error has occurred, it will be displayed below."),
             )
             if reason is not None:
                 embed.add_field(name=_("Reason:"), value=f"{reason}")

@@ -24,7 +24,7 @@ class settings(commands.Cog):
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
     @hybrid_group(name="setsimplesanction", aliases=["simplesanctionset"])
-    async def configuration(self, ctx: commands.Context):
+    async def configuration(self, ctx: commands.Context) -> None:
         """Configure SimpleSanction for your server."""
         pass
 
@@ -36,7 +36,7 @@ class settings(commands.Cog):
         ctx: commands.Context,
         *,
         color: typing.Optional[discord.ext.commands.converter.ColorConverter] = None,
-    ):
+    ) -> None:
         """Set a colour for the embed.
 
         ``color``: Color.
@@ -67,10 +67,10 @@ class settings(commands.Cog):
         embed.color = actual_color
         embed.set_thumbnail(url=actual_thumbnail)
         embed.add_field(name=_("Color:"), value=f"{actual_color}")
-        message = await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
     @configuration.command(aliases=["picture", "thumb", "link"], usage="<link_or_'none'>")
-    async def thumbnail(self, ctx: commands.Context, *, link: typing.Optional[str] = None):
+    async def thumbnail(self, ctx: commands.Context, *, link: typing.Optional[str] = None) -> None:
         """Set a thumbnail for the embed.
 
         ``link``: Thumbnail link.
@@ -101,10 +101,10 @@ class settings(commands.Cog):
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
         embed.add_field(name=_("Thumbnail:"), value=f"{actual_thumbnail}")
-        message = await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
     @configuration.command(name="showauthor", aliases=["authorshow"], usage="<true_or_false>")
-    async def showauthor(self, ctx: commands.Context, state: bool):
+    async def showauthor(self, ctx: commands.Context, state: bool) -> None:
         """Enable or disable Show Author
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -113,14 +113,14 @@ class settings(commands.Cog):
 
         actual_show_author = config["show_author"]
         if actual_show_author is state:
-            await ctx.send(_("Show Author is already set on {state}.").format(**locals()))
+            await ctx.send(_("Show Author is already set on {state}.").format(state=state))
             return
 
         await self.config.guild(ctx.guild).show_author.set(state)
-        await ctx.send(_("Show Author state registered: {state}.").format(**locals()))
+        await ctx.send(_("Show Author state registered: {state}.").format(state=state))
 
     @configuration.command(name="confirmation", aliases=["confirm"], usage="<true_or_false>")
-    async def confirmation(self, ctx: commands.Context, state: bool):
+    async def confirmation(self, ctx: commands.Context, state: bool) -> None:
         """Enable or disable Action Confirmation
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -129,16 +129,16 @@ class settings(commands.Cog):
 
         actual_action_confirmation = config["action_confirmation"]
         if actual_action_confirmation is state:
-            await ctx.send(_("Action Confirmation is already set on {state}.").format(**locals()))
+            await ctx.send(_("Action Confirmation is already set on {state}.").format(state=state))
             return
 
         await self.config.guild(ctx.guild).action_confirmation.set(state)
-        await ctx.send(_("Action Confirmation state registered: {state}.").format(**locals()))
+        await ctx.send(_("Action Confirmation state registered: {state}.").format(state=state))
 
     @configuration.command(
         name="finishmessage", aliases=["messagefinish"], usage="<true_or_false>"
     )
-    async def finishmessage(self, ctx: commands.Context, state: bool):
+    async def finishmessage(self, ctx: commands.Context, state: bool) -> None:
         """Enable or disable Finish Message
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -147,7 +147,7 @@ class settings(commands.Cog):
 
         actual_finish_message = config["finish_message"]
         if actual_finish_message is state:
-            await ctx.send(_("Finish Message is already set on {state}.").format(**locals()))
+            await ctx.send(_("Finish Message is already set on {state}.").format(state=state))
             return
 
         await self.config.guild(ctx.guild).finish_message.set(state)
@@ -156,7 +156,7 @@ class settings(commands.Cog):
     @configuration.command(
         name="warnsystemuse", aliases=["usewarnsystem"], usage="<true_or_false>"
     )
-    async def warnsystemuse(self, ctx: commands.Context, state: bool):
+    async def warnsystemuse(self, ctx: commands.Context, state: bool) -> None:
         """Enable or disable Warn System Use
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -165,16 +165,16 @@ class settings(commands.Cog):
 
         actual_warn_system_use = config["warn_system_use"]
         if actual_warn_system_use is state:
-            await ctx.send(_("Warn System Use is already set on {state}.").format(**locals()))
+            await ctx.send(_("Warn System Use is already set on {state}.").format(state=state))
             return
 
         await self.config.guild(ctx.guild).warn_system_use.set(state)
-        await ctx.send(_("Warn System Use state registered: {state}.").format(**locals()))
+        await ctx.send(_("Warn System Use state registered: {state}.").format(state=state))
 
     @configuration.command(name="way", aliases=["wayused"])
     async def buttonsuse(
         self, ctx: commands.Context, way: commands.Literal["buttons", "dropdown", "reactions"]
-    ):
+    ) -> None:
         """Enable or disable Buttons Use
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -183,7 +183,7 @@ class settings(commands.Cog):
 
         actual_way = config["way"]
         if actual_way is way:
-            await ctx.send(_("Way is already set on {way}.").format(**locals()))
+            await ctx.send(_("Way is already set on {way}.").format(way=way))
             return
 
         await self.config.guild(ctx.guild).way.set(way)
@@ -192,7 +192,7 @@ class settings(commands.Cog):
     @configuration.command(
         name="reasonrequired", aliases=["requiredreason"], usage="<true_or_false>"
     )
-    async def reasonrequired(self, ctx: commands.Context, state: bool):
+    async def reasonrequired(self, ctx: commands.Context, state: bool) -> None:
         """Enable or disable Reason Requiered
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -201,14 +201,14 @@ class settings(commands.Cog):
 
         actual_reason_required = config["reason_required"]
         if actual_reason_required is state:
-            await ctx.send(_("Reason Required is already set on {state}.").format(**locals()))
+            await ctx.send(_("Reason Required is already set on {state}.").format(state=state))
             return
 
         await self.config.guild(ctx.guild).reason_required.set(state)
-        await ctx.send(_("Reason Required state registered: {state}.").format(**locals()))
+        await ctx.send(_("Reason Required state registered: {state}.").format(state=state))
 
     @configuration.command(name="deleteembed", aliases=["embeddelete"], usage="<true_or_false>")
-    async def deleteembed(self, ctx: commands.Context, state: bool):
+    async def deleteembed(self, ctx: commands.Context, state: bool) -> None:
         """Enable or disable Delete Embed
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -217,7 +217,7 @@ class settings(commands.Cog):
 
         actual_delete_embed = config["delete_embed"]
         if actual_delete_embed is state:
-            await ctx.send(_("Delete Embed is already set on {state}.").format(**locals()))
+            await ctx.send(_("Delete Embed is already set on {state}.").format(state=state))
             return
 
         await self.config.guild(ctx.guild).delete_embed.set(state)
@@ -226,7 +226,7 @@ class settings(commands.Cog):
     @configuration.command(
         name="deletemessage", aliases=["messagedelete"], usage="<true_or_false>"
     )
-    async def deletemessage(self, ctx: commands.Context, state: bool):
+    async def deletemessage(self, ctx: commands.Context, state: bool) -> None:
         """Enable or disable Delete Message
 
         Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
@@ -235,14 +235,14 @@ class settings(commands.Cog):
 
         actual_delete_message = config["delete_message"]
         if actual_delete_message is state:
-            await ctx.send(_("Delete Message is already set on {state}.").format(**locals()))
+            await ctx.send(_("Delete Message is already set on {state}.").format(state=state))
             return
 
         await self.config.guild(ctx.guild).delete_message.set(state)
-        await ctx.send(_("Delete Message state registered: {state}.").format(**locals()))
+        await ctx.send(_("Delete Message state registered: {state}.").format(state=state))
 
     @configuration.command(name="timeout", aliases=["time"], usage="<seconds_number_or_`none`>")
-    async def timeout(self, ctx: commands.Context, timeout: typing.Optional[int] = None):
+    async def timeout(self, ctx: commands.Context, timeout: typing.Optional[int] = None) -> None:
         """Choose the timeout
 
         Use a int. The default is 180 seconds.
@@ -255,8 +255,8 @@ class settings(commands.Cog):
             await ctx.send(_("Timeout restored."))
             return
         if actual_timeout is timeout:
-            await ctx.send(_("Timeout is already set on {timeout}.").format(**locals()))
+            await ctx.send(_("Timeout is already set on {timeout}.").format(timeout=timeout))
             return
 
         await self.config.guild(ctx.guild).reason_required.set(timeout)
-        await ctx.send(_("Timeout state registered: {timeout}.").format(**locals()))
+        await ctx.send(_("Timeout state registered: {timeout}.").format(timeout=timeout))

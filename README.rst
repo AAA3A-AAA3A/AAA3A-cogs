@@ -107,11 +107,13 @@ Credits
 
 * Individual credits in each cog.
 
-* Thanks to 26, Aika, Yami, Jack, Flame, Draper and others for the discussions that helped me develop my cogs!
+* Thanks to 26, Aika, Yami, Jack, Flame, Draper, Zeph and others for the discussions that helped me develop my cogs!
 
 * Thanks to Kreusada because his repo served as a model for mine! Everything in the documentation uses the layout of his.
 
 * Thanks to Nado on Discord and Flame for giving me the solution to fix my repo, which Downloader could not update anymore!
+
+* Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
 
 * Thanks to amyrinbot on GitHub for a part of the GetDocs cog's code!
 

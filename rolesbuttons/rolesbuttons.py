@@ -18,12 +18,10 @@ if CogsUtils().is_dpy2:  # To remove
     setattr(commands, "Literal", typing.Literal)
 
 # Credits:
+# General repo credits.
 # Thanks to TrustyJAID for the two converter for the bulk command arguments! (https://github.com/TrustyJAID/Trusty-cogs/blob/main/roletools/converter.py)
-# Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel!
-# Thanks to Kuro for the emoji converter!(https://canary.discord.com/channels/133049272517001216/133251234164375552/1014520590239019048)
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+# Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
+# Thanks to Kuro for the emoji converter (https://canary.discord.com/channels/133049272517001216/133251234164375552/1014520590239019048)!
 
 _ = Translator("RolesButtons", __file__)
 
@@ -41,7 +39,7 @@ else:
 class RolesButtons(commands.Cog):
     """A cog to have roles-buttons!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
@@ -49,19 +47,19 @@ class RolesButtons(commands.Cog):
             identifier=205192943327321000143939875896557571750,  # 370638632963
             force_registration=True,
         )
-        self.roles_buttons_guild = {
+        self.roles_buttons_guild: typing.Dict[str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]] = {
             "roles_buttons": {},
         }
         self.config.register_guild(**self.roles_buttons_guild)
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
         self.purge.no_slash = True
 
-    async def cog_load(self):
+    async def cog_load(self) -> None:
         if self.cogsutils.is_dpy2:
             await self.load_buttons()
 
-    async def load_buttons(self):
+    async def load_buttons(self) -> None:
         all_guilds = await self.config.all_guilds()
         for guild in all_guilds:
             for role_button in all_guilds[guild]["roles_buttons"]:
@@ -98,7 +96,7 @@ class RolesButtons(commands.Cog):
 
     if CogsUtils().is_dpy2:
 
-        async def on_button_interaction(self, view: Buttons, interaction: discord.Interaction):
+        async def on_button_interaction(self, view: Buttons, interaction: discord.Interaction) -> None:
             if await self.bot.cog_disabled_in_guild(self, interaction.guild):
                 return
             if not interaction.data["custom_id"].startswith("roles_buttons"):
@@ -129,10 +127,10 @@ class RolesButtons(commands.Cog):
                     guild: discord.Guild,
                     channel: discord.TextChannel,
                 ):
-                    self.bot = bot
-                    self.author = author
-                    self.guild = guild
-                    self.channel = channel
+                    self.bot: Red = bot
+                    self.author: discord.Member = author
+                    self.guild: discord.Guild = guild
+                    self.channel: discord.TextChannel = channel
 
             fake_context = FakeContext(
                 self.bot, interaction.user, interaction.guild, interaction.channel
@@ -159,19 +157,19 @@ class RolesButtons(commands.Cog):
                         role,
                         reason=_(
                             "Role-button of {interaction.message.id} in {interaction.channel.id}."
-                        ).format(**locals()),
+                        ).format(interaction=interaction),
                     )
                 except discord.HTTPException:
                     await interaction.followup.send(
                         _(
                             "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
-                        ).format(**locals()),
+                        ).format(role=role),
                         ephemeral=True,
                     )
                     return
                 else:
                     await interaction.followup.send(
-                        _("You now have the role {role.mention} ({role.id}).").format(**locals()),
+                        _("You now have the role {role.mention} ({role.id}).").format(role=role),
                         ephemeral=True,
                     )
             else:
@@ -184,20 +182,20 @@ class RolesButtons(commands.Cog):
                     await interaction.followup.send(
                         _(
                             "I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
-                        ).format(**locals()),
+                        ).format(role=role),
                         ephemeral=True,
                     )
                     return
                 else:
                     await interaction.followup.send(
-                        _("I removed the role {role.mention} ({role.id}).").format(**locals()),
+                        _("I removed the role {role.mention} ({role.id}).").format(role=role),
                         ephemeral=True,
                     )
 
     else:
 
         @commands.Cog.listener()
-        async def on_button_click(self, inter: MessageInteraction):
+        async def on_button_click(self, inter: MessageInteraction) -> None:
             guild = inter.guild
             channel = inter.channel
             if inter.author is None:
@@ -227,10 +225,10 @@ class RolesButtons(commands.Cog):
                     guild: discord.Guild,
                     channel: discord.TextChannel,
                 ):
-                    self.bot = bot
-                    self.author = author
-                    self.guild = guild
-                    self.channel = channel
+                    self.bot: Red = bot
+                    self.author: discord.Member = author
+                    self.guild: discord.Guild = guild
+                    self.channel: discord.TextChannel = channel
 
             fake_context = FakeContext(self.bot, inter.author, inter.guild, inter.channel)
             emoji = await Emoji().convert(fake_context, emoji)
@@ -254,20 +252,20 @@ class RolesButtons(commands.Cog):
                     await inter.author.add_roles(
                         role,
                         reason=_("Role-button of {inter.message.id} in {channel.id}.").format(
-                            **locals()
+                            inter=inter, channel=channel
                         ),
                     )
                 except discord.HTTPException:
                     await inter.followup(
                         _(
                             "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
-                        ).format(**locals()),
+                        ).format(role=role),
                         ephemeral=True,
                     )
                     return
                 else:
                     await inter.followup(
-                        _("You now have the role {role.mention} ({role.id}).").format(**locals()),
+                        _("You now have the role {role.mention} ({role.id}).").format(role=role),
                         ephemeral=True,
                     )
                     return
@@ -280,19 +278,19 @@ class RolesButtons(commands.Cog):
                     await inter.followup(
                         _(
                             "I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
-                        ).format(**locals()),
+                        ).format(role=role),
                         ephemeral=True,
                     )
                     return
                 else:
                     await inter.followup(
-                        _("I did remove the role {role.mention} ({role.id}).").format(**locals()),
+                        _("I did remove the role {role.mention} ({role.id}).").format(role=role),
                         ephemeral=True,
                     )
                     return
 
     @commands.Cog.listener()
-    async def on_message_delete(self, message: discord.Message):
+    async def on_message_delete(self, message: discord.Message) -> None:
         if message.guild is None:
             return
         config = await self.config.guild(message.guild).roles_buttons.all()
@@ -305,7 +303,7 @@ class RolesButtons(commands.Cog):
     @commands.admin_or_permissions(manage_roles=True)
     @commands.bot_has_guild_permissions(manage_roles=True)
     @hybrid_group()
-    async def rolesbuttons(self, ctx: commands.Context):
+    async def rolesbuttons(self, ctx: commands.Context) -> None:
         """Group of commands for use RolesButtons."""
         pass
 
@@ -319,7 +317,7 @@ class RolesButtons(commands.Cog):
         style_button: typing.Optional[commands.Literal["1", "2", "3", "4"]] = "2",
         *,
         text_button: typing.Optional[str] = None,
-    ):
+    ) -> None:
         """Add a role-button to a message.
 
         `primary`: 1
@@ -335,9 +333,7 @@ class RolesButtons(commands.Cog):
         """
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.").format(
-                    **locals()
-                )
+                _("I have to be the author of the message for the role-button to work.")
             )
         permissions = message.channel.permissions_for(ctx.guild.me)
         if (
@@ -391,16 +387,14 @@ class RolesButtons(commands.Cog):
         ctx: commands.Context,
         message: discord.Message,
         roles_buttons: commands.Greedy[EmojiRoleConverter],
-    ):
+    ) -> None:
         """Add roles-buttons to a message.
 
         ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```
         """
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.").format(
-                    **locals()
-                )
+                _("I have to be the author of the message for the role-button to work.")
             )
         if len(roles_buttons) == 0:
             raise commands.UserFeedbackCheckFailure(
@@ -455,7 +449,7 @@ class RolesButtons(commands.Cog):
         await self.config.guild(ctx.guild).roles_buttons.set(config)
 
     @rolesbuttons.command()
-    async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji):
+    async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji) -> None:
         """Remove a role-button to a message."""
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
@@ -492,7 +486,7 @@ class RolesButtons(commands.Cog):
         await self.config.guild(ctx.guild).roles_buttons.set(config)
 
     @rolesbuttons.command()
-    async def clear(self, ctx: commands.Context, message: discord.Message):
+    async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
         """Clear all roles-buttons to a message."""
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
@@ -514,11 +508,11 @@ class RolesButtons(commands.Cog):
         await self.config.guild(ctx.guild).roles_buttons.set(config)
 
     @rolesbuttons.command(hidden=True)
-    async def purge(self, ctx: commands.Context):
+    async def purge(self, ctx: commands.Context) -> None:
         """Clear all roles-buttons to a **guild**."""
         await self.config.guild(ctx.guild).roles_buttons.clear()
 
-    def get_buttons(self, config: typing.Dict, message: discord.Message):
+    def get_buttons(self, config: typing.Dict, message: discord.Message) -> None:
         all_buttons = []
         if self.cogsutils.is_dpy2:
             for button in config[f"{message.channel.id}-{message.id}"]:

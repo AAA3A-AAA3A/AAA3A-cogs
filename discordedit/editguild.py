@@ -37,16 +37,16 @@ ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions 
 class EditGuild(commands.Cog):
     """A cog to edit guilds!"""
 
-    def __init__(self, bot: Red):  # Never executed except manually.
+    def __init__(self, bot: Red) -> None:  # Never executed except manually.
         self.bot: Red = bot
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_guild=True)
     @commands.bot_has_guild_permissions(manage_guild=True)
     @hybrid_group()
-    async def editguild(self, ctx: commands.Context):
+    async def editguild(self, ctx: commands.Context) -> None:
         """Commands for edit a guild."""
         pass
 
@@ -54,7 +54,7 @@ class EditGuild(commands.Cog):
     @editguild.command(name="create")
     async def editguild_create(
         self, ctx: commands.Context, name: str, template_code: typing.Optional[str] = None
-    ):
+    ) -> None:
         """Create a guild with the bot as owner."""
         try:
             guild = await ctx.bot.create_guild(name=name, code=template_code)
@@ -74,7 +74,7 @@ class EditGuild(commands.Cog):
 
     @commands.is_owner()
     @editguild.command(name="clone")
-    async def editguild_clone(self, ctx: commands.Context, *, name: str):
+    async def editguild_clone(self, ctx: commands.Context, *, name: str) -> None:
         """Clone a text channel."""
         guild = ctx.guild
         try:
@@ -96,7 +96,7 @@ class EditGuild(commands.Cog):
             await ctx.send((await channel.create_invite()).url)
 
     @editguild.command(name="name")
-    async def editguild_name(self, ctx: commands.Context, *, name: str):
+    async def editguild_name(self, ctx: commands.Context, *, name: str) -> None:
         """Edit guild name."""
         guild = ctx.guild
         try:
@@ -112,7 +112,7 @@ class EditGuild(commands.Cog):
     @editguild.command(name="description")
     async def editguild_description(
         self, ctx: commands.Context, *, description: typing.Optional[str] = None
-    ):
+    ) -> None:
         """Edit guild description."""
         guild = ctx.guild
         try:
@@ -126,7 +126,7 @@ class EditGuild(commands.Cog):
             )
 
     @editguild.command(name="community")
-    async def editguild_community(self, ctx: commands.Context, community: bool):
+    async def editguild_community(self, ctx: commands.Context, community: bool) -> None:
         """Edit guild community state."""
         guild = ctx.guild
         try:
@@ -142,7 +142,7 @@ class EditGuild(commands.Cog):
     @editguild.command(name="afkchannel")
     async def editguild_afk_channel(
         self, ctx: commands.Context, *, afk_channel: typing.Optional[discord.VoiceChannel] = None
-    ):
+    ) -> None:
         """Edit guild afkchannel."""
         guild = ctx.guild
         try:
@@ -156,7 +156,7 @@ class EditGuild(commands.Cog):
             )
 
     @editguild.command(name="afktimeout")
-    async def editguild_afk_timeout(self, ctx: commands.Context, afk_timeout: int):
+    async def editguild_afk_timeout(self, ctx: commands.Context, afk_timeout: int) -> None:
         """Edit guild afktimeout."""
         guild = ctx.guild
         try:
@@ -176,7 +176,7 @@ class EditGuild(commands.Cog):
         ctx: commands.Context,
         owner: discord.Member,
         confirmation: typing.Optional[bool] = False,
-    ):
+    ) -> None:
         """Edit guild owner (if the bot is bot owner)."""
         guild = ctx.guild
         if not confirmation:
@@ -184,7 +184,7 @@ class EditGuild(commands.Cog):
             embed.title = _(":⚠️ - Change Guild Owner")
             embed.description = _(
                 "Do you really want to change guild owner of the guild {guild.name} ({guild.id})?"
-            ).format(**locals())
+            ).format(guild=guild)
             embed.color = 0xF00020
             if not await self.cogsutils.ConfirmationAsk(
                 ctx, content=f"{ctx.author.mention}", embed=embed
@@ -204,7 +204,7 @@ class EditGuild(commands.Cog):
     @editguild.command(name="verificationlevel")
     async def editguild_verification_level(
         self, ctx: commands.Context, verification_level: discord.VerificationLevel
-    ):
+    ) -> None:
         """Edit guild verification level."""
         guild = ctx.guild
         try:
@@ -220,7 +220,7 @@ class EditGuild(commands.Cog):
     @editguild.command(name="defaultnotifications", aliases=["notificationslevel"])
     async def editguild_default_notifications(
         self, ctx: commands.Context, default_notifications: commands.Literal["0", "1"]
-    ):
+    ) -> None:
         """Edit guild notification level."""
         guild = ctx.guild
         default_notifications = discord.NotificationLevel(int(default_notifications))
@@ -237,7 +237,7 @@ class EditGuild(commands.Cog):
     @editguild.command(name="explicitcontentfilter")
     async def editguild_explicit_content_filter(
         self, ctx: commands.Context, explicit_content_filter: discord.ContentFilter
-    ):
+    ) -> None:
         """Edit guild explicit content filter."""
         guild = ctx.guild
         try:
@@ -251,7 +251,7 @@ class EditGuild(commands.Cog):
             )
 
     @editguild.command(name="vanitycode")
-    async def editguild_vanity_code(self, ctx: commands.Context, vanity_code: str):
+    async def editguild_vanity_code(self, ctx: commands.Context, vanity_code: str) -> None:
         """Edit guild vanity code."""
         guild = ctx.guild
         try:
@@ -267,7 +267,7 @@ class EditGuild(commands.Cog):
     @editguild.command(name="systemchannel")
     async def editguild_system_channel(
         self, ctx: commands.Context, system_channel: typing.Optional[discord.TextChannel] = None
-    ):
+    ) -> None:
         """Edit guild system channel."""
         guild = ctx.guild
         try:
@@ -283,7 +283,7 @@ class EditGuild(commands.Cog):
     @editguild.command(name="systemchannelflags")
     async def editguild_system_channel_flags(
         self, ctx: commands.Context, system_channel_flags: int
-    ):
+    ) -> None:
         """Edit guild system channel flags."""
         guild = ctx.guild
         _system_channel_flags = discord.SystemChannelFlags()
@@ -310,7 +310,7 @@ class EditGuild(commands.Cog):
     @editguild.command(name="preferredlocale")
     async def editguild_preferred_locale(
         self, ctx: commands.Context, preferred_locale: LocaleConverter
-    ):
+    ) -> None:
         """Edit guild preferred locale.
 
         american_english = 'en-US'
@@ -358,7 +358,7 @@ class EditGuild(commands.Cog):
     @editguild.command(name="ruleschannel")
     async def editguild_rules_channel(
         self, ctx: commands.Context, rules_channel: typing.Optional[discord.TextChannel] = None
-    ):
+    ) -> None:
         """Edit guild rules channel."""
         guild = ctx.guild
         try:
@@ -376,7 +376,7 @@ class EditGuild(commands.Cog):
         self,
         ctx: commands.Context,
         public_updates_channel: typing.Optional[discord.TextChannel] = None,
-    ):
+    ) -> None:
         """Edit guild public updates channel."""
         guild = ctx.guild
         try:
@@ -392,7 +392,7 @@ class EditGuild(commands.Cog):
     @editguild.command(name="premiumprogressbarenabled")
     async def editguild_premium_progress_bar_enabled(
         self, ctx: commands.Context, premium_progress_bar_enabled: bool
-    ):
+    ) -> None:
         """Edit guild premium progress bar enabled."""
         guild = ctx.guild
         try:
@@ -406,7 +406,7 @@ class EditGuild(commands.Cog):
             )
 
     @editguild.command(name="discoverable")
-    async def editguild_discoverable(self, ctx: commands.Context, discoverable: bool):
+    async def editguild_discoverable(self, ctx: commands.Context, discoverable: bool) -> None:
         """Edit guild discoverable state."""
         guild = ctx.guild
         try:
@@ -420,7 +420,7 @@ class EditGuild(commands.Cog):
             )
 
     @editguild.command(name="invitesdisabled")
-    async def editguild_invites_disabled(self, ctx: commands.Context, invites_disabled: bool):
+    async def editguild_invites_disabled(self, ctx: commands.Context, invites_disabled: bool) -> None:
         """Edit guild invites disabled state."""
         guild = ctx.guild
         try:
@@ -439,7 +439,7 @@ class EditGuild(commands.Cog):
         self,
         ctx: commands.Context,
         confirmation: typing.Optional[bool] = False,
-    ):
+    ) -> None:
         """Delete guild (if the bot is owner)."""
         guild = ctx.guild
         if not confirmation:
@@ -447,7 +447,7 @@ class EditGuild(commands.Cog):
             embed.title = _("⚠️ - Delete Guild")
             embed.description = _(
                 "Do you really want to delete the guild {guild.name} ({guild.id})?"
-            ).format(**locals())
+            ).format(guild=guild)
             embed.color = 0xF00020
             if not await self.cogsutils.ConfirmationAsk(
                 ctx, content=f"{ctx.author.mention}", embed=embed

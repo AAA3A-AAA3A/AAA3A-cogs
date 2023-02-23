@@ -21,12 +21,10 @@ if CogsUtils().is_dpy2:  # To remove
     setattr(commands, "Literal", typing.Literal)
 
 # Credits:
+# General repo credits.
 # Thanks to TrustyJAID for the two converter for the bulk command arguments! (https://github.com/TrustyJAID/Trusty-cogs/blob/main/roletools/converter.py)
-# Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel!
-# Thanks to Kuro for the emoji converter!(https://canary.discord.com/channels/133049272517001216/133251234164375552/1014520590239019048)
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+# Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
+# Thanks to Kuro for the emoji converter (https://canary.discord.com/channels/133049272517001216/133251234164375552/1014520590239019048)!
 
 _ = Translator("CommandsButtons", __file__)
 
@@ -44,7 +42,7 @@ else:
 class CommandsButtons(commands.Cog):
     """A cog to allow a user to execute a command by clicking on a button!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
@@ -52,21 +50,21 @@ class CommandsButtons(commands.Cog):
             identifier=205192943327321000143939875896557571750,  # 370638632963
             force_registration=True,
         )
-        self.commands_buttons_guild = {
+        self.commands_buttons_guild: typing.Dict[str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]] = {
             "commands_buttons": {},
         }
         self.config.register_guild(**self.commands_buttons_guild)
 
-        self.cogsutils = CogsUtils(cog=self)
-        self.purge.no_slash = True
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
+        self.purge.no_slash: bool = True
 
-        self.cache = []
+        self.cache: typing.List[commands.Context] = []
 
-    async def cog_load(self):
+    async def cog_load(self) -> None:
         if self.cogsutils.is_dpy2:
             await self.load_buttons()
 
-    async def load_buttons(self):
+    async def load_buttons(self) -> None:
         all_guilds = await self.config.all_guilds()
         for guild in all_guilds:
             for role_button in all_guilds[guild]["commands_buttons"]:
@@ -103,7 +101,7 @@ class CommandsButtons(commands.Cog):
 
     if CogsUtils().is_dpy2:
 
-        async def on_button_interaction(self, view: Buttons, interaction: discord.Interaction):
+        async def on_button_interaction(self, view: Buttons, interaction: discord.Interaction) -> None:
             if await self.bot.cog_disabled_in_guild(self, interaction.guild):
                 return
             if not interaction.data["custom_id"].startswith("commands_buttons"):
@@ -134,10 +132,10 @@ class CommandsButtons(commands.Cog):
                     guild: discord.Guild,
                     channel: discord.TextChannel,
                 ):
-                    self.bot = bot
-                    self.author = author
-                    self.guild = guild
-                    self.channel = channel
+                    self.bot: Red = bot
+                    self.author: discord.Member = author
+                    self.guild: discord.Guild = guild
+                    self.channel: discord.TextChannel = channel
 
             fake_context = FakeContext(
                 self.bot, interaction.user, interaction.guild, interaction.channel
@@ -170,7 +168,7 @@ class CommandsButtons(commands.Cog):
     else:
 
         @commands.Cog.listener()
-        async def on_button_click(self, inter: MessageInteraction):
+        async def on_button_click(self, inter: MessageInteraction) -> None:
             guild = inter.guild
             channel = inter.channel
             if inter.author is None:
@@ -200,10 +198,10 @@ class CommandsButtons(commands.Cog):
                     guild: discord.Guild,
                     channel: discord.TextChannel,
                 ):
-                    self.bot = bot
-                    self.author = author
-                    self.guild = guild
-                    self.channel = channel
+                    self.bot: Red = bot
+                    self.author: discord.Member = author
+                    self.guild: discord.Guild = guild
+                    self.channel: discord.TextChannel = channel
 
             fake_context = FakeContext(self.bot, inter.author, inter.guild, inter.channel)
             emoji = await Emoji().convert(fake_context, emoji)
@@ -230,12 +228,12 @@ class CommandsButtons(commands.Cog):
             self.cache.append(context)
 
     @commands.Cog.listener()
-    async def on_command_completion(self, ctx: commands.Context):
+    async def on_command_completion(self, ctx: commands.Context) -> None:
         if ctx in self.cache:
             self.cache.remove(ctx)
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: commands.Context, error: Exception):
+    async def on_command_error(self, ctx: commands.Context, error: Exception) -> None:
         if ctx not in self.cache:
             return
         self.cache.remove(ctx)
@@ -249,7 +247,7 @@ class CommandsButtons(commands.Cog):
             await ctx.send(inline(message))
 
     @commands.Cog.listener()
-    async def on_message_delete(self, message: discord.Message):
+    async def on_message_delete(self, message: discord.Message) -> None:
         if message.guild is None:
             return
         config = await self.config.guild(message.guild).commands_buttons.all()
@@ -261,7 +259,7 @@ class CommandsButtons(commands.Cog):
     @commands.guild_only()
     @commands.is_owner()
     @hybrid_group()
-    async def commandsbuttons(self, ctx: commands.Context):
+    async def commandsbuttons(self, ctx: commands.Context) -> None:
         """Group of commands for use CommandsButtons."""
         pass
 
@@ -275,7 +273,7 @@ class CommandsButtons(commands.Cog):
         style_button: typing.Optional[commands.Literal["1", "2", "3", "4"]] = "2",
         *,
         text_button: typing.Optional[str] = None,
-    ):
+    ) -> None:
         """Add a command-button to a message.
 
         `primary`: 1
@@ -291,9 +289,7 @@ class CommandsButtons(commands.Cog):
         """
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the command-button to work.").format(
-                    **locals()
-                )
+                _("I have to be the author of the message for the command-button to work.")
             )
         permissions = message.channel.permissions_for(ctx.guild.me)
         if (
@@ -355,7 +351,7 @@ class CommandsButtons(commands.Cog):
         ctx: commands.Context,
         message: discord.Message,
         commands_buttons: commands.Greedy[EmojiCommandConverter],
-    ):
+    ) -> None:
         """Add commands-buttons to a message.
 
         ```[p]commandsbuttons bulk <message> ":reaction1:|ping" ":reaction2:|ping" :reaction3:|ping"```
@@ -418,7 +414,7 @@ class CommandsButtons(commands.Cog):
         await self.config.guild(ctx.guild).commands_buttons.set(config)
 
     @commandsbuttons.command()
-    async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji):
+    async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji) -> None:
         """Remove a command-button to a message."""
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
@@ -455,7 +451,7 @@ class CommandsButtons(commands.Cog):
         await self.config.guild(ctx.guild).commands_buttons.set(config)
 
     @commandsbuttons.command()
-    async def clear(self, ctx: commands.Context, message: discord.Message):
+    async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
         """Clear all commands-buttons to a message."""
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
@@ -477,11 +473,11 @@ class CommandsButtons(commands.Cog):
         await self.config.guild(ctx.guild).commands_buttons.set(config)
 
     @commandsbuttons.command(hidden=True)
-    async def purge(self, ctx: commands.Context):
+    async def purge(self, ctx: commands.Context) -> None:
         """Clear all commands-buttons to a **guild**."""
         await self.config.guild(ctx.guild).commands_buttons.clear()
 
-    def get_buttons(self, config: typing.Dict, message: discord.Message):
+    def get_buttons(self, config: typing.Dict, message: discord.Message) -> typing.List[typing.Dict[str, str]]:
         all_buttons = []
         if self.cogsutils.is_dpy2:
             for button in config[f"{message.channel.id}-{message.id}"]:

@@ -11,6 +11,6 @@
         "role",
         "channel"
     ],
-    "requirements": ["sentry_sdk"],
+    "requirements": ["sentry_sdk", "emoji"],
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

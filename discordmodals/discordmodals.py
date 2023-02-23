@@ -10,9 +10,7 @@ import yaml
 from redbot.core import Config
 
 # Credits:
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+# General repo credits.
 
 _ = Translator("DiscordModals", __file__)
 
@@ -27,7 +25,7 @@ else:
 
 
 class YAMLConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.Dict:
+    async def convert(self, ctx: commands.Context, argument: str) -> typing.Dict[str, typing.Union[str, bool, typing.Dict, typing.List]]:
         try:
             argument_dict = yaml.safe_load(argument)
         except Exception:
@@ -43,7 +41,7 @@ class YAMLConverter(commands.Converter):
             if arg not in argument_dict:
                 raise discord.ext.commands.BadArgument(
                     _("The argument `/{arg}` is required in the root in the YAML.").format(
-                        **locals()
+                        arg=arg
                     )
                 )
         for arg in argument_dict:
@@ -51,7 +49,7 @@ class YAMLConverter(commands.Converter):
                 raise discord.ext.commands.BadArgument(
                     _(
                         "The agument `/{arg}` is invalid in in the YAML. Check the spelling."
-                    ).format(**locals())
+                    ).format(arg=aarg)
                 )
         # button
         required_arguments = ["label"]
@@ -59,14 +57,14 @@ class YAMLConverter(commands.Converter):
         for arg in required_arguments:
             if arg not in argument_dict["button"]:
                 raise discord.ext.commands.BadArgument(
-                    _("The argument `/button/{arg}` is required in the YAML.").format(**locals())
+                    _("The argument `/button/{arg}` is required in the YAML.").format(arg=arg)
                 )
         for arg in argument_dict["button"]:
             if arg is not None in required_arguments + optional_arguments:
                 raise discord.ext.commands.BadArgument(
                     _(
                         "The agument `/button/{arg}` is invalid in the YAML. Check the spelling."
-                    ).format(**locals())
+                    ).format(arg=arg)
                 )
         if "style" in argument_dict["button"]:
             argument_dict["button"]["style"] = str(argument_dict["button"]["style"])
@@ -74,15 +72,11 @@ class YAMLConverter(commands.Converter):
                 style = int(argument_dict["button"]["style"])
             except ValueError:
                 raise discord.ext.commands.BadArgument(
-                    _("The agument `/button/style` must be a number between 1 and 4.").format(
-                        **locals()
-                    )
+                    _("The agument `/button/style` must be a number between 1 and 4.")
                 )
             if not 1 <= style <= 4:
                 raise discord.ext.commands.BadArgument(
-                    _("The agument `/button/style` must be a number between 1 and 4.").format(
-                        **locals()
-                    )
+                    _("The agument `/button/style` must be a number between 1 and 4.")
                 )
             argument_dict["button"]["style"] = style
         else:
@@ -100,7 +94,7 @@ class YAMLConverter(commands.Converter):
                 if arg not in input:
                     raise discord.ext.commands.BadArgument(
                         _("The argument `/modal/{count}/{arg}` is required in the YAML.").format(
-                            **locals()
+                            count=count, arg=arg
                         )
                     )
             for arg in input:
@@ -108,7 +102,7 @@ class YAMLConverter(commands.Converter):
                     raise discord.ext.commands.BadArgument(
                         _(
                             "The agument `/modal/{count}/{arg}` is invalid in the YAML. Check the spelling."
-                        ).format(**locals())
+                        ).format(count=count, arg=arg)
                     )
             if "style" in input:
                 input["style"] = str(input["style"])
@@ -118,13 +112,13 @@ class YAMLConverter(commands.Converter):
                     raise discord.ext.commands.BadArgument(
                         _(
                             "The agument `/modal/{count}/style` must be a number between 1 and 2."
-                        ).format(**locals())
+                        ).format(count=count)
                     )
                 if not 1 <= style <= 2:
                     raise discord.ext.commands.BadArgument(
                         _(
                             "The agument `/modal/{count}/style` must be a number between 1 and 2."
-                        ).format(**locals())
+                        ).format(count=count)
                     )
                 input["style"] = style
             else:
@@ -147,7 +141,7 @@ class YAMLConverter(commands.Converter):
                     raise discord.ext.commands.BadArgument(
                         _(
                             "The agument `/modal/{count}/required` must be a boolean (True or False)."
-                        ).format(**locals())
+                        ).format(count=count)
                     )
             else:
                 input["required"] = True
@@ -189,7 +183,7 @@ class YAMLConverter(commands.Converter):
 class DiscordModals(commands.Cog):
     """A cog to use Discord Modals, forms with graphic interface!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
@@ -197,18 +191,18 @@ class DiscordModals(commands.Cog):
             identifier=205192943327321000143939875896557571750,  # 897374386384
             force_registration=True,
         )
-        self.discordmodals_guild = {
+        self.discordmodals_guild: typing.Dict[str, typing.Dict[str, typing.Dict[str, typing.Any]]] = {
             "modals": {},
         }
         self.config.register_guild(**self.discordmodals_guild)
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
         self.purge.no_slash = True
 
-    async def cog_load(self):
+    async def cog_load(self) -> None:
         await self.load_buttons()
 
-    async def load_buttons(self):
+    async def load_buttons(self) -> None:
         all_guilds = await self.config.all_guilds()
         for guild in all_guilds:
             for modal in all_guilds[guild]["modals"]:
@@ -224,7 +218,7 @@ class DiscordModals(commands.Cog):
                         exc_info=e,
                     )
 
-    async def send_modal(self, view: Buttons, interaction: discord.Interaction):
+    async def send_modal(self, view: Buttons, interaction: discord.Interaction) -> None:
         config = await self.config.guild(interaction.message.guild).modals()
         if f"{interaction.message.channel.id}-{interaction.message.id}" not in config:
             return
@@ -244,7 +238,7 @@ class DiscordModals(commands.Cog):
 
     async def send_embed_with_responses(
         self, view: Modal, interaction: discord.Interaction, values: typing.List
-    ):
+    ) -> None:
         config = await self.config.guild(interaction.message.guild).modals()
         if f"{interaction.message.channel.id}-{interaction.message.id}" not in config:
             return
@@ -309,7 +303,7 @@ class DiscordModals(commands.Cog):
             )
 
     @commands.Cog.listener()
-    async def on_message_delete(self, message: discord.Message):
+    async def on_message_delete(self, message: discord.Message) -> None:
         if message.guild is None:
             return
         config = await self.config.guild(message.guild).modals.all()
@@ -321,14 +315,14 @@ class DiscordModals(commands.Cog):
     @commands.guild_only()
     @commands.mod_or_permissions(manage_guild=True)
     @hybrid_group()
-    async def discordmodals(self, ctx: commands.Context):
+    async def discordmodals(self, ctx: commands.Context) -> None:
         """Group of commands for use ReactToCommand."""
         pass
 
     @discordmodals.command()
     async def add(
         self, ctx: commands.Context, message: discord.Message, *, argument: YAMLConverter
-    ):
+    ) -> None:
         """Add a Modal to a message.
         Use YAML syntax to set up everything.
 
@@ -396,7 +390,7 @@ class DiscordModals(commands.Cog):
         await self.config.guild(ctx.guild).modals.set(config)
 
     @discordmodals.command()
-    async def remove(self, ctx: commands.Context, message: discord.Message):
+    async def remove(self, ctx: commands.Context, message: discord.Message) -> None:
         """Remove a Modal to a message."""
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
@@ -413,6 +407,6 @@ class DiscordModals(commands.Cog):
         await self.config.guild(ctx.guild).modals.set(config)
 
     @discordmodals.command(hidden=True)
-    async def purge(self, ctx: commands.Context):
+    async def purge(self, ctx: commands.Context) -> None:
         """Clear all Modals to a **guild**."""
         await self.config.guild(ctx.guild).modals.clear()

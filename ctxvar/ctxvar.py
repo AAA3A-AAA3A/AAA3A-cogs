@@ -15,10 +15,8 @@ import rich
 from redbot.core.utils.chat_formatting import bold, box, pagify
 
 # Credits:
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
+# General repo credits.
 # Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel.
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
 _ = Translator("CtxVar", __file__)
 
@@ -36,15 +34,15 @@ else:
 class CtxVar(commands.Cog):
     """A cog to list and display the contents of all sub-functions of `ctx`!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True, add_reactions=True)
     @hybrid_group()
-    async def ctxvar(self, ctx: commands.Context):
+    async def ctxvar(self, ctx: commands.Context) -> None:
         """Commands for CtxVar."""
         pass
 
@@ -54,7 +52,7 @@ class CtxVar(commands.Cog):
         ctx: commands.Context,
         message: typing.Optional[discord.ext.commands.converter.MessageConverter] = None,
         args: typing.Optional[str] = None,
-    ):
+    ) -> None:
         """Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
@@ -123,7 +121,7 @@ class CtxVar(commands.Cog):
         await Menu(pages=embeds).start(ctx)
 
     @ctxvar.command(name="dir")
-    async def _dir(self, ctx: commands.Context, thing: str, search: typing.Optional[str] = None):
+    async def _dir(self, ctx: commands.Context, thing: str, search: typing.Optional[str] = None) -> None:
         """Display a list of all attributes of the provided object (debug not async)."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
@@ -146,7 +144,7 @@ class CtxVar(commands.Cog):
         except NameError:
             raise commands.UserFeedbackCheckFailure(
                 _("I couldn't find any cog, command, or object named `{thing}`.").format(
-                    **locals()
+                    thing=thing
                 )
             )
         except Exception as e:
@@ -175,7 +173,7 @@ class CtxVar(commands.Cog):
     @ctxvar.command(name="inspect")
     async def _inspect(
         self, ctx: commands.Context, show_all: typing.Optional[bool], *, thing: str
-    ):
+    ) -> None:
         """Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
@@ -198,7 +196,7 @@ class CtxVar(commands.Cog):
         except NameError:
             raise commands.UserFeedbackCheckFailure(
                 _("I couldn't find any cog, command, or object named `{thing}`.").format(
-                    **locals()
+                    thing=thing
                 )
             )
         except Exception as e:

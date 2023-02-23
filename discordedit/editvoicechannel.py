@@ -28,12 +28,12 @@ ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions 
 class EditVoiceChannel(commands.Cog):
     """A cog to edit voice channels!"""
 
-    def __init__(self, bot: Red):  # Never executed except manually.
+    def __init__(self, bot: Red) -> None:  # Never executed except manually.
         self.bot: Red = bot
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
-    async def check_voice_channel(self, ctx: commands.Context, channel: discord.VoiceChannel):
+    async def check_voice_channel(self, ctx: commands.Context, channel: discord.VoiceChannel) -> bool:
         if (
             not self.cogsutils.check_permissions_for(
                 channel=channel, user=ctx.author, check=["manage_channel"]
@@ -44,7 +44,7 @@ class EditVoiceChannel(commands.Cog):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "I can not let you edit the voice channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
-                ).format(**locals())
+                ).format(channel=channel)
             )
         if not self.cogsutils.check_permissions_for(
             channel=channel, user=ctx.guild.me, check=["manage_channel"]
@@ -52,14 +52,14 @@ class EditVoiceChannel(commands.Cog):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "I can not edit the voice channel {channel.mention} ({channel.id}) because you don't have the `manage_channel` permission."
-                ).format(**locals())
+                ).format(channel=channel)
             )
         return True
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_channels=True)
     @hybrid_group(aliases=["editvoiceroom"])
-    async def editvoicechannel(self, ctx: commands.Context):
+    async def editvoicechannel(self, ctx: commands.Context) -> None:
         """Commands for edit a voice channel."""
         pass
 
@@ -70,7 +70,7 @@ class EditVoiceChannel(commands.Cog):
         category: typing.Optional[discord.CategoryChannel] = None,
         *,
         name: str,
-    ):
+    ) -> None:
         """Create a voice channel."""
         try:
             await ctx.guild.create_voice_channel(
@@ -86,7 +86,7 @@ class EditVoiceChannel(commands.Cog):
     @editvoicechannel.command(name="clone")
     async def editvoicechannel_clone(
         self, ctx: commands.Context, channel: discord.VoiceChannel, *, name: str
-    ):
+    ) -> None:
         """Clone a voice channel."""
         await self.check_voice_channel(ctx, channel)
         try:
@@ -108,7 +108,7 @@ class EditVoiceChannel(commands.Cog):
         max_uses: typing.Optional[int] = None,
         temporary: typing.Optional[bool] = False,
         unique: typing.Optional[bool] = True,
-    ):
+    ) -> None:
         """Create an invite for a voice channel.
 
         `max_age`: How long the invite should last in days. If it's 0 then the invite doesn't expire.
@@ -135,7 +135,7 @@ class EditVoiceChannel(commands.Cog):
     @editvoicechannel.command(name="name")
     async def editvoicechannel_name(
         self, ctx: commands.Context, channel: discord.VoiceChannel, name: str
-    ):
+    ) -> None:
         """Edit voice channel name."""
         await self.check_voice_channel(ctx, channel)
         try:
@@ -151,7 +151,7 @@ class EditVoiceChannel(commands.Cog):
     @editvoicechannel.command(name="bitrate")
     async def editvoicechannel_bitrate(
         self, ctx: commands.Context, channel: discord.VoiceChannel, bitrate: int
-    ):
+    ) -> None:
         """Edit voice channel bitrate.
 
         It must be a number between 8000 and
@@ -176,7 +176,7 @@ class EditVoiceChannel(commands.Cog):
     @editvoicechannel.command(name="nsfw")
     async def editvoicechannel_nsfw(
         self, ctx: commands.Context, channel: discord.VoiceChannel, nsfw: bool
-    ):
+    ) -> None:
         """Edit voice channel nsfw."""
         await self.check_voice_channel(ctx, channel)
         try:
@@ -192,7 +192,7 @@ class EditVoiceChannel(commands.Cog):
     @editvoicechannel.command(name="userlimit")
     async def editvoicechannel_user_limit(
         self, ctx: commands.Context, channel: discord.VoiceChannel, user_limit: int
-    ):
+    ) -> None:
         """Edit voice channel user limit.
 
         It must be a number between 0 and 99.
@@ -212,7 +212,7 @@ class EditVoiceChannel(commands.Cog):
             )
 
     class PositionConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, argument: str):
+        async def convert(self, ctx: commands.Context, argument: str) -> int:
             try:
                 position = int(argument)
             except ValueError:
@@ -230,7 +230,7 @@ class EditVoiceChannel(commands.Cog):
     @editvoicechannel.command(name="position")
     async def editvoicechannel_position(
         self, ctx: commands.Context, channel: discord.VoiceChannel, *, position: PositionConverter
-    ):
+    ) -> None:
         """Edit voice channel position.
 
         Warning: Only voice channels are taken into account. Channel 1 is the highest positioned voice channel.
@@ -250,7 +250,7 @@ class EditVoiceChannel(commands.Cog):
     @editvoicechannel.command(name="syncpermissions")
     async def editvoicechannel_sync_permissions(
         self, ctx: commands.Context, channel: discord.VoiceChannel, sync_permissions: bool
-    ):
+    ) -> None:
         """Edit voice channel sync permissions."""
         await self.check_voice_channel(ctx, channel)
         try:
@@ -269,7 +269,7 @@ class EditVoiceChannel(commands.Cog):
         ctx: commands.Context,
         channel: discord.VoiceChannel,
         category: discord.CategoryChannel,
-    ):
+    ) -> None:
         """Edit voice channel category."""
         await self.check_voice_channel(ctx, channel)
         try:
@@ -288,7 +288,7 @@ class EditVoiceChannel(commands.Cog):
         ctx: commands.Context,
         channel: discord.VoiceChannel,
         video_quality_mode: commands.Literal["1", "2"],
-    ):
+    ) -> None:
         """Edit voice channel video quality mode.
 
         auto = 1
@@ -307,7 +307,7 @@ class EditVoiceChannel(commands.Cog):
             )
 
     class PermissionConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, argument: str):
+        async def convert(self, ctx: commands.Context, argument: str) -> str:
             permissions = [
                 key for key, value in dict(discord.Permissions.all_channel()).items() if value
             ]
@@ -323,7 +323,7 @@ class EditVoiceChannel(commands.Cog):
         permission: PermissionConverter,
         true_or_false: typing.Optional[bool],
         roles_or_users: commands.Greedy[typing.Union[discord.Member, discord.Role, str]],
-    ):
+    ) -> None:
         """Edit voice channel permissions/overwrites.
 
         create_instant_invite
@@ -392,7 +392,7 @@ class EditVoiceChannel(commands.Cog):
         ctx: commands.Context,
         channel: discord.VoiceChannel,
         confirmation: typing.Optional[bool] = False,
-    ):
+    ) -> None:
         """Delete voice channel."""
         await self.check_voice_channel(ctx, channel)
         if not confirmation:
@@ -400,7 +400,7 @@ class EditVoiceChannel(commands.Cog):
             embed.title = _("⚠️ - Delete voice channel")
             embed.description = _(
                 "Do you really want to delete the voice channel {channel.mention} ({channel.id})?"
-            ).format(**locals())
+            ).format(channel=channel)
             embed.color = 0xF00020
             if not await self.cogsutils.ConfirmationAsk(
                 ctx, content=f"{ctx.author.mention}", embed=embed

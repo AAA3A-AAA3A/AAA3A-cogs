@@ -6,6 +6,6 @@ from .ctxvar import CtxVar
 __red_end_user_data_statement__ = get_end_user_data_statement(file=__file__)
 
 
-async def setup(bot: Red):
+async def setup(bot: Red) -> None:
     cog = CtxVar(bot)
     await cog.cogsutils.add_cog(bot)

@@ -18,10 +18,9 @@ if CogsUtils().is_dpy2:  # To remove
     setattr(commands, "Literal", typing.Literal)
 
 # Credits:
-# Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel!
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+# General repo credits.
+# Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
+# Thanks to Kuro for the emoji converter (https://canary.discord.com/channels/133049272517001216/133251234164375552/1014520590239019048)!
 
 _ = Translator("DropdownsTexts", __file__)
 
@@ -39,7 +38,7 @@ else:
 class DropdownsTexts(commands.Cog):
     """A cog to have dropdowns-texts!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
@@ -52,13 +51,13 @@ class DropdownsTexts(commands.Cog):
         }
         self.config.register_guild(**self.dropdowns_texts_guild)
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
-    async def cog_load(self):
+    async def cog_load(self) -> None:
         if self.cogsutils.is_dpy2:
             await self.load_dropdowns()
 
-    async def load_dropdowns(self):
+    async def load_dropdowns(self) -> None:
         all_guilds = await self.config.all_guilds()
         for guild in all_guilds:
             config = all_guilds[guild]["dropdowns_texts"]
@@ -86,7 +85,7 @@ class DropdownsTexts(commands.Cog):
 
         async def on_dropdown_interaction(
             self, view: Dropdown, interaction: discord.Interaction, selected_options: typing.List
-        ):
+        ) -> None:
             if await self.bot.cog_disabled_in_guild(self, interaction.guild):
                 return
             if not interaction.data["custom_id"].startswith("DropdownsTexts"):
@@ -116,10 +115,10 @@ class DropdownsTexts(commands.Cog):
                     guild: discord.Guild,
                     channel: discord.TextChannel,
                 ):
-                    self.bot = bot
-                    self.author = author
-                    self.guild = guild
-                    self.channel = channel
+                    self.bot: Red = bot
+                    self.author: discord.Member = author
+                    self.guild: discord.Guild = guild
+                    self.channel: discord.TextChannel = channel
 
             fake_context = FakeContext(
                 self.bot, interaction.user, interaction.guild, interaction.channel
@@ -150,7 +149,7 @@ class DropdownsTexts(commands.Cog):
     else:
 
         @commands.Cog.listener()
-        async def on_dropdown(self, inter: MessageInteraction):
+        async def on_dropdown(self, inter: MessageInteraction) -> None:
             if inter.author is None:
                 return
             if inter.guild is None:
@@ -181,10 +180,10 @@ class DropdownsTexts(commands.Cog):
                     guild: discord.Guild,
                     channel: discord.TextChannel,
                 ):
-                    self.bot = bot
-                    self.author = author
-                    self.guild = guild
-                    self.channel = channel
+                    self.bot: Red = bot
+                    self.author: discord.Member = author
+                    self.guild: discord.Guild = guild
+                    self.channel: discord.TextChannel = channel
 
             fake_context = FakeContext(self.bot, inter.author, inter.guild, inter.channel)
             emoji = await Emoji().convert(fake_context, emoji)
@@ -207,7 +206,7 @@ class DropdownsTexts(commands.Cog):
                 )
 
     @commands.Cog.listener()
-    async def on_message_delete(self, message: discord.Message):
+    async def on_message_delete(self, message: discord.Message) -> None:
         if message.guild is None:
             return
         config = await self.config.guild(message.guild).dropdowns_texts.all()
@@ -219,7 +218,7 @@ class DropdownsTexts(commands.Cog):
     @commands.guild_only()
     @commands.admin_or_permissions(manage_messages=True)
     @hybrid_group()
-    async def dropdownstexts(self, ctx: commands.Context):
+    async def dropdownstexts(self, ctx: commands.Context) -> None:
         """Group of commands for use DropdownsTexts."""
         pass
 
@@ -232,13 +231,11 @@ class DropdownsTexts(commands.Cog):
         label: str,
         *,
         text: str,
-    ):
+    ) -> None:
         """Add a dropdown-text to a message."""
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.").format(
-                    **locals()
-                )
+                _("I have to be the author of the message for the role-button to work.")
             )
         permissions = message.channel.permissions_for(ctx.guild.me)
         if (
@@ -306,7 +303,7 @@ class DropdownsTexts(commands.Cog):
         ctx: commands.Context,
         message: discord.Message,
         dropdown_texts: commands.Greedy[EmojiLabelTextConverter],
-    ):
+    ) -> None:
         """Add dropdown-texts to a message."""
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
@@ -382,7 +379,7 @@ class DropdownsTexts(commands.Cog):
         ctx: commands.Context,
         message: discord.Message,
         emoji: Emoji,
-    ):
+    ) -> None:
         """Remove a dropdown-text to a message."""
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
@@ -423,7 +420,7 @@ class DropdownsTexts(commands.Cog):
         await self.config.guild(ctx.guild).dropdowns_texts.set(config)
 
     @dropdownstexts.command()
-    async def clear(self, ctx: commands.Context, message: discord.Message):
+    async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
         """Clear a dropdown-texts to a message."""
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
@@ -445,7 +442,7 @@ class DropdownsTexts(commands.Cog):
         await self.config.guild(ctx.guild).dropdowns_texts.set(config)
 
     @dropdownstexts.command(hidden=True)
-    async def purge(self, ctx: commands.Context):
+    async def purge(self, ctx: commands.Context) -> None:
         """Clear all dropdowns-texts to a **guild**."""
         await self.config.guild(ctx.guild).dropdowns_texts.clear()
 

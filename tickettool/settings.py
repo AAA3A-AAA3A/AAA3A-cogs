@@ -41,7 +41,7 @@ class settings(commands.Cog):
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
     @hybrid_group(name="settickettool", aliases=["tickettoolset"])
-    async def configuration(self, ctx: commands.Context):
+    async def configuration(self, ctx: commands.Context) -> None:
         """Configure TicketTool for your server."""
         pass
 
@@ -53,7 +53,7 @@ class settings(commands.Cog):
         channel: typing.Optional[discord.TextChannel],
         message: typing.Optional[discord.ext.commands.converter.MessageConverter],
         reason_options: commands.Greedy[EmojiLabelDescriptionValueConverter],
-    ):
+    ) -> None:
         """Send a message with a button to open a ticket or dropdown with possible reasons.
 
         Example:
@@ -66,9 +66,7 @@ class settings(commands.Cog):
             reason_options = None
         if message is not None and not message.author == ctx.guild.me:
             await ctx.send(
-                _("I have to be the author of the message for the interaction to work.").format(
-                    **locals()
-                )
+                _("I have to be the author of the message for the interaction to work.")
             )
             return
         config = await self.get_config(ctx.guild, panel)
@@ -246,7 +244,7 @@ class settings(commands.Cog):
 
     async def check_permissions_in_channel(
         self, permissions: typing.List[str], channel: discord.TextChannel
-    ):
+    ) -> typing.List[str]:
         """Function to checks if the permissions are available in a guild.
         This will return a list of the missing permissions.
         """

@@ -19,10 +19,9 @@ if CogsUtils().is_dpy2:  # To remove
     setattr(commands, "Literal", typing.Literal)
 
 # Credits:
+# General repo credits.
+
 # I made this cog to be able to update files on my bot's host machine easily and quickly, without having to update cogs from GitHub for all my tests.
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
 
 _ = Translator("EditFile", __file__)
 
@@ -43,11 +42,11 @@ class EditFile(commands.Cog):
     def __init__(self, bot: Red):
         self.bot: Red = bot
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.is_owner()
     @hybrid_group(aliases=["fileedit"])
-    async def editfile(self, ctx: commands.Context):
+    async def editfile(self, ctx: commands.Context) -> None:
         """Commands group to get a file and replace it from its path."""
         pass
 
@@ -59,7 +58,7 @@ class EditFile(commands.Cog):
         show_line: typing.Optional[bool] = False,
         *,
         path: str,
-    ):
+    ) -> None:
         """Get a file on the bot's host machine from its path.
         `#L10` or `#L10-L30` is supported.
         """
@@ -125,18 +124,18 @@ class EditFile(commands.Cog):
             if len(pages) == 0:
                 len_lines = len(content.split(b"\n"))
                 raise commands.UserFeedbackCheckFailure(
-                    _("There are only {len_lines} lines in this file.").format(**locals())
+                    _("There are only {len_lines} lines in this file.").format(len_lines=len_lines)
                 )
             await Menu(pages=pages, timeout=300, delete_after_timeout=None).start(ctx)
         else:
             await ctx.send(
-                _("Here are the contents of the file `{path}`.").format(**locals()), file=file
+                _("Here are the contents of the file `{path}`.").format(path=path), file=file
             )
 
     @editfile.command()
     async def replace(
         self, ctx: commands.Context, path: str, *, content: typing.Optional[str] = None
-    ):
+    ) -> None:
         """Replace a file on the bot's host machine from its path.
         `#L10` or `#L10-L30` is supported.
         """
@@ -161,7 +160,7 @@ class EditFile(commands.Cog):
             except IndexError:
                 len_lines = len(old_file_content.split(b"\n"))
                 raise commands.UserFeedbackCheckFailure(
-                    _("There are only {len_lines} lines in this file.").format(**locals())
+                    _("There are only {len_lines} lines in this file.").format(len_lines=len_lines)
                 )
             old_file = discord.File(fp=io.BytesIO(b"\n".join(lines)), filename=path.name)
         except FileNotFoundError:
@@ -201,12 +200,12 @@ class EditFile(commands.Cog):
         await ctx.send(
             _(
                 "This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly."
-            ).format(**locals()),
+            ).format(path=path),
             file=old_file,
         )
 
     @editfile.command()
-    async def findcog(self, ctx: commands.Context, cog: str):
+    async def findcog(self, ctx: commands.Context, cog: str) -> None:
         """Get a cog directory on the bot's host machine from its name."""
         cog_obj = ctx.bot.get_cog(cog)
         if cog_obj is None:
@@ -238,7 +237,7 @@ class EditFile(commands.Cog):
         await ctx.send(box(f"{message}"))
 
     @editfile.command()
-    async def listdir(self, ctx: commands.Context, *, path: str):
+    async def listdir(self, ctx: commands.Context, *, path: str) -> None:
         """List all files/directories of a directory from its path."""
         path = Path(self.cogsutils.replace_var_paths(path, reverse=True))
         if not path.exists():
@@ -267,7 +266,7 @@ class EditFile(commands.Cog):
             await ctx.send_interactive(pages)
 
     @editfile.command()
-    async def rename(self, ctx: commands.Context, new_name: str, *, path: str):
+    async def rename(self, ctx: commands.Context, new_name: str, *, path: str) -> None:
         """Rename a file."""
         path = Path(self.cogsutils.replace_var_paths(path))
         if not path.exists():
@@ -288,10 +287,10 @@ class EditFile(commands.Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("The path you specified refers to a directory, not a file.")
             )
-        await ctx.send(_("The `{path}` file has been deleted.").format(**locals()))
+        await ctx.send(_("The `{path}` file has been deleted.").format(path=path))
 
     @editfile.command()
-    async def delete(self, ctx: commands.Context, *, path: str):
+    async def delete(self, ctx: commands.Context, *, path: str) -> None:
         """Delete a file."""
         if not path.exists():
             raise commands.UserFeedbackCheckFailure(
@@ -301,7 +300,7 @@ class EditFile(commands.Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("The path you specified refers to a directory, not a file.")
             )
-        path = Path(self.cogsutils.replace_var_paths(path))
+        path: Path = Path(self.cogsutils.replace_var_paths(path))
         try:
             path.unlink()
         except FileNotFoundError:
@@ -312,4 +311,4 @@ class EditFile(commands.Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("The path you specified refers to a directory, not a file.")
             )
-        await ctx.send(_("The `{path}` file has been deleted.").format(**locals()))
+        await ctx.send(_("The `{path}` file has been deleted.").format(path=path))

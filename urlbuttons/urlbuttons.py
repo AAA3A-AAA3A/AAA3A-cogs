@@ -5,9 +5,7 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-if CogsUtils().is_dpy2:
-    from .AAA3A_utils import Buttons  # isort:skip
-else:
+if not CogsUtils().is_dpy2:
     from dislash import ActionRow  # isort:skip
 
 from redbot.core import Config
@@ -18,11 +16,8 @@ if CogsUtils().is_dpy2:  # To remove
     setattr(commands, "Literal", typing.Literal)
 
 # Credits:
-# Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel!
-# Thanks to Kuro for the emoji converter!(https://canary.discord.com/channels/133049272517001216/133251234164375552/1014520590239019048)
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+# General repo credits.# Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
+# Thanks to Kuro for the emoji converter (https://canary.discord.com/channels/133049272517001216/133251234164375552/1014520590239019048)!
 
 _ = Translator("UrlButtons", __file__)
 
@@ -40,7 +35,7 @@ else:
 class UrlButtons(commands.Cog):
     """A cog to have url-buttons!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
@@ -48,16 +43,16 @@ class UrlButtons(commands.Cog):
             identifier=205192943327321000143939875896557571750,  # 974269742704
             force_registration=True,
         )
-        self.url_buttons_guild = {
+        self.url_buttons_guild: typing.Dict[str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]] = {
             "url_buttons": {},
         }
         self.config.register_guild(**self.url_buttons_guild)
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
         self.purge.no_slash = True
 
     @commands.Cog.listener()
-    async def on_message_delete(self, message: discord.Message):
+    async def on_message_delete(self, message: discord.Message) -> None:
         if message.guild is None:
             return
         config = await self.config.guild(message.guild).url_buttons.all()
@@ -69,7 +64,7 @@ class UrlButtons(commands.Cog):
     @commands.guild_only()
     @commands.admin_or_permissions(manage_messages=True)
     @hybrid_group()
-    async def urlbuttons(self, ctx: commands.Context):
+    async def urlbuttons(self, ctx: commands.Context) -> None:
         """Group of commands for use UrlButtons."""
         pass
 
@@ -82,13 +77,11 @@ class UrlButtons(commands.Cog):
         url: str,
         *,
         text_button: typing.Optional[str] = None,
-    ):
+    ) -> None:
         """Add a url-button to a message."""
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the url-button to work.").format(
-                    **locals()
-                )
+                _("I have to be the author of the message for the url-button to work.")
             )
         if getattr(ctx, "interaction", None) is None:
             try:
@@ -113,9 +106,7 @@ class UrlButtons(commands.Cog):
             "text_button": text_button,
         }
         if self.cogsutils.is_dpy2:
-            await message.edit(
-                view=Buttons(timeout=None, buttons=self.get_buttons(config, message))
-            )
+            await message.edit(view=self.get_buttons(config, message))
         else:
             await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).url_buttons.set(config)
@@ -126,16 +117,14 @@ class UrlButtons(commands.Cog):
         ctx: commands.Context,
         message: discord.Message,
         url_buttons: commands.Greedy[EmojiUrlConverter],
-    ):
+    ) -> None:
         """Add a url-button to a message.
 
         ```[p]urlbuttons bulk <message> :red_circle:|<https://github.com/Cog-Creators/Red-DiscordBot> :smiley:|<https://github.com/Cog-Creators/Red-SmileyBot> :green_circle:|<https://github.com/Cog-Creators/Green-DiscordBot>```
         """
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the url-button to work.").format(
-                    **locals()
-                )
+                _("I have to be the author of the message for the url-button to work.")
             )
         if len(url_buttons) == 0:
             raise commands.UserFeedbackCheckFailure(
@@ -164,15 +153,13 @@ class UrlButtons(commands.Cog):
                 "text_button": None,
             }
         if self.cogsutils.is_dpy2:
-            await message.edit(
-                view=Buttons(timeout=None, buttons=self.get_buttons(config, message))
-            )
+            await message.edit(view=self.get_buttons(config, message))
         else:
             await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).url_buttons.set(config)
 
     @urlbuttons.command()
-    async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji):
+    async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji) -> None:
         """Remove a url-button to a message."""
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
@@ -190,9 +177,7 @@ class UrlButtons(commands.Cog):
         del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
         if not config[f"{message.channel.id}-{message.id}"] == {}:
             if self.cogsutils.is_dpy2:
-                await message.edit(
-                    view=Buttons(timeout=None, buttons=self.get_buttons(config, message))
-                )
+                await message.edit(view=self.get_buttons(config, message))
             else:
                 await message.edit(components=self.get_buttons(config, message))
         else:
@@ -204,13 +189,11 @@ class UrlButtons(commands.Cog):
         await self.config.guild(ctx.guild).url_buttons.set(config)
 
     @urlbuttons.command()
-    async def clear(self, ctx: commands.Context, message: discord.Message):
+    async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
         """Clear all url-buttons to a message."""
         if not message.author == ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the url-button to work.").format(
-                    **locals()
-                )
+                _("I have to be the author of the message for the url-button to work.")
             )
         config = await self.config.guild(ctx.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
@@ -228,13 +211,13 @@ class UrlButtons(commands.Cog):
         await self.config.guild(ctx.guild).url_buttons.set(config)
 
     @urlbuttons.command(hidden=True)
-    async def purge(self, ctx: commands.Context):
+    async def purge(self, ctx: commands.Context) -> None:
         """Clear all url-buttons to a **guild**."""
         await self.config.guild(ctx.guild).url_buttons.clear()
 
-    def get_buttons(self, config: typing.Dict, message: discord.Message):
-        all_buttons = []
+    def get_buttons(self, config: typing.Dict, message: discord.Message) -> typing.List[typing.Dict[str, str]]:
         if self.cogsutils.is_dpy2:
+            view = discord.ui.View()
             for button in config[f"{message.channel.id}-{message.id}"]:
                 try:
                     int(button)
@@ -242,17 +225,10 @@ class UrlButtons(commands.Cog):
                     b = button
                 else:
                     b = str(self.bot.get_emoji(int(button)))
-                all_buttons.append(
-                    {
-                        "style": 5,
-                        "label": config[f"{message.channel.id}-{message.id}"][f"{button}"][
-                            "text_button"
-                        ],
-                        "emoji": f"{b}",
-                        "url": config[f"{message.channel.id}-{message.id}"][f"{button}"]["url"],
-                    }
-                )
+                view.add_item(discord.ui.Button(emoji=b, label=config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], url=config[f"{message.channel.id}-{message.id}"][f"{button}"]["url"]))
+            return view
         else:
+            all_buttons = []
             lists = []
             one_l = [button for button in config[f"{message.channel.id}-{message.id}"]]
             while True:

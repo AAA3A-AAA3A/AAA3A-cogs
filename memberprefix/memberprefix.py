@@ -11,10 +11,8 @@ from copy import deepcopy
 from redbot.core import Config
 
 # Credits:
-# The idea for this cog came from @OnlyEli on Red cogs support! (https://discord.com/channels/240154543684321280/430582201113903114/944075297127538730)
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+# General repo credits.
+# The idea for this cog came from @OnlyEli on Red cogs support (https://discord.com/channels/240154543684321280/430582201113903114/944075297127538730)!
 
 _ = Translator("MemberPrefix", __file__)
 
@@ -32,7 +30,7 @@ else:
 class MemberPrefix(commands.Cog):
     """A cog to allow a member to choose custom prefixes, just for them!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
         self.config: Config = Config.get_conf(
@@ -40,31 +38,31 @@ class MemberPrefix(commands.Cog):
             identifier=205192943327321000143939875896557571750,  # 647053803629
             force_registration=True,
         )
-        self.memberprefix_member = {
+        self.memberprefix_member: typing.Dict[str, typing.List[str]] = {
             "custom_prefixes": [],
         }
-        self.memberprefix_global = {
+        self.memberprefix_global: typing.Dict[str, bool] = {
             "use_normal_prefixes": False,
         }
         self.config.register_member(**self.memberprefix_member)
         self.config.register_global(**self.memberprefix_global)
 
-        self.cache_messages = []
+        self.cache_messages: typing.List[discord.Message] = []
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
-    async def cog_load(self):
+    async def cog_load(self) -> None:
         self.bot.before_invoke(self.before_invoke)
 
     if CogsUtils().is_dpy2:
 
-        async def cog_unload(self):
+        async def cog_unload(self) -> None:
             self.bot.remove_before_invoke_hook(self.before_invoke)
             self.cogsutils._end()
 
     else:
 
-        def cog_unload(self):
+        def cog_unload(self) -> None:
             self.bot.remove_before_invoke_hook(self.before_invoke)
             self.cogsutils._end()
 
@@ -73,7 +71,7 @@ class MemberPrefix(commands.Cog):
         *,
         requester: typing.Literal["discord_deleted_user", "owner", "user", "user_strict"],
         user_id: int,
-    ):
+    ) -> None:
         """Delete all user chosen prefixes in all Config guilds."""
         if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
             return
@@ -88,7 +86,7 @@ class MemberPrefix(commands.Cog):
                 if members_data[guild] == {}:
                     del members_data[guild]
 
-    async def red_get_data_for_user(self, *, user_id: int):
+    async def red_get_data_for_user(self, *, user_id: int) -> typing.Dict[str, io.BytesIO]:
         """Get all data about the user."""
         data = {
             Config.GLOBAL: {},
@@ -130,6 +128,8 @@ class MemberPrefix(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
+        if message.webhook_id is not None or message.author.bot:
+            return
         if message.guild is None:
             return
         if not isinstance(message.author, discord.Member):
@@ -142,24 +142,29 @@ class MemberPrefix(commands.Cog):
                     if p not in prefixes:
                         prefixes.append(p)
         else:
-            prefixes = await self.bot.get_valid_prefixes(message.guild)
             return
         ctx = await self.get_context_with_custom_prefixes(
             origin=message, prefixes=prefixes, cls=commands.context.Context
         )
         if ctx is None:
+            ctx = await self.get_context_with_custom_prefixes(
+                origin=message, prefixes=[f"<@{self.bot.user.id}> ", f"<@!{self.bot.user.id}> "], cls=commands.context.Context
+            )
+            if ctx is not None and ctx.valid and ctx.command == self.memberprefix:
+                self.cache_messages.append(ctx.message.id)
+                await self.bot.invoke(ctx)
             return
         if ctx.valid:
             self.cache_messages.append(ctx.message.id)
             await self.bot.invoke(ctx)
 
     class StrConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, argument: str):
-            return arg
+        async def convert(self, ctx: commands.Context, argument: str) -> str:
+            return argument
 
     @commands.guild_only()
     @hybrid_command(aliases=["memberprefixes"], invoke_without_command=True)
-    async def memberprefix(self, ctx: commands.Context, prefixes: commands.Greedy[StrConverter]):
+    async def memberprefix(self, ctx: commands.Context, prefixes: commands.Greedy[StrConverter]) -> None:
         """Sets [botname]'s prefix(es) for you only.
         Warning: This is not additive. It will replace all current prefixes.
         The real prefixes will no longer work for you.
@@ -194,7 +199,7 @@ class MemberPrefix(commands.Cog):
 
     async def get_context_with_custom_prefixes(
         self, origin: discord.Message, prefixes: typing.List, *, cls=commands.context.Context
-    ):
+    ) -> None:
         r"""|coro|
 
         Returns the invocation context from the message or interaction.
@@ -260,6 +265,6 @@ class MemberPrefix(commands.Cog):
     @commands.guild_only()
     @commands.guildowner_or_permissions(administrator=True)
     @commands.command(hidden=True)
-    async def memberprefixpurge(self, ctx: commands.Context):
+    async def memberprefixpurge(self, ctx: commands.Context) -> None:
         """Clear all members prefixes for this guild."""
         await self.config.clear_all_members(guild=ctx.guild)

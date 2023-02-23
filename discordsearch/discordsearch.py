@@ -4,6 +4,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
+# import typing_extensions  # isort:skip
 
 import argparse
 import datetime
@@ -15,9 +16,7 @@ from redbot.core.utils.chat_formatting import bold, underline
 from redbot.core.utils.common_filters import URL_RE
 
 # Credits:
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+# General repo credits.
 
 _ = Translator("DiscordSearch", __file__)
 
@@ -32,7 +31,7 @@ else:
 
 
 class StrConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str):
+    async def convert(self, ctx: commands.Context, argument: str) -> str:
         return argument
 
 
@@ -40,10 +39,10 @@ class StrConverter(commands.Converter):
 class DiscordSearch(commands.Cog):
     """A cog to edit roles!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
@@ -54,7 +53,7 @@ class DiscordSearch(commands.Cog):
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
         args: commands.Greedy[StrConverter],
-    ):
+    ) -> None:
         """Search for a message on Discord in a channel.
 
         Warning: The bot uses the api for each search.
@@ -65,7 +64,7 @@ class DiscordSearch(commands.Cog):
         `--after "25/12/2000 00h00"`
         `--pinned true`
         `--content "AAA3A-cogs"`
-        `--regex "\[p\]"`
+        `--regex "\\[p\\]"`
         `--contain link --contain embed --contain file`
         `--limit 100`
         """
@@ -207,7 +206,7 @@ class DiscordSearch(commands.Cog):
                     embeds.append(embed)
             else:
                 embed: discord.Embed = discord.Embed()
-                embed.title = _("Search in #{channel.name} ({channel.id})").format(**locals())
+                embed.title = _("Search in #{channel.name} ({channel.id})").format(channel=channel)
                 embed.add_field(name="Result:", value=_("Sorry, I could not find any results."))
                 embed.timestamp = datetime.datetime.now()
                 embed.set_thumbnail(
@@ -221,19 +220,17 @@ class DiscordSearch(commands.Cog):
             end = monotonic()
             total = round(end - start, 1)
             for embed in embeds:
-                embed.title = _("Search in #{channel.name} ({channel.id}) in {total}s").format(
-                    **locals()
-                )
+                embed.title = _("Search in #{channel.name} ({channel.id}) in {total}s").format(channel=channel, total=total)
         await Menu(pages=embeds).start(ctx)
 
 
 class NoExitParser(argparse.ArgumentParser):
-    def error(self, message):
+    def error(self, message) -> None:
         raise commands.BadArgument(message)
 
 
 class SearchArgs:
-    def parse_arguments(self, arguments: str):
+    def parse_arguments(self, arguments: str) -> argparse.Namespace:
         parser = NoExitParser(description="Selection args for DiscordSearch.", add_help=False)
         parser.add_argument("--author", dest="authors", nargs="+")
         parser.add_argument("--mention", dest="mentions", nargs="+")
@@ -247,7 +244,7 @@ class SearchArgs:
 
         return parser.parse_args(arguments)
 
-    async def convert(self, ctx: commands.Context, arguments):
+    async def convert(self, ctx: commands.Context, arguments) -> typing.Any:  # typing_extensions.Self
         self.ctx = ctx
         args = self.parse_arguments(arguments)
         if args.authors is not None:

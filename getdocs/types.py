@@ -18,10 +18,10 @@ class RTFSResults:
         self.source = source
         self.results: typing.List[RTFSItem] = results
 
-    def __list__(self):
+    def __list__(self) -> typing.List[RTFSItem]:
         return self.results
 
-    def to_embeds(self):
+    def to_embeds(self) -> typing.List[discord.Embed]:
         description = "\n".join(
             f"• [`{name}`]({url})" for name, _, url, _ in self.results
         )
@@ -48,13 +48,13 @@ class RTFSResults:
 class SearchResults:
     def __init__(self, source, results: typing.Set, query_time: int) -> None:  # set[str, str, bool]
         self.source = source
-        self.results = results
+        self.results: typing.List[typing.Tuple[str, str, str]] = results
         self.query_time = query_time
 
-    def __list__(self):
+    def __list__(self) -> typing.Set:
         return self.results
 
-    def to_embeds(self):
+    def to_embeds(self) -> typing.List[discord.Embed]:
         description = "\n".join(
             f"• [`{name}`]({url})" for name, _, url, _ in self.results
         )
@@ -91,13 +91,13 @@ class SearchResults:
 
 class Parameters(typing.Dict):
 
-    def to_text(self):
+    def to_text(self) -> str:
         def format_parameter(name: str, description: str):
             formatted_parameter = f"• {name} – {description}"
             return formatted_parameter
         return "\n".join([format_parameter(name, description) for name, description in self.items()])
 
-    def to_embeds(self):
+    def to_embeds(self) -> typing.List[discord.Embed]:
         description = self.to_text()
         embeds = []
         pages = list(pagify(description, page_length=4000, delims=["\n• "]))
@@ -122,7 +122,7 @@ class Parameters(typing.Dict):
 
 class Examples(typing.List):
 
-    def to_embeds(self):
+    def to_embeds(self) -> typing.List[discord.Embed]:
         embeds = []
         for i, example in enumerate(self, start=1):
             embed = discord.Embed(
@@ -148,10 +148,10 @@ class Attributes:
     properties: typing.Dict[str, Attribute]
     methods: typing.Dict[str, Attribute]
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return all(bool(attributes) for attributes in self.__dataclass_fields__.values())
 
-    def to_embeds(self):
+    def to_embeds(self) -> typing.List[discord.Embed]:
         def format_attribute(name: str, role: str, url: str, description: str, show_description: typing.Optional[bool] = True):
             formatted_attribute = "• "
             if role is not None:
@@ -200,14 +200,14 @@ class Documentation:
     fields: typing.Dict[str, str]
     attributes: Attributes
 
-    def to_json(self):
+    def to_json(self) -> typing.Dict[str, typing.Any]:
         return {
             v: getattr(self, v)
             for v in dir(self)
             if not v.startswith("_") and v != "to_json" and v != "to_embed"
         }
 
-    def to_embed(self):
+    def to_embed(self) -> discord.Embed:
         description = f"```py\n{self.full_name}\n```\n{self.description}".strip()
         embed = discord.Embed(
             title=self.name, url=self.url, description=list(pagify(description, page_length=4000))[0], color=discord.Color.green()

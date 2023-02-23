@@ -10,7 +10,7 @@ __red_end_user_data_statement__ = get_end_user_data_statement(file=__file__)
 old_traceback = None
 
 
-async def setup_after_ready(bot):
+async def setup_after_ready(bot) -> None:
     global old_traceback
     await bot.wait_until_red_ready()
     cog = AutoTraceback(bot)
@@ -20,9 +20,9 @@ async def setup_after_ready(bot):
     await cog.cogsutils.add_cog(bot)
 
 
-async def setup(bot: Red):
+async def setup(bot: Red) -> None:
     asyncio.create_task(setup_after_ready(bot))
 
 
-def teardown(bot: Red):
+def teardown(bot: Red) -> None:
     bot.add_command(old_traceback)

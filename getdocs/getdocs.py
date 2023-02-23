@@ -29,7 +29,7 @@ if CogsUtils().is_dpy2:
 # Credits:
 # General repo credits.
 # Thanks to amyrinbot on GitHub for a part of the code (https://github.com/amyrinbot/bot/blob/main/modules/util/scraping/documentation/discord_py.py)!
-# Thanks to @Lemon for the idea of this code (show me @Lambda bot in dpy server, and give me many ideas and documentations links)!
+# Thanks to @Lemon for the idea of this code (showed me @Lambda bot in the dpy server, and gave me many ideas and documentations links)!
 
 _ = Translator("GetDocs", __file__)
 
@@ -146,7 +146,7 @@ class SourceConverter(commands.Converter):
 
 @cog_i18n(_)
 class GetDocs(commands.Cog):
-    """A cog to get and display Sphinx docs! Use `[p]listsources` to get a list of all the possible sources."""
+    """A cog to get and display Sphinx docs! Use `[p]listsources` to get a list of all the available sources."""
 
     def __init__(self, bot: Red):
         self.bot: Red = bot

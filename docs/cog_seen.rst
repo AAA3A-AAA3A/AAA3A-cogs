@@ -24,7 +24,7 @@ Commands
 
 Here are all the commands included in this cog (17):
 
-* ``[p]seen ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] <object>``
+* ``[p]seen ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] <_object>``
  Check when a member/role/channel/category was last active!
 
 * ``[p]seen board ["message"|"message_edit"|"reaction_add"|"reaction_remove"] ["members"|"roles"|"channels"|"categories"=members] [reverse=False]``
@@ -67,7 +67,7 @@ Here are all the commands included in this cog (17):
  Check when a member was last active!
 
 * ``[p]seen purge <"all"|"user"|"member"|"role"|"channel"|"guild">``
- Purge Config for a specified type or all.
+ Purge Config for a specified _type or all.
 
 * ``[p]seen role ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [role=None]``
  Check when a role was last active!

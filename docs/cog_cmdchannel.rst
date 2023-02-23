@@ -22,7 +22,7 @@ A cog to send the result of a command to another channel!
 Commands
 --------
 
-Here are all the commands included in this cog (12):
+Here are all the commands included in this cog (5):
 
 * ``[p]CmdchanneL``
  Use `[p]cmdchannel`, `[p]cmduser` and `[p]cmduserchannel`.
@@ -38,27 +38,6 @@ Here are all the commands included in this cog (12):
 
 * ``[p]CmdchanneL userchannel <user> [channel=None] <command>``
  Act as if the command had been typed in the channel of your choice by imitating the specified user.
-
-* ``[p]cmdset``
- Configure Command for your server.
-
-* ``[p]cmdset cmdchannel``
- Configure CmdChannel for your server.
-
-* ``[p]cmdset cmdchannel confirmation <true_or_false>``
- Enable or disable confirmation.
-
-* ``[p]cmdset cmdchannel delete <true_or_false>``
- Enable or disable message delete.
-
-* ``[p]cmdset cmdchannel enable <true_or_false>``
- Enable or disable CommandChannel.
-
-* ``[p]cmdset cmdchannel information <true_or_false>``
- Enable or disable information message.
-
-* ``[p]cmdset logschannel <text_channel_or_'none'>``
- Set a channel where events are registered.
 
 ------------
 Installation

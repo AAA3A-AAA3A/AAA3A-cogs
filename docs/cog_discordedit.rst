@@ -22,7 +22,7 @@ A cog to edit Discord default objects!
 Commands
 --------
 
-Here are all the commands included in this cog (59):
+Here are all the commands included in this cog (70):
 
 * ``[p]editguild``
  Commands for edit a guild.
@@ -100,7 +100,7 @@ Here are all the commands included in this cog (59):
  Create a role.
 
 * ``[p]editrole delete <role> [confirmation=False]``
- Delete role.
+ Delete a role.
 
 * ``[p]editrole mentionable <role> <mentionable>``
  Edit role mentionable.
@@ -130,7 +130,7 @@ Here are all the commands included in this cog (59):
  Edit text channel default auto archive duration.
 
 * ``[p]edittextchannel delete [channel] [confirmation=False]``
- Delete text channel.
+ Delete a text channel.
 
 * ``[p]edittextchannel invite [channel] [max_age=None] [max_uses=None] [temporary=False] [unique=True]``
  Create an invite for a text channel.
@@ -158,6 +158,39 @@ Here are all the commands included in this cog (59):
 
 * ``[p]edittextchannel type [channel] <"0"|"5">``
  Edit text channel type.
+
+* ``[p]editthread``
+ Commands for edit a text channel.
+
+* ``[p]editthread appliedtags <thread> [applied_tags]...``
+ Edit thread applied tags.
+
+* ``[p]editthread archived <thread> <archived>``
+ Edit thread archived.
+
+* ``[p]editthread autoarchiveduration <thread> <"60"|"1440"|"4320"|"10080">``
+ Edit thread auto archive duration.
+
+* ``[p]editthread create [channel=None] [message=None] <name>``
+ Create a thread.
+
+* ``[p]editthread delete <thread> [confirmation=False]``
+ Delete a thread.
+
+* ``[p]editthread invitable <thread> <invitable>``
+ Edit thread invitable.
+
+* ``[p]editthread locked <thread> <locked>``
+ Edit thread locked.
+
+* ``[p]editthread name <thread> <name>``
+ Edit thread name.
+
+* ``[p]editthread pinned <thread> <pinned>``
+ Edit thread pinned.
+
+* ``[p]editthread slowmodedelay <thread> <slowmode_delay>``
+ Edit thread slowmode delay.
 
 * ``[p]editvoicechannel``
  Commands for edit a voice channel.

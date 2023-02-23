@@ -22,22 +22,13 @@ A cog to transfer all messages channel in a other channel!
 Commands
 --------
 
-Here are all the commands included in this cog (5):
+Here are all the commands included in this cog (2):
 
 * ``[p]clearchannel [confirmation=False]``
  Delete ALL messages from the current channel by duplicating it and then deleting it.
 
 * ``[p]setclearchannel``
  Configure ClearChannel for your server.
-
-* ``[p]setclearchannel authordm <true_or_false>``
- Enable or disable Author dm
-
-* ``[p]setclearchannel channeldelete <true_or_false>``
- Enable or disable Channel Delete
-
-* ``[p]setclearchannel firstmessage <true_or_false>``
- Enable or disable First Message
 
 ------------
 Installation

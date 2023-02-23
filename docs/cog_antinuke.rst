@@ -33,10 +33,10 @@ Here are all the commands included in this cog (7):
 * ``[p]setantinuke logschannel <text_channel_or_'none'>``
  Set a channel where events are registered.
 
-* ``[p]setantinuke nbbot <int>``
+* ``[p]setantinuke nbbot <nb>``
  Number Detected - Bot
 
-* ``[p]setantinuke nbmember <int>``
+* ``[p]setantinuke nbmember <nb>``
  Number Detected - Member
 
 * ``[p]setantinuke resetuser <int>``

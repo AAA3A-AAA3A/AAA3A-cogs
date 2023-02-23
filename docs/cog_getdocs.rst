@@ -1,14 +1,14 @@
-.. _cmdchannel:
-==========
-CmdChannel
-==========
+.. _getdocs:
+=======
+GetDocs
+=======
 
-This is the cog guide for the 'CmdChannel' cog. This guide contains the collection of commands which you can use in the cog.
+This is the cog guide for the 'GetDocs' cog. This guide contains the collection of commands which you can use in the cog.
 Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` with your own prefix when you use these commands in Discord.
 
 .. note::
 
-    Ensure that you are up to date by running ``[p]cog update cmdchannel``.
+    Ensure that you are up to date by running ``[p]cog update getdocs``.
     If there is something missing, or something that needs improving in this documentation, feel free to create an issue `here <https://github.com/AAA3A-AAA3A/AAA3A-cogs/issues>`_.
     This documentation is auto-generated everytime this cog receives an update.
 
@@ -16,28 +16,19 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to send the result of a command to another channel!
+A cog to get and display Sphinx docs! Only `discord.py`, `redbot`, `python`, `aiohttp`, `requests`, `slashtags` (cog by Phen for Red), `psutil`, `pillow`, `numpy`, `matplotlib`, `asyncpg`, `sqlite`, `websockets`, `mango`, `redis`, `aiomysql`, `flask`, `motor`, `sphinx` and `starlite`.
 
 --------
 Commands
 --------
 
-Here are all the commands included in this cog (5):
+Here are all the commands included in this cog (2):
 
-* ``[p]CmdchanneL``
- Use `[p]cmdchannel`, `[p]cmduser` and `[p]cmduserchannel`.
+* ``[p]getdocs [source=discord.py] [query=None]``
+ View rich documentation for a specific node/query.
 
-* ``[p]CmdchanneL channel <channel> <command>``
- Act as if the command had been typed in the channel of your choice.
-
-* ``[p]CmdchanneL testvar``
- Test variables.
-
-* ``[p]CmdchanneL user <user> <command>``
- Act as if the command had been typed by imitating the specified user.
-
-* ``[p]CmdchanneL userchannel <user> [channel=None] <command>``
- Act as if the command had been typed in the channel of your choice by imitating the specified user.
+* ``[p]rtfm [source=discord.py] [limit=10] [with_std=True] [query=None]``
+ Show all attributes matching your search.
 
 ------------
 Installation
@@ -50,17 +41,17 @@ If you haven't added my repo before, lets add it first. We'll call it
 
     [p]repo add AAA3A-cogs https://github.com/AAA3A-AAA3A/AAA3A-cogs
 
-Now, we can install CmdChannel.
+Now, we can install GetDocs.
 
 .. code-block:: ini
 
-    [p]cog install AAA3A-cogs cmdchannel
+    [p]cog install AAA3A-cogs getdocs
 
 Once it's installed, it is not loaded by default. Load it by running the following command:
 
 .. code-block:: ini
 
-    [p]load cmdchannel
+    [p]load getdocs
 
 ---------------
 Further Support

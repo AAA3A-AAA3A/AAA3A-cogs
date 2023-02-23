@@ -6,12 +6,14 @@ from redbot.core.bot import Red  # isort:skip
 from .editguild import EditGuild
 from .editrole import EditRole
 from .edittextchannel import EditTextChannel
+if CogsUtils().is_dpy2:
+    from .editthread import EditThread
+else:
+    EditThread = type
 from .editvoicechannel import EditVoiceChannel
 
 # Credits:
-# Thanks to @epic guy on Discord for the basic syntax (command groups, commands) and also commands (await ctx.send, await ctx.author.send, await ctx.message.delete())!
-# Thanks to the developers of the cogs I added features to as it taught me how to make a cog! (Chessgame by WildStriker, Captcha by Kreusada, Speak by Epic guy and Rommer by Dav)
-# Thanks to all the people who helped me with some commands in the #coding channel of the redbot support server!
+# General repo credits.
 
 _ = Translator("DiscordEdit", __file__)
 
@@ -26,10 +28,10 @@ else:
 
 
 @cog_i18n(_)
-class DiscordEdit(EditGuild, EditRole, EditTextChannel, EditVoiceChannel, commands.Cog):
+class DiscordEdit(EditGuild, EditRole, EditTextChannel, EditThread, EditVoiceChannel, commands.Cog):
     """A cog to edit Discord default objects!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
-        self.cogsutils = CogsUtils(cog=self)
+        self.cogsutils: CogsUtils = CogsUtils(cog=self)

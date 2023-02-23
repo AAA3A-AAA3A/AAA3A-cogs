@@ -82,13 +82,6 @@ class SearchResults:
         return embeds
 
 
-# @dataclass(frozen=True)
-# class Parameter:
-#     name: str
-#     type: typing.Optional[str]
-#     description: str
-
-
 class Parameters(typing.Dict):
 
     def to_text(self) -> str:

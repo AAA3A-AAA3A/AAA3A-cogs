@@ -366,7 +366,7 @@ class GetDocs(commands.Cog):
         Shows a list of all the possible sources.
         """
         keys: str = ", ".join(
-            [f"`{key}`" for key in self.documentations.keys()]
+            [f"`{key}`" for key in BASE_URLS.keys()]
         )
         embed = discord.Embed(color=await ctx.embed_color())
         embed.title = "Sources"

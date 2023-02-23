@@ -206,6 +206,7 @@ class TicketTool(settings, commands.Cog):
                 "path": ["create_on_react"],
                 "converter": bool,
                 "description": "Create a ticket when the reaction 🎟️ is set on any message on the server.",
+                "no_slash": True,
             },
         }
         self.settings: Settings = Settings(

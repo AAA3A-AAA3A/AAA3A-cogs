@@ -146,7 +146,7 @@ class SourceConverter(commands.Converter):
 
 @cog_i18n(_)
 class GetDocs(commands.Cog):
-    """A cog to get and display Sphinx docs! Only `discord.py`, `redbot`, `python`, `aiohttp`, `requests`, `slashtags` (cog by Phen for Red), `psutil`, `pillow`, `numpy`, `matplotlib`, `asyncpg`, `sqlite`, `websockets`, `mango`, `redis`, `aiomysql`, `flask`, `motor`, `sphinx` and `starlite`."""
+    """A cog to get and display Sphinx docs! Use `[p]listsources` to get a list of all the possible sources."""
 
     def __init__(self, bot: Red):
         self.bot: Red = bot
@@ -194,9 +194,8 @@ class GetDocs(commands.Cog):
             if self._session is not None:
                 asyncio.create_task(self._session.close())
 
-    @hybrid_group(
+    @hybrid_command(
         aliases=["getdoc", "docs", "documentations"],
-        invoke_without_command=True,
     )
     async def getdocs(
         self,
@@ -258,18 +257,8 @@ class GetDocs(commands.Cog):
                 await ctx.send(content=content, embed=embed)
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))
-        
-    @getdocs.command(name="list")
-    async def getdocs_list(self, ctx: commands.Context):
-        """
-        Shows a list of all the possible sources.
-        """
-        keys = ', '.join([f'`{key}`' for key in BASE_URLS.keys()])
-        embed = discord.Embed(color=await ctx.embed_color())
-        embed.description = keys
-        await ctx.send(embed=embed)
 
-    @hybrid_group(invoke_without_command=True)
+    @hybrid_command()
     async def rtfm(
         self,
         ctx: commands.Context,
@@ -365,13 +354,19 @@ class GetDocs(commands.Cog):
                 exclude_std = not interaction.namespace.with_std
             return await self.query_autocomplete(interaction, current, exclude_std=exclude_std)
         
-    @rtfm.command(name="list")
-    async def rtfm_list(self, ctx: commands.Context):
+    @hybrid_command(
+        name="listsources", 
+        aliases=["listdocsources", "listrtfmsources", "listsource"]
+    )
+    async def _source_list(self, ctx: commands.Context):
         """
         Shows a list of all the possible sources.
         """
-        keys = ', '.join([f'`{key}`' for key in BASE_URLS.keys()])
+        keys: str = ', '.join(
+            [f'`{key}`' for key in BASE_URLS.keys()]
+        )
         embed = discord.Embed(color=await ctx.embed_color())
+        embed.title = "Sources"
         embed.description = keys
         await ctx.send(embed=embed)
 

@@ -235,7 +235,7 @@ class Dropdown(discord.ui.View):
         )
         self.check: typing.Optional[typing.Callable] = check
         self.function: typing.Optional[typing.Callable] = function
-        self.function_kwargstyping.Optional[typing.Dict[str, typing.Any]] = function_kwargs
+        self.function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = function_kwargs
         self.clear_items()
         self.options: typing.List[discord.SelectOption] = []
         self.options_dict: typing.List[typing.Dict[str, typing.Any]] = []

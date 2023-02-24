@@ -1,3 +1,4 @@
+from .AAA3A_utils import CogsUtils
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -187,11 +188,18 @@ class Documentation:
     name: str
     full_name: str
     description: str
-    parameters: Parameters[str, str]
-    examples: Examples[str]
-    url: str
-    fields: typing.Dict[str, str]
-    attributes: Attributes
+    if CogsUtils().is_dpy2:
+        parameters: Parameters[str, str]
+        examples: Examples[str]
+        url: str
+        fields: typing.Dict[str, str]
+        attributes: Attributes
+    else:
+        parameters: Parameters[str, str]
+        examples: Examples[str]
+        url: str
+        fields: typing.Dict[str, str]
+        attributes: Attributes
 
     def to_json(self) -> typing.Dict[str, typing.Any]:
         return {

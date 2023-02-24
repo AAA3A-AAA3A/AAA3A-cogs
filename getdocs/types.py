@@ -195,8 +195,8 @@ class Documentation:
         fields: typing.Dict[str, str]
         attributes: Attributes
     else:
-        parameters: Parameters[str, str]
-        examples: Examples[str]
+        parameters: Parameters
+        examples: Examples
         url: str
         fields: typing.Dict[str, str]
         attributes: Attributes

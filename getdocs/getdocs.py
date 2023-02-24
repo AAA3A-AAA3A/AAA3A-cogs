@@ -230,6 +230,8 @@ class GetDocs(commands.Cog):
                 await ctx.send(embed=embed)
             return
         if query == "random":
+            if not source._docs_cache:
+                raise commands.UserFeedbackCheckFailure(_("Documentations cache is not yet built, building now."))
             choice: Documentation = random.choice(source._docs_cache)
             await ctx.send(embed=choice.to_embed())
             return

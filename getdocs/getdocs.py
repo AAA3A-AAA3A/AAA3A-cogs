@@ -349,7 +349,11 @@ class GetDocs(commands.Cog):
         async def getdocs_query_autocomplete(
             self, interaction: discord.Interaction, current: str
         ) -> typing.List[discord.app_commands.Choice[str]]:
-            return await self.query_autocomplete(interaction, current, exclude_std=True)
+            result = await self.query_autocomplete(interaction, current, exclude_std=True)
+            if not current:
+                result.insert(0, discord.app_commands.Choice(name="random", value="random"))
+            result = result[:25]
+            return result
 
         # @rtfm.autocomplete("query")
         async def rtfm_query_autocomplete(

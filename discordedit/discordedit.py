@@ -6,11 +6,8 @@ from redbot.core.bot import Red  # isort:skip
 from .editguild import EditGuild
 from .editrole import EditRole
 from .edittextchannel import EditTextChannel
-
 if CogsUtils().is_dpy2:
     from .editthread import EditThread
-else:
-    EditThread = type
 from .editvoicechannel import EditVoiceChannel
 
 # Credits:
@@ -27,11 +24,13 @@ else:
     hybrid_command = commands.command
     hybrid_group = commands.group
 
+if CogsUtils().is_dpy2:
+    BASES = [EditGuild, EditRole, EditTextChannel, EditThread, EditVoiceChannel]
+else:
+    BASES = [EditGuild, EditRole, EditTextChannel, EditVoiceChannel]
 
 @cog_i18n(_)
-class DiscordEdit(
-    EditGuild, EditRole, EditTextChannel, EditThread, EditVoiceChannel, commands.Cog
-):
+class DiscordEdit(*BASES, commands.Cog):
     """A cog to edit Discord default objects!"""
 
     def __init__(self, bot: Red) -> None:

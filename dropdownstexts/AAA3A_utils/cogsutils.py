@@ -4,7 +4,6 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import asyncio
-import contextlib
 import datetime
 import inspect
 import logging
@@ -1390,30 +1389,6 @@ class CogsUtils(commands.Cog):
                 except Exception:
                     pass
 
-    def class_instance_to_dict(self, instance) -> typing.Dict:
-        """
-        Convert a class instance into a dictionary, while using ids for all sub-attributes.
-        """
-        original_dict = instance.__dict__
-        new_dict = self.to_id(original_dict)
-        return new_dict
-
-    def to_id(self, original_dict: typing.Dict) -> typing.Dict:
-        """
-        Return a dict with ids for all sub-attributes
-        """
-        new_dict = {}
-        for e in original_dict:
-            if isinstance(original_dict[e], typing.Dict):
-                new_dict[e] = self.to_id(original_dict[e])
-            elif hasattr(original_dict[e], "id"):
-                new_dict[e] = int(original_dict[e].id)
-            elif isinstance(original_dict[e], datetime.datetime):
-                new_dict[e] = float(datetime.datetime.timestamp(original_dict[e]))
-            else:
-                new_dict[e] = original_dict[e]
-        return new_dict
-
     def generate_key(
         self,
         number: typing.Optional[int] = 10,
@@ -1547,32 +1522,3 @@ class CogsUtils(commands.Cog):
         except commands.BadArgument:
             return False
         return True
-
-    async def autodestruction(self) -> None:
-        """
-        Cog self-destruct.
-        Will of course never be used, just a test.
-        """
-        raise RuntimeError("Don't use this method!")
-        Downloader = self.bot.get_cog("Downloader")
-        if Downloader is not None:
-            poss_installed_path = (
-                await Downloader.cog_install_path()
-            ) / self.cog.qualified_name.lower()
-            if poss_installed_path.exists():
-                with contextlib.suppress(commands.ExtensionNotLoaded):
-                    self.bot.unload_extension(self.cog.qualified_name.lower())
-                    await self.bot.remove_loaded_package(self.cog.qualified_name.lower())
-                await Downloader._delete_cog(poss_installed_path)
-            await Downloader._remove_from_installed(
-                [
-                    discord.utils.get(
-                        await Downloader.installed_cogs(), name=self.cog.qualified_name.lower()
-                    )
-                ]
-            )
-        else:
-            raise self.DownloaderNotLoaded("The Downloader cog is not loaded.")
-
-    class DownloaderNotLoaded(Exception):
-        pass

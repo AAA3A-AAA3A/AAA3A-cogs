@@ -234,6 +234,7 @@ class Cog:
             if (
                 not no_sentry
                 and not AAA3A_utils.sentry.sentry_enabled
+                and await AAA3A_utils.senderrorwithsentry.can_run(ctx)
                 and not getattr(AAA3A_utils.senderrorwithsentry, "__is_dev__", False)
             ):
                 message += "\n" + inline(

@@ -6,7 +6,7 @@
     "description": "This cog will only work on x server and therefore cannot be used by the general public!",
     "tags": [
     ],
-    "requirements": ["sentry_sdk"],
+    "requirements": ["sentry_sdk", "bs4"],
     "end_user_data_statement": "This cog does not persistently store data or metadata about users.",
     "hidden": true
 }

@@ -1,5 +1,5 @@
 ﻿from .AAA3A_utils import CogsUtils, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
+from redbot.core import commands, Config  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
@@ -155,6 +155,16 @@ class GetDocs(commands.Cog):
     def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
+        self.config: Config = Config.get_conf(
+            self,
+            identifier=205192943327321000143939875896557571750,
+            force_registration=True,
+        )
+        self.getdocs_global = {
+            "disabled_documentations": [],
+        }
+        self.config.register_global(**self.getdocs_global)
+
         self.documentations: typing.Dict[str, Source] = {}
         self._docs_stats: typing.Dict[str, int] = {"GLOBAL": {"manuals": 0, "documentations": 0}}
         self._load_time: float = None
@@ -175,7 +185,10 @@ class GetDocs(commands.Cog):
         # self._bcontext = await self._browser.new_context()
         self._load_time = time.monotonic()
         self._session = aiohttp.ClientSession()
+        disabled_documentations = await self.config.disabled_documentations()
         for source in BASE_URLS:
+            if source in disabled_documentations:
+                continue
             self.documentations[source] = Source(
                 self,
                 name=source,

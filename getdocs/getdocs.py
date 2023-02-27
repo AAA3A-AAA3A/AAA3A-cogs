@@ -21,6 +21,8 @@ from bs4 import BeautifulSoup, NavigableString, ResultSet, SoupStrainer, Tag
 from fuzzywuzzy import fuzz
 from sphobjinv import DataObjStr, Inventory
 
+from redbot.core.utils.chat_formatting import humanize_list
+
 from .types import Attribute, Attributes, Documentation, Examples, Parameters, SearchResults
 
 if CogsUtils().is_dpy2:
@@ -43,6 +45,23 @@ else:
     hybrid_group = commands.group
 
 CT = typing.TypeVar("CT", bound=typing.Callable[..., typing.Any])  # defined CT as a type variable that is bound to a callable that can take any argument and return any value.
+
+
+async def run_blocking_func(func: typing.Callable[..., typing.Any], *args: typing.Any, **kwargs: typing.Any) -> typing.Any:
+    partial = functools.partial(func, *args, **kwargs)
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(None, partial)
+
+
+def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
+    def decorator(func: CT) -> CT:
+        @functools.wraps(func)
+        def wrapper(*args: typing.Any, **kwargs: typing.Any):
+            return run_blocking_func(func, *args, **kwargs)
+
+        return wrapper
+
+    return decorator
 
 BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
     "discord.py": {
@@ -114,23 +133,6 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
         "icon_url": "https://preview.redd.it/2veaqsnz2uf81.png?width=1280&format=png&auto=webp&s=8d7c84d4ec435fc102c14f3f2534ee2c3e5c1cae",
     },
 }
-
-
-async def run_blocking_func(func: typing.Callable[..., typing.Any], *args: typing.Any, **kwargs: typing.Any) -> typing.Any:
-    partial = functools.partial(func, *args, **kwargs)
-    loop = asyncio.get_running_loop()
-    return await loop.run_in_executor(None, partial)
-
-
-def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
-    def decorator(func: CT) -> CT:
-        @functools.wraps(func)
-        def wrapper(*args: typing.Any, **kwargs: typing.Any):
-            return run_blocking_func(func, *args, **kwargs)
-
-        return wrapper
-
-    return decorator
 
 
 class SourceConverter(commands.Converter):
@@ -312,7 +314,7 @@ class GetDocs(commands.Cog):
                 command.app_command._params["source"].choices = [
                     discord.app_commands.Choice(name=source, value=source)
                     for source in list(self.documentations.keys())
-                ]
+                ][:25]
             if "query" in command.app_command._params:
                 command.app_command._params["query"].required = True
             _params1 = command.app_command._params.copy()
@@ -372,11 +374,8 @@ class GetDocs(commands.Cog):
         """
         Shows a list of all the available sources.
         """
-        keys: str = ", ".join(
-            [f"`{key}`" for key in BASE_URLS.keys()]
-        )
-        embed = discord.Embed(color=discord.Color.green())
-        embed.title = "GetDocs Sources"
+        keys: str = humanize_list([f"`{key}`" for key in BASE_URLS.keys()])
+        embed = discord.Embed(title="GetDocs Sources", color=discord.Color.green())
         embed.description = keys
         await ctx.send(embed=embed)
 

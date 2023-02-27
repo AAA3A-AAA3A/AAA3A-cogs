@@ -36,7 +36,7 @@ class RTFSResults:
             )
             embeds.append(embed)
         else:
-            for i, page in enumerate(pages, start=1):
+            for page in pages:
                 embed = discord.Embed(description=page, color=discord.Color.green())
                 embed.set_author(
                     name=f"{self.source.name} Documentation",
@@ -71,7 +71,7 @@ class SearchResults:
             embed.set_footer(text=f"Fetched in {query_time}.")
             embeds.append(embed)
         else:
-            for i, page in enumerate(pages, start=1):
+            for page in pages:
                 embed = discord.Embed(description=page, color=discord.Color.green())
                 embed.set_author(
                     name=f"{self.source.name} Documentation",
@@ -143,7 +143,7 @@ class Attributes:
     methods: typing.Dict[str, Attribute]
 
     def __bool__(self) -> bool:
-        return all(bool(attributes) for attributes in self.__dataclass_fields__.values())
+        return all(bool(getattr(self, key)) for key in self.__dataclass_fields__.keys())
 
     def to_embeds(self) -> typing.List[discord.Embed]:
         def format_attribute(name: str, role: str, url: str, description: str, show_description: typing.Optional[bool] = True):

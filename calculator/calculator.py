@@ -73,7 +73,7 @@ class Calculator(commands.Cog):
             "9": "⁹",
         }
         self.history: typing.Dict[
-            typing.Union[discord.Member, discord.User], typing.List[str]
+            typing.Union[discord.Member, discord.User], typing.Tuple[str]
         ] = {}
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)

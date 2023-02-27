@@ -1522,3 +1522,6 @@ class CogsUtils(commands.Cog):
         except commands.BadArgument:
             return False
         return True
+
+    class DownloaderNotLoaded(Exception):
+        pass

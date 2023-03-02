@@ -227,10 +227,31 @@ class DiscordSearch(commands.Cog):
         await Menu(pages=embeds).start(ctx)
 
 
+class DateConverter(commands.Converter):
+    """Date converter which uses dateparser.parse()."""
+
+    async def convert(self, ctx: commands.Context, argument: str) -> datetime.datetime:
+        parsed = dateparser.parse(argument)
+        if parsed is None:
+            raise commands.BadArgument(_("Unrecognized date/time."))
+        return parsed
+
+
+# class SearchArgs(discord.ext.commands.flags.FlagConverter, case_insensitive=False, prefix="--", delimiter=" "):
+#     authors: commands.Greedy[discord.Member]
+#     mentions: commands.Greedy[discord.Member]
+#     before: DateConverter
+#     after: DateConverter
+#     pinned: bool
+#     content: str
+#     regex: str
+#     contains: commands.Greedy[str]
+#     limit: int
+
+
 class NoExitParser(argparse.ArgumentParser):
     def error(self, message) -> None:
         raise commands.BadArgument(message)
-
 
 class SearchArgs:
     def parse_arguments(self, arguments: str) -> argparse.Namespace:
@@ -271,12 +292,12 @@ class SearchArgs:
         else:
             self.mentions = None
         self.before = (
-            await self.DateConverter().convert(ctx, args.before)
+            await DateConverter().convert(ctx, args.before)
             if args.before is not None
             else args.before
         )
         self.after = (
-            await self.DateConverter().convert(ctx, args.after)
+            await DateConverter().convert(ctx, args.after)
             if args.after is not None
             else args.after
         )
@@ -316,12 +337,3 @@ class SearchArgs:
         else:
             self.limit = None
         return self
-
-    class DateConverter(commands.Converter):
-        """Date converter which uses dateparser.parse()."""
-
-        async def convert(self, ctx: commands.Context, argument: str) -> datetime.datetime:
-            parsed = dateparser.parse(argument)
-            if parsed is None:
-                raise commands.BadArgument(_("Unrecognized date/time."))
-            return parsed

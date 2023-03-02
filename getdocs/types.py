@@ -143,7 +143,7 @@ class Attributes:
     methods: typing.Dict[str, Attribute]
 
     def __bool__(self) -> bool:
-        return all(bool(getattr(self, key)) for key in self.__dataclass_fields__.keys())
+        return any(bool(getattr(self, key)) for key in self.__dataclass_fields__.keys())
 
     def to_embeds(self) -> typing.List[discord.Embed]:
         def format_attribute(name: str, role: str, url: str, description: str, show_description: typing.Optional[bool] = True):

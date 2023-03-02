@@ -4,9 +4,8 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import typing  # isort:skip
 
-import socket
-
 import aiohttp
+# import socket
 
 # Credits:
 # General repo credits.
@@ -53,7 +52,7 @@ class Ip(commands.Cog):
     @ip_group.command()
     async def ip(self, ctx: commands.Context) -> None:
         """Get the ip address of the bot."""
-        hostname = socket.gethostname()
+        # hostname = socket.gethostname()
         async with aiohttp.ClientSession() as session:
             async with session.get("https://www.wikipedia.org", timeout=3) as r:
                 ip = r.headers["X-Client-IP"]  # Gives the "public IP" of the Bot client PC
@@ -62,7 +61,7 @@ class Ip(commands.Cog):
     @ip_group.command()
     async def website(self, ctx: commands.Context) -> None:
         """Get the ip address website."""
-        hostname = socket.gethostname()
+        # hostname = socket.gethostname()
         async with aiohttp.ClientSession() as session:
             async with session.get("https://www.wikipedia.org", timeout=3) as r:
                 ip = r.headers["X-Client-IP"]  # Gives the "public IP" of the Bot client PC

@@ -75,7 +75,7 @@ class EditGuild(commands.Cog):
     @commands.is_owner()
     @editguild.command(name="clone")
     async def editguild_clone(self, ctx: commands.Context, *, name: str) -> None:
-        """Clone a text channel."""
+        """Clone a guild."""
         guild = ctx.guild
         try:
             template = await guild.create_template(name="Template for guild clone.")

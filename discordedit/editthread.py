@@ -294,9 +294,7 @@ class EditThread(commands.Cog):
                 await self.cogsutils.delete_message(ctx.message)
                 return
         try:
-            await thread.delete(
-                reason=f"{ctx.author} ({ctx.author.id}) has deleted the thread #{thread.name} ({thread.id})."
-            )
+            await thread.delete()  # Not supported: reason=f"{ctx.author} ({ctx.author.id}) has deleted the thread #{thread.name} ({thread.id})."
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))

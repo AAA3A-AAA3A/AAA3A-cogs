@@ -25,7 +25,7 @@ else:
     hybrid_group = commands.group
 
 RESULT_MESSAGE = "Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nThere are {count_messages} exported messages.\nRemember that exporting other users' messages from Discord does not respect the TOS."
-LINK_MESSAGE = "[Click here to view the transcript.](https://mahto.id/chat-exporter?url={message.attachments[0].url})"
+LINK_MESSAGE = "[Click here to view the transcript.]({url})"
 
 
 @cog_i18n(_)
@@ -122,12 +122,18 @@ class ExportChannel(commands.Cog):
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
         )
+        url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
         embed = discord.Embed(
             title="Transcript Link",
-            description=LINK_MESSAGE.format(message=message),
+            description=LINK_MESSAGE.format(url=url),
             colour=discord.Colour.green(),
         )
-        await message.edit(embed=embed)
+        if self.cogsutils.is_dpy2:
+            view = discord.ui.View()
+            view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url))
+            await message.edit(embed=embed, view=view)
+        else:
+            await message.edit(embed=embed)
 
     @exportchannel.command()
     async def messages(
@@ -148,12 +154,18 @@ class ExportChannel(commands.Cog):
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
         )
+        url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
         embed = discord.Embed(
             title="Transcript Link",
-            description=LINK_MESSAGE.format(message=message),
+            description=LINK_MESSAGE.format(url=url),
             colour=discord.Colour.green(),
         )
-        await message.edit(embed=embed)
+        if self.cogsutils.is_dpy2:
+            view = discord.ui.View()
+            view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url))
+            await message.edit(embed=embed, view=view)
+        else:
+            await message.edit(embed=embed)
 
     @exportchannel.command()
     async def before(
@@ -177,12 +189,18 @@ class ExportChannel(commands.Cog):
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
         )
+        url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
         embed = discord.Embed(
             title="Transcript Link",
-            description=LINK_MESSAGE.format(message=message),
+            description=LINK_MESSAGE.format(url=url),
             colour=discord.Colour.green(),
         )
-        await message.edit(embed=embed)
+        if self.cogsutils.is_dpy2:
+            view = discord.ui.View()
+            view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url))
+            await message.edit(embed=embed, view=view)
+        else:
+            await message.edit(embed=embed)
 
     @exportchannel.command()
     async def after(
@@ -206,12 +224,18 @@ class ExportChannel(commands.Cog):
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
         )
+        url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
         embed = discord.Embed(
             title="Transcript Link",
-            description=LINK_MESSAGE.format(message=message),
+            description=LINK_MESSAGE.format(url=url),
             colour=discord.Colour.green(),
         )
-        await message.edit(embed=embed)
+        if self.cogsutils.is_dpy2:
+            view = discord.ui.View()
+            view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url))
+            await message.edit(embed=embed, view=view)
+        else:
+            await message.edit(embed=embed)
 
     @exportchannel.command()
     async def between(
@@ -236,12 +260,18 @@ class ExportChannel(commands.Cog):
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
         )
+        url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
         embed = discord.Embed(
             title="Transcript Link",
-            description=LINK_MESSAGE.format(message=message),
+            description=LINK_MESSAGE.format(url=url),
             colour=discord.Colour.green(),
         )
-        await message.edit(embed=embed)
+        if self.cogsutils.is_dpy2:
+            view = discord.ui.View()
+            view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url))
+            await message.edit(embed=embed, view=view)
+        else:
+            await message.edit(embed=embed)
 
     @exportchannel.command()
     async def user(
@@ -269,12 +299,18 @@ class ExportChannel(commands.Cog):
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
         )
+        url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
         embed = discord.Embed(
             title="Transcript Link",
-            description=LINK_MESSAGE.format(message=message),
+            description=LINK_MESSAGE.format(url=url),
             colour=discord.Colour.green(),
         )
-        await message.edit(embed=embed)
+        if self.cogsutils.is_dpy2:
+            view = discord.ui.View()
+            view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url))
+            await message.edit(embed=embed, view=view)
+        else:
+            await message.edit(embed=embed)
 
     @exportchannel.command()
     async def bot(
@@ -299,9 +335,15 @@ class ExportChannel(commands.Cog):
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
         )
+        url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
         embed = discord.Embed(
             title="Transcript Link",
-            description=LINK_MESSAGE.format(message=message),
+            description=LINK_MESSAGE.format(url=url),
             colour=discord.Colour.green(),
         )
-        await message.edit(embed=embed)
+        if self.cogsutils.is_dpy2:
+            view = discord.ui.View()
+            view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url))
+            await message.edit(embed=embed, view=view)
+        else:
+            await message.edit(embed=embed)

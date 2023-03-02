@@ -42,6 +42,8 @@ class GetLoc(commands.Cog):
     async def get_map(self, title: str, latitude: float, longitude: float) -> io.BytesIO:
         if "pyproj" in logging.Logger.manager.loggerDict:
             logging.Logger.manager.loggerDict["pyproj"].setLevel(logging.INFO)
+        if "matplotlib.font_manager" in logging.Logger.manager.loggerDict:
+            logging.Logger.manager.loggerDict["matplotlib.font_manager"].setLevel(logging.INFO)
         # fig = plt.figure(figsize=(7, 6))
         # set perspective angle
         lat_viewing_angle = latitude
@@ -55,7 +57,7 @@ class GetLoc(commands.Cog):
         )
         # define map coordinates from full-scale globe
         map_coords_xy = [m1.llcrnrx, m1.llcrnry, m1.urcrnrx, m1.urcrnry]
-        map_coords_geo = [m1.llcrnrlat, m1.llcrnrlon, m1.urcrnrlat, m1.urcrnrlon]
+        # map_coords_geo = [m1.llcrnrlat, m1.llcrnrlon, m1.urcrnrlat, m1.urcrnrlon]
         # zoom proportion and re-plot map
         zoom_prop = 2  # use 1.0 for full-scale map
         m = Basemap(

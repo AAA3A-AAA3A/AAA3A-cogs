@@ -1,5 +1,5 @@
 ﻿from .AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
+from redbot.core import commands, Config  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
@@ -9,8 +9,6 @@ if CogsUtils().is_dpy2:
     from .AAA3A_utils import Dropdown  # isort:skip
 else:
     from dislash import SelectMenu, SelectOption, MessageInteraction, ResponseType  # isort:skip
-
-from redbot.core import Config
 
 from .converters import Emoji, EmojiLabelTextConverter
 

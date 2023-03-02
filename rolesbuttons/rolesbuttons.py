@@ -51,6 +51,7 @@ class RolesButtons(commands.Cog):
             str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]
         ] = {
             "roles_buttons": {},
+            "modes": {}
         }
         self.config.register_guild(**self.roles_buttons_guild)
 
@@ -159,7 +160,14 @@ class RolesButtons(commands.Cog):
                     ephemeral=True,
                 )
                 return
-            if role not in interaction.user.roles:  # interaction.guild.get_role(roles[0])
+            mode = await self.config.guild(interaction.guild).modes.get_raw(f"{interaction.channel.id}-{interaction.message.id}", default="add_or_remove")
+            if mode == "add_only":
+                add_role = True
+            elif mode == "remove_only":
+                add_role = False
+            else:
+                add_role = role not in interaction.user.roles
+            if add_role:  # interaction.guild.get_role(roles[0])
                 try:
                     await interaction.user.add_roles(
                         role,
@@ -254,7 +262,14 @@ class RolesButtons(commands.Cog):
                     ephemeral=True,
                 )
                 return
-            if role not in inter.author.roles:
+            mode = await self.config.guild(inter.guild).modes.get_raw(f"{inter.channel.id}-{inter.message.id}", default="add_or_remove")
+            if mode == "add_only":
+                add_role = True
+            elif mode == "remove_only":
+                add_role = False
+            else:
+                add_role = role not in inter.author.roles
+            if add_role:
                 try:
                     await inter.author.add_roles(
                         role,
@@ -456,6 +471,28 @@ class RolesButtons(commands.Cog):
         await self.config.guild(ctx.guild).roles_buttons.set(config)
 
     @rolesbuttons.command()
+    async def mode(self, ctx: commands.Context, message: discord.Message, mode: commands.Literal["add_or_remove", "add_only", "remove_only"]) -> None:
+        """Choose a mode for a roles-buttons message.
+
+        Type `add_or_remove`:
+        Users get the role if they do not already have it, or lose it.
+        Type `add_only`:
+        Users can only get the role, but only manual action will remove it.
+        Type `remove_only`:
+        Users can only lose a role, and will not be able to get it again without a manual action.
+        """
+        if not message.author == ctx.guild.me:
+            raise commands.UserFeedbackCheckFailure(
+                _("I have to be the author of the message for the role-button to work.")
+            )
+        config = await self.config.guild(ctx.guild).roles_buttons.all()
+        if f"{message.channel.id}-{message.id}" not in config:
+            raise commands.UserFeedbackCheckFailure(
+                _("No role-button is configured for this message.")
+            )
+        await self.config.guild(ctx.guild).modes.set_raw(f"{message.channel.id}-{message.id}", value=mode)
+
+    @rolesbuttons.command()
     async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji) -> None:
         """Remove a role-button to a message."""
         if not message.author == ctx.guild.me:
@@ -490,6 +527,7 @@ class RolesButtons(commands.Cog):
                 await message.edit(view=None)
             else:
                 await message.edit(components=None)
+            await self.config.guild(ctx.guild).modes.clear_raw(f"{message.channel.id}-{message.id}")
         await self.config.guild(ctx.guild).roles_buttons.set(config)
 
     @rolesbuttons.command()
@@ -513,6 +551,7 @@ class RolesButtons(commands.Cog):
             pass
         del config[f"{message.channel.id}-{message.id}"]
         await self.config.guild(ctx.guild).roles_buttons.set(config)
+        await self.config.guild(ctx.guild).modes.clear_raw(f"{message.channel.id}-{message.id}")
 
     @rolesbuttons.command(hidden=True)
     async def purge(self, ctx: commands.Context) -> None:

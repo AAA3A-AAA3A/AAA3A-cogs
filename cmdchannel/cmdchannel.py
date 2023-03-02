@@ -8,7 +8,7 @@ from redbot.core import Config
 
 # Credits:
 # General repo credits.
-# Thanks to TrustyJAID for the code (a bit modified to work here and to improve as needed) for the log messages sent (https://github.com/TrustyJAID/Trusty-cogs/tree/master/extendedmodlog)!
+# Removed, but: Thanks to TrustyJAID for the code (a bit modified to work here and to improve as needed) for the log messages sent (https://github.com/TrustyJAID/Trusty-cogs/tree/master/extendedmodlog)!
 
 _ = Translator("CmdChannel", __file__)
 
@@ -34,16 +34,16 @@ class CmdChannel(commands.Cog):
             identifier=205192943327321000143939875896557571750,  # 793502759720
             force_registration=True,
         )
-        self.cmd_guild: typing.Dict[
-            str, typing.Union[typing.Optional[discord.TextChannel], bool]
-        ] = {
-            "logschannel": None,  # The channel for logs.
-            "enabled_cmdchannel": True,  # Enable the possibility of commands.
-            "confirmation_cmdchannel": False,  # Enable the confirmation.
-            "deletemessage_cmdchannel": False,  # Enable the message delete.
-            "informationmessage_cmdchannel": False,  # Enable the information message.
-        }
-        self.config.register_guild(**self.cmd_guild)
+        # self.cmd_guild: typing.Dict[
+        #     str, typing.Union[typing.Optional[discord.TextChannel], bool]
+        # ] = {
+        #     "logschannel": None,  # The channel for logs.
+        #     "enabled_cmdchannel": True,  # Enable the possibility of commands.
+        #     "confirmation_cmdchannel": False,  # Enable the confirmation.
+        #     "deletemessage_cmdchannel": False,  # Enable the message delete.
+        #     "informationmessage_cmdchannel": False,  # Enable the information message.
+        # }
+        # self.config.register_guild(**self.cmd_guild)
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
@@ -101,8 +101,6 @@ class CmdChannel(commands.Cog):
             message=ctx.message,
             dispatch_message=True,
         )
-        if self.cogsutils.is_dpy2:
-            await ctx.defer()
 
     @commands.is_owner()
     @cmdchannel.command()
@@ -135,8 +133,6 @@ class CmdChannel(commands.Cog):
             message=ctx.message,
             dispatch_message=True,
         )
-        if self.cogsutils.is_dpy2:
-            await ctx.defer()
 
     @commands.is_owner()
     @cmdchannel.command()
@@ -179,8 +175,6 @@ class CmdChannel(commands.Cog):
             message=ctx.message,
             dispatch_message=True,
         )
-        if self.cogsutils.is_dpy2:
-            await ctx.defer()
 
     @cmdchannel.command()
     async def testvar(self, ctx: commands.Context) -> None:

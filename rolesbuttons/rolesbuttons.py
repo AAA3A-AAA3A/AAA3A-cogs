@@ -5,9 +5,7 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-if CogsUtils().is_dpy2:
-    from .AAA3A_utils import Buttons  # isort:skip
-else:
+if not CogsUtils().is_dpy2:
     from dislash import ActionRow, MessageInteraction, ResponseType  # isort:skip
 
 from redbot.core import Config
@@ -65,43 +63,43 @@ class RolesButtons(commands.Cog):
     async def load_buttons(self) -> None:
         all_guilds = await self.config.all_guilds()
         for guild in all_guilds:
-            for role_button in all_guilds[guild]["roles_buttons"]:
+            config = all_guilds[guild]["roles_buttons"]
+            for message in config:
                 try:
-                    view = Buttons(
-                        timeout=None,
-                        buttons=[
-                            {
-                                "style": all_guilds[guild]["roles_buttons"][role_button][
-                                    f"{emoji}"
-                                ]["style_button"]
-                                if "style_button"
-                                in all_guilds[guild]["roles_buttons"][role_button][f"{emoji}"]
-                                else 2,
-                                "label": all_guilds[guild]["roles_buttons"][role_button][
-                                    f"{emoji}"
-                                ]["text_button"],
-                                "emoji": f"{emoji}",
-                                "custom_id": f"roles_buttons {emoji}",
-                                "disabled": False,
-                            }
-                            for emoji in all_guilds[guild]["roles_buttons"][role_button]
-                        ],
-                        function=self.on_button_interaction,
-                        infinity=True,
-                    )
-                    self.bot.add_view(view, message_id=int((str(role_button).split("-"))[1]))
+                    view = self.get_buttons(config=config, message=message)
+                    # view = Buttons(
+                    #     timeout=None,
+                    #     buttons=[
+                    #         {
+                    #             "style": all_guilds[guild]["roles_buttons"][role_button][
+                    #                 f"{emoji}"
+                    #             ]["style_button"]
+                    #             if "style_button"
+                    #             in all_guilds[guild]["roles_buttons"][role_button][f"{emoji}"]
+                    #             else 2,
+                    #             "label": all_guilds[guild]["roles_buttons"][role_button][
+                    #                 f"{emoji}"
+                    #             ]["text_button"],
+                    #             "emoji": f"{emoji}",
+                    #             "custom_id": f"roles_buttons {emoji}",
+                    #             "disabled": False,
+                    #         }
+                    #         for emoji in all_guilds[guild]["roles_buttons"][role_button]
+                    #     ],
+                    #     function=self.on_button_interaction,
+                    #     infinity=True,
+                    # )
+                    self.bot.add_view(view, message_id=int((str(message).split("-"))[1]))
                     self.cogsutils.views.append(view)
                 except Exception as e:
                     self.log.error(
-                        f"The Button View could not be added correctly for the {guild}-{role_button} message.",
+                        f"The Button View could not be added correctly for the {guild}-{message} message.",
                         exc_info=e,
                     )
 
     if CogsUtils().is_dpy2:
 
-        async def on_button_interaction(
-            self, view: Buttons, interaction: discord.Interaction
-        ) -> None:
+        async def on_button_interaction(self, interaction: discord.Interaction) -> None:
             if await self.bot.cog_disabled_in_guild(self, interaction.guild):
                 return
             if not interaction.data["custom_id"].startswith("roles_buttons"):
@@ -323,7 +321,7 @@ class RolesButtons(commands.Cog):
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_roles=True)
-    @commands.bot_has_guild_permissions(manage_roles=True)
+    #@commands.bot_has_guild_permissions(manage_roles=True)
     @hybrid_group()
     async def rolesbuttons(self, ctx: commands.Context) -> None:
         """Group of commands for use RolesButtons."""
@@ -391,12 +389,7 @@ class RolesButtons(commands.Cog):
             "text_button": text_button,
         }
         if self.cogsutils.is_dpy2:
-            view = Buttons(
-                timeout=None,
-                buttons=self.get_buttons(config, message),
-                function=self.on_button_interaction,
-                infinity=True,
-            )
+            view = self.get_buttons(config, message)
             await message.edit(view=view)
             self.cogsutils.views.append(view)
         else:
@@ -458,12 +451,7 @@ class RolesButtons(commands.Cog):
                 "text_button": None,
             }
         if self.cogsutils.is_dpy2:
-            view = Buttons(
-                timeout=None,
-                buttons=self.get_buttons(config, message),
-                function=self.on_button_interaction,
-                infinity=True,
-            )
+            view = self.get_buttons(config, message)
             await message.edit(view=view)
             self.cogsutils.views.append(view)
         else:
@@ -511,14 +499,9 @@ class RolesButtons(commands.Cog):
         del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
         if not config[f"{message.channel.id}-{message.id}"] == {}:
             if self.cogsutils.is_dpy2:
-                await message.edit(
-                    view=Buttons(
-                        timeout=None,
-                        buttons=self.get_buttons(config, message),
-                        function=self.on_button_interaction,
-                        infinity=True,
-                    )
-                )
+                view = self.get_buttons(config, message)
+                await message.edit(view=view)
+                self.cogsutils.views.append(view)
             else:
                 await message.edit(components=self.get_buttons(config, message))
         else:
@@ -558,51 +541,67 @@ class RolesButtons(commands.Cog):
         """Clear all roles-buttons to a **guild**."""
         await self.config.guild(ctx.guild).roles_buttons.clear()
 
-    def get_buttons(self, config: typing.Dict, message: discord.Message) -> None:
+    def get_buttons(self, config: typing.Dict, message: typing.Union[discord.Message, str]):  # dpy2: discord.ui.View
+        message = (
+            f"{message.channel.id}-{message.id}"
+            if isinstance(message, discord.Message)
+            else message
+        )
         all_buttons = []
         if self.cogsutils.is_dpy2:
-            for button in config[f"{message.channel.id}-{message.id}"]:
+            view = discord.ui.View(timeout=None)
+            for button in config[message]:
                 try:
                     int(button)
                 except ValueError:
                     b = button
                 else:
                     b = str(self.bot.get_emoji(int(button)))
-                all_buttons.append(
-                    {
-                        "style": config[f"{message.channel.id}-{message.id}"][f"{button}"][
-                            "style_button"
-                        ],
-                        "label": config[f"{message.channel.id}-{message.id}"][f"{button}"][
-                            "text_button"
-                        ],
-                        "emoji": f"{b}",
-                        "custom_id": f"roles_buttons {button}",
-                        "disabled": False,
-                    }
+                button = discord.ui.Button(
+                    label=config[message][f"{button}"]["text_button"],
+                    emoji=b,
+                    style=discord.ButtonStyle(config[message][f"{button}"].get("style_button", 2)),
+                    custom_id=f"roles_buttons {button}",
+                    disabled=False
                 )
+                button.callback = self.on_button_interaction
+                view.add_item(button)
+                # all_buttons.append(
+                #     {
+                #         "style": config[f"{message.channel.id}-{message.id}"][f"{button}"][
+                #             "style_button"
+                #         ],
+                #         "label": config[f"{message.channel.id}-{message.id}"][f"{button}"][
+                #             "text_button"
+                #         ],
+                #         "emoji": f"{b}",
+                #         "custom_id": f"roles_buttons {button}",
+                #         "disabled": False,
+                #     }
+                # )
+            return view
         else:
             lists = []
             one_l = [button for button in config[f"{message.channel.id}-{message.id}"]]
             while True:
-                l = one_l[0:4]
+                li = one_l[0:4]
                 one_l = one_l[4:]
-                lists.append(l)
+                lists.append(li)
                 if one_l == []:
                     break
-            for l in lists:
+            for li in lists:
                 buttons = {"type": 1, "components": []}
-                for button in l:
+                for button in li:
                     try:
                         int(button)
                     except ValueError:
                         buttons["components"].append(
                             {
                                 "type": 2,
-                                "style": config[f"{message.channel.id}-{message.id}"][f"{button}"][
+                                "style": config[message][f"{button}"][
                                     "style_button"
                                 ],
-                                "label": config[f"{message.channel.id}-{message.id}"][f"{button}"][
+                                "label": config[message][f"{button}"][
                                     "text_button"
                                 ],
                                 "emoji": {"name": f"{button}"},
@@ -613,10 +612,8 @@ class RolesButtons(commands.Cog):
                         buttons["components"].append(
                             {
                                 "type": 2,
-                                "style": config[f"{message.channel.id}-{message.id}"][f"{button}"][
-                                    "style_button"
-                                ],
-                                "label": config[f"{message.channel.id}-{message.id}"][f"{button}"][
+                                "style": config[message][f"{button}"].get("style_button", 2),
+                                "label": config[message][f"{button}"][
                                     "text_button"
                                 ],
                                 "emoji": {"name": f"{button}", "id": int(button)},

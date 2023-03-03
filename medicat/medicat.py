@@ -1,8 +1,5 @@
 ﻿from .AAA3A_utils import CogsUtils, Menu, Loop  # isort:skip
 
-if CogsUtils().is_dpy2:
-    from .AAA3A_utils import Buttons  # isort:skip
-
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -770,7 +767,7 @@ class Medicat(commands.Cog):
         context = await self.bot.get_context(message)
         if context.prefix is None:
             return
-        command = context.message.content[len(str(context.prefix)) :]
+        command = context.message.content[len(str(context.prefix)):]
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
@@ -842,16 +839,13 @@ class Medicat(commands.Cog):
         try:
             hook: discord.Webhook = await self.cogsutils.get_hook(ctx.channel)
             if self.cogsutils.is_dpy2:
-                view = Buttons(
-                    timeout=None,
-                    buttons=[
-                        {
-                            "style": 5,
-                            "label": "View FCportables Official Website",
-                            "url": "https://www.fcportables.com/",
-                        }
-                    ],
-                    infinity=True,
+                view = discord.ui.View()
+                view.add_item(
+                    discord.ui.Button(
+                        style=discord.ButtonStyle(5),
+                        label=_("View FCportables Official Website"),
+                        url="https://www.fcportables.com/"
+                    )
                 )
                 await hook.send(
                     embed=embed,
@@ -867,16 +861,13 @@ class Medicat(commands.Cog):
                 )
         except (AttributeError, discord.errors.Forbidden):
             if self.cogsutils.is_dpy2:
-                view = Buttons(
-                    timeout=None,
-                    buttons=[
-                        {
-                            "style": 5,
-                            "label": "View FCportables Official Website",
-                            "url": "https://www.fcportables.com/",
-                        }
-                    ],
-                    infinity=True,
+                view = discord.ui.View()
+                view.add_item(
+                    discord.ui.Button(
+                        style=discord.ButtonStyle(5),
+                        label=_("View FCportables Official Website"),
+                        url="https://www.fcportables.com/"
+                    )
                 )
                 await ctx.send(embed=embed, view=view)
             else:

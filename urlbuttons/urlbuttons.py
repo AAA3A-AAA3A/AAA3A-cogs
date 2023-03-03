@@ -108,7 +108,9 @@ class UrlButtons(commands.Cog):
             "text_button": text_button,
         }
         if self.cogsutils.is_dpy2:
-            await message.edit(view=self.get_buttons(config, message))
+            view = self.get_buttons(config, message)
+            await message.edit(view=view)
+            self.cogsutils.views.append(view)
         else:
             await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).url_buttons.set(config)
@@ -155,7 +157,9 @@ class UrlButtons(commands.Cog):
                 "text_button": None,
             }
         if self.cogsutils.is_dpy2:
-            await message.edit(view=self.get_buttons(config, message))
+            view = self.get_buttons(config, message)
+            await message.edit(view=view)
+            self.cogsutils.views.append(view)
         else:
             await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).url_buttons.set(config)
@@ -179,7 +183,9 @@ class UrlButtons(commands.Cog):
         del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
         if not config[f"{message.channel.id}-{message.id}"] == {}:
             if self.cogsutils.is_dpy2:
-                await message.edit(view=self.get_buttons(config, message))
+                view = self.get_buttons(config, message)
+                await message.edit(view=view)
+                self.cogsutils.views.append(view)
             else:
                 await message.edit(components=self.get_buttons(config, message))
         else:
@@ -217,9 +223,7 @@ class UrlButtons(commands.Cog):
         """Clear all url-buttons to a **guild**."""
         await self.config.guild(ctx.guild).url_buttons.clear()
 
-    def get_buttons(
-        self, config: typing.Dict, message: discord.Message
-    ) -> typing.List[typing.Dict[str, str]]:
+    def get_buttons(self, config: typing.Dict, message: discord.Message) -> typing.List[typing.Dict[str, str]]:  # dpy2: discord.ui.View
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()
             for button in config[f"{message.channel.id}-{message.id}"]:

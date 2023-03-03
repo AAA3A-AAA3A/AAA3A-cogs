@@ -167,8 +167,7 @@ class CalculatorView(discord.ui.View):
 
     async def on_timeout(self) -> None:
         for child in self.children:
-            if not child.style == discord.ButtonStyle.url:
-                child.disabled = True
+            child.disabled = True
         try:
             await self._message.edit(view=self)
         except discord.HTTPException:

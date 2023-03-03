@@ -5,9 +5,9 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-if CogsUtils().is_dpy2:
-    from .AAA3A_utils import Dropdown  # isort:skip
-else:
+from functools import partial
+
+if not CogsUtils().is_dpy2:
     from dislash import SelectMenu, SelectOption, MessageInteraction, ResponseType  # isort:skip
 
 from .converters import Emoji, EmojiLabelTextConverter
@@ -59,18 +59,19 @@ class DropdownsTexts(commands.Cog):
         all_guilds = await self.config.all_guilds()
         for guild in all_guilds:
             config = all_guilds[guild]["dropdowns_texts"]
-            for dropdown_text in all_guilds[guild]["dropdowns_texts"]:
+            for dropdown_text in config:
                 try:
-                    view = Dropdown(
-                        timeout=None,
-                        placeholder=_("Select an option."),
-                        min_values=0,
-                        max_values=1,
-                        options=self.get_dropdown(config, dropdown_text),
-                        function=self.on_dropdown_interaction,
-                        infinity=True,
-                        custom_id=f"DropdownsTexts_{dropdown_text}",
-                    )
+                    view = self.get_dropdown(config=config, message=dropdown_text)
+                    # view = Dropdown(
+                    #     timeout=None,
+                    #     placeholder=_("Select an option."),
+                    #     min_values=0,
+                    #     max_values=1,
+                    #     options=self.get_dropdown(config, dropdown_text),
+                    #     function=self.on_dropdown_interaction,
+                    #     infinity=True,
+                    #     custom_id=f"DropdownsTexts_{dropdown_text}",
+                    # )
                     self.bot.add_view(view, message_id=int((str(dropdown_text).split("-"))[1]))
                     self.cogsutils.views.append(view)
                 except Exception as e:
@@ -81,13 +82,12 @@ class DropdownsTexts(commands.Cog):
 
     if CogsUtils().is_dpy2:
 
-        async def on_dropdown_interaction(
-            self, view: Dropdown, interaction: discord.Interaction, selected_options: typing.List
-        ) -> None:
+        async def on_dropdown_interaction(self, interaction: discord.Interaction, dropdown: discord.ui.Select) -> None:
             if await self.bot.cog_disabled_in_guild(self, interaction.guild):
                 return
             if not interaction.data["custom_id"].startswith("DropdownsTexts"):
                 return
+            selected_options = dropdown.values
             if len(selected_options) == 0:
                 if not interaction.response.is_done():
                     await interaction.response.defer()
@@ -101,9 +101,9 @@ class DropdownsTexts(commands.Cog):
                 )
                 return
             options = [
-                option for option in view.options_dict if option["label"] == selected_options[0]
+                option for option in dropdown.options if option.value == selected_options[0]
             ]
-            emoji = options[0]["emoji"]
+            emoji = options[0].emoji
 
             class FakeContext:
                 def __init__(
@@ -122,7 +122,6 @@ class DropdownsTexts(commands.Cog):
                 self.bot, interaction.user, interaction.guild, interaction.channel
             )
             emoji = await Emoji().convert(fake_context, emoji)
-            emoji = await Emoji().convert(interaction, emoji)
             emoji = f"{getattr(emoji, 'id', emoji)}"
             if f"{emoji}" not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
                 await interaction.followup.send(_("This emoji is not in Config."), ephemeral=True)
@@ -279,16 +278,7 @@ class DropdownsTexts(commands.Cog):
                 "text": text,
             }
         if self.cogsutils.is_dpy2:
-            view = Dropdown(
-                timeout=None,
-                placeholder=_("Select an option."),
-                min_values=0,
-                max_values=1,
-                options=self.get_dropdown(config, message),
-                function=self.on_dropdown_interaction,
-                infinity=True,
-                custom_id=f"DropdownsTexts_{message.channel.id}-{message.id}",
-            )
+            view = self.get_dropdown(config=config, message=message)
             await message.edit(view=view)
             self.cogsutils.views.append(view)
         else:
@@ -355,16 +345,7 @@ class DropdownsTexts(commands.Cog):
                     "text": text,
                 }
         if self.cogsutils.is_dpy2:
-            view = Dropdown(
-                timeout=None,
-                placeholder=_("Select an option."),
-                min_values=0,
-                max_values=1,
-                options=self.get_dropdown(config, message),
-                function=self.on_dropdown_interaction,
-                infinity=True,
-                custom_id=f"DropdownsTexts_{message.channel.id}-{message.id}",
-            )
+            view = self.get_dropdown(config=config, message=message)
             await message.edit(view=view)
             self.cogsutils.views.append(view)
         else:
@@ -395,18 +376,9 @@ class DropdownsTexts(commands.Cog):
         del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
         if not config[f"{message.channel.id}-{message.id}"] == {}:
             if self.cogsutils.is_dpy2:
-                await message.edit(
-                    view=Dropdown(
-                        timeout=None,
-                        placeholder=_("Select an option."),
-                        min_values=0,
-                        max_values=1,
-                        options=self.get_dropdown(config, message),
-                        function=self.on_dropdown_interaction,
-                        infinity=True,
-                        custom_id=f"DropdownsTexts_{message.channel.id}-{message.id}",
-                    )
-                )
+                view = self.get_dropdown(config=config, message=message)
+                await message.edit(view=view)
+                self.cogsutils.views.append(view)
             else:
                 await message.edit(components=[self.get_dropdown(config, message)])
         else:
@@ -424,7 +396,7 @@ class DropdownsTexts(commands.Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.")
             )
-        config = await self.config.guild(ctx.guild).roles_buttons.all()
+        config = await self.config.guild(ctx.guild).dropdowns_texts.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
                 _("No dropdown-texts is configured for this message.")
@@ -444,14 +416,15 @@ class DropdownsTexts(commands.Cog):
         """Clear all dropdowns-texts to a **guild**."""
         await self.config.guild(ctx.guild).dropdowns_texts.clear()
 
-    def get_dropdown(self, config: typing.Dict, message: typing.Union[discord.Message, str]):
+    def get_dropdown(self, config: typing.Dict, message: typing.Union[discord.Message, str]) -> typing.List[typing.Any]:  # dpy2: discord.ui.View
         message = (
             f"{message.channel.id}-{message.id}"
             if isinstance(message, discord.Message)
             else message
         )
         if self.cogsutils.is_dpy2:
-            all_options = []
+            view = discord.ui.View(timeout=None)
+            options = []
             for option in config[message]:
                 try:
                     int(option)
@@ -459,8 +432,25 @@ class DropdownsTexts(commands.Cog):
                     e = option
                 else:
                     e = self.bot.get_emoji(int(option))
-                all_options.append({"label": config[message][option]["label"], "emoji": e})
-            return all_options
+                options.append(
+                    discord.SelectOption(
+                        label=config[message][option]["label"],
+                        value=config[message][option]["label"],
+                        emoji=e
+                    )
+                )
+                # all_options.append({"label": config[message][option]["label"], "emoji": e})
+            dropdown = discord.ui.Select(
+                custom_id=f"DropdownsTexts_{message}",
+                placeholder=_("Select an option."),
+                min_values=1,
+                max_values=1,
+                options=options,
+                disabled=False
+            )
+            dropdown.callback = partial(self.on_dropdown_interaction, dropdown=dropdown)
+            view.add_item(dropdown)
+            return view
         else:
             options = []
             for option in config[message]:

@@ -11,5 +11,6 @@
         "raid"
     ],
     "requirements": ["sentry_sdk", "dislash.py", "TagScript"],
-    "end_user_data_statement": "This cog records the number of times the user has performed an action that may be considered dangerous (e.g. deleting a channel)."
+    "end_user_data_statement": "This cog records the number of times the user has performed an action that may be considered dangerous (e.g. deleting a channel).",
+    "hidden": true
 }

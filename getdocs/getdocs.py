@@ -26,6 +26,7 @@ from redbot.core.utils.chat_formatting import humanize_list
 from .types import Attribute, Attributes, Documentation, Examples, Parameters, SearchResults
 
 if CogsUtils().is_dpy2:
+    setattr(commands, "Literal", typing.Literal)  # To remove
     from .view import DocsView
 
 # Credits:
@@ -161,7 +162,7 @@ class GetDocs(commands.Cog):
             force_registration=True,
         )
         self.getdocs_global = {
-            "disabled_documentations": [],
+            "disabled_sources": [],
         }
         self.config.register_global(**self.getdocs_global)
 
@@ -185,9 +186,9 @@ class GetDocs(commands.Cog):
         # self._bcontext = await self._browser.new_context()
         self._load_time = time.monotonic()
         self._session = aiohttp.ClientSession()
-        disabled_documentations = await self.config.disabled_documentations()
+        disabled_sources = await self.config.disabled_sources()
         for source in BASE_URLS:
-            if source in disabled_documentations:
+            if source in disabled_sources:
                 continue
             self.documentations[source] = Source(
                 self,
@@ -383,14 +384,56 @@ class GetDocs(commands.Cog):
         name="listsources",
         aliases=["listdocsources", "listrtfmsources", "listsource"]
     )
-    async def _source_list(self, ctx: commands.Context) -> None:
+    async def _sources_list(self, ctx: commands.Context, status: typing.Optional[commands.Literal["available", "all", "disabled"]] = "available") -> None:
         """
-        Shows a list of all the available sources.
+        Shows a list of all sources, those that are available or those that are disabled.
         """
-        keys: str = humanize_list([f"`{key}`" for key in BASE_URLS.keys()])
+        if status == "available":
+            keys: str = humanize_list([f"`{key}`" for key in self.documentations.keys()])
+        elif status == "all":
+            keys: str = humanize_list([f"`{key}`" for key in BASE_URLS.keys()])
+        elif status == "disabled":
+            keys: str = humanize_list([f"`{key}`" for key in BASE_URLS.keys() if key not in self.documentations.keys()])
         embed = discord.Embed(title="GetDocs Sources", color=discord.Color.green())
         embed.description = keys
         await ctx.send(embed=embed)
+
+    @commands.is_owner()
+    @hybrid_group()
+    async def setgetdocs(self, ctx: commands.Context) -> None:
+        """
+        Commands to configure GetDocs.
+        """
+        pass
+
+    @setgetdocs.command(name="enablesource",)
+    async def _source_enable(self, ctx: commands.Context, source: SourceConverter) -> None:
+        """
+        Enable a documentations source.
+        """
+        disabled_sources: typing.List[str] = await self.config.disabled_sources()
+        if source not in disabled_sources:
+            raise commands.UserFeedbackCheckFailure(_("This source is already enabled."))
+        disabled_sources.append(source)
+        await self.config.disabled_sources.set(disabled_sources)
+        self.documentations[source] = Source(
+            self,
+            name=source,
+            url=BASE_URLS[source]["url"],
+            icon_url=BASE_URLS[source]["icon_url"],
+        )
+        asyncio.create_task(self.documentations[source].load())
+
+    @setgetdocs.command(name="enablesource",)
+    async def _source_disable(self, ctx: commands.Context, source: SourceConverter) -> None:
+        """
+        Disable a documentations source.
+        """
+        disabled_sources: typing.List[str] = await self.config.disabled_sources()
+        if source in disabled_sources:
+            raise commands.UserFeedbackCheckFailure(_("This source is already disabled."))
+        disabled_sources.remove(source)
+        await self.config.disabled_sources.set(disabled_sources)
 
 
 class Source:

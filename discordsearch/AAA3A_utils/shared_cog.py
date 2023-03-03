@@ -123,8 +123,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
     async def addslash(self, ctx: commands.Context, cogs: commands.Greedy[StrConverter]) -> None:
         """Add slash commands for a cog from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
-            await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
         async with ctx.typing():
             result = {
                 "not_installed_or_loaded": [],
@@ -191,7 +190,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
     ) -> None:
         """Remove slash commands for a cog from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
-            await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
+            raise commands.UserFeedbackCheckFailure(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
             return
         async with ctx.typing():
             result = {
@@ -258,8 +257,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
     ) -> None:
         """Add ignored slash commands for a cog from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
-            await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
         async with ctx.typing():
             result = {
                 "not_exist": [],
@@ -321,8 +319,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
     ) -> None:
         """Remove ignored slash commands for a cog from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
-            await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
         async with ctx.typing():
             result = {
                 "not_exist": [],
@@ -382,8 +379,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
     async def clearslash(self, ctx: commands.Context) -> None:
         """Remove slash commands for all cogs from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
-            await ctx.send(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
-            return
+            raise commands.UserFeedbackCheckFailure(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
         config = await self.config.cogs_with_slash()
         for cog in self.cogsutils.get_all_repo_cogs_objects():
             if cog.qualified_name in config:
@@ -400,14 +396,11 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         """Get logs for a cog from AAA3A-cogs"""
         cog = ctx.bot.get_cog(cog)
         if cog is None:
-            await ctx.send(_("This cog is not installed or loaded."))
-            return
+            raise commands.UserFeedbackCheckFailure(_("This cog is not installed or loaded."))
         if cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
-            await ctx.send(_("This cog is not a cog from AAA3A-cogs."))
-            return
+            raise commands.UserFeedbackCheckFailure(_("This cog is not a cog from AAA3A-cogs."))
         if not hasattr(cog, "logs") or not isinstance(getattr(cog, "logs"), typing.Dict):
-            await ctx.send(_("This cog does not have any log saved."))
-            return
+            raise commands.UserFeedbackCheckFailure(_("This cog does not have any log saved."))
         if level == "stats":
             message = "---------- Logs Stats ----------"
             for _level, logs in cog.logs.items():
@@ -416,8 +409,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             return
         if not level == "all":
             if cog.logs.get(level, None) is None or cog.logs.get(level, None) == []:
-                await ctx.send(_("This cog does not have any log saved for this level."))
-                return
+                raise commands.UserFeedbackCheckFailure(_("This cog does not have any log saved for this level."))
         if level == "all":
             data = []
             for _level in cog.logs:
@@ -456,11 +448,9 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         """Get debug loops status for a cog from AAA3A-cogs."""
         cog = ctx.bot.get_cog(cog)
         if cog is None:
-            await ctx.send(_("This cog is not installed or loaded."))
-            return
+            raise commands.UserFeedbackCheckFailure(_("This cog is not installed or loaded."))
         if cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
-            await ctx.send(_("This cog is not a cog from AAA3A-cogs."))
-            return
+            raise commands.UserFeedbackCheckFailure(_("This cog is not a cog from AAA3A-cogs."))
         embeds = []
         for loop in cog.cogsutils.loops.values():
             embeds.append(loop.get_debug_embed())
@@ -474,14 +464,11 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         """Reset Config for a cog from AAA3A-cogs."""
         cog = ctx.bot.get_cog(cog)
         if cog is None:
-            await ctx.send(_("This cog is not installed or loaded."))
-            return
+            raise commands.UserFeedbackCheckFailure(_("This cog is not installed or loaded."))
         if cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
-            await ctx.send(_("This cog is not a cog from AAA3A-cogs."))
-            return
+            raise commands.UserFeedbackCheckFailure(_("This cog is not a cog from AAA3A-cogs."))
         if not hasattr(cog, "config") or not isinstance(getattr(cog, "config"), Config):
-            await ctx.send(_("This cog does not use the Config."))
-            return
+            raise commands.UserFeedbackCheckFailure(_("This cog does not use the Config."))
         if not confirmation:
             embed: discord.Embed = discord.Embed()
             embed.title = _("⚠️ - Reset Config")
@@ -509,8 +496,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         More details: https://aaa3a-cogs.readthedocs.io/en/latest/repo_telemetry.html
         """
         if error not in self.sentry.last_errors:
-            await ctx.send(_("This error does not exist."))
-            return
+            raise commands.UserFeedbackCheckFailure(_("This error does not exist."))
         e = self.sentry.last_errors.pop(error)
         event_id = await self.sentry.send_command_error(e["ctx"], e["error"], manually=True)
         await ctx.send(
@@ -677,8 +663,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         if command is not None:
             object_command = ctx.bot.get_command(_commands[0])
             if object_command is None:
-                await ctx.send(_("The command `{command}` does not exist."))
-                return
+                raise commands.UserFeedbackCheckFailure(_("The command `{command}` does not exist."))
             _commands = [object_command]
         downloader = ctx.bot.get_cog("Downloader")
         if downloader is None:
@@ -697,8 +682,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         if repo is not None:
             rp = _repos[0]
             if not isinstance(rp, Repo) and not "AAA3A".lower() in rp.lower():
-                await ctx.send(_("Repo by the name `{rp}` does not exist.").format(rp=rp))
-                return
+                raise commands.UserFeedbackCheckFailure(_("Repo by the name `{rp}` does not exist.").format(rp=rp))
             if not isinstance(repo, Repo):
                 found = False
                 for r in await downloader.config.installed_cogs():
@@ -707,8 +691,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                         found = True
                         break
                 if not found:
-                    await ctx.send(_("Repo by the name `{rp}` does not exist.").format(rp=rp))
-                    return
+                    raise commands.UserFeedbackCheckFailure(_("Repo by the name `{rp}` does not exist.").format(rp=rp))
             if check_updates:
                 cogs_to_check, failed = await downloader._get_cogs_to_check(repos={_repos[0]})
                 cogs_to_update, libs_to_update = await downloader._available_updates(cogs_to_check)

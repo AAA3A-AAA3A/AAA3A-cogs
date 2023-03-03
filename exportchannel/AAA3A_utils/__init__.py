@@ -14,6 +14,7 @@ from .shared_cog import SharedCog
 
 if CogsUtils().is_dpy2:
     from .views import (
+        ConfirmationAskView,
         Buttons,
         ChannelSelect,
         Dropdown,
@@ -37,6 +38,7 @@ __all__ = [
     "Settings",
     "SentryHelper",
     "Reactions",
+    "ConfirmationAskView",
     "Buttons",
     "Dropdown",
     "Select",

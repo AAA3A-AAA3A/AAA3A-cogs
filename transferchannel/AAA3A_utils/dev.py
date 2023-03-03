@@ -386,9 +386,9 @@ class DevEnv(typing.Dict[str, typing.Any]):
             for name, value in env.items():
                 try:
                     _env[name] = value(ctx)
-                except Exception as e:
-                    traceback.clear_frames(e.__traceback__)
-                    _env[name] = e
+                except Exception as exc:
+                    traceback.clear_frames(exc.__traceback__)
+                    _env[name] = exc
         else:
             _env = env
         return _env
@@ -418,13 +418,6 @@ class DevEnv(typing.Dict[str, typing.Any]):
         env.update(base_env)
         env.update(cls.get_env(ctx.bot, ctx))  # In CogsUtils.
         env.update({"devenv": env})
-        # class HTTP():
-        #     def __init__(self):
-        #         self.token = "OTQ5OTg4NTk3NDYzOTE2NTU0.YiSX0w.gsylrfoyk51gxXhnCvdGVm8Jc6k"  # Fake token.
-        # class Red():
-        #     def __init__(self):
-        #         self.http = HTTP()
-        # env.update({"bot": Red()})
         return env
 
     def get_formatted_env(
@@ -545,6 +538,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 setattr(cog, "get_environment", self.get_environment)
             if hasattr(cog, "sanitize_output"):
                 setattr(cog, "sanitize_output", self.sanitize_output)
+            elif hasattr(redbot.core.dev_commands, "sanitize_output"):
+                setattr(redbot.core.dev_commands, "sanitize_output", self.sanitize_output)
             c = Cog(None)
             c.cog = cog
             setattr(cog, "cog_before_invoke", c.cog_before_invoke)

@@ -1,3 +1,4 @@
+from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -62,6 +63,86 @@ def generate_key(
             return key
 
 
+class ConfirmationAskView(discord.ui.View):
+    """Request a confirmation by the user!"""
+
+    def __init__(
+        self,
+        ctx: commands.Context,
+        timeout: typing.Optional[int] = 60,
+        timeout_message: typing.Optional[str] = _("Timed out, please try again."),
+        delete_message: typing.Optional[bool] = True,
+        delete_after_timeout: typing.Optional[bool] = True,
+        members: typing.Optional[typing.Iterable[typing.Union[discord.Member, int]]] = None
+    ):
+        super().__init__(timeout=timeout)
+        self.ctx: commands.Context = ctx
+
+        self.delete_message: bool = delete_message
+        self.timeout_message: str = timeout_message
+        self.delete_after_timeout: bool = delete_after_timeout
+        self.members: typing.Optional[typing.List[int]] = (members if members is None else [getattr(member, "id", member) for member in members])
+
+        self._message: discord.Message = None
+        self._result: typing.Optional[bool] = None
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id not in [self.ctx.author.id] + self.members + list(self.ctx.bot.owner_ids):
+            await interaction.response.send_message(
+                "You are not allowed to use this interaction.", ephemeral=True
+            )
+            return False
+        return True
+
+    async def on_timeout(self) -> None:
+        await self.ctx.send(self.timeout_message)
+        if not self.delete_after_timeout:
+            for child in self.children:
+                child: discord.ui.Item
+                if not getattr(child, "style", 0) == discord.ButtonStyle.url:
+                    child.disabled = True
+            try:
+                await self._message.edit(view=self)
+            except discord.HTTPException:
+                pass
+        else:
+            try:
+                await self._message.delete()
+            except discord.HTTPException:
+                pass
+        self.stop()
+
+    @discord.ui.button(label=_("Yes"), emoji="✅", style=discord.ButtonStyle.success, custom_id="true_button")
+    async def true_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.defer()
+        if self.delete_message:
+            try:
+                await self._message.delete()
+            except discord.HTTPException:
+                pass
+        self._result = True
+
+    @discord.ui.button(label=_("No"), emoji="✖️", style=discord.ButtonStyle.danger, custom_id="false_button")
+    async def false_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.defer()
+        if self.delete_message:
+            try:
+                await self._message.delete()
+            except discord.HTTPException:
+                pass
+        self._result = False
+
+    async def start(self, *args, **kwargs) -> bool:
+        """
+        Allow confirmation to be requested from the user, in the form of buttons/dropdown/reactions/message, with many additional options.
+        """
+        self._message = await self.ctx.send(*args, **kwargs, view=self)
+        task_result = await self.wait()
+        if task_result is True or self._result is None:  # timeout
+            return None
+        return self._result
+
+
 class Buttons(discord.ui.View):
     """Create Buttons easily."""
 
@@ -69,7 +150,7 @@ class Buttons(discord.ui.View):
         self,
         timeout: typing.Optional[int] = 180,
         buttons: typing.Optional[typing.List] = [{}],
-        members: typing.Optional[typing.Iterable[discord.Member]] = None,
+        members: typing.Optional[typing.Iterable[typing.Union[discord.Member, int]]] = None,
         check: typing.Optional[typing.Callable] = None,
         function: typing.Optional[typing.Callable] = None,
         function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = {},
@@ -144,13 +225,13 @@ class Buttons(discord.ui.View):
                 await interaction.response.send_message(
                     "You are not allowed to use this interaction.", ephemeral=True
                 )
-                return True
+                return False
         if self.check is not None:
             if not self.check(interaction):
                 await interaction.response.send_message(
                     "You are not allowed to use this interaction.", ephemeral=True
                 )
-                return True
+                return False
         self.interaction_result = interaction
         if self.function is not None:
             self.function_result = await self.function(self, interaction, **self.function_kwargs)
@@ -199,7 +280,7 @@ class Dropdown(discord.ui.View):
             typing.Union[typing.List, discord.ComponentType, discord.ui.Select]
         ] = [{}],
         disabled: typing.Optional[bool] = False,
-        members: typing.Optional[typing.Iterable[discord.Member]] = None,
+        members: typing.Optional[typing.Iterable[typing.Union[discord.Member, int]]] = None,
         check: typing.Optional[typing.Callable] = None,
         function: typing.Optional[typing.Callable] = None,
         function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = {},
@@ -357,13 +438,13 @@ class Dropdown(discord.ui.View):
                 await interaction.response.send_message(
                     "You are not allowed to use this interaction.", ephemeral=True
                 )
-                return True
+                return False
         if self.check is not None:
             if not self.check(interaction):
                 await interaction.response.send_message(
                     "You are not allowed to use this interaction.", ephemeral=True
                 )
-                return True
+                return False
         self.interaction_result = interaction
         self.options_result = self.dropdown.values
         if self.function is not None:
@@ -500,7 +581,7 @@ class Modal(discord.ui.Modal):
         title: typing.Optional[str] = "Form",
         timeout: typing.Optional[float] = None,
         inputs: typing.Optional[typing.List] = [{}],
-        members: typing.Optional[typing.Iterable[discord.Member]] = None,
+        members: typing.Optional[typing.Iterable[typing.Union[discord.Member, int]]] = None,
         check: typing.Optional[typing.Callable] = None,
         function: typing.Optional[typing.Callable] = None,
         function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = {},
@@ -570,13 +651,13 @@ class Modal(discord.ui.Modal):
                 await interaction.response.send_message(
                     "You are not allowed to use this interaction.", ephemeral=True
                 )
-                return True
+                return False
         if self.check is not None:
             if not self.check(interaction):
                 await interaction.response.send_message(
                     "You are not allowed to use this interaction.", ephemeral=True
                 )
-                return True
+                return False
         self.interaction_result = interaction
         self.inputs_result = self.inputs
         if self.function is not None:

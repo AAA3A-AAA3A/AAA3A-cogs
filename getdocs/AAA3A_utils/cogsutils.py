@@ -28,7 +28,7 @@ from .menus import Reactions
 from .shared_cog import SharedCog
 
 if discord.version_info.major >= 2:
-    from .views import Buttons, Dropdown
+    from .views import ConfirmationAskView, Dropdown
 
 __all__ = ["CogsUtils"]
 
@@ -763,271 +763,27 @@ class CogsUtils(commands.Cog):
         way: typing.Optional[
             typing.Literal["buttons", "dropdown", "reactions", "message"]
         ] = "buttons",
-        message: typing.Optional[discord.Message] = None,
-        put_reactions: typing.Optional[bool] = True,
         delete_message: typing.Optional[bool] = True,
-        reactions: typing.Optional[typing.Iterable[typing.Union[str, discord.Emoji]]] = ["✅", "✖️"],
-        check_owner: typing.Optional[bool] = True,
         members_authored: typing.Optional[typing.Iterable[discord.Member]] = [],
         **kwargs,
     ) -> bool:
         """
         Allow confirmation to be requested from the user, in the form of buttons/dropdown/reactions/message, with many additional options.
         """
+        check_owner = True
+        reactions = ["✅", "✖️"]
         if (way == "buttons" or way == "dropdown") and not self.is_dpy2:
             way = "reactions"
-        if message is None:
-            if "content" not in kwargs and "embed" not in kwargs:
-                if way == "buttons":
-                    content = _(
-                        "To confirm the current action, please use the buttons below this message."
-                    )
-                if way == "dropdown":
-                    content = _(
-                        "To confirm the current action, please use the dropdown below this message."
-                    )
-                if way == "reactions":
-                    content = _(
-                        "To confirm the current action, please use the reactions below this message."
-                    )
-                if way == "message":
-                    content = _(
-                        "To confirm the current action, please send yes/no in this channel."
-                    )
-                kwargs["content"] = content
-            if not way == "buttons" and not way == "dropdown":
-                message = await ctx.send(*args, **kwargs)
-        if way == "reactions":
-            if put_reactions:
-                try:
-                    start_adding_reactions(message, reactions)
-                except discord.HTTPException:
-                    way = "message"
+
         if way == "buttons":
-            view = Buttons(
-                timeout=timeout,
-                buttons=[
-                    {
-                        "style": 3,
-                        "label": "Yes",
-                        "emoji": reactions[0],
-                        "custom_id": "ConfirmationAsk_Yes",
-                    },
-                    {
-                        "style": 4,
-                        "label": "No",
-                        "emoji": reactions[1],
-                        "custom_id": "ConfirmationAsk_No",
-                    },
-                ],
-                members=[ctx.author.id] + list(ctx.bot.owner_ids)
-                if check_owner
-                else [] + [x.id for x in members_authored],
-            )
-            message = await ctx.send(*args, **kwargs, view=view)
+            return await ConfirmationAskView(ctx=ctx, timeout=timeout, timeout_message=timeout_message, delete_message=delete_message, members=members_authored).start(*args, **kwargs)
+
+        elif way == "reactions":
+            message = await ctx.send(*args, **kwargs)
             try:
-                interaction, function_result = await view.wait_result()
-                if str(interaction.data["custom_id"]) == "ConfirmationAsk_Yes":
-                    if delete_message:
-                        await self.delete_message(message)
-                    else:
-                        view = Buttons(
-                            timeout=timeout,
-                            buttons=[
-                                {
-                                    "style": 3,
-                                    "label": "Yes",
-                                    "emoji": reactions[0],
-                                    "custom_id": "ConfirmationAsk_Yes",
-                                    "disabled": True,
-                                },
-                                {
-                                    "style": 4,
-                                    "label": "No",
-                                    "emoji": reactions[1],
-                                    "custom_id": "ConfirmationAsk_No",
-                                    "disabled": True,
-                                },
-                            ],
-                            members=[
-                                [ctx.author.id] + list(ctx.bot.owner_ids)
-                                if check_owner
-                                else [] + [x.id for x in members_authored]
-                            ],
-                        )
-                        await interaction.response.edit_message(view=view)
-                    return True
-                elif str(interaction.data["custom_id"]) == "ConfirmationAsk_No":
-                    if delete_message:
-                        await self.delete_message(message)
-                    else:
-                        view = Buttons(
-                            timeout=timeout,
-                            buttons=[
-                                {
-                                    "style": 3,
-                                    "label": "Yes",
-                                    "emoji": reactions[0],
-                                    "custom_id": "ConfirmationAsk_Yes",
-                                    "disabled": True,
-                                },
-                                {
-                                    "style": 4,
-                                    "label": "No",
-                                    "emoji": reactions[1],
-                                    "custom_id": "ConfirmationAsk_No",
-                                    "disabled": True,
-                                },
-                            ],
-                            members=[
-                                [ctx.author.id] + list(ctx.bot.owner_ids)
-                                if check_owner
-                                else [] + [x.id for x in members_authored]
-                            ],
-                        )
-                        await interaction.response.edit_message(view=view)
-                    return False
-            except TimeoutError:
-                if delete_message:
-                    await self.delete_message(message)
-                else:
-                    view = Buttons(
-                        timeout=timeout,
-                        buttons=[
-                            {
-                                "style": 3,
-                                "label": "Yes",
-                                "emoji": reactions[0],
-                                "custom_id": "ConfirmationAsk_Yes",
-                                "disabled": True,
-                            },
-                            {
-                                "style": 4,
-                                "label": "No",
-                                "emoji": reactions[1],
-                                "custom_id": "ConfirmationAsk_No",
-                                "disabled": True,
-                            },
-                        ],
-                        members=[
-                            [ctx.author.id] + list(ctx.bot.owner_ids)
-                            if check_owner
-                            else [] + [x.id for x in members_authored]
-                        ],
-                    )
-                    await interaction.response.edit_message(view=view)
-                if timeout_message is not None:
-                    await ctx.send(timeout_message)
-                return None
-        if way == "dropdown":
-            view = Dropdown(
-                timeout=timeout,
-                options=[
-                    {
-                        "label": "Yes",
-                        "emoji": reactions[0],
-                        "value": "ConfirmationAsk_Yes",
-                        "disabled": False,
-                    },
-                    {
-                        "label": "No",
-                        "emoji": reactions[1],
-                        "value": "ConfirmationAsk_No",
-                        "disabled": False,
-                    },
-                ],
-                disabled=False,
-                members=[ctx.author.id] + list(ctx.bot.owner_ids)
-                if check_owner
-                else [] + [x.id for x in members_authored],
-            )
-            message = await ctx.send(*args, **kwargs, view=view)
-            try:
-                interaction, values, function_result = await view.wait_result()
-                if str(values[0]) == "ConfirmationAsk_Yes":
-                    if delete_message:
-                        await self.delete_message(message)
-                    else:
-                        view = Dropdown(
-                            timeout=timeout,
-                            options=[
-                                {
-                                    "label": "Yes",
-                                    "emoji": reactions[0],
-                                    "value": "ConfirmationAsk_Yes",
-                                    "disabled": True,
-                                },
-                                {
-                                    "label": "No",
-                                    "emoji": reactions[1],
-                                    "value": "ConfirmationAsk_No",
-                                    "disabled": False,
-                                },
-                            ],
-                            disabled=True,
-                            members=[ctx.author.id] + list(ctx.bot.owner_ids)
-                            if check_owner
-                            else [] + [x.id for x in members_authored],
-                        )
-                        await interaction.response.edit_message(view=view)
-                    return True
-                elif str(values[0]) == "ConfirmationAsk_No":
-                    if delete_message:
-                        await self.delete_message(message)
-                    else:
-                        view = Dropdown(
-                            timeout=timeout,
-                            options=[
-                                {
-                                    "label": "Yes",
-                                    "emoji": reactions[0],
-                                    "value": "ConfirmationAsk_Yes",
-                                    "disabled": True,
-                                },
-                                {
-                                    "label": "No",
-                                    "emoji": reactions[1],
-                                    "value": "ConfirmationAsk_No",
-                                    "disabled": False,
-                                },
-                            ],
-                            disabled=True,
-                            members=[ctx.author.id] + list(ctx.bot.owner_ids)
-                            if check_owner
-                            else [] + [x.id for x in members_authored],
-                        )
-                        await interaction.response.edit_message(view=view)
-                    return False
-            except TimeoutError:
-                if delete_message:
-                    await self.delete_message(message)
-                else:
-                    view = Dropdown(
-                        timeout=timeout,
-                        options=[
-                            {
-                                "label": "Yes",
-                                "emoji": reactions[0],
-                                "value": "ConfirmationAsk_Yes",
-                                "disabled": True,
-                            },
-                            {
-                                "label": "No",
-                                "emoji": reactions[1],
-                                "value": "ConfirmationAsk_No",
-                                "disabled": False,
-                            },
-                        ],
-                        disabled=True,
-                        members=[ctx.author.id] + list(ctx.bot.owner_ids)
-                        if check_owner
-                        else [] + [x.id for x in members_authored],
-                    )
-                    await interaction.response.edit_message(view=view)
-                if timeout_message is not None:
-                    await ctx.send(timeout_message)
-                return None
-        if way == "reactions":
+                start_adding_reactions(message, reactions)
+            except discord.HTTPException:
+                way = "message"
             view = Reactions(
                 bot=ctx.bot,
                 message=message,
@@ -1056,7 +812,9 @@ class CogsUtils(commands.Cog):
                 if timeout_message is not None:
                     await ctx.send(timeout_message)
                 return None
-        if way == "message":
+
+        elif way == "message":
+            message = await ctx.send(*args, **kwargs)
 
             def check(msg):
                 if check_owner:
@@ -1074,12 +832,9 @@ class CogsUtils(commands.Cog):
                         and msg.channel == ctx.channel
                         and msg.content in ("yes", "y", "no", "n")
                     )
-                # This makes sure nobody except the command sender can interact with the "menu"
-
             try:
                 end_reaction = False
                 msg = await ctx.bot.wait_for("message", timeout=timeout, check=check)
-                # waiting for a a message to be sended - times out after x seconds
                 if msg.content in ("yes", "y"):
                     end_reaction = True
                     if delete_message:

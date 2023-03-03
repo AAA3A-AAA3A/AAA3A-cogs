@@ -424,7 +424,7 @@ class GetDocs(commands.Cog):
         )
         asyncio.create_task(self.documentations[source].load())
 
-    @setgetdocs.command(name="enablesource",)
+    @setgetdocs.command(name="disablesource",)
     async def _source_disable(self, ctx: commands.Context, source: SourceConverter) -> None:
         """
         Disable a documentations source.

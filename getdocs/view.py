@@ -61,7 +61,9 @@ class DocsView(discord.ui.View):
 
     async def on_timeout(self) -> None:
         for child in self.children:
-            child.disabled = True
+            child: discord.ui.Item
+            if not getattr(child, "style", 0) == discord.ButtonStyle.url:
+                child.disabled = True
         try:
             await self._message.edit(view=self)
         except discord.HTTPException:

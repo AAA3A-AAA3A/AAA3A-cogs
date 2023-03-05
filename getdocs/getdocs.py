@@ -917,7 +917,7 @@ class Source:
             reverse=True,
         )
         results = [
-            (*get_name(item), build_uri(item), bool(item.domain == "std")) for item in matches
+            (*get_name(item), build_uri(item), item.domain == "std") for item in matches
         ]
         results = [result for result in results if not result[2].startswith("c-api/")]
         if exclude_std:

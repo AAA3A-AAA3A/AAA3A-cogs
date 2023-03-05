@@ -582,7 +582,7 @@ class RolesButtons(commands.Cog):
             return view
         else:
             lists = []
-            one_l = [button for button in config[f"{message.channel.id}-{message.id}"]]
+            one_l = [button for button in config[fmessage]]
             while True:
                 li = one_l[0:4]
                 one_l = one_l[4:]

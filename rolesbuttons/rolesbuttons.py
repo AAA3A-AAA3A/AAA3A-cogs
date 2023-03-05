@@ -321,7 +321,7 @@ class RolesButtons(commands.Cog):
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_roles=True)
-    #@commands.bot_has_guild_permissions(manage_roles=True)
+    # @commands.bot_has_guild_permissions(manage_roles=True)
     @hybrid_group()
     async def rolesbuttons(self, ctx: commands.Context) -> None:
         """Group of commands for use RolesButtons."""
@@ -582,7 +582,7 @@ class RolesButtons(commands.Cog):
             return view
         else:
             lists = []
-            one_l = [button for button in config[fmessage]]
+            one_l = [button for button in config[message]]
             while True:
                 li = one_l[0:4]
                 one_l = one_l[4:]

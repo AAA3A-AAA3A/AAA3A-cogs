@@ -668,7 +668,7 @@ class TicketTool(settings, commands.Cog):
                     "The bot does not have `manage_channels` permission on the 'open' and 'close' categories to allow the ticket system to function properly. Please notify an administrator of this server."
                 )
             )
-        ticket: Ticket = Ticket.instance(ctx, panel, reason)
+        ticket: Ticket = Ticket.instance(ctx, panel=panel, reason=reason)
         await ticket.create()
         ctx.ticket = ticket
 

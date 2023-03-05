@@ -145,7 +145,7 @@ class SourceConverter(commands.Converter):
                     argument = name
                     found = True
             if not found:
-                raise commands.UserFeedbackCheckFailure(_("The source doesn't exist."))
+                raise commands.BadArgument(_("The source doesn't exist."))
         return argument.lower()
 
 

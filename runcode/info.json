@@ -1,0 +1,14 @@
+{
+    "author": ["AAA3A"],
+    "name": "RunCode",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
+    "short": "A cog to compile and run codes in some languages!",
+    "description": "A cog to compile and run codes in some languages!",
+    "tags": [
+        "dev",
+        "code",
+        "compiler"
+    ],
+    "requirements": ["sentry_sdk", "humanfriendly", "fuzzywuzzy"],
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users. Please note: all the code you run is stored on the wandbox.org server, even if you need a code to access it. To my knowledge, there is no way to request a deletion."
+}

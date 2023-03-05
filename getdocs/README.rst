@@ -16,19 +16,31 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to get and display Sphinx docs! Only `discord.py`, `redbot`, `python`, `aiohttp`, `requests`, `slashtags` (cog by Phen for Red), `psutil`, `pillow`, `numpy`, `matplotlib`, `asyncpg`, `sqlite`, `websockets`, `mango`, `redis`, `aiomysql`, `flask`, `motor`, `sphinx` and `starlite`.
+A cog to get and display Sphinx docs! Use `[p]listsources` to get a list of all the available sources.
 
 --------
 Commands
 --------
 
-Here are all the commands included in this cog (2):
+Here are all the commands included in this cog (6):
 
 * ``[p]getdocs [source=discord.py] [query=None]``
  View rich documentation for a specific node/query.
 
+* ``[p]listsources ["available"|"all"|"disabled"=available]``
+ Shows a list of all sources, those that are available or those that are disabled.
+
 * ``[p]rtfm [source=discord.py] [limit=10] [with_std=True] [query=None]``
  Show all attributes matching your search.
+
+* ``[p]setgetdocs``
+ Commands to configure GetDocs.
+
+* ``[p]setgetdocs disablesource <source>``
+ Disable a documentations source.
+
+* ``[p]setgetdocs enablesource <source>``
+ Enable a documentations source.
 
 ------------
 Installation

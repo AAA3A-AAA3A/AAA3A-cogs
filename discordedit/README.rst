@@ -34,7 +34,7 @@ Here are all the commands included in this cog (70):
  Edit guild afktimeout.
 
 * ``[p]editguild clone <name>``
- Clone a text channel.
+ Clone a guild.
 
 * ``[p]editguild community <community>``
  Edit guild community state.

@@ -1,14 +1,14 @@
-.. _rolesbuttons:
-============
-RolesButtons
-============
+.. _runcode:
+=======
+RunCode
+=======
 
-This is the cog guide for the 'RolesButtons' cog. This guide contains the collection of commands which you can use in the cog.
+This is the cog guide for the 'RunCode' cog. This guide contains the collection of commands which you can use in the cog.
 Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` with your own prefix when you use these commands in Discord.
 
 .. note::
 
-    Ensure that you are up to date by running ``[p]cog update rolesbuttons``.
+    Ensure that you are up to date by running ``[p]cog update runcode``.
     If there is something missing, or something that needs improving in this documentation, feel free to create an issue `here <https://github.com/AAA3A-AAA3A/AAA3A-cogs/issues>`_.
     This documentation is auto-generated everytime this cog receives an update.
 
@@ -16,7 +16,7 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to have roles-buttons!
+A cog to compile and run codes in some languages! Use `[p]setrundocs listlanguages` to get a list of all the available languages.
 
 --------
 Commands
@@ -24,26 +24,26 @@ Commands
 
 Here are all the commands included in this cog (7):
 
-* ``[p]rolesbuttons``
- Group of commands for use RolesButtons.
+* ``[p]runcode [verbose=False] [language=None] [parameters=None] [code=None]``
+ Run a code in a langage, with Wandbox API.
 
-* ``[p]rolesbuttons add <message> <emoji> <role> ["1"|"2"|"3"|"4"=2] [text_button=None]``
- Add a role-button to a message.
+* ``[p]runtio [verbose] <language> [parameters=None] [code=None]``
+ Run a code in a langage, with Tio API.
 
-* ``[p]rolesbuttons bulk <message> [roles_buttons]...``
- Add roles-buttons to a message.
+* ``[p]setruncode``
+ View RunCode options.
 
-* ``[p]rolesbuttons clear <message>``
- Clear all roles-buttons to a message.
+* ``[p]setruncode listengines <language>``
+ Shows a list of all the available engines for a specified language, only for Wandbox API.
 
-* ``[p]rolesbuttons mode <message> <"add_or_remove"|"add_only"|"remove_only">``
- Choose a mode for a roles-buttons message.
+* ``[p]setruncode listextensions``
+ Lists all the languages extensions.
 
-* ``[p]rolesbuttons purge``
- Clear all roles-buttons to a **guild**.
+* ``[p]setruncode listidentifiers``
+ Lists all the languages identifiers recognized by the bot, only for Wandbox API.
 
-* ``[p]rolesbuttons remove <message> <emoji>``
- Remove a role-button to a message.
+* ``[p]setruncode listlanguages <"wandbox"|"tio">``
+ Shows a list of all the available languages, or Wandbox or Tio API.
 
 ------------
 Installation
@@ -56,17 +56,17 @@ If you haven't added my repo before, lets add it first. We'll call it
 
     [p]repo add AAA3A-cogs https://github.com/AAA3A-AAA3A/AAA3A-cogs
 
-Now, we can install RolesButtons.
+Now, we can install RunCode.
 
 .. code-block:: ini
 
-    [p]cog install AAA3A-cogs rolesbuttons
+    [p]cog install AAA3A-cogs runcode
 
 Once it's installed, it is not loaded by default. Load it by running the following command:
 
 .. code-block:: ini
 
-    [p]load rolesbuttons
+    [p]load runcode
 
 ---------------
 Further Support

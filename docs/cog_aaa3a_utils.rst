@@ -22,7 +22,7 @@ Commands to manage all the cogs in AAA3A-cogs repo!
 Commands
 --------
 
-Here are all the commands included in this cog (12):
+Here are all the commands included in this cog (13):
 
 * ``[p]AAA3A_utils``
  All commands to manage all the cogs from AAA3A-cogs repo.
@@ -35,6 +35,9 @@ Here are all the commands included in this cog (12):
 
 * ``[p]AAA3A_utils clearslash``
  Remove slash commands for all cogs from AAA3A-cogs.
+
+* ``[p]AAA3A_utils flags <content>``
+ Use any command with flags.
 
 * ``[p]AAA3A_utils getallfor ["all"|"ALL"=None] [page=None] [repo=None] [check_updates=False] [cog=None] [command=None]``
  Get all the necessary information to get support on a bot/repo/cog/command.

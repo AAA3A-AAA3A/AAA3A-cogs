@@ -22,7 +22,7 @@ A cog to manage a ticket system!
 Commands
 --------
 
-Here are all the commands included in this cog (39):
+Here are all the commands included in this cog (40):
 
 * ``[p]settickettool``
  Configure TicketTool for your server.
@@ -92,6 +92,9 @@ Here are all the commands included in this cog (39):
 
 * ``[p]settickettool profileslist``
  List the existing profiles.
+
+* ``[p]settickettool resetsetting <profile> <setting>``
+ Reset a setting.
 
 * ``[p]settickettool showsettings <profile> [with_dev=False]``
  Show all settings for the cog with defaults and values.

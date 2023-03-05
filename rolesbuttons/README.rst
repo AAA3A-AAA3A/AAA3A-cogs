@@ -22,7 +22,7 @@ A cog to have roles-buttons!
 Commands
 --------
 
-Here are all the commands included in this cog (6):
+Here are all the commands included in this cog (7):
 
 * ``[p]rolesbuttons``
  Group of commands for use RolesButtons.
@@ -35,6 +35,9 @@ Here are all the commands included in this cog (6):
 
 * ``[p]rolesbuttons clear <message>``
  Clear all roles-buttons to a message.
+
+* ``[p]rolesbuttons mode <message> <"add_or_remove"|"add_only"|"remove_only">``
+ Choose a mode for a roles-buttons message.
 
 * ``[p]rolesbuttons purge``
  Clear all roles-buttons to a **guild**.

@@ -241,7 +241,7 @@ class GetDocs(commands.Cog):
             if self.cogsutils.is_dpy2:
                 view = discord.ui.View()
                 view.add_item(discord.ui.Button(label="Click to view", url=source.url))
-                await ctx.send(embed=embed)
+                await ctx.send(embed=embed, view=view)
             else:
                 await ctx.send(embed=embed)
             return
@@ -597,6 +597,8 @@ class Source:
         full_name = full_name.replace("¶", "").strip()
         if full_name.endswith("[source]"):
             full_name = full_name[:-8]
+        if full_name.endswith("[source]#"):
+            full_name = full_name[:-9]
         if self.name == "discord.py" and page_url == self.url + "tutorial/datastructures.html":
             name = full_name.strip("\n").split("(")[0]
             if discord.utils.get(self._rtfm_cache.objects, name=name) is None:

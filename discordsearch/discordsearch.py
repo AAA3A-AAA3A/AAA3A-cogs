@@ -88,9 +88,9 @@ class DiscordSearch(commands.Cog):
         limit = args.limit
         if channel is None:
             channel = ctx.channel
-        if not any(
+        if all(
             [
-                setting is not None
+                setting is None
                 for setting in [
                     authors,
                     mentions,
@@ -135,8 +135,10 @@ class DiscordSearch(commands.Cog):
         start = monotonic()
         messages: typing.List[discord.Message] = []
         async for message in channel.history(
-            limit=limit, oldest_first=False, before=before, after=after
+            limit=limit + 1, oldest_first=False, before=before, after=after
         ):
+            if message.id == ctx.author.id:
+                continue
             if authors is not None and message.author not in authors:
                 continue
             if mentions is not None and not any(
@@ -183,7 +185,7 @@ class DiscordSearch(commands.Cog):
                         value=(
                             message.content
                             if len(message.content) < 1025
-                            else (message.content[:1020] + "...")
+                            else (message.content[:1020] + "\n...")
                         )
                         if message.content
                         else "None",

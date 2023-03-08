@@ -27,7 +27,7 @@ class RTFSResults:
             f"• [`{name}`]({url})" for name, _, url, _ in self.results
         )
         embeds = []
-        pages = list(pagify(description, page_length=4000, delims="\n• "))
+        pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
         if len(pages) == 1:
             embed = discord.Embed(description=description, color=discord.Color.green())
             embed.set_author(
@@ -60,7 +60,7 @@ class SearchResults:
             f"• [`{name}`]({url})" for name, _, url, _ in self.results
         )
         embeds = []
-        pages = list(pagify(description, page_length=4000, delims="\n• "))
+        pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
         if len(pages) == 1:
             embed = discord.Embed(description=description, color=discord.Color.green())
             embed.set_author(

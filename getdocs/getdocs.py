@@ -233,7 +233,7 @@ class GetDocs(commands.Cog):
         - `source`: The name of the documentation to use. Defaults to `discord.py`.
         - `query`: The documentation node/query. (`random` to get a random documentation)
         """
-        source = self.documentations[source]
+        source: Source = self.documentations[source]
         if query is None:
             embed = discord.Embed(description=source.url)
             embed.set_author(
@@ -300,9 +300,12 @@ class GetDocs(commands.Cog):
         - `source`: The name of the documentation to use. Defaults to `discord.py`.
         - `limit`: The limit of objects to be sent.
         - `with_std`: Also display links to non-API documentation.
-        - `query`: Your search.
+        - `query`: Your search. (`events` to get all dpy events, for `discord.py` source only)
         """
-        source = self.documentations[source]
+        source: Source = self.documentations[source]
+        if source.name == "discord.py" and query == "events":
+            limit = len([item for item in source._raw_rtfm_cache_without_std if item.startswith("discord.on_")])
+            with_std = False
         try:
             result = await source.search(query, limit=limit, exclude_std=not with_std)
         except RuntimeError as e:
@@ -345,11 +348,11 @@ class GetDocs(commands.Cog):
             source = None
             if "source" in interaction.namespace and interaction.namespace.source:
                 try:
-                    await SourceConverter().convert(interaction, interaction.namespace.source)
+                    _source = await SourceConverter().convert(interaction, interaction.namespace.source)
                 except commands.BadArgument:
                     pass
                 else:
-                    source = interaction.namespace.source
+                    source = _source
             source = source or "discord.py"
             source = self.documentations[source]
             if not current:
@@ -360,17 +363,16 @@ class GetDocs(commands.Cog):
             matches = await source.search(
                 current, limit=25, exclude_std=exclude_std, with_raw_search=True
             )
-            return [discord.app_commands.Choice(name=name, value=name) for name in matches]
+            return source, [discord.app_commands.Choice(name=name, value=name) for name in matches]
 
         # @getdocs.autocomplete("query")
         async def getdocs_query_autocomplete(
             self, interaction: discord.Interaction, current: str
         ) -> typing.List[discord.app_commands.Choice[str]]:
-            result = await self.query_autocomplete(interaction, current, exclude_std=True)
+            _, result = await self.query_autocomplete(interaction, current, exclude_std=True)
             if not current:
                 result.insert(0, discord.app_commands.Choice(name="random", value="random"))
-            result = result[:25]
-            return result
+            return result[:25]
 
         # @rtfm.autocomplete("query")
         async def rtfm_query_autocomplete(
@@ -379,7 +381,10 @@ class GetDocs(commands.Cog):
             exclude_std = False
             if "with_std" in interaction.namespace:
                 exclude_std = not interaction.namespace.with_std
-            return await self.query_autocomplete(interaction, current, exclude_std=exclude_std)
+            source, result = await self.query_autocomplete(interaction, current, exclude_std=exclude_std)
+            if not current and source.name == "discord.py":
+                result.insert(0, discord.app_commands.Choice(name="events", value="events"))
+            return result[:25]
 
     @hybrid_command(
         name="listsources",
@@ -911,6 +916,8 @@ class Source:
         start = time.monotonic()
 
         def fuzzy_search(text: str, collection: typing.Iterable[typing.Union[str, typing.Any]], key: typing.Optional[typing.Callable] = None):
+            if self.name == "discord.py" and query.startswith("discord."):
+                text = text[8:]
             if self.name != "python":
                 matches = []
                 pat = '.*?'.join(map(re.escape, text))
@@ -939,7 +946,7 @@ class Source:
                     if name.startswith("_"):
                         continue
                     if query.lower() == name:
-                        query = f"abc.Messageable.{name.lower()}"
+                        query = f"discord.abc.Messageable.{name.lower()}"
                         break
             elif self.name == "aiohttp":
                 for name in dir(aiohttp.ClientSession):
@@ -948,9 +955,6 @@ class Source:
                     if query.lower() == name:
                         query = f"aiohttp.ClientSession.{name.lower()}"
                         break
-        else:
-            if self.name == "discord.py" and query.startswith("discord."):
-                query = query[8:]
         if with_raw_search:
             if exclude_std:
                 matches = fuzzy_search(text=query, collection=self._raw_rtfm_cache_without_std)
@@ -976,7 +980,10 @@ class Source:
                 location = location[:-1] + obj.name
             return urljoin(self.url, location)
 
-        matches = fuzzy_search(text=query, collection=self._rtfm_cache.objects, key=lambda item: item.name)
+        if self.name == "discord.py" and query == "events":
+            matches = [item for item in self._rtfm_cache.objects if item.name.startswith("discord.on_")]
+        else:
+            matches = fuzzy_search(text=query, collection=self._rtfm_cache.objects, key=lambda item: item.name)
         results = [
             (*get_name(item), build_uri(item), item.domain == "std") for item in matches
         ]

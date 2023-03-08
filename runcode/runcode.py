@@ -273,7 +273,7 @@ class RunCode(commands.Cog):
         if getattr(_language, "name", _language).split(" ")[0].lower() in wrapping:
             _code = wrapping[getattr(_language, "name", _language).split(" ")[0].lower()].replace("code", textwrap.indent(_code, "    "))
             if getattr(_language, "name", _language).split(" ")[0].lower() == "python":
-                _code = "import asyncio\nasync def _func():\n" + textwrap.indent(_code, "    ") + "\n    result = await func()\n\n    if result is not None:\n        print(result)\nasyncio.run(_func())"
+                _code = "import asyncio\nasync def _func():\n" + textwrap.indent(_code, "    ") + "\n\n    result = await func()\n    if result is not None:\n        print(result)\nasyncio.run(_func())"
 
         return _language, _code
 

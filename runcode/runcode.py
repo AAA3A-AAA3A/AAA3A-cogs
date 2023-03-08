@@ -55,6 +55,8 @@ class TioLanguageConverter(commands.Converter):
             for _language in LANGUAGES_IDENTIFIERS:
                 if argument.lower() == _language.lower() or argument.lower() in LANGUAGES_IDENTIFIERS[_language]:
                     argument = _language
+        if argument == "Python":
+            argument = "Python 3"
         matches = sorted(
             ctx.cog.tio_languages,
             key=lambda x: fuzz.ratio(argument, x),
@@ -270,7 +272,7 @@ class RunCode(commands.Cog):
             "d": "import std.stdio; void main(){code}",
             "kotlin": "fun main(args: Array<String>) {code}"
         }
-        if getattr(_language, "name", _language).split(" ")[0].lower() in wrapping:
+        if getattr(_language, "name", _language).split(" ")[0].lower() in wrapping and getattr(_language, "name", None) != "Python 1":
             _code = wrapping[getattr(_language, "name", _language).split(" ")[0].lower()].replace("code", textwrap.indent(_code, "    "))
             if getattr(_language, "name", _language).split(" ")[0].lower() == "python":
                 _code = "import asyncio\nasync def _func():\n" + textwrap.indent(_code, "    ") + "\n\n    result = await func()\n    if result is not None:\n        print(result)\nasyncio.run(_func())"
@@ -336,7 +338,7 @@ class RunCode(commands.Cog):
         if "compiler_options" in _parameters:
             if not raw_request["engine"].compiler_option_raw:
                 engine = raw_request["engine"]
-                await ctx.channel.send(_("There is no options available for compilation using `{engine}`.\nIgnoring this option.").format(engine=engine))
+                await ctx.send(_("There is no options available for compilation using `{engine}`.\nIgnoring this option.").format(engine=engine))
                 raw_request["compiler_options"] = ""
             else:
                 raw_request["compiler_options"] = " ".join(_parameters["compiler_options"])
@@ -345,7 +347,7 @@ class RunCode(commands.Cog):
         if "runtime_options" in _parameters:
             if not raw_request["engine"].runtime_option_raw:
                 engine = raw_request["engine"]
-                await ctx.channel.send(_("There is no options available for runtime execution `{engine}`.\nIgnoring this option.").format(engine=engine))
+                await ctx.send(_("There is no options available for runtime execution `{engine}`.\nIgnoring this option.").format(engine=engine))
                 raw_request["runtime_options"] = ""
             else:
                 raw_request["runtime_options"] = " ".join(_parameters["runtime_options"])
@@ -390,7 +392,6 @@ class RunCode(commands.Cog):
         raw_request = {}
 
         raw_request["language"], raw_request["code"] = await self.get_code_from_context(ctx, code=code, provided_language=language)
-        await ctx.send(str(raw_request["language"]))
 
         raw_request["inputs"] = _parameters.get("inputs", [])
         raw_request["compiler_flags"] = _parameters.get("compiler_flags", [])

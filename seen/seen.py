@@ -135,16 +135,22 @@ class Seen(commands.Cog):
         # Users
         async with user_group.all() as users_data:
             if str(user_id) in users_data:
-                for _type, custom_id in users_data[str(user_id)].items():
-                    custom_ids.append(tuple([_type, custom_id]))
+                custom_ids.extend(
+                    (_type, custom_id)
+                    for _type, custom_id in users_data[str(user_id)].items()
+                )
                 del users_data[str(user_id)]
         # Members
         async with member_group.all() as members_data:
             _members_data = deepcopy(members_data)
             for guild in _members_data:
                 if str(user_id) in _members_data[guild]:
-                    for _type, custom_id in members_data[guild][str(user_id)].items():
-                        custom_ids.append(tuple([_type, custom_id]))
+                    custom_ids.extend(
+                        (_type, custom_id)
+                        for _type, custom_id in members_data[guild][
+                            str(user_id)
+                        ].items()
+                    )
                     del members_data[guild][str(user_id)]
         # Roles
         async with role_group.all() as roles_data:
@@ -157,7 +163,7 @@ class Seen(commands.Cog):
                         ]
                         == user_id
                     ):
-                        custom_ids.append(tuple([_type, roles_data[role][_type]]))
+                        custom_ids.append((_type, roles_data[role][_type]))
                         roles_data[role][_type] = None
         # Channels
         async with channel_group.all() as channels_data:
@@ -170,7 +176,7 @@ class Seen(commands.Cog):
                         ]
                         == user_id
                     ):
-                        custom_ids.append(tuple([_type, channels_data[channel][_type]]))
+                        custom_ids.append((_type, channels_data[channel][_type]))
                         channels_data[channel][_type] = None
         # Categories
         async with category_group.all() as categories_data:
@@ -183,7 +189,7 @@ class Seen(commands.Cog):
                         ]
                         == user_id
                     ):
-                        custom_ids.append(tuple([_type, categories_data[category][_type]]))
+                        custom_ids.append((_type, categories_data[category][_type]))
                         categories_data[category][_type] = None
         # Guilds
         async with guild_group.all() as guilds_data:
@@ -196,7 +202,7 @@ class Seen(commands.Cog):
                         ]
                         == user_id
                     ):
-                        custom_ids.append(tuple([_type, guilds_data[guild][_type]]))
+                        custom_ids.append((_type, guilds_data[guild][_type]))
                         guilds_data[guild][_type] = None
         # Global
         for _type, custom_id in custom_ids:
@@ -228,15 +234,21 @@ class Seen(commands.Cog):
         async with user_group.all() as users_data:
             if str(user_id) in users_data:
                 data[Config.USER] = {str(user_id): users_data[str(user_id)]}
-                for _type, custom_id in users_data[str(user_id)].items():
-                    custom_ids.append(tuple([_type, custom_id]))
+                custom_ids.extend(
+                    (_type, custom_id)
+                    for _type, custom_id in users_data[str(user_id)].items()
+                )
         # Members
         async with member_group.all() as members_data:
             for guild in members_data:
                 if str(user_id) in members_data[guild]:
                     data[Config.MEMBER][guild] = {str(user_id): members_data[guild][str(user_id)]}
-                    for _type, custom_id in members_data[guild][str(user_id)].items():
-                        custom_ids.append(tuple([_type, custom_id]))
+                    custom_ids.extend(
+                        (_type, custom_id)
+                        for _type, custom_id in members_data[guild][
+                            str(user_id)
+                        ].items()
+                    )
         # Roles
         async with role_group.all() as roles_data:
             for role in roles_data:
@@ -250,7 +262,7 @@ class Seen(commands.Cog):
                         if role not in data[Config.ROLE]:
                             data[Config.ROLE][role] = {}
                         data[Config.ROLE][role][_type] = roles_data[role][_type]
-                        custom_ids.append(tuple([_type, roles_data[role][_type]]))
+                        custom_ids.append((_type, roles_data[role][_type]))
         # Channels
         async with channel_group.all() as channels_data:
             for channel in channels_data:
@@ -264,7 +276,7 @@ class Seen(commands.Cog):
                         if channel not in data[Config.CHANNEL]:
                             data[Config.CHANNEL][channel] = {}
                         data[Config.CHANNEL][channel][_type] = channels_data[channel][_type]
-                        custom_ids.append(tuple([_type, channels_data[channel][_type]]))
+                        custom_ids.append((_type, channels_data[channel][_type]))
         # Categories
         async with category_group.all() as categories_data:
             for category in categories_data:
@@ -855,6 +867,7 @@ class Seen(commands.Cog):
     ) -> None:
         await self.save_to_config()
         if _object == "users":
+            prefix = "@"
             users = await self.config.all_users()
             all_data = {
                 ctx.bot.get_user(user): data
@@ -862,6 +875,7 @@ class Seen(commands.Cog):
                 if ctx.bot.get_user(user) is not None
             }
         elif _object == "members":
+            prefix = "@"
             members = await self.config.all_members(ctx.guild)
             all_data = {
                 ctx.guild.get_member(member): data
@@ -869,6 +883,7 @@ class Seen(commands.Cog):
                 if ctx.guild.get_member(member) is not None
             }
         elif _object == "roles":
+            prefix = "@&"
             roles = await self.config.all_roles()
             all_data = {
                 ctx.guild.get_role(role): data
@@ -876,22 +891,25 @@ class Seen(commands.Cog):
                 if ctx.guild.get_role(role) is not None
             }
         elif _object == "channels":
+            prefix = "#"
             channels = await self.config.all_channels()
             all_data = {
                 ctx.guild.get_channel(channel): data
                 for channel, data in channels.items()
                 if ctx.guild.get_channel(channel) is not None
-                and ctx.guild.get_channel(channel)._type == discord.Channel_type.text
+                and ctx.guild.get_channel(channel).type == discord.ChannelType.text
             }
         elif _object == "categories":
+            prefix = ""
             categories = await self.config.all_channels()
             all_data = {
                 ctx.guild.get_channel(category): data
                 for category, data in categories.items()
                 if ctx.guild.get_channel(category) is not None
-                and ctx.guild.get_channel(category)._type == discord.Channel_type.category
+                and ctx.guild.get_channel(category).type == discord.ChannelType.category
             }
         elif _object == "guilds":
+            prefix = ""
             guilds = await self.config.all_guilds()
             all_data = {
                 ctx.bot.get_guild(guild): data
@@ -924,7 +942,7 @@ class Seen(commands.Cog):
             count += 1
             seen = y[1]
             description.append(
-                f"{(count) if not reverse else ((all_count + 1) - count)} - **{getattr(x, 'display_name', getattr(x, 'name', x))}**: {seen}."
+                f"{(count) if not reverse else ((all_count + 1) - count)} - **{prefix}{getattr(x, 'display_name', getattr(x, 'name', x))}**: {seen}."
             )
         description = "\n".join(description)
         for text in pagify(description):

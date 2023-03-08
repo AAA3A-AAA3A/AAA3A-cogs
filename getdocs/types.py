@@ -67,8 +67,8 @@ class SearchResults:
                 name=f"{self.source.name} Documentation",
                 icon_url=self.source.icon_url,
             )
-            query_time = format_timespan(self.query_time)
-            embed.set_footer(text=f"Fetched in {query_time}.")
+            # query_time = format_timespan(self.query_time)
+            # embed.set_footer(text=f"Fetched in {query_time}.")
             embeds.append(embed)
         else:
             for page in pages:
@@ -77,8 +77,8 @@ class SearchResults:
                     name=f"{self.source.name} Documentation",
                     icon_url=self.source.icon_url,
                 )
-                query_time = format_timespan(self.query_time)
-                embed.set_footer(text=f"Fetched in {query_time}.")
+                # query_time = format_timespan(self.query_time)
+                # embed.set_footer(text=f"Fetched in {query_time}.")
                 embeds.append(embed)
         return embeds
 
@@ -154,6 +154,7 @@ class Attributes:
             if description is not None and show_description:
                 formatted_attribute += f"\n> {description}"
             return formatted_attribute
+
         embeds = []
         for name in self.__dataclass_fields__.keys():
             attributes = getattr(self, name)
@@ -166,7 +167,7 @@ class Attributes:
             pages = list(pagify(description, page_length=4000, delims=["\n• "]))
             if len(pages) == 1:
                 embed = discord.Embed(
-                    title=name.title() + ":",
+                    title=f"{name.title()}:",
                     description=description,
                     color=discord.Color.green(),
                 )
@@ -174,7 +175,7 @@ class Attributes:
             else:
                 for i, page in enumerate(pages, start=1):
                     embed = discord.Embed(
-                        title=name.title() + f" {i}:",
+                        title=f"{name.title()} {i}:",
                         description=page,
                         color=discord.Color.green(),
                     )

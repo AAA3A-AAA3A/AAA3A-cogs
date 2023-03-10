@@ -300,7 +300,7 @@ class GetDocs(commands.Cog):
         - `source`: The name of the documentation to use. Defaults to `discord.py`.
         - `limit`: The limit of objects to be sent.
         - `with_std`: Also display links to non-API documentation.
-        - `query`: Your search. (`events` to get all dpy events, for `discord.py` source only)
+        - `query`: Your search. (`events` to get all dpy events, for `discord.py` and `redbot` source only)
         """
         source: Source = self.documentations[source]
         if source.name == "discord.py" and query == "events":
@@ -382,7 +382,7 @@ class GetDocs(commands.Cog):
             if "with_std" in interaction.namespace:
                 exclude_std = not interaction.namespace.with_std
             source, result = await self.query_autocomplete(interaction, current, exclude_std=exclude_std)
-            if not current and source.name == "discord.py":
+            if not current and source.name in ["discord.py", "redbot"]:
                 result.insert(0, discord.app_commands.Choice(name="events", value="events"))
             return result[:25]
 
@@ -892,7 +892,7 @@ class Source:
         if self.name == "python" and page_url[len(self.url):] in ["library/stdtypes.html", "tutorial/datastructures.html"]:
             for documentation in results:
                 if len(documentation.name.split(".")) > 1:
-                    parent_name = documentation.name.split(".")[0]
+                    parent_name = ".".join(documentation.name.split(".")[:-1])
                     parent = discord.utils.get(results, name=parent_name) or discord.utils.get(self._docs_cache, name=parent_name)
                     if parent is not None:
                         parent.attributes.methods[documentation.name[len(parent_name) + 1:]] = Attribute(name=documentation.name[(len(parent_name) + 1) * 2:], role="", url=documentation.url, description=documentation.description.split("\n")[0])
@@ -915,13 +915,18 @@ class Source:
             raise RuntimeError(_("RTFM caching isn't finished."))
         start = time.monotonic()
 
-        def fuzzy_search(text: str, collection: typing.Iterable[typing.Union[str, typing.Any]], key: typing.Optional[typing.Callable] = None):
-            if self.name == "discord.py" and query.startswith("discord."):
-                text = text[8:]
+        def fuzzy_search(text: str, collection: typing.Iterable[typing.Union[str, typing.Any]], key: typing.Optional[typing.Callable] = None) -> typing.List[typing.Union[str, typing.Any]]:
             if self.name != "python":
                 matches = []
                 pat = '.*?'.join(map(re.escape, text))
                 regex = re.compile(pat, flags=re.IGNORECASE)
+                def _key(item: typing.Union[str, typing.Any]) -> str:
+                    item_name = key(item) if key is not None else item
+                    if self.name == "discord.py" and item_name.startswith("discord.ext.commands."):
+                        item_name = item_name[21:]
+                    elif self.name == "discord.py" and item_name.startswith("discord."):
+                        item_name = item_name[8:]
+                    return item_name
                 for item in collection:
                     item_name = key(item) if key is not None else item
                     if self.name == "discord.py" and item_name.startswith("discord.ext.commands."):
@@ -931,7 +936,9 @@ class Source:
                     r = regex.search(item_name)
                     if r:
                         matches.append((len(r.group()), r.start(), item))
-                matches = [item for _, _, item in sorted(matches)]
+                def sort_key(tup: typing.Tuple[int, int, typing.Union[str, typing.Any]]) -> typing.Tuple[int, int, str]:
+                    return tup[0], tup[1], _key(tup[2])
+                matches = [item for _, _, item in sorted(matches, key=sort_key)]
             else:
                 matches = sorted(
                     collection,
@@ -948,6 +955,7 @@ class Source:
                     if query.lower() == name:
                         query = f"discord.abc.Messageable.{name.lower()}"
                         break
+                query = re.sub(r"^(?:discord\.(?:ext\.)?)?(?:commands\.)?(.+)", r"\1", query)
             elif self.name == "aiohttp":
                 for name in dir(aiohttp.ClientSession):
                     if name.startswith("_"):
@@ -980,8 +988,8 @@ class Source:
                 location = location[:-1] + obj.name
             return urljoin(self.url, location)
 
-        if self.name == "discord.py" and query == "events":
-            matches = [item for item in self._rtfm_cache.objects if item.name.startswith("discord.on_")]
+        if self.name in ["discord.py", "redbot"] and query == "events":
+            matches = [item for item in self._rtfm_cache.objects if item.name.split(".")[-1].startswith("on_")]
         else:
             matches = fuzzy_search(text=query, collection=self._rtfm_cache.objects, key=lambda item: item.name)
         results = [

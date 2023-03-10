@@ -43,7 +43,6 @@ class Emoji(commands.EmojiConverter):
     async def convert(
         self, ctx: commands.Context, argument: str
     ) -> typing.Union[discord.PartialEmoji, str]:
-        argument = str(argument)
         argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument

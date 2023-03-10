@@ -121,7 +121,7 @@ class DropdownsTexts(commands.Cog):
             fake_context = FakeContext(
                 self.bot, interaction.user, interaction.guild, interaction.channel
             )
-            emoji = await Emoji().convert(fake_context, emoji)
+            emoji = await Emoji().convert(fake_context, str(emoji))
             emoji = f"{getattr(emoji, 'id', emoji)}"
             if f"{emoji}" not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
                 await interaction.followup.send(_("This emoji is not in Config."), ephemeral=True)
@@ -183,7 +183,7 @@ class DropdownsTexts(commands.Cog):
                     self.channel: discord.TextChannel = channel
 
             fake_context = FakeContext(self.bot, inter.author, inter.guild, inter.channel)
-            emoji = await Emoji().convert(fake_context, emoji)
+            emoji = await Emoji().convert(fake_context, str(emoji))
             emoji = await Emoji().convert(inter, emoji)
             emoji = f"{getattr(emoji, 'id', emoji)}"
             if f"{emoji}" not in config[f"{inter.channel.id}-{inter.message.id}"]:

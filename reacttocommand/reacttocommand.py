@@ -36,7 +36,6 @@ class Emoji(commands.EmojiConverter):
     async def convert(
         self, ctx: commands.Context, argument: str
     ) -> typing.Union[discord.PartialEmoji, str]:
-        argument = str(argument)
         argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument
@@ -117,7 +116,7 @@ class ReactToCommand(commands.Cog):
         config = await self.config.guild(guild).react_commands.all()
         if f"{payload.channel_id}-{payload.message_id}" not in config:
             return
-        emoji = f"{getattr(Emoji().convert(payload.emoji), 'id', Emoji().convert(payload.emoji))}"
+        emoji = f"{getattr(Emoji().convert(payload.emoji), 'id', Emoji().convert(str(payload.emoji)))}"
         message = await channel.fetch_message(payload.message_id)
         try:
             await message.remove_reaction(emoji, payload.member)
@@ -181,7 +180,7 @@ class ReactToCommand(commands.Cog):
         payload.member = guild.get_member(payload.user_id)
         if payload.member is None:
             return
-        if not payload.member.id == guild.me.id:
+        if payload.member.id != guild.me.id:
             return
         config = await self.config.guild(guild).react_commands.all()
         if f"{payload.channel_id}-{payload.message_id}" not in config:
@@ -202,7 +201,7 @@ class ReactToCommand(commands.Cog):
                 self.channel: discord.TextChannel = channel
 
         fake_context = FakeContext(self.bot, payload.member, guild, channel)
-        emoji = await Emoji().convert(fake_context, emoji)
+        emoji = await Emoji().convert(fake_context, str(emoji))
         emoji = f"{getattr(emoji, 'id', emoji)}"
         if emoji not in config[f"{payload.channel_id}-{payload.message_id}"]:
             return

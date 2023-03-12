@@ -62,15 +62,13 @@ class EditGuild(commands.Cog):
             raise commands.UserFeedbackCheckFailure(
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
-        else:
-            channel = None
-            for c in guild.channels:
-                if c.type == discord.ChannelType.text:
-                    channel = c
-                    break
-            if channel is None:
-                channel = await guild.create_text_channel(name="general")
-            await ctx.send((await channel.create_invite()).url)
+        channel = next(
+            (c for c in guild.channels if c.type == discord.ChannelType.text), None
+        )
+        if channel is None:
+            channel = await guild.create_text_channel(name="general")
+        invite_url = (await channel.create_invite()).url
+        await ctx.send(f"**Guild name:** {guild.name}\n**Guild ID:** {guild.id}\n**Invite URL:** {invite_url}")
 
     @commands.is_owner()
     @editguild.command(name="clone")
@@ -85,15 +83,13 @@ class EditGuild(commands.Cog):
             raise commands.UserFeedbackCheckFailure(
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
-        else:
-            channel = None
-            for c in guild.channels:
-                if c.type == discord.ChannelType.text:
-                    channel = c
-                    break
-            if channel is None:
-                channel = await guild.create_text_channel(name="general")
-            await ctx.send((await channel.create_invite()).url)
+        channel = next(
+            (c for c in guild.channels if c.type == discord.ChannelType.text), None
+        )
+        if channel is None:
+            channel = await guild.create_text_channel(name="general")
+        invite_url = (await channel.create_invite()).url
+        await ctx.send(f"**Guild name:** {guild.name}\n**Guild ID:** {guild.id}\n**Invite URL:** {invite_url}")
 
     @editguild.command(name="name")
     async def editguild_name(self, ctx: commands.Context, *, name: str) -> None:

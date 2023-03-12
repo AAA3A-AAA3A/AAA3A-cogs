@@ -605,12 +605,10 @@ class Source:
     @executor()
     def _get_documentation(self, element: Tag, page_url: str) -> Documentation:
         full_name = element.text
-        full_name = full_name.replace("¶", "").strip()
+        full_name = full_name.replace("¶", "").replace("", "")
         if full_name.endswith("[source]"):
             full_name = full_name[:-8]
         elif full_name.endswith("[source]#"):
-            full_name = full_name[:-9]
-        elif full_name.endswith("[source]"):
             full_name = full_name[:-9]
         if self.name == "python" and page_url == self.url + "tutorial/datastructures.html":
             name = full_name.strip("\n").split("(")[0]

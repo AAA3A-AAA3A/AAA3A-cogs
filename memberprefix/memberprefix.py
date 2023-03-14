@@ -38,14 +38,14 @@ class MemberPrefix(commands.Cog):
             identifier=205192943327321000143939875896557571750,  # 647053803629
             force_registration=True,
         )
-        self.memberprefix_member: typing.Dict[str, typing.List[str]] = {
-            "custom_prefixes": [],
-        }
         self.memberprefix_global: typing.Dict[str, bool] = {
             "use_normal_prefixes": False,
         }
-        self.config.register_member(**self.memberprefix_member)
+        self.memberprefix_member: typing.Dict[str, typing.List[str]] = {
+            "custom_prefixes": [],
+        }
         self.config.register_global(**self.memberprefix_global)
+        self.config.register_member(**self.memberprefix_member)
 
         self.cache_messages: typing.List[discord.Message] = []
 
@@ -116,6 +116,10 @@ class MemberPrefix(commands.Cog):
     async def before_invoke(self, ctx: commands.Context) -> None:
         if ctx.guild is None:
             return
+        if getattr(ctx, "interaction", None) is not None:
+            return
+        if await self.config.use_normal_prefixes():
+            return
         if not isinstance(ctx.author, discord.Member):
             ctx.author = ctx.guild.get_member(ctx.author.id)
         config = await self.config.member(ctx.author).all()
@@ -135,14 +139,9 @@ class MemberPrefix(commands.Cog):
         if not isinstance(message.author, discord.Member):
             message.author = message.guild.get_member(message.author.id)
         config = await self.config.member(message.author).all()
-        if not config["custom_prefixes"] == []:
-            prefixes = config["custom_prefixes"]
-            if await self.config.use_normal_prefixes():
-                for p in await self.bot.get_valid_prefixes(message.guild):
-                    if p not in prefixes:
-                        prefixes.append(p)
-        else:
+        if config["custom_prefixes"] == []:
             return
+        prefixes = config["custom_prefixes"]
         ctx = await self.get_context_with_custom_prefixes(
             origin=message, prefixes=prefixes, cls=commands.context.Context
         )

@@ -58,21 +58,22 @@ class CmdChannel(commands.Cog):
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
-        if command_name not in ["cmdchannel", "cmduser", "cmduserchannel"]:
+        if command_name not in ["cmduser", "cmduserchannel"]:
             return
         command = command[3:]
         await self.cogsutils.invoke_command(
             author=context.author,
             channel=context.channel,
-            command=f"CmdchanneL {command}",
+            command=f"cmdchannel {command}",
             prefix=context.prefix,
             message=context.message,
         )
 
-    @hybrid_group(name="CmdchanneL", aliases=["cmdmock"], hidden=False)
-    async def cmdchannel(self, ctx: commands.Context):
+    @hybrid_group(aliases=["cmdmock"], invoke_without_command=True)
+    async def cmdchannel(self, ctx: commands.Context, channel: discord.TextChannel, *, command: str):
         """Use `[p]cmdchannel`, `[p]cmduser` and `[p]cmduserchannel`."""
-        pass
+        if ctx.invoked_subcommand is None:
+            await self.channel(ctx, channel=channel, command=command)
 
     @commands.mod()
     @cmdchannel.command()

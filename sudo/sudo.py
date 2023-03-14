@@ -80,39 +80,36 @@ class Sudo(commands.Cog):
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
-        if command_name not in ["su", "unsu", "sudo", "sutimeout"]:
+        if command_name not in ["su", "unsu", "sutimeout"]:
             return
         await self.cogsutils.invoke_command(
             author=context.author,
             channel=context.channel,
-            command=f"SudO {command}",
+            command=f"sudo {command}",
             prefix=context.prefix,
             message=context.message,
         )
 
     def decorator(all_owner_ids: typing.Optional[bool], bot_owner_ids: typing.Optional[bool]):
         async def pred(ctx):
-            if all_owner_ids:
-                if (
-                    ctx.author.id in ctx.bot.get_cog("Sudo").all_owner_ids
-                    and ctx.author.id not in ctx.bot.owner_ids
-                ):
-                    return True
-            if bot_owner_ids:
-                if ctx.author.id in ctx.bot.owner_ids:
-                    return True
-            return False
+            if all_owner_ids and (
+                ctx.author.id in ctx.bot.get_cog("Sudo").all_owner_ids
+                and ctx.author.id not in ctx.bot.owner_ids
+            ):
+                return True
+            return bool(bot_owner_ids and ctx.author.id in ctx.bot.owner_ids)
 
         return commands.check(pred)
 
     @decorator(all_owner_ids=True, bot_owner_ids=True)
-    @hybrid_group(name="SudO", hidden=False)
-    async def Sudo(self, ctx: commands.Context):
+    @hybrid_group(name="sudo", invoke_without_command=True)
+    async def Sudo(self, ctx: commands.Context, *, command: str):
         """Use `[p]su`, `[p]unsu`, `[p]sudo` and `[p]sutimeout`."""
-        pass
+        if ctx.invoked_subcommand is None:
+            await self._sudo(ctx, command=command)
 
     @decorator(all_owner_ids=True, bot_owner_ids=False)
-    @Sudo.command(name="su")
+    @Sudo.command(name="su", hidden=True)
     async def _su(self, ctx: commands.Context):
         """Sudo as the owner of the bot.
 
@@ -121,7 +118,7 @@ class Sudo(commands.Cog):
         ctx.bot.owner_ids.add(ctx.author.id)
 
     @decorator(all_owner_ids=False, bot_owner_ids=True)
-    @Sudo.command(name="unsu")
+    @Sudo.command(name="unsu", hidden=True)
     async def _unsu(self, ctx: commands.Context):
         """Unsudo as normal user.
 
@@ -132,7 +129,7 @@ class Sudo(commands.Cog):
             self.all_owner_ids.add(ctx.author.id)
 
     @decorator(all_owner_ids=True, bot_owner_ids=False)
-    @Sudo.command(name="sudo")
+    @Sudo.command(name="sudo", hidden=True)
     async def _sudo(self, ctx: commands.Context, *, command: str):
         """Rise as the bot owner for the specified command only.
 
@@ -156,7 +153,7 @@ class Sudo(commands.Cog):
 
     # Thanks to red#5419 for this command.
     @decorator(all_owner_ids=True, bot_owner_ids=False)
-    @Sudo.command(name="sutimeout")
+    @Sudo.command(name="sutimeout", hidden=True)
     async def _sutimeout(
         self,
         ctx: commands.Context,

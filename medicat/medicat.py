@@ -20,6 +20,8 @@ from redbot.core.utils.chat_formatting import bold, box, pagify
 
 # Credits:
 # General repo credits.
+# Thanks to Jayro for Medicat!
+# Thanks to Matt because this cog is for him bot.
 
 _ = Translator("Medicat", __file__)
 

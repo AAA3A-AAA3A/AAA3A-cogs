@@ -534,7 +534,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         async def flags(self, ctx: commands.Context, *, content: str) -> None:
             """Use any command with flags."""
             msg: discord.Message = ctx.message
-            msg.content = ctx.prefix + content
+            msg.content = (ctx.prefix if ctx.prefix != "/" else (await self.bot.get_valid_prefixes(guild=ctx.guild))[0]) + content
             context: commands.Context = await ctx.bot.get_context(msg)
             if context.command is None or not context.valid:
                 raise commands.UserFeedbackCheckFailure(_("This command doen't exist."))

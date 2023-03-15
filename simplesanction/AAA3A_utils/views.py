@@ -35,8 +35,7 @@ def generate_key(length: typing.Optional[int] = 10) -> str:  # same in CogsUtils
     strings = []
     strings += string.ascii_lowercase
     strings += string.digits
-    key = "".join(choice(strings) for _ in range(length))
-    return key
+    return "".join(choice(strings) for _ in range(length))
 
 
 class ConfirmationAskView(discord.ui.View):
@@ -64,6 +63,14 @@ class ConfirmationAskView(discord.ui.View):
         self._message: discord.Message = None
         self._result: typing.Optional[bool] = None
 
+    async def start(self, *args, **kwargs) -> bool:
+        """
+        Request a confirmation by the user.
+        """
+        self._message = await self.ctx.send(*args, **kwargs, view=self)
+        task_result = await self.wait()
+        return None if task_result is True or self._result is None else self._result
+
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + self.members + list(
             self.ctx.bot.owner_ids
@@ -79,7 +86,7 @@ class ConfirmationAskView(discord.ui.View):
         if not self.delete_after_timeout:
             for child in self.children:
                 child: discord.ui.Item
-                if getattr(child, "style", 0) != discord.ButtonStyle.url:
+                if isinstance(child, discord.ui.Button) and child.style != discord.ButtonStyle.url:
                     child.disabled = True
             try:
                 await self._message.edit(view=self)
@@ -115,14 +122,6 @@ class ConfirmationAskView(discord.ui.View):
             except discord.HTTPException:
                 pass
         self._result = False
-
-    async def start(self, *args, **kwargs) -> bool:
-        """
-        Allow confirmation to be requested from the user, in the form of buttons/dropdown/reactions/message, with many additional options.
-        """
-        self._message = await self.ctx.send(*args, **kwargs, view=self)
-        task_result = await self.wait()
-        return None if task_result is True or self._result is None else self._result
 
 
 class Buttons(discord.ui.View):

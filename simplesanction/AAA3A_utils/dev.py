@@ -613,7 +613,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
         if key.lower().startswith("id"):
             _id = key[2:] if key[2] != "_" else key[3:]
             try:
-                _id = int(id)
+                _id = int(_id)
             except ValueError:
                 pass
             else:

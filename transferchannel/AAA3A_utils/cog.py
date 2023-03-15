@@ -273,7 +273,7 @@ class Cog:
             return ValueError(error)
         method = error.response.request_info.method
         url = str(error.response.request_info.url)
-        url = url[len(discord.http.Route.BASE) :]
+        url = url[len(discord.http.Route.BASE):]
         url = url.split("?")[0]
         url = re.sub(r"\b\d{17,20}\b", "{snowflake}", url)
         key = f"{method.upper()} {url}"

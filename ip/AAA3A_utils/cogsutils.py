@@ -235,7 +235,7 @@ class CogsUtils(commands.Cog):
                 self.cog.log.debug("Error when adding the AAA3A_utils cog.", exc_info=e)
         if hasattr(self.cog, "settings") and hasattr(self.cog.settings, "commands_added"):
             await self.cog.settings.commands_added.wait()
-        AAA3A_utils = self.bot.get_cog("AAA3A_utils")
+        AAA3A_utils: SharedCog = self.bot.get_cog("AAA3A_utils")
         if AAA3A_utils is not None:
             if await AAA3A_utils.check_if_slash(self.cog):
                 try:
@@ -268,7 +268,7 @@ class CogsUtils(commands.Cog):
         asyncio.create_task(self._await_end())
 
     async def _await_end(self) -> None:
-        AAA3A_utils = self.bot.get_cog("AAA3A_utils")
+        AAA3A_utils: SharedCog = self.bot.get_cog("AAA3A_utils")
         if AAA3A_utils is not None:
             if getattr(AAA3A_utils, "sentry", None) is not None:
                 await AAA3A_utils.sentry.cog_unload(self.cog)
@@ -545,11 +545,14 @@ class CogsUtils(commands.Cog):
             await cog.CC_added.wait()
         # For new `[p]slash list` in Flame's PR.
         # for _object in cog.walk_commands():
-        #     if isinstance(_object, commands.HybridCommand):
+        #     if isinstance(_object, (commands.HybridCommand, commands.HybridGroup)):
         #         if _object.app_command is not None:
         #             _object.app_command.description = _object.app_command.description[:200]
-        # await self.remove_hybrid_commands(cog=cog)
-        AAA3A_utils = self.bot.get_cog("AAA3A_utils")
+        #         if _object.parent is not None:
+        #             if not _object.parent.invoke_without_command:
+        #                 _object.checks.extend(_object.parent.checks)
+        await self.remove_hybrid_commands(cog=cog)
+        AAA3A_utils: SharedCog = self.bot.get_cog("AAA3A_utils")
         if AAA3A_utils is not None:
             ignored_commands = await AAA3A_utils.config.ignored_slash_commands()
         else:
@@ -754,7 +757,7 @@ class CogsUtils(commands.Cog):
         **kwargs,
     ) -> bool:
         """
-        Allow confirmation to be requested from the user, in the form of buttons/dropdown/reactions/message, with many additional options.
+        Request a confirmation by the user., in the form of buttons/reactions/message, with many additional options.
         """
         check_owner = True
         reactions = ["✅", "✖️"]

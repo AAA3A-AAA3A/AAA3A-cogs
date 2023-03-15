@@ -137,7 +137,7 @@ if discord.version_info.major >= 2:
             if not self.delete_after_timeout:
                 for child in self.children:
                     child: discord.ui.Item
-                    if getattr(child, "style", 0) != discord.ButtonStyle.url:
+                    if isinstance(child, discord.ui.Button) and child.style != discord.ButtonStyle.url:
                         child.disabled = True
                 try:
                     await self._message.edit(view=self)

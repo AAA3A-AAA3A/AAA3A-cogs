@@ -121,16 +121,12 @@ class Calculator(commands.Cog):
                 result = "∞"
         except Exception:
             result = None
-        if result is not None:
-            result = f"{result}"
-        else:
-            result = _("Error!")
-        return result
+        return f"{result}" if result is not None else _("Error!")
 
     async def get_embed(
         self, ctx: commands.Context, expression: str, result: str
     ) -> discord.Embed:
-        if expression == "":
+        if not expression:
             expression = None
         if expression is None:
             expression = "|"
@@ -144,10 +140,8 @@ class Calculator(commands.Cog):
         else:
             expression = str(expression).replace("|", "")
             embed.description = (
-                box(f"> {str(expression)}", lang="fix")
-                + box(f"= {str(result)}", lang="fix")
-                + "\n"
-            )
+                box(f"> {expression}", lang="fix") + box(f"= {result}", lang="fix")
+            ) + "\n"
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
         embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
@@ -176,8 +170,8 @@ class Calculator(commands.Cog):
             lst.remove("|")
         except Exception:
             index = 0
-        if new in ["abs", "cos", "sin", "tan", "In", "√"]:
-            lst.insert(index, new + "(")
+        if new in {"abs", "cos", "sin", "tan", "In", "√"}:
+            lst.insert(index, f"{new}(")
             lst.insert(index + 1, ")")
         elif new == "X²":
             lst.insert(index, "²")
@@ -185,19 +179,17 @@ class Calculator(commands.Cog):
             lst.insert(index, "³")
         elif new == "Xˣ":
             lst.insert(index, "^")
-        else:
-            if len(lst) > 1 and lst[index - 1] == "^":
-                try:
-                    lst.insert(index, self.x[new])
-                    lst.remove("^")
-                    index -= 1
-                except Exception:
-                    lst.insert(index, new)
-            else:
+        elif len(lst) > 1 and lst[index - 1] == "^":
+            try:
+                lst.insert(index, self.x[new])
+                lst.remove("^")
+                index -= 1
+            except Exception:
                 lst.insert(index, new)
+        else:
+            lst.insert(index, new)
         lst.insert(index + 1, "|")
-        expression = "".join(lst)
-        return expression
+        return "".join(lst)
 
     async def get_buttons(self, disabled: bool) -> typing.Tuple:
         buttons_one = ActionRow(
@@ -358,7 +350,10 @@ class Calculator(commands.Cog):
         try:
             while True:
                 inter = await ctx.wait_for_button_click(timeout=config["time_max"], check=check)
-                if not inter.author == ctx.author and ctx.author.id not in ctx.bot.owner_ids:
+                if (
+                    inter.author != ctx.author
+                    and ctx.author.id not in ctx.bot.owner_ids
+                ):
                     await inter.respond(
                         _(
                             "Only the author of the command `{ctx.prefix}{ctx.command.name}` can interact with this message."
@@ -366,12 +361,14 @@ class Calculator(commands.Cog):
                         ephemeral=True,
                     )
                     continue
-                if result == _("Error!") or result == "∞" or result == "":
+                if result in [_("Error!"), "∞", ""]:
                     result = None
-                if result is not None:
-                    if not inter.clicked_button.custom_id == "result_button":
-                        expression = f"{result}|"
-                        result = None
+                if (
+                    result is not None
+                    and inter.clicked_button.custom_id != "result_button"
+                ):
+                    expression = f"{result}|"
+                    result = None
                 if (
                     expression is None
                     or expression == _("Error!")

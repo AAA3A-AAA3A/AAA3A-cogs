@@ -42,8 +42,11 @@ class MemoryGameView(discord.ui.View):
         ]
         for _list in self._solution_display:
             for emoji in _list:
-                custom_id = self.cog.cogsutils.generate_key(length=5, existing_keys=self._custom_ids)
-                self._custom_ids[custom_id] = emoji
+                if emoji != "​":
+                    custom_id = self.cog.cogsutils.generate_key(length=5, existing_keys=self._custom_ids)
+                    self._custom_ids[custom_id] = emoji
+                else:
+                    custom_id = emoji
                 button = discord.ui.Button(label="​", custom_id=custom_id)
                 if emoji == "​":
                     button.disabled = True
@@ -77,6 +80,8 @@ class MemoryGameView(discord.ui.View):
 
     async def callback(self, interaction: discord.Interaction):
         await interaction.response.defer()
+        if interaction.data["custom_id"] == "​":
+            return
         async with self._lock:
             if self._selected is None:
                 self._selected = interaction.data["custom_id"]
@@ -114,7 +119,8 @@ class MemoryGameView(discord.ui.View):
         self._selected = None
         for child in self._children:
             if isinstance(child, discord.ui.Button):
-                child.style = discord.ButtonStyle.success
+                if child.custom_id != "":
+                    child.style = discord.ButtonStyle.success
         self._end = time.monotonic()
         embed: discord.Embed = discord.Embed(title="Memory Game", color=discord.Color.green())
         embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar)

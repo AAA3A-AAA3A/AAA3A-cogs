@@ -127,9 +127,9 @@ class YAMLConverter(commands.Converter):
 
                 def convert_to_bool(argument: str) -> bool:
                     lowered = argument.lower()
-                    if lowered in ("yes", "y", "true", "t", "1", "enable", "on"):
+                    if lowered in {"yes", "y", "true", "t", "1", "enable", "on"}:
                         return True
-                    elif lowered in ("no", "n", "false", "f", "0", "disable", "off"):
+                    elif lowered in {"no", "n", "false", "f", "0", "disable", "off"}:
                         return False
                     else:
                         raise discord.ext.commands.BadBoolArgument(lowered)
@@ -362,7 +362,7 @@ class DiscordModals(commands.Cog):
         try:
             argument["button"][
                 "custom_id"
-            ] = f"DiscordModals_{self.cogsutils.generate_key(number=10)}"
+            ] = f"DiscordModals_{self.cogsutils.generate_key(length=10)}"
             view = Buttons(
                 timeout=None, buttons=[argument["button"]], function=self.send_modal, infinity=True
             )
@@ -376,7 +376,7 @@ class DiscordModals(commands.Cog):
             title=argument["title"],
             inputs=argument["modal"],
             function=self.send_embed_with_responses,
-            custom_id=f"DiscordModals_{self.cogsutils.generate_key(number=10)}",
+            custom_id=f"DiscordModals_{self.cogsutils.generate_key(length=10)}",
         )
         config[f"{message.channel.id}-{message.id}"] = {
             "title": argument["title"],

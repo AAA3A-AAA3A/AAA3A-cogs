@@ -337,7 +337,7 @@ class Seen(commands.Cog):
         if not isinstance(channel, discord.TextChannel):
             return
         custom_id = self.cogsutils.generate_key(
-            number=10,
+            length=10,
             existing_keys=self.cache["existing_keys"],
             strings_used={
                 "ascii_lowercase": True,

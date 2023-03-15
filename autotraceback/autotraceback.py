@@ -102,7 +102,7 @@ class AutoTraceback(commands.Cog):
         traceback_error = "".join(
             traceback.format_exception(type(error), error, error.__traceback__)
         )
-        traceback_error = self.cogsutils.replace_var_paths(traceback_error)*
+        traceback_error = self.cogsutils.replace_var_paths(traceback_error)
         self.tracebacks.append(traceback_error)
         if ctx.author.id not in ctx.bot.owner_ids:
             return

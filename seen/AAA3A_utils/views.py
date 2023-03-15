@@ -28,37 +28,36 @@ def _(untranslated: str) -> str:
 
 def generate_key(
     number: typing.Optional[int] = 10,
-    existing_keys: typing.Optional[typing.Union[typing.List, typing.Set]] = [],
-    strings_used: typing.Optional[typing.List] = {
-        "ascii_lowercase": True,
-        "ascii_uppercase": False,
-        "digits": True,
-        "punctuation": False,
-        "others": [],
-    },
+    existing_keys: typing.Optional[typing.Union[typing.List, typing.Set]] = None,
+    strings_used: typing.Optional[typing.List] = None,
 ) -> str:  # same in CogsUtils
     """
     Generate a secret key, with the choice of characters, the number of characters and a list of existing keys.
     """
+    if existing_keys is None:
+        existing_keys = []
+    if strings_used is None:
+        strings_used = {
+            "ascii_lowercase": True,
+            "ascii_uppercase": False,
+            "digits": True,
+            "punctuation": False,
+            "others": [],
+        }
     strings = []
-    if "ascii_lowercase" in strings_used:
-        if strings_used["ascii_lowercase"]:
-            strings += string.ascii_lowercase
-    if "ascii_uppercase" in strings_used:
-        if strings_used["ascii_uppercase"]:
-            strings += string.ascii_uppercase
-    if "digits" in strings_used:
-        if strings_used["digits"]:
-            strings += string.digits
-    if "punctuation" in strings_used:
-        if strings_used["punctuation"]:
-            strings += string.punctuation
-    if "others" in strings_used:
-        if isinstance(strings_used["others"], typing.List):
-            strings += strings_used["others"]
+    if "ascii_lowercase" in strings_used and strings_used["ascii_lowercase"]:
+        strings += string.ascii_lowercase
+    if "ascii_uppercase" in strings_used and strings_used["ascii_uppercase"]:
+        strings += string.ascii_uppercase
+    if "digits" in strings_used and strings_used["digits"]:
+        strings += string.digits
+    if "punctuation" in strings_used and strings_used["punctuation"]:
+        strings += string.punctuation
+    if "others" in strings_used and isinstance(strings_used["others"], typing.List):
+        strings += strings_used["others"]
     while True:
         # This probably won't turn into an endless loop.
-        key = "".join(choice(strings) for x in range(number))
+        key = "".join(choice(strings) for _ in range(number))
         if key not in existing_keys:
             return key
 
@@ -73,7 +72,7 @@ class ConfirmationAskView(discord.ui.View):
         timeout_message: typing.Optional[str] = _("Timed out, please try again."),
         delete_message: typing.Optional[bool] = True,
         delete_after_timeout: typing.Optional[bool] = True,
-        members: typing.Optional[typing.Iterable[typing.Union[discord.Member, int]]] = None
+        members: typing.Optional[typing.Iterable[typing.Union[discord.Member, int]]] = None,
     ):
         super().__init__(timeout=timeout)
         self.ctx: commands.Context = ctx
@@ -81,13 +80,17 @@ class ConfirmationAskView(discord.ui.View):
         self.delete_message: bool = delete_message
         self.timeout_message: str = timeout_message
         self.delete_after_timeout: bool = delete_after_timeout
-        self.members: typing.Optional[typing.List[int]] = (members if members is None else [getattr(member, "id", member) for member in members])
+        self.members: typing.Optional[typing.List[int]] = (
+            members if members is None else [getattr(member, "id", member) for member in members]
+        )
 
         self._message: discord.Message = None
         self._result: typing.Optional[bool] = None
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id not in [self.ctx.author.id] + self.members + list(self.ctx.bot.owner_ids):
+        if interaction.user.id not in [self.ctx.author.id] + self.members + list(
+            self.ctx.bot.owner_ids
+        ):
             await interaction.response.send_message(
                 "You are not allowed to use this interaction.", ephemeral=True
             )
@@ -99,7 +102,7 @@ class ConfirmationAskView(discord.ui.View):
         if not self.delete_after_timeout:
             for child in self.children:
                 child: discord.ui.Item
-                if not getattr(child, "style", 0) == discord.ButtonStyle.url:
+                if getattr(child, "style", 0) != discord.ButtonStyle.url:
                     child.disabled = True
             try:
                 await self._message.edit(view=self)
@@ -112,7 +115,9 @@ class ConfirmationAskView(discord.ui.View):
                 pass
         self.stop()
 
-    @discord.ui.button(label=_("Yes"), emoji="✅", style=discord.ButtonStyle.success, custom_id="true_button")
+    @discord.ui.button(
+        label=_("Yes"), emoji="✅", style=discord.ButtonStyle.success, custom_id="true_button"
+    )
     async def true_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer()
         if self.delete_message:
@@ -122,7 +127,9 @@ class ConfirmationAskView(discord.ui.View):
                 pass
         self._result = True
 
-    @discord.ui.button(label=_("No"), emoji="✖️", style=discord.ButtonStyle.danger, custom_id="false_button")
+    @discord.ui.button(
+        label=_("No"), emoji="✖️", style=discord.ButtonStyle.danger, custom_id="false_button"
+    )
     async def false_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer()
         if self.delete_message:
@@ -138,9 +145,7 @@ class ConfirmationAskView(discord.ui.View):
         """
         self._message = await self.ctx.send(*args, **kwargs, view=self)
         task_result = await self.wait()
-        if task_result is True or self._result is None:  # timeout
-            return None
-        return self._result
+        return None if task_result is True or self._result is None else self._result
 
 
 class Buttons(discord.ui.View):
@@ -149,14 +154,18 @@ class Buttons(discord.ui.View):
     def __init__(
         self,
         timeout: typing.Optional[int] = 180,
-        buttons: typing.Optional[typing.List] = [{}],
+        buttons: typing.Optional[typing.List] = None,
         members: typing.Optional[typing.Iterable[typing.Union[discord.Member, int]]] = None,
         check: typing.Optional[typing.Callable] = None,
         function: typing.Optional[typing.Callable] = None,
-        function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = {},
+        function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = None,
         infinity: typing.Optional[bool] = False,
     ) -> None:
         """style: ButtonStyle, label: Optional[str], disabled: bool, custom_id: Optional[str], url: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], row: Optional[int]"""
+        if buttons is None:
+            buttons = [{}]
+        if function_kwargs is None:
+            function_kwargs = {}
         for button_dict in buttons:
             if "url" in button_dict and button_dict["url"] is not None:
                 button_dict["style"] = 5
@@ -188,9 +197,8 @@ class Buttons(discord.ui.View):
         for button_dict in buttons:
             if "style" not in button_dict:
                 button_dict["style"] = discord.ButtonStyle(2)
-            else:
-                if isinstance(button_dict["style"], int):
-                    button_dict["style"] = discord.ButtonStyle(button_dict["style"])
+            elif isinstance(button_dict["style"], int):
+                button_dict["style"] = discord.ButtonStyle(button_dict["style"])
             if "disabled" not in button_dict:
                 button_dict["disabled"] = False
             if "label" not in button_dict and "emoji" not in button_dict:
@@ -220,18 +228,16 @@ class Buttons(discord.ui.View):
         return cls(**buttons_dict_instance)
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if self.members is not None:
-            if interaction.user.id not in self.members:
-                await interaction.response.send_message(
-                    "You are not allowed to use this interaction.", ephemeral=True
-                )
-                return False
-        if self.check is not None:
-            if not self.check(interaction):
-                await interaction.response.send_message(
-                    "You are not allowed to use this interaction.", ephemeral=True
-                )
-                return False
+        if self.members is not None and interaction.user.id not in self.members:
+            await interaction.response.send_message(
+                "You are not allowed to use this interaction.", ephemeral=True
+            )
+            return False
+        if self.check is not None and not self.check(interaction):
+            await interaction.response.send_message(
+                "You are not allowed to use this interaction.", ephemeral=True
+            )
+            return False
         self.interaction_result = interaction
         if self.function is not None:
             self.function_result = await self.function(self, interaction, **self.function_kwargs)
@@ -278,16 +284,20 @@ class Dropdown(discord.ui.View):
         _type: typing.Optional[discord.ComponentType] = discord.ComponentType.select,
         options: typing.Optional[
             typing.Union[typing.List, discord.ComponentType, discord.ui.Select]
-        ] = [{}],
+        ] = None,
         disabled: typing.Optional[bool] = False,
         members: typing.Optional[typing.Iterable[typing.Union[discord.Member, int]]] = None,
         check: typing.Optional[typing.Callable] = None,
         function: typing.Optional[typing.Callable] = None,
-        function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = {},
+        function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = None,
         infinity: typing.Optional[bool] = False,
         custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
     ) -> None:
         """label: str, value: str, description: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], default: bool"""
+        if options is None:
+            options = [{}]
+        if function_kwargs is None:
+            function_kwargs = {}
         self.dropdown_dict_instance: typing.Dict[str, typing.Any] = {
             "timeout": timeout,
             "placeholder": placeholder,
@@ -336,7 +346,7 @@ class Dropdown(discord.ui.View):
                 custom_id=custom_id,
             )
         elif _type is discord.ComponentType.channel_select or _type is ChannelSelect:
-            if options == [{}] or options == []:
+            if options in [[{}], []]:
                 options = None
             self.dropdown: discord.ui.Select = ChannelSelect(
                 placeholder=placeholder,
@@ -433,18 +443,16 @@ class Dropdown(discord.ui.View):
         return self.interaction_result, self.options_result, self.function_result
 
     async def callback(self, interaction: discord.Interaction) -> None:
-        if self.members is not None:
-            if interaction.user.id not in self.members:
-                await interaction.response.send_message(
-                    "You are not allowed to use this interaction.", ephemeral=True
-                )
-                return False
-        if self.check is not None:
-            if not self.check(interaction):
-                await interaction.response.send_message(
-                    "You are not allowed to use this interaction.", ephemeral=True
-                )
-                return False
+        if self.members is not None and interaction.user.id not in self.members:
+            await interaction.response.send_message(
+                "You are not allowed to use this interaction.", ephemeral=True
+            )
+            return False
+        if self.check is not None and not self.check(interaction):
+            await interaction.response.send_message(
+                "You are not allowed to use this interaction.", ephemeral=True
+            )
+            return False
         self.interaction_result = interaction
         self.options_result = self.dropdown.values
         if self.function is not None:
@@ -471,11 +479,13 @@ class Select(_Select, discord.ui.Select):
         min_values: typing.Optional[int] = 1,
         max_values: typing.Optional[int] = 1,
         *,
-        options: typing.Optional[typing.List] = [],
+        options: typing.Optional[typing.List] = None,
         disabled: typing.Optional[bool] = False,
         custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
         row: typing.Optional[int] = None,
     ) -> None:
+        if options is None:
+            options = []
         super().__init__(
             custom_id=custom_id,
             placeholder=placeholder,
@@ -494,11 +504,13 @@ class ChannelSelect(_Select, discord.ui.ChannelSelect):
         min_values: typing.Optional[int] = 1,
         max_values: typing.Optional[int] = 1,
         *,
-        channel_types: typing.Optional[discord.ChannelType] = [],
+        channel_types: typing.Optional[discord.ChannelType] = None,
         disabled: typing.Optional[bool] = False,
         custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
         row: typing.Optional[int] = None,
     ) -> None:
+        if channel_types is None:
+            channel_types = []
         super().__init__(
             custom_id=custom_id,
             placeholder=placeholder,
@@ -580,14 +592,18 @@ class Modal(discord.ui.Modal):
         self,
         title: typing.Optional[str] = "Form",
         timeout: typing.Optional[float] = None,
-        inputs: typing.Optional[typing.List] = [{}],
+        inputs: typing.Optional[typing.List] = None,
         members: typing.Optional[typing.Iterable[typing.Union[discord.Member, int]]] = None,
         check: typing.Optional[typing.Callable] = None,
         function: typing.Optional[typing.Callable] = None,
-        function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = {},
+        function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = None,
         custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
     ) -> None:
         """label: str, style: TextStyle, custom_id: str, placeholder: Optional[str], default: Optional[str], required: bool, min_length: Optional[int], max_length: Optional[int], row: Optional[int]"""
+        if inputs is None:
+            inputs = [{}]
+        if function_kwargs is None:
+            function_kwargs = {}
         for input_dict in inputs:
             if "custom_id" not in input_dict:
                 input_dict["custom_id"] = f"CogsUtils_{generate_key(number=10)}"
@@ -617,12 +633,11 @@ class Modal(discord.ui.Modal):
         for input_dict in inputs:
             if "label" not in input_dict:
                 input_dict["label"] = "Test"
-            if "style" in input_dict:
-                if isinstance(input_dict["style"], int):
-                    input_dict["style"] = discord.TextStyle(input_dict["style"])
-            input = discord.ui.TextInput(**input_dict)
-            self.add_item(input)
-            self.inputs.append(input)
+            if "style" in input_dict and isinstance(input_dict["style"], int):
+                input_dict["style"] = discord.TextStyle(input_dict["style"])
+            _input = discord.ui.TextInput(**input_dict)
+            self.add_item(_input)
+            self.inputs.append(_input)
             self.inputs_dict.append(input_dict)
         self.done: asyncio.Event = asyncio.Event()
 
@@ -646,18 +661,16 @@ class Modal(discord.ui.Modal):
         return cls(**modal_dict_instance)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
-        if self.members is not None:
-            if interaction.user.id not in self.members:
-                await interaction.response.send_message(
-                    "You are not allowed to use this interaction.", ephemeral=True
-                )
-                return False
-        if self.check is not None:
-            if not self.check(interaction):
-                await interaction.response.send_message(
-                    "You are not allowed to use this interaction.", ephemeral=True
-                )
-                return False
+        if self.members is not None and interaction.user.id not in self.members:
+            await interaction.response.send_message(
+                "You are not allowed to use this interaction.", ephemeral=True
+            )
+            return False
+        if self.check is not None and not self.check(interaction):
+            await interaction.response.send_message(
+                "You are not allowed to use this interaction.", ephemeral=True
+            )
+            return False
         self.interaction_result = interaction
         self.inputs_result = self.inputs
         if self.function is not None:

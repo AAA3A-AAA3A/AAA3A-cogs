@@ -43,7 +43,16 @@ from .settings import Settings
 from .shared_cog import SharedCog
 
 if discord.version_info.major >= 2:
-    from .views import Buttons, ChannelSelect, Dropdown, MentionableSelect, Modal, RoleSelect, Select, UserSelect  # NOQA
+    from .views import (
+        Buttons,
+        ChannelSelect,
+        Dropdown,
+        MentionableSelect,
+        Modal,
+        RoleSelect,
+        Select,
+        UserSelect,
+    )  # NOQA
 
 CogsUtils: typing.Any = None
 
@@ -79,9 +88,11 @@ class DevSpace:
 
     def __repr__(self) -> str:
         items = [f"{k}={v!r}" for k, v in self.__dict__.items()]
-        if len(items) == 0:
-            return f"<{self.__class__.__name__} [Nothing]>"
-        return f"<{self.__class__.__name__} {' '.join(items)}>"
+        return (
+            f"<{self.__class__.__name__} {' '.join(items)}>"
+            if items
+            else f"<{self.__class__.__name__} [Nothing]>"
+        )
 
     def __eq__(self, other: object) -> bool:
         if isinstance(self, self.__class__) and isinstance(other, self.__class__):
@@ -269,7 +280,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 )
                 try:
                     return await discord.ext.commands.converter.run_converters(
-                        ctx, converter=param.converter, argument=str(value), param=param
+                        ctx, converter=param.converter, argument=value, param=param
                     )
                 except commands.CommandError as e:
                     return e
@@ -279,7 +290,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 )
                 try:
                     return await ctx.command.do_conversion(
-                        ctx, converter=converter, argument=str(value), param=param
+                        ctx, converter=converter, argument=value, param=param
                     )
                 except commands.CommandError as e:
                     return e
@@ -413,7 +424,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
         )
         Dev = ctx.bot.get_cog("Dev")
         base_env = redbot.core.dev_commands.Dev.get_environment(Dev, ctx)  # In Dev in Core.
-        if not Dev.__class__ == redbot.core.dev_commands.Dev:
+        if Dev.__class__ != redbot.core.dev_commands.Dev:
             del base_env["_"]
         env.update(base_env)
         env.update(cls.get_env(ctx.bot, ctx))  # In CogsUtils.
@@ -568,7 +579,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 pass
 
     def __missing__(self, key: str) -> typing.Any:
-        if key in ("exit", "quit"):
+        if key in {"exit", "quit"}:
             try:
                 from dev.dev import Exit
             except ImportError:
@@ -599,51 +610,51 @@ class DevEnv(typing.Dict[str, typing.Any]):
         except (KeyError, AttributeError):
             pass
         if key.lower().startswith("id"):
-            id = key[2:] if not key[2] == "_" else key[3:]
+            _id = key[2:] if key[2] != "_" else key[3:]
             try:
-                id = int(id)
+                _id = int(id)
             except ValueError:
                 pass
             else:
                 try:
                     if "guild" not in self:
                         raise KeyError("guild")
-                    if member := self["guild"].get_member(id):
+                    if member := self["guild"].get_member(_id):
                         return member
                 except (KeyError, AttributeError):
                     pass
                 try:
                     if "bot" not in self:
                         raise KeyError("bot")
-                    if user := self["bot"].get_user(id):
+                    if user := self["bot"].get_user(_id):
                         return user
                 except (KeyError, AttributeError):
                     pass
                 try:
                     if "bot" not in self:
                         raise KeyError("bot")
-                    if guild := self["bot"].get_guild(id):
+                    if guild := self["bot"].get_guild(_id):
                         return guild
                 except (KeyError, AttributeError):
                     pass
                 try:
                     if "guild" not in self:
                         raise KeyError("guild")
-                    if channel := self["guild"].get_channel(id):
+                    if channel := self["guild"].get_channel(_id):
                         return channel
                 except (KeyError, AttributeError):
                     pass
                 try:
                     if "guild" not in self:
                         raise KeyError("guild")
-                    if role := self["guild"].get_role(id):
+                    if role := self["guild"].get_role(_id):
                         return role
                 except (KeyError, AttributeError):
                     pass
                 try:
                     if "channel" not in self:
                         raise KeyError("channel")
-                    if message := self["channel"].get_partial_message(id):
+                    if message := self["channel"].get_partial_message(_id):
                         return message
                 except (KeyError, AttributeError):
                     pass
@@ -721,11 +732,12 @@ class CogsCommands:
                 == getattr(cog, "qualified_name", None)
             }
             _items = source
-            items = {}
-            for key, value in _items.items():
-                items[key] = self.Command._setup(
+            items = {
+                key: self.Command._setup(
                     bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
                 )
+                for key, value in _items.items()
+            }
             yield from items.items()
 
         def __getitem__(self, key: str) -> typing.Any:
@@ -737,10 +749,9 @@ class CogsCommands:
                 == getattr(cog, "qualified_name", None)
             }
             _item = source[key]
-            item = self.Command._setup(
+            return self.Command._setup(
                 bot=self.bot, Cog=self.Cog, Command=self.Command, command=_item
             )
-            return item
 
         def items(self):
             cog = self
@@ -751,12 +762,12 @@ class CogsCommands:
                 == getattr(cog, "qualified_name", None)
             }
             _items = source
-            items = {}
-            for key, value in _items.items():
-                items[key] = self.Command._setup(
+            return {
+                key: self.Command._setup(
                     bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
                 )
-            return items
+                for key, value in _items.items()
+            }
 
         def keys(self):
             cog = self
@@ -766,8 +777,7 @@ class CogsCommands:
                 if getattr(command.cog, "qualified_name", None)
                 == getattr(cog, "qualified_name", None)
             }
-            keys = source.keys()
-            return keys
+            return source.keys()
 
         def values(self):
             cog = self
@@ -778,13 +788,13 @@ class CogsCommands:
                 == getattr(cog, "qualified_name", None)
             }
             _items = source
-            items = {}
-            for key, value in _items.items():
-                items[key] = self.Command._setup(
+            items = {
+                key: self.Command._setup(
                     bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
                 )
-            values = items.values()
-            return values
+                for key, value in _items.items()
+            }
+            return items.values()
 
     class Command(commands.Command):
         def __init__(func, *args, **kwargs):
@@ -838,11 +848,12 @@ class CogsCommands:
                 if getattr(c.parent, "qualified_name", None) == command.qualified_name
             }
             _items = source
-            items = {}
-            for key, value in _items.items():
-                items[key] = self.Command._setup(
+            items = {
+                key: self.Command._setup(
                     bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
                 )
+                for key, value in _items.items()
+            }
             yield from items.items()
 
         def __getitem__(self, key: str) -> typing.Any:
@@ -853,10 +864,9 @@ class CogsCommands:
                 if getattr(c.parent, "qualified_name", None) == command.qualified_name
             }
             _item = source[key]
-            item = self.Command._setup(
+            return self.Command._setup(
                 bot=self.bot, Cog=self.Cog, Command=self.Command, command=_item
             )
-            return item
 
         def items(self):
             command = self
@@ -866,12 +876,12 @@ class CogsCommands:
                 if getattr(c.parent, "qualified_name", None) == command.qualified_name
             }
             _items = source
-            items = {}
-            for key, value in _items.items():
-                items[key] = self.Command._setup(
+            return {
+                key: self.Command._setup(
                     bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
                 )
-            return items
+                for key, value in _items.items()
+            }
 
         def keys(self):
             command = self
@@ -880,8 +890,7 @@ class CogsCommands:
                 for c in self.bot.walk_commands()
                 if getattr(c.parent, "qualified_name", None) == command.qualified_name
             }
-            keys = source.keys()
-            return keys
+            return source.keys()
 
         def values(self):
             command = self
@@ -891,13 +900,13 @@ class CogsCommands:
                 if getattr(c.parent, "qualified_name", None) == command.qualified_name
             }
             _items = source
-            items = {}
-            for key, value in _items.items():
-                items[key] = self.Command._setup(
+            items = {
+                key: self.Command._setup(
                     bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
                 )
-            values = items.values()
-            return values
+                for key, value in _items.items()
+            }
+            return items.values()
 
     class Cogs:
         def __init__(self, bot: Red, Cog, Command) -> None:
@@ -919,44 +928,36 @@ class CogsCommands:
         def __iter__(self) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
             source = {cog.qualified_name: cog for cog in self.bot.cogs.values()}
             _items = source.items()
-            items = {}
-            for key, value in _items:
-                items[key] = self.Cog._setup(
-                    bot=self.bot, Cog=self.Cog, Command=self.Command, cog=value
-                )
-            yield from items
+            yield from {
+                key: self.Cog._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, cog=value)
+                for key, value in _items
+            }
 
         def __getitem__(self, key: str) -> typing.Any:
             source = {cog.qualified_name: cog for cog in self.bot.cogs.values()}
             _item = source[key]
-            item = self.Cog._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, cog=_item)
-            return item
+            return self.Cog._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, cog=_item)
 
         def items(self):
             source = {cog.qualified_name: cog for cog in self.bot.cogs.values()}
             _items = source.items()
-            items = {}
-            for key, value in _items:
-                items[key] = self.Cog._setup(
-                    bot=self.bot, Cog=self.Cog, Command=self.Command, cog=value
-                )
-            return items
+            return {
+                key: self.Cog._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, cog=value)
+                for key, value in _items
+            }
 
         def keys(self):
             source = {cog.qualified_name: cog for cog in self.bot.cogs.values()}
-            keys = source.keys()
-            return keys
+            return source.keys()
 
         def values(self):
             source = {cog.qualified_name: cog for cog in self.bot.cogs.values()}
             _items = source.items()
-            items = {}
-            for key, value in _items:
-                items[key] = self.Cog._setup(
-                    bot=self.bot, Cog=self.Cog, Command=self.Command, cog=value
-                )
-            values = items.values()
-            return values
+            items = {
+                key: self.Cog._setup(bot=self.bot, Cog=self.Cog, Command=self.Command, cog=value)
+                for key, value in _items
+            }
+            return items.values()
 
     class Commands:
         def __init__(self, bot: Red, Cog, Command) -> None:
@@ -978,43 +979,41 @@ class CogsCommands:
         def __iter__(self) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
             source = {command.name: command for command in self.bot.all_commands.values()}
             _items = source.items()
-            items = {}
-            for key, value in _items.items():
-                items[key] = self.Command._setup(
+            yield from {
+                key: self.Command._setup(
                     bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
                 )
-            yield from items
+                for key, value in _items.items()
+            }
 
         def __getitem__(self, key: str) -> typing.Any:
             source = {command.name: command for command in self.bot.all_commands.values()}
             _item = source[key]
-            item = self.Command._setup(
+            return self.Command._setup(
                 bot=self.bot, Cog=self.Cog, Command=self.Command, command=_item
             )
-            return item
 
         def items(self):
             source = {command.name: command for command in self.bot.all_commands.values()}
             _items = source.items()
-            items = {}
-            for key, value in _items.items():
-                items[key] = self.Command._setup(
+            return {
+                key: self.Command._setup(
                     bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
                 )
-            return items
+                for key, value in _items.items()
+            }
 
         def keys(self):
             source = {command.name: command for command in self.bot.all_commands.values()}
-            keys = source.keys()
-            return keys
+            return source.keys()
 
         def values(self):
             source = {command.name: command for command in self.bot.all_commands.values()}
             _items = source.items()
-            items = {}
-            for key, value in _items.items():
-                items[key] = self.Command._setup(
+            items = {
+                key: self.Command._setup(
                     bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
                 )
-            values = items.values()
-            return values
+                for key, value in _items.items()
+            }
+            return items.values()

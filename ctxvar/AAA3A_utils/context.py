@@ -47,22 +47,18 @@ def is_dev(
     Sudo = bot.get_cog("Sudo")
     if Sudo is None:
         owner_ids = bot.owner_ids
+    elif (
+        hasattr(Sudo, "all_owner_ids")
+        and len(Sudo.all_owner_ids) == 0
+        or not hasattr(Sudo, "all_owner_ids")
+    ):
+        owner_ids = bot.owner_ids
     else:
-        if hasattr(Sudo, "all_owner_ids"):
-            if len(Sudo.all_owner_ids) == 0:
-                owner_ids = bot.owner_ids
-            else:
-                owner_ids = bot.owner_ids | Sudo.all_owner_ids
-        else:
-            owner_ids = bot.owner_ids
+        owner_ids = bot.owner_ids | Sudo.all_owner_ids
     if user is not None:
         return int(getattr(user, "id", user)) in developers_ids
     else:
-        for dev in developers_ids:
-            if dev in owner_ids:
-                return True
-        else:
-            return False
+        return any(dev in owner_ids for dev in developers_ids)
 
 
 class Context:
@@ -76,8 +72,7 @@ class Context:
         """
         Adding additional functionality to the context.
         """
-        context = cls(ctx)
-        return context
+        return cls(ctx)
 
     def __getattr__(self, __name) -> typing.Any:
         return getattr(self.original_context, __name)
@@ -112,9 +107,8 @@ class Context:
         if reaction == commands.context.TICK:
             if getattr(self, "interaction", None) is not None and self.len_messages == 0:
                 message = "Done."
-            else:
-                if not can_user_react_in(self.me, self.channel) and self.len_messages == 0:
-                    message = "Done."
+            elif not can_user_react_in(self.me, self.channel) and self.len_messages == 0:
+                message = "Done."
             if getattr(self, "__is_mocked__", False):
                 message = None
         return await self.original_context.react_quietly(reaction, message=message)
@@ -153,9 +147,12 @@ class Context:
             except AttributeError:
                 pass
         self.len_messages += 1
-        if hasattr(self, "_typing"):
-            if hasattr(self._typing, "task") and hasattr(self._typing.task, "cancel"):
-                self._typing.task.cancel()
+        if (
+            hasattr(self, "_typing")
+            and hasattr(self._typing, "task")
+            and hasattr(self._typing.task, "cancel")
+        ):
+            self._typing.task.cancel()
         return await self.original_context.send(content=content, **kwargs)
 
     async def send_interactive(
@@ -184,8 +181,7 @@ class Context:
             return await self.original_context.send_interactive(
                 messages=messages, box_lang=box_lang, timeout=timeout
             )
-        else:
-            if box_lang is not None:
-                messages = [box(message, lang=box_lang) for message in messages]
-            await Menu(pages=messages).start(self)
-            return []
+        if box_lang is not None:
+            messages = [box(message, lang=box_lang) for message in messages]
+        await Menu(pages=messages).start(self)
+        return []

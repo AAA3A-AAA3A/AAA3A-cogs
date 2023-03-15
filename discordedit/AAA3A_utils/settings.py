@@ -21,7 +21,6 @@ from .menus import Menu
 if discord.version_info.major >= 2:
     from .views import Buttons, Modal
 
-if discord.version_info.major >= 2:  # To remove
     setattr(commands, "Literal", typing.Literal)
 
 __all__ = ["Settings", "CustomMessageConverter"]
@@ -159,17 +158,24 @@ class CustomMessageConverter(commands.Converter, dict):
         self.__dict__.update(**kwargs)
         return self
 
-    async def send_message(self, ctx: commands.Context, channel: typing.Optional[discord.abc.Messageable] = None, **kwargs):
+    async def send_message(
+        self,
+        ctx: commands.Context,
+        channel: typing.Optional[discord.abc.Messageable] = None,
+        **kwargs,
+    ):
         if channel is None:
             channel = ctx
         _kwargs = self.__dict__.copy()
         if (env := kwargs.pop("env", None)) is not None:
+
             class _Env(typing.Dict):
                 def __getitem__(self, key: str):
                     return env.__getitem__(key)
 
                 def __missing__(self, key: str):
                     return "{" + f"{key}" + "}"
+
             _env = _Env()
             if "content" in _kwargs and _kwargs["content"] is not None:
                 _kwargs["content"] = _kwargs["content"].format_map(_env)
@@ -199,9 +205,11 @@ class CustomMessageConverter(commands.Converter, dict):
     # Copied from `AAA3A_utils.dev.DevSpace`.
     def __repr__(self) -> str:
         items = [f"{k}={v!r}" for k, v in self.__dict__.items()]
-        if len(items) == 0:
-            return f"<{self.__class__.__name__} [Nothing]>"
-        return f"<{self.__class__.__name__} {' '.join(items)}>"
+        return (
+            f"<{self.__class__.__name__} {' '.join(items)}>"
+            if items
+            else f"<{self.__class__.__name__} [Nothing]>"
+        )
 
     def __eq__(self, other: object) -> bool:
         if isinstance(self, self.__class__) and isinstance(other, self.__class__):
@@ -280,11 +288,13 @@ class Settings:
         config: Config,
         group: str,
         settings: typing.Dict[str, typing.Dict[str, typing.Any]],
-        global_path: typing.List = [],
+        global_path: typing.List = None,
         use_profiles_system: typing.Optional[bool] = False,
         can_edit: bool = True,
         commands_group: typing.Optional[typing.Union[commands.Group, str]] = None,
     ) -> None:
+        if global_path is None:
+            global_path = []
         # {"enable": {"path": ["settings", "enabled"], "converter": bool, "command_name": "enable", "label": "Enable", "description": "Enable the system.", "usage": "enable", "style": 1}}
         self.bot: Red = bot
         self.cog: commands.Cog = cog
@@ -340,9 +350,8 @@ class Settings:
             if self.cog.cogsutils.is_dpy2:
                 if "style" not in settings[setting]:
                     settings[setting]["style"] = discord.TextStyle.short
-                else:
-                    if isinstance(settings[setting]["style"], int):
-                        settings[setting]["style"] = discord.TextStyle(settings[setting]["style"])
+                elif isinstance(settings[setting]["style"], int):
+                    settings[setting]["style"] = discord.TextStyle(settings[setting]["style"])
         self.settings: typing.Dict[str, typing.Dict[str, typing.Any]] = settings
 
     async def add_commands(self, force: typing.Optional[bool] = False) -> None:
@@ -379,9 +388,8 @@ class Settings:
             # commands_group.description = _help
             commands_group.callback.__doc__ = _help
             commands_group.cog = self.cog
-            if self.cog.cogsutils.is_dpy2:
-                if "ctx" in commands_group.params:
-                    del commands_group.params["ctx"]
+            if self.cog.cogsutils.is_dpy2 and "ctx" in commands_group.params:
+                del commands_group.params["ctx"]
             self.bot.add_command(commands_group)
             cog_commands = list(self.cog.__cog_commands__)
             cog_commands.append(commands_group)
@@ -394,18 +402,18 @@ class Settings:
                 if len(argument) > 10:
                     raise commands.BadArgument(_("This profile does not exist."))
                 if self.group == Config.GLOBAL:
-                    object = None
+                    _object = None
                 elif self.group == Config.GUILD:
-                    object = ctx.guild
+                    _object = ctx.guild
                 elif self.group == Config.MEMBER:
-                    object = ctx.author
+                    _object = ctx.author
                 elif self.group == Config.CHANNEL:
-                    object = ctx.author
+                    _object = ctx.author
                 elif self.group == Config.ROLE:
-                    object = ctx.author.top_role
+                    _object = ctx.author.top_role
                 elif self.group == Config.USER:
-                    object = ctx.author
-                data = self.get_data(object)
+                    _object = ctx.author
+                data = self.get_data(_object)
                 profiles = await data.get_raw(*self.global_path)
                 if argument.lower() not in profiles:
                     raise commands.BadArgument(_("This profile does not exist."))
@@ -413,9 +421,7 @@ class Settings:
 
         if not self.use_profiles_system:
 
-            async def reset_setting(
-                _self, ctx: commands.Context, setting: str
-            ):
+            async def reset_setting(_self, ctx: commands.Context, setting: str):
                 """Reset a setting."""
                 for _setting in self.settings:
                     if self.settings[_setting]["command_name"] == setting:
@@ -437,7 +443,11 @@ class Settings:
                 """Set all settings for the cog with a Discord Modal."""
                 await self.send_modal(ctx, confirmation=confirmation)
 
-            to_add = {"resetsetting": reset_setting, "showsettings": show_settings, "modalconfig": modal_config}
+            to_add = {
+                "resetsetting": reset_setting,
+                "showsettings": show_settings,
+                "modalconfig": modal_config,
+            }
         else:
 
             async def reset_setting(
@@ -545,9 +555,8 @@ class Settings:
             self.bot.dispatch("command_add", command)
             if self.bot.get_cog("permissions") is None:
                 command.requires.ready_event.set()
-            if self.cog.cogsutils.is_dpy2:
-                if "ctx" in command.params:
-                    del command.params["ctx"]
+            if self.cog.cogsutils.is_dpy2 and "ctx" in command.params:
+                del command.params["ctx"]
             setattr(self, f"settings_{name}", command)
             cog_commands = list(self.cog.__cog_commands__)
             cog_commands.append(command)
@@ -565,9 +574,7 @@ class Settings:
 
                 if not self.use_profiles_system:
 
-                    async def command(
-                        _self, ctx: commands.Context, *, value: _converter
-                    ):
+                    async def command(_self, ctx: commands.Context, *, value: _converter):
                         await self.command(ctx, key=None, value=value)
 
                 else:
@@ -577,16 +584,14 @@ class Settings:
                         ctx: commands.Context,
                         profile: ProfileConverter,
                         *,
-                        value: _converter
+                        value: _converter,
                     ):
                         await self.command(ctx, key=None, value=value, profile=profile)
 
                 command.__qualname__ = f"{self.cog.qualified_name}.settings_{name}"
                 command: commands.Command = self.commands_group.command(
                     name=name,
-                    usage=(
-                        f"[{_usage}]" if not self.use_profiles_system else f"<profile> [{_usage}]"
-                    ),
+                    usage=f"<profile> [{_usage}]" if self.use_profiles_system else f"[{_usage}]",
                     help=_help,
                 )(command)
                 if self.settings[setting]["no_slash"]:
@@ -600,9 +605,8 @@ class Settings:
                 self.bot.dispatch("command_add", command)
                 if self.bot.get_cog("permissions") is None:
                     command.requires.ready_event.set()
-                if self.cog.cogsutils.is_dpy2:
-                    if "ctx" in command.params:
-                        del command.params["ctx"]
+                if self.cog.cogsutils.is_dpy2 and "ctx" in command.params:
+                    del command.params["ctx"]
                 setattr(self, f"settings_{name}", command)
                 cog_commands = list(self.cog.__cog_commands__)
                 cog_commands.append(command)
@@ -616,7 +620,7 @@ class Settings:
         ctx: commands.Context,
         key: typing.Optional[str] = None,
         value: typing.Optional[typing.Any] = None,
-        object: typing.Optional[
+        _object: typing.Optional[
             typing.Union[
                 discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User
             ]
@@ -632,19 +636,19 @@ class Settings:
                 raise commands.UserFeedbackCheckFailure(_("No setting found."))
         if value is None:
             value = ctx.kwargs["value"]
-        if object is None:
+        if _object is None:
             if self.group == Config.GLOBAL:
-                object = None
+                _object = None
             elif self.group == Config.GUILD:
-                object = ctx.guild
+                _object = ctx.guild
             elif self.group == Config.MEMBER:
-                object = ctx.author
+                _object = ctx.author
             elif self.group == Config.CHANNEL:
-                object = ctx.author
+                _object = ctx.author
             elif self.group == Config.ROLE:
-                object = ctx.author.top_role
+                _object = ctx.author.top_role
             elif self.group == Config.USER:
-                object = ctx.author
+                _object = ctx.author
         if value is not discord.utils.MISSING:
             if isinstance(value, CustomMessageConverter):
                 value = value.to_dict()
@@ -652,7 +656,7 @@ class Settings:
                 await self.set_raw(
                     key=key,
                     value=getattr(value, "id", None) or getattr(value, "value", None) or value,
-                    object=object,
+                    _object=_object,
                     profile=profile,
                 )
             except self.NotExistingPanel:
@@ -660,7 +664,7 @@ class Settings:
                 return
         else:
             try:
-                await self.clear_raw(key=key, object=object, profile=profile)
+                await self.clear_raw(key=key, _object=_object, profile=profile)
             except self.NotExistingPanel:
                 await ctx.send("This profile don't exist.")
                 return
@@ -713,10 +717,9 @@ class Settings:
         await data.clear_raw(*self.global_path, profile)
         if self.cog.qualified_name == "TicketTool":
             data = await self.cog.config.guild(ctx.guild).tickets.all()
-            to_remove = []
-            for channel in data:
-                if data[channel].get("panel", "main") == profile:
-                    to_remove.append(channel)
+            to_remove = [
+                channel for channel in data if data[channel].get("panel", "main") == profile
+            ]
             for channel in to_remove:
                 try:
                     del data[channel]
@@ -739,10 +742,7 @@ class Settings:
         await data.clear_raw(*self.global_path, old_profile)
         if self.cog.qualified_name == "TicketTool":
             data = await self.cog.config.guild(ctx.guild).tickets.all()
-            to_edit = []
-            for channel in data:
-                if data[channel]["panel"] == old_profile:
-                    to_edit.append(channel)
+            to_edit = [channel for channel in data if data[channel]["panel"] == old_profile]
             for channel in to_edit:
                 try:
                     data[channel]["panel"] = profile
@@ -761,7 +761,7 @@ class Settings:
     async def show_settings(
         self,
         ctx: commands.Context,
-        object: typing.Optional[
+        _object: typing.Optional[
             typing.Union[
                 discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User
             ]
@@ -769,25 +769,26 @@ class Settings:
         profile: typing.Optional[str] = None,
         with_dev: typing.Optional[bool] = False,
     ) -> None:
-        if object is None:
+        if _object is None:
             if self.group == Config.GLOBAL:
-                object = None
+                _object = None
             elif self.group == Config.GUILD:
-                object = ctx.guild
+                _object = ctx.guild
             elif self.group == Config.MEMBER:
-                object = ctx.author
+                _object = ctx.author
             elif self.group == Config.CHANNEL:
-                object = ctx.author
+                _object = ctx.author
             elif self.group == Config.ROLE:
-                object = ctx.author.top_role
+                _object = ctx.author.top_role
             elif self.group == Config.USER:
-                object = ctx.author
-        if not self.use_profiles_system:
-            message = f"---------- {self.cog.qualified_name}'s Settings ----------\n```\n\n```py\n"
-        else:
-            message = f"---------- {self.cog.qualified_name}'s Settings for `{profile}` profile ----------\n```\n\n```py\n"
+                _object = ctx.author
+        message = (
+            f"---------- {self.cog.qualified_name}'s Settings for `{profile}` profile ----------\n```\n\n```py\n"
+            if self.use_profiles_system
+            else f"---------- {self.cog.qualified_name}'s Settings ----------\n```\n\n```py\n"
+        )
         try:
-            values = await self.get_values(object=object, profile=profile)
+            values = await self.get_values(_object=_object, profile=profile)
         except self.NotExistingPanel:
             await ctx.send("This profile don't exist.")
             return
@@ -798,18 +799,14 @@ class Settings:
                     value.replace("_", " ").title().replace(" ", ""),
                     repr(values[value]["default"]),
                     repr(values[value]["value"]),
-                    str(
-                        (
-                            (
-                                "|".join(
-                                    f'"{v}"' if isinstance(v, str) else str(v)
-                                    for v in self.settings[value]["converter"].__args__
-                                )
-                            )
-                            if self.settings[value]["converter"] is typing.Literal
-                            else getattr(self.settings[value]["converter"], "__name__", "")
+                    (
+                        "|".join(
+                            f'"{v}"' if isinstance(v, str) else str(v)
+                            for v in self.settings[value]["converter"].__args__
                         )
-                    ),
+                    )
+                    if self.settings[value]["converter"] is typing.Literal
+                    else getattr(self.settings[value]["converter"], "__name__", ""),
                 )
         else:
             raw_table = Table("Key", "Default", "Value", "Converter", "Path")
@@ -818,28 +815,17 @@ class Settings:
                     value.replace("_", " ").title().replace(" ", ""),
                     repr(values[value]["default"]),
                     repr(values[value]["value"]),
-                    str(
-                        (
-                            (
-                                "|".join(
-                                    f'"{v}"' if isinstance(v, str) else str(v)
-                                    for v in self.settings[value]["converter"].__args__
-                                )
-                            )
-                            if self.settings[value]["converter"] is typing.Literal
-                            else getattr(self.settings[value]["converter"], "__name__", "")
-                        )
-                    ),
                     (
-                        str([self.group] + self.global_path + self.settings[value]["path"])
-                        if not self.use_profiles_system
-                        else str(
-                            [self.group]
-                            + self.global_path
-                            + [profile]
-                            + self.settings[value]["path"]
+                        "|".join(
+                            f'"{v}"' if isinstance(v, str) else str(v)
+                            for v in self.settings[value]["converter"].__args__
                         )
-                    ),
+                    )
+                    if self.settings[value]["converter"] is typing.Literal
+                    else getattr(self.settings[value]["converter"], "__name__", ""),
+                    str([self.group] + self.global_path + [profile] + self.settings[value]["path"])
+                    if self.use_profiles_system
+                    else str([self.group] + self.global_path + self.settings[value]["path"]),
                 )
         raw_table_str = no_colour_rich_markup(raw_table, no_box=True)
         message += raw_table_str
@@ -848,7 +834,7 @@ class Settings:
     async def send_modal(
         self,
         ctx: commands.Context,
-        object: typing.Optional[
+        _object: typing.Optional[
             typing.Union[
                 discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User
             ]
@@ -858,30 +844,31 @@ class Settings:
     ) -> None:
         if not self.cog.cogsutils.is_dpy2:
             raise RuntimeError()
-        if object is None:
+        if _object is None:
             if self.group == Config.GLOBAL:
-                object = None
+                _object = None
             elif self.group == Config.GUILD:
-                object = ctx.guild
+                _object = ctx.guild
             elif self.group == Config.MEMBER:
-                object = ctx.author
+                _object = ctx.author
             elif self.group == Config.CHANNEL:
-                object = ctx.author
+                _object = ctx.author
             elif self.group == Config.ROLE:
-                object = ctx.author.top_role
+                _object = ctx.author.top_role
             elif self.group == Config.USER:
-                object = ctx.author
-        values = await self.get_values(object=object, profile=profile)
-        data = self.get_data(object)
-        if not self.use_profiles_system:
-            config = await data.get_raw(*self.global_path)
-        else:
-            config = await data.get_raw(*self.global_path, profile)
+                _object = ctx.author
+        values = await self.get_values(_object=_object, profile=profile)
+        data = self.get_data(_object)
+        config = (
+            await data.get_raw(*self.global_path, profile)
+            if self.use_profiles_system
+            else await data.get_raw(*self.global_path)
+        )
         one_l = list(self.settings)
         two_l = []
         three_l = {}
         while True:
-            lst = one_l[0:5]
+            lst = one_l[:5]
             one_l = one_l[5:]
             two_l.append(lst)
             if one_l == []:
@@ -951,9 +938,11 @@ class Settings:
             config: typing.Dict,
             three_l: typing.Dict,
         ):
-            if not interaction.data["custom_id"].startswith("Settings_ModalConfig_configure"):
-                if not interaction.response.is_done():
-                    await interaction.response.defer()
+            if (
+                not interaction.data["custom_id"].startswith("Settings_ModalConfig_configure")
+                and not interaction.response.is_done()
+            ):
+                await interaction.response.defer()
             if interaction.data["custom_id"] == "Settings_ModalConfig_cancel":
                 view.stop()
             elif interaction.data["custom_id"] == "Settings_ModalConfig_done":
@@ -963,10 +952,11 @@ class Settings:
                         "⚙️ Do you want to replace the entire Config of {cog.qualified_name} with what you specified?"
                     ).format(cog=self.cog)
                     if await self.cog.cogsutils.ConfirmationAsk(ctx, embed=embed):
-                        if not self.use_profiles_system:
-                            config = await data.set_raw(*self.global_path, value=config)
-                        else:
-                            config = await data.set_raw(*self.global_path, profile, value=config)
+                        config = (
+                            await data.set_raw(*self.global_path, profile, value=config)
+                            if self.use_profiles_system
+                            else await data.set_raw(*self.global_path, value=config)
+                        )
                 view.stop()
             elif interaction.data["custom_id"] == "Settings_ModalConfig_view":
                 await Menu(pages=str(config), box_language_py=True).start(ctx)
@@ -988,19 +978,18 @@ class Settings:
                                     )
                                     if self.settings[setting]["converter"] is typing.Literal
                                     else getattr(
-                                        self.settings[setting]["converter"], "__name__", ""
+                                        self.settings[setting]["converter"],
+                                        "__name__",
+                                        "",
                                     )
                                 )
                                 + ")"
                             )[:44],
                             "style": self.settings[setting]["style"],
                             "placeholder": str(values[setting]["default"]),
-                            "default": (
-                                str(values[setting]["value"])
-                                if not str(values[setting]["value"])
-                                == str(values[setting]["default"])
-                                else None
-                            ),
+                            "default": str(values[setting]["value"])
+                            if str(values[setting]["value"]) != str(values[setting]["default"])
+                            else None,
                             "required": False,
                             "custom_id": f"Settings_ModalConfig_{setting}",
                         }
@@ -1067,7 +1056,7 @@ class Settings:
     async def get_raw(
         self,
         key: str,
-        object: typing.Optional[
+        _object: typing.Optional[
             typing.Union[
                 discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User
             ]
@@ -1076,26 +1065,25 @@ class Settings:
     ) -> typing.Any:
         if key not in self.settings:
             raise KeyError(key)
-        data = self.get_data(object)
+        data = self.get_data(_object)
         setting = self.settings[key]
         if not self.use_profiles_system:
             return await data.get_raw(*self.global_path, *setting["path"])
-        else:
-            try:
-                profiles = await data.get_raw(*self.global_path)
-            except KeyError:
-                profiles = {}
-            try:
-                profiles[profile]
-            except KeyError:
-                raise self.NotExistingPanel(profile)
-            return await data.get_raw(*self.global_path, profile, *setting["path"])
+        try:
+            profiles = await data.get_raw(*self.global_path)
+        except KeyError:
+            profiles = {}
+        try:
+            profiles[profile]
+        except KeyError:
+            raise self.NotExistingPanel(profile)
+        return await data.get_raw(*self.global_path, profile, *setting["path"])
 
     async def set_raw(
         self,
         key: str,
         value: typing.Any,
-        object: typing.Optional[
+        _object: typing.Optional[
             typing.Union[
                 discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User
             ]
@@ -1104,7 +1092,7 @@ class Settings:
     ) -> None:
         if key not in self.settings:
             raise KeyError(key)
-        data = self.get_data(object)
+        data = self.get_data(_object)
         setting = self.settings[key]
         if not self.use_profiles_system:
             await data.set_raw(*self.global_path, *setting["path"], value=value)
@@ -1122,7 +1110,7 @@ class Settings:
     async def clear_raw(
         self,
         key: str,
-        object: typing.Optional[
+        _object: typing.Optional[
             typing.Union[
                 discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User
             ]
@@ -1131,7 +1119,7 @@ class Settings:
     ) -> None:
         if key not in self.settings:
             raise KeyError(key)
-        data = self.get_data(object)
+        data = self.get_data(_object)
         setting = self.settings[key]
         if not self.use_profiles_system:
             await data.clear_raw(*self.global_path, setting["path"])
@@ -1148,61 +1136,61 @@ class Settings:
 
     def get_data(
         self,
-        object: typing.Optional[
+        _object: typing.Optional[
             typing.Union[
                 discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User
             ]
         ] = None,
         ctx: typing.Optional[commands.Context] = None,
     ) -> redbot.core.config.Group:
-        if object is None and ctx is not None:
+        if _object is None and ctx is not None:
             if self.group == Config.GLOBAL:
-                object = None
+                _object = None
             elif self.group == Config.GUILD:
-                object = ctx.guild
+                _object = ctx.guild
             elif self.group == Config.MEMBER:
-                object = ctx.author
+                _object = ctx.author
             elif self.group == Config.CHANNEL:
-                object = ctx.author
+                _object = ctx.author
             elif self.group == Config.ROLE:
-                object = ctx.author.top_role
+                _object = ctx.author.top_role
             elif self.group == Config.USER:
-                object = ctx.author
+                _object = ctx.author
         data = {}
         if self.group == Config.GLOBAL:
             data = self.config
         elif self.group == Config.GUILD:
-            if isinstance(object, discord.Guild):
-                data = self.config.guild(object)
-            elif isinstance(object, int):
-                data = self.config.guild_from_id(object)
+            if isinstance(_object, discord.Guild):
+                data = self.config.guild(_object)
+            elif isinstance(_object, int):
+                data = self.config.guild_from_id(_object)
         elif self.group == Config.MEMBER:
-            if isinstance(object, discord.Member):
-                data = self.config.member(object)
-            elif isinstance(object, typing.List) and len(object) == 2:
-                data = self.config.member_from_ids(*object)
+            if isinstance(_object, discord.Member):
+                data = self.config.member(_object)
+            elif isinstance(_object, typing.List) and len(_object) == 2:
+                data = self.config.member_from_ids(*_object)
         elif self.group == Config.CHANNEL:
-            if isinstance(object, discord.abc.Messageable):
-                data = self.config.channel(object)
-            elif isinstance(object, int):
-                data = self.config.channel_from_id(object)
+            if isinstance(_object, discord.abc.Messageable):
+                data = self.config.channel(_object)
+            elif isinstance(_object, int):
+                data = self.config.channel_from_id(_object)
         elif self.group == Config.ROLE:
-            if isinstance(object, discord.Role):
-                data = self.config.role(object).all()
-            elif isinstance(object, int):
-                data = self.config.role_from_id(object)
+            if isinstance(_object, discord.Role):
+                data = self.config.role(_object).all()
+            elif isinstance(_object, int):
+                data = self.config.role_from_id(_object)
         elif self.group == Config.USER:
-            if isinstance(object, discord.User):
-                data = self.config.user(object)
-            elif isinstance(object, int):
-                data = self.config.user_from_id(object)
+            if isinstance(_object, discord.User):
+                data = self.config.user(_object)
+            elif isinstance(_object, int):
+                data = self.config.user_from_id(_object)
         else:
-            return self.config.custom(self.group if object is None else object)
+            return self.config.custom(self.group if _object is None else _object)
         return data
 
     async def get_values(
         self,
-        object: typing.Optional[
+        _object: typing.Optional[
             typing.Union[
                 discord.Guild, discord.Member, discord.abc.Messageable, discord.Role, discord.User
             ]
@@ -1210,7 +1198,7 @@ class Settings:
         profile: typing.Optional[str] = None,
     ) -> typing.Dict[str, typing.Dict[str, typing.Any]]:
         result = {}
-        data = self.get_data(object)
+        data = self.get_data(_object)
         for setting in self.settings:
             if not self.use_profiles_system:
                 default = self.config._defaults.get(self.group, {})

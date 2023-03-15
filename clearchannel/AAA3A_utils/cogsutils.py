@@ -28,7 +28,7 @@ from .menus import Reactions
 from .shared_cog import SharedCog
 
 if discord.version_info.major >= 2:
-    from .views import ConfirmationAskView, Dropdown
+    from .views import ConfirmationAskView
 
 __all__ = ["CogsUtils"]
 
@@ -157,9 +157,8 @@ class CogsUtils(commands.Cog):
         if inspect.isawaitable(value):
             await value
         self._setup()
-        if not self.is_dpy2:
-            if hasattr(cog, "cog_load"):
-                await cog.cog_load()
+        if not self.is_dpy2 and hasattr(cog, "cog_load"):
+            await cog.cog_load()
         return cog
 
     def _setup(self) -> None:
@@ -216,7 +215,7 @@ class CogsUtils(commands.Cog):
                 f"Something went wrong checking if {self.cog.qualified_name} cog is up to date.",
                 exc_info=e,
             )
-        if not self.cog.qualified_name == "AAA3A_utils":
+        if self.cog.qualified_name != "AAA3A_utils":
             try:
                 old_cog = self.bot.get_cog("AAA3A_utils")
                 if self.is_dpy2:
@@ -255,7 +254,7 @@ class CogsUtils(commands.Cog):
         """
         self.close_logger()
         DevEnv.remove_dev_env_values(bot=self.bot, cog=self.cog)
-        loops = {name: value for name, value in self.loops.items()}
+        loops = dict(self.loops.items())
         for loop in loops:
             if self.cog.qualified_name == "AAA3A_utils" and loop == "Sentry Helper":
                 continue
@@ -289,90 +288,86 @@ class CogsUtils(commands.Cog):
         Prepare the logger for the cog.
         Thanks to @laggron42 on GitHub! (https://github.com/laggron42/Laggron-utils/blob/master/laggron_utils/logging.py)
         """
-        if name is None and self.cog is not None:
-            if hasattr(self.cog, "log") and (
-                isinstance(self.cog.log, partial) or isinstance(self.cog.log, logging.Logger)
-            ):
-                return self.cog.log
-            self.cog.log = logging.getLogger(f"red.{self.repo_name}.{self.cog.qualified_name}")
-
-            __log = partial(logging.Logger._log, self.cog.log)
-
-            def _log(level, msg, args, exc_info=None, extra=None, stack_info=False, stacklevel=1):
-                if self.cog is not None:
-                    if not hasattr(self.cog, "logs") or not isinstance(self.cog.logs, typing.Dict):
-                        self.cog.logs: typing.Dict[typing.Union[str, int], typing.Dict] = {}
-                    from logging import CRITICAL, DEBUG, ERROR, FATAL, INFO, WARN, WARNING
-
-                    VERBOSE = DEBUG - 3
-                    TRACE = DEBUG - 5
-                    levels = {
-                        CRITICAL: "CRITICAL",
-                        DEBUG: "DEBUG",
-                        ERROR: "ERROR",
-                        FATAL: "FATAL",
-                        INFO: "INFO",
-                        WARN: "WARN",
-                        WARNING: "WARNING",
-                        VERBOSE: "VERBOSE",
-                        TRACE: "TRACE",
-                    }
-                    _level = levels.get(level, str(level))
-                    if _level not in self.cog.logs:
-                        self.cog.logs[_level] = []
-                    self.cog.logs[_level].append(
-                        {
-                            "time": datetime.datetime.now(),
-                            "level": level,
-                            "message": msg,
-                            "args": args,
-                            "exc_info": exc_info,
-                            "levelname": _level,
-                        }
-                    )
-                __log(
-                    level=level,
-                    msg=msg,
-                    args=args,
-                    exc_info=exc_info,
-                    extra=extra,
-                    stack_info=stack_info,
-                    stacklevel=stacklevel,
-                )
-
-            setattr(self.cog.log, "_log", _log)
-
-            # logging to a log file
-            # file is automatically created by the module, if the parent foler exists
-            try:
-                cog_path = cog_data_path(cog_instance=self.cog, raw_name=self.cog.qualified_name)
-                formatter = logging.Formatter(
-                    "[{asctime}] {levelname} [{name}] {message}",
-                    datefmt="%Y-%m-%d %H:%M:%S",
-                    style="{",
-                )
-                if cog_path.exists():
-                    file_handler = RotatingFileHandler(
-                        stem=self.cog.qualified_name,
-                        directory=cog_path,
-                        maxBytes=1_000_0,
-                        backupCount=0,
-                        encoding="utf-8",
-                    )
-                    # file_handler.doRollover()
-                    file_handler.setLevel(logging.DEBUG)
-                    file_handler.setFormatter(formatter)
-                    self.cog.log.addHandler(file_handler)
-            except Exception as e:
-                self.cog.log.debug(
-                    "Error when initiating the logger in a separate file.", exc_info=e
-                )
+        if name is not None or self.cog is None:
+            return (
+                logging.getLogger(f"{name}")
+                if name.startswith("red.")
+                else logging.getLogger(f"red.{self.repo_name}.{name}")
+            )
+        if hasattr(self.cog, "log") and (isinstance(self.cog.log, (partial, logging.Logger))):
             return self.cog.log
-        else:
-            if not name.startswith("red."):
-                return logging.getLogger(f"red.{self.repo_name}.{name}")
-            else:
-                return logging.getLogger(f"{name}")
+        self.cog.log = logging.getLogger(f"red.{self.repo_name}.{self.cog.qualified_name}")
+
+        __log = partial(logging.Logger._log, self.cog.log)
+
+        def _log(level, msg, args, exc_info=None, extra=None, stack_info=False, stacklevel=1):
+            if self.cog is not None:
+                if not hasattr(self.cog, "logs") or not isinstance(self.cog.logs, typing.Dict):
+                    self.cog.logs: typing.Dict[typing.Union[str, int], typing.Dict] = {}
+                from logging import CRITICAL, DEBUG, ERROR, FATAL, INFO, WARN, WARNING
+
+                VERBOSE = DEBUG - 3
+                TRACE = DEBUG - 5
+                levels = {
+                    CRITICAL: "CRITICAL",
+                    DEBUG: "DEBUG",
+                    ERROR: "ERROR",
+                    FATAL: "FATAL",
+                    INFO: "INFO",
+                    WARN: "WARN",
+                    WARNING: "WARNING",
+                    VERBOSE: "VERBOSE",
+                    TRACE: "TRACE",
+                }
+                _level = levels.get(level, str(level))
+                if _level not in self.cog.logs:
+                    self.cog.logs[_level] = []
+                self.cog.logs[_level].append(
+                    {
+                        "time": datetime.datetime.now(),
+                        "level": level,
+                        "message": msg,
+                        "args": args,
+                        "exc_info": exc_info,
+                        "levelname": _level,
+                    }
+                )
+            __log(
+                level=level,
+                msg=msg,
+                args=args,
+                exc_info=exc_info,
+                extra=extra,
+                stack_info=stack_info,
+                stacklevel=stacklevel,
+            )
+
+        setattr(self.cog.log, "_log", _log)
+
+        # logging to a log file.
+        # (File is automatically created by the module, if the parent foler exists.)
+        try:
+            cog_path = cog_data_path(cog_instance=self.cog, raw_name=self.cog.qualified_name)
+            formatter = logging.Formatter(
+                "[{asctime}] {levelname} [{name}] {message}",
+                datefmt="%Y-%m-%d %H:%M:%S",
+                style="{",
+            )
+            if cog_path.exists():
+                file_handler = RotatingFileHandler(
+                    stem=self.cog.qualified_name,
+                    directory=cog_path,
+                    maxBytes=1_000_0,
+                    backupCount=0,
+                    encoding="utf-8",
+                )
+                # file_handler.doRollover()
+                file_handler.setLevel(logging.DEBUG)
+                file_handler.setFormatter(formatter)
+                self.cog.log.addHandler(file_handler)
+        except Exception as e:
+            self.cog.log.debug("Error when initiating the logger in a separate file.", exc_info=e)
+        return self.cog.log
 
     def close_logger(self) -> None:
         """
@@ -389,11 +384,7 @@ class CogsUtils(commands.Cog):
     ) -> typing.Tuple[int, float, str]:
         if cog is None:
             cog = self.cog
-        if isinstance(cog, str):
-            cog_name = cog.lower()
-        else:
-            cog_name = cog.qualified_name.lower()
-
+        cog_name = cog.lower() if isinstance(cog, str) else cog.qualified_name.lower()
         downloader = self.bot.get_cog("Downloader")
         if downloader is None:
             raise self.DownloaderNotLoaded("The Downloader cog is not loaded.")
@@ -424,7 +415,7 @@ class CogsUtils(commands.Cog):
             cog_name=cog_name,
         )
         p = await repo._run(git_command)
-        if not p.returncode == 0:
+        if p.returncode != 0:
             raise asyncio.IncompleteReadError(
                 "No results could be retrieved from the git command.", None
             )
@@ -440,7 +431,7 @@ class CogsUtils(commands.Cog):
                 "git -C {path} log HEAD -1 {cog_name}", path=repo.folder_path, cog_name=cog_name
             )
             p = await repo._run(git_command)
-            if not p.returncode == 0:
+            if p.returncode != 0:
                 raise asyncio.IncompleteReadError(
                     "No results could be retrieved from the git command.", None
                 )
@@ -456,11 +447,7 @@ class CogsUtils(commands.Cog):
     ) -> typing.Tuple[bool, str, str]:
         if cog is None:
             cog = self.cog
-        if isinstance(cog, str):
-            cog_name = cog.lower()
-        else:
-            cog_name = cog.qualified_name.lower()
-
+        cog_name = cog.lower() if isinstance(cog, str) else cog.qualified_name.lower()
         if repo_url is None:
             downloader = self.bot.get_cog("Downloader")
             if downloader is None:
@@ -555,9 +542,13 @@ class CogsUtils(commands.Cog):
     async def add_hybrid_commands(self, cog: typing.Optional[commands.Cog] = None) -> None:
         if cog is None:
             cog = self.cog
-        if cog.qualified_name == "Medicat":
-            if hasattr(cog, "CC_added"):
-                await cog.CC_added.wait()
+        if cog.qualified_name == "Medicat" and hasattr(cog, "CC_added"):
+            await cog.CC_added.wait()
+        # For new `[p]slash list` in Flame's PR.
+        # for _object in cog.walk_commands():
+        #     if isinstance(_object, commands.HybridCommand):
+        #         if _object.app_command is not None:
+        #             _object.app_command.description = _object.app_command.description[:200]
         # await self.remove_hybrid_commands(cog=cog)
         AAA3A_utils = self.bot.get_cog("AAA3A_utils")
         if AAA3A_utils is not None:
@@ -565,17 +556,16 @@ class CogsUtils(commands.Cog):
         else:
             ignored_commands = []
         for _object in cog.walk_commands():
-            if getattr(_object, "app_command", None) is not None:
+            if getattr(_object, "app_command", None) is not None and getattr(_object, "app_command", None) is not discord.utils.MISSING:
                 continue
             if getattr(_object, "no_slash", False):
                 continue
             if _object.parent is None:
                 if _object.qualified_name in ignored_commands:
                     continue
-            else:
-                if _object.parents[0].qualified_name in ignored_commands:
-                    continue
-            if isinstance(_object, discord.ext.commands.HybridGroup):
+            elif _object.parents[0].qualified_name in ignored_commands:
+                continue
+            if isinstance(_object, commands.HybridGroup):
                 _object.with_app_command = True
                 guild_ids = getattr(
                     _object.callback, "__discord_app_commands_default_guilds__", None
@@ -603,7 +593,7 @@ class CogsUtils(commands.Cog):
                 )
                 _object.app_command.module = _object.module
                 _object.app_command.description = _object.app_command.description[:100]
-            elif isinstance(_object, discord.ext.commands.HybridCommand):
+            elif isinstance(_object, commands.HybridCommand):
                 _object.with_app_command = True
                 _object.app_command = discord.ext.commands.hybrid.HybridAppCommand(_object)
                 _object.app_command.description = _object.app_command.description[:100]
@@ -705,10 +695,7 @@ class CogsUtils(commands.Cog):
                     new_config_all[base_group] = new_config._defaults.get(base_group, None)
                 if new_config_all[base_group] is None:
                     del new_config_all[base_group]
-            if (
-                old_config_all == old_config._defaults
-                or not new_config_all == new_config._defaults
-            ):
+            if old_config_all == old_config._defaults or new_config_all != new_config._defaults:
                 return False
             for base_group in [
                 old_config.GLOBAL,
@@ -772,11 +759,17 @@ class CogsUtils(commands.Cog):
         """
         check_owner = True
         reactions = ["✅", "✖️"]
-        if (way == "buttons" or way == "dropdown") and not self.is_dpy2:
+        if way in ["buttons", "dropdown"] and not self.is_dpy2:
             way = "reactions"
 
         if way == "buttons":
-            return await ConfirmationAskView(ctx=ctx, timeout=timeout, timeout_message=timeout_message, delete_message=delete_message, members=members_authored).start(*args, **kwargs)
+            return await ConfirmationAskView(
+                ctx=ctx,
+                timeout=timeout,
+                timeout_message=timeout_message,
+                delete_message=delete_message,
+                members=members_authored,
+            ).start(*args, **kwargs)
 
         elif way == "reactions":
             message = await ctx.send(*args, **kwargs)
@@ -832,6 +825,7 @@ class CogsUtils(commands.Cog):
                         and msg.channel == ctx.channel
                         and msg.content in ("yes", "y", "no", "n")
                     )
+
             try:
                 end_reaction = False
                 msg = await ctx.bot.wait_for("message", timeout=timeout, check=check)
@@ -959,13 +953,16 @@ class CogsUtils(commands.Cog):
         """
         Create a discord.Webhook object. It tries to retrieve an existing webhook created by the bot or to create it itself.
         """
-        hook = None
-        for webhook in await channel.webhooks():
-            if webhook.user.id == self.bot.user.id:
-                hook = webhook
-                break
+        hook = next(
+            (
+                webhook
+                for webhook in await channel.webhooks()
+                if webhook.user.id == self.bot.user.id
+            ),
+            None,
+        )
         if hook is None:
-            hook = await channel.create_webhook(name="red_bot_hook_" + str(channel.id))
+            hook = await channel.create_webhook(name=f"red_bot_hook_{str(channel.id)}")
         return hook
 
     def get_embed(
@@ -999,8 +996,7 @@ class CogsUtils(commands.Cog):
                 )
         except Exception as e:
             raise commands.BadArgument(f"An error has occurred.\n{e}).")
-        back = {"embed": embed, "content": content}
-        return back
+        return {"embed": embed, "content": content}
 
     def datetime_to_timestamp(
         self,
@@ -1045,19 +1041,18 @@ class CogsUtils(commands.Cog):
             return True
         permissions = channel.permissions_for(user)
         if isinstance(check, typing.List):
-            new_check = {}
-            for p in check:
-                new_check[p] = True
+            new_check = {p: True for p in check}
             check = new_check
-        for p in check:
-            if getattr(permissions, f"{p}", None):
-                if check[p]:
-                    if not getattr(permissions, f"{p}"):
-                        return False
-                else:
-                    if getattr(permissions, f"{p}"):
-                        return False
-        return True
+        return not any(
+            getattr(permissions, f"{p}", None)
+            and (
+                check[p]
+                and not getattr(permissions, f"{p}")
+                or not check[p]
+                and getattr(permissions, f"{p}")
+            )
+            for p in check
+        )
 
     def create_loop(
         self,
@@ -1067,7 +1062,7 @@ class CogsUtils(commands.Cog):
         hours: typing.Optional[int] = 0,
         minutes: typing.Optional[int] = 0,
         seconds: typing.Optional[int] = 0,
-        function_kwargs: typing.Optional[typing.Dict] = {},
+        function_kwargs: typing.Optional[typing.Dict] = None,
         wait_raw: typing.Optional[bool] = False,
         limit_count: typing.Optional[int] = None,
         limit_date: typing.Optional[datetime.datetime] = None,
@@ -1076,6 +1071,8 @@ class CogsUtils(commands.Cog):
         """
         Create a loop like Loop, but with default values and loop object recording functionality.
         """
+        if function_kwargs is None:
+            function_kwargs = {}
         if name is None:
             name = f"{self.cog.qualified_name}"
         if (
@@ -1112,25 +1109,19 @@ class CogsUtils(commands.Cog):
         for cog in self.bot.cogs.values():
             if cog.qualified_name in ["CogGuide"]:
                 continue
-            if hasattr(cog, "cogsutils"):
-                if getattr(cog.cogsutils, "repo_name", None) == "AAA3A-cogs":
-                    if (
-                        f"{cog.qualified_name}" not in cogs
-                        or cogs[f"{cog.qualified_name}"] is None
-                    ):
-                        cogs[f"{cog.qualified_name}"] = cog
+            if (
+                hasattr(cog, "cogsutils")
+                and getattr(cog.cogsutils, "repo_name", None) == "AAA3A-cogs"
+                and (f"{cog.qualified_name}" not in cogs or cogs[f"{cog.qualified_name}"] is None)
+            ):
+                cogs[f"{cog.qualified_name}"] = cog
         return cogs
 
     def at_least_one_cog_loaded(self) -> bool:
         """
         Return True if at least one cog of all my cogs is loaded.
         """
-        at_least_one_cog_loaded = False
-        for object in self.get_all_repo_cogs_objects().values():
-            if object is not None:
-                at_least_one_cog_loaded = True
-                break
-        return at_least_one_cog_loaded
+        return any(object is not None for object in self.get_all_repo_cogs_objects().values())
 
     def add_all_dev_env_values(self) -> None:
         """
@@ -1147,37 +1138,36 @@ class CogsUtils(commands.Cog):
     def generate_key(
         self,
         number: typing.Optional[int] = 10,
-        existing_keys: typing.Optional[typing.Union[typing.List, typing.Set]] = [],
-        strings_used: typing.Optional[typing.List] = {
-            "ascii_lowercase": True,
-            "ascii_uppercase": False,
-            "digits": True,
-            "punctuation": False,
-            "others": [],
-        },
+        existing_keys: typing.Optional[typing.Union[typing.List, typing.Set]] = None,
+        strings_used: typing.Optional[typing.List] = None,
     ) -> str:
         """
         Generate a secret key, with the choice of characters, the number of characters and a list of existing keys.
         """
+        if existing_keys is None:
+            existing_keys = []
+        if strings_used is None:
+            strings_used = {
+                "ascii_lowercase": True,
+                "ascii_uppercase": False,
+                "digits": True,
+                "punctuation": False,
+                "others": [],
+            }
         strings = []
-        if "ascii_lowercase" in strings_used:
-            if strings_used["ascii_lowercase"]:
-                strings += string.ascii_lowercase
-        if "ascii_uppercase" in strings_used:
-            if strings_used["ascii_uppercase"]:
-                strings += string.ascii_uppercase
-        if "digits" in strings_used:
-            if strings_used["digits"]:
-                strings += string.digits
-        if "punctuation" in strings_used:
-            if strings_used["punctuation"]:
-                strings += string.punctuation
-        if "others" in strings_used:
-            if isinstance(strings_used["others"], typing.List):
-                strings += strings_used["others"]
+        if "ascii_lowercase" in strings_used and strings_used["ascii_lowercase"]:
+            strings += string.ascii_lowercase
+        if "ascii_uppercase" in strings_used and strings_used["ascii_uppercase"]:
+            strings += string.ascii_uppercase
+        if "digits" in strings_used and strings_used["digits"]:
+            strings += string.digits
+        if "punctuation" in strings_used and strings_used["punctuation"]:
+            strings += string.punctuation
+        if "others" in strings_used and isinstance(strings_used["others"], typing.List):
+            strings += strings_used["others"]
         while True:
             # This probably won't turn into an endless loop.
-            key = "".join(choice(strings) for x in range(number))
+            key = "".join(choice(strings) for _ in range(number))
             if key not in existing_keys:
                 return key
 
@@ -1209,16 +1199,19 @@ class CogsUtils(commands.Cog):
                 ):
                     raise discord.ext.commands.BadArgument()
                 # check whether the cog isn't disabled
-                if self.cog is not None:
-                    if await self.bot.cog_disabled_in_guild(self.cog, output.guild):
-                        raise discord.ext.commands.BadArgument()
+                if self.cog is not None and await self.bot.cog_disabled_in_guild(
+                    self.cog, output.guild
+                ):
+                    raise discord.ext.commands.BadArgument()
                 # check whether the channel isn't on the ignore list
                 if not await self.bot.ignored_channel_or_guild(output):
                     raise discord.ext.commands.BadArgument()
                 # check whether the message author isn't on allowlist/blocklist
-                if allowed_by_whitelist_blacklist:
-                    if not await self.bot.allowed_by_whitelist_blacklist(output.author):
-                        raise discord.ext.commands.BadArgument()
+                if (
+                    allowed_by_whitelist_blacklist
+                    and not await self.bot.allowed_by_whitelist_blacklist(output.author)
+                ):
+                    raise discord.ext.commands.BadArgument()
             if isinstance(output, discord.RawReactionActionEvent):
                 # check whether the message was sent in a guild
                 output.guild = self.bot.get_guild(output.guild_id)
@@ -1239,41 +1232,46 @@ class CogsUtils(commands.Cog):
                 ):
                     raise discord.ext.commands.BadArgument()
                 # check whether the cog isn't disabled
-                if self.cog is not None:
-                    if await self.bot.cog_disabled_in_guild(self.cog, output.guild):
-                        raise discord.ext.commands.BadArgument()
+                if self.cog is not None and await self.bot.cog_disabled_in_guild(
+                    self.cog, output.guild
+                ):
+                    raise discord.ext.commands.BadArgument()
                 # check whether the channel isn't on the ignore list
                 if not await self.bot.ignored_channel_or_guild(output):
                     raise discord.ext.commands.BadArgument()
                 # check whether the message author isn't on allowlist/blocklist
-                if allowed_by_whitelist_blacklist:
-                    if not await self.bot.allowed_by_whitelist_blacklist(output.author):
-                        raise discord.ext.commands.BadArgument()
-            if self.is_dpy2:
-                if isinstance(output, discord.Interaction):
-                    # check whether the message was sent in a guild
-                    if output.guild is None:
-                        raise discord.ext.commands.BadArgument()
-                    # check whether the message author isn't a bot
-                    if output.author is None:
-                        raise discord.ext.commands.BadArgument()
-                    if output.author.bot:
-                        raise discord.ext.commands.BadArgument()
-                    # check whether the bot can send message in the given channel
-                    if output.channel is None:
-                        raise discord.ext.commands.BadArgument()
-                    if not self.check_permissions_for(
-                        channel=output.channel, user=output.guild.me, check=["send_messages"]
-                    ):
-                        raise discord.ext.commands.BadArgument()
+                if (
+                    allowed_by_whitelist_blacklist
+                    and not await self.bot.allowed_by_whitelist_blacklist(output.author)
+                ):
+                    raise discord.ext.commands.BadArgument()
+            if self.is_dpy2 and isinstance(output, discord.Interaction):
+                # check whether the message was sent in a guild
+                if output.guild is None:
+                    raise discord.ext.commands.BadArgument()
+                # check whether the message author isn't a bot
+                if output.author is None:
+                    raise discord.ext.commands.BadArgument()
+                if output.author.bot:
+                    raise discord.ext.commands.BadArgument()
+                # check whether the bot can send message in the given channel
+                if output.channel is None:
+                    raise discord.ext.commands.BadArgument()
+                if not self.check_permissions_for(
+                    channel=output.channel, user=output.guild.me, check=["send_messages"]
+                ):
+                    raise discord.ext.commands.BadArgument()
                     # check whether the cog isn't disabled
-                    if self.cog is not None:
-                        if await self.bot.cog_disabled_in_guild(self.cog, output.guild):
-                            raise discord.ext.commands.BadArgument()
+                if self.cog is not None and await self.bot.cog_disabled_in_guild(
+                    self.cog, output.guild
+                ):
+                    raise discord.ext.commands.BadArgument()
                     # check whether the message author isn't on allowlist/blocklist
-                    if allowed_by_whitelist_blacklist:
-                        if not await self.bot.allowed_by_whitelist_blacklist(output.author):
-                            raise discord.ext.commands.BadArgument()
+                if (
+                    allowed_by_whitelist_blacklist
+                    and not await self.bot.allowed_by_whitelist_blacklist(output.author)
+                ):
+                    raise discord.ext.commands.BadArgument()
         except commands.BadArgument:
             return False
         return True

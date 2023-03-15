@@ -90,7 +90,18 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             force_registration=True,
             cog_name=self.qualified_name,
         )
-        self.AAA3A_utils_global: typing.Dict[str, typing.Union[typing.List[str], typing.Dict[str, typing.Dict[str, typing.Union[int, bool, typing.Optional[str], typing.List[str]]]]]] = {
+        self.AAA3A_utils_global: typing.Dict[
+            str,
+            typing.Union[
+                typing.List[str],
+                typing.Dict[
+                    str,
+                    typing.Dict[
+                        str, typing.Union[int, bool, typing.Optional[str], typing.List[str]]
+                    ],
+                ],
+            ],
+        ] = {
             "cogs_with_slash": [],
             "ignored_slash_commands": [],
             "sentry": {},
@@ -100,6 +111,8 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         self.cogsutils = CogsUtils(cog=self)
         self.sentry: SentryHelper = None
         self.telemetrywithsentry.__is_dev__: bool = True
+
+        self.AAA3A_utils.app_command.module = ".".join(self.AAA3A_utils.app_command.module.split(".")[1:])  # Add `AAA3A_utils` module to new `[p]slash list` in Flame's PR.
 
     async def cog_load(self) -> None:
         if self.sentry is None:
@@ -123,7 +136,9 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
     async def addslash(self, ctx: commands.Context, cogs: commands.Greedy[StrConverter]) -> None:
         """Add slash commands for a cog from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
-            raise commands.UserFeedbackCheckFailure(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
+            raise commands.UserFeedbackCheckFailure(
+                _("Slash commands do not work under dpy1. Wait for Red 3.5.")
+            )
         async with ctx.typing():
             result = {
                 "not_installed_or_loaded": [],
@@ -163,19 +178,19 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             await ctx.tick()
         else:
             message = ""
-            if not result["not_installed_or_loaded"] == []:
+            if result["not_installed_or_loaded"] != []:
                 items = result["not_installed_or_loaded"]
                 s = "s" if len(items) > 1 else ""
                 message += f"\n{bold(f'Cog{s} not installed or loaded')}: {humanize_list(items)}"
-            if not result["not_from_AAA3A-cogs"] == []:
+            if result["not_from_AAA3A-cogs"] != []:
                 items = result["not_from_AAA3A-cogs"]
                 s = "s" if len(items) > 1 else ""
                 message += f"\n{bold(f'Cog{s} not from AAA3A-cogs')}: {humanize_list(items)}"
-            if not result["already"] == []:
+            if result["already"] != []:
                 items = result["already"]
                 s = "s" if len(items) > 1 else ""
                 message += f"\n{bold(f'Cog{s} with slash commands already loaded')} (If they don't appear in Discord, you may have forgotten to sync.): {humanize_list(items)}"
-            if not result["failed"] == []:
+            if result["failed"] != []:
                 items = result["failed"]
                 s = "s" if len(items) > 1 else ""
                 message += (
@@ -190,8 +205,9 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
     ) -> None:
         """Remove slash commands for a cog from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
-            raise commands.UserFeedbackCheckFailure(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
-            return
+            raise commands.UserFeedbackCheckFailure(
+                _("Slash commands do not work under dpy1. Wait for Red 3.5.")
+            )
         async with ctx.typing():
             result = {
                 "not_installed_or_loaded": [],
@@ -230,19 +246,19 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             await ctx.tick()
         else:
             message = ""
-            if not result["not_installed_or_loaded"] == []:
+            if result["not_installed_or_loaded"] != []:
                 items = result["not_installed_or_loaded"]
                 s = "s" if len(items) > 1 else ""
                 message += f"\n{bold(f'Cog{s} not installed or loaded')}: {humanize_list(items)}"
-            if not result["not_from_AAA3A-cogs"] == []:
+            if result["not_from_AAA3A-cogs"] != []:
                 items = result["not_from_AAA3A-cogs"]
                 s = "s" if len(items) > 1 else ""
                 message += f"\n{bold(f'Cog{s} not from AAA3A-cogs')}: {humanize_list(items)}"
-            if not result["already"] == []:
+            if result["already"] != []:
                 items = result["already"]
                 s = "s" if len(items) > 1 else ""
                 message += f"\n{bold(f'Cog{s} with slash commands already unloaded')} (If they appear in Discord, you may have forgotten to sync.): {humanize_list(items)}"
-            if not result["failed"] == []:
+            if result["failed"] != []:
                 items = result["failed"]
                 s = "s" if len(items) > 1 else ""
                 message += (
@@ -257,7 +273,9 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
     ) -> None:
         """Add ignored slash commands for a cog from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
-            raise commands.UserFeedbackCheckFailure(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
+            raise commands.UserFeedbackCheckFailure(
+                _("Slash commands do not work under dpy1. Wait for Red 3.5.")
+            )
         async with ctx.typing():
             result = {
                 "not_exist": [],
@@ -294,19 +312,19 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             await ctx.tick()
         else:
             message = ""
-            if not result["not_exist"] == []:
+            if result["not_exist"] != []:
                 items = result["not_exist"]
                 s = "s" if len(items) > 1 else ""
                 message += f"\n{bold(f'Command{s} not existing')}: {humanize_list(items)}"
-            if not result["not_from_AAA3A-cogs"] == []:
+            if result["not_from_AAA3A-cogs"] != []:
                 items = result["not_from_AAA3A-cogs"]
                 s = "s" if len(items) > 1 else ""
                 message += f"\n{bold(f'Command{s} not from AAA3A-cogs')}: {humanize_list(items)}"
-            if not result["not_root_commands"] == []:
+            if result["not_root_commands"] != []:
                 items = result["not_root_commands"]
                 s = "s" if len(items) > 1 else ""
                 message += f"\n{bold(f'Command{s} not in root')} (For technical reasons, sub-commands cannot be ignored.): {humanize_list(items)}"
-            if not result["already"] == []:
+            if result["already"] != []:
                 items = result["already"]
                 s = "s" if len(items) > 1 else ""
                 message += f"\n{bold(f'Command{s} already ignored')} (If they appear in Discord, you may have forgotten to sync.): {humanize_list(items)}"
@@ -319,7 +337,9 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
     ) -> None:
         """Remove ignored slash commands for a cog from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
-            raise commands.UserFeedbackCheckFailure(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
+            raise commands.UserFeedbackCheckFailure(
+                _("Slash commands do not work under dpy1. Wait for Red 3.5.")
+            )
         async with ctx.typing():
             result = {
                 "not_exist": [],
@@ -356,19 +376,19 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             await ctx.tick()
         else:
             message = ""
-            if not result["not_exist"] == []:
+            if result["not_exist"] != []:
                 items = result["not_exist"]
                 s = "s" if len(items) > 1 else ""
                 message += f"\n{bold(f'Command{s} not existing')}: {humanize_list(items)}"
-            if not result["not_from_AAA3A-cogs"] == []:
+            if result["not_from_AAA3A-cogs"] != []:
                 items = result["not_from_AAA3A-cogs"]
                 s = "s" if len(items) > 1 else ""
                 message += f"\n{bold(f'Command{s} not from AAA3A-cogs')}: {humanize_list(items)}"
-            if not result["not_root_commands"] == []:
+            if result["not_root_commands"] != []:
                 items = result["not_root_commands"]
                 s = "s" if len(items) > 1 else ""
                 message += f"\n{bold(f'Command{s} not in root')} (For technical reasons, sub-commands cannot be ignored.): {humanize_list(items)}"
-            if not result["already"] == []:
+            if result["already"] != []:
                 items = result["already"]
                 s = "s" if len(items) > 1 else ""
                 message += f"\n{bold(f'Command{s} already not ignored')} (If they don't appear in Discord, you may have forgotten to add slash commands or sync.): {humanize_list(items)}"
@@ -379,7 +399,9 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
     async def clearslash(self, ctx: commands.Context) -> None:
         """Remove slash commands for all cogs from AAA3A-cogs."""
         if not self.cogsutils.is_dpy2:
-            raise commands.UserFeedbackCheckFailure(_("Slash commands do not work under dpy1. Wait for Red 3.5."))
+            raise commands.UserFeedbackCheckFailure(
+                _("Slash commands do not work under dpy1. Wait for Red 3.5.")
+            )
         config = await self.config.cogs_with_slash()
         for cog in self.cogsutils.get_all_repo_cogs_objects():
             if cog.qualified_name in config:
@@ -407,14 +429,16 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 message += f"\n{_level}: {len(logs)}"
             await ctx.send(box(message, lang="py"))
             return
-        if not level == "all":
-            if cog.logs.get(level, None) is None or cog.logs.get(level, None) == []:
-                raise commands.UserFeedbackCheckFailure(_("This cog does not have any log saved for this level."))
+        if level != "all" and (
+            cog.logs.get(level, None) is None or cog.logs.get(level, None) == []
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _("This cog does not have any log saved for this level.")
+            )
         if level == "all":
             data = []
             for _level in cog.logs:
-                for log in cog.logs[_level]:
-                    data.append(log)
+                data.extend(iter(cog.logs[_level]))
         else:
             data = list(cog.logs.get(level))
         result = []
@@ -451,9 +475,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             raise commands.UserFeedbackCheckFailure(_("This cog is not installed or loaded."))
         if cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
             raise commands.UserFeedbackCheckFailure(_("This cog is not a cog from AAA3A-cogs."))
-        embeds = []
-        for loop in cog.cogsutils.loops.values():
-            embeds.append(loop.get_debug_embed())
+        embeds = [loop.get_debug_embed() for loop in cog.cogsutils.loops.values()]
         await Menu(pages=embeds).start(ctx)
 
     @commands.is_owner()
@@ -489,7 +511,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         await self.config.sentry.sentry_enabled.set(state)
 
     @commands.is_owner()
-    @AAA3A_utils.command(hidden=True)
+    @AAA3A_utils.command()
     async def senderrorwithsentry(self, ctx: commands.Context, error: str) -> None:
         """Send a recent error to the developer of AAA3A's cogs with Sentry (use the code given when the error has been triggered).
 
@@ -506,6 +528,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         )
 
     if discord.version_info.major >= 2:
+
         @commands.is_owner()
         @AAA3A_utils.command()
         async def flags(self, ctx: commands.Context, *, content: str) -> None:
@@ -527,34 +550,60 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                     # if param.kind == param.POSITIONAL_ONLY:
                     context.current_parameter = param
                     params[name] = param
+
                 class FlagsConverter(commands.FlagConverter, prefix="--", delimiter=" "):
                     pass
+
                 for name, param in params.items():
-                    flag = discord.ext.commands.flags.Flag(name=name, attribute=name, aliases=[], annotation=param.annotation, default=param.default if not param.default == inspect._empty else discord.utils.MISSING, max_args=1, override=False)
+                    flag = discord.ext.commands.flags.Flag(
+                        name=name,
+                        attribute=name,
+                        aliases=[],
+                        annotation=param.annotation,
+                        default=param.default
+                        if param.default != inspect._empty
+                        else discord.utils.MISSING,
+                        max_args=1,
+                        override=False,
+                    )
                     FlagsConverter.__commands_flags__[name] = flag
 
                 keys = [re.escape(k) for k in FlagsConverter.__commands_flags__]
                 keys = sorted(keys, key=len, reverse=True)
-                joined = '|'.join(keys)
+                joined = "|".join(keys)
                 prefix = FlagsConverter.__commands_flag_prefix__
                 delimiter = FlagsConverter.__commands_flag_delimiter__
                 regex_flags = re.IGNORECASE
-                pattern = re.compile(f'(({re.escape(prefix)})(?P<flag>{joined}){re.escape(delimiter)})', regex_flags)
+                pattern = re.compile(
+                    f"(({re.escape(prefix)})(?P<flag>{joined}){re.escape(delimiter)})", regex_flags
+                )
                 FlagsConverter.__commands_flag_regex__ = pattern
 
                 converter = FlagsConverter
-                param = discord.ext.commands.parameters.Parameter(name="Flags", kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=converter)
-                result1 = await discord.ext.commands.converter.run_converters(context, converter, context.message.content[len(context.prefix):], param)
+                param = discord.ext.commands.parameters.Parameter(
+                    name="Flags",
+                    kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                    annotation=converter,
+                )
+                result1 = await discord.ext.commands.converter.run_converters(
+                    context, converter, context.message.content[len(context.prefix) :], param
+                )
                 result2 = result1.get_flags()
-                context.kwargs = {name: getattr(result1, name, params[name].default) for name in result2.keys()}
+                context.kwargs = {
+                    name: getattr(result1, name, params[name].default) for name in result2.keys()
+                }
                 if not command.ignore_extra and not view.eof:
-                    raise commands.TooManyArguments('Too many arguments passed to ' + command.qualified_name)
+                    raise commands.TooManyArguments(
+                        f"Too many arguments passed to {command.qualified_name}"
+                    )
 
             # Copied from dpy.
             if not command.enabled:
                 raise commands.DisabledCommand(f"{command.name} command is disabled.")
             if not await self.can_run(context, change_permission_state=True):
-                raise commands.CheckFailure(f"The check functions for command {command.qualified_name} failed.")
+                raise commands.CheckFailure(
+                    f"The check functions for command {command.qualified_name} failed."
+                )
             if command._max_concurrency is not None:
                 await command._max_concurrency.acquire(ctx)
             try:
@@ -592,10 +641,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                 commands.BadArgument,
                 commands.BadBoolArgument,
             )
-            if ctx.cog is not None:
-                cog = ctx.cog.qualified_name
-            else:
-                cog = "None"
+            cog = ctx.cog.qualified_name if ctx.cog is not None else "None"
             if ctx.command is None:
                 return
             if isinstance(error, IGNORED_ERRORS):
@@ -663,7 +709,9 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         if command is not None:
             object_command = ctx.bot.get_command(_commands[0])
             if object_command is None:
-                raise commands.UserFeedbackCheckFailure(_("The command `{command}` does not exist."))
+                raise commands.UserFeedbackCheckFailure(
+                    _("The command `{command}` does not exist.")
+                )
             _commands = [object_command]
         downloader = ctx.bot.get_cog("Downloader")
         if downloader is None:
@@ -682,7 +730,9 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         if repo is not None:
             rp = _repos[0]
             if not isinstance(rp, Repo) and not "AAA3A".lower() in rp.lower():
-                raise commands.UserFeedbackCheckFailure(_("Repo by the name `{rp}` does not exist.").format(rp=rp))
+                raise commands.UserFeedbackCheckFailure(
+                    _("Repo by the name `{rp}` does not exist.").format(rp=rp)
+                )
             if not isinstance(repo, Repo):
                 found = False
                 for r in await downloader.config.installed_cogs():
@@ -691,7 +741,9 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
                         found = True
                         break
                 if not found:
-                    raise commands.UserFeedbackCheckFailure(_("Repo by the name `{rp}` does not exist.").format(rp=rp))
+                    raise commands.UserFeedbackCheckFailure(
+                        _("Repo by the name `{rp}` does not exist.").format(rp=rp)
+                    )
             if check_updates:
                 cogs_to_check, failed = await downloader._get_cogs_to_check(repos={_repos[0]})
                 cogs_to_update, libs_to_update = await downloader._available_updates(cogs_to_check)

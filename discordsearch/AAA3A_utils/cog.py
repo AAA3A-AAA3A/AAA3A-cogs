@@ -47,7 +47,7 @@ class Cog:
                 continue
             if attr in specials:
                 continue
-            if not getattr(getattr(cog, attr, None), "__func__", "None1") == getattr(
+            if getattr(getattr(cog, attr, None), "__func__", "None1") != getattr(
                 commands.Cog, attr, "None2"
             ):
                 continue
@@ -70,9 +70,7 @@ class Cog:
     ) -> str:
         text = text.replace("        ", "")
         context = super(type(ctx.command), ctx.command).format_text_for_context(ctx, text)
-        if shortdoc:
-            return context
-        return self.get_formatted_text(context)
+        return context if shortdoc else self.get_formatted_text(context)
 
     def format_shortdoc_for_context(self, ctx: commands.Context) -> str:
         sh = super(type(ctx.command), ctx.command).short_doc
@@ -125,9 +123,8 @@ class Cog:
             raise commands.CheckFailure("Confirmation timed out.")
         if result:
             return True
-        else:
-            await ctx.send("Aborting.")
-            raise commands.CheckFailure("User choose no.")
+        await ctx.send("Aborting.")
+        raise commands.CheckFailure("User choose no.")
 
     async def cog_before_invoke(self, ctx: commands.Context) -> None:
         if self.cog is None:
@@ -172,13 +169,17 @@ class Cog:
     async def cog_after_invoke(self, ctx: commands.Context) -> None:
         if self.cog is None:
             return
-        if isinstance(ctx.command, commands.Group):
-            if ctx.invoked_subcommand is not None or not ctx.command.invoke_without_command:
-                return
+        if isinstance(ctx.command, commands.Group) and (
+            ctx.invoked_subcommand is not None or not ctx.command.invoke_without_command
+        ):
+            return
         context = await Context.from_context(ctx)
-        if hasattr(context, "_typing"):
-            if hasattr(context._typing, "task") and hasattr(context._typing.task, "cancel"):
-                context._typing.task.cancel()
+        if (
+            hasattr(context, "_typing")
+            and hasattr(context._typing, "task")
+            and hasattr(context._typing.task, "cancel")
+        ):
+            context._typing.task.cancel()
         if not ctx.command_failed:
             await context.tick()
         else:
@@ -191,11 +192,7 @@ class Cog:
         if self.cog is None or not hasattr(self.cog, "cogsutils"):
             await ctx.bot.on_command_error(ctx=ctx, error=error, unhandled_by_cog=True)
             return
-        no_sentry = False
         AAA3A_utils = ctx.bot.get_cog("AAA3A_utils")
-        if AAA3A_utils is not None:
-            if getattr(AAA3A_utils, "sentry", None) is None:
-                no_sentry = True
         is_command_error = False
         if isinstance(error, commands.CommandInvokeError):
             is_command_error = True
@@ -210,6 +207,7 @@ class Cog:
                 if e is not None and isinstance(e, commands.BotMissingPermissions):
                     error = e
             uuid = uuid4().hex
+            no_sentry = AAA3A_utils is not None and getattr(AAA3A_utils, "sentry", None) is None
             if not no_sentry:
                 AAA3A_utils.sentry.last_errors[uuid] = {"ctx": ctx, "error": error}
             if self.cog.cogsutils.is_dpy2 and isinstance(
@@ -483,7 +481,7 @@ class Cog:
         _permissions = end_points[key]
         permissions = {}
         for permission in _permissions:
-            if not permission.lower() in discord.Permissions.VALID_FLAGS:
+            if permission.lower() not in discord.Permissions.VALID_FLAGS:
                 continue
             if getattr(
                 (
@@ -495,6 +493,8 @@ class Cog:
             ):
                 continue
             permissions[permission.lower()] = True
-        if len(permissions) == 0:
-            return None
-        return commands.BotMissingPermissions(discord.Permissions(**permissions))
+        return (
+            commands.BotMissingPermissions(discord.Permissions(**permissions))
+            if permissions
+            else None
+        )

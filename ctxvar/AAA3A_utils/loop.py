@@ -55,13 +55,15 @@ class Loop:
         hours: typing.Optional[int] = 0,
         minutes: typing.Optional[int] = 0,
         seconds: typing.Optional[int] = 0,
-        function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = {},
+        function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = None,
         wait_raw: typing.Optional[bool] = False,
         limit_count: typing.Optional[int] = None,
         limit_date: typing.Optional[datetime.datetime] = None,
         limit_exception: typing.Optional[int] = None,
         start_now: typing.Optional[bool] = True,
     ) -> None:
+        if function_kwargs is None:
+            function_kwargs = {}
         self.cogsutils = cogsutils
 
         self.name: str = name
@@ -76,7 +78,7 @@ class Loop:
         self.limit_exception: int = limit_exception
         self.stop_manually: bool = False
 
-        self.start_datetime: datetime.datetime = datetime.datetime.utcnow()
+        self.start_datetime: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)
         self.expected_interval = datetime.timedelta(seconds=self.interval)
         self.last_iteration: typing.Optional[datetime.datetime] = None
         self.next_iteration: typing.Optional[datetime.datetime] = None
@@ -98,16 +100,15 @@ class Loop:
 
     async def wait_until_iteration(self) -> None:
         """Sleep during the raw interval."""
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.timezone.utc)
         time = now.timestamp()
         time = math.ceil(time / self.interval) * self.interval
         next_iteration = datetime.datetime.fromtimestamp(time) - now
         seconds_to_sleep = (next_iteration).total_seconds()
-        if not self.interval <= 60:
-            if hasattr(self.cogsutils.cog, "log"):
-                self.cogsutils.cog.log.debug(
-                    f"Sleeping for {seconds_to_sleep} seconds until {self.name} loop next iteration ({self.iteration_count + 1})..."
-                )
+        if self.interval > 60 and hasattr(self.cogsutils.cog, "log"):
+            self.cogsutils.cog.log.debug(
+                f"Sleeping for {seconds_to_sleep} seconds until {self.name} loop next iteration ({self.iteration_count + 1})..."
+            )
         await asyncio.sleep(seconds_to_sleep)
 
     async def loop(self) -> None:
@@ -128,11 +129,10 @@ class Loop:
                         self.cogsutils.cog.log.debug(
                             f"{self.name} initial iteration finished in {total}s ({self.iteration_count})."
                         )
-                    else:
-                        if not self.interval <= 60:
-                            self.cogsutils.cog.log.debug(
-                                f"{self.name} iteration finished in {total}s ({self.iteration_count})."
-                            )
+                    elif self.interval > 60:
+                        self.cogsutils.cog.log.debug(
+                            f"{self.name} iteration finished in {total}s ({self.iteration_count})."
+                        )
             except Exception as e:
                 if hasattr(self.cogsutils.cog, "log"):
                     if self.iteration_count == 1:
@@ -163,7 +163,7 @@ class Loop:
                     self.next_iteration = self.next_iteration.replace(
                         microsecond=0
                     )  # ensure further iterations are on the second
-                if not self.interval == 0:
+                if self.interval != 0:
                     await self.wait_until_iteration()
             else:
                 await self.sleep_until_next()
@@ -174,29 +174,25 @@ class Loop:
         if self.stop_manually:
             self.stop_all()
             return True
-        if self.limit_count is not None:
-            if self.iteration_count >= self.limit_count:
-                self.stop_all()
-                return True
-        if self.limit_date is not None:
-            if datetime.datetime.timestamp(datetime.datetime.now()) >= datetime.datetime.timestamp(
-                self.limit_date
-            ):
-                self.stop_all()
-                return True
-        if self.limit_exception:
-            if self.iteration_exception >= self.limit_exception:
-                self.stop_all()
-                return True
+        if self.limit_count is not None and self.iteration_count >= self.limit_count:
+            self.stop_all()
+            return True
+        if self.limit_date is not None and datetime.datetime.timestamp(
+            datetime.datetime.now()
+        ) >= datetime.datetime.timestamp(self.limit_date):
+            self.stop_all()
+            return True
+        if self.limit_exception and self.iteration_exception >= self.limit_exception:
+            self.stop_all()
+            return True
         return False
 
     def stop_all(self) -> typing.Any:  # typing_extensions.Self
         self.stop = True
         self.next_iteration = None
         self.task.cancel()
-        if f"{self.name}" in self.cogsutils.loops:
-            if self.cogsutils.loops[f"{self.name}"] == self:
-                del self.cogsutils.loops[f"{self.name}"]
+        if f"{self.name}" in self.cogsutils.loops and self.cogsutils.loops[f"{self.name}"] == self:
+            del self.cogsutils.loops[f"{self.name}"]
         if hasattr(self.cogsutils.cog, "log"):
             self.cogsutils.cog.log.debug(
                 f"{self.name} loop has been stopped after {self.iteration_count} iteration(s)."
@@ -217,7 +213,7 @@ class Loop:
         """
         if self.next_iteration is None:  # not started yet
             return False
-        return self.next_iteration > datetime.datetime.utcnow()
+        return self.next_iteration > datetime.datetime.now(datetime.timezone.utc)
 
     @property
     def until_next(self) -> float:
@@ -229,7 +225,9 @@ class Loop:
         if self.next_iteration is None:  # not started yet
             return 0.0
 
-        raw_until_next = (self.next_iteration - datetime.datetime.utcnow()).total_seconds()
+        raw_until_next = (
+            self.next_iteration - datetime.datetime.now(datetime.timezone.utc)
+        ).total_seconds()
         if raw_until_next > self.expected_interval.total_seconds():  # should never happen
             return self.expected_interval.total_seconds()
         elif raw_until_next > 0.0:
@@ -245,8 +243,8 @@ class Loop:
         """Register an iteration as starting."""
         self.iteration_count += 1
         self.currently_running = True
-        self.last_iteration = datetime.datetime.utcnow()
-        self.next_iteration = datetime.datetime.utcnow() + self.expected_interval
+        self.last_iteration = datetime.datetime.now(datetime.timezone.utc)
+        self.next_iteration = datetime.datetime.now(datetime.timezone.utc) + self.expected_interval
         # this isn't accurate, it will be "corrected" when finishing is called
 
     def iteration_finish(self) -> None:
@@ -264,7 +262,7 @@ class Loop:
 
     def get_debug_embed(self) -> discord.Embed:
         """Get an embed with infomation on this loop."""
-        now: datetime.datetime = datetime.datetime.utcnow()
+        now: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)
 
         raw_table = Table("Key", "Value")
         raw_table.add_row("expected_interval", str(self.expected_interval))

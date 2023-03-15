@@ -1,5 +1,4 @@
 from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -9,8 +8,7 @@ import asyncio
 import re
 
 from redbot.core.utils.chat_formatting import box, pagify, text_to_file
-from redbot.core.utils.menus import start_adding_reactions
-from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
+from redbot.core.utils.predicates import MessagePredicate
 from redbot.vendored.discord.ext import menus
 
 from .views import Reactions

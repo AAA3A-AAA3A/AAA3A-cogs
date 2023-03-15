@@ -1,4 +1,5 @@
 from redbot.core import commands  # isort:skip
+from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -9,6 +10,9 @@ import inspect
 import string
 from functools import partial
 from random import choice
+
+from redbot.core.utils.menus import start_adding_reactions
+from redbot.core.utils.predicates import ReactionPredicate
 
 __all__ = [
     "Buttons",

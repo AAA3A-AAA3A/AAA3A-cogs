@@ -105,6 +105,7 @@ class MemoryGameView(discord.ui.View):
             button2.style = discord.ButtonStyle.success
             button2.label = self._custom_ids[interaction.data["custom_id"]]
             self._message = await self._message.edit(view=self)
+            self._found.append(self._custom_ids[interaction.data["custom_id"]])
             if len(GAME_EMOJIS) != len(self.found):
                 return
             await self.win()

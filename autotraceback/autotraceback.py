@@ -3,6 +3,8 @@ from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
+import typing  # isort:skip
+
 import traceback
 
 from redbot.core.utils.chat_formatting import box, pagify
@@ -41,6 +43,8 @@ class AutoTraceback(commands.Cog):
     def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
+        self.tracebacks: typing.List[str] = []
+
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.is_owner()
@@ -62,14 +66,17 @@ class AutoTraceback(commands.Cog):
         if ctx.bot._last_exception:
             _last_exception = ctx.bot._last_exception.split("\n")
             _last_exception[0] = _last_exception[0] + (
-                ":\n" if not _last_exception[0].endswith(":") else ""
+                "" if _last_exception[0].endswith(":") else ":\n"
             )
             _last_exception = "\n".join(_last_exception)
             _last_exception = self.cogsutils.replace_var_paths(_last_exception)
             if public:
-                pages = []
-                for page in pagify(_last_exception, shorten_by=15, page_length=1985):
-                    pages.append(box(page, lang="py"))
+                pages = [
+                    box(page, lang="py")
+                    for page in pagify(
+                        _last_exception, shorten_by=15, page_length=1985
+                    )
+                ]
                 try:
                     await Menu(pages=pages, timeout=180, delete_after_timeout=False).start(ctx)
                 except discord.HTTPException:
@@ -90,17 +97,19 @@ class AutoTraceback(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError) -> None:
-        if ctx.author.id not in ctx.bot.owner_ids:
-            return
         if isinstance(error, IGNORED_ERRORS):
             return
         traceback_error = "".join(
             traceback.format_exception(type(error), error, error.__traceback__)
         )
-        traceback_error = self.cogsutils.replace_var_paths(traceback_error)
-        pages = []
-        for page in pagify(traceback_error, shorten_by=15, page_length=1985):
-            pages.append(box(page, lang="py"))
+        traceback_error = self.cogsutils.replace_var_paths(traceback_error)*
+        self.tracebacks.append(traceback_error)
+        if ctx.author.id not in ctx.bot.owner_ids:
+            return
+        pages = [
+            box(page, lang="py")
+            for page in pagify(traceback_error, shorten_by=15, page_length=1985)
+        ]
         try:
             await Menu(pages=pages, timeout=180, delete_after_timeout=False).start(ctx)
         except discord.HTTPException:

@@ -144,9 +144,9 @@ SCIENTIST_BUTTONS = [
 
 
 class CalculatorView(discord.ui.View):
-    def __init__(self, ctx: commands.Context, cog: commands.Cog) -> None:
+    def __init__(self, cog: commands.Cog) -> None:
         super().__init__(timeout=60 * 5)
-        self.ctx: commands.Context = ctx
+        self.ctx: commands.Context = None
         self.cog: commands.Cog = cog
 
         self._message: discord.Message = None
@@ -156,6 +156,31 @@ class CalculatorView(discord.ui.View):
 
         self.NORMAL_BUTTONS: typing.List[discord.ui.Button] = []
         self.SCIENTIST_BUTTONS: typing.List[discord.ui.Button] = []
+
+    async def start(self, ctx: commands.Context) -> None:
+        self.ctx: commands.Context = ctx
+        for button in NORMAL_BUTTONS:
+            button = button.copy()
+            if "style" in button:
+                button["style"] = discord.ButtonStyle(button["style"])
+            button = discord.ui.Button(**button)
+            button.callback = self._callback
+            self.NORMAL_BUTTONS.append(button)
+        for button in SCIENTIST_BUTTONS:
+            button = button.copy()
+            if "style" in button:
+                button["style"] = discord.ButtonStyle(button["style"])
+            button = discord.ui.Button(**button)
+            button.callback = self._callback
+            self.SCIENTIST_BUTTONS.append(button)
+        current_buttons = self.NORMAL_BUTTONS if self._is_normal else self.SCIENTIST_BUTTONS
+        self.clear_items()
+        for button in current_buttons:
+            self.add_item(button)
+        self._message = await self.ctx.send(
+            embed=await self.cog.get_embed(self.ctx, self._expression, self._result), view=self
+        )
+        return self._message
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
@@ -168,7 +193,7 @@ class CalculatorView(discord.ui.View):
     async def on_timeout(self) -> None:
         for child in self.children:
             child: discord.ui.Item
-            if not getattr(child, "style", 0) == discord.ButtonStyle.url:
+            if getattr(child, "style", 0) != discord.ButtonStyle.url:
                 child.disabled = True
         try:
             await self._message.edit(view=self)
@@ -176,12 +201,14 @@ class CalculatorView(discord.ui.View):
             pass
 
     async def _callback(self, interaction: discord.Interaction) -> None:
-        if self._result == _("Error!") or self._result == "∞" or self._result == "":
+        if self._result in [_("Error!"), "∞", ""]:
             self._result = None
-        if self._result is not None:
-            if not interaction.data["custom_id"] == "result_button":
-                self._expression = f"{self._result}|"
-                self._result = None
+        if (
+            self._result is not None
+            and interaction.data["custom_id"] != "result_button"
+        ):
+            self._expression = f"{self._result}|"
+            self._result = None
         if (
             self._expression is None
             or self._expression == _("Error!")
@@ -272,27 +299,4 @@ class CalculatorView(discord.ui.View):
             )
         await interaction.response.edit_message(
             embed=await self.cog.get_embed(self.ctx, self._expression, self._result)
-        )
-
-    async def start(self) -> None:
-        for button in NORMAL_BUTTONS:
-            button = button.copy()
-            if "style" in button:
-                button["style"] = discord.ButtonStyle(button["style"])
-            button = discord.ui.Button(**button)
-            button.callback = self._callback
-            self.NORMAL_BUTTONS.append(button)
-        for button in SCIENTIST_BUTTONS:
-            button = button.copy()
-            if "style" in button:
-                button["style"] = discord.ButtonStyle(button["style"])
-            button = discord.ui.Button(**button)
-            button.callback = self._callback
-            self.SCIENTIST_BUTTONS.append(button)
-        current_buttons = self.NORMAL_BUTTONS if self._is_normal else self.SCIENTIST_BUTTONS
-        self.clear_items()
-        for button in current_buttons:
-            self.add_item(button)
-        self._message = await self.ctx.send(
-            embed=await self.cog.get_embed(self.ctx, self._expression, self._result), view=self
         )

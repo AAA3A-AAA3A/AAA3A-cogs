@@ -28,7 +28,7 @@ from .types import Attribute, Attributes, Documentation, Examples, Parameters, S
 
 if CogsUtils().is_dpy2:
     setattr(commands, "Literal", typing.Literal)  # To remove
-    from .view import DocsView
+    from .view import GetDocsView
 
 # Credits:
 # General repo credits.
@@ -255,7 +255,7 @@ class GetDocs(commands.Cog):
             return
         try:
             if self.cogsutils.is_dpy2:
-                await DocsView(ctx, query=query, source=source).start()
+                await GetDocsView(cog=self, query=query, source=source).start(ctx)
             else:
                 results = await source.search(query, limit=25, exclude_std=True)
                 if not results or not results.results:

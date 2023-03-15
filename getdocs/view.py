@@ -33,15 +33,12 @@ class DocsSelect(discord.ui.Select):
         await self._parent._callback(interaction, option)
 
 
-class DocsView(discord.ui.View):
-    def __init__(
-        self,
-        ctx: commands.Context,
-        query: str,
-        source,
-    ) -> None:
+class GetDocsView(discord.ui.View):
+    def __init__(self, cog: commands.Cog, query: str, source) -> None:
         super().__init__(timeout=60 * 5)
-        self.ctx: commands.Context = ctx
+        self.ctx: commands.Context = None
+        self.cog: commands.Cog = cog
+
         self.query: str = query
         self.source = source
 
@@ -50,6 +47,17 @@ class DocsView(discord.ui.View):
         self._mode: typing.Literal[
             "documentation", "parameters", "examples", "attributes"
         ] = "documentation"
+
+    async def start(self, ctx: commands.Context) -> None:
+        self.ctx: commands.Context = ctx
+        results = await self.source.search(self.query, limit=25, exclude_std=True)
+        self.results = results
+        if not results or not results.results:
+            raise RuntimeError("No results found.")
+        select = DocsSelect(self, results)
+        self.add_item(select)
+        await self._update(results.results[0][1])
+        return self._message
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
@@ -307,12 +315,3 @@ class DocsView(discord.ui.View):
             await self._message.delete()
         except discord.HTTPException:
             pass
-
-    async def start(self) -> None:
-        results = await self.source.search(self.query, limit=25, exclude_std=True)
-        self.results = results
-        if not results or not results.results:
-            raise RuntimeError("No results found.")
-        select = DocsSelect(self, results)
-        self.add_item(select)
-        await self._update(results.results[0][1])

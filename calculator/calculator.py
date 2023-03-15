@@ -331,7 +331,7 @@ class Calculator(commands.Cog):
             message = await ctx.send(embed=await self.get_embed(ctx, calculation, result))
             return
         if self.cogsutils.is_dpy2:
-            await CalculatorView(ctx, self).start()
+            await CalculatorView(cog=self).start(ctx)
             return
         expression = None
         result = None

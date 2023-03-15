@@ -31,40 +31,12 @@ def _(untranslated: str) -> str:
     return untranslated
 
 
-def generate_key(
-    number: typing.Optional[int] = 10,
-    existing_keys: typing.Optional[typing.Union[typing.List, typing.Set]] = None,
-    strings_used: typing.Optional[typing.List] = None,
-) -> str:  # same in CogsUtils
-    """
-    Generate a secret key, with the choice of characters, the number of characters and a list of existing keys.
-    """
-    if existing_keys is None:
-        existing_keys = []
-    if strings_used is None:
-        strings_used = {
-            "ascii_lowercase": True,
-            "ascii_uppercase": False,
-            "digits": True,
-            "punctuation": False,
-            "others": [],
-        }
+def generate_key(length: typing.Optional[int] = 10) -> str:  # same in CogsUtils
     strings = []
-    if "ascii_lowercase" in strings_used and strings_used["ascii_lowercase"]:
-        strings += string.ascii_lowercase
-    if "ascii_uppercase" in strings_used and strings_used["ascii_uppercase"]:
-        strings += string.ascii_uppercase
-    if "digits" in strings_used and strings_used["digits"]:
-        strings += string.digits
-    if "punctuation" in strings_used and strings_used["punctuation"]:
-        strings += string.punctuation
-    if "others" in strings_used and isinstance(strings_used["others"], typing.List):
-        strings += strings_used["others"]
-    while True:
-        # This probably won't turn into an endless loop.
-        key = "".join(choice(strings) for _ in range(number))
-        if key not in existing_keys:
-            return key
+    strings += string.ascii_lowercase
+    strings += string.digits
+    key = "".join(choice(strings) for _ in range(length))
+    return key
 
 
 class ConfirmationAskView(discord.ui.View):
@@ -176,7 +148,7 @@ class Buttons(discord.ui.View):
                 button_dict["style"] = 5
                 continue
             if "custom_id" not in button_dict:
-                button_dict["custom_id"] = "CogsUtils" + "_" + generate_key(number=10)
+                button_dict["custom_id"] = "CogsUtils" + "_" + generate_key(length=10)
         self.buttons_dict_instance: typing.Dict[str, typing.Any] = {
             "timeout": timeout,
             "buttons": [b.copy() for b in buttons],
@@ -296,7 +268,7 @@ class Dropdown(discord.ui.View):
         function: typing.Optional[typing.Callable] = None,
         function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = None,
         infinity: typing.Optional[bool] = False,
-        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
+        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(length=10)}",
     ) -> None:
         """label: str, value: str, description: Optional[str], emoji: Optional[Union[str, Emoji, PartialEmoji]], default: bool"""
         if options is None:
@@ -486,7 +458,7 @@ class Select(_Select, discord.ui.Select):
         *,
         options: typing.Optional[typing.List] = None,
         disabled: typing.Optional[bool] = False,
-        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
+        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(length=10)}",
         row: typing.Optional[int] = None,
     ) -> None:
         if options is None:
@@ -511,7 +483,7 @@ class ChannelSelect(_Select, discord.ui.ChannelSelect):
         *,
         channel_types: typing.Optional[discord.ChannelType] = None,
         disabled: typing.Optional[bool] = False,
-        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
+        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(length=10)}",
         row: typing.Optional[int] = None,
     ) -> None:
         if channel_types is None:
@@ -535,7 +507,7 @@ class MentionableSelect(_Select, discord.ui.MentionableSelect):
         max_values: typing.Optional[int] = 1,
         *,
         disabled: typing.Optional[bool] = False,
-        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
+        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(length=10)}",
         row: typing.Optional[int] = None,
     ) -> None:
         super().__init__(
@@ -556,7 +528,7 @@ class RoleSelect(_Select, discord.ui.RoleSelect):
         max_values: typing.Optional[int] = 1,
         *,
         disabled: typing.Optional[bool] = False,
-        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
+        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(length=10)}",
         row: typing.Optional[int] = None,
     ) -> None:
         super().__init__(
@@ -577,7 +549,7 @@ class UserSelect(_Select, discord.ui.UserSelect):
         max_values: typing.Optional[int] = 1,
         *,
         disabled: typing.Optional[bool] = False,
-        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
+        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(length=10)}",
         row: typing.Optional[int] = None,
     ) -> None:
         super().__init__(
@@ -602,7 +574,7 @@ class Modal(discord.ui.Modal):
         check: typing.Optional[typing.Callable] = None,
         function: typing.Optional[typing.Callable] = None,
         function_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = None,
-        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(number=10)}",
+        custom_id: typing.Optional[str] = f"CogsUtils_{generate_key(length=10)}",
     ) -> None:
         """label: str, style: TextStyle, custom_id: str, placeholder: Optional[str], default: Optional[str], required: bool, min_length: Optional[int], max_length: Optional[int], row: Optional[int]"""
         if inputs is None:
@@ -611,7 +583,7 @@ class Modal(discord.ui.Modal):
             function_kwargs = {}
         for input_dict in inputs:
             if "custom_id" not in input_dict:
-                input_dict["custom_id"] = f"CogsUtils_{generate_key(number=10)}"
+                input_dict["custom_id"] = f"CogsUtils_{generate_key(length=10)}"
         self.modal_dict_instance = {
             "title": title,
             "timeout": timeout,

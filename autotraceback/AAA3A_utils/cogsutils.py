@@ -1124,7 +1124,7 @@ class CogsUtils(commands.Cog):
 
     def generate_key(
         self,
-        number: typing.Optional[int] = 10,
+        length: typing.Optional[int] = 10,
         existing_keys: typing.Optional[typing.Union[typing.List, typing.Set]] = None,
         strings_used: typing.Optional[typing.List] = None,
     ) -> str:
@@ -1154,7 +1154,7 @@ class CogsUtils(commands.Cog):
             strings += strings_used["others"]
         while True:
             # This probably won't turn into an endless loop.
-            key = "".join(choice(strings) for _ in range(number))
+            key = "".join(choice(strings) for _ in range(length))
             if key not in existing_keys:
                 return key
 

@@ -19,6 +19,7 @@ __all__ = [
     "RoleSelect",
     "UserSelect",
     "Modal",
+    "Reactions"
 ]
 
 
@@ -703,3 +704,145 @@ class Modal(discord.ui.Modal):
         discord.Interaction, typing.List[discord.ui.TextInput], typing.Optional[typing.Any]
     ]:
         return self.interaction_result, self.inputs_result, self.function_result
+
+
+class Reactions:
+    """Create Reactions easily."""
+
+    def __init__(
+        self,
+        bot: Red,
+        message: discord.Message,
+        remove_reaction: typing.Optional[bool] = True,
+        timeout: typing.Optional[int] = 180,
+        reactions: typing.Optional[typing.List] = None,
+        members: typing.Optional[typing.Iterable[typing.Union[discord.Member, int]]] = None,
+        check: typing.Optional[typing.Callable] = None,
+        function: typing.Optional[typing.Callable] = None,
+        function_args: typing.Optional[typing.Dict] = None,
+        infinity: typing.Optional[bool] = False,
+    ) -> None:
+        if reactions is None:
+            reactions = ["✅", "❌"]
+        if function_args is None:
+            function_args = {}
+        self.reactions_dict_instance: typing.Dict[str, typing.Any] = {
+            "message": message,
+            "timeout": timeout,
+            "reactions": reactions,
+            "members": members,
+            "check": check,
+            "function": function,
+            "function_args": function_args,
+            "infinity": infinity,
+        }
+        self.bot: Red = bot
+        self.message: discord.Message = message
+        self.remove_reaction: bool = remove_reaction
+        self.timeout: int = timeout
+        self.infinity: bool = infinity
+        self.reaction_result: typing.Union[str, discord.PartialEmoji] = None
+        self.user_result: discord.User = None
+        self.function_result: typing.Optional[typing.Any] = None
+        self.members: typing.Optional[typing.List[int]] = (
+            members if members is None else [getattr(member, "id", member) for member in members]
+        )
+        self.check: typing.Optional[typing.Callable] = check
+        self.function: typing.Optional[typing.Callable] = function
+        self.function_args: typing.Optional[typing.Dict[str, typing.Any]] = function_args
+        self.reactions: typing.List[str] = reactions
+        self.r: bool = False
+        self.done: asyncio.Event = asyncio.Event()
+        asyncio.create_task(self.wait())
+
+    def to_dict_cogsutils(
+        self, for_Config: typing.Optional[bool] = False
+    ) -> typing.Dict[str, typing.Any]:
+        reactions_dict_instance = self.reactions_dict_instance
+        if for_Config:
+            reactions_dict_instance["bot"] = None
+            reactions_dict_instance["message"] = None
+            reactions_dict_instance["members"] = None
+            reactions_dict_instance["check"] = None
+            reactions_dict_instance["function"] = None
+        return reactions_dict_instance
+
+    @classmethod
+    def from_dict_cogsutils(
+        cls, reactions_dict_instance: typing.Dict
+    ) -> typing.Any:  # typing_extensions.Self
+        return cls(**reactions_dict_instance)
+
+    async def wait(self) -> None:
+        if not self.r:
+            await start_adding_reactions(self.message, self.reactions)
+            self.r = True
+        predicates = ReactionPredicate.same_context(message=self.message)
+        running = True
+        try:
+            while running:
+                tasks = [asyncio.create_task(self.bot.wait_for("reaction_add", check=predicates))]
+                done, pending = await asyncio.wait(
+                    tasks, timeout=self.timeout, return_when=asyncio.FIRST_COMPLETED
+                )
+                for task in pending:
+                    task.cancel()
+                if len(done) == 0:
+                    raise TimeoutError()
+                reaction, user = done.pop().result()
+                running = await self.reaction_check(reaction, user)
+        except TimeoutError:
+            await self.on_timeout()
+
+    async def reaction_check(self, reaction: discord.Reaction, user: discord.User) -> bool:
+        async def remove_reaction(
+            remove_reaction,
+            message: discord.Message,
+            reaction: discord.Reaction,
+            user: discord.User,
+        ) -> None:
+            if remove_reaction:
+                try:
+                    await message.remove_reaction(emoji=reaction, member=user)
+                except discord.HTTPException:
+                    pass
+
+        if str(reaction.emoji) not in self.reactions:
+            await remove_reaction(self.remove_reaction, self.message, reaction, user)
+            return False
+        if self.members is not None and user.id not in self.members:
+            await remove_reaction(self.remove_reaction, self.message, reaction, user)
+            return False
+        if self.check is not None and not self.check(reaction, user):
+            await remove_reaction(self.remove_reaction, self.message, reaction, user)
+            return False
+        await remove_reaction(self.remove_reaction, self.message, reaction, user)
+        self.reaction_result = reaction
+        self.user_result = user
+        if self.function is not None:
+            self.function_result = await self.function(self, reaction, user, **self.function_args)
+        self.done.set()
+        return self.infinity
+
+    async def on_timeout(self) -> None:
+        self.done.set()
+
+    async def wait_result(
+        self,
+    ) -> typing.Tuple[
+        typing.Union[discord.PartialEmoji, str], discord.User, typing.Optional[typing.Any]
+    ]:
+        self.done = asyncio.Event()
+        await self.done.wait()
+        reaction, user, function_result = self.get_result()
+        if reaction is None:
+            raise TimeoutError()
+        self.reaction_result, self.user_result, self.function_result = None, None, None
+        return reaction, user, function_result
+
+    def get_result(
+        self,
+    ) -> typing.Tuple[
+        typing.Union[discord.PartialEmoji, str], discord.User, typing.Optional[typing.Any]
+    ]:
+        return self.reaction_result, self.user_result, self.function_result

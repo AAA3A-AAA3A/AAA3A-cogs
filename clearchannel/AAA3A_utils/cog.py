@@ -207,7 +207,7 @@ class Cog:
                 if e is not None and isinstance(e, commands.BotMissingPermissions):
                     error = e
             uuid = uuid4().hex
-            no_sentry = AAA3A_utils is not None and getattr(AAA3A_utils, "sentry", None) is None
+            no_sentry = AAA3A_utils is None or getattr(AAA3A_utils, "sentry", None) is None
             if not no_sentry:
                 AAA3A_utils.sentry.last_errors[uuid] = {"ctx": ctx, "error": error}
             if self.cog.cogsutils.is_dpy2 and isinstance(

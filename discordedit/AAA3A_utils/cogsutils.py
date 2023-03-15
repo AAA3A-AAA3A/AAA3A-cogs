@@ -24,11 +24,10 @@ from redbot.logging import RotatingFileHandler
 from .cog import Cog
 from .dev import DevEnv
 from .loop import Loop
-from .menus import Reactions
 from .shared_cog import SharedCog
 
 if discord.version_info.major >= 2:
-    from .views import ConfirmationAskView
+    from .views import ConfirmationAskView, Reactions
 
 __all__ = ["CogsUtils"]
 
@@ -556,7 +555,7 @@ class CogsUtils(commands.Cog):
         else:
             ignored_commands = []
         for _object in cog.walk_commands():
-            if getattr(_object, "app_command", None) is not None and getattr(_object, "app_command", None) is not discord.utils.MISSING:
+            if getattr(_object, "app_command", None):
                 continue
             if getattr(_object, "no_slash", False):
                 continue
@@ -625,7 +624,7 @@ class CogsUtils(commands.Cog):
         if cog is None:
             cog = self.cog
         for _object in cog.walk_commands():
-            if getattr(_object, "app_command", None) is None:
+            if not getattr(_object, "app_command", None):
                 continue
             if getattr(_object, "no_slash", False):
                 continue
@@ -748,7 +747,7 @@ class CogsUtils(commands.Cog):
         timeout: typing.Optional[int] = 60,
         timeout_message: typing.Optional[str] = _("Timed out, please try again"),
         way: typing.Optional[
-            typing.Literal["buttons", "dropdown", "reactions", "message"]
+            typing.Literal["buttons", "reactions", "message"]
         ] = "buttons",
         delete_message: typing.Optional[bool] = True,
         members_authored: typing.Optional[typing.Iterable[discord.Member]] = [],
@@ -759,7 +758,7 @@ class CogsUtils(commands.Cog):
         """
         check_owner = True
         reactions = ["✅", "✖️"]
-        if way in ["buttons", "dropdown"] and not self.is_dpy2:
+        if way == "buttons" and not self.is_dpy2:
             way = "reactions"
 
         if way == "buttons":
@@ -1122,18 +1121,6 @@ class CogsUtils(commands.Cog):
         Return True if at least one cog of all my cogs is loaded.
         """
         return any(object is not None for object in self.get_all_repo_cogs_objects().values())
-
-    def add_all_dev_env_values(self) -> None:
-        """
-        Add values to the development environment for all my loaded cogs. Not really useful anymore, now that my cogs use AAA3A_utils.
-        """
-        cogs = self.get_all_repo_cogs_objects()
-        for cog in cogs:
-            if cogs[cog] is not None:
-                try:
-                    DevEnv.add_dev_env_values(bot=self.bot, cog=cogs[cog], force=True)
-                except Exception:
-                    pass
 
     def generate_key(
         self,

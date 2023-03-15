@@ -3,7 +3,7 @@ from .cogsutils import CogsUtils
 from .context import Context
 from .dev import DevEnv, DevSpace
 from .loop import Loop
-from .menus import Menu, Reactions
+from .menus import Menu
 
 try:
     from .sentry import SentryHelper
@@ -23,6 +23,7 @@ if CogsUtils().is_dpy2:
         RoleSelect,
         Select,
         UserSelect,
+        Reactions
     )  # NOQA
 
 __author__ = "AAA3A"
@@ -37,7 +38,6 @@ __all__ = [
     "Context",
     "Settings",
     "SentryHelper",
-    "Reactions",
     "ConfirmationAskView",
     "Buttons",
     "Dropdown",
@@ -47,4 +47,5 @@ __all__ = [
     "RoleSelect",
     "UserSelect",
     "Modal",
+    "Reactions"
 ]

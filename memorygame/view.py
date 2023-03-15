@@ -70,7 +70,7 @@ class MemoryGameView(discord.ui.View):
     async def on_timeout(self) -> None:
         for child in self.children:
             child: discord.ui.Item
-            if isinstance(child, discord.ui.Button) and child.style != discord.ButtonStyle.url:
+            if isinstance(child, discord.ui.Button) and child.style != discord.ButtonStyle.url and child.custom_id != "​":
                 child.label = self._custom_ids[child.custom_id]
                 child.disabled = True
         try:
@@ -118,9 +118,8 @@ class MemoryGameView(discord.ui.View):
     async def win(self):
         self._selected = None
         for child in self._children:
-            if isinstance(child, discord.ui.Button):
-                if child.custom_id != "":
-                    child.style = discord.ButtonStyle.success
+            if isinstance(child, discord.ui.Button) and child.custom_id != "​":
+                child.style = discord.ButtonStyle.success
         self._end = time.monotonic()
         embed: discord.Embed = discord.Embed(title="Memory Game", color=discord.Color.green())
         embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar)

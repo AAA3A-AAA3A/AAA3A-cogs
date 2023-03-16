@@ -156,8 +156,7 @@ class CogsUtils(commands.Cog):
         # Get cog version.
         try:
             nb_commits, version, commit = await self.get_cog_version()
-            if self.__version__ == 1.0:
-                self.cog.__version__ = version
+            self.cog.__version__ = version
             self.cog.__commit__ = commit
         except (self.DownloaderNotLoaded, asyncio.TimeoutError, ValueError):
             pass

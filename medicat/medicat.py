@@ -699,7 +699,7 @@ class Medicat(Cog):
     @in_medicat_guild()
     @hybrid_group()
     async def medicat(self, ctx: commands.Context) -> None:
-        """Commands of the Medicat cog."""
+        """Commands of Medicat cog."""
         pass
 
     async def add_custom_commands(self) -> None:
@@ -958,7 +958,7 @@ class Medicat(Cog):
     @is_owner_or_AAA3A()
     @medicat.command(hidden=True)
     async def update(self, ctx: commands.Context) -> None:
-        """Update the Medicat cog without the bot owner (with his autorisation)."""
+        """Update Medicat cog directly."""
         try:
             message = copy(ctx.message)
             if ctx.guild is not None:

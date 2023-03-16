@@ -1,0 +1,4 @@
+rule_settings:
+  disable:
+  - use-contextlib-suppress
+  - class-extract-method

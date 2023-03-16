@@ -1,4 +1,4 @@
-from .AAA3A_utils import CogsUtils  # isort:skip
+from .AAA3A_utils import CogsUtils, Settings  # isort:skip
 from redbot.core import Config, commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -43,6 +43,27 @@ class Ip(commands.Cog):
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
+        _settings: typing.Dict[
+            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
+        ] = {
+            "port": {
+                "path": ["port"],
+                "converter": str,
+                "description": "Set the port.",
+            },
+        }
+        self.settings: Settings = Settings(
+            bot=self.bot,
+            cog=self,
+            config=self.config,
+            group=self.config.GLOBAL,
+            settings=_settings,
+            global_path=[],
+            use_profiles_system=False,
+            can_edit=True,
+            commands_group=self.ip_group,
+        )
+
     @commands.is_owner()
     @hybrid_group(name="ip")
     async def ip_group(self, ctx: commands.Context) -> None:
@@ -70,16 +91,3 @@ class Ip(commands.Cog):
         await ctx.send(
             _("The Administrator Panel website is http://{ip}:{port}/.").format(ip=ip, port=port)
         )
-
-    @ip_group.command(name="setportip", aliases=["ipportset"], usage="<port>")
-    async def setportip(self, ctx: commands.Context, *, port) -> None:
-        """Set the port."""
-        config = await self.config.all()
-
-        actual_port = config["port"]
-        if actual_port is port:
-            await ctx.send(_("Port is already set on {port}.").format(port=port))
-            return
-
-        await self.config.port.set(port)
-        await ctx.send(_("Port registered: {port}.").format(port=port))

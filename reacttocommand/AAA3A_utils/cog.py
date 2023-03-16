@@ -11,7 +11,6 @@ from uuid import uuid4
 
 from redbot.core.utils.chat_formatting import humanize_list, inline, warning
 
-from .cogsutils import CogsUtils
 from .context import Context, is_dev
 
 __all__ = ["Cog"]
@@ -80,7 +79,6 @@ class Cog(commands.Cog):
     __authors__: typing.List[str] = ["AAA3A"]
     __version__: float = 1.0
     __commit__: str = ""
-    cogsutils: CogsUtils
     bot: Red
     log: logging.Logger
 

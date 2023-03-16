@@ -32,11 +32,7 @@ from rich.console import Console
 from rich.table import Table
 
 from .menus import Menu
-
-try:
-    from .sentry import SentryHelper
-except ImportError:
-    SentryHelper = None
+from .sentry import SentryHelper
 
 __all__ = ["SharedCog"]
 

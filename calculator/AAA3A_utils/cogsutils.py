@@ -53,28 +53,6 @@ class CogsUtils(commands.Cog):
         else:
             self.cog: typing.Optional[commands.Cog] = None
             self.bot: typing.Optional[Red] = None
-        self.__authors__: typing.List[str] = ["AAA3A"]
-        self.__version__: float = 1.0
-        self.__commit__ = ""
-        if self.cog is not None:
-            if hasattr(self.cog, "__authors__"):
-                if isinstance(self.cog.__authors__, typing.List):
-                    self.__authors__: typing.List[str] = self.cog.__authors__
-                else:
-                    self.__authors__: typing.List[str] = [self.cog.__authors__]
-                del self.cog.__authors__
-            elif hasattr(self.cog, "__author__"):
-                if isinstance(self.cog.__author__, typing.List):
-                    self.__authors__: typing.List[str] = self.cog.__author__
-                else:
-                    self.__authors__: typing.List[str] = [self.cog.__author__]
-                del self.cog.__author__
-            self.cog.__authors__: typing.List[str] = self.__authors__
-            if hasattr(self.cog, "__version__"):
-                if isinstance(self.cog.__version__, typing.List):
-                    self.__version__: float = self.cog.__version__
-                del self.cog.__version__
-            self.cog.__version__: float = self.__version__
         self.loops: typing.Dict[str, Loop] = {}
         self.views: typing.List[getattr(getattr(discord, "ui", None), "View", None)] = []
         self.repo_name: str = "AAA3A-cogs"
@@ -148,13 +126,11 @@ class CogsUtils(commands.Cog):
             bot = self.bot
         if cog is None:
             cog = self.cog
-        await self.change_config_unique_identifier(cog=cog)
-        if hasattr(cog, "cogsutils"):
-            cog.cogsutils.init_logger()
+            await self.change_config_unique_identifier(cog=cog)
+            self._setup()
         value = bot.add_cog(cog)
         if inspect.isawaitable(value):
             await value
-        self._setup()
         if not self.is_dpy2 and hasattr(cog, "cog_load"):
             await cog.cog_load()
         return cog
@@ -166,6 +142,7 @@ class CogsUtils(commands.Cog):
         if self.cog is None:
             return
         setattr(self.cog, "cogsutils", self)
+        # Init logger.
         self.init_logger()
         asyncio.create_task(self._await_setup())
 
@@ -174,7 +151,9 @@ class CogsUtils(commands.Cog):
         Adds dev environment values, slash commands add Views.
         """
         await self.bot.wait_until_red_ready()
+        # Add Dev Env values.
         DevEnv.add_dev_env_values(bot=self.bot, cog=self.cog)
+        # Get cog version.
         try:
             nb_commits, version, commit = await self.get_cog_version()
             if self.__version__ == 1.0:
@@ -182,11 +161,12 @@ class CogsUtils(commands.Cog):
             self.cog.__commit__ = commit
         except (self.DownloaderNotLoaded, asyncio.TimeoutError, ValueError):
             pass
-        except Exception as e:  # really doesn't matter if this fails so fine with debug level
+        except Exception as e:  # Really doesn't matter if this fails, so fine with debug level.
             self.cog.log.debug(
                 f"Something went wrong checking {self.cog.qualified_name} version.",
                 exc_info=e,
             )
+        # Check updates.
         try:
             (
                 to_update,
@@ -194,7 +174,7 @@ class CogsUtils(commands.Cog):
                 online_commit,
                 online_commit_for_each_files,
             ) = await self.to_update()
-            if to_update and False:
+            if to_update:
                 self.cog.log.warning(
                     f"Your {self.cog.qualified_name} cog, from {self.repo_name}, is out of date. You can update your cogs with the '[p]cog update' command in Discord."
                 )
@@ -207,11 +187,12 @@ class CogsUtils(commands.Cog):
             asyncio.LimitOverrunError,
         ):
             pass
-        except Exception as e:  # really doesn't matter if this fails so fine with debug level
+        except Exception as e:  # Really doesn't matter if this fails, so fine with debug level.
             self.cog.log.debug(
                 f"Something went wrong checking if {self.cog.qualified_name} cog is up to date.",
                 exc_info=e,
             )
+        # Add SharedCog.
         if self.cog.qualified_name != "AAA3A_utils":
             try:
                 old_cog = self.bot.get_cog("AAA3A_utils")
@@ -230,9 +211,8 @@ class CogsUtils(commands.Cog):
                     pass
                 await cog.cogsutils.add_cog(bot=self.bot, cog=cog)
             except Exception as e:
-                self.cog.log.debug("Error when adding the AAA3A_utils cog.", exc_info=e)
-        if hasattr(self.cog, "settings") and hasattr(self.cog.settings, "commands_added"):
-            await self.cog.settings.commands_added.wait()
+                self.cog.log.debug("Error when adding AAA3A_utils cog.", exc_info=e)
+        # Add slash commands.
         AAA3A_utils: SharedCog = self.bot.get_cog("AAA3A_utils")
         if AAA3A_utils is not None:
             if await AAA3A_utils.check_if_slash(self.cog):
@@ -249,13 +229,17 @@ class CogsUtils(commands.Cog):
         """
         Removes dev environment values, slash commands and Views.
         """
+        # Close logger.
         self.close_logger()
+        # Remove Dev Env values.
         DevEnv.remove_dev_env_values(bot=self.bot, cog=self.cog)
+        # Stop loops.
         loops = dict(self.loops.items())
         for loop in loops:
             if self.cog.qualified_name == "AAA3A_utils" and loop == "Sentry Helper":
                 continue
             self.loops[loop].stop_all()
+        # Stop views.
         for view in self.views:
             view.stop()
             try:
@@ -266,6 +250,7 @@ class CogsUtils(commands.Cog):
         asyncio.create_task(self._await_end())
 
     async def _await_end(self) -> None:
+        # Remove SharedCog.
         AAA3A_utils: SharedCog = self.bot.get_cog("AAA3A_utils")
         if AAA3A_utils is not None:
             if getattr(AAA3A_utils, "sentry", None) is not None:
@@ -449,10 +434,8 @@ class CogsUtils(commands.Cog):
             downloader = self.bot.get_cog("Downloader")
             if downloader is None:
                 raise self.DownloaderNotLoaded("The cog downloader is not loaded.")
-
             if await self.bot._cog_mgr.find_cog(cog_name) is None:
                 raise ValueError("This cog was not found in any cog path.")
-
             local = discord.utils.get(await downloader.installed_cogs(), name=cog_name)
             if local is None:
                 raise ValueError("This cog is not installed on this bot with Downloader.")
@@ -478,10 +461,10 @@ class CogsUtils(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.get(
                 (
-                    f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents?ref={repo_branch}"
+                    f"https://api.github.com/repos/{repo_owner}/{repo_name}/commits?sha={repo_branch}&path={cog_name}"  # Thanks Jack!
                     if repo_branch
-                    else f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents"
-                ),  # f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}",
+                    else f"https://api.github.com/repos/{repo_owner}/{repo_name}/commits?path={cog_name}"
+                ),  # f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}" & f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents?path={cog_name}"
                 timeout=3,
             ) as r:
                 online = await r.json()
@@ -491,54 +474,45 @@ class CogsUtils(commands.Cog):
             and "API rate limit exceeded" in online["message"]
         ):
             raise asyncio.LimitOverrunError("API rate limit exceeded.", 47)
-        if online is None or not isinstance(online, typing.List):
+        if online is None or not isinstance(online, typing.List) or len(online) == 0:
             raise asyncio.IncompleteReadError(
                 "No results could be retrieved from the git API.", None
             )
-        online_commit_for_each_files = {
-            file["name"]: file["sha"] for file in online if file["type"] in ["dir", "file"]
-        }
-        if cog is None and cog_name is None:
-            return online_commit_for_each_files
+        online_commit = online[0]["sha"]
 
-        if cog_name not in online_commit_for_each_files:
-            raise asyncio.IncompleteReadError(
-                "No results could be retrieved from the git API.", None
-            )
-        online_commit = online_commit_for_each_files[cog_name]
+        async def compare_commit_dates(repo_owner, repo_name, commit_sha1, commit_sha2):
+            async def get_commit_date(repo_owner: str, repo_name: str, commit_sha: str, session: aiohttp.ClientSession):
+                url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/commits/{commit_sha}"
+                headers = {"Accept": "application/vnd.github+json"}
+                async with session.get(url, headers=headers) as response:
+                    data = await response.json()
+                    commit_date = data["commit"]["committer"]["date"]
+                return commit_date
+            async with aiohttp.ClientSession() as session:
+                commit_date1 = await get_commit_date(repo_owner, repo_name, commit_sha1, session)
+                commit_date2 = await get_commit_date(repo_owner, repo_name, commit_sha2, session)
+                if commit_date1 > commit_date2:
+                    # Commit `{commit_sha1}` is newer than commit `{commit_sha2}`.
+                    return False
+                elif commit_date1 < commit_date2:
+                    # Commit `{commit_sha2}` is newer than commit `{commit_sha1}`.
+                    return True
+                else:
+                    # Commits `{commit_sha1}` and `{commit_sha2}`are the same date.
+                    return None
 
-        # async with aiohttp.ClientSession() as session:
-        #     async with session.get(
-        #         f"https://api.github.com/repos/{repo_owner}/{repo_name}/git/refs/heads/{repo_branch}",
-        #         timeout=3,
-        #     ) as r:
-        #         online = await r.json()
-        # if online is None or not isinstance(online, typing.Dict) or "object" not in online or "sha" not in online["object"]:
-        #     raise asyncio.IncompleteReadError("No results could be retrieved from the git api.", None)
-        # online_commit = online["object"]["sha"]
-
-        # async with aiohttp.ClientSession() as session:
-        #     async with session.get(
-        #         f"https://api.github.com/repos/{repo_owner}/{repo_name}/compare/{local_commit}...{online_commit}",
-        #         timeout=3,
-        #     ) as r:
-        #         compare = await r.json()
-        # if compare is None or not isinstance(compare, typing.Dict) or "files" not in compare or not isinstance(compare["files"], typing.List):
-        #     raise asyncio.IncompleteReadError("No results could be retrieved from the git api.", None)
-        # to_update = True
-        # if len(compare["files"]) == 0:
-        #     to_update = False
-        # files_diff = [file["filename"] for file in compare["files"]]
-        # cogs_diff = [cog.split("/")[0] for cog in files_diff]
-        # if cog_name not in cogs_diff:
-        #     to_update = False
-        to_update = local_commit != online_commit
+        to_update = await compare_commit_dates(repo_owner=repo_owner, repo_name=repo_name, commit_sha1=local_commit, commit_sha2=online_commit)
+        path = Path(inspect.getsourcefile(cog.__class__))
+        if not path.parent.parent == (await self.bot._cog_mgr.install_path()):
+            to_update = False
 
         return to_update, local_commit, online_commit  # , online_commit_for_each_files
 
     async def add_hybrid_commands(self, cog: typing.Optional[commands.Cog] = None) -> None:
         if cog is None:
             cog = self.cog
+        if hasattr(self.cog, "settings") and hasattr(self.cog.settings, "commands_added"):
+            await self.cog.settings.commands_added.wait()
         if cog.qualified_name == "Medicat" and hasattr(cog, "CC_added"):
             await cog.CC_added.wait()
         # For new `[p]slash list` in Flame's PR.

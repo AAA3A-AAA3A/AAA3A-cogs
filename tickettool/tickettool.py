@@ -302,7 +302,7 @@ class TicketTool(settings, commands.Cog):
             self.bot.add_view(view)
             self.cogsutils.views.append(view)
         except Exception as e:
-            self.log.error(f"The Buttons View could not be added correctly.", exc_info=e)
+            self.log.error("The Buttons View could not be added correctly.", exc_info=e)
         all_guilds = await self.config.all_guilds()
         for guild in all_guilds:
             for dropdown in all_guilds[guild]["dropdowns"]:
@@ -450,9 +450,9 @@ class TicketTool(settings, commands.Cog):
         embed.add_field(
             inline=True,
             name=_("Owned by:"),
-            value=f"{ticket.owner.mention} ({ticket.owner.id})"
-            if not isinstance(ticket.owner, int)
-            else f"<@{ticket.owner}> ({ticket.owner})",
+            value=f"<@{ticket.owner}> ({ticket.owner})"
+            if isinstance(ticket.owner, int)
+            else f"{ticket.owner.mention} ({ticket.owner.id})",
         )
         embed.add_field(
             inline=True,
@@ -464,17 +464,17 @@ class TicketTool(settings, commands.Cog):
                 embed.add_field(
                     inline=False,
                     name=_("Closed by:"),
-                    value=f"{ticket.closed_by.mention} ({ticket.closed_by.id})"
-                    if not isinstance(ticket.closed_by, int)
-                    else f"<@{ticket.closed_by}> ({ticket.closed_by})",
+                    value=f"<@{ticket.closed_by}> ({ticket.closed_by})"
+                    if isinstance(ticket.closed_by, int)
+                    else f"{ticket.closed_by.mention} ({ticket.closed_by.id})",
                 )
             if ticket.deleted_by is not None:
                 embed.add_field(
                     inline=True,
                     name=_("Deleted by:"),
-                    value=f"{ticket.deleted_by.mention} ({ticket.deleted_by.id})"
-                    if not isinstance(ticket.deleted_by, int)
-                    else f"<@{ticket.deleted_by}> ({ticket.deleted_by})",
+                    value=f"<@{ticket.deleted_by}> ({ticket.deleted_by})"
+                    if isinstance(ticket.deleted_by, int)
+                    else f"{ticket.deleted_by.mention} ({ticket.deleted_by.id})",
                 )
             if ticket.closed_at:
                 embed.add_field(
@@ -516,28 +516,25 @@ class TicketTool(settings, commands.Cog):
             channel = member.guild.get_channel(int(id))
             if channel is not None:
                 ticket: Ticket = await self.get_ticket(channel)
-                if not ticket.panel == panel:
+                if ticket.panel != panel:
                     continue
                 if ticket.created_by == member and ticket.status == "open":
                     count += 1
             else:
                 to_remove.append(id)
-        if not to_remove == []:
+        if to_remove:
             data = await self.config.guild(member.guild).tickets.all()
             for id in to_remove:
                 del data[str(id)]
             await self.config.guild(member.guild).tickets.set(data)
-        if count > config["nb_max"]:
-            return False
-        else:
-            return True
+        return count <= config["nb_max"]
 
     async def create_modlog(
         self, ticket, action: str, reason: str
     ) -> typing.Optional[modlog.Case]:
         config = await self.get_config(ticket.guild, ticket.panel)
         if config["create_modlog"]:
-            case = await modlog.create_case(
+            return await modlog.create_case(
                 ticket.bot,
                 ticket.guild,
                 ticket.created_at,
@@ -546,7 +543,6 @@ class TicketTool(settings, commands.Cog):
                 moderator=None,
                 reason=reason,
             )
-            return case
         return
 
     def decorator(
@@ -563,51 +559,60 @@ class TicketTool(settings, commands.Cog):
         members: typing.Optional[bool] = False,
     ) -> None:
         async def pred(ctx) -> bool:
-            if ticket_check:
-                ticket: Ticket = await ctx.bot.get_cog("TicketTool").get_ticket(ctx.channel)
-                if ticket is None:
-                    return False
-                config = await ctx.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
-                if status is not None:
-                    if not ticket.status == status:
-                        return False
-                if claim is not None:
-                    if ticket.claim is not None:
-                        check = True
-                    elif ticket.claim is None:
-                        check = False
-                    if not check == claim:
-                        return False
-                if ctx.author.id in ctx.bot.owner_ids:
-                    return True
-                if ticket_owner:
-                    if not isinstance(ticket.owner, int):
-                        if ctx.author == ticket.owner:
-                            if not ctx.command.name == "close" or config["user_can_close"]:
-                                return True
-                if admin_role and config["admin_role"] is not None:
-                    if ctx.author in config["admin_role"].members:
-                        return True
-                if support_role and config["support_role"] is not None:
-                    if ctx.author in config["support_role"].members:
-                        return True
-                if ticket_role and config["ticket_role"] is not None:
-                    if ctx.author in config["ticket_role"].members:
-                        return True
-                if view_role and config["view_role"] is not None:
-                    if ctx.author in config["view_role"].members:
-                        return True
-                if guild_owner:
-                    if ctx.author == ctx.guild.owner:
-                        return True
-                if claim_staff:
-                    if ctx.author == ticket.claim:
-                        return True
-                if members:
-                    if ctx.author in ticket.members:
-                        return True
+            if not ticket_check:
+                return True
+
+            ticket: Ticket = await ctx.bot.get_cog("TicketTool").get_ticket(ctx.channel)
+            if ticket is None:
                 return False
-            return True
+            config = await ctx.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
+            if status is not None and ticket.status != status:
+                return False
+            if claim is not None:
+                if ticket.claim is not None:
+                    check = True
+                elif ticket.claim is None:
+                    check = False
+                if check != claim:
+                    return False
+            if ctx.author.id in ctx.bot.owner_ids:
+                return True
+            if (
+                ticket_owner
+                and not isinstance(ticket.owner, int)
+                and ctx.author == ticket.owner
+                and (ctx.command.name != "close" or config["user_can_close"])
+            ):
+                return True
+            if (
+                admin_role
+                and config["admin_role"] is not None
+                and ctx.author in config["admin_role"].members
+            ):
+                return True
+            if (
+                support_role
+                and config["support_role"] is not None
+                and ctx.author in config["support_role"].members
+            ):
+                return True
+            if (
+                ticket_role
+                and config["ticket_role"] is not None
+                and ctx.author in config["ticket_role"].members
+            ):
+                return True
+            if (
+                view_role
+                and config["view_role"] is not None
+                and ctx.author in config["view_role"].members
+            ):
+                return True
+            if guild_owner and ctx.author == ctx.guild.owner:
+                return True
+            if claim_staff and ctx.author == ticket.claim:
+                return True
+            return bool(members and ctx.author in ticket.members)
 
         return commands.check(pred)
 
@@ -691,7 +696,7 @@ class TicketTool(settings, commands.Cog):
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         """
         ticket: Ticket = await self.get_ticket(ctx.channel)
-        if ticket.cog.cogsutils.is_dpy2:
+        if self.cogsutils.is_dpy2:
             transcript = await chat_exporter.export(
                 channel=ticket.channel,
                 limit=None,
@@ -975,7 +980,7 @@ class TicketTool(settings, commands.Cog):
         """Add a member to an existing ticket."""
         ticket: Ticket = await self.get_ticket(ctx.channel)
         ticket.reason = reason
-        members = [member for member in members]
+        members = list(members)
         await ticket.add_member(members, ctx.author)
 
     @decorator(
@@ -1001,7 +1006,7 @@ class TicketTool(settings, commands.Cog):
         """Remove a member to an existing ticket."""
         ticket: Ticket = await self.get_ticket(ctx.channel)
         ticket.reason = reason
-        members = [member for member in members]
+        members = list(members)
         await ticket.remove_member(members, ctx.author)
 
     if CogsUtils().is_dpy2:
@@ -1017,7 +1022,7 @@ class TicketTool(settings, commands.Cog):
                 return
             if (
                 not interaction.response.is_done()
-                and not interaction.data["custom_id"] == "create_ticket_button"
+                and interaction.data["custom_id"] != "create_ticket_button"
             ):
                 await interaction.response.defer(ephemeral=True)
             if interaction.data["custom_id"] == "create_ticket_button":
@@ -1067,7 +1072,8 @@ class TicketTool(settings, commands.Cog):
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user,
                     channel=interaction.channel,
-                    command=f"ticket create {panel}" + (f" {reason}" if not reason == "" else ""),
+                    command=f"ticket create {panel}"
+                    + (f" {reason}" if reason != "" else ""),
                 )
                 if not await ctx.command.can_run(
                     ctx, change_permission_state=True
@@ -1231,7 +1237,7 @@ class TicketTool(settings, commands.Cog):
 
         @commands.Cog.listener()
         async def on_dropdown(self, inter: MessageInteraction) -> None:
-            if not inter.select_menu.custom_id == "create_ticket_dropdown":
+            if inter.select_menu.custom_id != "create_ticket_dropdown":
                 return
             if len(inter.select_menu.selected_options) == 0:
                 return
@@ -1314,18 +1320,20 @@ class TicketTool(settings, commands.Cog):
         if panel not in panels:
             return
         config = await self.get_config(guild, panel)
-        if config["enable"]:
-            if config["create_on_react"]:
-                if str(payload.emoji) == str("🎟️"):
-                    permissions = channel.permissions_for(member)
-                    if not permissions.read_messages and not permissions.send_messages:
-                        return
-                    permissions = channel.permissions_for(guild.me)
-                    if not permissions.read_messages and not permissions.read_message_history:
-                        return
-                    await self.cogsutils.invoke_command(
-                        author=member, channel=channel, command="ticket create"
-                    )
+        if (
+            config["enable"]
+            and config["create_on_react"]
+            and str(payload.emoji) == "🎟️"
+        ):
+            permissions = channel.permissions_for(member)
+            if not permissions.read_messages and not permissions.send_messages:
+                return
+            permissions = channel.permissions_for(guild.me)
+            if not permissions.read_messages and not permissions.read_message_history:
+                return
+            await self.cogsutils.invoke_command(
+                author=member, channel=channel, command="ticket create"
+            )
         return
 
     @commands.Cog.listener()

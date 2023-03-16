@@ -345,15 +345,15 @@ class SimpleSanction(settings, commands.Cog):
             args: typing.Optional[str] = "",
         ) -> None:
             try:
-                if not confirmation == "":
+                if confirmation != "":
                     confirmation = f" {confirmation}"
-                if not show_author == "":
+                if show_author != "":
                     show_author = f" {show_author}"
-                if not finish_message == "":
+                if finish_message != "":
                     finish_message = f" {finish_message}"
-                if not fake_action == "":
+                if fake_action != "":
                     fake_action = f" {fake_action}"
-                if not args == "":
+                if args != "":
                     args = f" {args}"
                 await self.cogsutils.invoke_command(
                     author=inter.author,
@@ -429,7 +429,6 @@ class SimpleSanction(settings, commands.Cog):
             reason,
         )
 
-    @commands.guild_only()
     @_sanction.command(
         name="00",
         aliases=["0", "sanction"],
@@ -471,7 +470,6 @@ class SimpleSanction(settings, commands.Cog):
             reason,
         )
 
-    @commands.guild_only()
     @_sanction.command(
         name="01",
         aliases=["1", "userinfo", "info"],
@@ -492,7 +490,7 @@ class SimpleSanction(settings, commands.Cog):
         reason: str = None,
     ) -> None:
         """
-         - :information_source: Show info on a user.
+         - :information_source: Show info on an user.
 
         Examples:
         - `[p]sanction 1 @user`: UserInfo for no reason
@@ -513,7 +511,6 @@ class SimpleSanction(settings, commands.Cog):
             reason,
         )
 
-    @commands.guild_only()
     @_sanction.command(
         name="02",
         aliases=["2", "warn"],
@@ -534,7 +531,7 @@ class SimpleSanction(settings, commands.Cog):
         reason: str = None,
     ) -> None:
         """
-         - ⚠️ Set a simple warning on a user.
+         - ⚠️ Set a simple warning on an user.
 
         Examples:
         - `[p]sanction 2 @user not`: Warn for no reason
@@ -555,7 +552,6 @@ class SimpleSanction(settings, commands.Cog):
             reason,
         )
 
-    @commands.guild_only()
     @_sanction.command(
         name="03",
         aliases=["3", "ban"],
@@ -599,7 +595,6 @@ class SimpleSanction(settings, commands.Cog):
             reason,
         )
 
-    @commands.guild_only()
     @_sanction.command(
         name="04",
         aliases=["4", "softban"],
@@ -643,7 +638,6 @@ class SimpleSanction(settings, commands.Cog):
             reason,
         )
 
-    @commands.guild_only()
     @_sanction.command(
         name="05",
         aliases=["5", "tempban"],
@@ -689,7 +683,6 @@ class SimpleSanction(settings, commands.Cog):
             reason,
         )
 
-    @commands.guild_only()
     @_sanction.command(
         name="06",
         aliases=["6", "kick"],
@@ -731,7 +724,6 @@ class SimpleSanction(settings, commands.Cog):
             reason,
         )
 
-    @commands.guild_only()
     @_sanction.command(
         name="07",
         aliases=["7", "mute"],
@@ -773,7 +765,6 @@ class SimpleSanction(settings, commands.Cog):
             reason,
         )
 
-    @commands.guild_only()
     @_sanction.command(
         name="08",
         aliases=["8", "mutechannel"],
@@ -815,7 +806,6 @@ class SimpleSanction(settings, commands.Cog):
             reason,
         )
 
-    @commands.guild_only()
     @_sanction.command(
         name="09",
         aliases=["9", "tempmute"],
@@ -859,7 +849,6 @@ class SimpleSanction(settings, commands.Cog):
             reason,
         )
 
-    @commands.guild_only()
     @_sanction.command(
         name="10",
         aliases=["tempmutechannel"],
@@ -903,7 +892,6 @@ class SimpleSanction(settings, commands.Cog):
             reason,
         )
 
-    @commands.guild_only()
     async def call_sanction(
         self,
         ctx: commands.Context,
@@ -918,7 +906,6 @@ class SimpleSanction(settings, commands.Cog):
         duration: typing.Optional[TimeDeltaConverter] = None,
         reason: str = None,
     ) -> None:
-        """Sanction a user quickly and easily."""
         config = await self.config.guild(ctx.guild).all()
         actual_thumbnail = config["thumbnail"]
         actual_color = config["color"]
@@ -943,9 +930,8 @@ class SimpleSanction(settings, commands.Cog):
             delete_embed = actual_delete_embed
         if delete_message is None:
             delete_message = actual_delete_message
-        if reason is not None:
-            if reason.lower() == "not":
-                reason = "not"
+        if reason is not None and reason.lower() == "not":
+            reason = "not"
         if delete_message and ctx.author == ctx.message.author:
             try:
                 await self.cogsutils.delete_message(ctx.message)

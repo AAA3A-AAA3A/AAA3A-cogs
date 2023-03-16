@@ -1,7 +1,7 @@
 from .AAA3A_utils import Cog, CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -12,9 +12,8 @@ else:
 
 import asyncio
 import datetime
-from math import *
+from math import pi, tau, e
 
-from redbot.core import Config
 from redbot.core.utils.chat_formatting import box
 from TagScriptEngine import Interpreter, block
 

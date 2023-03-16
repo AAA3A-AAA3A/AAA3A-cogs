@@ -33,7 +33,7 @@ class EditRole(Cog):
     async def check_role(self, ctx: commands.Context, role: discord.Role) -> bool:
         if (
             not ctx.author.top_role > role
-            and not ctx.author.id == ctx.guild.owner.id
+            and ctx.author.id != ctx.guild.owner.id
             and ctx.author.id not in ctx.bot.owner_ids
         ):
             raise commands.UserFeedbackCheckFailure(
@@ -132,17 +132,16 @@ class EditRole(Cog):
             except ValueError:
                 raise commands.BadArgument(_("The position must be an integer."))
             max_guild_roles_position = len(ctx.guild.roles)
-            if not position > 0 or not position < max_guild_roles_position + 1:
+            if position <= 0 or position >= max_guild_roles_position + 1:
                 raise commands.BadArgument(
                     _(
                         "The indicated position must be between 1 and {max_guild_roles_position}."
                     ).format(max_guild_roles_position=max_guild_roles_position)
                 )
-            l = [x for x in range(0, max_guild_roles_position - 1)]
-            l.reverse()
-            position = l[position - 1]
-            position = position + 1
-            return position
+            _list = list(range(max_guild_roles_position - 1))
+            _list.reverse()
+            position = _list[position - 1]
+            return position + 1
 
     @editrole.command(name="position")
     async def editrole_position(
@@ -171,14 +170,13 @@ class EditRole(Cog):
                 raise commands.BadArgument(_("The permissions must be an integer."))
             permissions_none = discord.Permissions.none().value
             permissions_all = discord.Permissions.all().value
-            if not permissions > permissions_none or not permissions < permissions_all:
+            if permissions <= permissions_none or permissions >= permissions_all:
                 raise commands.BadArgument(
                     _(
                         "The indicated permissions value must be between {permissions_none} and {permissions_all}."
                     ).format(permissions_none=permissions_none, permissions_all=permissions_all)
                 )
-            permissions = discord.Permissions(permissions=permissions)
-            return permissions
+            return discord.Permissions(permissions=permissions)
 
     @editrole.command(name="permissions")
     async def editrole_permissions(

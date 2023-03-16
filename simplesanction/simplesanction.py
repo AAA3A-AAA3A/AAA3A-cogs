@@ -1,7 +1,7 @@
 ﻿from .AAA3A_utils import Cog, CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -13,7 +13,6 @@ else:
 import asyncio
 
 from discord.ext.commands import BadArgument
-from redbot.core import Config
 from redbot.core.commands.converter import parse_timedelta, timedelta
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate

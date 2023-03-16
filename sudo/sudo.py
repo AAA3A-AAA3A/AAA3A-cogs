@@ -40,6 +40,12 @@ else:
     hybrid_command = commands.command
     hybrid_group = commands.group
 
+TimeDeltaConverter: commands.converter.timedelta = commands.TimedeltaConverter(
+    minimum=datetime.timedelta(seconds=10),
+    maximum=datetime.timedelta(days=1),
+    default_unit="m"
+)
+
 
 @cog_i18n(_)
 class Sudo(Cog):
@@ -76,7 +82,7 @@ class Sudo(Cog):
         context = await self.bot.get_context(message)
         if context.prefix is None:
             return
-        command = context.message.content[len(str(context.prefix)) :]
+        command = context.message.content[len(str(context.prefix)):]
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
@@ -158,11 +164,7 @@ class Sudo(Cog):
         self,
         ctx: commands.Context,
         *,
-        interval: commands.TimedeltaConverter(
-            minimum=datetime.timedelta(seconds=10),
-            maximum=datetime.timedelta(days=1),
-            default_unit="m",
-        ) = datetime.timedelta(minutes=5),
+        interval: typing.Optional[TimeDeltaConverter] = datetime.timedelta(minutes=5)
     ):
         """Sudo as the owner of the bot for the specified timeout.
         The time should be between 10 seconds and 1 day.

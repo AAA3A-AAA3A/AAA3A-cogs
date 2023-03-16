@@ -105,10 +105,10 @@ class GetLoc(Cog):
             zorder=20,
         )
         # save figure at 150 dpi and show it
-        map = io.BytesIO()
-        plt.savefig(map, dpi=500, transparent=True)
-        map.seek(0)
-        return map
+        _map = io.BytesIO()
+        plt.savefig(_map, dpi=500, transparent=True)
+        _map.seek(0)
+        return _map
 
     @commands.cooldown(rate=3, per=3600, type=commands.BucketType.member)
     @hybrid_command()
@@ -157,20 +157,20 @@ class GetLoc(Cog):
 
         if with_map:
             embed.set_image(url="attachment://map.png")
-            map = await self.get_map(
+            _map = await self.get_map(
                 title=message["City"] + ", " + message["Country"],
                 latitude=localisation.latitude,
                 longitude=localisation.longitude,
             )
             if self.cogsutils.is_dpy2:
                 file = discord.File(
-                    fp=map,
+                    fp=_map,
                     filename="map.png",
                     description=str(localisation.raw.get("display_name", None)),
                 )
             else:
                 file = discord.File(
-                    fp=map,
+                    fp=_map,
                     filename="map.png",
                 )
         else:

@@ -1,14 +1,12 @@
 ﻿from .AAA3A_utils import Cog, CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
 if not CogsUtils().is_dpy2:
     from dislash import ActionRow, MessageInteraction, ResponseType  # isort:skip
-
-from redbot.core import Config
 
 from .converters import Emoji, EmojiRoleConverter
 
@@ -351,7 +349,7 @@ class RolesButtons(Cog):
         `green`: 3
         `red`: 4
         """
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.")
             )
@@ -407,7 +405,7 @@ class RolesButtons(Cog):
 
         ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```
         """
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.")
             )
@@ -469,7 +467,7 @@ class RolesButtons(Cog):
         Type `remove_only`:
         Users can only lose a role, and will not be able to get it again without a manual action.
         """
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.")
             )
@@ -483,7 +481,7 @@ class RolesButtons(Cog):
     @rolesbuttons.command()
     async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji) -> None:
         """Remove a role-button to a message."""
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.")
             )
@@ -497,26 +495,25 @@ class RolesButtons(Cog):
                 _("I wasn't watching for this button on this message.")
             )
         del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
-        if not config[f"{message.channel.id}-{message.id}"] == {}:
-            if self.cogsutils.is_dpy2:
-                view = self.get_buttons(config, message)
-                await message.edit(view=view)
-                self.cogsutils.views.append(view)
-            else:
-                await message.edit(components=self.get_buttons(config, message))
-        else:
+        if config[f"{message.channel.id}-{message.id}"] == {}:
             del config[f"{message.channel.id}-{message.id}"]
             if self.cogsutils.is_dpy2:
                 await message.edit(view=None)
             else:
                 await message.edit(components=None)
             await self.config.guild(ctx.guild).modes.clear_raw(f"{message.channel.id}-{message.id}")
+        elif self.cogsutils.is_dpy2:
+            view = self.get_buttons(config, message)
+            await message.edit(view=view)
+            self.cogsutils.views.append(view)
+        else:
+            await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).roles_buttons.set(config)
 
     @rolesbuttons.command()
     async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
         """Clear all roles-buttons to a message."""
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.")
             )
@@ -582,13 +579,11 @@ class RolesButtons(Cog):
             return view
         else:
             lists = []
-            one_l = [button for button in config[message]]
-            while True:
-                li = one_l[0:4]
+            one_l = list(config[message])
+            while one_l != []:
+                li = one_l[:4]
                 one_l = one_l[4:]
                 lists.append(li)
-                if one_l == []:
-                    break
             for li in lists:
                 buttons = {"type": 1, "components": []}
                 for button in li:

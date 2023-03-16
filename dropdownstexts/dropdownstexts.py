@@ -1,7 +1,7 @@
 ﻿from .AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands, Config  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -230,7 +230,7 @@ class DropdownsTexts(Cog):
         text: str,
     ) -> None:
         """Add a dropdown-text to a message."""
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.")
             )
@@ -293,7 +293,7 @@ class DropdownsTexts(Cog):
         dropdown_texts: commands.Greedy[EmojiLabelTextConverter],
     ) -> None:
         """Add dropdown-texts to a message."""
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.")
             )
@@ -319,7 +319,7 @@ class DropdownsTexts(Cog):
                 )
             )
         if not self.cogsutils.is_dpy2 and any(
-            [hasattr(emoji, "id") for emoji, label, text in dropdown_texts]
+            hasattr(emoji, "id") for emoji, label, text in dropdown_texts
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
@@ -360,7 +360,7 @@ class DropdownsTexts(Cog):
         emoji: Emoji,
     ) -> None:
         """Remove a dropdown-text to a message."""
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.")
             )
@@ -374,25 +374,24 @@ class DropdownsTexts(Cog):
                 _("I wasn't watching for this dropdown-text on this message.")
             )
         del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
-        if not config[f"{message.channel.id}-{message.id}"] == {}:
-            if self.cogsutils.is_dpy2:
-                view = self.get_dropdown(config=config, message=message)
-                await message.edit(view=view)
-                self.cogsutils.views.append(view)
-            else:
-                await message.edit(components=[self.get_dropdown(config, message)])
-        else:
+        if config[f"{message.channel.id}-{message.id}"] == {}:
             del config[f"{message.channel.id}-{message.id}"]
             if self.cogsutils.is_dpy2:
                 await message.edit(view=None)
             else:
                 await message.edit(components=None)
+        elif self.cogsutils.is_dpy2:
+            view = self.get_dropdown(config=config, message=message)
+            await message.edit(view=view)
+            self.cogsutils.views.append(view)
+        else:
+            await message.edit(components=[self.get_dropdown(config, message)])
         await self.config.guild(ctx.guild).dropdowns_texts.set(config)
 
     @dropdownstexts.command()
     async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
         """Clear a dropdown-texts to a message."""
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.")
             )
@@ -422,9 +421,9 @@ class DropdownsTexts(Cog):
             if isinstance(message, discord.Message)
             else message
         )
+        options = []
         if self.cogsutils.is_dpy2:
             view = discord.ui.View(timeout=None)
-            options = []
             for option in config[message]:
                 try:
                     int(option)
@@ -451,32 +450,29 @@ class DropdownsTexts(Cog):
             dropdown.callback = partial(self.on_dropdown_interaction, dropdown=dropdown)
             view.add_item(dropdown)
             return view
-        else:
-            options = []
-            for option in config[message]:
-                try:
-                    int(option)
-                except ValueError:
-                    options.append(
-                        SelectOption(
-                            label=config[message][option]["label"],
-                            value=config[message][option]["label"],
-                            emoji=option,
-                        )
+        for option in config[message]:
+            try:
+                int(option)
+            except ValueError:
+                options.append(
+                    SelectOption(
+                        label=config[message][option]["label"],
+                        value=config[message][option]["label"],
+                        emoji=option,
                     )
-                else:
-                    options.append(
-                        SelectOption(
-                            label=config[message][option]["label"],
-                            value=config[message][option]["label"],
-                            emoji=str(self.bot.get_emoji(option)),
-                        )
+                )
+            else:
+                options.append(
+                    SelectOption(
+                        label=config[message][option]["label"],
+                        value=config[message][option]["label"],
+                        emoji=str(self.bot.get_emoji(option)),
                     )
-            dropdown = SelectMenu(
-                custom_id=f"DropdownsTexts_{message}",
-                placeholder=_("Select an option."),
-                min_values=0,
-                max_values=1,
-                options=options,
-            )
-            return dropdown
+                )
+        return SelectMenu(
+            custom_id=f"DropdownsTexts_{message}",
+            placeholder=_("Select an option."),
+            min_values=0,
+            max_values=1,
+            options=options,
+        )

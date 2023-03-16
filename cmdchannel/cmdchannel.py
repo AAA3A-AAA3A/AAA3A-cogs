@@ -1,10 +1,9 @@
 from .AAA3A_utils import Cog, CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
-from redbot.core import Config
 
 # Credits:
 # General repo credits.
@@ -54,7 +53,7 @@ class CmdChannel(Cog):
         context = await self.bot.get_context(message)
         if context.prefix is None:
             return
-        command = context.message.content[len(str(context.prefix)) :]
+        command = context.message.content[len(str(context.prefix)):]
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]

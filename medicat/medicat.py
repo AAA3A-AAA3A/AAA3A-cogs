@@ -1,8 +1,7 @@
 ﻿from .AAA3A_utils import Cog, CogsUtils, Menu, Loop  # isort:skip
-
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -15,7 +14,6 @@ from copy import copy
 import aiohttp
 from bs4 import BeautifulSoup
 from redbot import VersionInfo
-from redbot.core import Config
 from redbot.core.utils.chat_formatting import bold, box, pagify
 
 # Credits:
@@ -368,7 +366,7 @@ class Medicat(Cog):
                 self.remove_custom_commands()
             except Exception as e:
                 self.log.error(
-                    f"An error occurred while removing the custom_commands.", exc_info=e
+                    "An error occurred while removing the custom_commands.", exc_info=e
                 )
             self.cogsutils._end()
             if self._session is not None:
@@ -381,7 +379,7 @@ class Medicat(Cog):
                 self.remove_custom_commands()
             except Exception as e:
                 self.log.error(
-                    f"An error occurred while removing the custom_commands.", exc_info=e
+                    "An error occurred while removing the custom_commands.", exc_info=e
                 )
             self.cogsutils._end()
             if self._session is not None:
@@ -460,9 +458,8 @@ class Medicat(Cog):
                 ventoy_tag_name.replace("v", "").replace("1.0.0", "1.0.").replace("beta", ".dev")
             )
             ventoy_version = VersionInfo.from_str(ventoy_version_str)
-            if not force:
-                if last_ventoy_version >= ventoy_version:
-                    continue
+            if not force and last_ventoy_version >= ventoy_version:
+                continue
 
             ventoy_tag_body = str(version["body"])
 
@@ -474,7 +471,7 @@ class Medicat(Cog):
                     == "See [https://www.ventoy.net/en/doc_news.html](https://www.ventoy.net/en/doc_news.html) for more details.\r"
                 ):
                     break
-                if not x == "\r":
+                if x != "\r":
                     result.append(x)
             ventoy_tag_body = "\n".join(result)
             changelog = box(ventoy_tag_body)
@@ -682,21 +679,20 @@ class Medicat(Cog):
 
     def in_medicat_guild():
         async def pred(ctx) -> bool:
-            if ctx.author.id in ctx.bot.owner_ids or ctx.author.id == 829612600059887649:
+            if ctx.author.id in ctx.bot.owner_ids:
                 return True
             if ctx.guild is None:
                 return False
-            if ctx.guild.id == MEDICAT_GUILD or ctx.guild.id == TEST_GUILD:
-                return True
-            return False
+            return ctx.guild.id in [MEDICAT_GUILD, TEST_GUILD]
 
         return commands.check(pred)
 
     def is_owner_or_AAA3A():
         async def pred(ctx) -> bool:
-            if ctx.author.id in ctx.bot.owner_ids or ctx.author.id == 829612600059887649:
-                return True
-            return False
+            return (
+                ctx.author.id in ctx.bot.owner_ids
+                or (ctx.author.id == 829612600059887649 and ctx.guild.id == MEDICAT_GUILD)
+            )
 
         return commands.check(pred)
 
@@ -742,9 +738,8 @@ class Medicat(Cog):
                 self.bot.dispatch("command_add", command)
                 if self.bot.get_cog("permissions") is None:
                     command.requires.ready_event.set()
-                if self.cogsutils.is_dpy2:
-                    if "ctx" in command.params:
-                        del command.params["ctx"]
+                if self.cogsutils.is_dpy2 and "ctx" in command.params:
+                    del command.params["ctx"]
                 setattr(self, f"CC_{name}", command)
             except Exception as e:
                 self.log.error(
@@ -957,9 +952,7 @@ class Medicat(Cog):
     @medicat.command(hidden=True)
     async def getdebugloopsstatus(self, ctx: commands.Context) -> None:
         """Get an embed for check loops status."""
-        embeds = []
-        for loop in self.cogsutils.loops.values():
-            embeds.append(loop.get_debug_embed())
+        embeds = [loop.get_debug_embed() for loop in self.cogsutils.loops.values()]
         await Menu(pages=embeds).start(ctx)
 
     @is_owner_or_AAA3A()
@@ -981,9 +974,12 @@ class Medicat(Cog):
         except Exception as e:
             traceback_error = "".join(traceback.format_exception(type(e), e, e.__traceback__))
             traceback_error = self.cogsutils.replace_var_paths(traceback_error)
-            pages = []
-            for page in pagify(traceback_error, shorten_by=15, page_length=1985):
-                pages.append(box(page, lang="py"))
+            pages = [
+                box(page, lang="py")
+                for page in pagify(
+                    traceback_error, shorten_by=15, page_length=1985
+                )
+            ]
             try:
                 await Menu(pages=pages, timeout=30, delete_after_timeout=True).start(ctx)
             except discord.HTTPException:

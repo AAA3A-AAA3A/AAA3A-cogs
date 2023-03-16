@@ -64,7 +64,7 @@ class settings(commands.Cog):
             channel = ctx.channel
         if reason_options == []:
             reason_options = None
-        if message is not None and not message.author == ctx.guild.me:
+        if message is not None and message.author != ctx.guild.me:
             await ctx.send(
                 _("I have to be the author of the message for the interaction to work.")
             )
@@ -126,7 +126,7 @@ class settings(commands.Cog):
                 dropdowns_config = await self.config.guild(ctx.guild).dropdowns.all()
                 all_options = []
                 for emoji, label, description, value in reason_options:
-                    emoji = emoji if not hasattr(emoji, "id") else emoji.id
+                    emoji = emoji.id if hasattr(emoji, "id") else emoji
                     try:
                         int(emoji)
                     except ValueError:
@@ -160,7 +160,7 @@ class settings(commands.Cog):
                 dropdowns_config[f"{channel.id}-{message.id}"] = [
                     {
                         "panel": panel,
-                        "emoji": emoji if not hasattr(emoji, "id") else emoji.id,
+                        "emoji": emoji.id if hasattr(emoji, "id") else emoji,
                         "label": label,
                         "description": description,
                         "value": value,
@@ -168,79 +168,78 @@ class settings(commands.Cog):
                     for emoji, label, description, value in reason_options
                 ]
                 await self.config.guild(ctx.guild).dropdowns.set(dropdowns_config)
-        else:
-            if reason_options is None:
-                buttons_config = await self.config.guild(ctx.guild).buttons.all()
-                button = ActionRow(
-                    Button(
-                        style=ButtonStyle.grey,
-                        label=_("Create ticket"),
-                        emoji="🎟️",
-                        custom_id="create_ticket_button",
-                        disabled=False,
-                    )
+        elif reason_options is None:
+            buttons_config = await self.config.guild(ctx.guild).buttons.all()
+            button = ActionRow(
+                Button(
+                    style=ButtonStyle.grey,
+                    label=_("Create ticket"),
+                    emoji="🎟️",
+                    custom_id="create_ticket_button",
+                    disabled=False,
                 )
-                if message is None:
-                    message = await channel.send(embed=embed, components=[button])
-                else:
-                    await message.edit(components=[button])
-                buttons_config[f"{message.channel.id}-{message.id}"] = {"panel": panel}
-                await self.config.guild(ctx.guild).buttons.set(buttons_config)
+            )
+            if message is None:
+                message = await channel.send(embed=embed, components=[button])
             else:
-                if getattr(ctx, "interaction", None) is None:
-                    try:
-                        for emoji, label, description, value in reason_options[:19]:
-                            await ctx.message.add_reaction(emoji)
-                    except discord.HTTPException:
-                        await ctx.send(
-                            _(
-                                "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
-                            )
+                await message.edit(components=[button])
+            buttons_config[f"{message.channel.id}-{message.id}"] = {"panel": panel}
+            await self.config.guild(ctx.guild).buttons.set(buttons_config)
+        else:
+            if getattr(ctx, "interaction", None) is None:
+                try:
+                    for emoji, label, description, value in reason_options[:19]:
+                        await ctx.message.add_reaction(emoji)
+                except discord.HTTPException:
+                    await ctx.send(
+                        _(
+                            "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
                         )
-                        return
-                dropdown_config = await self.config.guild(ctx.guild).dropdowns.all()
-                all_options = []
-                for emoji, label, description, value in reason_options:
-                    emoji = emoji if not hasattr(emoji, "id") else emoji.id
-                    try:
-                        int(emoji)
-                    except ValueError:
-                        all_options.append(
-                            SelectOption(
-                                label=label, value=value, description=description, emoji=emoji
-                            )
+                    )
+                    return
+            dropdown_config = await self.config.guild(ctx.guild).dropdowns.all()
+            all_options = []
+            for emoji, label, description, value in reason_options:
+                emoji = emoji.id if hasattr(emoji, "id") else emoji
+                try:
+                    int(emoji)
+                except ValueError:
+                    all_options.append(
+                        SelectOption(
+                            label=label, value=value, description=description, emoji=emoji
                         )
-                    else:
-                        all_options.append(
-                            SelectOption(
-                                label=label,
-                                value=value,
-                                description=description,
-                                emoji=str(self.bot.get_emoji(emoji)),
-                            )
-                        )
-                dropdown = SelectMenu(
-                    custom_id="create_ticket_dropdown",
-                    placeholder=_("Choose the reason for open a ticket."),
-                    min_values=0,
-                    max_values=1,
-                    options=all_options,
-                )
-                if message is None:
-                    message = await channel.send(embed=embed, components=[dropdown])
+                    )
                 else:
-                    await message.edit(components=[dropdown])
-                dropdown_config[f"{channel.id}-{message.id}"] = [
-                    {
-                        "panel": panel,
-                        "emoji": emoji if not hasattr(emoji, "id") else emoji.id,
-                        "label": label,
-                        "description": description,
-                        "value": value,
-                    }
-                    for emoji, label, description, value in reason_options
-                ]
-                await self.config.guild(ctx.guild).dropdowns.set(dropdown_config)
+                    all_options.append(
+                        SelectOption(
+                            label=label,
+                            value=value,
+                            description=description,
+                            emoji=str(self.bot.get_emoji(emoji)),
+                        )
+                    )
+            dropdown = SelectMenu(
+                custom_id="create_ticket_dropdown",
+                placeholder=_("Choose the reason for open a ticket."),
+                min_values=0,
+                max_values=1,
+                options=all_options,
+            )
+            if message is None:
+                message = await channel.send(embed=embed, components=[dropdown])
+            else:
+                await message.edit(components=[dropdown])
+            dropdown_config[f"{channel.id}-{message.id}"] = [
+                {
+                    "panel": panel,
+                    "emoji": emoji.id if hasattr(emoji, "id") else emoji,
+                    "label": label,
+                    "description": description,
+                    "value": value,
+                }
+                for emoji, label, description, value in reason_options
+            ]
+            await self.config.guild(ctx.guild).dropdowns.set(dropdown_config)
 
     async def check_permissions_in_channel(
         self, permissions: typing.List[str], channel: discord.TextChannel

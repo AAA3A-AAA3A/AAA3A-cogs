@@ -1,7 +1,7 @@
 from .AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip*
 
@@ -18,7 +18,7 @@ import io
 from copy import deepcopy
 
 import chat_exporter
-from redbot.core import Config, modlog
+from redbot.core import modlog
 
 from .settings import settings
 from .ticket import Ticket
@@ -392,8 +392,7 @@ class TicketTool(settings, Cog):
         ticket.renamed_by = ticket.guild.get_member(ticket.renamed_by) or ticket.renamed_by
         members = ticket.members
         ticket.members = []
-        for m in members:
-            ticket.members.append(channel.guild.get_member(m))
+        ticket.members.extend(channel.guild.get_member(m) for m in members)
         if ticket.created_at is not None:
             ticket.created_at = datetime.datetime.fromtimestamp(ticket.created_at)
         if ticket.opened_at is not None:
@@ -1367,10 +1366,9 @@ class TicketTool(settings, Cog):
                 continue
             ticket: Ticket = await self.get_ticket(channel)
             config = await self.get_config(ticket.guild, ticket.panel)
-            if config["close_on_leave"]:
-                if (
-                    getattr(ticket.owner, "id", ticket.owner) == member.id
-                    and ticket.status == "open"
-                ):
-                    await ticket.close(ticket.guild.me)
+            if config["close_on_leave"] and (
+                getattr(ticket.owner, "id", ticket.owner) == member.id
+                and ticket.status == "open"
+            ):
+                await ticket.close(ticket.guild.me)
         return

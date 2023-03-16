@@ -123,16 +123,14 @@ class TransferChannel(Cog):
         async for message in channel.history(
             limit=limit, before=before, after=after, oldest_first=False
         ):
-            if user_id is not None:
-                if not message.author.id == user_id:
-                    continue
-            if bot is not None:
-                if not message.author.bot == bot:
-                    continue
+            if user_id is not None and message.author.id != user_id:
+                continue
+            if bot is not None and message.author.bot != bot:
+                continue
             messages.append(message)
             if number is not None and number <= len(messages):
                 break
-        messages = [message for message in messages if not message.id == ctx.message.id]
+        messages = [message for message in messages if message.id != ctx.message.id]
         count_messages = len(messages)
         if count_messages == 0:
             raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message."))
@@ -215,10 +213,9 @@ class TransferChannel(Cog):
 
         Remember that transfering other users' messages in does not respect the TOS.
         """
-        if ctx.guild is None:
-            if ctx.author.id not in ctx.bot.owner_ids:
-                await ctx.send_help()
-                return
+        if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
+            await ctx.send_help()
+            return
         await self.check_channels(ctx, source, destination, way)
         count_messages, messages = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way
@@ -243,17 +240,16 @@ class TransferChannel(Cog):
         Specify the number of messages since the end of the channel.
         Remember that transfering other users' messages in does not respect the TOS.
         """
-        if ctx.guild is None:
-            if ctx.author.id not in ctx.bot.owner_ids:
-                await ctx.send_help()
-                return
+        if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
+            await ctx.send_help()
+            return
         await self.check_channels(ctx, source, destination, way)
         count_messages, messages = await self.transfer_messages(
             ctx,
             source=source,
             destination=destination,
             way=way,
-            limit=limit if not source == ctx.channel else limit + 1,
+            limit=limit if source != ctx.channel else limit + 1,
         )
         await ctx.send(
             _(
@@ -275,10 +271,9 @@ class TransferChannel(Cog):
         Specify the before message (id or link).
         Remember that transfering other users' messages in does not respect the TOS.
         """
-        if ctx.guild is None:
-            if ctx.author.id not in ctx.bot.owner_ids:
-                await ctx.send_help()
-                return
+        if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
+            await ctx.send_help()
+            return
         await self.check_channels(ctx, source, destination, way)
         count_messages, messages = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, before=before
@@ -303,10 +298,9 @@ class TransferChannel(Cog):
         Specify the after message (id or link).
         Remember that transfering other users' messages in does not respect the TOS.
         """
-        if ctx.guild is None:
-            if ctx.author.id not in ctx.bot.owner_ids:
-                await ctx.send_help()
-                return
+        if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
+            await ctx.send_help()
+            return
         await self.check_channels(ctx, source, destination, way)
         count_messages, messages = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, after=after
@@ -332,10 +326,9 @@ class TransferChannel(Cog):
         Specify the between messages (id or link).
         Remember that transfering other users' messages in does not respect the TOS.
         """
-        if ctx.guild is None:
-            if ctx.author.id not in ctx.bot.owner_ids:
-                await ctx.send_help()
-                return
+        if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
+            await ctx.send_help()
+            return
         await self.check_channels(ctx, source, destination, way)
         count_messages, messages = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, before=before, after=after
@@ -363,10 +356,9 @@ class TransferChannel(Cog):
             Specify the member (id, name or mention).
             Remember that transfering other users' messages in does not respect the TOS.
             """
-            if ctx.guild is None:
-                if ctx.author.id not in ctx.bot.owner_ids:
-                    await ctx.send_help()
-                    return
+            if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
+                await ctx.send_help()
+                return
             await self.check_channels(ctx, source, destination, way)
             count_messages, messages = await self.transfer_messages(
                 ctx,
@@ -397,10 +389,9 @@ class TransferChannel(Cog):
         Specify the bool option.
         Remember that transfering other users' messages in does not respect the TOS.
         """
-        if ctx.guild is None:
-            if ctx.author.id not in ctx.bot.owner_ids:
-                await ctx.send_help()
-                return
+        if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
+            await ctx.send_help()
+            return
         await self.check_channels(ctx, source, destination, way)
         count_messages, messages = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, bot=bot, limit=limit

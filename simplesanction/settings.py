@@ -54,7 +54,7 @@ class settings(commands.Cog):
             embed.title = _("Configure the embed")
             embed.description = _("Reset color:")
             embed.add_field(name=_("Color:"), value=f"{actual_color}")
-            message = await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
             return
 
         await self.config.guild(ctx.guild).color.set(color.value)
@@ -88,7 +88,7 @@ class settings(commands.Cog):
             embed.set_thumbnail(url=actual_thumbnail)
             embed.color = actual_color
             embed.add_field(name=_("Thumbnail:"), value=f"{actual_thumbnail}")
-            message = await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
             return
 
         await self.config.guild(ctx.guild).thumbnail.set(link)

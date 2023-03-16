@@ -1,7 +1,7 @@
 from .AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 
 import inspect
@@ -12,7 +12,7 @@ import typing
 from os import listdir
 from pathlib import Path
 
-from redbot.core import Config, data_manager
+from redbot.core import data_manager
 from redbot.core.utils.chat_formatting import box, pagify
 
 if CogsUtils().is_dpy2:  # To remove
@@ -65,11 +65,11 @@ class EditFile(Cog):
         match = re.compile(r"(?:\.\/+)?(.+?)(?:#L?(\d+)(?:\-L?(\d+))?)?$").search(path)
         if match is None:
             raise commands.UserFeedbackCheckFailure(_("Couldn't parse this input."))
-        path = match.group(1)
+        path = match[1]
         line_span = None
-        if match.group(2) is not None:
-            start = int(match.group(2))
-            line_span = (start, int(match.group(3) or start))
+        if match[2] is not None:
+            start = int(match[2])
+            line_span = start, int(match[3] or start)
         path = self.cogsutils.replace_var_paths(path, reverse=True)
         path = Path(path)
         try:
@@ -87,7 +87,7 @@ class EditFile(Cog):
             with open(file=path, mode="rb") as file:
                 content = file.read()
             if line_span is not None:
-                lines = content.split(b"\n")[line_span[0] - 1 : line_span[1]]
+                lines = content.split(b"\n")[line_span[0] - 1: line_span[1]]
             else:
                 lines = content.split(b"\n")
             lines_without_count = lines
@@ -112,7 +112,8 @@ class EditFile(Cog):
             line = (
                 f"#L1-L{len(lines)} (All)"
                 if line_span is None
-                else ("#L" + str(line_span[0]) + "-L" + str(line_span[1]) + f" / {len_lines}")
+                else f"#L{str(line_span[0])}-L{str(line_span[1])}"
+                + f" / {len_lines}"
             )
             header = box(f"File {path}, line {line}.")
             pages = [
@@ -121,7 +122,7 @@ class EditFile(Cog):
                     (b"\n".join(lines)).decode(encoding="utf-8"), page_length=2000 - len(header)
                 )
             ]
-            if len(pages) == 0:
+            if not pages:
                 len_lines = len(content.split(b"\n"))
                 raise commands.UserFeedbackCheckFailure(
                     _("There are only {len_lines} lines in this file.").format(len_lines=len_lines)
@@ -143,10 +144,10 @@ class EditFile(Cog):
         match = re.compile(r"(?:\.\/+)?(.+?)(?:#L?(\d+)(?:\-L?(\d+))?)?$").search(path)
         if match is None:
             raise commands.UserFeedbackCheckFailure(_("Couldn't parse this input."))
-        path = match.group(1)
-        if match.group(2):
-            start = int(match.group(2))
-            line_span = (start, int(match.group(3) or start))
+        path = match[1]
+        if match[2]:
+            start = int(match[2])
+            line_span = start, int(match[3] or start)
         path = self.cogsutils.replace_var_paths(path, reverse=True)
         path = Path(path)
         try:
@@ -154,7 +155,7 @@ class EditFile(Cog):
                 old_file_content = file.read()
             try:
                 if line_span is not None:
-                    lines = old_file_content.split(b"\n")[line_span[0] - 1 : line_span[1]]
+                    lines = old_file_content.split(b"\n")[line_span[0] - 1: line_span[1]]
                 else:
                     lines = old_file_content.split(b"\n")
             except IndexError:
@@ -190,7 +191,7 @@ class EditFile(Cog):
             lines = (
                 old_file_content.split(b"\n")[: line_span[0] - 1]
                 + new_file_content.split(b"\n")
-                + old_file_content.split(b"\n")[line_span[1] :]
+                + old_file_content.split(b"\n")[line_span[1]:]
             )
         else:
             lines = new_file_content.split(b"\n")
@@ -215,10 +216,11 @@ class EditFile(Cog):
         cog_data_path = Path(data_manager.cog_data_path() / cog_obj.qualified_name).resolve()
         if not cog_data_path.exists():
             cog_data_path = None
-            if not isinstance(getattr(cog_obj, "config", None), Config):
-                reason = _("This cog does not store any data.")
-            else:
-                reason = _("This cog had its data directory removed.")
+            reason = (
+                _("This cog had its data directory removed.")
+                if isinstance(getattr(cog_obj, "config", None), Config)
+                else _("This cog does not store any data.")
+            )
         list_files = "\n".join(
             [
                 f"- {file}"
@@ -278,7 +280,7 @@ class EditFile(Cog):
                 _("The path you specified refers to a directory, not a file.")
             )
         try:
-            path.rename(target=Path(f"{path.parent}") + f"{new_name}")
+            path.rename(target=f'{Path(f"{path.parent}")}{new_name}')
         except FileNotFoundError:
             raise commands.UserFeedbackCheckFailure(
                 _("This file cannot be found on the host machine.")

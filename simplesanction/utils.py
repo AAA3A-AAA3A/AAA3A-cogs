@@ -176,9 +176,7 @@ class utils:
             await self.send(_("Timed out, please try again."))
             raise TimeoutError()
 
-    async def confirmation_ask(
-        ctx, confirmation, title, description, actual_color, user, reason, duration, actual_timeout
-    ) -> bool:
+    async def confirmation_ask(self, confirmation, title, description, actual_color, user, reason, duration, actual_timeout) -> bool:
         if confirmation:
             embed: discord.Embed = discord.Embed()
             embed.title = f"{title}"
@@ -198,7 +196,7 @@ class utils:
             else:
                 embed.add_field(inline=False, name="Reason:", value=f"{reason}")
             if duration is not None:
-                if not duration == "Infinity":
+                if duration != "Infinity":
                     embed.add_field(
                         inline=False,
                         name=_("Duration:"),
@@ -210,7 +208,7 @@ class utils:
                         name=_("Duration:"),
                         value=_("Infinity"),
                     )
-            return await CogsUtils(bot=ctx.bot).ConfirmationAsk(ctx=ctx, embed=embed)
+            return await CogsUtils(bot=self.bot).ConfirmationAsk(self=self, embed=embed)
 
     async def finish_message(self, finish_message, title, description, actual_thumbnail, actual_color, user, show_author, duration, reason) -> discord.Message:
         if not finish_message:

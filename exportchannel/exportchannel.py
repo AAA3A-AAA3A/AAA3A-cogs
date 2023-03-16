@@ -64,16 +64,14 @@ class ExportChannel(Cog):
         async for message in channel.history(
             limit=limit, before=before, after=after, oldest_first=False
         ):
-            if user_id is not None:
-                if not message.author.id == user_id:
-                    continue
-            if bot is not None:
-                if not message.author.bot == bot:
-                    continue
+            if user_id is not None and message.author.id != user_id:
+                continue
+            if bot is not None and message.author.bot != bot:
+                continue
             messages.append(message)
             if number is not None and number <= len(messages):
                 break
-        messages = [message for message in messages if not message.id == ctx.message.id]
+        messages = [message for message in messages if message.id != ctx.message.id]
         count_messages = len(messages)
         if count_messages == 0:
             raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message."))
@@ -149,7 +147,9 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, messages, file = await self.export_messages(
-            ctx, channel=channel, limit=limit if not channel == ctx.channel else limit + 1
+            ctx,
+            channel=channel,
+            limit=limit if channel != ctx.channel else limit + 1,
         )
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file

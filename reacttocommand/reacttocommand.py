@@ -1,13 +1,12 @@
 from .AAA3A_utils import Cog, CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
 import asyncio
 
-from redbot.core import Config
 from redbot.core.utils.chat_formatting import inline
 
 try:
@@ -238,7 +237,7 @@ class ReactToCommand(Cog):
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to add reactions and to see the messages in that channel."
                 )
             )
-        if not ctx.prefix == "/":
+        if ctx.prefix != "/":
             msg = ctx.message
             msg.content = f"{ctx.prefix}{command}"
             new_ctx = await ctx.bot.get_context(msg)

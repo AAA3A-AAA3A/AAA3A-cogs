@@ -1,13 +1,12 @@
 from .AAA3A_utils import Cog, CogsUtils  # isort:skip
 from .AAA3A_utils import Buttons, Modal  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
 import yaml
-from redbot.core import Config
 
 # Credits:
 # General repo credits.
@@ -352,7 +351,7 @@ class DiscordModals(Cog):
         ```
         The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous` and `messages` are not required.
         """
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the button to work.")
             )
@@ -394,7 +393,7 @@ class DiscordModals(Cog):
     @discordmodals.command()
     async def remove(self, ctx: commands.Context, message: discord.Message) -> None:
         """Remove a Modal to a message."""
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the Modal to work.")
             )

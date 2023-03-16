@@ -1,7 +1,7 @@
 from .AAA3A_utils import Cog, CogsUtils, Menu, Loop  # isort:skip
 from redbot.core import commands, Config  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -290,7 +290,7 @@ class Seen(Cog):
                         if channel not in data[Config.CHANNEL]:
                             data[Config.CHANNEL][category] = {}
                         data[Config.CHANNEL][category][_type] = categories_data[category][_type]
-                        custom_ids.append(tuple([_type, categories_data[category][_type]]))
+                        custom_ids.append((_type, categories_data[category][_type]))
         # Guilds
         async with guild_group.all() as guilds_data:
             for guild in guilds_data:
@@ -304,7 +304,7 @@ class Seen(Cog):
                         if channel not in data[Config.GUILD]:
                             data[Config.GUILD][guild] = {}
                         data[Config.GUILD][guild][_type] = guilds_data[guild][_type]
-                        custom_ids.append(tuple([_type, guilds_data[guild][_type]]))
+                        custom_ids.append((_type, guilds_data[guild][_type]))
         # Global
         if user_id in global_data["ignored_users"]:
             data[Config.GLOBAL]["ignored_users"] = [user_id]
@@ -507,57 +507,57 @@ class Seen(Cog):
         for user in users_data:
             for custom_id in users_data[user].values():
                 if custom_id is not None:
-                    if not for_count:
+                    if for_count:
+                        users_count += 1
+                    else:
                         # if custom_id not in self.cache["existing_keys"]:
                         existing_keys.append(custom_id)
-                    else:
-                        users_count += 1
         # Members
         for guild in members_data:
             for member in members_data[guild]:
                 for custom_id in members_data[guild][member].values():
                     if custom_id is not None:
-                        if not for_count:
+                        if for_count:
+                            members_count += 1
+                        else:
                             # if custom_id not in self.cache["existing_keys"]:
                             existing_keys.append(custom_id)
-                        else:
-                            members_count += 1
         # Roles
         for role in roles_data:
             for custom_id in roles_data[role].values():
                 if custom_id is not None:
-                    if not for_count:
+                    if for_count:
+                        roles_count += 1
+                    else:
                         # if custom_id not in self.cache["existing_keys"]:
                         existing_keys.append(custom_id)
-                    else:
-                        roles_count += 1
         # Channels
         for channel in channels_data:
             for custom_id in channels_data[channel].values():
                 if custom_id is not None:
-                    if not for_count:
+                    if for_count:
+                        channels_count += 1
+                    else:
                         # if custom_id not in self.cache["existing_keys"]:
                         existing_keys.append(custom_id)
-                    else:
-                        channels_count += 1
         # Categories
         for category in categories_data:
             for custom_id in categories_data[category].values():
                 if custom_id is not None:
-                    if not for_count:
+                    if for_count:
+                        categories_count += 1
+                    else:
                         # if custom_id not in self.cache["existing_keys"]:
                         existing_keys.append(custom_id)
-                    else:
-                        categories_count += 1
         # Guilds
         for guild in guilds_data:
             for custom_id in guilds_data[guild].values():
                 if custom_id is not None:
-                    if not for_count:
+                    if for_count:
+                        guilds_count += 1
+                    else:
                         # if custom_id not in self.cache["existing_keys"]:
                         existing_keys.append(custom_id)
-                    else:
-                        guilds_count += 1
         if not for_count:
             self.cache["existing_keys"] = list(set(existing_keys))
         # Global
@@ -565,16 +565,13 @@ class Seen(Cog):
             _global_data = deepcopy(global_data)
             for _type in _global_data:
                 for custom_id in _global_data[_type]:
-                    if not for_count:
-                        if (
-                            custom_id not in self.cache["existing_keys"]
-                        ):  # The action is no longer used by any data.
-                            try:
-                                del global_data[_type][custom_id]
-                            except (IndexError, KeyError):
-                                pass
-                    else:
+                    if for_count:
                         global_count += 1
+                    elif custom_id not in self.cache["existing_keys"]:  # The action is no longer used by any data.
+                        try:
+                            del global_data[_type][custom_id]
+                        except (IndexError, KeyError):
+                            pass
         if for_count:
             return (
                 global_count,
@@ -639,7 +636,7 @@ class Seen(Cog):
                 ]
                 if custom_id is not None
             ]
-            if len(custom_ids) == 0:
+            if not custom_ids:
                 return
             custom_id = sorted(
                 custom_ids,
@@ -713,17 +710,17 @@ class Seen(Cog):
         else:
             ts = ""
             if output[0] == 1:
-                ts += "{} day, ".format(output[0])
+                ts += f"{output[0]} day, "
             elif output[0] > 1:
-                ts += "{} days, ".format(output[0])
+                ts += f"{output[0]} days, "
             if output[1] == 1:
-                ts += "{} hour, ".format(output[1])
+                ts += f"{output[1]} hour, "
             elif output[1] > 1:
-                ts += "{} hours, ".format(output[1])
+                ts += f"{output[1]} hours, "
             if output[2] == 1:
-                ts += "{} minute ago".format(output[2])
+                ts += f"{output[2]} minute ago"
             elif output[2] > 1:
-                ts += "{} minutes ago".format(output[2])
+                ts += f"{output[2]} minutes ago"
         seen = ts
         action = data["action"]
         message = action["message"]
@@ -925,7 +922,7 @@ class Seen(Cog):
                 continue
             time, seen, action = result
             data[x] = [time, seen]
-        if len(data) == 0:
+        if not data:
             embed = discord.Embed()
             embed.color = discord.Color.red()
             embed.title = f"I haven't seen any {_object} yet."
@@ -936,13 +933,11 @@ class Seen(Cog):
         embed.timestamp = datetime.datetime.now()
         embeds = []
         description = []
-        count = 0
         all_count = len(data)
-        for x, y in sorted(data.items(), key=lambda x: x[1][0], reverse=not reverse):
-            count += 1
+        for count, (x, y) in enumerate(sorted(data.items(), key=lambda x: x[1][0], reverse=not reverse), start=1):
             seen = y[1]
             description.append(
-                f"{(count) if not reverse else ((all_count + 1) - count)} - **{prefix}{getattr(x, 'display_name', getattr(x, 'name', x))}**: {seen}."
+                f"{all_count + 1 - count if reverse else count} - **{prefix}{getattr(x, 'display_name', getattr(x, 'name', x))}**: {seen}."
             )
         description = "\n".join(description)
         for text in pagify(description):
@@ -961,11 +956,10 @@ class Seen(Cog):
             return
         if not message.author.bot:
             ctx: commands.Context = await self.bot.get_context(message)
-            if ctx.valid:
-                if (
-                    ctx.command.cog_name is not None and ctx.command.cog_name == "Seen"
-                ):  # The commands of this cog will not be counted in order to measure its own absence for example.
-                    return
+            if ctx.valid and (
+                ctx.command.cog_name is not None and ctx.command.cog_name == "Seen"
+            ):
+                return
         if (
             message.author.id == message.guild.me.id
             and len(message.embeds) == 1
@@ -1022,14 +1016,16 @@ class Seen(Cog):
             return
         if not isinstance(user, discord.Member):
             return
-        if user.id == reaction.message.guild.me.id and reaction.emoji == "✅":
-            if not reaction.message.author.bot:
-                ctx: commands.Context = await self.bot.get_context(reaction.message)
-                if ctx.valid:
-                    if (
-                        ctx.command.cog_name is not None and ctx.command.cog_name == "Seen"
-                    ):  # The commands of this cog will not be counted in order to measure its own absence for example.
-                        return
+        if (
+            user.id == reaction.message.guild.me.id
+            and reaction.emoji == "✅"
+            and not reaction.message.author.bot
+        ):
+            ctx: commands.Context = await self.bot.get_context(reaction.message)
+            if ctx.valid and (
+                ctx.command.cog_name is not None and ctx.command.cog_name == "Seen"
+            ):
+                return
         ignored_users = await self.config.ignored_users()
         if user.id in ignored_users:
             return
@@ -1166,16 +1162,14 @@ class Seen(Cog):
         """Check when a category was last active!"""
         if category is None:
             category = ctx.channel.category
-            if category is None:
-                await ctx.send_help()
-                return
+        if category is None:
+            await ctx.send_help()
+            return
         if show_details is None:
             show_details = True
         if all(
-            [
-                not channel.permissions_for(ctx.author).view_channel
-                for channel in category.text_channels
-            ]
+            not channel.permissions_for(ctx.author).view_channel
+            for channel in category.text_channels
         ):
             raise commands.UserFeedbackCheckFailure(
                 _("You do not have permission to view any of the channels in this category.")
@@ -1340,8 +1334,7 @@ class Seen(Cog):
             "Guilds count": guilds_count,
         }
         stats = [f"{key}: {value}" for key, value in stats.items()]
-        message = "---------- Config Stats for Seen ----------\n\n"
-        message += "\n".join(stats)
+        message = "---------- Config Stats for Seen ----------\n\n" + "\n".join(stats)
         message = box(message)
         await ctx.send(message)
 
@@ -1378,9 +1371,7 @@ class Seen(Cog):
     @seen.command(hidden=True)
     async def getdebugloopsstatus(self, ctx: commands.Context) -> None:
         """Get an embed for check loop status."""
-        embeds = []
-        for loop in self.cogsutils.loops.values():
-            embeds.append(loop.get_debug_embed())
+        embeds = [loop.get_debug_embed() for loop in self.cogsutils.loops.values()]
         await Menu(pages=embeds).start(ctx)
 
     @commands.is_owner()

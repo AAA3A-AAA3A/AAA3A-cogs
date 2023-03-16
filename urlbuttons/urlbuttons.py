@@ -1,14 +1,12 @@
 ﻿from .AAA3A_utils import Cog, CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
 if not CogsUtils().is_dpy2:
     from dislash import ActionRow  # isort:skip
-
-from redbot.core import Config
 
 from .converters import Emoji, EmojiUrlConverter
 
@@ -81,7 +79,7 @@ class UrlButtons(Cog):
         text_button: typing.Optional[str] = None,
     ) -> None:
         """Add a url-button to a message."""
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the url-button to work.")
             )
@@ -126,7 +124,7 @@ class UrlButtons(Cog):
 
         ```[p]urlbuttons bulk <message> :red_circle:|<https://github.com/Cog-Creators/Red-DiscordBot> :smiley:|<https://github.com/Cog-Creators/Red-SmileyBot> :green_circle:|<https://github.com/Cog-Creators/Green-DiscordBot>```
         """
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the url-button to work.")
             )
@@ -167,7 +165,7 @@ class UrlButtons(Cog):
     @urlbuttons.command()
     async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji) -> None:
         """Remove a url-button to a message."""
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.")
             )
@@ -181,25 +179,24 @@ class UrlButtons(Cog):
                 _("I wasn't watching for this button on this message.")
             )
         del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
-        if not config[f"{message.channel.id}-{message.id}"] == {}:
-            if self.cogsutils.is_dpy2:
-                view = self.get_buttons(config, message)
-                await message.edit(view=view)
-                self.cogsutils.views.append(view)
-            else:
-                await message.edit(components=self.get_buttons(config, message))
-        else:
+        if config[f"{message.channel.id}-{message.id}"] == {}:
             del config[f"{message.channel.id}-{message.id}"]
             if self.cogsutils.is_dpy2:
                 await message.edit(view=None)
             else:
                 await message.edit(components=None)
+        elif self.cogsutils.is_dpy2:
+            view = self.get_buttons(config, message)
+            await message.edit(view=view)
+            self.cogsutils.views.append(view)
+        else:
+            await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).url_buttons.set(config)
 
     @urlbuttons.command()
     async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
         """Clear all url-buttons to a message."""
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the url-button to work.")
             )
@@ -243,48 +240,43 @@ class UrlButtons(Cog):
                     )
                 )
             return view
-        else:
-            all_buttons = []
-            lists = []
-            one_l = [button for button in config[f"{message.channel.id}-{message.id}"]]
-            while True:
-                l = one_l[0:4]
-                one_l = one_l[4:]
-                lists.append(l)
-                if one_l == []:
-                    break
-            for l in lists:
-                buttons = {"type": 1, "components": []}
-                for button in l:
-                    try:
-                        int(button)
-                    except ValueError:
-                        buttons["components"].append(
-                            {
-                                "type": 2,
-                                "style": 5,
-                                "label": config[f"{message.channel.id}-{message.id}"][f"{button}"][
-                                    "text_button"
-                                ],
-                                "emoji": {"name": f"{button}"},
-                                "url": config[f"{message.channel.id}-{message.id}"][f"{button}"][
-                                    "url"
-                                ],
-                            }
-                        )
-                    else:
-                        buttons["components"].append(
-                            {
-                                "type": 2,
-                                "style": 5,
-                                "label": config[f"{message.channel.id}-{message.id}"][f"{button}"][
-                                    "text_button"
-                                ],
-                                "emoji": {"name": f"{button}", "id": int(button)},
-                                "url": config[f"{message.channel.id}-{message.id}"][f"{button}"][
-                                    "url"
-                                ],
-                            }
-                        )
-            all_buttons.append(ActionRow.from_dict(buttons))
-        return all_buttons
+        lists = []
+        one_l = list(config[f"{message.channel.id}-{message.id}"])
+        while one_l != []:
+            li = one_l[:4]
+            one_l = one_l[4:]
+            lists.append(li)
+        for li in lists:
+            buttons = {"type": 1, "components": []}
+            for button in li:
+                try:
+                    int(button)
+                except ValueError:
+                    buttons["components"].append(
+                        {
+                            "type": 2,
+                            "style": 5,
+                            "label": config[f"{message.channel.id}-{message.id}"][f"{button}"][
+                                "text_button"
+                            ],
+                            "emoji": {"name": f"{button}"},
+                            "url": config[f"{message.channel.id}-{message.id}"][f"{button}"][
+                                "url"
+                            ],
+                        }
+                    )
+                else:
+                    buttons["components"].append(
+                        {
+                            "type": 2,
+                            "style": 5,
+                            "label": config[f"{message.channel.id}-{message.id}"][f"{button}"][
+                                "text_button"
+                            ],
+                            "emoji": {"name": f"{button}", "id": int(button)},
+                            "url": config[f"{message.channel.id}-{message.id}"][f"{button}"][
+                                "url"
+                            ],
+                        }
+                    )
+        return [ActionRow.from_dict(buttons)]

@@ -72,7 +72,7 @@ class CtxVar(Cog):
                     )
                 instance = getattr(instance, arg)
         if len(f"{bold(full_instance_name)}") > 256:
-            full_instance_name = bold(full_instance_name[:248] + "|...")
+            full_instance_name = bold(f"{full_instance_name[:248]}|...")
         embed: discord.Embed = discord.Embed()
         embed.title = f"**{full_instance_name}**"
         embed.description = _(
@@ -92,17 +92,15 @@ class CtxVar(Cog):
             except Exception:
                 pass
         lists = []
-        while True:
-            lst = one_l[0:20]
+        while one_l != []:
+            li = one_l[:20]
             one_l = one_l[20:]
-            lists.append(lst)
-            if one_l == []:
-                break
+            lists.append(li)
         embeds = []
-        for lst in lists:
+        for li in lists:
             e = copy(embed)
-            for x in lst:
-                if not len(f"{x}") > 256:
+            for x in li:
+                if len(f"{x}") <= 256:
                     try:
                         e.add_field(
                             inline=True,
@@ -142,7 +140,7 @@ class CtxVar(Cog):
                     keywords=[],
                 )
                 tree = ast.fix_missing_locations(tree)
-            object = eval(compile(tree, "<dir>", "eval"), env)
+            _object = eval(compile(tree, "<dir>", "eval"), env)
         except NameError:
             raise commands.UserFeedbackCheckFailure(
                 _("I couldn't find any cog, command, or object named `{thing}`.").format(
@@ -154,13 +152,17 @@ class CtxVar(Cog):
                 box("".join(traceback.format_exception_only(type(e), e)), lang="py")
             )
 
-        result = "[\n"
-        if search is None:
-            result += "\n".join([f"    '{attr}'," for attr in dir(object)])
-        else:
-            result += "\n".join(
-                [f"    '{attr}'," for attr in dir(object) if search.lower() in attr.lower()]
+        result = "[\n" + (
+            "\n".join([f"    '{attr}'," for attr in dir(_object)])
+            if search is None
+            else "\n".join(
+                [
+                    f"    '{attr}',"
+                    for attr in dir(_object)
+                    if search.lower() in attr.lower()
+                ]
             )
+        )
         if result[-1] == ",":
             result = list(result)
             del result[-1]
@@ -194,7 +196,7 @@ class CtxVar(Cog):
                     keywords=[],
                 )
                 tree = ast.fix_missing_locations(tree)
-            object = eval(compile(tree, "<dir>", "eval"), env)
+            _object = eval(compile(tree, "<dir>", "eval"), env)
         except NameError:
             raise commands.UserFeedbackCheckFailure(
                 _("I couldn't find any cog, command, or object named `{thing}`.").format(
@@ -217,8 +219,8 @@ class CtxVar(Cog):
             console = rich.console.Console(file=file, **kwargs)
             if show_all:
                 rich.inspect(
-                    obj=object,
-                    title=repr(object),
+                    obj=_object,
+                    title=repr(_object),
                     help=True,
                     methods=True,
                     docs=True,
@@ -231,8 +233,8 @@ class CtxVar(Cog):
                 )
             else:
                 rich.inspect(
-                    obj=object,
-                    title=repr(object),
+                    obj=_object,
+                    title=repr(_object),
                     help=True,
                     methods=False,
                     docs=True,

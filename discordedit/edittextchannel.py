@@ -49,7 +49,7 @@ class EditTextChannel(Cog):
             not self.cogsutils.check_permissions_for(
                 channel=channel, user=ctx.author, check=["manage_channel"]
             )
-            and not ctx.author.id == ctx.guild.owner.id
+            and ctx.author.id != ctx.guild.owner.id
             and ctx.author.id not in ctx.bot.owner_ids
         ):
             raise commands.UserFeedbackCheckFailure(
@@ -192,11 +192,11 @@ class EditTextChannel(Cog):
             max_guild_text_channels_position = len(
                 [c for c in ctx.guild.channels if isinstance(c, discord.TextChannel)]
             )
-            if not position > 0 or not position < max_guild_text_channels_position + 1:
+            if position <= 0 or position >= max_guild_text_channels_position + 1:
                 raise commands.BadArgument(
                     f"The indicated position must be between 1 and {max_guild_text_channels_position}."
                 )
-            position = position - 1
+            position -= 1
             return position
 
     @edittextchannel.command(name="position")
@@ -300,7 +300,7 @@ class EditTextChannel(Cog):
             channel = ctx.channel
         await self.check_text_channel(ctx, channel)
         slowmode_delay = int(slowmode_delay.total_seconds())
-        if not slowmode_delay >= 0 or not slowmode_delay <= 21600:
+        if slowmode_delay < 0 or slowmode_delay > 21600:
             await ctx.send_help()
             return
         try:
@@ -318,7 +318,7 @@ class EditTextChannel(Cog):
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
-        type: commands.Literal["0", "5"],
+        _type: commands.Literal["0", "5"],
     ) -> None:
         """Edit text channel type.
 
@@ -329,10 +329,10 @@ class EditTextChannel(Cog):
         if channel is None:
             channel = ctx.channel
         await self.check_text_channel(ctx, channel)
-        type = discord.ChannelType(int(type))
+        _type = discord.ChannelType(int(_type))
         try:
             await channel.edit(
-                type=type,
+                type=_type,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
@@ -420,11 +420,9 @@ class EditTextChannel(Cog):
         targets = list(roles_or_users)
         for r in roles_or_users:
             if isinstance(r, str):
+                targets.remove(r)
                 if r == "everyone":
-                    targets.remove(r)
                     targets.append(ctx.guild.default_role)
-                else:
-                    targets.remove(r)
         if not targets:
             raise commands.UserFeedbackCheckFailure(
                 _("You need to provide a role or user you want to edit permissions for")

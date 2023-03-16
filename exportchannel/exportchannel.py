@@ -82,7 +82,42 @@ class ExportChannel(Cog):
     ) -> typing.Union[int, typing.List[discord.Message], discord.File]:
         count_messages, messages = await self.get_messages(ctx, channel=channel, **kwargs)
         if self.cogsutils.is_dpy2:
-            transcript = await chat_exporter.raw_export(
+            class Transcript(chat_exporter.construct.transcript.TranscriptDAO):
+                @classmethod
+                async def export(
+                    cls,
+                    channel: discord.TextChannel,
+                    messages: typing.List[discord.Message],
+                    tz_info="UTC",
+                    guild: typing.Optional[discord.Guild] = None,
+                    bot: typing.Optional[discord.Client] = None,
+                    military_time: typing.Optional[bool] = False,
+                    fancy_times: typing.Optional[bool] = True,
+                    support_dev: typing.Optional[bool] = True
+                ):
+                    self = cls(
+                        channel=channel,
+                        limit=None,
+                        messages=messages,
+                        pytz_timezone=tz_info,
+                        military_time=military_time,
+                        fancy_times=fancy_times,
+                        before=None,
+                        after=None,
+                        support_dev=support_dev,
+                        bot=bot
+                    )
+                    if not self.after:
+                        self.messages.reverse()
+                    return (await self.build_transcript()).html
+            # transcript = await chat_exporter.raw_export(
+            #     channel=channel,
+            #     messages=messages,
+            #     tz_info="UTC",
+            #     guild=channel.guild,
+            #     bot=ctx.bot,
+            # )
+            transcript = await Transcript.export(
                 channel=channel,
                 messages=messages,
                 tz_info="UTC",

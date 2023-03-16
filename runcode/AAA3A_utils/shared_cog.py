@@ -110,7 +110,10 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
 
         self.cogsutils = CogsUtils(cog=self)
         self.sentry: SentryHelper = None
+
         self.telemetrywithsentry.__is_dev__: bool = True
+        self.getallfor.__is_dev__: bool = True
+
         if self.AAA3A_utils.app_command:
             self.AAA3A_utils.app_command.module = ".".join(self.AAA3A_utils.app_command.module.split(".")[1:])  # Add `AAA3A_utils` module to new `[p]slash list` in Flame's PR.
 

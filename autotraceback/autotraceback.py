@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils import CogsUtils, Menu  # isort:skip
+﻿from .AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -37,7 +37,7 @@ IGNORED_ERRORS = (
 
 
 @cog_i18n(_)
-class AutoTraceback(commands.Cog):
+class AutoTraceback(Cog):
     """A cog to display the error traceback of a command automatically after the error!"""
 
     def __init__(self, bot: Red) -> None:

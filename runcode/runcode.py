@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils import CogsUtils, Menu  # isort:skip
+﻿from .AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -101,7 +101,7 @@ else:
 
 
 @cog_i18n(_)
-class RunCode(commands.Cog):
+class RunCode(Cog):
     """A cog to compile and run codes in some languages! Use `[p]setrundocs listlanguages` to get a list of all the available languages."""
 
     def __init__(self, bot: Red) -> None:

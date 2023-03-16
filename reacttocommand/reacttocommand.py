@@ -1,4 +1,4 @@
-from .AAA3A_utils import CogsUtils  # isort:skip
+from .AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -43,7 +43,7 @@ class Emoji(commands.EmojiConverter):
 
 
 @cog_i18n(_)
-class ReactToCommand(commands.Cog):
+class ReactToCommand(Cog):
     """A cog to allow a user to execute a command by clicking on a reaction!"""
 
     def __init__(self, bot: Red) -> None:

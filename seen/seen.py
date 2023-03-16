@@ -1,4 +1,4 @@
-from .AAA3A_utils import CogsUtils, Menu, Loop  # isort:skip
+from .AAA3A_utils import Cog, CogsUtils, Menu, Loop  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -33,7 +33,7 @@ else:
 
 
 @cog_i18n(_)
-class Seen(commands.Cog):
+class Seen(Cog):
     """A cog to check when a member/role/channel/category/user/guild was last active!"""
 
     def __init__(self, bot: Red) -> None:

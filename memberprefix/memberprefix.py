@@ -1,4 +1,4 @@
-from .AAA3A_utils import CogsUtils  # isort:skip
+from .AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -27,7 +27,7 @@ else:
 
 
 @cog_i18n(_)
-class MemberPrefix(commands.Cog):
+class MemberPrefix(Cog):
     """A cog to allow a member to choose custom prefixes, just for them!"""
 
     def __init__(self, bot: Red) -> None:

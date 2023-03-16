@@ -1,4 +1,4 @@
-from .AAA3A_utils import CogsUtils  # isort:skip
+from .AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -25,7 +25,7 @@ ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions 
 
 
 @cog_i18n(_)
-class EditVoiceChannel(commands.Cog):
+class EditVoiceChannel(Cog):
     """A cog to edit voice channels!"""
 
     def __init__(self, bot: Red) -> None:  # Never executed except manually.
@@ -40,7 +40,7 @@ class EditVoiceChannel(commands.Cog):
             not self.cogsutils.check_permissions_for(
                 channel=channel, user=ctx.author, check=["manage_channel"]
             )
-            and not ctx.author.id == ctx.guild.owner.id
+            and ctx.author.id != ctx.guild.owner.id
             and ctx.author.id not in ctx.bot.owner_ids
         ):
             raise commands.UserFeedbackCheckFailure(

@@ -1,4 +1,4 @@
-from .AAA3A_utils import CogsUtils, Menu  # isort:skip
+from .AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -37,7 +37,7 @@ class StrConverter(commands.Converter):
 
 
 @cog_i18n(_)
-class DiscordSearch(commands.Cog):
+class DiscordSearch(Cog):
     """A cog to edit roles!"""
 
     def __init__(self, bot: Red) -> None:

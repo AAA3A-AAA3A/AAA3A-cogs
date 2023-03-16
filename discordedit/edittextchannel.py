@@ -1,4 +1,4 @@
-from .AAA3A_utils import CogsUtils  # isort:skip
+from .AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -34,7 +34,7 @@ ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions 
 
 
 @cog_i18n(_)
-class EditTextChannel(commands.Cog):
+class EditTextChannel(Cog):
     """A cog to edit text channels!"""
 
     def __init__(self, bot: Red) -> None:  # Never executed except manually.

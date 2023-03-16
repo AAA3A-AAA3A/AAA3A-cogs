@@ -1,4 +1,4 @@
-from .AAA3A_utils import CogsUtils  # isort:skip
+from .AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -29,7 +29,7 @@ LINK_MESSAGE = "[Click here to view the transcript.]({url})"
 
 
 @cog_i18n(_)
-class ExportChannel(commands.Cog):
+class ExportChannel(Cog):
     """A cog to export all or part of a channel's messages to an html file!"""
 
     def __init__(self, bot: Red) -> None:

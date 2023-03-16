@@ -1,4 +1,4 @@
-from .AAA3A_utils import CogsUtils  # isort:skip
+from .AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -35,7 +35,7 @@ RESULT_MESSAGE = _(
 
 
 @cog_i18n(_)
-class TransferChannel(commands.Cog):
+class TransferChannel(Cog):
     """A cog to transfer all messages channel in a other channel!"""
 
     def __init__(self, bot: Red) -> None:

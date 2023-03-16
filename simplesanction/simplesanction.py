@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils import CogsUtils  # isort:skip
+﻿from .AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -49,7 +49,7 @@ class TimeDeltaConverter(commands.Converter):
 
 
 @cog_i18n(_)
-class SimpleSanction(settings, commands.Cog):
+class SimpleSanction(settings, Cog):
     """A cog to sanction a user!"""
 
     def __init__(self, bot: Red) -> None:

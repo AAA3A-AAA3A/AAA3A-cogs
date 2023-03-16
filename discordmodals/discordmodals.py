@@ -1,4 +1,4 @@
-from .AAA3A_utils import CogsUtils  # isort:skip
+from .AAA3A_utils import Cog, CogsUtils  # isort:skip
 from .AAA3A_utils import Buttons, Modal  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -49,7 +49,7 @@ class YAMLConverter(commands.Converter):
                 raise discord.ext.commands.BadArgument(
                     _(
                         "The agument `/{arg}` is invalid in in the YAML. Check the spelling."
-                    ).format(arg=aarg)
+                    ).format(arg=arg)
                 )
         # button
         required_arguments = ["label"]
@@ -180,7 +180,7 @@ class YAMLConverter(commands.Converter):
 
 
 @cog_i18n(_)
-class DiscordModals(commands.Cog):
+class DiscordModals(Cog):
     """A cog to use Discord Modals, forms with graphic interface!"""
 
     def __init__(self, bot: Red) -> None:

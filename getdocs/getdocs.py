@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils import CogsUtils, Menu  # isort:skip
+﻿from .AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -152,7 +152,7 @@ class SourceConverter(commands.Converter):
 
 
 @cog_i18n(_)
-class GetDocs(commands.Cog):
+class GetDocs(Cog):
     """A cog to get and display Sphinx docs! Use `[p]listsources` to get a list of all the available sources."""
 
     def __init__(self, bot: Red) -> None:

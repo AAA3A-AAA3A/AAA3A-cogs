@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils import CogsUtils  # isort:skip
+﻿from .AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -34,7 +34,7 @@ else:
 
 
 @cog_i18n(_)
-class RolesButtons(commands.Cog):
+class RolesButtons(Cog):
     """A cog to have roles-buttons!"""
 
     def __init__(self, bot: Red) -> None:

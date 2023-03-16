@@ -1,4 +1,4 @@
-from .AAA3A_utils import CogsUtils, Settings  # isort:skip
+from .AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
 from redbot.core import Config, commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -25,7 +25,7 @@ else:
 
 
 @cog_i18n(_)
-class Ip(commands.Cog):
+class Ip(Cog):
     """A cog to get the ip address of the bot!"""
 
     def __init__(self, bot: Red) -> None:

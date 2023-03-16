@@ -1,4 +1,4 @@
-from .AAA3A_utils import CogsUtils, Menu  # isort:skip
+from .AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -36,7 +36,7 @@ else:
 
 
 @cog_i18n(_)
-class EditFile(commands.Cog):
+class EditFile(Cog):
     """A cog to get a file and replace it from its path from Discord!"""
 
     def __init__(self, bot: Red):

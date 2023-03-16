@@ -21,7 +21,6 @@ from redbot.core.data_manager import cog_data_path
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.logging import RotatingFileHandler
 
-from .cog import Cog
 from .dev import DevEnv
 from .loop import Loop
 from .shared_cog import SharedCog
@@ -168,7 +167,6 @@ class CogsUtils(commands.Cog):
             return
         setattr(self.cog, "cogsutils", self)
         self.init_logger()
-        Cog._setup(bot=self.bot, cog=self.cog)
         asyncio.create_task(self._await_setup())
 
     async def _await_setup(self) -> None:

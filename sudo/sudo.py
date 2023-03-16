@@ -14,7 +14,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-from .AAA3A_utils import CogsUtils  # isort:skip
+from .AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -42,7 +42,7 @@ else:
 
 
 @cog_i18n(_)
-class Sudo(commands.Cog):
+class Sudo(Cog):
     """A cog to allow bot owners to be normal users in terms of permissions!"""
 
     def __init__(self, bot: Red):

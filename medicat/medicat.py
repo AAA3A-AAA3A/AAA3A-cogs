@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils import CogsUtils, Menu, Loop  # isort:skip
+﻿from .AAA3A_utils import Cog, CogsUtils, Menu, Loop  # isort:skip
 
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -268,7 +268,7 @@ BOOTABLES_TOOLS = {
 
 
 @cog_i18n(_)
-class Medicat(commands.Cog):
+class Medicat(Cog):
     """This cog will only work on x server and therefore cannot be used by the general public!"""
 
     def __init__(self, bot: Red) -> None:

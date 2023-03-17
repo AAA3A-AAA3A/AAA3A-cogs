@@ -3,7 +3,7 @@ from .cogsutils import CogsUtils
 from .context import Context
 from .dev import DevEnv, DevSpace
 from .loop import Loop
-from .menus import Menu
+from .menus import Menu, Reactions
 
 try:
     from .sentry import SentryHelper
@@ -23,7 +23,6 @@ if CogsUtils().is_dpy2:
         RoleSelect,
         Select,
         UserSelect,
-        Reactions
     )  # NOQA
 
 __author__ = "AAA3A"

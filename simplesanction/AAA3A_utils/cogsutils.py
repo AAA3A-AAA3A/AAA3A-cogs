@@ -23,10 +23,11 @@ from redbot.logging import RotatingFileHandler
 
 from .dev import DevEnv
 from .loop import Loop
+from .menus import Reactions
 from .shared_cog import SharedCog
 
 if discord.version_info.major >= 2:
-    from .views import ConfirmationAskView, Reactions
+    from .views import ConfirmationAskView
 
 __all__ = ["CogsUtils"]
 

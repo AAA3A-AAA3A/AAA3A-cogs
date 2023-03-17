@@ -95,6 +95,8 @@ class ExportChannel(Cog):
                     fancy_times: typing.Optional[bool] = True,
                     support_dev: typing.Optional[bool] = True
                 ):
+                    if guild:
+                        channel.guild = guild
                     self = cls(
                         channel=channel,
                         limit=None,

@@ -33,7 +33,7 @@ from rich.table import Table
 from .cog import Cog
 from .context import Context, is_dev
 from .loop import Loop
-from .menus import Menu
+from .menus import Menu, Reactions
 
 try:
     from .sentry import SentryHelper
@@ -51,9 +51,8 @@ if discord.version_info.major >= 2:
         Modal,
         RoleSelect,
         Select,
-        UserSelect,
-        Reactions
-    )  # NOQA
+        UserSelect
+)  # NOQA
 
 CogsUtils: typing.Any = None
 

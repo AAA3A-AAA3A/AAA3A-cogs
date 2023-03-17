@@ -2,7 +2,9 @@ from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from .types import Documentation, SearchResults
+from redbot.core.utils.chat_formatting import pagify
+
+from .types import SearchResults, Documentation
 
 
 class DocsSelectOption(discord.SelectOption):
@@ -54,6 +56,8 @@ class GetDocsView(discord.ui.View):
         self.results = results
         if not results or not results.results:
             raise RuntimeError("No results found.")
+        if self.source.name == "discordapi":
+            self.show_parameters.label = "Show fields"
         select = DocsSelect(self, results)
         self.add_item(select)
         await self._update(results.results[0][1])
@@ -91,7 +95,7 @@ class GetDocsView(discord.ui.View):
         if parameters_button := discord.utils.get(
             self.children, custom_id="show_parameters"
         ):
-            parameters_button.disabled = not doc.parameters
+            parameters_button.disabled = not doc.parameters and not (self.source.name == "discordapi" and doc.fields)
         if examples_button := discord.utils.get(
             self.children, custom_id="show_examples"
         ):
@@ -139,7 +143,7 @@ class GetDocsView(discord.ui.View):
                 "Current variable is somehow empty, so attributes aren't loaded.",
                 ephemeral=True,
             )
-        if not self._current.parameters:
+        if not self._current.parameters and not (self.source.name == "discordapi" and self._current.fields):
             return await interaction.response.send_message(
                 "There are no attributes available for this option.",
                 ephemeral=True,
@@ -159,7 +163,31 @@ class GetDocsView(discord.ui.View):
         if next_button:
             self.remove_item(next_button)
 
-        embeds = self._current.parameters.to_embeds()
+        if self.source.name != "discordapi":
+            embeds = self._current.parameters.to_embeds()
+        else:
+            description = ""
+            for name, value in self._current.fields.items():
+                description += f"\n\n**{name}:**\n{value}"
+            embeds = []
+            pages = list(pagify(description, page_length=4000, delims=["\n• ", "\n**"]))
+            if len(pages) == 1:
+                embed = discord.Embed(
+                        title="Fields:",
+                        description=description,
+                        color=discord.Color.green(),
+                )
+                embeds.append(embed)
+            else:
+                embeds = []
+                for i, page in enumerate(pages, start=1):
+                    embed = discord.Embed(
+                            title=f"Fields {i}:",
+                            description=page,
+                            color=discord.Color.green(),
+                    )
+                    embeds.append(embed)
+
         if len(embeds) == 1:
             self._message = await self._message.edit(embed=embeds[0])
         else:
@@ -196,7 +224,7 @@ class GetDocsView(discord.ui.View):
             next_button.callback = _next_button
             self.add_item(next_button)
             self._message = await self._message.edit(embed=embeds[0], view=self)
-            self._mode = "parameters"
+        self._mode = "parameters"
 
     @discord.ui.button(label="Show Examples", custom_id="show_examples", row=1)
     async def show_examples(

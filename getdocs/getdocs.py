@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
+﻿from .AAA3A_utils import Cog, CogsUtils, Menu, Loop  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -7,8 +7,12 @@ import typing  # isort:skip
 
 import asyncio
 import functools
+import os
+import pathlib
 import random
 import re
+import subprocess
+import tempfile
 import time
 
 # from playwright._impl._api_types import TimeoutError as PlaywrightTimeoutError
@@ -93,6 +97,11 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
     "slashtags": {
         "url": "https://phen-cogs.readthedocs.io/en/latest/",
         "icon_url": "https://i.imgur.com/dIOX12K.png",
+    },
+    "discordapi": {  # Special source.
+        "url": "https://discord.com/developers/docs/",
+        "icon_url": "https://c.clc2l.com/t/d/i/discord-4OXyS2.png",
+        "aliases": ["apidiscord"],
     },
     "psutil": {"url": "https://psutil.readthedocs.io/en/latest/", "icon_url": None},
     "pillow": {
@@ -289,7 +298,7 @@ class GetDocs(Cog):
         limit: typing.Optional[int] = 10,
         with_std: typing.Optional[bool] = True,
         *,
-        query: typing.Optional[str] = None,
+        query: typing.Optional[str] = "",
     ) -> None:
         """
         Show all attributes matching your search.
@@ -306,6 +315,8 @@ class GetDocs(Cog):
         if source.name == "discord.py" and query == "events":
             limit = len([item for item in source._raw_rtfm_cache_without_std if item.startswith("discord.on_")])
             with_std = False
+        elif query == "":
+            limit = len(source._rtfm_cache.objects)
         try:
             result = await source.search(query, limit=limit, exclude_std=not with_std)
         except RuntimeError as e:
@@ -452,8 +463,8 @@ class Source:
         self._rtfm_cache_url: str = urljoin(url, "objects.inv")
         # self._rtfs_commit: typing.Optional[str] = None
 
-        self._rtfm_caching_task = None
-        self._docs_caching_task = None
+        self._rtfm_caching_task: Loop = None
+        self._docs_caching_task: Loop = None
         self._docs_caching_progress: typing.Dict[
             str, typing.Optional[typing.Union[bool, Exception]]
         ] = {}
@@ -471,21 +482,21 @@ class Source:
     ###################
 
     async def load(self) -> None:
-        self._rtfm_caching_task = self.cog.cogsutils.create_loop(
-            self._build_rtfm_cache, name=f"{self.name}: Build RTFM Cache", limit_count=1
-        )
-        while self._rtfm_cache is None or (
-            self._rtfm_caching_task is not None and self._rtfm_caching_task.currently_running
-        ):
-            await asyncio.sleep(1)
-        if not self._docs_cache:
-            self._docs_caching_task = self.cog.cogsutils.create_loop(
-                self._build_docs_cache,
-                name=f"{self.name}: Build Documentations Cache",
-                limit_count=1,
+        if self.name != "discordapi":
+            self._rtfm_caching_task = self.cog.cogsutils.create_loop(
+                self._build_rtfm_cache, name=f"{self.name}: Build RTFM Cache", limit_count=1
             )
+            while self._rtfm_cache is None or (
+                self._rtfm_caching_task is not None and self._rtfm_caching_task.currently_running
+            ):
+                await asyncio.sleep(1)
+        self._docs_caching_task = self.cog.cogsutils.create_loop(
+            self._build_docs_cache,
+            name=f"{self.name}: Build Documentations Cache",
+            limit_count=1,
+        )
         # if not self._rtfs_cache:
-        # self._rtfs_caching_task = self.cog.cogsutils.create_loop(self._build_rtfs_cache, name=f"{self.name}: Build RTFS Cache", limit_count=1)
+        #     self._rtfs_caching_task = self.cog.cogsutils.create_loop(self._build_rtfs_cache, name=f"{self.name}: Build RTFS Cache", limit_count=1)
 
     async def _build_rtfm_cache(self, recache: bool = False) -> Inventory:
         if self._rtfm_cache is not None and not recache:
@@ -496,7 +507,6 @@ class Source:
         self._rtfm_cache = await loop.run_in_executor(None, partial)
         for item in self._rtfm_cache.objects:
             self._raw_rtfm_cache_with_std.append(item.name)
-        for item in self._rtfm_cache.objects:
             if item.domain != "std":
                 self._raw_rtfm_cache_without_std.append(item.name)
         self.cog.log.debug(f"{self.name}: RTFM cache built.")
@@ -513,42 +523,158 @@ class Source:
         start = time.monotonic()
         self.cog._docs_stats[self.name] = {"manuals": 0, "documentations": 0}
 
-        _manuals = {
-            obj.uri.split("#")[0]
-            for obj in self._rtfm_cache.objects
-            if obj.domain != "std"
-        }
         manuals = []
-        for manual in _manuals:
-            if manual.endswith("#$"):
-                manual = manual[:-2]
-            manuals.append((manual, self.url + manual))
-        if self.name == "python":
-            for i, manual in enumerate(["library/stdtypes.html", "library/functions.html"]):  # important documentations
-                manuals.remove((manual, self.url + manual))
-                manuals.insert(i, (manual, self.url + manual))
-            manual = "tutorial/datastructures.html"  # not found by RTFM caching task
-            manuals.insert(i + 1, (manual, self.url + manual))
-
-        for name, manual in manuals:
-            try:
-                documentations = await self._get_all_manual_documentations(manual)
-                for documentation in documentations:
-                    self.cog._docs_stats[self.name]["documentations"] += 1
-                    self.cog._docs_stats["GLOBAL"]["documentations"] += 1
-                    self._docs_cache.append(documentation)
-                self.cog._docs_stats[self.name]["manuals"] += 1
-                self.cog._docs_stats["GLOBAL"]["manuals"] += 1
-                if self.cog.cogsutils.is_dpy2:
-                    self.cog.log.trace(
-                        f"{self.name}: `{name}` documentation added to documentation cache."
+        if self.name != "discordapi":
+            _manuals = {
+                obj.uri.split("#")[0]
+                for obj in self._rtfm_cache.objects
+                if obj.domain != "std"
+            }
+            for manual in _manuals:
+                if manual.endswith("#$"):
+                    manual = manual[:-2]
+                manuals.append((manual, self.url + manual))
+            if self.name == "python":
+                for i, manual in enumerate(["library/stdtypes.html", "library/functions.html"]):  # important documentations
+                    manuals.remove((manual, self.url + manual))
+                    manuals.insert(i, (manual, self.url + manual))
+                manual = "tutorial/datastructures.html"  # not found by RTFM caching task
+                manuals.insert(i + 1, (manual, self.url + manual))
+            for name, manual in manuals:
+                try:
+                    documentations = await self._get_all_manual_documentations(manual)
+                    for documentation in documentations:
+                        self.cog._docs_stats[self.name]["documentations"] += 1
+                        self.cog._docs_stats["GLOBAL"]["documentations"] += 1
+                        self._docs_cache.append(documentation)
+                    self.cog._docs_stats[self.name]["manuals"] += 1
+                    self.cog._docs_stats["GLOBAL"]["manuals"] += 1
+                    if self.cog.cogsutils.is_dpy2:
+                        self.cog.log.trace(
+                            f"{self.name}: `{name}` documentation added to documentation cache."
+                        )
+                except Exception as e:
+                    self.cog.log.debug(
+                        f"{self.name}: Error occured while trying to cache `{name}` documentation.",
+                        exc_info=e,
                     )
-            except Exception as e:
-                self.cog.log.debug(
-                    f"{self.name}: Error occured while trying to cache `{name}` documentation.",
-                    exc_info=e,
-                )
-                self._docs_caching_progress[name] = e
+                    self._docs_caching_progress[name] = e
+        else:
+            self.cog.log.debug(f"{self.name}: Starting RTFM caching...")
+            _rtfm_cache = Inventory()
+            _rtfm_cache.project = self.name
+            _rtfm_cache.version = 1.0
+            with tempfile.TemporaryDirectory() as directory:
+                repo_url = "https://github.com/discord/discord-api-docs.git"
+                loop = asyncio.get_running_loop()
+                partial = functools.partial(subprocess.run, ["git", "clone", repo_url, directory], capture_output=True)
+                result = await loop.run_in_executor(None, partial)
+                if result.returncode != 0:
+                    self.cog.log.error(f"{self.name}: Error occured while trying to clone Discord API Docs's GitHub repo.")
+                    return []
+                for subdir, _, files in os.walk(f"{directory}\\docs\\resources"):
+                    for file in files:
+                        if not file.endswith(".md"):
+                            continue
+                        try:
+                            filepath = pathlib.Path(os.path.join(subdir, file))
+                            _subdir = f"{filepath.parents[0].name}"
+                            _file = filepath.name[:-3].lower().replace("_", "-").replace(" ", "-")
+                            name = f"{_subdir}/{file}"
+                            with open(filepath, "rt") as f:
+                                content: str = f.read()[2:]
+                            manuals.append(name)
+                            _documentations: typing.List[str] = []
+                            _current = None
+                            for line in content.split("\n"):
+                                if (line.startswith("### ") or line.startswith("## ")) and not line.startswith(("### Guild Scheduled Event ", "### An ", "### Any ")):
+                                    if _current is None:
+                                        _current = line
+                                    else:
+                                        _documentations.append(_current.strip("### ").strip("## "))
+                                        _current = None
+                                if _current is not None:
+                                    _current += f"\n{line}"
+                            # _documentations = content.split("### ")[1:]
+                            documentations = []
+                            for _documentation in _documentations:
+                                if not _documentation:
+                                    continue
+                                _name = _documentation.split("\n")[0]
+                                _documentation = "\n".join(_documentation.split("\n")[1:])
+                                if _documentation.startswith(f"## {_name}") or _documentation.startswith(f"### {_name}"):
+                                    _documentation = "\n".join(_documentation.split("\n")[1:])
+                                if len(_name.split(" % ")) == 2:
+                                    full_name = _name.split(" % ")[1]
+                                    _name = _name.split(" % ")[0]
+                                    for _match in re.compile("#DOCS_RESOURCES_.*/.*}").findall(full_name):
+                                        full_name = full_name.replace(_match[:-1], "")
+                                else:
+                                    full_name = ""
+                                description = _documentation.split("###### ")[0]
+                                if not description:
+                                    continue
+                                fields = {field.split("\n")[0]: "\n".join(field.split("\n")[1:]) for field in _documentation.split("###### ")[1:]}
+                                examples = Examples()
+                                for field in fields.copy():
+                                    if "Example" in field:
+                                        examples.append(fields[field])
+                                        del fields[field]
+                                    elif fields[field].startswith(("|", "\n|", "\n\n|")) and "-----" in fields[field]:
+                                        value = ""
+                                        for row in fields[field].split("\n"):
+                                            if not row.startswith("|") or "---" in row or row == "|":
+                                                continue
+                                            row = row.split("|")
+                                            value += f"\n{'• ' if value else ''}{' | '.join([_row for _row in row if _row != ''])}"
+                                        fields[field] = value
+                                if (
+                                    discord.utils.get(
+                                        _rtfm_cache.objects, name=_name
+                                    )
+                                    is not None
+                                ):
+                                    continue
+                                _object = DataObjStr(
+                                    name=_name,
+                                    domain="endpoint" if full_name else "py",
+                                    role="endpoint" if full_name else "std",
+                                    priority="1",
+                                    uri=f"{self.url}{_subdir}/{_file}#{_name.lower().replace('_', '-').replace(' ', '-')}",
+                                    dispname="-",
+                                )
+                                setattr(_object, "fake", True)
+                                _rtfm_cache.objects.append(_object)
+                                self._raw_rtfm_cache_with_std.append(_object.name)
+                                if _object.domain != "std":
+                                    self._raw_rtfm_cache_without_std.append(_object.name)
+                                documentation = Documentation(
+                                    self,
+                                    name=_name,
+                                    url=f"{self.url}{_subdir}/{_file}#{_name.lower().replace('_', '-').replace(' ', '-')}",
+                                    full_name=full_name,
+                                    description=description,
+                                    parameters=None,
+                                    examples=examples,
+                                    fields=fields,
+                                    attributes=Attributes(attributes={}, properties={}, methods={}),
+                                )
+                                self.cog._docs_stats[self.name]["documentations"] += 1
+                                self.cog._docs_stats["GLOBAL"]["documentations"] += 1
+                                self._docs_cache.append(documentation)
+                            self.cog._docs_stats[self.name]["manuals"] += 1
+                            self.cog._docs_stats["GLOBAL"]["manuals"] += 1
+                            if self.cog.cogsutils.is_dpy2:
+                                self.cog.log.trace(
+                                    f"{self.name}: `{name}` documentation added to documentation cache."
+                                )
+                        except Exception as e:
+                            self.cog.log.debug(
+                                f"{self.name}: Error occured while trying to cache `{name}` documentation.",
+                                exc_info=e,
+                            )
+                            self._docs_caching_progress[name] = e
+            self._rtfm_cache = _rtfm_cache
         amount = len(self._docs_cache)
         end = time.monotonic()
         duration = int(end - start)
@@ -623,6 +749,9 @@ class Source:
                 )
                 setattr(_object, "fake", True)
                 self._rtfm_cache.objects.append(_object)
+                self._raw_rtfm_cache_with_std.append(_object.name)
+                if _object.domain != "std":
+                    self._raw_rtfm_cache_without_std.append(_object.name)
             _url = f"#{name}"
         else:
             name = element.attrs.get("id")
@@ -971,7 +1100,7 @@ class Source:
         def get_name(obj: DataObjStr) -> str:
             name = obj.name or (obj.dispname if obj.dispname not in ["-", None] else None)
             original_name = name
-            if obj.domain == "std":
+            if obj.domain == "std" or obj.role == "endpoint":
                 name = f"{obj.role}: {name}"
             if self.name == "discord.py":
                 if name.startswith("discord.ext.commands."):

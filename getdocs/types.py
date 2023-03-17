@@ -120,7 +120,7 @@ class Examples(typing.List):
         for i, example in enumerate(self, start=1):
             embed = discord.Embed(
                 title=f"Example {i}:" if len(self) > 1 else "Example:",
-                description=box(example, lang="py"),
+                description=box(example, lang="py") if "```" not in example else example,
                 color=discord.Color.green(),
             )
             embeds.append(embed)
@@ -209,9 +209,9 @@ class Documentation:
         }
 
     def to_embed(self) -> discord.Embed:
-        description = f"```py\n{self.full_name}\n```\n{self.description}".strip()
+        description = (f"{box(self.full_name, lang='py')}\n" if self.full_name else "") + f"{self.description}".strip()
         embed = discord.Embed(
-            title=self.name, url=self.url, description=list(pagify(description, page_length=4000))[0], color=discord.Color.green()
+            title=self.name, url=self.url, description=list(pagify(description, page_length=4000))[0] if description else "No description.", color=discord.Color.green()
         )
         embed.set_author(
             name=f"{self.source.name} Documentation",
@@ -225,6 +225,9 @@ class Documentation:
         field_limit = 1024
         for name, value in fields.items():
             if len(value) > field_limit:
-                value = list(pagify(value, page_length=field_limit - 6))[0] + "\n..."
+                if "-----" not in value:
+                    value = list(pagify(value, page_length=field_limit - 6))[0] + "\n..."
+                else:
+                    value = box(list(pagify(value, page_length=field_limit - 16))[0], lang="py") + "\n..."
             embed.add_field(name=name, value=value, inline=False)
         return embed

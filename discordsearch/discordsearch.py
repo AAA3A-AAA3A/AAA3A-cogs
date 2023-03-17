@@ -135,9 +135,9 @@ class DiscordSearch(Cog):
         start = monotonic()
         messages: typing.List[discord.Message] = []
         async for message in channel.history(
-            limit=limit + 1, oldest_first=False, before=before, after=after
+            limit=limit, oldest_first=False, before=before, after=after
         ):
-            if message.id == ctx.author.id:
+            if message.id == ctx.message.id:
                 continue
             if authors is not None and message.author not in authors:
                 continue

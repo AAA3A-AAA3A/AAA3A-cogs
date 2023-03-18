@@ -587,11 +587,9 @@ class Source:
                             _current = None
                             for line in content.split("\n"):
                                 if (line.startswith("### ") or line.startswith("## ")) and not line.startswith(("### Guild Scheduled Event ", "### An ", "### Any ")):
-                                    if _current is None:
-                                        _current = line
-                                    else:
+                                    if _current is not None:
                                         _documentations.append(_current.strip("### ").strip("## "))
-                                        _current = None
+                                    _current = line
                                 if _current is not None:
                                     _current += f"\n{line}"
                             # _documentations = content.split("### ")[1:]

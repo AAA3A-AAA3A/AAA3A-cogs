@@ -560,10 +560,9 @@ class Source:
                     )
                     self._docs_caching_progress[name] = e
         else:
-            self.cog.log.debug(f"{self.name}: Starting RTFM caching...")
             _rtfm_cache = Inventory()
             _rtfm_cache.project = self.name
-            _rtfm_cache.version = 1.0
+            _rtfm_cache.version = "1.0"
             with tempfile.TemporaryDirectory() as directory:
                 repo_url = "https://github.com/discord/discord-api-docs.git"
                 loop = asyncio.get_running_loop()

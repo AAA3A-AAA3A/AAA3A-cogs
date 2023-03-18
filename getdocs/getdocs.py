@@ -669,7 +669,7 @@ class Source:
                                                     _param_raw += f'# ?\\* "{_param[0][2:].strip()[:-3]}": '
                                                 else:
                                                     _param_raw += f'"{_param[0][2:].strip()}": '
-                                                _param_raw += "1" if _param[1].strip() in ["integer", "snowflake"] else ('"true"' if _param[1].strip() == "boolean" else ('""' if _param[1].strip() == "string" else "MISSING"))
+                                                _param_raw += '"1"' if _param[1].strip() in ["integer", "snowflake"] else ('"true"' if _param[1].strip() == "boolean" else ('""' if _param[1].strip() == "string" else "MISSING"))
                                                 _param_raw += f",  # {_param[1].strip()[1:] if _param[1].strip().endswith('?') else _param[1].strip()}"
                                                 example += _param_raw
                                             example += "\n}"

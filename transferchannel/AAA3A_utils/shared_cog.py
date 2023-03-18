@@ -110,7 +110,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         self.telemetrywithsentry.__is_dev__: bool = True
         self.getallfor.__is_dev__: bool = True
 
-        if self.AAA3A_utils.app_command:
+        if getattr(self.AAA3A_utils, "app_command", None) is not None:
             self.AAA3A_utils.app_command.module = ".".join(self.AAA3A_utils.app_command.module.split(".")[1:])  # Add `AAA3A_utils` module to new `[p]slash list` in Flame's PR.
 
     async def cog_load(self) -> None:
@@ -420,7 +420,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
             raise commands.UserFeedbackCheckFailure(_("This cog is not installed or loaded."))
         if cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
             raise commands.UserFeedbackCheckFailure(_("This cog is not a cog from AAA3A-cogs."))
-        if not hasattr(cog, "logs") or not isinstance(getattr(cog, "logs"), typing.Dict):
+        if not hasattr(cog, "logs") or not isinstance(cog.logs, typing.Dict) or cog.logs == {}:
             raise commands.UserFeedbackCheckFailure(_("This cog does not have any log saved."))
         if level == "stats":
             message = "---------- Logs Stats ----------"

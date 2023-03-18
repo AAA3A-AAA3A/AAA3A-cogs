@@ -179,7 +179,10 @@ if discord.version_info.major >= 2:
                 return current, {"embed": value, "content": None}
 
         async def change_page(self, interaction: discord.Interaction):
-            await interaction.response.defer()
+            try:
+                await interaction.response.defer()
+            except discord.HTTPException:
+                pass
             current, kwargs = await self.get_page(self._current_page)
             if choose_button := discord.utils.get(self.children, custom_id="choose_page"):
                 choose_button.label = f"Page {current + 1}/{len(self.pages)}"

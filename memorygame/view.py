@@ -80,16 +80,16 @@ class MemoryGameView(discord.ui.View):
 
     async def callback(self, interaction: discord.Interaction):
         await interaction.response.defer()
-        if interaction.data["custom_id"] == "​":
-            return
         async with self._lock:
+            if interaction.data["custom_id"] == "​" or self._custom_ids[interaction.data["custom_id"]] in self._found:
+                return
             if self._selected is None:
                 self._selected = interaction.data["custom_id"]
                 button: discord.ui.Button = discord.utils.get(self.children, custom_id=self._selected)
                 button.label = self._custom_ids[self._selected]
                 self._message = await self._message.edit(view=self)
                 return
-            if self._custom_ids[self._selected] != self._custom_ids[interaction.data["custom_id"]]:
+            if self._custom_ids[self._selected] != self._custom_ids[interaction.data["custom_id"]] or self._selected == interaction.data["custom_id"]:
                 button1: discord.ui.Button = discord.utils.get(self.children, custom_id=self._selected)
                 button2: discord.ui.Button = discord.utils.get(self.children, custom_id=interaction.data["custom_id"])
                 button1.style = discord.ButtonStyle.danger
@@ -111,7 +111,8 @@ class MemoryGameView(discord.ui.View):
             button2.label = self._custom_ids[interaction.data["custom_id"]]
             self._message = await self._message.edit(view=self)
             self._found.append(self._custom_ids[interaction.data["custom_id"]])
-            if len(GAME_EMOJIS) != len(self.found):
+            self._selected = None
+            if len(GAME_EMOJIS) != len(self._found):
                 return
             await self.win()
 

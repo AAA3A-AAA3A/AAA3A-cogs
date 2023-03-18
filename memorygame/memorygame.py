@@ -9,6 +9,7 @@ from .view import MemoryGameView
 
 # Credits:
 # General repo credits.
+# Thanks to Flame for his tests which allowed to discover several errors!
 
 _ = Translator("MemoryGame", __file__)
 

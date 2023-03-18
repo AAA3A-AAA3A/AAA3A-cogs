@@ -573,13 +573,15 @@ class Source:
                     self.cog.log.error(f"{self.name}: Error occured while trying to clone Discord API Docs's GitHub repo.")
                     return []
                 # Iter files.
-                for subdir, _, files in os.walk(f"{directory}\\docs\\resources"):
+                for subdir, _, files in os.walk(f"{directory}\\docs"):
+                    if subdir.endswith(("docs", "dispatch", "game_and_server_management", "game_sdk", "policies_and_agreements", "rich_presence", "tutorials")):
+                        continue
                     for file in files:
                         if not file.endswith(".md"):
                             continue
                         try:
                             filepath = pathlib.Path(os.path.join(subdir, file))
-                            _subdir = f"{filepath.parents[0].name}"
+                            _subdir = f"{filepath.parents[0].name}".replace(" ", "_")
                             _file = filepath.name[:-3].lower().replace("_", "-").replace(" ", "-")
                             name = f"{_subdir}/{file}"
                             with open(filepath, "rt") as f:
@@ -641,8 +643,8 @@ class Source:
                                     if _kwargs:
                                         example += "\nkwargs = {"
                                         for _kwarg in _kwargs:
-                                            example += f'\n    "{_kwarg.split(".")[0]}": ' + (f'"{_kwarg.split(".")[0].upper()}_ID",  # snowflake' if _kwarg.split(".")[-1] == "id" else '"",')
-                                            _path = _path.replace("{" + _kwarg + "}", "{" + _kwarg.split(".")[0] + "}")
+                                            example += f'\n    "{_kwarg.replace(".", "_")}": ' + (f'"{_kwarg.split(".")[0].upper()}_ID",  # snowflake' if _kwarg.split(".")[-1] == "id" and _kwarg.split(".")[-2] in ["user", "member", "guild", "channel", "role", "message", "application"] else '"",')
+                                            _path = _path.replace("{" + _kwarg + "}", "{" + _kwarg.replace(".", "_") + "}")
                                         example += "\n}"
                                         example += f'\nroute = Route(method="{_method}", path="{_path}", **kwargs)'
                                     else:
@@ -661,8 +663,8 @@ class Source:
                                                 _param_raw += f'"{_param[0][2:].strip()}": '
                                             else:
                                                 _param_raw += f'# ? "{_param[0][2:].strip()[:-1]}": '
-                                            _param_raw += "1" if _param[1].strip() in ["integer", "snowflake"] else ('"true"' if _param[1].strip() == "boolean" else '""')
-                                            _param_raw += f",  # {_param[1].strip()}"
+                                            _param_raw += "1" if _param[1].strip() in ["integer", "snowflake"] else ('"true"' if _param[1].strip() == "boolean" else ('""' if _param[1].strip() == "string" else "MISSING"))
+                                            _param_raw += f",  # {_param[1].strip()[1:] if _param[1].strip().endswith('?') else _param[1].strip()}"
                                             example += _param_raw
                                         example += "\n}"
                                         _kwargs += ", params=_params"
@@ -679,7 +681,7 @@ class Source:
                                                 _param_raw += f'"{_param[0][2:].strip()}": '
                                             else:
                                                 _param_raw += f'# ? "{_param[0][2:].strip()[:-1]}": '
-                                            _param_raw += "1" if _param[1].strip() in ["integer", "snowflake"] else ('"true"' if _param[1].strip() == "boolean" else '""')
+                                            _param_raw += "1" if _param[1].strip() in ["integer", "snowflake"] else ('"true"' if _param[1].strip() == "boolean" else ('""' if _param[1].strip() == "string" else "MISSING"))
                                             _param_raw += f",  # {_param[1].strip()}"
                                             example += _param_raw
                                         example += "\n}"
@@ -689,8 +691,8 @@ class Source:
                                 # Add to RTFM cache.
                                 _object = DataObjStr(
                                     name=_name,
-                                    domain="endpoint" if full_name else "py",
-                                    role="endpoint" if full_name else "std",
+                                    domain="py",
+                                    role="endpoint" if full_name else _subdir,
                                     priority="1",
                                     uri=f"{self.url}{_subdir}/{_file}#{_name.lower().replace('_', '-').replace(' ', '-')}",
                                     dispname="-",
@@ -1153,7 +1155,7 @@ class Source:
         def get_name(obj: DataObjStr) -> str:
             name = obj.name or (obj.dispname if obj.dispname not in ["-", None] else None)
             original_name = name
-            if obj.domain == "std" or obj.role == "endpoint":
+            if obj.domain == "std" or self.name == "discordapi":
                 name = f"{obj.role}: {name}"
             if self.name == "discord.py":
                 if name.startswith("discord.ext.commands."):

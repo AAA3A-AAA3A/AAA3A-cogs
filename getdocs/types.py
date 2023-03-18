@@ -126,6 +126,8 @@ class Examples(typing.List):
                 or "CHANNEL_ID" in example
                 or "ROLE_ID" in example
                 or "MESSAGE_ID" in example
+                or "BOT_ID" in example
+                or "APPLICATION_ID" in example
             ):
                 example = (
                     example.replace('"USER_ID"', str(ctx.author.id))
@@ -134,6 +136,8 @@ class Examples(typing.List):
                     .replace('"CHANNEL_ID"', str(ctx.channel.id))
                     .replace('"ROLE_ID"', str(ctx.author.top_role) if getattr(ctx.author, "top_role", None) is not None else '"{ROLE_ID}"')
                     .replace('"MESSAGE_ID"', str(ctx.message.id))
+                    .replace('"BOT_ID"', str(ctx.bot.user.id))
+                    .replace('"APPLICATION_ID"', str(ctx.bot.application_id))
                 )
             embed = discord.Embed(
                 title=f"Example {i}:" if len(self) > 1 else "Example:",

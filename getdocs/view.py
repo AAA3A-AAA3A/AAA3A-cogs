@@ -256,7 +256,7 @@ class GetDocsView(discord.ui.View):
         ):
             self.remove_item(next_button)
 
-        embeds = self._current.examples.to_embeds()
+        embeds = self._current.examples.to_embeds(self.ctx)
         self._message = await self._message.edit(embeds=embeds[:25], view=self)
         self._mode = "examples"
 

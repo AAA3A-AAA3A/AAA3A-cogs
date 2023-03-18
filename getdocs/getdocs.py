@@ -564,6 +564,7 @@ class Source:
             _rtfm_cache.project = self.name
             _rtfm_cache.version = "1.0"
             with tempfile.TemporaryDirectory() as directory:
+                # Clone GitHub repo.
                 repo_url = "https://github.com/discord/discord-api-docs.git"
                 loop = asyncio.get_running_loop()
                 partial = functools.partial(subprocess.run, ["git", "clone", repo_url, directory], capture_output=True)
@@ -571,6 +572,7 @@ class Source:
                 if result.returncode != 0:
                     self.cog.log.error(f"{self.name}: Error occured while trying to clone Discord API Docs's GitHub repo.")
                     return []
+                # Iter files.
                 for subdir, _, files in os.walk(f"{directory}\\docs\\resources"):
                     for file in files:
                         if not file.endswith(".md"):
@@ -583,6 +585,7 @@ class Source:
                             with open(filepath, "rt") as f:
                                 content: str = f.read()[2:]
                             manuals.append(name)
+                            # Find documentations.
                             _documentations: typing.List[str] = []
                             _current = None
                             for line in content.split("\n"):
@@ -592,11 +595,12 @@ class Source:
                                     _current = line
                                 if _current is not None:
                                     _current += f"\n{line}"
-                            # _documentations = content.split("### ")[1:]
                             documentations = []
+                            # Iter documentations.
                             for _documentation in _documentations:
                                 if not _documentation:
                                     continue
+                                # Get name and full_name.
                                 _name = _documentation.split("\n")[0]
                                 _documentation = "\n".join(_documentation.split("\n")[1:])
                                 if _documentation.startswith(f"## {_name}") or _documentation.startswith(f"### {_name}"):
@@ -604,34 +608,85 @@ class Source:
                                 if len(_name.split(" % ")) == 2:
                                     full_name = _name.split(" % ")[1]
                                     _name = _name.split(" % ")[0]
-                                    for _match in re.compile("#DOCS_RESOURCES_.*/.*}").findall(full_name):
-                                        full_name = full_name.replace(_match[:-1], "")
+                                    for _match in re.compile(r"{.*?#DOCS_(.*?)}").findall(full_name):
+                                        full_name = full_name.replace(f"#DOCS_{_match}", "")
                                 else:
                                     full_name = ""
                                 description = _documentation.split("###### ")[0]
                                 if not description:
                                     continue
+                                # Get fields.
                                 fields = {field.split("\n")[0]: "\n".join(field.split("\n")[1:]) for field in _documentation.split("###### ")[1:]}
                                 examples = Examples()
                                 for field in fields.copy():
                                     if "Example" in field:
                                         examples.append(fields[field])
                                         del fields[field]
-                                    elif fields[field].startswith(("|", "\n|", "\n\n|")) and "-----" in fields[field]:
+                                    elif fields[field].startswith(("|", "\n|", "\n\n|")) and "-----" in fields[field]:  # Format tables.
                                         value = ""
                                         for row in fields[field].split("\n"):
-                                            if not row.startswith("|") or "---" in row or row == "|":
+                                            if "-----" in row or row == "|" or not row:  # not row.startswith("|")
                                                 continue
                                             row = row.split("|")
-                                            value += f"\n{'• ' if value else ''}{' | '.join([_row for _row in row if _row != ''])}"
+                                            if value != "":
+                                                value += f"\n{'• ' if value else ''}{' | '.join([_row for _row in row if _row != ''])}"
+                                            else:
+                                                value += f"**{' | '.join([_row for _row in row if _row != ''])}**"
                                         fields[field] = value
-                                if (
-                                    discord.utils.get(
-                                        _rtfm_cache.objects, name=_name
-                                    )
-                                    is not None
-                                ):
-                                    continue
+                                if full_name:  # Create a custom example for each endpoint.
+                                    _method = full_name.split(" ")[0]
+                                    _path = full_name.split(" ")[1]
+                                    example = "from discord.http import Route"
+                                    _kwargs = re.compile(r"{(.*?)}").findall(_path)
+                                    if _kwargs:
+                                        example += "\nkwargs = {"
+                                        for _kwarg in _kwargs:
+                                            example += f'\n    "{_kwarg.split(".")[0]}": ' + (f'"{_kwarg.split(".")[0].upper()}_ID",  # snowflake' if _kwarg.split(".")[-1] == "id" else '"",')
+                                            _path = _path.replace("{" + _kwarg + "}", "{" + _kwarg.split(".")[0] + "}")
+                                        example += "\n}"
+                                        example += f'\nroute = Route(method="{_method}", path="{_path}", **kwargs)'
+                                    else:
+                                        example += f'\nroute = Route(method="{_method}", path="{_path}")'
+                                    _kwargs = ""
+                                    if "Query String Params" in fields:
+                                        example += "\n_params = {"
+                                        for _param in fields["Query String Params"].split("\n"):
+                                            if not _param.startswith("• "):
+                                                continue
+                                            _param = _param.split(" | ")
+                                            if not len(_param) > 2 or not len(_param[0]) > 3:
+                                                continue
+                                            _param_raw = "\n    "
+                                            if not _param[0][2:].strip().endswith("?"):
+                                                _param_raw += f'"{_param[0][2:].strip()}": '
+                                            else:
+                                                _param_raw += f'# ? "{_param[0][2:].strip()[:-1]}": '
+                                            _param_raw += "1" if _param[1].strip() in ["integer", "snowflake"] else ('"true"' if _param[1].strip() == "boolean" else '""')
+                                            _param_raw += f",  # {_param[1].strip()}"
+                                            example += _param_raw
+                                        example += "\n}"
+                                        _kwargs += ", params=_params"
+                                    if "JSON Params" in fields:
+                                        example += "\n_json = {"
+                                        for _param in fields["JSON Params"].split("\n"):
+                                            if not _param.startswith("• "):
+                                                continue
+                                            _param = _param.split(" | ")
+                                            if not len(_param) > 2 or not len(_param[0]) > 3:
+                                                continue
+                                            _param_raw = "\n    "
+                                            if not _param[0][2:].strip().endswith("?"):
+                                                _param_raw += f'"{_param[0][2:].strip()}": '
+                                            else:
+                                                _param_raw += f'# ? "{_param[0][2:].strip()[:-1]}": '
+                                            _param_raw += "1" if _param[1].strip() in ["integer", "snowflake"] else ('"true"' if _param[1].strip() == "boolean" else '""')
+                                            _param_raw += f",  # {_param[1].strip()}"
+                                            example += _param_raw
+                                        example += "\n}"
+                                        _kwargs += ", json=_json"
+                                    example += f"\nreturn await ctx.bot.http.request(route=route{_kwargs})"
+                                    examples.insert(0, example)
+                                # Add to RTFM cache.
                                 _object = DataObjStr(
                                     name=_name,
                                     domain="endpoint" if full_name else "py",
@@ -645,6 +700,7 @@ class Source:
                                 self._raw_rtfm_cache_with_std.append(_object.name)
                                 if _object.domain != "std":
                                     self._raw_rtfm_cache_without_std.append(_object.name)
+                                # Add to Documentations cache.
                                 documentation = Documentation(
                                     self,
                                     name=_name,
@@ -728,7 +784,7 @@ class Source:
     @executor()
     def _get_documentation(self, element: Tag, page_url: str) -> Documentation:
         full_name = element.text
-        full_name = full_name.replace("¶", "").replace("", "")
+        full_name = full_name.strip().replace("¶", "").replace("", "").replace("\n", "")
         if full_name.endswith("[source]"):
             full_name = full_name[:-8]
         elif full_name.endswith("[source]#"):

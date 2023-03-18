@@ -1,4 +1,5 @@
-from .AAA3A_utils import CogsUtils
+from .AAA3A_utils import CogsUtils  # isort:skip
+from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -115,9 +116,25 @@ class Parameters(typing.Dict):
 
 class Examples(typing.List):
 
-    def to_embeds(self) -> typing.List[discord.Embed]:
+    def to_embeds(self, ctx: typing.Optional[commands.Context] = None) -> typing.List[discord.Embed]:
         embeds = []
         for i, example in enumerate(self, start=1):
+            if ctx is not None and (
+                "USER_ID" in example
+                or "MEMBER_ID" in example
+                or "GUILD_ID" in example
+                or "CHANNEL_ID" in example
+                or "ROLE_ID" in example
+                or "MESSAGE_ID" in example
+            ):
+                example = (
+                    example.replace('"USER_ID"', str(ctx.author.id))
+                    .replace('"MEMBER_ID"', str(ctx.author.id))
+                    .replace('"GUILD_ID"', str(ctx.guild.id) if ctx.guild is not None else '"{GUILD_ID}"')
+                    .replace('"CHANNEL_ID"', str(ctx.channel.id))
+                    .replace('"ROLE_ID"', str(ctx.author.top_role) if getattr(ctx.author, "top_role", None) is not None else '"{ROLE_ID}"')
+                    .replace('"MESSAGE_ID"', str(ctx.message.id))
+                )
             embed = discord.Embed(
                 title=f"Example {i}:" if len(self) > 1 else "Example:",
                 description=box(example, lang="py") if "```" not in example else example,

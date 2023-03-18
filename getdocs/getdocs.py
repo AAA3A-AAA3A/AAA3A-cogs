@@ -624,10 +624,10 @@ class Source:
                                     if "Example" in field:
                                         examples.append(fields[field])
                                         del fields[field]
-                                    elif fields[field].startswith(("|", "\n|", "\n\n|")) and "-----" in fields[field]:  # Format tables.
+                                    elif "-----" in fields[field]:  # Format tables.
                                         value = ""
                                         for row in fields[field].split("\n"):
-                                            if "-----" in row or row == "|" or not row:  # not row.startswith("|")
+                                            if not row or not row.startswith("|") or row == "|" or "-----" in row:  # not row.startswith("|")
                                                 continue
                                             row = row.split("|")
                                             if value != "":
@@ -643,49 +643,37 @@ class Source:
                                     if _kwargs:
                                         example += "\nkwargs = {"
                                         for _kwarg in _kwargs:
-                                            example += f'\n    "{_kwarg.replace(".", "_")}": ' + (f'"{_kwarg.split(".")[0].upper()}_ID",  # snowflake' if _kwarg.split(".")[-1] == "id" and _kwarg.split(".")[-2] in ["user", "member", "guild", "channel", "role", "message", "application"] else '"",')
+                                            _kwarg_raw = "\n    "
+                                            _kwarg_raw += f'"{_kwarg.replace(".", "_")}": '
+                                            _kwarg_raw += f'"{_kwarg.split(".")[0].upper()}_ID",  # snowflake' if _kwarg.split(".")[-1] == "id" and _kwarg.split(".")[-2] in ["user", "member", "guild", "channel", "role", "message", "application"] else '"",'
+                                            example += _kwarg_raw
                                             _path = _path.replace("{" + _kwarg + "}", "{" + _kwarg.replace(".", "_") + "}")
                                         example += "\n}"
                                         example += f'\nroute = Route(method="{_method}", path="{_path}", **kwargs)'
                                     else:
                                         example += f'\nroute = Route(method="{_method}", path="{_path}")'
                                     _kwargs = ""
-                                    if "Query String Params" in fields:
-                                        example += "\n_params = {"
-                                        for _param in fields["Query String Params"].split("\n"):
-                                            if not _param.startswith("• "):
-                                                continue
-                                            _param = _param.split(" | ")
-                                            if not len(_param) > 2 or not len(_param[0]) > 3:
-                                                continue
-                                            _param_raw = "\n    "
-                                            if not _param[0][2:].strip().endswith("?"):
-                                                _param_raw += f'"{_param[0][2:].strip()}": '
-                                            else:
-                                                _param_raw += f'# ? "{_param[0][2:].strip()[:-1]}": '
-                                            _param_raw += "1" if _param[1].strip() in ["integer", "snowflake"] else ('"true"' if _param[1].strip() == "boolean" else ('""' if _param[1].strip() == "string" else "MISSING"))
-                                            _param_raw += f",  # {_param[1].strip()[1:] if _param[1].strip().endswith('?') else _param[1].strip()}"
-                                            example += _param_raw
-                                        example += "\n}"
-                                        _kwargs += ", params=_params"
-                                    if "JSON Params" in fields:
-                                        example += "\n_json = {"
-                                        for _param in fields["JSON Params"].split("\n"):
-                                            if not _param.startswith("• "):
-                                                continue
-                                            _param = _param.split(" | ")
-                                            if not len(_param) > 2 or not len(_param[0]) > 3:
-                                                continue
-                                            _param_raw = "\n    "
-                                            if not _param[0][2:].strip().endswith("?"):
-                                                _param_raw += f'"{_param[0][2:].strip()}": '
-                                            else:
-                                                _param_raw += f'# ? "{_param[0][2:].strip()[:-1]}": '
-                                            _param_raw += "1" if _param[1].strip() in ["integer", "snowflake"] else ('"true"' if _param[1].strip() == "boolean" else ('""' if _param[1].strip() == "string" else "MISSING"))
-                                            _param_raw += f",  # {_param[1].strip()}"
-                                            example += _param_raw
-                                        example += "\n}"
-                                        _kwargs += ", json=_json"
+                                    for key, value in {"Query String Params": "params", "JSON Params": "json", "JSON/Form Params": "json"}.items():
+                                        if key in fields:
+                                            example += f"\n_{value}" + "= {"
+                                            for _param in fields[key].split("\n"):
+                                                if not _param.startswith("• "):
+                                                    continue
+                                                _param = _param.split(" | ")
+                                                if not len(_param) > 2 or not len(_param[0]) > 3:
+                                                    continue
+                                                _param_raw = "\n    "
+                                                if _param[0][2:].strip().endswith("?"):
+                                                    _param_raw += f'# ? "{_param[0][2:].strip()[:-1]}": '
+                                                elif _param[0][2:].strip().endswith("?\\*"):
+                                                    _param_raw += f'# ?\\* "{_param[0][2:].strip()[:-3]}": '
+                                                else:
+                                                    _param_raw += f'"{_param[0][2:].strip()}": '
+                                                _param_raw += "1" if _param[1].strip() in ["integer", "snowflake"] else ('"true"' if _param[1].strip() == "boolean" else ('""' if _param[1].strip() == "string" else "MISSING"))
+                                                _param_raw += f",  # {_param[1].strip()[1:] if _param[1].strip().endswith('?') else _param[1].strip()}"
+                                                example += _param_raw
+                                            example += "\n}"
+                                            _kwargs += f", {value}=_{value}"
                                     example += f"\nreturn await ctx.bot.http.request(route=route{_kwargs})"
                                     examples.insert(0, example)
                                 # Add to RTFM cache.

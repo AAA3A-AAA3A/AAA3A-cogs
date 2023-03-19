@@ -1088,12 +1088,15 @@ class TicketTool(settings, Cog):
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user, channel=interaction.channel, command="ticket close"
                 )
-                await interaction.followup.send(
-                    _(
-                        "You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command."
-                    ),
-                    ephemeral=True,
-                )
+                try:
+                    await interaction.followup.send(
+                        _(
+                            "You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+                        ),
+                        ephemeral=True,
+                    )
+                except discord.HTTPException:
+                    pass
             if interaction.data["custom_id"] == "claim_ticket_button":
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user, channel=interaction.channel, command="ticket claim"
@@ -1216,12 +1219,15 @@ class TicketTool(settings, Cog):
                 ctx = await self.cogsutils.invoke_command(
                     author=inter.author, channel=inter.channel, command="ticket close"
                 )
-                await inter.followup(
-                    _(
-                        "You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command."
-                    ),
-                    ephemeral=True,
-                )
+                try:
+                    await inter.followup(
+                        _(
+                            "You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+                        ),
+                        ephemeral=True,
+                    )
+                except discord.HTTPException:
+                    pass
             elif inter.clicked_button.custom_id == "claim_ticket_button":
                 ctx = await self.cogsutils.invoke_command(
                     author=inter.author, channel=inter.channel, command="ticket claim"

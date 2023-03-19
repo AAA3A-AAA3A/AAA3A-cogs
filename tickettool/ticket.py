@@ -222,7 +222,7 @@ class Ticket:
             guild=self.guild,
             panel=self.panel,
             author=self.created_by,
-            reason=_("Creating the ticket {ticket.id}.").format(self=self),
+            reason=_("Creating the ticket {ticket.id}.").format(ticket=self),
         )
         try:
             to_replace = {
@@ -262,7 +262,7 @@ class Ticket:
             "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
             "☢️ Ticket reason: {ticket.reason}\n"
             "👥 Ticket claimed by: Nobody."
-        ).format(self=self)
+        ).format(ticket=self)
         await self.channel.edit(topic=topic)
         if config["create_modlog"]:
             await self.cog.create_modlog(self, "ticket_created", reason)
@@ -358,11 +358,11 @@ class Ticket:
                 title=_("Ticket Created"),
                 description=_(
                     "The ticket was created by {ticket.created_by}."
-                ).format(self=self),
+                ).format(ticket=self),
             )
             await logschannel.send(
                 _("Report on the creation of the ticket {ticket.id}.").format(
-                    self=self
+                    ticket=self
                 ),
                 embed=embed,
             )
@@ -404,7 +404,7 @@ class Ticket:
             guild=self.guild,
             panel=self.panel,
             author=author,
-            reason=_("Opening the ticket {ticket.id}.").format(self=self),
+            reason=_("Opening the ticket {ticket.id}.").format(ticket=self),
         )
         logschannel = config["logschannel"]
         emoji_open = config["emoji_open"]
@@ -433,11 +433,11 @@ class Ticket:
                     title=_("Ticket Opened"),
                     description=_(
                         "The ticket was opened by {ticket.opened_by}."
-                    ).format(self=self),
+                    ).format(ticket=self),
                 )
                 await logschannel.send(
                     _("Report on the close of the ticket {ticket.id}.").format(
-                        self=self
+                        ticket=self
                     ),
                     embed=embed,
                 )
@@ -593,7 +593,7 @@ class Ticket:
             author=author,
             reason=_(
                 "Renaming the ticket {ticket.id}. (`{ticket.channel.name}` to `{new_name}`)"
-            ).format(self=self, new_name=new_name),
+            ).format(ticket=self, new_name=new_name),
         )
         await self.channel.edit(name=new_name, reason=reason)
         if author is not None:
@@ -614,7 +614,7 @@ class Ticket:
             guild=self.guild,
             panel=self.panel,
             author=author,
-            reason=_("Deleting the ticket {ticket.id}.").format(self=self),
+            reason=_("Deleting the ticket {ticket.id}.").format(ticket=self),
         )
         self.deleted_by = author
         self.deleted_at = datetime.datetime.now()
@@ -626,7 +626,7 @@ class Ticket:
                 title=_("Ticket Deleted"),
                 description=_(
                     "The ticket was deleted by {ticket.deleted_by}."
-                ).format(self=self),
+                ).format(ticket=self),
             )
             try:
                 if self.cog.cogsutils.is_dpy2:
@@ -652,7 +652,7 @@ class Ticket:
                 file = None
             message = await logschannel.send(
                 _("Report on the deletion of the ticket {ticket.id}.").format(
-                    self=self
+                    ticket=self
                 ),
                 embed=embed,
                 file=file,
@@ -680,7 +680,7 @@ class Ticket:
             guild=self.guild,
             panel=self.panel,
             author=author,
-            reason=_("Claiming the ticket {ticket.id}.").format(self=self),
+            reason=_("Claiming the ticket {ticket.id}.").format(ticket=self),
         )
         if member.bot:
             raise commands.UserFeedbackCheckFailure(_("A bot cannot claim a ticket."))
@@ -691,7 +691,7 @@ class Ticket:
             "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
             "☢️ Ticket reason: {ticket.reason}\n"
             "👥 Ticket claimed by: @{ticket.claim.display_name} (@{ticket.claim.id})."
-        ).format(self=self)
+        ).format(ticket=self)
         overwrites = self.channel.overwrites
         overwrites[member] = discord.PermissionOverwrite(
             attach_files=True,
@@ -769,7 +769,7 @@ class Ticket:
             guild=self.guild,
             panel=self.panel,
             author=author,
-            reason=_("Claiming the ticket {ticket.id}.").format(self=self),
+            reason=_("Claiming the ticket {ticket.id}.").format(ticket=self),
         )
         self.claim = None
         topic = _(
@@ -778,7 +778,7 @@ class Ticket:
             "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
             "☢️ Ticket reason: {ticket.reason}\n"
             "👥 Ticket claimed by: Nobody."
-        ).format(self=self)
+        ).format(ticket=self)
         await self.channel.edit(topic=topic)
         if config["support_role"] is not None:
             overwrites = self.channel.overwrites
@@ -852,7 +852,7 @@ class Ticket:
             panel=self.panel,
             author=author,
             reason=_("Changing owner of the ticket {ticket.id}.").format(
-                self=self
+                ticket=self
             ),
         )
         if member.bot:
@@ -898,7 +898,7 @@ class Ticket:
             panel=self.panel,
             author=author,
             reason=_("Adding a member to the ticket {ticket.id}.").format(
-                self=self
+                ticket=self
             ),
         )
         if config["admin_role"] is not None:
@@ -950,7 +950,7 @@ class Ticket:
             panel=self.panel,
             author=author,
             reason=_("Removing a member to the ticket {ticket.id}.").format(
-                self=self
+                ticket=self
             ),
         )
         if config["admin_role"] is not None:

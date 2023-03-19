@@ -91,7 +91,6 @@ class AutoTraceback(Cog):
                         "I couldn't send the traceback message to you in DM. "
                         "Either you blocked me or you disabled DMs in this server."
                     )
-                return
         else:
             await ctx.send(_("No exception has occurred yet."))
 

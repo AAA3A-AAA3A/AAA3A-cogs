@@ -26,10 +26,8 @@ if CogsUtils().is_dpy2:
 _ = Translator("GetDocs", __file__)
 
 if CogsUtils().is_dpy2:
-    from functools import partial
-
-    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
-    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+    hybrid_command = commands.hybrid_command
+    hybrid_group = commands.hybrid_group
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
@@ -429,7 +427,7 @@ class RunCode(Cog):
             _params3 = {key: _params1[key] for key in _params2}
             command.app_command._params = _params3
 
-        # @runcode.autocomplete("language")
+        @runcode.autocomplete("language")
         async def runcode_language_autocomplete(
             self, interaction: discord.Interaction, current: str
         ) -> typing.List[discord.app_commands.Choice[str]]:
@@ -446,7 +444,7 @@ class RunCode(Cog):
                 ]
             )
 
-        # @runcode.autocomplete("language")
+        @runtio.autocomplete("language")
         async def runtio_language_autocomplete(
             self, interaction: discord.Interaction, current: str
         ) -> typing.List[discord.app_commands.Choice[str]]:

@@ -15,10 +15,8 @@ import aiohttp
 _ = Translator("Ip", __file__)
 
 if CogsUtils().is_dpy2:
-    from functools import partial
-
-    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
-    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+    hybrid_command = commands.hybrid_command
+    hybrid_group = commands.hybrid_group
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group

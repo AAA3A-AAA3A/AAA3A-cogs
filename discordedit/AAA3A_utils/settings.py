@@ -589,13 +589,19 @@ class Settings:
                         await self.command(ctx, key=None, value=value, profile=profile)
 
                 command.__qualname__ = f"{self.cog.qualified_name}.settings_{name}"
-                command: commands.Command = self.commands_group.command(
-                    name=name,
-                    usage=f"<profile> [{_usage}]" if self.use_profiles_system else f"[{_usage}]",
-                    help=_help,
-                )(command)
-                if self.settings[setting]["no_slash"]:
-                    command.no_slash = True
+                if self.settings[setting]["no_slash"] and self.cog.cogsutils.is_dpy2 and isinstance(self.commands_group, commands.HybridGroup):
+                    command: commands.Command = self.commands_group.command(
+                        name=name,
+                        usage=f"<profile> [{_usage}]" if self.use_profiles_system else f"[{_usage}]",
+                        help=_help,
+                        with_app_command=False,
+                    )(command)
+                else:
+                    command: commands.Command = self.commands_group.command(
+                        name=name,
+                        usage=f"<profile> [{_usage}]" if self.use_profiles_system else f"[{_usage}]",
+                        help=_help,
+                    )(command)
 
                 command.name = name
                 # command.brief = _help

@@ -209,20 +209,19 @@ class CogsUtils(commands.Cog):
                     cog.cogsutils.loops = old_cog.cogsutils.loops
                 except AttributeError:
                     pass
-                await cog.cogsutils.add_cog(bot=self.bot, cog=cog)
+                await cog.cogsutils.add_cog(bot=self.bot)
             except Exception as e:
                 self.cog.log.debug("Error when adding AAA3A_utils cog.", exc_info=e)
-        # Add slash commands.
+        # Modify hybrid commands.
+        try:
+            await self.add_hybrid_commands()
+        except Exception as e:
+            self.cog.log.error(
+                f"Error when adding [hybrid|slash] commands from the {self.cog.qualified_name} cog.",
+                exc_info=e,
+            )
         AAA3A_utils: SharedCog = self.bot.get_cog("AAA3A_utils")
         if AAA3A_utils is not None:
-            if await AAA3A_utils.check_if_slash(self.cog):
-                try:
-                    await self.add_hybrid_commands()
-                except Exception as e:
-                    self.cog.log.error(
-                        f"Error when adding [hybrid|slash] commands from the {self.cog.qualified_name} cog.",
-                        exc_info=e,
-                    )
             await AAA3A_utils.sentry.maybe_send_owners(self.cog)
 
     def _end(self) -> None:
@@ -515,104 +514,18 @@ class CogsUtils(commands.Cog):
             await self.cog.settings.commands_added.wait()
         if cog.qualified_name == "Medicat" and hasattr(cog, "CC_added"):
             await cog.CC_added.wait()
-        # For new `[p]slash list` in Flame's PR.
-        # for _object in cog.walk_commands():
-        #     if isinstance(_object, (commands.HybridCommand, commands.HybridGroup)):
-        #         if _object.app_command is not None:
-        #             _object.app_command.description = _object.app_command.description[:200]
-        #         if _object.parent is not None:
-        #             if not _object.parent.invoke_without_command:
-        #                 _object.checks.extend(_object.parent.checks)
-        await self.remove_hybrid_commands(cog=cog)
-        AAA3A_utils: SharedCog = self.bot.get_cog("AAA3A_utils")
-        if AAA3A_utils is not None:
-            ignored_commands = await AAA3A_utils.config.ignored_slash_commands()
-        else:
-            ignored_commands = []
         for _object in cog.walk_commands():
-            if getattr(_object, "app_command", None):
-                continue
-            if getattr(_object, "no_slash", False):
-                continue
-            if _object.parent is None:
-                if _object.qualified_name in ignored_commands:
-                    continue
-            elif _object.parents[0].qualified_name in ignored_commands:
-                continue
-            if isinstance(_object, commands.HybridGroup):
-                _object.with_app_command = True
-                guild_ids = getattr(
-                    _object.callback, "__discord_app_commands_default_guilds__", None
-                )
-                guild_only = getattr(
-                    _object.callback, "__discord_app_commands_guild_only__", False
-                )
-                default_permissions = getattr(
-                    _object.callback, "__discord_app_commands_default_permissions__", None
-                )
-                nsfw = getattr(_object.callback, "__discord_app_commands_is_nsfw__", False)
-                _object.app_command = discord.app_commands.Group(
-                    name=(_object._locale_name or _object.name).lower(),
-                    description=_object._locale_description
-                    or _object.description
-                    or _object.short_doc
-                    or "…",
-                    guild_ids=guild_ids,
-                    guild_only=guild_only,
-                    default_permissions=default_permissions,
-                    nsfw=nsfw,
-                )
-                _object.app_command.parent = (
-                    _object.parent.app_command if _object.parent is not None else None
-                )
-                _object.app_command.module = _object.module
-                _object.app_command.description = _object.app_command.description[:100]
-            elif isinstance(_object, commands.HybridCommand):
-                _object.with_app_command = True
-                _object.app_command = discord.ext.commands.hybrid.HybridAppCommand(_object)
-                _object.app_command.description = _object.app_command.description[:100]
-                for param in _object.app_command._params:
-                    if hasattr(cog, f"{_object.name}_{param}_autocomplete"):
-                        setattr(
-                            cog,
-                            f"{_object.name}_{param}_autocomplete",
-                            _object.autocomplete(param)(
-                                getattr(cog, f"{_object.name}_{param}_autocomplete")
-                            ),
-                        )
-            else:
-                continue
-            if hasattr(cog, "_cogsutils_add_hybrid_commands"):
-                await cog._cogsutils_add_hybrid_commands(_object)
-            if _object.parent is not None:
-                if getattr(_object.parent, "no_slash", False):
-                    continue
-                if not _object.parent.invoke_without_command:
+            if isinstance(_object, (commands.HybridCommand, commands.HybridGroup)):
+                if _object.app_command is not None:
+                    _object.app_command.description = _object.app_command.description[:100]
+                if (
+                    _object.parent is not None
+                    and not _object.parent.invoke_without_command
+                ):
                     _object.checks.extend(_object.parent.checks)
-                _object.parent.app_command.remove_command(_object.app_command.name)
-                _object.parent.app_command.add_command(_object.app_command)
-            else:
-                self.bot.tree.remove_command(_object.app_command.name)
-                self.bot.tree.add_command(_object.app_command)
-
-    async def remove_hybrid_commands(self, cog: typing.Optional[commands.Cog] = None) -> None:
-        if cog is None:
-            cog = self.cog
-        for _object in cog.walk_commands():
-            if not getattr(_object, "app_command", None):
-                continue
-            if getattr(_object, "no_slash", False):
-                continue
-            if isinstance(_object, discord.ext.commands.HybridGroup):
-                _object.with_app_command = False
-                _object.app_command = None
-            elif isinstance(_object, discord.ext.commands.HybridCommand):
-                _object.with_app_command = False
-                _object.app_command = None
-            else:
-                continue
-            if _object.parent is None:
-                self.bot.tree.remove_command(_object.name)
+                if hasattr(cog, "_cogsutils_add_hybrid_commands"):
+                    await cog._cogsutils_add_hybrid_commands(_object)
+        await self.bot.tree.red_check_enabled()
 
     async def change_config_unique_identifier(
         self, cog: typing.Optional[commands.Cog] = None

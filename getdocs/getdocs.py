@@ -43,10 +43,8 @@ if CogsUtils().is_dpy2:
 _ = Translator("GetDocs", __file__)
 
 if CogsUtils().is_dpy2:
-    from functools import partial
-
-    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
-    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+    hybrid_command = commands.hybrid_command
+    hybrid_group = commands.hybrid_group
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
@@ -415,7 +413,7 @@ class GetDocs(Cog):
             )
             return source, [discord.app_commands.Choice(name=name, value=name) for name in matches]
 
-        # @getdocs.autocomplete("query")
+        @getdocs.autocomplete("query")
         async def getdocs_query_autocomplete(
             self, interaction: discord.Interaction, current: str
         ) -> typing.List[discord.app_commands.Choice[str]]:
@@ -424,7 +422,7 @@ class GetDocs(Cog):
                 result.insert(0, discord.app_commands.Choice(name="random", value="random"))
             return result[:25]
 
-        # @rtfm.autocomplete("query")
+        @rtfm.autocomplete("query")
         async def rtfm_query_autocomplete(
             self, interaction: discord.Interaction, current: str
         ) -> typing.List[discord.app_commands.Choice[str]]:

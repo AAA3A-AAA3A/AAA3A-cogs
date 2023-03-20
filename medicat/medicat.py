@@ -24,10 +24,8 @@ from redbot.core.utils.chat_formatting import bold, box, pagify
 _ = Translator("Medicat", __file__)
 
 if CogsUtils().is_dpy2:
-    from functools import partial
-
-    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
-    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+    hybrid_command = commands.hybrid_command
+    hybrid_group = commands.hybrid_group
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
@@ -313,7 +311,6 @@ class Medicat(Cog):
         self._session: aiohttp.ClientSession = None
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
-        self.update.no_slash = True
 
     @property
     def loops(self) -> typing.List[Loop]:

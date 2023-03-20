@@ -23,7 +23,6 @@ from redbot.core.data_manager import basic_config, config_file, instance_name, s
 from redbot.core.utils.chat_formatting import (
     bold,
     box,
-    humanize_list,
     humanize_timedelta,
     pagify,
     text_to_file,
@@ -37,10 +36,8 @@ from .sentry import SentryHelper
 __all__ = ["SharedCog"]
 
 if discord.version_info.major >= 2:
-    from functools import partial
-
-    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
-    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
+    hybrid_command = commands.hybrid_command
+    hybrid_group = commands.hybrid_group
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
@@ -110,6 +107,7 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         self.telemetrywithsentry.__is_dev__: bool = True
         self.getallfor.__is_dev__: bool = True
 
+        # For `[p]slash list` in Flame's PR in Red repo.
         if getattr(self.AAA3A_utils, "app_command", None):
             self.AAA3A_utils.app_command.module = ".".join(self.AAA3A_utils.app_command.module.split(".")[1:])  # Add `AAA3A_utils` module to new `[p]slash list` in Flame's PR.
 
@@ -117,297 +115,11 @@ class SharedCog(commands.Cog, name="AAA3A_utils"):
         if self.sentry is None:
             self.sentry = SentryHelper(self)
 
-    async def check_if_slash(self, cog: commands.Cog) -> bool:
-        if not self.cogsutils.is_dpy2:
-            return False
-        if cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
-            return False
-        return cog.qualified_name in await self.config.cogs_with_slash()
-
     @commands.is_owner()
-    @hybrid_group(name="AAA3A_utils", aliases=["aaa3a_utils"], hidden=True)
+    @hybrid_group(name="aaa3a_utils", aliases=["AAA3A_utils"], hidden=True)
     async def AAA3A_utils(self, ctx: commands.Context) -> None:
         """All commands to manage all the cogs from AAA3A-cogs repo."""
         pass
-
-    @commands.is_owner()
-    @AAA3A_utils.command()
-    async def addslash(self, ctx: commands.Context, cogs: commands.Greedy[StrConverter]) -> None:
-        """Add slash commands for a cog from AAA3A-cogs."""
-        if not self.cogsutils.is_dpy2:
-            raise commands.UserFeedbackCheckFailure(
-                _("Slash commands do not work under dpy1. Wait for Red 3.5.")
-            )
-        async with ctx.typing():
-            result = {
-                "not_installed_or_loaded": [],
-                "not_from_AAA3A-cogs": [],
-                "already": [],
-                "failed": [],
-            }
-            config = await self.config.cogs_with_slash()
-            for cog_name in list(set(cogs)):
-                cog = ctx.bot.get_cog(cog_name)
-                if cog is None:
-                    result["not_installed_or_loaded"].append(cog_name)
-                    continue
-                if cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
-                    result["not_from_AAA3A-cogs"].append(cog.qualified_name)
-                    continue
-                if cog.qualified_name in config:
-                    result["already"].append(cog.qualified_name)
-                    continue
-                try:
-                    await self.cogsutils.add_hybrid_commands(cog=cog)
-                except Exception as e:
-                    self.log.error(
-                        f"Error when adding slash (hybrids) commands from the {cog.qualified_name} cog.",
-                        exc_info=e,
-                    )
-                    result["failed"].append(cog.qualified_name)
-                    continue
-                config.append(cog.qualified_name)
-            await self.config.cogs_with_slash.set(config)
-        if result == {
-            "not_installed_or_loaded": [],
-            "not_from_AAA3A-cogs": [],
-            "already": [],
-            "failed": [],
-        }:
-            await ctx.tick()
-        else:
-            message = ""
-            if result["not_installed_or_loaded"] != []:
-                items = result["not_installed_or_loaded"]
-                s = "s" if len(items) > 1 else ""
-                message += f"\n{bold(f'Cog{s} not installed or loaded')}: {humanize_list(items)}"
-            if result["not_from_AAA3A-cogs"] != []:
-                items = result["not_from_AAA3A-cogs"]
-                s = "s" if len(items) > 1 else ""
-                message += f"\n{bold(f'Cog{s} not from AAA3A-cogs')}: {humanize_list(items)}"
-            if result["already"] != []:
-                items = result["already"]
-                s = "s" if len(items) > 1 else ""
-                message += f"\n{bold(f'Cog{s} with slash commands already loaded')} (If they don't appear in Discord, you may have forgotten to sync.): {humanize_list(items)}"
-            if result["failed"] != []:
-                items = result["failed"]
-                s = "s" if len(items) > 1 else ""
-                message += (
-                    f"\n{bold(f'Failed cog{s}')} (Check the bot console.): {humanize_list(items)}"
-                )
-            await ctx.send(message)
-
-    @commands.is_owner()
-    @AAA3A_utils.command()
-    async def removeslash(
-        self, ctx: commands.Context, cogs: commands.Greedy[StrConverter]
-    ) -> None:
-        """Remove slash commands for a cog from AAA3A-cogs."""
-        if not self.cogsutils.is_dpy2:
-            raise commands.UserFeedbackCheckFailure(
-                _("Slash commands do not work under dpy1. Wait for Red 3.5.")
-            )
-        async with ctx.typing():
-            result = {
-                "not_installed_or_loaded": [],
-                "not_from_AAA3A-cogs": [],
-                "already": [],
-                "failed": [],
-            }
-            config = await self.config.cogs_with_slash()
-            for cog_name in list(set(cogs)):
-                cog = ctx.bot.get_cog(cog_name)
-                if cog is None:
-                    result["not_installed_or_loaded"].append(cog_name)
-                    continue
-                if cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects():
-                    result["not_from_AAA3A-cogs"].append(cog.qualified_name)
-                    continue
-                if cog.qualified_name not in config:
-                    result["already"].append(cog.qualified_name)
-                    continue
-                try:
-                    await self.cogsutils.remove_hybrid_commands(cog=cog)
-                except Exception as e:
-                    self.log.error(
-                        f"Error when removing slash (hybrids) commands from the {cog.qualified_name} cog.",
-                        exc_info=e,
-                    )
-                    result["failed"].append(cog.qualified_name)
-                config.remove(cog.qualified_name)
-            await self.config.cogs_with_slash.set(config)
-        if result == {
-            "not_installed_or_loaded": [],
-            "not_from_AAA3A-cogs": [],
-            "already": [],
-            "failed": [],
-        }:
-            await ctx.tick()
-        else:
-            message = ""
-            if result["not_installed_or_loaded"] != []:
-                items = result["not_installed_or_loaded"]
-                s = "s" if len(items) > 1 else ""
-                message += f"\n{bold(f'Cog{s} not installed or loaded')}: {humanize_list(items)}"
-            if result["not_from_AAA3A-cogs"] != []:
-                items = result["not_from_AAA3A-cogs"]
-                s = "s" if len(items) > 1 else ""
-                message += f"\n{bold(f'Cog{s} not from AAA3A-cogs')}: {humanize_list(items)}"
-            if result["already"] != []:
-                items = result["already"]
-                s = "s" if len(items) > 1 else ""
-                message += f"\n{bold(f'Cog{s} with slash commands already unloaded')} (If they appear in Discord, you may have forgotten to sync.): {humanize_list(items)}"
-            if result["failed"] != []:
-                items = result["failed"]
-                s = "s" if len(items) > 1 else ""
-                message += (
-                    f"\n{bold(f'Failed cog{s}')} (Check the bot console.): {humanize_list(items)}"
-                )
-            await ctx.send(message)
-
-    @commands.is_owner()
-    @AAA3A_utils.command()
-    async def addignoredslash(
-        self, ctx: commands.Context, commands: commands.Greedy[StrConverter]
-    ) -> None:
-        """Add ignored slash commands for a cog from AAA3A-cogs."""
-        if not self.cogsutils.is_dpy2:
-            raise commands.UserFeedbackCheckFailure(
-                _("Slash commands do not work under dpy1. Wait for Red 3.5.")
-            )
-        async with ctx.typing():
-            result = {
-                "not_exist": [],
-                "not_from_AAA3A-cogs": [],
-                "not_root_commands": [],
-                "already": [],
-            }
-            config = await self.config.ignored_slash_commands()
-            for command_name in list(set(commands)):
-                command = ctx.bot.get_command(command_name)
-                if command is None:
-                    result["not_exist"].append(command_name)
-                    continue
-                if (
-                    command.cog is None
-                    or command.cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects()
-                ):
-                    result["not_from_AAA3A-cogs"].append(command.qualified_name)
-                    continue
-                if command.parent is not None:
-                    result["not_root_commands"].append(command.qualified_name)
-                    continue
-                if command.qualified_name in config:
-                    result["already"].append(command.qualified_name)
-                    continue
-                config.append(command.qualified_name)
-            await self.config.ignored_slash_commands.set(config)
-        if result == {
-            "not_exist": [],
-            "not_from_AAA3A-cogs": [],
-            "not_root_commands": [],
-            "already": [],
-        }:
-            await ctx.tick()
-        else:
-            message = ""
-            if result["not_exist"] != []:
-                items = result["not_exist"]
-                s = "s" if len(items) > 1 else ""
-                message += f"\n{bold(f'Command{s} not existing')}: {humanize_list(items)}"
-            if result["not_from_AAA3A-cogs"] != []:
-                items = result["not_from_AAA3A-cogs"]
-                s = "s" if len(items) > 1 else ""
-                message += f"\n{bold(f'Command{s} not from AAA3A-cogs')}: {humanize_list(items)}"
-            if result["not_root_commands"] != []:
-                items = result["not_root_commands"]
-                s = "s" if len(items) > 1 else ""
-                message += f"\n{bold(f'Command{s} not in root')} (For technical reasons, sub-commands cannot be ignored.): {humanize_list(items)}"
-            if result["already"] != []:
-                items = result["already"]
-                s = "s" if len(items) > 1 else ""
-                message += f"\n{bold(f'Command{s} already ignored')} (If they appear in Discord, you may have forgotten to sync.): {humanize_list(items)}"
-            await ctx.send(message)
-
-    @commands.is_owner()
-    @AAA3A_utils.command()
-    async def removeignoredslash(
-        self, ctx: commands.Context, commands: commands.Greedy[StrConverter]
-    ) -> None:
-        """Remove ignored slash commands for a cog from AAA3A-cogs."""
-        if not self.cogsutils.is_dpy2:
-            raise commands.UserFeedbackCheckFailure(
-                _("Slash commands do not work under dpy1. Wait for Red 3.5.")
-            )
-        async with ctx.typing():
-            result = {
-                "not_exist": [],
-                "not_from_AAA3A-cogs": [],
-                "not_root_commands": [],
-                "already": [],
-            }
-            config = await self.config.ignored_slash_commands()
-            for command_name in list(set(commands)):
-                command = ctx.bot.get_command(command_name)
-                if command is None:
-                    result["not_exist"].append(command_name)
-                    continue
-                if (
-                    command.cog is None
-                    or command.cog.qualified_name not in self.cogsutils.get_all_repo_cogs_objects()
-                ):
-                    result["not_from_AAA3A-cogs"].append(command.qualified_name)
-                    continue
-                if command.parent is not None:
-                    result["not_root_commands"].append(command.qualified_name)
-                    continue
-                if command.qualified_name not in config:
-                    result["already"].append(command.qualified_name)
-                    continue
-                config.remove(command.qualified_name)
-            await self.config.ignored_slash_commands.set(config)
-        if result == {
-            "not_exist": [],
-            "not_from_AAA3A-cogs": [],
-            "not_root_commands": [],
-            "already": [],
-        }:
-            await ctx.tick()
-        else:
-            message = ""
-            if result["not_exist"] != []:
-                items = result["not_exist"]
-                s = "s" if len(items) > 1 else ""
-                message += f"\n{bold(f'Command{s} not existing')}: {humanize_list(items)}"
-            if result["not_from_AAA3A-cogs"] != []:
-                items = result["not_from_AAA3A-cogs"]
-                s = "s" if len(items) > 1 else ""
-                message += f"\n{bold(f'Command{s} not from AAA3A-cogs')}: {humanize_list(items)}"
-            if result["not_root_commands"] != []:
-                items = result["not_root_commands"]
-                s = "s" if len(items) > 1 else ""
-                message += f"\n{bold(f'Command{s} not in root')} (For technical reasons, sub-commands cannot be ignored.): {humanize_list(items)}"
-            if result["already"] != []:
-                items = result["already"]
-                s = "s" if len(items) > 1 else ""
-                message += f"\n{bold(f'Command{s} already not ignored')} (If they don't appear in Discord, you may have forgotten to add slash commands or sync.): {humanize_list(items)}"
-            await ctx.send(message)
-
-    @commands.is_owner()
-    @AAA3A_utils.command()
-    async def clearslash(self, ctx: commands.Context) -> None:
-        """Remove slash commands for all cogs from AAA3A-cogs."""
-        if not self.cogsutils.is_dpy2:
-            raise commands.UserFeedbackCheckFailure(
-                _("Slash commands do not work under dpy1. Wait for Red 3.5.")
-            )
-        config = await self.config.cogs_with_slash()
-        for cog in self.cogsutils.get_all_repo_cogs_objects():
-            if cog.qualified_name in config:
-                await self.cogsutils.remove_hybrid_commands(cog=cog)
-        config.clear()
-        await self.config.cogs_with_slash.set(config)
-        await self.cogsutils.remove_hybrid_commands(cog=cog)
 
     @commands.is_owner()
     @AAA3A_utils.command()

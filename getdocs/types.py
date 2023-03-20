@@ -24,7 +24,7 @@ class RTFSResults:
 
     def to_embeds(self) -> typing.List[discord.Embed]:
         description = "\n".join(
-            f"• [`{name}`]({url})" for name, _, url, _ in self.results
+            f"**•** [**`{name}`**]({url})" for name, _, url, _ in self.results
         )
         embeds = []
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
@@ -57,7 +57,7 @@ class SearchResults:
 
     def to_embeds(self) -> typing.List[discord.Embed]:
         description = "\n".join(
-            f"• [`{name}`]({url})" for name, _, url, _ in self.results
+            f"**•** [**`{name}`**]({url})" for name, _, url, _ in self.results
         )
         embeds = []
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
@@ -141,7 +141,7 @@ class Examples(typing.List):
                 )
             embed = discord.Embed(
                 title=f"Example {i}:" if len(self) > 1 else "Example:",
-                description=box(example, lang="py") if "```" not in example else example,
+                description=(box(example, lang="py") if "```" not in example else example)[:4096],
                 color=discord.Color.green(),
             )
             embeds.append(embed)
@@ -167,10 +167,10 @@ class Attributes:
 
     def to_embeds(self) -> typing.List[discord.Embed]:
         def format_attribute(name: str, role: str, url: str, description: str, show_description: typing.Optional[bool] = True):
-            formatted_attribute = "• "
+            formatted_attribute = "**•** "
             if role is not None:
                 formatted_attribute += f"{role} "
-            formatted_attribute += f"[{name}]({url})"
+            formatted_attribute += f"[**{name}**]({url})"
             if description is not None and show_description:
                 formatted_attribute += f"\n> {description}"
             return formatted_attribute
@@ -210,13 +210,13 @@ class Documentation:
     full_name: str
     description: str
     if CogsUtils().is_dpy2:
-        parameters: Parameters[str, str]
+        parameters: typing.Union[Parameters[str, str], str]
         examples: Examples[str]
         url: str
         fields: typing.Dict[str, str]
         attributes: Attributes
     else:
-        parameters: Parameters
+        parameters: typing.Union[Parameters, str]
         examples: Examples
         url: str
         fields: typing.Dict[str, str]
@@ -230,9 +230,9 @@ class Documentation:
         }
 
     def to_embed(self) -> discord.Embed:
-        description = (f"{box(self.full_name, lang='py')}\n" if self.full_name else "") + f"{self.description}".strip()
+        description = (f"{box(self.full_name, lang='py' if self.source.name != 'git' else 'ini')}\n" if self.full_name else "") + f"{self.description}".strip()
         embed = discord.Embed(
-            title=self.name, url=self.url, description=list(pagify(description, page_length=4000))[0] if description else "No description.", color=discord.Color.green()
+            title=self.name, url=self.url if self.url.startswith("http") else None, description=list(pagify(description, page_length=4000))[0] if description else "No description.", color=discord.Color.green()
         )
         embed.set_author(
             name=f"{self.source.name} Documentation",
@@ -240,7 +240,10 @@ class Documentation:
         )
         fields = {}
         if self.parameters:
-            parameters = self.parameters.to_text()
+            if isinstance(self.parameters, str):
+                parameters = self.parameters
+            else:
+                parameters = self.parameters.to_text()
             fields["Parameters"] = parameters
         fields.update(**self.fields)
         field_limit = 1024

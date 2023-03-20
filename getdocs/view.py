@@ -163,9 +163,7 @@ class GetDocsView(discord.ui.View):
         if next_button:
             self.remove_item(next_button)
 
-        if self.source.name != "discordapi":
-            embeds = self._current.parameters.to_embeds()
-        else:
+        if self.source.name == "discordapi":
             description = ""
             for name, value in self._current.fields.items():
                 description += f"\n\n**{name}:**\n{value}"
@@ -187,6 +185,28 @@ class GetDocsView(discord.ui.View):
                             color=discord.Color.green(),
                     )
                     embeds.append(embed)
+        elif isinstance(self._current.parameters, str):
+            description = self._current.parameters
+            embeds = []
+            pages = list(pagify(description, page_length=4000))
+            if len(pages) == 1:
+                embed = discord.Embed(
+                        title="Parameters:",
+                        description=description,
+                        color=discord.Color.green(),
+                )
+                embeds.append(embed)
+            else:
+                embeds = []
+                for i, page in enumerate(pages, start=1):
+                    embed = discord.Embed(
+                            title=f"Parameters {i}:",
+                            description=page,
+                            color=discord.Color.green(),
+                    )
+                    embeds.append(embed)
+        else:
+            embeds = self._current.parameters.to_embeds()
 
         if len(embeds) == 1:
             self._message = await self._message.edit(embed=embeds[0])

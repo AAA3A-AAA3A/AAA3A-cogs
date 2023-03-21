@@ -71,6 +71,7 @@ class TicketTool(settings, Cog):
             "default_profile_settings": {
                 "enable": False,
                 "logschannel": None,
+                "forum_channel": None,
                 "category_open": None,
                 "category_close": None,
                 "admin_role": None,
@@ -122,6 +123,11 @@ class TicketTool(settings, Cog):
                 "path": ["logschannel"],
                 "converter": discord.TextChannel,
                 "description": "Set the channel where the logs will be saved.",
+            },
+            "forum_channel": {
+                "path": ["forum_channel"],
+                "converter":  discord.ForumChannel if self.cogsutils.is_dpy2 else None,
+                "description": "Set the forum channel where the opened tickets will be. If it's set, `category_open` and `category_close` will be ignored (except for existing tickets).",
             },
             "category_open": {
                 "path": ["category_open"],
@@ -193,6 +199,7 @@ class TicketTool(settings, Cog):
                 "path": ["create_modlog"],
                 "converter": bool,
                 "description": "Does the bot create an action in the bot modlog when a ticket is created?",
+                "no_slash": True,
             },
             "audit_logs": {
                 "path": ["audit_logs"],
@@ -337,6 +344,8 @@ class TicketTool(settings, Cog):
                 config[key] = value
         if config["logschannel"] is not None:
             config["logschannel"] = guild.get_channel(config["logschannel"])
+        if config["forum_channel"] is not None:
+            config["forum_channel"] = guild.get_channel(config["forum_channel"])
         if config["category_open"] is not None:
             config["category_open"] = guild.get_channel(config["category_open"])
         if config["category_close"] is not None:
@@ -381,13 +390,15 @@ class TicketTool(settings, Cog):
         ticket.cog = self
         ticket.guild = ticket.bot.get_guild(ticket.guild) or ticket.guild
         ticket.owner = ticket.guild.get_member(ticket.owner) or ticket.owner
-        ticket.channel = ticket.guild.get_channel(ticket.channel) or ticket.channel
+        ticket.channel = channel
         ticket.claim = ticket.guild.get_member(ticket.claim) or ticket.claim
         ticket.created_by = ticket.guild.get_member(ticket.created_by) or ticket.created_by
         ticket.opened_by = ticket.guild.get_member(ticket.opened_by) or ticket.opened_by
         ticket.closed_by = ticket.guild.get_member(ticket.closed_by) or ticket.closed_by
         ticket.deleted_by = ticket.guild.get_member(ticket.deleted_by) or ticket.deleted_by
         ticket.renamed_by = ticket.guild.get_member(ticket.renamed_by) or ticket.renamed_by
+        ticket.locked_by = ticket.guild.get_member(ticket.locked_by) or ticket.locked_by
+        ticket.unlocked_by = ticket.guild.get_member(ticket.unlocked_by) or ticket.unlocked_by
         members = ticket.members
         ticket.members = []
         ticket.members.extend(channel.guild.get_member(m) for m in members)
@@ -401,6 +412,10 @@ class TicketTool(settings, Cog):
             ticket.deleted_at = datetime.datetime.fromtimestamp(ticket.deleted_at)
         if ticket.renamed_at is not None:
             ticket.renamed_at = datetime.datetime.fromtimestamp(ticket.renamed_at)
+        if ticket.locked_at is not None:
+            ticket.locked_at = datetime.datetime.fromtimestamp(ticket.locked_at)
+        if ticket.unlocked_at is not None:
+            ticket.unlocked_at = datetime.datetime.fromtimestamp(ticket.unlocked_at)
         if ticket.first_message is not None:
             ticket.first_message = ticket.channel.get_partial_message(ticket.first_message)
         return ticket
@@ -451,11 +466,12 @@ class TicketTool(settings, Cog):
             if isinstance(ticket.owner, int)
             else f"{ticket.owner.mention} ({ticket.owner.id})",
         )
-        embed.add_field(
-            inline=True,
-            name=_("Channel:"),
-            value=f"{ticket.channel.mention} - {ticket.channel.name} ({ticket.channel.id})",
-        )
+        if ticket.channel is not None:
+            embed.add_field(
+                inline=True,
+                name=_("Channel:"),
+                value=f"{ticket.channel.mention} - {ticket.channel.name} ({ticket.channel.id})",
+            )
         if more:
             if ticket.closed_by is not None:
                 embed.add_field(
@@ -510,7 +526,10 @@ class TicketTool(settings, Cog):
         to_remove = []
         count = 1
         for id in data:
-            channel = member.guild.get_channel(int(id))
+            if config["forum_channel"] is not None:
+                channel = config["forum_channel"].get_thread(int(id))
+            else:
+                channel = member.guild.get_channel(int(id))
             if channel is not None:
                 ticket: Ticket = await self.get_ticket(channel)
                 if ticket.panel != panel:
@@ -554,6 +573,7 @@ class TicketTool(settings, Cog):
         claim: typing.Optional[bool] = None,
         claim_staff: typing.Optional[bool] = False,
         members: typing.Optional[bool] = False,
+        locked: typing.Optional[bool] = None,
     ) -> None:
         async def pred(ctx) -> bool:
             if not ticket_check:
@@ -571,6 +591,9 @@ class TicketTool(settings, Cog):
                 elif ticket.claim is None:
                     check = False
                 if check != claim:
+                    return False
+            if locked is not None:
+                if not isinstance(ticket.channel, discord.TextChannel) and not ticket.channel.locked == locked:
                     return False
             if ctx.author.id in ctx.bot.owner_ids:
                 return True
@@ -640,15 +663,16 @@ class TicketTool(settings, Cog):
         if panel not in panels:
             raise commands.UserFeedbackCheckFailure(_("This panel does not exist."))
         config = await self.get_config(ctx.guild, panel)
-        category_open = config["category_open"]
-        category_close = config["category_close"]
+        forum_channel = config["forum_channel"]  # dpy2: discord.ForumChannel type hint
+        category_open: discord.CategoryChannel = config["category_open"]
+        category_close: discord.CategoryChannel = config["category_close"]
         if not config["enable"]:
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "The ticket system is not enabled on this server. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it."
                 ).format(ctx=ctx)
             )
-        if category_open is None or category_close is None:
+        if forum_channel is None and (category_open is None or category_close is None):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "The category `open` or the category `close` have not been configured. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it."
@@ -661,18 +685,25 @@ class TicketTool(settings, Cog):
                     limit=limit
                 )
             )
-        if (
-            not category_open.permissions_for(ctx.guild.me).manage_channels
-            or not category_close.permissions_for(ctx.guild.me).manage_channels
-        ):
+        if forum_channel is None:
+            if (
+                not category_open.permissions_for(ctx.guild.me).manage_channels
+                or not category_close.permissions_for(ctx.guild.me).manage_channels
+            ):
+                raise commands.UserFeedbackCheckFailure(
+                    _(
+                        "The bot does not have `manage_channels` permission on the `open` and `close` categories to allow the ticket system to function properly. Please notify an administrator of this server."
+                    )
+                )
+        elif not forum_channel.permissions_for(ctx.guild.me).create_private_threads or not forum_channel.permissions_for(ctx.guild.me).create_public_threads:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "The bot does not have `manage_channels` permission on the 'open' and 'close' categories to allow the ticket system to function properly. Please notify an administrator of this server."
+                    "The bot does not have `manage_channel` permission in the forum channel to allow the ticket system to function properly. Please notify an administrator of this server."
                 )
             )
         ticket: Ticket = Ticket.instance(ctx, panel=panel, reason=reason)
         await ticket.create()
-        ctx.ticket = ticket
+        ctx.ticket: Ticket = ticket
 
     @decorator(
         ticket_check=True,
@@ -686,6 +717,7 @@ class TicketTool(settings, Cog):
         claim=None,
         claim_staff=True,
         members=False,
+        locked=None,
     )
     @ticket.command(name="export")
     async def command_export(self, ctx: commands.Context) -> None:
@@ -737,6 +769,7 @@ class TicketTool(settings, Cog):
         claim=None,
         claim_staff=True,
         members=False,
+        locked=None,
     )
     @ticket.command(name="open")
     async def command_open(
@@ -764,6 +797,7 @@ class TicketTool(settings, Cog):
         claim=None,
         claim_staff=True,
         members=False,
+        locked=None,
     )
     @ticket.command(name="close")
     async def command_close(
@@ -804,6 +838,80 @@ class TicketTool(settings, Cog):
     @decorator(
         ticket_check=True,
         status=None,
+        ticket_owner=False,
+        admin_role=True,
+        support_role=False,
+        ticket_role=False,
+        view_role=False,
+        guild_owner=True,
+        claim=None,
+        claim_staff=True,
+        members=False,
+        locked=False,
+    )
+    @ticket.command(name="lock")
+    async def command_lock(
+        self,
+        ctx: commands.Context,
+        confirmation: typing.Optional[bool] = None,
+        *,
+        reason: typing.Optional[str] = _("No reason provided."),
+    ) -> None:
+        """Lock an existing ticket."""
+        ticket: Ticket = await self.get_ticket(ctx.channel)
+        if isinstance(ticket.channel, discord.TextChannel):
+            raise commands.UserFeedbackCheckFailure(_("Cannot execute action on a text channel."))
+        config = await self.get_config(ticket.guild, ticket.panel)
+        if not confirmation:
+            embed: discord.Embed = discord.Embed()
+            embed.title = _("Do you really want to lock the ticket {ticket.id}?").format(
+                ticket=ticket
+            )
+            embed.color = config["color"]
+            embed.set_author(
+                name=ctx.author.name,
+                url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url,
+                icon_url=ctx.author.display_avatar
+                if self.cogsutils.is_dpy2
+                else ctx.author.avatar_url,
+            )
+            response = await self.cogsutils.ConfirmationAsk(ctx, embed=embed)
+            if not response:
+                return
+        ticket.reason = reason
+        await ticket.lock(ctx.author)
+
+    @decorator(
+        ticket_check=True,
+        status=None,
+        ticket_owner=False,
+        admin_role=True,
+        support_role=False,
+        ticket_role=False,
+        view_role=False,
+        guild_owner=True,
+        claim=None,
+        claim_staff=True,
+        members=False,
+        locked=True,
+    )
+    @ticket.command(name="unlock")
+    async def command_unlock(
+        self,
+        ctx: commands.Context,
+        *,
+        reason: typing.Optional[str] = _("No reason provided."),
+    ) -> None:
+        """Unlock an existing locked ticket."""
+        ticket: Ticket = await self.get_ticket(ctx.channel)
+        if isinstance(ticket.channel, discord.TextChannel):
+            raise commands.UserFeedbackCheckFailure(_("Cannot execute action on a text channel."))
+        ticket.reason = reason
+        await ticket.unlock(ctx.author)
+
+    @decorator(
+        ticket_check=True,
+        status=None,
         ticket_owner=True,
         admin_role=True,
         support_role=True,
@@ -813,6 +921,7 @@ class TicketTool(settings, Cog):
         claim=None,
         claim_staff=True,
         members=False,
+        locked=None,
     )
     @ticket.command(name="rename")
     async def command_rename(
@@ -839,6 +948,7 @@ class TicketTool(settings, Cog):
         claim=None,
         claim_staff=True,
         members=False,
+        locked=None,
     )
     @ticket.command(name="delete")
     async def command_delete(
@@ -888,6 +998,7 @@ class TicketTool(settings, Cog):
         claim=False,
         claim_staff=False,
         members=False,
+        locked=None,
     )
     @ticket.command(name="claim")
     async def command_claim(
@@ -916,6 +1027,7 @@ class TicketTool(settings, Cog):
         claim=True,
         claim_staff=True,
         members=False,
+        locked=None,
     )
     @ticket.command(name="unclaim")
     async def command_unclaim(
@@ -938,6 +1050,7 @@ class TicketTool(settings, Cog):
         claim=None,
         claim_staff=False,
         members=False,
+        locked=None,
     )
     @ticket.command(name="owner")
     async def command_owner(
@@ -966,9 +1079,10 @@ class TicketTool(settings, Cog):
         claim=None,
         claim_staff=True,
         members=False,
+        locked=None,
     )
-    @ticket.command(name="add")
-    async def command_add(
+    @ticket.command(name="addmember", aliases=["add"])
+    async def command_addmember(
         self,
         ctx: commands.Context,
         members: commands.Greedy[discord.Member],
@@ -992,9 +1106,10 @@ class TicketTool(settings, Cog):
         claim=None,
         claim_staff=True,
         members=False,
+        locked=None,
     )
-    @ticket.command(name="remove")
-    async def command_remove(
+    @ticket.command(name="removemember", aliases=["remove"])
+    async def command_removemember(
         self,
         ctx: commands.Context,
         members: commands.Greedy[discord.Member],
@@ -1365,7 +1480,11 @@ class TicketTool(settings, Cog):
     async def on_member_remove(self, member: discord.Member) -> None:
         data = await self.config.guild(member.guild).tickets.all()
         for channel in data:
-            channel = member.guild.get_channel(int(channel))
+            config = await self.get_config(member.guild, panel=data[channel]["panel"])
+            if config["forum_channel"] is not None:
+                channel = config["forum_channel"].get_thread(int(id))
+            else:
+                channel = member.guild.get_channel(int(id))
             if channel is None:
                 continue
             ticket: Ticket = await self.get_ticket(channel)

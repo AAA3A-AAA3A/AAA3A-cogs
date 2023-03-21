@@ -43,12 +43,16 @@ class Ticket:
         closed_by,
         deleted_by,
         renamed_by,
+        locked_by,
+        unlocked_by,
         members,
         created_at,
         opened_at,
         closed_at,
         deleted_at,
         renamed_at,
+        locked_at,
+        unlocked_at,
         status,
         reason,
         logs_messages,
@@ -61,19 +65,26 @@ class Ticket:
         self.id: int = id
         self.owner: discord.Member = owner
         self.guild: discord.Guild = guild
-        self.channel: discord.TextChannel = channel
+        if self.cog.cogsutils.is_dpy2:
+            self.channel: typing.Union[discord.TextChannel, discord.Thread] = channel
+        else:
+            self.channel: discord.TextChannel = channel
         self.claim: discord.Member = claim
         self.created_by: discord.Member = created_by
         self.opened_by: discord.Member = opened_by
         self.closed_by: discord.Member = closed_by
         self.deleted_by: discord.Member = deleted_by
         self.renamed_by: discord.Member = renamed_by
+        self.locked_by: discord.Member = locked_by
+        self.unlocked_by: discord.Member = locked_by
         self.members: typing.List[discord.Member] = members
         self.created_at: datetime.datetime = created_at
         self.opened_at: datetime.datetime = opened_at
         self.closed_at: datetime.datetime = closed_at
         self.deleted_at: datetime.datetime = deleted_at
         self.renamed_at: datetime.datetime = renamed_at
+        self.locked_at: datetime.datetime = locked_at
+        self.unlocked_at: datetime.datetime = locked_at
         self.status: str = status
         self.reason: str = reason
         self.logs_messages: bool = logs_messages
@@ -100,12 +111,16 @@ class Ticket:
             closed_by=None,
             deleted_by=None,
             renamed_by=None,
+            locked_by=None,
+            unlocked_by=None,
             members=[],
             created_at=datetime.datetime.now(),
             opened_at=None,
             closed_at=None,
             deleted_at=None,
             renamed_at=None,
+            locked_at=None,
+            unlocked_at=None,
             status="open",
             reason=reason,
             logs_messages=True,
@@ -130,12 +145,16 @@ class Ticket:
             closed_by=json["closed_by"],
             deleted_by=json["deleted_by"],
             renamed_by=json["renamed_by"],
+            locked_by=json.get("renamed_by", None),
+            unlocked_by=json.get("unlocked_by", None),
             members=json["members"],
             created_at=json["created_at"],
             opened_at=json["opened_at"],
             closed_at=json["closed_at"],
             deleted_at=json["deleted_at"],
             renamed_at=json["renamed_at"],
+            locked_at=json.get("locked_at", None),
+            unlocked_at=json.get("unlocked_at", None),
             status=json["status"],
             reason=json["reason"],
             logs_messages=json["logs_messages"],
@@ -162,35 +181,19 @@ class Ticket:
         if self.claim is not None:
             self.claim = self.claim.id
         if self.created_by is not None:
-            self.created_by = (
-                int(self.created_by)
-                if isinstance(self.created_by, int)
-                else int(self.created_by.id)
-            )
+            self.created_by = int(getattr(self.created_by, "id", self.created_by))
         if self.opened_by is not None:
-            self.opened_by = (
-                int(self.opened_by)
-                if isinstance(self.opened_by, int)
-                else int(self.opened_by.id)
-            )
+            self.opened_by = int(getattr(self.opened_by, "id", self.opened_by))
         if self.closed_by is not None:
-            self.closed_by = (
-                int(self.closed_by)
-                if isinstance(self.closed_by, int)
-                else int(self.closed_by.id)
-            )
+            self.closed_by = int(getattr(self.closed_by, "id", self.closed_by))
         if self.deleted_by is not None:
-            self.deleted_by = (
-                int(self.deleted_by)
-                if isinstance(self.deleted_by, int)
-                else int(self.deleted_by.id)
-            )
+            self.deleted_by = int(getattr(self.deleted_by, "id", self.deleted_by))
         if self.renamed_by is not None:
-            self.renamed_by = (
-                int(self.renamed_by)
-                if isinstance(self.renamed_by, int)
-                else int(self.renamed_by.id)
-            )
+            self.renamed_by = int(getattr(self.renamed_by, "id", self.renamed_by))
+        if self.locked_by is not None:
+            self.locked_by = int(getattr(self.locked_by, "id", self.locked_by))
+        if self.unlocked_by is not None:
+            self.unlocked_by = int(getattr(self.unlocked_by, "id", self.unlocked_by))
         members = self.members
         self.members = [int(m.id) for m in members]
         if self.created_at is not None:
@@ -203,6 +206,10 @@ class Ticket:
             self.deleted_at = float(datetime.datetime.timestamp(self.deleted_at))
         if self.renamed_at is not None:
             self.renamed_at = float(datetime.datetime.timestamp(self.renamed_at))
+        if self.locked_at is not None:
+            self.locked_at = float(datetime.datetime.timestamp(self.locked_at))
+        if self.unlocked_at is not None:
+            self.unlocked_at = float(datetime.datetime.timestamp(self.unlocked_at))
         if self.first_message is not None:
             self.first_message = int(self.first_message.id)
         json = self.__dict__
@@ -214,7 +221,6 @@ class Ticket:
     async def create(self) -> typing.Any:  # typing_extensions.Self
         config = await self.cog.get_config(self.guild, self.panel)
         logschannel = config["logschannel"]
-        overwrites = await utils().get_overwrites(self)
         emoji_open = config["emoji_open"]
         ping_role = config["ping_role"]
         self.id = config["last_nb"] + 1
@@ -240,32 +246,9 @@ class Ticket:
                 "time": self.created_at.strftime("%I-%M-%p"),
             }
             name = config["dynamic_channel_name"].format(**to_replace).replace(" ", "-")
-            self.channel = await self.guild.create_text_channel(
-                name,
-                overwrites=overwrites,
-                category=config["category_open"],
-                topic=self.reason,
-                reason=reason,
-            )
-        except (KeyError, AttributeError, discord.HTTPException):
+        except (KeyError, AttributeError):
             name = f"{emoji_open}-ticket-{self.id}"
-            self.channel = await self.guild.create_text_channel(
-                name,
-                overwrites=overwrites,
-                category=config["category_open"],
-                topic=self.reason,
-                reason=reason,
-            )
-        topic = _(
-            "🎟️ Ticket ID: {ticket.id}\n"
-            "🔥 Channel ID: {ticket.channel.id}\n"
-            "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
-            "☢️ Ticket reason: {ticket.reason}\n"
-            "👥 Ticket claimed by: Nobody."
-        ).format(ticket=self)
-        await self.channel.edit(topic=topic)
-        if config["create_modlog"]:
-            await self.cog.create_modlog(self, "ticket_created", reason)
+
         if CogsUtils().is_dpy2:
             view = Buttons(
                 timeout=None,
@@ -313,21 +296,67 @@ class Ticket:
             title=_("Ticket Created"),
             description=_("Thank you for creating a ticket on this server!"),
         )
-        if CogsUtils().is_dpy2:
-            self.first_message = await self.channel.send(
-                f"{self.created_by.mention}{optionnal_ping}",
+        if config["forum_channel"] is None:
+            overwrites = await utils().get_overwrites(self)
+            self.channel: discord.TextChannel = await self.guild.create_text_channel(
+                name,
+                overwrites=overwrites,
+                category=config["category_open"],
+                topic=self.reason,
+                reason=reason,
+            )
+            topic = _(
+                "🎟️ Ticket ID: {ticket.id}\n"
+                "🔥 Channel ID: {ticket.channel.id}\n"
+                "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+                "☢️ Ticket reason: {ticket.reason}\n"
+                "👥 Ticket claimed by: Nobody."
+            ).format(ticket=self)
+            await self.channel.edit(topic=topic)
+            if CogsUtils().is_dpy2:
+                self.first_message = await self.channel.send(
+                    f"{self.created_by.mention}{optionnal_ping}",
+                    embed=embed,
+                    view=view,
+                    allowed_mentions=discord.AllowedMentions(users=True, roles=True),
+                )
+                self.cog.cogsutils.views.append(view)
+            else:
+                self.first_message = await self.channel.send(
+                    f"{self.created_by.mention}{optionnal_ping}",
+                    embed=embed,
+                    components=[buttons],
+                    allowed_mentions=discord.AllowedMentions(users=True, roles=True),
+                )
+        else:
+            forum_channel: discord.ForumChannel = config["forum_channel"]
+            result: discord.channel.ThreadWithMessage = await forum_channel.create_thread(
+                name=name,
+                content=f"{self.created_by.mention}{optionnal_ping}",
                 embed=embed,
                 view=view,
                 allowed_mentions=discord.AllowedMentions(users=True, roles=True),
             )
+            self.channel = result.thread
+            self.first_message = result.message
             self.cog.cogsutils.views.append(view)
-        else:
-            self.first_message = await self.channel.send(
-                f"{self.created_by.mention}{optionnal_ping}",
-                embed=embed,
-                components=[buttons],
-                allowed_mentions=discord.AllowedMentions(users=True, roles=True),
-            )
+            try:
+                await self.channel.edit(invitable=False)
+            except discord.HTTPException:
+                pass
+            members = [self.owner]
+            if self.claim is not None:
+                members.append(self.claim)
+            if config["admin_role"] is not None:
+                members.extend(config["admin_role"].members)
+            if config["support_role"] is not None:
+                members.extend(config["support_role"].members)
+            if config["view_role"] is not None:
+                members.extend(config["view_role"].members)
+            for member in members:
+                self.channel.add_user(member)
+        if config["create_modlog"]:
+            await self.cog.create_modlog(self, "ticket_created", reason)
         if config["custom_message"] is not None:
             try:
                 embed: discord.Embed = discord.Embed()
@@ -417,9 +446,12 @@ class Ticket:
         new_name = f"{self.channel.name}"
         new_name = new_name.replace(f"{emoji_close}-", "", 1)
         new_name = f"{emoji_open}-{new_name}"
-        await self.channel.edit(
-            name=new_name, category=config["category_open"], reason=reason
-        )
+        if isinstance(self.channel, discord.TextChannel):
+            await self.channel.edit(
+                name=new_name, category=config["category_open"], reason=reason
+            )
+        else:
+            await self.channel.edit(name=new_name, archived=False, reason=reason)
         if self.logs_messages:
             embed = await self.cog.get_embed_action(
                 self, author=self.opened_by, action=_("Ticket Opened")
@@ -512,9 +544,12 @@ class Ticket:
         new_name = f"{self.channel.name}"
         new_name = new_name.replace(f"{emoji_open}-", "", 1)
         new_name = f"{emoji_close}-{new_name}"
-        await self.channel.edit(
-            name=new_name, category=config["category_close"], reason=reason
-        )
+        if isinstance(self.channel, discord.TextChannel):
+            await self.channel.edit(
+                name=new_name, category=config["category_close"], reason=reason
+            )
+        else:
+            await self.channel.edit(name=new_name, archived=True, reason=reason)
         if self.logs_messages:
             embed = await self.cog.get_embed_action(
                 self, author=self.closed_by, action="Ticket Closed"
@@ -586,6 +621,74 @@ class Ticket:
         await self.save()
         return self
 
+    async def lock(self, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+        if isinstance(self.channel, discord.TextChannel):
+            raise commands.UserFeedbackCheckFailure(_("Cannot execute action on a text channel."))
+        config = await self.cog.get_config(self.guild, self.panel)
+        reason = await self.cog.get_audit_reason(
+            guild=self.guild,
+            panel=self.panel,
+            author=author,
+            reason=f"Locking the ticket {self.id}.",
+        )
+        logschannel = config["logschannel"]
+        self.locked_by = author
+        self.locked_at = datetime.datetime.now()
+        await self.channel.edit(locked=True, reason=reason)
+        if self.logs_messages:
+            embed = await self.cog.get_embed_action(
+                self, author=self.locked_by, action="Ticket Locked"
+            )
+            await self.channel.send(embed=embed)
+            if logschannel is not None:
+                embed = await self.cog.get_embed_important(
+                    self,
+                    True,
+                    author=self.locked_by,
+                    title="Ticket Locked",
+                    description=f"The ticket was locked by {self.closed_by}.",
+                )
+                await logschannel.send(
+                    _("Report on the lock of the ticket {ticket.id}."),
+                    embed=embed,
+                )
+        await self.save()
+        return self
+
+    async def unlock(self, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+        if isinstance(self.channel, discord.TextChannel):
+            raise commands.UserFeedbackCheckFailure(_("Cannot execute action on a text channel."))
+        config = await self.cog.get_config(self.guild, self.panel)
+        reason = await self.cog.get_audit_reason(
+            guild=self.guild,
+            panel=self.panel,
+            author=author,
+            reason=f"Unlocking the ticket {self.id}.",
+        )
+        logschannel = config["logschannel"]
+        self.unlocked_by = author
+        self.unlocked_at = datetime.datetime.now()
+        await self.channel.edit(locked=False, reason=reason)
+        if self.logs_messages:
+            embed = await self.cog.get_embed_action(
+                self, author=self.unlocked_by, action="Ticket Unlocked"
+            )
+            await self.channel.send(embed=embed)
+            if logschannel is not None:
+                embed = await self.cog.get_embed_important(
+                    self,
+                    True,
+                    author=self.unlocked_by,
+                    title="Ticket Unlocked",
+                    description=f"The ticket was unlocked by {self.closed_by}.",
+                )
+                await logschannel.send(
+                    _("Report on the unlock of the ticket {ticket.id}."),
+                    embed=embed,
+                )
+        await self.save()
+        return self
+
     async def rename(self, new_name: str, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
@@ -610,12 +713,6 @@ class Ticket:
     async def delete(self, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
         config = await self.cog.get_config(self.guild, self.panel)
         logschannel = config["logschannel"]
-        reason = await self.cog.get_audit_reason(
-            guild=self.guild,
-            panel=self.panel,
-            author=author,
-            reason=_("Deleting the ticket {ticket.id}.").format(ticket=self),
-        )
         self.deleted_by = author
         self.deleted_at = datetime.datetime.now()
         if self.logs_messages and logschannel is not None:
@@ -665,7 +762,16 @@ class Ticket:
                 colour=discord.Colour.green(),
             )
             await logschannel.send(embed=embed)
-        await self.channel.delete(reason=reason)
+        if isinstance(self.channel, discord.TextChannel):
+            reason = await self.cog.get_audit_reason(
+                guild=self.guild,
+                panel=self.panel,
+                author=author,
+                reason=_("Deleting the ticket {ticket.id}.").format(ticket=self),
+            )
+            await self.channel.delete(reason=reason)
+        else:
+            await self.channel.delete()
         data = await self.cog.config.guild(self.guild).tickets.all()
         try:
             del data[str(self.channel.id)]
@@ -692,23 +798,24 @@ class Ticket:
             "☢️ Ticket reason: {ticket.reason}\n"
             "👥 Ticket claimed by: @{ticket.claim.display_name} (@{ticket.claim.id})."
         ).format(ticket=self)
-        overwrites = self.channel.overwrites
-        overwrites[member] = discord.PermissionOverwrite(
-            attach_files=True,
-            read_message_history=True,
-            read_messages=True,
-            send_messages=True,
-            view_channel=True,
-        )
-        if config["support_role"] is not None:
-            overwrites[config["support_role"]] = discord.PermissionOverwrite(
-                attach_files=False,
+        if isinstance(self.channel, discord.TextChannel):
+            overwrites = self.channel.overwrites
+            overwrites[member] = discord.PermissionOverwrite(
+                attach_files=True,
                 read_message_history=True,
                 read_messages=True,
-                send_messages=False,
+                send_messages=True,
                 view_channel=True,
             )
-        await self.channel.edit(topic=topic, overwrites=overwrites, reason=reason)
+            if config["support_role"] is not None:
+                overwrites[config["support_role"]] = discord.PermissionOverwrite(
+                    attach_files=False,
+                    read_message_history=True,
+                    read_messages=True,
+                    send_messages=False,
+                    view_channel=True,
+                )
+            await self.channel.edit(topic=topic, overwrites=overwrites, reason=reason)
         if self.first_message is not None:
             try:
                 if CogsUtils().is_dpy2:
@@ -780,17 +887,18 @@ class Ticket:
             "👥 Ticket claimed by: Nobody."
         ).format(ticket=self)
         await self.channel.edit(topic=topic)
-        if config["support_role"] is not None:
-            overwrites = self.channel.overwrites
-            overwrites[config["support_role"]] = discord.PermissionOverwrite(
-                attach_files=True,
-                read_message_history=True,
-                read_messages=True,
-                send_messages=True,
-                view_channel=True,
-            )
-            await self.channel.edit(overwrites=overwrites, reason=reason)
-        await self.channel.set_permissions(member, overwrite=None, reason=reason)
+        if isinstance(self.channel, discord.TextChannel):
+            if config["support_role"] is not None:
+                overwrites = self.channel.overwrites
+                overwrites[config["support_role"]] = discord.PermissionOverwrite(
+                    attach_files=True,
+                    read_message_history=True,
+                    read_messages=True,
+                    send_messages=True,
+                    view_channel=True,
+                )
+                await self.channel.edit(overwrites=overwrites, reason=reason)
+            await self.channel.set_permissions(member, overwrite=None, reason=reason)
         if self.first_message is not None:
             try:
                 if CogsUtils().is_dpy2:
@@ -846,6 +954,8 @@ class Ticket:
         return self
 
     async def change_owner(self, member: discord.Member, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+        if not isinstance(self.channel, discord.TextChannel):
+            raise commands.UserFeedbackCheckFailure(_("Cannot execute action on a thread channel."))
         config = await self.cog.get_config(self.guild, self.panel)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
@@ -905,41 +1015,70 @@ class Ticket:
             admin_role_members = config["admin_role"].members
         else:
             admin_role_members = []
-        overwrites = self.channel.overwrites
-        for member in members:
-            if author is not None:
-                if member.bot:
-                    raise commands.UserFeedbackCheckFailure(
-                        _("You cannot add a bot to a ticket. ({member})").format(member=member)
-                    )
-                if not isinstance(self.owner, int) and member == self.owner:
-                    raise commands.UserFeedbackCheckFailure(
-                        _(
-                            "This member is already the owner of this ticket. ({member})"
-                        ).format(member=member)
-                    )
-                if member in admin_role_members:
-                    raise commands.UserFeedbackCheckFailure(
-                        _(
-                            "This member is an administrator for the ticket system. They will always have access to the ticket anyway. ({member})"
-                        ).format(member=member)
-                    )
-                if member in self.members:
-                    raise commands.UserFeedbackCheckFailure(
-                        _("This member already has access to this ticket. ({member})").format(
-                            member=member
+        if isinstance(self.channel, discord.TextChannel):
+            overwrites = self.channel.overwrites
+            for member in members:
+                if author is not None:
+                    if member.bot:
+                        raise commands.UserFeedbackCheckFailure(
+                            _("You cannot add a bot to a ticket. ({member})").format(member=member)
                         )
-                    )
-            if member not in self.members:
-                self.members.append(member)
-            overwrites[member] = discord.PermissionOverwrite(
-                attach_files=True,
-                read_message_history=True,
-                read_messages=True,
-                send_messages=True,
-                view_channel=True,
-            )
-        await self.channel.edit(overwrites=overwrites, reason=reason)
+                    if not isinstance(self.owner, int) and member == self.owner:
+                        raise commands.UserFeedbackCheckFailure(
+                            _(
+                                "This member is already the owner of this ticket. ({member})"
+                            ).format(member=member)
+                        )
+                    if member in admin_role_members:
+                        raise commands.UserFeedbackCheckFailure(
+                            _(
+                                "This member is an administrator for the ticket system. They will always have access to the ticket anyway. ({member})"
+                            ).format(member=member)
+                        )
+                    if member in self.members:
+                        raise commands.UserFeedbackCheckFailure(
+                            _("This member already has access to this ticket. ({member})").format(
+                                member=member
+                            )
+                        )
+                if member not in self.members:
+                    self.members.append(member)
+                overwrites[member] = discord.PermissionOverwrite(
+                    attach_files=True,
+                    read_message_history=True,
+                    read_messages=True,
+                    send_messages=True,
+                    view_channel=True,
+                )
+            await self.channel.edit(overwrites=overwrites, reason=reason)
+        else:
+            for member in members:
+                if author is not None:
+                    if member.bot:
+                        raise commands.UserFeedbackCheckFailure(
+                            _("You cannot add a bot to a ticket. ({member})").format(member=member)
+                        )
+                    if not isinstance(self.owner, int) and member == self.owner:
+                        raise commands.UserFeedbackCheckFailure(
+                            _(
+                                "This member is already the owner of this ticket. ({member})"
+                            ).format(member=member)
+                        )
+                    if member in admin_role_members:
+                        raise commands.UserFeedbackCheckFailure(
+                            _(
+                                "This member is an administrator for the ticket system. They will always have access to the ticket anyway. ({member})"
+                            ).format(member=member)
+                        )
+                    if member in self.members:
+                        raise commands.UserFeedbackCheckFailure(
+                            _("This member already has access to this ticket. ({member})").format(
+                                member=member
+                            )
+                        )
+                    await self.channel.add_user(member)
+                if member not in self.members:
+                    self.members.append(member)
         await self.save()
         return self
 
@@ -961,46 +1100,67 @@ class Ticket:
             support_role_members = config["support_role"].members
         else:
             support_role_members = []
-        for member in members:
-            if author is not None:
-                if member.bot:
-                    raise commands.UserFeedbackCheckFailure(
-                        _("You cannot remove a bot to a ticket ({member}).").format(member=member)
-                    )
-                if not isinstance(self.owner, int) and member == self.owner:
-                    raise commands.UserFeedbackCheckFailure(
-                        _("You cannot remove the owner of this ticket. ({member})").format(
-                            member=member
+        if isinstance(self.channel, discord.TextChannel):
+            for member in members:
+                if author is not None:
+                    if member.bot:
+                        raise commands.UserFeedbackCheckFailure(
+                            _("You cannot remove a bot to a ticket ({member}).").format(member=member)
                         )
-                    )
-                if member in admin_role_members:
-                    raise commands.UserFeedbackCheckFailure(
-                        _(
-                            "This member is an administrator for the ticket system. They will always have access to the ticket. ({member})"
-                        ).format(member=member)
-                    )
-                if (
-                    member not in self.members
-                    and member not in support_role_members
-                ):
-                    raise commands.UserFeedbackCheckFailure(
-                        _(
-                            "This member is not in the list of those authorised to access the ticket. ({member})"
-                        ).format(member=member)
-                    )
-            if member in self.members:
-                self.members.remove(member)
-            if member in support_role_members:
-                overwrites = self.channel.overwrites
-                overwrites[member] = discord.PermissionOverwrite(
-                    attach_files=False,
-                    read_message_history=False,
-                    read_messages=False,
-                    send_messages=False,
-                    view_channel=False,
-                )
-                await self.channel.edit(overwrites=overwrites, reason=reason)
-            else:
-                await self.channel.set_permissions(member, overwrite=None, reason=reason)
+                    if not isinstance(self.owner, int) and member == self.owner:
+                        raise commands.UserFeedbackCheckFailure(
+                            _("You cannot remove the owner of this ticket. ({member})").format(
+                                member=member
+                            )
+                        )
+                    if member in admin_role_members:
+                        raise commands.UserFeedbackCheckFailure(
+                            _(
+                                "This member is an administrator for the ticket system. They will always have access to the ticket. ({member})"
+                            ).format(member=member)
+                        )
+                    if (
+                        member not in self.members
+                        and member not in support_role_members
+                    ):
+                        raise commands.UserFeedbackCheckFailure(
+                            _(
+                                "This member is not in the list of those authorised to access the ticket. ({member})"
+                            ).format(member=member)
+                        )
+                    await self.channel.set_permissions(member, overwrite=None, reason=reason)
+                if member in self.members:
+                    self.members.remove(member)
+        else:
+            for member in members:
+                if author is not None:
+                    if member.bot:
+                        raise commands.UserFeedbackCheckFailure(
+                            _("You cannot remove a bot to a ticket ({member}).").format(member=member)
+                        )
+                    if not isinstance(self.owner, int) and member == self.owner:
+                        raise commands.UserFeedbackCheckFailure(
+                            _("You cannot remove the owner of this ticket. ({member})").format(
+                                member=member
+                            )
+                        )
+                    if member in admin_role_members:
+                        raise commands.UserFeedbackCheckFailure(
+                            _(
+                                "This member is an administrator for the ticket system. They will always have access to the ticket. ({member})"
+                            ).format(member=member)
+                        )
+                    if (
+                        member not in self.members
+                        and member not in support_role_members
+                    ):
+                        raise commands.UserFeedbackCheckFailure(
+                            _(
+                                "This member is not in the list of those authorised to access the ticket. ({member})"
+                            ).format(member=member)
+                        )
+                    await self.channel.remove_user(member)
+                if member in self.members:
+                    self.members.remove(member)
         await self.save()
         return self

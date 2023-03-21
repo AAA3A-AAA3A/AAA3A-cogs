@@ -592,14 +592,14 @@ class Settings:
                 if self.settings[setting]["no_slash"] and self.cog.cogsutils.is_dpy2 and isinstance(self.commands_group, commands.HybridGroup):
                     command: commands.Command = self.commands_group.command(
                         name=name,
-                        usage=f"<profile> [{_usage}]" if self.use_profiles_system else f"[{_usage}]",
+                        usage=f"<profile> <{_usage}>" if self.use_profiles_system else f"<{_usage}>",
                         help=_help,
                         with_app_command=False,
                     )(command)
                 else:
                     command: commands.Command = self.commands_group.command(
                         name=name,
-                        usage=f"<profile> [{_usage}]" if self.use_profiles_system else f"[{_usage}]",
+                        usage=f"<profile> <{_usage}>" if self.use_profiles_system else f"<{_usage}>",
                         help=_help,
                     )(command)
 

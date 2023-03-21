@@ -105,6 +105,7 @@ class ConfirmationAskView(discord.ui.View):
             except discord.HTTPException:
                 pass
         self._result = True
+        self.stop()
 
     @discord.ui.button(
         label=_("No"), emoji="✖️", style=discord.ButtonStyle.danger, custom_id="false_button"
@@ -117,6 +118,7 @@ class ConfirmationAskView(discord.ui.View):
             except discord.HTTPException:
                 pass
         self._result = False
+        self.stop()
 
 
 class Buttons(discord.ui.View):

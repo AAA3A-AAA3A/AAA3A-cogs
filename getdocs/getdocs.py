@@ -392,19 +392,20 @@ class GetDocs(Cog):
 
         async def query_autocomplete(
             self, interaction: discord.Interaction, current: str, exclude_std: bool
-        ) -> typing.List[discord.app_commands.Choice[str]]:
+        ) -> typing.Tuple["Source", typing.List[discord.app_commands.Choice[str]]]:
             source = None
             if "source" in interaction.namespace and interaction.namespace.source:
                 try:
                     _source = await SourceConverter().convert(interaction, interaction.namespace.source)
                 except commands.BadArgument:
-                    pass
+                    source = "discord.py"
                 else:
                     source = _source
-            source = source or "discord.py"
+            if source not in self.documentations:
+                return []
             source = self.documentations[source]
             if not current:
-                return [
+                return source, [
                     discord.app_commands.Choice(name=name, value=name)
                     for name in source._raw_rtfm_cache_with_std[:25]
                 ]

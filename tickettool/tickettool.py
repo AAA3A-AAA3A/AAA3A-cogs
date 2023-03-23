@@ -300,6 +300,13 @@ class TicketTool(settings, Cog):
                         "custom_id": "claim_ticket_button",
                         "disabled": False,
                     },
+                    {
+                        "style": 2,
+                        "label": _("Delete"),
+                        "emoji": "🗑️",
+                        "custom_id": "delete_ticket_button",
+                        "disabled": False,
+                    },
                 ],
                 function=self.on_button_interaction,
                 infinity=True,
@@ -1197,7 +1204,7 @@ class TicketTool(settings, Cog):
                     await interaction.followup.send(
                         _("You have chosen to create a ticket."), ephemeral=True
                     )
-            if interaction.data["custom_id"] == "close_ticket_button":
+            elif interaction.data["custom_id"] == "close_ticket_button":
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user, channel=interaction.channel, command="ticket close"
                 )
@@ -1210,7 +1217,7 @@ class TicketTool(settings, Cog):
                     )
                 except discord.HTTPException:
                     pass
-            if interaction.data["custom_id"] == "claim_ticket_button":
+            elif interaction.data["custom_id"] == "claim_ticket_button":
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user, channel=interaction.channel, command="ticket claim"
                 )
@@ -1220,7 +1227,16 @@ class TicketTool(settings, Cog):
                     ),
                     ephemeral=True,
                 )
-            return
+            elif interaction.data["custom_id"] == "delete_ticket_button":
+                ctx = await self.cogsutils.invoke_command(
+                    author=interaction.user, channel=interaction.channel, command="ticket delete"
+                )
+                await interaction.followup.send(
+                    _(
+                        "You have chosen to delete this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+                    ),
+                    ephemeral=True,
+                )
 
         async def on_dropdown_interaction(
             self, view: Dropdown, interaction: discord.Interaction, options: typing.List
@@ -1351,7 +1367,16 @@ class TicketTool(settings, Cog):
                     ),
                     ephemeral=True,
                 )
-            return
+            elif inter.clicked_button.custom_id == "delete_ticket_button":
+                ctx = await self.cogsutils.invoke_command(
+                    author=inter.author, channel=inter.channel, command="ticket delete"
+                )
+                await inter.followup(
+                    _(
+                        "You have chosen to delete this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+                    ),
+                    ephemeral=True,
+                )
 
         @commands.Cog.listener()
         async def on_dropdown(self, inter: MessageInteraction) -> None:

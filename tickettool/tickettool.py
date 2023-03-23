@@ -303,7 +303,7 @@ class TicketTool(settings, Cog):
                     {
                         "style": 2,
                         "label": _("Delete"),
-                        "emoji": "🗑️",
+                        "emoji": "⛔",
                         "custom_id": "delete_ticket_button",
                         "disabled": False,
                     },

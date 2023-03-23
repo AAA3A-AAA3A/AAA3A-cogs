@@ -270,7 +270,7 @@ class Ticket:
                     {
                         "style": 2,
                         "label": _("Delete"),
-                        "emoji": "🗑️",
+                        "emoji": "⛔",
                         "custom_id": "delete_ticket_button",
                         "disabled": False,
                     },
@@ -297,7 +297,7 @@ class Ticket:
                 Button(
                     style=ButtonStyle.grey,
                     label=_("Delete"),
-                    emoji="🙋🗑️",
+                    emoji="⛔",
                     custom_id="delete_ticket_button",
                     disabled=False,
                 ),
@@ -510,7 +510,7 @@ class Ticket:
                             {
                                 "style": 2,
                                 "label": _("Delete"),
-                                "emoji": "🗑️",
+                                "emoji": "⛔",
                                 "custom_id": "delete_ticket_button",
                                 "disabled": False,
                             },
@@ -541,7 +541,7 @@ class Ticket:
                         Button(
                             style=ButtonStyle.grey,
                             label=_("Delete"),
-                            emoji="🗑️",
+                            emoji="⛔",
                             custom_id="delete_ticket_button",
                             disabled=False,
                         ),
@@ -618,7 +618,7 @@ class Ticket:
                             {
                                 "style": 2,
                                 "label": _("Delete"),
-                                "emoji": "🗑️",
+                                "emoji": "⛔",
                                 "custom_id": "delete_ticket_button",
                                 "disabled": False,
                             },
@@ -649,7 +649,7 @@ class Ticket:
                         Button(
                             style=ButtonStyle.grey,
                             label=_("Delete"),
-                            emoji="🗑️",
+                            emoji="⛔",
                             custom_id="delete_ticket_button",
                             disabled=False,
                         ),
@@ -881,7 +881,7 @@ class Ticket:
                             {
                                 "style": 2,
                                 "label": _("Delete"),
-                                "emoji": "🗑️",
+                                "emoji": "⛔",
                                 "custom_id": "delete_ticket_button",
                                 "disabled": False,
                             },
@@ -978,7 +978,7 @@ class Ticket:
                             {
                                 "style": 2,
                                 "label": _("Delete"),
-                                "emoji": "🗑️",
+                                "emoji": "⛔",
                                 "custom_id": "delete_ticket_button",
                                 "disabled": False,
                             },
@@ -1009,7 +1009,7 @@ class Ticket:
                         Button(
                             style=ButtonStyle.grey,
                             label=_("Delete"),
-                            emoji="🗑️",
+                            emoji="⛔",
                             custom_id="delete_ticket_button",
                             disabled=False,
                         ),

@@ -1148,7 +1148,7 @@ class TicketTool(settings, Cog):
                 return
             if (
                 not interaction.response.is_done()
-                and interaction.data["custom_id"] != "create_ticket_button"
+                and interaction.data["custom_id"] not in ["create_ticket_button", "close_ticket_button"]
             ):
                 await interaction.response.defer(ephemeral=True)
             if interaction.data["custom_id"] == "create_ticket_button":
@@ -1183,9 +1183,8 @@ class TicketTool(settings, Cog):
                     interaction, inputs, function_result = await modal.wait_result()
                 except TimeoutError:
                     return
-                else:
-                    if not interaction.response.is_done():
-                        await interaction.response.defer(ephemeral=True)
+                if not interaction.response.is_done():
+                    await interaction.response.defer(ephemeral=True)
                 panel = inputs[0].value
                 reason = inputs[1].value or ""
                 panels = await self.config.guild(interaction.guild).panels()
@@ -1212,8 +1211,29 @@ class TicketTool(settings, Cog):
                         _("You have chosen to create a ticket."), ephemeral=True
                     )
             elif interaction.data["custom_id"] == "close_ticket_button":
+                modal = Modal(
+                    title="Close the Ticket",
+                    inputs=[
+                        {
+                            "label": "Why are you closing this ticket?",
+                            "style": discord.TextStyle.long,
+                            "max_length": 1000,
+                            "required": False,
+                            "placeholder": "No reason provided.",
+                        },
+                    ],
+                )
+                await interaction.response.send_modal(modal)
+                try:
+                    interaction, inputs, function_result = await modal.wait_result()
+                except TimeoutError:
+                    return
+                if not interaction.response.is_done():
+                    await interaction.response.defer(ephemeral=True)
+                reason = inputs[1].value or ""
+                panels = await self.config.guild(interaction.guild).panels()
                 ctx = await self.cogsutils.invoke_command(
-                    author=interaction.user, channel=interaction.channel, command="ticket close"
+                    author=interaction.user, channel=interaction.channel, command=("ticket close" + (f" {reason}" if reason != "" else ""))
                 )
                 try:
                     await interaction.followup.send(

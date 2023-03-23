@@ -603,10 +603,10 @@ class Ticket:
                         buttons=[
                             {
                                 "style": 2,
-                                "label": _("Close"),
-                                "emoji": "🔒",
-                                "custom_id": "close_ticket_button",
-                                "disabled": True,
+                                "label": _("Re-open"),
+                                "emoji": "🔓",
+                                "custom_id": "open_ticket_button",
+                                "disabled": False,
                             },
                             {
                                 "style": 2,
@@ -634,9 +634,9 @@ class Ticket:
                     buttons = ActionRow(
                         Button(
                             style=ButtonStyle.grey,
-                            label=_("Close"),
-                            emoji="🔒",
-                            custom_id="close_ticket_button",
+                            label=_("Re-open"),
+                            emoji="🔓",
+                            custom_id="open_ticket_button",
                             disabled=True,
                         ),
                         Button(
@@ -823,6 +823,8 @@ class Ticket:
         return self
 
     async def claim_ticket(self, member: discord.Member, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+        if self.status != "open":
+            raise commands.UserFeedbackCheckFailure(_("A ticket cannot be claimed if it is closed."))
         config = await self.cog.get_config(self.guild, self.panel)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
@@ -869,7 +871,7 @@ class Ticket:
                                 "label": _("Close"),
                                 "emoji": "🔒",
                                 "custom_id": "close_ticket_button",
-                                "disabled": self.status != "open",
+                                "disabled": False,
                             },
                             {
                                 "style": 2,
@@ -900,7 +902,7 @@ class Ticket:
                             label=_("Close"),
                             emoji="🔒",
                             custom_id="close_ticket_button",
-                            disabled=self.status != "open",
+                            disabled=False,
                         ),
                         Button(
                             style=ButtonStyle.grey,
@@ -912,7 +914,7 @@ class Ticket:
                         Button(
                             style=ButtonStyle.grey,
                             label=_("Delete"),
-                            emoji="🗑️",
+                            emoji="⛔",
                             custom_id="delete_ticket_button",
                             disabled=False,
                         ),
@@ -927,12 +929,14 @@ class Ticket:
         return self
 
     async def unclaim_ticket(self, member: discord.Member, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+        if self.status != "open":
+            raise commands.UserFeedbackCheckFailure(_("A ticket cannot be unclaimed if it is closed."))
         config = await self.cog.get_config(self.guild, self.panel)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
             panel=self.panel,
             author=author,
-            reason=_("Claiming the ticket {ticket.id}.").format(ticket=self),
+            reason=_("Unclaiming the ticket {ticket.id}.").format(ticket=self),
         )
         self.claim = None
         topic = _(
@@ -966,7 +970,7 @@ class Ticket:
                                 "label": _("Close"),
                                 "emoji": "🔒",
                                 "custom_id": "close_ticket_button",
-                                "disabled": self.status != "open",
+                                "disabled": False,
                             },
                             {
                                 "style": 2,
@@ -997,7 +1001,7 @@ class Ticket:
                             label=_("Close"),
                             emoji="🔒",
                             custom_id="close_ticket_button",
-                            disabled=self.status != "open",
+                            disabled=False,
                         ),
                         Button(
                             style=ButtonStyle.grey,

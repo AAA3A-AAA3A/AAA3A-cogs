@@ -295,6 +295,13 @@ class TicketTool(settings, Cog):
                     },
                     {
                         "style": 2,
+                        "label": _("Re-open"),
+                        "emoji": "🔓",
+                        "custom_id": "open_ticket_button",
+                        "disabled": False,
+                    },
+                    {
+                        "style": 2,
                         "label": _("Claim"),
                         "emoji": "🙋‍♂️",
                         "custom_id": "claim_ticket_button",
@@ -778,7 +785,7 @@ class TicketTool(settings, Cog):
         members=False,
         locked=None,
     )
-    @ticket.command(name="open")
+    @ticket.command(name="open", aliases=["reopen"])
     async def command_open(
         self, ctx: commands.Context, *, reason: typing.Optional[str] = "No reason provided."
     ) -> None:
@@ -1217,6 +1224,19 @@ class TicketTool(settings, Cog):
                     )
                 except discord.HTTPException:
                     pass
+            elif interaction.data["custom_id"] == "open_ticket_button":
+                ctx = await self.cogsutils.invoke_command(
+                    author=interaction.user, channel=interaction.channel, command="ticket open"
+                )
+                try:
+                    await interaction.followup.send(
+                        _(
+                            "You have chosen to re-open this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+                        ),
+                        ephemeral=True,
+                    )
+                except discord.HTTPException:
+                    pass
             elif interaction.data["custom_id"] == "claim_ticket_button":
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user, channel=interaction.channel, command="ticket claim"
@@ -1352,6 +1372,19 @@ class TicketTool(settings, Cog):
                     await inter.followup(
                         _(
                             "You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+                        ),
+                        ephemeral=True,
+                    )
+                except discord.HTTPException:
+                    pass
+            elif inter.clicked_button.custom_id == "open_ticket_button":
+                ctx = await self.cogsutils.invoke_command(
+                    author=inter.author, channel=inter.channel, command="ticket open"
+                )
+                try:
+                    await inter.followup(
+                        _(
+                            "You have chosen to re-open this ticket. If this is not done, you do not have the necessary permissions to execute this command."
                         ),
                         ephemeral=True,
                     )

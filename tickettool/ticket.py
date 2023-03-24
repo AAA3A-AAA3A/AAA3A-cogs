@@ -343,21 +343,38 @@ class Ticket:
                     allowed_mentions=discord.AllowedMentions(users=True, roles=True),
                 )
         else:
-            forum_channel: discord.ForumChannel = config["forum_channel"]
-            result: discord.channel.ThreadWithMessage = await forum_channel.create_thread(
-                name=name,
-                content=f"{self.created_by.mention}{optionnal_ping}",
-                embed=embed,
-                view=view,
-                allowed_mentions=discord.AllowedMentions(users=True, roles=True),
-            )
-            self.channel = result.thread
-            self.first_message = result.message
+            if isinstance(config["forum_channel"], discord.ForumChannel):
+                forum_channel: discord.ForumChannel = config["forum_channel"]
+                result: discord.channel.ThreadWithMessage = await forum_channel.create_thread(
+                    name=name,
+                    content=f"{self.created_by.mention}{optionnal_ping}",
+                    embed=embed,
+                    view=view,
+                    allowed_mentions=discord.AllowedMentions(users=True, roles=True),
+                    invitable=False,
+                    auto_archive_duration=10080,
+                    reason=reason,
+                )
+                self.channel: discord.Thread = result.thread
+                self.first_message: discord.Message = result.message
+            else:  # isinstance(config["forum_channel"], discord.TextChannel)
+                forum_channel: discord.TextChannel = config["forum_channel"]
+                self.channel: discord.Thread = await forum_channel.create_thread(
+                    name=name,
+                    message=None,  # Private thread.
+                    type=discord.ChannelType.private_thread,
+                    invitable=False,
+                    auto_archive_duration=10080,
+                    reason=reason,
+                )
+                self.first_message = await self.channel.send(
+                    f"{self.created_by.mention}{optionnal_ping}",
+                    embed=embed,
+                    view=view,
+                    allowed_mentions=discord.AllowedMentions(users=True, roles=True),
+                )
+                self.cog.cogsutils.views.append(view)
             self.cog.cogsutils.views.append(view)
-            try:
-                await self.channel.edit(invitable=False)
-            except discord.HTTPException:
-                pass
             members = [self.owner]
             if self.claim is not None:
                 members.append(self.claim)

@@ -126,8 +126,8 @@ class TicketTool(settings, Cog):
             },
             "forum_channel": {
                 "path": ["forum_channel"],
-                "converter":  discord.ForumChannel if self.cogsutils.is_dpy2 else None,
-                "description": "Set the forum channel where the opened tickets will be. If it's set, `category_open` and `category_close` will be ignored (except for existing tickets).",
+                "converter": typing.Union[discord.ForumChannel, discord.TextChannel] if self.cogsutils.is_dpy2 else None,
+                "description": "Set the forum channel where the opened tickets will be, or a text channel to use private threads. If it's set, `category_open` and `category_close` will be ignored (except for existing tickets).",
             },
             "category_open": {
                 "path": ["category_open"],
@@ -1230,7 +1230,7 @@ class TicketTool(settings, Cog):
                     return
                 if not interaction.response.is_done():
                     await interaction.response.defer(ephemeral=True)
-                reason = inputs[1].value or ""
+                reason = inputs[0].value or ""
                 panels = await self.config.guild(interaction.guild).panels()
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user, channel=interaction.channel, command=("ticket close" + (f" {reason}" if reason != "" else ""))
@@ -1270,12 +1270,6 @@ class TicketTool(settings, Cog):
             elif interaction.data["custom_id"] == "delete_ticket_button":
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user, channel=interaction.channel, command="ticket delete"
-                )
-                await interaction.followup.send(
-                    _(
-                        "You have chosen to delete this ticket. If this is not done, you do not have the necessary permissions to execute this command."
-                    ),
-                    ephemeral=True,
                 )
 
         async def on_dropdown_interaction(
@@ -1423,12 +1417,6 @@ class TicketTool(settings, Cog):
             elif inter.clicked_button.custom_id == "delete_ticket_button":
                 ctx = await self.cogsutils.invoke_command(
                     author=inter.author, channel=inter.channel, command="ticket delete"
-                )
-                await inter.followup(
-                    _(
-                        "You have chosen to delete this ticket. If this is not done, you do not have the necessary permissions to execute this command."
-                    ),
-                    ephemeral=True,
                 )
 
         @commands.Cog.listener()

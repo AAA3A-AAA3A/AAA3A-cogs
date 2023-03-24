@@ -18,13 +18,11 @@ _ = Translator("DiscordEdit", __file__)
 if CogsUtils().is_dpy2:
     hybrid_command = commands.hybrid_command
     hybrid_group = commands.hybrid_group
+    BASES = [EditGuild, EditRole, EditTextChannel, EditThread, EditVoiceChannel]
 else:
     hybrid_command = commands.command
     hybrid_group = commands.group
 
-if CogsUtils().is_dpy2:
-    BASES = [EditGuild, EditRole, EditTextChannel, EditThread, EditVoiceChannel]
-else:
     BASES = [EditGuild, EditRole, EditTextChannel, EditVoiceChannel]
 
 @cog_i18n(_)

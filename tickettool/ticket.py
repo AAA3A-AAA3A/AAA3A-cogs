@@ -76,7 +76,7 @@ class Ticket:
         self.deleted_by: discord.Member = deleted_by
         self.renamed_by: discord.Member = renamed_by
         self.locked_by: discord.Member = locked_by
-        self.unlocked_by: discord.Member = locked_by
+        self.unlocked_by: discord.Member = unlocked_by
         self.members: typing.List[discord.Member] = members
         self.created_at: datetime.datetime = created_at
         self.opened_at: datetime.datetime = opened_at
@@ -84,7 +84,7 @@ class Ticket:
         self.deleted_at: datetime.datetime = deleted_at
         self.renamed_at: datetime.datetime = renamed_at
         self.locked_at: datetime.datetime = locked_at
-        self.unlocked_at: datetime.datetime = locked_at
+        self.unlocked_at: datetime.datetime = unlocked_at
         self.status: str = status
         self.reason: str = reason
         self.logs_messages: bool = logs_messages

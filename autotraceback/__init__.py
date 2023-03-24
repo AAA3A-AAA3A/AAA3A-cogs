@@ -14,8 +14,7 @@ async def setup_after_ready(bot) -> None:
     global old_traceback
     await bot.wait_until_red_ready()
     cog = AutoTraceback(bot)
-    old_traceback = bot.get_command("traceback")
-    if old_traceback:
+    if old_traceback := bot.get_command("traceback"):
         bot.remove_command(old_traceback.name)
     await cog.cogsutils.add_cog(bot)
 

@@ -61,7 +61,7 @@ class EditThread(Cog):
             not self.cogsutils.check_permissions_for(
                 channel=thread, user=ctx.author, check=["manage_channel"]
             )
-            and not ctx.author.id == ctx.guild.owner.id
+            and ctx.author.id != ctx.guild.owner.id
             and ctx.author.id not in ctx.bot.owner_ids
         ):
             raise commands.UserFeedbackCheckFailure(

@@ -160,7 +160,7 @@ class EditVoiceChannel(Cog):
         Level 3: 384000
         """
         await self.check_voice_channel(ctx, channel)
-        if not bitrate >= 8000 or not bitrate <= ctx.guild.bitrate_limit:
+        if bitrate < 8000 or bitrate > ctx.guild.bitrate_limit:
             await ctx.send_help()
             return
         try:
@@ -198,7 +198,7 @@ class EditVoiceChannel(Cog):
         It must be a number between 0 and 99.
         """
         await self.check_voice_channel(ctx, channel)
-        if not user_limit >= 0 or not user_limit <= 99:
+        if user_limit < 0 or user_limit > 99:
             await ctx.send_help()
             return
         try:
@@ -220,11 +220,11 @@ class EditVoiceChannel(Cog):
             max_guild_text_channels_position = len(
                 [c for c in ctx.guild.channels if isinstance(c, discord.TextChannel)]
             )
-            if not position > 0 or not position < max_guild_text_channels_position + 1:
+            if position <= 0 or position >= max_guild_text_channels_position + 1:
                 raise commands.BadArgument(
                     f"The indicated position must be between 1 and {max_guild_text_channels_position}."
                 )
-            position = position - 1
+            position -= 1
             return position
 
     @editvoicechannel.command(name="position")
@@ -360,11 +360,9 @@ class EditVoiceChannel(Cog):
         targets = list(roles_or_users)
         for r in roles_or_users:
             if isinstance(r, str):
+                targets.remove(r)
                 if r == "everyone":
-                    targets.remove(r)
                     targets.append(ctx.guild.default_role)
-                else:
-                    targets.remove(r)
         if not targets:
             return await ctx.send(
                 _("You need to provide a role or user you want to edit permissions for.")

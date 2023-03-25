@@ -25,7 +25,7 @@ Commands
 Here are all the commands included in this cog (6):
 
 * ``[p]dropdownstexts``
- Group of commands for use DropdownsTexts.
+ Group of commands to use DropdownsTexts.
 
 * ``[p]dropdownstexts add <message> <emoji> <label> <text>``
  Add a dropdown-text to a message.

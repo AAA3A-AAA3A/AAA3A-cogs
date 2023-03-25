@@ -25,7 +25,7 @@ Commands
 Here are all the commands included in this cog (6):
 
 * ``[p]urlbuttons``
- Group of commands for use UrlButtons.
+ Group of commands to use UrlButtons.
 
 * ``[p]urlbuttons add <message> <emoji> <url> [text_button=None]``
  Add a url-button to a message.

@@ -25,7 +25,7 @@ Commands
 Here are all the commands included in this cog (7):
 
 * ``[p]rolesbuttons``
- Group of commands for use RolesButtons.
+ Group of commands to use RolesButtons.
 
 * ``[p]rolesbuttons add <message> <emoji> <role> ["1"|"2"|"3"|"4"=2] [text_button=None]``
  Add a role-button to a message.

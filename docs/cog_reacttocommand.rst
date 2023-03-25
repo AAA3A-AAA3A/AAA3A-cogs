@@ -25,7 +25,7 @@ Commands
 Here are all the commands included in this cog (5):
 
 * ``[p]reacttocommand``
- Group of commands for use ReactToCommand.
+ Group of commands to use ReactToCommand.
 
 * ``[p]reacttocommand add <message> <emoji> <command>``
  Add a command-reaction to a message.

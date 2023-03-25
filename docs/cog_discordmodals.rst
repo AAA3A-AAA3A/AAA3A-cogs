@@ -25,7 +25,7 @@ Commands
 Here are all the commands included in this cog (4):
 
 * ``[p]discordmodals``
- Group of commands for use ReactToCommand.
+ Group of commands to use ReactToCommand.
 
 * ``[p]discordmodals add <message> <argument>``
  Add a Modal to a message.

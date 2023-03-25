@@ -314,7 +314,7 @@ class DiscordModals(Cog):
     @commands.mod_or_permissions(manage_guild=True)
     @hybrid_group()
     async def discordmodals(self, ctx: commands.Context) -> None:
-        """Group of commands for use ReactToCommand."""
+        """Group of commands to use ReactToCommand."""
         pass
 
     @discordmodals.command()

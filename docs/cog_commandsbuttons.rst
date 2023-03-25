@@ -25,7 +25,7 @@ Commands
 Here are all the commands included in this cog (6):
 
 * ``[p]commandsbuttons``
- Group of commands for use CommandsButtons.
+ Group of commands to use CommandsButtons.
 
 * ``[p]commandsbuttons add <message> <emoji> <command> ["1"|"2"|"3"|"4"=2] [text_button=None]``
  Add a command-button to a message.

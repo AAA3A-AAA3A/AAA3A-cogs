@@ -258,7 +258,7 @@ class CommandsButtons(Cog):
     @commands.is_owner()
     @hybrid_group()
     async def commandsbuttons(self, ctx: commands.Context) -> None:
-        """Group of commands for use CommandsButtons."""
+        """Group of commands to use CommandsButtons."""
         pass
 
     @commandsbuttons.command()

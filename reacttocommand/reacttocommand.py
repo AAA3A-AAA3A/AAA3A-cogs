@@ -210,7 +210,7 @@ class ReactToCommand(Cog):
     @commands.is_owner()
     @hybrid_group(aliases=["rtc"])
     async def reacttocommand(self, ctx: commands.Context) -> None:
-        """Group of commands for use ReactToCommand."""
+        """Group of commands to use ReactToCommand."""
         pass
 
     @reacttocommand.command()

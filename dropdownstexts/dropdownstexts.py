@@ -214,7 +214,7 @@ class DropdownsTexts(Cog):
     @commands.admin_or_permissions(manage_messages=True)
     @hybrid_group()
     async def dropdownstexts(self, ctx: commands.Context) -> None:
-        """Group of commands for use DropdownsTexts."""
+        """Group of commands to use DropdownsTexts."""
         pass
 
     @dropdownstexts.command()

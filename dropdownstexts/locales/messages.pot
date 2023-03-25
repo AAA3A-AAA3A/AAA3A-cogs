@@ -38,7 +38,7 @@ msgstr ""
 
 #: dropdownstexts\dropdownstexts.py:177
 #, docstring
-msgid "Group of commands for use DropdownsTexts."
+msgid "Group of commands to use DropdownsTexts."
 msgstr ""
 
 #: dropdownstexts\dropdownstexts.py:190

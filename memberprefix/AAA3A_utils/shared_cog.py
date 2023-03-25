@@ -30,6 +30,7 @@ from redbot.core.utils.chat_formatting import (
 from rich.console import Console
 from rich.table import Table
 
+from .cog import Cog
 from .menus import Menu
 from .sentry import SentryHelper
 
@@ -71,7 +72,7 @@ class StrConverter(commands.Converter):
         return argument
 
 
-class SharedCog(commands.Cog, name="AAA3A_utils"):
+class SharedCog(Cog, name="AAA3A_utils"):
     """Commands to manage all the cogs in AAA3A-cogs repo!"""
 
     def __init__(self, bot: Red, CogsUtils) -> None:

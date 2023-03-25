@@ -297,7 +297,7 @@ if discord.version_info.major >= 2:
                         label="Page number",
                         placeholder="Page number",
                         required=True,
-                        max_length=5,
+                        max_length=len(str(len(self.pages))),
                     )
                     _self.add_item(_self.item)
 

@@ -500,10 +500,14 @@ class CogsUtils(commands.Cog):
                     # Commits `{commit_sha1}` and `{commit_sha2}`are the same date.
                     return None
 
-        to_update = await compare_commit_dates(repo_owner=repo_owner, repo_name=repo_name, commit_sha1=local_commit, commit_sha2=online_commit)
-        path = Path(inspect.getsourcefile(cog.__class__))
-        if not path.parent.parent == (await self.bot._cog_mgr.install_path()):
+        try:
+            to_update = await compare_commit_dates(repo_owner=repo_owner, repo_name=repo_name, commit_sha1=local_commit, commit_sha2=online_commit)
+        except ValueError:  # Failed API request (temporary).
             to_update = False
+        else:
+            path = Path(inspect.getsourcefile(cog.__class__))
+            if not path.parent.parent == (await self.bot._cog_mgr.install_path()):
+                to_update = False
 
         return to_update, local_commit, online_commit  # , online_commit_for_each_files
 

@@ -44,6 +44,7 @@ from .shared_cog import SharedCog
 
 if discord.version_info.major >= 2:
     from .views import (
+        ConfirmationAskView,
         Buttons,
         ChannelSelect,
         Dropdown,
@@ -336,6 +337,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
         if discord.version_info.major >= 2:
             env.update(
                 {
+                    "ConfirmationAskView": lambda ctx: ConfirmationAskView,
                     "Buttons": lambda ctx: Buttons,
                     "Dropdown": lambda ctx: Dropdown,
                     "Select": lambda ctx: Select,
@@ -603,9 +605,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
             self[key] = module
             return module
         try:
-            if "bot" not in self:
-                raise KeyError("bot")
             if cog := self["bot"].get_cog(key):
+                self[key] = cog
                 return cog
         except (KeyError, AttributeError):
             pass
@@ -617,65 +618,58 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 pass
             else:
                 try:
-                    if "guild" not in self:
-                        raise KeyError("guild")
                     if member := self["guild"].get_member(_id):
+                        self[key] = member
                         return member
                 except (KeyError, AttributeError):
                     pass
                 try:
-                    if "bot" not in self:
-                        raise KeyError("bot")
                     if user := self["bot"].get_user(_id):
+                        self[key] = user
                         return user
                 except (KeyError, AttributeError):
                     pass
                 try:
-                    if "bot" not in self:
-                        raise KeyError("bot")
                     if guild := self["bot"].get_guild(_id):
+                        self[key] = guild
                         return guild
                 except (KeyError, AttributeError):
                     pass
                 try:
-                    if "guild" not in self:
-                        raise KeyError("guild")
                     if channel := self["guild"].get_channel(_id):
+                        self[key] = channel
                         return channel
                 except (KeyError, AttributeError):
                     pass
                 try:
-                    if "guild" not in self:
-                        raise KeyError("guild")
                     if role := self["guild"].get_role(_id):
+                        self[key] = role
                         return role
                 except (KeyError, AttributeError):
                     pass
                 try:
-                    if "channel" not in self:
-                        raise KeyError("channel")
                     if message := self["channel"].get_partial_message(_id):
+                        self[key] = message
                         return message
                 except (KeyError, AttributeError):
                     pass
         try:
-            if "devspace" not in self:
-                raise KeyError("devspace")
             if value := self["devspace"].get(key):
                 return value
         except (KeyError, AttributeError):
             pass
         if attr := getattr(discord, key, None):
             self.imported.append(f"discord.{key}")
+            self[key] = attr
             return attr
         if attr := getattr(typing, key, None):
             self.imported.append(f"typing.{key}")
+            self[key] = attr
             return attr
         try:
-            if "bot" not in self:
-                raise KeyError("bot")
             if attr := getattr(self["bot"].get_cog("AAA3A_utils").cogsutils, key, None):
-                self.imported.append(f"AAA3A_utils.cogsutils.CogsUtils.{key}")
+                self.imported.append(f"AAA3A_utils.CogsUtils.{key}")
+                self[key] = attr
                 return attr
         except (KeyError, AttributeError):
             pass

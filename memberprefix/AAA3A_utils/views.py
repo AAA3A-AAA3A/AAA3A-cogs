@@ -11,6 +11,7 @@ from functools import partial
 from random import choice
 
 __all__ = [
+    "ConfirmationAskView",
     "Buttons",
     "Dropdown",
     "Select",
@@ -52,7 +53,7 @@ class ConfirmationAskView(discord.ui.View):
         self.timeout_message: str = timeout_message
         self.delete_after_timeout: bool = delete_after_timeout
         self.members: typing.Optional[typing.List[int]] = (
-            members if members is None else [getattr(member, "id", member) for member in members]
+            [] if members is None else [getattr(member, "id", member) for member in members]
         )
 
         self._message: discord.Message = None

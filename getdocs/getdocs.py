@@ -180,14 +180,15 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
 
 class SourceConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> str:
-        if argument.lower() not in BASE_URLS:
+        cog: GetDocs = ctx.bot.get_cog("GetDocs")
+        if argument.lower() not in cog.documentations:
             found = False
-            for name, data in BASE_URLS.items():
-                if argument.lower() in data.get("aliases", []):
+            for name, documentation in cog.documentations.items():
+                if argument.lower() in documentation.aliases:
                     argument = name
                     found = True
             if not found:
-                raise commands.BadArgument(_("The source doesn't exist."))
+                raise commands.BadArgument(_("This source doesn't exist."))
         return argument.lower()
 
 
@@ -238,6 +239,7 @@ class GetDocs(Cog):
                 name=source,
                 url=BASE_URLS[source]["url"],
                 icon_url=BASE_URLS[source]["icon_url"],
+                aliases=BASE_URLS[source].get("aliases", []),
             )
             asyncio.create_task(self.documentations[source].load())
 
@@ -513,11 +515,14 @@ class GetDocs(Cog):
 
 
 class Source:
-    def __init__(self, cog: GetDocs, name: str, url: str, icon_url: typing.Optional[str] = None) -> None:
+    def __init__(self, cog: GetDocs, name: str, url: str, icon_url: typing.Optional[str] = None, aliases: typing.Optional[typing.List[str]] = None) -> None:
+        if aliases is None:
+            aliases = []
         self.cog: GetDocs = cog
         self.name: str = name
         self.url: str = url
         self.icon_url: typing.Optional[str] = icon_url
+        self.aliases: typing.List[str] = aliases
 
         if self.url.startswith("http"):
             self._rtfm_cache_url: str = urljoin(url, "objects.inv")

@@ -141,7 +141,7 @@ class ExportChannel(Cog):
 
     @exportchannel.command()
     async def all(
-        self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel] = None
+        self, ctx: commands.Context, channel: discord.TextChannel = None
     ) -> None:
         """Export all of a channel's messages to an html file.
 

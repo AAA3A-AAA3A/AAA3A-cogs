@@ -133,7 +133,7 @@ class EditFile(Cog):
 
     @editfile.command()
     async def replace(
-        self, ctx: commands.Context, path: str, *, content: typing.Optional[str] = None
+        self, ctx: commands.Context, path: str, *, content: str = None
     ) -> None:
         """Replace a file on the bot's host machine from its path.
         `#L10` or `#L10-L30` is supported.

@@ -105,7 +105,7 @@ class MemoryGame(Cog):
         await self.settings.add_commands()
 
     @hybrid_command()
-    async def memorygame(self, ctx: commands.Context, difficulty: typing.Optional[commands.Literal["3x3", "4x4", "5x5"]] = "5x5") -> None:
+    async def memorygame(self, ctx: commands.Context, difficulty: commands.Literal["3x3", "4x4", "5x5"] = "5x5") -> None:
         """
         Play to Memory game. Choose between `3x3`, `4x4` and `5x5` versions.
         """
@@ -117,6 +117,9 @@ class MemoryGame(Cog):
 
     @hybrid_command()
     async def memorygameleaderboard(self, ctx: commands.Context) -> None:
+        """
+        Show MemoryGame leaderboard.
+        """
         all_members = await self.config.all_members(ctx.guild)
         all_members = {ctx.guild.get_member(member): data for member, data in all_members.items() if ctx.guild.get_member(member) is not None}
         if not all_members:

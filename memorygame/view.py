@@ -13,10 +13,11 @@ from redbot.core.errors import BalanceTooHigh
 GAME_EMOJIS = ["🏆", "🎯", "🎲", "⚽", "🏀", "🏓", "🥁", "🎮", "🎳", "🎻", "🎖️", "🏹"]
 
 class MemoryGameView(discord.ui.View):
-    def __init__(self, cog: commands.Cog, max_wrong_matches: typing.Optional[int] = None) -> None:
+    def __init__(self, cog: commands.Cog, difficulty: typing.Literal["3x3", "4x4", "5x5"], max_wrong_matches: typing.Optional[int] = None) -> None:
         super().__init__(timeout=60 * 10)
         self.ctx: commands.Context = None
         self.cog: commands.Cog = cog
+        self.difficulty: typing.Literal["3x3", "4x4", "5x5"] = difficulty
         self.max_wrong_matches: typing.Optional[int] = max_wrong_matches
 
         self._message: discord.Message = None
@@ -36,14 +37,14 @@ class MemoryGameView(discord.ui.View):
     async def start(self, ctx: commands.Context) -> None:
         self.ctx: commands.Context = ctx
         self._solution, self._solution_display = self.get_emojis()
-        for _list in self._solution_display:
+        for row, _list in enumerate(self._solution_display):
             for emoji in _list:
                 if emoji != "​":
                     custom_id = self.cog.cogsutils.generate_key(length=5, existing_keys=self._custom_ids)
                     self._custom_ids[custom_id] = emoji
                 else:
                     custom_id = emoji
-                button = discord.ui.Button(label="​", custom_id=custom_id)
+                button = discord.ui.Button(label="​", row=row, custom_id=custom_id)
                 if emoji == "​":
                     button.disabled = True
                 button.callback = self.callback
@@ -74,17 +75,43 @@ class MemoryGameView(discord.ui.View):
             pass
 
     def get_emojis(self) -> typing.Tuple[typing.List[str], typing.List[typing.List[str]]]:
-        solution = GAME_EMOJIS.copy() * 2
-        random.shuffle(solution)
-        raw = solution.copy()
-        raw.insert(12, "​")  # invisible character
-        solution_display = [
-            raw[:5],
-            raw[5:10],
-            raw[10:15],
-            raw[15:20],
-            raw[20:25]
-        ]
+        emojis = GAME_EMOJIS.copy()
+        if self.difficulty == "3x3":
+            random.shuffle(emojis)
+            emojis = emojis[:4]
+            solution = emojis * 2
+            random.shuffle(solution)
+            raw = solution.copy()
+            raw.insert(4, "​")  # invisible character
+            solution_display = [
+                raw[:3],
+                raw[3:6],
+                raw[6:9],
+            ]
+        elif self.difficulty == "4x4":
+            random.shuffle(emojis)
+            emojis = emojis[:8]
+            solution = emojis * 2
+            random.shuffle(solution)
+            raw = solution.copy()
+            solution_display = [
+                raw[:4],
+                raw[4:8],
+                raw[8:12],
+                raw[12:16],
+            ]
+        else:
+            solution = emojis * 2
+            random.shuffle(solution)
+            raw = solution.copy()
+            raw.insert(12, "​")  # invisible character
+            solution_display = [
+                raw[:5],
+                raw[5:10],
+                raw[10:15],
+                raw[15:20],
+                raw[20:25]
+            ]
         return solution, solution_display
 
     async def callback(self, interaction: discord.Interaction):
@@ -125,7 +152,7 @@ class MemoryGameView(discord.ui.View):
             self._message = await self._message.edit(view=self)
             self._found.append(self._custom_ids[interaction.data["custom_id"]])
             self._selected = None
-            if len(GAME_EMOJIS) != len(self._found):
+            if (len(self._solution) / 2) != len(self._found):
                 return
             await self.win()
 
@@ -144,6 +171,10 @@ class MemoryGameView(discord.ui.View):
         if self.ctx.guild is not None:
             config = await self.cog.config.guild(self.ctx.guild).all()
             max_prize = config["max_prize"]
+            if self.difficulty == "3x3":
+                max_prize = int(max_prize / 3)
+            elif self.difficulty == "4x4":
+                max_prize = int(max_prize / 3 * 2)
             reduction_per_second = config["reduction_per_second"]
             reduction_per_wrong_match = config["reduction_per_wrong_match"]
             member_config = await self.cog.config.member(self.ctx.author).all()

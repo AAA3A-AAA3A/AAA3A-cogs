@@ -11,6 +11,9 @@ from redbot.core.utils.chat_formatting import box, pagify
 
 from .view import MemoryGameView
 
+if CogsUtils().is_dpy2:  # To remove
+    setattr(commands, "Literal", typing.Literal)
+
 # Credits:
 # General repo credits.
 # Thanks to Flame for his tests which allowed to discover several errors!
@@ -102,15 +105,15 @@ class MemoryGame(Cog):
         await self.settings.add_commands()
 
     @hybrid_command()
-    async def memorygame(self, ctx: commands.Context) -> None:
+    async def memorygame(self, ctx: commands.Context, difficulty: typing.Optional[commands.Literal["3x3", "4x4", "5x5"]] = "5x5") -> None:
         """
-        Play to Memory game.
+        Play to Memory game. Choose between `3x3`, `4x4` and `5x5` versions.
         """
         if ctx.guild is not None:
             max_wrong_matches = await self.config.guild(ctx.guild).max_wrong_matches()
         else:
             max_wrong_matches = None
-        await MemoryGameView(cog=self, max_wrong_matches=max_wrong_matches).start(ctx)
+        await MemoryGameView(cog=self, difficulty=difficulty, max_wrong_matches=max_wrong_matches).start(ctx)
 
     @hybrid_command()
     async def memorygameleaderboard(self, ctx: commands.Context) -> None:

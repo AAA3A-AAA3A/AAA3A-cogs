@@ -141,22 +141,23 @@ class MemoryGameView(discord.ui.View):
             self._tries = len(self._found)
         self._end = time.monotonic()
         game_time = int(self._end - self._start)
-        config = await self.cog.config.guild(self.ctx.guild).all()
-        max_prize = config["max_prize"]
-        reduction_per_second = config["reduction_per_second"]
-        reduction_per_wrong_match = config["reduction_per_wrong_match"]
-        member_config = await self.cog.config.member(self.ctx.author).all()
-        member_config["score"] += max_prize - (game_time * reduction_per_second) - (self._wrong_matches * reduction_per_wrong_match)
-        member_config["wins"] += 1
-        member_config["games"] += 1
-        await self.cog.config.member(self.ctx.author).set(member_config)
-        if self.cog.config.guild(self.ctx.guild).red_economy():
-            # https://canary.discord.com/channels/133049272517001216/133251234164375552/1089212578279997521
-            final_prize = max_prize - (game_time * reduction_per_second) - (self._wrong_matches * reduction_per_wrong_match)
-            try:
-                await bank.deposit_credits(self.ctx.author, final_prize)
-            except BalanceTooHigh as e:
-                await bank.set_balance(self.ctx.author, e.max_balance)
+        if self.ctx.guild is not None:
+            config = await self.cog.config.guild(self.ctx.guild).all()
+            max_prize = config["max_prize"]
+            reduction_per_second = config["reduction_per_second"]
+            reduction_per_wrong_match = config["reduction_per_wrong_match"]
+            member_config = await self.cog.config.member(self.ctx.author).all()
+            member_config["score"] += max_prize - (game_time * reduction_per_second) - (self._wrong_matches * reduction_per_wrong_match)
+            member_config["wins"] += 1
+            member_config["games"] += 1
+            await self.cog.config.member(self.ctx.author).set(member_config)
+            if self.cog.config.guild(self.ctx.guild).red_economy():
+                # https://canary.discord.com/channels/133049272517001216/133251234164375552/1089212578279997521
+                final_prize = max_prize - (game_time * reduction_per_second) - (self._wrong_matches * reduction_per_wrong_match)
+                try:
+                    await bank.deposit_credits(self.ctx.author, final_prize)
+                except BalanceTooHigh as e:
+                    await bank.set_balance(self.ctx.author, e.max_balance)
         embed: discord.Embed = discord.Embed(title="Memory Game", color=discord.Color.green())
         embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar)
         embed.description = f"You won in {game_time} seconds, with {self._tries} tries and {self._wrong_matches} wrong matches!"
@@ -167,9 +168,10 @@ class MemoryGameView(discord.ui.View):
     async def lose(self):
         self._selected = None
         self._end = time.monotonic()
-        member_config = await self.cog.config.member(self.ctx.author).all()
-        member_config["games"] += 1
-        await self.cog.config.member(self.ctx.author).set(member_config)
+        if self.ctx.guild is not None:
+            member_config = await self.cog.config.member(self.ctx.author).all()
+            member_config["games"] += 1
+            await self.cog.config.member(self.ctx.author).set(member_config)
         embed: discord.Embed = discord.Embed(title="Memory Game", color=discord.Color.green())
         embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar)
         embed.description = f"You lose, because you tried too many times ({self._tries} tries and {self._wrong_matches} wrong matches)."

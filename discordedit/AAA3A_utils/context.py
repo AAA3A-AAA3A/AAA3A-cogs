@@ -177,7 +177,7 @@ class Context:
 
         """
         messages = list(messages)
-        if len(messages) <= 1:
+        if len(messages) <= 1 and getattr(self.cog, "qualified_name") != "Dev":
             return await self.original_context.send_interactive(
                 messages=messages, box_lang=box_lang, timeout=timeout
             )

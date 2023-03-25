@@ -2,12 +2,12 @@
     "author": ["AAA3A"],
     "name": "MemoryGame",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
-    "short": "A cog to play to Memory game, with buttons!",
-    "description": "A cog to play to Memory game, with buttons!",
+    "short": "A cog to play to Memory game, with buttons, leaderboard and Red bank!",
+    "description": "A cog to play to Memory game, with buttons, leaderboard and Red bank!",
     "tags": [
         "memory",
         "game"
     ],
-    "requirements": ["sentry_sdk"],
+    "requirements": ["sentry_sdk", "tabulate"],
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

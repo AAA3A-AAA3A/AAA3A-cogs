@@ -93,10 +93,10 @@ Here are all the commands included in this cog (70):
 * ``[p]editrole``
  Commands for edit a role.
 
-* ``[p]editrole colour <role> <colour>``
- Edit role colour.
+* ``[p]editrole color <role> <color>``
+ Edit role color.
 
-* ``[p]editrole create [colour=None] <name>``
+* ``[p]editrole create [color=None] <name>``
  Create a role.
 
 * ``[p]editrole delete <role> [confirmation=False]``

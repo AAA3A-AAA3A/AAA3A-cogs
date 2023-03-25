@@ -159,7 +159,7 @@ class ExportChannel(Cog):
         embed = discord.Embed(
             title="Transcript Link",
             description=LINK_MESSAGE.format(url=url),
-            colour=discord.Colour.green(),
+            color=await ctx.embed_color(),
         )
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()
@@ -193,7 +193,7 @@ class ExportChannel(Cog):
         embed = discord.Embed(
             title="Transcript Link",
             description=LINK_MESSAGE.format(url=url),
-            colour=discord.Colour.green(),
+            color=await ctx.embed_color(),
         )
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()
@@ -228,7 +228,7 @@ class ExportChannel(Cog):
         embed = discord.Embed(
             title="Transcript Link",
             description=LINK_MESSAGE.format(url=url),
-            colour=discord.Colour.green(),
+            color=await ctx.embed_color(),
         )
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()
@@ -263,7 +263,7 @@ class ExportChannel(Cog):
         embed = discord.Embed(
             title="Transcript Link",
             description=LINK_MESSAGE.format(url=url),
-            colour=discord.Colour.green(),
+            color=await ctx.embed_color(),
         )
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()
@@ -299,7 +299,7 @@ class ExportChannel(Cog):
         embed = discord.Embed(
             title="Transcript Link",
             description=LINK_MESSAGE.format(url=url),
-            colour=discord.Colour.green(),
+            color=await ctx.embed_color(),
         )
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()
@@ -338,7 +338,7 @@ class ExportChannel(Cog):
         embed = discord.Embed(
             title="Transcript Link",
             description=LINK_MESSAGE.format(url=url),
-            colour=discord.Colour.green(),
+            color=await ctx.embed_color(),
         )
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()
@@ -374,7 +374,7 @@ class ExportChannel(Cog):
         embed = discord.Embed(
             title="Transcript Link",
             description=LINK_MESSAGE.format(url=url),
-            colour=discord.Colour.green(),
+            color=await ctx.embed_color(),
         )
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()

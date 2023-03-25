@@ -168,7 +168,7 @@ class AntiNuke(Cog):
                 embed.description = _(
                     "To prevent him from doing anything else, I took away as many roles as my current permissions would allow.\nUser mention: {perp.mention} - User ID: {perp.id}"
                 ).format(perp=perp)
-                embed.color = discord.Colour.dark_teal()
+                embed.color = discord.Color.dark_teal()
                 embed.set_author(
                     name=perp,
                     url=perp.display_avatar if self.cogsutils.is_dpy2 else perp.avatar_url,

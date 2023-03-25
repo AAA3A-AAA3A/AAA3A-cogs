@@ -14,7 +14,7 @@ msgstr ""
 #: simplesanction\settings.py:40
 #, docstring
 msgid ""
-"Set a colour for the embed.\n"
+"Set a color for the embed.\n"
 "\n"
 "        ``color``: Color.\n"
 "        You can also use \"None\" if you wish to reset the color.\n"

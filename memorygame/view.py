@@ -32,7 +32,7 @@ class MemoryGameView(discord.ui.View):
         self._wrong_matches: int = 0
 
         self._lock: asyncio.Lock = asyncio.Lock()
-   
+
     async def start(self, ctx: commands.Context) -> None:
         self.ctx: commands.Context = ctx
         self._solution, self._solution_display = self.get_emojis()
@@ -48,7 +48,7 @@ class MemoryGameView(discord.ui.View):
                     button.disabled = True
                 button.callback = self.callback
                 self.add_item(button)
-        embed: discord.Embed = discord.Embed(title="Memory Game", color=discord.Color.green())
+        embed: discord.Embed = discord.Embed(title="Memory Game", color=await self.ctx.embed_color())
         embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar)
         self._message = await self.ctx.send(embed=embed, view=self)
         self.cog.games[self._message] = self
@@ -158,7 +158,7 @@ class MemoryGameView(discord.ui.View):
                     await bank.deposit_credits(self.ctx.author, final_prize)
                 except BalanceTooHigh as e:
                     await bank.set_balance(self.ctx.author, e.max_balance)
-        embed: discord.Embed = discord.Embed(title="Memory Game", color=discord.Color.green())
+        embed: discord.Embed = discord.Embed(title="Memory Game", color=await self.ctx.embed_color())
         embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar)
         embed.description = f"You won in {game_time} seconds, with {self._tries} tries and {self._wrong_matches} wrong matches!"
         self._message = await self._message.edit(embed=embed, view=self)
@@ -172,7 +172,7 @@ class MemoryGameView(discord.ui.View):
             member_config = await self.cog.config.member(self.ctx.author).all()
             member_config["games"] += 1
             await self.cog.config.member(self.ctx.author).set(member_config)
-        embed: discord.Embed = discord.Embed(title="Memory Game", color=discord.Color.green())
+        embed: discord.Embed = discord.Embed(title="Memory Game", color=await self.ctx.embed_color())
         embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar)
         embed.description = f"You lose, because you tried too many times ({self._tries} tries and {self._wrong_matches} wrong matches)."
         self._message = await self._message.edit(embed=embed, view=self)

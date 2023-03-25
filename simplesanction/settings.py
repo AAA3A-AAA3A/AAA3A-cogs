@@ -27,7 +27,7 @@ class settings(commands.Cog):
         pass
 
     @configuration.command(
-        aliases=["colour", "col", "embedcolor", "embedcolour"], usage="<color_or_'none'>"
+        aliases=["color", "col", "embedcolor", "embedcolor"], usage="<color_or_'none'>"
     )
     async def color(
         self,
@@ -35,7 +35,7 @@ class settings(commands.Cog):
         *,
         color: typing.Optional[discord.ext.commands.converter.ColorConverter] = None,
     ) -> None:
-        """Set a colour for the embed.
+        """Set a color for the embed.
 
         ``color``: Color.
         You can also use "None" if you wish to reset the color.

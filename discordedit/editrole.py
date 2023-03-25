@@ -61,7 +61,7 @@ class EditRole(Cog):
     async def editrole_create(
         self,
         ctx: commands.Context,
-        colour: typing.Optional[discord.ext.commands.converter.ColourConverter] = None,
+        color: typing.Optional[discord.ext.commands.converter.ColorConverter] = None,
         *,
         name: str,
     ) -> None:
@@ -69,7 +69,7 @@ class EditRole(Cog):
         try:
             await ctx.guild.create_role(
                 name=name,
-                colour=colour,
+                color=color,
                 reason=f"{ctx.author} ({ctx.author.id}) has created the role {name}.",
             )
         except discord.HTTPException as e:
@@ -91,15 +91,15 @@ class EditRole(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editrole.command(name="colour", aliases=["color"])
-    async def editrole_colour(
-        self, ctx: commands.Context, role: discord.Role, colour: discord.Colour
+    @editrole.command(name="color", aliases=["color"])
+    async def editrole_color(
+        self, ctx: commands.Context, role: discord.Role, color: discord.Color
     ) -> None:
-        """Edit role colour."""
+        """Edit role color."""
         await self.check_role(ctx, role)
         try:
             await role.edit(
-                colour=colour,
+                color=color,
                 reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).",
             )
         except discord.HTTPException as e:

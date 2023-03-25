@@ -115,7 +115,7 @@ class GetDocsView(discord.ui.View):
             self.remove_item(next_button)
 
         self._current = doc
-        embed = doc.to_embed()
+        embed = doc.to_embed(embed_color=await self.ctx.embed_color())
         content = None
         if (
             self.source._docs_caching_task is not None
@@ -173,7 +173,7 @@ class GetDocsView(discord.ui.View):
                 embed = discord.Embed(
                         title="Fields:",
                         description=description,
-                        color=discord.Color.green(),
+                        color=await self.ctx.embed_color(),
                 )
                 embeds.append(embed)
             else:
@@ -182,7 +182,7 @@ class GetDocsView(discord.ui.View):
                     embed = discord.Embed(
                             title=f"Fields {i}:",
                             description=page,
-                            color=discord.Color.green(),
+                            color=await self.ctx.embed_color(),
                     )
                     embeds.append(embed)
         elif isinstance(self._current.parameters, str):
@@ -193,7 +193,7 @@ class GetDocsView(discord.ui.View):
                 embed = discord.Embed(
                         title="Parameters:",
                         description=description,
-                        color=discord.Color.green(),
+                        color=await self.ctx.embed_color(),
                 )
                 embeds.append(embed)
             else:
@@ -202,11 +202,11 @@ class GetDocsView(discord.ui.View):
                     embed = discord.Embed(
                             title=f"Parameters {i}:",
                             description=page,
-                            color=discord.Color.green(),
+                            color=await self.ctx.embed_color(),
                     )
                     embeds.append(embed)
         else:
-            embeds = self._current.parameters.to_embeds()
+            embeds = self._current.parameters.to_embeds(embed_color=await self.ctx.embed_color())
 
         if len(embeds) == 1:
             self._message = await self._message.edit(embed=embeds[0])
@@ -276,7 +276,7 @@ class GetDocsView(discord.ui.View):
         ):
             self.remove_item(next_button)
 
-        embeds = self._current.examples.to_embeds(self.ctx)
+        embeds = self._current.examples.to_embeds(self.ctx, embed_color=await self.ctx.embed_color())
         self._message = await self._message.edit(embeds=embeds[:25], view=self)
         self._mode = "examples"
 
@@ -311,7 +311,7 @@ class GetDocsView(discord.ui.View):
         ):
             self.remove_item(next_button)
 
-        embeds = self._current.attributes.to_embeds()
+        embeds = self._current.attributes.to_embeds(embed_color=await self.ctx.embed_color())
         if sum(len(embed) for embed in embeds) > 6000:
 
             async def _back_button(interaction: discord.Interaction):

@@ -64,7 +64,7 @@ Here are all the commands included in this cog (24):
  Configure SimpleSanction for your server.
 
 * ``[p]setsimplesanction color <color_or_'none'>``
- Set a colour for the embed.
+ Set a color for the embed.
 
 * ``[p]setsimplesanction confirmation <true_or_false>``
  Enable or disable Action Confirmation

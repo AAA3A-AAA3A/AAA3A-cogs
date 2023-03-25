@@ -59,7 +59,7 @@ class WandboxRequest:
         }
 
     def to_embed(self, with_code: typing.Optional[bool] = False) -> discord.Embed:
-        embed: discord.Embed = discord.Embed(title="RunCode Request (with Wandbox API)", color=discord.Color.green())
+        embed: discord.Embed = discord.Embed(title="RunCode Request (with Wandbox API)", color=await ctx.embed_color())
         embed.set_author(name=f"{self.engine.language.capitalize()} language", icon_url=LANGUAGES_IMAGES[self.language.language])
         if with_code:
             if self.codes == []:
@@ -138,7 +138,7 @@ class WandboxResponse:
         elif self.status != "0":
             embed.color = discord.Color.orange()
         else:
-            embed.color = discord.Color.green()
+            embed.color = await ctx.embed_color()
 
         embed.add_field(name="Engine used", value=self.request.engine.name, inline=True)
         embed.add_field(
@@ -199,7 +199,7 @@ class TioRequest:
         return parameters
 
     def to_embed(self, with_code: typing.Optional[bool] = False) -> discord.Embed:
-        embed: discord.Embed = discord.Embed(title="RunCode Request (with Tio API)", color=discord.Color.green())
+        embed: discord.Embed = discord.Embed(title="RunCode Request (with Tio API)", color=await ctx.embed_color())
         embed.set_author(name=f"{self.language.name.capitalize()} language")
         if with_code:
             description = box(self.code, lang=self.language)

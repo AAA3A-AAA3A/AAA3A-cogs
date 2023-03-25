@@ -296,7 +296,7 @@ class GetDocs(Cog):
             if not source._docs_cache:
                 raise commands.UserFeedbackCheckFailure(_("Documentations cache is not yet built, building now."))
             choice: Documentation = random.choice(source._docs_cache)
-            await ctx.send(embed=choice.to_embed())
+            await ctx.send(embed=choice.to_embed(embed_color=await ctx.embed_color()))
             return
         try:
             if self.cogsutils.is_dpy2:
@@ -360,7 +360,7 @@ class GetDocs(Cog):
             raise commands.UserFeedbackCheckFailure(str(e))
         if result is None or not result.results:
             raise commands.UserFeedbackCheckFailure(_("No results found."))
-        embeds = result.to_embeds()
+        embeds = result.to_embeds(embed_color=await ctx.embed_color())
         if len(embeds) == 1:
             await ctx.send(embed=embeds[0])
         else:
@@ -458,7 +458,7 @@ class GetDocs(Cog):
             if _sorted:
                 keys = sorted(keys)
             keys: str = humanize_list(keys)
-        embed = discord.Embed(title="GetDocs Sources", color=discord.Color.green())
+        embed = discord.Embed(title="GetDocs Sources", color=await ctx.embed_color())
         embed.description = keys
         await ctx.send(embed=embed)
 

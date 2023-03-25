@@ -384,7 +384,7 @@ msgstr ""
 #: tickettool\settings.py:484
 #, docstring
 msgid ""
-"Set a colour for the embeds.\n"
+"Set a color for the embeds.\n"
 "\n"
 "        ``color``: Color.\n"
 "        You can also use \"None\" if you wish to reset the color.\n"

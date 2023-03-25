@@ -818,7 +818,7 @@ class Ticket:
                 description=(
                     f"[Click here to view the transcript.](https://mahto.id/chat-exporter?url={message.attachments[0].url})"
                 ),
-                colour=discord.Colour.green(),
+                color=discord.Color.red(),
             )
             await logschannel.send(embed=embed)
         if isinstance(self.channel, discord.TextChannel):

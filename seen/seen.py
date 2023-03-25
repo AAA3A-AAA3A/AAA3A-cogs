@@ -802,7 +802,7 @@ class Seen(Cog):
             return
         time, seen, action = data
         embed: discord.Embed = discord.Embed()
-        embed.color = getattr(_object, "color", discord.Color.green())
+        embed.color = getattr(_object, "color", await ctx.embed_color())
         if isinstance(_object, discord.User):
             embed.set_author(
                 name=_("@{_object.display_name} was seen {seen}.").format(

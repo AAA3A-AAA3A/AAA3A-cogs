@@ -767,7 +767,7 @@ class TicketTool(settings, Cog):
             description=(
                 f"[Click here to view the transcript.](https://mahto.id/chat-exporter?url={message.attachments[0].url})"
             ),
-            colour=discord.Colour.green(),
+            color=await ctx.embed_color(),
         )
         await message.edit(embed=embed)
 

@@ -65,7 +65,7 @@ msgstr ""
 
 #: discordedit\editrole.py:97
 #, docstring
-msgid "Edit role colour."
+msgid "Edit role color."
 msgstr ""
 
 #: discordedit\editrole.py:114

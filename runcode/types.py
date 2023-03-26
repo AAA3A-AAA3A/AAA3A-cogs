@@ -58,8 +58,8 @@ class WandboxRequest:
             "runtime-option-raw": self.runtime_options
         }
 
-    def to_embed(self, with_code: typing.Optional[bool] = False) -> discord.Embed:
-        embed: discord.Embed = discord.Embed(title="RunCode Request (with Wandbox API)", color=await ctx.embed_color())
+    def to_embed(self, with_code: typing.Optional[bool] = False, embed_color: typing.Optional[discord.Color] = discord.Color.green()) -> discord.Embed:
+        embed: discord.Embed = discord.Embed(title="RunCode Request (with Wandbox API)", color=embed_color)
         embed.set_author(name=f"{self.engine.language.capitalize()} language", icon_url=LANGUAGES_IMAGES[self.language.language])
         if with_code:
             if self.codes == []:
@@ -100,8 +100,7 @@ class WandboxRequest:
             raw_response["status"] = None
         if "signal" not in raw_response:
             raw_response["signal"] = None
-        response = WandboxResponse(request=self, run_time=int(end - start), **raw_response)
-        return response
+        return WandboxResponse(request=self, run_time=int(end - start), **raw_response)
 
 
 @dataclass(frozen=True)
@@ -121,12 +120,20 @@ class WandboxResponse:
     url: str
 
     async def send(self, ctx: commands.Context, verbose: typing.Optional[bool] = False) -> None:
-        if not verbose and not (self.signal or self.compiler_error or self.program_error or self.status != "0"):
-            output = f"{self.url}\n" + self.program_output
+        if (
+            not verbose
+            and not self.signal
+            and not self.compiler_error
+            and not self.program_error
+            and self.status == "0"
+        ):
+            output = f"{self.url}\n{self.program_output}"
             await Menu(pages=output, box_language_py=True).start(ctx)
             return
-        embed: discord.Embed = discord.Embed(title=f"RunCode Response (with Wandbox API)", url=self.url)
-        embed.timestamp = datetime.datetime.utcnow()
+        embed: discord.Embed = discord.Embed(
+            title="RunCode Response (with Wandbox API)", url=self.url
+        )
+        embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
         run_time = format_timespan(self.run_time)
         embed.set_footer(text=f"Ran in {run_time}.")
         embed.set_author(name=f"{self.request.engine.language.capitalize()} language", icon_url=LANGUAGES_IMAGES[self.request.engine.language])
@@ -151,7 +158,12 @@ class WandboxResponse:
         for field in ["signal", "compiler_output", "compiler_error", "program_output", "program_error"]:
             if value := getattr(self, field):
                 description += f"\n\n**{field.replace('_', ' ').title()}**:\n{value}"
-        pages = list(pagify(description, page_length=4000 if (6000 - len(embed) > 4000) else (6000 - len(embed) > 4000)))
+        pages = list(
+            pagify(
+                description,
+                page_length=4000 if len(embed) < 2000 else len(embed) < 2000,
+            )
+        )
         embeds = []
         for page in pages:
             e = embed.copy()
@@ -180,26 +192,17 @@ class TioRequest:
     args: typing.List[str]
 
     def to_request_parameters(self):
-        # parameters = {
-        #     "code": self.code,
-        #     "lang": self.language,
-        #     "inputs": self.inputs,
-        #     "compilerFlags": self.compiler_flags,
-        #     "commandLineOptions": self.command_line_options,
-        #     "args": self.args
-        # }
-        parameters = {
+        return {
             "lang": [self.language.value],
             ".code.tio": self.code,
             ".input.tio": self.inputs,
             "TIO_CFLAGS": self.compiler_flags,
             "TIO_OPTIONS": self.command_line_options,
-            "args": self.args
+            "args": self.args,
         }
-        return parameters
 
-    def to_embed(self, with_code: typing.Optional[bool] = False) -> discord.Embed:
-        embed: discord.Embed = discord.Embed(title="RunCode Request (with Tio API)", color=await ctx.embed_color())
+    def to_embed(self, with_code: typing.Optional[bool] = False, embed_color: typing.Optional[discord.Color] = discord.Color.green()) -> discord.Embed:
+        embed: discord.Embed = discord.Embed(title="RunCode Request (with Tio API)", color=embed_color)
         embed.set_author(name=f"{self.language.name.capitalize()} language")
         if with_code:
             description = box(self.code, lang=self.language)
@@ -223,10 +226,11 @@ class TioRequest:
             if not obj:
                 return b""
             elif type(obj) == list:
-                content = ["V" + name, str(len(obj))] + obj
+                content = [f"V{name}", str(len(obj))] + obj
                 return to_bytes("\x00".join(content) + "\x00")
             else:
                 return to_bytes(f"F{name}\x00{len(to_bytes(obj))}\x00{obj}\x00")
+
         strings = self.to_request_parameters()
         bytes_ = b"".join(map(_to_tio_string, zip(strings.keys(), strings.values()))) + b"R"
         data = zlib.compress(bytes_, 9)[2:-4]
@@ -257,8 +261,10 @@ class TioResponse:
             output = CogsUtils().replace_var_paths(output)
             await Menu(pages=output, box_language_py=True).start(ctx)
             return
-        embed: discord.Embed = discord.Embed(title=f"RunCode Response (with Tio API)", url=self.request.language.link)
-        embed.timestamp = datetime.datetime.utcnow()
+        embed: discord.Embed = discord.Embed(
+            title="RunCode Response (with Tio API)", url=self.request.language.link
+        )
+        embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
         run_time = format_timespan(self.run_time)
         embed.set_footer(text=f"Ran in {run_time}.")
         embed.set_author(name=f"{self.request.language.name.capitalize()} language")
@@ -270,7 +276,12 @@ class TioResponse:
         except ValueError:
             pass
         embed.add_field(name="Debug", value=box(debug, lang="py"))
-        pages = list(pagify(description, page_length=4000 if (6000 - len(embed) > 4000) else (6000 - len(embed) > 4000)))
+        pages = list(
+            pagify(
+                description,
+                page_length=4000 if len(embed) < 2000 else len(embed) < 2000,
+            )
+        )
         embeds = []
         for page in pages:
             e = embed.copy()

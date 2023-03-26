@@ -27,7 +27,7 @@ class settings(commands.Cog):
         pass
 
     @configuration.command(
-        aliases=["color", "col", "embedcolor", "embedcolor"], usage="<color_or_'none'>"
+        aliases=["colour", "col", "embedcolor", "embedcolour"], usage="<color_or_'none'>"
     )
     async def color(
         self,

@@ -91,7 +91,7 @@ class EditRole(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editrole.command(name="color", aliases=["color"])
+    @editrole.command(name="color", aliases=["colour"])
     async def editrole_color(
         self, ctx: commands.Context, role: discord.Role, color: discord.Color
     ) -> None:

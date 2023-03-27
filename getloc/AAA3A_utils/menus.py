@@ -54,6 +54,7 @@ if discord.version_info.major >= 2:
                 "🔻": "send_all",
                 "📩": "send_interactive",
                 "💾": "send_as_file",
+                "choose_page": "choose_page",
             }
             self.controls: typing.Dict[str, str] = controls.copy()
             self.disabled_controls: typing.List[str] = []

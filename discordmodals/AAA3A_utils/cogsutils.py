@@ -213,13 +213,14 @@ class CogsUtils(commands.Cog):
             except Exception as e:
                 self.cog.log.debug("Error when adding AAA3A_utils cog.", exc_info=e)
         # Modify hybrid commands.
-        try:
-            await self.add_hybrid_commands()
-        except Exception as e:
-            self.cog.log.error(
-                f"Error when adding [hybrid|slash] commands from the {self.cog.qualified_name} cog.",
-                exc_info=e,
-            )
+        if self.is_dpy2:
+            try:
+                await self.add_hybrid_commands()
+            except Exception as e:
+                self.cog.log.error(
+                    f"Error when adding [hybrid|slash] commands from the {self.cog.qualified_name} cog.",
+                    exc_info=e,
+                )
         AAA3A_utils: SharedCog = self.bot.get_cog("AAA3A_utils")
         if AAA3A_utils is not None:
             await AAA3A_utils.sentry.maybe_send_owners(self.cog)

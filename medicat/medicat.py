@@ -218,7 +218,7 @@ BOOTABLES_TOOLS = {
     "Memtest86 Pro": {
         "url": "https://www.fcportables.com/memtest86-pro/",
         "category": "USB\\Boot_Repair\\",
-        "regex": r"Memtest86 Pro (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(ISO/USB\)",
+        "regex": r"Memtest86 Pro v(\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) ISO-USB Multilingual \(Fixed\)",
     },
     "Active@ Boot Disk": {
         "url": "https://www.fcportables.com/active-boot-disk/",
@@ -238,7 +238,7 @@ BOOTABLES_TOOLS = {
     "EaseUS Partition Master": {
         "url": "https://www.fcportables.com/easeus-partition-master-winpe/",
         "category": "USB\\Partition_Tools\\",
-        "regex": r"EaseUS Partition Master (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) WinPE",
+        "regex": r"EaseUS Partition Master (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Build (\d*) \(x64\) WinPE",
     },
     "MiniTool Partition Wizard Technician": {
         "url": "https://www.fcportables.com/minitool-partition-wizard-portable/",
@@ -924,9 +924,10 @@ class Medicat(Cog):
             # x = x.replace('    "headline": "', "").replace('",', "")
             # result["Search for the tool name"]["Tool name full"] = x
             soup = BeautifulSoup(content, "lxml")
-            _json = json.loads(soup.find("script", class_="yoast-schema-graph").text)
+            found = soup.find("script", class_="yoast-schema-graph")
+            _json = json.loads(found.text)
             x = _json["@graph"][0]["headline"]
-            result["Search for the tool name"]["Tool name full"] = x
+            result["Search for the tool name"]["Tool name line"] = str(found)[:301] + "\n..."
             result["Search for the tool name"]["Tool name full"] = x
             if tool is not None:
                 result["Find version"]["Regex used"] = BOOTABLES_TOOLS[tool]["regex"]

@@ -450,7 +450,7 @@ class Medicat(Cog):
             versions = [versions[-1]]
 
         for version in versions:
-            ventoy_tag_name = str(version["tag_name"]).replace("v", "")
+            ventoy_tag_name = str(version["tag_name"])
             ventoy_version_str = (
                 ventoy_tag_name.replace("v", "").replace("1.0.0", "1.0.").replace("beta", ".dev")
             )

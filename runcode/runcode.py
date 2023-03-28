@@ -1,5 +1,5 @@
 ﻿from .AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
+from redbot.core import commands, app_commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
@@ -430,16 +430,16 @@ class RunCode(Cog):
         @runcode.autocomplete("language")
         async def runcode_language_autocomplete(
             self, interaction: discord.Interaction, current: str
-        ) -> typing.List[discord.app_commands.Choice[str]]:
+        ) -> typing.List[app_commands.Choice[str]]:
             return (
                 [
-                    discord.app_commands.Choice(name=language, value=language)
+                    app_commands.Choice(name=language, value=language)
                     for language in list(self.wandbox_languages.keys())
                     if language.lower().startswith(current.lower())
                 ][:25]
                 if current
                 else [
-                    discord.app_commands.Choice(name=language, value=language)
+                    app_commands.Choice(name=language, value=language)
                     for language in list(self.wandbox_languages.keys())[:25]
                 ]
             )
@@ -447,16 +447,16 @@ class RunCode(Cog):
         @runtio.autocomplete("language")
         async def runtio_language_autocomplete(
             self, interaction: discord.Interaction, current: str
-        ) -> typing.List[discord.app_commands.Choice[str]]:
+        ) -> typing.List[app_commands.Choice[str]]:
             return (
                 [
-                    discord.app_commands.Choice(name=language, value=language)
+                    app_commands.Choice(name=language, value=language)
                     for language in list(self.tio_languages.keys())
                     if language.lower().startswith(current.lower())
                 ][:25]
                 if current
                 else [
-                    discord.app_commands.Choice(name=language, value=language)
+                    app_commands.Choice(name=language, value=language)
                     for language in list(self.tio_languages.keys())[:25]
                 ]
             )

@@ -1,5 +1,5 @@
 ﻿from .AAA3A_utils import Cog, CogsUtils, Menu, Loop  # isort:skip
-from redbot.core import commands, Config  # isort:skip
+from redbot.core import commands, app_commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
@@ -381,7 +381,7 @@ class GetDocs(Cog):
                 command.app_command._params["source"].required = True
                 command.app_command._params["source"].default = "discord.py"
                 command.app_command._params["source"].choices = [
-                    discord.app_commands.Choice(name=source, value=source)
+                    app_commands.Choice(name=source, value=source)
                     for source in list(self.documentations.keys())
                 ][:25]
             if "query" in command.app_command._params:
@@ -394,7 +394,7 @@ class GetDocs(Cog):
 
         async def query_autocomplete(
             self, interaction: discord.Interaction, current: str, exclude_std: bool
-        ) -> typing.Tuple["Source", typing.List[discord.app_commands.Choice[str]]]:
+        ) -> typing.Tuple["Source", typing.List[app_commands.Choice[str]]]:
             source = None
             if "source" in interaction.namespace and interaction.namespace.source:
                 try:
@@ -408,33 +408,33 @@ class GetDocs(Cog):
             source = self.documentations[source]
             if not current:
                 return source, [
-                    discord.app_commands.Choice(name=name, value=name)
+                    app_commands.Choice(name=name, value=name)
                     for name in source._raw_rtfm_cache_with_std[:25]
                 ]
             matches = await source.search(
                 current, limit=25, exclude_std=exclude_std, with_raw_search=True
             )
-            return source, [discord.app_commands.Choice(name=name, value=name) for name in matches]
+            return source, [app_commands.Choice(name=name, value=name) for name in matches]
 
         @getdocs.autocomplete("query")
         async def getdocs_query_autocomplete(
             self, interaction: discord.Interaction, current: str
-        ) -> typing.List[discord.app_commands.Choice[str]]:
+        ) -> typing.List[app_commands.Choice[str]]:
             _, result = await self.query_autocomplete(interaction, current, exclude_std=True)
             if not current:
-                result.insert(0, discord.app_commands.Choice(name="random", value="random"))
+                result.insert(0, app_commands.Choice(name="random", value="random"))
             return result[:25]
 
         @rtfm.autocomplete("query")
         async def rtfm_query_autocomplete(
             self, interaction: discord.Interaction, current: str
-        ) -> typing.List[discord.app_commands.Choice[str]]:
+        ) -> typing.List[app_commands.Choice[str]]:
             exclude_std = False
             if "with_std" in interaction.namespace:
                 exclude_std = not interaction.namespace.with_std
             source, result = await self.query_autocomplete(interaction, current, exclude_std=exclude_std)
             if not current and source.name in ["discord.py", "redbot"]:
-                result.insert(0, discord.app_commands.Choice(name="events", value="events"))
+                result.insert(0, app_commands.Choice(name="events", value="events"))
             return result[:25]
 
     @hybrid_command(

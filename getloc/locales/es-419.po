@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-02 17:31\n"
+"Last-Translator: \n"
+"Language-Team: Spanish, Latin America\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-419\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/getloc/locales/messages.pot\n"
+"X-Crowdin-File-ID: 148\n"
+"Language: es_419\n"
+
+#: getloc\getloc.py:33
+#, docstring
+msgid "A cog to display information about a location based on its address or geographical coordinates!"
+msgstr "crwdns1074:0crwdne1074:0"
+
+#: getloc\getloc.py:128
+msgid "An error has occurred. Please try again."
+msgstr "crwdns1078:0crwdne1078:0"
+
+#: getloc\getloc.py:131
+msgid "The address or contact details you have provided do not lead to any results. Are you sure of your input?"
+msgstr "crwdns1080:0crwdne1080:0"
+

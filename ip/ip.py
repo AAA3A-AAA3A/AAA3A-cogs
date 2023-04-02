@@ -24,7 +24,7 @@ else:
 
 @cog_i18n(_)
 class Ip(Cog):
-    """A cog to get the ip address of the bot!"""
+    """A cog to get the ip address  of the bot's host machine!"""
 
     def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
@@ -70,7 +70,7 @@ class Ip(Cog):
 
     @ip_group.command()
     async def ip(self, ctx: commands.Context) -> None:
-        """Get the ip address of the bot."""
+        """Get the ip address of the bot's host machine."""
         # hostname = socket.gethostname()
         async with aiohttp.ClientSession() as session:
             async with session.get("https://www.wikipedia.org", timeout=3) as r:
@@ -79,13 +79,12 @@ class Ip(Cog):
 
     @ip_group.command()
     async def website(self, ctx: commands.Context) -> None:
-        """Get the ip address website."""
+        """Get the ip address website of the bot's host machine."""
         # hostname = socket.gethostname()
         async with aiohttp.ClientSession() as session:
             async with session.get("https://www.wikipedia.org", timeout=3) as r:
                 ip = r.headers["X-Client-IP"]  # Gives the "public IP" of the Bot client PC
-        config = await self.config.all()
-        port = config["port"]
+        port = await self.config.port()
         await ctx.send(
             _("The Administrator Panel website is http://{ip}:{port}/.").format(ip=ip, port=port)
         )

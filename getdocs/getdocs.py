@@ -1030,7 +1030,7 @@ class Source:
         # Examples
         examples = Examples()
         for child in documentation.find_all(
-            "div", class_=["highlight-python3", "highlight-default", "highlight"], recursive=False
+            "div", class_=["highlight-python3", "highlight-default", "highlight"], recursive=True
         ):
             examples.append(child.find("pre").text)
 

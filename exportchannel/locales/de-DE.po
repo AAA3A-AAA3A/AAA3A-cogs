@@ -1,0 +1,135 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-02 21:53\n"
+"Last-Translator: \n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: de\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/exportchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 146\n"
+"Language: de_DE\n"
+
+#: exportchannel\exportchannel.py:25
+msgid "Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\n"
+"Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"There are {count_messages} exported messages.\n"
+"Remember that exporting other users' messages from Discord does not respect the TOS."
+msgstr "Hier ist die html-Datei des Transkripts der Nachrichten im Kanal {channel.mention} ({channel.id}).\n"
+"Bitte beachten Sie: alle Anhänge und Benutzeravatare werden mit dem Discord-Link in dieser Datei gespeichert.\n"
+"Es gibt {count_messages} exportierte Nachrichten.\n"
+"Denken Sie daran, dass das Exportieren von Nachrichten anderer Benutzer aus Discord gegen die TOS verstößt."
+
+#: exportchannel\exportchannel.py:26
+msgid "[Click here to view the transcript.]({url})"
+msgstr "[Klicken Sie hier, um die Abschrift zu sehen]({url})"
+
+#: exportchannel\exportchannel.py:31
+#, docstring
+msgid "A cog to export all or part of a channel's messages to an html file!"
+msgstr "Eine Funktion zum Exportieren aller oder eines Teils der Nachrichten eines Kanals in eine HTML-Datei!"
+
+#: exportchannel\exportchannel.py:45
+msgid "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
+msgstr "Sorry, ich kann den Inhalt der Nachrichten in {channel.mention} ({channel.id}) nicht lesen."
+
+#: exportchannel\exportchannel.py:75
+msgid "Sorry. I could not find any message."
+msgstr "Entschuldigung. Ich konnte keine Nachricht finden."
+
+#: exportchannel\exportchannel.py:146
+#, docstring
+msgid "Export all of a channel's messages to an html file.\n\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Exportiert alle Nachrichten eines Channels in eine html-Datei.\n\n"
+"        Bitte beachten Sie: Alle Anhänge und Benutzeravatare werden mit dem Discord-Link in dieser Datei gespeichert.\n"
+"        Denken Sie daran, dass das Exportieren von Nachrichten anderer Benutzer aus Discord gegen die AGB verstößt.\n"
+"        "
+
+#: exportchannel\exportchannel.py:175
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the number of messages since the end of the channel.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Exportieren Sie einen Teil der Nachrichten eines Channels in eine html-Datei.\n\n"
+"        Geben Sie die Anzahl der Nachrichten seit dem Ende des Channels an.\n"
+"        Bitte beachten Sie: Alle Anhänge und Benutzeravatare werden mit dem Discord-Link in dieser Datei gespeichert.\n"
+"        Denken Sie daran, dass das Exportieren von Nachrichten anderer Benutzer aus Discord nicht den TOS entspricht.\n"
+"        "
+
+#: exportchannel\exportchannel.py:212
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the before message (id or link).\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Exportieren Sie einen Teil der Nachrichten eines Kanals in eine HTML-Datei.\n\n"
+"        Geben Sie die vorherige Nachricht an (ID oder Link).\n"
+"        Bitte beachten Sie: Alle Anhänge und Benutzeravatare werden mit dem Discord-Link in dieser Datei gespeichert.\n"
+"        Denken Sie daran, dass das Exportieren von Nachrichten anderer Benutzer aus Discord gegen die AGB verstößt.\n"
+"        "
+
+#: exportchannel\exportchannel.py:247
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the after message (id or link).\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Exportieren Sie einen Teil der Nachrichten eines Kanals in eine HTML-Datei.\n\n"
+"        Geben Sie die Nachricht nach der Nachricht an (ID oder Link).\n"
+"        Bitte beachten Sie: Alle Anhänge und Benutzeravatare werden mit dem Discord-Link in dieser Datei gespeichert.\n"
+"        Denken Sie daran, dass das Exportieren von Nachrichten anderer Benutzer aus Discord gegen die AGB verstößt.\n"
+"        "
+
+#: exportchannel\exportchannel.py:283
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the before and after messages (id or link).\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Exportieren Sie einen Teil der Nachrichten eines Kanals in eine HTML-Datei.\n\n"
+"        Geben Sie die Nachrichten vor und nach dem Export an (ID oder Link).\n"
+"        Bitte beachten Sie: Alle Anhänge und Benutzeravatare werden mit dem Discord-Link in dieser Datei gespeichert.\n"
+"        Denken Sie daran, dass das Exportieren von Nachrichten anderer Benutzer aus Discord nicht den TOS entspricht.\n"
+"        "
+
+#: exportchannel\exportchannel.py:319
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the member (id, name or mention).\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Exportieren Sie einen Teil der Nachrichten eines Kanals in eine HTML-Datei.\n\n"
+"        Geben Sie das Mitglied an (ID, Name oder Erwähnung).\n"
+"        Bitte beachten Sie: Alle Anhänge und Benutzeravatare werden mit dem Discord-Link in dieser Datei gespeichert.\n"
+"        Denken Sie daran, dass das Exportieren von Nachrichten anderer Benutzer aus Discord nicht den TOS entspricht.\n"
+"        "
+
+#: exportchannel\exportchannel.py:358
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the bool option.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Exportiert einen Teil der Nachrichten eines Kanals in eine HTML-Datei.\n\n"
+"        Geben Sie die Option bool an.\n"
+"        Bitte beachten Sie: Alle Anhänge und Benutzeravatare werden mit dem Discord-Link in dieser Datei gespeichert.\n"
+"        Denken Sie daran, dass das Exportieren von Nachrichten anderer Benutzer aus Discord nicht den TOS entspricht.\n"
+"        "
+

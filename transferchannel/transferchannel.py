@@ -27,9 +27,7 @@ else:
     hybrid_command = commands.command
     hybrid_group = commands.group
 
-RESULT_MESSAGE = _(
-    "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
-)
+RESULT_MESSAGE = "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
 
 
 @cog_i18n(_)

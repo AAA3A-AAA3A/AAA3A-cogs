@@ -1,0 +1,142 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-02 17:31\n"
+"Last-Translator: \n"
+"Language-Team: Spanish, Latin America\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-419\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/antinuke/locales/messages.pot\n"
+"X-Crowdin-File-ID: 72\n"
+"Language: es_419\n"
+
+#: antinuke\antinuke.py:26
+#, docstring
+msgid "A cog to remove all permissions from a person who deletes a channel!"
+msgstr "crwdns2:0crwdne2:0"
+
+#: antinuke\antinuke.py:144
+msgid "All your roles have been taken away because you have deleted channel #{old_channel}.\n"
+"Your previous roles: {rolelist_name}"
+msgstr "crwdns1861:0#{old_channel}crwdnd1861:0{rolelist_name}crwdne1861:0"
+
+#: antinuke\antinuke.py:156
+msgid "All roles in {perp} ({perp.id}) roles have been removed as a result of the antinuke system being triggered on this server."
+msgstr "crwdns8:0{perp}crwdnd8:0{perp.id}crwdne8:0"
+
+#: antinuke\antinuke.py:165
+msgid "The user {perp.name}#{perp.discriminator} has deleted the channel #{old_channel.name}!"
+msgstr "crwdns10:0{perp.name}crwdnd10:0#{perp.discriminator}crwdnd10:0#{old_channel.name}crwdne10:0"
+
+#: antinuke\antinuke.py:168
+msgid "To prevent him from doing anything else, I took away as many roles as my current permissions would allow.\n"
+"User mention: {perp.mention} - User ID: {perp.id}"
+msgstr "crwdns12:0{perp.mention}crwdnd12:0{perp.id}crwdne12:0"
+
+#: antinuke\antinuke.py:181
+msgid "Before I intervened, the user had the following roles:"
+msgstr "crwdns14:0crwdne14:0"
+
+#: antinuke\antinuke.py:220
+#, docstring
+msgid "Set a channel where events are registered.\n\n"
+"        ``channel``: Text channel.\n"
+"        You can also use \"None\" if you wish to remove the logging channel.\n"
+"        "
+msgstr "crwdns18:0crwdne18:0"
+
+#: antinuke\antinuke.py:226 antinuke\antinuke.py:274 antinuke\antinuke.py:293
+#: antinuke\antinuke.py:314 antinuke\antinuke.py:328 antinuke\antinuke.py:340
+msgid "Only the owner of this server can access these commands!"
+msgstr "crwdns20:0crwdne20:0"
+
+#: antinuke\antinuke.py:231
+msgid "Logging channel removed."
+msgstr "crwdns22:0crwdne22:0"
+
+#: antinuke\antinuke.py:246
+msgid "The bot does not have at least one of the following permissions in this channel: `embed_links`, `read_messages`, `read_message_history`, `send_messages`, `attach_files`."
+msgstr "crwdns24:0crwdne24:0"
+
+#: antinuke\antinuke.py:253
+msgid "Logging channel registered: {channel.mention}."
+msgstr "crwdns26:0{channel.mention}crwdne26:0"
+
+#: antinuke\antinuke.py:269
+#, docstring
+msgid "Enable or disable AntiNuke.\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "crwdns30:0crwdne30:0"
+
+#: antinuke\antinuke.py:280
+msgid "AntiNuke is already set on {state}."
+msgstr "crwdns32:0{state}crwdne32:0"
+
+#: antinuke\antinuke.py:284
+msgid "AntiNuke state registered: {state}."
+msgstr "crwdns34:0{state}crwdne34:0"
+
+#: antinuke\antinuke.py:288
+#, docstring
+msgid "Enable or disable User DM.\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "crwdns36:0crwdne36:0"
+
+#: antinuke\antinuke.py:300
+msgid "User DM is already set on {state}."
+msgstr "crwdns38:0{state}crwdne38:0"
+
+#: antinuke\antinuke.py:304
+msgid "User DM state registered: {state}."
+msgstr "crwdns40:0{state}crwdne40:0"
+
+#: antinuke\antinuke.py:308
+#, docstring
+msgid "Number Detected - Member\n\n"
+"        Before action, how many deleted channels should be detected?\n"
+"        `0' to disable this protection.\n"
+"        "
+msgstr "crwdns42:0crwdne42:0"
+
+#: antinuke\antinuke.py:318
+msgid "Number Detected - Member registered: {nb}."
+msgstr "crwdns1863:0{nb}crwdne1863:0"
+
+#: antinuke\antinuke.py:322
+#, docstring
+msgid "Number Detected - Bot\n\n"
+"        Before action, how many deleted channels should be detected?\n"
+"        `0' to disable this protection.\n"
+"        "
+msgstr "crwdns46:0crwdne46:0"
+
+#: antinuke\antinuke.py:332
+msgid "Number Detected - Bot registered: {nb}."
+msgstr "crwdns1865:0{nb}crwdne1865:0"
+
+#: antinuke\antinuke.py:338
+#, docstring
+msgid "Reset number detected for a user."
+msgstr "crwdns1413:0crwdne1413:0"
+
+#: antinuke\antinuke.py:356
+msgid "All former roles of {user} ({user.id}) have been restored at the request of the server owner."
+msgstr "crwdns52:0{user}crwdnd52:0{user.id}crwdne52:0"
+
+#: antinuke\antinuke.py:360
+msgid "Restored roles for {user.name} ({user.id})."
+msgstr "crwdns54:0{user.name}crwdnd54:0{user.id}crwdne54:0"
+
+#: antinuke\antinuke.py:364
+msgid "Count reset for {user.name} ({user.id})."
+msgstr "crwdns1415:0{user.name}crwdnd1415:0{user.id}crwdne1415:0"
+

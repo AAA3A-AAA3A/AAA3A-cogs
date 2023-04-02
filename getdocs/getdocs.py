@@ -991,16 +991,19 @@ class Source:
         full_name = (f"{_full_name[0]} " if _full_name[0] is not None else "") + _full_name[1]
 
         # Description
-        description = []
+        description: typing.List[str] = []
         for child in documentation.children:
             child: Tag = child
-            if child.name == "div":
-                break
             if isinstance(child, NavigableString):
                 continue
-            if child.attrs.get("class") is not None and not (
-                child.name == "ul" and child.attrs.get("class") == ["simple"]
-            ):
+            if child.name == "div":
+                if child.attrs.get("class") is not None and child.attrs.get("class")[0].startswith("highlight"):
+                    if len(description) > 1 and description[-1].endswith(":"):
+                        del description[-1]
+                    continue
+                else:
+                    break
+            elif child.attrs.get("class") is not None and not (child.name == "ul" and child.attrs.get("class") == ["simple"]):
                 break
             if child.name == "p":
                 elements = []
@@ -1022,7 +1025,7 @@ class Source:
                 except IndexError:
                     x = ""
                 description.append(f"{x}\n" + "\n".join(_elements))
-        description = "\n\n".join(description).replace("Example:", "").strip()
+        description = "\n\n".join(description).strip()
 
         # Examples
         examples = Examples()

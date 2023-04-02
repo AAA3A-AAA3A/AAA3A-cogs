@@ -1,0 +1,47 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2022-11-22 19:44+0100\n"
+"PO-Revision-Date: 2023-04-02 16:50\n"
+"Last-Translator: \n"
+"Language-Team: Spanish, Latin America\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-419\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/ctxvar/locales/messages.pot\n"
+"X-Crowdin-File-ID: 82\n"
+"Language: es_419\n"
+
+#: ctxvar\ctxvar.py:39
+#, docstring
+msgid "A cog to list and display the contents of all sub-functions of `ctx`!"
+msgstr "crwdns250:0crwdne250:0"
+
+#: ctxvar\ctxvar.py:60
+#, docstring
+msgid "Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."
+msgstr "crwdns1435:0crwdne1435:0"
+
+#: ctxvar\ctxvar.py:74
+msgid "The argument you specified is not a subclass of the instance."
+msgstr "crwdns252:0crwdne252:0"
+
+#: ctxvar\ctxvar.py:84
+msgid "Here are all the variables and their associated values that can be used in this instance class."
+msgstr "crwdns1437:0crwdne1437:0"
+
+#: ctxvar\ctxvar.py:129
+#, docstring
+msgid "Display a list of all attributes of the provided object (debug not async)."
+msgstr "crwdns1439:0crwdne1439:0"
+
+#: ctxvar\ctxvar.py:176
+#, docstring
+msgid "Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."
+msgstr "crwdns1441:0crwdne1441:0"
+

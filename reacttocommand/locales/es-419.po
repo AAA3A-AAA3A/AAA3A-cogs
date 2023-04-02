@@ -1,0 +1,69 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-02 17:31\n"
+"Last-Translator: \n"
+"Language-Team: Spanish, Latin America\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-419\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/reacttocommand/locales/messages.pot\n"
+"X-Crowdin-File-ID: 94\n"
+"Language: es_419\n"
+
+#: reacttocommand\reacttocommand.py:44
+#, docstring
+msgid "A cog to allow a user to execute a command by clicking on a reaction!"
+msgstr "crwdns360:0crwdne360:0"
+
+#: reacttocommand\reacttocommand.py:220
+#, docstring
+msgid "Add a command-reaction to a message.\n"
+"        There should be no prefix in the command.\n"
+"        The command will be invoked with the permissions of the user who clicked on the reaction.\n"
+"        This user must be able to see writing in the channel.\n"
+"        "
+msgstr "crwdns364:0crwdne364:0"
+
+#: reacttocommand\reacttocommand.py:233
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to add reactions and to see the messages in that channel."
+msgstr "crwdns366:0crwdne366:0"
+
+#: reacttocommand\reacttocommand.py:243
+msgid "You have not specified a correct command."
+msgstr "crwdns368:0crwdne368:0"
+
+#: reacttocommand\reacttocommand.py:250
+msgid "An error has occurred. It is possible that the emoji you provided is invalid."
+msgstr "crwdns370:0crwdne370:0"
+
+#: reacttocommand\reacttocommand.py:262
+#, docstring
+msgid "Remove a command-reaction to a message."
+msgstr "crwdns1555:0crwdne1555:0"
+
+#: reacttocommand\reacttocommand.py:266 reacttocommand\reacttocommand.py:287
+msgid "No command-reaction is configured for this message."
+msgstr "crwdns374:0crwdne374:0"
+
+#: reacttocommand\reacttocommand.py:270
+msgid "I wasn't watching for this reaction on this message."
+msgstr "crwdns376:0crwdne376:0"
+
+#: reacttocommand\reacttocommand.py:283
+#, docstring
+msgid "Clear all commands-reactions to a message."
+msgstr "crwdns1557:0crwdne1557:0"
+
+#: reacttocommand\reacttocommand.py:299
+#, docstring
+msgid "Clear all commands-reactions to a **guild**."
+msgstr "crwdns1559:0crwdne1559:0"
+

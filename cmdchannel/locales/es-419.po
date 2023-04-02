@@ -1,0 +1,187 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2022-11-22 19:44+0100\n"
+"PO-Revision-Date: 2023-04-02 16:50\n"
+"Last-Translator: \n"
+"Language-Team: Spanish, Latin America\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-419\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/cmdchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 80\n"
+"Language: es_419\n"
+
+#: cmdchannel\cmdchannel.py:30
+#, docstring
+msgid "A cog to send the result of a command to another channel!"
+msgstr "crwdns116:0crwdne116:0"
+
+#: cmdchannel\cmdchannel.py:59
+#, docstring
+msgid "Act as if the command had been typed in the channel of your choice.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
+"        If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).\n"
+"        "
+msgstr "crwdns1427:0crwdne1427:0"
+
+#: cmdchannel\cmdchannel.py:66 cmdchannel\cmdchannel.py:230
+msgid "To send commands to another server, you must be there."
+msgstr "crwdns124:0crwdne124:0"
+
+#: cmdchannel\cmdchannel.py:103
+msgid "Imitated user"
+msgstr "crwdns128:0crwdne128:0"
+
+#: cmdchannel\cmdchannel.py:105
+msgid "Channel"
+msgstr "crwdns130:0crwdne130:0"
+
+#: cmdchannel\cmdchannel.py:106
+msgid "Can Run"
+msgstr "crwdns132:0crwdne132:0"
+
+#: cmdchannel\cmdchannel.py:107
+msgid "{ctx.author} ({ctx.author.id}) - Used a Command"
+msgstr "crwdns134:0{ctx.author}crwdnd134:0{ctx.author.id}crwdne134:0"
+
+#: cmdchannel\cmdchannel.py:121
+msgid "The command issued in this channel is:\n"
+"```{command}```"
+msgstr "crwdns126:0{command}crwdne126:0"
+
+#: cmdchannel\cmdchannel.py:136 cmdchannel\cmdchannel.py:142
+msgid "The `{command}` command has been launched in the {channel} channel. You can check if it worked."
+msgstr "crwdns136:0{command}crwdnd136:0{channel}crwdne136:0"
+
+#: cmdchannel\cmdchannel.py:153 cmdchannel\cmdchannel.py:159
+msgid "You cannot run this command because you do not have the permissions to send messages in the {channel} channel."
+msgstr "crwdns138:0{channel}crwdne138:0"
+
+#: cmdchannel\cmdchannel.py:166 cmdchannel\cmdchannel.py:172
+msgid "CommandChannel have been disabled by an administrator of this server."
+msgstr "crwdns140:0crwdne140:0"
+
+#: cmdchannel\cmdchannel.py:187
+#, docstring
+msgid "Act as if the command had been typed by imitating the specified user.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
+"        If you do not specify a user, the author will be used.\n"
+"        "
+msgstr "crwdns1429:0crwdne1429:0"
+
+#: cmdchannel\cmdchannel.py:219
+#, docstring
+msgid "Act as if the command had been typed in the channel of your choice by imitating the specified user.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
+"        If you do not specify a user, the author will be used.\n"
+"        "
+msgstr "crwdns1431:0crwdne1431:0"
+
+#: cmdchannel\cmdchannel.py:253
+#, docstring
+msgid "Test variables."
+msgstr "crwdns1433:0crwdne1433:0"
+
+#: cmdchannel\cmdchannel.py:255
+msgid "Testvar"
+msgstr "crwdns162:0crwdne162:0"
+
+#: cmdchannel\cmdchannel.py:256
+msgid "Variables:"
+msgstr "crwdns164:0crwdne164:0"
+
+#: cmdchannel\cmdchannel.py:257
+msgid "Author:"
+msgstr "crwdns166:0crwdne166:0"
+
+#: cmdchannel\cmdchannel.py:258
+msgid "Channel:"
+msgstr "crwdns168:0crwdne168:0"
+
+#: cmdchannel\cmdchannel.py:274
+#, docstring
+msgid "Set a channel where events are registered.\n\n"
+"        ``channel``: Text channel.\n"
+"        You can also use \"None\" if you wish to remove the logging channel.\n"
+"        "
+msgstr "crwdns172:0crwdne172:0"
+
+#: cmdchannel\cmdchannel.py:281
+msgid "Logging channel removed."
+msgstr "crwdns176:0crwdne176:0"
+
+#: cmdchannel\cmdchannel.py:296
+msgid "The bot does not have at least one of the following permissions in this channel: `embed_links`, `read_messages`, `read_message_history`, `send_messages`, `attach_files`."
+msgstr "crwdns178:0crwdne178:0"
+
+#: cmdchannel\cmdchannel.py:303
+msgid "Logging channel registered: {channel.mention}."
+msgstr "crwdns180:0{channel.mention}crwdne180:0"
+
+#: cmdchannel\cmdchannel.py:320
+#, docstring
+msgid "Configure CmdChannel for your server."
+msgstr "crwdns184:0crwdne184:0"
+
+#: cmdchannel\cmdchannel.py:324
+#, docstring
+msgid "Enable or disable CommandChannel.\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "crwdns186:0crwdne186:0"
+
+#: cmdchannel\cmdchannel.py:332
+msgid "CommandChannel is already set on {state}."
+msgstr "crwdns188:0{state}crwdne188:0"
+
+#: cmdchannel\cmdchannel.py:336
+msgid "CommandChannel state registered: {state}."
+msgstr "crwdns190:0{state}crwdne190:0"
+
+#: cmdchannel\cmdchannel.py:340
+#, docstring
+msgid "Enable or disable confirmation.\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "crwdns192:0crwdne192:0"
+
+#: cmdchannel\cmdchannel.py:348
+msgid "Confirmation is already set on {state}."
+msgstr "crwdns194:0{state}crwdne194:0"
+
+#: cmdchannel\cmdchannel.py:356
+#, docstring
+msgid "Enable or disable message delete.\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "crwdns196:0crwdne196:0"
+
+#: cmdchannel\cmdchannel.py:364
+msgid "Message delete is already set on {state}."
+msgstr "crwdns198:0{state}crwdne198:0"
+
+#: cmdchannel\cmdchannel.py:368
+msgid "Message delete state registered: {state}."
+msgstr "crwdns200:0{state}crwdne200:0"
+
+#: cmdchannel\cmdchannel.py:372
+#, docstring
+msgid "Enable or disable information message.\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "crwdns202:0crwdne202:0"
+
+#: cmdchannel\cmdchannel.py:380
+msgid "Information message is already set on {state}."
+msgstr "crwdns204:0{state}crwdne204:0"
+
+#: cmdchannel\cmdchannel.py:384
+msgid "Information message state registered: {state}."
+msgstr "crwdns206:0{state}crwdne206:0"
+

@@ -1,0 +1,46 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2022-11-22 19:45+0100\n"
+"PO-Revision-Date: 2023-04-02 16:50\n"
+"Last-Translator: \n"
+"Language-Team: Spanish, Latin America\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-419\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/sudo/locales/messages.pot\n"
+"X-Crowdin-File-ID: 100\n"
+"Language: es_419\n"
+
+#: sudo\sudo.py:48
+#, docstring
+msgid "A cog to allow bot owners to be normal users in terms of permissions!"
+msgstr "crwdns656:0crwdne656:0"
+
+#: sudo\sudo.py:114
+#, docstring
+msgid "Sudo as the owner of the bot."
+msgstr "crwdns1597:0crwdne1597:0"
+
+#: sudo\sudo.py:120
+#, docstring
+msgid "Unsudo as normal user."
+msgstr "crwdns1599:0crwdne1599:0"
+
+#: sudo\sudo.py:128
+#, docstring
+msgid "Rise as the bot owner for the specified command only."
+msgstr "crwdns1601:0crwdne1601:0"
+
+#: sudo\sudo.py:158
+#, docstring
+msgid "Sudo as the owner of the bot for the specified timeout.\n"
+"        The time should be between 10 seconds and 1 day.\n"
+"        "
+msgstr "crwdns664:0crwdne664:0"
+

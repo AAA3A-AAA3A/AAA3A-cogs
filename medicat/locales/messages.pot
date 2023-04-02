@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-11-22 19:45+0100\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,21 +11,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: medicat\medicat.py:57
-msgid "How to add your own bootable tools (iso, wim, vhd) to Medicat USB?"
+#: medicat\medicat.py:52
+msgid ""
+"Can I add my own bootable tools (iso, wim, vhd) or PortableApps softwares to"
+" Medicat USB?"
+msgstr ""
+
+#: medicat\medicat.py:55
+msgid ""
+"Please feel free to modify MediCat to YOUR individual needs! 😄\n"
+"To add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\n"
+"Then you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template.\n"
+"Absolutely, I encourage it!"
 msgstr ""
 
 #: medicat\medicat.py:60
-msgid ""
-"To add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\n"
-"Then you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template."
+msgid "Is Medicat free?"
 msgstr ""
 
-#: medicat\medicat.py:65
-msgid "How do I install Medicat USB?"
+#: medicat\medicat.py:61
+msgid ""
+"Absolutely. I will never charge money for MediCat, or accept donations. "
+"However, feel free to share your ideas, questions, and concerns in this "
+"thread. That's how you can give back. 🙂"
 msgstr ""
 
 #: medicat\medicat.py:66
+msgid "How do I install Medicat USB?"
+msgstr ""
+
+#: medicat\medicat.py:67
 msgid ""
 "1) Install the latest version of Ventoy on your USB stick (<https://github.com/ventoy/Ventoy/releases> & <https://ventoy.net/en/doc_start.html>).\n"
 "2) Download the last version of Medicat USB with Torrent, Mega or Google Drive (<https://medicatusb.com/>).\n"
@@ -35,32 +50,32 @@ msgid ""
 "Warning: do not forget to disable your antivirus software (see the `virus` command for more information)."
 msgstr ""
 
-#: medicat\medicat.py:71
+#: medicat\medicat.py:72
 msgid "How to make a donation?"
 msgstr ""
 
-#: medicat\medicat.py:72
+#: medicat\medicat.py:73
 msgid ""
 "@Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\n"
 "@MON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\n"
 "@AAA3A (Medicat Developer): Nothing"
 msgstr ""
 
-#: medicat\medicat.py:77
+#: medicat\medicat.py:78
 msgid "What is the latest version of Medicat USB?"
 msgstr ""
 
-#: medicat\medicat.py:78
+#: medicat\medicat.py:79
 msgid ""
 "The latest version of Medicat USB is 21.12!\n"
 "||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||"
 msgstr ""
 
-#: medicat\medicat.py:83
+#: medicat\medicat.py:84
 msgid "How to download one of the menus?"
 msgstr ""
 
-#: medicat\medicat.py:84
+#: medicat\medicat.py:85
 msgid ""
 "Here are the latest links to download the latest versions of the menus:\n"
 "- Jayro's Lockîck: \n"
@@ -73,48 +88,73 @@ msgid ""
 "<https://mega.nz/folder/FtRCgLQL#KTq897WQiXCJT8OQ3cT9Tg>"
 msgstr ""
 
-#: medicat\medicat.py:89
+#: medicat\medicat.py:90
+msgid "Can I install Mini Windows 10 as my main OS?"
+msgstr ""
+
+#: medicat\medicat.py:91
+msgid ""
+"No, it doesn't work like that. It's a WinPE image (Windows Pre-install "
+"Environment) that runs in memory. It's primary use is to troubleshoot a "
+"troublesome PC."
+msgstr ""
+
+#: medicat\medicat.py:96
 msgid "How do I download the Medicat USB iso file?"
 msgstr ""
 
-#: medicat\medicat.py:90
+#: medicat\medicat.py:97
 msgid ""
 "Medicat USB is not available as an iso file.\n"
 "Previously, Medicat USB was available as an iso file. Now it uses Ventoy to run. It is currently impossible to put Ventoy and therefore Medicat USB in an iso file, or at least not without difficulties."
 msgstr ""
 
-#: medicat\medicat.py:95
+#: medicat\medicat.py:102
+msgid ""
+"Can I run the PortableApps on my current PC without booting up MediCat?"
+msgstr ""
+
+#: medicat\medicat.py:103
+msgid ""
+"Yes, just mount the MediCat USB, and open Start.exe to launch the platform. "
+"These are the same exact apps that get loaded within Mini Windows 10. So if "
+"you update them, they will show up updated in Mini Windows 10 as well."
+msgstr ""
+
+#: medicat\medicat.py:108
 msgid ""
 "How can I update Medicat USB without having to install all the files again?"
 msgstr ""
 
-#: medicat\medicat.py:98
+#: medicat\medicat.py:109
 msgid ""
 "For the time being, you are in any case obliged to download all Medicat USB files again to update it. However, if you only want to keep your previous personal changes, you can save them somewhere and reproduce them on the new instance of the bootable USB stick.\n"
 "For Medicat USB 22.06, @AAA3A is currently coding an update only script for Medicat USB, in batch. It will be downloaded with only the necessary files and will however only work from one version to another, after being prepared in advance."
 msgstr ""
 
-#: medicat\medicat.py:103
+#: medicat\medicat.py:114
 msgid "What is the difference between Medicat USB and Medicat VHD?"
 msgstr ""
 
-#: medicat\medicat.py:106
+#: medicat\medicat.py:115
 msgid ""
-"Medicat USB is a bootable menu that runs on Ventoy and contains all the necessary tools for computer troubleshooting. It contains for example Malwarebytes bootable for virus scans, Mini Windows 10 for a winPE utility and Jayro's Lockpick for all things password related.\n"
+"**Medicat USB** is a bootable menu that runs on Ventoy and contains all the necessary tools for computer troubleshooting. It contains for example Malwarebytes bootable for virus scans, Mini Windows 10 for a winPE utility and Jayro's Lockpick for all things password related.\n"
 "<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>\n"
-"Medicat VHD is a full-featured windows, using the real performance of the computer. It is therefore much more powerful than Mini Windows 10. Moreover, all data is saved and you can find it again at each reboot. (Not intended to be used as an operating system).\n"
+"**Medicat VHD** is a full-featured windows, using the real performance of the computer. It is therefore much more powerful than Mini Windows 10. Moreover, all data is saved and you can find it again at each reboot. (Not intended to be used as an operating system).\n"
 "<https://gbatemp.net/threads/official-medicat-vhd-a-usb-bootable-windows-10-virtual-harddisk-for-pc-repair.581637/>\n"
-"Jayro's Lockpick is a winPE with a menu containing all the necessary tools to remove/bypass/retrieve a Windows password or even for a server.\n"
+"**Jayro's Lockpick** is a winPE with a menu containing all the necessary tools to remove/bypass/retrieve a Windows password or even for a server.\n"
 "<https://gbatemp.net/threads/release-jayros-lockpick-a-bootable-password-removal-suite-winpe.579278/>\n"
-"Malwarebytes bootable is a very powerful antivirus. Since it is launched from a winPE, a potential virus cannot prevent it from running properly.\n"
-"<https://gbatemp.net/threads/unofficial-malwarebytes-bootable.481046/>"
+"**Malwarebytes bootable** is a very powerful antivirus. Since it is launched from a winPE, a potential virus cannot prevent it from running properly.\n"
+"<https://gbatemp.net/threads/unofficial-malwarebytes-bootable.481046/>\n"
+"**Medicat Second Opinion** is a set of 11 bootable antiviruses to clean viruses in a computer. But most of them only work on legacy BIOS and not UEFI.\n"
+"<https://gbatemp.net/threads/medicat-second-opinion-a-collection-of-bootable-antivirus-boot-disks-on-a-single-usb-device.577842/>"
 msgstr ""
 
-#: medicat\medicat.py:111
+#: medicat\medicat.py:120
 msgid "Why does my antivirus software blame Medicat?"
 msgstr ""
 
-#: medicat\medicat.py:112
+#: medicat\medicat.py:121
 msgid ""
 "Medicat USB does not contain any viruses! If an antivirus software detects one of its files as such, it is a false positive.\n"
 "As you know, Medicat USB contains tools that can reset a partition, find a password, and modify the system. Portable applications can be falsely flagged because of how they are cracked and packaged.\n"
@@ -122,11 +162,11 @@ msgid ""
 "All the scripts associated with the project (published by one of the 3 developers) and Ventoy do not have one either."
 msgstr ""
 
-#: medicat\medicat.py:117
+#: medicat\medicat.py:126
 msgid "What is Medicat USB?"
 msgstr ""
 
-#: medicat\medicat.py:118
+#: medicat\medicat.py:127
 msgid ""
 "Medicat USB contains tools to backup/restore data, to manage "
 "disks/partitions, to reset/bypass/find a Windows password, to use software "
@@ -135,11 +175,23 @@ msgid ""
 "and paste."
 msgstr ""
 
-#: medicat\medicat.py:123
+#: medicat\medicat.py:132
+msgid "How often will Medicat be updated?"
+msgstr ""
+
+#: medicat\medicat.py:133
+msgid ""
+"MediCat USB is now a rolling release, so will be regularly updated with "
+"major releases, and minor updates as needed (Typically monthly or bi-"
+"monthly). The links here will always be the latest version. The PortableApps"
+" are easily updatable by the user, once they have been 'burned' to USB."
+msgstr ""
+
+#: medicat\medicat.py:138
 msgid "Why doesn't Ventoy display Wim and VHD files?"
 msgstr ""
 
-#: medicat\medicat.py:124
+#: medicat\medicat.py:139
 msgid ""
 "You must download an additional plugin/file and place it in the `USB\\ventoy\\` folder (create it if necessary).\n"
 "\n"
@@ -152,66 +204,94 @@ msgid ""
 "- Put the file under `ventoy` directory in the `ventoy` partition of the USB stick, that is `/ventoy/ventoy_vhdboot.img` and that's all."
 msgstr ""
 
-#: medicat\medicat.py:129
+#: medicat\medicat.py:144
 msgid "X & Y"
 msgstr ""
 
-#: medicat\medicat.py:130
+#: medicat\medicat.py:145
 msgid ""
 "What is the context?\n"
 "If you have any problems or would like to ask for help, please give information about what you are not able to do. Don't just say you don't understand how to make x software work, say where you are, what is wrong with it and what is the potential error. \n"
 "Thank you for your understanding."
 msgstr ""
 
-#: medicat\medicat.py:134
+#: medicat\medicat.py:149
 msgid "Test!"
 msgstr ""
 
-#: medicat\medicat.py:134
+#: medicat\medicat.py:149
 msgid "Test."
 msgstr ""
 
-#: medicat\medicat.py:253
+#: medicat\medicat.py:268
 #, docstring
 msgid ""
 "This cog will only work on x server and therefore cannot be used by the "
 "general public!"
 msgstr ""
 
-#: medicat\medicat.py:413
+#: medicat\medicat.py:447
 msgid "This Ventoy version doesn't exists."
 msgstr ""
 
-#: medicat\medicat.py:759
+#: medicat\medicat.py:483
+msgid "Ventoy v{ventoy_version_str} has been released!"
+msgstr ""
+
+#: medicat\medicat.py:486
+msgid "New features:"
+msgstr ""
+
+#: medicat\medicat.py:491
+msgid "Download this version:"
+msgstr ""
+
+#: medicat\medicat.py:502 medicat\medicat.py:530
+msgid "View on Ventoy Official Website"
+msgstr ""
+
+#: medicat\medicat.py:608
+msgid "{tool} now has a new version!"
+msgstr ""
+
+#: medicat\medicat.py:625 medicat\medicat.py:653
+msgid "View on FCportables Official Website"
+msgstr ""
+
+#: medicat\medicat.py:781
 #, docstring
 msgid "Get the latest version of Ventoy."
 msgstr ""
 
-#: medicat\medicat.py:763 medicat\medicat.py:773
+#: medicat\medicat.py:785 medicat\medicat.py:796
 msgid "An error has occurred. Please try again."
 msgstr ""
 
-#: medicat\medicat.py:769
+#: medicat\medicat.py:790
 #, docstring
 msgid "Get a version of Ventoy."
 msgstr ""
 
-#: medicat\medicat.py:779
+#: medicat\medicat.py:801
 #, docstring
 msgid "Get the latest versions of each Medicat USB bootable tool."
 msgstr ""
 
-#: medicat\medicat.py:857
+#: medicat\medicat.py:840 medicat\medicat.py:862
+msgid "View FCportables Official Website"
+msgstr ""
+
+#: medicat\medicat.py:873
 #, docstring
 msgid "Get the debug for a FCportables's tool."
 msgstr ""
 
-#: medicat\medicat.py:913
+#: medicat\medicat.py:952
 #, docstring
 msgid "Get an embed for check loops status."
 msgstr ""
 
-#: medicat\medicat.py:922
+#: medicat\medicat.py:959
 #, docstring
-msgid "Update the Medicat cog without the bot owner (with his autorisation)."
+msgid "Update Medicat cog directly."
 msgstr ""

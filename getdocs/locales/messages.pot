@@ -1,0 +1,73 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: getdocs\getdocs.py:191
+msgid "This source doesn't exist."
+msgstr ""
+
+#: getdocs\getdocs.py:197
+#, docstring
+msgid ""
+"A cog to get and display Sphinx docs! Use `[p]listsources` to get a list of "
+"all the available sources."
+msgstr ""
+
+#: getdocs\getdocs.py:299
+msgid "Documentations cache is not yet built, building now."
+msgstr ""
+
+#: getdocs\getdocs.py:364
+msgid "No results found."
+msgstr ""
+
+#: getdocs\getdocs.py:477
+#, docstring
+msgid ""
+"\n"
+"        Enable a documentations source.\n"
+"        "
+msgstr ""
+
+#: getdocs\getdocs.py:482
+msgid "This source is already enabled."
+msgstr ""
+
+#: getdocs\getdocs.py:495
+#, docstring
+msgid ""
+"\n"
+"        Disable a documentations source.\n"
+"        "
+msgstr ""
+
+#: getdocs\getdocs.py:500
+msgid "This source is already disabled."
+msgstr ""
+
+#: getdocs\getdocs.py:506
+#, docstring
+msgid ""
+"\n"
+"        Set the documentations source.\n"
+"\n"
+"        The default value was `discord.py`.\n"
+"        "
+msgstr ""
+
+#: getdocs\getdocs.py:513
+msgid "This source is disabled."
+msgstr ""
+
+#: getdocs\getdocs.py:1244
+msgid "RTFM caching isn't finished."
+msgstr ""

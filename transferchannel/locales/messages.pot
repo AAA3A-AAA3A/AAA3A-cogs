@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-11-22 19:45+0100\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,24 +11,53 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: transferchannel\transferchannel.py:37
+#: transferchannel\transferchannel.py:30
+#: transferchannel\transferchannel.py:251
+msgid ""
+"There are {count_messages} transfered messages from {source.mention} to "
+"{destination.mention}."
+msgstr ""
+
+#: transferchannel\transferchannel.py:35
 #, docstring
 msgid "A cog to transfer all messages channel in a other channel!"
 msgstr ""
 
-#: transferchannel\transferchannel.py:128
-msgid "**Author:** {message.author.mention} ({message.author.id})"
+#: transferchannel\transferchannel.py:87
+msgid ""
+"Sorry, I can't read the content of the messages in {source.mention} "
+"({source.id})."
 msgstr ""
 
-#: transferchannel\transferchannel.py:131
-msgid "**Channel:** <#{message.channel.id}>"
+#: transferchannel\transferchannel.py:95
+msgid ""
+"I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n"
+"`embed_links`."
+msgstr ""
+
+#: transferchannel\transferchannel.py:102
+msgid ""
+"I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n"
+"`manage_channels`"
 msgstr ""
 
 #: transferchannel\transferchannel.py:132
+msgid "Sorry. I could not find any message."
+msgstr ""
+
+#: transferchannel\transferchannel.py:164
+msgid "**Author:** {message.author.mention} ({message.author.id})"
+msgstr ""
+
+#: transferchannel\transferchannel.py:167
+msgid "**Channel:** <#{message.channel.id}>"
+msgstr ""
+
+#: transferchannel\transferchannel.py:168
 msgid "**Time (UTC):** {iso_format}"
 msgstr ""
 
-#: transferchannel\transferchannel.py:171
+#: transferchannel\transferchannel.py:208
 #, docstring
 msgid ""
 "Transfer all messages channel in a other channel. This might take a long time.\n"
@@ -37,65 +66,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:185
-#: transferchannel\transferchannel.py:246
-#: transferchannel\transferchannel.py:309
-#: transferchannel\transferchannel.py:370
-#: transferchannel\transferchannel.py:432
-#: transferchannel\transferchannel.py:496
-#: transferchannel\transferchannel.py:562
-msgid ""
-"Sorry, I can't read the content of the messages in {source.mention} "
-"({source.id})."
-msgstr ""
-
-#: transferchannel\transferchannel.py:194
-#: transferchannel\transferchannel.py:255
-#: transferchannel\transferchannel.py:318
-#: transferchannel\transferchannel.py:379
-#: transferchannel\transferchannel.py:441
-#: transferchannel\transferchannel.py:505
-#: transferchannel\transferchannel.py:571
-msgid ""
-"I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n"
-"`embed_links`."
-msgstr ""
-
-#: transferchannel\transferchannel.py:202
-#: transferchannel\transferchannel.py:263
-#: transferchannel\transferchannel.py:326
-#: transferchannel\transferchannel.py:387
-#: transferchannel\transferchannel.py:449
-#: transferchannel\transferchannel.py:513
-#: transferchannel\transferchannel.py:579
-msgid ""
-"I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n"
-"`manage_channels`"
-msgstr ""
-
-#: transferchannel\transferchannel.py:211
-#: transferchannel\transferchannel.py:274
-#: transferchannel\transferchannel.py:335
-#: transferchannel\transferchannel.py:396
-#: transferchannel\transferchannel.py:458
-#: transferchannel\transferchannel.py:526
-#: transferchannel\transferchannel.py:588
-msgid "Sorry. I could not find any message."
-msgstr ""
-
-#: transferchannel\transferchannel.py:217
-#: transferchannel\transferchannel.py:280
-#: transferchannel\transferchannel.py:341
-#: transferchannel\transferchannel.py:402
-#: transferchannel\transferchannel.py:464
-#: transferchannel\transferchannel.py:532
-#: transferchannel\transferchannel.py:594
-msgid ""
-"There are {count_messages} transfered messages from {source.mention} to "
-"{destination.mention}."
-msgstr ""
-
-#: transferchannel\transferchannel.py:231
+#: transferchannel\transferchannel.py:234
 #, docstring
 msgid ""
 "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"
@@ -105,7 +76,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:294
+#: transferchannel\transferchannel.py:265
 #, docstring
 msgid ""
 "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"
@@ -115,7 +86,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:355
+#: transferchannel\transferchannel.py:292
 #, docstring
 msgid ""
 "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"
@@ -125,7 +96,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:417
+#: transferchannel\transferchannel.py:320
 #, docstring
 msgid ""
 "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"
@@ -135,7 +106,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:481
+#: transferchannel\transferchannel.py:350
 #, docstring
 msgid ""
 "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"
@@ -145,7 +116,7 @@ msgid ""
 "            "
 msgstr ""
 
-#: transferchannel\transferchannel.py:547
+#: transferchannel\transferchannel.py:383
 #, docstring
 msgid ""
 "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"

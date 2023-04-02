@@ -22,8 +22,8 @@ else:
     hybrid_command = commands.command
     hybrid_group = commands.group
 
-RESULT_MESSAGE = "Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nThere are {count_messages} exported messages.\nRemember that exporting other users' messages from Discord does not respect the TOS."
-LINK_MESSAGE = "[Click here to view the transcript.]({url})"
+RESULT_MESSAGE = _("Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nThere are {count_messages} exported messages.\nRemember that exporting other users' messages from Discord does not respect the TOS.")
+LINK_MESSAGE = _("[Click here to view the transcript.]({url})")
 
 
 @cog_i18n(_)

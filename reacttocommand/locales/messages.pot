@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-11-22 19:45+0100\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,12 +11,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: reacttocommand\reacttocommand.py:46
+#: reacttocommand\reacttocommand.py:44
 #, docstring
 msgid "A cog to allow a user to execute a command by clicking on a reaction!"
 msgstr ""
 
-#: reacttocommand\reacttocommand.py:211
+#: reacttocommand\reacttocommand.py:220
 #, docstring
 msgid ""
 "Add a command-reaction to a message.\n"
@@ -26,41 +26,41 @@ msgid ""
 "        "
 msgstr ""
 
-#: reacttocommand\reacttocommand.py:224
+#: reacttocommand\reacttocommand.py:233
 msgid ""
 "I don't have sufficient permissions on the channel where the message you specified is located.\n"
 "I need the permissions to add reactions and to see the messages in that channel."
 msgstr ""
 
-#: reacttocommand\reacttocommand.py:234
+#: reacttocommand\reacttocommand.py:243
 msgid "You have not specified a correct command."
 msgstr ""
 
-#: reacttocommand\reacttocommand.py:240
+#: reacttocommand\reacttocommand.py:250
 msgid ""
 "An error has occurred. It is possible that the emoji you provided is "
 "invalid."
 msgstr ""
 
-#: reacttocommand\reacttocommand.py:253
+#: reacttocommand\reacttocommand.py:262
 #, docstring
 msgid "Remove a command-reaction to a message."
 msgstr ""
 
-#: reacttocommand\reacttocommand.py:257 reacttocommand\reacttocommand.py:280
+#: reacttocommand\reacttocommand.py:266 reacttocommand\reacttocommand.py:287
 msgid "No command-reaction is configured for this message."
 msgstr ""
 
-#: reacttocommand\reacttocommand.py:262
+#: reacttocommand\reacttocommand.py:270
 msgid "I wasn't watching for this reaction on this message."
 msgstr ""
 
-#: reacttocommand\reacttocommand.py:276
+#: reacttocommand\reacttocommand.py:283
 #, docstring
 msgid "Clear all commands-reactions to a message."
 msgstr ""
 
-#: reacttocommand\reacttocommand.py:293
+#: reacttocommand\reacttocommand.py:299
 #, docstring
 msgid "Clear all commands-reactions to a **guild**."
 msgstr ""

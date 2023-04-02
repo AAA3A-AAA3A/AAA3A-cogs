@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-11-22 19:45+0100\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,30 +11,44 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: sudo\sudo.py:48
+#: sudo\sudo.py:50
 #, docstring
 msgid "A cog to allow bot owners to be normal users in terms of permissions!"
 msgstr ""
 
-#: sudo\sudo.py:114
+#: sudo\sudo.py:118
 #, docstring
-msgid "Sudo as the owner of the bot."
+msgid ""
+"Sudo as the owner of the bot.\n"
+"\n"
+"        Use `[p]su`!\n"
+"        "
 msgstr ""
 
-#: sudo\sudo.py:120
+#: sudo\sudo.py:127
 #, docstring
-msgid "Unsudo as normal user."
+msgid ""
+"Unsudo as normal user.\n"
+"\n"
+"        Use `[p]unsu`!\n"
+"        "
 msgstr ""
 
-#: sudo\sudo.py:128
+#: sudo\sudo.py:138
 #, docstring
-msgid "Rise as the bot owner for the specified command only."
+msgid ""
+"Rise as the bot owner for the specified command only.\n"
+"\n"
+"        Use `[p]sudo`!\n"
+"        "
 msgstr ""
 
-#: sudo\sudo.py:158
+#: sudo\sudo.py:167
 #, docstring
 msgid ""
 "Sudo as the owner of the bot for the specified timeout.\n"
 "        The time should be between 10 seconds and 1 day.\n"
+"\n"
+"        Use `[p]sutimeout`!\n"
 "        "
 msgstr ""

@@ -147,9 +147,7 @@ class RolesButtons(Cog):
             role = interaction.guild.get_role(role_id)
             if role is None:
                 await interaction.followup.send(
-                    _(
-                        f"The role ({role_id}) I have to put you in no longer exists. Please notify an administrator of this server."
-                    ),
+                    _("The role ({role_id}) I have to put you in no longer exists. Please notify an administrator of this server.").format(role=role),
                     ephemeral=True,
                 )
                 return
@@ -249,9 +247,7 @@ class RolesButtons(Cog):
             role = inter.guild.get_role(role_id)
             if role is None:
                 await inter.followup(
-                    _(
-                        f"The role ({role_id}) I have to put you in no longer exists. Please notify an administrator of this server."
-                    ),
+                    _("The role ({role_id}) I have to put you in no longer exists. Please notify an administrator of this server.").format(role=role),
                     ephemeral=True,
                 )
                 return

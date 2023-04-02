@@ -1,0 +1,300 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2022-11-22 19:44+0100\n"
+"PO-Revision-Date: 2023-04-02 16:50\n"
+"Last-Translator: \n"
+"Language-Team: Spanish, Latin America\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-419\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/discordedit/locales/messages.pot\n"
+"X-Crowdin-File-ID: 163\n"
+"Language: es_419\n"
+
+#: discordedit\discordedit.py:29
+#, docstring
+msgid "A cog to edit Discord default objects!"
+msgstr "crwdns1311:0crwdne1311:0"
+
+#: discordedit\editrole.py:22
+#, docstring
+msgid "A cog to edit roles!"
+msgstr "crwdns1313:0crwdne1313:0"
+
+#: discordedit\editrole.py:32
+msgid "I can not let you edit {role.mention} ({role.id}) because that role is higher than or equal to your highest role in the Discord hierarchy."
+msgstr "crwdns1315:0{role.mention}crwdnd1315:0{role.id}crwdne1315:0"
+
+#: discordedit\editrole.py:40
+msgid "I can not edit {role.mention} ({role.id}) because that role is higher than or equal to my highest role in the Discord hierarchy."
+msgstr "crwdns1317:0{role.mention}crwdnd1317:0{role.id}crwdne1317:0"
+
+#: discordedit\editrole.py:64
+#, docstring
+msgid "Create a role."
+msgstr "crwdns1319:0crwdne1319:0"
+
+#: discordedit\editrole.py:73 discordedit\editrole.py:90
+#: discordedit\editrole.py:107 discordedit\editrole.py:124
+#: discordedit\editrole.py:156 discordedit\editrole.py:187
+#: discordedit\editrole.py:220 discordedit\edittextchannel.py:90
+#: discordedit\edittextchannel.py:111 discordedit\edittextchannel.py:132
+#: discordedit\edittextchannel.py:153 discordedit\edittextchannel.py:193
+#: discordedit\edittextchannel.py:214 discordedit\edittextchannel.py:238
+#: discordedit\edittextchannel.py:262 discordedit\edittextchannel.py:293
+#: discordedit\edittextchannel.py:323 discordedit\edittextchannel.py:350
+#: discordedit\edittextchannel.py:385 discordedit\editvoicechannel.py:80
+#: discordedit\editvoicechannel.py:97 discordedit\editvoicechannel.py:114
+#: discordedit\editvoicechannel.py:140 discordedit\editvoicechannel.py:157
+#: discordedit\editvoicechannel.py:182 discordedit\editvoicechannel.py:216
+#: discordedit\editvoicechannel.py:235 discordedit\editvoicechannel.py:257
+#: discordedit\editvoicechannel.py:284 discordedit\editvoicechannel.py:317
+msgid "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete."
+msgstr "crwdns1321:0crwdne1321:0"
+
+#: discordedit\editrole.py:80
+#, docstring
+msgid "Edit role name."
+msgstr "crwdns1323:0crwdne1323:0"
+
+#: discordedit\editrole.py:97
+#, docstring
+msgid "Edit role color."
+msgstr "crwdns1753:0crwdne1753:0"
+
+#: discordedit\editrole.py:114
+#, docstring
+msgid "Edit role mentionable."
+msgstr "crwdns1327:0crwdne1327:0"
+
+#: discordedit\editrole.py:131
+#, docstring
+msgid "Edit role position.\n\n"
+"        Warning: The role with a position 1 is the highest role in the Discord hierarchy.\n"
+"        "
+msgstr "crwdns1329:0crwdne1329:0"
+
+#: discordedit\editrole.py:140
+msgid "The indicated position must be between 1 and {max_guild_roles_position}."
+msgstr "crwdns1331:0{max_guild_roles_position}crwdne1331:0"
+
+#: discordedit\editrole.py:163
+#, docstring
+msgid "Edit role permissions.\n\n"
+"        Warning: You must use the permissions value in numbers (admnistrator=8).\n"
+"        You can use: https://discordapi.com/permissions.html\n"
+"        "
+msgstr "crwdns1333:0crwdne1333:0"
+
+#: discordedit\editrole.py:174
+msgid "The indicated permissions value must be between {permissions_none} and {permissions_all}."
+msgstr "crwdns1335:0{permissions_none}crwdnd1335:0{permissions_all}crwdne1335:0"
+
+#: discordedit\editrole.py:199
+#, docstring
+msgid "Delete role."
+msgstr "crwdns1337:0crwdne1337:0"
+
+#: discordedit\editrole.py:204
+msgid "⚠️ - Delete role"
+msgstr "crwdns1731:0crwdne1731:0"
+
+#: discordedit\editrole.py:205
+msgid "Do you really want to delete the role {role.mention} ({role.id})?"
+msgstr "crwdns1341:0{role.mention}crwdnd1341:0{role.id}crwdne1341:0"
+
+#: discordedit\edittextchannel.py:35
+#, docstring
+msgid "A cog to edit text channels!"
+msgstr "crwdns1343:0crwdne1343:0"
+
+#: discordedit\edittextchannel.py:47
+msgid "I can not let you edit the text channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
+msgstr "crwdns1345:0{channel.mention}crwdnd1345:0{channel.id}crwdne1345:0"
+
+#: discordedit\edittextchannel.py:59
+msgid "I can not edit the text channel {channel.mention} ({channel.id}) because you don't have the `manage_channel` permission."
+msgstr "crwdns1347:0{channel.mention}crwdnd1347:0{channel.id}crwdne1347:0"
+
+#: discordedit\edittextchannel.py:81
+#, docstring
+msgid "Create a text channel."
+msgstr "crwdns1349:0crwdne1349:0"
+
+#: discordedit\edittextchannel.py:99
+#, docstring
+msgid "Clone a text channel."
+msgstr "crwdns1351:0crwdne1351:0"
+
+#: discordedit\edittextchannel.py:120
+#, docstring
+msgid "Edit text channel name."
+msgstr "crwdns1353:0crwdne1353:0"
+
+#: discordedit\edittextchannel.py:141
+#, docstring
+msgid "Edit text channel topic."
+msgstr "crwdns1355:0crwdne1355:0"
+
+#: discordedit\edittextchannel.py:166
+#, docstring
+msgid "Edit text channel position.\n\n"
+"        Warning: Only text channels are taken into account. Channel 1 is the highest positioned text channel.\n"
+"        Channels cannot be moved to a position that takes them out of their current category.\n"
+"        "
+msgstr "crwdns1357:0crwdne1357:0"
+
+#: discordedit\edittextchannel.py:180
+msgid "The indicated position must be between 1 and {max_guild_text_channels_position}."
+msgstr "crwdns1359:0{max_guild_text_channels_position}crwdne1359:0"
+
+#: discordedit\edittextchannel.py:202
+#, docstring
+msgid "Edit text channel nsfw."
+msgstr "crwdns1361:0crwdne1361:0"
+
+#: discordedit\edittextchannel.py:226
+#, docstring
+msgid "Edit text channel syncpermissions with category."
+msgstr "crwdns1363:0crwdne1363:0"
+
+#: discordedit\edittextchannel.py:250
+#, docstring
+msgid "Edit text channel category."
+msgstr "crwdns1365:0crwdne1365:0"
+
+#: discordedit\edittextchannel.py:274
+#, docstring
+msgid "Edit text channel slowmode delay.\n\n"
+"        Specifies the slowmode rate limit for user in this channel, in seconds. A value of 0s disables slowmode. The maximum value possible is 21600s.\n"
+"        "
+msgstr "crwdns1367:0crwdne1367:0"
+
+#: discordedit\edittextchannel.py:305
+#, docstring
+msgid "Edit text channel type.\n\n"
+"        `text`: 0\n"
+"        `news`: 5\n"
+"        Currently, only conversion between ChannelType.text and ChannelType.news is supported. This is only available to guilds that contain NEWS in Guild.features.\n"
+"        "
+msgstr "crwdns1369:0crwdne1369:0"
+
+#: discordedit\edittextchannel.py:335
+#, docstring
+msgid "Edit text channel default auto archive duration.\n\n"
+"        The new default auto archive duration in minutes for threads created in this channel. Must be one of `60`, `1440`, `4320`, or `10080`.\n"
+"        "
+msgstr "crwdns1371:0crwdne1371:0"
+
+#: discordedit\edittextchannel.py:362
+#, docstring
+msgid "Delete text channel."
+msgstr "crwdns1373:0crwdne1373:0"
+
+#: discordedit\edittextchannel.py:369
+msgid "⚠️ - Delete text channel"
+msgstr "crwdns1733:0crwdne1733:0"
+
+#: discordedit\edittextchannel.py:370
+msgid "Do you really want to delete the text channel {channel.mention} ({channel.id})?"
+msgstr "crwdns1377:0{channel.mention}crwdnd1377:0{channel.id}crwdne1377:0"
+
+#: discordedit\editvoicechannel.py:25
+#, docstring
+msgid "A cog to edit voice channels!"
+msgstr "crwdns1379:0crwdne1379:0"
+
+#: discordedit\editvoicechannel.py:37
+msgid "I can not let you edit the voice channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
+msgstr "crwdns1381:0{channel.mention}crwdnd1381:0{channel.id}crwdne1381:0"
+
+#: discordedit\editvoicechannel.py:49
+msgid "I can not edit the voice channel {channel.mention} ({channel.id}) because you don't have the `manage_channel` permission."
+msgstr "crwdns1383:0{channel.mention}crwdnd1383:0{channel.id}crwdne1383:0"
+
+#: discordedit\editvoicechannel.py:71
+#, docstring
+msgid "Create a voice channel."
+msgstr "crwdns1385:0crwdne1385:0"
+
+#: discordedit\editvoicechannel.py:87
+#, docstring
+msgid "Clone a voice channel."
+msgstr "crwdns1387:0crwdne1387:0"
+
+#: discordedit\editvoicechannel.py:104
+#, docstring
+msgid "Edit voice channel name."
+msgstr "crwdns1389:0crwdne1389:0"
+
+#: discordedit\editvoicechannel.py:121
+#, docstring
+msgid "Edit voice channel bitrate.\n\n"
+"        It must be a number between 8000 and\n"
+"        Level 1: 128000\n"
+"        Level 2: 256000\n"
+"        Level 3: 384000\n"
+"        "
+msgstr "crwdns1391:0crwdne1391:0"
+
+#: discordedit\editvoicechannel.py:147
+#, docstring
+msgid "Edit voice channel nsfw."
+msgstr "crwdns1393:0crwdne1393:0"
+
+#: discordedit\editvoicechannel.py:166
+#, docstring
+msgid "Edit voice channel user limit.\n\n"
+"        It must be a number between 0 and 99.\n"
+"        "
+msgstr "crwdns1395:0crwdne1395:0"
+
+#: discordedit\editvoicechannel.py:191
+#, docstring
+msgid "Edit voice channel position.\n\n"
+"        Warning: Only voice channels are taken into account. Channel 1 is the highest positioned voice channel.\n"
+"        Channels cannot be moved to a position that takes them out of their current category.\n"
+"        "
+msgstr "crwdns1397:0crwdne1397:0"
+
+#: discordedit\editvoicechannel.py:203
+msgid "The indicated position must be between 1 and {max_guild_voice_channels_position}."
+msgstr "crwdns1399:0{max_guild_voice_channels_position}crwdne1399:0"
+
+#: discordedit\editvoicechannel.py:225
+#, docstring
+msgid "Edit voice channel sync permissions."
+msgstr "crwdns1401:0crwdne1401:0"
+
+#: discordedit\editvoicechannel.py:247
+#, docstring
+msgid "Edit voice channel category."
+msgstr "crwdns1403:0crwdne1403:0"
+
+#: discordedit\editvoicechannel.py:269
+#, docstring
+msgid "Edit voice channel video quality mode.\n\n"
+"        auto = 1\n"
+"        full = 2\n"
+"        "
+msgstr "crwdns1405:0crwdne1405:0"
+
+#: discordedit\editvoicechannel.py:296
+#, docstring
+msgid "Delete voice channel."
+msgstr "crwdns1407:0crwdne1407:0"
+
+#: discordedit\editvoicechannel.py:301
+msgid "⚠️ - Delete voice channel"
+msgstr "crwdns1735:0crwdne1735:0"
+
+#: discordedit\editvoicechannel.py:302
+msgid "Do you really want to delete the voice channel {channel.mention} ({channel.id})?"
+msgstr "crwdns1411:0{channel.mention}crwdnd1411:0{channel.id}crwdne1411:0"
+

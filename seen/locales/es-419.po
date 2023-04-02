@@ -1,0 +1,132 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2022-11-22 19:45+0100\n"
+"PO-Revision-Date: 2023-04-02 16:50\n"
+"Last-Translator: \n"
+"Language-Team: Spanish, Latin America\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-419\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/seen/locales/messages.pot\n"
+"X-Crowdin-File-ID: 150\n"
+"Language: es_419\n"
+
+#: seen\seen.py:39
+#, docstring
+msgid "A cog to check when a member/role/channel/category/user/guild was last active!"
+msgstr "crwdns1082:0crwdne1082:0"
+
+#: seen\seen.py:773 seen\seen.py:780
+msgid "@{object.display_name} was seen {seen}."
+msgstr "crwdns1084:0{object.display_name}crwdnd1084:0{seen}crwdne1084:0"
+
+#: seen\seen.py:787
+msgid "The role @&{object.name} was seen {seen}."
+msgstr "crwdns1086:0{object.name}crwdnd1086:0{seen}crwdne1086:0"
+
+#: seen\seen.py:792
+msgid "The text channel #{object.name} was seen {seen}."
+msgstr "crwdns1088:0#{object.name}crwdnd1088:0{seen}crwdne1088:0"
+
+#: seen\seen.py:797
+msgid "The category {object.name} was seen {seen}."
+msgstr "crwdns1090:0{object.name}crwdnd1090:0{seen}crwdne1090:0"
+
+#: seen\seen.py:802
+msgid "The guild {object.name} was seen {seen}."
+msgstr "crwdns1092:0{object.name}crwdnd1092:0{seen}crwdne1092:0"
+
+#: seen\seen.py:1049
+#, docstring
+msgid "Check when a member was last active!"
+msgstr "crwdns1096:0crwdne1096:0"
+
+#: seen\seen.py:1069
+#, docstring
+msgid "Check when a role was last active!"
+msgstr "crwdns1098:0crwdne1098:0"
+
+#: seen\seen.py:1088
+#, docstring
+msgid "Check when a channel was last active!"
+msgstr "crwdns1100:0crwdne1100:0"
+
+#: seen\seen.py:1095
+msgid "You do not have permission to view this channel."
+msgstr "crwdns1577:0crwdne1577:0"
+
+#: seen\seen.py:1112
+#, docstring
+msgid "Check when a category was last active!"
+msgstr "crwdns1102:0crwdne1102:0"
+
+#: seen\seen.py:1127
+msgid "You do not have permission to view any of the channels in this category."
+msgstr "crwdns1579:0crwdne1579:0"
+
+#: seen\seen.py:1147
+#, docstring
+msgid "Check when a old member was last active!"
+msgstr "crwdns1104:0crwdne1104:0"
+
+#: seen\seen.py:1175
+#, docstring
+msgid "Check when a guild was last active!"
+msgstr "crwdns1106:0crwdne1106:0"
+
+#: seen\seen.py:1195
+#, docstring
+msgid "Check when a user was last active!"
+msgstr "crwdns1108:0crwdne1108:0"
+
+#: seen\seen.py:1214
+#, docstring
+msgid "Check when a old user was last active!"
+msgstr "crwdns1110:0crwdne1110:0"
+
+#: seen\seen.py:1237
+#, docstring
+msgid "View a Seen Board for members/roles/channels/categories!"
+msgstr "crwdns1112:0crwdne1112:0"
+
+#: seen\seen.py:1251
+#, docstring
+msgid "View a Seen Board for guilds!"
+msgstr "crwdns1114:0crwdne1114:0"
+
+#: seen\seen.py:1266
+#, docstring
+msgid "View a Seen Board for users!"
+msgstr "crwdns1116:0crwdne1116:0"
+
+#: seen\seen.py:1273
+#, docstring
+msgid "Get Config data stats."
+msgstr "crwdns1581:0crwdne1581:0"
+
+#: seen\seen.py:1308
+#, docstring
+msgid "Enable or disable a listener."
+msgstr "crwdns1583:0crwdne1583:0"
+
+#: seen\seen.py:1316
+#, docstring
+msgid "Asking Seen to ignore your actions."
+msgstr "crwdns1585:0crwdne1585:0"
+
+#: seen\seen.py:1330
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "crwdns1118:0crwdne1118:0"
+
+#: seen\seen.py:1343
+#, docstring
+msgid "Purge Config for a specified type or all."
+msgstr "crwdns1587:0crwdne1587:0"
+

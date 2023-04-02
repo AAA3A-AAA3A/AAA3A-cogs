@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-02 17:31\n"
+"Last-Translator: \n"
+"Language-Team: Spanish, Latin America\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-419\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/cmdchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 80\n"
+"Language: es_419\n"
+
+#: cmdchannel\cmdchannel.py:24
+#, docstring
+msgid "A cog to send the result of a command to another channel!"
+msgstr "crwdns116:0crwdne116:0"
+
+#: cmdchannel\cmdchannel.py:80
+#, docstring
+msgid "Act as if the command had been typed in the channel of your choice.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
+"        If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).\n\n"
+"        Use `[p]cmdchannel`!\n"
+"        "
+msgstr "crwdns1867:0[p]crwdne1867:0"
+
+#: cmdchannel\cmdchannel.py:89 cmdchannel\cmdchannel.py:158
+msgid "To send commands to another server, you must be there."
+msgstr "crwdns124:0crwdne124:0"
+
+#: cmdchannel\cmdchannel.py:112
+#, docstring
+msgid "Act as if the command had been typed by imitating the specified user.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
+"        If you do not specify a user, the author will be used.\n\n"
+"        Use `[p]cmduser`!\n"
+"        "
+msgstr "crwdns1869:0[p]crwdne1869:0"
+
+#: cmdchannel\cmdchannel.py:122 cmdchannel\cmdchannel.py:163
+msgid "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
+msgstr "crwdns1871:0crwdne1871:0"
+
+#: cmdchannel\cmdchannel.py:145
+#, docstring
+msgid "Act as if the command had been typed in the channel of your choice by imitating the specified user.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
+"        If you do not specify a user, the author will be used.\n\n"
+"        Use `[p]cmduserchannel`!\n"
+"        "
+msgstr "crwdns1873:0[p]crwdne1873:0"
+
+#: cmdchannel\cmdchannel.py:179
+#, docstring
+msgid "Test variables."
+msgstr "crwdns1433:0crwdne1433:0"
+
+#: cmdchannel\cmdchannel.py:181
+msgid "Testvar"
+msgstr "crwdns162:0crwdne162:0"
+
+#: cmdchannel\cmdchannel.py:182
+msgid "Variables:"
+msgstr "crwdns164:0crwdne164:0"
+
+#: cmdchannel\cmdchannel.py:183
+msgid "Author:"
+msgstr "crwdns166:0crwdne166:0"
+
+#: cmdchannel\cmdchannel.py:184
+msgid "Channel:"
+msgstr "crwdns168:0crwdne168:0"
+

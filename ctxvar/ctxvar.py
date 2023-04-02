@@ -30,11 +30,8 @@ class CtxVar(commands.Cog):
     @commands.bot_has_permissions(embed_links=True, add_reactions=True)
     @commands.command()
     async def ctxvar(self, ctx: commands.Context, message: typing.Optional[discord.Message]=None, args: typing.Optional[str]=""):
-        if message is not None:
-            instance = await ctx.bot.get_context(message)
-        else:
-            instance = ctx
-        if not args == "":
+        instance = await ctx.bot.get_context(message) if message is not None else ctx
+        if args != "":
             if not hasattr(instance, f"{args}"):
                 await ctx.send(_("The argument you specified is not a subclass of the instance.").format(**locals()))
                 return
@@ -57,7 +54,7 @@ class CtxVar(commands.Cog):
                 pass
         lists = []
         while True:
-            l = one_l[0:20]
+            l = one_l[:20]
             one_l = one_l[20:]
             lists.append(l)
             if one_l == []:
@@ -66,7 +63,7 @@ class CtxVar(commands.Cog):
         for l in lists:
             e = copy(embed)
             for x in l:
-                if not len(f"{x}") > 256:
+                if len(f"{x}") <= 256:
                     try:
                         e.add_field(
                             inline=True,
@@ -76,9 +73,7 @@ class CtxVar(commands.Cog):
                         pass
             embeds.append(e)
 
-        page = 0
         for embed in embeds:
-            page += 1
             l = len(embeds)
             embed.set_footer(text=_("Page {page}/{l}").format(**locals()))
 

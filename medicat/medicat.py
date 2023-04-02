@@ -275,14 +275,18 @@ class Medicat(commands.Cog):
             try:
                 self.remove_custom_commands()
             except Exception as e:
-                self.log.error(f"An error occurred while removing the custom_commands.", exc_info=e)
+                self.log.error(
+                    "An error occurred while removing the custom_commands.", exc_info=e
+                )
             self.cogsutils._end()
     else:
         def cog_unload(self):
             try:
                 self.remove_custom_commands()
             except Exception as e:
-                self.log.error(f"An error occurred while removing the custom_commands.", exc_info=e)
+                self.log.error(
+                    "An error occurred while removing the custom_commands.", exc_info=e
+                )
             self.cogsutils._end()
 
     async def ventoy_updates(self, channel: typing.Optional[discord.TextChannel]=None, role_id: typing.Optional[int]=None):
@@ -328,7 +332,7 @@ class Medicat(commands.Cog):
                 for x in ventoy_tag_body:
                     if x == "See [https://www.ventoy.net/en/doc_news.html](https://www.ventoy.net/en/doc_news.html) for more details.\r":
                         break
-                    if not x == "\r":
+                    if x != "\r":
                         result.append(x)
                 ventoy_tag_body = "\n".join(result)
                 changelog = box(ventoy_tag_body)
@@ -413,10 +417,8 @@ class Medicat(commands.Cog):
                 return True
             if ctx.guild is None:
                 return False
-            if ctx.guild.id == MEDICAT_GUILD or ctx.guild.id == TEST_GUILD:
-                return True
-            else:
-                return False
+            return ctx.guild.id in [MEDICAT_GUILD, TEST_GUILD]
+
         return commands.check(pred)
 
     async def add_custom_commands(self):
@@ -511,7 +513,7 @@ class Medicat(commands.Cog):
                     for x in ventoy_tag_body:
                         if x == "See [https://www.ventoy.net/en/doc_news.html](https://www.ventoy.net/en/doc_news.html) for more details.\r":
                             break
-                        if not x == "\r":
+                        if x != "\r":
                             result.append(x)
                     ventoy_tag_body = "\n".join(result)
                     changelog = box(ventoy_tag_body)
@@ -570,10 +572,11 @@ class Medicat(commands.Cog):
 
     def is_owner_or_AAA3A():
         async def pred(ctx):
-            if ctx.author.id in ctx.bot.owner_ids or ctx.author.id == 829612600059887649:
-                return True
-            else:
-                return False
+            return (
+                ctx.author.id in ctx.bot.owner_ids
+                or ctx.author.id == 829612600059887649
+            )
+
         return commands.check(pred)
 
     @is_owner_or_AAA3A()
@@ -600,9 +603,12 @@ class Medicat(commands.Cog):
         except Exception as error:
             traceback_error = "".join(traceback.format_exception(type(error), error, error.__traceback__))
             traceback_error = self.cogsutils.replace_var_paths(traceback_error)
-            pages = []
-            for page in pagify(traceback_error, shorten_by=15, page_length=1985):
-                pages.append(box(page, lang="py"))
+            pages = [
+                box(page, lang="py")
+                for page in pagify(
+                    traceback_error, shorten_by=15, page_length=1985
+                )
+            ]
             try:
                 await Menu(pages=pages, timeout=30, delete_after_timeout=True).start(ctx)
             except discord.HTTPException:

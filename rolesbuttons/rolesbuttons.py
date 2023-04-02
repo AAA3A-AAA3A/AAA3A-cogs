@@ -171,7 +171,7 @@ class RolesButtons(commands.Cog):
         `green`: 3
         `red`: 4
         """
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the role-button to work.").format(**locals()))
             return
         permissions = message.channel.permissions_for(ctx.guild.me)
@@ -204,7 +204,7 @@ class RolesButtons(commands.Cog):
     async def bulk(self, ctx: commands.Context, message: discord.Message, *roles_buttons: EmojiRoleConverter):
         """Add roles-buttons to a message.
         """
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the role-button to work.").format(**locals()))
             return
         permissions = message.channel.permissions_for(ctx.guild.me)
@@ -239,7 +239,7 @@ class RolesButtons(commands.Cog):
     async def remove(self, ctx: commands.Context, message: discord.Message, button: typing.Union[discord.Emoji, str]):
         """Remove a role-button to a message.
         """
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the role-button to work.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
@@ -250,17 +250,16 @@ class RolesButtons(commands.Cog):
             await ctx.send(_("I wasn't watching for this button on this message.").format(**locals()))
             return
         del config[f"{message.channel.id}-{message.id}"][f"{button}"]
-        if not config[f"{message.channel.id}-{message.id}"] == {}:
-            if self.cogsutils.is_dpy2:
-                await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message), function=self.on_button_interaction, infinity=True))
-            else:
-                await message.edit(components=self.get_buttons(config, message))
-        else:
+        if config[f"{message.channel.id}-{message.id}"] == {}:
             del config[f"{message.channel.id}-{message.id}"]
             if self.cogsutils.is_dpy2:
                 await message.edit(view=None)
             else:
                 await message.edit(components=None)
+        elif self.cogsutils.is_dpy2:
+            await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message), function=self.on_button_interaction, infinity=True))
+        else:
+            await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).roles_buttons.set(config)
         await ctx.tick()
 
@@ -268,7 +267,7 @@ class RolesButtons(commands.Cog):
     async def clear(self, ctx: commands.Context, message: discord.Message):
         """Clear all roles-buttons to a message.
         """
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the role-button to work.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).roles_buttons.all()
@@ -296,13 +295,25 @@ class RolesButtons(commands.Cog):
     def get_buttons(self, config: typing.Dict, message: discord.Message):
         all_buttons = []
         if self.cogsutils.is_dpy2:
-            for button in config[f"{message.channel.id}-{message.id}"]:
-                all_buttons.append({"style": config[f"{message.channel.id}-{message.id}"][f"{button}"]["style_button"], "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": f"{button}", "custom_id": f"roles_buttons {button}", "disabled": False})
+            all_buttons.extend(
+                {
+                    "style": config[f"{message.channel.id}-{message.id}"][
+                        f"{button}"
+                    ]["style_button"],
+                    "label": config[f"{message.channel.id}-{message.id}"][
+                        f"{button}"
+                    ]["text_button"],
+                    "emoji": f"{button}",
+                    "custom_id": f"roles_buttons {button}",
+                    "disabled": False,
+                }
+                for button in config[f"{message.channel.id}-{message.id}"]
+            )
         else:
             lists = []
-            one_l = [button for button in config[f"{message.channel.id}-{message.id}"]]
+            one_l = list(config[f"{message.channel.id}-{message.id}"])
             while True:
-                l = one_l[0:4]
+                l = one_l[:4]
                 one_l = one_l[4:]
                 lists.append(l)
                 if one_l == []:

@@ -65,7 +65,7 @@ class EditVoiceChannel(commands.Cog):
         """
         if not await self.check_voice_channel(ctx, channel):
             return
-        if not bitrate > 7999 or not bitrate < ctx.guild.bitrate_limit + 1:
+        if bitrate <= 7999 or bitrate >= ctx.guild.bitrate_limit + 1:
             await ctx.send_help()
             return
         try:
@@ -96,7 +96,7 @@ class EditVoiceChannel(commands.Cog):
         """
         if not await self.check_voice_channel(ctx, channel):
             return
-        if not user_limit > -1 or not user_limit < 100:
+        if user_limit <= -1 or user_limit >= 100:
             await ctx.send_help()
             return
         try:
@@ -116,10 +116,10 @@ class EditVoiceChannel(commands.Cog):
         if not await self.check_voice_channel(ctx, channel):
             return
         max_guild_voice_channels_position = len([c for c in ctx.guild.channels if isinstance(c, discord.VoiceChannel)])
-        if not position > 0 or not position < max_guild_voice_channels_position + 1:
+        if position <= 0 or position >= max_guild_voice_channels_position + 1:
             await ctx.send(_("The indicated position must be between 1 and {max_guild_voice_channels_position}.").format(**locals()))
             return
-        position = position - 1
+        position -= 1
         try:
             await channel.edit(position=position, reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel !{channel.name} ({channel.id}).")
         except discord.HTTPException:

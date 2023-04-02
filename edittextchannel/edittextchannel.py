@@ -83,10 +83,10 @@ class EditTextChannel(commands.Cog):
         if not await self.check_text_channel(ctx, channel):
             return
         max_guild_text_channels_position = len([c for c in ctx.guild.channels if isinstance(c, discord.TextChannel)])
-        if not position > 0 or not position < max_guild_text_channels_position + 1:
+        if position <= 0 or position >= max_guild_text_channels_position + 1:
             await ctx.send(_("The indicated position must be between 1 and {max_guild_text_channels_position}.").format(**locals()))
             return
-        position = position - 1
+        position -= 1
         try:
             await channel.edit(position=position, reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).")
         except discord.HTTPException:
@@ -149,7 +149,7 @@ class EditTextChannel(commands.Cog):
             channel = ctx.channel
         if not await self.check_text_channel(ctx, channel):
             return
-        if not slowmode_delay > 0 or not slowmode_delay < 21600:
+        if slowmode_delay <= 0 or slowmode_delay >= 21600:
             await ctx.send_help()
             return
         try:

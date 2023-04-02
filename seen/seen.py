@@ -206,57 +206,57 @@ class Seen(commands.Cog):
         for user in users_data:
             for custom_id in users_data[user].values():
                 if custom_id is not None:
-                    if not for_count:
+                    if for_count:
+                        users_count += 1
+                    else:
                         # if custom_id not in self.cache["existing_keys"]:
                         existing_keys.append(custom_id)
-                    else:
-                        users_count += 1
         # Members
         for guild in members_data:
             for member in members_data[guild]:
                 for custom_id in members_data[guild][member].values():
                     if custom_id is not None:
-                        if not for_count:
+                        if for_count:
+                            members_count += 1
+                        else:
                             # if custom_id not in self.cache["existing_keys"]:
                             existing_keys.append(custom_id)
-                        else:
-                            members_count += 1
         # Roles
         for role in roles_data:
             for custom_id in roles_data[role].values():
                 if custom_id is not None:
-                    if not for_count:
+                    if for_count:
+                        roles_count += 1
+                    else:
                         # if custom_id not in self.cache["existing_keys"]:
                         existing_keys.append(custom_id)
-                    else:
-                        roles_count += 1
         # Channels
         for channel in channels_data:
             for custom_id in channels_data[channel].values():
                 if custom_id is not None:
-                    if not for_count:
+                    if for_count:
+                        channels_count += 1
+                    else:
                         # if custom_id not in self.cache["existing_keys"]:
                         existing_keys.append(custom_id)
-                    else:
-                        channels_count += 1
         # Categories
         for category in categories_data:
             for custom_id in categories_data[category].values():
                 if custom_id is not None:
-                    if not for_count:
+                    if for_count:
+                        categories_count += 1
+                    else:
                         # if custom_id not in self.cache["existing_keys"]:
                         existing_keys.append(custom_id)
-                    else:
-                        categories_count += 1
         # Guilds
         for guild in guilds_data:
             for custom_id in guilds_data[guild].values():
                 if custom_id is not None:
-                    if not for_count:
+                    if for_count:
+                        guilds_count += 1
+                    else:
                         # if custom_id not in self.cache["existing_keys"]:
                         existing_keys.append(custom_id)
-                    else:
-                        guilds_count += 1
         if not for_count:
             self.cache["existing_keys"] = list(set(existing_keys))
         # Global
@@ -264,11 +264,10 @@ class Seen(commands.Cog):
             _global_data = deepcopy(global_data)
             for type in _global_data:
                 for custom_id in _global_data[type]:
-                    if not for_count:
-                        if custom_id not in self.cache["existing_keys"]:  # The action is no longer used by any data.
-                            del global_data[type][custom_id]
-                    else:
+                    if for_count:
                         global_count += 1
+                    elif custom_id not in self.cache["existing_keys"]:  # The action is no longer used by any data.
+                        del global_data[type][custom_id]
         if for_count:
             return global_count, users_count, members_count, roles_count, channels_count, categories_count, guilds_count
 

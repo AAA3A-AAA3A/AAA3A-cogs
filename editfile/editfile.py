@@ -52,11 +52,11 @@ class EditFile(commands.Cog):
         if match is None:
             await ctx.send(_("Couldn't parse this input.").format(**locals()))
             return
-        path = match.group(1)
+        path = match[1]
         line_span = None
-        if match.group(2) is not None:
-            start = int(match.group(2))
-            line_span = (start, int(match.group(3) or start))
+        if match[2] is not None:
+            start = int(match[2])
+            line_span = start, int(match[3] or start)
         path = self.cogsutils.replace_var_paths(path, reverse=True)
         path = Path(path)
         try:
@@ -90,10 +90,15 @@ class EditFile(commands.Cog):
         path = Path(self.cogsutils.replace_var_paths(str(path)))
         if menu:
             len_lines = len(content.split(b"\n"))
-            line = f"#L1-L{len(lines)} (All)" if line_span is None else ("#L" + str(line_span[0]) + "-L" + str(line_span[1]) + f" / {len_lines}")
+            line = (
+                f"#L1-L{len(lines)} (All)"
+                if line_span is None
+                else f"#L{str(line_span[0])}-L{str(line_span[1])}"
+                + f" / {len_lines}"
+            )
             header = box(f"File {path}, line {line}.")
             pages = [{"content": (header + box(p, lang="py")), "file": file} for p in pagify((b"\n".join(lines)).decode(encoding="utf-8"), page_length=2000 - len(header))]
-            if len(pages) == 0:
+            if not pages:
                 len_lines = len(content.split(b"\n"))
                 await ctx.send(_("There are only {len_lines} lines in this file.").format(**locals()))
                 return
@@ -111,10 +116,10 @@ class EditFile(commands.Cog):
         if match is None:
             await ctx.send(_("Couldn't parse this input.").format(**locals()))
             return
-        path = match.group(1)
-        if match.group(2):
-            start = int(match.group(2))
-            line_span = (start, int(match.group(3) or start))
+        path = match[1]
+        if match[2]:
+            start = int(match[2])
+            line_span = start, int(match[3] or start)
         path = self.cogsutils.replace_var_paths(path, reverse=True)
         path = Path(path)
         try:
@@ -196,7 +201,7 @@ class EditFile(commands.Cog):
             elif path_file.is_dir():
                 message += "\n" + f"- [DIR] {file}"
         message = self.cogsutils.replace_var_paths(message)
-        message = "```" + message + "```"
+        message = f"```{message}```"
         for m in pagify(message):
             await ctx.send(m)
 

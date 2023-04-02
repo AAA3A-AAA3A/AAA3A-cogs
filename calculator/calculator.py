@@ -164,16 +164,13 @@ class Calculator(commands.Cog):
         except Exception:
             result = None
         if result is not None:
-            if ASCII_one_hundred_and_twenty_four:
-                result = f"{result}|"
-            else:
-                result = f"{result}"
+            result = f"{result}|" if ASCII_one_hundred_and_twenty_four else f"{result}"
         if result is None:
             result = _("Error!").format(**locals())
         return result
 
     async def get_embed(self, ctx: commands.Context, expression: str):
-        if expression == "":
+        if not expression:
             expression = None
         if expression is None:
             expression = "|"
@@ -203,8 +200,7 @@ class Calculator(commands.Cog):
             index = 0
         lst.insert(index, new)
         lst.insert(index + 1, "|")
-        expression = "".join(lst)
-        return expression
+        return "".join(lst)
 
     async def get_buttons(self, disabled: bool):
         buttons_one = ActionRow(
@@ -480,10 +476,11 @@ class Calculator(commands.Cog):
         else:
             def check(inter):
                 return inter.guild == ctx.guild and inter.channel == ctx.channel and inter.message == message
+
             try:
                 while True:
                     inter = await ctx.wait_for_button_click(timeout=config["time_max"], check=check)
-                    if not inter.author == ctx.author:
+                    if inter.author != ctx.author:
                         await inter.respond(_("Only the author of the command `{ctx.prefix}{ctx.command.name}` can interact with this message.").format(**locals()), ephemeral=True)
                     else:
                         if expression is None or expression == _("Error!").format(**locals()) or expression == "∞":

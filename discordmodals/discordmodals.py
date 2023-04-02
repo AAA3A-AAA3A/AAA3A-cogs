@@ -83,12 +83,13 @@ class YAMLConverter(commands.Converter):
             if "required" in input:
                 def convert_to_bool(argument: str) -> bool:
                     lowered = argument.lower()
-                    if lowered in ('yes', 'y', 'true', 't', '1', 'enable', 'on'):
+                    if lowered in {'yes', 'y', 'true', 't', '1', 'enable', 'on'}:
                         return True
-                    elif lowered in ('no', 'n', 'false', 'f', '0', 'disable', 'off'):
+                    elif lowered in {'no', 'n', 'false', 'f', '0', 'disable', 'off'}:
                         return False
                     else:
                         raise discord.ext.commands.BadBoolArgument(lowered)
+
                 input["required"] = str(input["required"])
                 try:
                     input["required"] = convert_to_bool(input["required"])
@@ -184,9 +185,7 @@ class DiscordModals(commands.Cog):
                 return
             embed: discord.Embed = discord.Embed()
             embed.title = config["title"]
-            if "anonymous" not in config:
-                embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar)
-            elif not config["anonymous"]:
+            if "anonymous" not in config or not config["anonymous"]:
                 embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar)
             else:
                 embed.set_author(name="Anonymous", icon_url="https://forum.mtasa.com/uploads/monthly_2016_10/Anonyme.png.4060431ce866962fa496657f752d5613.png")
@@ -252,7 +251,7 @@ class DiscordModals(commands.Cog):
         ```
         The `style`, `emoji`, `default`, `placeholder`, `channel`, `required`, `anonymous` and `messages` are not required.
         """
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the button to work.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).modals.all()
@@ -275,7 +274,7 @@ class DiscordModals(commands.Cog):
     async def remove(self, ctx: commands.Context, message: discord.Message):
         """Remove a Modal to a message.
         """
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the Modal to work.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).modals.all()

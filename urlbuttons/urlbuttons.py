@@ -66,7 +66,7 @@ class UrlButtons(commands.Cog):
     async def add(self, ctx: commands.Context, message: discord.Message, url: str, emoji: typing.Union[discord.Emoji, str], *, text_button: typing.Optional[str]=None):
         """Add a url-button to a message.
         """
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the url-button to work.").format(**locals()))
             return
         try:
@@ -98,7 +98,7 @@ class UrlButtons(commands.Cog):
     async def bulk(self, ctx: commands.Context, message: discord.Message, *url_buttons: EmojiUrlConverter):
         """Add a url-button to a message.
         """
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the url-button to work.").format(**locals()))
             return
         try:
@@ -129,7 +129,7 @@ class UrlButtons(commands.Cog):
     async def remove(self, ctx: commands.Context, message: discord.Message, button: typing.Union[discord.Emoji, str]):
         """Remove a url-button to a message.
         """
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the role-button to work.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).url_buttons.all()
@@ -140,17 +140,16 @@ class UrlButtons(commands.Cog):
             await ctx.send(_("I wasn't watching for this button on this message.").format(**locals()))
             return
         del config[f"{message.channel.id}-{message.id}"][f"{button}"]
-        if not config[f"{message.channel.id}-{message.id}"] == {}:
-            if self.cogsutils.is_dpy2:
-                await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message)))
-            else:
-                await message.edit(components=self.get_buttons(config, message))
-        else:
+        if config[f"{message.channel.id}-{message.id}"] == {}:
             del config[f"{message.channel.id}-{message.id}"]
             if self.cogsutils.is_dpy2:
                 await message.edit(view=None)
             else:
                 await message.edit(components=None)
+        elif self.cogsutils.is_dpy2:
+            await message.edit(view=Buttons(timeout=None, buttons=self.get_buttons(config, message)))
+        else:
+            await message.edit(components=self.get_buttons(config, message))
         await self.config.guild(ctx.guild).url_buttons.set(config)
         await ctx.tick()
 
@@ -158,7 +157,7 @@ class UrlButtons(commands.Cog):
     async def clear(self, ctx: commands.Context, message: discord.Message):
         """Clear all url-buttons to a message.
         """
-        if not message.author == ctx.guild.me:
+        if message.author != ctx.guild.me:
             await ctx.send(_("I have to be the author of the message for the url-button to work.").format(**locals()))
             return
         config = await self.config.guild(ctx.guild).url_buttons.all()
@@ -186,13 +185,24 @@ class UrlButtons(commands.Cog):
     def get_buttons(self, config: typing.Dict, message: discord.Message):
         all_buttons = []
         if self.cogsutils.is_dpy2:
-            for button in config[f"{message.channel.id}-{message.id}"]:
-                all_buttons.append({"style": 5, "label": config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"], "emoji": f"{button}", "url": config[f"{message.channel.id}-{message.id}"][f"{button}"]["url"]})
+            all_buttons.extend(
+                {
+                    "style": 5,
+                    "label": config[f"{message.channel.id}-{message.id}"][
+                        f"{button}"
+                    ]["text_button"],
+                    "emoji": f"{button}",
+                    "url": config[f"{message.channel.id}-{message.id}"][
+                        f"{button}"
+                    ]["url"],
+                }
+                for button in config[f"{message.channel.id}-{message.id}"]
+            )
         else:
             lists = []
-            one_l = [button for button in config[f"{message.channel.id}-{message.id}"]]
+            one_l = list(config[f"{message.channel.id}-{message.id}"])
             while True:
-                l = one_l[0:4]
+                l = one_l[:4]
                 one_l = one_l[4:]
                 lists.append(l)
                 if one_l == []:

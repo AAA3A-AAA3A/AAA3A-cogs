@@ -1,0 +1,96 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2022-11-22 19:45+0100\n"
+"PO-Revision-Date: 2023-04-02 16:50\n"
+"Last-Translator: \n"
+"Language-Team: Spanish, Latin America\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-419\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/urlbuttons/locales/messages.pot\n"
+"X-Crowdin-File-ID: 152\n"
+"Language: es_419\n"
+
+#: urlbuttons\converters.py:33
+msgid "Emoji Url must be an emoji followed by a url separated by either `;`, `,`, `|`, or `-`."
+msgstr "crwdns1122:0crwdne1122:0"
+
+#: urlbuttons\converters.py:43 urlbuttons\urlbuttons.py:105
+msgid "Url must start with `https` or `http`."
+msgstr "crwdns1124:0crwdne1124:0"
+
+#: urlbuttons\urlbuttons.py:41
+#, docstring
+msgid "A cog to have url-buttons!"
+msgstr "crwdns1126:0crwdne1126:0"
+
+#: urlbuttons\urlbuttons.py:86
+#, docstring
+msgid "Add a url-button to a message."
+msgstr "crwdns1717:0crwdne1717:0"
+
+#: urlbuttons\urlbuttons.py:89 urlbuttons\urlbuttons.py:140
+#: urlbuttons\urlbuttons.py:220
+msgid "I have to be the author of the message for the url-button to work."
+msgstr "crwdns1132:0crwdne1132:0"
+
+#: urlbuttons\urlbuttons.py:99
+msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "crwdns1134:0crwdne1134:0"
+
+#: urlbuttons\urlbuttons.py:112 urlbuttons\urlbuttons.py:164
+msgid "I can't do more than 25 url-buttons for one message."
+msgstr "crwdns1136:0crwdne1136:0"
+
+#: urlbuttons\urlbuttons.py:134
+#, docstring
+msgid "Add a url-button to a message.\n\n"
+"        ```[p]urlbuttons bulk <message> :red_circle:|<https://github.com/Cog-Creators/Red-DiscordBot> :smiley:|<https://github.com/Cog-Creators/Red-SmileyBot> :green_circle:|<https://github.com/Cog-Creators/Green-DiscordBot>```\n"
+"        "
+msgstr "crwdns1719:0[p]crwdnd1719:0:red_circle:crwdnd1719:0:smiley:crwdnd1719:0:green_circle:crwdne1719:0"
+
+#: urlbuttons\urlbuttons.py:146
+msgid "You have not specified any valid url-button."
+msgstr "crwdns1721:0crwdne1721:0"
+
+#: urlbuttons\urlbuttons.py:154
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "crwdns1749:0crwdne1749:0"
+
+#: urlbuttons\urlbuttons.py:182
+#, docstring
+msgid "Remove a url-button to a message."
+msgstr "crwdns1723:0crwdne1723:0"
+
+#: urlbuttons\urlbuttons.py:185
+msgid "I have to be the author of the message for the role-button to work."
+msgstr "crwdns1142:0crwdne1142:0"
+
+#: urlbuttons\urlbuttons.py:192
+msgid "No url-button is configured for this message."
+msgstr "crwdns1144:0crwdne1144:0"
+
+#: urlbuttons\urlbuttons.py:196
+msgid "I wasn't watching for this button on this message."
+msgstr "crwdns1146:0crwdne1146:0"
+
+#: urlbuttons\urlbuttons.py:217
+#, docstring
+msgid "Clear all url-buttons to a message."
+msgstr "crwdns1725:0crwdne1725:0"
+
+#: urlbuttons\urlbuttons.py:227
+msgid "No role-button is configured for this message."
+msgstr "crwdns1150:0crwdne1150:0"
+
+#: urlbuttons\urlbuttons.py:241
+#, docstring
+msgid "Clear all url-buttons to a **guild**."
+msgstr "crwdns1727:0crwdne1727:0"
+

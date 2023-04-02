@@ -1,0 +1,827 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2022-11-22 19:45+0100\n"
+"PO-Revision-Date: 2023-04-02 16:50\n"
+"Last-Translator: \n"
+"Language-Team: Spanish, Latin America\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-419\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/tickettool/locales/messages.pot\n"
+"X-Crowdin-File-ID: 102\n"
+"Language: es_419\n"
+
+#: tickettool\settings.py:34 tickettool\settings.py:37
+#: tickettool\tickettool.py:490 tickettool\tickettool.py:493
+#: tickettool\tickettool.py:508
+msgid "This panel does not exist."
+msgstr "crwdns1603:0crwdne1603:0"
+
+#: tickettool\settings.py:53
+#, docstring
+msgid "Create a new panel with defaults settings."
+msgstr "crwdns1605:0crwdne1605:0"
+
+#: tickettool\settings.py:55 tickettool\settings.py:67
+#: tickettool\settings.py:109
+msgid "The name of a panel must be less than or equal to 10 characters."
+msgstr "crwdns1607:0crwdne1607:0"
+
+#: tickettool\settings.py:59 tickettool\settings.py:71
+msgid "This panel already exists."
+msgstr "crwdns1609:0crwdne1609:0"
+
+#: tickettool\settings.py:65 tickettool\settings.py:107
+#, docstring
+msgid "Clone an existing panel with his settings."
+msgstr "crwdns1611:0crwdne1611:0"
+
+#: tickettool\settings.py:78
+#, docstring
+msgid "Remove an existing panel."
+msgstr "crwdns1613:0crwdne1613:0"
+
+#: tickettool\settings.py:82
+msgid "Do you really want to remove this panel?"
+msgstr "crwdns1615:0crwdne1615:0"
+
+#: tickettool\settings.py:85
+msgid "All tickets associated with this panel will be removed from the Config, but the channels will still exist. Commands related to the tickets will no longer work."
+msgstr "crwdns1617:0crwdne1617:0"
+
+#: tickettool\settings.py:113
+msgid "A panel with this name already exists."
+msgstr "crwdns1619:0crwdne1619:0"
+
+#: tickettool\settings.py:131
+#, docstring
+msgid "List the existing panels."
+msgstr "crwdns1621:0crwdne1621:0"
+
+#: tickettool\settings.py:139
+#, docstring
+msgid "Enable or disable Ticket System\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "crwdns668:0crwdne668:0"
+
+#: tickettool\settings.py:151
+msgid "You cannot enable the ticket system on this server if you have not configured the following options:\n"
+"- The category of open tickets : `{ctx.prefix}setticket categoryopen <category>`\n"
+"- The category of close tickets : `{ctx.prefix}setticket categoryclose <category>`\n"
+"- The admin role has full access to the tickets : `{ctx.prefix}setticket adminrole <role>`\n"
+"All other parameters are optional or have default values that will be used."
+msgstr "crwdns1208:0{ctx.prefix}crwdnd1208:0{ctx.prefix}crwdnd1208:0{ctx.prefix}crwdne1208:0"
+
+#: tickettool\settings.py:163
+msgid "Ticket System is already set on {state}."
+msgstr "crwdns670:0{state}crwdne670:0"
+
+#: tickettool\settings.py:167
+msgid "Ticket System state registered: {state}."
+msgstr "crwdns672:0{state}crwdne672:0"
+
+#: tickettool\settings.py:176
+#, docstring
+msgid "Set a channel where events are registered.\n\n"
+"        ``channel``: Text channel.\n"
+"        You can also use \"None\" if you wish to remove the logging channel.\n"
+"        "
+msgstr "crwdns674:0crwdne674:0"
+
+#: tickettool\settings.py:183
+msgid "Logging channel removed."
+msgstr "crwdns676:0crwdne676:0"
+
+#: tickettool\settings.py:198
+msgid "The bot does not have at least one of the following permissions in this channel: `embed_links`, `read_messages`, `read_message_history`, `send_messages`, `attach_files`."
+msgstr "crwdns678:0crwdne678:0"
+
+#: tickettool\settings.py:205
+msgid "Logging channel registered: {channel.mention}."
+msgstr "crwdns680:0{channel.mention}crwdne680:0"
+
+#: tickettool\settings.py:211
+#, docstring
+msgid "Set a category where open tickets are created.\n\n"
+"        ``category``: Category.\n"
+"        You can also use \"None\" if you wish to remove the open category.\n"
+"        "
+msgstr "crwdns682:0crwdne682:0"
+
+#: tickettool\settings.py:218
+msgid "Category Open removed."
+msgstr "crwdns684:0crwdne684:0"
+
+#: tickettool\settings.py:222
+msgid "Category Open registered: {category.name}."
+msgstr "crwdns686:0{category.name}crwdne686:0"
+
+#: tickettool\settings.py:228
+#, docstring
+msgid "Set a category where close tickets are created.\n\n"
+"        ``category``: Category.\n"
+"        You can also use \"None\" if you wish to remove the close category.\n"
+"        "
+msgstr "crwdns688:0crwdne688:0"
+
+#: tickettool\settings.py:235
+msgid "Category Close removed."
+msgstr "crwdns690:0crwdne690:0"
+
+#: tickettool\settings.py:239
+msgid "Category Close registered: {category.name}."
+msgstr "crwdns692:0{category.name}crwdne692:0"
+
+#: tickettool\settings.py:245
+#, docstring
+msgid "Set a role for administrators of the ticket system.\n\n"
+"        ``role``: Role.\n"
+"        You can also use \"None\" if you wish to remove the admin role.\n"
+"        "
+msgstr "crwdns694:0crwdne694:0"
+
+#: tickettool\settings.py:252
+msgid "Admin Role removed."
+msgstr "crwdns696:0crwdne696:0"
+
+#: tickettool\settings.py:256
+msgid "Admin Role registered: {role.name}."
+msgstr "crwdns698:0{role.name}crwdne698:0"
+
+#: tickettool\settings.py:262
+#, docstring
+msgid "Set a role for helpers of the ticket system.\n\n"
+"        ``role``: Role.\n"
+"        You can also use \"None\" if you wish to remove the support role.\n"
+"        "
+msgstr "crwdns700:0crwdne700:0"
+
+#: tickettool\settings.py:269
+msgid "Support Role removed."
+msgstr "crwdns702:0crwdne702:0"
+
+#: tickettool\settings.py:273
+msgid "Support Role registered: {role.name}."
+msgstr "crwdns704:0{role.name}crwdne704:0"
+
+#: tickettool\settings.py:279
+#, docstring
+msgid "Set a role for creaters of a ticket.\n\n"
+"        ``role``: Role.\n"
+"        You can also use \"None\" if you wish to remove the ticket role.\n"
+"        "
+msgstr "crwdns706:0crwdne706:0"
+
+#: tickettool\settings.py:286
+msgid "Ticket Role removed."
+msgstr "crwdns708:0crwdne708:0"
+
+#: tickettool\settings.py:290
+msgid "Ticket Role registered: {role.name}."
+msgstr "crwdns710:0{role.name}crwdne710:0"
+
+#: tickettool\settings.py:294
+#, docstring
+msgid "Set a role for viewers of tickets.\n\n"
+"        ``role``: Role.\n"
+"        You can also use \"None\" if you wish to remove the view role.\n"
+"        "
+msgstr "crwdns712:0crwdne712:0"
+
+#: tickettool\settings.py:301
+msgid "View Role removed."
+msgstr "crwdns714:0crwdne714:0"
+
+#: tickettool\settings.py:305
+msgid "View Role registered: {role.name}."
+msgstr "crwdns716:0{role.name}crwdne716:0"
+
+#: tickettool\settings.py:309
+#, docstring
+msgid "Set a role for pings on ticket creation.\n\n"
+"        ``role``: Role.\n"
+"        You can also use \"None\" if you wish to remove the ping role.\n"
+"        "
+msgstr "crwdns718:0crwdne718:0"
+
+#: tickettool\settings.py:316
+msgid "Ping Role removed."
+msgstr "crwdns720:0crwdne720:0"
+
+#: tickettool\settings.py:320
+msgid "Ping Role registered: {role.name}."
+msgstr "crwdns722:0{role.name}crwdne722:0"
+
+#: tickettool\settings.py:324
+#, docstring
+msgid "Max Number of tickets for a member."
+msgstr "crwdns1623:0crwdne1623:0"
+
+#: tickettool\settings.py:330
+msgid "Max Number of tickets is already set on {nb_max}."
+msgstr "crwdns1210:0{nb_max}crwdne1210:0"
+
+#: tickettool\settings.py:335
+msgid "Max Number of tickets registered: {nb_max}."
+msgstr "crwdns1212:0{nb_max}crwdne1212:0"
+
+#: tickettool\settings.py:339
+#, docstring
+msgid "Enable or disable Modlog.\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "crwdns730:0crwdne730:0"
+
+#: tickettool\settings.py:347
+msgid "Modlog is already set on {state}."
+msgstr "crwdns732:0{state}crwdne732:0"
+
+#: tickettool\settings.py:351
+msgid "Modlog state registered: {state}."
+msgstr "crwdns734:0{state}crwdne734:0"
+
+#: tickettool\settings.py:355
+#, docstring
+msgid "Enable or disable Close on Leave.\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "crwdns736:0crwdne736:0"
+
+#: tickettool\settings.py:363
+msgid "Close on Leave is already set on {state}."
+msgstr "crwdns738:0{state}crwdne738:0"
+
+#: tickettool\settings.py:367
+msgid "Close on Leave state registered: {state}."
+msgstr "crwdns740:0{state}crwdne740:0"
+
+#: tickettool\settings.py:371
+#, docstring
+msgid "Enable or disable Create on React.\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        Remember that this feature will only work for the `main` profile!\n"
+"        "
+msgstr "crwdns1625:0crwdne1625:0"
+
+#: tickettool\settings.py:380
+msgid "Create on React is already set on {state}."
+msgstr "crwdns744:0{state}crwdne744:0"
+
+#: tickettool\settings.py:384
+msgid "Create on React state registered: {state}. Remember that this feature will only work for the `main` profile!"
+msgstr "crwdns1627:0{state}crwdne1627:0"
+
+#: tickettool\settings.py:388
+#, docstring
+msgid "Enable or disable User Can Close.\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "crwdns1216:0crwdne1216:0"
+
+#: tickettool\settings.py:396
+msgid "User Can Close is already set on {state}."
+msgstr "crwdns1218:0{state}crwdne1218:0"
+
+#: tickettool\settings.py:400
+msgid "User Can Close state registered: {state}."
+msgstr "crwdns1220:0{state}crwdne1220:0"
+
+#: tickettool\settings.py:404
+#, docstring
+msgid "Enable or disable Delete On Close.\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "crwdns1629:0crwdne1629:0"
+
+#: tickettool\settings.py:412
+msgid "Delete On Close is already set on {state}."
+msgstr "crwdns1631:0{state}crwdne1631:0"
+
+#: tickettool\settings.py:416
+msgid "Delete On Close state registered: {state}."
+msgstr "crwdns1633:0{state}crwdne1633:0"
+
+#: tickettool\settings.py:422
+#, docstring
+msgid "Set the Dinamic Ticket Channel Name.\n\n"
+"        `{ticket_id}` - Ticket number\n"
+"        `{owner_display_name}` - user's nick or name\n"
+"        `{owner_name}` - user's name\n"
+"        `{owner_id}` - user's id\n"
+"        `{guild_name}` - guild's name\n"
+"        `{guild_id}` - guild's id\n"
+"        `{bot_display_name}` - bot's nick or name\n"
+"        `{bot_name}` - bot's name\n"
+"        `{bot_id}` - bot's id\n"
+"        `{shortdate}` - mm-dd\n"
+"        `{longdate}` - mm-dd-yyyy\n"
+"        `{time}` - hh-mm AM/PM according to bot host system time\n\n"
+"        If, when creating the ticket, an error occurs with this name, another name will be used automatically.\n"
+"        "
+msgstr "crwdns1635:0{ticket_id}crwdnd1635:0{owner_display_name}crwdnd1635:0{owner_name}crwdnd1635:0{owner_id}crwdnd1635:0{guild_name}crwdnd1635:0{guild_id}crwdnd1635:0{bot_display_name}crwdnd1635:0{bot_name}crwdnd1635:0{bot_id}crwdnd1635:0{shortdate}crwdnd1635:0{longdate}crwdnd1635:0{time}crwdne1635:0"
+
+#: tickettool\settings.py:451
+#, docstring
+msgid "Set the Custom Message.\n\n"
+"        `{ticket_id}` - Ticket number\n"
+"        `{owner_display_name}` - user's nick or name\n"
+"        `{owner_name}` - user's name\n"
+"        `{owner_id}` - user's id\n"
+"        `{guild_name}` - guild's name\n"
+"        `{guild_id}` - guild's id\n"
+"        `{bot_display_name}` - bot's nick or name\n"
+"        `{bot_name}` - bot's name\n"
+"        `{bot_id}` - bot's id\n"
+"        `{shortdate}` - mm-dd\n"
+"        `{longdate}` - mm-dd-yyyy\n"
+"        `{time}` - hh-mm AM/PM according to bot host system time\n"
+"        "
+msgstr "crwdns1637:0{ticket_id}crwdnd1637:0{owner_display_name}crwdnd1637:0{owner_name}crwdnd1637:0{owner_id}crwdnd1637:0{guild_name}crwdnd1637:0{guild_id}crwdnd1637:0{bot_display_name}crwdnd1637:0{bot_name}crwdnd1637:0{bot_id}crwdnd1637:0{shortdate}crwdnd1637:0{longdate}crwdnd1637:0{time}crwdne1637:0"
+
+#: tickettool\settings.py:484
+#, docstring
+msgid "Set a color for the embeds.\n\n"
+"        ``color``: Color.\n"
+"        You can also use \"None\" if you wish to reset the color.\n"
+"        "
+msgstr "crwdns1757:0crwdne1757:0"
+
+#: tickettool\settings.py:497 tickettool\settings.py:508
+#: tickettool\settings.py:528 tickettool\settings.py:541
+msgid "Configure the embed"
+msgstr "crwdns750:0crwdne750:0"
+
+#: tickettool\settings.py:498
+msgid "Reset color:"
+msgstr "crwdns752:0crwdne752:0"
+
+#: tickettool\settings.py:499 tickettool\settings.py:512
+msgid "Color:"
+msgstr "crwdns754:0crwdne754:0"
+
+#: tickettool\settings.py:509
+msgid "Set color:"
+msgstr "crwdns756:0crwdne756:0"
+
+#: tickettool\settings.py:517
+#, docstring
+msgid "Set a thumbnail for the embeds.\n\n"
+"        ``link``: Thumbnail link.\n"
+"        You can also use \"None\" if you wish to reset the thumbnail.\n"
+"        "
+msgstr "crwdns1228:0crwdne1228:0"
+
+#: tickettool\settings.py:529
+msgid "Reset thumbnail:"
+msgstr "crwdns760:0crwdne760:0"
+
+#: tickettool\settings.py:532 tickettool\settings.py:545
+msgid "Thumbnail:"
+msgstr "crwdns762:0crwdne762:0"
+
+#: tickettool\settings.py:542
+msgid "Set thumbnail:"
+msgstr "crwdns764:0crwdne764:0"
+
+#: tickettool\settings.py:550
+#, docstring
+msgid "Make the author of each action concerning a ticket appear in the server logs.\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "crwdns766:0crwdne766:0"
+
+#: tickettool\settings.py:558
+msgid "Audit Logs is already set on {state}."
+msgstr "crwdns768:0{state}crwdne768:0"
+
+#: tickettool\settings.py:562
+msgid "Audit Logs state registered: {state}."
+msgstr "crwdns770:0{state}crwdne770:0"
+
+#: tickettool\settings.py:566
+#, docstring
+msgid "Enable or disable Close Confirmation.\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "crwdns772:0crwdne772:0"
+
+#: tickettool\settings.py:574
+msgid "Close Confirmation is already set on {state}."
+msgstr "crwdns774:0{state}crwdne774:0"
+
+#: tickettool\settings.py:578
+msgid "Close Confirmation state registered: {state}."
+msgstr "crwdns776:0{state}crwdne776:0"
+
+#: tickettool\settings.py:589
+#, docstring
+msgid "Set the settings for the button embed."
+msgstr "crwdns1639:0crwdne1639:0"
+
+#: tickettool\settings.py:616
+#, docstring
+msgid "Enable or disable Rename Channel Dropdown.\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "crwdns1232:0crwdne1232:0"
+
+#: tickettool\settings.py:625
+msgid "Rename Channel Dropdown is already set on {state}."
+msgstr "crwdns1234:0{state}crwdne1234:0"
+
+#: tickettool\settings.py:630
+msgid "Rename Channel Dropdown state registered: {state}."
+msgstr "crwdns1236:0{state}crwdne1236:0"
+
+#: tickettool\settings.py:641
+#, docstring
+msgid "Send a message with a button to open a ticket or dropdown with possible reasons.\n\n"
+"        Example:\n"
+"        `[p]setticket message #general \"🐛|Report a bug|If you find a bug, report it here.|bug\" \"⚠️|Report a user|If you find a malicious user, report it here.|user\"`\n"
+"        `[p]setticket 1234567890-0987654321`\n"
+"        "
+msgstr "crwdns1641:0[p]crwdnd1641:0[p]crwdne1641:0"
+
+#: tickettool\settings.py:653
+msgid "I have to be the author of the message for the interaction to work."
+msgstr "crwdns1240:0crwdne1240:0"
+
+#: tickettool\settings.py:684 tickettool\settings.py:780
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "crwdns1745:0crwdne1745:0"
+
+#: tickettool\settings.py:695 tickettool\settings.py:761
+#: tickettool\tickettool.py:150
+msgid "Create ticket"
+msgstr "crwdns778:0crwdne778:0"
+
+#: tickettool\settings.py:843
+#, docstring
+msgid "Purge all existing tickets in the config. Does not delete any channels.\n\n"
+"        All commands associated with the tickets will no longer work.\n"
+"        "
+msgstr "crwdns1645:0crwdne1645:0"
+
+#: tickettool\settings.py:849
+msgid "Do you really want to purge all the tickets in the config?"
+msgstr "crwdns784:0crwdne784:0"
+
+#: tickettool\settings.py:852
+msgid "Does not delete any channels. All commands associated with the tickets will no longer work."
+msgstr "crwdns786:0crwdne786:0"
+
+#: tickettool\settings.py:878
+msgid "{count} tickets have been removed from the config."
+msgstr "crwdns788:0{count}crwdne788:0"
+
+#: tickettool\tickettool.py:43
+#, docstring
+msgid "A cog to manage a ticket system!"
+msgstr "crwdns790:0crwdne790:0"
+
+#: tickettool\tickettool.py:86
+msgid "To get help on this server or to make an order for example, you can create a ticket.\n"
+"Just use the command `{prefix}ticket create` or click on the button below.\n"
+"You can then use the `{prefix}ticket` subcommand to manage your ticket."
+msgstr "crwdns1242:0{prefix}crwdnd1242:0{prefix}crwdne1242:0"
+
+#: tickettool\tickettool.py:166 tickettool\tickettool.py:1406
+#: tickettool\tickettool.py:1426 tickettool\tickettool.py:1580
+#: tickettool\tickettool.py:1604 tickettool\tickettool.py:1666
+#: tickettool\tickettool.py:1690 tickettool\tickettool.py:1839
+#: tickettool\tickettool.py:1863 tickettool\tickettool.py:1923
+#: tickettool\tickettool.py:1947
+msgid "Close"
+msgstr "crwdns794:0crwdne794:0"
+
+#: tickettool\tickettool.py:173 tickettool\tickettool.py:1413
+#: tickettool\tickettool.py:1433 tickettool\tickettool.py:1587
+#: tickettool\tickettool.py:1611 tickettool\tickettool.py:1673
+#: tickettool\tickettool.py:1697 tickettool\tickettool.py:1846
+#: tickettool\tickettool.py:1870 tickettool\tickettool.py:1930
+#: tickettool\tickettool.py:1954
+msgid "Claim"
+msgstr "crwdns796:0crwdne796:0"
+
+#: tickettool\tickettool.py:289
+msgid "Action taken for the ticket system."
+msgstr "crwdns798:0crwdne798:0"
+
+#: tickettool\tickettool.py:319
+msgid "Ticket ID:"
+msgstr "crwdns800:0crwdne800:0"
+
+#: tickettool\tickettool.py:322
+msgid "Owned by:"
+msgstr "crwdns802:0crwdne802:0"
+
+#: tickettool\tickettool.py:329
+msgid "Channel:"
+msgstr "crwdns804:0crwdne804:0"
+
+#: tickettool\tickettool.py:336
+msgid "Closed by:"
+msgstr "crwdns806:0crwdne806:0"
+
+#: tickettool\tickettool.py:344
+msgid "Deleted by:"
+msgstr "crwdns808:0crwdne808:0"
+
+#: tickettool\tickettool.py:352
+msgid "Closed at:"
+msgstr "crwdns810:0crwdne810:0"
+
+#: tickettool\tickettool.py:356 tickettool\tickettool.py:380
+msgid "Reason:"
+msgstr "crwdns812:0crwdne812:0"
+
+#: tickettool\tickettool.py:364
+msgid "Ticket [{ticket.panel}] {ticket.id} - Action taken"
+msgstr "crwdns1647:0{ticket.panel}crwdnd1647:0{ticket.id}crwdne1647:0"
+
+#: tickettool\tickettool.py:505
+#, docstring
+msgid "Create a ticket."
+msgstr "crwdns1649:0crwdne1649:0"
+
+#: tickettool\tickettool.py:515
+msgid "The ticket system is not enabled on this server. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it."
+msgstr "crwdns1651:0{ctx.prefix}crwdne1651:0"
+
+#: tickettool\tickettool.py:522
+msgid "The category `open` or the category `close` have not been configured. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it."
+msgstr "crwdns1653:0{ctx.prefix}crwdne1653:0"
+
+#: tickettool\tickettool.py:529
+msgid "Sorry. You have already reached the limit of {limit} open tickets."
+msgstr "crwdns1655:0{limit}crwdne1655:0"
+
+#: tickettool\tickettool.py:539
+msgid "The bot does not have `manage_channels` permission on the 'open' and 'close' categories to allow the ticket system to function properly. Please notify an administrator of this server."
+msgstr "crwdns822:0crwdne822:0"
+
+#: tickettool\tickettool.py:563
+#, docstring
+msgid "Export all the messages of an existing ticket in html format.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        "
+msgstr "crwdns824:0crwdne824:0"
+
+#: tickettool\tickettool.py:584
+msgid "Here is the html file of the transcript of all the messages in this ticket.\n"
+"Please note: all attachments and user avatars are saved with the Discord link in this file."
+msgstr "crwdns826:0crwdne826:0"
+
+#: tickettool\tickettool.py:607
+#, docstring
+msgid "Open an existing ticket."
+msgstr "crwdns1657:0crwdne1657:0"
+
+#: tickettool\tickettool.py:611
+msgid "The ticket system is not enabled on this server."
+msgstr "crwdns1659:0crwdne1659:0"
+
+#: tickettool\tickettool.py:637
+#, docstring
+msgid "Close an existing ticket."
+msgstr "crwdns1661:0crwdne1661:0"
+
+#: tickettool\tickettool.py:648
+msgid "Do you really want to close the ticket {ticket.id}?"
+msgstr "crwdns832:0{ticket.id}crwdne832:0"
+
+#: tickettool\tickettool.py:686
+#, docstring
+msgid "Rename an existing ticket."
+msgstr "crwdns1663:0crwdne1663:0"
+
+#: tickettool\tickettool.py:712
+#, docstring
+msgid "Delete an existing ticket.\n"
+"        If a log channel is defined, an html file containing all the messages of this ticket will be generated.\n"
+"        (Attachments are not supported, as they are saved with their Discord link)\n"
+"        "
+msgstr "crwdns836:0crwdne836:0"
+
+#: tickettool\tickettool.py:720
+msgid "Do you really want to delete all the messages of the ticket {ticket.id}?"
+msgstr "crwdns838:0{ticket.id}crwdne838:0"
+
+#: tickettool\tickettool.py:723
+msgid "If a log channel is defined, an html file containing all the messages of this ticket will be generated. (Attachments are not supported, as they are saved with their Discord link)"
+msgstr "crwdns840:0crwdne840:0"
+
+#: tickettool\tickettool.py:761
+#, docstring
+msgid "Claim an existing ticket."
+msgstr "crwdns1665:0crwdne1665:0"
+
+#: tickettool\tickettool.py:785
+#, docstring
+msgid "Unclaim an existing ticket."
+msgstr "crwdns1667:0crwdne1667:0"
+
+#: tickettool\tickettool.py:811
+#, docstring
+msgid "Change the owner of an existing ticket."
+msgstr "crwdns1669:0crwdne1669:0"
+
+#: tickettool\tickettool.py:838
+#, docstring
+msgid "Add a member to an existing ticket."
+msgstr "crwdns1671:0crwdne1671:0"
+
+#: tickettool\tickettool.py:864
+#, docstring
+msgid "Remove a member to an existing ticket."
+msgstr "crwdns1673:0crwdne1673:0"
+
+#: tickettool\tickettool.py:889 tickettool\tickettool.py:1003
+#: tickettool\tickettool.py:1058
+msgid "The panel for which this button was configured no longer exists."
+msgstr "crwdns1675:0crwdne1675:0"
+
+#: tickettool\tickettool.py:896 tickettool\tickettool.py:955
+#: tickettool\tickettool.py:1010 tickettool\tickettool.py:1069
+msgid "You are not allowed to execute this command."
+msgstr "crwdns1244:0crwdne1244:0"
+
+#: tickettool\tickettool.py:900 tickettool\tickettool.py:1014
+msgid "You have chosen to create a ticket."
+msgstr "crwdns856:0crwdne856:0"
+
+#: tickettool\tickettool.py:907 tickettool\tickettool.py:1021
+msgid "You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+msgstr "crwdns1677:0crwdne1677:0"
+
+#: tickettool\tickettool.py:915 tickettool\tickettool.py:1029
+msgid "You have chosen to claim this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+msgstr "crwdns1679:0crwdne1679:0"
+
+#: tickettool\tickettool.py:937
+msgid "This message is not in TicketTool config."
+msgstr "crwdns1681:0crwdne1681:0"
+
+#: tickettool\tickettool.py:942
+msgid "The panel for which this dropdown was configured no longer exists."
+msgstr "crwdns1683:0crwdne1683:0"
+
+#: tickettool\tickettool.py:974 tickettool\tickettool.py:1090
+msgid "You have chosen to create a ticket with the reason `{reason}`."
+msgstr "crwdns1250:0{reason}crwdne1250:0"
+
+#: tickettool\tickettool.py:1053
+msgid "This message is not in TicketTool Config."
+msgstr "crwdns1685:0crwdne1685:0"
+
+#: tickettool\tickettool.py:1218
+msgid "No reason provided."
+msgstr "crwdns1252:0crwdne1252:0"
+
+#: tickettool\tickettool.py:1356
+msgid "Creating the ticket {ticket.id}."
+msgstr "crwdns860:0{ticket.id}crwdne860:0"
+
+#: tickettool\tickettool.py:1390 tickettool\tickettool.py:1896
+msgid "🎟️ Ticket ID: {ticket.id}\n"
+"🔥 Channel ID: {ticket.channel.id}\n"
+"🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+"☢️ Ticket reason: {ticket.reason}\n"
+"👥 Ticket claimed by: Nobody."
+msgstr "crwdns1254:0{ticket.id}crwdnd1254:0{ticket.channel.id}crwdnd1254:0{ticket.created_by.display_name}crwdnd1254:0{ticket.created_by.id}crwdnd1254:0{ticket.reason}crwdne1254:0"
+
+#: tickettool\tickettool.py:1447 tickettool\tickettool.py:1493
+msgid "Ticket Created"
+msgstr "crwdns862:0crwdne862:0"
+
+#: tickettool\tickettool.py:1448
+msgid "Thank you for creating a ticket on this server!"
+msgstr "crwdns864:0crwdne864:0"
+
+#: tickettool\tickettool.py:1494
+msgid "The ticket was created by {ticket.created_by}."
+msgstr "crwdns866:0{ticket.created_by}crwdne866:0"
+
+#: tickettool\tickettool.py:1499
+msgid "Report on the creation of the ticket {ticket.id}."
+msgstr "crwdns868:0{ticket.id}crwdne868:0"
+
+#: tickettool\tickettool.py:1539
+msgid "Opening the ticket {ticket.id}."
+msgstr "crwdns870:0{ticket.id}crwdne870:0"
+
+#: tickettool\tickettool.py:1555 tickettool\tickettool.py:1563
+msgid "Ticket Opened"
+msgstr "crwdns872:0crwdne872:0"
+
+#: tickettool\tickettool.py:1564
+msgid "The ticket was opened by {ticket.opened_by}."
+msgstr "crwdns874:0{ticket.opened_by}crwdne874:0"
+
+#: tickettool\tickettool.py:1569 tickettool\tickettool.py:1655
+msgid "Report on the close of the ticket {ticket.id}."
+msgstr "crwdns876:0{ticket.id}crwdne876:0"
+
+#: tickettool\tickettool.py:1717
+msgid "Renaming the ticket {ticket.id}. (`{ticket.channel.name}` to `{new_name}`)"
+msgstr "crwdns878:0{ticket.id}crwdnd878:0{ticket.channel.name}crwdnd878:0{new_name}crwdne878:0"
+
+#: tickettool\tickettool.py:1729
+msgid "Ticket Renamed."
+msgstr "crwdns880:0crwdne880:0"
+
+#: tickettool\tickettool.py:1742
+msgid "Deleting the ticket {ticket.id}."
+msgstr "crwdns882:0{ticket.id}crwdne882:0"
+
+#: tickettool\tickettool.py:1752
+msgid "Ticket Deleted"
+msgstr "crwdns884:0crwdne884:0"
+
+#: tickettool\tickettool.py:1753
+msgid "The ticket was deleted by {ticket.deleted_by}."
+msgstr "crwdns886:0{ticket.deleted_by}crwdne886:0"
+
+#: tickettool\tickettool.py:1780
+msgid "Report on the deletion of the ticket {ticket.id}."
+msgstr "crwdns888:0{ticket.id}crwdne888:0"
+
+#: tickettool\tickettool.py:1801 tickettool\tickettool.py:1893
+msgid "Claiming the ticket {ticket.id}."
+msgstr "crwdns890:0{ticket.id}crwdne890:0"
+
+#: tickettool\tickettool.py:1804
+msgid "A bot cannot claim a ticket."
+msgstr "crwdns892:0crwdne892:0"
+
+#: tickettool\tickettool.py:1807
+msgid "🎟️ Ticket ID: {ticket.id}\n"
+"🔥 Channel ID: {ticket.channel.id}\n"
+"🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+"☢️ Ticket reason: {ticket.reason}\n"
+"👥 Ticket claimed by: @{ticket.claim.display_name}."
+msgstr "crwdns1256:0{ticket.id}crwdnd1256:0{ticket.channel.id}crwdnd1256:0{ticket.created_by.display_name}crwdnd1256:0{ticket.created_by.id}crwdnd1256:0{ticket.reason}crwdnd1256:0{ticket.claim.display_name}crwdne1256:0"
+
+#: tickettool\tickettool.py:1977
+msgid "Changing owner of the ticket {ticket.id}."
+msgstr "crwdns894:0{ticket.id}crwdne894:0"
+
+#: tickettool\tickettool.py:1981
+msgid "You cannot transfer ownership of a ticket to a bot."
+msgstr "crwdns896:0crwdne896:0"
+
+#: tickettool\tickettool.py:2010
+msgid "Owner Modified."
+msgstr "crwdns898:0crwdne898:0"
+
+#: tickettool\tickettool.py:2026
+msgid "Adding a member to the ticket {ticket.id}."
+msgstr "crwdns900:0{ticket.id}crwdne900:0"
+
+#: tickettool\tickettool.py:2037
+msgid "You cannot add a bot to a ticket. ({member})"
+msgstr "crwdns1258:0{member}crwdne1258:0"
+
+#: tickettool\tickettool.py:2043
+msgid "This member is already the owner of this ticket. ({member})"
+msgstr "crwdns1260:0{member}crwdne1260:0"
+
+#: tickettool\tickettool.py:2050
+msgid "This member is an administrator for the ticket system. They will always have access to the ticket anyway. ({member})"
+msgstr "crwdns1308:0{member}crwdne1308:0"
+
+#: tickettool\tickettool.py:2057
+msgid "This member already has access to this ticket. ({member})"
+msgstr "crwdns1264:0{member}crwdne1264:0"
+
+#: tickettool\tickettool.py:2085
+msgid "Removing a member to the ticket {ticket.id}."
+msgstr "crwdns910:0{ticket.id}crwdne910:0"
+
+#: tickettool\tickettool.py:2099
+msgid "You cannot remove a bot to a ticket ({member})."
+msgstr "crwdns1266:0{member}crwdne1266:0"
+
+#: tickettool\tickettool.py:2105
+msgid "You cannot remove the owner of this ticket. ({member})"
+msgstr "crwdns1268:0{member}crwdne1268:0"
+
+#: tickettool\tickettool.py:2112
+msgid "This member is an administrator for the ticket system. They will always have access to the ticket. ({member})"
+msgstr "crwdns1310:0{member}crwdne1310:0"
+
+#: tickettool\tickettool.py:2119
+msgid "This member is not in the list of those authorised to access the ticket. ({member})"
+msgstr "crwdns1272:0{member}crwdne1272:0"
+
+#: tickettool\utils.py:103
+msgid "Emoji Label must be An emoji followed by an string, and optionnaly by a description and a value (for rename ticket channel), separated by either `;`, `,`, `|`, or `-`."
+msgstr "crwdns1747:0crwdne1747:0"
+

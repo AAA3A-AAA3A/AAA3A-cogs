@@ -1,0 +1,106 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2022-11-22 19:45+0100\n"
+"PO-Revision-Date: 2023-04-02 16:50\n"
+"Last-Translator: \n"
+"Language-Team: Spanish, Latin America\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-419\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/dropdownstexts/locales/messages.pot\n"
+"X-Crowdin-File-ID: 158\n"
+"Language: es_419\n"
+
+#: dropdownstexts\converters.py:33
+msgid "Dropdown Text must be an emoji, followed by a label and a text, separated by either `;`, `,`, `|`, or `-`."
+msgstr "crwdns1278:0crwdne1278:0"
+
+#: dropdownstexts\dropdownstexts.py:31
+#, docstring
+msgid "A cog to have dropdowns-texts!"
+msgstr "crwdns1280:0crwdne1280:0"
+
+#: dropdownstexts\dropdownstexts.py:61 dropdownstexts\dropdownstexts.py:249
+#: dropdownstexts\dropdownstexts.py:332 dropdownstexts\dropdownstexts.py:377
+#: dropdownstexts\dropdownstexts.py:467
+msgid "Select an option."
+msgstr "crwdns1449:0crwdne1449:0"
+
+#: dropdownstexts\dropdownstexts.py:94 dropdownstexts\dropdownstexts.py:142
+msgid "This message is not in Config."
+msgstr "crwdns1451:0crwdne1451:0"
+
+#: dropdownstexts\dropdownstexts.py:102 dropdownstexts\dropdownstexts.py:148
+msgid "This emoji is not in Config."
+msgstr "crwdns1453:0crwdne1453:0"
+
+#: dropdownstexts\dropdownstexts.py:177
+#, docstring
+msgid "Group of commands to use DropdownsTexts."
+msgstr "crwdns1751:0crwdne1751:0"
+
+#: dropdownstexts\dropdownstexts.py:190
+#, docstring
+msgid "Add a dropdown-text to a message."
+msgstr "crwdns1457:0crwdne1457:0"
+
+#: dropdownstexts\dropdownstexts.py:193 dropdownstexts\dropdownstexts.py:272
+#: dropdownstexts\dropdownstexts.py:355 dropdownstexts\dropdownstexts.py:401
+msgid "I have to be the author of the message for the role-button to work."
+msgstr "crwdns1286:0crwdne1286:0"
+
+#: dropdownstexts\dropdownstexts.py:206 dropdownstexts\dropdownstexts.py:285
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "crwdns1288:0crwdne1288:0"
+
+#: dropdownstexts\dropdownstexts.py:215
+msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "crwdns1290:0crwdne1290:0"
+
+#: dropdownstexts\dropdownstexts.py:222 dropdownstexts\dropdownstexts.py:304
+msgid "Custom emojis are not supported by Dislash for dropdown menu options. Please wait for Red 3.5 with dpy2."
+msgstr "crwdns1459:0crwdne1459:0"
+
+#: dropdownstexts\dropdownstexts.py:232 dropdownstexts\dropdownstexts.py:314
+msgid "I can't do more than 25 dropdown-texts for one message."
+msgstr "crwdns1292:0crwdne1292:0"
+
+#: dropdownstexts\dropdownstexts.py:269
+#, docstring
+msgid "Add dropdown-texts to a message."
+msgstr "crwdns1461:0crwdne1461:0"
+
+#: dropdownstexts\dropdownstexts.py:295
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "crwdns1737:0crwdne1737:0"
+
+#: dropdownstexts\dropdownstexts.py:352
+#, docstring
+msgid "Remove a dropdown-text to a message."
+msgstr "crwdns1463:0crwdne1463:0"
+
+#: dropdownstexts\dropdownstexts.py:363 dropdownstexts\dropdownstexts.py:409
+msgid "No dropdown-texts is configured for this message."
+msgstr "crwdns1300:0crwdne1300:0"
+
+#: dropdownstexts\dropdownstexts.py:368
+msgid "I wasn't watching for this dropdown-text on this message."
+msgstr "crwdns1302:0crwdne1302:0"
+
+#: dropdownstexts\dropdownstexts.py:398
+#, docstring
+msgid "Clear a dropdown-texts to a message."
+msgstr "crwdns1465:0crwdne1465:0"
+
+#: dropdownstexts\dropdownstexts.py:424
+#, docstring
+msgid "Clear all dropdowns-texts to a **guild**."
+msgstr "crwdns1467:0crwdne1467:0"
+

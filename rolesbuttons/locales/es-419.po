@@ -1,0 +1,160 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2022-11-22 19:45+0100\n"
+"PO-Revision-Date: 2023-04-02 16:50\n"
+"Last-Translator: \n"
+"Language-Team: Spanish, Latin America\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-419\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/rolesbuttons/locales/messages.pot\n"
+"X-Crowdin-File-ID: 96\n"
+"Language: es_419\n"
+
+#: rolesbuttons\converters.py:41
+msgid "The {role.mention} role is a bot integration role and cannot be assigned or removed."
+msgstr "crwdns384:0{role.mention}crwdne384:0"
+
+#: rolesbuttons\converters.py:47
+msgid "The {role.mention} role is an integration role and cannot be assigned or removed."
+msgstr "crwdns386:0{role.mention}crwdne386:0"
+
+#: rolesbuttons\converters.py:53
+msgid "The {role.mention} role is a premium subscriber role and can only be assigned or removed by Nitro boosting the server."
+msgstr "crwdns388:0{role.mention}crwdne388:0"
+
+#: rolesbuttons\converters.py:59
+msgid "The {role.mention} role is higher than my highest role in the discord hierarchy."
+msgstr "crwdns390:0{role.mention}crwdne390:0"
+
+#: rolesbuttons\converters.py:65
+msgid "The {role.mention} role is higher than your highest role in the discord hierarchy."
+msgstr "crwdns392:0{role.mention}crwdne392:0"
+
+#: rolesbuttons\converters.py:81
+msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
+msgstr "crwdns1192:0crwdne1192:0"
+
+#: rolesbuttons\rolesbuttons.py:42
+#, docstring
+msgid "A cog to have roles-buttons!"
+msgstr "crwdns396:0crwdne396:0"
+
+#: rolesbuttons\rolesbuttons.py:111 rolesbuttons\rolesbuttons.py:198
+msgid "This message is not in Config."
+msgstr "crwdns1561:0crwdne1561:0"
+
+#: rolesbuttons\rolesbuttons.py:123 rolesbuttons\rolesbuttons.py:207
+msgid "This emoji is not in Config."
+msgstr "crwdns1563:0crwdne1563:0"
+
+#: rolesbuttons\rolesbuttons.py:130 rolesbuttons\rolesbuttons.py:216
+msgid "The role I have to put you in no longer exists. Please notify an administrator of this server."
+msgstr "crwdns398:0crwdne398:0"
+
+#: rolesbuttons\rolesbuttons.py:140
+msgid "Role-button of {interaction.message.id} in {interaction.channel.id}."
+msgstr "crwdns400:0{interaction.message.id}crwdnd400:0{interaction.channel.id}crwdne400:0"
+
+#: rolesbuttons\rolesbuttons.py:146 rolesbuttons\rolesbuttons.py:232
+msgid "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
+msgstr "crwdns402:0{role.mention}crwdnd402:0{role.id}crwdne402:0"
+
+#: rolesbuttons\rolesbuttons.py:154 rolesbuttons\rolesbuttons.py:240
+msgid "You now have the role {role.mention} ({role.id})."
+msgstr "crwdns404:0{role.mention}crwdnd404:0{role.id}crwdne404:0"
+
+#: rolesbuttons\rolesbuttons.py:165 rolesbuttons\rolesbuttons.py:251
+msgid "I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
+msgstr "crwdns406:0{role.mention}crwdnd406:0{role.id}crwdne406:0"
+
+#: rolesbuttons\rolesbuttons.py:173
+msgid "I removed the role {role.mention} ({role.id})."
+msgstr "crwdns1565:0{role.mention}crwdnd1565:0{role.id}crwdne1565:0"
+
+#: rolesbuttons\rolesbuttons.py:226
+msgid "Role-button of {inter.message.id} in {channel.id}."
+msgstr "crwdns410:0{inter.message.id}crwdnd410:0{channel.id}crwdne410:0"
+
+#: rolesbuttons\rolesbuttons.py:259
+msgid "I did remove the role {role.mention} ({role.id})."
+msgstr "crwdns408:0{role.mention}crwdnd408:0{role.id}crwdne408:0"
+
+#: rolesbuttons\rolesbuttons.py:293
+#, docstring
+msgid "Add a role-button to a message.\n\n"
+"        `primary`: 1\n"
+"        `secondary`: 2\n"
+"        `success`: 3\n"
+"        `danger`: 4\n"
+"        # Aliases\n"
+"        `blurple`: 1\n"
+"        `grey`: 2\n"
+"        `gray`: 2\n"
+"        `green`: 3\n"
+"        `red`: 4\n"
+"        "
+msgstr "crwdns1196:0crwdne1196:0"
+
+#: rolesbuttons\rolesbuttons.py:308 rolesbuttons\rolesbuttons.py:375
+#: rolesbuttons\rolesbuttons.py:439 rolesbuttons\rolesbuttons.py:479
+msgid "I have to be the author of the message for the role-button to work."
+msgstr "crwdns416:0crwdne416:0"
+
+#: rolesbuttons\rolesbuttons.py:321 rolesbuttons\rolesbuttons.py:391
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "crwdns418:0crwdne418:0"
+
+#: rolesbuttons\rolesbuttons.py:331
+msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "crwdns1198:0crwdne1198:0"
+
+#: rolesbuttons\rolesbuttons.py:341 rolesbuttons\rolesbuttons.py:412
+msgid "I can't do more than 25 roles-buttons for one message."
+msgstr "crwdns420:0crwdne420:0"
+
+#: rolesbuttons\rolesbuttons.py:369
+#, docstring
+msgid "Add roles-buttons to a message.\n\n"
+"        ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```\n"
+"        "
+msgstr "crwdns1567:0[p]crwdnd1567:0:reaction1:crwdnd1567:0:reaction2:crwdnd1567:0:reaction3:crwdne1567:0"
+
+#: rolesbuttons\rolesbuttons.py:381
+msgid "You have not specified any valid role-button."
+msgstr "crwdns1569:0crwdne1569:0"
+
+#: rolesbuttons\rolesbuttons.py:402
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "crwdns1739:0crwdne1739:0"
+
+#: rolesbuttons\rolesbuttons.py:436
+#, docstring
+msgid "Remove a role-button to a message."
+msgstr "crwdns1571:0crwdne1571:0"
+
+#: rolesbuttons\rolesbuttons.py:446 rolesbuttons\rolesbuttons.py:486
+msgid "No role-button is configured for this message."
+msgstr "crwdns424:0crwdne424:0"
+
+#: rolesbuttons\rolesbuttons.py:450
+msgid "I wasn't watching for this button on this message."
+msgstr "crwdns426:0crwdne426:0"
+
+#: rolesbuttons\rolesbuttons.py:476
+#, docstring
+msgid "Clear all roles-buttons to a message."
+msgstr "crwdns1573:0crwdne1573:0"
+
+#: rolesbuttons\rolesbuttons.py:500
+#, docstring
+msgid "Clear all roles-buttons to a **guild**."
+msgstr "crwdns1575:0crwdne1575:0"
+

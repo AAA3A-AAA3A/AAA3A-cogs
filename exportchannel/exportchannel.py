@@ -158,7 +158,7 @@ class ExportChannel(Cog):
         url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
         embed = discord.Embed(
             title="Transcript Link",
-            description=LINK_MESSAGE.format(url=url),
+            description=_(LINK_MESSAGE).format(url=url),
             color=await ctx.embed_color(),
         )
         if self.cogsutils.is_dpy2:
@@ -192,7 +192,7 @@ class ExportChannel(Cog):
         url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
         embed = discord.Embed(
             title="Transcript Link",
-            description=LINK_MESSAGE.format(url=url),
+            description=_(LINK_MESSAGE).format(url=url),
             color=await ctx.embed_color(),
         )
         if self.cogsutils.is_dpy2:
@@ -227,7 +227,7 @@ class ExportChannel(Cog):
         url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
         embed = discord.Embed(
             title="Transcript Link",
-            description=LINK_MESSAGE.format(url=url),
+            description=_(LINK_MESSAGE).format(url=url),
             color=await ctx.embed_color(),
         )
         if self.cogsutils.is_dpy2:
@@ -262,7 +262,7 @@ class ExportChannel(Cog):
         url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
         embed = discord.Embed(
             title="Transcript Link",
-            description=LINK_MESSAGE.format(url=url),
+            description=_(LINK_MESSAGE).format(url=url),
             color=await ctx.embed_color(),
         )
         if self.cogsutils.is_dpy2:
@@ -298,7 +298,7 @@ class ExportChannel(Cog):
         url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
         embed = discord.Embed(
             title="Transcript Link",
-            description=LINK_MESSAGE.format(url=url),
+            description=_(LINK_MESSAGE).format(url=url),
             color=await ctx.embed_color(),
         )
         if self.cogsutils.is_dpy2:
@@ -337,7 +337,7 @@ class ExportChannel(Cog):
         url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
         embed = discord.Embed(
             title="Transcript Link",
-            description=LINK_MESSAGE.format(url=url),
+            description=_(LINK_MESSAGE).format(url=url),
             color=await ctx.embed_color(),
         )
         if self.cogsutils.is_dpy2:
@@ -373,7 +373,7 @@ class ExportChannel(Cog):
         url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
         embed = discord.Embed(
             title="Transcript Link",
-            description=LINK_MESSAGE.format(url=url),
+            description=_(LINK_MESSAGE).format(url=url),
             color=await ctx.embed_color(),
         )
         if self.cogsutils.is_dpy2:

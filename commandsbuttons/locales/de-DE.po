@@ -1,0 +1,149 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-02 21:53\n"
+"Last-Translator: \n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: de\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/commandsbuttons/locales/messages.pot\n"
+"X-Crowdin-File-ID: 181\n"
+"Language: de_DE\n"
+
+#: commandsbuttons\commandsbuttons.py:38
+#, docstring
+msgid "A cog to allow a user to execute a command by clicking on a button!"
+msgstr "Ein Zahnrad, mit dem ein Benutzer einen Befehl durch Klicken auf eine Schaltfläche ausführen kann!"
+
+#: commandsbuttons\commandsbuttons.py:112
+#: commandsbuttons\commandsbuttons.py:187
+msgid "This message is not in Config."
+msgstr "Diese Nachricht ist nicht in Config."
+
+#: commandsbuttons\commandsbuttons.py:144
+#: commandsbuttons\commandsbuttons.py:208
+msgid "This emoji is not in Config."
+msgstr "Dieses Emoji ist nicht in Config."
+
+#: commandsbuttons\commandsbuttons.py:157
+#: commandsbuttons\commandsbuttons.py:219
+msgid "The command don't exist."
+msgstr "Der Befehl existiert nicht."
+
+#: commandsbuttons\commandsbuttons.py:161
+#: commandsbuttons\commandsbuttons.py:223
+msgid "You are not allowed to execute this command."
+msgstr "Sie sind nicht berechtigt, diesen Befehl auszuführen."
+
+#: commandsbuttons\commandsbuttons.py:275
+#, docstring
+msgid "Add a command-button to a message.\n\n"
+"        `primary`: 1\n"
+"        `secondary`: 2\n"
+"        `success`: 3\n"
+"        `danger`: 4\n"
+"        # Aliases\n"
+"        `blurple`: 1\n"
+"        `grey`: 2\n"
+"        `gray`: 2\n"
+"        `green`: 3\n"
+"        `red`: 4\n"
+"        "
+msgstr "Hinzufügen einer Befehlsschaltfläche zu einer Nachricht.\n\n"
+"        `primär`: 1\n"
+"        `Sekundär`: 2\n"
+"        `Erfolg`: 3\n"
+"        `Gefahr`: 4\n"
+"        # Aliase\n"
+"        `blurple`: 1\n"
+"        `grey`: 2\n"
+"        `gray`: 2\n"
+"        `green`: 3\n"
+"        `red`: 4\n"
+"        "
+
+#: commandsbuttons\commandsbuttons.py:290
+#: commandsbuttons\commandsbuttons.py:354
+#: commandsbuttons\commandsbuttons.py:408
+msgid "I have to be the author of the message for the command-button to work."
+msgstr "Damit die Befehlsschaltfläche funktioniert, muss ich der Verfasser der Nachricht sein."
+
+#: commandsbuttons\commandsbuttons.py:300
+#: commandsbuttons\commandsbuttons.py:368
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "Ich habe keine ausreichenden Berechtigungen für den Kanal, in dem sich die von Ihnen angegebene Nachricht befindet.\n"
+"Ich brauche die Berechtigung, um die Nachrichten in diesem Kanal zu sehen."
+
+#: commandsbuttons\commandsbuttons.py:310
+msgid "You have not specified a correct command."
+msgstr "Sie haben keinen korrekten Befehl angegeben."
+
+#: commandsbuttons\commandsbuttons.py:317
+msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Das von Ihnen ausgewählte Emoji scheint ungültig zu sein. Prüfen Sie, ob es sich um ein Emoji handelt. Wenn Sie Nitro haben, haben Sie möglicherweise ein benutzerdefiniertes Emoji von einem anderen Server verwendet."
+
+#: commandsbuttons\commandsbuttons.py:326
+msgid "I can't do more than 25 commands-buttons for one message."
+msgstr "Ich kann nicht mehr als 25 Befehlsschaltflächen für eine Nachricht verwenden."
+
+#: commandsbuttons\commandsbuttons.py:348
+#, docstring
+msgid "Add commands-buttons to a message.\n\n"
+"        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
+"        "
+msgstr "Befehle-Schaltflächen zu einer Nachricht hinzufügen.\n\n"
+"        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
+"        "
+
+#: commandsbuttons\commandsbuttons.py:358
+msgid "You have not specified any valid command-button."
+msgstr "Sie haben keine gültige Befehlsschaltfläche angegeben."
+
+#: commandsbuttons\commandsbuttons.py:378
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Ein von Ihnen ausgewähltes Emoji scheint ungültig zu sein. Prüfen Sie, ob es sich um ein Emoji handelt. Wenn Sie Nitro haben, haben Sie möglicherweise ein benutzerdefiniertes Emoji von einem anderen Server verwendet."
+
+#: commandsbuttons\commandsbuttons.py:387
+msgid "I can't do more than 25 roles-buttons for one message."
+msgstr "Ich kann nicht mehr als 25 Rollen-Buttons für eine Nachricht."
+
+#: commandsbuttons\commandsbuttons.py:405
+#, docstring
+msgid "Remove a command-button to a message."
+msgstr "Entfernen Sie eine Befehlsschaltfläche aus einer Nachricht."
+
+#: commandsbuttons\commandsbuttons.py:413
+#: commandsbuttons\commandsbuttons.py:444
+msgid "No command-button is configured for this message."
+msgstr "Für diese Nachricht ist keine Befehlsschaltfläche konfiguriert."
+
+#: commandsbuttons\commandsbuttons.py:417
+msgid "I wasn't watching for this button on this message."
+msgstr "Ich habe nicht auf diese Schaltfläche in dieser Nachricht geachtet."
+
+#: commandsbuttons\commandsbuttons.py:436
+#, docstring
+msgid "Clear all commands-buttons to a message."
+msgstr "Löschen Sie alle Befehlsschaltflächen zu einer Nachricht."
+
+#: commandsbuttons\commandsbuttons.py:439
+msgid "I have to be the author of the message for the role-button to work."
+msgstr "Ich muss der Verfasser der Nachricht sein, damit die Rollen-Buttons funktionieren."
+
+#: commandsbuttons\commandsbuttons.py:458
+#, docstring
+msgid "Clear all commands-buttons to a **guild**."
+msgstr "Löschen Sie alle Befehlsschaltflächen zu einer **Gilde**."
+
+#: commandsbuttons\converters.py:35
+msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
+msgstr "Emoji Rolle muss ein Emoji sein, gefolgt von einer Rolle, die entweder durch `;`, `,`, `|` oder `-` getrennt wird."
+

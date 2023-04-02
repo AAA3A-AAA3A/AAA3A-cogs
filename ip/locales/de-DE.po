@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-02 21:52\n"
+"Last-Translator: \n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: de\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/ip/locales/messages.pot\n"
+"X-Crowdin-File-ID: 88\n"
+"Language: de_DE\n"
+
+#: ip\ip.py:27
+#, docstring
+msgid "A cog to get the ip address of the bot!"
+msgstr "Ein Zahnrad, um die IP-Adresse des Bots zu erhalten!"
+
+#: ip\ip.py:73
+#, docstring
+msgid "Get the ip address of the bot."
+msgstr "Ermitteln Sie die IP-Adresse des Bots."
+
+#: ip\ip.py:78
+msgid "The ip address of your bot is `{ip}`."
+msgstr "Die IP-Adresse deines Bots lautet `{ip}`."
+
+#: ip\ip.py:82
+#, docstring
+msgid "Get the ip address website."
+msgstr "Holen Sie sich die IP-Adresse der Website."
+
+#: ip\ip.py:90
+msgid "The Administrator Panel website is http://{ip}:{port}/."
+msgstr "Die Website des Administrationspanels ist http://{ip}:{port}/."
+

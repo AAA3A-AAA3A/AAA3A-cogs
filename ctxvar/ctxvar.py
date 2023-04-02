@@ -73,11 +73,7 @@ class CtxVar(Cog):
             full_instance_name = bold(f"{full_instance_name[:248]}|...")
         embed: discord.Embed = discord.Embed()
         embed.title = f"**{full_instance_name}**"
-        embed.description = _(
-            _(
-                "Here are all the variables and their associated values that can be used in this instance class."
-            )
-        )
+        embed.description = _("Here are all the variables and their associated values that can be used in this instance class.")
         embed.color = 0x01D758
         embed.set_thumbnail(
             url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/2048px-Python-logo-notext.svg.png"

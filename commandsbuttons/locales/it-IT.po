@@ -1,0 +1,149 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-03 19:20\n"
+"Last-Translator: \n"
+"Language-Team: Italian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: it\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/commandsbuttons/locales/messages.pot\n"
+"X-Crowdin-File-ID: 181\n"
+"Language: it_IT\n"
+
+#: commandsbuttons\commandsbuttons.py:38
+#, docstring
+msgid "A cog to allow a user to execute a command by clicking on a button!"
+msgstr "Un ingranaggio per consentire all'utente di eseguire un comando facendo clic su un pulsante!"
+
+#: commandsbuttons\commandsbuttons.py:112
+#: commandsbuttons\commandsbuttons.py:187
+msgid "This message is not in Config."
+msgstr "Questo messaggio non è in Config."
+
+#: commandsbuttons\commandsbuttons.py:144
+#: commandsbuttons\commandsbuttons.py:208
+msgid "This emoji is not in Config."
+msgstr "Questa emoji non è in Config."
+
+#: commandsbuttons\commandsbuttons.py:157
+#: commandsbuttons\commandsbuttons.py:219
+msgid "The command don't exist."
+msgstr "Il comando non esiste."
+
+#: commandsbuttons\commandsbuttons.py:161
+#: commandsbuttons\commandsbuttons.py:223
+msgid "You are not allowed to execute this command."
+msgstr "Non è possibile eseguire questo comando."
+
+#: commandsbuttons\commandsbuttons.py:275
+#, docstring
+msgid "Add a command-button to a message.\n\n"
+"        `primary`: 1\n"
+"        `secondary`: 2\n"
+"        `success`: 3\n"
+"        `danger`: 4\n"
+"        # Aliases\n"
+"        `blurple`: 1\n"
+"        `grey`: 2\n"
+"        `gray`: 2\n"
+"        `green`: 3\n"
+"        `red`: 4\n"
+"        "
+msgstr "Aggiungere un pulsante di comando a un messaggio.\n\n"
+"        `primario': 1\n"
+"        `secondario`: 2\n"
+"        `successo`: 3\n"
+"        `pericolo`: 4\n"
+"        # Alias\n"
+"        `blurple`: 1\n"
+"        `grigio`: 2\n"
+"        `grigio`: 2\n"
+"        `verde`: 3\n"
+"        `rosso`: 4\n"
+"        "
+
+#: commandsbuttons\commandsbuttons.py:290
+#: commandsbuttons\commandsbuttons.py:354
+#: commandsbuttons\commandsbuttons.py:408
+msgid "I have to be the author of the message for the command-button to work."
+msgstr "Devo essere l'autore del messaggio perché il pulsante di comando funzioni."
+
+#: commandsbuttons\commandsbuttons.py:300
+#: commandsbuttons\commandsbuttons.py:368
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "Non ho i permessi sufficienti sul canale in cui si trova il messaggio specificato.\n"
+"Ho bisogno dei permessi per vedere i messaggi in quel canale."
+
+#: commandsbuttons\commandsbuttons.py:310
+msgid "You have not specified a correct command."
+msgstr "Non è stato specificato un comando corretto."
+
+#: commandsbuttons\commandsbuttons.py:317
+msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "L'emoji selezionata non sembra valida. Verificare che si tratti di un emoji. Se si dispone di Nitro, è possibile che sia stata utilizzata un'emoji personalizzata da un altro server."
+
+#: commandsbuttons\commandsbuttons.py:326
+msgid "I can't do more than 25 commands-buttons for one message."
+msgstr "Non posso eseguire più di 25 comandi-bottoni per un messaggio."
+
+#: commandsbuttons\commandsbuttons.py:348
+#, docstring
+msgid "Add commands-buttons to a message.\n\n"
+"        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
+"        "
+msgstr "Aggiungere i pulsanti dei comandi a un messaggio.\n\n"
+"        ```[p]pulsanti di comando alla rinfusa <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"````\n"
+"        "
+
+#: commandsbuttons\commandsbuttons.py:358
+msgid "You have not specified any valid command-button."
+msgstr "Non è stato specificato alcun pulsante di comando valido."
+
+#: commandsbuttons\commandsbuttons.py:378
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Un'emoji selezionata non sembra valida. Verificare che si tratti di un emoji. Se si dispone di Nitro, è possibile che sia stata utilizzata un'emoji personalizzata da un altro server."
+
+#: commandsbuttons\commandsbuttons.py:387
+msgid "I can't do more than 25 roles-buttons for one message."
+msgstr "Non posso fare più di 25 ruoli-bottoni per un messaggio."
+
+#: commandsbuttons\commandsbuttons.py:405
+#, docstring
+msgid "Remove a command-button to a message."
+msgstr "Rimuovere un pulsante di comando da un messaggio."
+
+#: commandsbuttons\commandsbuttons.py:413
+#: commandsbuttons\commandsbuttons.py:444
+msgid "No command-button is configured for this message."
+msgstr "Per questo messaggio non è configurato alcun pulsante di comando."
+
+#: commandsbuttons\commandsbuttons.py:417
+msgid "I wasn't watching for this button on this message."
+msgstr "Non stavo cercando questo pulsante in questo messaggio."
+
+#: commandsbuttons\commandsbuttons.py:436
+#, docstring
+msgid "Clear all commands-buttons to a message."
+msgstr "Cancellare tutti i comandi-bottoni di un messaggio."
+
+#: commandsbuttons\commandsbuttons.py:439
+msgid "I have to be the author of the message for the role-button to work."
+msgstr "Devo essere l'autore del messaggio perché il pulsante del ruolo funzioni."
+
+#: commandsbuttons\commandsbuttons.py:458
+#, docstring
+msgid "Clear all commands-buttons to a **guild**."
+msgstr "Cancella tutti i comandi-bottoni di una **gilda**."
+
+#: commandsbuttons\converters.py:35
+msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
+msgstr "Emoji Il ruolo deve essere un'emoji seguita da un ruolo separato da `;`, `,`, `|` o `-`."
+

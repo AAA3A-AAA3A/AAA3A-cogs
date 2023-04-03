@@ -1,0 +1,81 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-03 20:01\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/getdocs/locales/messages.pot\n"
+"X-Crowdin-File-ID: 183\n"
+"Language: ja_JP\n"
+
+#: getdocs\getdocs.py:191
+msgid "This source doesn't exist."
+msgstr "このソースは存在しない。"
+
+#: getdocs\getdocs.py:197
+#, docstring
+msgid "A cog to get and display Sphinx docs! Use `[p]listsources` to get a list of all the available sources."
+msgstr "Sphinxのドキュメントを取得し、表示するためのコグです！[p]listsources`を使用すると、利用可能なすべてのソースのリストを取得することができます。"
+
+#: getdocs\getdocs.py:299
+msgid "Documentations cache is not yet built, building now."
+msgstr "ドキュメンテーションキャッシュはまだ構築されていません、現在構築中です。"
+
+#: getdocs\getdocs.py:364
+msgid "No results found."
+msgstr "結果は見つかりませんでした。"
+
+#: getdocs\getdocs.py:477
+#, docstring
+msgid "\n"
+"        Enable a documentations source.\n"
+"        "
+msgstr "\n"
+"        ドキュメンテーションソースを有効にします。\n"
+"        "
+
+#: getdocs\getdocs.py:482
+msgid "This source is already enabled."
+msgstr "このソースはすでに有効になっています。"
+
+#: getdocs\getdocs.py:495
+#, docstring
+msgid "\n"
+"        Disable a documentations source.\n"
+"        "
+msgstr "\n"
+"        ドキュメンテーションソースを無効化する。\n"
+"        "
+
+#: getdocs\getdocs.py:500
+msgid "This source is already disabled."
+msgstr "このソースはすでに無効になっています。"
+
+#: getdocs\getdocs.py:506
+#, docstring
+msgid "\n"
+"        Set the documentations source.\n\n"
+"        The default value was `discord.py`.\n"
+"        "
+msgstr "\n"
+"        ドキュメンテーションのソースを設定します。\n\n"
+"        デフォルトは `discord.py` です。\n"
+"        "
+
+#: getdocs\getdocs.py:513
+msgid "This source is disabled."
+msgstr "このソースは無効です。"
+
+#: getdocs\getdocs.py:1244
+msgid "RTFM caching isn't finished."
+msgstr "RTFMキャッシングは終わっていない。"
+

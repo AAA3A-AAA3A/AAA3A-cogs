@@ -1,0 +1,169 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-03 17:03\n"
+"Last-Translator: \n"
+"Language-Team: Polish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/discordmodals/locales/messages.pot\n"
+"X-Crowdin-File-ID: 84\n"
+"Language: pl_PL\n"
+
+#: discordmodals\discordmodals.py:32
+msgid "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)"
+msgstr "Błąd parsowania YAML. Proszę upewnić się, że format jest poprawny (walidator YAML może pomóc)"
+
+#: discordmodals\discordmodals.py:42
+msgid "The argument `/{arg}` is required in the root in the YAML."
+msgstr "Argument `/{arg}` jest wymagany w korzeniu w YAML."
+
+#: discordmodals\discordmodals.py:47
+msgid "The agument `/{arg}` is invalid in in the YAML. Check the spelling."
+msgstr "The agument `/{arg}` is invalid in in the YAML. Sprawdź pisownię."
+
+#: discordmodals\discordmodals.py:57
+msgid "The argument `/button/{arg}` is required in the YAML."
+msgstr "Argument `/button/{arg}` jest wymagany w YAML."
+
+#: discordmodals\discordmodals.py:62
+msgid "The agument `/button/{arg}` is invalid in the YAML. Check the spelling."
+msgstr "Agument `/button/{arg}` jest nieprawidłowy w YAML. Sprawdź pisownię."
+
+#: discordmodals\discordmodals.py:72 discordmodals\discordmodals.py:76
+msgid "The agument `/button/style` must be a number between 1 and 4."
+msgstr "Agument `/button/style` musi być liczbą pomiędzy 1 a 4."
+
+#: discordmodals\discordmodals.py:84
+msgid "The argument `/button/modal` must be a list of TextInputs."
+msgstr "Argument `/button/modal` musi być listą TextInputs."
+
+#: discordmodals\discordmodals.py:93
+msgid "The argument `/modal/{count}/{arg}` is required in the YAML."
+msgstr "Argument `/modal/{count}/{arg}` jest wymagany w YAML."
+
+#: discordmodals\discordmodals.py:100
+msgid "The agument `/modal/{count}/{arg}` is invalid in the YAML. Check the spelling."
+msgstr "Agument `/modal/{count}/{arg}` jest nieprawidłowy w YAML. Sprawdź pisownię."
+
+#: discordmodals\discordmodals.py:110 discordmodals\discordmodals.py:116
+msgid "The agument `/modal/{count}/style` must be a number between 1 and 2."
+msgstr "Agument `/modal/{count}/style` musi być liczbą pomiędzy 1 a 2."
+
+#: discordmodals\discordmodals.py:139
+msgid "The agument `/modal/{count}/required` must be a boolean (True or False)."
+msgstr "Agument `/modal/{count}/required` musi być booleanem (True lub False)."
+
+#: discordmodals\discordmodals.py:181
+#, docstring
+msgid "A cog to use Discord Modals, forms with graphic interface!"
+msgstr "Trybik do korzystania z Discord Modals, formularzy z interfejsem graficznym!"
+
+#: discordmodals\discordmodals.py:234 discordmodals\discordmodals.py:295
+msgid "Sorry. An error has occurred."
+msgstr "Przepraszam. Wystąpił błąd."
+
+#: discordmodals\discordmodals.py:250
+msgid "The channel in which I was to send the results of this Modal no longer exists. Please notify an administrator of this server."
+msgstr "Kanał, w którym miałem wysłać wyniki tego Modala już nie istnieje. Proszę powiadomić administratora tego serwera."
+
+#: discordmodals\discordmodals.py:262
+msgid "I don't have sufficient permissions in the destination channel (view channel, send messages, send embeds). Please notify an administrator of this server."
+msgstr "Nie mam wystarczających uprawnień w kanale docelowym (view channel, send messages, send embeds). Proszę powiadomić administratora tego serwera."
+
+#: discordmodals\discordmodals.py:299
+msgid "Thank you for sending this Modal!"
+msgstr "Dziękuję za przesłanie tego Modala!"
+
+#: discordmodals\discordmodals.py:324
+#, docstring
+msgid "Add a Modal to a message.\n"
+"        Use YAML syntax to set up everything.\n\n"
+"        **Example:**\n"
+"        ```\n"
+"        [p]discordmodals add 1234567890\n"
+"        title: Report a bug\n"
+"        button:\n"
+"          label: Report\n"
+"          emoji: ⚠️\n"
+"          style: 4 # blurple = 1, grey = 2, green = 3, red = 4\n"
+"        modal:\n"
+"          - label: What is the problem?\n"
+"            style: 2 # short = 1, paragraph = 2\n"
+"            required: True\n"
+"            default: None\n"
+"            placeholder: None\n"
+"            min_length: None\n"
+"            max_length: None\n"
+"        channel: general # id, mention, name\n"
+"        anonymous: False\n"
+"        messages:\n"
+"          error: Error!\n"
+"          done: Form submitted.\n"
+"        ```\n"
+"        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous` and `messages` are not required.\n"
+"        "
+msgstr "Dodaj Modal do wiadomości.\n"
+"        Użyj składni YAML, aby ustawić wszystko.\n\n"
+"        **Przykład:**\n"
+"        ```\n"
+"        [p]discordmodals add 1234567890\n"
+"        title: Zgłoś błąd\n"
+"        przycisk:\n"
+"          etykieta: Zgłoś\n"
+"          emoji: ⚠️\n"
+"          style: 4 # blurple = 1, grey = 2, green = 3, red = 4\n"
+"        modal:\n"
+"          - label: Co jest problemem?\n"
+"            style: 2 # short = 1, paragraph = 2\n"
+"            wymagane: True\n"
+"            default: None\n"
+"            placeholder: None\n"
+"            min_length: None\n"
+"            max_length: None\n"
+"        channel: general # id, mention, name\n"
+"        anonymous: False\n"
+"        messages:\n"
+"          error: Błąd!\n"
+"          wykonane: Formularz przesłany.\n"
+"        ``\n"
+"        Dane `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous` i `messages` nie są wymagane.\n"
+"        "
+
+#: discordmodals\discordmodals.py:353
+msgid "I have to be the author of the message for the button to work."
+msgstr "Muszę być autorem wiadomości, aby przycisk działał."
+
+#: discordmodals\discordmodals.py:357
+msgid "This message already has a Modal."
+msgstr "Ta wiadomość posiada już Modal."
+
+#: discordmodals\discordmodals.py:369
+msgid "Sorry. An error occurred when I tried to put the button on the message."
+msgstr "Przepraszam. Wystąpił błąd, gdy próbowałem umieścić przycisk na wiadomości."
+
+#: discordmodals\discordmodals.py:392
+#, docstring
+msgid "Remove a Modal to a message."
+msgstr "Usuń Modal do wiadomości."
+
+#: discordmodals\discordmodals.py:395
+msgid "I have to be the author of the message for the Modal to work."
+msgstr "Muszę być autorem wiadomości, aby Modal działał."
+
+#: discordmodals\discordmodals.py:399
+msgid "No Modal is configured for this message."
+msgstr "Dla tej wiadomości nie jest skonfigurowany żaden Modal."
+
+#: discordmodals\discordmodals.py:409
+#, docstring
+msgid "Clear all Modals to a **guild**."
+msgstr "Wyczyść wszystkie Modale do **gildii**."
+

@@ -1,0 +1,55 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-03 20:00\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/ctxvar/locales/messages.pot\n"
+"X-Crowdin-File-ID: 82\n"
+"Language: ja_JP\n"
+
+#: ctxvar\ctxvar.py:33
+#, docstring
+msgid "A cog to list and display the contents of all sub-functions of `ctx`!"
+msgstr "ctx`のすべてのサブファンクションの内容をリストアップして表示するためのコグである！"
+
+#: ctxvar\ctxvar.py:54
+#, docstring
+msgid "Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."
+msgstr "'ctx' クラスのインスタンスまたはそのサブアトリビュートのすべての属性とその値の一覧を表示する。"
+
+#: ctxvar\ctxvar.py:58 ctxvar\ctxvar.py:123 ctxvar\ctxvar.py:179
+msgid "The cog Dev must be loaded, to make sure you know what you are doing."
+msgstr "コグ・デヴは、必ず、読み込む必要があります。"
+
+#: ctxvar\ctxvar.py:69
+msgid "The argument you specified is not a subclass of the instance."
+msgstr "指定した引数は、インスタンスのサブクラスではありません。"
+
+#: ctxvar\ctxvar.py:76
+msgid "Here are all the variables and their associated values that can be used in this instance class."
+msgstr "このインスタンスクラスで使用できるすべての変数とその関連値です。"
+
+#: ctxvar\ctxvar.py:119
+#, docstring
+msgid "Display a list of all attributes of the provided object (debug not async)."
+msgstr "提供されたオブジェクトのすべての属性のリストを表示する（非同期でないデバッグ）。"
+
+#: ctxvar\ctxvar.py:140 ctxvar\ctxvar.py:196
+msgid "I couldn't find any cog, command, or object named `{thing}`."
+msgstr "{thing}`という名前の歯車、コマンド、オブジェクトは見つかりませんでした。"
+
+#: ctxvar\ctxvar.py:175
+#, docstring
+msgid "Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."
+msgstr "提供されたオブジェクトに対して `rich.help(obj=object, ...)` を実行する（非同期でなくデバッグ）。"
+

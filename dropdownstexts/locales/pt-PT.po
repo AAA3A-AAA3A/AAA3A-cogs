@@ -1,0 +1,100 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-03 17:04\n"
+"Last-Translator: \n"
+"Language-Team: Portuguese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pt-PT\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/dropdownstexts/locales/messages.pot\n"
+"X-Crowdin-File-ID: 158\n"
+"Language: pt_PT\n"
+
+#: dropdownstexts\converters.py:35
+msgid "Dropdown Text must be an emoji, followed by a label and a text, separated by either `;`, `,`, `|`, or `-`."
+msgstr "Dropdown Text deve ser um emoji, seguido por uma etiqueta e um texto, separados por `;`, `,`, `|`, ``, ou `-``."
+
+#: dropdownstexts\dropdownstexts.py:35
+#, docstring
+msgid "A cog to have dropdowns-texts!"
+msgstr "Uma engrenagem para ter textos de dropdowns-texts!"
+
+#: dropdownstexts\dropdownstexts.py:98 dropdownstexts\dropdownstexts.py:165
+msgid "This message is not in Config."
+msgstr "Esta mensagem não se encontra em Config."
+
+#: dropdownstexts\dropdownstexts.py:125 dropdownstexts\dropdownstexts.py:188
+msgid "This emoji is not in Config."
+msgstr "Este emoji não está em Configuração."
+
+#: dropdownstexts\dropdownstexts.py:230
+#, docstring
+msgid "Add a dropdown-text to a message."
+msgstr "Acrescentar um texto de dropdown a uma mensagem."
+
+#: dropdownstexts\dropdownstexts.py:233 dropdownstexts\dropdownstexts.py:296
+#: dropdownstexts\dropdownstexts.py:363 dropdownstexts\dropdownstexts.py:394
+msgid "I have to be the author of the message for the role-button to work."
+msgstr "Tenho de ser o autor da mensagem para que o botão de papel funcione."
+
+#: dropdownstexts\dropdownstexts.py:243 dropdownstexts\dropdownstexts.py:306
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "Não tenho permissões suficientes no canal onde se encontra a mensagem que especificou.\n"
+"Preciso das permissões para ver as mensagens nesse canal."
+
+#: dropdownstexts\dropdownstexts.py:251
+msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "O emoji que seleccionou parece inválido. Verifique se se trata de um emoji. Se tiver Nitro, poderá ter utilizado um emoji personalizado de outro servidor."
+
+#: dropdownstexts\dropdownstexts.py:257 dropdownstexts\dropdownstexts.py:323
+msgid "Custom emojis are not supported by Dislash for dropdown menu options. Please wait for Red 3.5 with dpy2."
+msgstr "Os emojis personalizados não são suportados por Dislash para opções de menu dropdown. Por favor aguarde pelo Vermelho 3.5 com dpy2."
+
+#: dropdownstexts\dropdownstexts.py:266 dropdownstexts\dropdownstexts.py:332
+msgid "I can't do more than 25 dropdown-texts for one message."
+msgstr "Não posso fazer mais de 25 textos para uma mensagem."
+
+#: dropdownstexts\dropdownstexts.py:293
+#, docstring
+msgid "Add dropdown-texts to a message."
+msgstr "Acrescentar textos de dropdown-texts a uma mensagem."
+
+#: dropdownstexts\dropdownstexts.py:315
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Um emoji que seleccionou parece inválido. Verifique se se trata de um emoji. Se tiver Nitro, poderá ter usado um emoji personalizado de outro servidor."
+
+#: dropdownstexts\dropdownstexts.py:360
+#, docstring
+msgid "Remove a dropdown-text to a message."
+msgstr "Remover um texto de texto suspenso para uma mensagem."
+
+#: dropdownstexts\dropdownstexts.py:368 dropdownstexts\dropdownstexts.py:399
+msgid "No dropdown-texts is configured for this message."
+msgstr "Não está configurado nenhum texto dropdown-texts para esta mensagem."
+
+#: dropdownstexts\dropdownstexts.py:372
+msgid "I wasn't watching for this dropdown-text on this message."
+msgstr "Eu não estava atento a este texto de entrega sobre esta mensagem."
+
+#: dropdownstexts\dropdownstexts.py:391
+#, docstring
+msgid "Clear a dropdown-texts to a message."
+msgstr "Limpar os textos para uma mensagem."
+
+#: dropdownstexts\dropdownstexts.py:413
+#, docstring
+msgid "Clear all dropdowns-texts to a **guild**."
+msgstr "Limpar todos os textos de dropdowns para um **guild***."
+
+#: dropdownstexts\dropdownstexts.py:442 dropdownstexts\dropdownstexts.py:472
+msgid "Select an option."
+msgstr "Seleccione uma opção."
+

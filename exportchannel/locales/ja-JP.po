@@ -1,0 +1,135 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-03 20:01\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/exportchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 146\n"
+"Language: ja_JP\n"
+
+#: exportchannel\exportchannel.py:25
+msgid "Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\n"
+"Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"There are {count_messages} exported messages.\n"
+"Remember that exporting other users' messages from Discord does not respect the TOS."
+msgstr "こちらは、チャンネル {channel.mention} ({channel.id}) のメッセージのトランスクリプトの html ファイルです。\n"
+"注意：すべての添付ファイルとユーザーアバターは、このファイル内のDiscordリンクで保存されます。\n"
+" {count_messages} エクスポートされたメッセージがあります。\n"
+"Discordから他のユーザーのメッセージをエクスポートすることは、TOSを尊重しないことを忘れないでください。"
+
+#: exportchannel\exportchannel.py:26
+msgid "[Click here to view the transcript.]({url})"
+msgstr "[記録はこちら]({url})"
+
+#: exportchannel\exportchannel.py:31
+#, docstring
+msgid "A cog to export all or part of a channel's messages to an html file!"
+msgstr "チャンネルのメッセージの全部または一部をhtmlファイルに書き出すためのコグです！"
+
+#: exportchannel\exportchannel.py:45
+msgid "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
+msgstr "申し訳ありませんが、 {channel.mention} ({channel.id}) のメッセージの内容は読めません。"
+
+#: exportchannel\exportchannel.py:75
+msgid "Sorry. I could not find any message."
+msgstr "すみません。メッセージは見つかりませんでした。"
+
+#: exportchannel\exportchannel.py:146
+#, docstring
+msgid "Export all of a channel's messages to an html file.\n\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "チャンネルの全メッセージをhtmlファイルにエクスポートします。\n\n"
+"        注意：すべての添付ファイルとユーザーアバターは、このファイル内のDiscordリンクと一緒に保存されます。\n"
+"        Discordから他のユーザーのメッセージをエクスポートすることは、TOSを尊重しないことを忘れないでください。\n"
+"        "
+
+#: exportchannel\exportchannel.py:175
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the number of messages since the end of the channel.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "チャンネルのメッセージの一部を html ファイルに書き出す。\n\n"
+"        チャンネル終了時からのメッセージ数を指定します。\n"
+"        注意：すべての添付ファイルとユーザーアバターは、このファイル内のDiscordリンクと一緒に保存されます。\n"
+"        Discordから他のユーザーのメッセージをエクスポートすることは、TOSを尊重しないことを忘れないでください。\n"
+"        "
+
+#: exportchannel\exportchannel.py:212
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the before message (id or link).\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "チャンネルのメッセージの一部をhtmlファイルに書き出す。\n\n"
+"        ビフォアメッセージ（idまたはリンク）を指定します。\n"
+"        注意：すべての添付ファイルとユーザーアバターは、このファイル内のDiscordリンクとともに保存されます。\n"
+"        Discordから他のユーザーのメッセージをエクスポートすることは、TOSを尊重しないことを忘れないでください。\n"
+"        "
+
+#: exportchannel\exportchannel.py:247
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the after message (id or link).\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "チャンネルのメッセージの一部をhtmlファイルに書き出す。\n\n"
+"        メッセージの後を指定する（IDまたはリンク）。\n"
+"        注意：すべての添付ファイルとユーザーアバターは、このファイル内のDiscordリンクとともに保存されます。\n"
+"        Discordから他のユーザーのメッセージをエクスポートすることは、TOSを尊重しないことを忘れないでください。\n"
+"        "
+
+#: exportchannel\exportchannel.py:283
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the before and after messages (id or link).\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "チャンネルのメッセージの一部をhtmlファイルに書き出す。\n\n"
+"        メッセージの前後を指定します（idまたはlink）。\n"
+"        注意：すべての添付ファイルとユーザーアバターは、このファイル内のDiscordリンクとともに保存されます。\n"
+"        Discordから他のユーザーのメッセージをエクスポートすることは、TOSを尊重しないことを忘れないでください。\n"
+"        "
+
+#: exportchannel\exportchannel.py:319
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the member (id, name or mention).\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "チャンネルのメッセージの一部をhtmlファイルに書き出す。\n\n"
+"        メンバー（id、name、mention）を指定します。\n"
+"        注意：すべての添付ファイルとユーザーアバターは、このファイル内のDiscordリンクと一緒に保存されます。\n"
+"        Discordから他のユーザーのメッセージをエクスポートすることは、TOSを尊重しないことを忘れないでください。\n"
+"        "
+
+#: exportchannel\exportchannel.py:358
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the bool option.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "チャンネルのメッセージの一部をhtmlファイルに書き出す。\n\n"
+"        boolオプションを指定します。\n"
+"        注意：すべての添付ファイルとユーザーアバターは、このファイルのDiscordリンクとともに保存されます。\n"
+"        Discordから他のユーザーのメッセージをエクスポートすることは、TOSを尊重しないことを忘れないでください。\n"
+"        "
+

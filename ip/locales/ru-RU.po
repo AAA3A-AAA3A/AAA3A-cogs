@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-03 16:47\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/ip/locales/messages.pot\n"
+"X-Crowdin-File-ID: 88\n"
+"Language: ru_RU\n"
+
+#: ip\ip.py:27
+#, docstring
+msgid "A cog to get the ip address of the bot!"
+msgstr "Коготь для получения ip-адреса бота!"
+
+#: ip\ip.py:73
+#, docstring
+msgid "Get the ip address of the bot."
+msgstr "Получите ip-адрес бота."
+
+#: ip\ip.py:78
+msgid "The ip address of your bot is `{ip}`."
+msgstr "ip-адрес вашего бота - `{ip}`."
+
+#: ip\ip.py:82
+#, docstring
+msgid "Get the ip address website."
+msgstr "Получите ip-адрес веб-сайта."
+
+#: ip\ip.py:90
+msgid "The Administrator Panel website is http://{ip}:{port}/."
+msgstr "Веб-сайт панели администратора: http://{ip}:{port}/."
+

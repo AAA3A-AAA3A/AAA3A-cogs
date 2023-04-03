@@ -1,0 +1,92 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-03 20:00\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/cmdchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 80\n"
+"Language: ja_JP\n"
+
+#: cmdchannel\cmdchannel.py:24
+#, docstring
+msgid "A cog to send the result of a command to another channel!"
+msgstr "コマンドの結果を別のチャンネルに送るためのコグ！"
+
+#: cmdchannel\cmdchannel.py:80
+#, docstring
+msgid "Act as if the command had been typed in the channel of your choice.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
+"        If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).\n\n"
+"        Use `[p]cmdchannel`!\n"
+"        "
+msgstr "選択したチャンネルでコマンドが入力されたように動作します。\n"
+"        コマンドの場合はプレフィックスを入力してはならない。コマンドが無効な場合は、メッセージのみとなります。\n"
+"        チャンネルを指定しない場合、使用したいコマンドが既存のチャンネル名（例えばhelpやtest）でない限り、現在のチャンネルが使用されます。\n\n"
+"[p]cmdchannel`を使用してください！\n"
+"        "
+
+#: cmdchannel\cmdchannel.py:89 cmdchannel\cmdchannel.py:158
+msgid "To send commands to another server, you must be there."
+msgstr "他のサーバーにコマンドを送るには、その場にいる必要があります。"
+
+#: cmdchannel\cmdchannel.py:112
+#, docstring
+msgid "Act as if the command had been typed by imitating the specified user.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
+"        If you do not specify a user, the author will be used.\n\n"
+"        Use `[p]cmduser`!\n"
+"        "
+msgstr "指定されたユーザーの真似をして、コマンドが入力されたように動作する。\n"
+"        コマンドの場合、接頭辞は入力してはいけない。コマンドが無効な場合は、メッセージのみとなります。\n"
+"        ユーザーを指定しない場合は、authorが使われます。\n\n"
+"[p]cmduser`を使用してください．\n"
+"        "
+
+#: cmdchannel\cmdchannel.py:122 cmdchannel\cmdchannel.py:163
+msgid "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
+msgstr "他のユーザーとしてコマンドを実行できるようにするには、cog Devをロードして、自分が何をしているかを確認する必要があります。"
+
+#: cmdchannel\cmdchannel.py:145
+#, docstring
+msgid "Act as if the command had been typed in the channel of your choice by imitating the specified user.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
+"        If you do not specify a user, the author will be used.\n\n"
+"        Use `[p]cmduserchannel`!\n"
+"        "
+msgstr "指定されたユーザーの真似をして、希望のチャンネルでコマンドが入力されたように動作します。\n"
+"        コマンドの場合、接頭辞は入力してはいけない。コマンドが無効な場合は、メッセージのみとなります。\n"
+"        ユーザを指定しない場合は、作者が使われます。\n\n"
+"[p]cmduserchannel`を使用してください！\n"
+"        "
+
+#: cmdchannel\cmdchannel.py:179
+#, docstring
+msgid "Test variables."
+msgstr "テスト変数。"
+
+#: cmdchannel\cmdchannel.py:181
+msgid "Testvar"
+msgstr "テストバー"
+
+#: cmdchannel\cmdchannel.py:182
+msgid "Variables:"
+msgstr "変数です："
+
+#: cmdchannel\cmdchannel.py:183
+msgid "Author:"
+msgstr "著者"
+
+#: cmdchannel\cmdchannel.py:184
+msgid "Channel:"
+msgstr "チャンネルです："
+

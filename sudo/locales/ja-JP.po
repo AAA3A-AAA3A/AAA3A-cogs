@@ -1,0 +1,62 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-03 20:01\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/sudo/locales/messages.pot\n"
+"X-Crowdin-File-ID: 100\n"
+"Language: ja_JP\n"
+
+#: sudo\sudo.py:50
+#, docstring
+msgid "A cog to allow bot owners to be normal users in terms of permissions!"
+msgstr "ボットオーナーが権限的に通常のユーザーになれるようにするためのコト！"
+
+#: sudo\sudo.py:118
+#, docstring
+msgid "Sudo as the owner of the bot.\n\n"
+"        Use `[p]su`!\n"
+"        "
+msgstr "須藤をbotのオーナーにする。\n\n"
+"[p]su`を使用します！\n"
+"        "
+
+#: sudo\sudo.py:127
+#, docstring
+msgid "Unsudo as normal user.\n\n"
+"        Use `[p]unsu`!\n"
+"        "
+msgstr "通常ユーザーでunsudoする。\n\n"
+"[p]unsu`を使用します！\n"
+"        "
+
+#: sudo\sudo.py:138
+#, docstring
+msgid "Rise as the bot owner for the specified command only.\n\n"
+"        Use `[p]sudo`!\n"
+"        "
+msgstr "指定したコマンドのみボットオーナーとして立ち上がります。\n\n"
+"[p]sudo`を使用します！\n"
+"        "
+
+#: sudo\sudo.py:167
+#, docstring
+msgid "Sudo as the owner of the bot for the specified timeout.\n"
+"        The time should be between 10 seconds and 1 day.\n\n"
+"        Use `[p]sutimeout`!\n"
+"        "
+msgstr "指定されたタイムアウトの間、ボットのオーナーとしてSudoを使用します。\n"
+"        時間は10秒から1日の間である必要があります。\n\n"
+"[p]sutimeout`を使用してください！\n"
+"        "
+

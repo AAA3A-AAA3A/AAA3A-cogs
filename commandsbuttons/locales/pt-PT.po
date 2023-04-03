@@ -1,0 +1,149 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-03 17:05\n"
+"Last-Translator: \n"
+"Language-Team: Portuguese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pt-PT\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/commandsbuttons/locales/messages.pot\n"
+"X-Crowdin-File-ID: 181\n"
+"Language: pt_PT\n"
+
+#: commandsbuttons\commandsbuttons.py:38
+#, docstring
+msgid "A cog to allow a user to execute a command by clicking on a button!"
+msgstr "Uma engrenagem para permitir a um utilizador executar um comando, clicando num botão!"
+
+#: commandsbuttons\commandsbuttons.py:112
+#: commandsbuttons\commandsbuttons.py:187
+msgid "This message is not in Config."
+msgstr "Esta mensagem não se encontra em Config."
+
+#: commandsbuttons\commandsbuttons.py:144
+#: commandsbuttons\commandsbuttons.py:208
+msgid "This emoji is not in Config."
+msgstr "Este emoji não está em Configuração."
+
+#: commandsbuttons\commandsbuttons.py:157
+#: commandsbuttons\commandsbuttons.py:219
+msgid "The command don't exist."
+msgstr "O comando não existe."
+
+#: commandsbuttons\commandsbuttons.py:161
+#: commandsbuttons\commandsbuttons.py:223
+msgid "You are not allowed to execute this command."
+msgstr "Não está autorizado a executar este comando."
+
+#: commandsbuttons\commandsbuttons.py:275
+#, docstring
+msgid "Add a command-button to a message.\n\n"
+"        `primary`: 1\n"
+"        `secondary`: 2\n"
+"        `success`: 3\n"
+"        `danger`: 4\n"
+"        # Aliases\n"
+"        `blurple`: 1\n"
+"        `grey`: 2\n"
+"        `gray`: 2\n"
+"        `green`: 3\n"
+"        `red`: 4\n"
+"        "
+msgstr "Acrescentar um botão de função a uma mensagem.\n\n"
+"        \"Primário\": 1\n"
+"        `secundário`: 2\n"
+"        `sucesso`: 3\n"
+"        `perigo`:: 4\n"
+"        # pseudónimos\n"
+"        `blurple`:: 1\n"
+"        `cinzento`: 2\n"
+"        `cinzento`: 2\n"
+"        `verde`: 3\n"
+"        `vermelho`:: 4\n"
+"        "
+
+#: commandsbuttons\commandsbuttons.py:290
+#: commandsbuttons\commandsbuttons.py:354
+#: commandsbuttons\commandsbuttons.py:408
+msgid "I have to be the author of the message for the command-button to work."
+msgstr "Tenho de ser o autor da mensagem para que o botão de comando funcione."
+
+#: commandsbuttons\commandsbuttons.py:300
+#: commandsbuttons\commandsbuttons.py:368
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "Não tenho permissões suficientes no canal onde se encontra a mensagem que especificou.\n"
+"Preciso das permissões para ver as mensagens nesse canal."
+
+#: commandsbuttons\commandsbuttons.py:310
+msgid "You have not specified a correct command."
+msgstr "Não especificou um comando correcto."
+
+#: commandsbuttons\commandsbuttons.py:317
+msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "O emoji que seleccionou parece inválido. Verifique se se trata de um emoji. Se tiver Nitro, poderá ter utilizado um emoji personalizado de outro servidor."
+
+#: commandsbuttons\commandsbuttons.py:326
+msgid "I can't do more than 25 commands-buttons for one message."
+msgstr "Não posso fazer mais de 25 comandos-botões para uma mensagem."
+
+#: commandsbuttons\commandsbuttons.py:348
+#, docstring
+msgid "Add commands-buttons to a message.\n\n"
+"        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
+"        "
+msgstr "Adicionar comandos-botões a uma mensagem.\n\n"
+"[p]\" comandos-botões em massa <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
+"        "
+
+#: commandsbuttons\commandsbuttons.py:358
+msgid "You have not specified any valid command-button."
+msgstr "Não especificou nenhum botão de comando válido."
+
+#: commandsbuttons\commandsbuttons.py:378
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Um emoji que seleccionou parece inválido. Verifique se se trata de um emoji. Se tiver Nitro, poderá ter usado um emoji personalizado de outro servidor."
+
+#: commandsbuttons\commandsbuttons.py:387
+msgid "I can't do more than 25 roles-buttons for one message."
+msgstr "Não posso fazer mais de 25 papéis-botões para uma mensagem."
+
+#: commandsbuttons\commandsbuttons.py:405
+#, docstring
+msgid "Remove a command-button to a message."
+msgstr "Remover um comando-botão para uma mensagem."
+
+#: commandsbuttons\commandsbuttons.py:413
+#: commandsbuttons\commandsbuttons.py:444
+msgid "No command-button is configured for this message."
+msgstr "Nenhum botão de comando está configurado para esta mensagem."
+
+#: commandsbuttons\commandsbuttons.py:417
+msgid "I wasn't watching for this button on this message."
+msgstr "Eu não estava atento a este botão nesta mensagem."
+
+#: commandsbuttons\commandsbuttons.py:436
+#, docstring
+msgid "Clear all commands-buttons to a message."
+msgstr "Limpar todos os comandos-botões a uma mensagem."
+
+#: commandsbuttons\commandsbuttons.py:439
+msgid "I have to be the author of the message for the role-button to work."
+msgstr "Tenho de ser o autor da mensagem para que o botão de papel funcione."
+
+#: commandsbuttons\commandsbuttons.py:458
+#, docstring
+msgid "Clear all commands-buttons to a **guild**."
+msgstr "Limpar todos os comandos-botões para um **guild***."
+
+#: commandsbuttons\converters.py:35
+msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
+msgstr "Emoji Role deve ser um emoji seguido por um papel separado por `;`, `,`, ```, ``, `-`, ou `-`."
+

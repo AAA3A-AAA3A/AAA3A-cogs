@@ -1,0 +1,128 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-03 17:04\n"
+"Last-Translator: \n"
+"Language-Team: Portuguese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pt-PT\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/editfile/locales/messages.pot\n"
+"X-Crowdin-File-ID: 86\n"
+"Language: pt_PT\n"
+
+#: editfile\editfile.py:38
+#, docstring
+msgid "A cog to get a file and replace it from its path from Discord!"
+msgstr "Uma engrenagem para obter um ficheiro e substituí-lo a partir do seu caminho a partir da Discord!"
+
+#: editfile\editfile.py:60
+#, docstring
+msgid "Get a file on the bot's host machine from its path.\n"
+"        `#L10` or `#L10-L30` is supported.\n"
+"        "
+msgstr "Obtenha um ficheiro na máquina anfitriã do bot a partir do seu caminho.\n"
+"        É suportado `#L10` ou `#L10-L30`.\n"
+"        "
+
+#: editfile\editfile.py:65 editfile\editfile.py:144
+msgid "Couldn't parse this input."
+msgstr "Não foi possível analisar este input."
+
+#: editfile\editfile.py:77
+msgid "Cowardly refusing to read a file with no size stat. (it may be empty, endless or inaccessible)."
+msgstr "Recusa-se cobardemente a ler um ficheiro sem tamanho stat. (pode estar vazio, infinito ou inacessível)."
+
+#: editfile\editfile.py:83
+msgid "Cowardly refusing to read a file >128MB."
+msgstr "Recusa-se cobardemente a ler um ficheiro >128MB."
+
+#: editfile\editfile.py:101 editfile\editfile.py:274 editfile\editfile.py:284
+#: editfile\editfile.py:297 editfile\editfile.py:308
+msgid "This file cannot be found on the host machine."
+msgstr "Este ficheiro não pode ser encontrado na máquina anfitriã."
+
+#: editfile\editfile.py:105 editfile\editfile.py:171 editfile\editfile.py:278
+#: editfile\editfile.py:288 editfile\editfile.py:301 editfile\editfile.py:312
+msgid "The path you specified refers to a directory, not a file."
+msgstr "O caminho que especificou refere-se a um directório, não a um ficheiro."
+
+#: editfile\editfile.py:126 editfile\editfile.py:162
+msgid "There are only {len_lines} lines in this file."
+msgstr "Existem apenas linhas {len_lines} neste ficheiro."
+
+#: editfile\editfile.py:131
+msgid "Here are the contents of the file `{path}`."
+msgstr "Aqui estão os conteúdos do ficheiro `{path}`."
+
+#: editfile\editfile.py:138
+#, docstring
+msgid "Replace a file on the bot's host machine from its path.\n"
+"        `#L10` or `#L10-L30` is supported.\n"
+"        "
+msgstr "Substituir um ficheiro na máquina anfitriã do bot pelo seu caminho.\n"
+"        É suportado `#L10` ou `#L10-L30`.\n"
+"        "
+
+#: editfile\editfile.py:167
+msgid "This original file cannot be found on the host machine."
+msgstr "Este ficheiro original não pode ser encontrado na máquina anfitriã."
+
+#: editfile\editfile.py:175
+msgid "You must send the command with an attachment that will be used to replace the original file."
+msgstr "Deve enviar o comando com um anexo que será utilizado para substituir o ficheiro original."
+
+#: editfile\editfile.py:200
+msgid "This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly."
+msgstr "Este é o ficheiro original/antigo disponível no caminho `{path}`. Normalmente, este ficheiro foi substituído correctamente."
+
+#: editfile\editfile.py:208
+#, docstring
+msgid "Get a cog directory on the bot's host machine from its name."
+msgstr "Obtenha um directório de engrenagens na máquina anfitriã do bot a partir do seu nome."
+
+#: editfile\editfile.py:211
+msgid "Could not find a cog with this name."
+msgstr "Não foi possível encontrar uma engrenagem com este nome."
+
+#: editfile\editfile.py:218
+msgid "This cog had its data directory removed."
+msgstr "Esta engrenagem teve o seu directório de dados removido."
+
+#: editfile\editfile.py:220
+msgid "This cog does not store any data."
+msgstr "Esta engrenagem não armazena quaisquer dados."
+
+#: editfile\editfile.py:241
+#, docstring
+msgid "List all files/directories of a directory from its path."
+msgstr "Listar todos os ficheiros/directórios de um directório a partir do seu caminho."
+
+#: editfile\editfile.py:245
+msgid "This directory cannot be found on the host machine."
+msgstr "Este directório não pode ser encontrado na máquina anfitriã."
+
+#: editfile\editfile.py:249
+msgid "The path you specified refers to a file, not a directory."
+msgstr "O caminho que especificou refere-se a um ficheiro, não a um directório."
+
+#: editfile\editfile.py:270
+#, docstring
+msgid "Rename a file."
+msgstr "Renomear um ficheiro."
+
+#: editfile\editfile.py:290 editfile\editfile.py:314
+msgid "The `{path}` file has been deleted."
+msgstr "O ficheiro `{path}` foi eliminado."
+
+#: editfile\editfile.py:294
+#, docstring
+msgid "Delete a file."
+msgstr "Apagar um ficheiro."
+

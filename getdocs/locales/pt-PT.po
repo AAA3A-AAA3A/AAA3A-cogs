@@ -1,0 +1,81 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-03 17:05\n"
+"Last-Translator: \n"
+"Language-Team: Portuguese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pt-PT\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/getdocs/locales/messages.pot\n"
+"X-Crowdin-File-ID: 183\n"
+"Language: pt_PT\n"
+
+#: getdocs\getdocs.py:191
+msgid "This source doesn't exist."
+msgstr "Esta fonte não existe."
+
+#: getdocs\getdocs.py:197
+#, docstring
+msgid "A cog to get and display Sphinx docs! Use `[p]listsources` to get a list of all the available sources."
+msgstr "Uma engrenagem para obter e exibir documentos Sphinx! Utilize `[p]listsources` para obter uma lista de todas as fontes disponíveis."
+
+#: getdocs\getdocs.py:299
+msgid "Documentations cache is not yet built, building now."
+msgstr "A cache de documentação ainda não está construída, construindo agora."
+
+#: getdocs\getdocs.py:364
+msgid "No results found."
+msgstr "Não foram encontrados resultados."
+
+#: getdocs\getdocs.py:477
+#, docstring
+msgid "\n"
+"        Enable a documentations source.\n"
+"        "
+msgstr "\n"
+"        Habilitar uma fonte de documentação.\n"
+"        "
+
+#: getdocs\getdocs.py:482
+msgid "This source is already enabled."
+msgstr "Esta fonte já está activada."
+
+#: getdocs\getdocs.py:495
+#, docstring
+msgid "\n"
+"        Disable a documentations source.\n"
+"        "
+msgstr "\n"
+"        Desactivar uma fonte de documentação.\n"
+"        "
+
+#: getdocs\getdocs.py:500
+msgid "This source is already disabled."
+msgstr "Esta fonte já está desactivada."
+
+#: getdocs\getdocs.py:506
+#, docstring
+msgid "\n"
+"        Set the documentations source.\n\n"
+"        The default value was `discord.py`.\n"
+"        "
+msgstr "\n"
+"        Definir a fonte da documentação.\n\n"
+"        O valor por defeito era `discord.py`.\n"
+"        "
+
+#: getdocs\getdocs.py:513
+msgid "This source is disabled."
+msgstr "Esta fonte está desactivada."
+
+#: getdocs\getdocs.py:1244
+msgid "RTFM caching isn't finished."
+msgstr "O caching RTFM não está terminado."
+

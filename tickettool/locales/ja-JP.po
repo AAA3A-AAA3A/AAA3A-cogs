@@ -1,0 +1,474 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-03 20:01\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/tickettool/locales/messages.pot\n"
+"X-Crowdin-File-ID: 102\n"
+"Language: ja_JP\n"
+
+#: tickettool\settings.py:30 tickettool\settings.py:33
+#: tickettool\tickettool.py:656 tickettool\tickettool.py:659
+#: tickettool\tickettool.py:678
+msgid "This panel does not exist."
+msgstr "このパネルは存在しません。"
+
+#: tickettool\settings.py:55
+#, docstring
+msgid "Send a message with a button to open a ticket or dropdown with possible reasons.\n\n"
+"        Example:\n"
+"        `[p]setticket message #general \"🐛|Report a bug|If you find a bug, report it here.|bug\" \"⚠️|Report a user|If you find a malicious user, report it here.|user\"`\n"
+"        `[p]setticket 1234567890-0987654321`\n"
+"        "
+msgstr "チケットを開くためのボタンや、考えられる理由のドロップダウンを持つメッセージを送信します。\n\n"
+"        例:\n"
+"        `[p]setticket message #general \"🐛|バグを見つけたらここに報告してください.|bug\" \"⚠️|Report a user|If you find a malicious user, report it here.|user\"`\n"
+"        `[p]setticket 1234567890-0987654321`\n"
+"        "
+
+#: tickettool\settings.py:67
+msgid "I have to be the author of the message for the interaction to work."
+msgstr "メッセージの作成者でなければ、インタラクションは機能しないのです。"
+
+#: tickettool\settings.py:96 tickettool\settings.py:174
+#: tickettool\tickettool.py:275
+msgid "Create ticket"
+msgstr "チケット作成"
+
+#: tickettool\settings.py:119 tickettool\settings.py:193
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "選択した絵文字が無効のようです。絵文字であることを確認してください。Nitroをご利用の場合、他のサーバーのカスタム絵文字を使用した可能性があります。"
+
+#: tickettool\settings.py:221 tickettool\tickettool.py:331
+msgid "Choose the reason for open a ticket."
+msgstr "チケットを開設する理由を選択します。"
+
+#: tickettool\ticket.py:99
+msgid "No reason provided."
+msgstr "理由は記載されていません。"
+
+#: tickettool\ticket.py:231
+msgid "Creating the ticket {ticket.id}."
+msgstr "チケットの作成 {ticket.id}."
+
+#: tickettool\ticket.py:258 tickettool\ticket.py:285 tickettool\ticket.py:515
+#: tickettool\ticket.py:546 tickettool\ticket.py:888 tickettool\ticket.py:919
+#: tickettool\ticket.py:987 tickettool\ticket.py:1018
+#: tickettool\tickettool.py:291
+msgid "Close"
+msgstr "閉じる"
+
+#: tickettool\ticket.py:265 tickettool\ticket.py:292 tickettool\ticket.py:522
+#: tickettool\ticket.py:553 tickettool\ticket.py:630 tickettool\ticket.py:661
+#: tickettool\ticket.py:895 tickettool\ticket.py:926 tickettool\ticket.py:994
+#: tickettool\ticket.py:1025 tickettool\tickettool.py:305
+msgid "Claim"
+msgstr "請求項"
+
+#: tickettool\ticket.py:272 tickettool\ticket.py:299 tickettool\ticket.py:529
+#: tickettool\ticket.py:560 tickettool\ticket.py:637 tickettool\ticket.py:668
+#: tickettool\ticket.py:902 tickettool\ticket.py:933 tickettool\ticket.py:1001
+#: tickettool\ticket.py:1032 tickettool\tickettool.py:312
+msgid "Delete"
+msgstr "削除"
+
+#: tickettool\ticket.py:310 tickettool\ticket.py:418
+msgid "Ticket Created"
+msgstr "チケット作成"
+
+#: tickettool\ticket.py:311
+msgid "Thank you for creating a ticket on this server!"
+msgstr "このサーバーでチケットを作成していただき、ありがとうございます！"
+
+#: tickettool\ticket.py:322 tickettool\ticket.py:959
+msgid "🎟️ Ticket ID: {ticket.id}\n"
+"🔥 Channel ID: {ticket.channel.id}\n"
+"🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+"☢️ Ticket reason: {ticket.reason}\n"
+"👥 Ticket claimed by: Nobody."
+msgstr "🎟️ チケットのIDです： {ticket.id}\n"
+"🔥 チャンネルID: {ticket.channel.id}\n"
+"🕵️ チケットの作成者：@{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+"☢️ チケット理由: {ticket.reason}\n"
+"㊙チケット請求者：誰もいない。"
+
+#: tickettool\ticket.py:419
+msgid "The ticket was created by {ticket.created_by}."
+msgstr "チケットは {ticket.created_by}で作成しました。"
+
+#: tickettool\ticket.py:424
+msgid "Report on the creation of the ticket {ticket.id}."
+msgstr "チケット作成レポート {ticket.id}."
+
+#: tickettool\ticket.py:467
+msgid "Opening the ticket {ticket.id}."
+msgstr "チケットの開封 {ticket.id}."
+
+#: tickettool\ticket.py:488 tickettool\ticket.py:496
+msgid "Ticket Opened"
+msgstr "チケット開封"
+
+#: tickettool\ticket.py:497
+msgid "The ticket was opened by {ticket.opened_by}."
+msgstr "チケットは {ticket.opened_by}から開封されました。"
+
+#: tickettool\ticket.py:502 tickettool\ticket.py:612
+msgid "Report on the close of the ticket {ticket.id}."
+msgstr "チケット終了のご報告 {ticket.id}."
+
+#: tickettool\ticket.py:623 tickettool\ticket.py:654
+#: tickettool\tickettool.py:298
+msgid "Re-open"
+msgstr "再オープン"
+
+#: tickettool\ticket.py:685 tickettool\ticket.py:719
+#: tickettool\tickettool.py:877 tickettool\tickettool.py:922
+msgid "Cannot execute action on a text channel."
+msgstr "テキストチャンネルでアクションを実行できない。"
+
+#: tickettool\ticket.py:711
+msgid "Report on the lock of the ticket {ticket.id}."
+msgstr "チケットのロックに関する報告 {ticket.id}."
+
+#: tickettool\ticket.py:745
+msgid "Report on the unlock of the ticket {ticket.id}."
+msgstr "チケットのロック解除に関するご報告 {ticket.id}."
+
+#: tickettool\ticket.py:756
+msgid "Renaming the ticket {ticket.id}. (`{ticket.channel.name}` to `{new_name}`)"
+msgstr "チケットの名前を変更する {ticket.id}. (`{ticket.channel.name}` から `{new_name}`)"
+
+#: tickettool\ticket.py:766
+msgid "Ticket Renamed."
+msgstr "チケットの名称を変更しました。"
+
+#: tickettool\ticket.py:782
+msgid "Ticket Deleted"
+msgstr "チケット削除"
+
+#: tickettool\ticket.py:783
+msgid "The ticket was deleted by {ticket.deleted_by}."
+msgstr "チケットは {ticket.deleted_by}によって削除されました。"
+
+#: tickettool\ticket.py:810
+msgid "Report on the deletion of the ticket {ticket.id}."
+msgstr "チケット削除のご報告 {ticket.id}."
+
+#: tickettool\ticket.py:829
+msgid "Deleting the ticket {ticket.id}."
+msgstr "チケットの削除 {ticket.id}."
+
+#: tickettool\ticket.py:844
+msgid "A ticket cannot be claimed if it is closed."
+msgstr "チケットが終了している場合は、請求できません。"
+
+#: tickettool\ticket.py:850
+msgid "Claiming the ticket {ticket.id}."
+msgstr "チケットの請求について {ticket.id}."
+
+#: tickettool\ticket.py:853
+msgid "A bot cannot claim a ticket."
+msgstr "ボットはチケットを請求することはできません。"
+
+#: tickettool\ticket.py:855
+msgid "🎟️ Ticket ID: {ticket.id}\n"
+"🔥 Channel ID: {ticket.channel.id}\n"
+"🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+"☢️ Ticket reason: {ticket.reason}\n"
+"👥 Ticket claimed by: @{ticket.claim.display_name} (@{ticket.claim.id})."
+msgstr "🎟️ チケットのIDです： {ticket.id}\n"
+"🔥 チャンネルID: {ticket.channel.id}\n"
+"🕵️ チケットの作成者：@{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+"☢️ チケット理由: {ticket.reason}\n"
+"㊙チケット請求者：@{ticket.claim.display_name} (@{ticket.claim.id}) です。"
+
+#: tickettool\ticket.py:950
+msgid "A ticket cannot be unclaimed if it is closed."
+msgstr "チケットが終了した場合、未請求にすることはできません。"
+
+#: tickettool\ticket.py:956
+msgid "Unclaiming the ticket {ticket.id}."
+msgstr "チケットのアンカリング {ticket.id}."
+
+#: tickettool\ticket.py:1049
+msgid "Cannot execute action on a thread channel."
+msgstr "スレッドチャネルでアクションを実行できません。"
+
+#: tickettool\ticket.py:1055
+msgid "Changing owner of the ticket {ticket.id}."
+msgstr "チケットの所有者を変更する {ticket.id}."
+
+#: tickettool\ticket.py:1061
+msgid "You cannot transfer ownership of a ticket to a bot."
+msgstr "チケットの所有権をボットに譲渡することはできません。"
+
+#: tickettool\ticket.py:1089
+msgid "Owner Modified."
+msgstr "オーナーモディファイドです。"
+
+#: tickettool\ticket.py:1101
+msgid "Adding a member to the ticket {ticket.id}."
+msgstr "チケットにメンバーを追加する {ticket.id}."
+
+#: tickettool\ticket.py:1115 tickettool\ticket.py:1150
+msgid "You cannot add a bot to a ticket. ({member})"
+msgstr "チケットにボットを追加することはできません。({member})"
+
+#: tickettool\ticket.py:1119 tickettool\ticket.py:1154
+msgid "This member is already the owner of this ticket. ({member})"
+msgstr "このメンバーはすでにこのチケットの所有者です。({member})"
+
+#: tickettool\ticket.py:1125 tickettool\ticket.py:1160
+msgid "This member is an administrator for the ticket system. They will always have access to the ticket anyway. ({member})"
+msgstr "このメンバーは、チケットシステムの管理者です。彼らは常にチケットにアクセスすることができます。({member})"
+
+#: tickettool\ticket.py:1131 tickettool\ticket.py:1166
+msgid "This member already has access to this ticket. ({member})"
+msgstr "このメンバーはすでにこのチケットにアクセスしています。({member})"
+
+#: tickettool\ticket.py:1182
+msgid "Removing a member to the ticket {ticket.id}."
+msgstr "チケットのメンバーを削除する {ticket.id}."
+
+#: tickettool\ticket.py:1199 tickettool\ticket.py:1230
+msgid "You cannot remove a bot to a ticket ({member})."
+msgstr "チケット（{member}）にボットを削除することはできません。"
+
+#: tickettool\ticket.py:1203 tickettool\ticket.py:1234
+msgid "You cannot remove the owner of this ticket. ({member})"
+msgstr "このチケットの所有者を削除することはできません。({member})"
+
+#: tickettool\ticket.py:1209 tickettool\ticket.py:1240
+msgid "This member is an administrator for the ticket system. They will always have access to the ticket. ({member})"
+msgstr "このメンバーは、チケットシステムの管理者です。彼らは常にチケットにアクセスすることができます。({member})"
+
+#: tickettool\ticket.py:1218 tickettool\ticket.py:1249
+msgid "This member is not in the list of those authorised to access the ticket. ({member})"
+msgstr "このメンバーは、チケットにアクセスする権限を持つ人のリストに含まれていません。({member})"
+
+#: tickettool\tickettool.py:42
+#, docstring
+msgid "A cog to manage a ticket system!"
+msgstr "チケットシステムを管理するための歯車です！"
+
+#: tickettool\tickettool.py:99
+msgid "To get help on this server or to make an order for example, you can create a ticket.\n"
+"Just use the command `{prefix}ticket create` or click on the button below.\n"
+"You can then use the `{prefix}ticket` subcommands to manage your ticket."
+msgstr "このサーバーでヘルプを得たり、注文をしたりするには、チケットを作成することができます。\n"
+"{prefix}ticket create`というコマンドを使うか、下のボタンをクリックするだけです。\n"
+"その後、`{prefix}ticket`サブコマンドを使用して、チケットを管理することができます。"
+
+#: tickettool\tickettool.py:445
+msgid "Action taken for the ticket system."
+msgstr "チケットシステムのアクションを行いました。"
+
+#: tickettool\tickettool.py:475
+msgid "Ticket ID:"
+msgstr "チケットIDです："
+
+#: tickettool\tickettool.py:478
+msgid "Owned by:"
+msgstr "所有されています："
+
+#: tickettool\tickettool.py:486
+msgid "Channel:"
+msgstr "チャンネルです："
+
+#: tickettool\tickettool.py:493
+msgid "Closed by:"
+msgstr "によって閉じられた："
+
+#: tickettool\tickettool.py:501
+msgid "Deleted by:"
+msgstr "によって削除された："
+
+#: tickettool\tickettool.py:509
+msgid "Closed at:"
+msgstr "で閉じた："
+
+#: tickettool\tickettool.py:512 tickettool\tickettool.py:534
+msgid "Reason:"
+msgstr "理由"
+
+#: tickettool\tickettool.py:519
+msgid "Ticket [{ticket.panel}] {ticket.id} - Action taken"
+msgstr "チケット [{ticket.panel}] {ticket.id} - アクションを実行しました。"
+
+#: tickettool\tickettool.py:675
+#, docstring
+msgid "Create a ticket."
+msgstr "チケットを作成します。"
+
+#: tickettool\tickettool.py:685
+msgid "The ticket system is not enabled on this server. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it."
+msgstr "このサーバーでは、チケットシステムが有効になっていません。このサーバの管理者に、`{ctx.prefix}ticketset` サブコマンドを使用して設定するよう依頼してください。"
+
+#: tickettool\tickettool.py:691
+msgid "The category `open` or the category `close` have not been configured. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it."
+msgstr "カテゴリ`open`またはカテゴリ`close`が設定されていません。このサーバーの管理者に、`{ctx.prefix}ticketset`サブコマンドを使用して設定するよう依頼してください。"
+
+#: tickettool\tickettool.py:698
+msgid "Sorry. You have already reached the limit of {limit} open tickets."
+msgstr "申し訳ありません。すでに {limit} のオープンチケットの上限に達しています。"
+
+#: tickettool\tickettool.py:708
+msgid "The bot does not have `manage_channels` permission on the `open` and `close` categories to allow the ticket system to function properly. Please notify an administrator of this server."
+msgstr "チケットシステムを正しく機能させるために、ボットは `open` と `close` カテゴリに `manage_channels` 権限を持っていません。このサーバーの管理者にお知らせください。"
+
+#: tickettool\tickettool.py:714
+msgid "The bot does not have `manage_channel` permission in the forum channel to allow the ticket system to function properly. Please notify an administrator of this server."
+msgstr "ボットには、チケットシステムを正しく機能させるための、フォーラムチャンネルの `manage_channel` 権限がありません。このサーバーの管理者にお知らせください。"
+
+#: tickettool\tickettool.py:738
+#, docstring
+msgid "Export all the messages of an existing ticket in html format.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        "
+msgstr "既存のチケットの全メッセージを html 形式でエクスポートします。\n"
+"        注意：すべての添付ファイルとユーザーアバターは、このファイル内のDiscordリンクとともに保存されます。\n"
+"        "
+
+#: tickettool\tickettool.py:760
+msgid "Here is the html file of the transcript of all the messages in this ticket.\n"
+"Please note: all attachments and user avatars are saved with the Discord link in this file."
+msgstr "このチケットのすべてのメッセージのトランスクリプトのhtmlファイルです。\n"
+"注意：すべての添付ファイルとユーザーアバターは、このファイル内のDiscordリンクで保存されます。"
+
+#: tickettool\tickettool.py:792
+#, docstring
+msgid "Open an existing ticket."
+msgstr "既存のチケットを開く。"
+
+#: tickettool\tickettool.py:797
+msgid "The ticket system is not enabled on this server."
+msgstr "このサーバーでは、チケットシステムは有効ではありません。"
+
+#: tickettool\tickettool.py:824
+#, docstring
+msgid "Close an existing ticket."
+msgstr "既存のチケットを閉じる。"
+
+#: tickettool\tickettool.py:835
+msgid "Do you really want to close the ticket {ticket.id}?"
+msgstr "本当にチケット {ticket.id}を閉めたいのですか？"
+
+#: tickettool\tickettool.py:874
+#, docstring
+msgid "Lock an existing ticket."
+msgstr "既存のチケットをロックする。"
+
+#: tickettool\tickettool.py:881
+msgid "Do you really want to lock the ticket {ticket.id}?"
+msgstr "チケットのロックは本当に必要なのか {ticket.id}?"
+
+#: tickettool\tickettool.py:919
+#, docstring
+msgid "Unlock an existing locked ticket."
+msgstr "ロックされているチケットのロックを解除します。"
+
+#: tickettool\tickettool.py:948
+#, docstring
+msgid "Rename an existing ticket."
+msgstr "既存のチケットの名前を変更する。"
+
+#: tickettool\tickettool.py:975
+#, docstring
+msgid "Delete an existing ticket.\n"
+"        If a log channel is defined, an html file containing all the messages of this ticket will be generated.\n"
+"        (Attachments are not supported, as they are saved with their Discord link)\n"
+"        "
+msgstr "既存のチケットを削除します。\n"
+"        ログチャンネルが定義されている場合、このチケットのすべてのメッセージを含む html ファイルが生成されます。\n"
+"        (添付ファイルは Discord リンクと一緒に保存されるため、サポートされていません。)\n"
+"        "
+
+#: tickettool\tickettool.py:983
+msgid "Do you really want to delete all the messages of the ticket {ticket.id}?"
+msgstr "本当にチケットのメッセージをすべて削除したいのですか {ticket.id}?"
+
+#: tickettool\tickettool.py:986
+msgid "If a log channel is defined, an html file containing all the messages of this ticket will be generated. (Attachments are not supported, as they are saved with their Discord link)"
+msgstr "ログチャンネルが定義されている場合、このチケットのすべてのメッセージを含む html ファイルが生成されます。(添付ファイルは、Discordのリンクと一緒に保存されるため、サポートされていません）。"
+
+#: tickettool\tickettool.py:1025
+#, docstring
+msgid "Claim an existing ticket."
+msgstr "既存のチケットを請求する。"
+
+#: tickettool\tickettool.py:1050
+#, docstring
+msgid "Unclaim an existing ticket."
+msgstr "既存のチケットのクレームを解除する。"
+
+#: tickettool\tickettool.py:1077
+#, docstring
+msgid "Change the owner of an existing ticket."
+msgstr "既存のチケットの所有者を変更する。"
+
+#: tickettool\tickettool.py:1105
+#, docstring
+msgid "Add a member to an existing ticket."
+msgstr "既存のチケットにメンバーを追加する。"
+
+#: tickettool\tickettool.py:1132
+#, docstring
+msgid "Remove a member to an existing ticket."
+msgstr "既存のチケットからメンバーを削除する。"
+
+#: tickettool\tickettool.py:1193 tickettool\tickettool.py:1366
+#: tickettool\tickettool.py:1451
+msgid "The panel for which this button was configured no longer exists."
+msgstr "このボタンが設定されていたパネルは、もう存在しません。"
+
+#: tickettool\tickettool.py:1207 tickettool\tickettool.py:1317
+#: tickettool\tickettool.py:1377 tickettool\tickettool.py:1466
+msgid "You are not allowed to execute this command."
+msgstr "このコマンドの実行は許可されていません。"
+
+#: tickettool\tickettool.py:1211 tickettool\tickettool.py:1380
+msgid "You have chosen to create a ticket."
+msgstr "チケットの作成を選択されました。"
+
+#: tickettool\tickettool.py:1240 tickettool\tickettool.py:1387
+msgid "You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+msgstr "あなたは、このチケットを閉じることを選択しました。このままでは、このコマンドを実行するのに必要な権限がないことになります。"
+
+#: tickettool\tickettool.py:1253 tickettool\tickettool.py:1400
+msgid "You have chosen to re-open this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+msgstr "あなたはこのチケットを再オープンすることを選択しました。このままでは、このコマンドを実行するのに必要な権限がないことになります。"
+
+#: tickettool\tickettool.py:1265 tickettool\tickettool.py:1412
+msgid "You have chosen to claim this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+msgstr "あなたは、このチケットを請求することを選択しました。このままでは、このコマンドを実行するために必要な権限がありません。"
+
+#: tickettool\tickettool.py:1293
+msgid "This message is not in TicketTool config."
+msgstr "このメッセージは、TicketToolの設定にはありません。"
+
+#: tickettool\tickettool.py:1302
+msgid "The panel for which this dropdown was configured no longer exists."
+msgstr "このドロップダウンが設定されたパネルは、もはや存在しません。"
+
+#: tickettool\tickettool.py:1336 tickettool\tickettool.py:1487
+msgid "You have chosen to create a ticket with the reason `{reason}`."
+msgstr "あなたは、理由 `{reason}` でチケットを作成することを選択しました。"
+
+#: tickettool\tickettool.py:1442
+msgid "This message is not in TicketTool Config."
+msgstr "このメッセージは、TicketTool Configにはありません。"
+
+#: tickettool\utils.py:105
+msgid "Emoji Label must be An emoji followed by an string, and optionnaly by a description and a value (for rename ticket channel), separated by either `;`, `,`, `|`, or `-`."
+msgstr "絵文字ラベルは、絵文字の後に文字列、さらにオプションで説明と値（チケットチャンネルの名前を変更する場合）を、`;`、`,`、`|`、`-`で区切って指定します。"
+

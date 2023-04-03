@@ -1,0 +1,132 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-03 19:19\n"
+"Last-Translator: \n"
+"Language-Team: Italian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: it\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/seen/locales/messages.pot\n"
+"X-Crowdin-File-ID: 150\n"
+"Language: it_IT\n"
+
+#: seen\seen.py:35
+#, docstring
+msgid "A cog to check when a member/role/channel/category/user/guild was last active!"
+msgstr "Una rotella per controllare quando un membro/ruolo/canale/categoria/utente/gilda è stato attivo l'ultima volta!"
+
+#: seen\seen.py:808 seen\seen.py:815
+msgid "@{_object.display_name} was seen {seen}."
+msgstr "@{_object.display_name} è stato visto {seen}."
+
+#: seen\seen.py:822
+msgid "The role @&{_object.name} was seen {seen}."
+msgstr "Il ruolo @&{_object.name} è stato visto {seen}."
+
+#: seen\seen.py:829
+msgid "The text channel #{_object.name} was seen {seen}."
+msgstr "Il canale di testo #{_object.name} è stato visto {seen}."
+
+#: seen\seen.py:836
+msgid "The category {_object.name} was seen {seen}."
+msgstr "La categoria {_object.name} è stata vista {seen}."
+
+#: seen\seen.py:843
+msgid "The guild {_object.name} was seen {seen}."
+msgstr "La gilda {_object.name} è stata vista {seen}."
+
+#: seen\seen.py:1097
+#, docstring
+msgid "Check when a member was last active!"
+msgstr "Controlla quando un membro è stato attivo per l'ultima volta!"
+
+#: seen\seen.py:1117
+#, docstring
+msgid "Check when a role was last active!"
+msgstr "Controllare quando un ruolo è stato attivo per l'ultima volta!"
+
+#: seen\seen.py:1136
+#, docstring
+msgid "Check when a channel was last active!"
+msgstr "Controllare quando un canale è stato attivo per l'ultima volta!"
+
+#: seen\seen.py:1143
+msgid "You do not have permission to view this channel."
+msgstr "Non hai il permesso di vedere questo canale."
+
+#: seen\seen.py:1159
+#, docstring
+msgid "Check when a category was last active!"
+msgstr "Controllare quando una categoria è stata attiva per l'ultima volta!"
+
+#: seen\seen.py:1172
+msgid "You do not have permission to view any of the channels in this category."
+msgstr "Non hai il permesso di vedere nessuno dei canali di questa categoria."
+
+#: seen\seen.py:1189
+#, docstring
+msgid "Check when a old member was last active!"
+msgstr "Controlla quando un vecchio membro è stato attivo per l'ultima volta!"
+
+#: seen\seen.py:1217
+#, docstring
+msgid "Check when a guild was last active!"
+msgstr "Controlla quando una gilda è stata attiva l'ultima volta!"
+
+#: seen\seen.py:1237
+#, docstring
+msgid "Check when a user was last active!"
+msgstr "Controllare quando un utente è stato attivo per l'ultima volta!"
+
+#: seen\seen.py:1256
+#, docstring
+msgid "Check when a old user was last active!"
+msgstr "Controllare quando un vecchio utente è stato attivo per l'ultima volta!"
+
+#: seen\seen.py:1278
+#, docstring
+msgid "View a Seen Board for members/roles/channels/categories!"
+msgstr "Visualizzare una scheda Seen per membri/ruoli/canali/categorie!"
+
+#: seen\seen.py:1292
+#, docstring
+msgid "View a Seen Board for guilds!"
+msgstr "Visualizza una bacheca per le gilde!"
+
+#: seen\seen.py:1307
+#, docstring
+msgid "View a Seen Board for users!"
+msgstr "Visualizzare un consiglio per gli utenti!"
+
+#: seen\seen.py:1314
+#, docstring
+msgid "Get Config data stats."
+msgstr "Ottenere le statistiche dei dati di configurazione."
+
+#: seen\seen.py:1348
+#, docstring
+msgid "Enable or disable a listener."
+msgstr "Abilita o disabilita un ascoltatore."
+
+#: seen\seen.py:1356
+#, docstring
+msgid "Asking Seen to ignore your actions."
+msgstr "Chiedere a Seen di ignorare le sue azioni."
+
+#: seen\seen.py:1370
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "Ottenere un embed per controllare lo stato del ciclo."
+
+#: seen\seen.py:1381
+#, docstring
+msgid "Purge Config for a specified _type or all."
+msgstr "Elimina la configurazione per un _tipo specificato o per tutti."
+

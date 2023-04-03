@@ -1,0 +1,55 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-03 17:03\n"
+"Last-Translator: \n"
+"Language-Team: Polish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/ctxvar/locales/messages.pot\n"
+"X-Crowdin-File-ID: 82\n"
+"Language: pl_PL\n"
+
+#: ctxvar\ctxvar.py:33
+#, docstring
+msgid "A cog to list and display the contents of all sub-functions of `ctx`!"
+msgstr "Trybik do listowania i wyświetlania zawartości wszystkich podfunkcji `ctx`!"
+
+#: ctxvar\ctxvar.py:54
+#, docstring
+msgid "Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."
+msgstr "Wyświetl listę wszystkich atrybutów i ich wartości instancji klasy 'ctx' lub jej podatrybutów."
+
+#: ctxvar\ctxvar.py:58 ctxvar\ctxvar.py:123 ctxvar\ctxvar.py:179
+msgid "The cog Dev must be loaded, to make sure you know what you are doing."
+msgstr "Cog Dev musi być załadowany, aby upewnić się, że wiesz, co robisz."
+
+#: ctxvar\ctxvar.py:69
+msgid "The argument you specified is not a subclass of the instance."
+msgstr "Argument, który podałeś, nie jest podklasą instancji."
+
+#: ctxvar\ctxvar.py:76
+msgid "Here are all the variables and their associated values that can be used in this instance class."
+msgstr "Oto wszystkie zmienne i ich powiązane wartości, które mogą być używane w tej klasie instancji."
+
+#: ctxvar\ctxvar.py:119
+#, docstring
+msgid "Display a list of all attributes of the provided object (debug not async)."
+msgstr "Wyświetl listę wszystkich atrybutów podanego obiektu (debug nie async)."
+
+#: ctxvar\ctxvar.py:140 ctxvar\ctxvar.py:196
+msgid "I couldn't find any cog, command, or object named `{thing}`."
+msgstr "Nie mogłem znaleźć żadnego trybiku, polecenia ani obiektu o nazwie `{thing}`."
+
+#: ctxvar\ctxvar.py:175
+#, docstring
+msgid "Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."
+msgstr "Wykonaj `rich.help(obj=obiekt, ...)` na podanym obiekcie (debug nie async)."
+

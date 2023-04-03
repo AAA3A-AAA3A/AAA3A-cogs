@@ -1,0 +1,28 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-03 20:01\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/memorygame/locales/messages.pot\n"
+"X-Crowdin-File-ID: 185\n"
+"Language: ja_JP\n"
+
+#: memorygame\memorygame.py:34
+#, docstring
+msgid "A cog to play to Memory game, with buttons, leaderboard and Red bank!"
+msgstr "ボタン、リーダーボード、レッドバンクを備えた、メモリーゲームに遊ぶための歯車です！"
+
+#: memorygame\memorygame.py:126
+msgid "No one has played this game yet."
+msgstr "このゲームはまだ誰もプレイしていない。"
+

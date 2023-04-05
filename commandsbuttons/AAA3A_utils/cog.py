@@ -82,7 +82,7 @@ class Cog(commands.Cog):
     __commit__: str = ""
     bot: Red
     log: logging.Logger
-    logs: typing.Dict[str, typing.List[typing.Dict[str, typing.Optional[typing.Union[datetime.datetime, int, str, typing.Tuple[typing.Any]]]]]] = []
+    logs: typing.Dict[str, typing.List[typing.Dict[str, typing.Optional[typing.Union[datetime.datetime, int, str, typing.Tuple[typing.Any]]]]]] = {}
 
     def __init__(self, bot: Red) -> None:
         self.bot: Red = bot

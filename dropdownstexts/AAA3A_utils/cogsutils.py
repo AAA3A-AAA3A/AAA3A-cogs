@@ -767,6 +767,7 @@ class CogsUtils(commands.Cog):
         prefix: typing.Optional[str] = None,
         message: typing.Optional[discord.Message] = None,
         dispatch_message: typing.Optional[bool] = False,
+        invoke: typing.Optional[bool] = True,
         __is_mocked__: typing.Optional[bool] = True,
         message_id: typing.Optional[str] = "".join(choice(string.digits) for i in range(18)),
         timestamp: typing.Optional[datetime.datetime] = datetime.datetime.now(),
@@ -822,6 +823,8 @@ class CogsUtils(commands.Cog):
 
         message.content = content
         context = await bot.get_context(message)
+        if not invoke:
+            return context
         if context.valid:
             context.author = author
             context.guild = channel.guild

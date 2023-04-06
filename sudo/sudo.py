@@ -162,7 +162,7 @@ class Sudo(Cog):
         self,
         ctx: commands.Context,
         *,
-        interval: typing.Optional[TimeDeltaConverter] = datetime.timedelta(minutes=5)
+        interval: TimeDeltaConverter = datetime.timedelta(minutes=5)
     ):
         """Sudo as the owner of the bot for the specified timeout.
         The time should be between 10 seconds and 1 day.

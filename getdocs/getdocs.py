@@ -101,9 +101,10 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
         "url": "https://pylav.readthedocs.io/en/latest/",
         "icon_url": "https://avatars.githubusercontent.com/u/125160897?s=88&v=4",
     },
-    "slashtags": {
+    "phentags": {  # Cogs `Tags` and `SlashTags` by Phen.
         "url": "https://phen-cogs.readthedocs.io/en/latest/",
         "icon_url": "https://i.imgur.com/dIOX12K.png",
+        "aliases": ["slashtags"],
     },
     "git": {  # Special source.
         "url": "https://git-scm.com/docs/",

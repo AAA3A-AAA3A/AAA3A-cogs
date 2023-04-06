@@ -3,7 +3,7 @@
     "name": "GetDocs",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
     "short": "A cog to get and display Sphinx docs! Only `discord.py`, `redbot`, `python`, `aiohttp`, `requests`, `gitpython`, `slashtags`, `pylav`, `discordapi`, `git`, `psutil`, `pillow`, `numpy`, `matplotlib`, `asyncpg`, `sqlite`, `websockets`, `mango`, `redis`, `aiomysql`, `flask`, `motor`, `sphinx`, and `starlite`.",
-    "description": "A cog to get and display Sphinx docs. Only `discord.py`, `redbot`, `python`, `aiohttp`, `requests`, `gitpython`, `slashtags`, `pylav`, `discordapi`, `git`, `psutil`, `pillow`, `numpy`, `matplotlib`, `asyncpg`, `sqlite`, `websockets`, `mango`, `redis`, `aiomysql`, `flask`, `motor`, `sphinx`, and `starlite`.",
+    "description": "A cog to get and display Sphinx docs. Only `discord.py`, `redbot`, `python`, `aiohttp`, `requests`, `gitpython`, `phentags`, `pylav`, `discordapi`, `git`, `psutil`, `pillow`, `numpy`, `matplotlib`, `asyncpg`, `sqlite`, `websockets`, `mango`, `redis`, `aiomysql`, `flask`, `motor`, `sphinx`, and `starlite`.",
     "tags": [
         "dpy",
         "python",

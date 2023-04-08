@@ -305,9 +305,7 @@ class Calculator(Cog):
         return buttons_one, buttons_two, buttons_three, buttons_four, buttons_five
 
     @hybrid_command(name="calculate", aliases=["calc"])
-    async def _calculate(
-        self, ctx: commands.Context, calculation: typing.Optional[str] = None
-    ) -> None:
+    async def _calculate(self, ctx: commands.Context, *, calculation: str = None) -> None:
         """Calculate a simple expression."""
         config = await self.config.settings.all()
         if calculation is not None:

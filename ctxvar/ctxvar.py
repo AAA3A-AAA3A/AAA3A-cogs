@@ -306,7 +306,7 @@ class CtxVar(Cog):
             if attr.startswith("_"):
                 continue
             value = getattr(_object, attr)
-            if hasattr(value, ("__func__", "__call__")):
+            if hasattr(value, "__func__"):
                 continue
             if isinstance(value, (typing.List, discord.utils.SequenceProxy, typing.Tuple)):
                 result2[attr.replace("_", " ").capitalize()] = len(value)
@@ -346,7 +346,7 @@ class CtxVar(Cog):
                 value = f"{value.type.name.capitalize()} to {value.name}" + (f" ({value.url})" if value.url else "")
             elif isinstance(value, discord.flags.BaseFlags):
                 value = tuple(v for v in dict(value) if dict(value)[v])
-            result[attr.replace("_", " ").capitalize()] = value
+            result[attr.replace("_", " ").capitalize()] = value if isinstance(value, str) else repr(value)
         result.update(**result2)
         _result = "".join(f"\n[{k}] : {r}" for k, r in result.items())
         await Menu(

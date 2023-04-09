@@ -6,12 +6,14 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import ast
+import datetime
 import inspect
 import io
+import rich
+import time
 import traceback
 from copy import copy
 
-import rich
 from redbot.core.utils.chat_formatting import bold, box, pagify
 
 # Credits:
@@ -244,4 +246,109 @@ class CtxVar(Cog):
 
         await Menu(
             pages=[box(page, "py") for page in pagify(result.strip(), page_length=2000 - 10)]
+        ).start(ctx)
+
+    class WhatIsConverter(commands.Converter):
+        async def convert(self, ctx: commands.Context, argument: str):
+            _types = [discord.Guild, discord.TextChannel, discord.VoiceChannel, discord.User, discord.Member, discord.Role, discord.Emoji]
+            try:
+                _types.extend([discord.Thread, discord.ForumChannel])
+            except AttributeError:
+                pass
+            for _type in _types:
+                try:
+                    return await discord.ext.commands.converter.CONVERTER_MAPPING[_type]().convert(ctx, argument)
+                except commands.BadArgument:
+                    pass
+            return argument
+
+    @ctxvar.command(name="whatis")
+    async def _whatis(
+        self, ctx: commands.Context, *, thing: WhatIsConverter
+    ) -> None:
+        """List attributes of the provided object like dpy objects (debug not async)."""
+        if isinstance(thing, str):
+            Dev = ctx.bot.get_cog("Dev")
+            if not Dev:
+                raise commands.UserFeedbackCheckFailure(
+                    _("The cog Dev must be loaded, to make sure you know what you are doing.")
+                )
+            thing = Dev.cleanup_code(thing)
+            env = Dev.get_environment(ctx)
+            env["getattr_static"] = inspect.getattr_static
+            try:
+                tree = ast.parse(thing, "<dir>", "eval")
+                if isinstance(tree.body, ast.Attribute) and isinstance(tree.body.ctx, ast.Load):
+                    tree.body = ast.Call(
+                        func=ast.Name(id="getattr_static", ctx=ast.Load()),
+                        args=[tree.body.value, ast.Constant(value=tree.body.attr)],
+                        keywords=[],
+                    )
+                    tree = ast.fix_missing_locations(tree)
+                _object = eval(compile(tree, "<dir>", "eval"), env)
+            except NameError:
+                raise commands.UserFeedbackCheckFailure(
+                    _("I couldn't find any cog, command, or object named `{thing}`.").format(
+                        thing=thing
+                    )
+                )
+            except Exception as e:
+                raise commands.UserFeedbackCheckFailure(
+                    box("".join(traceback.format_exception_only(type(e), e)), lang="py")
+                )
+        else:
+            _object = thing
+        if isinstance(_object, commands.Context):
+            _object = getattr(_object, "original_context", _object)
+        result = {}
+        result2 = {}
+        for attr in dir(_object):
+            if attr.startswith("_"):
+                continue
+            value = getattr(_object, attr)
+            if hasattr(value, ("__func__", "__call__")):
+                continue
+            if isinstance(value, (typing.List, discord.utils.SequenceProxy, typing.Tuple)):
+                result2[attr.replace("_", " ").capitalize()] = len(value)
+                continue
+            elif isinstance(value, datetime.datetime):
+                _time = int(value.timestamp())
+                now = int(time.time())
+                time_elapsed = int(now - _time)
+                m, s = divmod(time_elapsed, 60)
+                h, m = divmod(m, 60)
+                d, h = divmod(h, 24)
+                output = d, h, m
+                if output[2] < 1:
+                    ts = "just now"
+                else:
+                    ts = ""
+                    if output[0] == 1:
+                        ts += f"{output[0]} day, "
+                    elif output[0] > 1:
+                        ts += f"{output[0]} days, "
+                    if output[1] == 1:
+                        ts += f"{output[1]} hour, "
+                    elif output[1] > 1:
+                        ts += f"{output[1]} hours, "
+                    if output[2] == 1:
+                        ts += f"{output[2]} minute ago"
+                    elif output[2] > 1:
+                        ts += f"{output[2]} minutes ago"
+                value = ts
+            elif isinstance(value, discord.Asset):
+                value = str(value)
+            elif hasattr(value, "display_name") and hasattr(value, "id"):
+                value = f"{value.display_name} ({value.id})"
+            elif hasattr(value, "id"):
+                value = f"{value} ({value.id})"
+            elif isinstance(value, discord.Activity):
+                value = f"{value.type.name.capitalize()} to {value.name}" + (f" ({value.url})" if value.url else "")
+            elif isinstance(value, discord.flags.BaseFlags):
+                value = tuple(v for v in dict(value) if dict(value)[v])
+            result[attr.replace("_", " ").capitalize()] = value
+        result.update(**result2)
+        _result = "".join(f"\n[{k}] : {r}" for k, r in result.items())
+        await Menu(
+            pages=[box(page, "ini") for page in pagify(_result.strip(), page_length=2000 - 11)]
         ).start(ctx)

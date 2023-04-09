@@ -250,7 +250,7 @@ class CtxVar(Cog):
 
     class WhatIsConverter(commands.Converter):
         async def convert(self, ctx: commands.Context, argument: str):
-            _types = [discord.Guild, discord.TextChannel, discord.VoiceChannel, discord.User, discord.Member, discord.Role, discord.Emoji]
+            _types = [discord.Guild, discord.TextChannel, discord.VoiceChannel, discord.Member, discord.User, discord.Role, discord.Emoji]
             try:
                 _types.extend([discord.Thread, discord.ForumChannel])
             except AttributeError:

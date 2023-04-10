@@ -58,8 +58,9 @@ class GetDocsView(discord.ui.View):
             raise RuntimeError("No results found.")
         if self.source.name == "discordapi":
             self.show_parameters.label = "Show fields"
-        select = DocsSelect(self, results)
-        self.add_item(select)
+        if len(results.results) > 1:
+            select = DocsSelect(self, results)
+            self.add_item(select)
         await self._update(results.results[0][1])
         return self._message
 

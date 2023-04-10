@@ -299,8 +299,10 @@ class GetDocs(Cog):
             if not source._docs_cache:
                 raise commands.UserFeedbackCheckFailure(_("Documentations cache is not yet built, building now."))
             choice: Documentation = random.choice(source._docs_cache)
-            await ctx.send(embed=choice.to_embed(embed_color=await ctx.embed_color()))
-            return
+            if not any([choice.parameters, choice.examples, choice.attributes]):
+                await ctx.send(embed=choice.to_embed(embed_color=await ctx.embed_color()))
+                return
+            query = choice.name
         try:
             if self.cogsutils.is_dpy2:
                 await GetDocsView(cog=self, query=query.strip(), source=source).start(ctx)

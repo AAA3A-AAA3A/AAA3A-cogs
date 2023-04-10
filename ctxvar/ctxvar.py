@@ -12,6 +12,7 @@ import io
 import rich
 import time
 import traceback
+import types
 from copy import copy
 
 from redbot.core.utils.chat_formatting import bold, box, pagify
@@ -80,13 +81,11 @@ class CtxVar(Cog):
         embed.set_thumbnail(
             url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/2048px-Python-logo-notext.svg.png"
         )
-        one_l = []
-        for x in dir(instance):
-            try:
-                if not (x.startswith("__") and x.endswith("__")):
-                    one_l.append(x)
-            except Exception:
-                pass
+        one_l = [
+            x
+            for x in dir(instance)
+            if not (x.startswith("__") and x.endswith("__"))
+        ]
         lists = []
         while one_l != []:
             li = one_l[:20]
@@ -108,7 +107,7 @@ class CtxVar(Cog):
                                 "py",
                             ),
                         )
-                    except Exception:
+                    except AttributeError:
                         pass
             embeds.append(e)
 
@@ -305,10 +304,13 @@ class CtxVar(Cog):
         for attr in dir(_object):
             if attr.startswith("_"):
                 continue
-            value = getattr(_object, attr)
+            try:
+                value = getattr(_object, attr)
+            except AttributeError:
+                continue
             if hasattr(value, "__func__"):
                 continue
-            if isinstance(value, (typing.List, discord.utils.SequenceProxy, typing.Tuple)):
+            if isinstance(value, (typing.List, typing.Tuple, typing.Dict, typing.Set, types.MappingProxyType, discord.utils.SequenceProxy)):
                 result2[attr.replace("_", " ").capitalize()] = len(value)
                 continue
             elif isinstance(value, datetime.datetime):

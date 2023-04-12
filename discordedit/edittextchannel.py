@@ -376,9 +376,9 @@ class EditTextChannel(Cog):
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
-        permission: PermissionConverter,
+        roles_or_users: commands.Greedy[typing.Union[discord.Member, discord.Role, typing.Literal["everyone"]]],
         true_or_false: typing.Optional[bool],
-        roles_or_users: commands.Greedy[typing.Union[discord.Member, discord.Role, str]],
+        permissions: commands.Greedy[PermissionConverter],
     ) -> None:
         """Edit text channel permissions/overwrites.
 
@@ -417,20 +417,23 @@ class EditTextChannel(Cog):
         await self.check_text_channel(ctx, channel)
         targets = list(roles_or_users)
         for r in roles_or_users:
-            if isinstance(r, str):
+            if r == "everyone":
                 targets.remove(r)
-                if r == "everyone":
-                    targets.append(ctx.guild.default_role)
+                targets.append(ctx.guild.default_role)
         if not targets:
             raise commands.UserFeedbackCheckFailure(
-                _("You need to provide a role or user you want to edit permissions for")
+                _("You need to provide a role or user you want to edit permissions for.")
+            )
+        if not permissions:
+            raise commands.UserFeedbackCheckFailure(
+                _("You need to provide at least one permission.")
             )
         overwrites = channel.overwrites
         for target in targets:
             if target in overwrites:
-                overwrites[target].update(**{permission: true_or_false})
+                overwrites[target].update(**{permission: true_or_false for permission in permissions})
             else:
-                perm = discord.PermissionOverwrite(**{permission: true_or_false})
+                perm = discord.PermissionOverwrite(**{permission: true_or_false for permission in permissions})
                 overwrites[target] = perm
         try:
             await channel.edit(

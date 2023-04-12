@@ -30,7 +30,7 @@ else:
     hybrid_command = commands.command
     hybrid_group = commands.group
 
-MEDICAT_ICON = None
+MEDICAT_ICON_URL = None
 
 MEDICAT_GUILD = 829469886681972816
 VENTOY_UPDATES_CHANNEL = 831224763162165278
@@ -317,8 +317,8 @@ class Medicat(Cog):
         return list(self.cogsutils.loops.values())
 
     async def cog_load(self) -> None:
-        global MEDICAT_ICON
-        MEDICAT_ICON = (
+        global MEDICAT_ICON_URL
+        MEDICAT_ICON_URL = (
             (await self.bot.fetch_invite("medicat")).guild.icon.url
             if self.cogsutils.is_dpy2
             else (await self.bot.fetch_invite("medicat")).guild.icon_url
@@ -719,8 +719,8 @@ class Medicat(Cog):
 
                 async def CC(self, ctx: commands.Context):
                     embed: discord.Embed = discord.Embed()
-                    embed.set_thumbnail(url=MEDICAT_ICON)
-                    embed.set_footer(text="Medicat USB Official", icon_url=MEDICAT_ICON)
+                    embed.set_thumbnail(url=MEDICAT_ICON_URL)
+                    embed.set_footer(text="Medicat USB Official", icon_url=MEDICAT_ICON_URL)
                     embed.title = _(CUSTOM_COMMANDS[ctx.command.name]["title"])
                     embed.description = _(CUSTOM_COMMANDS[ctx.command.name]["description"])
                     await ctx.send(embed=embed)

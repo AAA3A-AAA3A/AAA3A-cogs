@@ -14,8 +14,7 @@ async def setup_after_ready(bot) -> None:
     global old_editrole
     await bot.wait_until_red_ready()
     cog = DiscordEdit(bot)
-    old_editrole = bot.get_command("editrole")
-    if old_editrole:
+    if old_editrole := bot.get_command("editrole"):
         bot.remove_command(old_editrole.name)
     await cog.cogsutils.add_cog(bot)
 

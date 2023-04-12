@@ -1015,7 +1015,7 @@ class Source:
                     text = self._get_text(element, parsed_url)
                     elements.append(text)
                 description.append("".join(elements))
-            elif child.name == "ul" and child.attrs.get("class") == ["simple"]:
+            elif child.name == "ul":  # and child.attrs.get("class") == ["simple"]:
                 _elements = []
                 for _child in child.find_all("p"):
                     elements = []

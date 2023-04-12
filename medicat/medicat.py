@@ -317,6 +317,7 @@ class Medicat(Cog):
         return list(self.cogsutils.loops.values())
 
     async def cog_load(self) -> None:
+        await self.bot.wait_until_red_ready()
         global MEDICAT_ICON
         MEDICAT_ICON = (
             (await self.bot.fetch_invite("medicat")).guild.icon.url

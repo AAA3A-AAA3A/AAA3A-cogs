@@ -170,7 +170,7 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
         "icon_url": None
     },
     "starlite": {
-        "url": "https://starliteproject.dev/",
+        "url": "https://docs.litestar.dev/2/",
         "icon_url": "https://preview.redd.it/2veaqsnz2uf81.png?width=1280&format=png&auto=webp&s=8d7c84d4ec435fc102c14f3f2534ee2c3e5c1cae"
     },
     "websockets": {

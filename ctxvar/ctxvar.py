@@ -266,12 +266,12 @@ class CtxVar(Cog):
         self, ctx: commands.Context, *, thing: WhatIsConverter
     ) -> None:
         """List attributes of the provided object like dpy objects (debug not async)."""
+        Dev = ctx.bot.get_cog("Dev")
+        if not Dev:
+            raise commands.UserFeedbackCheckFailure(
+                _("The cog Dev must be loaded, to make sure you know what you are doing.")
+            )
         if isinstance(thing, str):
-            Dev = ctx.bot.get_cog("Dev")
-            if not Dev:
-                raise commands.UserFeedbackCheckFailure(
-                    _("The cog Dev must be loaded, to make sure you know what you are doing.")
-                )
             thing = Dev.cleanup_code(thing)
             env = Dev.get_environment(ctx)
             env["getattr_static"] = inspect.getattr_static
@@ -297,8 +297,8 @@ class CtxVar(Cog):
                 )
         else:
             _object = thing
-        if isinstance(_object, commands.Context):
-            _object = getattr(_object, "original_context", _object)
+        if hasattr(_object, "original_context") and isinstance(_object.original_context, commands.Context):
+            _object = _object.original_context
         result = {}
         result2 = {}
         for attr in dir(_object):
@@ -311,7 +311,7 @@ class CtxVar(Cog):
             if hasattr(value, "__func__"):
                 continue
             if isinstance(value, (typing.List, typing.Tuple, typing.Dict, typing.Set, types.MappingProxyType, discord.utils.SequenceProxy)):
-                result2[attr.replace("_", " ").capitalize()] = len(value)
+                result2[attr.replace("_", " ").capitalize()] = f"{value.__class__.__name__} - {len(value)}"
                 continue
             elif isinstance(value, datetime.datetime):
                 _time = int(value.timestamp())
@@ -350,7 +350,7 @@ class CtxVar(Cog):
                 value = tuple(v for v in dict(value) if dict(value)[v])
             result[attr.replace("_", " ").capitalize()] = value if isinstance(value, str) else repr(value)
         result.update(**result2)
-        _result = "".join(f"\n[{k}] : {r}" for k, r in result.items())
+        _result = Dev.sanitize_output(ctx, "".join(f"\n[{k}] : {r}" for k, r in result.items()))
         await Menu(
             pages=[box(page, "ini") for page in pagify(_result.strip(), page_length=2000 - 11)]
         ).start(ctx)

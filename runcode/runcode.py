@@ -1,5 +1,5 @@
 ﻿from .AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands, app_commands  # isort:skip
+from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
@@ -18,6 +18,7 @@ from .data import LANGUAGES_IDENTIFIERS, LANGUAGES_FILES_EXTENSIONS, LANGUAGES_I
 from .types import WandboxEngine, WandboxRequest, WandboxResponse, TioLanguage, TioRequest, TioResponse
 
 if CogsUtils().is_dpy2:
+    from redbot.core import app_commands  # isort:skip
     setattr(commands, "Literal", typing.Literal)  # To remove
 
 # Credits:

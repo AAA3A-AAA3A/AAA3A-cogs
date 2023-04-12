@@ -1,5 +1,5 @@
 ﻿from .AAA3A_utils import Cog, CogsUtils, Menu, Loop  # isort:skip
-from redbot.core import commands, app_commands, Config  # isort:skip
+from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
@@ -31,6 +31,7 @@ from redbot.core.utils.chat_formatting import humanize_list
 from .types import Attribute, Attributes, Documentation, Examples, Parameters, SearchResults
 
 if CogsUtils().is_dpy2:
+    from redbot.core import app_commands  # isort:skip
     setattr(commands, "Literal", typing.Literal)  # To remove
     from .view import GetDocsView
 

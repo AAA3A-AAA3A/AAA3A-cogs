@@ -232,7 +232,7 @@ class Documentation:
     def to_embed(self, embed_color: typing.Optional[discord.Color] = discord.Color.green()) -> discord.Embed:
         description = (f"{box(self.full_name, lang='py' if self.source.name != 'git' else 'ini')}\n" if self.full_name else "") + f"{self.description}".strip()
         embed = discord.Embed(
-            title=self.name, url=self.url if self.url.startswith("http") else None, description=list(pagify(description, page_length=4000))[0] if description else "No description.", color=embed_color
+            title=discord.utils.escape_markdown(self.name), url=self.url if self.url.startswith("http") else None, description=list(pagify(description, page_length=4000))[0] if description else "No description.", color=embed_color
         )
         embed.set_author(
             name=f"{self.source.name} Documentation",

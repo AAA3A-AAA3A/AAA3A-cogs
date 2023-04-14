@@ -894,7 +894,7 @@ class Source:
             content = await r.text(encoding="utf-8")
         return content
 
-    def _get_text(self, element: Tag, parsed_url: ParseResult, template: str = "[`{}`]({})") -> str:
+    def _get_text(self, element: Tag, parsed_url: ParseResult, template: str = "[**`{}`**]({})") -> str:
         if not hasattr(element, "contents"):
             element.contents = [element]
 
@@ -1295,8 +1295,11 @@ class Source:
                     if query.lower() == name:
                         query = f"aiohttp.ClientSession.{name.lower()}"
                         break
-        if self.name == "discord.py":
-            query = re.sub(r"^(?:discord\.(?:ext\.)?)?(?:commands\.)?(.+)", r"\1", query)
+        if self.name in ["discord.py", "redbot"]:
+            if query.split(".")[0] == "ctx":
+                query = f"commands.Context{query[4:]}"
+            if self.name == "discord.py":
+                query = re.sub(r"^(?:discord\.(?:ext\.)?)?(?:commands\.)?(.+)", r"\1", query)
         if with_raw_search:
             if exclude_std:
                 matches = fuzzy_search(text=query, collection=self._raw_rtfm_cache_without_std)

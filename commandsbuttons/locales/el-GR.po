@@ -1,0 +1,149 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"PO-Revision-Date: 2023-04-15 15:48\n"
+"Last-Translator: \n"
+"Language-Team: Greek\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: el\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/commandsbuttons/locales/messages.pot\n"
+"X-Crowdin-File-ID: 181\n"
+"Language: el_GR\n"
+
+#: commandsbuttons\commandsbuttons.py:38
+#, docstring
+msgid "A cog to allow a user to execute a command by clicking on a button!"
+msgstr "Ένα γρανάζι που επιτρέπει στον χρήστη να εκτελέσει μια εντολή κάνοντας κλικ σε ένα κουμπί!"
+
+#: commandsbuttons\commandsbuttons.py:112
+#: commandsbuttons\commandsbuttons.py:187
+msgid "This message is not in Config."
+msgstr "Αυτό το μήνυμα δεν είναι στο Config."
+
+#: commandsbuttons\commandsbuttons.py:144
+#: commandsbuttons\commandsbuttons.py:208
+msgid "This emoji is not in Config."
+msgstr "Αυτό το emoji δεν είναι στο Config."
+
+#: commandsbuttons\commandsbuttons.py:157
+#: commandsbuttons\commandsbuttons.py:219
+msgid "The command don't exist."
+msgstr "Η εντολή δεν υπάρχει."
+
+#: commandsbuttons\commandsbuttons.py:161
+#: commandsbuttons\commandsbuttons.py:223
+msgid "You are not allowed to execute this command."
+msgstr "Δεν επιτρέπεται η εκτέλεση αυτής της εντολής."
+
+#: commandsbuttons\commandsbuttons.py:275
+#, docstring
+msgid "Add a command-button to a message.\n\n"
+"        `primary`: 1\n"
+"        `secondary`: 2\n"
+"        `success`: 3\n"
+"        `danger`: 4\n"
+"        # Aliases\n"
+"        `blurple`: 1\n"
+"        `grey`: 2\n"
+"        `gray`: 2\n"
+"        `green`: 3\n"
+"        `red`: 4\n"
+"        "
+msgstr "Προσθήκη ενός κουμπιού εντολών σε ένα μήνυμα.\n\n"
+"        `primary`: 1\n"
+"        `δευτερεύον`: 2\n"
+"        `επιτυχία`: 3\n"
+"        `κίνδυνος`: 4\n"
+"        # Aliases\n"
+"        `blurple`: 1\n"
+"        `grey`: 2\n"
+"        `gray`: 2\n"
+"        `green`: 3\n"
+"        `red`: 4\n"
+"        "
+
+#: commandsbuttons\commandsbuttons.py:290
+#: commandsbuttons\commandsbuttons.py:354
+#: commandsbuttons\commandsbuttons.py:408
+msgid "I have to be the author of the message for the command-button to work."
+msgstr "Πρέπει να είμαι ο συντάκτης του μηνύματος για να λειτουργήσει το κουμπί εντολών."
+
+#: commandsbuttons\commandsbuttons.py:300
+#: commandsbuttons\commandsbuttons.py:368
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "Δεν έχω επαρκή δικαιώματα στο κανάλι στο οποίο βρίσκεται το μήνυμα που προσδιορίσατε.\n"
+"Χρειάζομαι τα δικαιώματα για να δω τα μηνύματα σε αυτό το κανάλι."
+
+#: commandsbuttons\commandsbuttons.py:310
+msgid "You have not specified a correct command."
+msgstr "Δεν έχετε καθορίσει μια σωστή εντολή."
+
+#: commandsbuttons\commandsbuttons.py:317
+msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Το emoji που επιλέξατε φαίνεται άκυρο. Ελέγξτε ότι πρόκειται για emoji. Αν έχετε Nitro, μπορεί να έχετε χρησιμοποιήσει ένα προσαρμοσμένο emoji από άλλο διακομιστή."
+
+#: commandsbuttons\commandsbuttons.py:326
+msgid "I can't do more than 25 commands-buttons for one message."
+msgstr "Δεν μπορώ να κάνω περισσότερες από 25 εντολές-κουμπιά για ένα μήνυμα."
+
+#: commandsbuttons\commandsbuttons.py:348
+#, docstring
+msgid "Add commands-buttons to a message.\n\n"
+"        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
+"        "
+msgstr "Προσθήκη εντολών-κουμπιών σε ένα μήνυμα.\n\n"
+"        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
+"        "
+
+#: commandsbuttons\commandsbuttons.py:358
+msgid "You have not specified any valid command-button."
+msgstr "Δεν έχετε καθορίσει κανένα έγκυρο κουμπί εντολών."
+
+#: commandsbuttons\commandsbuttons.py:378
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Ένα emoji που επιλέξατε φαίνεται άκυρο. Ελέγξτε ότι πρόκειται για emoji. Αν έχετε Nitro, μπορεί να έχετε χρησιμοποιήσει ένα προσαρμοσμένο emoji από άλλο διακομιστή."
+
+#: commandsbuttons\commandsbuttons.py:387
+msgid "I can't do more than 25 roles-buttons for one message."
+msgstr "Δεν μπορώ να κάνω περισσότερους από 25 ρόλους-κουμπιά για ένα μήνυμα."
+
+#: commandsbuttons\commandsbuttons.py:405
+#, docstring
+msgid "Remove a command-button to a message."
+msgstr "Αφαίρεση ενός κουμπιού εντολών σε ένα μήνυμα."
+
+#: commandsbuttons\commandsbuttons.py:413
+#: commandsbuttons\commandsbuttons.py:444
+msgid "No command-button is configured for this message."
+msgstr "Δεν έχει ρυθμιστεί κουμπί εντολών για αυτό το μήνυμα."
+
+#: commandsbuttons\commandsbuttons.py:417
+msgid "I wasn't watching for this button on this message."
+msgstr "Δεν πρόσεχα αυτό το κουμπί σε αυτό το μήνυμα."
+
+#: commandsbuttons\commandsbuttons.py:436
+#, docstring
+msgid "Clear all commands-buttons to a message."
+msgstr "Καθαρισμός όλων των εντολών-κουμπιών σε ένα μήνυμα."
+
+#: commandsbuttons\commandsbuttons.py:439
+msgid "I have to be the author of the message for the role-button to work."
+msgstr "Πρέπει να είμαι ο συντάκτης του μηνύματος για να λειτουργήσει το κουμπί ρόλου."
+
+#: commandsbuttons\commandsbuttons.py:458
+#, docstring
+msgid "Clear all commands-buttons to a **guild**."
+msgstr "Καθαρίστε όλες τις εντολές-κουμπιά σε μια **γέφυρα**."
+
+#: commandsbuttons\converters.py:35
+msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
+msgstr "Emoji Ο ρόλος πρέπει να είναι ένα emoji ακολουθούμενο από έναν ρόλο χωρισμένο είτε με `;`, `,`, `|`, ή `-`."
+

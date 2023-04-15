@@ -155,7 +155,7 @@ class settings(commands.Cog):
                 else:
                     await message.edit(view=view)
                 self.cogsutils.views.append(view)
-                dropdowns_config[f"{channel.id}-{message.id}"] = [
+                dropdowns_config[f"{message.channel.id}-{message.id}"] = [
                     {
                         "profile": profile,
                         "emoji": emoji.id if hasattr(emoji, "id") else emoji,
@@ -227,7 +227,7 @@ class settings(commands.Cog):
                 message = await channel.send(embed=embed, components=[dropdown])
             else:
                 await message.edit(components=[dropdown])
-            dropdown_config[f"{channel.id}-{message.id}"] = [
+            dropdown_config[f"{message.channel.id}-{message.id}"] = [
                 {
                     "profile": profile,
                     "emoji": emoji.id if hasattr(emoji, "id") else emoji,

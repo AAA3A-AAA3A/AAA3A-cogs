@@ -219,6 +219,7 @@ class Seen(Cog):
             Config.CHANNEL: {},
             Config.GUILD: {},
         }
+
         global_data = await self.config.all()
         user_group = self.config._get_base_group(self.config.USER)
         member_group = self.config._get_base_group(self.config.MEMBER)
@@ -309,14 +310,12 @@ class Seen(Cog):
             d = global_data[_type].get(custom_id, None)
             if d is not None:
                 data[Config.GLOBAL][_type] = {custom_id: d}
-        if data == {
-            Config.GLOBAL: {},
-            Config.USER: {},
-            Config.MEMBER: {},
-            Config.ROLE: {},
-            Config.CHANNEL: {},
-            Config.GUILD: {},
-        }:
+    
+        _data = deepcopy(data)
+        for key, value in _data.items():
+            if not value:
+                del data[key]
+        if not data:
             return {}
         file = io.BytesIO(str(data).encode(encoding="utf-8"))
         return {f"{self.qualified_name}.json": file}

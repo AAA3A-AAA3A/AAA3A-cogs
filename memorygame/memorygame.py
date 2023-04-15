@@ -5,6 +5,8 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import io
+from copy import deepcopy
 from tabulate import tabulate
 
 from redbot.core.utils.chat_formatting import box, pagify
@@ -103,6 +105,50 @@ class MemoryGame(Cog):
 
     async def cog_load(self):
         await self.settings.add_commands()
+
+    async def red_delete_data_for_user(
+        self,
+        *,
+        requester: typing.Literal["discord_deleted_user", "owner", "user", "user_strict"],
+        user_id: int,
+    ) -> None:
+        """Delete all user's levels/xp in each guild."""
+        if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
+            return
+        guild_group = self.config._get_base_group(self.config.GUILD)
+        async with guild_group.all() as guilds_data:
+            _guilds_data = deepcopy(guilds_data)
+            for guild in _guilds_data:
+                if str(user_id) in _guilds_data[guild]:
+                    del _guilds_data[guild][str(user_id)]
+                if _guilds_data[guild] == {}:
+                    del _guilds_data[guild]
+
+    async def red_get_data_for_user(self, *, user_id: int) -> typing.Dict[str, io.BytesIO]:
+        """Get all data about the user."""
+        data = {
+            Config.GLOBAL: {},
+            Config.USER: {},
+            Config.MEMBER: {},
+            Config.ROLE: {},
+            Config.CHANNEL: {},
+            Config.GUILD: {},
+        }
+
+        guild_group = self.config._get_base_group(self.config.GUILD)
+        async with guild_group.all() as guilds_data:
+            for guild in guilds_data:
+                if str(user_id) in guilds_data[guild]:
+                    data[Config.GUILD][guild] = {str(user_id): guilds_data[guild][str(user_id)]}
+
+        _data = deepcopy(data)
+        for key, value in _data.items():
+            if not value:
+                del data[key]
+        if not data:
+            return {}
+        file = io.BytesIO(str(data).encode(encoding="utf-8"))
+        return {f"{self.qualified_name}.json": file}
 
     @hybrid_command()
     async def memorygame(self, ctx: commands.Context, difficulty: commands.Literal["3x3", "4x4", "5x5"] = "5x5") -> None:

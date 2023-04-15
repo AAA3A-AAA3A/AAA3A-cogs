@@ -79,19 +79,18 @@ class AntiNuke(Cog):
             Config.CHANNEL: {},
             Config.GUILD: {},
         }
+
         member_group = self.config._get_base_group(self.config.MEMBER)
         async with member_group.all() as members_data:
             for guild in members_data:
                 if str(user_id) in members_data[guild]:
                     data[Config.MEMBER][guild] = {str(user_id): members_data[guild][str(user_id)]}
-        if data == {
-            Config.GLOBAL: {},
-            Config.USER: {},
-            Config.MEMBER: {},
-            Config.ROLE: {},
-            Config.CHANNEL: {},
-            Config.GUILD: {},
-        }:
+
+        _data = deepcopy(data)
+        for key, value in _data.items():
+            if not value:
+                del data[key]
+        if not data:
             return {}
         file = io.BytesIO(str(data).encode(encoding="utf-8"))
         return {f"{self.qualified_name}.json": file}

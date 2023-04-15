@@ -1041,7 +1041,6 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 else ctx.author.avatar_url,
             )
             response = await self.cogsutils.ConfirmationAsk(ctx, embed=embed)
-            await ctx.send(repr(response))
             if not response:
                 return
         ticket.reason = reason

@@ -1,4 +1,4 @@
-from .AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
+from .AAA3A_utils import Cog, CogsUtils, Menu, Settings  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -19,7 +19,9 @@ from copy import deepcopy
 
 import chat_exporter
 from redbot.core import modlog
+from redbot.core.utils.chat_formatting import pagify
 
+from .dashboard_integration import DashboardIntegration
 from .settings import settings
 from .ticket import Ticket
 
@@ -38,7 +40,7 @@ else:
 
 
 @cog_i18n(_)
-class TicketTool(settings, Cog):
+class TicketTool(settings, DashboardIntegration, Cog):
     """A cog to manage a ticket system!"""
 
     def __init__(self, bot: Red) -> None:
@@ -231,6 +233,7 @@ class TicketTool(settings, Cog):
         await self.settings.add_commands()
         if self.cogsutils.is_dpy2:
             await self.load_buttons()
+        await super().cog_load()
 
     async def edit_config_schema(self):
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
@@ -392,9 +395,9 @@ class TicketTool(settings, Cog):
         return config
 
     async def get_ticket(self, channel: discord.TextChannel) -> Ticket:
-        config = await self.config.guild(channel.guild).tickets.all()
-        if str(channel.id) in config:
-            json = config[str(channel.id)]
+        tickets = await self.config.guild(channel.guild).tickets.all()
+        if str(channel.id) in tickets:
+            json = tickets[str(channel.id)]
         else:
             return None
         if "panel" not in json:
@@ -536,10 +539,10 @@ class TicketTool(settings, Cog):
 
     async def check_limit(self, member: discord.Member, panel: str) -> bool:
         config = await self.get_config(member.guild, panel)
-        data = await self.config.guild(member.guild).tickets.all()
+        tickets = await self.config.guild(member.guild).tickets.all()
         to_remove = []
         count = 1
-        for id in data:
+        for id in tickets:
             if config["forum_channel"] is not None:
                 channel = config["forum_channel"].get_thread(int(id))
             else:
@@ -553,10 +556,10 @@ class TicketTool(settings, Cog):
             else:
                 to_remove.append(id)
         if to_remove:
-            data = await self.config.guild(member.guild).tickets.all()
+            tickets = await self.config.guild(member.guild).tickets.all()
             for id in to_remove:
-                del data[str(id)]
-            await self.config.guild(member.guild).tickets.set(data)
+                del tickets[str(id)]
+            await self.config.guild(member.guild).tickets.set(tickets)
         return count <= config["nb_max"]
 
     async def create_modlog(
@@ -606,9 +609,12 @@ class TicketTool(settings, Cog):
                     check = False
                 if check != claim:
                     return False
-            if locked is not None:
-                if not isinstance(ticket.channel, discord.TextChannel) and not ticket.channel.locked == locked:
-                    return False
+            if (
+                locked is not None
+                and not isinstance(ticket.channel, discord.TextChannel)
+                and ticket.channel.locked != locked
+            ):
+                return False
             if ctx.author.id in ctx.bot.owner_ids:
                 return True
             if (
@@ -1135,6 +1141,41 @@ class TicketTool(settings, Cog):
         members = list(members)
         await ticket.remove_member(members, ctx.author)
 
+    @commands.admin_or_permissions(administrator=True)
+    @ticket.command(name="list")
+    async def command_list(
+        self,
+        ctx: commands.Context,
+        panel: PanelConverter,
+        status: typing.Optional[commands.Literal["open", "close", "all"]],
+        member: typing.Optional[discord.Member],
+    ) -> None:
+        if status is None:
+            status = "open"
+        tickets = await self.config.guild(ctx.guild).tickets.all()
+        tickets_to_show = []
+        for channel_id in tickets:
+            config = await self.get_config(ctx.guild, panel=panel)
+            if config["forum_channel"] is not None:
+                channel = config["forum_channel"].get_thread(int(channel_id))
+            else:
+                channel = ctx.guild.get_channel(int(channel_id))
+            if channel is None:
+                continue
+            ticket: Ticket = await self.get_ticket(channel)
+            if ticket.panel == panel and (member is None or ticket.owner == member) and (status == "all" or ticket.status == status):
+                tickets_to_show.append(ticket)
+        if not tickets_to_show:
+            raise commands.UserFeedbackCheckFailure(_("No tickets to show."))
+        description = "\n".join([f"• **{ticket.id}** - {ticket.status} - {ticket.channel.mention}" for ticket in sorted(tickets_to_show, key=lambda x: x.id)])
+        pages = list(pagify(description, page_length=6000))
+        embeds = []
+        for page in pages:
+            embed: discord.Embed = discord.Embed(title=f"Tickets in this guild - Panel {panel}")
+            embed.description = page
+            embeds.append(embed)
+        await Menu(pages=embeds).start(ctx)
+
     if CogsUtils().is_dpy2:
 
         async def on_button_interaction(
@@ -1532,29 +1573,28 @@ class TicketTool(settings, Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, old_channel: discord.abc.GuildChannel) -> None:
-        data = await self.config.guild(old_channel.guild).tickets.all()
-        if str(old_channel.id) not in data:
+        tickets = await self.config.guild(old_channel.guild).tickets.all()
+        if str(old_channel.id) not in tickets:
             return
         try:
-            del data[str(old_channel.id)]
+            del tickets[str(old_channel.id)]
         except KeyError:
             pass
-        await self.config.guild(old_channel.guild).tickets.set(data)
+        await self.config.guild(old_channel.guild).tickets.set(tickets)
         return
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member) -> None:
-        data = await self.config.guild(member.guild).tickets.all()
-        for channel in data:
-            config = await self.get_config(member.guild, panel=data[channel]["panel"])
+        tickets = await self.config.guild(member.guild).tickets.all()
+        for channel_id in tickets:
+            config = await self.get_config(member.guild, panel=tickets[channel_id]["panel"])
             if config["forum_channel"] is not None:
-                channel = config["forum_channel"].get_thread(int(id))
+                channel = config["forum_channel"].get_thread(int(channel_id))
             else:
-                channel = member.guild.get_channel(int(id))
+                channel = member.guild.get_channel(int(channel_id))
             if channel is None:
                 continue
             ticket: Ticket = await self.get_ticket(channel)
-            config = await self.get_config(ticket.guild, ticket.panel)
             if config["close_on_leave"] and (
                 getattr(ticket.owner, "id", ticket.owner) == member.id
                 and ticket.status == "open"

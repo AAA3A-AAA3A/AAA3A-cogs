@@ -9,6 +9,8 @@ import traceback
 
 from redbot.core.utils.chat_formatting import box, pagify
 
+from .dashboard_integration import DashboardIntegration
+
 # Credits:
 # General repo credits.
 
@@ -35,7 +37,7 @@ IGNORED_ERRORS = (
 
 
 @cog_i18n(_)
-class AutoTraceback(Cog):
+class AutoTraceback(DashboardIntegration, Cog):
     """A cog to display the error traceback of a command automatically after the error!"""
 
     def __init__(self, bot: Red) -> None:
@@ -61,36 +63,29 @@ class AutoTraceback(Cog):
         **Arguments:**
             - `[public]` - Whether to send the traceback to the current context. Leave blank to send to your DMs.
         """
-        if ctx.bot._last_exception:
-            _last_exception = ctx.bot._last_exception.split("\n")
-            _last_exception[0] = _last_exception[0] + (
-                "" if _last_exception[0].endswith(":") else ":\n"
-            )
-            _last_exception = "\n".join(_last_exception)
-            _last_exception = self.cogsutils.replace_var_paths(_last_exception)
-            if public:
-                pages = [
-                    box(page, lang="py")
-                    for page in pagify(
-                        _last_exception, shorten_by=15, page_length=1985
-                    )
-                ]
-                try:
-                    await Menu(pages=pages, timeout=180, delete_after_timeout=False).start(ctx)
-                except discord.HTTPException:
-                    pass
-                else:
-                    return
-            for page in pagify(_last_exception, shorten_by=15, page_length=1985):
-                try:
-                    await ctx.author.send(box(page, lang="py"))
-                except discord.HTTPException:
-                    raise commands.UserFeedbackCheckFailure(
-                        "I couldn't send the traceback message to you in DM. "
-                        "Either you blocked me or you disabled DMs in this server."
-                    )
-        else:
+        if not ctx.bot._last_exception:
             await ctx.send(_("No exception has occurred yet."))
+        _last_exception = ctx.bot._last_exception.split("\n")
+        _last_exception[0] = _last_exception[0] + (
+            "" if _last_exception[0].endswith(":") else ":\n"
+        )
+        _last_exception = "\n".join(_last_exception)
+        _last_exception = self.cogsutils.replace_var_paths(_last_exception)
+        if public:
+            try:
+                await Menu(pages=_last_exception, timeout=180, lang="py").start(ctx)
+            except discord.HTTPException:
+                pass
+            else:
+                return
+        for page in pagify(_last_exception, shorten_by=15, page_length=1985):
+            try:
+                await ctx.author.send(box(page, lang="py"))
+            except discord.HTTPException:
+                raise commands.UserFeedbackCheckFailure(
+                    "I couldn't send the traceback message to you in DM. "
+                    "Either you blocked me or you disabled DMs in this server."
+                )
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError) -> None:

@@ -5,6 +5,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+from .dashboard_integration import DashboardIntegration
 from .AAA3A_utils.settings import CustomMessageConverter
 
 # Credits:
@@ -21,7 +22,7 @@ else:
 
 
 @cog_i18n(_)
-class ClearChannel(Cog):
+class ClearChannel(DashboardIntegration, Cog):
     """A cog to transfer all messages channel in a other channel!"""
 
     def __init__(self, bot: Red) -> None:

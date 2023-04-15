@@ -112,7 +112,9 @@ class ReactToCommand(Cog):
         config = await self.config.guild(guild).react_commands.all()
         if f"{payload.channel_id}-{payload.message_id}" not in config:
             return
-        emoji = f"{getattr(Emoji().convert(payload.emoji), 'id', Emoji().convert(str(payload.emoji)))}"
+        emoji = (
+            f"{getattr(Emoji().convert(payload.emoji), 'id', Emoji().convert(str(payload.emoji)))}"
+        )
         message = await channel.fetch_message(payload.message_id)
         try:
             await message.remove_reaction(emoji, payload.member)

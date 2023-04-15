@@ -3,15 +3,15 @@ from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import aiohttp
 import datetime
 import json
 import time
 import zlib
 from dataclasses import dataclass
 from functools import partial
-from humanfriendly import format_timespan
 
+import aiohttp
+from humanfriendly import format_timespan
 from redbot.core.utils.chat_formatting import box, pagify
 
 from .data import LANGUAGES_IDENTIFIERS, LANGUAGES_IMAGES
@@ -55,17 +55,31 @@ class WandboxRequest:
             "save": self.save,
             "stdin": self.stdin,
             "compiler-option-raw": self.compiler_options,
-            "runtime-option-raw": self.runtime_options
+            "runtime-option-raw": self.runtime_options,
         }
 
-    def to_embed(self, with_code: typing.Optional[bool] = False, embed_color: typing.Optional[discord.Color] = discord.Color.green()) -> discord.Embed:
-        embed: discord.Embed = discord.Embed(title="RunCode Request (with Wandbox API)", color=embed_color)
-        embed.set_author(name=f"{self.engine.language.capitalize()} language", icon_url=LANGUAGES_IMAGES[self.language.language])
+    def to_embed(
+        self,
+        with_code: typing.Optional[bool] = False,
+        embed_color: typing.Optional[discord.Color] = discord.Color.green(),
+    ) -> discord.Embed:
+        embed: discord.Embed = discord.Embed(
+            title="RunCode Request (with Wandbox API)", color=embed_color
+        )
+        embed.set_author(
+            name=f"{self.engine.language.capitalize()} language",
+            icon_url=LANGUAGES_IMAGES[self.language.language],
+        )
         if with_code:
             if self.codes == []:
                 description = box(self.code, lang=LANGUAGES_IDENTIFIERS[self.engine.language][0])
             else:
-                description = "\n".join([box(code, lang=LANGUAGES_IDENTIFIERS[self.engine.language][0]) for code in self.codes])
+                description = "\n".join(
+                    [
+                        box(code, lang=LANGUAGES_IDENTIFIERS[self.engine.language][0])
+                        for code in self.codes
+                    ]
+                )
             pages = list(pagify(description, delims=["\n"], page_length=4000))
             if len(pages) == 1:
                 embed.description = description
@@ -74,14 +88,25 @@ class WandboxRequest:
                 if page.endswith("```"):
                     page[:-3]
                 embed.description = f"{page}\n...```"
-        for field in ["language", "compiler", "save", "stdin", "compiler_option_raw", "runtime_option_raw"]:
+        for field in [
+            "language",
+            "compiler",
+            "save",
+            "stdin",
+            "compiler_option_raw",
+            "runtime_option_raw",
+        ]:
             embed.add_field(name=field, value=box(f"{repr(getattr(self, field))}", lang="py"))
         return embed
 
     async def fetch_response(self, raw: typing.Optional[bool] = False) -> "WandboxResponse":
         start = time.monotonic()
         data = json.dumps(self.to_request_parameters())
-        async with self.cog._session.post(url="https://wandbox.org/api/compile.json", data=data, headers={"content-type": "text/javascript"}) as r:
+        async with self.cog._session.post(
+            url="https://wandbox.org/api/compile.json",
+            data=data,
+            headers={"content-type": "text/javascript"},
+        ) as r:
             try:
                 raw_response = await r.json()
             except (aiohttp.ContentTypeError, json.JSONDecodeError):
@@ -136,7 +161,10 @@ class WandboxResponse:
         embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
         run_time = format_timespan(self.run_time)
         embed.set_footer(text=f"Ran in {run_time}.")
-        embed.set_author(name=f"{self.request.engine.language.capitalize()} language", icon_url=LANGUAGES_IMAGES[self.request.engine.language])
+        embed.set_author(
+            name=f"{self.request.engine.language.capitalize()} language",
+            icon_url=LANGUAGES_IMAGES[self.request.engine.language],
+        )
         if self.signal or self.compiler_error or self.program_error:
             if not self.status or self.status != "0":
                 embed.color = discord.Color.red()
@@ -150,12 +178,22 @@ class WandboxResponse:
         embed.add_field(name="Engine used", value=self.request.engine.name, inline=True)
         embed.add_field(
             name="Command used",
-            value=self.request.cog.wandbox_languages[self.request.engine.language][self.request.engine.template][self.request.engine.name].display_compile_command + (f" {self.request.compiler_options}" if self.request.compiler_options else "") + (f" {self.request.runtime_options}" if self.request.runtime_options else ""),
-            inline=True
+            value=self.request.cog.wandbox_languages[self.request.engine.language][
+                self.request.engine.template
+            ][self.request.engine.name].display_compile_command
+            + (f" {self.request.compiler_options}" if self.request.compiler_options else "")
+            + (f" {self.request.runtime_options}" if self.request.runtime_options else ""),
+            inline=True,
         )
         embed.add_field(name="Exit status", value=self.status, inline=False)
         description = ""
-        for field in ["signal", "compiler_output", "compiler_error", "program_output", "program_error"]:
+        for field in [
+            "signal",
+            "compiler_output",
+            "compiler_error",
+            "program_output",
+            "program_error",
+        ]:
             if value := getattr(self, field):
                 description += f"\n\n**{field.replace('_', ' ').title()}**:\n{value}"
         pages = list(
@@ -201,8 +239,14 @@ class TioRequest:
             "args": self.args,
         }
 
-    def to_embed(self, with_code: typing.Optional[bool] = False, embed_color: typing.Optional[discord.Color] = discord.Color.green()) -> discord.Embed:
-        embed: discord.Embed = discord.Embed(title="RunCode Request (with Tio API)", color=embed_color)
+    def to_embed(
+        self,
+        with_code: typing.Optional[bool] = False,
+        embed_color: typing.Optional[discord.Color] = discord.Color.green(),
+    ) -> discord.Embed:
+        embed: discord.Embed = discord.Embed(
+            title="RunCode Request (with Tio API)", color=embed_color
+        )
         embed.set_author(name=f"{self.language.name.capitalize()} language")
         if with_code:
             description = box(self.code, lang=self.language)
@@ -220,7 +264,8 @@ class TioRequest:
 
     async def fetch_response(self) -> "TioResponse":
         start = time.monotonic()
-        to_bytes = partial(bytes, encoding='utf-8')
+        to_bytes = partial(bytes, encoding="utf-8")
+
         def _to_tio_string(couple):
             name, obj = couple[0], couple[1]
             if not obj:
@@ -236,7 +281,7 @@ class TioRequest:
         data = zlib.compress(bytes_, 9)[2:-4]
         async with self.cog._session.post("https://tio.run/cgi-bin/run/api/", data=data) as r:
             raw_response: str = await r.text(encoding="utf-8")
-            raw_response = raw_response.replace(raw_response[:16], '')  # remove token
+            raw_response = raw_response.replace(raw_response[:16], "")  # remove token
         end = time.monotonic()
         response = TioResponse(request=self, run_time=int(end - start), result=raw_response)
         return response
@@ -255,7 +300,7 @@ class TioResponse:
             try:
                 start = output.rindex("Real time: ")
                 end = output.rindex("%\nExit code: ")
-                output = output[:start] + output[end + 2:]
+                output = output[:start] + output[end + 2 :]
             except ValueError:
                 pass
             output = CogsUtils().replace_var_paths(output)
@@ -271,8 +316,8 @@ class TioResponse:
         try:
             start = output.rindex("Real time: ")
             end = output.rindex("%\nExit code: ")
-            description = output[:start] + output[end + 2:]
-            debug = output[start:end + 2]
+            description = output[:start] + output[end + 2 :]
+            debug = output[start : end + 2]
         except ValueError:
             pass
         embed.add_field(name="Debug", value=box(debug, lang="py"))

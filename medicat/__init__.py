@@ -1,7 +1,7 @@
 from redbot.core.bot import Red  # isort:skip
-from redbot.core.utils import get_end_user_data_statement
-
 import asyncio
+
+from redbot.core.utils import get_end_user_data_statement
 
 from .medicat import Medicat  # , MEDICAT_GUILD, TEST_GUILD
 
@@ -12,6 +12,7 @@ async def setup_after_ready(bot) -> None:
     await bot.wait_until_red_ready()
     cog = Medicat(bot)
     await cog.cogsutils.add_cog(bot)
+
 
 async def setup(bot: Red) -> None:
     # await bot.wait_until_ready()

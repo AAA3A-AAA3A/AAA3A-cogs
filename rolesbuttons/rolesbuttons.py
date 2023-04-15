@@ -43,10 +43,7 @@ class RolesButtons(Cog):
         )
         self.roles_buttons_guild: typing.Dict[
             str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]
-        ] = {
-            "roles_buttons": {},
-            "modes": {}
-        }
+        ] = {"roles_buttons": {}, "modes": {}}
         self.config.register_guild(**self.roles_buttons_guild)
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
@@ -147,11 +144,15 @@ class RolesButtons(Cog):
             role = interaction.guild.get_role(role_id)
             if role is None:
                 await interaction.followup.send(
-                    _("The role ({role_id}) I have to put you in no longer exists. Please notify an administrator of this server.").format(role=role),
+                    _(
+                        "The role ({role_id}) I have to put you in no longer exists. Please notify an administrator of this server."
+                    ).format(role=role),
                     ephemeral=True,
                 )
                 return
-            mode = await self.config.guild(interaction.guild).modes.get_raw(f"{interaction.channel.id}-{interaction.message.id}", default="add_or_remove")
+            mode = await self.config.guild(interaction.guild).modes.get_raw(
+                f"{interaction.channel.id}-{interaction.message.id}", default="add_or_remove"
+            )
             if mode == "add_only":
                 add_role = True
             elif mode == "remove_only":
@@ -247,11 +248,15 @@ class RolesButtons(Cog):
             role = inter.guild.get_role(role_id)
             if role is None:
                 await inter.followup(
-                    _("The role ({role_id}) I have to put you in no longer exists. Please notify an administrator of this server.").format(role=role),
+                    _(
+                        "The role ({role_id}) I have to put you in no longer exists. Please notify an administrator of this server."
+                    ).format(role=role),
                     ephemeral=True,
                 )
                 return
-            mode = await self.config.guild(inter.guild).modes.get_raw(f"{inter.channel.id}-{inter.message.id}", default="add_or_remove")
+            mode = await self.config.guild(inter.guild).modes.get_raw(
+                f"{inter.channel.id}-{inter.message.id}", default="add_or_remove"
+            )
             if mode == "add_only":
                 add_role = True
             elif mode == "remove_only":
@@ -450,7 +455,12 @@ class RolesButtons(Cog):
         await self.config.guild(ctx.guild).roles_buttons.set(config)
 
     @rolesbuttons.command()
-    async def mode(self, ctx: commands.Context, message: discord.Message, mode: commands.Literal["add_or_remove", "add_only", "remove_only"]) -> None:
+    async def mode(
+        self,
+        ctx: commands.Context,
+        message: discord.Message,
+        mode: commands.Literal["add_or_remove", "add_only", "remove_only"],
+    ) -> None:
         """Choose a mode for a roles-buttons message.
 
         Type `add_or_remove`:
@@ -469,7 +479,9 @@ class RolesButtons(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("No role-button is configured for this message.")
             )
-        await self.config.guild(ctx.guild).modes.set_raw(f"{message.channel.id}-{message.id}", value=mode)
+        await self.config.guild(ctx.guild).modes.set_raw(
+            f"{message.channel.id}-{message.id}", value=mode
+        )
 
     @rolesbuttons.command()
     async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji) -> None:
@@ -494,7 +506,9 @@ class RolesButtons(Cog):
                 await message.edit(view=None)
             else:
                 await message.edit(components=None)
-            await self.config.guild(ctx.guild).modes.clear_raw(f"{message.channel.id}-{message.id}")
+            await self.config.guild(ctx.guild).modes.clear_raw(
+                f"{message.channel.id}-{message.id}"
+            )
         elif self.cogsutils.is_dpy2:
             view = self.get_buttons(config, message)
             await message.edit(view=view)
@@ -531,7 +545,9 @@ class RolesButtons(Cog):
         """Clear all roles-buttons to a **guild**."""
         await self.config.guild(ctx.guild).roles_buttons.clear()
 
-    def get_buttons(self, config: typing.Dict, message: typing.Union[discord.Message, str]):  # dpy2: discord.ui.View
+    def get_buttons(
+        self, config: typing.Dict, message: typing.Union[discord.Message, str]
+    ):  # dpy2: discord.ui.View
         message = (
             f"{message.channel.id}-{message.id}"
             if isinstance(message, discord.Message)
@@ -552,7 +568,7 @@ class RolesButtons(Cog):
                     emoji=b,
                     style=discord.ButtonStyle(config[message][f"{button}"].get("style_button", 2)),
                     custom_id=f"roles_buttons {button}",
-                    disabled=False
+                    disabled=False,
                 )
                 button.callback = self.on_button_interaction
                 view.add_item(button)
@@ -586,12 +602,8 @@ class RolesButtons(Cog):
                         buttons["components"].append(
                             {
                                 "type": 2,
-                                "style": config[message][f"{button}"][
-                                    "style_button"
-                                ],
-                                "label": config[message][f"{button}"][
-                                    "text_button"
-                                ],
+                                "style": config[message][f"{button}"]["style_button"],
+                                "label": config[message][f"{button}"]["text_button"],
                                 "emoji": {"name": f"{button}"},
                                 "custom_id": f"roles_buttons {button}",
                             }
@@ -601,9 +613,7 @@ class RolesButtons(Cog):
                             {
                                 "type": 2,
                                 "style": config[message][f"{button}"].get("style_button", 2),
-                                "label": config[message][f"{button}"][
-                                    "text_button"
-                                ],
+                                "label": config[message][f"{button}"]["text_button"],
                                 "emoji": {"name": f"{button}", "id": int(button)},
                                 "custom_id": f"roles_buttons {button}",
                             }

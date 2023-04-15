@@ -362,9 +362,7 @@ class Medicat(Cog):
             try:
                 self.remove_custom_commands()
             except Exception as e:
-                self.log.error(
-                    "An error occurred while removing the custom_commands.", exc_info=e
-                )
+                self.log.error("An error occurred while removing the custom_commands.", exc_info=e)
             self.cogsutils._end()
             if self._session is not None:
                 await self._session.close()
@@ -375,9 +373,7 @@ class Medicat(Cog):
             try:
                 self.remove_custom_commands()
             except Exception as e:
-                self.log.error(
-                    "An error occurred while removing the custom_commands.", exc_info=e
-                )
+                self.log.error("An error occurred while removing the custom_commands.", exc_info=e)
             self.cogsutils._end()
             if self._session is not None:
                 asyncio.create_task(self._session.close())
@@ -686,9 +682,8 @@ class Medicat(Cog):
 
     def is_owner_or_AAA3A():
         async def pred(ctx) -> bool:
-            return (
-                ctx.author.id in ctx.bot.owner_ids
-                or (ctx.author.id == 829612600059887649 and ctx.guild.id == MEDICAT_GUILD)
+            return ctx.author.id in ctx.bot.owner_ids or (
+                ctx.author.id == 829612600059887649 and ctx.guild.id == MEDICAT_GUILD
             )
 
         return commands.check(pred)
@@ -762,7 +757,7 @@ class Medicat(Cog):
         context = await self.bot.get_context(message)
         if context.prefix is None:
             return
-        command = context.message.content[len(str(context.prefix)):]
+        command = context.message.content[len(str(context.prefix)) :]
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
@@ -839,7 +834,7 @@ class Medicat(Cog):
                     discord.ui.Button(
                         style=discord.ButtonStyle(5),
                         label=_("View FCportables Official Website"),
-                        url="https://www.fcportables.com/"
+                        url="https://www.fcportables.com/",
                     )
                 )
                 await hook.send(
@@ -861,7 +856,7 @@ class Medicat(Cog):
                     discord.ui.Button(
                         style=discord.ButtonStyle(5),
                         label=_("View FCportables Official Website"),
-                        url="https://www.fcportables.com/"
+                        url="https://www.fcportables.com/",
                     )
                 )
                 await ctx.send(embed=embed, view=view)

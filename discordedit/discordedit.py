@@ -6,8 +6,10 @@ from redbot.core.bot import Red  # isort:skip
 from .editguild import EditGuild
 from .editrole import EditRole
 from .edittextchannel import EditTextChannel
+
 if CogsUtils().is_dpy2:
     from .editthread import EditThread
+
 from .editvoicechannel import EditVoiceChannel
 
 # Credits:
@@ -23,6 +25,7 @@ else:
     hybrid_command = commands.command
     hybrid_group = commands.group
     BASES = [EditGuild, EditRole, EditTextChannel, EditVoiceChannel]
+
 
 @cog_i18n(_)
 class DiscordEdit(*BASES, Cog):

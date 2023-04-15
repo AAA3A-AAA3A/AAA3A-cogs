@@ -1,259 +1,73 @@
 # Thanks to Beafantles for this file (https://github.com/Beafantles/Discode/tree/master/data/code)!
 
 LANGUAGES_FILES_EXTENSIONS = {
-    "Bash": [
-        "sh"
-    ],
-    "C": [
-        "c",
-        "h"
-    ],
-    "C#": [
-        "cs"
-    ],
-    "C++": [
-        "cc",
-        "cpp",
-        "cp",
-        "cxx",
-        "cbp",
-        "hh",
-        "hpp",
-        "hxx",
-        "inl"
-    ],
-    "CoffeeScript": [
-        "coffee",
-        "litcoffee"
-    ],
-    "Crystal": [
-        "cr",
-        "ecr",
-        "slang"
-    ],
-    "D": [
-        "d"
-    ],
-    "Elixir": [
-        "exs",
-        "ex"
-    ],
-    "Erlang": [
-        "erl",
-        "hrl"
-    ],
-    "F#": [
-        "fs",
-        "fsi",
-        "fsx",
-        ".fsscript"
-    ],
-    "Go": [
-        "go"
-    ],
-    "Groovy": [
-        "groovy"
-    ],
-    "Haskell": [
-        "hs",
-        "has",
-        "lhs",
-        "lit"
-    ],
-    "Java": [
-        "java",
-        "class",
-        "jar",
-        "war"
-    ],
-    "JavaScript": [
-        "js"
-    ],
-    "Lazy_K": [
-        "lazy"
-    ],
-    "Lisp": [
-        "lisp",
-        "lsp",
-        "l",
-        "cl",
-        "fasl"
-    ],
-    "Lua": [
-        "lua",
-        "luc"
-    ],
-    "Nim": [
-        "nim"
-    ],
-    "OCaml": [
-        "ml",
-        "mli"
-    ],
-    "Pascal": [
-        "pas",
-        "pp",
-        "p",
-        "inc",
-        "tpu"
-    ],
-    "Perl": [
-        "pl",
-        "pm",
-        "ph",
-        "pod"
-    ],
-    "PHP": [
-        "php",
-        "php3",
-        "php4",
-        "php5",
-        "phps",
-        "phtml"
-    ],
-    "Pony": [
-        "",
-        "pony"
-    ],
-    "Python": [
-        "py",
-        "pyc",
-        "pyo",
-        "pyd",
-        "pyw",
-        "rpy"
-    ],
-    "Rill": [
-        "rill"
-    ],
-    "Ruby": [
-        "rb",
-        "erb",
-        "rbw"
-    ],
-    "Rust": [
-        "rs",
-        "rlib"
-    ],
-    "Scala": [
-        "scala",
-        "sc"
-    ],
-    "SQL": [
-        "sql",
-        "eql"
-    ],
-    "Swift": [
-        "swift"
-    ],
-    "Vim": [
-        "vim"
-    ]
+    "Bash": ["sh"],
+    "C": ["c", "h"],
+    "C#": ["cs"],
+    "C++": ["cc", "cpp", "cp", "cxx", "cbp", "hh", "hpp", "hxx", "inl"],
+    "CoffeeScript": ["coffee", "litcoffee"],
+    "Crystal": ["cr", "ecr", "slang"],
+    "D": ["d"],
+    "Elixir": ["exs", "ex"],
+    "Erlang": ["erl", "hrl"],
+    "F#": ["fs", "fsi", "fsx", ".fsscript"],
+    "Go": ["go"],
+    "Groovy": ["groovy"],
+    "Haskell": ["hs", "has", "lhs", "lit"],
+    "Java": ["java", "class", "jar", "war"],
+    "JavaScript": ["js"],
+    "Lazy_K": ["lazy"],
+    "Lisp": ["lisp", "lsp", "l", "cl", "fasl"],
+    "Lua": ["lua", "luc"],
+    "Nim": ["nim"],
+    "OCaml": ["ml", "mli"],
+    "Pascal": ["pas", "pp", "p", "inc", "tpu"],
+    "Perl": ["pl", "pm", "ph", "pod"],
+    "PHP": ["php", "php3", "php4", "php5", "phps", "phtml"],
+    "Pony": ["", "pony"],
+    "Python": ["py", "pyc", "pyo", "pyd", "pyw", "rpy"],
+    "Rill": ["rill"],
+    "Ruby": ["rb", "erb", "rbw"],
+    "Rust": ["rs", "rlib"],
+    "Scala": ["scala", "sc"],
+    "SQL": ["sql", "eql"],
+    "Swift": ["swift"],
+    "Vim": ["vim"],
 }
 
 LANGUAGES_IDENTIFIERS = {
-    "Bash": [
-        "bash",
-        "sh"
-    ],
-    "C": [
-        "c"
-    ],
-    "C#": [
-        "cs",
-        "csharp"
-    ],
-    "C++": [
-        "cpp"
-    ],
-    "CoffeeScript": [
-        "coffeescript"
-    ],
-    "Crystal": [
-        "crystal"
-    ],
-    "D": [
-        "d"
-    ],
-    "Elixir": [
-        "elixir"
-    ],
-    "Erlang": [
-        "erlang"
-    ],
-    "F#": [
-        "fsharp"
-    ],
-    "Go": [
-        "go"
-    ],
-    "Groovy": [
-        "groovy"
-    ],
-    "Haskell": [
-        "haskell"
-    ],
-    "Java": [
-        "java"
-    ],
-    "JavaScript": [
-        "js",
-        "javascript"
-    ],
-    "Lazy_K": [
-        "k",
-        "lazy_k"
-    ],
-    "Lisp": [
-        "lisp"
-    ],
-    "Lua": [
-        "lua"
-    ],
-    "Nim": [
-        "nim",
-        "nimrod"
-    ],
-    "OCaml": [
-        "ocaml"
-    ],
-    "Pascal": [
-        "pascal"
-    ],
-    "Perl": [
-        "perl"
-    ],
-    "PHP": [
-        "php"
-    ],
-    "Pony": [
-        "pony"
-    ],
-    "Python": [
-        "py",
-        "python"
-    ],
-    "Rill": [
-        "rill"
-    ],
-    "Ruby": [
-        "ruby"
-    ],
-    "Rust": [
-        "rust"
-    ],
-    "Scala": [
-        "scala"
-    ],
-    "SQL": [
-        "sql"
-    ],
-    "Swift": [
-        "swift"
-    ],
-    "Vim": [
-        "vim"
-    ]
+    "Bash": ["bash", "sh"],
+    "C": ["c"],
+    "C#": ["cs", "csharp"],
+    "C++": ["cpp"],
+    "CoffeeScript": ["coffeescript"],
+    "Crystal": ["crystal"],
+    "D": ["d"],
+    "Elixir": ["elixir"],
+    "Erlang": ["erlang"],
+    "F#": ["fsharp"],
+    "Go": ["go"],
+    "Groovy": ["groovy"],
+    "Haskell": ["haskell"],
+    "Java": ["java"],
+    "JavaScript": ["js", "javascript"],
+    "Lazy_K": ["k", "lazy_k"],
+    "Lisp": ["lisp"],
+    "Lua": ["lua"],
+    "Nim": ["nim", "nimrod"],
+    "OCaml": ["ocaml"],
+    "Pascal": ["pascal"],
+    "Perl": ["perl"],
+    "PHP": ["php"],
+    "Pony": ["pony"],
+    "Python": ["py", "python"],
+    "Rill": ["rill"],
+    "Ruby": ["ruby"],
+    "Rust": ["rust"],
+    "Scala": ["scala"],
+    "SQL": ["sql"],
+    "Swift": ["swift"],
+    "Vim": ["vim"],
 }
 
 LANGUAGES_IMAGES = {
@@ -288,5 +102,5 @@ LANGUAGES_IMAGES = {
     "Scala": "https://i.imgur.com/5uBOncQ.png",
     "SQL": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Applications-database.svg/500px-Applications-database.svg.png",
     "Swift": "https://upload.wikimedia.org/wikipedia/fr/6/63/Logo_Apple_Swift.png",
-    "Vim": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Vimlogo.svg/500px-Vimlogo.svg.png"
+    "Vim": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Vimlogo.svg/500px-Vimlogo.svg.png",
 }

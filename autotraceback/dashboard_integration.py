@@ -8,6 +8,7 @@ def dashboard_page(*args, **kwargs):
     def decorator(func: typing.Callable):
         func.__dashboard_decorator_params__ = (args, kwargs)
         return func
+
     return decorator
 
 
@@ -25,7 +26,17 @@ class DashboardIntegration:
             return
         for attr in dir(self):
             if hasattr((func := getattr(self, attr)), "__dashboard_decorator_params__"):
-                setattr(self, attr, func.__class__(dashboard_page(*func.__dashboard_decorator_params__[0], **func.__dashboard_decorator_params__[1])(func.__func__), func.__self__))
+                setattr(
+                    self,
+                    attr,
+                    func.__class__(
+                        dashboard_page(
+                            *func.__dashboard_decorator_params__[0],
+                            **func.__dashboard_decorator_params__[1],
+                        )(func.__func__),
+                        func.__self__,
+                    ),
+                )
         dashboard_cog.rpc.third_parties_handler.add_third_party(self)
 
     async def cog_unload(self) -> None:

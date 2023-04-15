@@ -416,14 +416,12 @@ class Ticket:
                 True,
                 author=self.created_by,
                 title=_("Ticket Created"),
-                description=_(
-                    "The ticket was created by {ticket.created_by}."
-                ).format(ticket=self),
-            )
-            await logschannel.send(
-                _("Report on the creation of the ticket {ticket.id}.").format(
+                description=_("The ticket was created by {ticket.created_by}.").format(
                     ticket=self
                 ),
+            )
+            await logschannel.send(
+                _("Report on the creation of the ticket {ticket.id}.").format(ticket=self),
                 embed=embed,
             )
         if config["ticket_role"] is not None and self.owner:
@@ -458,7 +456,9 @@ class Ticket:
                 )
         return None
 
-    async def open(self, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+    async def open(
+        self, author: typing.Optional[discord.Member] = None
+    ) -> typing.Any:  # typing_extensions.Self
         config = await self.cog.get_config(self.guild, self.panel)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
@@ -478,9 +478,7 @@ class Ticket:
         new_name = new_name.replace(f"{emoji_close}-", "", 1)
         new_name = f"{emoji_open}-{new_name}"
         if isinstance(self.channel, discord.TextChannel):
-            await self.channel.edit(
-                name=new_name, category=config["category_open"], reason=reason
-            )
+            await self.channel.edit(name=new_name, category=config["category_open"], reason=reason)
         else:
             await self.channel.edit(name=new_name, archived=False, reason=reason)
         if self.logs_messages:
@@ -494,14 +492,12 @@ class Ticket:
                     True,
                     author=self.opened_by,
                     title=_("Ticket Opened"),
-                    description=_(
-                        "The ticket was opened by {ticket.opened_by}."
-                    ).format(ticket=self),
-                )
-                await logschannel.send(
-                    _("Report on the close of the ticket {ticket.id}.").format(
+                    description=_("The ticket was opened by {ticket.opened_by}.").format(
                         ticket=self
                     ),
+                )
+                await logschannel.send(
+                    _("Report on the close of the ticket {ticket.id}.").format(ticket=self),
                     embed=embed,
                 )
         if self.first_message is not None:
@@ -572,7 +568,9 @@ class Ticket:
         await self.save()
         return self
 
-    async def close(self, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+    async def close(
+        self, author: typing.Optional[discord.Member] = None
+    ) -> typing.Any:  # typing_extensions.Self
         config = await self.cog.get_config(self.guild, self.panel)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
@@ -680,7 +678,9 @@ class Ticket:
         await self.save()
         return self
 
-    async def lock(self, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+    async def lock(
+        self, author: typing.Optional[discord.Member] = None
+    ) -> typing.Any:  # typing_extensions.Self
         if isinstance(self.channel, discord.TextChannel):
             raise commands.UserFeedbackCheckFailure(_("Cannot execute action on a text channel."))
         config = await self.cog.get_config(self.guild, self.panel)
@@ -714,7 +714,9 @@ class Ticket:
         await self.save()
         return self
 
-    async def unlock(self, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+    async def unlock(
+        self, author: typing.Optional[discord.Member] = None
+    ) -> typing.Any:  # typing_extensions.Self
         if isinstance(self.channel, discord.TextChannel):
             raise commands.UserFeedbackCheckFailure(_("Cannot execute action on a text channel."))
         config = await self.cog.get_config(self.guild, self.panel)
@@ -748,7 +750,9 @@ class Ticket:
         await self.save()
         return self
 
-    async def rename(self, new_name: str, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+    async def rename(
+        self, new_name: str, author: typing.Optional[discord.Member] = None
+    ) -> typing.Any:  # typing_extensions.Self
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
             panel=self.panel,
@@ -769,7 +773,9 @@ class Ticket:
             await self.save()
         return self
 
-    async def delete(self, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+    async def delete(
+        self, author: typing.Optional[discord.Member] = None
+    ) -> typing.Any:  # typing_extensions.Self
         config = await self.cog.get_config(self.guild, self.panel)
         logschannel = config["logschannel"]
         self.deleted_by = author
@@ -780,9 +786,9 @@ class Ticket:
                 True,
                 author=self.deleted_by,
                 title=_("Ticket Deleted"),
-                description=_(
-                    "The ticket was deleted by {ticket.deleted_by}."
-                ).format(ticket=self),
+                description=_("The ticket was deleted by {ticket.deleted_by}.").format(
+                    ticket=self
+                ),
             )
             try:
                 if self.cog.cogsutils.is_dpy2:
@@ -807,9 +813,7 @@ class Ticket:
             else:
                 file = None
             message = await logschannel.send(
-                _("Report on the deletion of the ticket {ticket.id}.").format(
-                    ticket=self
-                ),
+                _("Report on the deletion of the ticket {ticket.id}.").format(ticket=self),
                 embed=embed,
                 file=file,
             )
@@ -839,9 +843,13 @@ class Ticket:
         await self.cog.config.guild(self.guild).tickets.set(data)
         return self
 
-    async def claim_ticket(self, member: discord.Member, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+    async def claim_ticket(
+        self, member: discord.Member, author: typing.Optional[discord.Member] = None
+    ) -> typing.Any:  # typing_extensions.Self
         if self.status != "open":
-            raise commands.UserFeedbackCheckFailure(_("A ticket cannot be claimed if it is closed."))
+            raise commands.UserFeedbackCheckFailure(
+                _("A ticket cannot be claimed if it is closed.")
+            )
         config = await self.cog.get_config(self.guild, self.panel)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
@@ -945,9 +953,13 @@ class Ticket:
         await self.save()
         return self
 
-    async def unclaim_ticket(self, member: discord.Member, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+    async def unclaim_ticket(
+        self, member: discord.Member, author: typing.Optional[discord.Member] = None
+    ) -> typing.Any:  # typing_extensions.Self
         if self.status != "open":
-            raise commands.UserFeedbackCheckFailure(_("A ticket cannot be unclaimed if it is closed."))
+            raise commands.UserFeedbackCheckFailure(
+                _("A ticket cannot be unclaimed if it is closed.")
+            )
         config = await self.cog.get_config(self.guild, self.panel)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
@@ -1044,17 +1056,19 @@ class Ticket:
         await self.save()
         return self
 
-    async def change_owner(self, member: discord.Member, author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+    async def change_owner(
+        self, member: discord.Member, author: typing.Optional[discord.Member] = None
+    ) -> typing.Any:  # typing_extensions.Self
         if not isinstance(self.channel, discord.TextChannel):
-            raise commands.UserFeedbackCheckFailure(_("Cannot execute action on a thread channel."))
+            raise commands.UserFeedbackCheckFailure(
+                _("Cannot execute action on a thread channel.")
+            )
         config = await self.cog.get_config(self.guild, self.panel)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
             panel=self.panel,
             author=author,
-            reason=_("Changing owner of the ticket {ticket.id}.").format(
-                ticket=self
-            ),
+            reason=_("Changing owner of the ticket {ticket.id}.").format(ticket=self),
         )
         if member.bot:
             raise commands.UserFeedbackCheckFailure(
@@ -1092,15 +1106,15 @@ class Ticket:
         await self.save()
         return self
 
-    async def add_member(self, members: typing.List[discord.Member], author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+    async def add_member(
+        self, members: typing.List[discord.Member], author: typing.Optional[discord.Member] = None
+    ) -> typing.Any:  # typing_extensions.Self
         config = await self.cog.get_config(self.guild, self.panel)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
             panel=self.panel,
             author=author,
-            reason=_("Adding a member to the ticket {ticket.id}.").format(
-                ticket=self
-            ),
+            reason=_("Adding a member to the ticket {ticket.id}.").format(ticket=self),
         )
         if config["admin_role"] is not None:
             admin_role_members = config["admin_role"].members
@@ -1173,15 +1187,15 @@ class Ticket:
         await self.save()
         return self
 
-    async def remove_member(self, members: typing.List[discord.Member], author: typing.Optional[discord.Member] = None) -> typing.Any:  # typing_extensions.Self
+    async def remove_member(
+        self, members: typing.List[discord.Member], author: typing.Optional[discord.Member] = None
+    ) -> typing.Any:  # typing_extensions.Self
         config = await self.cog.get_config(self.guild, self.panel)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
             panel=self.panel,
             author=author,
-            reason=_("Removing a member to the ticket {ticket.id}.").format(
-                ticket=self
-            ),
+            reason=_("Removing a member to the ticket {ticket.id}.").format(ticket=self),
         )
         if config["admin_role"] is not None:
             admin_role_members = config["admin_role"].members
@@ -1196,7 +1210,9 @@ class Ticket:
                 if author is not None:
                     if member.bot:
                         raise commands.UserFeedbackCheckFailure(
-                            _("You cannot remove a bot to a ticket ({member}).").format(member=member)
+                            _("You cannot remove a bot to a ticket ({member}).").format(
+                                member=member
+                            )
                         )
                     if not isinstance(self.owner, int) and member == self.owner:
                         raise commands.UserFeedbackCheckFailure(
@@ -1210,10 +1226,7 @@ class Ticket:
                                 "This member is an administrator for the ticket system. They will always have access to the ticket. ({member})"
                             ).format(member=member)
                         )
-                    if (
-                        member not in self.members
-                        and member not in support_role_members
-                    ):
+                    if member not in self.members and member not in support_role_members:
                         raise commands.UserFeedbackCheckFailure(
                             _(
                                 "This member is not in the list of those authorised to access the ticket. ({member})"
@@ -1227,7 +1240,9 @@ class Ticket:
                 if author is not None:
                     if member.bot:
                         raise commands.UserFeedbackCheckFailure(
-                            _("You cannot remove a bot to a ticket ({member}).").format(member=member)
+                            _("You cannot remove a bot to a ticket ({member}).").format(
+                                member=member
+                            )
                         )
                     if not isinstance(self.owner, int) and member == self.owner:
                         raise commands.UserFeedbackCheckFailure(
@@ -1241,10 +1256,7 @@ class Ticket:
                                 "This member is an administrator for the ticket system. They will always have access to the ticket. ({member})"
                             ).format(member=member)
                         )
-                    if (
-                        member not in self.members
-                        and member not in support_role_members
-                    ):
+                    if member not in self.members and member not in support_role_members:
                         raise commands.UserFeedbackCheckFailure(
                             _(
                                 "This member is not in the list of those authorised to access the ticket. ({member})"

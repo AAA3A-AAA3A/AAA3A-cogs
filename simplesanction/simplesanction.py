@@ -2091,7 +2091,9 @@ class SimpleSanction(settings, Cog):
                 if not warn_system_exist:
                     if not ctx.bot.get_cog("Warnings"):
                         await ctx.send(
-                            _("The cog Warnings is not loaded. To load it, do `{ctx.prefix}load warnings`. You can also install/load the WarnSystem cog.").format(ctx=ctx)
+                            _(
+                                "The cog Warnings is not loaded. To load it, do `{ctx.prefix}load warnings`. You can also install/load the WarnSystem cog."
+                            ).format(ctx=ctx)
                         )
                     if reason == "not":
                         command = f"warn {user.id} The reason was not given."

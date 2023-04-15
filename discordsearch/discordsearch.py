@@ -253,6 +253,7 @@ class NoExitParser(argparse.ArgumentParser):
     def error(self, message) -> None:
         raise commands.BadArgument(message)
 
+
 class SearchArgs:
     def parse_arguments(self, arguments: str) -> argparse.Namespace:
         parser = NoExitParser(description="Selection args for DiscordSearch.", add_help=False)

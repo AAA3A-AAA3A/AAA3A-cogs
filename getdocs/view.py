@@ -4,7 +4,7 @@ import typing  # isort:skip
 
 from redbot.core.utils.chat_formatting import pagify
 
-from .types import SearchResults, Documentation
+from .types import Documentation, SearchResults
 
 
 class DocsSelectOption(discord.SelectOption):
@@ -93,26 +93,18 @@ class GetDocsView(discord.ui.View):
             i += 1
         if doc is None:
             raise RuntimeError("No results found.")
-        if parameters_button := discord.utils.get(
-            self.children, custom_id="show_parameters"
-        ):
-            parameters_button.disabled = not doc.parameters and not (self.source.name == "discordapi" and doc.fields)
-        if examples_button := discord.utils.get(
-            self.children, custom_id="show_examples"
-        ):
+        if parameters_button := discord.utils.get(self.children, custom_id="show_parameters"):
+            parameters_button.disabled = not doc.parameters and not (
+                self.source.name == "discordapi" and doc.fields
+            )
+        if examples_button := discord.utils.get(self.children, custom_id="show_examples"):
             examples_button.disabled = not bool(doc.examples)
-        if attributes_button := discord.utils.get(
-            self.children, custom_id="show_attributes"
-        ):
+        if attributes_button := discord.utils.get(self.children, custom_id="show_attributes"):
             attributes_button.disabled = not bool(doc.attributes)
 
-        if back_button := discord.utils.get(
-            self.children, custom_id="back_button"
-        ):
+        if back_button := discord.utils.get(self.children, custom_id="back_button"):
             self.remove_item(back_button)
-        if next_button := discord.utils.get(
-            self.children, custom_id="next_button"
-        ):
+        if next_button := discord.utils.get(self.children, custom_id="next_button"):
             self.remove_item(next_button)
 
         self._current = doc
@@ -144,7 +136,9 @@ class GetDocsView(discord.ui.View):
                 "Current variable is somehow empty, so attributes aren't loaded.",
                 ephemeral=True,
             )
-        if not self._current.parameters and not (self.source.name == "discordapi" and self._current.fields):
+        if not self._current.parameters and not (
+            self.source.name == "discordapi" and self._current.fields
+        ):
             return await interaction.response.send_message(
                 "There are no attributes available for this option.",
                 ephemeral=True,
@@ -172,18 +166,18 @@ class GetDocsView(discord.ui.View):
             pages = list(pagify(description, page_length=4000, delims=["\n• ", "\n**"]))
             if len(pages) == 1:
                 embed = discord.Embed(
-                        title="Fields:",
-                        description=description,
-                        color=await self.ctx.embed_color(),
+                    title="Fields:",
+                    description=description,
+                    color=await self.ctx.embed_color(),
                 )
                 embeds.append(embed)
             else:
                 embeds = []
                 for i, page in enumerate(pages, start=1):
                     embed = discord.Embed(
-                            title=f"Fields {i}:",
-                            description=page,
-                            color=await self.ctx.embed_color(),
+                        title=f"Fields {i}:",
+                        description=page,
+                        color=await self.ctx.embed_color(),
                     )
                     embeds.append(embed)
         elif isinstance(self._current.parameters, str):
@@ -192,18 +186,18 @@ class GetDocsView(discord.ui.View):
             pages = list(pagify(description, page_length=4000))
             if len(pages) == 1:
                 embed = discord.Embed(
-                        title="Parameters:",
-                        description=description,
-                        color=await self.ctx.embed_color(),
+                    title="Parameters:",
+                    description=description,
+                    color=await self.ctx.embed_color(),
                 )
                 embeds.append(embed)
             else:
                 embeds = []
                 for i, page in enumerate(pages, start=1):
                     embed = discord.Embed(
-                            title=f"Parameters {i}:",
-                            description=page,
-                            color=await self.ctx.embed_color(),
+                        title=f"Parameters {i}:",
+                        description=page,
+                        color=await self.ctx.embed_color(),
                     )
                     embeds.append(embed)
         else:
@@ -230,18 +224,10 @@ class GetDocsView(discord.ui.View):
                     current_embed = embeds[0]
                 self._message = await self._message.edit(embed=current_embed)
 
-            back_button = discord.ui.Button(
-                emoji="◀️",
-                custom_id="back_button",
-                row=2
-            )
+            back_button = discord.ui.Button(emoji="◀️", custom_id="back_button", row=2)
             back_button.callback = _back_button
             self.add_item(back_button)
-            next_button = discord.ui.Button(
-                emoji="▶️",
-                custom_id="next_button",
-                row=2
-            )
+            next_button = discord.ui.Button(emoji="▶️", custom_id="next_button", row=2)
             next_button.callback = _next_button
             self.add_item(next_button)
             self._message = await self._message.edit(embed=embeds[0], view=self)
@@ -268,16 +254,14 @@ class GetDocsView(discord.ui.View):
             await self._update(self._current.name)
             return
 
-        if back_button := discord.utils.get(
-            self.children, custom_id="back_button"
-        ):
+        if back_button := discord.utils.get(self.children, custom_id="back_button"):
             self.remove_item(back_button)
-        if next_button := discord.utils.get(
-            self.children, custom_id="next_button"
-        ):
+        if next_button := discord.utils.get(self.children, custom_id="next_button"):
             self.remove_item(next_button)
 
-        embeds = self._current.examples.to_embeds(self.ctx, embed_color=await self.ctx.embed_color())
+        embeds = self._current.examples.to_embeds(
+            self.ctx, embed_color=await self.ctx.embed_color()
+        )
         self._message = await self._message.edit(embeds=embeds[:10], view=self)
         self._mode = "examples"
 
@@ -303,13 +287,9 @@ class GetDocsView(discord.ui.View):
             return
 
         # Attributes pagination
-        if back_button := discord.utils.get(
-            self.children, custom_id="back_button"
-        ):
+        if back_button := discord.utils.get(self.children, custom_id="back_button"):
             self.remove_item(back_button)
-        if next_button := discord.utils.get(
-            self.children, custom_id="next_button"
-        ):
+        if next_button := discord.utils.get(self.children, custom_id="next_button"):
             self.remove_item(next_button)
 
         embeds = self._current.attributes.to_embeds(embed_color=await self.ctx.embed_color())
@@ -332,18 +312,10 @@ class GetDocsView(discord.ui.View):
                     current_embed = embeds[0]
                 self._message = await self._message.edit(embed=current_embed)
 
-            back_button = discord.ui.Button(
-                emoji="◀️",
-                custom_id="back_button",
-                row=2
-            )
+            back_button = discord.ui.Button(emoji="◀️", custom_id="back_button", row=2)
             back_button.callback = _back_button
             self.add_item(back_button)
-            next_button = discord.ui.Button(
-                emoji="▶️",
-                custom_id="next_button",
-                row=2
-            )
+            next_button = discord.ui.Button(emoji="▶️", custom_id="next_button", row=2)
             next_button.callback = _next_button
             self.add_item(next_button)
             self._message = await self._message.edit(embed=embeds[0], view=self)

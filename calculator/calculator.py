@@ -12,7 +12,7 @@ else:
 
 import asyncio
 import datetime
-from math import pi, tau, e
+from math import e, pi, tau
 
 from redbot.core.utils.chat_formatting import box
 from TagScriptEngine import Interpreter, block
@@ -345,10 +345,7 @@ class Calculator(Cog):
         try:
             while True:
                 inter = await ctx.wait_for_button_click(timeout=config["time_max"], check=check)
-                if (
-                    inter.author != ctx.author
-                    and ctx.author.id not in ctx.bot.owner_ids
-                ):
+                if inter.author != ctx.author and ctx.author.id not in ctx.bot.owner_ids:
                     await inter.respond(
                         _(
                             "Only the author of the command `{ctx.prefix}{ctx.command.name}` can interact with this message."
@@ -358,10 +355,7 @@ class Calculator(Cog):
                     continue
                 if result in [_("Error!"), "∞", ""]:
                     result = None
-                if (
-                    result is not None
-                    and inter.clicked_button.custom_id != "result_button"
-                ):
+                if result is not None and inter.clicked_button.custom_id != "result_button":
                     expression = f"{result}|"
                     result = None
                 if (

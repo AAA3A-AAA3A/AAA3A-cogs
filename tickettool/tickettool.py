@@ -128,7 +128,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
             },
             "forum_channel": {
                 "path": ["forum_channel"],
-                "converter": typing.Union[discord.ForumChannel, discord.TextChannel] if self.cogsutils.is_dpy2 else None,
+                "converter": typing.Union[discord.ForumChannel, discord.TextChannel]
+                if self.cogsutils.is_dpy2
+                else None,
                 "description": "Set the forum channel where the opened tickets will be, or a text channel to use private threads. If it's set, `category_open` and `category_close` will be ignored (except for existing tickets).",
             },
             "category_open": {
@@ -714,7 +716,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
                         "The bot does not have `manage_channels` permission on the `open` and `close` categories to allow the ticket system to function properly. Please notify an administrator of this server."
                     )
                 )
-        elif not forum_channel.permissions_for(ctx.guild.me).create_private_threads or not forum_channel.permissions_for(ctx.guild.me).create_public_threads:
+        elif (
+            not forum_channel.permissions_for(ctx.guild.me).create_private_threads
+            or not forum_channel.permissions_for(ctx.guild.me).create_public_threads
+        ):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "The bot does not have `manage_channel` permission in the forum channel to allow the ticket system to function properly. Please notify an administrator of this server."
@@ -1162,11 +1167,20 @@ class TicketTool(settings, DashboardIntegration, Cog):
             if channel is None:
                 continue
             ticket: Ticket = await self.get_ticket(channel)
-            if ticket.panel == panel and (member is None or ticket.owner == member) and (status == "all" or ticket.status == status):
+            if (
+                ticket.panel == panel
+                and (member is None or ticket.owner == member)
+                and (status == "all" or ticket.status == status)
+            ):
                 tickets_to_show.append(ticket)
         if not tickets_to_show:
             raise commands.UserFeedbackCheckFailure(_("No tickets to show."))
-        description = "\n".join([f"• **{ticket.id}** - {ticket.status} - {ticket.channel.mention}" for ticket in sorted(tickets_to_show, key=lambda x: x.id)])
+        description = "\n".join(
+            [
+                f"• **{ticket.id}** - {ticket.status} - {ticket.channel.mention}"
+                for ticket in sorted(tickets_to_show, key=lambda x: x.id)
+            ]
+        )
         pages = list(pagify(description, page_length=6000))
         embeds = []
         for page in pages:
@@ -1186,10 +1200,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
             permissions = interaction.channel.permissions_for(interaction.guild.me)
             if not permissions.read_messages and not permissions.read_message_history:
                 return
-            if (
-                not interaction.response.is_done()
-                and interaction.data["custom_id"] not in ["create_ticket_button", "close_ticket_button"]
-            ):
+            if not interaction.response.is_done() and interaction.data["custom_id"] not in [
+                "create_ticket_button",
+                "close_ticket_button",
+            ]:
                 await interaction.response.defer(ephemeral=True)
             if interaction.data["custom_id"] == "create_ticket_button":
                 buttons = await self.config.guild(interaction.guild).buttons.all()
@@ -1237,8 +1251,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user,
                     channel=interaction.channel,
-                    command=f"ticket create {panel}"
-                    + (f" {reason}" if reason != "" else ""),
+                    command=f"ticket create {panel}" + (f" {reason}" if reason != "" else ""),
                 )
                 if not await ctx.command.can_run(
                     ctx, change_permission_state=True
@@ -1273,7 +1286,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 reason = inputs[0].value or ""
                 panels = await self.config.guild(interaction.guild).panels()
                 ctx = await self.cogsutils.invoke_command(
-                    author=interaction.user, channel=interaction.channel, command=("ticket close" + (f" {reason}" if reason != "" else ""))
+                    author=interaction.user,
+                    channel=interaction.channel,
+                    command=("ticket close" + (f" {reason}" if reason != "" else "")),
                 )
                 try:
                     await interaction.followup.send(
@@ -1544,11 +1559,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         if panel not in panels:
             return
         config = await self.get_config(guild, panel)
-        if (
-            config["enable"]
-            and config["create_on_react"]
-            and str(payload.emoji) == "🎟️"
-        ):
+        if config["enable"] and config["create_on_react"] and str(payload.emoji) == "🎟️":
             permissions = channel.permissions_for(member)
             if not permissions.read_messages and not permissions.send_messages:
                 return
@@ -1595,8 +1606,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 continue
             ticket: Ticket = await self.get_ticket(channel)
             if config["close_on_leave"] and (
-                getattr(ticket.owner, "id", ticket.owner) == member.id
-                and ticket.status == "open"
+                getattr(ticket.owner, "id", ticket.owner) == member.id and ticket.status == "open"
             ):
                 await ticket.close(ticket.guild.me)
         return

@@ -12,8 +12,14 @@ from redbot.core.errors import BalanceTooHigh
 # GAME_EMOJIS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"]
 GAME_EMOJIS = ["🏆", "🎯", "🎲", "⚽", "🏀", "🏓", "🥁", "🎮", "🎳", "🎻", "🎖️", "🏹"]
 
+
 class MemoryGameView(discord.ui.View):
-    def __init__(self, cog: commands.Cog, difficulty: typing.Literal["3x3", "4x4", "5x5"], max_wrong_matches: typing.Optional[int] = None) -> None:
+    def __init__(
+        self,
+        cog: commands.Cog,
+        difficulty: typing.Literal["3x3", "4x4", "5x5"],
+        max_wrong_matches: typing.Optional[int] = None,
+    ) -> None:
         super().__init__(timeout=60 * 10)
         self.ctx: commands.Context = None
         self.cog: commands.Cog = cog
@@ -40,7 +46,9 @@ class MemoryGameView(discord.ui.View):
         for row, _list in enumerate(self._solution_display):
             for emoji in _list:
                 if emoji != "​":
-                    custom_id = self.cog.cogsutils.generate_key(length=5, existing_keys=self._custom_ids)
+                    custom_id = self.cog.cogsutils.generate_key(
+                        length=5, existing_keys=self._custom_ids
+                    )
                     self._custom_ids[custom_id] = emoji
                 else:
                     custom_id = emoji
@@ -49,8 +57,12 @@ class MemoryGameView(discord.ui.View):
                     button.disabled = True
                 button.callback = self.callback
                 self.add_item(button)
-        embed: discord.Embed = discord.Embed(title="Memory Game", color=await self.ctx.embed_color())
-        embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar)
+        embed: discord.Embed = discord.Embed(
+            title="Memory Game", color=await self.ctx.embed_color()
+        )
+        embed.set_author(
+            name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar
+        )
         self._message = await self.ctx.send(embed=embed, view=self)
         self.cog.games[self._message] = self
         self._start = time.monotonic()
@@ -67,7 +79,11 @@ class MemoryGameView(discord.ui.View):
     async def on_timeout(self) -> None:
         for child in self.children:
             child: discord.ui.Item
-            if isinstance(child, discord.ui.Button) and child.style != discord.ButtonStyle.url and child.custom_id != "​":
+            if (
+                isinstance(child, discord.ui.Button)
+                and child.style != discord.ButtonStyle.url
+                and child.custom_id != "​"
+            ):
                 child.disabled = True
         try:
             await self._message.edit(view=self)
@@ -105,30 +121,36 @@ class MemoryGameView(discord.ui.View):
             random.shuffle(solution)
             raw = solution.copy()
             raw.insert(12, "​")  # invisible character
-            solution_display = [
-                raw[:5],
-                raw[5:10],
-                raw[10:15],
-                raw[15:20],
-                raw[20:25]
-            ]
+            solution_display = [raw[:5], raw[5:10], raw[10:15], raw[15:20], raw[20:25]]
         return solution, solution_display
 
     async def callback(self, interaction: discord.Interaction):
         await interaction.response.defer()
         async with self._lock:
-            if interaction.data["custom_id"] == "​" or self._custom_ids[interaction.data["custom_id"]] in self._found:
+            if (
+                interaction.data["custom_id"] == "​"
+                or self._custom_ids[interaction.data["custom_id"]] in self._found
+            ):
                 return
             if self._selected is None:
                 self._selected = interaction.data["custom_id"]
-                button: discord.ui.Button = discord.utils.get(self.children, custom_id=self._selected)
+                button: discord.ui.Button = discord.utils.get(
+                    self.children, custom_id=self._selected
+                )
                 button.label = self._custom_ids[self._selected]
                 self._message = await self._message.edit(view=self)
                 return
             self._tries += 1
-            if self._custom_ids[self._selected] != self._custom_ids[interaction.data["custom_id"]] or self._selected == interaction.data["custom_id"]:
-                button1: discord.ui.Button = discord.utils.get(self.children, custom_id=self._selected)
-                button2: discord.ui.Button = discord.utils.get(self.children, custom_id=interaction.data["custom_id"])
+            if (
+                self._custom_ids[self._selected] != self._custom_ids[interaction.data["custom_id"]]
+                or self._selected == interaction.data["custom_id"]
+            ):
+                button1: discord.ui.Button = discord.utils.get(
+                    self.children, custom_id=self._selected
+                )
+                button2: discord.ui.Button = discord.utils.get(
+                    self.children, custom_id=interaction.data["custom_id"]
+                )
                 button1.style = discord.ButtonStyle.danger
                 button2.style = discord.ButtonStyle.danger
                 button2.label = self._custom_ids[interaction.data["custom_id"]]
@@ -145,7 +167,9 @@ class MemoryGameView(discord.ui.View):
                     await self.lose()
                 return
             button1: discord.ui.Button = discord.utils.get(self.children, custom_id=self._selected)
-            button2: discord.ui.Button = discord.utils.get(self.children, custom_id=interaction.data["custom_id"])
+            button2: discord.ui.Button = discord.utils.get(
+                self.children, custom_id=interaction.data["custom_id"]
+            )
             button1.style = discord.ButtonStyle.success
             button2.style = discord.ButtonStyle.success
             button2.label = self._custom_ids[interaction.data["custom_id"]]
@@ -178,19 +202,31 @@ class MemoryGameView(discord.ui.View):
             reduction_per_second = config["reduction_per_second"]
             reduction_per_wrong_match = config["reduction_per_wrong_match"]
             member_config = await self.cog.config.member(self.ctx.author).all()
-            member_config["score"] += max_prize - (game_time * reduction_per_second) - (self._wrong_matches * reduction_per_wrong_match)
+            member_config["score"] += (
+                max_prize
+                - (game_time * reduction_per_second)
+                - (self._wrong_matches * reduction_per_wrong_match)
+            )
             member_config["wins"] += 1
             member_config["games"] += 1
             await self.cog.config.member(self.ctx.author).set(member_config)
             if self.cog.config.guild(self.ctx.guild).red_economy():
                 # https://canary.discord.com/channels/133049272517001216/133251234164375552/1089212578279997521
-                final_prize = max_prize - (game_time * reduction_per_second) - (self._wrong_matches * reduction_per_wrong_match)
+                final_prize = (
+                    max_prize
+                    - (game_time * reduction_per_second)
+                    - (self._wrong_matches * reduction_per_wrong_match)
+                )
                 try:
                     await bank.deposit_credits(self.ctx.author, final_prize)
                 except BalanceTooHigh as e:
                     await bank.set_balance(self.ctx.author, e.max_balance)
-        embed: discord.Embed = discord.Embed(title="Memory Game", color=await self.ctx.embed_color())
-        embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar)
+        embed: discord.Embed = discord.Embed(
+            title="Memory Game", color=await self.ctx.embed_color()
+        )
+        embed.set_author(
+            name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar
+        )
         embed.description = f"You won in {game_time} seconds, with {self._tries} tries and {self._wrong_matches} wrong matches!"
         self._message = await self._message.edit(embed=embed, view=self)
         await self.on_timeout()
@@ -203,8 +239,12 @@ class MemoryGameView(discord.ui.View):
             member_config = await self.cog.config.member(self.ctx.author).all()
             member_config["games"] += 1
             await self.cog.config.member(self.ctx.author).set(member_config)
-        embed: discord.Embed = discord.Embed(title="Memory Game", color=await self.ctx.embed_color())
-        embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar)
+        embed: discord.Embed = discord.Embed(
+            title="Memory Game", color=await self.ctx.embed_color()
+        )
+        embed.set_author(
+            name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar
+        )
         embed.description = f"You lose, because you tried too many times ({self._tries} tries and {self._wrong_matches} wrong matches)."
         self._message = await self._message.edit(embed=embed, view=self)
         await self.on_timeout()

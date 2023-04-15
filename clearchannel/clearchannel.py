@@ -5,8 +5,8 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from .dashboard_integration import DashboardIntegration
 from .AAA3A_utils.settings import CustomMessageConverter
+from .dashboard_integration import DashboardIntegration
 
 # Credits:
 # General repo credits.

@@ -51,7 +51,7 @@ class CmdChannel(Cog):
         context = await self.bot.get_context(message)
         if context.prefix is None:
             return
-        command = context.message.content[len(str(context.prefix)):]
+        command = context.message.content[len(str(context.prefix)) :]
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
@@ -67,7 +67,9 @@ class CmdChannel(Cog):
         )
 
     @hybrid_group(aliases=["cmdmock"], invoke_without_command=True)
-    async def cmdchannel(self, ctx: commands.Context, channel: discord.TextChannel, *, command: str):
+    async def cmdchannel(
+        self, ctx: commands.Context, channel: discord.TextChannel, *, command: str
+    ):
         """Use `[p]cmdchannel`, `[p]cmduser` and `[p]cmduserchannel`."""
         if ctx.invoked_subcommand is None:
             await self.channel(ctx, channel=channel, command=command)

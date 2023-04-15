@@ -133,8 +133,7 @@ class Seen(Cog):
         async with user_group.all() as users_data:
             if str(user_id) in users_data:
                 custom_ids.extend(
-                    (_type, custom_id)
-                    for _type, custom_id in users_data[str(user_id)].items()
+                    (_type, custom_id) for _type, custom_id in users_data[str(user_id)].items()
                 )
                 del users_data[str(user_id)]
         # Members
@@ -144,9 +143,7 @@ class Seen(Cog):
                 if str(user_id) in _members_data[guild]:
                     custom_ids.extend(
                         (_type, custom_id)
-                        for _type, custom_id in members_data[guild][
-                            str(user_id)
-                        ].items()
+                        for _type, custom_id in members_data[guild][str(user_id)].items()
                     )
                     del members_data[guild][str(user_id)]
         # Roles
@@ -233,8 +230,7 @@ class Seen(Cog):
             if str(user_id) in users_data:
                 data[Config.USER] = {str(user_id): users_data[str(user_id)]}
                 custom_ids.extend(
-                    (_type, custom_id)
-                    for _type, custom_id in users_data[str(user_id)].items()
+                    (_type, custom_id) for _type, custom_id in users_data[str(user_id)].items()
                 )
         # Members
         async with member_group.all() as members_data:
@@ -243,9 +239,7 @@ class Seen(Cog):
                     data[Config.MEMBER][guild] = {str(user_id): members_data[guild][str(user_id)]}
                     custom_ids.extend(
                         (_type, custom_id)
-                        for _type, custom_id in members_data[guild][
-                            str(user_id)
-                        ].items()
+                        for _type, custom_id in members_data[guild][str(user_id)].items()
                     )
         # Roles
         async with role_group.all() as roles_data:
@@ -310,7 +304,7 @@ class Seen(Cog):
             d = global_data[_type].get(custom_id, None)
             if d is not None:
                 data[Config.GLOBAL][_type] = {custom_id: d}
-    
+
         _data = deepcopy(data)
         for key, value in _data.items():
             if not value:
@@ -563,7 +557,9 @@ class Seen(Cog):
                 for custom_id in _global_data[_type]:
                     if for_count:
                         global_count += 1
-                    elif custom_id not in self.cache["existing_keys"]:  # The action is no longer used by any data.
+                    elif (
+                        custom_id not in self.cache["existing_keys"]
+                    ):  # The action is no longer used by any data.
                         try:
                             del global_data[_type][custom_id]
                         except (IndexError, KeyError):
@@ -930,7 +926,9 @@ class Seen(Cog):
         embeds = []
         description = []
         all_count = len(data)
-        for count, (x, y) in enumerate(sorted(data.items(), key=lambda x: x[1][0], reverse=not reverse), start=1):
+        for count, (x, y) in enumerate(
+            sorted(data.items(), key=lambda x: x[1][0], reverse=not reverse), start=1
+        ):
             seen = y[1]
             description.append(
                 f"{all_count + 1 - count if reverse else count} - **{prefix}{getattr(x, 'display_name', getattr(x, 'name', x))}**: {seen}."
@@ -952,9 +950,7 @@ class Seen(Cog):
             return
         if not message.author.bot:
             ctx: commands.Context = await self.bot.get_context(message)
-            if ctx.valid and (
-                ctx.command.cog_name is not None and ctx.command.cog_name == "Seen"
-            ):
+            if ctx.valid and (ctx.command.cog_name is not None and ctx.command.cog_name == "Seen"):
                 return
         if (
             message.author.id == message.guild.me.id
@@ -1018,9 +1014,7 @@ class Seen(Cog):
             and not reaction.message.author.bot
         ):
             ctx: commands.Context = await self.bot.get_context(reaction.message)
-            if ctx.valid and (
-                ctx.command.cog_name is not None and ctx.command.cog_name == "Seen"
-            ):
+            if ctx.valid and (ctx.command.cog_name is not None and ctx.command.cog_name == "Seen"):
                 return
         ignored_users = await self.config.ignored_users()
         if user.id in ignored_users:

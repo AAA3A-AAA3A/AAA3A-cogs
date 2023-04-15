@@ -22,7 +22,9 @@ else:
     hybrid_command = commands.command
     hybrid_group = commands.group
 
-RESULT_MESSAGE = _("Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nThere are {count_messages} exported messages.\nRemember that exporting other users' messages from Discord does not respect the TOS.")
+RESULT_MESSAGE = _(
+    "Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nThere are {count_messages} exported messages.\nRemember that exporting other users' messages from Discord does not respect the TOS."
+)
 LINK_MESSAGE = _("[Click here to view the transcript.]({url})")
 
 
@@ -80,6 +82,7 @@ class ExportChannel(Cog):
     ) -> typing.Union[int, typing.List[discord.Message], discord.File]:
         count_messages, messages = await self.get_messages(ctx, channel=channel, **kwargs)
         if self.cogsutils.is_dpy2:
+
             class Transcript(chat_exporter.construct.transcript.TranscriptDAO):
                 @classmethod
                 async def export(
@@ -91,7 +94,7 @@ class ExportChannel(Cog):
                     bot: typing.Optional[discord.Client] = None,
                     military_time: typing.Optional[bool] = False,
                     fancy_times: typing.Optional[bool] = True,
-                    support_dev: typing.Optional[bool] = True
+                    support_dev: typing.Optional[bool] = True,
                 ):
                     if guild:
                         channel.guild = guild
@@ -105,11 +108,12 @@ class ExportChannel(Cog):
                         before=None,
                         after=None,
                         support_dev=support_dev,
-                        bot=bot
+                        bot=bot,
                     )
                     if not self.after:
                         self.messages.reverse()
                     return (await self.build_transcript()).html
+
             # transcript = await chat_exporter.raw_export(
             #     channel=channel,
             #     messages=messages,
@@ -140,9 +144,7 @@ class ExportChannel(Cog):
         """Commands for export all or part of a channel's messages to an html file."""
 
     @exportchannel.command()
-    async def all(
-        self, ctx: commands.Context, channel: discord.TextChannel = None
-    ) -> None:
+    async def all(self, ctx: commands.Context, channel: discord.TextChannel = None) -> None:
         """Export all of a channel's messages to an html file.
 
         Please note: all attachments and user avatars are saved with the Discord link in this file.
@@ -163,7 +165,9 @@ class ExportChannel(Cog):
         )
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()
-            view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url))
+            view.add_item(
+                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            )
             await message.edit(embed=embed, view=view)
         else:
             await message.edit(embed=embed)
@@ -197,7 +201,9 @@ class ExportChannel(Cog):
         )
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()
-            view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url))
+            view.add_item(
+                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            )
             await message.edit(embed=embed, view=view)
         else:
             await message.edit(embed=embed)
@@ -232,7 +238,9 @@ class ExportChannel(Cog):
         )
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()
-            view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url))
+            view.add_item(
+                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            )
             await message.edit(embed=embed, view=view)
         else:
             await message.edit(embed=embed)
@@ -267,7 +275,9 @@ class ExportChannel(Cog):
         )
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()
-            view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url))
+            view.add_item(
+                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            )
             await message.edit(embed=embed, view=view)
         else:
             await message.edit(embed=embed)
@@ -303,7 +313,9 @@ class ExportChannel(Cog):
         )
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()
-            view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url))
+            view.add_item(
+                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            )
             await message.edit(embed=embed, view=view)
         else:
             await message.edit(embed=embed)
@@ -342,7 +354,9 @@ class ExportChannel(Cog):
         )
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()
-            view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url))
+            view.add_item(
+                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            )
             await message.edit(embed=embed, view=view)
         else:
             await message.edit(embed=embed)
@@ -378,7 +392,9 @@ class ExportChannel(Cog):
         )
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()
-            view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url))
+            view.add_item(
+                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            )
             await message.edit(embed=embed, view=view)
         else:
             await message.edit(embed=embed)

@@ -217,7 +217,9 @@ class UrlButtons(Cog):
         """Clear all url-buttons to a **guild**."""
         await self.config.guild(ctx.guild).url_buttons.clear()
 
-    def get_buttons(self, config: typing.Dict, message: discord.Message) -> typing.List[typing.Dict[str, str]]:  # dpy2: discord.ui.View
+    def get_buttons(
+        self, config: typing.Dict, message: discord.Message
+    ) -> typing.List[typing.Dict[str, str]]:  # dpy2: discord.ui.View
         if self.cogsutils.is_dpy2:
             view = discord.ui.View()
             for button in config[f"{message.channel.id}-{message.id}"]:

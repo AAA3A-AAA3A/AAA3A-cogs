@@ -9,12 +9,12 @@ import ast
 import datetime
 import inspect
 import io
-import rich
 import time
 import traceback
 import types
 from copy import copy
 
+import rich
 from redbot.core.utils.chat_formatting import bold, box, pagify
 
 # Credits:
@@ -76,16 +76,14 @@ class CtxVar(Cog):
             full_instance_name = bold(f"{full_instance_name[:248]}|...")
         embed: discord.Embed = discord.Embed()
         embed.title = f"**{full_instance_name}**"
-        embed.description = _("Here are all the variables and their associated values that can be used in this instance class.")
+        embed.description = _(
+            "Here are all the variables and their associated values that can be used in this instance class."
+        )
         embed.color = 0x01D758
         embed.set_thumbnail(
             url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/2048px-Python-logo-notext.svg.png"
         )
-        one_l = [
-            x
-            for x in dir(instance)
-            if not (x.startswith("__") and x.endswith("__"))
-        ]
+        one_l = [x for x in dir(instance) if not (x.startswith("__") and x.endswith("__"))]
         lists = []
         while one_l != []:
             li = one_l[:20]
@@ -151,11 +149,7 @@ class CtxVar(Cog):
             "\n".join([f"    '{attr}'," for attr in dir(_object)])
             if search is None
             else "\n".join(
-                [
-                    f"    '{attr}',"
-                    for attr in dir(_object)
-                    if search.lower() in attr.lower()
-                ]
+                [f"    '{attr}'," for attr in dir(_object) if search.lower() in attr.lower()]
             )
         )
         if result[-1] == ",":
@@ -245,22 +239,30 @@ class CtxVar(Cog):
 
     class WhatIsConverter(commands.Converter):
         async def convert(self, ctx: commands.Context, argument: str):
-            _types = [discord.Guild, discord.TextChannel, discord.VoiceChannel, discord.Member, discord.User, discord.Role, discord.Emoji]
+            _types = [
+                discord.Guild,
+                discord.TextChannel,
+                discord.VoiceChannel,
+                discord.Member,
+                discord.User,
+                discord.Role,
+                discord.Emoji,
+            ]
             try:
                 _types.extend([discord.Thread, discord.ForumChannel])
             except AttributeError:
                 pass
             for _type in _types:
                 try:
-                    return await discord.ext.commands.converter.CONVERTER_MAPPING[_type]().convert(ctx, argument)
+                    return await discord.ext.commands.converter.CONVERTER_MAPPING[_type]().convert(
+                        ctx, argument
+                    )
                 except commands.BadArgument:
                     pass
             return argument
 
     @ctxvar.command(name="whatis")
-    async def _whatis(
-        self, ctx: commands.Context, *, thing: WhatIsConverter
-    ) -> None:
+    async def _whatis(self, ctx: commands.Context, *, thing: WhatIsConverter) -> None:
         """List attributes of the provided object like dpy objects (debug not async)."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
@@ -293,7 +295,9 @@ class CtxVar(Cog):
                 )
         else:
             _object = thing
-        if hasattr(_object, "original_context") and isinstance(_object.original_context, commands.Context):
+        if hasattr(_object, "original_context") and isinstance(
+            _object.original_context, commands.Context
+        ):
             _object = _object.original_context
         result = {}
         result2 = {}
@@ -306,8 +310,20 @@ class CtxVar(Cog):
                 continue
             if hasattr(value, "__func__"):
                 continue
-            if isinstance(value, (typing.List, typing.Tuple, typing.Dict, typing.Set, types.MappingProxyType, discord.utils.SequenceProxy)):
-                result2[attr.replace("_", " ").capitalize()] = f"{value.__class__.__name__} - {len(value)}"
+            if isinstance(
+                value,
+                (
+                    typing.List,
+                    typing.Tuple,
+                    typing.Dict,
+                    typing.Set,
+                    types.MappingProxyType,
+                    discord.utils.SequenceProxy,
+                ),
+            ):
+                result2[
+                    attr.replace("_", " ").capitalize()
+                ] = f"{value.__class__.__name__} - {len(value)}"
                 continue
             elif isinstance(value, datetime.datetime):
                 _time = int(value.timestamp())
@@ -341,10 +357,14 @@ class CtxVar(Cog):
             elif hasattr(value, "id"):
                 value = f"{value} ({value.id})"
             elif isinstance(value, discord.Activity):
-                value = f"{value.type.name.capitalize()} to {value.name}" + (f" ({value.url})" if value.url else "")
+                value = f"{value.type.name.capitalize()} to {value.name}" + (
+                    f" ({value.url})" if value.url else ""
+                )
             elif isinstance(value, discord.flags.BaseFlags):
                 value = tuple(v for v in dict(value) if dict(value)[v])
-            result[attr.replace("_", " ").capitalize()] = value if isinstance(value, str) else repr(value)
+            result[attr.replace("_", " ").capitalize()] = (
+                value if isinstance(value, str) else repr(value)
+            )
         result.update(**result2)
         _result = Dev.sanitize_output(ctx, "".join(f"\n[{k}] : {r}" for k, r in result.items()))
         await Menu(pages=_result.strip(), lang="ini").start(ctx)

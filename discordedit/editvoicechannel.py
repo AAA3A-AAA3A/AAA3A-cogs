@@ -320,7 +320,9 @@ class EditVoiceChannel(Cog):
         self,
         ctx: commands.Context,
         channel: discord.VoiceChannel,
-        roles_or_users: commands.Greedy[typing.Union[discord.Member, discord.Role, typing.Literal["everyone"]]],
+        roles_or_users: commands.Greedy[
+            typing.Union[discord.Member, discord.Role, typing.Literal["everyone"]]
+        ],
         true_or_false: typing.Optional[bool],
         permissions: commands.Greedy[PermissionConverter],
     ) -> None:
@@ -373,9 +375,13 @@ class EditVoiceChannel(Cog):
         overwrites = channel.overwrites
         for target in targets:
             if target in overwrites:
-                overwrites[target].update(**{permission: true_or_false for permission in permissions})
+                overwrites[target].update(
+                    **{permission: true_or_false for permission in permissions}
+                )
             else:
-                perm = discord.PermissionOverwrite(**{permission: true_or_false for permission in permissions})
+                perm = discord.PermissionOverwrite(
+                    **{permission: true_or_false for permission in permissions}
+                )
                 overwrites[target] = perm
         try:
             await channel.edit(

@@ -7,9 +7,9 @@ import typing  # isort:skip
 
 import io
 from copy import deepcopy
-from tabulate import tabulate
 
 from redbot.core.utils.chat_formatting import box, pagify
+from tabulate import tabulate
 
 from .view import MemoryGameView
 
@@ -151,7 +151,9 @@ class MemoryGame(Cog):
         return {f"{self.qualified_name}.json": file}
 
     @hybrid_command()
-    async def memorygame(self, ctx: commands.Context, difficulty: commands.Literal["3x3", "4x4", "5x5"] = "5x5") -> None:
+    async def memorygame(
+        self, ctx: commands.Context, difficulty: commands.Literal["3x3", "4x4", "5x5"] = "5x5"
+    ) -> None:
         """
         Play to Memory game. Choose between `3x3`, `4x4` and `5x5` versions.
         """
@@ -159,7 +161,9 @@ class MemoryGame(Cog):
             max_wrong_matches = await self.config.guild(ctx.guild).max_wrong_matches()
         else:
             max_wrong_matches = None
-        await MemoryGameView(cog=self, difficulty=difficulty, max_wrong_matches=max_wrong_matches).start(ctx)
+        await MemoryGameView(
+            cog=self, difficulty=difficulty, max_wrong_matches=max_wrong_matches
+        ).start(ctx)
 
     @hybrid_command()
     async def memorygameleaderboard(self, ctx: commands.Context) -> None:
@@ -167,7 +171,11 @@ class MemoryGame(Cog):
         Show MemoryGame leaderboard.
         """
         all_members = await self.config.all_members(ctx.guild)
-        all_members = {ctx.guild.get_member(member): data for member, data in all_members.items() if ctx.guild.get_member(member) is not None}
+        all_members = {
+            ctx.guild.get_member(member): data
+            for member, data in all_members.items()
+            if ctx.guild.get_member(member) is not None
+        }
         if not all_members:
             raise commands.UserFeedbackCheckFailure(_("No one has played this game yet."))
         sorted_members = sorted(all_members.items(), key=lambda x: x[1]["score"], reverse=True)
@@ -185,7 +193,15 @@ class MemoryGame(Cog):
             place = num + 1
             member: discord.Member = sorted_members[num][0]
             data = sorted_members[num][1]
-            table.append([place, member.display_name if self.cogsutils.is_dpy2 else member.name, data["score"], data["wins"], data["games"]])
+            table.append(
+                [
+                    place,
+                    member.display_name if self.cogsutils.is_dpy2 else member.name,
+                    data["score"],
+                    data["wins"],
+                    data["games"],
+                ]
+            )
         board = tabulate(
             tabular_data=table,
             headers=["#", "Name", "Score", "Wins", "Games"],

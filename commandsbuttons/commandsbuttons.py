@@ -458,7 +458,9 @@ class CommandsButtons(Cog):
         """Clear all commands-buttons to a **guild**."""
         await self.config.guild(ctx.guild).commands_buttons.clear()
 
-    def get_buttons(self, config: typing.Dict, message: typing.Union[discord.Message, str]) -> typing.List[typing.Any]:  # dpy2: discord.ui.View
+    def get_buttons(
+        self, config: typing.Dict, message: typing.Union[discord.Message, str]
+    ) -> typing.List[typing.Any]:  # dpy2: discord.ui.View
         message = (
             f"{message.channel.id}-{message.id}"
             if isinstance(message, discord.Message)
@@ -479,7 +481,7 @@ class CommandsButtons(Cog):
                     emoji=b,
                     style=discord.ButtonStyle(config[message][f"{button}"].get("style_button", 2)),
                     custom_id=f"roles_buttons {button}",
-                    disabled=False
+                    disabled=False,
                 )
                 button.callback = self.on_button_interaction
                 view.add_item(button)
@@ -500,12 +502,8 @@ class CommandsButtons(Cog):
                         buttons["components"].append(
                             {
                                 "type": 2,
-                                "style": config[message][f"{button}"][
-                                    "style_button"
-                                ],
-                                "label": config[message][f"{button}"][
-                                    "text_button"
-                                ],
+                                "style": config[message][f"{button}"]["style_button"],
+                                "label": config[message][f"{button}"]["text_button"],
                                 "emoji": {"name": f"{button}"},
                                 "custom_id": f"commands_buttons {button}",
                             }
@@ -515,9 +513,7 @@ class CommandsButtons(Cog):
                             {
                                 "type": 2,
                                 "style": config[message][f"{button}"].get("style_button", 2),
-                                "label": config[message][f"{button}"][
-                                    "text_button"
-                                ],
+                                "label": config[message][f"{button}"]["text_button"],
                                 "emoji": {"name": f"{button}", "id": int(button)},
                                 "custom_id": f"commands_buttons {button}",
                             }

@@ -114,7 +114,16 @@ class utils:
         )
         return buttons, buttons_one, buttons_two, buttons_three
 
-    async def reason_ask(self, reason, actual_reason_required, title, description, actual_color, user, actual_timeout) -> str:
+    async def reason_ask(
+        self,
+        reason,
+        actual_reason_required,
+        title,
+        description,
+        actual_color,
+        user,
+        actual_timeout,
+    ) -> str:
         if reason is not None:
             return reason
         if not actual_reason_required:
@@ -148,7 +157,9 @@ class utils:
             await self.send(_("Timed out, please try again."))
             raise TimeoutError()
 
-    async def duration_ask(self, duration, title, description, actual_color, user, actual_timeout) -> str:
+    async def duration_ask(
+        self, duration, title, description, actual_color, user, actual_timeout
+    ) -> str:
         if duration is not None:
             return duration
         embed: discord.Embed = discord.Embed()
@@ -176,7 +187,17 @@ class utils:
             await self.send(_("Timed out, please try again."))
             raise TimeoutError()
 
-    async def confirmation_ask(self, confirmation, title, description, actual_color, user, reason, duration, actual_timeout) -> bool:
+    async def confirmation_ask(
+        self,
+        confirmation,
+        title,
+        description,
+        actual_color,
+        user,
+        reason,
+        duration,
+        actual_timeout,
+    ) -> bool:
         if confirmation:
             embed: discord.Embed = discord.Embed()
             embed.title = f"{title}"
@@ -210,7 +231,18 @@ class utils:
                     )
             return await CogsUtils(bot=self.bot).ConfirmationAsk(self=self, embed=embed)
 
-    async def finish_message(self, finish_message, title, description, actual_thumbnail, actual_color, user, show_author, duration, reason) -> discord.Message:
+    async def finish_message(
+        self,
+        finish_message,
+        title,
+        description,
+        actual_thumbnail,
+        actual_color,
+        user,
+        show_author,
+        duration,
+        reason,
+    ) -> discord.Message:
         if not finish_message:
             return
         embed: discord.Embed = discord.Embed()

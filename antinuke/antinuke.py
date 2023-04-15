@@ -119,9 +119,7 @@ class AntiNuke(Cog):
         if not actual_state_enabled:
             return
         actual_number_detected = (
-            actual_number_detected_bot
-            if perp.bot
-            else actual_number_detected_member
+            actual_number_detected_bot if perp.bot else actual_number_detected_member
         )
         if actual_number_detected == 0:
             return
@@ -171,9 +169,7 @@ class AntiNuke(Cog):
                 embed.set_author(
                     name=perp,
                     url=perp.display_avatar if self.cogsutils.is_dpy2 else perp.avatar_url,
-                    icon_url=perp.display_avatar
-                    if self.cogsutils.is_dpy2
-                    else perp.avatar_url,
+                    icon_url=perp.display_avatar if self.cogsutils.is_dpy2 else perp.avatar_url,
                 )
                 embed.add_field(
                     inline=False,

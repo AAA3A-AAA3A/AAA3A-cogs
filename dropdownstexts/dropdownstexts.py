@@ -80,7 +80,9 @@ class DropdownsTexts(Cog):
 
     if CogsUtils().is_dpy2:
 
-        async def on_dropdown_interaction(self, interaction: discord.Interaction, dropdown: discord.ui.Select) -> None:
+        async def on_dropdown_interaction(
+            self, interaction: discord.Interaction, dropdown: discord.ui.Select
+        ) -> None:
             if await self.bot.cog_disabled_in_guild(self, interaction.guild):
                 return
             if not interaction.data["custom_id"].startswith("DropdownsTexts"):
@@ -413,7 +415,9 @@ class DropdownsTexts(Cog):
         """Clear all dropdowns-texts to a **guild**."""
         await self.config.guild(ctx.guild).dropdowns_texts.clear()
 
-    def get_dropdown(self, config: typing.Dict, message: typing.Union[discord.Message, str]) -> typing.List[typing.Any]:  # dpy2: discord.ui.View
+    def get_dropdown(
+        self, config: typing.Dict, message: typing.Union[discord.Message, str]
+    ) -> typing.List[typing.Any]:  # dpy2: discord.ui.View
         message = (
             f"{message.channel.id}-{message.id}"
             if isinstance(message, discord.Message)
@@ -433,7 +437,7 @@ class DropdownsTexts(Cog):
                     discord.SelectOption(
                         label=config[message][option]["label"],
                         value=config[message][option]["label"],
-                        emoji=e
+                        emoji=e,
                     )
                 )
                 # all_options.append({"label": config[message][option]["label"], "emoji": e})
@@ -443,7 +447,7 @@ class DropdownsTexts(Cog):
                 min_values=1,
                 max_values=1,
                 options=options,
-                disabled=False
+                disabled=False,
             )
             dropdown.callback = partial(self.on_dropdown_interaction, dropdown=dropdown)
             view.add_item(dropdown)

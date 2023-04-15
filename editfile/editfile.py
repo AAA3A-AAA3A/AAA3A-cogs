@@ -85,7 +85,7 @@ class EditFile(Cog):
             with open(file=path, mode="rb") as file:
                 content = file.read()
             if line_span is not None:
-                lines = content.split(b"\n")[line_span[0] - 1: line_span[1]]
+                lines = content.split(b"\n")[line_span[0] - 1 : line_span[1]]
             else:
                 lines = content.split(b"\n")
             lines_without_count = lines
@@ -110,8 +110,7 @@ class EditFile(Cog):
             line = (
                 f"#L1-L{len(lines)} (All)"
                 if line_span is None
-                else f"#L{str(line_span[0])}-L{str(line_span[1])}"
-                + f" / {len_lines}"
+                else f"#L{str(line_span[0])}-L{str(line_span[1])}" + f" / {len_lines}"
             )
             header = box(f"File {path}, line {line}.")
             pages = [
@@ -132,9 +131,7 @@ class EditFile(Cog):
             )
 
     @editfile.command()
-    async def replace(
-        self, ctx: commands.Context, path: str, *, content: str = None
-    ) -> None:
+    async def replace(self, ctx: commands.Context, path: str, *, content: str = None) -> None:
         """Replace a file on the bot's host machine from its path.
         `#L10` or `#L10-L30` is supported.
         """
@@ -153,7 +150,7 @@ class EditFile(Cog):
                 old_file_content = file.read()
             try:
                 if line_span is not None:
-                    lines = old_file_content.split(b"\n")[line_span[0] - 1: line_span[1]]
+                    lines = old_file_content.split(b"\n")[line_span[0] - 1 : line_span[1]]
                 else:
                     lines = old_file_content.split(b"\n")
             except IndexError:
@@ -189,7 +186,7 @@ class EditFile(Cog):
             lines = (
                 old_file_content.split(b"\n")[: line_span[0] - 1]
                 + new_file_content.split(b"\n")
-                + old_file_content.split(b"\n")[line_span[1]:]
+                + old_file_content.split(b"\n")[line_span[1] :]
             )
         else:
             lines = new_file_content.split(b"\n")

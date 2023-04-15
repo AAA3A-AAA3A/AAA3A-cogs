@@ -33,6 +33,7 @@ class Ticket:
         self,
         bot,
         cog,
+        profile,
         id,
         owner,
         guild,
@@ -58,10 +59,10 @@ class Ticket:
         logs_messages,
         save_data,
         first_message,
-        panel,
     ):
         self.bot: Red = bot
         self.cog: commands.Cog = cog
+        self.profile: str = profile
         self.id: int = id
         self.owner: discord.Member = owner
         self.guild: discord.Guild = guild
@@ -90,17 +91,17 @@ class Ticket:
         self.logs_messages: bool = logs_messages
         self.save_data: bool = save_data
         self.first_message: discord.Message = first_message
-        self.panel: str = panel
 
     @staticmethod
     def instance(
         ctx: commands.Context,
-        panel: str,
+        profile: str,
         reason: typing.Optional[str] = _("No reason provided."),
     ) -> typing.Any:  # typing_extensions.Self
         ticket: Ticket = Ticket(
             bot=ctx.bot,
             cog=ctx.cog,
+            profile=profile,
             id=None,
             owner=ctx.author,
             guild=ctx.guild,
@@ -126,7 +127,6 @@ class Ticket:
             logs_messages=True,
             save_data=True,
             first_message=None,
-            panel=panel,
         )
         return ticket
 
@@ -135,6 +135,7 @@ class Ticket:
         ticket: Ticket = Ticket(
             bot=bot,
             cog=cog,
+            profile=json["profile"],
             id=json["id"],
             owner=json["owner"],
             guild=json["guild"],
@@ -145,22 +146,21 @@ class Ticket:
             closed_by=json["closed_by"],
             deleted_by=json["deleted_by"],
             renamed_by=json["renamed_by"],
-            locked_by=json.get("renamed_by", None),
-            unlocked_by=json.get("unlocked_by", None),
+            locked_by=json.get("renamed_by"),
+            unlocked_by=json.get("unlocked_by"),
             members=json["members"],
             created_at=json["created_at"],
             opened_at=json["opened_at"],
             closed_at=json["closed_at"],
             deleted_at=json["deleted_at"],
             renamed_at=json["renamed_at"],
-            locked_at=json.get("locked_at", None),
-            unlocked_at=json.get("unlocked_at", None),
+            locked_at=json.get("locked_at"),
+            unlocked_at=json.get("unlocked_at"),
             status=json["status"],
             reason=json["reason"],
             logs_messages=json["logs_messages"],
             save_data=json["save_data"],
             first_message=json["first_message"],
-            panel=json["panel"],
         )
         return ticket
 
@@ -219,14 +219,14 @@ class Ticket:
         return data
 
     async def create(self) -> typing.Any:  # typing_extensions.Self
-        config = await self.cog.get_config(self.guild, self.panel)
+        config = await self.cog.get_config(self.guild, self.profile)
         logschannel = config["logschannel"]
         emoji_open = config["emoji_open"]
         ping_role = config["ping_role"]
         self.id = config["last_nb"] + 1
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
-            panel=self.panel,
+            profile=self.profile,
             author=self.created_by,
             reason=_("Creating the ticket {ticket.id}.").format(ticket=self),
         )
@@ -429,8 +429,8 @@ class Ticket:
                 await self.owner.add_roles(config["ticket_role"], reason=reason)
             except discord.HTTPException:
                 pass
-        await self.cog.config.guild(self.guild).panels.set_raw(
-            self.panel, "last_nb", value=self.id
+        await self.cog.config.guild(self.guild).profiles.set_raw(
+            self.profile, "last_nb", value=self.id
         )
         await self.save()
         return self
@@ -452,17 +452,17 @@ class Ticket:
             if transcript is not None:
                 return discord.File(
                     io.BytesIO(transcript.encode()),
-                    filename=f"transcript-ticket-{self.panel}-{self.id}.html",
+                    filename=f"transcript-ticket-{self.profile}-{self.id}.html",
                 )
         return None
 
     async def open(
         self, author: typing.Optional[discord.Member] = None
     ) -> typing.Any:  # typing_extensions.Self
-        config = await self.cog.get_config(self.guild, self.panel)
+        config = await self.cog.get_config(self.guild, self.profile)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
-            panel=self.panel,
+            profile=self.profile,
             author=author,
             reason=_("Opening the ticket {ticket.id}.").format(ticket=self),
         )
@@ -571,10 +571,10 @@ class Ticket:
     async def close(
         self, author: typing.Optional[discord.Member] = None
     ) -> typing.Any:  # typing_extensions.Self
-        config = await self.cog.get_config(self.guild, self.panel)
+        config = await self.cog.get_config(self.guild, self.profile)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
-            panel=self.panel,
+            profile=self.profile,
             author=author,
             reason=f"Closing the ticket {self.id}.",
         )
@@ -683,10 +683,10 @@ class Ticket:
     ) -> typing.Any:  # typing_extensions.Self
         if isinstance(self.channel, discord.TextChannel):
             raise commands.UserFeedbackCheckFailure(_("Cannot execute action on a text channel."))
-        config = await self.cog.get_config(self.guild, self.panel)
+        config = await self.cog.get_config(self.guild, self.profile)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
-            panel=self.panel,
+            profile=self.profile,
             author=author,
             reason=f"Locking the ticket {self.id}.",
         )
@@ -719,10 +719,10 @@ class Ticket:
     ) -> typing.Any:  # typing_extensions.Self
         if isinstance(self.channel, discord.TextChannel):
             raise commands.UserFeedbackCheckFailure(_("Cannot execute action on a text channel."))
-        config = await self.cog.get_config(self.guild, self.panel)
+        config = await self.cog.get_config(self.guild, self.profile)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
-            panel=self.panel,
+            profile=self.profile,
             author=author,
             reason=f"Unlocking the ticket {self.id}.",
         )
@@ -755,7 +755,7 @@ class Ticket:
     ) -> typing.Any:  # typing_extensions.Self
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
-            panel=self.panel,
+            profile=self.profile,
             author=author,
             reason=_(
                 "Renaming the ticket {ticket.id}. (`{ticket.channel.name}` to `{new_name}`)"
@@ -776,7 +776,7 @@ class Ticket:
     async def delete(
         self, author: typing.Optional[discord.Member] = None
     ) -> typing.Any:  # typing_extensions.Self
-        config = await self.cog.get_config(self.guild, self.panel)
+        config = await self.cog.get_config(self.guild, self.profile)
         logschannel = config["logschannel"]
         self.deleted_by = author
         self.deleted_at = datetime.datetime.now()
@@ -828,7 +828,7 @@ class Ticket:
         if isinstance(self.channel, discord.TextChannel):
             reason = await self.cog.get_audit_reason(
                 guild=self.guild,
-                panel=self.panel,
+                profile=self.profile,
                 author=author,
                 reason=_("Deleting the ticket {ticket.id}.").format(ticket=self),
             )
@@ -850,10 +850,10 @@ class Ticket:
             raise commands.UserFeedbackCheckFailure(
                 _("A ticket cannot be claimed if it is closed.")
             )
-        config = await self.cog.get_config(self.guild, self.panel)
+        config = await self.cog.get_config(self.guild, self.profile)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
-            panel=self.panel,
+            profile=self.profile,
             author=author,
             reason=_("Claiming the ticket {ticket.id}.").format(ticket=self),
         )
@@ -960,10 +960,10 @@ class Ticket:
             raise commands.UserFeedbackCheckFailure(
                 _("A ticket cannot be unclaimed if it is closed.")
             )
-        config = await self.cog.get_config(self.guild, self.panel)
+        config = await self.cog.get_config(self.guild, self.profile)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
-            panel=self.panel,
+            profile=self.profile,
             author=author,
             reason=_("Unclaiming the ticket {ticket.id}.").format(ticket=self),
         )
@@ -1063,10 +1063,10 @@ class Ticket:
             raise commands.UserFeedbackCheckFailure(
                 _("Cannot execute action on a thread channel.")
             )
-        config = await self.cog.get_config(self.guild, self.panel)
+        config = await self.cog.get_config(self.guild, self.profile)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
-            panel=self.panel,
+            profile=self.profile,
             author=author,
             reason=_("Changing owner of the ticket {ticket.id}.").format(ticket=self),
         )
@@ -1109,10 +1109,10 @@ class Ticket:
     async def add_member(
         self, members: typing.List[discord.Member], author: typing.Optional[discord.Member] = None
     ) -> typing.Any:  # typing_extensions.Self
-        config = await self.cog.get_config(self.guild, self.panel)
+        config = await self.cog.get_config(self.guild, self.profile)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
-            panel=self.panel,
+            profile=self.profile,
             author=author,
             reason=_("Adding a member to the ticket {ticket.id}.").format(ticket=self),
         )
@@ -1190,10 +1190,10 @@ class Ticket:
     async def remove_member(
         self, members: typing.List[discord.Member], author: typing.Optional[discord.Member] = None
     ) -> typing.Any:  # typing_extensions.Self
-        config = await self.cog.get_config(self.guild, self.panel)
+        config = await self.cog.get_config(self.guild, self.profile)
         reason = await self.cog.get_audit_reason(
             guild=self.guild,
-            panel=self.panel,
+            profile=self.profile,
             author=author,
             reason=_("Removing a member to the ticket {ticket.id}.").format(ticket=self),
         )

@@ -24,13 +24,13 @@ else:
     hybrid_group = commands.group
 
 
-class PanelConverter(commands.Converter):
+class ProfileConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str):
         if len(argument) > 10:
-            raise commands.BadArgument(_("This panel does not exist."))
-        panels = await ctx.bot.get_cog("TicketTool").config.guild(ctx.guild).panels()
-        if argument.lower() not in panels:
-            raise commands.BadArgument(_("This panel does not exist."))
+            raise commands.BadArgument(_("This profile does not exist."))
+        profiles = await ctx.bot.get_cog("TicketTool").config.guild(ctx.guild).profiles()
+        if argument.lower() not in profiles:
+            raise commands.BadArgument(_("This profile does not exist."))
         return argument.lower()
 
 
@@ -47,7 +47,7 @@ class settings(commands.Cog):
     async def message(
         self,
         ctx: commands.Context,
-        panel: PanelConverter,
+        profile: ProfileConverter,
         channel: typing.Optional[discord.TextChannel],
         message: typing.Optional[discord.ext.commands.converter.MessageConverter],
         reason_options: commands.Greedy[EmojiLabelDescriptionValueConverter],
@@ -55,7 +55,7 @@ class settings(commands.Cog):
         """Send a message with a button to open a ticket or dropdown with possible reasons.
 
         Example:
-        `[p]setticket message #general "🐛|Report a bug|If you find a bug, report it here.|bug" "⚠️|Report a user|If you find a malicious user, report it here.|user"`
+        `[p]setticket message #general "🐛|Report a bug|If you find a bug, report it here.|bug" "⚠️|Report an user|If you find a malicious user, report it here.|user"`
         `[p]setticket 1234567890-0987654321`
         """
         if channel is None:
@@ -67,7 +67,7 @@ class settings(commands.Cog):
                 _("I have to be the author of the message for the interaction to work.")
             )
             return
-        config = await self.get_config(ctx.guild, panel)
+        config = await self.get_config(ctx.guild, profile)
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
         embed: discord.Embed = discord.Embed()
@@ -107,7 +107,7 @@ class settings(commands.Cog):
                 else:
                     await message.edit(view=view)
                 self.cogsutils.views.append(view)
-                buttons_config[f"{message.channel.id}-{message.id}"] = {"panel": panel}
+                buttons_config[f"{message.channel.id}-{message.id}"] = {"profile": profile}
                 await self.config.guild(ctx.guild).buttons.set(buttons_config)
             else:
                 if getattr(ctx, "interaction", None) is None:
@@ -157,7 +157,7 @@ class settings(commands.Cog):
                 self.cogsutils.views.append(view)
                 dropdowns_config[f"{channel.id}-{message.id}"] = [
                     {
-                        "panel": panel,
+                        "profile": profile,
                         "emoji": emoji.id if hasattr(emoji, "id") else emoji,
                         "label": label,
                         "description": description,
@@ -181,7 +181,7 @@ class settings(commands.Cog):
                 message = await channel.send(embed=embed, components=[button])
             else:
                 await message.edit(components=[button])
-            buttons_config[f"{message.channel.id}-{message.id}"] = {"panel": panel}
+            buttons_config[f"{message.channel.id}-{message.id}"] = {"profile": profile}
             await self.config.guild(ctx.guild).buttons.set(buttons_config)
         else:
             if getattr(ctx, "interaction", None) is None:
@@ -229,7 +229,7 @@ class settings(commands.Cog):
                 await message.edit(components=[dropdown])
             dropdown_config[f"{channel.id}-{message.id}"] = [
                 {
-                    "panel": panel,
+                    "profile": profile,
                     "emoji": emoji.id if hasattr(emoji, "id") else emoji,
                     "label": label,
                     "description": description,
@@ -255,7 +255,7 @@ class settings(commands.Cog):
     # async def embedbutton(
     #     self,
     #     ctx: commands.Context,
-    #     panel: PanelConverter,
+    #     profile: ProfileConverter,
     #     where: commands.Literal["title", "description", "image", "placeholderdropdown"],
     #     *,
     #     text: typing.Optional[str] = None,
@@ -263,23 +263,23 @@ class settings(commands.Cog):
     #     """Set the settings for the button embed."""
     #     if text is None:
     #         if where == "title":
-    #             await self.config.guild(ctx.guild).panels.clear_raw(panel, "embed_button", "title")
+    #             await self.config.guild(ctx.guild).profiles.clear_raw(profile, "embed_button", "title")
     #         elif where == "description":
-    #             await self.config.guild(ctx.guild).panels.clear_raw(panel, "embed_button", "description")
+    #             await self.config.guild(ctx.guild).profiles.clear_raw(profile, "embed_button", "description")
     #         elif where == "image":
-    #             await self.config.guild(ctx.guild).panels.clear_raw(panel, "embed_button", "image")
+    #             await self.config.guild(ctx.guild).profiles.clear_raw(profile, "embed_button", "image")
     #         elif where == "placeholderdropdown":
     #             await self.config.guild(
     #                 ctx.guild
-    #             ).panels.clear_raw(panel, "embed_button", "placeholder_dropdown")
+    #             ).profiles.clear_raw(profile, "embed_button", "placeholder_dropdown")
 
     #         return
 
     #     if where == "title":
-    #         await self.config.guild(ctx.guild).panels.set_raw(panel, "embed_button", "title", value=text)
+    #         await self.config.guild(ctx.guild).profiles.set_raw(profile, "embed_button", "title", value=text)
     #     elif where == "description":
-    #         await self.config.guild(ctx.guild).panels.set_raw(panel, "embed_button", "description", value=text)
+    #         await self.config.guild(ctx.guild).profiles.set_raw(profile, "embed_button", "description", value=text)
     #     elif where == "image":
-    #         await self.config.guild(ctx.guild).panels.set_raw(panel, "embed_button", "image", value=text)
+    #         await self.config.guild(ctx.guild).profiles.set_raw(profile, "embed_button", "image", value=text)
     #     elif where == "placeholderdropdown":
-    #         await self.config.guild(ctx.guild).panels.set_raw(panel, "embed_button", "placeholder_dropdown", value=text)
+    #         await self.config.guild(ctx.guild).profiles.set_raw(profile, "embed_button", "placeholder_dropdown", value=text)

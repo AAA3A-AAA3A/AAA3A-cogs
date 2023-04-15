@@ -51,7 +51,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             identifier=205192943327321000143939875896557571750,  # 937480369417
             force_registration=True,
         )
-        self.CONFIG_SCHEMA: int = 2
+        self.CONFIG_SCHEMA: int = 3
         self.tickettool_global: typing.Dict[str, typing.Optional[int]] = {
             "CONFIG_SCHEMA": None,
         }
@@ -69,7 +69,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 ],
             ],
         ] = {
-            "panels": {},
+            "profiles": {},
             "default_profile_settings": {
                 "enable": False,
                 "logschannel": None,
@@ -224,7 +224,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             config=self.config,
             group=self.config.GUILD,
             settings=_settings,
-            global_path=["panels"],
+            global_path=["profiles"],
             use_profiles_system=True,
             can_edit=True,
             commands_group=self.configuration,
@@ -261,6 +261,36 @@ class TicketTool(settings, DashboardIntegration, Cog):
                         guilds_data[guild]["panels"]["main"][key] = value
                     del guilds_data[guild]["settings"]
             CONFIG_SCHEMA = 2
+            await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
+        if CONFIG_SCHEMA == 2:
+            guild_group = self.config._get_base_group(self.config.GUILD)
+            async with guild_group.all() as guilds_data:
+                _guilds_data = deepcopy(guilds_data)
+                for guild in _guilds_data:
+                    if "profiles" in guilds_data[guild]:
+                        continue
+                    if "panels" in guilds_data[guild]:
+                        guilds_data[guild]["profiles"] = guilds_data[guild]["panels"]
+                        del guilds_data[guild]["panels"]
+                    if "tickets" in guilds_data[guild]:
+                        for channel_id in guilds_data[guild]["tickets"]:
+                            if "panel" not in guilds_data[guild]["tickets"][channel_id]:
+                                continue
+                            guilds_data[guild]["tickets"][channel_id]["profile"] = guilds_data[guild]["tickets"][channel_id]["panel"]
+                            del guilds_data[guild]["tickets"][channel_id]["panel"]
+                    if "buttons" in guilds_data[guild]:
+                        for message_id in guilds_data[guild]["buttons"]:
+                            if "panel" not in guilds_data[guild]["buttons"][message_id]:
+                                continue
+                            guilds_data[guild]["buttons"][message_id]["profile"] = guilds_data[guild]["buttons"][message_id]["panel"]
+                            del guilds_data[guild]["buttons"][message_id]["panel"]
+                    if "dropdowns" in guilds_data[guild]:
+                        for message_id in guilds_data[guild]["dropdowns"]:
+                            if "panel" not in guilds_data[guild]["dropdowns"][message_id]:
+                                continue
+                            guilds_data[guild]["dropdowns"][message_id]["profile"] = guilds_data[guild]["dropdowns"][message_id]["panel"]
+                            del guilds_data[guild]["dropdowns"][message_id]["panel"]
+            CONFIG_SCHEMA = 3
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         if CONFIG_SCHEMA < self.CONFIG_SCHEMA:
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
@@ -355,8 +385,8 @@ class TicketTool(settings, DashboardIntegration, Cog):
                         exc_info=e,
                     )
 
-    async def get_config(self, guild: discord.Guild, panel: str) -> typing.Dict[str, typing.Any]:
-        config = await self.config.guild(guild).panels.get_raw(panel)
+    async def get_config(self, guild: discord.Guild, profile: str) -> typing.Dict[str, typing.Any]:
+        config = await self.config.guild(guild).profiles.get_raw(profile)
         for key, value in self.config._defaults[Config.GUILD]["default_profile_settings"].items():
             if key not in config:
                 config[key] = value
@@ -401,8 +431,8 @@ class TicketTool(settings, DashboardIntegration, Cog):
             json = tickets[str(channel.id)]
         else:
             return None
-        if "panel" not in json:
-            json["panel"] = "main"
+        if "profile" not in json:
+            json["profile"] = "main"
         ticket: Ticket = Ticket.from_json(json, self.bot, self)
         ticket.bot = self.bot
         ticket.cog = self
@@ -441,13 +471,13 @@ class TicketTool(settings, DashboardIntegration, Cog):
     async def get_audit_reason(
         self,
         guild: discord.Guild,
-        panel: str,
+        profile: str,
         author: typing.Optional[discord.Member] = None,
         reason: typing.Optional[str] = None,
     ) -> str:
         if reason is None:
             reason = _("Action taken for the ticket system.")
-        config = await self.get_config(guild, panel)
+        config = await self.get_config(guild, profile)
         if author is None or not config["audit_logs"]:
             return f"{reason}"
         else:
@@ -456,7 +486,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
     async def get_embed_important(
         self, ticket, more: bool, author: discord.Member, title: str, description: str
     ) -> discord.Embed:
-        config = await self.get_config(ticket.guild, ticket.panel)
+        config = await self.get_config(ticket.guild, ticket.profile)
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]
         embed: discord.Embed = discord.Embed()
@@ -476,7 +506,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             if self.cogsutils.is_dpy2
             else ticket.guild.icon_url or "",
         )
-        embed.add_field(inline=True, name=_("Ticket ID:"), value=f"[{ticket.panel}] {ticket.id}")
+        embed.add_field(inline=True, name=_("Ticket ID:"), value=f"[{ticket.profile}] {ticket.id}")
         embed.add_field(
             inline=True,
             name=_("Owned by:"),
@@ -517,10 +547,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
         return embed
 
     async def get_embed_action(self, ticket, author: discord.Member, action: str) -> discord.Embed:
-        config = await self.get_config(ticket.guild, ticket.panel)
+        config = await self.get_config(ticket.guild, ticket.profile)
         actual_color = config["color"]
         embed: discord.Embed = discord.Embed()
-        embed.title = _("Ticket [{ticket.panel}] {ticket.id} - Action taken").format(ticket=ticket)
+        embed.title = _("Ticket [{ticket.profile}] {ticket.id} - Action taken").format(ticket=ticket)
         embed.description = f"{action}"
         embed.color = actual_color
         embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
@@ -538,8 +568,8 @@ class TicketTool(settings, DashboardIntegration, Cog):
         embed.add_field(inline=False, name=_("Reason:"), value=f"{ticket.reason}")
         return embed
 
-    async def check_limit(self, member: discord.Member, panel: str) -> bool:
-        config = await self.get_config(member.guild, panel)
+    async def check_limit(self, member: discord.Member, profile: str) -> bool:
+        config = await self.get_config(member.guild, profile)
         tickets = await self.config.guild(member.guild).tickets.all()
         to_remove = []
         count = 1
@@ -550,7 +580,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 channel = member.guild.get_channel(int(id))
             if channel is not None:
                 ticket: Ticket = await self.get_ticket(channel)
-                if ticket.panel != panel:
+                if ticket.profile != profile:
                     continue
                 if ticket.created_by == member and ticket.status == "open":
                     count += 1
@@ -566,7 +596,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
     async def create_modlog(
         self, ticket, action: str, reason: str
     ) -> typing.Optional[modlog.Case]:
-        config = await self.get_config(ticket.guild, ticket.panel)
+        config = await self.get_config(ticket.guild, ticket.profile)
         if config["create_modlog"]:
             return await modlog.create_case(
                 ticket.bot,
@@ -600,7 +630,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             ticket: Ticket = await ctx.bot.get_cog("TicketTool").get_ticket(ctx.channel)
             if ticket is None:
                 return False
-            config = await ctx.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
+            config = await ctx.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.profile)
             if status is not None and ticket.status != status:
                 return False
             if claim is not None:
@@ -657,13 +687,13 @@ class TicketTool(settings, DashboardIntegration, Cog):
 
         return commands.check(pred)
 
-    class PanelConverter(commands.Converter):
+    class ProfileConverter(commands.Converter):
         async def convert(self, ctx: commands.Context, argument: str) -> str:
             if len(argument) > 10:
-                raise commands.BadArgument(_("This panel does not exist."))
-            panels = await ctx.bot.get_cog("TicketTool").config.guild(ctx.guild).panels()
-            if argument.lower() not in panels:
-                raise commands.BadArgument(_("This panel does not exist."))
+                raise commands.BadArgument(_("This profile does not exist."))
+            profiles = await ctx.bot.get_cog("TicketTool").config.guild(ctx.guild).profiles()
+            if argument.lower() not in profiles:
+                raise commands.BadArgument(_("This profile does not exist."))
             return argument.lower()
 
     @commands.guild_only()
@@ -675,15 +705,15 @@ class TicketTool(settings, DashboardIntegration, Cog):
     async def command_create(
         self,
         ctx: commands.Context,
-        panel: typing.Optional[PanelConverter] = "main",
+        profile: typing.Optional[ProfileConverter] = "main",
         *,
         reason: typing.Optional[str] = "No reason provided.",
     ) -> None:
         """Create a ticket."""
-        panels = await self.config.guild(ctx.guild).panels()
-        if panel not in panels:
-            raise commands.UserFeedbackCheckFailure(_("This panel does not exist."))
-        config = await self.get_config(ctx.guild, panel)
+        profiles = await self.config.guild(ctx.guild).profiles()
+        if profile not in profiles:
+            raise commands.UserFeedbackCheckFailure(_("This profile does not exist."))
+        config = await self.get_config(ctx.guild, profile)
         forum_channel = config["forum_channel"]  # dpy2: discord.ForumChannel type hint
         category_open: discord.CategoryChannel = config["category_open"]
         category_close: discord.CategoryChannel = config["category_close"]
@@ -699,7 +729,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     "The category `open` or the category `close` have not been configured. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it."
                 ).format(ctx=ctx)
             )
-        if not await self.check_limit(ctx.author, panel):
+        if not await self.check_limit(ctx.author, profile):
             limit = config["nb_max"]
             raise commands.UserFeedbackCheckFailure(
                 _("Sorry. You have already reached the limit of {limit} open tickets.").format(
@@ -725,7 +755,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     "The bot does not have `manage_channel` permission in the forum channel to allow the ticket system to function properly. Please notify an administrator of this server."
                 )
             )
-        ticket: Ticket = Ticket.instance(ctx, panel=panel, reason=reason)
+        ticket: Ticket = Ticket.instance(ctx, profile=profile, reason=reason)
         await ticket.create()
         ctx.ticket: Ticket = ticket
 
@@ -764,7 +794,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         if transcript is not None:
             file = discord.File(
                 io.BytesIO(transcript.encode()),
-                filename=f"transcript-ticket-{ticket.panel}-{ticket.id}.html",
+                filename=f"transcript-ticket-{ticket.profile}-{ticket.id}.html",
             )
         message = await ctx.send(
             _(
@@ -801,7 +831,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
     ) -> None:
         """Open an existing ticket."""
         ticket: Ticket = await self.get_ticket(ctx.channel)
-        config = await ctx.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.panel)
+        config = await ctx.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.profile)
         if not config["enable"]:
             raise commands.UserFeedbackCheckFailure(
                 _("The ticket system is not enabled on this server.")
@@ -833,12 +863,12 @@ class TicketTool(settings, DashboardIntegration, Cog):
     ) -> None:
         """Close an existing ticket."""
         ticket: Ticket = await self.get_ticket(ctx.channel)
-        config = await self.get_config(ticket.guild, ticket.panel)
+        config = await self.get_config(ticket.guild, ticket.profile)
         if config["delete_on_close"]:
             await self.command_delete(ctx, confirmation=confirmation, reason=reason)
             return
         if confirmation is None:
-            config = await self.get_config(ticket.guild, ticket.panel)
+            config = await self.get_config(ticket.guild, ticket.profile)
             confirmation = not config["close_confirmation"]
         if not confirmation:
             embed: discord.Embed = discord.Embed()
@@ -885,7 +915,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket: Ticket = await self.get_ticket(ctx.channel)
         if isinstance(ticket.channel, discord.TextChannel):
             raise commands.UserFeedbackCheckFailure(_("Cannot execute action on a text channel."))
-        config = await self.get_config(ticket.guild, ticket.panel)
+        config = await self.get_config(ticket.guild, ticket.profile)
         if not confirmation:
             embed: discord.Embed = discord.Embed()
             embed.title = _("Do you really want to lock the ticket {ticket.id}?").format(
@@ -987,7 +1017,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         (Attachments are not supported, as they are saved with their Discord link)
         """
         ticket: Ticket = await self.get_ticket(ctx.channel)
-        config = await self.get_config(ticket.guild, ticket.panel)
+        config = await self.get_config(ticket.guild, ticket.profile)
         if not confirmation:
             embed: discord.Embed = discord.Embed()
             embed.title = _(
@@ -1150,7 +1180,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
     async def command_list(
         self,
         ctx: commands.Context,
-        panel: PanelConverter,
+        profile: ProfileConverter,
         status: typing.Optional[commands.Literal["open", "close", "all"]],
         member: typing.Optional[discord.Member],
     ) -> None:
@@ -1159,7 +1189,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         tickets = await self.config.guild(ctx.guild).tickets.all()
         tickets_to_show = []
         for channel_id in tickets:
-            config = await self.get_config(ctx.guild, panel=panel)
+            config = await self.get_config(ctx.guild, profile=profile)
             if config["forum_channel"] is not None:
                 channel = config["forum_channel"].get_thread(int(channel_id))
             else:
@@ -1168,7 +1198,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 continue
             ticket: Ticket = await self.get_ticket(channel)
             if (
-                ticket.panel == panel
+                ticket.profile == profile
                 and (member is None or ticket.owner == member)
                 and (status == "all" or ticket.status == status)
             ):
@@ -1184,7 +1214,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         pages = list(pagify(description, page_length=6000))
         embeds = []
         for page in pages:
-            embed: discord.Embed = discord.Embed(title=f"Tickets in this guild - Panel {panel}")
+            embed: discord.Embed = discord.Embed(title=f"Tickets in this guild - Profile {profile}")
             embed.description = page
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
@@ -1208,16 +1238,16 @@ class TicketTool(settings, DashboardIntegration, Cog):
             if interaction.data["custom_id"] == "create_ticket_button":
                 buttons = await self.config.guild(interaction.guild).buttons.all()
                 if f"{interaction.message.channel.id}-{interaction.message.id}" in buttons:
-                    panel = buttons[f"{interaction.message.channel.id}-{interaction.message.id}"][
-                        "panel"
+                    profile = buttons[f"{interaction.message.channel.id}-{interaction.message.id}"][
+                        "profile"
                     ]
                 else:
-                    panel = "main"
+                    profile = "main"
                 modal = Modal(
                     title="Create a Ticket",
                     inputs=[
                         {
-                            "label": "Panel",
+                            "label": "Profile",
                             "style": discord.TextStyle.short,
                             "default": "main",
                             "max_length": 10,
@@ -1239,19 +1269,19 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     return
                 if not interaction.response.is_done():
                     await interaction.response.defer(ephemeral=True)
-                panel = inputs[0].value
+                profile = inputs[0].value
                 reason = inputs[1].value or ""
-                panels = await self.config.guild(interaction.guild).panels()
-                if panel not in panels:
+                profiles = await self.config.guild(interaction.guild).profiles()
+                if profile not in profiles:
                     await interaction.followup.send(
-                        _("The panel for which this button was configured no longer exists."),
+                        _("The profile for which this button was configured no longer exists."),
                         ephemeral=True,
                     )
                     return
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user,
                     channel=interaction.channel,
-                    command=f"ticket create {panel}" + (f" {reason}" if reason != "" else ""),
+                    command=f"ticket create {profile}" + (f" {reason}" if reason != "" else ""),
                 )
                 if not await ctx.command.can_run(
                     ctx, change_permission_state=True
@@ -1284,7 +1314,6 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 if not interaction.response.is_done():
                     await interaction.response.defer(ephemeral=True)
                 reason = inputs[0].value or ""
-                panels = await self.config.guild(interaction.guild).panels()
                 ctx = await self.cogsutils.invoke_command(
                     author=interaction.user,
                     channel=interaction.channel,
@@ -1348,13 +1377,13 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     _("This message is not in TicketTool config."), ephemeral=True
                 )
                 return
-            panel = dropdowns[f"{interaction.message.channel.id}-{interaction.message.id}"][0].get(
-                "panel", "main"
+            profile = dropdowns[f"{interaction.message.channel.id}-{interaction.message.id}"][0].get(
+                "profile", "main"
             )
-            panels = await self.config.guild(interaction.guild).panels()
-            if panel not in panels:
+            profiles = await self.config.guild(interaction.guild).profiles()
+            if profile not in profiles:
                 await interaction.followup.send(
-                    _("The panel for which this dropdown was configured no longer exists."),
+                    _("The profile for which this dropdown was configured no longer exists."),
                     ephemeral=True,
                 )
                 return
@@ -1363,7 +1392,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             ctx = await self.cogsutils.invoke_command(
                 author=interaction.user,
                 channel=interaction.channel,
-                command=f"ticket create {panel} {reason}",
+                command=f"ticket create {profile} {reason}",
             )
             if not await discord.utils.async_all(
                 check(ctx) for check in ctx.command.checks
@@ -1372,7 +1401,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     _("You are not allowed to execute this command."), ephemeral=True
                 )
                 return
-            config = await self.get_config(interaction.guild, panel)
+            config = await self.get_config(interaction.guild, profile)
             if config["embed_button"]["rename_channel_dropdown"]:
                 try:
                     ticket: Ticket = await self.get_ticket(
@@ -1412,18 +1441,18 @@ class TicketTool(settings, DashboardIntegration, Cog):
             if inter.clicked_button.custom_id == "create_ticket_button":
                 buttons = await self.config.guild(inter.guild).buttons.all()
                 if f"{inter.message.channel.id}-{inter.message.id}" in buttons:
-                    panel = buttons[f"{inter.message.channel.id}-{inter.message.id}"]["panel"]
+                    profile = buttons[f"{inter.message.channel.id}-{inter.message.id}"]["profile"]
                 else:
-                    panel = "main"
-                panels = await self.config.guild(inter.guild).panels()
-                if panel not in panels:
+                    profile = "main"
+                profiles = await self.config.guild(inter.guild).profiles()
+                if profile not in profiles:
                     await inter.followup(
-                        _("The panel for which this button was configured no longer exists."),
+                        _("The profile for which this button was configured no longer exists."),
                         ephemeral=True,
                     )
                     return
                 ctx = await self.cogsutils.invoke_command(
-                    author=inter.author, channel=inter.channel, command=f"ticket create {panel}"
+                    author=inter.author, channel=inter.channel, command=f"ticket create {profile}"
                 )
                 if not await ctx.command.can_run(
                     ctx, change_permission_state=True
@@ -1497,13 +1526,13 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     _("This message is not in TicketTool Config."), ephemeral=True
                 )
                 return
-            panel = dropdowns[f"{inter.message.channel.id}-{inter.message.id}"][0].get(
-                "panel", "main"
+            profile = dropdowns[f"{inter.message.channel.id}-{inter.message.id}"][0].get(
+                "profile", "main"
             )
-            panels = await self.config.guild(inter.guild).panels()
-            if panel not in panels:
+            profiles = await self.config.guild(inter.guild).profiles()
+            if profile not in profiles:
                 await inter.followup(
-                    _("The panel for which this button was configured no longer exists."),
+                    _("The profile for which this button was configured no longer exists."),
                     ephemeral=True,
                 )
                 return
@@ -1512,7 +1541,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             ctx = await self.cogsutils.invoke_command(
                 author=inter.author,
                 channel=inter.channel,
-                command=f"ticket create {panel} {reason}",
+                command=f"ticket create {profile} {reason}",
             )
             if not await discord.utils.async_all(
                 check(ctx) for check in ctx.command.checks
@@ -1521,7 +1550,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     _("You are not allowed to execute this command."), ephemeral=True
                 )
                 return
-            config = await self.get_config(inter.guild, panel)
+            config = await self.get_config(inter.guild, profile)
             if config["embed_button"]["rename_channel_dropdown"]:
                 try:
                     ticket: Ticket = await self.get_ticket(
@@ -1554,11 +1583,11 @@ class TicketTool(settings, DashboardIntegration, Cog):
         member = guild.get_member(payload.user_id)
         if member == guild.me or member.bot:
             return
-        panel = "main"
-        panels = await self.config.guild(guild).panels()
-        if panel not in panels:
+        profile = "main"
+        profiles = await self.config.guild(guild).profiles()
+        if profile not in profiles:
             return
-        config = await self.get_config(guild, panel)
+        config = await self.get_config(guild, profile)
         if config["enable"] and config["create_on_react"] and str(payload.emoji) == "🎟️":
             permissions = channel.permissions_for(member)
             if not permissions.read_messages and not permissions.send_messages:
@@ -1597,7 +1626,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
     async def on_member_remove(self, member: discord.Member) -> None:
         tickets = await self.config.guild(member.guild).tickets.all()
         for channel_id in tickets:
-            config = await self.get_config(member.guild, panel=tickets[channel_id]["panel"])
+            config = await self.get_config(member.guild, profile=tickets[channel_id]["profile"])
             if config["forum_channel"] is not None:
                 channel = config["forum_channel"].get_thread(int(channel_id))
             else:

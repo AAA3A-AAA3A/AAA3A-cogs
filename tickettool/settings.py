@@ -218,7 +218,7 @@ class settings(commands.Cog):
                     )
             dropdown = SelectMenu(
                 custom_id="create_ticket_dropdown",
-                placeholder=_("Choose the reason for open a ticket."),
+                placeholder=config["embed_button"]["placeholder_dropdown"],
                 min_values=0,
                 max_values=1,
                 options=all_options,

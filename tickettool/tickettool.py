@@ -104,7 +104,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                         "You can then use the `{prefix}ticket` subcommands to manage your ticket."
                     ),
                     "image": None,
-                    "placeholder_dropdown": "Choose the reason to open a ticket.",
+                    "placeholder_dropdown": "Choose a reason to open a ticket.",
                     "rename_channel_dropdown": False,
                 },
             },

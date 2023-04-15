@@ -652,7 +652,7 @@ class Ticket:
                             label=_("Re-open"),
                             emoji="🔓",
                             custom_id="open_ticket_button",
-                            disabled=True,
+                            disabled=False,
                         ),
                         Button(
                             style=ButtonStyle.grey,

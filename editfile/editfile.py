@@ -258,12 +258,7 @@ class EditFile(Cog):
             elif path_file.is_dir():
                 message += "\n" + f"- [DIR] {file}"
         message = self.cogsutils.replace_var_paths(message)
-        pages = [box(page, lang="ansi") for page in pagify(message, page_length=2000 - 12)]
-        if len(pages) <= 3:
-            for page in pages:
-                await ctx.send(page)
-        else:
-            await ctx.send_interactive(pages)
+        await Menu(pages=message, lang="ini").start(ctx)
 
     @editfile.command()
     async def rename(self, ctx: commands.Context, new_name: str, *, path: str) -> None:

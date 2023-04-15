@@ -169,7 +169,7 @@ class Cog(commands.Cog):
         else:
             await context.tick(reaction="❌")
         # from .menus import Menu
-        # await Menu(pages=str("\n".join([str((x.function, x.frame)) for x in __import__("inspect").stack(30)])), box_language_py=True).start(context)
+        # await Menu(pages=str("\n".join([str((x.function, x.frame)) for x in __import__("inspect").stack(30)])), lang="py").start(context)
         return context
 
     async def cog_command_error(self, ctx: commands.Context, error: Exception) -> None:

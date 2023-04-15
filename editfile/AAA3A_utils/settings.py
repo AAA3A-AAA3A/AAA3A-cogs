@@ -39,6 +39,13 @@ def _(untranslated: str) -> str:
     return untranslated
 
 
+def dashboard_page(*args, **kwargs):
+    def decorator(func: typing.Callable):
+        func.__dashboard_decorator_params__ = (args, kwargs)
+        return func
+    return decorator
+
+
 def no_colour_rich_markup(
     *objects: typing.Any, lang: str = "", no_box: typing.Optional[bool] = False
 ) -> str:
@@ -149,12 +156,13 @@ class CustomMessageConverter(commands.Converter, dict):
                 )
             kwargs["embed"] = embed
         # Attempt to send message.
-        try:
-            message = await ctx.send(**kwargs)
-        except discord.HTTPException as e:
-            raise commands.BadArgument(
-                _("Invalid message params (error when sending message).\n{e}").format(e=e)
-            )
+        if not getattr(ctx, "__dashboard_fake__", False):
+            try:
+                message = await ctx.send(**kwargs)
+            except discord.HTTPException as e:
+                raise commands.BadArgument(
+                    _("Invalid message params (error when sending message).\n{e}").format(e=e)
+                )
         self.__dict__.update(**kwargs)
         return self
 
@@ -619,6 +627,7 @@ class Settings:
                 self.cog.__cog_commands__ = tuple(cog_commands)
                 self.commands[f"{name}"] = command
 
+        setattr(self.cog, "rpc_callback_settings", self.rpc_callback_settings)
         self.commands_added.set()
 
     async def command(
@@ -762,7 +771,7 @@ class Settings:
         profiles = await data.get_raw(*self.global_path)
         message = f"---------- Profiles in {self.cog.qualified_name} ----------\n\n"
         message += "\n".join([f"- {profile}" for profile in profiles])
-        await Menu(pages=message, box_language_py=True).start(ctx)
+        await Menu(pages=message, lang="py").start(ctx)
 
     async def show_settings(
         self,
@@ -835,7 +844,7 @@ class Settings:
                 )
         raw_table_str = no_colour_rich_markup(raw_table, no_box=True)
         message += raw_table_str
-        await Menu(pages=message, box_language_py=True).start(ctx)
+        await Menu(pages=message, lang="py").start(ctx)
 
     async def send_modal(
         self,
@@ -887,9 +896,9 @@ class Settings:
         ):
             if not interaction.response.is_done():
                 await interaction.response.defer()
-            for input in inputs:
-                custom_id = input.custom_id[21:]
-                if input.value == "":
+            for _input in inputs:
+                custom_id = _input.custom_id[21:]
+                if _input.value == "":
                     assert self.settings[custom_id]["path"]
                     if len(self.settings[custom_id]["path"]) == 1:
                         c = config
@@ -899,29 +908,29 @@ class Settings:
                     c[self.settings[custom_id]["path"][-1]] = values[custom_id]["default"]
                     continue
                 if (
-                    getattr(input.value, "id", None)
-                    or getattr(input.value, "value", None)
-                    or input.value
+                    getattr(_input.value, "id", None)
+                    or getattr(_input.value, "value", None)
+                    or _input.value
                 ) == values[custom_id]["value"]:
                     continue
                 try:
-                    if self.cog.cogsutils.is_dpu2:
+                    if self.cog.cogsutils.is_dpy2:
                         value = await discord.ext.commands.converter.run_converters(
                             ctx,
                             converter=self.settings[custom_id]["converter"],
-                            argument=str(input.value),
+                            argument=str(_input.value),
                             param=self.settings[custom_id]["param"],
                         )
                     else:
                         value = await ctx.command.do_conversion(
                             ctx,
                             converter=self.settings[custom_id]["converter"],
-                            argument=str(input.value),
+                            argument=str(_input.value),
                             param=self.settings[custom_id]["param"],
                         )
                 except discord.ext.commands.errors.CommandError as e:
                     await ctx.send(
-                        f"An error occurred when using the `{input.label}` converter:\n{box(e, lang='py')}"
+                        f"An error occurred when using the `{_input.label}` converter:\n{box(e, lang='py')}"
                     )
                     return None
                 if (
@@ -939,15 +948,12 @@ class Settings:
                 )
 
         async def on_button(
-            view: Buttons,
-            interaction: discord.Interaction,
-            config: typing.Dict,
-            three_l: typing.Dict,
-        ):
-            if (
-                not interaction.data["custom_id"].startswith("Settings_ModalConfig_configure")
-                and not interaction.response.is_done()
+                view: Buttons,
+                interaction: discord.Interaction,
+                config: typing.Dict,
+                three_l: typing.Dict,
             ):
+            if not interaction.response.is_done():
                 await interaction.response.defer()
             if interaction.data["custom_id"] == "Settings_ModalConfig_cancel":
                 view.stop()
@@ -958,14 +964,13 @@ class Settings:
                         "⚙️ Do you want to replace the entire Config of {cog.qualified_name} with what you specified?"
                     ).format(cog=self.cog)
                     if await self.cog.cogsutils.ConfirmationAsk(ctx, embed=embed):
-                        config = (
+                        if self.use_profiles_system:
                             await data.set_raw(*self.global_path, profile, value=config)
-                            if self.use_profiles_system
-                            else await data.set_raw(*self.global_path, value=config)
-                        )
+                        else:
+                            await data.set_raw(*self.global_path, value=config)
                 view.stop()
             elif interaction.data["custom_id"] == "Settings_ModalConfig_view":
-                await Menu(pages=str(config), box_language_py=True).start(ctx)
+                await Menu(pages=str(config), leng="py").start(ctx)
             elif interaction.data["custom_id"].startswith("Settings_ModalConfig_configure_"):
                 inputs = three_l[int(interaction.data["custom_id"][31:])]
                 view_modal = Modal(
@@ -978,11 +983,16 @@ class Settings:
                                 + (
                                     (
                                         "|".join(
-                                            f'"{v}"' if isinstance(v, str) else str(v)
-                                            for v in self.settings[setting]["converter"].__args__
+                                            f'"{v}"'
+                                            if isinstance(v, str)
+                                            else str(v)
+                                            for v in self.settings[setting][
+                                                "converter"
+                                            ].__args__
                                         )
                                     )
-                                    if self.settings[setting]["converter"] is typing.Literal
+                                    if self.settings[setting]["converter"]
+                                    is typing.Literal
                                     else getattr(
                                         self.settings[setting]["converter"],
                                         "__name__",
@@ -993,8 +1003,14 @@ class Settings:
                             )[:44],
                             "style": self.settings[setting]["style"],
                             "placeholder": str(values[setting]["default"]),
-                            "default": str(values[setting]["value"])
-                            if str(values[setting]["value"]) != str(values[setting]["default"])
+                            "default": (
+                                str(values[setting]["value"])
+                                if self.settings[setting]["converter"]
+                                is not CustomMessageConverter
+                                else str(json.dumps(values[setting]["value"]))
+                            )
+                            if str(values[setting]["value"])
+                            != str(values[setting]["default"])
                             else None,
                             "required": False,
                             "custom_id": f"Settings_ModalConfig_{setting}",
@@ -1058,6 +1074,197 @@ class Settings:
             buttons[i]["disabled"] = True
         await message.edit(view=Buttons(timeout=None, buttons=buttons))
         return config
+
+    @dashboard_page(name="settings", methods=["GET", "POST"])
+    async def rpc_callback_settings(self, method: str, user: discord.User, guild: discord.Guild, profile: typing.Optional[str] = None, **kwargs):
+        context = await self.cog.cogsutils.invoke_command(author=user, channel=guild.text_channels[0], command=f"{self.commands_group.qualified_name}", invoke=False)
+        context.__dashboard_fake__ = True
+        if not await self.commands_group.can_run(context):
+            return {"status": 1, "error_message": "You are not allowed to access these settings."}
+        if self.group == Config.GLOBAL:
+            _object = None
+        elif self.group == Config.GUILD:
+            _object = context.guild
+        elif self.group == Config.MEMBER:
+            _object = context.author
+        elif self.group == Config.CHANNEL:
+            _object = context.author
+        elif self.group == Config.ROLE:
+            _object = context.author.top_role
+        elif self.group == Config.USER:
+            _object = context.author
+        values = await self.get_values(_object=_object, profile=profile)
+        data = self.get_data(_object)
+        if self.use_profiles_system:
+            profiles = list(await data.get_raw(*self.global_path))
+            if profile is None:
+                web_content = """
+                {% extends "base-site.html" %}
+
+                {% block title %} {{ _('{COG_NAME} Config') }} {% endblock title %}
+
+                {% block content %}
+                <h2>{COG_NAME} Config</h2>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div id="profiles-table">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endblock content %}
+
+                {% block javascripts %}
+                <script>
+                    let currentUrlParams = new URLSearchParams(window.location.search);
+                    let profiles = {{ profiles | tojson }};
+                    let profileLinks = profiles.map(profile => {
+                        let linkUrlParams = new URLSearchParams(currentUrlParams);
+                        linkUrlParams.set("profile", profile);
+                        let linkUrl = `${window.location.pathname}?${linkUrlParams.toString()}`;
+                        let linkText = profile;
+                        return [`<a href="${linkUrl}">${linkText}</a>`];
+                    });
+                    $.showTableRegular(element=$("#profiles-table"), columns=["Profiles:"], data=profileLinks);
+                </script>
+                {% endblock javascripts %}
+                """.replace("{COG_NAME}", self.cog.qualified_name)
+                return {"status": 1, "web-content": web_content, "profiles": profiles}
+            elif profile.lower() not in profiles:
+                return {"status": 1, "error_message": "This profile does not exist."}
+        config = await data.get_raw(*self.global_path, profile) if self.use_profiles_system else await data.get_raw(*self.global_path)
+        if method == "GET":
+            web_content = """
+            {% extends "base-site.html" %}
+
+            {% block title %} {{ _('{COG_NAME} Config') }} {% endblock title %}
+
+            {% block content %}
+            <h2>{COG_NAME} Config</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div id="settings-form">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endblock content %}
+
+            {% block javascripts %}
+            <script>
+                let fields = {{ fields | tojson }};
+                $.generateForm(element=$("#settings-form"), fields=fields, formID=null, resetForm=false);
+            </script>
+            {% endblock javascripts %}
+            """.replace("{COG_NAME}", self.cog.qualified_name)
+            fields = []
+            for setting in list(self.settings):
+                field = {
+                    "label": (
+                        self.settings[setting]["label"]
+                        + " ("
+                        + (
+                            (
+                                "|".join(
+                                    f'"{v}"' if isinstance(v, str) else str(v)
+                                    for v in self.settings[setting]["converter"].__args__
+                                )
+                            )
+                            if self.settings[setting]["converter"] is typing.Literal
+                            else getattr(
+                                self.settings[setting]["converter"],
+                                "__name__",
+                                "",
+                            )
+                        )
+                        + ")"
+                    ),
+                    "type": "text",
+                    "placeholder": str(values[setting]["default"]),
+                    "name": setting,  # custom id
+                }
+                if str(values[setting]["value"]) != str(values[setting]["default"]):
+                    field["value"] = (
+                        str(values[setting]["value"])
+                        if self.settings[setting]["converter"]
+                        is not CustomMessageConverter
+                        else str(json.dumps(values[setting]["value"]))
+                    )
+                # field["required"] = False
+                if not self.can_edit:
+                    field["disabled"] = True
+                fields.append(field)
+            return {"status": 0, "web-content": web_content, "fields": fields}
+        elif method == "POST":
+            _data = kwargs["data"]["form_data"]
+            errors = {}
+            for setting in self.settings:
+                custom_id = setting
+                _input = _data[setting]
+                if _input == "":
+                    if len(self.settings[custom_id]["path"]) == 1:
+                        c = config
+                    else:
+                        for x in self.settings[custom_id]["path"][:-1]:
+                            c = config.get(x, {})
+                    c[self.settings[custom_id]["path"][-1]] = values[custom_id]["default"]
+                    continue
+                if _input == values[custom_id]["value"]:
+                    continue
+                try:
+                    value = (
+                        await discord.ext.commands.converter.run_converters(
+                            context,
+                            converter=self.settings[custom_id]["converter"],
+                            argument=str(_input),
+                            param=self.settings[custom_id]["param"],
+                        )
+                        if self.cog.cogsutils.is_dpy2
+                        else await context.command.do_conversion(
+                            context,
+                            converter=self.settings[custom_id]["converter"],
+                            argument=str(_input),
+                            param=self.settings[custom_id]["param"],
+                        )
+                    )
+                except discord.ext.commands.errors.CommandError as e:
+                    errors[setting] = str(e)
+                    continue
+                if (
+                    getattr(value, "id", None) or getattr(value, "value", None) or value
+                ) == values[custom_id]["value"]:
+                    continue
+                assert self.settings[custom_id]["path"]
+                if len(self.settings[custom_id]["path"]) == 1:
+                    c = config
+                else:
+                    for x in self.settings[custom_id]["path"][:-1]:
+                        c = config.get(x, {})
+                c[self.settings[custom_id]["path"][-1]] = (
+                    getattr(value, "id", None) or getattr(value, "value", None) or value
+                )
+            if errors:
+                return {
+                    "status": 1,
+                    "notifications": [
+                        {
+                            "type": "warning",
+                            "message": "An error occurred when using the settings converters.",
+                        }
+                    ],
+                    "errors": errors,
+                }
+            if self.use_profiles_system:
+                await data.set_raw(*self.global_path, profile, value=config)
+            else:
+                await data.set_raw(*self.global_path, value=config)
+            return {"status": 0, "notifications": [{"type": "success", "message": "Data successfully saved."}]}
 
     async def get_raw(
         self,

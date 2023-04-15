@@ -181,9 +181,7 @@ class Context:
             return await self.original_context.send_interactive(
                 messages=messages, box_lang=box_lang, timeout=timeout
             )
-        if box_lang is not None:
-            messages = [box(message, lang=box_lang) for message in messages]
-        menu = Menu(pages=messages)
+        menu = Menu(pages=list(messages), lang=box_lang)
         if discord.version_info.major >= 2 and len(messages) <= 1:
             menu.disabled_controls.extend(["send_as_file", "choose_page"])
         await menu.start(self)

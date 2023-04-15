@@ -14,7 +14,7 @@ from copy import copy
 import aiohttp
 from bs4 import BeautifulSoup
 from redbot import VersionInfo
-from redbot.core.utils.chat_formatting import bold, box, pagify
+from redbot.core.utils.chat_formatting import bold, box
 
 # Credits:
 # General repo credits.
@@ -945,7 +945,7 @@ class Medicat(Cog):
             message += f"\n\n--------------- {x} ---------------"
             for y, z in result[x].items():
                 message += f"\n{y}: {z}"
-        await Menu(pages=message, box_language_py=True).start(ctx)
+        await Menu(pages=message, lang="py").start(ctx)
 
     @is_owner_or_AAA3A()
     @medicat.command(hidden=True)
@@ -973,13 +973,4 @@ class Medicat(Cog):
         except Exception as e:
             traceback_error = "".join(traceback.format_exception(type(e), e, e.__traceback__))
             traceback_error = self.cogsutils.replace_var_paths(traceback_error)
-            pages = [
-                box(page, lang="py")
-                for page in pagify(
-                    traceback_error, shorten_by=15, page_length=1985
-                )
-            ]
-            try:
-                await Menu(pages=pages, timeout=30, delete_after_timeout=True).start(ctx)
-            except discord.HTTPException:
-                return
+            await Menu(pages=traceback_error, timeout=30, lang="py").start(ctx)

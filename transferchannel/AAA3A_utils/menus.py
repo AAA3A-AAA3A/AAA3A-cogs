@@ -35,7 +35,7 @@ if discord.version_info.major >= 2:
             page_start: typing.Optional[int] = 0,
             members: typing.Optional[typing.Iterable[typing.Union[discord.Member, int]]] = None,
             ephemeral: typing.Optional[bool] = False,
-            box_language_py: typing.Optional[bool] = False,
+            lang: typing.Optional[str] = None,
         ) -> None:
             if members is None:
                 members = []
@@ -67,9 +67,9 @@ if discord.version_info.major >= 2:
             if not self.pages:
                 self.pages: typing.List[str] = ["Nothing to show."]
             if isinstance(self.pages, str):
-                self.pages: typing.List[str] = list(pagify(self.pages, page_length=2000 - 10))
-            if box_language_py and all(isinstance(page, str) for page in self.pages):
-                self.pages: typing.List[str] = [box(page, "py") for page in self.pages]
+                self.pages: typing.List[str] = list(pagify(self.pages, page_length=2000 - len(f"```{lang}\n\n```" if lang is not None else "")))
+            if lang is not None and all(isinstance(page, str) for page in self.pages):
+                self.pages: typing.List[str] = [box(page, lang) for page in self.pages]
             if not isinstance(self.pages[0], (typing.Dict, discord.Embed, str)):
                 raise RuntimeError("Pages must be of type typing.Dict, discord.Embed or str.")
 
@@ -371,7 +371,7 @@ else:
             check_owner: typing.Optional[bool] = True,
             members: typing.Optional[typing.Iterable[discord.Member]] = None,
             ephemeral: typing.Optional[bool] = False,
-            box_language_py: typing.Optional[bool] = False,
+            lang: typing.Optional[str] = False,
         ) -> None:
             if members is None:
                 members = []
@@ -399,9 +399,9 @@ else:
             if not self.pages:
                 self.pages: typing.List[str] = ["Nothing to show."]
             if isinstance(self.pages, str):
-                self.pages: typing.List[str] = list(pagify(self.pages, page_length=2000 - 10))
-            if box_language_py and all(isinstance(page, str) for page in self.pages):
-                self.pages: typing.List[str] = [box(page, "py") for page in self.pages]
+                self.pages: typing.List[str] = list(pagify(self.pages, page_length=2000 - len(f"```{lang}\n\n```" if lang is not None else "")))
+            if lang is not None and all(isinstance(page, str) for page in self.pages):
+                self.pages: typing.List[str] = [box(page, lang) for page in self.pages]
             if not isinstance(self.pages[0], (typing.Dict, discord.Embed, str)):
                 raise RuntimeError("Pages must be of type typing.Dict, discord.Embed or str.")
 

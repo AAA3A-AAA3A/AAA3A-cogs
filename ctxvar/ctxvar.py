@@ -165,9 +165,7 @@ class CtxVar(Cog):
         result += "\n]"
         result = self.cogsutils.replace_var_paths(Dev.sanitize_output(ctx, result))
 
-        await Menu(
-            pages=[box(page, "py") for page in pagify(result, page_length=2000 - 10)]
-        ).start(ctx)
+        await Menu(pages=result.strip(), lang="py").start(ctx)
 
     @ctxvar.command(name="inspect")
     async def _inspect(
@@ -243,9 +241,7 @@ class CtxVar(Cog):
             result = console.file.getvalue()
         result = self.cogsutils.replace_var_paths(Dev.sanitize_output(ctx, result))
 
-        await Menu(
-            pages=[box(page, "py") for page in pagify(result.strip(), page_length=2000 - 10)]
-        ).start(ctx)
+        await Menu(pages=result.strip(), lang="py").start(ctx)
 
     class WhatIsConverter(commands.Converter):
         async def convert(self, ctx: commands.Context, argument: str):
@@ -351,6 +347,4 @@ class CtxVar(Cog):
             result[attr.replace("_", " ").capitalize()] = value if isinstance(value, str) else repr(value)
         result.update(**result2)
         _result = Dev.sanitize_output(ctx, "".join(f"\n[{k}] : {r}" for k, r in result.items()))
-        await Menu(
-            pages=[box(page, "ini") for page in pagify(_result.strip(), page_length=2000 - 11)]
-        ).start(ctx)
+        await Menu(pages=_result.strip(), lang="ini").start(ctx)

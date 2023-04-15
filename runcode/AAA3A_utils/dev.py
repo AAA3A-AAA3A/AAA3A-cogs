@@ -187,7 +187,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
 
         async def _rtfs(ctx: commands.Context, object):
             code = inspect.getsource(object)
-            await Menu(pages=code, box_language_py=True).start(ctx)
+            await Menu(pages=code, lang="py").start(ctx)
 
         async def get_url(url: str, **kwargs):
             async with aiohttp.ClientSession() as session:

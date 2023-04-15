@@ -128,7 +128,7 @@ class WandboxResponse:
             and self.status == "0"
         ):
             output = f"{self.url}\n{self.program_output}"
-            await Menu(pages=output, box_language_py=True).start(ctx)
+            await Menu(pages=output, lang="py").start(ctx)
             return
         embed: discord.Embed = discord.Embed(
             title="RunCode Response (with Wandbox API)", url=self.url
@@ -259,7 +259,7 @@ class TioResponse:
             except ValueError:
                 pass
             output = CogsUtils().replace_var_paths(output)
-            await Menu(pages=output, box_language_py=True).start(ctx)
+            await Menu(pages=output, lang="py").start(ctx)
             return
         embed: discord.Embed = discord.Embed(
             title="RunCode Response (with Tio API)", url=self.request.language.link

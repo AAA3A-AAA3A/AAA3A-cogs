@@ -76,45 +76,21 @@ class CogsUtils(commands.Cog):
 
     def replace_var_paths(self, text: str, reverse: typing.Optional[bool] = False) -> str:
         if not reverse:
-            if "USERPROFILE" in os.environ:
-                text = text.replace(os.environ["USERPROFILE"], "{USERPROFILE}")
-                text = text.replace(os.environ["USERPROFILE"].lower(), "{USERPROFILE}".lower())
-                text = text.replace(
-                    os.environ["USERPROFILE"].replace("\\", "\\\\"), "{USERPROFILE}"
-                )
-                text = text.replace(
-                    os.environ["USERPROFILE"].replace("\\", "\\\\").lower(), "{USERPROFILE}.lower("
-                )
-                text = text.replace(os.environ["USERPROFILE"].replace("\\", "/"), "{USERPROFILE}")
-                text = text.replace(
-                    os.environ["USERPROFILE"].replace("\\", "/").lower(), "{USERPROFILE}".lower()
-                )
-            if "HOME" in os.environ:
-                text = text.replace(os.environ["HOME"], "{HOME}")
-                text = text.replace(os.environ["HOME"].lower(), "{HOME}".lower())
-                text = text.replace(os.environ["HOME"].replace("\\", "\\\\"), "{HOME}")
-                text = text.replace(
-                    os.environ["HOME"].replace("\\", "\\\\").lower(), "{HOME}".lower()
-                )
-            if "USERNAME" in os.environ:
-                text = text.replace(os.environ["USERNAME"], "{USERNAME}")
-                text = text.replace(os.environ["USERNAME"].lower(), "{USERNAME}".lower())
-            if "COMPUTERNAME" in os.environ:
-                text = text.replace(os.environ["COMPUTERNAME"], "{COMPUTERNAME}")
-                text = text.replace(os.environ["COMPUTERNAME"].lower(), "{COMPUTERNAME}".lower())
+            for env_var in ["USERPROFILE", "HOME", "USERNAME", "COMPUTERNAME"]:
+                if env_var in os.environ:
+                    regex = re.compile(re.escape(os.environ[env_var]), re.I)
+                    text = regex.sub(f"{{{env_var}}}", text)
         else:
-            if "USERPROFILE" in os.environ:
-                text = text.replace("{USERPROFILE}", os.environ["USERPROFILE"])
-                text = text.replace("{USERPROFILE}".lower(), os.environ["USERPROFILE"].lower())
-            if "HOME" in os.environ:
-                text = text.replace("{HOME}", os.environ["HOME"])
-                text = text.replace("{HOME}".lower(), os.environ["HOME"].lower())
-            if "USERNAME" in os.environ:
-                text = text.replace("{USERNAME}", os.environ["USERNAME"])
-                text = text.replace("{USERNAME}".lower(), os.environ["USERNAME"].lower())
-            if "COMPUTERNAME" in os.environ:
-                text = text.replace("{COMPUTERNAME}", os.environ["COMPUTERNAME"])
-                text = text.replace("{COMPUTERNAME}".lower(), os.environ["COMPUTERNAME"].lower())
+            class FakeDict(typing.Dict):
+                def __missing__(self, key: str) -> str:
+                    if (
+                        key.upper()
+                        in {"USERPROFILE", "HOME", "USERNAME", "COMPUTERNAME"}
+                        and key.upper() in os.environ
+                    ):
+                        return os.environ[key.upper()]
+                    return f"{{{key}}}"
+            text = text.format_map(FakeDict())
         return text
 
     async def add_cog(
@@ -486,6 +462,8 @@ class CogsUtils(commands.Cog):
                 headers = {"Accept": "application/vnd.github+json"}
                 async with session.get(url, headers=headers) as response:
                     data = await response.json()
+                    if "commit" not in data:
+                        raise asyncio.TimeoutError("No results could be retrieved from the git API.")
                     commit_date = data["commit"]["committer"]["date"]
                 return commit_date
             async with aiohttp.ClientSession() as session:

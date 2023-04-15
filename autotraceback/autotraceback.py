@@ -49,7 +49,7 @@ class AutoTraceback(DashboardIntegration, Cog):
 
     @commands.is_owner()
     @hybrid_command()
-    async def traceback(self, ctx: commands.Context, public: bool = False) -> None:
+    async def traceback(self, ctx: commands.Context, public: bool = True) -> None:
         """Sends to the owner the last command exception that has occurred.
 
         If public (yes is specified), it will be sent to the chat instead.
@@ -61,7 +61,7 @@ class AutoTraceback(DashboardIntegration, Cog):
             - `[p]traceback True` - Sends the last traceback in the current context.
 
         **Arguments:**
-            - `[public]` - Whether to send the traceback to the current context. Leave blank to send to your DMs.
+            - `[public]` - Whether to send the traceback to the current context. Default is `True`.
         """
         if not ctx.bot._last_exception:
             await ctx.send(_("No exception has occurred yet."))

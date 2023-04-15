@@ -233,7 +233,6 @@ class TicketTool(settings, DashboardIntegration, Cog):
         await self.settings.add_commands()
         if self.cogsutils.is_dpy2:
             await self.load_buttons()
-        await super().cog_load()
 
     async def edit_config_schema(self):
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()

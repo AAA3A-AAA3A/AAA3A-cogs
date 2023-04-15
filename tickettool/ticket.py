@@ -351,7 +351,6 @@ class Ticket:
                     embed=embed,
                     view=view,
                     allowed_mentions=discord.AllowedMentions(users=True, roles=True),
-                    invitable=False,
                     auto_archive_duration=10080,
                     reason=reason,
                 )

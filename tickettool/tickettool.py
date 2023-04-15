@@ -217,6 +217,12 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 "description": "Create a ticket when the reaction 🎟️ is set on any message on the server.",
                 "no_slash": True,
             },
+            "rename_channel_dropdown": {
+                "path": ["embed_button", "rename_channel_dropdown"],
+                "converter": bool,
+                "description": "With Dropdowns feature, rename the ticket channel with chosen reason.",
+                "no_slash": True,
+            },
         }
         self.settings: Settings = Settings(
             bot=self.bot,
@@ -1035,6 +1041,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 else ctx.author.avatar_url,
             )
             response = await self.cogsutils.ConfirmationAsk(ctx, embed=embed)
+            await ctx.send(repr(response))
             if not response:
                 return
         ticket.reason = reason

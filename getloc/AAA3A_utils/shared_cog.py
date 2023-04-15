@@ -110,7 +110,9 @@ class SharedCog(Cog, name="AAA3A_utils"):
 
         # For `[p]slash list` in Flame's PR in Red repo.
         if getattr(self.AAA3A_utils, "app_command", None):
-            self.AAA3A_utils.app_command.module = ".".join(self.AAA3A_utils.app_command.module.split(".")[1:])  # Add `AAA3A_utils` module to new `[p]slash list` in Flame's PR.
+            self.AAA3A_utils.app_command.module = ".".join(
+                self.AAA3A_utils.app_command.module.split(".")[1:]
+            )  # Add `AAA3A_utils` module to new `[p]slash list` in Flame's PR.
 
     async def cog_load(self) -> None:
         if self.sentry is None:
@@ -246,7 +248,11 @@ class SharedCog(Cog, name="AAA3A_utils"):
         async def flags(self, ctx: commands.Context, *, content: str) -> None:
             """Use any command with flags."""
             msg: discord.Message = ctx.message
-            msg.content = (ctx.prefix if ctx.prefix != "/" else (await self.bot.get_valid_prefixes(guild=ctx.guild))[0]) + content
+            msg.content = (
+                ctx.prefix
+                if ctx.prefix != "/"
+                else (await self.bot.get_valid_prefixes(guild=ctx.guild))[0]
+            ) + content
             context: commands.Context = await ctx.bot.get_context(msg)
             if context.command is None or not context.valid:
                 raise commands.UserFeedbackCheckFailure(_("This command doen't exist."))

@@ -43,6 +43,7 @@ def dashboard_page(*args, **kwargs):
     def decorator(func: typing.Callable):
         func.__dashboard_decorator_params__ = (args, kwargs)
         return func
+
     return decorator
 
 
@@ -597,17 +598,25 @@ class Settings:
                         await self.command(ctx, key=None, value=value, profile=profile)
 
                 command.__qualname__ = f"{self.cog.qualified_name}.settings_{name}"
-                if self.settings[setting]["no_slash"] and self.cog.cogsutils.is_dpy2 and isinstance(self.commands_group, commands.HybridGroup):
+                if (
+                    self.settings[setting]["no_slash"]
+                    and self.cog.cogsutils.is_dpy2
+                    and isinstance(self.commands_group, commands.HybridGroup)
+                ):
                     command: commands.Command = self.commands_group.command(
                         name=name,
-                        usage=f"<profile> <{_usage}>" if self.use_profiles_system else f"<{_usage}>",
+                        usage=f"<profile> <{_usage}>"
+                        if self.use_profiles_system
+                        else f"<{_usage}>",
                         help=_help,
                         with_app_command=False,
                     )(command)
                 else:
                     command: commands.Command = self.commands_group.command(
                         name=name,
-                        usage=f"<profile> <{_usage}>" if self.use_profiles_system else f"<{_usage}>",
+                        usage=f"<profile> <{_usage}>"
+                        if self.use_profiles_system
+                        else f"<{_usage}>",
                         help=_help,
                     )(command)
 
@@ -948,11 +957,11 @@ class Settings:
                 )
 
         async def on_button(
-                view: Buttons,
-                interaction: discord.Interaction,
-                config: typing.Dict,
-                three_l: typing.Dict,
-            ):
+            view: Buttons,
+            interaction: discord.Interaction,
+            config: typing.Dict,
+            three_l: typing.Dict,
+        ):
             if not interaction.response.is_done():
                 await interaction.response.defer()
             if interaction.data["custom_id"] == "Settings_ModalConfig_cancel":
@@ -983,16 +992,11 @@ class Settings:
                                 + (
                                     (
                                         "|".join(
-                                            f'"{v}"'
-                                            if isinstance(v, str)
-                                            else str(v)
-                                            for v in self.settings[setting][
-                                                "converter"
-                                            ].__args__
+                                            f'"{v}"' if isinstance(v, str) else str(v)
+                                            for v in self.settings[setting]["converter"].__args__
                                         )
                                     )
-                                    if self.settings[setting]["converter"]
-                                    is typing.Literal
+                                    if self.settings[setting]["converter"] is typing.Literal
                                     else getattr(
                                         self.settings[setting]["converter"],
                                         "__name__",
@@ -1009,8 +1013,7 @@ class Settings:
                                 is not CustomMessageConverter
                                 else str(json.dumps(values[setting]["value"]))
                             )
-                            if str(values[setting]["value"])
-                            != str(values[setting]["default"])
+                            if str(values[setting]["value"]) != str(values[setting]["default"])
                             else None,
                             "required": False,
                             "custom_id": f"Settings_ModalConfig_{setting}",
@@ -1076,8 +1079,20 @@ class Settings:
         return config
 
     @dashboard_page(name="settings", methods=["GET", "POST"])
-    async def rpc_callback_settings(self, method: str, user: discord.User, guild: discord.Guild, profile: typing.Optional[str] = None, **kwargs):
-        context = await self.cog.cogsutils.invoke_command(author=user, channel=guild.text_channels[0], command=f"{self.commands_group.qualified_name}", invoke=False)
+    async def rpc_callback_settings(
+        self,
+        method: str,
+        user: discord.User,
+        guild: discord.Guild,
+        profile: typing.Optional[str] = None,
+        **kwargs,
+    ):
+        context = await self.cog.cogsutils.invoke_command(
+            author=user,
+            channel=guild.text_channels[0],
+            command=f"{self.commands_group.qualified_name}",
+            invoke=False,
+        )
         context.__dashboard_fake__ = True
         if not await self.commands_group.can_run(context):
             return {"status": 1, "error_message": "You are not allowed to access these settings."}
@@ -1131,11 +1146,17 @@ class Settings:
                     $.showTableRegular(element=$("#profiles-table"), columns=["Profiles:"], data=profileLinks);
                 </script>
                 {% endblock javascripts %}
-                """.replace("{COG_NAME}", self.cog.qualified_name)
+                """.replace(
+                    "{COG_NAME}", self.cog.qualified_name
+                )
                 return {"status": 1, "web-content": web_content, "profiles": profiles}
             elif profile.lower() not in profiles:
                 return {"status": 1, "error_message": "This profile does not exist."}
-        config = await data.get_raw(*self.global_path, profile) if self.use_profiles_system else await data.get_raw(*self.global_path)
+        config = (
+            await data.get_raw(*self.global_path, profile)
+            if self.use_profiles_system
+            else await data.get_raw(*self.global_path)
+        )
         if method == "GET":
             web_content = """
             {% extends "base-site.html" %}
@@ -1162,7 +1183,9 @@ class Settings:
                 $.generateForm(element=$("#settings-form"), fields=fields, formID=null, resetForm=false);
             </script>
             {% endblock javascripts %}
-            """.replace("{COG_NAME}", self.cog.qualified_name)
+            """.replace(
+                "{COG_NAME}", self.cog.qualified_name
+            )
             fields = []
             for setting in list(self.settings):
                 field = {
@@ -1192,8 +1215,7 @@ class Settings:
                 if str(values[setting]["value"]) != str(values[setting]["default"]):
                     field["value"] = (
                         str(values[setting]["value"])
-                        if self.settings[setting]["converter"]
-                        is not CustomMessageConverter
+                        if self.settings[setting]["converter"] is not CustomMessageConverter
                         else str(json.dumps(values[setting]["value"]))
                     )
                 # field["required"] = False
@@ -1264,7 +1286,10 @@ class Settings:
                 await data.set_raw(*self.global_path, profile, value=config)
             else:
                 await data.set_raw(*self.global_path, value=config)
-            return {"status": 0, "notifications": [{"type": "success", "message": "Data successfully saved."}]}
+            return {
+                "status": 0,
+                "notifications": [{"type": "success", "message": "Data successfully saved."}],
+            }
 
     async def get_raw(
         self,

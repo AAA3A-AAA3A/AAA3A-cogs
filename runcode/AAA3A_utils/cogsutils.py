@@ -81,15 +81,16 @@ class CogsUtils(commands.Cog):
                     regex = re.compile(re.escape(os.environ[env_var]), re.I)
                     text = regex.sub(f"{{{env_var}}}", text)
         else:
+
             class FakeDict(typing.Dict):
                 def __missing__(self, key: str) -> str:
                     if (
-                        key.upper()
-                        in {"USERPROFILE", "HOME", "USERNAME", "COMPUTERNAME"}
+                        key.upper() in {"USERPROFILE", "HOME", "USERNAME", "COMPUTERNAME"}
                         and key.upper() in os.environ
                     ):
                         return os.environ[key.upper()]
                     return f"{{{key}}}"
+
             text = text.format_map(FakeDict())
         return text
 
@@ -457,15 +458,20 @@ class CogsUtils(commands.Cog):
         online_commit = online[0]["sha"]
 
         async def compare_commit_dates(repo_owner, repo_name, commit_sha1, commit_sha2):
-            async def get_commit_date(repo_owner: str, repo_name: str, commit_sha: str, session: aiohttp.ClientSession):
+            async def get_commit_date(
+                repo_owner: str, repo_name: str, commit_sha: str, session: aiohttp.ClientSession
+            ):
                 url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/commits/{commit_sha}"
                 headers = {"Accept": "application/vnd.github+json"}
                 async with session.get(url, headers=headers) as response:
                     data = await response.json()
                     if "commit" not in data:
-                        raise asyncio.TimeoutError("No results could be retrieved from the git API.")
+                        raise asyncio.TimeoutError(
+                            "No results could be retrieved from the git API."
+                        )
                     commit_date = data["commit"]["committer"]["date"]
                 return commit_date
+
             async with aiohttp.ClientSession() as session:
                 commit_date1 = await get_commit_date(repo_owner, repo_name, commit_sha1, session)
                 commit_date2 = await get_commit_date(repo_owner, repo_name, commit_sha2, session)
@@ -480,7 +486,12 @@ class CogsUtils(commands.Cog):
                     return None
 
         try:
-            to_update = await compare_commit_dates(repo_owner=repo_owner, repo_name=repo_name, commit_sha1=local_commit, commit_sha2=online_commit)
+            to_update = await compare_commit_dates(
+                repo_owner=repo_owner,
+                repo_name=repo_name,
+                commit_sha1=local_commit,
+                commit_sha2=online_commit,
+            )
         except ValueError:  # Failed API request (temporary).
             to_update = False
         else:
@@ -501,10 +512,7 @@ class CogsUtils(commands.Cog):
             if isinstance(_object, (commands.HybridCommand, commands.HybridGroup)):
                 if _object.app_command is not None:
                     _object.app_command.description = _object.app_command.description[:100]
-                if (
-                    _object.parent is not None
-                    and not _object.parent.invoke_without_command
-                ):
+                if _object.parent is not None and not _object.parent.invoke_without_command:
                     _object.checks.extend(_object.parent.checks)
                 if hasattr(cog, "_cogsutils_add_hybrid_commands"):
                     await cog._cogsutils_add_hybrid_commands(_object)
@@ -617,9 +625,7 @@ class CogsUtils(commands.Cog):
         *args,
         timeout: typing.Optional[int] = 60,
         timeout_message: typing.Optional[str] = _("Timed out, please try again"),
-        way: typing.Optional[
-            typing.Literal["buttons", "reactions", "message"]
-        ] = "buttons",
+        way: typing.Optional[typing.Literal["buttons", "reactions", "message"]] = "buttons",
         delete_message: typing.Optional[bool] = True,
         members_authored: typing.Optional[typing.Iterable[discord.Member]] = [],
         **kwargs,

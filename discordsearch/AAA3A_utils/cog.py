@@ -55,6 +55,7 @@ def _(untranslated: str) -> str:
 #                 continue
 #             setattr(cog, attr, getattr(self, attr))
 
+
 async def unsupported(ctx: commands.Context) -> None:
     """Thanks to Vexed for this (https://github.com/Vexed01/Vex-Cogs/blob/master/status/commands/statusdev_com.py#L33-L56)."""
     if is_dev(ctx.bot, ctx.author):
@@ -65,7 +66,9 @@ async def unsupported(ctx: commands.Context) -> None:
         "you want to continue?"
     )
     try:
-        result = await ctx.bot.get_cog("AAA3A_utils").cogsutils.ConfirmationAsk(ctx, content=content)
+        result = await ctx.bot.get_cog("AAA3A_utils").cogsutils.ConfirmationAsk(
+            ctx, content=content
+        )
     except TimeoutError:
         await ctx.send("Timeout, aborting.")
         raise commands.CheckFailure("Confirmation timed out.")
@@ -82,7 +85,17 @@ class Cog(commands.Cog):
     __commit__: str = ""
     bot: Red
     log: logging.Logger
-    logs: typing.Dict[str, typing.List[typing.Dict[str, typing.Optional[typing.Union[datetime.datetime, int, str, typing.Tuple[typing.Any]]]]]] = {}
+    logs: typing.Dict[
+        str,
+        typing.List[
+            typing.Dict[
+                str,
+                typing.Optional[
+                    typing.Union[datetime.datetime, int, str, typing.Tuple[typing.Any]]
+                ],
+            ]
+        ],
+    ] = {}
 
     def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
@@ -258,16 +271,14 @@ def verbose_forbidden_exception(ctx: commands.Context, error: discord.Forbidden)
         return ValueError(error)
     method = error.response.request_info.method
     url = str(error.response.request_info.url)
-    url = url[len(discord.http.Route.BASE):]
+    url = url[len(discord.http.Route.BASE) :]
     url = url.split("?")[0]
     url = re.sub(r"\b\d{17,20}\b", "{snowflake}", url)
     key = f"{method.upper()} {url}"
     end_points = {
         "GET /guilds/{guild.id}/audit-logs": ["VIEW_AUDIT_LOG"],
         "GET /guilds/{guild.id}/auto-moderation/rules": ["MANAGE_GUILD"],
-        "GET /guilds/{guild.id}/auto-moderation/rules/{auto_moderation_rule.id}": [
-            "MANAGE_GUILD"
-        ],
+        "GET /guilds/{guild.id}/auto-moderation/rules/{auto_moderation_rule.id}": ["MANAGE_GUILD"],
         "POST /guilds/{guild.id}/auto-moderation/rules": ["MANAGE_GUILD"],
         "PATCH /guilds/{guild.id}/auto-moderation/rules/{auto_moderation_rule.id}": [
             "MANAGE_GUILD"
@@ -393,12 +404,8 @@ def verbose_forbidden_exception(ctx: commands.Context, error: discord.Forbidden)
         "GET /guilds/{guild.id}/scheduled-events": [],
         "POST /guilds/{guild.id}/scheduled-events": ["MANAGE_EVENTS"],
         "GET /guilds/{guild.id}/scheduled-events/{guild_scheduled_event.id}": [],
-        "PATCH /guilds/{guild.id}/scheduled-events/{guild_scheduled_event.id}": [
-            "MANAGE_EVENTS"
-        ],
-        "DELETE /guilds/{guild.id}/scheduled-events/{guild_scheduled_event.id}": [
-            "MANAGE_EVENTS"
-        ],
+        "PATCH /guilds/{guild.id}/scheduled-events/{guild_scheduled_event.id}": ["MANAGE_EVENTS"],
+        "DELETE /guilds/{guild.id}/scheduled-events/{guild_scheduled_event.id}": ["MANAGE_EVENTS"],
         "GET /guilds/{guild.id}/scheduled-events/{guild_scheduled_event.id}/users": [],
         "GET /guilds/templates/{template.code}": [],
         "POST /guilds/templates/{template.code}": [],
@@ -447,6 +454,7 @@ def verbose_forbidden_exception(ctx: commands.Context, error: discord.Forbidden)
         "PATCH /webhooks/{webhook.id}/{webhook.token}/messages/{message.id}": [],
         "DELETE /webhooks/{webhook.id}/{webhook.token}/messages/{message.id}": [],
     }
+
     class FakeObject:
         id: str = "{snowflake}"
         token: str = "{snowflake}"
@@ -454,9 +462,11 @@ def verbose_forbidden_exception(ctx: commands.Context, error: discord.Forbidden)
 
         def __str__(self):
             return "{snowflake}"
+
     class FakeDict(dict):
         def __getitem__(self, *args, **kwargs):
             return FakeObject()
+
     end_points = {_key.format_map(FakeDict()): _value for _key, _value in end_points.items()}
     if key not in end_points:
         return None
@@ -476,7 +486,5 @@ def verbose_forbidden_exception(ctx: commands.Context, error: discord.Forbidden)
             continue
         permissions[permission.lower()] = True
     return (
-        commands.BotMissingPermissions(discord.Permissions(**permissions))
-        if permissions
-        else None
+        commands.BotMissingPermissions(discord.Permissions(**permissions)) if permissions else None
     )

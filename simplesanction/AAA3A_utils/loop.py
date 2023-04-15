@@ -225,9 +225,7 @@ class Loop:
         if self.next_iteration is None:  # not started yet
             return 0.0
 
-        raw_until_next = (
-            self.next_iteration - datetime.datetime.utcnow()
-        ).total_seconds()
+        raw_until_next = (self.next_iteration - datetime.datetime.utcnow()).total_seconds()
         if raw_until_next > self.expected_interval.total_seconds():  # should never happen
             return self.expected_interval.total_seconds()
         elif raw_until_next > 0.0:

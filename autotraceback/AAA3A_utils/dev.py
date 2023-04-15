@@ -44,16 +44,16 @@ from .shared_cog import SharedCog
 
 if discord.version_info.major >= 2:
     from .views import (
-        ConfirmationAskView,
         Buttons,
         ChannelSelect,
+        ConfirmationAskView,
         Dropdown,
         MentionableSelect,
         Modal,
         RoleSelect,
         Select,
-        UserSelect
-)  # NOQA
+        UserSelect,
+    )  # NOQA
 
 CogsUtils: typing.Any = None
 

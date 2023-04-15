@@ -67,7 +67,12 @@ if discord.version_info.major >= 2:
             if not self.pages:
                 self.pages: typing.List[str] = ["Nothing to show."]
             if isinstance(self.pages, str):
-                self.pages: typing.List[str] = list(pagify(self.pages, page_length=2000 - len(f"```{lang}\n\n```" if lang is not None else "")))
+                self.pages: typing.List[str] = list(
+                    pagify(
+                        self.pages,
+                        page_length=2000 - len(f"```{lang}\n\n```" if lang is not None else ""),
+                    )
+                )
             if lang is not None and all(isinstance(page, str) for page in self.pages):
                 self.pages: typing.List[str] = [box(page, lang) for page in self.pages]
             if not isinstance(self.pages[0], (typing.Dict, discord.Embed, str)):
@@ -138,7 +143,10 @@ if discord.version_info.major >= 2:
             if not self.delete_after_timeout:
                 for child in self.children:
                     child: discord.ui.Item
-                    if isinstance(child, discord.ui.Button) and child.style != discord.ButtonStyle.url:
+                    if (
+                        isinstance(child, discord.ui.Button)
+                        and child.style != discord.ButtonStyle.url
+                    ):
                         child.disabled = True
                 try:
                     await self._message.edit(view=self)
@@ -399,7 +407,12 @@ else:
             if not self.pages:
                 self.pages: typing.List[str] = ["Nothing to show."]
             if isinstance(self.pages, str):
-                self.pages: typing.List[str] = list(pagify(self.pages, page_length=2000 - len(f"```{lang}\n\n```" if lang is not None else "")))
+                self.pages: typing.List[str] = list(
+                    pagify(
+                        self.pages,
+                        page_length=2000 - len(f"```{lang}\n\n```" if lang is not None else ""),
+                    )
+                )
             if lang is not None and all(isinstance(page, str) for page in self.pages):
                 self.pages: typing.List[str] = [box(page, lang) for page in self.pages]
             if not isinstance(self.pages[0], (typing.Dict, discord.Embed, str)):
@@ -622,6 +635,7 @@ else:
                 ],
             ) -> typing.Union[str, discord.Embed]:
                 return page
+
 
 class Reactions:
     """Create Reactions easily."""

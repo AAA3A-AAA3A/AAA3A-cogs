@@ -300,11 +300,10 @@ class GetDocs(Cog):
                 results = await source.search(query.strip(), limit=25, exclude_std=True)
                 if not results or not results.results:
                     raise RuntimeError("No results found.")
-                doc = None
                 i = 0
-                doc = source.get_documentation(results.results[0][0])
+                doc = source.get_documentation(results.results[0][1])
                 while doc is None and i < len(results.results):
-                    doc = source.get_documentation(results.results[i][0])
+                    doc = source.get_documentation(results.results[i][1])
                     if doc is not None:
                         break
                     i += 1

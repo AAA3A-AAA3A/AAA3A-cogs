@@ -83,9 +83,8 @@ class GetDocsView(discord.ui.View):
             pass
 
     async def _update(self, name: str) -> None:
-        doc = None
-        i = 0
         doc: Documentation = self.source.get_documentation(name)
+        i = 0
         while doc is None and i < len(self.results.results):
             doc = self.source.get_documentation(self.results.results[i][0])
             if doc is not None:
@@ -94,8 +93,8 @@ class GetDocsView(discord.ui.View):
         if doc is None:
             raise RuntimeError("No results found.")
         if parameters_button := discord.utils.get(self.children, custom_id="show_parameters"):
-            parameters_button.disabled = not doc.parameters and not (
-                self.source.name == "discordapi" and doc.fields
+            parameters_button.disabled = not doc.parameters and (
+                self.source.name != "discordapi" or not doc.fields
             )
         if examples_button := discord.utils.get(self.children, custom_id="show_examples"):
             examples_button.disabled = not bool(doc.examples)

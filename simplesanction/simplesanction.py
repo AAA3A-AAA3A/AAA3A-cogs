@@ -487,7 +487,7 @@ class SimpleSanction(settings, Cog):
         reason: str = None,
     ) -> None:
         """
-         - :information_source: Show info on an user.
+         - :information_source: Show info on a user.
 
         Examples:
         - `[p]sanction 1 @user`: UserInfo for no reason
@@ -528,7 +528,7 @@ class SimpleSanction(settings, Cog):
         reason: str = None,
     ) -> None:
         """
-         - ⚠️ Set a simple warning on an user.
+         - ⚠️ Set a simple warning on a user.
 
         Examples:
         - `[p]sanction 2 @user not`: Warn for no reason

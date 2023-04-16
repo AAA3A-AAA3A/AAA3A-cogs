@@ -55,7 +55,7 @@ class settings(commands.Cog):
         """Send a message with a button to open a ticket or dropdown with possible reasons.
 
         Example:
-        `[p]setticket message #general "🐛|Report a bug|If you find a bug, report it here.|bug" "⚠️|Report an user|If you find a malicious user, report it here.|user"`
+        `[p]setticket message #general "🐛|Report a bug|If you find a bug, report it here.|bug" "⚠️|Report a user|If you find a malicious user, report it here.|user"`
         `[p]setticket 1234567890-0987654321`
         """
         if channel is None:

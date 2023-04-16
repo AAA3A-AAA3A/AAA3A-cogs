@@ -196,13 +196,12 @@ class Cog(commands.Cog):
         elif self.cogsutils.is_dpy2 and isinstance(error, commands.HybridCommandError):
             is_command_error = True
 
+        if is_command_error and isinstance(error.original, discord.Forbidden):  # Error can be changed into `commands.BotMissingPermissions` or not.
+            e = verbose_forbidden_exception(ctx, error.original)
+            if e is not None and isinstance(e, commands.BotMissingPermissions):
+                error = e
+                is_command_error = False
         if is_command_error:
-            if isinstance(
-                error.original, discord.Forbidden
-            ):  # Error can be changed into `commands.BotMissingPermissions` or not.
-                e = verbose_forbidden_exception(ctx, error.original)
-                if e is not None and isinstance(e, commands.BotMissingPermissions):
-                    error = e
             uuid = uuid4().hex
             no_sentry = AAA3A_utils is None or getattr(AAA3A_utils, "sentry", None) is None
             if not no_sentry:

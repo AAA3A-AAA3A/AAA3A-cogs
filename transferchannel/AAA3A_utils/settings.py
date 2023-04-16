@@ -8,6 +8,7 @@ import typing  # isort:skip
 import asyncio
 import inspect
 import json
+from copy import deepcopy
 from io import StringIO
 
 from redbot.core import Config
@@ -765,14 +766,31 @@ class Settings:
         )
         await data.clear_raw(*self.global_path, old_profile)
         if self.cog.qualified_name == "TicketTool":
-            data = await self.cog.config.guild(ctx.guild).tickets.all()
-            to_edit = [channel for channel in data if data[channel]["panel"] == old_profile]
-            for channel in to_edit:
-                try:
-                    data[channel]["panel"] = profile
-                except KeyError:
-                    pass
-            await self.cog.config.guild(ctx.guild).tickets.set(data)
+            guild_group = self.config._get_base_group(self.config.GUILD)
+            async with guild_group.all() as guilds_data:
+                _guilds_data = deepcopy(guilds_data)
+                for guild in _guilds_data:
+                    if "tickets" in guilds_data[guild]:
+                        for channel_id in guilds_data[guild]["tickets"]:
+                            if "profile" not in guilds_data[guild]["tickets"][channel_id]:
+                                continue
+                            if guilds_data[guild]["tickets"][channel_id]["profile"] != old_profile:
+                                continue
+                            guilds_data[guild]["tickets"][channel_id]["profile"] = profile
+                    if "buttons" in guilds_data[guild]:
+                        for message_id in guilds_data[guild]["buttons"]:
+                            if "profile" not in guilds_data[guild]["buttons"][message_id]:
+                                continue
+                            if guilds_data[guild]["buttons"][message_id]["profile"] != old_profile:
+                                continue
+                            guilds_data[guild]["buttons"][message_id]["profile"] = profile
+                    if "dropdowns" in guilds_data[guild]:
+                        for message_id in guilds_data[guild]["dropdowns"]:
+                            if "profile" not in guilds_data[guild]["dropdowns"][message_id]:
+                                continue
+                            if guilds_data[guild]["dropdowns"][message_id]["profile"] != old_profile:
+                                continue
+                            guilds_data[guild]["dropdowns"][message_id]["profile"] = profile
 
     async def list_profiles(self, ctx: commands.Context) -> None:
         """List the existing profiles."""

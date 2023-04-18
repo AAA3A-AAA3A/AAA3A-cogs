@@ -83,37 +83,37 @@ class GetDocsView(discord.ui.View):
             pass
 
     async def _update(self, name: str) -> None:
-        doc: Documentation = self.source.get_documentation(name)
+        documentation: Documentation = await self.source.get_documentation(name)
         i = 0
-        while doc is None and i < len(self.results.results):
-            doc = self.source.get_documentation(self.results.results[i][0])
-            if doc is not None:
+        while documentation is None and i < len(self.results.results):
+            documentation = await self.source.get_documentation(self.results.results[i][0])
+            if documentation is not None:
                 break
             i += 1
-        if doc is None:
+        if documentation is None:
             raise RuntimeError("No results found.")
         if parameters_button := discord.utils.get(self.children, custom_id="show_parameters"):
-            parameters_button.disabled = not doc.parameters and (
-                self.source.name != "discordapi" or not doc.fields
+            parameters_button.disabled = not documentation.parameters and (
+                self.source.name != "discordapi" or not documentation.fields
             )
         if examples_button := discord.utils.get(self.children, custom_id="show_examples"):
-            examples_button.disabled = not bool(doc.examples)
+            examples_button.disabled = not bool(documentation.examples)
         if attributes_button := discord.utils.get(self.children, custom_id="show_attributes"):
-            attributes_button.disabled = not bool(doc.attributes)
+            attributes_button.disabled = not bool(documentation.attributes)
 
         if back_button := discord.utils.get(self.children, custom_id="back_button"):
             self.remove_item(back_button)
         if next_button := discord.utils.get(self.children, custom_id="next_button"):
             self.remove_item(next_button)
 
-        self._current = doc
-        embed = doc.to_embed(embed_color=await self.ctx.embed_color())
+        self._current = documentation
+        embed = documentation.to_embed(embed_color=await self.ctx.embed_color())
         content = None
-        if (
-            self.source._docs_caching_task is not None
-            and self.source._docs_caching_task.currently_running
-        ):
-            content = "⚠️ The documentation cache is not yet fully built, building now."
+        # if (
+        #     self.source._docs_caching_task is not None
+        #     and self.source._docs_caching_task.currently_running
+        # ):
+        #     content = "⚠️ The documentation cache is not yet fully built, building now."
         if self._message is None:
             self._message = await self.ctx.send(content=content, embed=embed, view=self)
         else:

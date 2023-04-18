@@ -78,7 +78,7 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
     "discord.py": {
         "url": "https://discordpy.readthedocs.io/en/stable/",
         "icon_url": "https://cdn.discordapp.com/attachments/381963689470984203/1068553303908155442/sW87z7N.png",
-        "aliases": ["dpy"],
+        "aliases": ["dpy", "discordpy", "discord-py"],
     },
     "redbot": {
         "url": "https://docs.discord.red/en/stable/",
@@ -88,11 +88,12 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
     "python": {
         "url": "https://docs.python.org/3/",
         "icon_url": "https://assets.stickpng.com/images/5848152fcef1014c0b5e4967.png",
-        "aliases": ["py"],
+        "aliases": ["py", "python3", "python-3", "py3"],
     },
     "aiohttp": {
         "url": "https://docs.aiohttp.org/en/stable/",
         "icon_url": "https://docs.aiohttp.org/en/v3.7.3/_static/aiohttp-icon-128x128.png",
+        "aliases": ["ahttp"],
     },
     "requests": {
         "url": "https://requests.readthedocs.io/en/latest/",
@@ -118,7 +119,7 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
         "aliases": ["pythongit"],
     },
     "aiomysql": {"url": "https://aiomysql.readthedocs.io/en/stable/", "icon_url": None},
-    "asyncpg": {"url": "https://magicstack.github.io/asyncpg/current/", "icon_url": None},
+    "asyncpg": {"url": "https://magicstack.github.io/asyncpg/current/", "icon_url": None, "aliases": ["apg"]},
     "flask": {
         "url": "https://flask.palletsprojects.com/",
         "icon_url": "https://flask.palletsprojects.com/en/2.2.x/_images/flask-logo.png",
@@ -132,6 +133,7 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
     "matplotlib": {
         "url": "https://matplotlib.org/stable/",
         "icon_url": "https://matplotlib.org/2.1.2/_static/logo2.png",
+        "aliases": ["mpl"],
     },
     "motor": {
         "url": "https://motor.readthedocs.io/en/stable/",
@@ -140,11 +142,13 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
     "numpy": {
         "url": "https://numpy.org/doc/stable/",
         "icon_url": "https://www.google.com/url?sa=i&url=https%3A%2F%2Frphabet.github.io%2Fposts%2Fpython_numpy_loop%2F&psig=AOvVaw1WvAODE50upYEYKVF68d8s&ust=1676914473120000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCLiMo66Pov0CFQAAAAAdAAAAABAJ",
+        "aliases": ["np"],
     },
     "piccolo": {"url": "https://piccolo-orm.readthedocs.io/en/latest/", "icon_url": None},
     "pillow": {
         "url": "https://pillow.readthedocs.io/en/stable/",
         "icon_url": "https://pillow.readthedocs.io/en/stable/_static/pillow-logo-dark-text.png",
+        "aliases": ["pil"],
     },
     "psutil": {"url": "https://psutil.readthedocs.io/en/latest/", "icon_url": None},
     "redis": {
@@ -196,6 +200,7 @@ class GetDocs(Cog):
         self.getdocs_global = {
             "default_source": "discord.py",
             "disabled_sources": [],
+            "caching": True,
         }
         self.config.register_global(**self.getdocs_global)
 
@@ -301,15 +306,15 @@ class GetDocs(Cog):
                 if not results or not results.results:
                     raise RuntimeError("No results found.")
                 i = 0
-                doc = source.get_documentation(results.results[0][1])
-                while doc is None and i < len(results.results):
-                    doc = source.get_documentation(results.results[i][1])
-                    if doc is not None:
+                documentation = await source.get_documentation(results.results[0][1])
+                while documentation is None and i < len(results.results):
+                    documentation = await source.get_documentation(results.results[i][1])
+                    if documentation is not None:
                         break
                     i += 1
-                if doc is None:
+                if documentation is None:
                     raise RuntimeError("No results found.")
-                embed = doc.to_embed()
+                embed = documentation.to_embed()
                 content = None
                 if (
                     source._docs_caching_task is not None
@@ -477,7 +482,7 @@ class GetDocs(Cog):
     @setgetdocs.command(name="enablesource")
     async def _source_enable(self, ctx: commands.Context, source: SourceConverter) -> None:
         """
-        Enable a documentations source.
+        Enable a Documentations source.
         """
         disabled_sources: typing.List[str] = await self.config.disabled_sources()
         if source not in disabled_sources:
@@ -495,7 +500,7 @@ class GetDocs(Cog):
     @setgetdocs.command(name="disablesource")
     async def _source_disable(self, ctx: commands.Context, source: SourceConverter) -> None:
         """
-        Disable a documentations source.
+        Disable a Documentations source.
         """
         disabled_sources: typing.List[str] = await self.config.disabled_sources()
         if source in disabled_sources:
@@ -508,12 +513,22 @@ class GetDocs(Cog):
         """
         Set the documentations source.
 
-        The default value was `discord.py`.
+        The default value is `discord.py`.
         """
         disabled_sources: typing.List[str] = await self.config.disabled_sources()
         if source in disabled_sources:
             raise commands.UserFeedbackCheckFailure(_("This source is disabled."))
         await self.config.default_source.set(source)
+
+    @setgetdocs.command(name="caching")
+    async def _caching_toggle(self, ctx: commands.Context, caching: bool) -> None:
+        """
+        Enable or disable Documentations caching when loading the cog.
+
+        If the option is disabled, a web request will be executed when the command `[p]getdocs` is run only for the searched item.
+        The default value is `True`.
+        """
+        await self.config.caching.set(caching)
 
 
 class Source:
@@ -603,6 +618,8 @@ class Source:
         start = time.monotonic()
         self.cog._docs_stats[self.name] = {"manuals": 0, "documentations": 0}
 
+        if not (await self.cog.config.caching()) and self.name not in ["discordapi", "git"]:
+            return self._docs_cache
         if self.name == "discordapi":
             _, manuals, documentations = await (
                 await executor()(self._build_discordapi_docs_cache)()
@@ -1305,11 +1322,14 @@ class Source:
             attributes=attributes,
         )
 
-    async def _get_all_manual_documentations(self, page_url: str) -> typing.List[Documentation]:
+    async def _get_all_manual_documentations(self, page_url: str, item_name: typing.Optional[str] = None) -> typing.List[Documentation]:
         @executor()
         def bs4(content: str):
             strainer = SoupStrainer("dl")
             soup = BeautifulSoup(content, "lxml", parse_only=strainer)
+            if item_name is not None:
+                r = soup.find(id=item_name)
+                return [r] if r is not None else []
             if self._rtfm_cache is not None and (
                 self._rtfm_caching_task is None or not self._rtfm_caching_task.currently_running
             ):
@@ -1323,6 +1343,8 @@ class Source:
         results: typing.List[Documentation] = []
         for element in elements:
             result = await self._get_documentation(element, page_url)
+            if item_name is not None:
+                return result
             if result is not None:
                 results.append(result)
         # Add attributes for Python stdtypes.
@@ -1498,7 +1520,7 @@ class Source:
             query_time=int(end - start),
         )
 
-    def get_documentation(self, name: str) -> Documentation:
+    async def get_documentation(self, name: str) -> Documentation:
         # if self._docs_caching_task is not None and self._docs_caching_task.currently_running:
         #     raise RuntimeError(_("Documentations cache is not yet built, building now."))
         if self.name == "discord.py" and not self.name.startswith("discord."):
@@ -1506,4 +1528,16 @@ class Source:
                 name = f"discord.{name}"
             else:
                 name = f"discord.ext.commands.{name}"
+        if self.name not in ["discordapi", "git"] and discord.utils.get(self._docs_cache, name=name) is None:
+            item = discord.utils.get(self._rtfm_cache.objects, name=name)
+            location = item.uri
+            if location.endswith("$"):
+                location = location[:-1]
+            if location.endswith("#"):
+                location = location[:-1]
+            page_url = urljoin(self.url, location)
+            documentation = await self._get_all_manual_documentations(page_url=page_url, item_name=name)
+            if documentation is None:
+                return
+            self._docs_cache.append(documentation)
         return discord.utils.get(self._docs_cache, name=name)

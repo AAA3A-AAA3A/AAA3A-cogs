@@ -86,7 +86,10 @@ class GetDocsView(discord.ui.View):
         documentation: Documentation = await self.source.get_documentation(name)
         i = 0
         while documentation is None and i < len(self.results.results):
-            documentation = await self.source.get_documentation(self.results.results[i][0])
+            if name == self.results.results[i][1]:
+                i += 1
+                continue
+            documentation = await self.source.get_documentation(self.results.results[i][1])
             if documentation is not None:
                 break
             i += 1

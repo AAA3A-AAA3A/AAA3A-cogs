@@ -305,9 +305,13 @@ class GetDocs(Cog):
                 results = await source.search(query.strip(), limit=25, exclude_std=True)
                 if not results or not results.results:
                     raise RuntimeError("No results found.")
+                name = results[0][1]
+                documentation: Documentation = await self.source.get_documentation(name)
                 i = 0
-                documentation = await source.get_documentation(results.results[0][1])
                 while documentation is None and i < len(results.results):
+                    if name == results.results[i][1]:
+                        i += 1
+                        continue
                     documentation = await source.get_documentation(results.results[i][1])
                     if documentation is not None:
                         break
@@ -601,6 +605,8 @@ class Source:
         loop = asyncio.get_running_loop()
         self._rtfm_cache = await loop.run_in_executor(None, partial)
         for item in self._rtfm_cache.objects:
+            if self.name == "redbot" and len(item.name.split("-")) > 2 and item.name.split("-")[1] == "command":
+                item.role = "command"
             self._raw_rtfm_cache_with_std.append(item.name)
             if item.domain != "std":
                 self._raw_rtfm_cache_without_std.append(item.name)
@@ -936,28 +942,12 @@ class Source:
                 # Find documentation.
                 _documentation = soup.find("div", id="main")
                 # Get informations.
-                _name = self._get_text(
-                    _documentation.find_all("div", class_="sectionbody")[0], parsed_url=manual[1]
-                ).strip()
-                full_name = self._get_text(
-                    _documentation.find_all("div", class_="sectionbody")[1], parsed_url=manual[1]
-                ).strip()
-                description = self._get_text(
-                    _documentation.find_all("div", class_="sectionbody")[2], parsed_url=manual[1]
-                )
-                parameters = self._get_text(
-                    _documentation.find_all("div", class_="sectionbody")[3], parsed_url=manual[1]
-                )
-                examples = Examples(
-                    [
-                        self._get_text(
-                            _documentation.find_all("div", class_="sectionbody")[4],
-                            parsed_url=manual[1],
-                        )
-                        .strip()
-                        .replace("\n\n\n\n", "\n")
-                    ]
-                )
+                div = _documentation.find_all("div", class_="sectionbody")
+                _name = self._get_text(div[0], parsed_url=manual[1]).strip()
+                full_name = self._get_text(div[1], parsed_url=manual[1]).strip()
+                description = self._get_text(div[2], parsed_url=manual[1])
+                parameters = self._get_text(div[3], parsed_url=manual[1])
+                examples = Examples([self._get_text(div[4], parsed_url=manual[1]).strip().replace("\n\n\n\n", "\n")])
                 # Add to RTFM cache.
                 _object = DataObjStr(
                     name=_name,
@@ -1333,7 +1323,7 @@ class Source:
             if self._rtfm_cache is not None and (
                 self._rtfm_caching_task is None or not self._rtfm_caching_task.currently_running
             ):
-                e1 = soup.find_all("dt", id=[x.name for x in self._rtfm_cache.objects])
+                e1 = soup.find_all("dt", id=[name for name in self._raw_rtfm_cache_without_std])
             else:
                 e1 = ResultSet(strainer)
             e2 = soup.find_all("dt", class_="sig sig-object py")
@@ -1458,7 +1448,7 @@ class Source:
         def get_name(obj: DataObjStr) -> str:
             name = obj.name or (obj.dispname if obj.dispname not in ["-", None] else None)
             original_name = name
-            if obj.domain == "std" or self.name == "discordapi":
+            if obj.domain == "std" or obj.role == "command" or self.name == "discordapi":
                 name = f"{obj.role}: {name}"
             if self.name == "discord.py":
                 if name.startswith("discord.ext.commands."):
@@ -1537,7 +1527,8 @@ class Source:
                 location = location[:-1]
             page_url = urljoin(self.url, location)
             documentation = await self._get_all_manual_documentations(page_url=page_url, item_name=name)
-            if documentation is None:
+            if not documentation:
                 return
             self._docs_cache.append(documentation)
+            return documentation
         return discord.utils.get(self._docs_cache, name=name)

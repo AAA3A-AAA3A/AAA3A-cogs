@@ -169,7 +169,7 @@ class EditGuild(Cog):
         self,
         ctx: commands.Context,
         owner: discord.Member,
-        confirmation: typing.Optional[bool] = False,
+        confirmation: bool = False,
     ) -> None:
         """Edit guild owner (if the bot is bot owner)."""
         guild = ctx.guild
@@ -434,7 +434,7 @@ class EditGuild(Cog):
     async def editguild_delete(
         self,
         ctx: commands.Context,
-        confirmation: typing.Optional[bool] = False,
+        confirmation: bool = False,
     ) -> None:
         """Delete guild (if the bot is owner)."""
         guild = ctx.guild

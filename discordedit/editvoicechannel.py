@@ -398,7 +398,7 @@ class EditVoiceChannel(Cog):
         self,
         ctx: commands.Context,
         channel: discord.VoiceChannel,
-        confirmation: typing.Optional[bool] = False,
+        confirmation: bool = False,
     ) -> None:
         """Delete voice channel."""
         await self.check_voice_channel(ctx, channel)

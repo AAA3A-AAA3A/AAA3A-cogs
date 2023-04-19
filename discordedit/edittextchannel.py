@@ -456,7 +456,7 @@ class EditTextChannel(Cog):
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
-        confirmation: typing.Optional[bool] = False,
+        confirmation: bool = False,
     ) -> None:
         """Delete a text channel."""
         if channel is None:

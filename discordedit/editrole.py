@@ -201,7 +201,7 @@ class EditRole(Cog):
         self,
         ctx: commands.Context,
         role: discord.Role,
-        confirmation: typing.Optional[bool] = False,
+        confirmation: bool = False,
     ) -> None:
         """Delete a role."""
         await self.check_role(ctx, role)

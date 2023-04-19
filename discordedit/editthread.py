@@ -274,7 +274,7 @@ class EditThread(Cog):
         self,
         ctx: commands.Context,
         thread: discord.Thread,
-        confirmation: typing.Optional[bool] = False,
+        cconfirmation: bool = False,
     ) -> None:
         """Delete a thread."""
         await self.check_thread(ctx, thread)

@@ -3,6 +3,8 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import types
+
 
 def dashboard_page(*args, **kwargs):
     def decorator(func: typing.Callable):
@@ -29,7 +31,7 @@ class DashboardIntegration:
                 setattr(
                     self,
                     attr,
-                    func.__class__(
+                    types.MethodType(
                         dashboard_page(
                             *func.__dashboard_decorator_params__[0],
                             **func.__dashboard_decorator_params__[1],

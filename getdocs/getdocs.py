@@ -291,7 +291,7 @@ class GetDocs(Cog):
         if query == "random":
             if not source._docs_cache:
                 raise commands.UserFeedbackCheckFailure(
-                    _("Documentations cache is not yet built, building now.")
+                    _("Documentations cache is not yet built.")
                 )
             choice: Documentation = random.choice(source._docs_cache)
             if not any([choice.parameters, choice.examples, choice.attributes]):
@@ -320,11 +320,6 @@ class GetDocs(Cog):
                     raise RuntimeError("No results found.")
                 embed = documentation.to_embed()
                 content = None
-                if (
-                    source._docs_caching_task is not None
-                    and source._docs_caching_task.currently_running
-                ):
-                    content = "⚠️ The documentation cache is not yet fully built, building now."
                 await ctx.send(content=content, embed=embed)
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))

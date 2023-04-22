@@ -26,6 +26,10 @@ isort --atomic --check --diff --line-length 99 --use-parentheses .
 black --check --diff -l 99 .
 exit /B %ERRORLEVEL%
 
+:crowdin
+redgettext . --command-docstrings --omit-empty --recursive --verbose --include-context --exclude-files "**/AAA3A_utils/*"
+exit /B %ERRORLEVEL%
+
 :help
 echo Usage:
 echo   make ^<command^>
@@ -35,3 +39,4 @@ echo   reformat                   Reformat all .py files being tracked by git.
 echo   isort                      Reformat all .py files only with isort.
 echo   black                      Reformat all .py files only with black.
 echo   stylediff                  Check .py files for style diffs.
+echo   crowdin                    Create translations source files.

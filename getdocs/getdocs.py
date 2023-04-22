@@ -7,6 +7,7 @@ import typing  # isort:skip
 
 import asyncio
 import functools
+import inspect
 import os
 import pathlib
 import random
@@ -60,7 +61,10 @@ async def run_blocking_func(
 ) -> typing.Any:
     partial = functools.partial(func, *args, **kwargs)
     loop = asyncio.get_running_loop()
-    return await loop.run_in_executor(None, partial)
+    if not inspect.iscoroutinefunction(func):
+        return await loop.run_in_executor(None, partial)
+    else:
+        return await (await loop.run_in_executor(None, partial))
 
 
 def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
@@ -68,7 +72,6 @@ def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
         @functools.wraps(func)
         def wrapper(*args: typing.Any, **kwargs: typing.Any):
             return run_blocking_func(func, *args, **kwargs)
-
         return wrapper
 
     return decorator
@@ -622,15 +625,13 @@ class Source:
         if not (await self.cog.config.caching()) and self.name not in ["discordapi", "git"]:
             return self._docs_cache
         if self.name == "discordapi":
-            _, manuals, documentations = await (
-                await executor()(self._build_discordapi_docs_cache)()
-            )
+            _, manuals, documentations = await executor()(self._build_discordapi_docs_cache)()
             self.cog._docs_stats[self.name]["documentations"] += len(documentations)
             self.cog._docs_stats["GLOBAL"]["documentations"] += len(documentations)
             self.cog._docs_stats[self.name]["manuals"] += len(manuals)
             self.cog._docs_stats["GLOBAL"]["manuals"] += len(manuals)
         elif self.name == "git":
-            _, manuals, documentations = await (await executor()(self._build_git_docs_cache)())
+            _, manuals, documentations = await executor()(self._build_git_docs_cache)()
             self.cog._docs_stats[self.name]["documentations"] += len(documentations)
             self.cog._docs_stats["GLOBAL"]["documentations"] += len(documentations)
             self.cog._docs_stats[self.name]["manuals"] += len(manuals)
@@ -770,7 +771,7 @@ class Source:
                             examples = Examples()
                             for field in fields.copy():
                                 if "Example" in field:
-                                    examples.append(fields[field])
+                                    examples.append(fields[field].strip())
                                     del fields[field]
                                 elif "-----" in fields[field]:  # Format tables.
                                     value = ""
@@ -1141,7 +1142,7 @@ class Source:
         for child in documentation.find_all(
             "div", class_=["highlight-python3", "highlight-default", "highlight"], recursive=True
         ):
-            examples.append(child.find("pre").text)
+            examples.append(child.find("pre").text.strip())
 
         # Fields
         fields = {}

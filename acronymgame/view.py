@@ -26,7 +26,9 @@ class JoinGameModal(discord.ui.Modal):
             default=None,
             style=discord.TextStyle.short,
             custom_id="description",
-            required=False,
+            required=True,
+            min_length=(len(self._parent.acronym) * 2) + (len(self._parent.acronym) - 1),  # n words with at least 2 characters + spaces
+            max_length=50,
         )
         self.add_item(self.answer)
 
@@ -40,7 +42,7 @@ class JoinGameModal(discord.ui.Modal):
         if self._parent._mode != "join":
             await interaction.response.send_message(_("Sorry, the vote has already started."), ephemeral=True)
             return
-        answer = self.answer.value
+        answer = self.answer.value.strip()
         if len(answer.split(" ")) != len(self._parent.acronym):
             await interaction.response.send_message(_("Sorry, the number of words in your answer must be {len_words}.").format(len_words=len(self._parent.acronym)), ephemeral=True)
             return

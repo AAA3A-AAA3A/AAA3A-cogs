@@ -21,7 +21,7 @@ class JoinGameModal(discord.ui.Modal):
         super().__init__(title="Join Acronym Game")
         self._parent: discord.ui.View = parent
         self.answer: discord.ui.TextInput = discord.ui.TextInput(
-            label="Answer for {self._parent.acronym} acronym",
+            label=f"Answer for {self._parent.acronym} acronym",
             placeholder=f"Your full name for {self._parent.acronym} acronym",
             default=None,
             style=discord.TextStyle.short,

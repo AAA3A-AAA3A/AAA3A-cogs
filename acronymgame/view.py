@@ -137,10 +137,12 @@ class AcronymGameView(discord.ui.View):
             raise commands.UserFeedbackCheckFailure(_("No vote given."))
         table = PrettyTable()
         players = sorted(self.players.items(), key=lambda x: self.votes[list(self.players).index(x[0]) + 1], reverse=True)
-        winners = [players[0][0]]
-        for player in players[1:]:
-            if self.votes[list(self.players).index(player) + 1] == winners[0]:
-                winners.append(player[0])
+        winners = [players[0][0].display_name]
+        winners.extend(
+            player.display_name
+            for player, __ in players[1:]
+            if self.votes[list(self.players).index(player) + 1] == players[0][1]
+        )
         table.field_names = ["#", "Name", "Answer", "Votes"]
         for num, (player, answer) in enumerate(players):
             table.add_row([num + 1, player.display_name, answer, self.votes[list(self.players).index(player) + 1]])
@@ -150,7 +152,7 @@ class AcronymGameView(discord.ui.View):
         embed.description = _("Here is the leaderboard for this game:") + box(str(table), lang='py')
         embed.add_field(name="Random Acronym", value=self.acronym)
         self._message: discord.Message = await self._message.edit(embed=embed, view=self)
-        await self._message.reply(_("Winner{s}: {winners}!").format(winners=humanize_list(winners), s="s" if winners > 1 else ""))
+        await self._message.reply(_("Winner{s}: {winners}!").format(winners=humanize_list(winners), s="s" if len(winners) > 1 else ""))
         return self._message
 
     async def on_timeout(self) -> None:

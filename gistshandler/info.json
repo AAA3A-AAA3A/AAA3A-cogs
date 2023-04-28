@@ -1,0 +1,17 @@
+{
+    "author": ["AAA3A"],
+    "name": "Gists",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
+    "short": "A cog to create new Gists and edit/delete existing ones!",
+    "description": "A cog to create new Gists and edit/delete existing ones!",
+    "tags": [
+        "dev",
+        "gists",
+        "github",
+        "code",
+        "snippet"
+    ],
+    "requirements": ["sentry_sdk", "git+https://github.com/WitherredAway/gists.py"],
+    "min_bot_version": "3.5.0",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

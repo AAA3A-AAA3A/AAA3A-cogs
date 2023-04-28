@@ -50,9 +50,6 @@ class JoinGameModal(discord.ui.Modal):
             if answer.split(" ")[i][0].upper() != letter.upper():
                 await interaction.response.send_message(_("Sorry, the initial of each word in your answer must be each letter of the acronym ({acronym}).").format(acronym=self._parent.acronym), ephemeral=True)
                 return
-        if len(answer) > 50:
-            await interaction.response.send_message(_("Sorry, your answer should not be longer than 50 characters."), ephemeral=True)
-            return
         self._parent.players[interaction.user] = answer
         embed: discord.Embed = self._parent._message.embeds[0]
         table = PrettyTable()
@@ -147,7 +144,7 @@ class AcronymGameView(discord.ui.View):
         )
         table.field_names = ["#", "Name", "Answer", "Votes"]
         for num, (player, answer) in enumerate(players):
-            table.add_row([num + 1, player.display_name, answer, self.votes[list(self.players).index(player) + 1]])
+            table.add_row([num + 1, (f"{player.display_name[:15]}..." if len(player.display_name) > 15 else player.display_name), answer, self.votes[list(self.players).index(player) + 1]])
         embed: discord.Embed = discord.Embed(
             title="Acronym Game", color=await self.ctx.embed_color()
         )

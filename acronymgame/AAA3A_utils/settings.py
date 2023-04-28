@@ -609,7 +609,7 @@ class Settings:
                 self.commands[f"{name}"] = command
 
         if self.group != Config.GLOBAL:
-            self.rpc_callback_settings.__dashboard_decorator_params__["context_ids"] = ["guild_id", f"{self.group.lower()}_id"]
+            self.rpc_callback_settings.__dashboard_decorator_params__[1]["context_ids"] = ["guild_id", f"{self.group.lower()}_id"]
         setattr(self.cog, "rpc_callback_settings", self.rpc_callback_settings)
         self.commands_added.set()
 

@@ -66,7 +66,7 @@ class AnswerSelect(discord.ui.Select):
     def __init__(self, parent: discord.ui.View, players: typing.Dict[discord.Member, int]) -> None:
         self._parent: discord.ui.View = parent
         self._options = [
-            discord.SelectOption(label=f"{answer[:97]}..." if len(answer) > 100 else answer, value=num + 1)
+            discord.SelectOption(label=f"{answer[:97]}..." if len(answer) > 100 else answer, value=str(num + 1))
             for num, (_, answer) in enumerate(players.items())
         ]
         super().__init__(
@@ -76,7 +76,7 @@ class AnswerSelect(discord.ui.Select):
         )
 
     async def callback(self, interaction: discord.Interaction) -> None:
-        option = discord.utils.get(self._options, label=self.values[0])
+        option = discord.utils.get(self._options, value=self.values[0])
         await self._parent._callback(interaction, option)
 
 
@@ -164,7 +164,7 @@ class AcronymGameView(discord.ui.View):
             pass
 
     def get_acronym(self) -> str:
-        return "".join([random.choice(string.ascii_uppercase) for __ in range(random.choice(range(4)))])
+        return "".join([random.choice(string.ascii_uppercase) for __ in range(random.choice(range(4, 5)))])
 
     @discord.ui.button(label="Join Game", emoji="🎮", style=discord.ButtonStyle.success)
     async def join_button(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
@@ -177,9 +177,10 @@ class AcronymGameView(discord.ui.View):
         if interaction.user in self._voters:
             await interaction.response.send_message(_("You have already voted in this game."), ephemeral=True)
             return
-        if interaction.user == list(self.players)[option.value - 1]:
+        value = int(option.value)
+        if interaction.user == list(self.players)[value - 1]:
             await interaction.response.send_message(_("You can't vote for yourself."), ephemeral=True)
             return
-        self._voters[interaction.user] = option.value
-        self.votes[option.value] += 1
-        await interaction.response.send_message(_("Vote given for answer {num}.").format(num=option.value), ephemeral=True)
+        self._voters[interaction.user] = value
+        self.votes[value] += 1
+        await interaction.response.send_message(_("Vote given for answer {num}.").format(num=value), ephemeral=True)

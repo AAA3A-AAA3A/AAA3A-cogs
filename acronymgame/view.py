@@ -9,9 +9,9 @@ import random
 import string
 
 from collections import Counter
-from tabulate import tabulate
+from prettytable import PrettyTable
 
-from redbot.core.utils.chat_formatting import box
+from redbot.core.utils.chat_formatting import box, humanize_list
 
 _ = Translator("AcronymGame", __file__)
 
@@ -48,19 +48,16 @@ class JoinGameModal(discord.ui.Modal):
             if answer.split(" ")[i][0].upper() != letter.upper():
                 await interaction.response.send_message(_("Sorry, the initial of each word in your answer must be each letter of the acronym ({acronym}).").format(acronym=self._parent.acronym), ephemeral=True)
                 return
+        if len(answer) > 50:
+            await interaction.response.send_message(_("Sorry, your answer should not be longer than 50 characters."), ephemeral=True)
+            return
         self._parent.players[interaction.user] = answer
         embed: discord.Embed = self._parent._message.embeds[0]
-        table = [
-            [num + 1, answer]
-            for num, (_, answer) in enumerate(self._parent.players.items())
-        ]
-        board = tabulate(
-            tabular_data=table,
-            headers=["#", "Answer"],
-            numalign="left",
-            stralign="left",
-        )
-        embed.description = _("Join the game by clicking on the button below and entering your acronym. Maximum 20 players.\n") + box(board, lang='py')
+        table = PrettyTable()
+        table.field_names = ["#", "Answer"]
+        for num, (__, answer) in enumerate(self._parent.players.items()):
+            table.add_row([num + 1, answer])
+        embed.description = _("Join the game by clicking on the button below and entering your acronym. Maximum 20 players.\n") + box(str(table), lang='py')
         self._parent._message: discord.Message = await self._parent._message.edit(embed=embed)
         await interaction.response.send_message(_("Game joined with `{answer}` answer.").format(answer=answer), ephemeral=True)
 
@@ -119,20 +116,14 @@ class AcronymGameView(discord.ui.View):
             await self.on_timeout()
             self.stop()
             raise commands.UserFeedbackCheckFailure(_("At least three players are needed to play."))
-        table = [
-            [num + 1, answer]
-            for num, (_, answer) in enumerate(self.players.items())
-        ]
-        board = tabulate(
-            tabular_data=table,
-            headers=["#", "Answer"],
-            numalign="left",
-            stralign="left",
-        )
+        table = PrettyTable()
+        table.field_names = ["#", "Answer"]
+        for num, (__, answer) in enumerate(self.players.items()):
+            table.add_row([num + 1, answer])
         embed: discord.Embed = discord.Embed(
             title="Acronym Game", color=await self.ctx.embed_color()
         )
-        embed.description = _("Use the dropdown below to vote for the best answer for the random acronym. All guild members can vote.\n") + box(board, lang='py')
+        embed.description = _("Use the dropdown below to vote for the best answer for the random acronym. All guild members can vote.\n") + box(str(table), lang='py')
         embed.add_field(name="Random Acronym", value=self.acronym)
         end_time = int((datetime.datetime.now() + datetime.timedelta(seconds=60)).timestamp())
         embed.add_field(name="End time for voting", value=f"<t:{end_time}:T> (<t:{end_time}:R>)")
@@ -144,22 +135,22 @@ class AcronymGameView(discord.ui.View):
             await self.on_timeout()
             self.stop()
             raise commands.UserFeedbackCheckFailure(_("No vote given."))
-        table = [
-            [num + 1, player.display_name, answer, self.votes[list(self.players).index(player) + 1]]
-            for num, (player, answer) in enumerate(sorted(self.players.items(), key=lambda x: self.votes[list(self.players).index(x[0]) + 1]))
-        ]
-        board = tabulate(
-            tabular_data=table,
-            headers=["#", "Name", "Answer", "Votes"],
-            numalign="left",
-            stralign="left",
-        )
+        table = PrettyTable()
+        players = sorted(self.players.items(), key=lambda x: self.votes[list(self.players).index(x[0]) + 1], reverse=True)
+        winners = [players[0][0]]
+        for player in players[1:]:
+            if self.votes[list(self.players).index(player) + 1] == winners[0]:
+                winners.append(player[0])
+        table.field_names = ["#", "Name", "Answer", "Votes"]
+        for num, (player, answer) in enumerate(players):
+            table.add_row([num + 1, player.display_name, answer, self.votes[list(self.players).index(player) + 1]])
         embed: discord.Embed = discord.Embed(
             title="Acronym Game", color=await self.ctx.embed_color()
         )
-        embed.description = _("Here is the leaderboard for this game:") + box(board, lang='py')
+        embed.description = _("Here is the leaderboard for this game:") + box(str(table), lang='py')
         embed.add_field(name="Random Acronym", value=self.acronym)
         self._message: discord.Message = await self._message.edit(embed=embed, view=self)
+        await self._message.reply(_("Winner{s}: {winners}!").format(winners=humanize_list(winners), s="s" if winners > 1 else ""))
         return self._message
 
     async def on_timeout(self) -> None:
@@ -173,7 +164,7 @@ class AcronymGameView(discord.ui.View):
             pass
 
     def get_acronym(self) -> str:
-        return "".join([random.choice(string.ascii_uppercase) for _ in range(random.choice(range(4, 5)))])
+        return "".join([random.choice(string.ascii_uppercase) for __ in range(random.choice(range(4)))])
 
     @discord.ui.button(label="Join Game", emoji="🎮", style=discord.ButtonStyle.success)
     async def join_button(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:

@@ -1,5 +1,5 @@
-﻿from .AAA3A_utils import Cog, CogsUtils, Menu, Loop  # isort:skip
-from redbot.core import commands, Config  # isort:skip
+﻿from .AAA3A_utils import Cog, CogsUtils, Loop, Menu, Settings  # isort:skip
+from redbot.core import commands, app_commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
@@ -7,7 +7,6 @@ import typing  # isort:skip
 
 import asyncio
 import functools
-import inspect
 import os
 import pathlib
 import random
@@ -28,13 +27,9 @@ from fuzzywuzzy import fuzz
 from redbot.core.utils.chat_formatting import humanize_list
 from sphobjinv import DataObjStr, Inventory
 
+from .dashboard_integration import DashboardIntegration
 from .types import Attribute, Attributes, Documentation, Examples, Parameters, SearchResults
-
-if CogsUtils().is_dpy2:
-    from redbot.core import app_commands  # isort:skip
-
-    setattr(commands, "Literal", typing.Literal)  # To remove
-    from .view import GetDocsView
+from .view import GetDocsView
 
 # Credits:
 # General repo credits.
@@ -43,13 +38,6 @@ if CogsUtils().is_dpy2:
 # Thanks to Danny for fuzzy search function (https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/utils/fuzzy.py#L325-L350)!
 
 _ = Translator("GetDocs", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 CT = typing.TypeVar(
     "CT", bound=typing.Callable[..., typing.Any]
@@ -61,10 +49,7 @@ async def run_blocking_func(
 ) -> typing.Any:
     partial = functools.partial(func, *args, **kwargs)
     loop = asyncio.get_running_loop()
-    if not inspect.iscoroutinefunction(func):
-        return await loop.run_in_executor(None, partial)
-    else:
-        return await (await loop.run_in_executor(None, partial))
+    return await loop.run_in_executor(None, partial)
 
 
 def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
@@ -84,7 +69,7 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
         "aliases": ["dpy", "discordpy", "discord-py"],
     },
     "redbot": {
-        "url": "https://docs.discord.red/en/stable/",
+        "url": "https://docs.discord.red/en/latest/",
         "icon_url": "https://media.discordapp.net/attachments/133251234164375552/1074432427201663086/a_aab012f3206eb514cac0432182e9e9ec.png",
         "aliases": ["red"],
     },
@@ -189,8 +174,8 @@ class SourceConverter(commands.Converter):
 
 
 @cog_i18n(_)
-class GetDocs(Cog):
-    """A cog to get and display Sphinx docs! Use `[p]listsources` to get a list of all the available sources."""
+class GetDocs(DashboardIntegration, Cog):
+    """A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."""
 
     def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
@@ -202,8 +187,8 @@ class GetDocs(Cog):
         )
         self.getdocs_global = {
             "default_source": "discord.py",
-            "disabled_sources": [],
             "caching": True,
+            "disabled_sources": [],
         }
         self.config.register_global(**self.getdocs_global)
 
@@ -221,12 +206,39 @@ class GetDocs(Cog):
         self.__authors__: typing.List[str] = ["AAA3A", "amyrinbot"]
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
+        _settings: typing.Dict[
+            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
+        ] = {
+            "default_source": {
+                "path": ["default_source"],
+                "converter": SourceConverter,
+                "description": "Set the documentations source.\n\nThe default value is `discord.py`.",
+            },
+            "caching": {
+                "path": ["caching"],
+                "converter": bool,
+                "description": "Enable or disable Documentations caching when loading the cog.\n\nIf the option is disabled, a web request will be executed when the command `[p]getdocs` is run only for the searched item.\nThe default value is `True`.",
+            },
+        }
+        self.settings: Settings = Settings(
+            bot=self.bot,
+            cog=self,
+            config=self.config,
+            group=self.config.GLOBAL,
+            settings=_settings,
+            global_path=[],
+            use_profiles_system=False,
+            can_edit=True,
+            commands_group=self.configuration,
+        )
+
     async def cog_load(self) -> None:
+        await self.settings.add_commands()
         # self._playwright = await async_playwright().start()
         # self._browser = await self._playwright.chromium.launch()
         # self._bcontext = await self._browser.new_context()
         self._load_time = time.monotonic()
-        self._session = aiohttp.ClientSession()
+        self._session: aiohttp.ClientSession = aiohttp.ClientSession()
         disabled_sources = await self.config.disabled_sources()
         for source in BASE_URLS:
             if source in disabled_sources:
@@ -240,21 +252,12 @@ class GetDocs(Cog):
             )
             asyncio.create_task(self.documentations[source].load())
 
-    if CogsUtils().is_dpy2:
+    async def cog_unload(self) -> None:
+        if self._session is not None:
+            await self._session.close()
+        self.cogsutils._end()
 
-        async def cog_unload(self) -> None:
-            self.cogsutils._end()
-            if self._session is not None:
-                await self._session.close()
-
-    else:
-
-        def cog_unload(self) -> None:
-            self.cogsutils._end()
-            if self._session is not None:
-                asyncio.create_task(self._session.close())
-
-    @hybrid_command(
+    @commands.hybrid_command(
         aliases=["getdoc", "docs", "doc"],
     )
     async def getdocs(
@@ -284,12 +287,9 @@ class GetDocs(Cog):
                 name=f"{source.name} Documentation",
                 icon_url=source.icon_url,
             )
-            if self.cogsutils.is_dpy2:
-                view = discord.ui.View()
-                view.add_item(discord.ui.Button(label="Click to view", url=source.url))
-                await ctx.send(embed=embed, view=view)
-            else:
-                await ctx.send(embed=embed)
+            view = discord.ui.View()
+            view.add_item(discord.ui.Button(label="Click to view", url=source.url))
+            await ctx.send(embed=embed, view=view)
             return
         if query == "random":
             if not source._docs_cache:
@@ -302,32 +302,11 @@ class GetDocs(Cog):
                 return
             query = choice.name
         try:
-            if self.cogsutils.is_dpy2:
-                await GetDocsView(cog=self, query=query.strip(), source=source).start(ctx)
-            else:
-                results = await source.search(query.strip(), limit=25, exclude_std=True)
-                if not results or not results.results:
-                    raise RuntimeError("No results found.")
-                name = results[0][1]
-                documentation: Documentation = await self.source.get_documentation(name)
-                i = 0
-                while documentation is None and i < len(results.results):
-                    if name == results.results[i][1]:
-                        i += 1
-                        continue
-                    documentation = await source.get_documentation(results.results[i][1])
-                    if documentation is not None:
-                        break
-                    i += 1
-                if documentation is None:
-                    raise RuntimeError("No results found.")
-                embed = documentation.to_embed()
-                content = None
-                await ctx.send(content=content, embed=embed)
+            await GetDocsView(cog=self, query=query.strip(), source=source).start(ctx)
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))
 
-    @hybrid_command(aliases=["rtfd"])
+    @commands.hybrid_command(aliases=["rtfd"])
     async def rtfm(
         self,
         ctx: commands.Context,
@@ -367,87 +346,85 @@ class GetDocs(Cog):
         else:
             await Menu(pages=embeds).start(ctx)
 
-    if CogsUtils().is_dpy2:
+    async def _cogsutils_add_hybrid_commands(
+        self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]
+    ) -> None:
+        if command.app_command is None:
+            return
+        if not isinstance(command, commands.HybridCommand):
+            return
+        if "source" in command.app_command._params:
+            command.app_command._params["source"].required = True
+            command.app_command._params["source"].default = "discord.py"
+            command.app_command._params["source"].choices = [
+                app_commands.Choice(name=source, value=source)
+                for source in list(self.documentations.keys())
+            ][:25]
+        if "query" in command.app_command._params:
+            command.app_command._params["query"].required = True
+        _params1 = command.app_command._params.copy()
+        _params2 = list(command.app_command._params.keys())
+        _params2 = sorted(_params2, key=lambda x: _params1[x].required, reverse=True)
+        _params3 = {key: _params1[key] for key in _params2}
+        command.app_command._params = _params3
 
-        async def _cogsutils_add_hybrid_commands(
-            self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]
-        ) -> None:
-            if command.app_command is None:
-                return
-            if not isinstance(command, commands.HybridCommand):
-                return
-            if "source" in command.app_command._params:
-                command.app_command._params["source"].required = True
-                command.app_command._params["source"].default = "discord.py"
-                command.app_command._params["source"].choices = [
-                    app_commands.Choice(name=source, value=source)
-                    for source in list(self.documentations.keys())
-                ][:25]
-            if "query" in command.app_command._params:
-                command.app_command._params["query"].required = True
-            _params1 = command.app_command._params.copy()
-            _params2 = list(command.app_command._params.keys())
-            _params2 = sorted(_params2, key=lambda x: _params1[x].required, reverse=True)
-            _params3 = {key: _params1[key] for key in _params2}
-            command.app_command._params = _params3
+    async def query_autocomplete(
+        self, interaction: discord.Interaction, current: str, exclude_std: bool
+    ) -> typing.Tuple["Source", typing.List[app_commands.Choice[str]]]:
+        source = None
+        if "source" in interaction.namespace and interaction.namespace.source:
+            try:
+                _source = await SourceConverter().convert(
+                    interaction, interaction.namespace.source
+                )
+            except commands.BadArgument:
+                source = "discord.py"
+            else:
+                source = _source
+        if source not in self.documentations:
+            return []
+        source = self.documentations[source]
+        if not current:
+            return source, [
+                app_commands.Choice(name=name, value=name)
+                for name in source._raw_rtfm_cache_with_std[:25]
+            ]
+        matches = await source.search(
+            current, limit=25, exclude_std=exclude_std, with_raw_search=True
+        )
+        return source, [app_commands.Choice(name=name, value=name) for name in matches]
 
-        async def query_autocomplete(
-            self, interaction: discord.Interaction, current: str, exclude_std: bool
-        ) -> typing.Tuple["Source", typing.List[app_commands.Choice[str]]]:
-            source = None
-            if "source" in interaction.namespace and interaction.namespace.source:
-                try:
-                    _source = await SourceConverter().convert(
-                        interaction, interaction.namespace.source
-                    )
-                except commands.BadArgument:
-                    source = "discord.py"
-                else:
-                    source = _source
-            if source not in self.documentations:
-                return []
-            source = self.documentations[source]
-            if not current:
-                return source, [
-                    app_commands.Choice(name=name, value=name)
-                    for name in source._raw_rtfm_cache_with_std[:25]
-                ]
-            matches = await source.search(
-                current, limit=25, exclude_std=exclude_std, with_raw_search=True
-            )
-            return source, [app_commands.Choice(name=name, value=name) for name in matches]
+    @getdocs.autocomplete("query")
+    async def getdocs_query_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> typing.List[app_commands.Choice[str]]:
+        _, result = await self.query_autocomplete(interaction, current, exclude_std=True)
+        if not current:
+            result.insert(0, app_commands.Choice(name="random", value="random"))
+        return result[:25]
 
-        @getdocs.autocomplete("query")
-        async def getdocs_query_autocomplete(
-            self, interaction: discord.Interaction, current: str
-        ) -> typing.List[app_commands.Choice[str]]:
-            _, result = await self.query_autocomplete(interaction, current, exclude_std=True)
-            if not current:
-                result.insert(0, app_commands.Choice(name="random", value="random"))
-            return result[:25]
+    @rtfm.autocomplete("query")
+    async def rtfm_query_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> typing.List[app_commands.Choice[str]]:
+        exclude_std = False
+        if "with_std" in interaction.namespace:
+            exclude_std = not interaction.namespace.with_std
+        source, result = await self.query_autocomplete(
+            interaction, current, exclude_std=exclude_std
+        )
+        if not current and source.name in ["discord.py", "redbot"]:
+            result.insert(0, app_commands.Choice(name="events", value="events"))
+        return result[:25]
 
-        @rtfm.autocomplete("query")
-        async def rtfm_query_autocomplete(
-            self, interaction: discord.Interaction, current: str
-        ) -> typing.List[app_commands.Choice[str]]:
-            exclude_std = False
-            if "with_std" in interaction.namespace:
-                exclude_std = not interaction.namespace.with_std
-            source, result = await self.query_autocomplete(
-                interaction, current, exclude_std=exclude_std
-            )
-            if not current and source.name in ["discord.py", "redbot"]:
-                result.insert(0, app_commands.Choice(name="events", value="events"))
-            return result[:25]
-
-    @hybrid_command(
+    @commands.hybrid_command(
         name="listsources", aliases=["listdocsources", "listrtfmsources", "listsource"]
     )
     async def _sources_list(
         self,
         ctx: commands.Context,
         _sorted: typing.Optional[bool] = False,
-        status: typing.Optional[commands.Literal["available", "all", "disabled"]] = "available",
+        status: typing.Optional[typing.Literal["available", "all", "disabled"]] = "available",
     ) -> None:
         """
         Shows a list of all sources, those that are available or those that are disabled.
@@ -474,21 +451,24 @@ class GetDocs(Cog):
         await ctx.send(embed=embed)
 
     @commands.is_owner()
-    @hybrid_group()
-    async def setgetdocs(self, ctx: commands.Context) -> None:
+    @commands.hybrid_group(name="setgetdocs")
+    async def configuration(self, ctx: commands.Context) -> None:
         """
         Commands to configure GetDocs.
         """
         pass
 
-    @setgetdocs.command(name="enablesource")
-    async def _source_enable(self, ctx: commands.Context, source: SourceConverter) -> None:
+    @configuration.command(name="enablesource")
+    async def _source_enable(self, ctx: commands.Context, source: str) -> None:
         """
         Enable a Documentations source.
         """
         disabled_sources: typing.List[str] = await self.config.disabled_sources()
         if source not in disabled_sources:
-            raise commands.UserFeedbackCheckFailure(_("This source is already enabled."))
+            if source in self.documentations:
+                raise commands.UserFeedbackCheckFailure(_("This source is already enabled."))
+            else:
+                raise commands.UserFeedbackCheckFailure(_("This source doesn't exist."))
         disabled_sources.append(source)
         await self.config.disabled_sources.set(disabled_sources)
         self.documentations[source] = Source(
@@ -499,38 +479,14 @@ class GetDocs(Cog):
         )
         asyncio.create_task(self.documentations[source].load())
 
-    @setgetdocs.command(name="disablesource")
+    @configuration.command(name="disablesource")
     async def _source_disable(self, ctx: commands.Context, source: SourceConverter) -> None:
         """
         Disable a Documentations source.
         """
         disabled_sources: typing.List[str] = await self.config.disabled_sources()
-        if source in disabled_sources:
-            raise commands.UserFeedbackCheckFailure(_("This source is already disabled."))
         disabled_sources.remove(source)
         await self.config.disabled_sources.set(disabled_sources)
-
-    @setgetdocs.command(name="defaultsource", aliases=["setdefaultsource"])
-    async def _source_default(self, ctx: commands.Context, source: SourceConverter) -> None:
-        """
-        Set the documentations source.
-
-        The default value is `discord.py`.
-        """
-        disabled_sources: typing.List[str] = await self.config.disabled_sources()
-        if source in disabled_sources:
-            raise commands.UserFeedbackCheckFailure(_("This source is disabled."))
-        await self.config.default_source.set(source)
-
-    @setgetdocs.command(name="caching")
-    async def _caching_toggle(self, ctx: commands.Context, caching: bool) -> None:
-        """
-        Enable or disable Documentations caching when loading the cog.
-
-        If the option is disabled, a web request will be executed when the command `[p]getdocs` is run only for the searched item.
-        The default value is `True`.
-        """
-        await self.config.caching.set(caching)
 
 
 class Source:
@@ -625,13 +581,13 @@ class Source:
         if not (await self.cog.config.caching()) and self.name not in ["discordapi", "git"]:
             return self._docs_cache
         if self.name == "discordapi":
-            _, manuals, documentations = await executor()(self._build_discordapi_docs_cache)()
+            _, manuals, documentations = await (await executor()(self._build_discordapi_docs_cache)())
             self.cog._docs_stats[self.name]["documentations"] += len(documentations)
             self.cog._docs_stats["GLOBAL"]["documentations"] += len(documentations)
             self.cog._docs_stats[self.name]["manuals"] += len(manuals)
             self.cog._docs_stats["GLOBAL"]["manuals"] += len(manuals)
         elif self.name == "git":
-            _, manuals, documentations = await executor()(self._build_git_docs_cache)()
+            _, manuals, documentations = await (await executor()(self._build_git_docs_cache)())
             self.cog._docs_stats[self.name]["documentations"] += len(documentations)
             self.cog._docs_stats["GLOBAL"]["documentations"] += len(documentations)
             self.cog._docs_stats[self.name]["manuals"] += len(manuals)
@@ -661,10 +617,9 @@ class Source:
                     self._docs_cache.extend(documentations)
                     self.cog._docs_stats[self.name]["manuals"] += 1
                     self.cog._docs_stats["GLOBAL"]["manuals"] += 1
-                    if self.cog.cogsutils.is_dpy2:
-                        self.cog.log.trace(
-                            f"{self.name}: `{name}` documentation added to documentation cache."
-                        )
+                    self.cog.log.trace(
+                        f"{self.name}: `{name}` documentation added to documentation cache."
+                    )
                 except Exception as e:
                     self.cog.log.debug(
                         f"{self.name}: Error occured while trying to cache `{name}` documentation.",
@@ -903,10 +858,9 @@ class Source:
                                 attributes=Attributes(attributes={}, properties={}, methods={}),
                             )
                             self._docs_cache.append(documentation)
-                        if self.cog.cogsutils.is_dpy2:
-                            self.cog.log.trace(
-                                f"{self.name}: `{name}` documentation added to documentation cache."
-                            )
+                        self.cog.log.trace(
+                            f"{self.name}: `{name}` documentation added to documentation cache."
+                        )
                     except Exception as e:
                         self.cog.log.debug(
                             f"{self.name}: Error occured while trying to cache `{name}` documentation.",
@@ -971,10 +925,9 @@ class Source:
                     attributes=Attributes(attributes={}, properties={}, methods={}),
                 )
                 self._docs_cache.append(documentation)
-                if self.cog.cogsutils.is_dpy2:
-                    self.cog.log.trace(
-                        f"{self.name}: `{manual[0]}` documentation added to documentation cache."
-                    )
+                self.cog.log.trace(
+                    f"{self.name}: `{manual[0]}` documentation added to documentation cache."
+                )
             except Exception as e:
                 self.cog.log.debug(
                     f"{self.name}: Error occured while trying to cache `{manual[0]}` documentation.",
@@ -1046,7 +999,7 @@ class Source:
                     domain="py",
                     role="method",
                     priority="1",
-                    uri=page_url[len(self.url) :] + "#$",
+                    uri=page_url[len(self.url):] + "#$",
                     dispname="-",
                 )
                 setattr(_object, "fake", True)
@@ -1334,7 +1287,7 @@ class Source:
             if result is not None:
                 results.append(result)
         # Add attributes for Python stdtypes.
-        if self.name == "python" and page_url[len(self.url) :] in [
+        if self.name == "python" and page_url[len(self.url):] in [
             "library/stdtypes.html",
             "tutorial/datastructures.html",
         ]:
@@ -1346,9 +1299,9 @@ class Source:
                     )
                     if parent is not None:
                         parent.attributes.methods[
-                            documentation.name[len(parent_name) + 1 :]
+                            documentation.name[len(parent_name) + 1:]
                         ] = Attribute(
-                            name=documentation.name[(len(parent_name) + 1) * 2 :],
+                            name=documentation.name[(len(parent_name) + 1) * 2:],
                             role="",
                             url=documentation.url,
                             description=documentation.description.split("\n")[0],
@@ -1405,7 +1358,7 @@ class Source:
                 ) -> typing.Tuple[int, int, str]:
                     return tup[0], tup[1], _key(tup[2])
 
-                matches = [item for _, _, item in sorted(matches, key=sort_key)]
+                matches = [item for __, __, item in sorted(matches, key=sort_key)]
             else:
                 matches = sorted(
                     collection,
@@ -1509,11 +1462,11 @@ class Source:
     async def get_documentation(self, name: str) -> Documentation:
         # if self._docs_caching_task is not None and self._docs_caching_task.currently_running:
         #     raise RuntimeError(_("Documentations cache is not yet built, building now."))
-        if self.name == "discord.py" and not self.name.startswith("discord."):
-            if f"discord.{name}" in self._raw_rtfm_cache_without_std:
-                name = f"discord.{name}"
-            else:
-                name = f"discord.ext.commands.{name}"
+        # if self.name == "discord.py" and not self.name.startswith("discord."):
+        #     if f"discord.{name}" in self._raw_rtfm_cache_without_std:
+        #         name = f"discord.{name}"
+        #     elif f"discord.ext.commands.{name}" in self._raw_rtfm_cache_without_std:
+        #         name = f"discord.ext.commands.{name}"
         if self.name not in ["discordapi", "git"] and discord.utils.get(self._docs_cache, name=name) is None:
             item = discord.utils.get(self._rtfm_cache.objects, name=name)
             location = item.uri

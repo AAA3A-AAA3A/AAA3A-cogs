@@ -18,22 +18,11 @@ from rich.console import Console
 from rich.table import Table
 
 from .menus import Menu
+from .views import Buttons, Modal
 
-if discord.version_info.major >= 2:
-    from .views import Buttons, Modal
-
-    setattr(commands, "Literal", typing.Literal)
+setattr(commands, "Literal", typing.Literal)
 
 __all__ = ["Settings", "CustomMessageConverter"]
-
-if discord.version_info.major >= 2:
-    from functools import partial
-
-    hybrid_command = partial(commands.hybrid_command, with_app_command=False)
-    hybrid_group = partial(commands.hybrid_group, with_app_command=False)
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 def _(untranslated: str) -> str:
@@ -329,11 +318,7 @@ class Settings:
                 label = settings[setting]["label"]
                 settings[setting]["description"] = f"Set `{label}`."
             if "usage" not in settings[setting]:
-                if (
-                    self.cog.cogsutils.is_dpy2
-                    and settings[setting]["converter"]
-                    in discord.ext.commands.converter.CONVERTER_MAPPING
-                ):
+                if settings[setting]["converter"] in discord.ext.commands.converter.CONVERTER_MAPPING:
                     x = settings[setting]["converter"].__name__.replace(" ", "_")
                     usage = x[0]
                     for y in x[1:]:
@@ -345,23 +330,15 @@ class Settings:
                     settings[setting]["usage"] = setting.replace(" ", "_").lower()
             if "no_slash" not in settings[setting]:
                 settings[setting]["no_slash"] = False
-            if self.cog.cogsutils.is_dpy2:
-                settings[setting]["param"] = discord.ext.commands.parameters.Parameter(
-                    name=setting,
-                    kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
-                    annotation=settings[setting]["converter"],
-                )
-            else:
-                settings[setting]["param"] = inspect.Parameter(
-                    name=setting,
-                    kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
-                    annotation=settings[setting]["converter"],
-                )
-            if self.cog.cogsutils.is_dpy2:
-                if "style" not in settings[setting]:
-                    settings[setting]["style"] = discord.TextStyle.short
-                elif isinstance(settings[setting]["style"], int):
-                    settings[setting]["style"] = discord.TextStyle(settings[setting]["style"])
+            settings[setting]["param"] = discord.ext.commands.parameters.Parameter(
+                name=setting,
+                kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                annotation=settings[setting]["converter"],
+            )
+            if "style" not in settings[setting]:
+                settings[setting]["style"] = discord.TextStyle.short
+            elif isinstance(settings[setting]["style"], int):
+                settings[setting]["style"] = discord.TextStyle(settings[setting]["style"])
         self.settings: typing.Dict[str, typing.Dict[str, typing.Any]] = settings
 
     async def add_commands(self, force: typing.Optional[bool] = False) -> None:
@@ -391,14 +368,14 @@ class Settings:
 
             commands_group.__qualname__ = f"{self.cog.qualified_name}.{name}"
             commands_group: commands.Group = commands.admin_or_permissions(administrator=True)(
-                hybrid_group(name=name, aliases=aliases, help=_help)(commands_group)
+                commands.hybrid_group(name=name, aliases=aliases, help=_help)(commands_group)
             )
             commands_group.name = name
             # commands_group.brief = _help
             # commands_group.description = _help
             commands_group.callback.__doc__ = _help
             commands_group.cog = self.cog
-            if self.cog.cogsutils.is_dpy2 and "ctx" in commands_group.params:
+            if "ctx" in commands_group.params:
                 del commands_group.params["ctx"]
             self.bot.add_command(commands_group)
             cog_commands = list(self.cog.__cog_commands__)
@@ -537,11 +514,6 @@ class Settings:
             "profilerename": ["renameprofile"],
             "profileslist": ["listprofiles"],
         }
-        if not self.cog.cogsutils.is_dpy2:
-            try:
-                del to_add["modalconfig"]
-            except KeyError:
-                pass
         if not (self.can_edit or force):
             for name in [
                 "resetsetting",
@@ -565,7 +537,7 @@ class Settings:
             self.bot.dispatch("command_add", command)
             if self.bot.get_cog("permissions") is None:
                 command.requires.ready_event.set()
-            if self.cog.cogsutils.is_dpy2 and "ctx" in command.params:
+            if "ctx" in command.params:
                 del command.params["ctx"]
             setattr(self, f"settings_{name}", command)
             cog_commands = list(self.cog.__cog_commands__)
@@ -601,7 +573,6 @@ class Settings:
                 command.__qualname__ = f"{self.cog.qualified_name}.settings_{name}"
                 if (
                     self.settings[setting]["no_slash"]
-                    and self.cog.cogsutils.is_dpy2
                     and isinstance(self.commands_group, commands.HybridGroup)
                 ):
                     command: commands.Command = self.commands_group.command(
@@ -629,7 +600,7 @@ class Settings:
                 self.bot.dispatch("command_add", command)
                 if self.bot.get_cog("permissions") is None:
                     command.requires.ready_event.set()
-                if self.cog.cogsutils.is_dpy2 and "ctx" in command.params:
+                if "ctx" in command.params:
                     del command.params["ctx"]
                 setattr(self, f"settings_{name}", command)
                 cog_commands = list(self.cog.__cog_commands__)
@@ -637,6 +608,8 @@ class Settings:
                 self.cog.__cog_commands__ = tuple(cog_commands)
                 self.commands[f"{name}"] = command
 
+        if self.group != Config.GLOBAL:
+            self.rpc_callback_settings.__dashboard_decorator_params__[1]["context_ids"] = ["guild_id", f"{self.group.lower()}_id"]
         setattr(self.cog, "rpc_callback_settings", self.rpc_callback_settings)
         self.commands_added.set()
 
@@ -884,8 +857,6 @@ class Settings:
         profile: typing.Optional[str] = None,
         confirmation: typing.Optional[bool] = False,
     ) -> None:
-        if not self.cog.cogsutils.is_dpy2:
-            raise RuntimeError()
         if _object is None:
             if self.group == Config.GLOBAL:
                 _object = None
@@ -941,20 +912,12 @@ class Settings:
                 ) == values[custom_id]["value"]:
                     continue
                 try:
-                    if self.cog.cogsutils.is_dpy2:
-                        value = await discord.ext.commands.converter.run_converters(
-                            ctx,
-                            converter=self.settings[custom_id]["converter"],
-                            argument=str(_input.value),
-                            param=self.settings[custom_id]["param"],
-                        )
-                    else:
-                        value = await ctx.command.do_conversion(
-                            ctx,
-                            converter=self.settings[custom_id]["converter"],
-                            argument=str(_input.value),
-                            param=self.settings[custom_id]["param"],
-                        )
+                    value = await discord.ext.commands.converter.run_converters(
+                        ctx,
+                        converter=self.settings[custom_id]["converter"],
+                        argument=str(_input.value),
+                        param=self.settings[custom_id]["param"],
+                    )
                 except discord.ext.commands.errors.CommandError as e:
                     await ctx.send(
                         f"An error occurred when using the `{_input.label}` converter:\n{box(e, lang='py')}"
@@ -1010,11 +973,16 @@ class Settings:
                                 + (
                                     (
                                         "|".join(
-                                            f'"{v}"' if isinstance(v, str) else str(v)
-                                            for v in self.settings[setting]["converter"].__args__
+                                            f'"{v}"'
+                                            if isinstance(v, str)
+                                            else str(v)
+                                            for v in self.settings[setting][
+                                                "converter"
+                                            ].__args__
                                         )
                                     )
-                                    if self.settings[setting]["converter"] is typing.Literal
+                                    if self.settings[setting]["converter"]
+                                    is typing.Literal
                                     else getattr(
                                         self.settings[setting]["converter"],
                                         "__name__",
@@ -1029,9 +997,10 @@ class Settings:
                                 str(values[setting]["value"])
                                 if self.settings[setting]["converter"]
                                 is not CustomMessageConverter
-                                else str(json.dumps(values[setting]["value"]))
+                                else json.dumps(values[setting]["value"])
                             )
-                            if str(values[setting]["value"]) != str(values[setting]["default"])
+                            if str(values[setting]["value"])
+                            != str(values[setting]["default"])
                             else None,
                             "required": False,
                             "custom_id": f"Settings_ModalConfig_{setting}",
@@ -1101,31 +1070,41 @@ class Settings:
         self,
         method: str,
         user: discord.User,
-        guild: discord.Guild,
         profile: typing.Optional[str] = None,
         **kwargs,
     ):
-        context = await self.cog.cogsutils.invoke_command(
-            author=user,
-            channel=guild.text_channels[0],
-            command=f"{self.commands_group.qualified_name}",
-            invoke=False,
-        )
-        context.__dashboard_fake__ = True
-        if not await self.commands_group.can_run(context):
-            return {"status": 1, "error_message": "You are not allowed to access these settings."}
-        if self.group == Config.GLOBAL:
-            _object = None
-        elif self.group == Config.GUILD:
-            _object = context.guild
-        elif self.group == Config.MEMBER:
-            _object = context.author
-        elif self.group == Config.CHANNEL:
-            _object = context.author
-        elif self.group == Config.ROLE:
-            _object = context.author.top_role
-        elif self.group == Config.USER:
-            _object = context.author
+        if "guild" in kwargs:
+            guild = kwargs["guild"]
+            context = await self.cog.cogsutils.invoke_command(
+                author=user,
+                channel=kwargs.get("channel", guild.text_channels[0]),
+                command=f"{self.commands_group.qualified_name}",
+                invoke=False,
+            )
+            context.__dashboard_fake__ = True
+            if not await self.commands_group.can_run(context):
+                return {"status": 1, "error_message": "You are not allowed to access these settings."}
+        else:
+            context = await self.cog.cogsutils.invoke_command(
+                author=user,
+                channel=list(self.bot.get_all_channels())[0],
+                command=f"{self.commands_group.qualified_name}",
+                invoke=False,
+            )
+            context.__dashboard_fake__ = True
+        try:
+            if self.group == Config.GLOBAL:
+                _object = None
+            elif self.group == Config.GUILD:
+                _object = kwargs["guild"]
+            elif self.group == Config.MEMBER:
+                _object = kwargs["member"]
+            elif self.group == Config.CHANNEL:
+                _object = kwargs["channel"]
+            elif self.group == Config.ROLE:
+                _object = kwargs["role"]
+        except KeyError:
+            return {"status": 1, "error_message": f"Missing `{self.group.lower()}_id` argument."}
         values = await self.get_values(_object=_object, profile=profile)
         data = self.get_data(_object)
         if self.use_profiles_system:
@@ -1233,8 +1212,9 @@ class Settings:
                 if str(values[setting]["value"]) != str(values[setting]["default"]):
                     field["value"] = (
                         str(values[setting]["value"])
-                        if self.settings[setting]["converter"] is not CustomMessageConverter
-                        else str(json.dumps(values[setting]["value"]))
+                        if self.settings[setting]["converter"]
+                        is not CustomMessageConverter
+                        else json.dumps(values[setting]["value"])
                     )
                 # field["required"] = False
                 if not self.can_edit:
@@ -1258,20 +1238,11 @@ class Settings:
                 if _input == values[custom_id]["value"]:
                     continue
                 try:
-                    value = (
-                        await discord.ext.commands.converter.run_converters(
-                            context,
-                            converter=self.settings[custom_id]["converter"],
-                            argument=str(_input),
-                            param=self.settings[custom_id]["param"],
-                        )
-                        if self.cog.cogsutils.is_dpy2
-                        else await context.command.do_conversion(
-                            context,
-                            converter=self.settings[custom_id]["converter"],
-                            argument=str(_input),
-                            param=self.settings[custom_id]["param"],
-                        )
+                    value = await discord.ext.commands.converter.run_converters(
+                        context,
+                        converter=self.settings[custom_id]["converter"],
+                        argument=str(_input),
+                        param=self.settings[custom_id]["param"],
                     )
                 except discord.ext.commands.errors.CommandError as e:
                     errors[setting] = str(e)

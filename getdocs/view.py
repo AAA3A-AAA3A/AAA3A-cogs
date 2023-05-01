@@ -7,22 +7,16 @@ from redbot.core.utils.chat_formatting import pagify
 from .types import Documentation, SearchResults
 
 
-class DocsSelectOption(discord.SelectOption):
-    def __init__(self, original_name: str, *args, **kwargs) -> None:
-        self.original_name: str = original_name
-        super().__init__(*args, **kwargs)
-
-
 class DocsSelect(discord.ui.Select):
     def __init__(self, parent: discord.ui.View, results: SearchResults) -> None:
         self._parent: discord.ui.View = parent
         self.texts: typing.Dict[str, typing.Tuple[str, str]] = {}
-        for name, original_name, url, _ in results.results:
+        for name, original_name, __, __ in results.results:
             if name not in self.texts.keys():
-                self.texts[name] = url, original_name
+                self.texts[name] = original_name
         self._options = [
-            DocsSelectOption(label=name, original_name=original_name)
-            for name, (_, original_name) in self.texts.items()
+            discord.SelectOption(label=name, value=original_name)
+            for name, original_name in self.texts.items()
         ]
         super().__init__(
             placeholder="Select an option.",
@@ -31,7 +25,7 @@ class DocsSelect(discord.ui.Select):
         )
 
     async def callback(self, interaction: discord.Interaction) -> None:
-        option = discord.utils.get(self._options, label=self.values[0])
+        option = discord.utils.get(self._options, value=self.values[0])
         await self._parent._callback(interaction, option)
 
 
@@ -75,7 +69,7 @@ class GetDocsView(discord.ui.View):
     async def on_timeout(self) -> None:
         for child in self.children:
             child: discord.ui.Item
-            if isinstance(child, discord.ui.Button) and child.style != discord.ButtonStyle.url:
+            if hasattr(child, "disabled") and not (isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url):
                 child.disabled = True
         try:
             await self._message.edit(view=self)
@@ -118,16 +112,16 @@ class GetDocsView(discord.ui.View):
         # ):
         #     content = "⚠️ The documentation cache is not yet fully built, building now."
         if self._message is None:
-            self._message = await self.ctx.send(content=content, embed=embed, view=self)
+            self._message: discord.Message = await self.ctx.send(content=content, embed=embed, view=self)
         else:
-            self._message = await self._message.edit(content=content, embed=embed, view=self)
+            self._message: discord.Message = await self._message.edit(content=content, embed=embed, view=self)
         self._mode = "documentation"
 
     async def _callback(
         self, interaction: discord.Interaction, option: discord.SelectOption
     ) -> None:
         await interaction.response.defer()
-        await self._update(option.original_name)
+        await self._update(option.value)
 
     @discord.ui.button(label="Show Parameters", custom_id="show_parameters", row=1)
     async def show_parameters(
@@ -206,7 +200,7 @@ class GetDocsView(discord.ui.View):
             embeds = self._current.parameters.to_embeds(embed_color=await self.ctx.embed_color())
 
         if len(embeds) == 1:
-            self._message = await self._message.edit(embed=embeds[0])
+            self._message: discord.Message = await self._message.edit(embed=embeds[0])
         else:
 
             async def _back_button(interaction: discord.Interaction):
@@ -214,7 +208,7 @@ class GetDocsView(discord.ui.View):
                 current = discord.utils.get(embeds, title=self._message.embeds[0].title)
                 current = embeds.index(current)
                 current_embed = embeds[current - 1]
-                self._message = await self._message.edit(embed=current_embed)
+                self._message: discord.Message = await self._message.edit(embed=current_embed)
 
             async def _next_button(interaction: discord.Interaction):
                 await interaction.response.defer()
@@ -224,7 +218,7 @@ class GetDocsView(discord.ui.View):
                     current_embed = embeds[current + 1]
                 except IndexError:
                     current_embed = embeds[0]
-                self._message = await self._message.edit(embed=current_embed)
+                self._message: discord.Message = await self._message.edit(embed=current_embed)
 
             back_button = discord.ui.Button(emoji="◀️", custom_id="back_button", row=2)
             back_button.callback = _back_button
@@ -232,7 +226,7 @@ class GetDocsView(discord.ui.View):
             next_button = discord.ui.Button(emoji="▶️", custom_id="next_button", row=2)
             next_button.callback = _next_button
             self.add_item(next_button)
-            self._message = await self._message.edit(embed=embeds[0], view=self)
+            self._message: discord.Message = await self._message.edit(embed=embeds[0], view=self)
         self._mode = "parameters"
 
     @discord.ui.button(label="Show Examples", custom_id="show_examples", row=1)
@@ -264,7 +258,7 @@ class GetDocsView(discord.ui.View):
         embeds = self._current.examples.to_embeds(
             self.ctx, embed_color=await self.ctx.embed_color()
         )
-        self._message = await self._message.edit(embeds=embeds[:10], view=self)
+        self._message: discord.Message = await self._message.edit(embeds=embeds[:10], view=self)
         self._mode = "examples"
 
     @discord.ui.button(label="Show Attributes", custom_id="show_attributes", row=1)
@@ -302,7 +296,7 @@ class GetDocsView(discord.ui.View):
                 current = discord.utils.get(embeds, title=self._message.embeds[0].title)
                 current = embeds.index(current)
                 current_embed = embeds[current - 1]
-                self._message = await self._message.edit(embed=current_embed)
+                self._message: discord.Message = await self._message.edit(embed=current_embed)
 
             async def _next_button(interaction: discord.Interaction):
                 await interaction.response.defer()
@@ -312,7 +306,7 @@ class GetDocsView(discord.ui.View):
                     current_embed = embeds[current + 1]
                 except IndexError:
                     current_embed = embeds[0]
-                self._message = await self._message.edit(embed=current_embed)
+                self._message: discord.Message = await self._message.edit(embed=current_embed)
 
             back_button = discord.ui.Button(emoji="◀️", custom_id="back_button", row=2)
             back_button.callback = _back_button
@@ -320,9 +314,9 @@ class GetDocsView(discord.ui.View):
             next_button = discord.ui.Button(emoji="▶️", custom_id="next_button", row=2)
             next_button.callback = _next_button
             self.add_item(next_button)
-            self._message = await self._message.edit(embed=embeds[0], view=self)
+            self._message: discord.Message = await self._message.edit(embed=embeds[0], view=self)
         else:
-            self._message = await self._message.edit(embeds=embeds)
+            self._message: discord.Message = await self._message.edit(embeds=embeds)
         self._mode = "attributes"
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page", row=2)

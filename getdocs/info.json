@@ -2,14 +2,21 @@
     "author": ["AAA3A", "amyrinbot"],
     "name": "GetDocs",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
-    "short": "A cog to get and display Sphinx docs! Only `discord.py`, `redbot`, `python`, `aiohttp`, `requests`, `gitpython`, `slashtags`, `pylav`, `discordapi`, `git`, `psutil`, `pillow`, `numpy`, `matplotlib`, `asyncpg`, `sqlite`, `websockets`, `mango`, `redis`, `aiomysql`, `flask`, `motor`, `sphinx`, and `starlite`.",
-    "description": "A cog to get and display Sphinx docs. Only `discord.py`, `redbot`, `python`, `aiohttp`, `requests`, `gitpython`, `phentags`, `pylav`, `discordapi`, `git`, `psutil`, `pillow`, `numpy`, `matplotlib`, `asyncpg`, `sqlite`, `websockets`, `mango`, `redis`, `aiomysql`, `flask`, `motor`, `sphinx`, and `starlite`.",
+    "short": "A cog to get and display some documentations in Discord! Only `discord.py`, `redbot`, `python`, `aiohttp`, `requests`, `gitpython`, `slashtags`, `pylav`, `discordapi`, `git`, `psutil`, `pillow`, `numpy`, `matplotlib`, `asyncpg`, `sqlite`, `websockets`, `mango`, `redis`, `aiomysql`, `flask`, `motor`, `sphinx`, and `starlite`.",
+    "description": "A cog to get and display some documentations in Discord! Only `discord.py`, `redbot`, `python`, `aiohttp`, `requests`, `gitpython`, `phentags`, `pylav`, `discordapi`, `git`, `psutil`, `pillow`, `numpy`, `matplotlib`, `asyncpg`, `sqlite`, `websockets`, `mango`, `redis`, `aiomysql`, `flask`, `motor`, `sphinx`, and `starlite`.",
     "tags": [
+        "dev",
+        "coding",
         "dpy",
         "python",
-        "coding",
-        "docs"
+        "docs",
+        "documentations",
+        "discordapi",
+        "rtfm",
+        "rtd",
+        "readthedocs"
     ],
     "requirements": ["sentry_sdk", "sphobjinv", "humanfriendly", "bs4", "lxml", "fuzzywuzzy"],
+    "min_bot_version": "3.5.0",
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

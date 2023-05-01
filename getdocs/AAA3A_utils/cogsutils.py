@@ -26,8 +26,7 @@ from .loop import Loop
 from .menus import Reactions
 from .shared_cog import SharedCog
 
-if discord.version_info.major >= 2:
-    from .views import ConfirmationAskView
+from .views import ConfirmationAskView
 
 __all__ = ["CogsUtils"]
 
@@ -57,15 +56,6 @@ class CogsUtils(commands.Cog):
         self.loops: typing.Dict[str, Loop] = {}
         self.views: typing.List[getattr(getattr(discord, "ui", None), "View", None)] = []
         self.repo_name: str = "AAA3A-cogs"
-        # if self.cog is not None:
-        #     if (
-        #         self.cog.qualified_name in self.all_cogs
-        #         and self.cog.qualified_name not in self.all_cogs_dpy2
-        #     ):
-        #         if self.is_dpy2 or redbot.version_info >= redbot.VersionInfo.from_str("3.5.0"):
-        #             raise RuntimeError(
-        #                 f"{self.cog.qualified_name} needs to be updated to run on dpy2/Red 3.5.0. It's best to use `[p]cog update` with no arguments to update all your cogs, which may be using new dpy2-specific methods."
-        #             )
 
     @property
     def is_dpy2(self) -> bool:
@@ -109,8 +99,6 @@ class CogsUtils(commands.Cog):
         value = bot.add_cog(cog)
         if inspect.isawaitable(value):
             await value
-        if not self.is_dpy2 and hasattr(cog, "cog_load"):
-            await cog.cog_load()
         return cog
 
     def _setup(self) -> None:
@@ -136,7 +124,7 @@ class CogsUtils(commands.Cog):
             nb_commits, version, commit = await self.get_cog_version()
             self.cog.__version__ = version
             self.cog.__commit__ = commit
-        except (self.DownloaderNotLoaded, asyncio.TimeoutError, ValueError):
+        except (self.DownloaderNotLoaded, asyncio.TimeoutError, ValueError, TypeError):  # `TypeError: <class 'extension.extension.Cog'> is a built-in class` is when the cog failed to load.
             pass
         except Exception as e:  # Really doesn't matter if this fails, so fine with debug level.
             self.cog.log.debug(
@@ -173,10 +161,7 @@ class CogsUtils(commands.Cog):
         if self.cog.qualified_name != "AAA3A_utils":
             try:
                 old_cog = self.bot.get_cog("AAA3A_utils")
-                if self.is_dpy2:
-                    await self.bot.remove_cog("AAA3A_utils")
-                else:
-                    self.bot.remove_cog("AAA3A_utils")
+                await self.bot.remove_cog("AAA3A_utils")
                 cog = SharedCog(self.bot, CogsUtils)
                 try:
                     if getattr(old_cog, "sentry", None) is not None:
@@ -190,14 +175,13 @@ class CogsUtils(commands.Cog):
             except Exception as e:
                 self.cog.log.debug("Error when adding AAA3A_utils cog.", exc_info=e)
         # Modify hybrid commands.
-        if self.is_dpy2:
-            try:
-                await self.add_hybrid_commands()
-            except Exception as e:
-                self.cog.log.error(
-                    f"Error when adding [hybrid|slash] commands from the {self.cog.qualified_name} cog.",
-                    exc_info=e,
-                )
+        try:
+            await self.add_hybrid_commands()
+        except Exception as e:
+            self.cog.log.error(
+                f"Error when adding [hybrid|slash] commands from the {self.cog.qualified_name} cog.",
+                exc_info=e,
+            )
         AAA3A_utils: SharedCog = self.bot.get_cog("AAA3A_utils")
         if AAA3A_utils is not None:
             await AAA3A_utils.sentry.maybe_send_owners(self.cog)
@@ -237,10 +221,7 @@ class CogsUtils(commands.Cog):
                     AAA3A_utils.cogsutils.loops["Sentry Helper"].stop_all()
                 except ValueError:
                     pass
-                if self.is_dpy2:
-                    await self.bot.remove_cog("AAA3A_utils")
-                else:
-                    self.bot.remove_cog("AAA3A_utils")
+                await self.bot.remove_cog("AAA3A_utils")
 
     def init_logger(self, name: typing.Optional[str] = None) -> logging.Logger:
         """
@@ -635,8 +616,6 @@ class CogsUtils(commands.Cog):
         """
         check_owner = True
         reactions = ["✅", "✖️"]
-        if way == "buttons" and not self.is_dpy2:
-            way = "reactions"
 
         if way == "buttons":
             return await ConfirmationAskView(
@@ -1079,7 +1058,7 @@ class CogsUtils(commands.Cog):
                     and not await self.bot.allowed_by_whitelist_blacklist(output.author)
                 ):
                     raise discord.ext.commands.BadArgument()
-            if isinstance(output, discord.RawReactionActionEvent):
+            elif isinstance(output, discord.RawReactionActionEvent):
                 # check whether the message was sent in a guild
                 output.guild = self.bot.get_guild(output.guild_id)
                 if output.guild is None:
@@ -1112,7 +1091,7 @@ class CogsUtils(commands.Cog):
                     and not await self.bot.allowed_by_whitelist_blacklist(output.author)
                 ):
                     raise discord.ext.commands.BadArgument()
-            if self.is_dpy2 and isinstance(output, discord.Interaction):
+            elif isinstance(output, discord.Interaction):
                 # check whether the message was sent in a guild
                 if output.guild is None:
                     raise discord.ext.commands.BadArgument()

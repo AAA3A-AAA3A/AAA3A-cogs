@@ -42,18 +42,17 @@ except ImportError:
 from .settings import Settings
 from .shared_cog import SharedCog
 
-if discord.version_info.major >= 2:
-    from .views import (
-        Buttons,
-        ChannelSelect,
-        ConfirmationAskView,
-        Dropdown,
-        MentionableSelect,
-        Modal,
-        RoleSelect,
-        Select,
-        UserSelect,
-    )  # NOQA
+from .views import (
+    Buttons,
+    ChannelSelect,
+    ConfirmationAskView,
+    Dropdown,
+    MentionableSelect,
+    Modal,
+    RoleSelect,
+    Select,
+    UserSelect,
+)  # NOQA
 
 CogsUtils: typing.Any = None
 
@@ -275,26 +274,15 @@ class DevEnv(typing.Dict[str, typing.Any]):
         async def run_converter(
             converter: typing.Any, value: str, label: typing.Optional[str] = "test"
         ):
-            if CogsUtils().is_dpy2:
-                param = discord.ext.commands.parameters.Parameter(
-                    name=label, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=converter
+            param = discord.ext.commands.parameters.Parameter(
+                name=label, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=converter
+            )
+            try:
+                return await discord.ext.commands.converter.run_converters(
+                    ctx, converter=param.converter, argument=value, param=param
                 )
-                try:
-                    return await discord.ext.commands.converter.run_converters(
-                        ctx, converter=param.converter, argument=value, param=param
-                    )
-                except commands.CommandError as e:
-                    return e
-            else:
-                param = inspect.Parameter(
-                    name=label, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=converter
-                )
-                try:
-                    return await ctx.command.do_conversion(
-                        ctx, converter=converter, argument=value, param=param
-                    )
-                except commands.CommandError as e:
-                    return e
+            except commands.CommandError as e:
+                return e
 
         def get_devspace(bot: Red):
             Dev = bot.get_cog("Dev")
@@ -334,20 +322,20 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 bot=ctx.bot, Cog=CogsCommands.Cog, Command=CogsCommands.Command
             ),
         }
-        if discord.version_info.major >= 2:
-            env.update(
-                {
-                    "ConfirmationAskView": lambda ctx: ConfirmationAskView,
-                    "Buttons": lambda ctx: Buttons,
-                    "Dropdown": lambda ctx: Dropdown,
-                    "Select": lambda ctx: Select,
-                    "ChannelSelect": lambda ctx: ChannelSelect,
-                    "MentionableSelect": lambda ctx: MentionableSelect,
-                    "RoleSelect": lambda ctx: RoleSelect,
-                    "UserSelect": lambda ctx: UserSelect,
-                    "Modal": lambda ctx: Modal,
-                }
-            )
+        # Dpy2 things
+        env.update(
+            {
+                "ConfirmationAskView": lambda ctx: ConfirmationAskView,
+                "Buttons": lambda ctx: Buttons,
+                "Dropdown": lambda ctx: Dropdown,
+                "Select": lambda ctx: Select,
+                "ChannelSelect": lambda ctx: ChannelSelect,
+                "MentionableSelect": lambda ctx: MentionableSelect,
+                "RoleSelect": lambda ctx: RoleSelect,
+                "UserSelect": lambda ctx: UserSelect,
+                "Modal": lambda ctx: Modal,
+            }
+        )
         env.update(
             {
                 # Dpy & Red
@@ -533,14 +521,14 @@ class DevEnv(typing.Dict[str, typing.Any]):
             return None
         try:
             bot.remove_dev_env_value(cog.qualified_name)
-        except Exception:
+        except KeyError:
             pass
         if not cog.cogsutils.at_least_one_cog_loaded():
             _env = cls.get_env(bot)
             for name in _env:
                 try:
                     bot.remove_dev_env_value(name)
-                except Exception:
+                except KeyError:
                     pass
             return _env
 

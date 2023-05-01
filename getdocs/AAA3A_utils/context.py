@@ -3,18 +3,9 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-# import typing_extensions  # isort:skip
-
-from redbot.core.utils.chat_formatting import box
-
 from .menus import Menu
 
-if discord.version_info.major >= 2:
-    from redbot.core.utils import can_user_react_in
-else:
-
-    def can_user_react_in(obj: discord.abc.User, messageable: discord.abc.Messageable):
-        return messageable.permissions_for(obj).add_reactions
+from redbot.core.utils import can_user_react_in
 
 
 __all__ = ["Context"]
@@ -143,7 +134,7 @@ class Context:
         """
         if content is not None:
             try:
-                content = self.cog.cogsutils.replace_var_paths(content)
+                content = self.cog.cogsutils.replace_var_paths(str(content))
             except AttributeError:
                 pass
         self.len_messages += 1
@@ -177,12 +168,11 @@ class Context:
 
         """
         messages = list(messages)
-        if len(messages) <= 1 and getattr(self.cog, "qualified_name") != "Dev":
-            return await self.original_context.send_interactive(
-                messages=messages, box_lang=box_lang, timeout=timeout
-            )
-        menu = Menu(pages=list(messages), lang=box_lang)
-        if discord.version_info.major >= 2 and len(messages) <= 1:
-            menu.disabled_controls.extend(["send_as_file", "choose_page"])
-        await menu.start(self)
+        if not messages:
+            return
+        # if len(messages) <= 1 and getattr(self.cog, "qualified_name") != "Dev":
+        #     return await self.original_context.send_interactive(
+        #         messages=messages, box_lang=box_lang, timeout=timeout
+        #     )
+        await Menu(pages=messages, lang=box_lang).start(self)
         return []

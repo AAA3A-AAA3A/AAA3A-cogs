@@ -36,13 +36,6 @@ from .sentry import SentryHelper
 
 __all__ = ["SharedCog"]
 
-if discord.version_info.major >= 2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
-
 
 def _(untranslated: str) -> str:
     return untranslated
@@ -119,7 +112,7 @@ class SharedCog(Cog, name="AAA3A_utils"):
             self.sentry = SentryHelper(self)
 
     @commands.is_owner()
-    @hybrid_group(name="aaa3a_utils", aliases=["AAA3A_utils"], hidden=True)
+    @commands.hybrid_group(name="aaa3a_utils", aliases=["AAA3A_utils"], hidden=True)
     async def AAA3A_utils(self, ctx: commands.Context) -> None:
         """All commands to manage all the cogs from AAA3A-cogs repo."""
         pass
@@ -127,7 +120,7 @@ class SharedCog(Cog, name="AAA3A_utils"):
     @commands.is_owner()
     @AAA3A_utils.command()
     async def getlogs(
-        self, ctx: commands.Context, cog: str, level: typing.Optional[str] = "all"
+        self, ctx: commands.Context, cog: str, level: str = "all"
     ) -> None:
         """Get logs for a cog from AAA3A-cogs"""
         cog = ctx.bot.get_cog(cog)
@@ -195,7 +188,7 @@ class SharedCog(Cog, name="AAA3A_utils"):
     @commands.is_owner()
     @AAA3A_utils.command()
     async def resetconfig(
-        self, ctx: commands.Context, cog: str, confirmation: typing.Optional[bool] = False
+        self, ctx: commands.Context, cog: str, confirmation: bool = False
     ) -> None:
         """Reset Config for a cog from AAA3A-cogs."""
         cog = ctx.bot.get_cog(cog)
@@ -823,12 +816,7 @@ class SharedCog(Cog, name="AAA3A_utils"):
                 elif isinstance(x, str):
                     response.append(x)
         to_html = (
-            to_html_getallfor.replace(
-                "{AVATAR_URL}",
-                str(ctx.bot.user.display_avatar)
-                if self.cogsutils.is_dpy2
-                else str(ctx.bot.user.avatar_url),
-            )
+            to_html_getallfor.replace("{AVATAR_URL}", str(ctx.bot.user.display_avatar))
             .replace("{BOT_NAME}", str(ctx.bot.user.name))
             .replace(
                 "{REPO_NAME}", str(getattr(_repos[0], "name", None) if all is None else "All")

@@ -145,13 +145,11 @@ class SentryHelper:
             if hub is None:
                 return
             if isinstance(error, commands.CommandInvokeError):
-                if self.cogsutils.is_dpy2 and isinstance(
-                    ctx.command, discord.ext.commands.HybridCommand
-                ):
+                if isinstance(ctx.command, discord.ext.commands.HybridCommand):
                     _type = "[hybrid|text]"
                 else:
                     _type = "[text]"
-            elif self.cogsutils.is_dpy2 and isinstance(error, commands.HybridCommandError):
+            elif isinstance(error, commands.HybridCommandError):
                 _type = "[hybrid|slash]"
             else:
                 return False
@@ -170,7 +168,7 @@ class SentryHelper:
             self.cog.log.error("Sending an error to Sentry failed.", exc_info=e)
             return False
 
-    def remove_sensitive_data(self, event: dict, hint: dict) -> typing.Dict:
+    def remove_sensitive_data(self, event: dict, hint: typing.Optional[dict] = {}) -> typing.Dict:
         """Remove sensitive data from the event. This should only be used by the Sentry SDK.
         This has two main parts:
         1) Remove any mentions of the bot's token
@@ -226,18 +224,18 @@ class SentryHelper:
             dict
                 Safe dict
             """
-            if isinstance(d, dict):
+            if isinstance(d, typing.Dict):
                 return {
                     self.cogsutils.replace_var_paths(regex_stuff(k.replace(token, "[BOT-TOKEN]")))
                     if isinstance(k, str)
                     else k: recursive_replace(v, token)
                     for k, v in d.items()
                 }
-            if isinstance(d, list):
+            elif isinstance(d, typing.List):
                 return [
                     self.cogsutils.replace_var_paths(
                         regex_stuff(recursive_replace(i, token))
-                    )  # type:ignore
+                    )
                     if isinstance(i, str)
                     else recursive_replace(i, token)
                     for i in d
@@ -303,6 +301,7 @@ class SentryHelper:
         )
 
         scope = sentry_sdk.Scope()
+        scope.set_tag("cog_name", cog.qualified_name)
         scope.set_tag("cog_version", getattr(cog, "__version__", 1.0))
         scope.set_tag("cog_commit", getattr(cog, "__commit__", ""))
         scope.set_tag("red_release", red_version)

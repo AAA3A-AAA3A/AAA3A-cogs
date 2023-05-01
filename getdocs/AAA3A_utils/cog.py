@@ -117,15 +117,8 @@ class Cog(commands.Cog):
         """Nothing to get."""
         return {}
 
-    if discord.version_info.major >= 2:
-
-        async def cog_unload(self) -> None:
-            self.cogsutils._end()
-
-    else:
-
-        def cog_unload(self) -> None:
-            self.cogsutils._end()
+    async def cog_unload(self) -> None:
+        self.cogsutils._end()
 
     async def cog_before_invoke(self, ctx: commands.Context) -> None:
         if isinstance(ctx.command, commands.Group):
@@ -190,12 +183,9 @@ class Cog(commands.Cog):
             await ctx.bot.on_command_error(ctx=ctx, error=error, unhandled_by_cog=True)
             return
         AAA3A_utils = ctx.bot.get_cog("AAA3A_utils")
-        is_command_error = False
-        if isinstance(error, commands.CommandInvokeError):
-            is_command_error = True
-        elif self.cogsutils.is_dpy2 and isinstance(error, commands.HybridCommandError):
-            is_command_error = True
-
+        is_command_error = isinstance(
+            error, (commands.CommandInvokeError, commands.HybridCommandError)
+        )
         if is_command_error and isinstance(error.original, discord.Forbidden):  # Error can be changed into `commands.BotMissingPermissions` or not.
             e = verbose_forbidden_exception(ctx, error.original)
             if e is not None and isinstance(e, commands.BotMissingPermissions):
@@ -206,9 +196,7 @@ class Cog(commands.Cog):
             no_sentry = AAA3A_utils is None or getattr(AAA3A_utils, "sentry", None) is None
             if not no_sentry:
                 AAA3A_utils.sentry.last_errors[uuid] = {"ctx": ctx, "error": error}
-            if self.cogsutils.is_dpy2 and isinstance(
-                ctx.command, discord.ext.commands.HybridCommand
-            ):
+            if isinstance(ctx.command, discord.ext.commands.HybridCommand):
                 if getattr(ctx, "interaction", None) is None:
                     _type = "[hybrid|text]"
                 else:
@@ -474,14 +462,7 @@ def verbose_forbidden_exception(ctx: commands.Context, error: discord.Forbidden)
     for permission in _permissions:
         if permission.lower() not in discord.Permissions.VALID_FLAGS:
             continue
-        if getattr(
-            (
-                ctx.bot_permissions
-                if discord.version_info.major >= 2
-                else ctx.channel.permissions_for(ctx.me)
-            ),
-            permission.lower(),
-        ):
+        if getattr(ctx.bot_permissions, permission.lower()):
             continue
         permissions[permission.lower()] = True
     return (

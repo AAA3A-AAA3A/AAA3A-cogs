@@ -541,7 +541,7 @@ class RoleSelect(_Select, discord.ui.RoleSelect):
 class UserSelect(_Select, discord.ui.UserSelect):
     def __init__(
         self,
-        placeholder: typing.Optional[str] = "Choose an user.",
+        placeholder: typing.Optional[str] = "Choose a user.",
         min_values: typing.Optional[int] = 1,
         max_values: typing.Optional[int] = 1,
         *,

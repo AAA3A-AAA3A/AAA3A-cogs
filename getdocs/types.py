@@ -25,7 +25,7 @@ class RTFSResults:
     def to_embeds(
         self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
     ) -> typing.List[discord.Embed]:
-        description = "\n".join(f"**•** [**`{name}`**]({url})" for name, _, url, _ in self.results)
+        description = "\n".join(f"**•** [**`{name}`**]({url})" for name, _, url, __ in self.results)
         embeds = []
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
         if len(pages) == 1:
@@ -60,7 +60,7 @@ class SearchResults:
     def to_embeds(
         self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
     ) -> typing.List[discord.Embed]:
-        description = "\n".join(f"**•** [**`{name}`**]({url})" for name, _, url, _ in self.results)
+        description = "\n".join(f"**•** [**`{name}`**]({url})" for name, _, url, __ in self.results)
         embeds = []
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
         if len(pages) == 1:
@@ -233,25 +233,17 @@ class Attributes:
                     embeds.append(embed)
         return embeds
 
-
 @dataclass(frozen=True)
 class Documentation:
     source: typing.Any
     name: str
     full_name: str
     description: str
-    if CogsUtils().is_dpy2:
-        parameters: typing.Union[Parameters[str, str], str]
-        examples: Examples[str]
-        url: str
-        fields: typing.Dict[str, str]
-        attributes: Attributes
-    else:
-        parameters: typing.Union[Parameters, str]
-        examples: Examples
-        url: str
-        fields: typing.Dict[str, str]
-        attributes: Attributes
+    parameters: typing.Union[Parameters[str, str], str]
+    examples: Examples[str]
+    url: str
+    fields: typing.Dict[str, str]
+    attributes: Attributes
 
     def to_json(self) -> typing.Dict[str, typing.Any]:
         return {

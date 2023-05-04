@@ -57,7 +57,7 @@ class AutoTraceback(DashboardIntegration, Cog):
             - `[public]` - Whether to send the traceback to the current context. Default is `True`.
         """
         if not ctx.bot._last_exception:
-            await ctx.send(_("No exception has occurred yet."))
+            raise commands.UserFeedbackCheckFailure(_("No exception has occurred yet."))
         _last_exception = ctx.bot._last_exception.split("\n")
         _last_exception[0] = _last_exception[0] + (
             "" if _last_exception[0].endswith(":") else ":\n"

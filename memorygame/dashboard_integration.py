@@ -10,7 +10,6 @@ def dashboard_page(*args, **kwargs):
     def decorator(func: typing.Callable):
         func.__dashboard_decorator_params__ = (args, kwargs)
         return func
-
     return decorator
 
 
@@ -41,7 +40,7 @@ class DashboardIntegration:
         dashboard_cog.rpc.third_parties_handler.add_third_party(self)
 
     @dashboard_page(name=None)
-    async def rpc_callback(self, user: discord.User, **kwargs) -> None:
+    async def rpc_callback(self, user: discord.User, **kwargs) -> dict:
         return {"status": 0, "web-content": web_content}
 
 

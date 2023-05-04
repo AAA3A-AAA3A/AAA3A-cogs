@@ -10,7 +10,6 @@ def dashboard_page(*args, **kwargs):
     def decorator(func: typing.Callable):
         func.__dashboard_decorator_params__ = (args, kwargs)
         return func
-
     return decorator
 
 
@@ -46,7 +45,7 @@ class DashboardIntegration:
             dashboard_cog.rpc.third_parties_handler.remove_third_party(self)
 
     @dashboard_page(name=None)
-    async def rpc_callback(self, user: discord.User, **kwargs) -> None:
+    async def rpc_callback(self, user: discord.User, **kwargs) -> dict:
         if user.id not in self.bot.owner_ids:
             return {"status": 1, "error_message": "You're not a bot owner!"}
         tracebacks = self.tracebacks.copy()

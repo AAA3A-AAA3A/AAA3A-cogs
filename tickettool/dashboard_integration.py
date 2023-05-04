@@ -10,7 +10,6 @@ def dashboard_page(*args, **kwargs):
     def decorator(func: typing.Callable):
         func.__dashboard_decorator_params__ = (args, kwargs)
         return func
-
     return decorator
 
 
@@ -41,11 +40,11 @@ class DashboardIntegration:
         dashboard_cog.rpc.third_parties_handler.add_third_party(self)
 
     @dashboard_page(name=None)
-    async def rpc_callback(self, user: discord.User, **kwargs) -> None:
+    async def rpc_callback(self, user: discord.User, **kwargs) -> dict:
         return {"status": 0, "web-content": web_content}
 
     @dashboard_page(name="transcript")
-    async def rpc_callback_transcript(self, attachment_url: str, **kwargs) -> None:
+    async def rpc_callback_transcript(self, attachment_url: str, **kwargs) -> dict:
         if not attachment_url.startswith("https://cdn.discordapp.com/attachments/"):
             if len(attachment_url.split("-")) >= 3:
                 attachment_url = f"{attachment_url.split('-')[0]}/{attachment_url.split('-')[1]}/{'-'.join(attachment_url.split('-')[2:])}"

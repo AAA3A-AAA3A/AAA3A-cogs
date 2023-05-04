@@ -10,7 +10,6 @@ def dashboard_page(*args, **kwargs):
     def decorator(func: typing.Callable):
         func.__dashboard_decorator_params__ = (args, kwargs)
         return func
-
     return decorator
 
 
@@ -42,15 +41,15 @@ class DashboardIntegration:
         dashboard_cog.rpc.third_parties_handler.add_third_party(self)
 
     @dashboard_page(name=None)
-    async def rpc_callback(self, user: discord.User, **kwargs) -> None:
+    async def rpc_callback(self, user: discord.User, **kwargs) -> dict:
         return {"status": 0, "web-content": web_content}
 
     @dashboard_page(name="sources", hidden=True)
-    async def rpc_callback_sources(self, **kwargs) -> None:
+    async def rpc_callback_sources(self, **kwargs) -> dict:
         return {"status": 0, "sources": list(self.documentations.keys())}
 
     @dashboard_page(name="rtfm", hidden=True)
-    async def rpc_callback_rtfm(self, source: str, query: str, limit: typing.Optional[int] = 10, with_std: typing.Optional[bool] = True, **kwargs) -> None:
+    async def rpc_callback_rtfm(self, source: str, query: str, limit: typing.Optional[int] = 10, with_std: typing.Optional[bool] = True, **kwargs) -> dict:
         if isinstance(limit, str):
             try:
                 limit = int(limit)
@@ -71,7 +70,7 @@ class DashboardIntegration:
         return {"status": 0, "source": source, "results": results.results}
 
     @dashboard_page(name="documentations", hidden=True)
-    async def rpc_callback_documentations(self, source: str, documentation: str, **kwargs) -> None:
+    async def rpc_callback_documentations(self, source: str, documentation: str, **kwargs) -> dict:
         if source not in self.documentations:
             return {"status": 1, "message": "Source not found."}
         _source = self.documentations[source]

@@ -115,7 +115,7 @@ class EditGistModal(discord.ui.Modal):
         self.add_item(self.description)
 
         self.old_file_filename: discord.ui.TextInput = discord.ui.TextInput(
-            label=f"Edit {self.file.name}'s name",
+            label=f"Edit {self.file.name[:33]}'s name",
             placeholder="Edit File name",
             default=self.file.name,
             style=discord.TextStyle.short,
@@ -124,14 +124,14 @@ class EditGistModal(discord.ui.Modal):
         )
         self.add_item(self.old_file_filename)
         self.old_file_content: discord.ui.TextInput = discord.ui.TextInput(
-            label=f"Edit {self.file.name}'s content",
+            label=f"Edit {self.file.name[:30]}'s content",
             placeholder="Edit File content "
             + (
                 "(Leave empty to delete the file)"
                 if len(self.gist.files) > 1
                 else "(Cannot delete last file)"
             ),
-            default=self.file.content,
+            default=self.file.content[:4000],
             style=discord.TextStyle.paragraph,
             custom_id="old_file_content",
             required=len(self.gist.files) <= 1,
@@ -162,6 +162,8 @@ class EditGistModal(discord.ui.Modal):
         old_file_old_name = self.file.name
         old_file_name = self.old_file_filename.value
         old_file_content = self.old_file_content.value
+        if old_file_content == self.file.content[:4000]:
+            old_file_content = self.file.content
         files = self.gist.files
         files.remove(self.file)
         if old_file_content != "":

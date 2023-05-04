@@ -24,19 +24,19 @@ Commands
 
 Here are all the commands included in this cog (5):
 
-* ``[p]CmdchanneL``
+* ``[p]cmdchannel <channel> <command>``
  Use `[p]cmdchannel`, `[p]cmduser` and `[p]cmduserchannel`.
 
-* ``[p]CmdchanneL channel <channel> <command>``
+* ``[p]cmdchannel channel <channel> <command>``
  Act as if the command had been typed in the channel of your choice.
 
-* ``[p]CmdchanneL testvar``
+* ``[p]cmdchannel testvar``
  Test variables.
 
-* ``[p]CmdchanneL user <user> <command>``
+* ``[p]cmdchannel user <user> <command>``
  Act as if the command had been typed by imitating the specified user.
 
-* ``[p]CmdchanneL userchannel <user> [channel=None] <command>``
+* ``[p]cmdchannel userchannel <user> [channel=None] <command>``
  Act as if the command had been typed in the channel of your choice by imitating the specified user.
 
 ------------

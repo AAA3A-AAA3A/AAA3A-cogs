@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils import Cog, CogsUtils, Menu, Settings  # isort:skip
+﻿from AAA3A_utils import Cog, CogsUtils, Menu, Settings  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -7,14 +7,13 @@ import typing  # isort:skip
 
 import io
 from copy import deepcopy
+from prettytable import PrettyTable
 
 from redbot.core.utils.chat_formatting import box, pagify
-from tabulate import tabulate
 
+from .dashboard_integration import DashboardIntegration
 from .view import MemoryGameView
 
-if CogsUtils().is_dpy2:  # To remove
-    setattr(commands, "Literal", typing.Literal)
 
 # Credits:
 # General repo credits.
@@ -23,16 +22,9 @@ if CogsUtils().is_dpy2:  # To remove
 
 _ = Translator("MemoryGame", __file__)
 
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
-
 
 @cog_i18n(_)
-class MemoryGame(Cog):
+class MemoryGame(DashboardIntegration, Cog):
     """A cog to play to Memory game, with buttons, leaderboard and Red bank!"""
 
     def __init__(self, bot: Red) -> None:
@@ -150,9 +142,9 @@ class MemoryGame(Cog):
         file = io.BytesIO(str(data).encode(encoding="utf-8"))
         return {f"{self.qualified_name}.json": file}
 
-    @hybrid_command()
+    @commands.hybrid_command()
     async def memorygame(
-        self, ctx: commands.Context, difficulty: commands.Literal["3x3", "4x4", "5x5"] = "5x5"
+        self, ctx: commands.Context, difficulty: typing.Literal["3x3", "4x4", "5x5"] = "5x5"
     ) -> None:
         """
         Play to Memory game. Choose between `3x3`, `4x4` and `5x5` versions.
@@ -165,7 +157,7 @@ class MemoryGame(Cog):
             cog=self, difficulty=difficulty, max_wrong_matches=max_wrong_matches
         ).start(ctx)
 
-    @hybrid_command()
+    @commands.hybrid_command()
     async def memorygameleaderboard(self, ctx: commands.Context) -> None:
         """
         Show MemoryGame leaderboard.
@@ -188,27 +180,22 @@ class MemoryGame(Cog):
             None,
         )
         embeds = []
-        table = []
+        table = PrettyTable()
+        table.field_names = ["#", "Name", "Score", "Wins", "Games"]
         for num in range(len(sorted_members)):
             place = num + 1
             member: discord.Member = sorted_members[num][0]
             data = sorted_members[num][1]
-            table.append(
+            table.add_row(
                 [
                     place,
-                    member.display_name if self.cogsutils.is_dpy2 else member.name,
+                    member.display_name,
                     data["score"],
                     data["wins"],
                     data["games"],
                 ]
             )
-        board = tabulate(
-            tabular_data=table,
-            headers=["#", "Name", "Score", "Wins", "Games"],
-            numalign="left",
-            stralign="left",
-        )
-        for page in pagify(board, page_length=2000):
+        for page in pagify(str(table), page_length=2000):
             embed = discord.Embed(title="MemoryGame Leaderboard")
             embed.description = box(page, lang="py")
             if you:
@@ -218,11 +205,12 @@ class MemoryGame(Cog):
 
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
-    @hybrid_group(name="setmemorygame")
+    @commands.hybrid_group(name="setmemorygame")
     async def configuration(self, ctx: commands.Context) -> None:
         """Group of commands to set MemoryGame."""
         pass
 
     @configuration.command()
     async def resetleaderboard(self, ctx: commands.Context) -> None:
+        """Reset leaderboard in the guild."""
         await self.config.clear_all_members(ctx.guild)

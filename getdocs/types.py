@@ -1,4 +1,4 @@
-from .AAA3A_utils import CogsUtils  # isort:skip
+from AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip

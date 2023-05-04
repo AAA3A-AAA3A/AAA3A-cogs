@@ -16,7 +16,7 @@
         "rtd",
         "readthedocs"
     ],
-    "requirements": ["sentry_sdk", "sphobjinv", "humanfriendly", "bs4", "lxml", "fuzzywuzzy"],
+    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "sphobjinv", "humanfriendly", "bs4", "lxml", "fuzzywuzzy"],
     "min_bot_version": "3.5.0.dev100",
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

@@ -28,19 +28,19 @@ Here are all the commands included in this cog (6):
  Group of commands to use DropdownsTexts.
 
 * ``[p]dropdownstexts add <message> <emoji> <label> <text>``
- Add a dropdown-text to a message.
+ Add a dropdown-text for a message.
 
 * ``[p]dropdownstexts bulk <message> [dropdown_texts]...``
- Add dropdown-texts to a message.
+ Add dropdown-texts for a message.
 
 * ``[p]dropdownstexts clear <message>``
- Clear a dropdown-texts to a message.
+ Clear a dropdown-texts for a message.
 
 * ``[p]dropdownstexts purge``
- Clear all dropdowns-texts to a **guild**.
+ Clear all dropdowns-texts for a guild.
 
 * ``[p]dropdownstexts remove <message> <emoji>``
- Remove a dropdown-text to a message.
+ Remove a dropdown-text for a message.
 
 ------------
 Installation

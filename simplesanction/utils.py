@@ -1,119 +1,16 @@
-from .AAA3A_utils import CogsUtils  # isort:skip
+from AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
-import typing  # isort:skip
 
 import asyncio
 
 from redbot.core.commands.converter import parse_timedelta
 from redbot.core.utils.predicates import MessagePredicate
 
-if not CogsUtils().is_dpy2:
-    from dislash import ActionRow, Button, ButtonStyle
-
 _ = Translator("SimpleSanction", __file__)
 
 
 class utils:
-    async def emojis(self) -> typing.Tuple:
-        buttons = [
-            "userinfo_button",
-            "warn_button",
-            "ban_button",
-            "softban_button",
-            "tempban_button",
-            "kick_button",
-            "mute_button",
-            "mutechannel_button",
-            "tempmute_button",
-            "tempmutechannel_button",
-            "close_button",
-        ]
-        buttons_one = ActionRow(
-            Button(
-                style=ButtonStyle.grey,
-                label="UserInfo",
-                emoji="ℹ️",
-                custom_id="userinfo_button",
-                self=self,
-            ),
-            Button(
-                style=ButtonStyle.grey,
-                label="Warn",
-                emoji="⚠️",
-                custom_id="warn_button",
-                self=self,
-            ),
-            Button(
-                style=ButtonStyle.grey,
-                label="Ban",
-                emoji="🔨",
-                custom_id="ban_button",
-                self=self,
-            ),
-            Button(
-                style=ButtonStyle.grey,
-                label="SoftBan",
-                emoji="🔂",
-                custom_id="softban_button",
-                self=self,
-            ),
-            Button(
-                style=ButtonStyle.grey,
-                label="TempBan",
-                emoji="💨",
-                custom_id="tempban_button",
-                self=self,
-            ),
-        )
-        buttons_two = ActionRow(
-            Button(
-                style=ButtonStyle.grey,
-                label="Kick",
-                emoji="👢",
-                custom_id="kick_button",
-                self=self,
-            ),
-            Button(
-                style=ButtonStyle.grey,
-                label="Mute",
-                emoji="🔇",
-                custom_id="mute_button",
-                self=self,
-            ),
-            Button(
-                style=ButtonStyle.grey,
-                label="MuteChannel",
-                emoji="👊",
-                custom_id="mutechannel_button",
-                self=self,
-            ),
-            Button(
-                style=ButtonStyle.grey,
-                label="TempMute",
-                emoji="⏳",
-                custom_id="tempmute_button",
-                self=self,
-            ),
-            Button(
-                style=ButtonStyle.grey,
-                label="TempMuteChannel",
-                emoji="⌛",
-                custom_id="tempmutechannel_button",
-                self=self,
-            ),
-        )
-        buttons_three = ActionRow(
-            Button(
-                style=ButtonStyle.grey,
-                label="Close",
-                emoji="❌",
-                custom_id="close_button",
-                self=self,
-            )
-        )
-        return buttons, buttons_one, buttons_two, buttons_three
-
     async def reason_ask(
         self,
         reason,
@@ -134,8 +31,8 @@ class utils:
         embed.color = actual_color
         embed.set_author(
             name=user.name,
-            url=user.display_avatar if CogsUtils().is_dpy2 else user.avatar_url,
-            icon_url=user.display_avatar if CogsUtils().is_dpy2 else user.avatar_url,
+            url=user.display_avatar,
+            icon_url=user.display_avatar,
         )
         message = await self.send(embed=embed)
         try:
@@ -168,8 +65,8 @@ class utils:
         embed.color = actual_color
         embed.set_author(
             name=user,
-            url=user.display_avatar if CogsUtils().is_dpy2 else user.avatar_url,
-            icon_url=user.display_avatar if CogsUtils().is_dpy2 else user.avatar_url,
+            url=user.display_avatar,
+            icon_url=user.display_avatar,
         )
         message = await self.send(embed=embed)
         try:
@@ -205,8 +102,8 @@ class utils:
             embed.color = actual_color
             embed.set_author(
                 name=user,
-                url=user.display_avatar if CogsUtils().is_dpy2 else user.avatar_url,
-                icon_url=user.display_avatar if CogsUtils().is_dpy2 else user.avatar_url,
+                url=user.display_avatar,
+                icon_url=user.display_avatar,
             )
             if reason == "not":
                 embed.add_field(
@@ -254,15 +151,13 @@ class utils:
         embed.color = actual_color
         embed.set_author(
             name=user,
-            url=user.display_avatar if CogsUtils().is_dpy2 else user.avatar_url,
-            icon_url=user.display_avatar if CogsUtils().is_dpy2 else user.avatar_url,
+            url=user.display_avatar,
+            icon_url=user.display_avatar,
         )
         if show_author:
             embed.set_footer(
                 text=self.author,
-                icon_url=self.author.display_avatar
-                if CogsUtils().is_dpy2
-                else self.author.avatar_url,
+                icon_url=self.author.display_avatar,
             )
         embed.add_field(
             inline=False,

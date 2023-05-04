@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
+﻿from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -15,20 +15,14 @@ import types
 from copy import copy
 
 import rich
-from redbot.core.utils.chat_formatting import bold, box, pagify
+from redbot.core.dev_commands import cleanup_code, sanitize_output
+from redbot.core.utils.chat_formatting import bold, box
 
 # Credits:
 # General repo credits.
 # Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel.
 
 _ = Translator("CtxVar", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 @cog_i18n(_)
@@ -41,17 +35,17 @@ class CtxVar(Cog):
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.is_owner()
-    @commands.bot_has_permissions(embed_links=True, add_reactions=True)
-    @hybrid_group()
+    @commands.hybrid_group(invoke_without_subcommand=True)
     async def ctxvar(self, ctx: commands.Context) -> None:
         """Commands for CtxVar."""
         pass
 
+    @commands.is_owner()
     @ctxvar.command()
     async def ctx(
         self,
         ctx: commands.Context,
-        message: typing.Optional[discord.ext.commands.converter.MessageConverter] = None,
+        message: typing.Optional[commands.MessageConverter] = None,
         args: typing.Optional[str] = None,
     ) -> None:
         """Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."""
@@ -100,7 +94,7 @@ class CtxVar(Cog):
                             name=f"{x}",
                             value=box(
                                 self.cogsutils.replace_var_paths(
-                                    Dev.sanitize_output(ctx, str(getattr(instance, x))[:100])
+                                    sanitize_output(ctx, str(getattr(instance, x))[:100])
                                 ),
                                 "py",
                             ),
@@ -111,6 +105,7 @@ class CtxVar(Cog):
 
         await Menu(pages=embeds).start(ctx)
 
+    @commands.is_owner()
     @ctxvar.command(name="dir")
     async def _dir(
         self, ctx: commands.Context, thing: str, search: typing.Optional[str] = None
@@ -121,7 +116,7 @@ class CtxVar(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("The cog Dev must be loaded, to make sure you know what you are doing.")
             )
-        thing = Dev.cleanup_code(thing)
+        thing = cleanup_code(thing)
         env = Dev.get_environment(ctx)
         env["getattr_static"] = inspect.getattr_static
         try:
@@ -157,10 +152,11 @@ class CtxVar(Cog):
             del result[-1]
             result = "".join(result)
         result += "\n]"
-        result = self.cogsutils.replace_var_paths(Dev.sanitize_output(ctx, result))
+        result = self.cogsutils.replace_var_paths(sanitize_output(ctx, result))
 
         await Menu(pages=result.strip(), lang="py").start(ctx)
 
+    @commands.is_owner()
     @ctxvar.command(name="inspect")
     async def _inspect(
         self, ctx: commands.Context, show_all: typing.Optional[bool], *, thing: str
@@ -171,7 +167,7 @@ class CtxVar(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("The cog Dev must be loaded, to make sure you know what you are doing.")
             )
-        thing = Dev.cleanup_code(thing)
+        thing = cleanup_code(thing)
         env = Dev.get_environment(ctx)
         env["getattr_static"] = inspect.getattr_static
         try:
@@ -233,7 +229,7 @@ class CtxVar(Cog):
                     console=console,
                 )
             result = console.file.getvalue()
-        result = self.cogsutils.replace_var_paths(Dev.sanitize_output(ctx, result))
+        result = self.cogsutils.replace_var_paths(sanitize_output(ctx, result))
 
         await Menu(pages=result.strip(), lang="py").start(ctx)
 
@@ -243,15 +239,16 @@ class CtxVar(Cog):
                 discord.Guild,
                 discord.TextChannel,
                 discord.VoiceChannel,
+                discord.ForumChannel,
+                discord.Thread,
+                discord.Invite,
                 discord.Member,
                 discord.User,
                 discord.Role,
                 discord.Emoji,
+                discord.Message,
             ]
-            try:
-                _types.extend([discord.Thread, discord.ForumChannel])
-            except AttributeError:
-                pass
+            # _types = list(discord.ext.commands.converter.CONVERTER_MAPPING.keys())[1:]
             for _type in _types:
                 try:
                     return await discord.ext.commands.converter.CONVERTER_MAPPING[_type]().convert(
@@ -259,18 +256,12 @@ class CtxVar(Cog):
                     )
                 except commands.BadArgument:
                     pass
-            return argument
-
-    @ctxvar.command(name="whatis")
-    async def _whatis(self, ctx: commands.Context, *, thing: WhatIsConverter) -> None:
-        """List attributes of the provided object like dpy objects (debug not async)."""
-        Dev = ctx.bot.get_cog("Dev")
-        if not Dev:
-            raise commands.UserFeedbackCheckFailure(
-                _("The cog Dev must be loaded, to make sure you know what you are doing.")
-            )
-        if isinstance(thing, str):
-            thing = Dev.cleanup_code(thing)
+            Dev = ctx.bot.get_cog("Dev")
+            if not Dev:
+                raise commands.UserFeedbackCheckFailure(
+                    _("No Discord object found.")
+                )
+            thing = cleanup_code(argument)
             env = Dev.get_environment(ctx)
             env["getattr_static"] = inspect.getattr_static
             try:
@@ -293,8 +284,12 @@ class CtxVar(Cog):
                 raise commands.UserFeedbackCheckFailure(
                     box("".join(traceback.format_exception_only(type(e), e)), lang="py")
                 )
-        else:
-            _object = thing
+            return _object
+
+    @ctxvar.command(name="whatis")
+    async def _whatis(self, ctx: commands.Context, *, thing: WhatIsConverter) -> None:
+        """List attributes of the provided object like dpy objects (debug not async)."""
+        _object = thing
         if hasattr(_object, "original_context") and isinstance(
             _object.original_context, commands.Context
         ):
@@ -349,7 +344,7 @@ class CtxVar(Cog):
                         ts += f"{output[2]} minute ago"
                     elif output[2] > 1:
                         ts += f"{output[2]} minutes ago"
-                value = ts
+                value = f"{value} ({ts})"
             elif isinstance(value, discord.Asset):
                 value = str(value)
             elif hasattr(value, "display_name") and hasattr(value, "id"):
@@ -366,5 +361,5 @@ class CtxVar(Cog):
                 value if isinstance(value, str) else repr(value)
             )
         result.update(**result2)
-        _result = Dev.sanitize_output(ctx, "".join(f"\n[{k}] : {r}" for k, r in result.items()))
+        _result = sanitize_output(ctx, "".join(f"\n[{k}] : {r}" for k, r in result.items()))
         await Menu(pages=_result.strip(), lang="ini").start(ctx)

@@ -32,7 +32,7 @@ msgstr ""
 
 #: dropdownstexts\dropdownstexts.py:230
 #, docstring
-msgid "Add a dropdown-text to a message."
+msgid "Add a dropdown-text for a message."
 msgstr ""
 
 #: dropdownstexts\dropdownstexts.py:233 dropdownstexts\dropdownstexts.py:296
@@ -64,7 +64,7 @@ msgstr ""
 
 #: dropdownstexts\dropdownstexts.py:293
 #, docstring
-msgid "Add dropdown-texts to a message."
+msgid "Add dropdown-texts for a message."
 msgstr ""
 
 #: dropdownstexts\dropdownstexts.py:315
@@ -75,7 +75,7 @@ msgstr ""
 
 #: dropdownstexts\dropdownstexts.py:360
 #, docstring
-msgid "Remove a dropdown-text to a message."
+msgid "Remove a dropdown-text for a message."
 msgstr ""
 
 #: dropdownstexts\dropdownstexts.py:368 dropdownstexts\dropdownstexts.py:399
@@ -88,12 +88,12 @@ msgstr ""
 
 #: dropdownstexts\dropdownstexts.py:391
 #, docstring
-msgid "Clear a dropdown-texts to a message."
+msgid "Clear a dropdown-texts for a message."
 msgstr ""
 
 #: dropdownstexts\dropdownstexts.py:413
 #, docstring
-msgid "Clear all dropdowns-texts to a **guild**."
+msgid "Clear all dropdowns-texts for a guild."
 msgstr ""
 
 #: dropdownstexts\dropdownstexts.py:442 dropdownstexts\dropdownstexts.py:472

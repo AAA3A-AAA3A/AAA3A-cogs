@@ -28,22 +28,22 @@ Here are all the commands included in this cog (7):
  Group of commands to use RolesButtons.
 
 * ``[p]rolesbuttons add <message> <emoji> <role> ["1"|"2"|"3"|"4"=2] [text_button=None]``
- Add a role-button to a message.
+ Add a role-button for a message.
 
 * ``[p]rolesbuttons bulk <message> [roles_buttons]...``
- Add roles-buttons to a message.
+ Add roles-buttons for a message.
 
 * ``[p]rolesbuttons clear <message>``
- Clear all roles-buttons to a message.
+ Clear all roles-buttons for a message.
 
 * ``[p]rolesbuttons mode <message> <"add_or_remove"|"add_only"|"remove_only">``
  Choose a mode for a roles-buttons message.
 
 * ``[p]rolesbuttons purge``
- Clear all roles-buttons to a **guild**.
+ Clear all roles-buttons for a guild.
 
 * ``[p]rolesbuttons remove <message> <emoji>``
- Remove a role-button to a message.
+ Remove a role-button for a message.
 
 ------------
 Installation

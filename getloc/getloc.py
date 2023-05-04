@@ -1,4 +1,4 @@
-from .AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -19,13 +19,6 @@ from mpl_toolkits.basemap import Basemap
 # Thanks to this tutorial (https://makersportal.com/blog/2018/8/16/rotating-globe-in-python-using-basemap-toolkit) for the map!
 
 _ = Translator("GetLoc", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 @cog_i18n(_)
@@ -109,7 +102,7 @@ class GetLoc(Cog):
         return _map
 
     @commands.cooldown(rate=3, per=3600, type=commands.BucketType.member)
-    @hybrid_command()
+    @commands.hybrid_command()
     async def getloc(
         self,
         ctx: commands.Context,
@@ -160,17 +153,11 @@ class GetLoc(Cog):
                 latitude=localisation.latitude,
                 longitude=localisation.longitude,
             )
-            if self.cogsutils.is_dpy2:
-                file = discord.File(
-                    fp=_map,
-                    filename="map.png",
-                    description=str(localisation.raw.get("display_name", None)),
-                )
-            else:
-                file = discord.File(
-                    fp=_map,
-                    filename="map.png",
-                )
+            file = discord.File(
+                fp=_map,
+                filename="map.png",
+                description=str(localisation.raw.get("display_name", None)),
+            )
         else:
             file = None
 

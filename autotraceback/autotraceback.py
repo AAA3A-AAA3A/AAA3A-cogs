@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
+﻿from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -15,13 +15,6 @@ from .dashboard_integration import DashboardIntegration
 # General repo credits.
 
 _ = Translator("AutoTraceback", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 IGNORED_ERRORS = (
     commands.UserInputError,
@@ -48,7 +41,7 @@ class AutoTraceback(DashboardIntegration, Cog):
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.is_owner()
-    @hybrid_command()
+    @commands.hybrid_command()
     async def traceback(self, ctx: commands.Context, public: bool = True) -> None:
         """Sends to the owner the last command exception that has occurred.
 

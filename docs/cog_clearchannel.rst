@@ -30,16 +30,16 @@ Here are all the commands included in this cog (9):
 * ``[p]setclearchannel``
  Configure ClearChannel for your server.
 
-* ``[p]setclearchannel custommessage [custom_message]``
+* ``[p]setclearchannel custommessage <custom_message>``
  Specify a custom message to be sent from the link of another message or a json (https://discohook.org/ for example).
 
-* ``[p]setclearchannel deletechannel [delete_channel]``
+* ``[p]setclearchannel deletechannel <delete_channel>``
  If this option is disabled, the bot will not delete the original channel: it will duplicate it as normal, but move it to the end of the server's channel list.
 
-* ``[p]setclearchannel dmauthor [dm_author]``
+* ``[p]setclearchannel dmauthor <dm_author>``
  If this option is enabled, the bot will try to send a dm to the author of the order to confirm that everything went well.
 
-* ``[p]setclearchannel firstmessage [first_message]``
+* ``[p]setclearchannel firstmessage <first_message>``
  If this option is enabled, the bot will send a message to the emptied channel to inform that it has been emptied.
 
 * ``[p]setclearchannel modalconfig [confirmation=False]``

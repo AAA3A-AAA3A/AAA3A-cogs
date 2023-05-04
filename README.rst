@@ -117,6 +117,10 @@ Credits
 
 * Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
 
+* Thanks to Lemon for his help and many cogs ideas!
+
+* Thanks to WitherredAway for the Draw cog!
+
 * Thanks to amyrinbot on GitHub for a part of the GetDocs cog's code!
 
 -------

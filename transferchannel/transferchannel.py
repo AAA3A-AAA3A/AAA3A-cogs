@@ -1,4 +1,4 @@
-from .AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -6,9 +6,6 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 from redbot.core.utils.tunnel import Tunnel
-
-if CogsUtils().is_dpy2:
-    setattr(commands, "Literal", typing.Literal)  # To remove
 
 # Credits:
 # General repo credits.
@@ -19,13 +16,6 @@ if CogsUtils().is_dpy2:
 # Thanks to CruxCraft on GitHub for the idea of allowing channels from other servers! (https://github.com/AAA3A-AAA3A/AAA3A-cogs/issues/1)
 
 _ = Translator("TransferChannel", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 RESULT_MESSAGE = "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
 
@@ -45,7 +35,7 @@ class TransferChannel(Cog):
         assert isinstance(channel, discord.TextChannel), "mypy"  # nosec
         guild = channel.guild
         author = message.author
-        avatar = author.display_avatar if self.cogsutils.is_dpy2 else author.avatar_url
+        avatar = author.display_avatar
         footer = f"Said in {guild.name} #{channel.name}."
         try:
             color = author.color if author.color.value != 0 else None
@@ -56,14 +46,14 @@ class TransferChannel(Cog):
             em.color = color
         em.set_author(name=f"{author.name}", icon_url=avatar)
         em.set_footer(
-            icon_url=guild.icon or "" if self.cogsutils.is_dpy2 else guild.icon_url or "",
+            icon_url=guild.icon,
             text=footer,
         )
         if message.attachments:
             a = message.attachments[0]
             fname = a.filename
             url = a.url
-            if fname.split(".")[-1] in ["png", "jpg", "gif", "jpeg"]:
+            if fname.split(".")[-1] in ["WEBP", "jpg", "gif", "jpeg"]:
                 em.set_image(url=url)
             else:
                 em.add_field(
@@ -151,9 +141,7 @@ class TransferChannel(Cog):
                 hook = await self.cogsutils.get_hook(destination)
                 await hook.send(
                     username=message.author.display_name,
-                    avatar_url=message.author.display_avatar
-                    if self.cogsutils.is_dpy2
-                    else message.author.avatar_url,
+                    avatar_url=message.author.display_avatar,
                     content=message.content,
                     files=files,
                 )
@@ -184,7 +172,7 @@ class TransferChannel(Cog):
         return count_messages, messages
 
     @commands.guildowner_or_permissions(administrator=True)
-    @hybrid_group(name="transferchannel", aliases=["channeltransfer"])
+    @commands.hybrid_group(name="transferchannel", aliases=["channeltransfer"])
     async def transferchannel(self, ctx: commands.Context) -> None:
         """Transfer all messages channel in a other channel. This might take a long time.
         You can specify the id of a channel from another server.
@@ -203,7 +191,7 @@ class TransferChannel(Cog):
         ctx: commands.Context,
         source: discord.TextChannel,
         destination: discord.TextChannel,
-        way: commands.Literal["embeds", "webhooks", "messages"],
+        way: typing.Literal["embeds", "webhooks", "messages"],
     ) -> None:
         """Transfer all messages channel in a other channel. This might take a long time.
 
@@ -228,7 +216,7 @@ class TransferChannel(Cog):
         ctx: commands.Context,
         source: discord.TextChannel,
         destination: discord.TextChannel,
-        way: commands.Literal["embeds", "webhooks", "messages"],
+        way: typing.Literal["embeds", "webhooks", "messages"],
         limit: int,
     ) -> None:
         """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
@@ -259,7 +247,7 @@ class TransferChannel(Cog):
         ctx: commands.Context,
         source: discord.TextChannel,
         destination: discord.TextChannel,
-        way: commands.Literal["embeds", "webhooks", "messages"],
+        way: typing.Literal["embeds", "webhooks", "messages"],
         before: discord.Message,
     ) -> None:
         """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
@@ -286,7 +274,7 @@ class TransferChannel(Cog):
         ctx: commands.Context,
         source: discord.TextChannel,
         destination: discord.TextChannel,
-        way: commands.Literal["embeds", "webhooks", "messages"],
+        way: typing.Literal["embeds", "webhooks", "messages"],
         after: discord.Message,
     ) -> None:
         """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
@@ -313,7 +301,7 @@ class TransferChannel(Cog):
         ctx: commands.Context,
         source: discord.TextChannel,
         destination: discord.TextChannel,
-        way: commands.Literal["embeds", "webhooks", "messages"],
+        way: typing.Literal["embeds", "webhooks", "messages"],
         before: discord.Message,
         after: discord.Message,
     ) -> None:
@@ -335,40 +323,38 @@ class TransferChannel(Cog):
             )
         )
 
-    if CogsUtils().is_dpy2:
+    @transferchannel.command()
+    async def user(
+        self,
+        ctx: commands.Context,
+        source: discord.TextChannel,
+        destination: discord.TextChannel,
+        way: typing.Literal["embeds", "webhooks", "messages"],
+        user: discord.User,
+        limit: typing.Optional[int] = None,
+    ) -> None:
+        """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
 
-        @transferchannel.command()
-        async def user(
-            self,
-            ctx: commands.Context,
-            source: discord.TextChannel,
-            destination: discord.TextChannel,
-            way: commands.Literal["embeds", "webhooks", "messages"],
-            user: discord.User,
-            limit: typing.Optional[int] = None,
-        ) -> None:
-            """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
-
-            Specify the member (id, name or mention).
-            Remember that transfering other users' messages in does not respect the TOS.
-            """
-            if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
-                await ctx.send_help()
-                return
-            await self.check_channels(ctx, source, destination, way)
-            count_messages, messages = await self.transfer_messages(
-                ctx,
-                source=source,
-                destination=destination,
-                way=way,
-                user_id=user.id if isinstance(user, discord.Member) else user,
-                limit=limit,
+        Specify the member (id, name or mention).
+        Remember that transfering other users' messages in does not respect the TOS.
+        """
+        if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
+            await ctx.send_help()
+            return
+        await self.check_channels(ctx, source, destination, way)
+        count_messages, messages = await self.transfer_messages(
+            ctx,
+            source=source,
+            destination=destination,
+            way=way,
+            user_id=user.id if isinstance(user, discord.Member) else user,
+            limit=limit,
+        )
+        await ctx.send(
+            _(RESULT_MESSAGE).format(
+                count_messages=count_messages, source=source, destination=destination
             )
-            await ctx.send(
-                _(RESULT_MESSAGE).format(
-                    count_messages=count_messages, source=source, destination=destination
-                )
-            )
+        )
 
     @transferchannel.command()
     async def bot(
@@ -376,7 +362,7 @@ class TransferChannel(Cog):
         ctx: commands.Context,
         source: discord.TextChannel,
         destination: discord.TextChannel,
-        way: commands.Literal["embeds", "webhooks", "messages"],
+        way: typing.Literal["embeds", "webhooks", "messages"],
         bot: typing.Optional[bool] = True,
         limit: typing.Optional[int] = None,
     ) -> None:

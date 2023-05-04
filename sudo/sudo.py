@@ -14,7 +14,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-from .AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -30,13 +30,6 @@ from copy import copy
 # The idea for this cog came from Jack and Draper! This PR will take time, so I'm making it. If one day this one is integrated into Red, this cog may make it easier to manage. (https://github.com/Cog-Creators/Red-DiscordBot/pull/5419)
 
 _ = Translator("Sudo", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 TimeDeltaConverter: commands.converter.timedelta = commands.TimedeltaConverter(
     minimum=datetime.timedelta(seconds=10),
@@ -59,19 +52,10 @@ class Sudo(Cog):
         self.all_owner_ids = copy(self.bot.owner_ids)
         self.bot.owner_ids.clear()
 
-    if CogsUtils().is_dpy2:
-
-        async def cog_unload(self):
-            self.bot.owner_ids.update(copy(self.all_owner_ids))
-            self.all_owner_ids.clear()
-            self.cogsutils._end()
-
-    else:
-
-        def cog_unload(self):
-            self.bot.owner_ids.update(copy(self.all_owner_ids))
-            self.all_owner_ids.clear()
-            self.cogsutils._end()
+    async def cog_unload(self):
+        self.bot.owner_ids.update(copy(self.all_owner_ids))
+        self.all_owner_ids.clear()
+        self.cogsutils._end()
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message):
@@ -106,7 +90,7 @@ class Sudo(Cog):
         return commands.check(pred)
 
     @decorator(all_owner_ids=True, bot_owner_ids=True)
-    @hybrid_group(name="sudo", invoke_without_command=True)
+    @commands.hybrid_group(name="sudo", invoke_without_command=True)
     async def Sudo(self, ctx: commands.Context, *, command: str):
         """Use `[p]su`, `[p]unsu`, `[p]sudo` and `[p]sutimeout`."""
         if ctx.invoked_subcommand is None:
@@ -152,8 +136,7 @@ class Sudo(Cog):
                 ctx.bot.owner_ids.remove(ctx.author.id)
             except KeyError:
                 pass
-        if self.cogsutils.is_dpy2:
-            await ctx.defer()
+        await ctx.defer()
 
     # Thanks to red#5419 for this command.
     @decorator(all_owner_ids=True, bot_owner_ids=False)

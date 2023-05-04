@@ -1,27 +1,18 @@
-from .AAA3A_utils import CogsUtils  # isort:skip
+from AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-if CogsUtils().is_dpy2:  # To remove
-    setattr(commands, "Literal", typing.Literal)
 
 _ = Translator("SimpleSanction", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 @cog_i18n(_)
 class settings(commands.Cog):
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
-    @hybrid_group(name="setsimplesanction", aliases=["simplesanctionset"])
+    @commands.hybrid_group(name="setsimplesanction", aliases=["simplesanctionset"])
     async def configuration(self, ctx: commands.Context) -> None:
         """Configure SimpleSanction for your server."""
         pass
@@ -33,7 +24,7 @@ class settings(commands.Cog):
         self,
         ctx: commands.Context,
         *,
-        color: typing.Optional[discord.ext.commands.converter.ColorConverter] = None,
+        color: typing.Optional[commands.ColorConverter] = None,
     ) -> None:
         """Set a color for the embed.
 
@@ -171,7 +162,7 @@ class settings(commands.Cog):
 
     @configuration.command(name="way", aliases=["wayused"])
     async def buttonsuse(
-        self, ctx: commands.Context, way: commands.Literal["buttons", "dropdown", "reactions"]
+        self, ctx: commands.Context, way: typing.Literal["buttons", "dropdown", "reactions"]
     ) -> None:
         """Enable or disable Buttons Use
 

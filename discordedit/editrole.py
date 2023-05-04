@@ -1,22 +1,50 @@
-from .AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import box
+from redbot.core.utils.chat_formatting import box, pagify
 
 _ = Translator("DiscordEdit", __file__)
 
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
-
 ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+
+
+class PositionConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> int:
+        try:
+            position = int(argument)
+        except ValueError:
+            raise commands.BadArgument(_("The position must be an integer."))
+        max_guild_roles_position = len(ctx.guild.roles)
+        if position <= 0 or position >= max_guild_roles_position + 1:
+            raise commands.BadArgument(
+                _(
+                    "The indicated position must be between 1 and {max_guild_roles_position}."
+                ).format(max_guild_roles_position=max_guild_roles_position)
+            )
+        _list = list(range(max_guild_roles_position - 1))
+        _list.reverse()
+        position = _list[position - 1]
+        return position + 1
+
+class PermissionsConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> discord.Permissions:
+        try:
+            permissions = int(argument)
+        except ValueError:
+            raise commands.BadArgument(_("The permissions must be an integer."))
+        permissions_none = discord.Permissions.none().value
+        permissions_all = discord.Permissions.all().value
+        if permissions <= permissions_none or permissions >= permissions_all:
+            raise commands.BadArgument(
+                _(
+                    "The indicated permissions value must be between {permissions_none} and {permissions_all}."
+                ).format(permissions_none=permissions_none, permissions_all=permissions_all)
+            )
+        return discord.Permissions(permissions=permissions)
 
 
 @cog_i18n(_)
@@ -52,7 +80,7 @@ class EditRole(Cog):
     @commands.guild_only()
     @commands.admin_or_permissions(manage_roles=True)
     @commands.bot_has_guild_permissions(manage_roles=True)
-    @hybrid_group()
+    @commands.hybrid_group()
     async def editrole(self, ctx: commands.Context) -> None:
         """Commands for edit a role."""
         pass
@@ -61,7 +89,7 @@ class EditRole(Cog):
     async def editrole_create(
         self,
         ctx: commands.Context,
-        color: typing.Optional[discord.ext.commands.converter.ColorConverter] = None,
+        color: typing.Optional[commands.ColorConverter] = None,
         *,
         name: str,
     ) -> None:
@@ -76,6 +104,26 @@ class EditRole(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
+
+    @editrole.command(name="list")
+    async def editrole_list(
+        self,
+        ctx: commands.Context,
+    ) -> None:
+        """List all roles in the current guild."""
+        description = "".join(
+            f"\n**•** **{len(ctx.guild.roles) - role.position}** - {role.mention} ({role.id}) - {len(role.members)} members"
+            for role in sorted(ctx.guild.roles, key=lambda x: x.position, reverse=True)
+        )
+        embed: discord.Embed = discord.Embed(color=await ctx.embed_color())
+        embed.title = _("List of roles in {guild.name} ({guild.id})").format(guild=ctx.guild)
+        embeds = []
+        pages = pagify(description, page_length=4096)
+        for page in pages:
+            e = embed.copy()
+            e.description = page
+            embeds.append(e)
+        await Menu(pages=embeds).start(ctx)
 
     @editrole.command(name="name")
     async def editrole_name(self, ctx: commands.Context, role: discord.Role, *, name: str) -> None:
@@ -123,24 +171,6 @@ class EditRole(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    class PositionConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, argument: str) -> int:
-            try:
-                position = int(argument)
-            except ValueError:
-                raise commands.BadArgument(_("The position must be an integer."))
-            max_guild_roles_position = len(ctx.guild.roles)
-            if position <= 0 or position >= max_guild_roles_position + 1:
-                raise commands.BadArgument(
-                    _(
-                        "The indicated position must be between 1 and {max_guild_roles_position}."
-                    ).format(max_guild_roles_position=max_guild_roles_position)
-                )
-            _list = list(range(max_guild_roles_position - 1))
-            _list.reverse()
-            position = _list[position - 1]
-            return position + 1
-
     @editrole.command(name="position")
     async def editrole_position(
         self, ctx: commands.Context, role: discord.Role, position: PositionConverter
@@ -159,22 +189,6 @@ class EditRole(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
-
-    class PermissionsConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, argument: str) -> discord.Permissions:
-            try:
-                permissions = int(argument)
-            except ValueError:
-                raise commands.BadArgument(_("The permissions must be an integer."))
-            permissions_none = discord.Permissions.none().value
-            permissions_all = discord.Permissions.all().value
-            if permissions <= permissions_none or permissions >= permissions_all:
-                raise commands.BadArgument(
-                    _(
-                        "The indicated permissions value must be between {permissions_none} and {permissions_all}."
-                    ).format(permissions_none=permissions_none, permissions_all=permissions_all)
-                )
-            return discord.Permissions(permissions=permissions)
 
     @editrole.command(name="permissions")
     async def editrole_permissions(

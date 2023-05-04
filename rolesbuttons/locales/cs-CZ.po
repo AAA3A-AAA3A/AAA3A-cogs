@@ -88,7 +88,7 @@ msgstr "Odebral jsem ti roli {role.mention} ({role.id})."
 
 #: rolesbuttons\rolesbuttons.py:293
 #, docstring
-msgid "Add a role-button to a message.\n\n"
+msgid "Add a role-button for a message.\n\n"
 "        `primary`: 1\n"
 "        `secondary`: 2\n"
 "        `success`: 3\n"
@@ -134,7 +134,7 @@ msgstr "Nemohu přiřadit více než 25 rolí tlačítek pro jednu zprávu."
 
 #: rolesbuttons\rolesbuttons.py:369
 #, docstring
-msgid "Add roles-buttons to a message.\n\n"
+msgid "Add roles-buttons for a message.\n\n"
 "        ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```\n"
 "        "
 msgstr "Přidejte do zprávy tlačítka rolí.\n\n"
@@ -151,7 +151,7 @@ msgstr ""
 
 #: rolesbuttons\rolesbuttons.py:436
 #, docstring
-msgid "Remove a role-button to a message."
+msgid "Remove a role-button for a message."
 msgstr "Odebrat tlačítko rolí ze zprávy."
 
 #: rolesbuttons\rolesbuttons.py:446 rolesbuttons\rolesbuttons.py:486
@@ -164,11 +164,11 @@ msgstr "Nesledoval jsem toto tlačítko v této zprávě."
 
 #: rolesbuttons\rolesbuttons.py:476
 #, docstring
-msgid "Clear all roles-buttons to a message."
+msgid "Clear all roles-buttons for a message."
 msgstr "Vymazat všechna tlačítka rolí ze zprávy."
 
 #: rolesbuttons\rolesbuttons.py:500
 #, docstring
-msgid "Clear all roles-buttons to a **guild**."
+msgid "Clear all roles-buttons for a guild."
 msgstr "Vymazat všechna tlačítka rolí do **klanu**."
 

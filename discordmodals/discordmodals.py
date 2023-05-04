@@ -1,5 +1,4 @@
-from .AAA3A_utils import Cog, CogsUtils  # isort:skip
-from .AAA3A_utils import Buttons, Modal  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Buttons, Modal  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -12,13 +11,6 @@ import yaml
 # General repo credits.
 
 _ = Translator("DiscordModals", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 class YAMLConverter(commands.Converter):
@@ -312,7 +304,7 @@ class DiscordModals(Cog):
 
     @commands.guild_only()
     @commands.mod_or_permissions(manage_guild=True)
-    @hybrid_group()
+    @commands.hybrid_group()
     async def discordmodals(self, ctx: commands.Context) -> None:
         """Group of commands to use ReactToCommand."""
         pass
@@ -321,7 +313,7 @@ class DiscordModals(Cog):
     async def add(
         self, ctx: commands.Context, message: discord.Message, *, argument: YAMLConverter
     ) -> None:
-        """Add a Modal to a message.
+        """Add a Modal for a message.
         Use YAML syntax to set up everything.
 
         **Example:**
@@ -389,7 +381,7 @@ class DiscordModals(Cog):
 
     @discordmodals.command()
     async def remove(self, ctx: commands.Context, message: discord.Message) -> None:
-        """Remove a Modal to a message."""
+        """Remove a Modal for a message."""
         if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the Modal to work.")
@@ -406,5 +398,5 @@ class DiscordModals(Cog):
 
     @discordmodals.command(hidden=True)
     async def purge(self, ctx: commands.Context) -> None:
-        """Clear all Modals to a **guild**."""
+        """Clear all Modals for a guild."""
         await self.config.guild(ctx.guild).modals.clear()

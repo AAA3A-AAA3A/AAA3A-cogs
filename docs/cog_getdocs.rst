@@ -16,31 +16,46 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to get and display Sphinx docs! Use `[p]listsources` to get a list of all the available sources.
+A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources.
 
 --------
 Commands
 --------
 
-Here are all the commands included in this cog (6):
+Here are all the commands included in this cog (11):
 
-* ``[p]getdocs [source=discord.py] [query=None]``
+* ``[p]getdocs [source=None] [query=None]``
  View rich documentation for a specific node/query.
 
-* ``[p]listsources ["available"|"all"|"disabled"=available]``
+* ``[p]listsources [_sorted=False] ["available"|"all"|"disabled"=available]``
  Shows a list of all sources, those that are available or those that are disabled.
 
-* ``[p]rtfm [source=discord.py] [limit=10] [with_std=True] [query=None]``
+* ``[p]rtfm [source=None] [limit=10] [with_std=True] [query]``
  Show all attributes matching your search.
 
 * ``[p]setgetdocs``
  Commands to configure GetDocs.
 
+* ``[p]setgetdocs caching <caching>``
+ Enable or disable Documentations caching when loading the cog.
+
+* ``[p]setgetdocs defaultsource <default_source>``
+ Set the documentations source.
+
 * ``[p]setgetdocs disablesource <source>``
- Disable a documentations source.
+ Disable a Documentations source.
 
 * ``[p]setgetdocs enablesource <source>``
- Enable a documentations source.
+ Enable a Documentations source.
+
+* ``[p]setgetdocs modalconfig [confirmation=False]``
+ Set all settings for the cog with a Discord Modal.
+
+* ``[p]setgetdocs resetsetting <setting>``
+ Reset a setting.
+
+* ``[p]setgetdocs showsettings [with_dev=False]``
+ Show all settings for the cog with defaults and values.
 
 ------------
 Installation

@@ -25,7 +25,7 @@ Commands
 Here are all the commands included in this cog (21):
 
 * ``[p]medicat``
- Commands of the Medicat cog.
+ Commands of Medicat cog.
 
 * ``[p]medicat customtools``
  Can I add my own bootable tools (iso, wim, vhd) or PortableApps softwares to Medicat USB?

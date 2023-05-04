@@ -39,7 +39,7 @@ msgstr ""
 #: commandsbuttons\commandsbuttons.py:275
 #, docstring
 msgid ""
-"Add a command-button to a message.\n"
+"Add a command-button for a message.\n"
 "\n"
 "        `primary`: 1\n"
 "        `secondary`: 2\n"
@@ -84,7 +84,7 @@ msgstr ""
 #: commandsbuttons\commandsbuttons.py:348
 #, docstring
 msgid ""
-"Add commands-buttons to a message.\n"
+"Add commands-buttons for a message.\n"
 "\n"
 "        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
 "        "
@@ -106,7 +106,7 @@ msgstr ""
 
 #: commandsbuttons\commandsbuttons.py:405
 #, docstring
-msgid "Remove a command-button to a message."
+msgid "Remove a command-button for a message."
 msgstr ""
 
 #: commandsbuttons\commandsbuttons.py:413
@@ -120,7 +120,7 @@ msgstr ""
 
 #: commandsbuttons\commandsbuttons.py:436
 #, docstring
-msgid "Clear all commands-buttons to a message."
+msgid "Clear all commands-buttons for a message."
 msgstr ""
 
 #: commandsbuttons\commandsbuttons.py:439
@@ -129,7 +129,7 @@ msgstr ""
 
 #: commandsbuttons\commandsbuttons.py:458
 #, docstring
-msgid "Clear all commands-buttons to a **guild**."
+msgid "Clear all commands-buttons for a guild."
 msgstr ""
 
 #: commandsbuttons\converters.py:35

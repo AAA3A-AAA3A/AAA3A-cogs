@@ -22,7 +22,7 @@ A cog to list and display the contents of all sub-functions of `ctx`!
 Commands
 --------
 
-Here are all the commands included in this cog (4):
+Here are all the commands included in this cog (5):
 
 * ``[p]ctxvar``
  Commands for CtxVar.
@@ -35,6 +35,9 @@ Here are all the commands included in this cog (4):
 
 * ``[p]ctxvar inspect [show_all] <thing>``
  Execute `rich.help(obj=object, ...)` on the provided object (debug not async).
+
+* ``[p]ctxvar whatis <thing>``
+ List attributes of the provided object like dpy objects (debug not async).
 
 ------------
 Installation

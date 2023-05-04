@@ -1,9 +1,4 @@
-from .AAA3A_utils import CogsUtils  # isort:skip
-
-if CogsUtils().is_dpy2:
-    from .AAA3A_utils import Buttons, Dropdown  # isort:skip
-else:
-    from dislash import ActionRow, Button, ButtonStyle, SelectMenu, SelectOption  # isort:skip
+from AAA3A_utils import Buttons, Dropdown  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
@@ -11,17 +6,8 @@ import typing  # isort:skip
 
 from .utils import EmojiLabelDescriptionValueConverter
 
-if CogsUtils().is_dpy2:  # To remove
-    setattr(commands, "Literal", typing.Literal)
 
 _ = Translator("TicketTool", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 class ProfileConverter(commands.Converter):
@@ -38,7 +24,7 @@ class ProfileConverter(commands.Converter):
 class settings(commands.Cog):
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
-    @hybrid_group(name="settickettool", aliases=["tickettoolset"])
+    @commands.hybrid_group(name="settickettool", aliases=["tickettoolset"])
     async def configuration(self, ctx: commands.Context) -> None:
         """Configure TicketTool for your server."""
         pass
@@ -49,7 +35,7 @@ class settings(commands.Cog):
         ctx: commands.Context,
         profile: ProfileConverter,
         channel: typing.Optional[discord.TextChannel],
-        message: typing.Optional[discord.ext.commands.converter.MessageConverter],
+        message: typing.Optional[commands.MessageConverter],
         reason_options: commands.Greedy[EmojiLabelDescriptionValueConverter],
     ) -> None:
         """Send a message with a button to open a ticket or dropdown with possible reasons.
@@ -77,110 +63,34 @@ class settings(commands.Cog):
         )
         embed.set_image(
             url=config["embed_button"]["image"]
-            or (None if self.cogsutils.is_dpy2 else discord.Embed.Empty)
         )
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
         embed.set_footer(
             text=ctx.guild.name,
-            icon_url=ctx.guild.icon or "" if self.cogsutils.is_dpy2 else ctx.guild.icon_url or "",
+            icon_url=ctx.guild.icon,
         )
-        if self.cogsutils.is_dpy2:
-            if reason_options is None:
-                buttons_config = await self.config.guild(ctx.guild).buttons.all()
-                view = Buttons(
-                    timeout=None,
-                    buttons=[
-                        {
-                            "style": 2,
-                            "label": _("Create ticket"),
-                            "emoji": "🎟️",
-                            "custom_id": "create_ticket_button",
-                            "disabled": False,
-                        }
-                    ],
-                    function=self.on_button_interaction,
-                    infinity=True,
-                )
-                if message is None:
-                    message = await channel.send(embed=embed, view=view)
-                else:
-                    await message.edit(view=view)
-                self.cogsutils.views.append(view)
-                buttons_config[f"{message.channel.id}-{message.id}"] = {"profile": profile}
-                await self.config.guild(ctx.guild).buttons.set(buttons_config)
-            else:
-                if getattr(ctx, "interaction", None) is None:
-                    try:
-                        for emoji, label, description, value in reason_options[:19]:
-                            await ctx.message.add_reaction(emoji)
-                    except discord.HTTPException:
-                        await ctx.send(
-                            _(
-                                "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
-                            )
-                        )
-                        return
-                dropdowns_config = await self.config.guild(ctx.guild).dropdowns.all()
-                all_options = []
-                for emoji, label, description, value in reason_options:
-                    emoji = emoji.id if hasattr(emoji, "id") else emoji
-                    try:
-                        int(emoji)
-                    except ValueError:
-                        e = emoji
-                    else:
-                        e = self.bot.get_emoji(int(emoji))
-                    all_options.append(
-                        {
-                            "label": label,
-                            "value": value,
-                            "description": description,
-                            "emoji": e,
-                            "default": False,
-                        }
-                    )
-                view = Dropdown(
-                    timeout=None,
-                    placeholder=config["embed_button"]["placeholder_dropdown"],
-                    min_values=0,
-                    max_values=1,
-                    options=all_options,
-                    function=self.on_dropdown_interaction,
-                    infinity=True,
-                    custom_id="create_ticket_dropdown",
-                )
-                if message is None:
-                    message = await channel.send(embed=embed, view=view)
-                else:
-                    await message.edit(view=view)
-                self.cogsutils.views.append(view)
-                dropdowns_config[f"{message.channel.id}-{message.id}"] = [
-                    {
-                        "profile": profile,
-                        "emoji": emoji.id if hasattr(emoji, "id") else emoji,
-                        "label": label,
-                        "description": description,
-                        "value": value,
-                    }
-                    for emoji, label, description, value in reason_options
-                ]
-                await self.config.guild(ctx.guild).dropdowns.set(dropdowns_config)
-        elif reason_options is None:
+        if reason_options is None:
             buttons_config = await self.config.guild(ctx.guild).buttons.all()
-            button = ActionRow(
-                Button(
-                    style=ButtonStyle.grey,
-                    label=_("Create ticket"),
-                    emoji="🎟️",
-                    custom_id="create_ticket_button",
-                    disabled=False,
-                )
+            view = Buttons(
+                timeout=None,
+                buttons=[
+                    {
+                        "style": 2,
+                        "label": _("Create ticket"),
+                        "emoji": "🎟️",
+                        "custom_id": "create_ticket_button",
+                        "disabled": False,
+                    }
+                ],
+                function=self.on_button_interaction,
+                infinity=True,
             )
             if message is None:
-                message = await channel.send(embed=embed, components=[button])
+                message = await channel.send(embed=embed, view=view)
             else:
-                await message.edit(components=[button])
+                await message.edit(view=view)
+            self.cogsutils.views.append(view)
             buttons_config[f"{message.channel.id}-{message.id}"] = {"profile": profile}
             await self.config.guild(ctx.guild).buttons.set(buttons_config)
         else:
@@ -195,39 +105,41 @@ class settings(commands.Cog):
                         )
                     )
                     return
-            dropdown_config = await self.config.guild(ctx.guild).dropdowns.all()
+            dropdowns_config = await self.config.guild(ctx.guild).dropdowns.all()
             all_options = []
             for emoji, label, description, value in reason_options:
                 emoji = emoji.id if hasattr(emoji, "id") else emoji
                 try:
                     int(emoji)
                 except ValueError:
-                    all_options.append(
-                        SelectOption(
-                            label=label, value=value, description=description, emoji=emoji
-                        )
-                    )
+                    e = emoji
                 else:
-                    all_options.append(
-                        SelectOption(
-                            label=label,
-                            value=value,
-                            description=description,
-                            emoji=str(self.bot.get_emoji(emoji)),
-                        )
-                    )
-            dropdown = SelectMenu(
-                custom_id="create_ticket_dropdown",
+                    e = self.bot.get_emoji(int(emoji))
+                all_options.append(
+                    {
+                        "label": label,
+                        "value": value,
+                        "description": description,
+                        "emoji": e,
+                        "default": False,
+                    }
+                )
+            view = Dropdown(
+                timeout=None,
                 placeholder=config["embed_button"]["placeholder_dropdown"],
                 min_values=0,
                 max_values=1,
                 options=all_options,
+                function=self.on_dropdown_interaction,
+                infinity=True,
+                custom_id="create_ticket_dropdown",
             )
             if message is None:
-                message = await channel.send(embed=embed, components=[dropdown])
+                message = await channel.send(embed=embed, view=view)
             else:
-                await message.edit(components=[dropdown])
-            dropdown_config[f"{message.channel.id}-{message.id}"] = [
+                await message.edit(view=view)
+            self.cogsutils.views.append(view)
+            dropdowns_config[f"{message.channel.id}-{message.id}"] = [
                 {
                     "profile": profile,
                     "emoji": emoji.id if hasattr(emoji, "id") else emoji,
@@ -237,7 +149,7 @@ class settings(commands.Cog):
                 }
                 for emoji, label, description, value in reason_options
             ]
-            await self.config.guild(ctx.guild).dropdowns.set(dropdown_config)
+            await self.config.guild(ctx.guild).dropdowns.set(dropdowns_config)
 
     async def check_permissions_in_channel(
         self, permissions: typing.List[str], channel: discord.TextChannel
@@ -256,7 +168,7 @@ class settings(commands.Cog):
     #     self,
     #     ctx: commands.Context,
     #     profile: ProfileConverter,
-    #     where: commands.Literal["title", "description", "image", "placeholderdropdown"],
+    #     where: typing.Literal["title", "description", "image", "placeholderdropdown"],
     #     *,
     #     text: typing.Optional[str] = None,
     # ):

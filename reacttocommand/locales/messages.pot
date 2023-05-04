@@ -19,7 +19,7 @@ msgstr ""
 #: reacttocommand\reacttocommand.py:220
 #, docstring
 msgid ""
-"Add a command-reaction to a message.\n"
+"Add a command-reaction for a message.\n"
 "        There should be no prefix in the command.\n"
 "        The command will be invoked with the permissions of the user who clicked on the reaction.\n"
 "        This user must be able to see writing in the channel.\n"
@@ -44,7 +44,7 @@ msgstr ""
 
 #: reacttocommand\reacttocommand.py:262
 #, docstring
-msgid "Remove a command-reaction to a message."
+msgid "Remove a command-reaction for a message."
 msgstr ""
 
 #: reacttocommand\reacttocommand.py:266 reacttocommand\reacttocommand.py:287
@@ -57,10 +57,10 @@ msgstr ""
 
 #: reacttocommand\reacttocommand.py:283
 #, docstring
-msgid "Clear all commands-reactions to a message."
+msgid "Clear all commands-reactions for a message."
 msgstr ""
 
 #: reacttocommand\reacttocommand.py:299
 #, docstring
-msgid "Clear all commands-reactions to a **guild**."
+msgid "Clear all commands-reactions for a guild."
 msgstr ""

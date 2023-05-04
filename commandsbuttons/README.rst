@@ -28,19 +28,19 @@ Here are all the commands included in this cog (6):
  Group of commands to use CommandsButtons.
 
 * ``[p]commandsbuttons add <message> <emoji> <command> ["1"|"2"|"3"|"4"=2] [text_button=None]``
- Add a command-button to a message.
+ Add a command-button for a message.
 
 * ``[p]commandsbuttons bulk <message> [commands_buttons]...``
- Add commands-buttons to a message.
+ Add commands-buttons for a message.
 
 * ``[p]commandsbuttons clear <message>``
- Clear all commands-buttons to a message.
+ Clear all commands-buttons for a message.
 
 * ``[p]commandsbuttons purge``
- Clear all commands-buttons to a **guild**.
+ Clear all commands-buttons for a guild.
 
 * ``[p]commandsbuttons remove <message> <emoji>``
- Remove a command-button to a message.
+ Remove a command-button for a message.
 
 ------------
 Installation

@@ -1,24 +1,17 @@
-from .AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from .AAA3A_utils.settings import CustomMessageConverter
+from AAA3A_utils.settings import CustomMessageConverter
 from .dashboard_integration import DashboardIntegration
 
 # Credits:
 # General repo credits.
 
 _ = Translator("ClearChannel", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 @cog_i18n(_)
@@ -85,7 +78,7 @@ class ClearChannel(DashboardIntegration, Cog):
     @commands.guild_only()
     @commands.guildowner()
     @commands.bot_has_permissions(manage_channels=True)
-    @hybrid_command(name="clearchannel")
+    @commands.hybrid_command(name="clearchannel")
     async def cleanup_channel(self, ctx: commands.Context, confirmation: bool = False) -> None:
         """Delete ALL messages from the current channel by duplicating it and then deleting it.
         For security reasons, only the server owner and the bot owner can use the command. Use the "permissions" tool for more options.
@@ -131,23 +124,15 @@ class ClearChannel(DashboardIntegration, Cog):
                 embed.description = _("ALL the messages in this channel have been deleted...")
                 embed.color = 0xF00020
                 embed.set_author(
-                    name=ctx.author.display_name if self.cogsutils.is_dpy2 else ctx.author.name,
-                    url=ctx.author.display_avatar
-                    if self.cogsutils.is_dpy2
-                    else ctx.author.avatar_url,
-                    icon_url=ctx.author.display_avatar
-                    if self.cogsutils.is_dpy2
-                    else ctx.author.avatar_url,
+                    name=ctx.author.display_name,
+                    url=ctx.author.display_avatar,
+                    icon_url=ctx.author.display_avatar,
                 )
                 await new_channel.send(embed=embed)
             else:
                 env = {
-                    "user_name": ctx.author.display_name
-                    if self.cogsutils.is_dpy2
-                    else ctx.author.name,
-                    "icon_url": ctx.author.display_avatar
-                    if self.cogsutils.is_dpy2
-                    else ctx.author.avatar_url,
+                    "user_name": ctx.author.display_name,
+                    "icon_url": ctx.author.display_avatar,
                 }
                 await CustomMessageConverter(**config["custom_message"]).send_message(
                     ctx, channel=new_channel, env=env
@@ -161,7 +146,7 @@ class ClearChannel(DashboardIntegration, Cog):
 
     @commands.guild_only()
     @commands.guildowner()
-    @hybrid_group(name="setclearchannel", aliases=["clearchannelset"])
+    @commands.hybrid_group(name="setclearchannel", aliases=["clearchannelset"])
     async def configuration(self, ctx: commands.Context) -> None:
         """Configure ClearChannel for your server."""
         pass

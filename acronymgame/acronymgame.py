@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils import Cog, CogsUtils  # isort:skip
+﻿from AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -18,7 +18,7 @@ _ = Translator("AcronymGame", __file__)
 
 @cog_i18n(_)
 class AcronymGame(Cog):
-    """A cog to play to Acrononym game, with Modals!"""
+    """A cog to play a random match of Acrononym game, with Modals!"""
 
     def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
@@ -28,9 +28,9 @@ class AcronymGame(Cog):
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.guild_only()
-    @commands.hybrid_command()
+    @commands.hybrid_command(aliases=["acro", "acronym"])
     async def acronymgame(self, ctx: commands.Context) -> None:
         """
-        Play to Acronym game.
+        Play a random match of Acronym game.
         """
         await AcronymGameView(cog=self).start(ctx)

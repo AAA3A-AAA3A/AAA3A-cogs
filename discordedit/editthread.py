@@ -1,4 +1,4 @@
-from .AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -6,10 +6,9 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import datetime
-import re
 
 from redbot.core.commands.converter import get_timedelta_converter
-from redbot.core.utils.chat_formatting import box
+from redbot.core.utils.chat_formatting import box, pagify
 
 try:
     from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
@@ -22,17 +21,7 @@ TimedeltaConverter = get_timedelta_converter(
     minimum=datetime.timedelta(seconds=0),
 )
 
-if CogsUtils().is_dpy2:  # To remove
-    setattr(commands, "Literal", typing.Literal)
-
 _ = Translator("DiscordEdit", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
 
@@ -45,6 +34,26 @@ class Emoji(commands.EmojiConverter):
         if argument in EMOJI_DATA:
             return argument
         return await super().convert(ctx, argument)
+
+class ForumTagConverter(discord.ext.commands.Converter):
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Tuple[discord.Role, typing.Union[discord.PartialEmoji, str]]:
+        arg_split = re.split(r";|,|\||-", argument)
+        try:
+            try:
+                name, emoji, moderated = arg_split
+            except Exception:
+                name, emoji = arg_split
+                moderated = False
+        except Exception:
+            raise discord.ext.commands.BadArgument(
+                _(
+                    "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
+                )
+            )
+        emoji = await Emoji().convert(ctx, emoji.strip())
+        return discord.ForumTag(name=name, emoji=emoji, moderated=moderated)
 
 
 @cog_i18n(_)
@@ -81,7 +90,7 @@ class EditThread(Cog):
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_channels=True)
-    @hybrid_group()
+    @commands.hybrid_group()
     async def editthread(self, ctx: commands.Context) -> None:
         """Commands for edit a text channel."""
         pass
@@ -108,6 +117,28 @@ class EditThread(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
+
+    @editthread.command(name="list")
+    async def editthread_list(
+        self,
+        ctx: commands.Context,
+    ) -> None:
+        """List all threads in the current guild."""
+        description = "\n".join(
+            [
+                f"**•** {thread.mention} ({thread.id}) - {len(await thread.fetch_members())} members"
+                for thread in ctx.guild.threads
+            ]
+        )
+        embed: discord.Embed = discord.Embed(color=await ctx.embed_color())
+        embed.title = _("List of threads in {guild.name} ({guild.id})").format(guild=ctx.guild)
+        embeds = []
+        pages = pagify(description, page_length=4096)
+        for page in pages:
+            e = embed.copy()
+            e.description = page
+            embeds.append(e)
+        await Menu(pages=embeds).start(ctx)
 
     @editthread.command(name="name")
     async def editthread_name(
@@ -194,7 +225,7 @@ class EditThread(Cog):
         self,
         ctx: commands.Context,
         thread: discord.Thread,
-        auto_archive_duration: commands.Literal["60", "1440", "4320", "10080"],
+        auto_archive_duration: typing.Literal["60", "1440", "4320", "10080"],
     ) -> None:
         """Edit thread auto archive duration."""
         await self.check_thread(ctx, thread)
@@ -223,26 +254,6 @@ class EditThread(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
-
-    class ForumTagConverter(discord.ext.commands.Converter):
-        async def convert(
-            self, ctx: commands.Context, argument: str
-        ) -> typing.Tuple[discord.Role, typing.Union[discord.PartialEmoji, str]]:
-            arg_split = re.split(r";|,|\||-", argument)
-            try:
-                try:
-                    name, emoji, moderated = arg_split
-                except Exception:
-                    name, emoji = arg_split
-                    moderated = False
-            except Exception:
-                raise discord.ext.commands.BadArgument(
-                    _(
-                        "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
-                    )
-                )
-            emoji = await Emoji().convert(ctx, emoji.strip())
-            return discord.ForumTag(name=name, emoji=emoji, moderated=moderated)
 
     @editthread.command(name="appliedtags")
     async def editthread_applied_tags(
@@ -274,7 +285,7 @@ class EditThread(Cog):
         self,
         ctx: commands.Context,
         thread: discord.Thread,
-        cconfirmation: bool = False,
+        confirmation: bool = False,
     ) -> None:
         """Delete a thread."""
         await self.check_thread(ctx, thread)

@@ -16,13 +16,46 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to edit Discord default objects!
+A cog to edit Discord default objects, like guilds, roles, text channels, voice channels, threads and AutoMod!
 
 --------
 Commands
 --------
 
-Here are all the commands included in this cog (70):
+Here are all the commands included in this cog (85):
+
+* ``[p]editautomod``
+ Commands for edit an AutoMod rule.
+
+* ``[p]editautomod actions <rule> <actions>``
+ Edit AutoMod rule actions.
+
+* ``[p]editautomod create <name> <trigger> <actions>``
+ Create an AutoMod rule.
+
+* ``[p]editautomod delete <rule> [confirmation=False]``
+ Delete automod rule.
+
+* ``[p]editautomod enabled <rule> <enabled>``
+ Edit AutoMod rule enabled.
+
+* ``[p]editautomod exemptchannels <rule> [exempt_channels]...``
+ Edit AutoMod rule exempt channels.
+
+* ``[p]editautomod exemptroles <rule> [exempt_roles]...``
+ Edit AutoMod rule exempt roles.
+
+* ``[p]editautomod list``
+ List all AutoMod rules in the current guild.
+
+* ``[p]editautomod name <rule> <name>``
+ Edit AutoMod rule name.
+
+* ``[p]editautomod trigger <rule> <trigger>``
+ Edit AutoMod rule trigger.
+
+* ``[p]editautomod view [rule=None]``
+ 
 
 * ``[p]editguild``
  Commands for edit a guild.
@@ -102,6 +135,9 @@ Here are all the commands included in this cog (70):
 * ``[p]editrole delete <role> [confirmation=False]``
  Delete a role.
 
+* ``[p]editrole list``
+ List all roles in the current guild.
+
 * ``[p]editrole mentionable <role> <mentionable>``
  Edit role mentionable.
 
@@ -135,13 +171,16 @@ Here are all the commands included in this cog (70):
 * ``[p]edittextchannel invite [channel] [max_age=None] [max_uses=None] [temporary=False] [unique=True]``
  Create an invite for a text channel.
 
+* ``[p]edittextchannel list``
+ List all text channels in the current guild.
+
 * ``[p]edittextchannel name [channel] <name>``
  Edit text channel name.
 
 * ``[p]edittextchannel nsfw [channel] <nsfw>``
  Edit text channel nsfw.
 
-* ``[p]edittextchannel permissions [channel] <permission> [true_or_false] [roles_or_users]...``
+* ``[p]edittextchannel permissions [channel] [roles_or_users]... [true_or_false] [permissions]...``
  Edit text channel permissions/overwrites.
 
 * ``[p]edittextchannel position [channel] <position>``
@@ -180,6 +219,9 @@ Here are all the commands included in this cog (70):
 * ``[p]editthread invitable <thread> <invitable>``
  Edit thread invitable.
 
+* ``[p]editthread list``
+ List all threads in the current guild.
+
 * ``[p]editthread locked <thread> <locked>``
  Edit thread locked.
 
@@ -213,13 +255,16 @@ Here are all the commands included in this cog (70):
 * ``[p]editvoicechannel invite <channel> [max_age=None] [max_uses=None] [temporary=False] [unique=True]``
  Create an invite for a voice channel.
 
+* ``[p]editvoicechannel list``
+ List all voice channels in the current guild.
+
 * ``[p]editvoicechannel name <channel> <name>``
  Edit voice channel name.
 
 * ``[p]editvoicechannel nsfw <channel> <nsfw>``
  Edit voice channel nsfw.
 
-* ``[p]editvoicechannel permissions <channel> <permission> [true_or_false] [roles_or_users]...``
+* ``[p]editvoicechannel permissions <channel> [roles_or_users]... [true_or_false] [permissions]...``
  Edit voice channel permissions/overwrites.
 
 * ``[p]editvoicechannel position <channel> <position>``

@@ -28,7 +28,7 @@ msgstr ""
 
 #: urlbuttons\urlbuttons.py:78
 #, docstring
-msgid "Add a url-button to a message."
+msgid "Add a url-button for a message."
 msgstr ""
 
 #: urlbuttons\urlbuttons.py:81 urlbuttons\urlbuttons.py:126
@@ -49,7 +49,7 @@ msgstr ""
 #: urlbuttons\urlbuttons.py:120
 #, docstring
 msgid ""
-"Add a url-button to a message.\n"
+"Add a url-button for a message.\n"
 "\n"
 "        ```[p]urlbuttons bulk <message> :red_circle:|<https://github.com/Cog-Creators/Red-DiscordBot> :smiley:|<https://github.com/Cog-Creators/Red-SmileyBot> :green_circle:|<https://github.com/Cog-Creators/Green-DiscordBot>```\n"
 "        "
@@ -67,7 +67,7 @@ msgstr ""
 
 #: urlbuttons\urlbuttons.py:164
 #, docstring
-msgid "Remove a url-button to a message."
+msgid "Remove a url-button for a message."
 msgstr ""
 
 #: urlbuttons\urlbuttons.py:167
@@ -84,7 +84,7 @@ msgstr ""
 
 #: urlbuttons\urlbuttons.py:195
 #, docstring
-msgid "Clear all url-buttons to a message."
+msgid "Clear all url-buttons for a message."
 msgstr ""
 
 #: urlbuttons\urlbuttons.py:203
@@ -93,5 +93,5 @@ msgstr ""
 
 #: urlbuttons\urlbuttons.py:217
 #, docstring
-msgid "Clear all url-buttons to a **guild**."
+msgid "Clear all url-buttons for a guild."
 msgstr ""

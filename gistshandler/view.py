@@ -1,4 +1,4 @@
-from .AAA3A_utils import Menu  # isort:skip
+from AAA3A_utils import Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
@@ -13,17 +13,11 @@ from redbot.core.utils.chat_formatting import box
 _ = Translator("GistsHandler", __file__)
 
 
-class FilesSelectOption(discord.SelectOption):
-    def __init__(self, original_name: str, *args, **kwargs) -> None:
-        self.original_name: str = original_name
-        super().__init__(*args, **kwargs)
-
-
 class FilesSelect(discord.ui.Select):
     def __init__(self, parent: discord.ui.View, files: typing.List[gists.File], current_file: typing.Optional[gists.File] = None) -> None:
         self._parent: discord.ui.View = parent
         self._options = [
-            FilesSelectOption(label=file.name, original_name=file.name, default=file == current_file)
+            discord.SelectOption(label=file.name, value=file.name, default=file == current_file)
             for file in files[:25]
         ]
         super().__init__(
@@ -33,7 +27,7 @@ class FilesSelect(discord.ui.Select):
         )
 
     async def callback(self, interaction: discord.Interaction) -> None:
-        option = discord.utils.get(self._options, label=self.values[0])
+        option = discord.utils.get(self._options, value=self.values[0])
         await self._parent._callback(interaction, option)
 
 
@@ -315,7 +309,7 @@ class GistsHandlerView(discord.ui.View):
         modal = CreateGistModal(self)
         await interaction.response.send_modal(modal)
 
-    @discord.ui.button(label="View File Content", style=discord.ButtonStyle.grey)
+    @discord.ui.button(label="View File Content", style=discord.ButtonStyle.secondary)
     async def view_content(self, interaction: discord.Interaction, button: discord.Button) -> None:
         await interaction.response.defer()
         if self.file.name.split(".")[-1] != "md":
@@ -323,7 +317,7 @@ class GistsHandlerView(discord.ui.View):
         else:
             await Menu(pages=self.file.content).start(self.ctx)
 
-    @discord.ui.button(label="Edit Gist/File", style=discord.ButtonStyle.blurple)
+    @discord.ui.button(label="Edit Gist/File", style=discord.ButtonStyle.primary)
     async def edit_gist(self, interaction: discord.Interaction, button: discord.Button) -> None:
         modal = EditGistModal(self, gist=self.gist, file=self.file)
         await interaction.response.send_modal(modal)
@@ -349,5 +343,5 @@ class GistsHandlerView(discord.ui.View):
         self, interaction: discord.Interaction, option: discord.SelectOption
     ) -> None:
         await interaction.response.defer()
-        self.file: gists.File = discord.utils.get(self.gist.files, name=option.original_name)
+        self.file: gists.File = discord.utils.get(self.gist.files, name=option.value)
         await self._update()

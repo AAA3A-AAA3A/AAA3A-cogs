@@ -1,4 +1,4 @@
-from .AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -14,13 +14,6 @@ import aiohttp
 # Thanks to @Flanisch on GitHub for the use of Wikipedia headers instead of the site found before (https://github.com/AAA3A-AAA3A/AAA3A-cogs/pull/)!
 
 _ = Translator("Ip", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 @cog_i18n(_)
@@ -64,7 +57,7 @@ class Ip(Cog):
         )
 
     @commands.is_owner()
-    @hybrid_group(name="ip")
+    @commands.hybrid_group(name="ip")
     async def ip_group(self, ctx: commands.Context) -> None:
         """Commands group for Ip."""
         pass

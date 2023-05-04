@@ -1,17 +1,9 @@
-from .AAA3A_utils import Cog, CogsUtils, Menu, Settings  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Menu, Settings, Buttons, Dropdown, Modal  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
-import typing  # isort:skip*
-
-if CogsUtils().is_dpy2:
-    from .AAA3A_utils import Buttons, Dropdown, Modal  # isort:skip
-else:
-    from dislash import (
-        MessageInteraction,
-        ResponseType,
-    )  # isort:skip
+import typing  # isort:skip
 
 import datetime
 import io
@@ -30,13 +22,6 @@ from .ticket import Ticket
 # Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
 
 _ = Translator("TicketTool", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 @cog_i18n(_)
@@ -128,9 +113,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             },
             "forum_channel": {
                 "path": ["forum_channel"],
-                "converter": typing.Union[discord.ForumChannel, discord.TextChannel]
-                if self.cogsutils.is_dpy2
-                else None,
+                "converter": typing.Union[discord.ForumChannel, discord.TextChannel],
                 "description": "Set the forum channel where the opened tickets will be, or a text channel to use private threads. If it's set, `category_open` and `category_close` will be ignored (except for existing tickets).",
             },
             "category_open": {
@@ -239,8 +222,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
     async def cog_load(self):
         await self.edit_config_schema()
         await self.settings.add_commands()
-        if self.cogsutils.is_dpy2:
-            await self.load_buttons()
+        await self.load_buttons()
 
     async def edit_config_schema(self):
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
@@ -490,7 +472,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             return f"{author.name} ({author.id}) - {reason}"
 
     async def get_embed_important(
-        self, ticket, more: bool, author: discord.Member, title: str, description: str
+        self, ticket, more: bool, author: discord.Member, title: str, description: str, reason: typing.Optional[str] = None
     ) -> discord.Embed:
         config = await self.get_config(ticket.guild, ticket.profile)
         actual_color = config["color"]
@@ -503,14 +485,12 @@ class TicketTool(settings, DashboardIntegration, Cog):
         embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
         embed.set_author(
             name=author,
-            url=author.display_avatar if self.cogsutils.is_dpy2 else author.avatar_url,
-            icon_url=author.display_avatar if self.cogsutils.is_dpy2 else author.avatar_url,
+            url=author.display_avatar,
+            icon_url=author.display_avatar,
         )
         embed.set_footer(
             text=ticket.guild.name,
-            icon_url=ticket.guild.icon or ""
-            if self.cogsutils.is_dpy2
-            else ticket.guild.icon_url or "",
+            icon_url=ticket.guild.icon,
         )
         embed.add_field(inline=True, name=_("Ticket ID:"), value=f"[{ticket.profile}] {ticket.id}")
         embed.add_field(
@@ -543,16 +523,16 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     if isinstance(ticket.deleted_by, int)
                     else f"{ticket.deleted_by.mention} ({ticket.deleted_by.id})",
                 )
-            if ticket.closed_at:
+            if ticket.closed_at is not None:
                 embed.add_field(
                     inline=False,
                     name=_("Closed at:"),
                     value=f"{ticket.closed_at}",
                 )
-        embed.add_field(inline=False, name=_("Reason:"), value=f"{ticket.reason}")
+        embed.add_field(inline=False, name=_("Reason:"), value=f"{reason}")
         return embed
 
-    async def get_embed_action(self, ticket, author: discord.Member, action: str) -> discord.Embed:
+    async def get_embed_action(self, ticket, author: discord.Member, action: str, reason: typing.Optional[str] = None) -> discord.Embed:
         config = await self.get_config(ticket.guild, ticket.profile)
         actual_color = config["color"]
         embed: discord.Embed = discord.Embed()
@@ -562,16 +542,14 @@ class TicketTool(settings, DashboardIntegration, Cog):
         embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
         embed.set_author(
             name=author,
-            url=author.display_avatar if self.cogsutils.is_dpy2 else author.avatar_url,
-            icon_url=author.display_avatar if self.cogsutils.is_dpy2 else author.avatar_url,
+            url=author.display_avatar,
+            icon_url=author.display_avatar,
         )
         embed.set_footer(
             text=ticket.guild.name,
-            icon_url=ticket.guild.icon or ""
-            if self.cogsutils.is_dpy2
-            else ticket.guild.icon_url or "",
+            icon_url=ticket.guild.icon,
         )
-        embed.add_field(inline=False, name=_("Reason:"), value=f"{ticket.reason}")
+        embed.add_field(inline=False, name=_("Reason:"), value=f"{reason}")
         return embed
 
     async def check_limit(self, member: discord.Member, profile: str) -> bool:
@@ -703,7 +681,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             return argument.lower()
 
     @commands.guild_only()
-    @hybrid_group(name="ticket")
+    @commands.hybrid_group(name="ticket")
     async def ticket(self, ctx: commands.Context) -> None:
         """Commands for using the ticket system."""
 
@@ -720,7 +698,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         if profile not in profiles:
             raise commands.UserFeedbackCheckFailure(_("This profile does not exist."))
         config = await self.get_config(ctx.guild, profile)
-        forum_channel = config["forum_channel"]  # dpy2: discord.ForumChannel type hint
+        forum_channel: typing.Union[discord.ForumChannel, discord.Thread] = config["forum_channel"]
         category_open: discord.CategoryChannel = config["category_open"]
         category_close: discord.CategoryChannel = config["category_close"]
         if not config["enable"]:
@@ -785,18 +763,13 @@ class TicketTool(settings, DashboardIntegration, Cog):
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         """
         ticket: Ticket = await self.get_ticket(ctx.channel)
-        if self.cogsutils.is_dpy2:
-            transcript = await chat_exporter.export(
-                channel=ticket.channel,
-                limit=None,
-                tz_info="UTC",
-                guild=ticket.guild,
-                bot=ticket.bot,
-            )
-        else:
-            transcript = await chat_exporter.export(
-                channel=ticket.channel, guild=ticket.guild, limit=None
-            )
+        transcript = await chat_exporter.export(
+            channel=ticket.channel,
+            limit=None,
+            tz_info="UTC",
+            guild=ticket.guild,
+            bot=ticket.bot,
+        )
         if transcript is not None:
             file = discord.File(
                 io.BytesIO(transcript.encode()),
@@ -842,8 +815,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("The ticket system is not enabled on this server.")
             )
-        ticket.reason = reason
-        await ticket.open(ctx.author)
+        await ticket.open(ctx.author, reason=reason)
 
     @decorator(
         ticket_check=True,
@@ -884,16 +856,13 @@ class TicketTool(settings, DashboardIntegration, Cog):
             embed.color = config["color"]
             embed.set_author(
                 name=ctx.author.name,
-                url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url,
-                icon_url=ctx.author.display_avatar
-                if self.cogsutils.is_dpy2
-                else ctx.author.avatar_url,
+                url=ctx.author.display_avatar,
+                icon_url=ctx.author.display_avatar,
             )
             response = await self.cogsutils.ConfirmationAsk(ctx, embed=embed)
             if not response:
                 return
-        ticket.reason = reason
-        await ticket.close(ctx.author)
+        await ticket.close(ctx.author, reason=reason)
 
     @decorator(
         ticket_check=True,
@@ -930,16 +899,13 @@ class TicketTool(settings, DashboardIntegration, Cog):
             embed.color = config["color"]
             embed.set_author(
                 name=ctx.author.name,
-                url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url,
-                icon_url=ctx.author.display_avatar
-                if self.cogsutils.is_dpy2
-                else ctx.author.avatar_url,
+                url=ctx.author.display_avatar,
+                icon_url=ctx.author.display_avatar,
             )
             response = await self.cogsutils.ConfirmationAsk(ctx, embed=embed)
             if not response:
                 return
-        ticket.reason = reason
-        await ticket.lock(ctx.author)
+        await ticket.lock(ctx.author, reason=reason)
 
     @decorator(
         ticket_check=True,
@@ -966,8 +932,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket: Ticket = await self.get_ticket(ctx.channel)
         if isinstance(ticket.channel, discord.TextChannel):
             raise commands.UserFeedbackCheckFailure(_("Cannot execute action on a text channel."))
-        ticket.reason = reason
-        await ticket.unlock(ctx.author)
+        await ticket.unlock(ctx.author, reason=reason)
 
     @decorator(
         ticket_check=True,
@@ -993,8 +958,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
     ) -> None:
         """Rename an existing ticket."""
         ticket: Ticket = await self.get_ticket(ctx.channel)
-        ticket.reason = reason
-        await ticket.rename(new_name, ctx.author)
+        await ticket.rename(new_name, ctx.author, reason=reason)
 
     @decorator(
         ticket_check=True,
@@ -1035,16 +999,13 @@ class TicketTool(settings, DashboardIntegration, Cog):
             embed.color = config["color"]
             embed.set_author(
                 name=ctx.author.name,
-                url=ctx.author.display_avatar if self.cogsutils.is_dpy2 else ctx.author.avatar_url,
-                icon_url=ctx.author.display_avatar
-                if self.cogsutils.is_dpy2
-                else ctx.author.avatar_url,
+                url=ctx.author.display_avatar,
+                icon_url=ctx.author.display_avatar,
             )
             response = await self.cogsutils.ConfirmationAsk(ctx, embed=embed)
             if not response:
                 return
-        ticket.reason = reason
-        await ticket.delete(ctx.author)
+        await ticket.delete(ctx.author, reason=reason)
 
     @decorator(
         ticket_check=True,
@@ -1070,10 +1031,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
     ) -> None:
         """Claim an existing ticket."""
         ticket: Ticket = await self.get_ticket(ctx.channel)
-        ticket.reason = reason
         if member is None:
             member = ctx.author
-        await ticket.claim_ticket(member, ctx.author)
+        await ticket.claim_ticket(member, ctx.author, reason=reason)
 
     @decorator(
         ticket_check=True,
@@ -1095,8 +1055,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
     ) -> None:
         """Unclaim an existing ticket."""
         ticket: Ticket = await self.get_ticket(ctx.channel)
-        ticket.reason = reason
-        await ticket.unclaim_ticket(ticket.claim, ctx.author)
+        await ticket.unclaim_ticket(ticket.claim, ctx.author, reason=reason)
 
     @decorator(
         ticket_check=True,
@@ -1122,10 +1081,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
     ) -> None:
         """Change the owner of an existing ticket."""
         ticket: Ticket = await self.get_ticket(ctx.channel)
-        ticket.reason = reason
         if new_owner is None:
             new_owner = ctx.author
-        await ticket.change_owner(new_owner, ctx.author)
+        await ticket.change_owner(new_owner, ctx.author, reason=reason)
 
     @decorator(
         ticket_check=True,
@@ -1146,11 +1104,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
         self,
         ctx: commands.Context,
         members: commands.Greedy[discord.Member],
-        reason: typing.Optional[str] = _("No reason provided."),
     ) -> None:
         """Add a member to an existing ticket."""
         ticket: Ticket = await self.get_ticket(ctx.channel)
-        ticket.reason = reason
         members = list(members)
         await ticket.add_member(members, ctx.author)
 
@@ -1173,11 +1129,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
         self,
         ctx: commands.Context,
         members: commands.Greedy[discord.Member],
-        reason: typing.Optional[str] = _("No reason provided."),
     ) -> None:
         """Remove a member to an existing ticket."""
         ticket: Ticket = await self.get_ticket(ctx.channel)
-        ticket.reason = reason
         members = list(members)
         await ticket.remove_member(members, ctx.author)
 
@@ -1187,7 +1141,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         self,
         ctx: commands.Context,
         profile: ProfileConverter,
-        status: typing.Optional[commands.Literal["open", "close", "all"]],
+        status: typing.Optional[typing.Literal["open", "close", "all"]],
         member: typing.Optional[discord.Member],
     ) -> None:
         if status is None:
@@ -1225,360 +1179,207 @@ class TicketTool(settings, DashboardIntegration, Cog):
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
 
-    if CogsUtils().is_dpy2:
-
-        async def on_button_interaction(
-            self, view: Buttons, interaction: discord.Interaction
-        ) -> None:
-            permissions = interaction.channel.permissions_for(interaction.user)
-            if not permissions.read_messages and not permissions.send_messages:
-                return
-            permissions = interaction.channel.permissions_for(interaction.guild.me)
-            if not permissions.read_messages and not permissions.read_message_history:
-                return
-            if not interaction.response.is_done() and interaction.data["custom_id"] not in [
-                "create_ticket_button",
-                "close_ticket_button",
-            ]:
-                await interaction.response.defer(ephemeral=True)
-            if interaction.data["custom_id"] == "create_ticket_button":
-                buttons = await self.config.guild(interaction.guild).buttons.all()
-                if f"{interaction.message.channel.id}-{interaction.message.id}" in buttons:
-                    profile = buttons[f"{interaction.message.channel.id}-{interaction.message.id}"][
-                        "profile"
-                    ]
-                else:
-                    profile = "main"
-                modal = Modal(
-                    title="Create a Ticket",
-                    inputs=[
-                        {
-                            "label": "Profile",
-                            "style": discord.TextStyle.short,
-                            "default": "main",
-                            "max_length": 10,
-                            "required": True,
-                        },
-                        {
-                            "label": "Why are you creating this ticket?",
-                            "style": discord.TextStyle.long,
-                            "max_length": 1000,
-                            "required": False,
-                            "placeholder": "No reason provided.",
-                        },
-                    ],
-                )
-                await interaction.response.send_modal(modal)
-                try:
-                    interaction, inputs, function_result = await modal.wait_result()
-                except TimeoutError:
-                    return
-                if not interaction.response.is_done():
-                    await interaction.response.defer(ephemeral=True)
-                profile = inputs[0].value
-                reason = inputs[1].value or ""
-                profiles = await self.config.guild(interaction.guild).profiles()
-                if profile not in profiles:
-                    await interaction.followup.send(
-                        _("The profile for which this button was configured no longer exists."),
-                        ephemeral=True,
-                    )
-                    return
-                ctx = await self.cogsutils.invoke_command(
-                    author=interaction.user,
-                    channel=interaction.channel,
-                    command=f"ticket create {profile}" + (f" {reason}" if reason != "" else ""),
-                )
-                if not await ctx.command.can_run(
-                    ctx, change_permission_state=True
-                ):  # await discord.utils.async_all(check(ctx) for check in ctx.command.checks)
-                    await interaction.followup.send(
-                        _("You are not allowed to execute this command."), ephemeral=True
-                    )
-                else:
-                    await interaction.followup.send(
-                        _("You have chosen to create a ticket."), ephemeral=True
-                    )
-            elif interaction.data["custom_id"] == "close_ticket_button":
-                modal = Modal(
-                    title="Close the Ticket",
-                    inputs=[
-                        {
-                            "label": "Why are you closing this ticket?",
-                            "style": discord.TextStyle.long,
-                            "max_length": 1000,
-                            "required": False,
-                            "placeholder": "No reason provided.",
-                        },
-                    ],
-                )
-                await interaction.response.send_modal(modal)
-                try:
-                    interaction, inputs, function_result = await modal.wait_result()
-                except TimeoutError:
-                    return
-                if not interaction.response.is_done():
-                    await interaction.response.defer(ephemeral=True)
-                reason = inputs[0].value or ""
-                ctx = await self.cogsutils.invoke_command(
-                    author=interaction.user,
-                    channel=interaction.channel,
-                    command=("ticket close" + (f" {reason}" if reason != "" else "")),
-                )
-                try:
-                    await interaction.followup.send(
-                        _(
-                            "You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command."
-                        ),
-                        ephemeral=True,
-                    )
-                except discord.HTTPException:
-                    pass
-            elif interaction.data["custom_id"] == "open_ticket_button":
-                ctx = await self.cogsutils.invoke_command(
-                    author=interaction.user, channel=interaction.channel, command="ticket open"
-                )
-                try:
-                    await interaction.followup.send(
-                        _(
-                            "You have chosen to re-open this ticket. If this is not done, you do not have the necessary permissions to execute this command."
-                        ),
-                        ephemeral=True,
-                    )
-                except discord.HTTPException:
-                    pass
-            elif interaction.data["custom_id"] == "claim_ticket_button":
-                ctx = await self.cogsutils.invoke_command(
-                    author=interaction.user, channel=interaction.channel, command="ticket claim"
-                )
-                await interaction.followup.send(
-                    _(
-                        "You have chosen to claim this ticket. If this is not done, you do not have the necessary permissions to execute this command."
-                    ),
-                    ephemeral=True,
-                )
-            elif interaction.data["custom_id"] == "delete_ticket_button":
-                ctx = await self.cogsutils.invoke_command(
-                    author=interaction.user, channel=interaction.channel, command="ticket delete"
-                )
-
-        async def on_dropdown_interaction(
-            self, view: Dropdown, interaction: discord.Interaction, options: typing.List
-        ) -> None:
-            if len(options) == 0:
-                if not interaction.response.is_done():
-                    await interaction.response.defer()
-                return
-            permissions = interaction.channel.permissions_for(interaction.user)
-            if not permissions.read_messages and not permissions.send_messages:
-                return
-            permissions = interaction.channel.permissions_for(interaction.guild.me)
-            if not permissions.read_messages and not permissions.read_message_history:
+    async def on_button_interaction(
+        self, view: Buttons, interaction: discord.Interaction
+    ) -> None:
+        permissions = interaction.channel.permissions_for(interaction.user)
+        if not permissions.read_messages and not permissions.send_messages:
+            return
+        permissions = interaction.channel.permissions_for(interaction.guild.me)
+        if not permissions.read_messages and not permissions.read_message_history:
+            return
+        if not interaction.response.is_done() and interaction.data["custom_id"] not in [
+            "create_ticket_button",
+            "close_ticket_button",
+        ]:
+            await interaction.response.defer(ephemeral=True)
+        if interaction.data["custom_id"] == "create_ticket_button":
+            buttons = await self.config.guild(interaction.guild).buttons.all()
+            if f"{interaction.message.channel.id}-{interaction.message.id}" in buttons:
+                profile = buttons[f"{interaction.message.channel.id}-{interaction.message.id}"][
+                    "profile"
+                ]
+            else:
+                profile = "main"
+            modal = Modal(
+                title="Create a Ticket",
+                inputs=[
+                    {
+                        "label": "Profile",
+                        "style": discord.TextStyle.short,
+                        "default": "main",
+                        "max_length": 10,
+                        "required": True,
+                    },
+                    {
+                        "label": "Why are you creating this ticket?",
+                        "style": discord.TextStyle.long,
+                        "max_length": 1000,
+                        "required": False,
+                        "placeholder": "No reason provided.",
+                    },
+                ],
+            )
+            await interaction.response.send_modal(modal)
+            try:
+                interaction, inputs, function_result = await modal.wait_result()
+            except TimeoutError:
                 return
             if not interaction.response.is_done():
                 await interaction.response.defer(ephemeral=True)
-            dropdowns = await self.config.guild(interaction.guild).dropdowns()
-            if f"{interaction.message.channel.id}-{interaction.message.id}" not in dropdowns:
-                await interaction.followup.send(
-                    _("This message is not in TicketTool config."), ephemeral=True
-                )
-                return
-            profile = dropdowns[f"{interaction.message.channel.id}-{interaction.message.id}"][0].get(
-                "profile", "main"
-            )
+            profile = inputs[0].value
+            reason = inputs[1].value or ""
             profiles = await self.config.guild(interaction.guild).profiles()
             if profile not in profiles:
                 await interaction.followup.send(
-                    _("The profile for which this dropdown was configured no longer exists."),
-                    ephemeral=True,
-                )
-                return
-            option = [option for option in view.options if option.value == options[0]][0]
-            reason = f"{option.emoji} - {option.label}"
-            ctx = await self.cogsutils.invoke_command(
-                author=interaction.user,
-                channel=interaction.channel,
-                command=f"ticket create {profile} {reason}",
-            )
-            if not await discord.utils.async_all(
-                check(ctx) for check in ctx.command.checks
-            ) or not hasattr(ctx, "ticket"):
-                await interaction.followup.send(
-                    _("You are not allowed to execute this command."), ephemeral=True
-                )
-                return
-            config = await self.get_config(interaction.guild, profile)
-            if config["embed_button"]["rename_channel_dropdown"]:
-                try:
-                    ticket: Ticket = await self.get_ticket(
-                        ctx.guild.get_channel(ctx.ticket.channel)
-                    )
-                    if ticket is not None:
-                        await ticket.rename(
-                            new_name=f"{option.emoji}-{option.value}_{interaction.user.id}".replace(
-                                " ", "-"
-                            ),
-                            author=None,
-                        )
-                except discord.HTTPException:
-                    pass
-            await interaction.followup.send(
-                _("You have chosen to create a ticket with the reason `{reason}`.").format(
-                    reason=reason
-                ),
-                ephemeral=True,
-            )
-
-    else:
-
-        @commands.Cog.listener()
-        async def on_button_click(self, inter: MessageInteraction) -> None:
-            permissions = inter.channel.permissions_for(inter.author)
-            if not permissions.read_messages and not permissions.send_messages:
-                return
-            permissions = inter.channel.permissions_for(inter.guild.me)
-            if not permissions.read_messages and not permissions.read_message_history:
-                return
-            if not getattr(inter, "_sent", False) and not inter.expired:
-                try:
-                    await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
-                except discord.HTTPException:
-                    pass
-            if inter.clicked_button.custom_id == "create_ticket_button":
-                buttons = await self.config.guild(inter.guild).buttons.all()
-                if f"{inter.message.channel.id}-{inter.message.id}" in buttons:
-                    profile = buttons[f"{inter.message.channel.id}-{inter.message.id}"]["profile"]
-                else:
-                    profile = "main"
-                profiles = await self.config.guild(inter.guild).profiles()
-                if profile not in profiles:
-                    await inter.followup(
-                        _("The profile for which this button was configured no longer exists."),
-                        ephemeral=True,
-                    )
-                    return
-                ctx = await self.cogsutils.invoke_command(
-                    author=inter.author, channel=inter.channel, command=f"ticket create {profile}"
-                )
-                if not await ctx.command.can_run(
-                    ctx, change_permission_state=True
-                ):  # await discord.utils.async_all(check(ctx) for check in ctx.command.checks)
-                    await inter.followup(
-                        _("You are not allowed to execute this command."), ephemeral=True
-                    )
-                else:
-                    await inter.followup(_("You have chosen to create a ticket."), ephemeral=True)
-            elif inter.clicked_button.custom_id == "close_ticket_button":
-                ctx = await self.cogsutils.invoke_command(
-                    author=inter.author, channel=inter.channel, command="ticket close"
-                )
-                try:
-                    await inter.followup(
-                        _(
-                            "You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command."
-                        ),
-                        ephemeral=True,
-                    )
-                except discord.HTTPException:
-                    pass
-            elif inter.clicked_button.custom_id == "open_ticket_button":
-                ctx = await self.cogsutils.invoke_command(
-                    author=inter.author, channel=inter.channel, command="ticket open"
-                )
-                try:
-                    await inter.followup(
-                        _(
-                            "You have chosen to re-open this ticket. If this is not done, you do not have the necessary permissions to execute this command."
-                        ),
-                        ephemeral=True,
-                    )
-                except discord.HTTPException:
-                    pass
-            elif inter.clicked_button.custom_id == "claim_ticket_button":
-                ctx = await self.cogsutils.invoke_command(
-                    author=inter.author, channel=inter.channel, command="ticket claim"
-                )
-                await inter.followup(
-                    _(
-                        "You have chosen to claim this ticket. If this is not done, you do not have the necessary permissions to execute this command."
-                    ),
-                    ephemeral=True,
-                )
-            elif inter.clicked_button.custom_id == "delete_ticket_button":
-                ctx = await self.cogsutils.invoke_command(
-                    author=inter.author, channel=inter.channel, command="ticket delete"
-                )
-
-        @commands.Cog.listener()
-        async def on_dropdown(self, inter: MessageInteraction) -> None:
-            if inter.select_menu.custom_id != "create_ticket_dropdown":
-                return
-            if len(inter.select_menu.selected_options) == 0:
-                return
-            permissions = inter.channel.permissions_for(inter.author)
-            if not permissions.read_messages and not permissions.send_messages:
-                return
-            permissions = inter.channel.permissions_for(inter.guild.me)
-            if not permissions.read_messages and not permissions.read_message_history:
-                return
-            if not getattr(inter, "_sent", False) and not inter.expired:
-                try:
-                    await inter.respond(type=ResponseType.DeferredUpdateMessage, ephemeral=True)
-                except discord.HTTPException:
-                    pass
-            dropdowns = await self.config.guild(inter.guild).dropdowns()
-            if f"{inter.message.channel.id}-{inter.message.id}" not in dropdowns:
-                await inter.followup(
-                    _("This message is not in TicketTool Config."), ephemeral=True
-                )
-                return
-            profile = dropdowns[f"{inter.message.channel.id}-{inter.message.id}"][0].get(
-                "profile", "main"
-            )
-            profiles = await self.config.guild(inter.guild).profiles()
-            if profile not in profiles:
-                await inter.followup(
                     _("The profile for which this button was configured no longer exists."),
                     ephemeral=True,
                 )
                 return
-            option = inter.select_menu.selected_options[0]
-            reason = f"{option.emoji} - {option.label}"
             ctx = await self.cogsutils.invoke_command(
-                author=inter.author,
-                channel=inter.channel,
-                command=f"ticket create {profile} {reason}",
+                author=interaction.user,
+                channel=interaction.channel,
+                command=f"ticket create {profile}" + (f" {reason}" if reason != "" else ""),
             )
-            if not await discord.utils.async_all(
-                check(ctx) for check in ctx.command.checks
-            ) or not hasattr(ctx, "ticket"):
-                await inter.followup(
+            if not await ctx.command.can_run(
+                ctx, change_permission_state=True
+            ):  # await discord.utils.async_all(check(ctx) for check in ctx.command.checks)
+                await interaction.followup.send(
                     _("You are not allowed to execute this command."), ephemeral=True
                 )
+            else:
+                await interaction.followup.send(
+                    _("You have chosen to create a ticket."), ephemeral=True
+                )
+        elif interaction.data["custom_id"] == "close_ticket_button":
+            modal = Modal(
+                title="Close the Ticket",
+                inputs=[
+                    {
+                        "label": "Why are you closing this ticket?",
+                        "style": discord.TextStyle.long,
+                        "max_length": 1000,
+                        "required": False,
+                        "placeholder": "No reason provided.",
+                    },
+                ],
+            )
+            await interaction.response.send_modal(modal)
+            try:
+                interaction, inputs, function_result = await modal.wait_result()
+            except TimeoutError:
                 return
-            config = await self.get_config(inter.guild, profile)
-            if config["embed_button"]["rename_channel_dropdown"]:
-                try:
-                    ticket: Ticket = await self.get_ticket(
-                        ctx.guild.get_channel(ctx.ticket.channel)
-                    )
-                    if ticket is not None:
-                        await ticket.rename(
-                            new_name=(
-                                f"{option.emoji}-{option.value}_{inter.author.id}".replace(
-                                    " ", "-"
-                                )
-                            )[:99],
-                            author=None,
-                        )
-                except discord.HTTPException:
-                    pass
-            await inter.followup(
-                _("You have chosen to create a ticket with the reason `{reason}`.").format(
-                    reason=reason
+            if not interaction.response.is_done():
+                await interaction.response.defer(ephemeral=True)
+            reason = inputs[0].value or ""
+            ctx = await self.cogsutils.invoke_command(
+                author=interaction.user,
+                channel=interaction.channel,
+                command=("ticket close" + (f" {reason}" if reason != "" else "")),
+            )
+            try:
+                await interaction.followup.send(
+                    _(
+                        "You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+                    ),
+                    ephemeral=True,
+                )
+            except discord.HTTPException:
+                pass
+        elif interaction.data["custom_id"] == "open_ticket_button":
+            ctx = await self.cogsutils.invoke_command(
+                author=interaction.user, channel=interaction.channel, command="ticket open"
+            )
+            try:
+                await interaction.followup.send(
+                    _(
+                        "You have chosen to re-open this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+                    ),
+                    ephemeral=True,
+                )
+            except discord.HTTPException:
+                pass
+        elif interaction.data["custom_id"] == "claim_ticket_button":
+            ctx = await self.cogsutils.invoke_command(
+                author=interaction.user, channel=interaction.channel, command="ticket claim"
+            )
+            await interaction.followup.send(
+                _(
+                    "You have chosen to claim this ticket. If this is not done, you do not have the necessary permissions to execute this command."
                 ),
                 ephemeral=True,
             )
+        elif interaction.data["custom_id"] == "delete_ticket_button":
+            ctx = await self.cogsutils.invoke_command(
+                author=interaction.user, channel=interaction.channel, command="ticket delete"
+            )
+
+    async def on_dropdown_interaction(
+        self, view: Dropdown, interaction: discord.Interaction, options: typing.List
+    ) -> None:
+        if len(options) == 0:
+            if not interaction.response.is_done():
+                await interaction.response.defer()
+            return
+        permissions = interaction.channel.permissions_for(interaction.user)
+        if not permissions.read_messages and not permissions.send_messages:
+            return
+        permissions = interaction.channel.permissions_for(interaction.guild.me)
+        if not permissions.read_messages and not permissions.read_message_history:
+            return
+        if not interaction.response.is_done():
+            await interaction.response.defer(ephemeral=True)
+        dropdowns = await self.config.guild(interaction.guild).dropdowns()
+        if f"{interaction.message.channel.id}-{interaction.message.id}" not in dropdowns:
+            await interaction.followup.send(
+                _("This message is not in TicketTool config."), ephemeral=True
+            )
+            return
+        profile = dropdowns[f"{interaction.message.channel.id}-{interaction.message.id}"][0].get(
+            "profile", "main"
+        )
+        profiles = await self.config.guild(interaction.guild).profiles()
+        if profile not in profiles:
+            await interaction.followup.send(
+                _("The profile for which this dropdown was configured no longer exists."),
+                ephemeral=True,
+            )
+            return
+        option = [option for option in view.options if option.value == options[0]][0]
+        reason = f"{option.emoji} - {option.label}"
+        ctx = await self.cogsutils.invoke_command(
+            author=interaction.user,
+            channel=interaction.channel,
+            command=f"ticket create {profile} {reason}",
+        )
+        if not await discord.utils.async_all(
+            check(ctx) for check in ctx.command.checks
+        ) or not hasattr(ctx, "ticket"):
+            await interaction.followup.send(
+                _("You are not allowed to execute this command."), ephemeral=True
+            )
+            return
+        config = await self.get_config(interaction.guild, profile)
+        if config["embed_button"]["rename_channel_dropdown"]:
+            try:
+                ticket: Ticket = await self.get_ticket(
+                    ctx.guild.get_channel(ctx.ticket.channel)
+                )
+                if ticket is not None:
+                    await ticket.rename(
+                        new_name=f"{option.emoji}-{option.value}_{interaction.user.id}".replace(
+                            " ", "-"
+                        ),
+                        author=None,
+                    )
+            except discord.HTTPException:
+                pass
+        await interaction.followup.send(
+            _("You have chosen to create a ticket with the reason `{reason}`.").format(
+                reason=reason
+            ),
+            ephemeral=True,
+        )
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:

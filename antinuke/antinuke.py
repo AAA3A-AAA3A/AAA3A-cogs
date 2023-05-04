@@ -1,4 +1,4 @@
-from .AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -8,21 +8,16 @@ import typing  # isort:skip
 import io
 from copy import deepcopy
 
+from .dashboard_integration import DashboardIntegration
+
 # Credits:
 # General repo credits.
 
 _ = Translator("AntiNuke", __file__)
 
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
-
 
 @cog_i18n(_)
-class AntiNuke(Cog):
+class AntiNuke(DashboardIntegration, Cog):
     """A cog to remove all permissions from a person who deletes a channel!"""
 
     def __init__(self, bot: Red) -> None:
@@ -48,6 +43,48 @@ class AntiNuke(Cog):
         self.config.register_member(**self.antinuke_member)
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
+
+        _settings: typing.Dict[
+            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
+        ] = {
+            "enabled": {
+                "path": ["enabled"],
+                "converter": bool,
+                "description": "Enable of disable AntiNuke system.",
+            },
+            "logschannel": {
+                "path": ["logschannel"],
+                "converter": discord.TextChannel,
+                "description": "Set a channel where events will be sent.",
+            },
+            "user_dm": {
+                "path": ["user_dm"],
+                "converter": bool,
+                "description": "If enabled, the detected user will receive a DM.",
+                "aliases": ["dmuser"],
+            },
+            "nbmember": {
+                "path": ["number_detected_member"],
+                "converter": bool,
+                "description": "Before action, how many deleted channels should be detected for a member? `0` to disable this protection.",
+            },
+            "nbbot": {
+                "path": ["number_detected_bot"],
+                "converter": bool,
+                "description": "Before action, how many deleted channels should be detected for a bot? `0` to disable this protection.",
+            },
+        }
+        self.settings: Settings = Settings(
+            bot=self.bot,
+            cog=self,
+            config=self.config,
+            group=self.config.GUILD,
+            settings=_settings,
+            global_path=[],
+            use_profiles_system=False,
+            can_edit=True,
+            commands_group=self.configuration,
+        )
 
     async def red_delete_data_for_user(
         self,
@@ -160,7 +197,7 @@ class AntiNuke(Cog):
             if logschannel:
                 embed: discord.Embed = discord.Embed()
                 embed.title = _(
-                    "The user {perp.name}#{perp.discriminator} has deleted the channel #{old_channel.name}!"
+                    "The user {perp} has deleted the channel #{old_channel.name}!"
                 ).format(perp=perp, old_channel=old_channel)
                 embed.description = _(
                     "To prevent him from doing anything else, I took away as many roles as my current permissions would allow.\nUser mention: {perp.mention} - User ID: {perp.id}"
@@ -168,8 +205,8 @@ class AntiNuke(Cog):
                 embed.color = discord.Color.dark_teal()
                 embed.set_author(
                     name=perp,
-                    url=perp.display_avatar if self.cogsutils.is_dpy2 else perp.avatar_url,
-                    icon_url=perp.display_avatar if self.cogsutils.is_dpy2 else perp.avatar_url,
+                    url=perp.display_avatar,
+                    icon_url=perp.display_avatar,
                 )
                 embed.add_field(
                     inline=False,
@@ -201,130 +238,9 @@ class AntiNuke(Cog):
 
     @commands.guild_only()
     @commands.guildowner()
-    @hybrid_group(name="setantinuke", aliases=["antinukeset"])
+    @commands.hybrid_group(name="setantinuke", aliases=["antinukeset"])
     async def configuration(self, ctx: commands.Context) -> None:
         """Configure AntiNuke for your server."""
-
-    @configuration.command(
-        aliases=["lchann", "lchannel", "logschan", "logchannel", "logsc"],
-        usage="<text_channel_or_'none'>",
-    )
-    async def logschannel(
-        self, ctx: commands.Context, *, channel: typing.Optional[discord.TextChannel] = None
-    ) -> None:
-        """Set a channel where events are registered.
-
-        ``channel``: Text channel.
-        You can also use "None" if you wish to remove the logging channel.
-        """
-        if ctx.author.id != ctx.guild.owner.id:
-            await ctx.send(_("Only the owner of this server can access these commands!"))
-            return
-
-        if channel is None:
-            await self.config.guild(ctx.guild).logschannel.clear()
-            await ctx.send(_("Logging channel removed."))
-            return
-
-        needperm = await self.check_permissions_in_channel(
-            [
-                "embed_links",
-                "read_messages",
-                "read_message_history",
-                "send_messages",
-                "attach_files",
-            ],
-            channel,
-        )
-        if needperm:
-            await ctx.send(
-                _(
-                    "The bot does not have at least one of the following permissions in this channel: `embed_links`, `read_messages`, `read_message_history`, `send_messages`, `attach_files`."
-                )
-            )
-            return
-
-        await self.config.guild(ctx.guild).logschannel.set(channel.id)
-        await ctx.send(_("Logging channel registered: {channel.mention}.").format(channel=channel))
-
-    async def check_permissions_in_channel(
-        self, permissions: typing.List[str], channel: discord.TextChannel
-    ) -> None:
-        """Function to checks if the permissions are available in a guild.
-        This will return a list of the missing permissions.
-        """
-        return [
-            permission
-            for permission in permissions
-            if not getattr(channel.permissions_for(channel.guild.me), permission)
-        ]
-
-    @configuration.command(name="enable", aliases=["activate"], usage="<true_or_false>")
-    async def enable(self, ctx: commands.Context, state: bool) -> None:
-        """Enable or disable AntiNuke.
-
-        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
-        """
-        if ctx.author.id != ctx.guild.owner.id:
-            await ctx.send(_("Only the owner of this server can access these commands!"))
-            return
-
-        config = await self.config.guild(ctx.guild).all()
-        actual_state_enabled = config["enabled"]
-        if actual_state_enabled is state:
-            await ctx.send(_("AntiNuke is already set on {state}.").format(state=state))
-            return
-
-        await self.config.guild(ctx.guild).enabled.set(state)
-        await ctx.send(_("AntiNuke state registered: {state}.").format(state=state))
-
-    @configuration.command(name="userdm", aliases=["dm"], usage="<true_or_false>")
-    async def userdm(self, ctx: commands.Context, state: bool) -> None:
-        """Enable or disable User DM.
-
-        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.
-        """
-        if ctx.author.id != ctx.guild.owner.id:
-            await ctx.send(_("Only the owner of this server can access these commands!"))
-            return
-
-        config = await self.config.guild(ctx.guild).all()
-
-        actual_state_user_dm = config["user_dm"]
-        if actual_state_user_dm is state:
-            await ctx.send(_("User DM is already set on {state}.").format(state=state))
-            return
-
-        await self.config.guild(ctx.guild).user_dm.set(state)
-        await ctx.send(_("User DM state registered: {state}.").format(state=state))
-
-    @configuration.command(name="nbmember", aliases=["membernb"], usage="<nb>")
-    async def nbmember(self, ctx: commands.Context, nb: int) -> None:
-        """Number Detected - Member
-
-        Before action, how many deleted channels should be detected?
-        `0' to disable this protection.
-        """
-        if ctx.author.id != ctx.guild.owner.id:
-            await ctx.send(_("Only the owner of this server can access these commands!"))
-            return
-
-        await self.config.guild(ctx.guild).number_detected_member.set(nb)
-        await ctx.send(_("Number Detected - Member registered: {nb}.").format(nb=nb))
-
-    @configuration.command(name="nbbot", aliases=["botsnb"], usage="<nb>")
-    async def nbbot(self, ctx: commands.Context, nb: int) -> None:
-        """Number Detected - Bot
-
-        Before action, how many deleted channels should be detected?
-        `0' to disable this protection.
-        """
-        if ctx.author.id != ctx.guild.owner.id:
-            await ctx.send(_("Only the owner of this server can access these commands!"))
-            return
-
-        await self.config.guild(ctx.guild).number_detected_bot.set(nb)
-        await ctx.send(_("Number Detected - Bot registered: {nb}.").format(nb=nb))
 
     @configuration.command(name="resetuser", aliases=["userreset"], usage="<int>")
     async def resetuser(

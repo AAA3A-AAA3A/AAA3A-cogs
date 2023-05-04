@@ -28,13 +28,13 @@ Here are all the commands included in this cog (4):
  Group of commands to use ReactToCommand.
 
 * ``[p]discordmodals add <message> <argument>``
- Add a Modal to a message.
+ Add a Modal for a message.
 
 * ``[p]discordmodals purge``
- Clear all Modals to a **guild**.
+ Clear all Modals for a guild.
 
 * ``[p]discordmodals remove <message>``
- Remove a Modal to a message.
+ Remove a Modal for a message.
 
 ------------
 Installation

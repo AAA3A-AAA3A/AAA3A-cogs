@@ -28,19 +28,19 @@ Here are all the commands included in this cog (6):
  Group of commands to use UrlButtons.
 
 * ``[p]urlbuttons add <message> <emoji> <url> [text_button=None]``
- Add a url-button to a message.
+ Add a url-button for a message.
 
 * ``[p]urlbuttons bulk <message> [url_buttons]...``
- Add a url-button to a message.
+ Add a url-button for a message.
 
 * ``[p]urlbuttons clear <message>``
- Clear all url-buttons to a message.
+ Clear all url-buttons for a message.
 
 * ``[p]urlbuttons purge``
- Clear all url-buttons to a **guild**.
+ Clear all url-buttons for a guild.
 
 * ``[p]urlbuttons remove <message> <emoji>``
- Remove a url-button to a message.
+ Remove a url-button for a message.
 
 ------------
 Installation

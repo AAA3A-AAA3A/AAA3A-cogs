@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils import Cog, CogsUtils, Menu, Loop  # isort:skip
+﻿from AAA3A_utils import Cog, CogsUtils, Menu, Loop  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -22,13 +22,6 @@ from redbot.core.utils.chat_formatting import bold, box
 # Thanks to Matt because this cog is for him bot.
 
 _ = Translator("Medicat", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 MEDICAT_ICON_URL = None
 
@@ -117,7 +110,7 @@ CUSTOM_COMMANDS = {
         ),
     },
     "virus": {
-        "title": ("Why does my antivirus software blame Medicat?"),
+        "title": ("Why does my antivirus software detect Medicat as a virus?"),
         "description": (
             "Medicat USB does not contain any viruses! If an antivirus software detects one of its files as such, it is a false positive.\nAs you know, Medicat USB contains tools that can reset a partition, find a password, and modify the system. Portable applications can be falsely flagged because of how they are cracked and packaged.\nFor these reasons all antivirus software's 'real-time scanning' should be disabled when installing, and sometimes even when using, Medicat USB.\nAll the scripts associated with the project (published by one of the 3 developers) and Ventoy do not have one either."
         ),
@@ -318,13 +311,9 @@ class Medicat(Cog):
 
     async def cog_load(self) -> None:
         global MEDICAT_ICON_URL
-        MEDICAT_ICON_URL = (
-            (await self.bot.fetch_invite("medicat")).guild.icon.url
-            if self.cogsutils.is_dpy2
-            else (await self.bot.fetch_invite("medicat")).guild.icon_url
-        )
+        MEDICAT_ICON_URL = (await self.bot.fetch_invite("medicat")).guild.icon.url
         await self.edit_config_schema()
-        self._session = aiohttp.ClientSession()
+        self._session: aiohttp.ClientSession = aiohttp.ClientSession()
         self.cogsutils.create_loop(function=self.ventoy_updates, name="Ventoy Updates", hours=1)
         self.cogsutils.create_loop(
             function=self.bootables_tools_updates, name="Bootables Tools Updates", hours=1
@@ -355,28 +344,15 @@ class Medicat(Cog):
             f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog."
         )
 
-    if CogsUtils().is_dpy2:
-
-        async def cog_unload(self) -> None:
-            self.CC_added.set()
-            try:
-                self.remove_custom_commands()
-            except Exception as e:
-                self.log.error("An error occurred while removing the custom_commands.", exc_info=e)
-            self.cogsutils._end()
-            if self._session is not None:
-                await self._session.close()
-
-    else:
-
-        def cog_unload(self) -> None:
-            try:
-                self.remove_custom_commands()
-            except Exception as e:
-                self.log.error("An error occurred while removing the custom_commands.", exc_info=e)
-            self.cogsutils._end()
-            if self._session is not None:
-                asyncio.create_task(self._session.close())
+    async def cog_unload(self) -> None:
+        self.CC_added.set()
+        try:
+            self.remove_custom_commands()
+        except Exception as e:
+            self.log.error("An error occurred while removing the custom_commands.", exc_info=e)
+        if self._session is not None:
+            await self._session.close()
+        self.cogsutils._end()
 
     async def ventoy_updates(
         self,
@@ -489,57 +465,32 @@ class Medicat(Cog):
                 inline=True,
             )
             role = guild.get_role(VENTOY_UPDATES_ROLE) if ping_role else None
+            view = discord.ui.View()
+            view.add_item(
+                discord.ui.Button(
+                    label=_("View on Ventoy Official Website"),
+                    url="https://www.ventoy.net/en/doc_news.html",
+                    style=discord.ButtonStyle(5),
+                )
+            )
             try:
                 hook: discord.Webhook = await self.cogsutils.get_hook(channel)
-                if self.cogsutils.is_dpy2:
-                    view = discord.ui.View()
-                    view.add_item(
-                        discord.ui.Button(
-                            label=_("View on Ventoy Official Website"),
-                            url="https://www.ventoy.net/en/doc_news.html",
-                            style=discord.ButtonStyle(5),
-                        )
-                    )
-                    message: discord.Message = await hook.send(
-                        content=role.mention if role is not None else None,
-                        embed=embed,
-                        username="Ventoy Updates",
-                        avatar_url="https://ventoy.net/static/img/ventoy.png?v=1",
-                        view=view,
-                        allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
-                        wait=True,
-                    )
-                else:
-                    message: discord.Message = await hook.send(
-                        content=role.mention if role is not None else None,
-                        embed=embed,
-                        username="Ventoy Updates",
-                        avatar_url="https://ventoy.net/static/img/ventoy.png?v=1",
-                        allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
-                        wait=True,
-                    )
+                message: discord.Message = await hook.send(
+                    content=role.mention if role is not None else None,
+                    embed=embed,
+                    username="Ventoy Updates",
+                    avatar_url="https://ventoy.net/static/img/ventoy.png?v=1",
+                    view=view,
+                    allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
+                    wait=True,
+                )
             except (AttributeError, discord.errors.Forbidden):
-                if self.cogsutils.is_dpy2:
-                    view = discord.ui.View()
-                    view.add_item(
-                        discord.ui.Button(
-                            label=_("View on Ventoy Official Website"),
-                            url="https://www.ventoy.net/en/doc_news.html",
-                            style=discord.ButtonStyle(5),
-                        )
-                    )
-                    message: discord.Message = await channel.send(
-                        content=role.mention if role is not None else None,
-                        embed=embed,
-                        view=view,
-                        allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
-                    )
-                else:
-                    message: discord.Message = await channel.send(
-                        content=role.mention if role is not None else None,
-                        embed=embed,
-                        allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
-                    )
+                message: discord.Message = await channel.send(
+                    content=role.mention if role is not None else None,
+                    embed=embed,
+                    view=view,
+                    allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
+                )
             if message is not None:
                 try:
                     await message.publish()
@@ -612,57 +563,32 @@ class Medicat(Cog):
             )
 
             role = guild.get_role(BOOTABLES_TOOLS_UPDATE_ROLE) if ping_role else None
+            view = discord.ui.View()
+            view.add_item(
+                discord.ui.Button(
+                    label=_("View on FCportables Official Website"),
+                    url=url,
+                    style=discord.ButtonStyle(5),
+                )
+            )
             try:
                 hook: discord.Webhook = await self.cogsutils.get_hook(channel)
-                if self.cogsutils.is_dpy2:
-                    view = discord.ui.View()
-                    view.add_item(
-                        discord.ui.Button(
-                            label=_("View on FCportables Official Website"),
-                            url=url,
-                            style=discord.ButtonStyle(5),
-                        )
-                    )
-                    message: discord.Message = await hook.send(
-                        content=role.mention if role is not None else None,
-                        embed=embed,
-                        username="Bootables Tools Updates",
-                        avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg",
-                        view=view,
-                        allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
-                        wait=True,
-                    )
-                else:
-                    message: discord.Message = await hook.send(
-                        content=role.mention if role is not None else None,
-                        embed=embed,
-                        username="Bootables Tools Updates",
-                        avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg",
-                        allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
-                        wait=True,
-                    )
+                message: discord.Message = await hook.send(
+                    content=role.mention if role is not None else None,
+                    embed=embed,
+                    username="Bootables Tools Updates",
+                    avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg",
+                    view=view,
+                    allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
+                    wait=True,
+                )
             except (AttributeError, discord.errors.Forbidden):
-                if self.cogsutils.is_dpy2:
-                    view = discord.ui.View()
-                    view.add_item(
-                        discord.ui.Button(
-                            label=_("View on FCportables Official Website"),
-                            url=url,
-                            style=discord.ButtonStyle(5),
-                        )
-                    )
-                    message: discord.Message = await channel.send(
-                        content=role.mention if role is not None else None,
-                        embed=embed,
-                        view=view,
-                        allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
-                    )
-                else:
-                    message: discord.Message = await channel.send(
-                        content=role.mention if role is not None else None,
-                        embed=embed,
-                        allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
-                    )
+                message: discord.Message = await channel.send(
+                    content=role.mention if role is not None else None,
+                    embed=embed,
+                    view=view,
+                    allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
+                )
             if message is not None:
                 try:
                     await message.publish()
@@ -689,7 +615,7 @@ class Medicat(Cog):
         return commands.check(pred)
 
     @in_medicat_guild()
-    @hybrid_group()
+    @commands.hybrid_group()
     async def medicat(self, ctx: commands.Context) -> None:
         """Commands of Medicat cog."""
         pass
@@ -731,7 +657,7 @@ class Medicat(Cog):
                 self.bot.dispatch("command_add", command)
                 if self.bot.get_cog("permissions") is None:
                     command.requires.ready_event.set()
-                if self.cogsutils.is_dpy2 and "ctx" in command.params:
+                if "ctx" in command.params:
                     del command.params["ctx"]
                 setattr(self, f"CC_{name}", command)
             except Exception as e:
@@ -826,42 +752,24 @@ class Medicat(Cog):
         embed.description = "\n".join(
             [f"{bold(name)} ➜ {value}" for name, value in result.items()]
         )
+        view = discord.ui.View()
+        view.add_item(
+            discord.ui.Button(
+                style=discord.ButtonStyle(5),
+                label=_("View FCportables Official Website"),
+                url="https://www.fcportables.com/",
+            )
+        )
         try:
             hook: discord.Webhook = await self.cogsutils.get_hook(ctx.channel)
-            if self.cogsutils.is_dpy2:
-                view = discord.ui.View()
-                view.add_item(
-                    discord.ui.Button(
-                        style=discord.ButtonStyle(5),
-                        label=_("View FCportables Official Website"),
-                        url="https://www.fcportables.com/",
-                    )
-                )
-                await hook.send(
-                    embed=embed,
-                    username="Bootables Tools Updates",
-                    avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg",
-                    view=view,
-                )
-            else:
-                await hook.send(
-                    embed=embed,
-                    username="Bootables Tools Updates",
-                    avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg",
-                )
+            await hook.send(
+                embed=embed,
+                username="Bootables Tools Updates",
+                avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg",
+                view=view,
+            )
         except (AttributeError, discord.errors.Forbidden):
-            if self.cogsutils.is_dpy2:
-                view = discord.ui.View()
-                view.add_item(
-                    discord.ui.Button(
-                        style=discord.ButtonStyle(5),
-                        label=_("View FCportables Official Website"),
-                        url="https://www.fcportables.com/",
-                    )
-                )
-                await ctx.send(embed=embed, view=view)
-            else:
-                await ctx.send(embed=embed)
+            await ctx.send(embed=embed, view=view)
 
     @is_owner_or_AAA3A()
     @medicat.command(hidden=True)

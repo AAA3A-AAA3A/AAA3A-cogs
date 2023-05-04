@@ -101,7 +101,7 @@ msgstr ""
 #: rolesbuttons\rolesbuttons.py:332
 #, docstring
 msgid ""
-"Add a role-button to a message.\n"
+"Add a role-button for a message.\n"
 "\n"
 "        `primary`: 1\n"
 "        `secondary`: 2\n"
@@ -141,7 +141,7 @@ msgstr ""
 #: rolesbuttons\rolesbuttons.py:397
 #, docstring
 msgid ""
-"Add roles-buttons to a message.\n"
+"Add roles-buttons for a message.\n"
 "\n"
 "        ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```\n"
 "        "
@@ -178,7 +178,7 @@ msgstr ""
 
 #: rolesbuttons\rolesbuttons.py:476
 #, docstring
-msgid "Remove a role-button to a message."
+msgid "Remove a role-button for a message."
 msgstr ""
 
 #: rolesbuttons\rolesbuttons.py:488
@@ -187,10 +187,10 @@ msgstr ""
 
 #: rolesbuttons\rolesbuttons.py:508
 #, docstring
-msgid "Clear all roles-buttons to a message."
+msgid "Clear all roles-buttons for a message."
 msgstr ""
 
 #: rolesbuttons\rolesbuttons.py:531
 #, docstring
-msgid "Clear all roles-buttons to a **guild**."
+msgid "Clear all roles-buttons for a guild."
 msgstr ""

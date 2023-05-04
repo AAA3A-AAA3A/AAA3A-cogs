@@ -1,14 +1,9 @@
-﻿from .AAA3A_utils import Cog, CogsUtils  # isort:skip
+﻿from AAA3A_utils import Cog, CogsUtils, Buttons, Dropdown  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
-
-if CogsUtils().is_dpy2:
-    from .AAA3A_utils import Buttons, Dropdown  # isort:skip
-else:
-    from dislash import user_command, message_command, slash_command, Option, OptionType
 
 import asyncio
 
@@ -27,13 +22,6 @@ from .utils import utils
 # Thanks to @Aikaterna on the Redbot support server for help on displaying the main command help menu and other commands!
 
 _ = Translator("SimpleSanction", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 class TimeDeltaConverter(commands.Converter):
@@ -250,131 +238,10 @@ class SimpleSanction(settings, Cog):
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
-    if not CogsUtils().is_dpy2:
-
-        @user_command(name="Sanction user")
-        async def sanctionusermenu(self, inter) -> None:
-            try:
-                await self.cogsutils.invoke_command(
-                    author=inter.author, channel=inter.channel, command=f"sanction {inter.user.id}"
-                )
-                await inter.respond(
-                    _(
-                        "You have chosen to sanction {inter.user.mention} ({inter.user.id}) in {inter.channel.mention}."
-                    ).format(inter=inter),
-                    ephemeral=True,
-                )
-            except Exception:
-                await inter.respond(
-                    _(
-                        "An error has occurred in your interaction. Please try to use the real command instead of this contextual menu."
-                    ),
-                    ephemeral=True,
-                )
-
-        @message_command(name="Sanction author")
-        async def sanctionmessagemenu(self, inter) -> None:
-            try:
-                await self.cogsutils.invoke_command(
-                    author=inter.author,
-                    channel=inter.channel,
-                    command=f"sanction {inter.message.author.id}",
-                )
-                await inter.respond(
-                    _(
-                        "You have chosen to sanction {inter.message.author.mention} ({inter.message.author.id}) in {inter.channel.mention}."
-                    ).format(inter=inter),
-                    ephemeral=True,
-                )
-            except Exception:
-                await inter.respond(
-                    _(
-                        "An error has occurred in your interaction. Please try to use the real command instead of this contextual menu."
-                    ),
-                    ephemeral=True,
-                )
-
-        @slash_command(
-            name="sanction",
-            description="Sanction user",
-            options=[
-                Option("user", "Enter the user.", OptionType.USER, required=True),
-                Option(
-                    "confirmation",
-                    "Ask for confirmation from you before the action?",
-                    OptionType.BOOLEAN,
-                    required=False,
-                ),
-                Option(
-                    "show_author",
-                    "Show in embeds who is the author of the command?",
-                    OptionType.BOOLEAN,
-                    required=False,
-                ),
-                Option(
-                    "finish_message",
-                    "Show an embed just before the action?",
-                    OptionType.BOOLEAN,
-                    required=False,
-                ),
-                Option(
-                    "fake_action",
-                    "Do everything as usual, but (unintentionally) forget to execute the action?",
-                    OptionType.BOOLEAN,
-                    required=False,
-                ),
-                Option(
-                    "args",
-                    "Enter the arguments of the command.",
-                    OptionType.STRING,
-                    required=False,
-                ),
-            ],
-        )
-        async def sanctionslash(
-            self,
-            inter,
-            user,
-            confirmation: typing.Optional[bool] = "",
-            show_author: typing.Optional[bool] = "",
-            finish_message: typing.Optional[bool] = "",
-            fake_action: typing.Optional[bool] = "",
-            args: typing.Optional[str] = "",
-        ) -> None:
-            try:
-                if confirmation != "":
-                    confirmation = f" {confirmation}"
-                if show_author != "":
-                    show_author = f" {show_author}"
-                if finish_message != "":
-                    finish_message = f" {finish_message}"
-                if fake_action != "":
-                    fake_action = f" {fake_action}"
-                if args != "":
-                    args = f" {args}"
-                await self.cogsutils.invoke_command(
-                    author=inter.author,
-                    channel=inter.channel,
-                    command=f"sanction {user.id}{confirmation}{show_author}{finish_message}{fake_action}{args}",
-                )
-                await inter.respond(
-                    _(
-                        "You have chosen to sanction {user.mention} ({user.id}) in {inter.channel.mention}."
-                    ).format(inter=inter),
-                    ephemeral=True,
-                )
-            except Exception:
-                await inter.respond(
-                    _(
-                        "An error has occurred in this interaction. Please try to use the real command instead of this contextual menu."
-                    ),
-                    ephemeral=True,
-                )
-
     @commands.guild_only()
     @commands.mod_or_permissions(administrator=True)
     @commands.bot_has_permissions(add_reactions=True, embed_links=True)
-    @hybrid_group(
+    @commands.hybrid_group(
         invoke_without_command=True,
         name="sanction",
         aliases=["punishuser"],
@@ -910,8 +777,6 @@ class SimpleSanction(settings, Cog):
         actual_action_confirmation = config["action_confirmation"]
         actual_finish_message = config["finish_message"]
         actual_way = config["way"]
-        if actual_way == "dropdown" and not self.cogsutils.is_dpy2:
-            actual_way = "buttons"
         actual_delete_embed = config["delete_embed"]
         actual_delete_message = config["delete_message"]
         actual_timeout = config["timeout"]
@@ -969,15 +834,13 @@ class SimpleSanction(settings, Cog):
             embed.color = actual_color
             embed.set_author(
                 name=user,
-                url=user.display_avatar if self.cogsutils.is_dpy2 else user.avatar_url,
-                icon_url=user.display_avatar if self.cogsutils.is_dpy2 else user.avatar_url,
+                url=user.display_avatar,
+                icon_url=user.display_avatar,
             )
             if show_author:
                 embed.set_footer(
                     text=ctx.author,
-                    icon_url=ctx.author.display_avatar
-                    if self.cogsutils.is_dpy2
-                    else ctx.author.avatar_url,
+                    icon_url=ctx.author.display_avatar,
                 )
             embed.add_field(
                 inline=False,
@@ -997,36 +860,27 @@ class SimpleSanction(settings, Cog):
                 embed.add_field(
                     inline=False, name=_("Duration:"), value=f"{parse_timedelta(duration)}"
                 )
-            if self.cogsutils.is_dpy2:
 
-                async def send_fake_epheremal(
-                    view: discord.ui.View, interaction: discord.Interaction, fake_action: bool
-                ):
-                    if fake_action:
-                        await interaction.response.send_message(
-                            _(
-                                "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                            ),
-                            ephemeral=True,
-                        )
+            async def send_fake_epheremal(
+                view: discord.ui.View, interaction: discord.Interaction, fake_action: bool
+            ):
+                if fake_action:
+                    await interaction.response.send_message(
+                        _(
+                            "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
+                        ),
+                        ephemeral=True,
+                    )
 
             if actual_way == "buttons":
-                if self.cogsutils.is_dpy2:
-                    view = Buttons(
-                        timeout=actual_timeout,
-                        buttons=self.buttons_dict,
-                        members=[ctx.author] + list(ctx.bot.owner_ids),
-                        function=send_fake_epheremal,
-                        function_kwargs={"fake_action": fake_action},
-                    )
-                    message = await ctx.send(embed=embed, view=view)
-                else:
-                    buttons, buttons_one, buttons_two, buttons_three = await utils.emojis(
-                        disabled=False
-                    )
-                    message = await ctx.send(
-                        embed=embed, components=[buttons_one, buttons_two, buttons_three]
-                    )
+                view = Buttons(
+                    timeout=actual_timeout,
+                    buttons=self.buttons_dict,
+                    members=[ctx.author] + list(ctx.bot.owner_ids),
+                    function=send_fake_epheremal,
+                    function_kwargs={"fake_action": fake_action},
+                )
+                message = await ctx.send(embed=embed, view=view)
             elif actual_way == "dropdown":
                 view = Dropdown(
                     timeout=actual_timeout,
@@ -1058,7 +912,7 @@ class SimpleSanction(settings, Cog):
                 reason,
             )
 
-        if action is None and actual_way == "buttons" and self.cogsutils.is_dpy2:
+        if action is None and actual_way == "buttons":
             try:
                 interaction, function_result = await view.wait_result()
                 if interaction.data["custom_id"] == "SimpleSanction_userinfo_button":
@@ -1258,7 +1112,7 @@ class SimpleSanction(settings, Cog):
                     await message.edit(embed=embed, view=view)
                 return
 
-        if action is None and actual_way == "dropdown" and self.cogsutils.is_dpy2:
+        if action is None and actual_way == "dropdown":
             try:
                 interaction, values, function_result = await view.wait_result()
                 if str(values[0]) == "SimpleSanction_userinfo_button":
@@ -1677,314 +1531,6 @@ class SimpleSanction(settings, Cog):
                             await self.cogsutils.delete_message(message)
                         await ctx.send("Timed out, please try again.")
                         return
-
-        if action is None and actual_way == "buttons" and not self.cogsutils.is_dpy2:
-            on_click = message.create_click_listener(timeout=actual_timeout)
-
-            @on_click.not_from_user(ctx.author, cancel_others=True, reset_timeout=False)
-            async def on_wrong_user(inter):
-                # This function is called in case a button was clicked not by the author
-                # cancel_others=True prevents all on_click-functions under this function from working
-                # regardless of their checks
-                # reset_timeout=False makes the timer keep going after this function is called
-                await inter.respond(_("You are not the author of this command."), ephemeral=True)
-
-            @on_click.matching_id("userinfo_button")
-            async def on_userinfo_button(inter):
-                if fake_action:
-                    await inter.respond(
-                        _(
-                            "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ),
-                        ephemeral=True,
-                    )
-                action = 1
-                await self.cogsutils.delete_message(message)
-                await self.call_actions(
-                    ctx,
-                    action,
-                    user,
-                    confirmation,
-                    show_author,
-                    finish_message,
-                    fake_action,
-                    delete_embed,
-                    delete_message,
-                    duration,
-                    reason,
-                )
-                return
-
-            @on_click.matching_id("warn_button")
-            async def on_warn_button(inter):
-                if fake_action:
-                    await inter.respond(
-                        _(
-                            "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ),
-                        ephemeral=True,
-                    )
-                action = 2
-                await self.cogsutils.delete_message(message)
-                await self.call_actions(
-                    ctx,
-                    action,
-                    user,
-                    confirmation,
-                    show_author,
-                    finish_message,
-                    fake_action,
-                    delete_embed,
-                    delete_message,
-                    duration,
-                    reason,
-                )
-                return
-
-            @on_click.matching_id("ban_button")
-            async def on_ban_button(inter):
-                if fake_action:
-                    await inter.respond(
-                        _(
-                            "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ),
-                        ephemeral=True,
-                    )
-                action = 3
-                await self.cogsutils.delete_message(message)
-                await self.call_actions(
-                    ctx,
-                    action,
-                    user,
-                    confirmation,
-                    show_author,
-                    finish_message,
-                    fake_action,
-                    delete_embed,
-                    delete_message,
-                    duration,
-                    reason,
-                )
-                return
-
-            @on_click.matching_id("softban_button")
-            async def on_softban_button(inter):
-                if fake_action:
-                    await inter.respond(
-                        _(
-                            "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ),
-                        ephemeral=True,
-                    )
-                action = 4
-                await self.cogsutils.delete_message(message)
-                await self.call_actions(
-                    ctx,
-                    action,
-                    user,
-                    confirmation,
-                    show_author,
-                    finish_message,
-                    fake_action,
-                    delete_embed,
-                    delete_message,
-                    duration,
-                    reason,
-                )
-                return
-
-            @on_click.matching_id("tempban_button")
-            async def on_tempban_button(inter):
-                if fake_action:
-                    await inter.respond(
-                        _(
-                            "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ),
-                        ephemeral=True,
-                    )
-                action = 5
-                await self.cogsutils.delete_message(message)
-                await self.call_actions(
-                    ctx,
-                    action,
-                    user,
-                    confirmation,
-                    show_author,
-                    finish_message,
-                    fake_action,
-                    delete_embed,
-                    delete_message,
-                    duration,
-                    reason,
-                )
-                return
-
-            @on_click.matching_id("kick_button")
-            async def on_kick_button(inter):
-                if fake_action:
-                    await inter.respond(
-                        _(
-                            "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ),
-                        ephemeral=True,
-                    )
-                action = 6
-                await self.cogsutils.delete_message(message)
-                await self.call_actions(
-                    ctx,
-                    action,
-                    user,
-                    confirmation,
-                    show_author,
-                    finish_message,
-                    fake_action,
-                    delete_embed,
-                    delete_message,
-                    duration,
-                    reason,
-                )
-                return
-
-            @on_click.matching_id("mute_button")
-            async def on_mute_button(inter):
-                if fake_action:
-                    await inter.respond(
-                        _(
-                            "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ),
-                        ephemeral=True,
-                    )
-                action = 7
-                await self.cogsutils.delete_message(message)
-                await self.call_actions(
-                    ctx,
-                    action,
-                    user,
-                    confirmation,
-                    show_author,
-                    finish_message,
-                    fake_action,
-                    delete_embed,
-                    delete_message,
-                    duration,
-                    reason,
-                )
-                return
-
-            @on_click.matching_id("mutechannel_button")
-            async def on_mutechannel_button(inter):
-                if fake_action:
-                    await inter.respond(
-                        _(
-                            "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ),
-                        ephemeral=True,
-                    )
-                action = 8
-                await self.cogsutils.delete_message(message)
-                await self.call_actions(
-                    ctx,
-                    action,
-                    user,
-                    confirmation,
-                    show_author,
-                    finish_message,
-                    fake_action,
-                    delete_embed,
-                    delete_message,
-                    duration,
-                    reason,
-                )
-                return
-
-            @on_click.matching_id("tempmute_button")
-            async def on_tempmute_button(inter):
-                if fake_action:
-                    await inter.respond(
-                        _(
-                            "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ),
-                        ephemeral=True,
-                    )
-                action = 9
-                await self.cogsutils.delete_message(message)
-                await self.call_actions(
-                    ctx,
-                    action,
-                    user,
-                    confirmation,
-                    show_author,
-                    finish_message,
-                    fake_action,
-                    delete_embed,
-                    delete_message,
-                    duration,
-                    reason,
-                )
-                return
-
-            @on_click.matching_id("tempmutechannel_button")
-            async def on_tempmutechannel_button(inter):
-                if fake_action:
-                    await inter.respond(
-                        _(
-                            "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-                        ),
-                        ephemeral=True,
-                    )
-                action = 10
-                await self.cogsutils.delete_message(message)
-                await self.call_actions(
-                    ctx,
-                    action,
-                    user,
-                    confirmation,
-                    show_author,
-                    finish_message,
-                    fake_action,
-                    delete_embed,
-                    delete_message,
-                    duration,
-                    reason,
-                )
-                return
-
-            @on_click.matching_id("close_button")
-            async def on_test_button(inter):
-                action = 11
-                await self.cogsutils.delete_message(message)
-                await self.call_actions(
-                    ctx,
-                    action,
-                    user,
-                    confirmation,
-                    show_author,
-                    finish_message,
-                    fake_action,
-                    delete_embed,
-                    delete_message,
-                    duration,
-                    reason,
-                )
-                return
-
-            @on_click.timeout
-            async def on_timeout():
-                if not end_reaction:
-                    if delete_embed:
-                        await self.cogsutils.delete_message(message)
-                    else:
-                        (
-                            reactions,
-                            buttons,
-                            buttons_one,
-                            buttons_two,
-                            buttons_three,
-                        ) = await utils.emojis(disabled=True)
-                        await message.edit(
-                            embed=embed, components=[buttons_one, buttons_two, buttons_three]
-                        )
-                    return
 
     async def call_actions(
         self,

@@ -1,4 +1,4 @@
-from .AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -10,13 +10,6 @@ import typing  # isort:skip
 # Removed, but: Thanks to TrustyJAID for the code (a bit modified to work here and to improve as needed) for the log messages sent (https://github.com/TrustyJAID/Trusty-cogs/tree/master/extendedmodlog)!
 
 _ = Translator("CmdChannel", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 @cog_i18n(_)
@@ -66,7 +59,7 @@ class CmdChannel(Cog):
             message=context.message,
         )
 
-    @hybrid_group(aliases=["cmdmock"], invoke_without_command=True)
+    @commands.hybrid_group(aliases=["cmdmock"], invoke_without_command=True)
     async def cmdchannel(
         self, ctx: commands.Context, channel: discord.TextChannel, *, command: str
     ):

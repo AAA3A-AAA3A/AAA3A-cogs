@@ -177,7 +177,7 @@ class CalculatorView(discord.ui.View):
         self.clear_items()
         for button in current_buttons:
             self.add_item(button)
-        self._message = await self.ctx.send(
+        self._message: discord.Message = await self.ctx.send(
             embed=await self.cog.get_embed(self.ctx, self._expression, self._result), view=self
         )
         return self._message
@@ -193,7 +193,7 @@ class CalculatorView(discord.ui.View):
     async def on_timeout(self) -> None:
         for child in self.children:
             child: discord.ui.Item
-            if isinstance(child, discord.ui.Button) and child.style != discord.ButtonStyle.url:
+            if hasattr(child, "disabled") and not (isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url):
                 child.disabled = True
         try:
             await self._message.edit(view=self)

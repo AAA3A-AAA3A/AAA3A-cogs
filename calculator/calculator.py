@@ -1,16 +1,12 @@
-from .AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-if CogsUtils().is_dpy2:
-    from .view import CalculatorView  # isort:skip
-else:
-    from dislash import ActionRow, Button, ButtonStyle, ResponseType  # isort:skip
+from .view import CalculatorView  # isort:skip
 
-import asyncio
 import datetime
 from math import e, pi, tau
 
@@ -22,13 +18,6 @@ from TagScriptEngine import Interpreter, block
 # Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
 
 _ = Translator("Calculator", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 @cog_i18n(_)
@@ -145,16 +134,12 @@ class Calculator(Cog):
         if ctx.guild:
             embed.set_footer(
                 text=ctx.guild.name,
-                icon_url=ctx.guild.icon or ""
-                if self.cogsutils.is_dpy2
-                else ctx.guild.icon_url or "",
+                icon_url=ctx.guild.icon
             )
         else:
             embed.set_footer(
                 text=ctx.author.name,
                 icon_url=ctx.author.display_avatar
-                if self.cogsutils.is_dpy2
-                else ctx.author.avatar_url,
             )
         return embed
 
@@ -188,126 +173,9 @@ class Calculator(Cog):
         lst.insert(index + 1, "|")
         return "".join(lst)
 
-    async def get_buttons(self, disabled: bool) -> typing.Tuple:
-        buttons_one = ActionRow(
-            Button(
-                style=ButtonStyle.grey, label="1", emoji=None, custom_id="1", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.grey, label="2", emoji=None, custom_id="2", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.grey, label="3", emoji=None, custom_id="3", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.blurple, label="x", emoji=None, custom_id="x", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.red,
-                label=_("Exit"),
-                emoji=None,
-                custom_id="exit_button",
-                disabled=disabled,
-            ),
-        )
-        buttons_two = ActionRow(
-            Button(
-                style=ButtonStyle.grey, label="4", emoji=None, custom_id="4", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.grey, label="5", emoji=None, custom_id="5", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.grey, label="6", emoji=None, custom_id="6", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.blurple, label="÷", emoji=None, custom_id="÷", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.red,
-                label="⌫",
-                emoji=None,
-                custom_id="back_button",
-                disabled=disabled,
-            ),
-        )
-        buttons_three = ActionRow(
-            Button(
-                style=ButtonStyle.grey, label="7", emoji=None, custom_id="7", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.grey, label="8", emoji=None, custom_id="8", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.grey, label="9", emoji=None, custom_id="9", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.blurple, label="+", emoji=None, custom_id="+", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.red,
-                label=_("Clear"),
-                emoji=None,
-                custom_id="clear_button",
-                disabled=disabled,
-            ),
-        )
-        buttons_four = ActionRow(
-            Button(
-                style=ButtonStyle.grey,
-                label="📄",
-                emoji=None,
-                custom_id="history_button",
-                disabled=disabled,
-            ),
-            Button(
-                style=ButtonStyle.grey, label="0", emoji=None, custom_id="0", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.grey, label=".", emoji=None, custom_id=".", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.blurple, label="-", emoji=None, custom_id="-", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.green,
-                label="=",
-                emoji=None,
-                custom_id="result_button",
-                disabled=disabled,
-            ),
-        )
-        buttons_five = ActionRow(
-            Button(
-                style=ButtonStyle.grey, label="(", emoji=None, custom_id="(", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.grey, label=")", emoji=None, custom_id=")", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.grey, label="√", emoji=None, custom_id="√", disabled=disabled
-            ),
-            Button(
-                style=ButtonStyle.green,
-                label="<",
-                emoji=None,
-                custom_id="left_button",
-                disabled=disabled,
-            ),
-            Button(
-                style=ButtonStyle.green,
-                label=">",
-                emoji=None,
-                custom_id="right_button",
-                disabled=disabled,
-            ),
-        )
-        return buttons_one, buttons_two, buttons_three, buttons_four, buttons_five
-
-    @hybrid_command(name="calculate", aliases=["calc"])
+    @commands.hybrid_command(name="calculate", aliases=["calc"])
     async def _calculate(self, ctx: commands.Context, *, calculation: str = None) -> None:
         """Calculate a simple expression."""
-        config = await self.config.settings.all()
         if calculation is not None:
             result = f"{await self.calculate(calculation)}"
             if ctx.author not in self.history:
@@ -315,168 +183,6 @@ class Calculator(Cog):
             self.history[ctx.author].append(
                 (calculation.replace("|", ""), result.replace("|", ""))
             )
-            message = await ctx.send(embed=await self.get_embed(ctx, calculation, result))
+            await ctx.send(embed=await self.get_embed(ctx, calculation, result))
             return
-        if self.cogsutils.is_dpy2:
-            await CalculatorView(cog=self).start(ctx)
-            return
-        expression = None
-        result = None
-        is_normal = True
-        (
-            buttons_one,
-            buttons_two,
-            buttons_three,
-            buttons_four,
-            buttons_five,
-        ) = await self.get_buttons(False)
-        message = await ctx.send(
-            embed=await self.get_embed(ctx, expression, result),
-            components=[buttons_one, buttons_two, buttons_three, buttons_four, buttons_five],
-        )
-
-        def check(inter):
-            return (
-                inter.guild == ctx.guild
-                and inter.channel == ctx.channel
-                and inter.message.id == message.id
-            )
-
-        try:
-            while True:
-                inter = await ctx.wait_for_button_click(timeout=config["time_max"], check=check)
-                if inter.author != ctx.author and ctx.author.id not in ctx.bot.owner_ids:
-                    await inter.respond(
-                        _(
-                            "Only the author of the command `{ctx.prefix}{ctx.command.name}` can interact with this message."
-                        ).format(ctx=ctx),
-                        ephemeral=True,
-                    )
-                    continue
-                if result in [_("Error!"), "∞", ""]:
-                    result = None
-                if result is not None and inter.clicked_button.custom_id != "result_button":
-                    expression = f"{result}|"
-                    result = None
-                if (
-                    expression is None
-                    or expression == _("Error!")
-                    or expression == "∞"
-                    or expression == ""
-                ):
-                    expression = "|"
-                if inter.clicked_button.custom_id == "result_button":
-                    result = f"{await self.calculate(expression)}"
-                    if ctx.author not in self.history:
-                        self.history[ctx.author] = []
-                    self.history[ctx.author].append(
-                        (expression.replace("|", ""), result.replace("|", ""))
-                    )
-                elif inter.clicked_button.custom_id == "exit_button":
-                    (
-                        buttons_one,
-                        buttons_two,
-                        buttons_three,
-                        buttons_four,
-                        buttons_five,
-                    ) = await self.get_buttons(True)
-                    await message.edit(
-                        components=[
-                            buttons_one,
-                            buttons_two,
-                            buttons_three,
-                            buttons_four,
-                            buttons_five,
-                        ]
-                    )
-                    try:
-                        await inter.respond(type=ResponseType.DeferredUpdateMessage)
-                    except discord.HTTPException:
-                        pass
-                    return
-                elif inter.clicked_button.custom_id == "clear_button":
-                    expression = None
-                    result = None
-                elif inter.clicked_button.custom_id == "back_button":
-                    lst = list(expression)
-                    if len(lst) > 1:
-                        try:
-                            index = lst.index("|")
-                            lst.pop(index - 1)
-                            expression = "".join(lst)
-                        except Exception:
-                            expression = None
-                elif inter.clicked_button.custom_id == "left_button":
-                    lst = list(expression)
-                    if len(lst) > 1:
-                        try:
-                            index = lst.index("|")
-                            lst.remove("|")
-                            lst.insert(index - 1, "|")
-                        except Exception:
-                            lst = ["|"]
-                    expression = "".join(lst)
-                    if expression == "|":
-                        expression = None
-                elif inter.clicked_button.custom_id == "right_button":
-                    lst = list(expression)
-                    if len(lst) > 1:
-                        try:
-                            index = lst.index("|")
-                            lst.remove("|")
-                            lst.insert(index + 1, "|")
-                        except Exception:
-                            lst = ["|"]
-                    expression = "".join(lst)
-                    if expression == "|":
-                        expression = None
-                elif inter.clicked_button.custom_id == "mode_button":
-                    is_normal = not is_normal
-                elif inter.clicked_button.custom_id == "history_button":
-                    embed: discord.Embed = discord.Embed()
-                    embed.title = f"{ctx.author.display_name}'s history"
-                    history = self.history.get(ctx.author, [])[-25:]
-                    history.reverse()
-                    if len(history) == 0:
-                        embed.description = _("Nothing in your history.")
-                    else:
-                        for count, entry in enumerate(history, start=0):
-                            all_count = list(range(1, len(self.history.get(ctx.author, [])) + 1))
-                            all_count.reverse()
-                            count = all_count[count]
-                            _expression, _result = entry
-                            embed.add_field(
-                                name=f"Entry {count}:",
-                                value=box(f"> {str(_expression)}", lang="fix")
-                                + box(f"= {str(_result)}", lang="fix")
-                                + "\n",
-                            )
-                    await inter.respond(embed=embed, ephemeral=True)
-                    continue
-                else:
-                    expression = await self.input_formatter(
-                        expression, str(inter.clicked_button.custom_id)
-                    )
-                await message.edit(embed=await self.get_embed(ctx, expression, result))
-                try:
-                    await inter.respond(type=ResponseType.DeferredUpdateMessage)
-                except discord.HTTPException:
-                    pass
-        except asyncio.TimeoutError:
-            (
-                buttons_one,
-                buttons_two,
-                buttons_three,
-                buttons_four,
-                buttons_five,
-            ) = await self.get_buttons(True)
-            await message.edit(
-                components=[
-                    buttons_one,
-                    buttons_two,
-                    buttons_three,
-                    buttons_four,
-                    buttons_five,
-                ]
-            )
-            return
+        await CalculatorView(cog=self).start(ctx)

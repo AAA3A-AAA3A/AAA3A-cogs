@@ -90,7 +90,7 @@ msgstr ""
 #: discordmodals\discordmodals.py:324
 #, docstring
 msgid ""
-"Add a Modal to a message.\n"
+"Add a Modal for a message.\n"
 "        Use YAML syntax to set up everything.\n"
 "\n"
 "        **Example:**\n"
@@ -134,7 +134,7 @@ msgstr ""
 
 #: discordmodals\discordmodals.py:392
 #, docstring
-msgid "Remove a Modal to a message."
+msgid "Remove a Modal for a message."
 msgstr ""
 
 #: discordmodals\discordmodals.py:395
@@ -147,5 +147,5 @@ msgstr ""
 
 #: discordmodals\discordmodals.py:409
 #, docstring
-msgid "Clear all Modals to a **guild**."
+msgid "Clear all Modals for a guild."
 msgstr ""

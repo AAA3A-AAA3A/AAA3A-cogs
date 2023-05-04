@@ -1,4 +1,4 @@
-from .AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -14,13 +14,6 @@ import chat_exporter
 # Thanks to Red's Cleanup cog for the converters and help with the message retrieval function! (https://github.com/Cog-Creators/Red-DiscordBot/blob/V3/develop/redbot/cogs/cleanup/converters.py#L12)
 
 _ = Translator("ExportChannel", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 RESULT_MESSAGE = _(
     "Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nThere are {count_messages} exported messages.\nRemember that exporting other users' messages from Discord does not respect the TOS."
@@ -81,57 +74,45 @@ class ExportChannel(Cog):
         self, ctx: commands.Context, channel: discord.TextChannel, **kwargs
     ) -> typing.Union[int, typing.List[discord.Message], discord.File]:
         count_messages, messages = await self.get_messages(ctx, channel=channel, **kwargs)
-        if self.cogsutils.is_dpy2:
 
-            class Transcript(chat_exporter.construct.transcript.TranscriptDAO):
-                @classmethod
-                async def export(
-                    cls,
-                    channel: discord.TextChannel,
-                    messages: typing.List[discord.Message],
-                    tz_info="UTC",
-                    guild: typing.Optional[discord.Guild] = None,
-                    bot: typing.Optional[discord.Client] = None,
-                    military_time: typing.Optional[bool] = False,
-                    fancy_times: typing.Optional[bool] = True,
-                    support_dev: typing.Optional[bool] = True,
-                ):
-                    if guild:
-                        channel.guild = guild
-                    self = cls(
-                        channel=channel,
-                        limit=None,
-                        messages=messages,
-                        pytz_timezone=tz_info,
-                        military_time=military_time,
-                        fancy_times=fancy_times,
-                        before=None,
-                        after=None,
-                        support_dev=support_dev,
-                        bot=bot,
-                    )
-                    if not self.after:
-                        self.messages.reverse()
-                    return (await self.build_transcript()).html
-
-            # transcript = await chat_exporter.raw_export(
-            #     channel=channel,
-            #     messages=messages,
-            #     tz_info="UTC",
-            #     guild=channel.guild,
-            #     bot=ctx.bot,
-            # )
-            transcript = await Transcript.export(
-                channel=channel,
-                messages=messages,
+        class Transcript(chat_exporter.construct.transcript.TranscriptDAO):
+            @classmethod
+            async def export(
+                cls,
+                channel: discord.TextChannel,
+                messages: typing.List[discord.Message],
                 tz_info="UTC",
-                guild=channel.guild,
-                bot=ctx.bot,
-            )
-        else:
-            transcript = await chat_exporter.raw_export(
-                channel=channel, messages=messages, guild=channel.guild
-            )
+                guild: typing.Optional[discord.Guild] = None,
+                bot: typing.Optional[discord.Client] = None,
+                military_time: typing.Optional[bool] = False,
+                fancy_times: typing.Optional[bool] = True,
+                support_dev: typing.Optional[bool] = True,
+            ):
+                if guild:
+                    channel.guild = guild
+                self = cls(
+                    channel=channel,
+                    limit=None,
+                    messages=messages,
+                    pytz_timezone=tz_info,
+                    military_time=military_time,
+                    fancy_times=fancy_times,
+                    before=None,
+                    after=None,
+                    support_dev=support_dev,
+                    bot=bot,
+                )
+                if not self.after:
+                    self.messages.reverse()
+                return (await self.build_transcript()).html
+
+        transcript = await Transcript.export(
+            channel=channel,
+            messages=messages,
+            tz_info="UTC",
+            guild=channel.guild,
+            bot=ctx.bot,
+        )
         file = discord.File(
             io.BytesIO(transcript.encode()), filename=f"transcript-{channel.id}.html"
         )
@@ -139,7 +120,7 @@ class ExportChannel(Cog):
 
     @commands.guild_only()
     @commands.guildowner_or_permissions(administrator=True)
-    @hybrid_group(name="exportchannel", aliases=["exportmessages"])
+    @commands.hybrid_group(name="exportchannel", aliases=["exportmessages"])
     async def exportchannel(self, ctx: commands.Context) -> None:
         """Commands for export all or part of a channel's messages to an html file."""
 
@@ -163,14 +144,11 @@ class ExportChannel(Cog):
             description=_(LINK_MESSAGE).format(url=url),
             color=await ctx.embed_color(),
         )
-        if self.cogsutils.is_dpy2:
-            view = discord.ui.View()
-            view.add_item(
+        view = discord.ui.View()
+        view.add_item(
                 discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
-            )
-            await message.edit(embed=embed, view=view)
-        else:
-            await message.edit(embed=embed)
+        )
+        await message.edit(embed=embed, view=view)
 
     @exportchannel.command()
     async def messages(
@@ -199,14 +177,11 @@ class ExportChannel(Cog):
             description=_(LINK_MESSAGE).format(url=url),
             color=await ctx.embed_color(),
         )
-        if self.cogsutils.is_dpy2:
-            view = discord.ui.View()
-            view.add_item(
+        view = discord.ui.View()
+        view.add_item(
                 discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
-            )
-            await message.edit(embed=embed, view=view)
-        else:
-            await message.edit(embed=embed)
+        )
+        await message.edit(embed=embed, view=view)
 
     @exportchannel.command()
     async def before(
@@ -236,14 +211,11 @@ class ExportChannel(Cog):
             description=_(LINK_MESSAGE).format(url=url),
             color=await ctx.embed_color(),
         )
-        if self.cogsutils.is_dpy2:
-            view = discord.ui.View()
-            view.add_item(
+        view = discord.ui.View()
+        view.add_item(
                 discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
-            )
-            await message.edit(embed=embed, view=view)
-        else:
-            await message.edit(embed=embed)
+        )
+        await message.edit(embed=embed, view=view)
 
     @exportchannel.command()
     async def after(
@@ -273,14 +245,11 @@ class ExportChannel(Cog):
             description=_(LINK_MESSAGE).format(url=url),
             color=await ctx.embed_color(),
         )
-        if self.cogsutils.is_dpy2:
-            view = discord.ui.View()
-            view.add_item(
+        view = discord.ui.View()
+        view.add_item(
                 discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
-            )
-            await message.edit(embed=embed, view=view)
-        else:
-            await message.edit(embed=embed)
+        )
+        await message.edit(embed=embed, view=view)
 
     @exportchannel.command()
     async def between(
@@ -311,14 +280,11 @@ class ExportChannel(Cog):
             description=_(LINK_MESSAGE).format(url=url),
             color=await ctx.embed_color(),
         )
-        if self.cogsutils.is_dpy2:
-            view = discord.ui.View()
-            view.add_item(
+        view = discord.ui.View()
+        view.add_item(
                 discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
-            )
-            await message.edit(embed=embed, view=view)
-        else:
-            await message.edit(embed=embed)
+        )
+        await message.edit(embed=embed, view=view)
 
     @exportchannel.command()
     async def user(
@@ -352,14 +318,11 @@ class ExportChannel(Cog):
             description=_(LINK_MESSAGE).format(url=url),
             color=await ctx.embed_color(),
         )
-        if self.cogsutils.is_dpy2:
-            view = discord.ui.View()
-            view.add_item(
+        view = discord.ui.View()
+        view.add_item(
                 discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
-            )
-            await message.edit(embed=embed, view=view)
-        else:
-            await message.edit(embed=embed)
+        )
+        await message.edit(embed=embed, view=view)
 
     @exportchannel.command()
     async def bot(
@@ -390,11 +353,8 @@ class ExportChannel(Cog):
             description=_(LINK_MESSAGE).format(url=url),
             color=await ctx.embed_color(),
         )
-        if self.cogsutils.is_dpy2:
-            view = discord.ui.View()
-            view.add_item(
+        view = discord.ui.View()
+        view.add_item(
                 discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
-            )
-            await message.edit(embed=embed, view=view)
-        else:
-            await message.edit(embed=embed)
+        )
+        await message.edit(embed=embed, view=view)

@@ -1,4 +1,4 @@
-from .AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -20,13 +20,6 @@ except ImportError:
 # Thanks to Kuro for the emoji converter (https://canary.discord.com/channels/133049272517001216/133251234164375552/1014520590239019048)!
 
 _ = Translator("ReactToCommand", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 class Emoji(commands.EmojiConverter):
@@ -210,7 +203,7 @@ class ReactToCommand(Cog):
 
     @commands.guild_only()
     @commands.is_owner()
-    @hybrid_group(aliases=["rtc"])
+    @commands.hybrid_group(aliases=["rtc"])
     async def reacttocommand(self, ctx: commands.Context) -> None:
         """Group of commands to use ReactToCommand."""
         pass
@@ -219,7 +212,7 @@ class ReactToCommand(Cog):
     async def add(
         self, ctx: commands.Context, message: discord.Message, emoji: Emoji, *, command: str
     ) -> None:
-        """Add a command-reaction to a message.
+        """Add a command-reaction for a message.
         There should be no prefix in the command.
         The command will be invoked with the permissions of the user who clicked on the reaction.
         This user must be able to see writing in the channel.
@@ -261,7 +254,7 @@ class ReactToCommand(Cog):
 
     @reacttocommand.command()
     async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji) -> None:
-        """Remove a command-reaction to a message."""
+        """Remove a command-reaction for a message."""
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
@@ -282,7 +275,7 @@ class ReactToCommand(Cog):
 
     @reacttocommand.command()
     async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
-        """Clear all commands-reactions to a message."""
+        """Clear all commands-reactions for a message."""
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
@@ -298,5 +291,5 @@ class ReactToCommand(Cog):
 
     @reacttocommand.command(hidden=True)
     async def purge(self, ctx: commands.Context) -> None:
-        """Clear all commands-reactions to a **guild**."""
+        """Clear all commands-reactions for a guild."""
         await self.config.guild(ctx.guild).react_commands.clear()

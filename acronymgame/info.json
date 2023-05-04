@@ -2,13 +2,13 @@
     "author": ["AAA3A"],
     "name": "AcronymGame",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
-    "short": "A cog to play to Acrononym game, with Modals!",
-    "description": "A cog to play to Acrononym game, with Modals!",
+    "short": "A cog to play a random match of Acrononym game, with Modals!",
+    "description": "A cog to play a random match of Acrononym game, with Modals!",
     "tags": [
         "acronym",
         "game"
     ],
-    "requirements": ["sentry_sdk", "prettytable"],
+    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "prettytable"],
     "min_bot_version": "3.5.0",
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

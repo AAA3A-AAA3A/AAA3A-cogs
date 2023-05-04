@@ -40,10 +40,6 @@ class DashboardIntegration:
                 )
         dashboard_cog.rpc.third_parties_handler.add_third_party(self)
 
-    async def cog_unload(self) -> None:
-        if (dashboard_cog := self.bot.get_cog("Dashboard")) is not None:
-            dashboard_cog.rpc.third_parties_handler.remove_third_party(self)
-
     @dashboard_page(name=None)
     async def rpc_callback(self, user: discord.User, **kwargs) -> None:
         return {"status": 0, "web-content": web_content}
@@ -52,7 +48,7 @@ class DashboardIntegration:
 web_content = """
 {% extends "base-site.html" %}
 
-{% block title %} {{ _('ClearChannel cog') }} {% endblock title %}
+{% block title %} {{ _('ClearChannel Cog') }} {% endblock title %}
 
 {% block content %}
 <h2>ClearChannel Cog</h2>

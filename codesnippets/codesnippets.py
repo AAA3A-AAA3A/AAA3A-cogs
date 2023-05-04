@@ -1,4 +1,4 @@
-from .AAA3A_utils import Cog, CogsUtils, Menu, Settings  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Menu, Settings  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -86,6 +86,7 @@ class CodeSnippets(DashboardIntegration, Cog):
             PASTEBIN_RE: self.fetch_pastebin_snippet,
             HASTEBIN_RE: self.fetch_hastebin_snippet
         }
+        self._session: aiohttp.ClientSession = None
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
@@ -111,7 +112,7 @@ class CodeSnippets(DashboardIntegration, Cog):
         )
 
     async def cog_load(self) -> None:
-        self._session = aiohttp.ClientSession()
+        self._session: aiohttp.ClientSession = aiohttp.ClientSession()
         await self.settings.add_commands()
 
     async def cog_unload(self) -> None:

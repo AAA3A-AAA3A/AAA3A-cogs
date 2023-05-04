@@ -28,16 +28,16 @@ Here are all the commands included in this cog (5):
  Group of commands to use ReactToCommand.
 
 * ``[p]reacttocommand add <message> <emoji> <command>``
- Add a command-reaction to a message.
+ Add a command-reaction for a message.
 
 * ``[p]reacttocommand clear <message>``
- Clear all commands-reactions to a message.
+ Clear all commands-reactions for a message.
 
 * ``[p]reacttocommand purge``
- Clear all commands-reactions to a **guild**.
+ Clear all commands-reactions for a guild.
 
 * ``[p]reacttocommand remove <message> <emoji>``
- Remove a command-reaction to a message.
+ Remove a command-reaction for a message.
 
 ------------
 Installation

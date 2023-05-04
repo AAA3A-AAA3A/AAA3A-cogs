@@ -1,4 +1,4 @@
-from .AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -16,19 +16,19 @@ TimedeltaConverter = get_timedelta_converter(
     minimum=datetime.timedelta(seconds=0),
 )
 
-if CogsUtils().is_dpy2:  # To remove
-    setattr(commands, "Literal", typing.Literal)
-
 _ = Translator("DiscordEdit", __file__)
 
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
-
 ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+
+
+class LocaleConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str):
+        try:
+            return discord.Locale(argument)
+        except ValueError:
+            raise commands.BadArgument(
+                _("Converting to `Locale` failed for parameter `preferred_locale`.")
+            )
 
 
 @cog_i18n(_)
@@ -43,7 +43,7 @@ class EditGuild(Cog):
     @commands.guild_only()
     @commands.admin_or_permissions(manage_guild=True)
     @commands.bot_has_guild_permissions(manage_guild=True)
-    @hybrid_group()
+    @commands.hybrid_group()
     async def editguild(self, ctx: commands.Context) -> None:
         """Commands for edit a guild."""
         pass
@@ -96,7 +96,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 name=name,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -112,7 +112,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 description=description,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -126,7 +126,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 community=community,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -142,7 +142,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 afk_channel=afk_channel,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -156,7 +156,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 afk_timeout=afk_timeout,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -188,7 +188,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 owner=owner,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -204,7 +204,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 verification_level=verification_level,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -213,7 +213,7 @@ class EditGuild(Cog):
 
     @editguild.command(name="defaultnotifications", aliases=["notificationslevel"])
     async def editguild_default_notifications(
-        self, ctx: commands.Context, default_notifications: commands.Literal["0", "1"]
+        self, ctx: commands.Context, default_notifications: typing.Literal["0", "1"]
     ) -> None:
         """Edit guild notification level."""
         guild = ctx.guild
@@ -221,7 +221,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 default_notifications=default_notifications,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -237,7 +237,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 explicit_content_filter=explicit_content_filter,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -251,7 +251,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 vanity_code=vanity_code,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -267,7 +267,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 system_channel=system_channel,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -285,21 +285,12 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 system_channel_flags=_system_channel_flags,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
-
-    class LocaleConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, argument: str):
-            try:
-                return discord.Locale(argument)
-            except ValueError:
-                raise commands.BadArgument(
-                    _("Converting to `Locale` failed for parameter `preferred_locale`.")
-                )
 
     @editguild.command(name="preferredlocale")
     async def editguild_preferred_locale(
@@ -342,7 +333,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 preferred_locale=preferred_locale,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -358,7 +349,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 rules_channel=rules_channel,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -376,7 +367,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 public_updates_channel=public_updates_channel,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -392,7 +383,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 premium_progress_bar_enabled=premium_progress_bar_enabled,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -406,7 +397,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 discoverable=discoverable,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -422,7 +413,7 @@ class EditGuild(Cog):
         try:
             await guild.edit(
                 invites_disabled=invites_disabled,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild #{guild.name} ({guild.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(

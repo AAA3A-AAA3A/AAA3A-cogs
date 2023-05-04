@@ -1,5 +1,5 @@
-﻿from .AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
+﻿from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
+from redbot.core import commands, app_commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
@@ -24,22 +24,10 @@ from .types import (
     WandboxResponse,
 )  # NOQA
 
-if CogsUtils().is_dpy2:
-    from redbot.core import app_commands  # isort:skip
-
-    setattr(commands, "Literal", typing.Literal)  # To remove
-
 # Credits:
 # General repo credits.
 
-_ = Translator("GetDocs", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
+_ = Translator("RunCode", __file__)
 
 
 class WandboxLanguageConverter(commands.Converter):
@@ -82,57 +70,45 @@ class TioLanguageConverter(commands.Converter):
         return ctx.cog.tio_languages[matches[0]]
 
 
-if CogsUtils().is_dpy2:
+class ListConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> typing.List[str]:
+        return list(re.split(r";|,|\|", argument))
 
-    class ListConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, argument: str) -> typing.List[str]:
-            return list(re.split(r";|,|\|", argument))
+class WandboxFlagsConverter(commands.FlagConverter):  # , prefix="--", delimiter=" "
+    engine: str = commands.Flag(name="engine", annotation=str, default=None)
+    input: str = commands.Flag(name="input", annotation=str, default=None)
+    compiler_options: str = commands.Flag(
+        name="compiler_options", annotation=ListConverter, default=None
+    )
+    runtime_options: str = commands.Flag(
+        name="runtime_options", annotation=ListConverter, default=None
+    )
 
-    class WandboxFlagsConverter(commands.FlagConverter):  # , prefix="--", delimiter=" "
-        engine: str = commands.Flag(name="engine", annotation=str, default=None)
-        input: str = commands.Flag(name="input", annotation=str, default=None)
-        compiler_options: str = commands.Flag(
-            name="compiler_options", annotation=ListConverter, default=None
-        )
-        runtime_options: str = commands.Flag(
-            name="runtime_options", annotation=ListConverter, default=None
-        )
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Any:
+        if ":" not in argument:
+            raise commands.BadArgument(_("No flags in argument."))
+        return super().conver(ctx, argument)
 
-        async def convert(
-            self, ctx: commands.Context, argument: str
-        ) -> typing.Any:  # typing_extensions.Self
-            if ":" not in argument:
-                raise commands.BadArgument(_("No flags in argument."))
-            return super().conver(ctx, argument)
+class TioFlagsConverter(commands.FlagConverter):
+    inputs: typing.List[str] = commands.Flag(
+        name="inputs", annotation=ListConverter, default=None
+    )
+    compiler_flags: typing.List[str] = commands.Flag(
+        name="compiler_flags", annotation=ListConverter, default=None
+    )
+    command_line_options: typing.List[str] = commands.Flag(
+        name="command_line_options", annotation=ListConverter, default=None
+    )
+    args: typing.List[str] = commands.Flag(name="args", annotation=ListConverter, default=None)
 
-    class TioFlagsConverter(commands.FlagConverter):
-        inputs: typing.List[str] = commands.Flag(
-            name="inputs", annotation=ListConverter, default=None
-        )
-        compiler_flags: typing.List[str] = commands.Flag(
-            name="compiler_flags", annotation=ListConverter, default=None
-        )
-        command_line_options: typing.List[str] = commands.Flag(
-            name="command_line_options", annotation=ListConverter, default=None
-        )
-        args: typing.List[str] = commands.Flag(name="args", annotation=ListConverter, default=None)
-
-        async def convert(
-            self, ctx: commands.Context, argument: str
-        ) -> typing.Any:  # typing_extensions.Self
-            if ":" not in argument:
-                raise commands.BadArgument(_("No flags in argument."))
-            return super().conver(ctx, argument)
-
-else:
-
-    class WandboxFlagsConverter(commands.FlagConverter):
-        async def convert(self, ctx: commands.Context, argument: str) -> None:
-            raise commands.BadArgument(_("Not supported under dpy1."))
-
-    class TioFlagsConverter(commands.FlagConverter):
-        async def convert(self, ctx: commands.Context, argument: str) -> None:
-            raise commands.BadArgument(_("Not supported under dpy1."))
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Any:
+        if ":" not in argument:
+            raise commands.BadArgument(_("No flags in argument."))
+        return super().conver(ctx, argument)
 
 
 @cog_i18n(_)
@@ -155,23 +131,14 @@ class RunCode(Cog):
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     async def cog_load(self) -> None:
-        self._session = aiohttp.ClientSession()
+        self._session: aiohttp.ClientSession = aiohttp.ClientSession()
         asyncio.create_task(self.load_wandbox_languages())
         asyncio.create_task(self.load_tio_languages())
 
-    if CogsUtils().is_dpy2:
-
-        async def cog_unload(self) -> None:
-            self.cogsutils._end()
-            if self._session is not None:
-                await self._session.close()
-
-    else:
-
-        def cog_unload(self) -> None:
-            self.cogsutils._end()
-            if self._session is not None:
-                asyncio.create_task(self._session.close())
+    async def cog_unload(self) -> None:
+        if self._session is not None:
+            await self._session.close()
+        self.cogsutils._end()
 
     async def load_wandbox_languages(
         self, force: typing.Optional[bool] = False
@@ -384,7 +351,7 @@ class RunCode(Cog):
 
         return _language, _code
 
-    @hybrid_command(aliases=["executecode"])
+    @commands.hybrid_command(aliases=["executecode"])
     async def runcode(
         self,
         ctx: commands.Context,
@@ -497,7 +464,7 @@ class RunCode(Cog):
         self.history[ctx.author].append(response)
         await response.send(ctx, verbose=verbose)
 
-    @hybrid_command(aliases=["tiorun"])
+    @commands.hybrid_command(aliases=["tiorun"])
     async def runtio(
         self,
         ctx: commands.Context,
@@ -548,70 +515,68 @@ class RunCode(Cog):
         self.history[ctx.author].append(response)
         await response.send(ctx, verbose=verbose)
 
-    if CogsUtils().is_dpy2:
+    async def _cogsutils_add_hybrid_commands(
+        self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]
+    ) -> None:
+        if command.app_command is None:
+            return
+        if not isinstance(command, commands.HybridCommand):
+            return
+        if "language" in command.app_command._params and command.qualified_name == "runcode":
+            command.app_command._params["language"].required = True
+            command.app_command._params["language"].default = "Python"
+        if "code" in command.app_command._params:
+            command.app_command._params["code"].required = True
+        _params1 = command.app_command._params.copy()
+        _params2 = list(command.app_command._params.keys())
+        _params2 = sorted(_params2, key=lambda x: _params1[x].required, reverse=True)
+        _params3 = {key: _params1[key] for key in _params2}
+        command.app_command._params = _params3
 
-        async def _cogsutils_add_hybrid_commands(
-            self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]
-        ) -> None:
-            if command.app_command is None:
-                return
-            if not isinstance(command, commands.HybridCommand):
-                return
-            if "language" in command.app_command._params and command.qualified_name == "runcode":
-                command.app_command._params["language"].required = True
-                command.app_command._params["language"].default = "Python"
-            if "code" in command.app_command._params:
-                command.app_command._params["code"].required = True
-            _params1 = command.app_command._params.copy()
-            _params2 = list(command.app_command._params.keys())
-            _params2 = sorted(_params2, key=lambda x: _params1[x].required, reverse=True)
-            _params3 = {key: _params1[key] for key in _params2}
-            command.app_command._params = _params3
+    @runcode.autocomplete("language")
+    async def runcode_language_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> typing.List[app_commands.Choice[str]]:
+        return (
+            [
+                app_commands.Choice(name=language, value=language)
+                for language in list(self.wandbox_languages.keys())
+                if language.lower().startswith(current.lower())
+            ][:25]
+            if current
+            else [
+                app_commands.Choice(name=language, value=language)
+                for language in list(self.wandbox_languages.keys())[:25]
+            ]
+        )
 
-        @runcode.autocomplete("language")
-        async def runcode_language_autocomplete(
-            self, interaction: discord.Interaction, current: str
-        ) -> typing.List[app_commands.Choice[str]]:
-            return (
-                [
-                    app_commands.Choice(name=language, value=language)
-                    for language in list(self.wandbox_languages.keys())
-                    if language.lower().startswith(current.lower())
-                ][:25]
-                if current
-                else [
-                    app_commands.Choice(name=language, value=language)
-                    for language in list(self.wandbox_languages.keys())[:25]
-                ]
-            )
+    @runtio.autocomplete("language")
+    async def runtio_language_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> typing.List[app_commands.Choice[str]]:
+        return (
+            [
+                app_commands.Choice(name=language, value=language)
+                for language in list(self.tio_languages.keys())
+                if language.lower().startswith(current.lower())
+            ][:25]
+            if current
+            else [
+                app_commands.Choice(name=language, value=language)
+                for language in list(self.tio_languages.keys())[:25]
+            ]
+        )
 
-        @runtio.autocomplete("language")
-        async def runtio_language_autocomplete(
-            self, interaction: discord.Interaction, current: str
-        ) -> typing.List[app_commands.Choice[str]]:
-            return (
-                [
-                    app_commands.Choice(name=language, value=language)
-                    for language in list(self.tio_languages.keys())
-                    if language.lower().startswith(current.lower())
-                ][:25]
-                if current
-                else [
-                    app_commands.Choice(name=language, value=language)
-                    for language in list(self.tio_languages.keys())[:25]
-                ]
-            )
-
-    @hybrid_group()
-    async def setruncode(self, ctx: commands.Context) -> None:
+    @commands.hybrid_group(name="setruncode")
+    async def configuration(self, ctx: commands.Context) -> None:
         """
         View RunCode options.
         """
         pass
 
-    @setruncode.command(name="listlanguages")
+    @configuration.command(name="listlanguages")
     async def _languages_list(
-        self, ctx: commands.Context, api: commands.Literal["wandbox", "tio"]
+        self, ctx: commands.Context, api: typing.Literal["wandbox", "tio"]
     ) -> None:
         """
         Shows a list of all the available languages, or Wandbox or Tio API.
@@ -632,7 +597,7 @@ class RunCode(Cog):
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
 
-    @setruncode.command(name="listengines")
+    @configuration.command(name="listengines")
     async def _engines_list(self, ctx: commands.Context, language: str) -> None:
         """
         Shows a list of all the available engines for a specified language, only for Wandbox API.
@@ -660,7 +625,7 @@ class RunCode(Cog):
         embed.description = keys
         await ctx.send(embed=embed)
 
-    @setruncode.command(name="listidentifiers")
+    @configuration.command(name="listidentifiers")
     async def _identifiers_list(self, ctx: commands.Context) -> None:
         """
         Lists all the languages identifiers recognized by the bot, only for Wandbox API.
@@ -677,7 +642,7 @@ class RunCode(Cog):
         embed.description = result
         await ctx.send(embed=embed)
 
-    @setruncode.command(name="listextensions")
+    @configuration.command(name="listextensions")
     async def _extensions_list(self, ctx: commands.Context) -> None:
         """
         Lists all the languages extensions.

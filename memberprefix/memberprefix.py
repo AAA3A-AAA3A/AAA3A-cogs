@@ -1,4 +1,4 @@
-from .AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -13,13 +13,6 @@ from copy import deepcopy
 # The idea for this cog came from @OnlyEli on Red cogs support (https://discord.com/channels/240154543684321280/430582201113903114/944075297127538730)!
 
 _ = Translator("MemberPrefix", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 @cog_i18n(_)
@@ -50,17 +43,9 @@ class MemberPrefix(Cog):
     async def cog_load(self) -> None:
         self.bot.before_invoke(self.before_invoke)
 
-    if CogsUtils().is_dpy2:
-
-        async def cog_unload(self) -> None:
-            self.bot.remove_before_invoke_hook(self.before_invoke)
-            self.cogsutils._end()
-
-    else:
-
-        def cog_unload(self) -> None:
-            self.bot.remove_before_invoke_hook(self.before_invoke)
-            self.cogsutils._end()
+    async def cog_unload(self) -> None:
+        self.bot.remove_before_invoke_hook(self.before_invoke)
+        self.cogsutils._end()
 
     async def red_delete_data_for_user(
         self,
@@ -129,6 +114,8 @@ class MemberPrefix(Cog):
             return
         if message.guild is None:
             return
+        if not await self.bot.allowed_by_whitelist_blacklist(message.author):
+            return
         if not isinstance(message.author, discord.Member):
             message.author = message.guild.get_member(message.author.id)
         config = await self.config.member(message.author).all()
@@ -157,7 +144,7 @@ class MemberPrefix(Cog):
             return argument
 
     @commands.guild_only()
-    @hybrid_command(aliases=["memberprefixes"], invoke_without_command=True)
+    @commands.hybrid_command(aliases=["memberprefixes"], invoke_without_command=True)
     async def memberprefix(
         self, ctx: commands.Context, prefixes: commands.Greedy[StrConverter]
     ) -> None:
@@ -233,9 +220,8 @@ class MemberPrefix(Cog):
             The invocation context. The type of this can change via the
             ``cls`` parameter.
         """
-        if self.cogsutils.is_dpy2:
-            if isinstance(origin, discord.Interaction):
-                return
+        if isinstance(origin, discord.Interaction):
+            return
         view = discord.ext.commands.view.StringView(origin.content)
         ctx = cls(prefix=None, view=view, bot=self.bot, message=origin)
         if origin.author.id == self.bot.user.id:  # type: ignore
@@ -245,11 +231,10 @@ class MemberPrefix(Cog):
         if isinstance(prefix, str):
             if not view.skip_string(prefix):
                 return ctx
+        elif origin.content.startswith(tuple(prefix)):
+            invoked_prefix = discord.utils.find(view.skip_string, prefix)
         else:
-            if origin.content.startswith(tuple(prefix)):
-                invoked_prefix = discord.utils.find(view.skip_string, prefix)
-            else:
-                return ctx
+            return ctx
         if self.bot.strip_after_prefix:
             view.skip_ws()
         invoker = view.get_word()

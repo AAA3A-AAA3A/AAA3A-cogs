@@ -1,4 +1,4 @@
-﻿from .AAA3A_utils import Cog, CogsUtils, Loop, Menu, Settings  # isort:skip
+﻿from AAA3A_utils import Cog, CogsUtils, Loop, Menu, Settings  # isort:skip
 from redbot.core import commands, app_commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -718,6 +718,11 @@ class Source:
                             description = _documentation.split("###### ")[0]
                             if not description:
                                 continue
+                            for _match in re.compile(r"]\(#DOCS_(.*?)\)").findall(description):
+                                if len(_match.split("/")) == 2:
+                                    description = description.replace(f"#DOCS_{_match}", f"{self.url}{_match.split('/')[0].split('_')[0].lower()}/{'_'.join(_match.split('/')[0].split('_')[1:]).lower().replace('_', '-')}#{_match.split('/')[1]}")
+                                else:
+                                    description = description.replace(f"#DOCS_{_match}", f"{self.url}{_match.split('_')[0].lower()}/{'_'.join(_match.split('_')[1:]).lower().replace('_', '-')}")
                             # Get fields.
                             fields = {
                                 field.split("\n")[0]: "\n".join(field.split("\n")[1:])

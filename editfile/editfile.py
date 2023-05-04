@@ -1,4 +1,4 @@
-from .AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -15,8 +15,6 @@ from pathlib import Path
 from redbot.core import data_manager
 from redbot.core.utils.chat_formatting import box, pagify
 
-if CogsUtils().is_dpy2:  # To remove
-    setattr(commands, "Literal", typing.Literal)
 
 # Credits:
 # General repo credits.
@@ -24,13 +22,6 @@ if CogsUtils().is_dpy2:  # To remove
 # I made this cog to be able to update files on my bot's host machine easily and quickly, without having to update cogs from GitHub for all my tests.
 
 _ = Translator("EditFile", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 @cog_i18n(_)
@@ -43,7 +34,7 @@ class EditFile(Cog):
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.is_owner()
-    @hybrid_group(aliases=["fileedit"])
+    @commands.hybrid_group(aliases=["fileedit"])
     async def editfile(self, ctx: commands.Context) -> None:
         """Commands group to get a file and replace it from its path."""
         pass

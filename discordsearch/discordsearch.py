@@ -1,11 +1,9 @@
-from .AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
-
-# import typing_extensions  # isort:skip
 
 import argparse
 import datetime
@@ -20,13 +18,6 @@ from redbot.core.utils.common_filters import URL_RE
 # General repo credits.
 
 _ = Translator("DiscordSearch", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 class StrConverter(commands.Converter):
@@ -46,7 +37,7 @@ class DiscordSearch(Cog):
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
     @commands.cooldown(rate=3, per=30, type=commands.BucketType.user)
-    @hybrid_command(name="discordsearch", aliases=["dsearch"])
+    @commands.hybrid_command(name="discordsearch", aliases=["dsearch"])
     async def discordsearch(
         self,
         ctx: commands.Context,
@@ -271,7 +262,7 @@ class SearchArgs:
 
     async def convert(
         self, ctx: commands.Context, arguments
-    ) -> typing.Any:  # typing_extensions.Self
+    ) -> typing.Any:
         self.ctx = ctx
         args = self.parse_arguments(arguments)
         if args.authors is not None:

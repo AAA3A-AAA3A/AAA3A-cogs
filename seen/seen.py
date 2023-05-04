@@ -1,4 +1,4 @@
-from .AAA3A_utils import Cog, CogsUtils, Menu, Loop  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Menu, Loop  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -13,21 +13,12 @@ from copy import deepcopy
 
 from redbot.core.utils.chat_formatting import box, pagify
 
-if CogsUtils().is_dpy2:  # To remove
-    setattr(commands, "Literal", typing.Literal)
 
 # Credits:
 # General repo credits.
 # Thanks to @aikaterna on Discord for the cog idea and a part of the code (https://github.com/aikaterna/aikaterna-cogs/blob/v3/seen/seen.py)!
 
 _ = Translator("Seen", __file__)
-
-if CogsUtils().is_dpy2:
-    hybrid_command = commands.hybrid_command
-    hybrid_group = commands.hybrid_group
-else:
-    hybrid_command = commands.command
-    hybrid_group = commands.group
 
 
 @cog_i18n(_)
@@ -100,17 +91,9 @@ class Seen(Cog):
             function=self.save_to_config, name="Save Seen Config", minutes=1
         )
 
-    if CogsUtils().is_dpy2:
-
-        async def cog_unload(self) -> None:
-            self.cogsutils._end()
-            asyncio.create_task(self.save_to_config())
-
-    else:
-
-        def cog_unload(self) -> None:
-            self.cogsutils._end()
-            asyncio.create_task(self.save_to_config())
+    async def cog_unload(self) -> None:
+        self.cogsutils._end()
+        asyncio.create_task(self.save_to_config())
 
     async def red_delete_data_for_user(
         self,
@@ -803,14 +786,14 @@ class Seen(Cog):
                 name=_("@{_object.display_name} was seen {seen}.").format(
                     _object=_object, seen=seen
                 ),
-                icon_url=_object.display_avatar if self.cogsutils.is_dpy2 else _object.avatar_url,
+                icon_url=_object.display_avatar,
             )
         elif isinstance(_object, discord.Member):
             embed.set_author(
                 name=_("@{_object.display_name} was seen {seen}.").format(
                     _object=_object, seen=seen
                 ),
-                icon_url=_object.display_avatar if self.cogsutils.is_dpy2 else _object.avatar_url,
+                icon_url=_object.display_avatar,
             )
         elif isinstance(_object, discord.Role):
             embed.set_author(
@@ -838,7 +821,7 @@ class Seen(Cog):
                 name=_("The guild {_object.name} was seen {seen}.").format(
                     _object=_object, seen=seen
                 ),
-                icon_url=_object.icon if self.cogsutils.is_dpy2 else _object.icon_url,
+                icon_url=_object.icon,
             )
         if show_details:
             embed.description = action
@@ -1056,12 +1039,12 @@ class Seen(Cog):
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @hybrid_group(invoke_without_command=True)
+    @commands.hybrid_group(invoke_without_command=True)
     async def seen(
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         *,
@@ -1081,7 +1064,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         *,
@@ -1101,7 +1084,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         *,
@@ -1121,7 +1104,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         channel: typing.Optional[discord.TextChannel] = None,
@@ -1144,7 +1127,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         category: typing.Optional[discord.CategoryChannel] = None,
@@ -1174,7 +1157,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         user: discord.User,
@@ -1201,11 +1184,11 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         *,
-        guild: typing.Optional[discord.ext.commands.converter.GuildConverter] = None,
+        guild: typing.Optional[commands.GuildConverter] = None,
     ) -> None:
         """Check when a guild was last active!"""
         if guild is None or ctx.author.id not in ctx.bot.owner_ids:
@@ -1221,7 +1204,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         *,
@@ -1241,7 +1224,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         user_id: int,
@@ -1261,7 +1244,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         _object: typing.Optional[
             typing.Literal["members", "roles", "channels", "categories"]
@@ -1278,7 +1261,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         reverse: typing.Optional[bool] = False,
     ) -> None:
@@ -1293,7 +1276,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            commands.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         reverse: typing.Optional[bool] = False,
     ) -> None:
@@ -1369,7 +1352,7 @@ class Seen(Cog):
     async def purge(
         self,
         ctx: commands.Context,
-        _type: commands.Literal["all", "user", "member", "role", "channel", "guild"],
+        _type: typing.Literal["all", "user", "member", "role", "channel", "guild"],
     ) -> None:
         """Purge Config for a specified _type or all."""
         if _type == "all":

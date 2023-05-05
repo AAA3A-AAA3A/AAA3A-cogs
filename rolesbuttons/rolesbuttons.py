@@ -73,7 +73,7 @@ class RolesButtons(Cog):
             return
         role_id = config[f"{interaction.channel.id}-{interaction.message.id}"][config_identifier]["role"]
         role = interaction.guild.get_role(role_id)
-        if not role:
+        if role is None:
             await interaction.followup.send(
                 _(
                     "The role ({role_id}) I have to give you no longer exists. Please notify an administrator of this server."

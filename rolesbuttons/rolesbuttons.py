@@ -146,6 +146,7 @@ class RolesButtons(Cog):
                     for _component in interaction.message.components:
                         for component in _component.to_dict()["components"]:
                             emoji = await Emoji().convert(fake_context, self.get_emoji(component))
+                            emoji = f"{getattr(emoji, 'id', emoji)}"
                             if emoji not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
                                 continue
                             role_id = config[f"{interaction.channel.id}-{interaction.message.id}"][emoji]["role"]

@@ -153,10 +153,13 @@ class RolesButtons(Cog):
                             other_role = interaction.guild.get_role(other_role_id)
                             if not other_role or other_role not in interaction.user.roles:
                                 continue
-                            await interaction.user.remove_roles(
-                                other_role,
-                                reason=f"Role-button of {interaction.message.id} in {interaction.channel.id}.",
-                            )
+                            try:
+                                await interaction.user.remove_roles(
+                                    other_role,
+                                    reason=f"Role-button of {interaction.message.id} in {interaction.channel.id}.",
+                                )
+                            except discord.HTTPException:
+                                pass
                 await interaction.followup.send(
                     _("You now have the {role.mention} role.").format(role=role),
                     ephemeral=True,

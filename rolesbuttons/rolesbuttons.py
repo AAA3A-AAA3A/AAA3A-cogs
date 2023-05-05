@@ -108,7 +108,7 @@ class RolesButtons(Cog):
         # roles = [role]
         # for role_id in roles:  # Only one role, as the commit has been canceled.
         role = interaction.guild.get_role(role_id)
-        if role is None:
+        if not role:
             await interaction.followup.send(
                 _(
                     "The role ({role_id}) I have to give you no longer exists. Please notify an administrator of this server."
@@ -149,12 +149,12 @@ class RolesButtons(Cog):
                             emoji = f"{getattr(emoji, 'id', emoji)}"
                             if emoji not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
                                 continue
-                            role_id = config[f"{interaction.channel.id}-{interaction.message.id}"][emoji]["role"]
-                            role = interaction.guild.get_role(role_id)
-                            if role is None or role not in interaction.user.roles:
+                            other_role_id = config[f"{interaction.channel.id}-{interaction.message.id}"][emoji]["role"]
+                            other_role = interaction.guild.get_role(other_role_id)
+                            if not other_role or other_role not in interaction.user.roles:
                                 continue
                             await interaction.user.remove_roles(
-                                role,
+                                other_role,
                                 reason=f"Role-button of {interaction.message.id} in {interaction.channel.id}.",
                             )
                 await interaction.followup.send(

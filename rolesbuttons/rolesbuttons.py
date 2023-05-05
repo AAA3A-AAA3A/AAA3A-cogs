@@ -5,6 +5,8 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+from functools import partial
+
 from .converters import Emoji, EmojiRoleConverter
 
 # Credits:
@@ -53,7 +55,7 @@ class RolesButtons(Cog):
                         exc_info=e,
                     )
 
-    async def on_button_interaction(self, interaction: discord.Interaction) -> None:
+    async def on_button_interaction(self, interaction: discord.Interaction, config_identifier: str) -> None:
         if await self.bot.cog_disabled_in_guild(self, interaction.guild):
             return
         if not interaction.data["custom_id"].startswith("roles_buttons"):
@@ -66,48 +68,15 @@ class RolesButtons(Cog):
                 _("This message is not in Config."), ephemeral=True
             )
             return
-        for _component in interaction.message.components:
-            for component in _component.to_dict()["components"]:
-                if component["custom_id"] == interaction.data["custom_id"]:
-                    emoji = (
-                        str(component["emoji"]["name"]).strip("\N{VARIATION SELECTOR-16}")
-                        if "name" in component["emoji"]
-                        else str(component["emoji"]["id"])
-                    )
-                    break
-
-        class FakeContext:
-            def __init__(
-                self,
-                bot: Red,
-                author: discord.Member,
-                guild: discord.Guild,
-                channel: discord.TextChannel,
-            ):
-                self.bot: Red = bot
-                self.author: discord.Member = author
-                self.guild: discord.Guild = guild
-                self.channel: discord.TextChannel = channel
-
-        fake_context = FakeContext(
-            self.bot, interaction.user, interaction.guild, interaction.channel
-        )
-        emoji = await Emoji().convert(fake_context, str(emoji))
-        emoji = f"{getattr(emoji, 'id', emoji)}"
-        if emoji not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
+        if config_identifier not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
             await interaction.followup.send(_("This emoji is not in Config."), ephemeral=True)
             return
-        # try:
-        #     roles = config[f"{interaction.channel.id}-{interaction.message.id}"][emoji]["roles"]
-        # except ValueError:
-        role_id = config[f"{interaction.channel.id}-{interaction.message.id}"][emoji]["role"]
-        # roles = [role]
-        # for role_id in roles:  # Only one role, as the commit has been canceled.
+        role_id = config[f"{interaction.channel.id}-{interaction.message.id}"][config_identifier]["role"]
         role = interaction.guild.get_role(role_id)
         if role is None:
             await interaction.followup.send(
                 _(
-                    "The role ({role_id}) I have to put you in no longer exists. Please notify an administrator of this server."
+                    "The role ({role_id}) I have to give you no longer exists. Please notify an administrator of this server."
                 ).format(role=role),
                 ephemeral=True,
             )
@@ -121,7 +90,7 @@ class RolesButtons(Cog):
             add_role = False
         else:
             add_role = role not in interaction.user.roles
-        if add_role:  # interaction.guild.get_role(roles[0])
+        if add_role:
             try:
                 await interaction.user.add_roles(
                     role,
@@ -151,14 +120,14 @@ class RolesButtons(Cog):
             except discord.HTTPException:
                 await interaction.followup.send(
                     _(
-                        "I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
+                        "I could not remove the {role.mention} ({role.id}) role from you. Please notify an administrator of this server."
                     ).format(role=role),
                     ephemeral=True,
                 )
                 return
             else:
                 await interaction.followup.send(
-                    _("I removed the role {role.mention} ({role.id}).").format(role=role),
+                    _("You no longer have the role {role.mention} ({role.id}).").format(role=role),
                     ephemeral=True,
                 )
 
@@ -315,11 +284,11 @@ class RolesButtons(Cog):
         """Choose a mode for a roles-buttons message.
 
         Type `add_or_remove`:
-        Users get the role if they do not already have it, or lose it.
+        - Users get the role if they do not already have it, or lose it.
         Type `add_only`:
-        Users can only get the role, but only manual action will remove it.
+        - Users can only get the role, but only manual action will remove it.
         Type `remove_only`:
-        Users can only lose a role, and will not be able to get it again without a manual action.
+        - Users can only lose a role, and will not be able to get it again without a manual action.
         """
         if message.author != ctx.guild.me:
             raise commands.UserFeedbackCheckFailure(
@@ -411,6 +380,6 @@ class RolesButtons(Cog):
                 custom_id=f"roles_buttons {button}",
                 disabled=False,
             )
-            button.callback = self.on_button_interaction
+            button.callback = partial(self.on_button_interaction, config_identifier=button)
             view.add_item(button)
         return view

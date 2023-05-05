@@ -7,6 +7,8 @@ import typing  # isort:skip
 
 import asyncio
 
+from functools import partial
+
 from redbot.core.utils.chat_formatting import inline
 
 from .converters import Emoji, EmojiCommandConverter
@@ -84,7 +86,7 @@ class CommandsButtons(Cog):
                         exc_info=e,
                     )
 
-    async def on_button_interaction(self, interaction: discord.Interaction) -> None:
+    async def on_button_interaction(self, interaction: discord.Interaction, config_identifier: str) -> None:
         if await self.bot.cog_disabled_in_guild(self, interaction.guild):
             return
         if not interaction.data["custom_id"].startswith("commands_buttons"):
@@ -97,38 +99,10 @@ class CommandsButtons(Cog):
                 _("This message is not in Config."), ephemeral=True
             )
             return
-        for _component in interaction.message.components:
-            for component in _component.to_dict()["components"]:
-                if component["custom_id"] == interaction.data["custom_id"]:
-                    emoji = (
-                        str(component["emoji"]["name"]).strip("\N{VARIATION SELECTOR-16}")
-                        if "name" in component["emoji"]
-                        else str(component["emoji"]["id"])
-                    )
-                    break
-
-        class FakeContext:
-            def __init__(
-                self,
-                bot: Red,
-                author: discord.Member,
-                guild: discord.Guild,
-                channel: discord.TextChannel,
-            ):
-                self.bot: Red = bot
-                self.author: discord.Member = author
-                self.guild: discord.Guild = guild
-                self.channel: discord.TextChannel = channel
-
-        fake_context = FakeContext(
-            self.bot, interaction.user, interaction.guild, interaction.channel
-        )
-        emoji = await Emoji().convert(fake_context, str(emoji))
-        emoji = f"{getattr(emoji, 'id', emoji)}"
-        if emoji not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
-            await interaction.followup.send(_("This emoji is not in Config."), ephemeral=True)
+        if config_identifier not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
+            await interaction.followup.send(_("This button is not in Config."), ephemeral=True)
             return
-        command = config[f"{interaction.channel.id}-{interaction.message.id}"][emoji][
+        command = config[f"{interaction.channel.id}-{interaction.message.id}"][config_identifier][
             "command"
         ]
         context = await self.cogsutils.invoke_command(
@@ -390,6 +364,6 @@ class CommandsButtons(Cog):
                 custom_id=f"roles_buttons {button}",
                 disabled=False,
             )
-            button.callback = self.on_button_interaction
+            button.callback = partial(self.on_button_interaction, config_identifier=button)
             view.add_item(button)
         return view

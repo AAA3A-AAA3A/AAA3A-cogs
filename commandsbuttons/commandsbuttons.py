@@ -342,7 +342,7 @@ class CommandsButtons(Cog):
         await self.config.guild(ctx.guild).commands_buttons.clear()
 
     def get_buttons(
-        self, config: typing.Dict, message: typing.Union[discord.Message, str]
+        self, config: typing.Dict[str, dict], message: typing.Union[discord.Message, str]
     ) -> discord.ui.View:
         message = (
             f"{message.channel.id}-{message.id}"
@@ -350,20 +350,20 @@ class CommandsButtons(Cog):
             else message
         )
         view = discord.ui.View(timeout=None)
-        for button in config[message]:
+        for config_identifier in config[message]:
             try:
-                int(button)
+                int(config_identifier)
             except ValueError:
-                b = button
+                b = config_identifier
             else:
-                b = str(self.bot.get_emoji(int(button)))
+                b = str(self.bot.get_emoji(int(config_identifier)))
             button = discord.ui.Button(
-                label=config[message][f"{button}"]["text_button"],
+                label=config[message][config_identifier]["text_button"],
                 emoji=b,
-                style=discord.ButtonStyle(config[message][f"{button}"].get("style_button", 2)),
-                custom_id=f"roles_buttons {button}",
+                style=discord.ButtonStyle(config[message][config_identifier].get("style_button", 2)),
+                custom_id=f"roles_buttons {config_identifier}",
                 disabled=False,
             )
-            button.callback = partial(self.on_button_interaction, config_identifier=button)
+            button.callback = partial(self.on_button_interaction, config_identifier=config_identifier)
             view.add_item(button)
         return view

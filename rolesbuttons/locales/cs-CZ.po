@@ -55,7 +55,7 @@ msgid "This emoji is not in Config."
 msgstr ""
 
 #: rolesbuttons\rolesbuttons.py:130 rolesbuttons\rolesbuttons.py:216
-msgid "The role I have to give you no longer exists. Please notify an administrator of this server."
+msgid "The role I have to put you in no longer exists. Please notify an administrator of this server."
 msgstr "Role kterou vás musím dát již neexistuje. Upozorněte prosím správce tohoto serveru."
 
 #: rolesbuttons\rolesbuttons.py:140
@@ -63,19 +63,19 @@ msgid "Role-button of {interaction.message.id} in {interaction.channel.id}."
 msgstr "Role tlačítko {interaction.message.id} v {interaction.channel.id}."
 
 #: rolesbuttons\rolesbuttons.py:146 rolesbuttons\rolesbuttons.py:232
-msgid "I could not add the {role.mention} role to you. Please notify an administrator of this server."
+msgid "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
 msgstr "Nemohu Vám přiřadit roli {role.mention} ({role.id}). Upozorněte prosím správce tohoto serveru."
 
 #: rolesbuttons\rolesbuttons.py:154 rolesbuttons\rolesbuttons.py:240
-msgid "You now have the {role.mention} role."
+msgid "You now have the role {role.mention} ({role.id})."
 msgstr "Přiřadil jsem ti roli {role.mention} ({role.id})."
 
 #: rolesbuttons\rolesbuttons.py:165 rolesbuttons\rolesbuttons.py:251
-msgid "I could not remove the {role.mention} role from you. Please notify an administrator of this server."
+msgid "I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
 msgstr "Nemohu vám odebrat roli {role.mention} ({role.id}). Upozorněte prosím správce tohoto serveru."
 
 #: rolesbuttons\rolesbuttons.py:173
-msgid "You no longer have the {role.mention} role."
+msgid "I removed the role {role.mention} ({role.id})."
 msgstr "Odebral jsem ti roli {role.mention} ({role.id})."
 
 #: rolesbuttons\rolesbuttons.py:226

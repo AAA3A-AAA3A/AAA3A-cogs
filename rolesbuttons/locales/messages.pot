@@ -62,7 +62,7 @@ msgstr ""
 
 #: rolesbuttons\rolesbuttons.py:150 rolesbuttons\rolesbuttons.py:250
 msgid ""
-"The role ({role_id}) I have to give you no longer exists. Please notify an"
+"The role ({role_id}) I have to put you in no longer exists. Please notify an"
 " administrator of this server."
 msgstr ""
 
@@ -72,22 +72,22 @@ msgstr ""
 
 #: rolesbuttons\rolesbuttons.py:171 rolesbuttons\rolesbuttons.py:271
 msgid ""
-"I could not add the {role.mention} role to you. Please notify an"
+"I could not add the {role.mention} ({role.id}) role to you. Please notify an"
 " administrator of this server."
 msgstr ""
 
 #: rolesbuttons\rolesbuttons.py:179 rolesbuttons\rolesbuttons.py:279
-msgid "You now have the {role.mention} role."
+msgid "You now have the role {role.mention} ({role.id})."
 msgstr ""
 
 #: rolesbuttons\rolesbuttons.py:190 rolesbuttons\rolesbuttons.py:290
 msgid ""
-"I could not remove the {role.mention} role from you. Please notify"
+"I could not remove the {role.mention} ({role.id}) role to you. Please notify"
 " an administrator of this server."
 msgstr ""
 
 #: rolesbuttons\rolesbuttons.py:198
-msgid "You no longer have the {role.mention} role."
+msgid "I removed the role {role.mention} ({role.id})."
 msgstr ""
 
 #: rolesbuttons\rolesbuttons.py:265

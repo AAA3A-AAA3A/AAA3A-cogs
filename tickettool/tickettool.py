@@ -1207,7 +1207,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     {
                         "label": "Profile",
                         "style": discord.TextStyle.short,
-                        "default": "main",
+                        "default": profile,
                         "max_length": 10,
                         "required": True,
                     },

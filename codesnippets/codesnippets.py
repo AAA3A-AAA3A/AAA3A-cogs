@@ -7,9 +7,11 @@ import typing  # isort:skip
 
 import aiohttp
 import asyncio
-from urllib.parse import quote_plus
 import re
 import textwrap
+
+from collections import deque
+from urllib.parse import quote_plus
 
 from redbot.core.utils.chat_formatting import pagify
 
@@ -87,6 +89,7 @@ class CodeSnippets(DashboardIntegration, Cog):
             HASTEBIN_RE: self.fetch_hastebin_snippet
         }
         self._session: aiohttp.ClientSession = None
+        self.antispam_cache: typing.Dict[discord.abc.Messageable, deque[tuple, 5]] = {}
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
@@ -318,7 +321,7 @@ class CodeSnippets(DashboardIntegration, Cog):
             return ret, language, code
         return "", "", ""
 
-    async def parse_snippets(self, content: str, limit: typing.Optional[int] = None) -> typing.Dict[str, str]:
+    async def parse_snippets(self, content: str, limit: typing.Optional[int] = None, is_listener: typing.Optional[bool] = False, channel: typing.Optional[discord.abc.Messageable] = None) -> typing.Dict[str, str]:
         all_snippets = {}
         i = 0
         for pattern, handler in self.pattern_handlers.items():
@@ -326,6 +329,12 @@ class CodeSnippets(DashboardIntegration, Cog):
                 i += 1
                 if limit is not None and i > limit:
                     return all_snippets
+                if is_listener:
+                    if channel in self.antispam_cache and tuple(match.groupdict().items()) in self.antispam_cache[channel]:
+                        continue
+                    if channel not in self.antispam_cache:
+                        self.antispam_cache[channel] = deque(maxlen=5)
+                    self.antispam_cache[channel].append(tuple(match.groupdict().items()))
                 try:
                     snippet = await handler(**match.groupdict())
                     if snippet == ("", "", ""):
@@ -338,12 +347,7 @@ class CodeSnippets(DashboardIntegration, Cog):
                     self.log.error(f"Failed to fetch code snippet from {match[0]!r}: {e.status} for GET {e.request_info.real_url.human_repr()}.", exc_info=e)
         return all_snippets
 
-    @commands.hybrid_command(aliases=["codesnippet"])
-    async def codesnippets(self, ctx: commands.Context, limit: typing.Optional[commands.Range[int, 1, 10]] = 3, *, urls: str) -> None:
-        """Send code content from a GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL."""
-        snippets = await self.parse_snippets(content=urls, limit=limit)
-        if not snippets:
-            raise commands.UserFeedbackCheckFailure(_("No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found."))
+    async def send_snippets(self, ctx: commands.Context, snippets: typing.Dict[str, typing.Tuple[str, str, str]]):
         for url, snippet in snippets.items():
             ret, language, code = snippet
             pages = pagify(code, page_length=2000 - len(f"```py\n{ret}\n```") - len(f"```{language}\n\n```"))
@@ -351,6 +355,14 @@ class CodeSnippets(DashboardIntegration, Cog):
             menu = Menu(pages=pages)
             menu.extra_items.append(discord.ui.Button(style=discord.ButtonStyle.url, label="View on GitHub", url=url))
             asyncio.create_task(menu.start(ctx))
+
+    @commands.hybrid_command(aliases=["codesnippet"])
+    async def codesnippets(self, ctx: commands.Context, limit: typing.Optional[commands.Range[int, 1, 10]] = 3, *, urls: str) -> None:
+        """Send code content from a GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL."""
+        snippets = await self.parse_snippets(content=urls, limit=limit)
+        if not snippets:
+            raise commands.UserFeedbackCheckFailure(_("No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found."))
+        await self.send_snippets(ctx, snippets=snippets)
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message) -> None:
@@ -363,10 +375,10 @@ class CodeSnippets(DashboardIntegration, Cog):
         if message.channel.id not in await self.config.guild(message.guild).channels():
             return
         context = await self.bot.get_context(message)
-        try:
-            await self.codesnippets(context, limit=3, urls=message.content)
-        except commands.UserFeedbackCheckFailure:
-            pass
+        snippets = await self.parse_snippets(content=message.content, limit=3, is_listener=True, channel=message.channel)
+        if not snippets:
+            return
+        await self.send_snippets(context, snippets=snippets)
 
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)

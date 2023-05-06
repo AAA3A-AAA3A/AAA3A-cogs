@@ -375,7 +375,7 @@ class GetDocs(DashboardIntegration, Cog):
         if "source" in interaction.namespace and interaction.namespace.source:
             try:
                 _source = await SourceConverter().convert(
-                    interaction, interaction.namespace.source
+                    await commands.Context.from_interaction(interaction), interaction.namespace.source
                 )
             except commands.BadArgument:
                 source = "discord.py"
@@ -413,7 +413,7 @@ class GetDocs(DashboardIntegration, Cog):
         source, result = await self.query_autocomplete(
             interaction, current, exclude_std=exclude_std
         )
-        if not current and source.name in ["discord.py", "redbot"]:
+        if not current and source.name in ["discord.py", "redbot", "pylav"]:
             result.insert(0, app_commands.Choice(name="events", value="events"))
         return result[:25]
 
@@ -581,13 +581,19 @@ class Source:
         if not (await self.cog.config.caching()) and self.name not in ["discordapi", "git"]:
             return self._docs_cache
         if self.name == "discordapi":
-            _, manuals, documentations = await (await executor()(self._build_discordapi_docs_cache)())
+            try:
+                _, manuals, documentations = await (await executor()(self._build_discordapi_docs_cache)())
+            except TypeError:
+                _, manuals, documentations = await self._build_discordapi_docs_cache()
             self.cog._docs_stats[self.name]["documentations"] += len(documentations)
             self.cog._docs_stats["GLOBAL"]["documentations"] += len(documentations)
             self.cog._docs_stats[self.name]["manuals"] += len(manuals)
             self.cog._docs_stats["GLOBAL"]["manuals"] += len(manuals)
         elif self.name == "git":
-            _, manuals, documentations = await (await executor()(self._build_git_docs_cache)())
+            try:
+                _, manuals, documentations = await (await executor()(self._build_git_docs_cache)())
+            except TypeError:
+                _, manuals, documentations = await self._build_git_docs_cache()
             self.cog._docs_stats[self.name]["documentations"] += len(documentations)
             self.cog._docs_stats["GLOBAL"]["documentations"] += len(documentations)
             self.cog._docs_stats[self.name]["manuals"] += len(manuals)

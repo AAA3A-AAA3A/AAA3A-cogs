@@ -1,4 +1,3 @@
-from AAA3A_utils import Buttons  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -235,33 +234,30 @@ class Ticket:
         except (KeyError, AttributeError):
             name = f"{emoji_open}-ticket-{self.id}"
 
-        view = Buttons(
-            timeout=None,
+        view = self.cog.get_buttons(
             buttons=[
                 {
-                    "style": 2,
+                    "style": discord.ButtonStyle(2),
                     "label": _("Close"),
                     "emoji": "🔒",
                     "custom_id": "close_ticket_button",
                     "disabled": False,
                 },
                 {
-                    "style": 2,
+                    "style": discord.ButtonStyle(2),
                     "label": _("Claim"),
                     "emoji": "🙋‍♂️",
                     "custom_id": "claim_ticket_button",
                     "disabled": False,
                 },
                 {
-                    "style": 2,
+                    "style": discord.ButtonStyle(2),
                     "label": _("Delete"),
                     "emoji": "⛔",
                     "custom_id": "delete_ticket_button",
                     "disabled": False,
                 },
             ],
-            function=self.cog.on_button_interaction,
-            infinity=True,
         )
         optionnal_ping = f" ||{ping_role.mention}||" if ping_role is not None else ""
         embed = await self.cog.get_embed_important(
@@ -451,33 +447,30 @@ class Ticket:
                     embed=embed,
                 )
         if self.first_message is not None:
-            view = Buttons(
-                timeout=None,
+            view = self.cog.get_buttons(
                 buttons=[
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Close"),
                         "emoji": "🔒",
                         "custom_id": "close_ticket_button",
                         "disabled": False,
                     },
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Claim"),
                         "emoji": "🙋‍♂️",
                         "custom_id": "claim_ticket_button",
                         "disabled": False,
                     },
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Delete"),
                         "emoji": "⛔",
                         "custom_id": "delete_ticket_button",
                         "disabled": False,
                     },
                 ],
-                function=self.cog.on_button_interaction,
-                infinity=True,
             )
             try:
                 self.first_message = await self.channel.fetch_message(
@@ -533,33 +526,30 @@ class Ticket:
                     embed=embed,
                 )
         if self.first_message is not None:
-            view = Buttons(
-                timeout=None,
+            view = self.cog.get_buttons(
                 buttons=[
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Re-open"),
                         "emoji": "🔓",
                         "custom_id": "open_ticket_button",
                         "disabled": False,
                     },
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Claim"),
                         "emoji": "🙋‍♂️",
                         "custom_id": "claim_ticket_button",
                         "disabled": True,
                     },
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Delete"),
                         "emoji": "⛔",
                         "custom_id": "delete_ticket_button",
                         "disabled": False,
                     },
                 ],
-                function=self.cog.on_button_interaction,
-                infinity=True,
             )
             try:
                 self.first_message = await self.channel.fetch_message(
@@ -777,33 +767,30 @@ class Ticket:
                 )
             await self.channel.edit(topic=topic, overwrites=overwrites, reason=_reason)
         if self.first_message is not None:
-            view = Buttons(
-                timeout=None,
+            view = self.cog.get_buttons(
                 buttons=[
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Close"),
                         "emoji": "🔒",
                         "custom_id": "close_ticket_button",
                         "disabled": False,
                     },
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Claim"),
                         "emoji": "🙋‍♂️",
                         "custom_id": "claim_ticket_button",
                         "disabled": True,
                     },
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Delete"),
                         "emoji": "⛔",
                         "custom_id": "delete_ticket_button",
                         "disabled": False,
                     },
                 ],
-                function=self.cog.on_button_interaction,
-                infinity=True,
             )
             try:
                 self.first_message = await self.channel.fetch_message(
@@ -856,33 +843,30 @@ class Ticket:
                 await self.channel.edit(overwrites=overwrites, reason=_reason)
             await self.channel.set_permissions(member, overwrite=None, reason=_reason)
         if self.first_message is not None:
-            view = Buttons(
-                timeout=None,
+            view = self.cog.get_buttons(
                 buttons=[
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Close"),
                         "emoji": "🔒",
                         "custom_id": "close_ticket_button",
                         "disabled": False,
                     },
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Claim"),
                         "emoji": "🙋‍♂️",
                         "custom_id": "claim_ticket_button",
                         "disabled": True,
                     },
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Delete"),
                         "emoji": "⛔",
                         "custom_id": "delete_ticket_button",
                         "disabled": False,
                     },
                 ],
-                function=self.cog.on_button_interaction,
-                infinity=True,
             )
             try:
                 self.first_message = await self.channel.fetch_message(

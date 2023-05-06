@@ -1,4 +1,3 @@
-from AAA3A_utils import Buttons, Dropdown  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
@@ -72,19 +71,16 @@ class settings(commands.Cog):
         )
         if reason_options is None:
             buttons_config = await self.config.guild(ctx.guild).buttons.all()
-            view = Buttons(
-                timeout=None,
+            view = self.get_buttons(
                 buttons=[
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Create ticket"),
                         "emoji": "🎟️",
                         "custom_id": "create_ticket_button",
                         "disabled": False,
                     }
                 ],
-                function=self.on_button_interaction,
-                infinity=True,
             )
             if message is None:
                 message = await channel.send(embed=embed, view=view)
@@ -124,15 +120,9 @@ class settings(commands.Cog):
                         "default": False,
                     }
                 )
-            view = Dropdown(
-                timeout=None,
+            view = self.get_drodpdown(
                 placeholder=config["embed_button"]["placeholder_dropdown"],
-                min_values=0,
-                max_values=1,
                 options=all_options,
-                function=self.on_dropdown_interaction,
-                infinity=True,
-                custom_id="create_ticket_dropdown",
             )
             if message is None:
                 message = await channel.send(embed=embed, view=view)

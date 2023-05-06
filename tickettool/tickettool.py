@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils, Menu, Settings, Buttons, Dropdown, Modal  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Menu, Settings, Modal  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -6,10 +6,11 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import datetime
+import chat_exporter
 import io
 from copy import deepcopy
+from functools import partial
 
-import chat_exporter
 from redbot.core import modlog
 from redbot.core.utils.chat_formatting import pagify
 
@@ -160,7 +161,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 "path": ["custom_message"],
                 "converter": str,
                 "description": "This message will be sent in the ticket channel when the ticket is opened.\n\n`{ticket_id}` - Ticket number\n`{owner_display_name}` - user's nick or name\n`{owner_name}` - user's name\n`{owner_id}` - user's id\n`{guild_name}` - guild's name\n`{guild_id}` - guild's id\n`{bot_display_name}` - bot's nick or name\n`{bot_name}` - bot's name\n`{bot_id}` - bot's id\n`{shortdate}` - mm-dd\n`{longdate}` - mm-dd-yyyy\n`{time}` - hh-mm AM/PM according to bot host system time",
-                "style": 2,
+                "style": discord.ButtonStyle(2),
             },
             "user_can_close": {
                 "path": ["user_can_close"],
@@ -289,56 +290,50 @@ class TicketTool(settings, DashboardIntegration, Cog):
 
     async def load_buttons(self) -> None:
         try:
-            view = Buttons(
-                timeout=None,
+            view = self.get_buttons(
                 buttons=[
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Create ticket"),
                         "emoji": "🎟️",
                         "custom_id": "create_ticket_button",
                         "disabled": False,
                     }
                 ],
-                function=self.on_button_interaction,
-                infinity=True,
             )
             self.bot.add_view(view)
             self.cogsutils.views.append(view)
-            view = Buttons(
-                timeout=None,
+            view = self.get_buttons(
                 buttons=[
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Close"),
                         "emoji": "🔒",
                         "custom_id": "close_ticket_button",
                         "disabled": False,
                     },
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Re-open"),
                         "emoji": "🔓",
                         "custom_id": "open_ticket_button",
                         "disabled": False,
                     },
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Claim"),
                         "emoji": "🙋‍♂️",
                         "custom_id": "claim_ticket_button",
                         "disabled": False,
                     },
                     {
-                        "style": 2,
+                        "style": discord.ButtonStyle(2),
                         "label": _("Delete"),
                         "emoji": "⛔",
                         "custom_id": "delete_ticket_button",
                         "disabled": False,
                     },
                 ],
-                function=self.on_button_interaction,
-                infinity=True,
             )
             self.bot.add_view(view)
             self.cogsutils.views.append(view)
@@ -348,8 +343,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         for guild in all_guilds:
             for dropdown in all_guilds[guild]["dropdowns"]:
                 try:
-                    view = Dropdown(
-                        timeout=None,
+                    view = self.get_dropdown(
                         placeholder=_("Choose the reason for open a ticket."),
                         options=[
                             {
@@ -361,9 +355,6 @@ class TicketTool(settings, DashboardIntegration, Cog):
                             }
                             for reason_option in all_guilds[guild]["dropdowns"][dropdown]
                         ],
-                        function=self.on_dropdown_interaction,
-                        infinity=True,
-                        custom_id="create_ticket_dropdown",
                     )
                     self.bot.add_view(view, message_id=int((str(dropdown).split("-"))[1]))
                     self.cogsutils.views.append(view)
@@ -1179,9 +1170,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
 
-    async def on_button_interaction(
-        self, view: Buttons, interaction: discord.Interaction
-    ) -> None:
+    async def on_button_interaction(self, interaction: discord.Interaction) -> None:
         permissions = interaction.channel.permissions_for(interaction.user)
         if not permissions.read_messages and not permissions.send_messages:
             return
@@ -1201,34 +1190,20 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 ]
             else:
                 profile = "main"
-            modal = Modal(
-                title="Create a Ticket",
-                inputs=[
-                    {
-                        "label": "Profile",
-                        "style": discord.TextStyle.short,
-                        "default": profile,
-                        "max_length": 10,
-                        "required": True,
-                    },
-                    {
-                        "label": "Why are you creating this ticket?",
-                        "style": discord.TextStyle.long,
-                        "max_length": 1000,
-                        "required": False,
-                        "placeholder": "No reason provided.",
-                    },
-                ],
-            )
+            modal = discord.ui.Modal(title="Create a Ticket", timeout=180, custom_id="create_ticket_modal")
+            modal.on_submit = lambda interaction: interaction.response.defer(ephemeral=True)
+            profile_input = discord.ui.TextInput(label="Profile", style=discord.TextStyle.short, default=profile, max_length=10, required=True)
+            reason_input = discord.ui.TextInput(label="Why are you creating this ticket?", style=discord.TextStyle.long, max_length=1000, required=False, placeholder="No reason provided.")
+            modal.add_item(profile_input)
+            modal.add_item(reason_input)
             await interaction.response.send_modal(modal)
-            try:
-                interaction, inputs, function_result = await modal.wait_result()
-            except TimeoutError:
+            timeout = await modal.wait()
+            if timeout:
                 return
             if not interaction.response.is_done():
                 await interaction.response.defer(ephemeral=True)
-            profile = inputs[0].value
-            reason = inputs[1].value or ""
+            profile = profile_input.value
+            reason = reason_input.value or ""
             profiles = await self.config.guild(interaction.guild).profiles()
             if profile not in profiles:
                 await interaction.followup.send(
@@ -1252,26 +1227,15 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     _("You have chosen to create a ticket."), ephemeral=True
                 )
         elif interaction.data["custom_id"] == "close_ticket_button":
-            modal = Modal(
-                title="Close the Ticket",
-                inputs=[
-                    {
-                        "label": "Why are you closing this ticket?",
-                        "style": discord.TextStyle.long,
-                        "max_length": 1000,
-                        "required": False,
-                        "placeholder": "No reason provided.",
-                    },
-                ],
-            )
+            modal = discord.ui.Modal(title="Close the Ticket", timeout=180, custom_id="close_ticket_modal")
+            modal.on_submit = lambda interaction: interaction.response.defer(ephemeral=True)
+            reason_input = discord.ui.TextInput(label="Why are you closing this ticket?", style=discord.TextStyle.long, max_length=1000, required=False, placeholder="No reason provided.")
+            modal.add_item(reason_input)
             await interaction.response.send_modal(modal)
-            try:
-                interaction, inputs, function_result = await modal.wait_result()
-            except TimeoutError:
+            timeout = await modal.wait()
+            if timeout:
                 return
-            if not interaction.response.is_done():
-                await interaction.response.defer(ephemeral=True)
-            reason = inputs[0].value or ""
+            reason = reason_input.value or ""
             ctx = await self.cogsutils.invoke_command(
                 author=interaction.user,
                 channel=interaction.channel,
@@ -1314,9 +1278,8 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 author=interaction.user, channel=interaction.channel, command="ticket delete"
             )
 
-    async def on_dropdown_interaction(
-        self, view: Dropdown, interaction: discord.Interaction, options: typing.List
-    ) -> None:
+    async def on_dropdown_interaction(self, interaction: discord.Interaction, select_menu: discord.ui.Select) -> None:
+        options = select_menu.values
         if len(options) == 0:
             if not interaction.response.is_done():
                 await interaction.response.defer()
@@ -1345,7 +1308,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 ephemeral=True,
             )
             return
-        option = [option for option in view.options if option.value == options[0]][0]
+        option = [option for option in select_menu.options if option.value == options[0]][0]
         reason = f"{option.emoji} - {option.label}"
         ctx = await self.cogsutils.invoke_command(
             author=interaction.user,
@@ -1446,3 +1409,18 @@ class TicketTool(settings, DashboardIntegration, Cog):
             ):
                 await ticket.close(ticket.guild.me)
         return
+
+    def get_buttons(self, buttons: typing.List[dict]) -> discord.ui.View:
+        view = discord.ui.View(timeout=None)
+        for button in buttons:
+            button = discord.ui.Button(**button)
+            button.callback = self.on_button_interaction
+            view.add_item(button)
+        return view
+
+    def get_dropdown(self, placeholder: str, options: typing.List[dict]) -> discord.ui.View:
+        view = discord.ui.View(timeout=None)
+        select_menu = discord.ui.Select(placeholder=placeholder, options=[discord.SelectOption(**option) for option in options], custom_id="create_ticket_dropdown")
+        select_menu.callback = partial(self.on_dropdown_interaction, select_menu=select_menu)
+        view.add_item(select_menu)
+        return view

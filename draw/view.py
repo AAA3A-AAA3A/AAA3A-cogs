@@ -987,7 +987,7 @@ class DrawView(discord.ui.View):
     ) -> None:
         await interaction.response.defer()
         self.board.cursor_display = not self.board.cursor_display
-        state = "enabled" if self.cursor_display else "disabled"
+        state = "enabled" if self.board.cursor_display else "disabled"
         await self.create_notification(
             f"Cursor Display {state}.",
             emoji="📍",

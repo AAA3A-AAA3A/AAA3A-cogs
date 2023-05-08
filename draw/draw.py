@@ -46,6 +46,8 @@ class Draw(Cog):
 
     async def generate_cache(self) -> None:
         for pixel in DEFAULT_CACHE:
+            if pixel == "transparent":
+                continue
             await self.get_pixel(pixel)
 
     async def cog_unload(self) -> None:
@@ -117,7 +119,7 @@ class Draw(Cog):
         else:
             if from_message not in self.drawings:
                 raise commands.UserFeedbackCheckFailure(_("This message isn't in the cache."))
-            board = Board(cog=self, height=height, width=width, background=background)
+            board = Board(cog=self, height=self.drawings[from_message].board.height, width=self.drawings[from_message].width, background=background)
             board.board_history = self.drawings[from_message].board.board_history.copy()
             board.board_index = self.drawings[from_message].board.board_index
         await StartDrawView(cog=self, board=board).start(ctx)

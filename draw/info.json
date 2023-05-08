@@ -1,0 +1,16 @@
+{
+    "author": ["WitherredAway", "AAA3A"],
+    "name": "Draw",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
+    "short": "A cog to make pixel arts on Discord!",
+    "description": "A cog to make pixel arts on Discord!",
+    "tags": [
+        "draw",
+        "pixel",
+        "art",
+        "paint"
+    ],
+    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "numpy", "pillow", "emoji"],
+    "min_bot_version": "3.5.0",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

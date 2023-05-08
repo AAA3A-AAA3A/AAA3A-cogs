@@ -90,7 +90,7 @@ class settings(commands.Cog):
             buttons_config[f"{message.channel.id}-{message.id}"] = {"profile": profile}
             await self.config.guild(ctx.guild).buttons.set(buttons_config)
         else:
-            if getattr(ctx, "interaction", None) is None:
+            if ctx.interaction is None:
                 try:
                     for emoji, label, description, value in reason_options[:19]:
                         await ctx.message.add_reaction(emoji)

@@ -45,7 +45,7 @@ class MemberPrefix(Cog):
 
     async def cog_unload(self) -> None:
         self.bot.remove_before_invoke_hook(self.before_invoke)
-        self.cogsutils._end()
+        await super().cog_unload()
 
     async def red_delete_data_for_user(
         self,
@@ -94,7 +94,7 @@ class MemberPrefix(Cog):
     async def before_invoke(self, ctx: commands.Context) -> None:
         if ctx.guild is None:
             return
-        if getattr(ctx, "interaction", None) is not None:
+        if ctx.interaction is not None:
             return
         if await self.config.use_normal_prefixes():
             return

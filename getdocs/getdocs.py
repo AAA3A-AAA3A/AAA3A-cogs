@@ -255,7 +255,7 @@ class GetDocs(DashboardIntegration, Cog):
     async def cog_unload(self) -> None:
         if self._session is not None:
             await self._session.close()
-        self.cogsutils._end()
+        await super().cog_unload()
 
     @commands.hybrid_command(
         aliases=["getdoc", "docs", "doc"],
@@ -663,7 +663,7 @@ class Source:
                 self.cog.log.error(
                     f"{self.name}: Error occured while trying to clone Discord API Docs's GitHub repo."
                 )
-                return []
+                return self._rtfm_cache, [], []
             # Iter files.
             for subdir, _, files in os.walk(f"{directory}\\docs"):
                 if subdir.endswith(

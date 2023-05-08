@@ -55,7 +55,7 @@ class Sudo(Cog):
     async def cog_unload(self):
         self.bot.owner_ids.update(copy(self.all_owner_ids))
         self.all_owner_ids.clear()
-        self.cogsutils._end()
+        await super().cog_unload()
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message):

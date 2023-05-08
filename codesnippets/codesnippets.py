@@ -121,7 +121,7 @@ class CodeSnippets(DashboardIntegration, Cog):
     async def cog_unload(self) -> None:
         if self._session is not None:
             await self._session.close()
-        self.cogsutils._end()
+        await super().cog_unload()
 
     async def _fetch_response(self, url: str, response_format: str, **kwargs) -> typing.Any:
         if "github.com" in url:

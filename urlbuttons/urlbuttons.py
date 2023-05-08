@@ -68,7 +68,7 @@ class UrlButtons(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the url-button to work.")
             )
-        if getattr(ctx, "interaction", None) is None:
+        if ctx.interaction is None:
             try:
                 await ctx.message.add_reaction(emoji)
             except discord.HTTPException:
@@ -114,7 +114,7 @@ class UrlButtons(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("You have not specified any valid url-button.")
             )
-        if getattr(ctx, "interaction", None) is None:
+        if ctx.interaction is None:
             try:
                 for emoji, url in url_buttons:
                     await ctx.message.add_reaction(emoji)

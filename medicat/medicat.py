@@ -352,7 +352,7 @@ class Medicat(Cog):
             self.log.error("An error occurred while removing the custom_commands.", exc_info=e)
         if self._session is not None:
             await self._session.close()
-        self.cogsutils._end()
+        await super().cog_unload()
 
     async def ventoy_updates(
         self,

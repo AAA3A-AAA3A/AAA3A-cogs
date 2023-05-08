@@ -206,7 +206,7 @@ class CommandsButtons(Cog):
                 raise commands.UserFeedbackCheckFailure(
                     _("You have not specified a correct command.")
                 )
-        if getattr(ctx, "interaction", None) is None:
+        if ctx.interaction is None:
             try:
                 await ctx.message.add_reaction(emoji)
             except discord.HTTPException:
@@ -263,7 +263,7 @@ class CommandsButtons(Cog):
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
                 )
             )
-        if getattr(ctx, "interaction", None) is None:
+        if ctx.interaction is None:
             try:
                 for emoji, command in commands_buttons[:19]:
                     await ctx.message.add_reaction(emoji)

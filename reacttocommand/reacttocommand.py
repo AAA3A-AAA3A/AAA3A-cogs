@@ -237,7 +237,7 @@ class ReactToCommand(Cog):
                 raise commands.UserFeedbackCheckFailure(
                     _("You have not specified a correct command.")
                 )
-        if getattr(ctx, "interaction", None) is None:
+        if ctx.interaction is None:
             try:
                 await ctx.message.add_reaction(emoji)
             except discord.HTTPException:

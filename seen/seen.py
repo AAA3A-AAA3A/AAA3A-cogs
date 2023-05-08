@@ -92,8 +92,8 @@ class Seen(Cog):
         )
 
     async def cog_unload(self) -> None:
-        self.cogsutils._end()
         asyncio.create_task(self.save_to_config())
+        await super().cog_unload()
 
     async def red_delete_data_for_user(
         self,

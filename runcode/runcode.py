@@ -138,7 +138,7 @@ class RunCode(Cog):
     async def cog_unload(self) -> None:
         if self._session is not None:
             await self._session.close()
-        self.cogsutils._end()
+        await super().cog_unload()
 
     async def load_wandbox_languages(
         self, force: typing.Optional[bool] = False
@@ -285,7 +285,7 @@ class RunCode(Cog):
         else:
             raise commands.UserFeedbackCheckFailure(_("Please provide the code!"))
 
-        if getattr(ctx, "interaction", None) is None:
+        if ctx.interaction is None:
             begin = code.find("```")
             language_identifier = code[
                 begin + 3 : code[begin + 3 :].find("\n") + begin + 3

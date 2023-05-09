@@ -8,14 +8,16 @@ import typing  # isort:skip
 from .view import CalculatorView  # isort:skip
 
 import datetime
+from expr import evaluate, EvaluatorError
 from math import e, pi, tau
+# from TagScriptEngine import Interpreter, block
 
 from redbot.core.utils.chat_formatting import box
-from TagScriptEngine import Interpreter, block
 
 # Credits:
 # General repo credits.
 # Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
+# Thanks to Flame for fixing an RCE in the cog!
 
 _ = Translator("Calculator", __file__)
 
@@ -41,12 +43,12 @@ class Calculator(Cog):
         }
         self.config.register_global(**self.calculator_global)
 
-        blocks: typing.List[block.Block] = [
-            block.MathBlock(),
-            block.RandomBlock(),
-            block.RangeBlock(),
-        ]
-        self.engine: Interpreter = Interpreter(blocks)
+        # blocks: typing.List[block.Block] = [
+        #     block.MathBlock(),
+        #     block.RandomBlock(),
+        #     block.RangeBlock(),
+        # ]
+        # self.engine: Interpreter = Interpreter(blocks)
         self.x: typing.Dict[str, str] = {
             "1": "¹",
             "2": "²",
@@ -85,22 +87,18 @@ class Calculator(Cog):
         expression = expression.replace("**3", "^3")
         expression = expression.replace("**", "^")
         expression = expression.replace("√", "sqrt")
-        expression = expression.replace(",", "")
         for x in self.x:
             if self.x[x] in expression:
                 expression = expression.replace(self.x[x], f"^{x}")
-        if "sqrt" in expression and "^" not in expression:
-            expression = expression.replace("^2", "**2")
-            expression = expression.replace("^3", "**3")
-            expression = expression.replace("^", "**")
-            try:
-                result = f"{eval(expression)}"
-            except Exception:
-                result = None
-        else:
-            engine_input = "{m:" + expression + "}"
-            result = self.engine.process(engine_input).body
-            result = result.replace("{m:", "").replace("}", "")
+        # if "sqrt" in expression and "^" not in expression:
+        try:
+            result = evaluate(expression)
+        except EvaluatorError:
+            result = None
+        # else:
+        #     engine_input = "{m:" + expression + "}"
+        #     result = self.engine.process(engine_input).body
+        #     result = result.replace("{m:", "").replace("}", "")
         try:
             result = f"{float(result):,}"
             if result == "inf":

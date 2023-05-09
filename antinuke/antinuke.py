@@ -86,6 +86,9 @@ class AntiNuke(DashboardIntegration, Cog):
             commands_group=self.configuration,
         )
 
+    async def cog_load(self) -> None:
+        await self.settings.add_commands()
+
     async def red_delete_data_for_user(
         self,
         *,

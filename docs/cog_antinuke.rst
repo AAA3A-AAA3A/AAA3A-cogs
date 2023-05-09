@@ -22,13 +22,37 @@ A cog to remove all permissions from a person who deletes a channel!
 Commands
 --------
 
-Here are all the commands included in this cog (2):
+Here are all the commands included in this cog (10):
 
 * ``[p]setantinuke``
  Configure AntiNuke for your server.
 
+* ``[p]setantinuke enabled <enabled>``
+ Enable of disable AntiNuke system.
+
+* ``[p]setantinuke logschannel <text channel>``
+ Set a channel where events will be sent.
+
+* ``[p]setantinuke modalconfig [confirmation=False]``
+ Set all settings for the cog with a Discord Modal.
+
+* ``[p]setantinuke nbbot <nbbot>``
+ Before action, how many deleted channels should be detected for a bot? `0` to disable this protection.
+
+* ``[p]setantinuke nbmember <nbmember>``
+ Before action, how many deleted channels should be detected for a member? `0` to disable this protection.
+
+* ``[p]setantinuke resetsetting <setting>``
+ Reset a setting.
+
 * ``[p]setantinuke resetuser <int>``
  Reset number detected for a user.
+
+* ``[p]setantinuke showsettings [with_dev=False]``
+ Show all settings for the cog with defaults and values.
+
+* ``[p]setantinuke userdm <user_dm>``
+ If enabled, the detected user will receive a DM.
 
 ------------
 Installation

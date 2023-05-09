@@ -25,7 +25,7 @@ __red_end_user_data_statement__ = get_end_user_data_statement(file=__file__)
 old_traceback = None
 
 
-async def setup_after_ready(bot) -> None:
+async def setup_after_ready(bot: Red) -> None:
     global old_traceback
     await bot.wait_until_red_ready()
     cog = AutoTraceback(bot)

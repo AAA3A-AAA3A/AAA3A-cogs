@@ -23,7 +23,7 @@ from .medicat import Medicat  # , MEDICAT_GUILD, TEST_GUILD
 __red_end_user_data_statement__ = get_end_user_data_statement(file=__file__)
 
 
-async def setup_after_ready(bot) -> None:
+async def setup_after_ready(bot: Red) -> None:
     await bot.wait_until_red_ready()
     cog = Medicat(bot)
     await cog.cogsutils.add_cog(bot)

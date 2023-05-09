@@ -268,7 +268,7 @@ class Minecraft(Cog):
 
     @commands.admin_or_permissions(manage_guild=True)
     @minecraft.command()
-    async def checkplayers(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], state: True) -> None:
+    async def checkplayers(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], state: bool) -> None:
         """Remove a Minecraft Java server in Config."""
         if channel is None:
             channel = ctx.channel

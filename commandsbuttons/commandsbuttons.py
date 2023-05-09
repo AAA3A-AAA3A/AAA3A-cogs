@@ -361,7 +361,7 @@ class CommandsButtons(Cog):
                 label=config[message][config_identifier]["text_button"],
                 emoji=b,
                 style=discord.ButtonStyle(config[message][config_identifier].get("style_button", 2)),
-                custom_id=f"roles_buttons {config_identifier}",
+                custom_id=f"commands_buttons {config_identifier}",
                 disabled=False,
             )
             button.callback = partial(self.on_button_interaction, config_identifier=config_identifier)

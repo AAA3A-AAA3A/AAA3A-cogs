@@ -249,9 +249,9 @@ class DarkenTool(Tool):
 
     async def use(self, *, interaction: discord.Interaction) -> bool:
         """The method that is called when the tool is used."""
-        cursors = self.board.cursor_coords
-        for cursor in cursors:
-            pixel = self.board.board[cursor]
+        coords = self.board.cursor_coords
+        for coord in coords:
+            pixel = self.board.board[coord]
             color = MAIN_COLORS_DICT.get(pixel, pixel)
             if isinstance(color, Color):
                 RGB_A = (
@@ -261,7 +261,7 @@ class DarkenTool(Tool):
                     color.A,
                 )
                 modified_color = Color(RGB_A)
-                self.board.draw(modified_color, coords=[cursor])
+                self.board.draw(modified_color, coords=[coord])
         return True
 
 
@@ -284,38 +284,19 @@ class LightenTool(DarkenTool):
             value + CHANGE_AMOUNT, 255
         )  # The min func makes sure it doesn't go above 255 when increasing, for example, white.
 
-class DarkenTool(Tool):
+class InverseTool(DarkenTool):
     @property
     def name(self) -> str:
-        return "Darken"
+        return "Invert Colors"
 
     @property
     def emoji(self) -> str:
-        return "🔅"
+        return "🔦"
 
     @property
     def description(self) -> str:
-        return "Darken pixel(s) by 17 RGB values."
+        return "Invert colors in pixel(s)."
 
     @staticmethod
     def edit(value: int) -> int:
-        return max(
-            value - CHANGE_AMOUNT, 0
-        )  # The max func makes sure it doesn't go below 0 when decreasing, for example, black.
-
-    async def use(self, *, interaction: discord.Interaction) -> bool:
-        """The method that is called when the tool is used."""
-        cursors = self.board.cursor_coords
-        for cursor in cursors:
-            pixel = self.board.board[cursor]
-            color = MAIN_COLORS_DICT.get(pixel, pixel)
-            if isinstance(color, Color):
-                RGB_A = (
-                    self.edit(color.R),
-                    self.edit(color.G),
-                    self.edit(color.B),
-                    color.A,
-                )
-                modified_color = Color(RGB_A)
-                self.board.draw(modified_color, coords=[cursor])
-        return True
+        return 255 - value

@@ -46,8 +46,6 @@ class Draw(Cog):
 
     async def generate_cache(self) -> None:
         for pixel in DEFAULT_CACHE:
-            if pixel == "transparent":
-                continue
             await self.get_pixel(pixel)
 
     async def cog_unload(self) -> None:

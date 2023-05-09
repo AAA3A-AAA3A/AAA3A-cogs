@@ -26,9 +26,8 @@ MAIN_COLORS_DICT: typing.Dict[str, Color] = {
     "🟫": Color((200, 100, 80, 255)),
     "⬛": Color((0, 0, 0, 255)),
     "⬜": Color((255, 255, 255, 255)),
-    "transparent": Color((0, 0, 0, 0)),
 }
-MAIN_COLORS: typing.List[str] = list(MAIN_COLORS_DICT.keys())
+MAIN_COLORS: typing.List[str] = list(MAIN_COLORS_DICT.keys()) + ["transparent"]
 
 MIN_HEIGHT_OR_WIDTH: int = 5
 MAX_HEIGHT_OR_WIDTH: int = 17
@@ -113,6 +112,6 @@ u200b: str = "\u200b"
 PADDING: str = f" {u200b}" * 6
 LB: str = "\n"
 
-DEFAULT_CACHE: typing.List[typing.Union[str, int]] = MAIN_COLORS + list(MAIN_COLORS_DICT.values()) + ROW_ICONS + COLUMN_ICONS + list(ROW_ICONS_DICT.values()) + list(COLUMN_ICONS_DICT.values())
+DEFAULT_CACHE: typing.List[typing.Union[str, int]] = list(MAIN_COLORS_DICT.keys()) + list(MAIN_COLORS_DICT.values()) + ROW_ICONS + COLUMN_ICONS + list(ROW_ICONS_DICT.values()) + list(COLUMN_ICONS_DICT.values())
 
 IMAGE_EXTENSION = "PNG"

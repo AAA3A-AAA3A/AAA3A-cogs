@@ -13,7 +13,7 @@ from redbot.core.utils.chat_formatting import humanize_list
 from .board import Board
 from .color import Color
 from .constants import base_colors_options, MAIN_COLORS_DICT, ALPHABETS, NUMBERS, LETTER_TO_NUMBER, IMAGE_EXTENSION
-from .tools import Tool, BrushTool, EraseTool, EyedropperTool, FillTool, ReplaceTool, DarkenTool, LightenTool
+from .tools import Tool, BrushTool, EraseTool, EyedropperTool, FillTool, ReplaceTool, DarkenTool, LightenTool, InverseTool
 
 _ = Translator("Draw", __file__)
 
@@ -86,6 +86,7 @@ class ToolsMenu(discord.ui.Select):
             ReplaceTool(view),
             DarkenTool(view),
             LightenTool(view),
+            InverseTool(view),
         ]
         default_options: typing.List[discord.SelectOption] = [
             discord.SelectOption(

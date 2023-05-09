@@ -22,40 +22,7 @@ A cog to edit Discord default objects, like guilds, roles, text channels, voice 
 Commands
 --------
 
-Here are all the commands included in this cog (85):
-
-* ``[p]editautomod``
- Commands for edit an AutoMod rule.
-
-* ``[p]editautomod actions <rule> <actions>``
- Edit AutoMod rule actions.
-
-* ``[p]editautomod create <name> <trigger> <actions>``
- Create an AutoMod rule.
-
-* ``[p]editautomod delete <rule> [confirmation=False]``
- Delete automod rule.
-
-* ``[p]editautomod enabled <rule> <enabled>``
- Edit AutoMod rule enabled.
-
-* ``[p]editautomod exemptchannels <rule> [exempt_channels]...``
- Edit AutoMod rule exempt channels.
-
-* ``[p]editautomod exemptroles <rule> [exempt_roles]...``
- Edit AutoMod rule exempt roles.
-
-* ``[p]editautomod list``
- List all AutoMod rules in the current guild.
-
-* ``[p]editautomod name <rule> <name>``
- Edit AutoMod rule name.
-
-* ``[p]editautomod trigger <rule> <trigger>``
- Edit AutoMod rule trigger.
-
-* ``[p]editautomod view [rule=None]``
- 
+Here are all the commands included in this cog (74):
 
 * ``[p]editguild``
  Commands for edit a guild.

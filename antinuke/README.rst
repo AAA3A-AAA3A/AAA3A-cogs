@@ -22,28 +22,13 @@ A cog to remove all permissions from a person who deletes a channel!
 Commands
 --------
 
-Here are all the commands included in this cog (7):
+Here are all the commands included in this cog (2):
 
 * ``[p]setantinuke``
  Configure AntiNuke for your server.
 
-* ``[p]setantinuke enable <true_or_false>``
- Enable or disable AntiNuke.
-
-* ``[p]setantinuke logschannel <text_channel_or_'none'>``
- Set a channel where events are registered.
-
-* ``[p]setantinuke nbbot <nb>``
- Number Detected - Bot
-
-* ``[p]setantinuke nbmember <nb>``
- Number Detected - Member
-
 * ``[p]setantinuke resetuser <int>``
  Reset number detected for a user.
-
-* ``[p]setantinuke userdm <true_or_false>``
- Enable or disable User DM.
 
 ------------
 Installation

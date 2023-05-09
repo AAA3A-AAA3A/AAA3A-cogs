@@ -73,7 +73,7 @@ Here are all the commands included in this cog (21):
  What is the difference between Medicat USB and Medicat VHD?
 
 * ``[p]medicat virus``
- Why does my antivirus software blame Medicat?
+ Why does my antivirus software detect Medicat as a virus?
 
 * ``[p]medicat whatmedicat``
  What is Medicat USB?

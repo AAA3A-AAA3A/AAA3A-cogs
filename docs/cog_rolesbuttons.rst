@@ -36,7 +36,7 @@ Here are all the commands included in this cog (7):
 * ``[p]rolesbuttons clear <message>``
  Clear all roles-buttons for a message.
 
-* ``[p]rolesbuttons mode <message> <"add_or_remove"|"add_only"|"remove_only">``
+* ``[p]rolesbuttons mode <message> <"add_or_remove"|"add_only"|"remove_only"|"replace">``
  Choose a mode for a roles-buttons message.
 
 * ``[p]rolesbuttons purge``

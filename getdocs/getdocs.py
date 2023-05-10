@@ -12,20 +12,24 @@ import pathlib
 import random
 import re
 import subprocess
+import sys
 import tempfile
 import time
 
 # from playwright._impl._api_types import TimeoutError as PlaywrightTimeoutError
 # from playwright.async_api import async_playwright
-from urllib.parse import ParseResult, urljoin, urlparse
+# from aiolimiter import AsyncLimiter
 
 import aiohttp
 from bs4 import BeautifulSoup, NavigableString, ResultSet, SoupStrainer, Tag
+from urllib.parse import ParseResult, urljoin, urlparse
 
-# from aiolimiter import AsyncLimiter
+from dataclasses import is_dataclass
 from fuzzywuzzy import fuzz
-from redbot.core.utils.chat_formatting import humanize_list
 from sphobjinv import DataObjStr, Inventory
+from prettytable import PrettyTable
+
+from redbot.core.utils.chat_formatting import humanize_list
 
 from .dashboard_integration import DashboardIntegration
 from .types import Attribute, Attributes, Documentation, Examples, Parameters, SearchResults
@@ -60,6 +64,31 @@ def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
         return wrapper
 
     return decorator
+
+
+def get_object_size(obj) -> int:
+    size = sys.getsizeof(obj)
+    try:
+        if isinstance(obj, typing.List):
+            size += sum(get_object_size(item) for item in obj)
+        elif isinstance(obj, typing.Tuple):
+            size += sum(get_object_size(item) for item in obj)
+        elif isinstance(obj, typing.Dict):
+            size += sum(get_object_size(key) + get_object_size(value) for key, value in obj.items() if isinstance(key, str) and not key.startswith('_'))
+        elif is_dataclass(obj):
+            size += sum(get_object_size(key) + get_object_size(getattr(obj, key)) for key in obj.__dataclass_fields__ if isinstance(key, str) and not key.startswith('_'))
+    except RecursionError:
+        pass
+    return size
+
+
+# https://stackoverflow.com/questions/1094841/get-human-readable-version-of-file-size
+def sizeof_fmt(num, suffix="B") -> str:
+    for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
+        if abs(num) < 1024.0:
+            return f"{num:3.1f}{unit}{suffix}"
+        num /= 1024.0
+    return f"{num:.1f}Yi{suffix}"
 
 
 BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
@@ -196,6 +225,7 @@ class GetDocs(DashboardIntegration, Cog):
         self._docs_stats: typing.Dict[str, int] = {"GLOBAL": {"manuals": 0, "documentations": 0}}
         self._load_time: float = None
         self._caching_time: typing.Dict[str, int] = {"GLOBAL": 0}
+        self._docs_sizes: typing.Dict[str, int] = {"GLOBAL": 0}
 
         # self._playwright = None
         # self._browser = None
@@ -237,7 +267,7 @@ class GetDocs(DashboardIntegration, Cog):
         # self._playwright = await async_playwright().start()
         # self._browser = await self._playwright.chromium.launch()
         # self._bcontext = await self._browser.new_context()
-        self._load_time = time.monotonic()
+        self._load_time = int(time.monotonic())
         self._session: aiohttp.ClientSession = aiohttp.ClientSession()
         disabled_sources = await self.config.disabled_sources()
         for source in BASE_URLS:
@@ -488,6 +518,42 @@ class GetDocs(DashboardIntegration, Cog):
         disabled_sources.remove(source)
         await self.config.disabled_sources.set(disabled_sources)
 
+    @configuration.command(name="stats")
+    async def stats(self, ctx: commands.Context) -> None:
+        """
+        Show stats about all documentations sources.
+        """
+        table = PrettyTable()
+        table.field_names = ["Name", "Manuals", "Docs", "Caching", "Size"]
+        table.add_row(
+            [
+                "GLOBAL",
+                self._docs_stats["GLOBAL"]["manuals"],
+                self._docs_stats["GLOBAL"]["documentations"],
+                str(self._caching_time["GLOBAL"]) + "s",
+                sizeof_fmt(self._docs_sizes["GLOBAL"]),
+            ]
+        )
+        for source in self.documentations:
+            table.add_row(
+                [
+                    source,
+                    self._docs_stats.get(
+                        source, {"manuals": None, "documentations": None}
+                    )["manuals"],
+                    self._docs_stats.get(
+                        source, {"manuals": None, "documentations": None}
+                    )["documentations"],
+                    f"{str(self._caching_time[source])}s"
+                    if source in self._caching_time
+                    else None,
+                    sizeof_fmt(self._docs_sizes[source])
+                    if source in self._docs_sizes
+                    else None,
+                ]
+            )
+        await Menu(pages=str(table), lang="py").start(ctx)
+
 
 class Source:
     def __init__(
@@ -585,19 +651,21 @@ class Source:
                 _, manuals, documentations = await (await executor()(self._build_discordapi_docs_cache)())
             except TypeError:
                 _, manuals, documentations = await self._build_discordapi_docs_cache()
-            self.cog._docs_stats[self.name]["documentations"] += len(documentations)
-            self.cog._docs_stats["GLOBAL"]["documentations"] += len(documentations)
+            self._docs_cache.extend(documentations)
             self.cog._docs_stats[self.name]["manuals"] += len(manuals)
             self.cog._docs_stats["GLOBAL"]["manuals"] += len(manuals)
+            self.cog._docs_stats[self.name]["documentations"] += len(documentations)
+            self.cog._docs_stats["GLOBAL"]["documentations"] += len(documentations)
         elif self.name == "git":
             try:
                 _, manuals, documentations = await (await executor()(self._build_git_docs_cache)())
             except TypeError:
                 _, manuals, documentations = await self._build_git_docs_cache()
-            self.cog._docs_stats[self.name]["documentations"] += len(documentations)
-            self.cog._docs_stats["GLOBAL"]["documentations"] += len(documentations)
+            self._docs_cache.extend(documentations)
             self.cog._docs_stats[self.name]["manuals"] += len(manuals)
             self.cog._docs_stats["GLOBAL"]["manuals"] += len(manuals)
+            self.cog._docs_stats[self.name]["documentations"] += len(documentations)
+            self.cog._docs_stats["GLOBAL"]["documentations"] += len(documentations)
         else:
             manuals = []
             _manuals = {
@@ -618,11 +686,11 @@ class Source:
             for name, manual in manuals:
                 try:
                     documentations = await self._get_all_manual_documentations(manual)
-                    self.cog._docs_stats[self.name]["documentations"] += len(documentations)
-                    self.cog._docs_stats["GLOBAL"]["documentations"] += len(documentations)
                     self._docs_cache.extend(documentations)
                     self.cog._docs_stats[self.name]["manuals"] += 1
                     self.cog._docs_stats["GLOBAL"]["manuals"] += 1
+                    self.cog._docs_stats[self.name]["documentations"] += len(documentations)
+                    self.cog._docs_stats["GLOBAL"]["documentations"] += len(documentations)
                     self.cog.log.trace(
                         f"{self.name}: `{name}` documentation added to documentation cache."
                     )
@@ -633,12 +701,15 @@ class Source:
                     )
                     self._docs_caching_progress[name] = e
         amount = len(self._docs_cache)
-        end = time.monotonic()
+        end = int(time.monotonic())
         duration = int(end - start)
         self.cog._caching_time[self.name] = duration
         total_duration = end - self.cog._load_time
         if total_duration > self.cog._caching_time["GLOBAL"]:
             self.cog._caching_time["GLOBAL"] = total_duration
+        size = get_object_size(self._docs_cache)
+        self.cog._docs_sizes[self.name] = size
+        self.cog._docs_sizes["GLOBAL"] += size
         self.cog.log.debug(
             f"{self.name}: Successfully cached {amount} Documentations/{len(manuals)} manuals."
         )
@@ -651,6 +722,7 @@ class Source:
         self._rtfm_cache.project = self.name
         self._rtfm_cache.version = "1.0"
         manuals = []
+        documentations = []
         with tempfile.TemporaryDirectory() as directory:
             # Clone GitHub repo.
             repo_url = "https://github.com/discord/discord-api-docs.git"
@@ -868,7 +940,7 @@ class Source:
                                 fields=fields,
                                 attributes=Attributes(attributes={}, properties={}, methods={}),
                             )
-                            self._docs_cache.append(documentation)
+                            documentations.append(documentation)
                         self.cog.log.trace(
                             f"{self.name}: `{name}` documentation added to documentation cache."
                         )
@@ -878,7 +950,7 @@ class Source:
                             exc_info=e,
                         )
                         self._docs_caching_progress[name] = e
-        return self._rtfm_cache, manuals, self._docs_cache
+        return self._rtfm_cache, manuals, documentations
 
     async def _build_git_docs_cache(
         self,
@@ -887,6 +959,7 @@ class Source:
         self._rtfm_cache.project = self.name
         self._rtfm_cache.version = "1.0"
         manuals = []
+        documentations = []
         # Find manuals.
         content = await self._get_html(self.url)
         soup = BeautifulSoup(content, "lxml")
@@ -935,7 +1008,7 @@ class Source:
                     fields={},
                     attributes=Attributes(attributes={}, properties={}, methods={}),
                 )
-                self._docs_cache.append(documentation)
+                documentations.append(documentation)
                 self.cog.log.trace(
                     f"{self.name}: `{manual[0]}` documentation added to documentation cache."
                 )
@@ -945,7 +1018,7 @@ class Source:
                     exc_info=e,
                 )
                 self._docs_caching_progress[manual[0]] = e
-        return self._rtfm_cache, manuals, self._docs_cache
+        return self._rtfm_cache, manuals, documentations
 
     async def _get_html(self, url: str, timeout: int = 0) -> str:
         # async with self.cog._rate_limit:

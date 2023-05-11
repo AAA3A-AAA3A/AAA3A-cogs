@@ -470,7 +470,7 @@ class Medicat(Cog):
                 discord.ui.Button(
                     label=_("View on Ventoy Official Website"),
                     url="https://www.ventoy.net/en/doc_news.html",
-                    style=discord.ButtonStyle(5),
+                    style=discord.ButtonStyle.url,
                 )
             )
             try:
@@ -568,7 +568,7 @@ class Medicat(Cog):
                 discord.ui.Button(
                     label=_("View on FCportables Official Website"),
                     url=url,
-                    style=discord.ButtonStyle(5),
+                    style=discord.ButtonStyle.url,
                 )
             )
             try:
@@ -755,7 +755,7 @@ class Medicat(Cog):
         view = discord.ui.View()
         view.add_item(
             discord.ui.Button(
-                style=discord.ButtonStyle(5),
+                style=discord.ButtonStyle.url,
                 label=_("View FCportables Official Website"),
                 url="https://www.fcportables.com/",
             )

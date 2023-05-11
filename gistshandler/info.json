@@ -1,6 +1,6 @@
 {
     "author": ["AAA3A"],
-    "name": "Gists",
+    "name": "GistsHandler",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
     "short": "A cog to create new Gists and edit/delete existing ones!",
     "description": "A cog to create new Gists and edit/delete existing ones!",

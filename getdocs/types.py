@@ -15,7 +15,7 @@ class RTFSItem:
 
 
 class RTFSResults:
-    def __init__(self, source, results: typing.Set) -> None:  # set[str, str, bool]
+    def __init__(self, source, results: typing.List[typing.Tuple[str, str, str]]) -> None:  # set[str, str, bool]
         self.source = source
         self.results: typing.List[RTFSItem] = results
 
@@ -26,29 +26,25 @@ class RTFSResults:
         self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
     ) -> typing.List[discord.Embed]:
         description = "\n".join(f"**•** [**`{name}`**]({url})" for name, _, url, __ in self.results)
-        embeds = []
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
-        if len(pages) == 1:
-            embed = discord.Embed(description=description, color=embed_color)
-            embed.set_author(
-                name=f"{self.source.name} Documentation",
-                icon_url=self.source.icon_url,
-            )
-            embeds.append(embed)
-        else:
-            for page in pages:
-                embed = discord.Embed(description=page, color=embed_color)
-                embed.set_author(
-                    name=f"{self.source.name} Documentation",
-                    icon_url=self.source.icon_url,
-                )
-                embeds.append(embed)
+        embed = discord.Embed(color=embed_color)
+        embed.set_author(
+            name=f"{self.source.name} Documentation",
+            icon_url=self.source.icon_url,
+        )
+        # query_time = format_timespan(self.query_time)
+        # embed.set_footer(text=f"Fetched in {query_time}.")
+        embeds = []
+        for page in pages:
+            e = embed.copy()
+            e.description = page
+            embeds.append(e)
         return embeds
 
 
 class SearchResults:
     def __init__(
-        self, source, results: typing.Set, query_time: int
+        self, source, results: typing.List[typing.Tuple[str, str, str]], query_time: int
     ) -> None:  # set[str, str, bool]
         self.source = source
         self.results: typing.List[typing.Tuple[str, str, str]] = results
@@ -61,27 +57,19 @@ class SearchResults:
         self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
     ) -> typing.List[discord.Embed]:
         description = "\n".join(f"**•** [**`{name}`**]({url})" for name, _, url, __ in self.results)
-        embeds = []
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
-        if len(pages) == 1:
-            embed = discord.Embed(description=description, color=embed_color)
-            embed.set_author(
-                name=f"{self.source.name} Documentation",
-                icon_url=self.source.icon_url,
-            )
-            # query_time = format_timespan(self.query_time)
-            # embed.set_footer(text=f"Fetched in {query_time}.")
-            embeds.append(embed)
-        else:
-            for page in pages:
-                embed = discord.Embed(description=page, color=embed_color)
-                embed.set_author(
-                    name=f"{self.source.name} Documentation",
-                    icon_url=self.source.icon_url,
-                )
-                # query_time = format_timespan(self.query_time)
-                # embed.set_footer(text=f"Fetched in {query_time}.")
-                embeds.append(embed)
+        embed = discord.Embed(color=embed_color)
+        embed.set_author(
+            name=f"{self.source.name} Documentation",
+            icon_url=self.source.icon_url,
+        )
+        # query_time = format_timespan(self.query_time)
+        # embed.set_footer(text=f"Fetched in {query_time}.")
+        embeds = []
+        for page in pages:
+            e = embed.copy()
+            e.description = page
+            embeds.append(e)
         return embeds
 
 

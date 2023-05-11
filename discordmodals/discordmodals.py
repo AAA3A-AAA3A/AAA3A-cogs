@@ -259,9 +259,7 @@ class DiscordModals(Cog):
                 return
             embed: discord.Embed = discord.Embed()
             embed.title = config["title"]
-            if "anonymous" not in config:
-                embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar)
-            elif not config["anonymous"]:
+            if not config.get("anonymous"):
                 embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar)
                 embed.color = interaction.user.color
             else:

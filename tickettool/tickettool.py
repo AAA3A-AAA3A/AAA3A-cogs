@@ -1426,7 +1426,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
 
     def get_dropdown(self, placeholder: str, options: typing.List[dict]) -> discord.ui.View:
         view = discord.ui.View(timeout=None)
-        select_menu = discord.ui.Select(placeholder=placeholder, options=[discord.SelectOption(**option) for option in options], custom_id="create_ticket_dropdown")
+        select_menu = discord.ui.Select(placeholder=placeholder, options=[discord.SelectOption(**option, value=self.cogsutils.generate_key(length=5)) for option in options], custom_id="create_ticket_dropdown")
         select_menu.callback = partial(self.on_dropdown_interaction, select_menu=select_menu)
         view.add_item(select_menu)
         return view

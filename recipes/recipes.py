@@ -64,7 +64,7 @@ class Recipes(Cog):
             content = await r.text()
         bs4 = BeautifulSoup(content, "lxml")
         content = bs4.find("script", type="application/ld+json").text.strip().replace("\r", "")
-        pattern = r'(?<="description": ")[\s\S]*?(?=")'
+        pattern = r'(?<="description": ")[\s\S]*?(?="\\n)'
         if match := re.search(pattern, content):
             description = match[0].replace("\n", "BREAK_LINE")
             content = re.sub(pattern, description, content)

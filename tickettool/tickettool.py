@@ -64,9 +64,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 "category_close": None,
                 "admin_role": None,
                 "support_role": None,
-                "ticket_role": None,
                 "view_role": None,
                 "ping_role": None,
+                "ticket_role": None,
                 "nb_max": 5,
                 "create_modlog": False,
                 "close_on_leave": False,
@@ -138,7 +138,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 "description": "Users with this role will be able to participate and claim the ticket.",
             },
             "view_role": {
-                "path": ["support_role"],
+                "path": ["view_role"],
                 "converter": discord.Role,
                 "description": "Users with this role will only be able to read messages from the ticket, but not send them.",
             },
@@ -146,6 +146,11 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 "path": ["ping_role"],
                 "converter": discord.Role,
                 "description": "This role will be pinged automatically when the ticket is created, but does not give any additional permissions.",
+            },
+            "ticket_role": {
+                "path": ["ticket_role"],
+                "converter": discord.Role,
+                "description": "This role will be added automatically to open tickets owners.",
             },
             "dynamic_channel_name": {
                 "path": ["dynamic_channel_name"],
@@ -182,6 +187,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 "path": ["delete_on_close"],
                 "converter": bool,
                 "description": "Does closing the ticket directly delete it (with confirmation)?",
+                "no_slash": True,
             },
             "modlog": {
                 "path": ["create_modlog"],

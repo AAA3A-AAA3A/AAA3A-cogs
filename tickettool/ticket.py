@@ -479,6 +479,11 @@ class Ticket:
                 await self.first_message.edit(view=view)
             except discord.HTTPException:
                 pass
+        if config["ticket_role"] is not None and self.owner:
+            try:
+                await self.owner.add_roles(config["ticket_role"], reason=_reason)
+            except discord.HTTPException:
+                pass
         await self.save()
         return self
 
@@ -556,6 +561,11 @@ class Ticket:
                     int(self.first_message.id)
                 )
                 await self.first_message.edit(view=view)
+            except discord.HTTPException:
+                pass
+        if config["ticket_role"] is not None and self.owner:
+            try:
+                await self.owner.remove_roles(config["ticket_role"], reason=_reason)
             except discord.HTTPException:
                 pass
         await self.save()

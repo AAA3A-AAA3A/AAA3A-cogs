@@ -63,8 +63,8 @@ class Recipes(Cog):
         async with self._session.get(url) as r:
             content = await r.text()
         bs4 = BeautifulSoup(content, "lxml")
-        content = bs4.find("script", type="application/ld+json").text.strip().replace("\r", "")
-        pattern = r'(?<="description": ")[\s\S]*?(?="\\n)'
+        content = bs4.find("script", type="application/ld+json").text.strip().replace("\r", "").replace("”", "`")
+        pattern = r'(?<="description": ")[^"]*?(?="\,)'
         if match := re.search(pattern, content):
             description = match[0].replace("\n", "BREAK_LINE")
             content = re.sub(pattern, description, content)

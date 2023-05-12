@@ -120,7 +120,7 @@ class settings(commands.Cog):
                         "default": False,
                     }
                 )
-            view = self.get_drodpdown(
+            view = self.get_dropdown(
                 placeholder=config["embed_button"]["placeholder_dropdown"],
                 options=all_options,
             )

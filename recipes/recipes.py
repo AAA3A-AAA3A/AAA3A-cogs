@@ -79,7 +79,7 @@ class Recipes(Cog):
             _yield=unquote(json_content["recipeYield"].strip()),
             prep_time=json_content["prepTime"][2:].lower(),
             cook_time=json_content["cookTime"][2:].lower(),
-            rating={"value": round(float(json_content["aggregateRating"]["ratingValue"]), 1), "count": int(json_content["aggregateRating"]["ratingCount"])},
+            rating=({"value": round(float(json_content["aggregateRating"]["ratingValue"]), 1), "count": int(json_content["aggregateRating"]["ratingCount"])}) if "aggregateRating" in json_content else None,
             images_urls=json_content["image"],
             ingredients=[unquote(ingredient) for ingredient in json_content["recipeIngredient"]],
             instructions=(
@@ -106,7 +106,7 @@ class Recipes(Cog):
     async def recipe(self, ctx: commands.Context, *, query: str) -> None:
         """Show a recipe of Food52, from a query."""
         __, results = await self.get_query_results(query, limit=1)
-        if not results:
+        if not results.results:
             raise commands.UserFeedbackCheckFailure(_("No recipe found."))
         url = list(results.results.values())[0]
         try:

@@ -43,7 +43,7 @@ class Recipe:
     _yield: str
     prep_time: str
     cook_time: str
-    rating: typing.Dict[str, typing.Union[float, int]]
+    rating: typing.Optional[typing.Dict[str, typing.Union[float, int]]]
     images_urls: typing.List[str]
     ingredients: typing.List[str]
     instructions: typing.Dict[str, typing.List[str]]
@@ -62,7 +62,8 @@ class Recipe:
         embed.set_author(name=self.author["name"], url=self.author["url"], icon_url="https://forum.mtasa.com/uploads/monthly_2016_10/Anonyme.png.4060431ce866962fa496657f752d5613.png")
         embed.description = self.description
         embed.add_field(name="Yield:", value=self._yield, inline=True)
-        embed.add_field(name="Note:", value=f"{self.rating['value']}/5 with {self.rating['count']} votes", inline=True)
+        if self.rating:
+            embed.add_field(name="Note:", value=f"{self.rating['value']}/5 with {self.rating['count']} votes", inline=True)
         embed.add_field(name="Ingredients:", value="\n".join([f"**•** {ingredient}" for ingredient in self.ingredients]), inline=False)
         if self.prep_time:
             embed.add_field(name="Preparation Time:", value=self.prep_time, inline=True)

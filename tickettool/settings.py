@@ -90,7 +90,11 @@ class settings(commands.Cog):
             buttons_config[f"{message.channel.id}-{message.id}"] = {"profile": profile}
             await self.config.guild(ctx.guild).buttons.set(buttons_config)
         else:
-            if ctx.interaction is None:
+            if len({value for __, __, __, value in reason_options}) != len(
+                [value for __, __, __, value in reason_options]
+            ):
+                raise commands.UserFeedbackCheckFailure(_("A different value must be provided for each dropdown option."))
+            if ctx.interaction is None and ctx.bot_permissions.add_reactions:
                 try:
                     for emoji, label, description, value in reason_options[:19]:
                         await ctx.message.add_reaction(emoji)

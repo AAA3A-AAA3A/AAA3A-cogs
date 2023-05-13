@@ -1,0 +1,16 @@
+{
+    "author": ["AAA3A"],
+    "name": "Dictionary",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
+    "short": "A cog to search an english term/word in the dictionary! Synonyms, antonyms, phonetics (with audio)...",
+    "description": "A cog to search an english term/word in the dictionary! Synonyms, antonyms, phonetics (with audio)...",
+    "tags": [
+        "dictionary",
+        "english",
+        "word",
+        "term"
+    ],
+    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git"],
+    "min_bot_version": "3.5.0",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

@@ -9,12 +9,14 @@ import ast
 import datetime
 import inspect
 import io
+import rich
 import time
 import traceback
 import types
-from copy import copy
 
-import rich
+from copy import copy
+from textwrap import dedent
+
 from redbot.core.dev_commands import cleanup_code, sanitize_output
 from redbot.core.utils.chat_formatting import bold, box
 
@@ -230,6 +232,45 @@ class CtxVar(Cog):
                 )
             result = console.file.getvalue()
         result = self.cogsutils.replace_var_paths(sanitize_output(ctx, result))
+
+        await Menu(pages=result.strip(), lang="py").start(ctx)
+
+    @commands.is_owner()
+    @ctxvar.command(name="astdump", aliases=["dumpast"])
+    async def _dump_ast(
+        self, ctx: commands.Context, include_attributes: typing.Optional[bool] = True, *, thing: str
+    ) -> None:
+        """Execute `ast.dump(ast.parse(<code content>))` on the provided object (debug not async)."""
+        Dev = ctx.bot.get_cog("Dev")
+        if not Dev:
+            raise commands.UserFeedbackCheckFailure(
+                _("The cog Dev must be loaded, to make sure you know what you are doing.")
+            )
+        thing = cleanup_code(thing)
+        env = Dev.get_environment(ctx)
+        env["getattr_static"] = inspect.getattr_static
+        try:
+            tree = ast.parse(thing, "<dir>", "eval")
+            if isinstance(tree.body, ast.Attribute) and isinstance(tree.body.ctx, ast.Load):
+                tree.body = ast.Call(
+                    func=ast.Name(id="getattr_static", ctx=ast.Load()),
+                    args=[tree.body.value, ast.Constant(value=tree.body.attr)],
+                    keywords=[],
+                )
+                tree = ast.fix_missing_locations(tree)
+            _object = eval(compile(tree, "<dir>", "eval"), env)
+        except NameError:
+            raise commands.UserFeedbackCheckFailure(
+                _("I couldn't find any cog, command, or object named `{thing}`.").format(
+                    thing=thing
+                )
+            )
+        except Exception as e:
+            raise commands.UserFeedbackCheckFailure(
+                box("".join(traceback.format_exception_only(type(e), e)), lang="py")
+            )
+
+        result = ast.dump(ast.parse(dedent("\n".join(inspect.getsourcelines(_object)[0]))), annotate_fields=True, include_attributes=include_attributes, indent=4)
 
         await Menu(pages=result.strip(), lang="py").start(ctx)
 

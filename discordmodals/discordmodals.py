@@ -49,7 +49,7 @@ class YAMLConverter(commands.Converter):
                     _("The argument `/button/{arg}` is required in the YAML.").format(arg=arg)
                 )
         for arg in argument_dict["button"]:
-            if arg is not None in required_arguments + optional_arguments:
+            if arg is not None and arg not in required_arguments + optional_arguments:
                 raise discord.ext.commands.BadArgument(
                     _(
                         "The agument `/button/{arg}` is invalid in the YAML. Check the spelling."
@@ -87,7 +87,7 @@ class YAMLConverter(commands.Converter):
                         )
                     )
             for arg in input:
-                if arg is not None in required_arguments + optional_arguments:
+                if arg is not None and arg not in required_arguments + optional_arguments:
                     raise discord.ext.commands.BadArgument(
                         _(
                             "The agument `/modal/{count}/{arg}` is invalid in the YAML. Check the spelling."

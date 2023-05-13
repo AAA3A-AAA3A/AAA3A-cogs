@@ -57,7 +57,7 @@ class Recipe:
 
     def to_embeds(
         self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
-    ) -> discord.Embed:
+    ) -> typing.List[discord.Embed]:
         embed: discord.Embed = discord.Embed(title=self.name, url=self.url, color=embed_color)
         embed.set_author(name=self.author["name"], url=self.author["url"], icon_url="https://forum.mtasa.com/uploads/monthly_2016_10/Anonyme.png.4060431ce866962fa496657f752d5613.png")
         embed.description = self.description

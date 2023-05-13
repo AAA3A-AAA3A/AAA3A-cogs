@@ -84,7 +84,7 @@ class Recipes(Cog):
             ingredients=[unquote(ingredient) for ingredient in json_content["recipeIngredient"]],
             instructions=(
                 {
-                    unquote(section["name"]): [
+                    unquote(section["name"].title()): [
                         unquote(instruction["text"])
                         for instruction in section["itemListElement"]
                     ]

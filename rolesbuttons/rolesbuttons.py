@@ -204,7 +204,7 @@ class RolesButtons(Cog):
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
                 )
             )
-        if ctx.interaction is None:
+        if ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
                 await ctx.message.add_reaction(emoji)
             except discord.HTTPException:
@@ -261,7 +261,7 @@ class RolesButtons(Cog):
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
                 )
             )
-        if ctx.interaction is None:
+        if ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
                 for emoji, role in roles_buttons[:19]:
                     await ctx.message.add_reaction(emoji)

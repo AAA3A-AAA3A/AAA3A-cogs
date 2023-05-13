@@ -288,11 +288,11 @@ class RunCode(Cog):
         if ctx.interaction is None:
             begin = code.find("```")
             language_identifier = code[
-                begin + 3 : code[begin + 3 :].find("\n") + begin + 3
+                begin + 3:code[begin + 3:].find("\n") + begin + 3
             ].lower()
             no_code = False
             try:
-                end = code[begin + 3 + len(language_identifier) :].rfind("```")
+                end = code[begin + 3 + len(language_identifier):].rfind("```")
             except IndexError:
                 no_code = True
             if begin == -1 or end == -1:
@@ -313,12 +313,12 @@ class RunCode(Cog):
                         ).format(ctx=ctx)
                     )
             before = code[:begin]
-            after = code[end + begin + 6 + len(language_identifier) :]
+            after = code[end + begin + 6 + len(language_identifier):]
             lines = ((before[:-1] if before else "") + (after[1:] if after else "")).split("\n")
             if len(lines) == 1 and lines[0] == "":
                 lines = []
             _code = code[
-                (begin + 4 + len(language_identifier)) : (
+                (begin + 4 + len(language_identifier)):(
                     end + begin + 2 + len(language_identifier)
                 )
             ]

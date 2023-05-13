@@ -90,7 +90,7 @@ class Recipes(Cog):
                     ]
                     for section in json_content["recipeInstructions"]
                 }
-            ) if isinstance(json_content["recipeInstructions"][0], typing.Dict) else (
+            ) if not json_content["recipeInstructions"] or isinstance(json_content["recipeInstructions"][0], typing.Dict) else (
                 {
                     "Main section": [
                         unquote(instruction["text"])

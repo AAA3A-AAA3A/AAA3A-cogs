@@ -290,6 +290,10 @@ class GetDocs(DashboardIntegration, Cog):
     @commands.hybrid_command(
         aliases=["getdoc", "docs", "doc"],
     )
+    @app_commands.describe(
+        source="The name of the documentation to use.",
+        query="The documentation node/query. (`random` to get a random documentation)",    
+    )
     async def getdocs(
         self,
         ctx: commands.Context,
@@ -337,6 +341,12 @@ class GetDocs(DashboardIntegration, Cog):
             raise commands.UserFeedbackCheckFailure(str(e))
 
     @commands.hybrid_command(aliases=["rtfd"])
+    @app_commands.describe(
+        source="The name of the documentation to use.",
+        limit="The limit of objects to be sent.",
+        with_std="Also display links to non-API documentation.",
+        query="Your search. (`events` to get all dpy events, for `discord.py`, `redbot` and `pylav` source only)",   
+    )
     async def rtfm(
         self,
         ctx: commands.Context,
@@ -450,6 +460,10 @@ class GetDocs(DashboardIntegration, Cog):
     @commands.hybrid_command(
         name="listsources", aliases=["listdocsources", "listrtfmsources", "listsource"]
     )
+    @app_commands.describe(
+        _sorted="Whether to sort the list of sources alphabetically.",
+        status="Whether to show all sources, only available sources or only disabled sources.",
+    )
     async def _sources_list(
         self,
         ctx: commands.Context,
@@ -489,6 +503,7 @@ class GetDocs(DashboardIntegration, Cog):
         pass
 
     @configuration.command(name="enablesource")
+    @app_commands.describe(source="The source to enable.")
     async def _source_enable(self, ctx: commands.Context, source: str) -> None:
         """
         Enable a Documentations source.
@@ -510,6 +525,7 @@ class GetDocs(DashboardIntegration, Cog):
         asyncio.create_task(self.documentations[source].load())
 
     @configuration.command(name="disablesource")
+    @app_commands.describe(source="The source to disable.")
     async def _source_disable(self, ctx: commands.Context, source: SourceConverter) -> None:
         """
         Disable a Documentations source.

@@ -238,7 +238,7 @@ class CtxVar(Cog):
     @commands.is_owner()
     @ctxvar.command(name="astdump", aliases=["dumpast"])
     async def _dump_ast(
-        self, ctx: commands.Context, include_attributes: typing.Optional[bool] = True, *, thing: str
+        self, ctx: commands.Context, include_attributes: typing.Optional[bool] = False, *, thing: str
     ) -> None:
         """Execute `ast.dump(ast.parse(<code content>))` on the provided object (debug not async)."""
         Dev = ctx.bot.get_cog("Dev")

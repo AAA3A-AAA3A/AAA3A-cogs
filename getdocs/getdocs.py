@@ -66,7 +66,7 @@ def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
     return decorator
 
 
-def get_object_size(obj) -> int:
+def get_object_size(obj: typing.Any) -> int:
     size = sys.getsizeof(obj)
     try:
         if isinstance(obj, typing.List):
@@ -83,7 +83,7 @@ def get_object_size(obj) -> int:
 
 
 # https://stackoverflow.com/questions/1094841/get-human-readable-version-of-file-size
-def sizeof_fmt(num, suffix="B") -> str:
+def sizeof_fmt(num, suffix: str = "B") -> str:
     for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
         if abs(num) < 1024.0:
             return f"{num:3.1f} {unit}{suffix}"
@@ -409,7 +409,7 @@ class GetDocs(DashboardIntegration, Cog):
         command.app_command._params = _params3
 
     async def query_autocomplete(
-        self, interaction: discord.Interaction, current: str, exclude_std: bool
+        self, interaction: discord.Interaction, current: str, exclude_std: typing.Optional[bool] = True
     ) -> typing.Tuple["Source", typing.List[app_commands.Choice[str]]]:
         source = None
         if "source" in interaction.namespace and interaction.namespace.source:

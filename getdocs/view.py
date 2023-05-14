@@ -2,6 +2,8 @@ from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import asyncio
+
 from redbot.core.utils.chat_formatting import pagify
 
 from .types import Documentation, SearchResults
@@ -43,6 +45,7 @@ class GetDocsView(discord.ui.View):
         self._mode: typing.Literal[
             "documentation", "parameters", "examples", "attributes"
         ] = "documentation"
+        self._ready: asyncio.Event = asyncio.Event()
 
     async def start(self, ctx: commands.Context) -> None:
         self.ctx: commands.Context = ctx
@@ -56,6 +59,7 @@ class GetDocsView(discord.ui.View):
             select = DocsSelect(self, results)
             self.add_item(select)
         await self._update(results.results[0][1])
+        await self._ready.wait()
         return self._message
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:

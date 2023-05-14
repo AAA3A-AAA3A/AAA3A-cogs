@@ -47,16 +47,6 @@ class DropdownsTexts(Cog):
             for dropdown_text in config:
                 try:
                     view = self.get_dropdown(config=config, message=dropdown_text)
-                    # view = Dropdown(
-                    #     timeout=None,
-                    #     placeholder=_("Select an option."),
-                    #     min_values=0,
-                    #     max_values=1,
-                    #     options=self.get_dropdown(config, dropdown_text),
-                    #     function=self.on_dropdown_interaction,
-                    #     infinity=True,
-                    #     custom_id=f"DropdownsTexts_{dropdown_text}",
-                    # )
                     self.bot.add_view(view, message_id=int((str(dropdown_text).split("-"))[1]))
                     self.cogsutils.views.append(view)
                 except Exception as e:

@@ -56,28 +56,6 @@ class CommandsButtons(Cog):
             for message in config:
                 try:
                     view = self.get_buttons(config=config, message=message)
-                    # view = Buttons(
-                    #     timeout=None,
-                    #     buttons=[
-                    #         {
-                    #             "style": all_guilds[guild]["commands_buttons"][command_button][
-                    #                 f"{emoji}"
-                    #             ]["style_button"]
-                    #             if "style_button"
-                    #             in all_guilds[guild]["commands_buttons"][command_button][f"{emoji}"]
-                    #             else 2,
-                    #             "label": all_guilds[guild]["commands_buttons"][command_button][
-                    #                 f"{emoji}"
-                    #             ]["text_button"],
-                    #             "emoji": f"{emoji}",
-                    #             "custom_id": f"commands_buttons {emoji}",
-                    #             "disabled": False,
-                    #         }
-                    #         for emoji in all_guilds[guild]["commands_buttons"][command_button]
-                    #     ],
-                    #     function=self.on_button_interaction,
-                    #     infinity=True,
-                    # )
                     self.bot.add_view(view, message_id=int((str(message).split("-"))[1]))
                     self.cogsutils.views.append(view)
                 except Exception as e:

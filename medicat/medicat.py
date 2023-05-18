@@ -86,7 +86,7 @@ CUSTOM_COMMANDS = {
         ),
     },
     "missingfiles": {
-        "title": ("Can I install Mini Windows 10 as my main OS?"),
+        "title": ("See what files are missing using the quick SFV program"),
         "description": (
             "In order to see what files are missing using the quick SFV program, please scroll all the way to the top once it has finished scanning."
         ),

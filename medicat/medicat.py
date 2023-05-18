@@ -85,6 +85,13 @@ CUSTOM_COMMANDS = {
             "No, it doesn't work like that. It's a WinPE image (Windows Pre-install Environment) that runs in memory. It's primary use is to troubleshoot a troublesome PC."
         ),
     },
+    "missingfiles": {
+        "title": ("Can I install Mini Windows 10 as my main OS?"),
+        "description": (
+            "In order to see what files are missing using the quick SFV program, please scroll all the way to the top once it has finished scanning."
+        ),
+        "image_url": "https://media.discordapp.net/attachments/893780404031590421/1107907798278352956/Screenshot_22.png",
+    },
     "noiso": {
         "title": ("How do I download the Medicat USB iso file?"),
         "description": (
@@ -644,6 +651,8 @@ class Medicat(Cog):
                     embed.set_footer(text="Medicat USB Official", icon_url=MEDICAT_ICON_URL)
                     embed.title = _(CUSTOM_COMMANDS[ctx.command.name]["title"])
                     embed.description = _(CUSTOM_COMMANDS[ctx.command.name]["description"])
+                    if "image_url" in CUSTOM_COMMANDS[ctx.command.name]:
+                        embed.set_image(url=CUSTOM_COMMANDS[ctx.command.name]["image_url"])
                     await ctx.send(embed=embed)
 
                 CC.__qualname__ = f"{self.qualified_name}.CC_{name}"

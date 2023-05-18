@@ -214,7 +214,7 @@ class GetDocs(DashboardIntegration, Cog):
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
-        self.getdocs_global = {
+        self.getdocs_global: typing.Dict[str, typing.Union[str, bool, typing.List[str]]] = {
             "default_source": "discord.py",
             "caching": True,
             "disabled_sources": [],

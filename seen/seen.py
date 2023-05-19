@@ -478,59 +478,65 @@ class Seen(Cog):
             guilds_count = 0
         # Users
         for user in users_data:
+            if for_count:
+                if any([custom_id is not None for custom_id in users_data[user].values()]):
+                    users_count += 1
+                continue
             for custom_id in users_data[user].values():
                 if custom_id is not None:
-                    if for_count:
-                        users_count += 1
-                    else:
-                        # if custom_id not in self.cache["existing_keys"]:
-                        existing_keys.append(custom_id)
+                    # if custom_id not in self.cache["existing_keys"]:
+                    existing_keys.append(custom_id)
         # Members
         for guild in members_data:
             for member in members_data[guild]:
+                if for_count:
+                    if any([custom_id is not None for custom_id in members_data[guild][member].values()]):
+                        members_count += 1
+                    continue
                 for custom_id in members_data[guild][member].values():
                     if custom_id is not None:
-                        if for_count:
-                            members_count += 1
-                        else:
-                            # if custom_id not in self.cache["existing_keys"]:
-                            existing_keys.append(custom_id)
+                        # if custom_id not in self.cache["existing_keys"]:
+                        existing_keys.append(custom_id)
         # Roles
         for role in roles_data:
+            if for_count:
+                if any([custom_id is not None for custom_id in roles_data[role].values()]):
+                    roles_count += 1
+                continue
             for custom_id in roles_data[role].values():
                 if custom_id is not None:
-                    if for_count:
-                        roles_count += 1
-                    else:
-                        # if custom_id not in self.cache["existing_keys"]:
-                        existing_keys.append(custom_id)
+                    # if custom_id not in self.cache["existing_keys"]:
+                    existing_keys.append(custom_id)
         # Channels
         for channel in channels_data:
+            if for_count:
+                if any([custom_id is not None for custom_id in channels_data[channel].values()]):
+                    channels_count += 1
+                continue
             for custom_id in channels_data[channel].values():
                 if custom_id is not None:
-                    if for_count:
-                        channels_count += 1
-                    else:
-                        # if custom_id not in self.cache["existing_keys"]:
-                        existing_keys.append(custom_id)
+                    # if custom_id not in self.cache["existing_keys"]:
+                    existing_keys.append(custom_id)
         # Categories
         for category in categories_data:
+            if for_count:
+                if any([custom_id is not None for custom_id in categories_data[category].values()]):
+                    categories_count += 1
+                continue
             for custom_id in categories_data[category].values():
                 if custom_id is not None:
-                    if for_count:
-                        categories_count += 1
-                    else:
-                        # if custom_id not in self.cache["existing_keys"]:
-                        existing_keys.append(custom_id)
+                    # if custom_id not in self.cache["existing_keys"]:
+                    existing_keys.append(custom_id)
         # Guilds
         for guild in guilds_data:
+            if for_count:
+                if any([custom_id is not None for custom_id in guilds_data[guild].values()]):
+                    guilds_count += 1
+                continue
             for custom_id in guilds_data[guild].values():
                 if custom_id is not None:
-                    if for_count:
-                        guilds_count += 1
-                    else:
-                        # if custom_id not in self.cache["existing_keys"]:
-                        existing_keys.append(custom_id)
+                    # if custom_id not in self.cache["existing_keys"]:
+                    existing_keys.append(custom_id)
         if not for_count:
             self.cache["existing_keys"] = list(set(existing_keys))
         # Global
@@ -904,7 +910,7 @@ class Seen(Cog):
             await ctx.send(embed=embed)
             return
         embed: discord.Embed = discord.Embed()
-        embed.title = f"Seen Board for the {_object.capitalize()}"
+        embed.title = f"Seen Board for the {_object.capitalize()}" + (f" - ({_type})" if _type is not None else "")
         embed.timestamp = datetime.datetime.now()
         embeds = []
         description = []
@@ -1239,7 +1245,7 @@ class Seen(Cog):
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @seen.group(invoke_without_command=True)
+    @seen.command(invoke_without_command=True)
     async def board(
         self,
         ctx: commands.Context,
@@ -1247,41 +1253,13 @@ class Seen(Cog):
             typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         _object: typing.Optional[
-            typing.Literal["members", "roles", "channels", "categories"]
+            typing.Literal["members", "roles", "channels", "categories", "guilds", "users"]
         ] = "members",
         reverse: typing.Optional[bool] = False,
     ) -> None:
-        """View a Seen Board for members/roles/channels/categories!"""
-        await self.send_board(ctx, _object=_object, _type=_type, reverse=reverse)
-
-    @commands.is_owner()
-    @commands.bot_has_permissions(embed_links=True)
-    @board.command(name="guilds")
-    async def board_guilds(
-        self,
-        ctx: commands.Context,
-        _type: typing.Optional[
-            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
-        ],
-        reverse: typing.Optional[bool] = False,
-    ) -> None:
-        """View a Seen Board for guilds!"""
-        _object = "guilds"
-        await self.send_board(ctx, _object=_object, _type=_type, reverse=reverse)
-
-    @commands.is_owner()
-    @commands.bot_has_permissions(embed_links=True)
-    @board.command(name="users", hidden=True)
-    async def board_users(
-        self,
-        ctx: commands.Context,
-        _type: typing.Optional[
-            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
-        ],
-        reverse: typing.Optional[bool] = False,
-    ) -> None:
-        """View a Seen Board for users!"""
-        _object = "users"
+        """View a Seen Board for members/roles/channels/categories/guilds/users!"""
+        if _object in ["guilds", "users"] and ctx.author.id not in ctx.bot.owner_ids:
+            raise commands.UserFeedbackCheckFailure(_("You're not allowed to view the Seen board for guilds and users."))
         await self.send_board(ctx, _object=_object, _type=_type, reverse=reverse)
 
     @commands.is_owner()

@@ -272,10 +272,10 @@ class Documentation:
         for name, value in fields.items():
             if len(value) > field_limit:
                 if "-----" not in value:
-                    value = list(pagify(value, page_length=field_limit - 6))[0] + "\n..."
+                    value = list(pagify(value, page_length=field_limit, shorten_by=6))[0] + "\n..."
                 else:
                     value = (
-                        box(list(pagify(value, page_length=field_limit - 16))[0], lang="py")
+                        box(list(pagify(value, page_length=field_limit, shorten_by=16))[0], lang="py")
                         + "\n..."
                     )
             embed.add_field(name=name, value=value, inline=False)

@@ -71,7 +71,7 @@ class AutoTraceback(DashboardIntegration, Cog):
                 pass
             else:
                 return
-        for page in pagify(_last_exception, shorten_by=15, page_length=1985):
+        for page in pagify(_last_exception, shorten_by=15):
             try:
                 await ctx.author.send(box(page, lang="py"))
             except discord.HTTPException:
@@ -93,7 +93,7 @@ class AutoTraceback(DashboardIntegration, Cog):
             return
         pages = [
             box(page, lang="py")
-            for page in pagify(traceback_error, shorten_by=15, page_length=1985)
+            for page in pagify(traceback_error, shorten_by=15)
         ]
         try:
             await Menu(pages=pages, timeout=180, delete_after_timeout=False).start(ctx)

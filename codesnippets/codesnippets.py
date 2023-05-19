@@ -350,7 +350,7 @@ class CodeSnippets(DashboardIntegration, Cog):
     async def send_snippets(self, ctx: commands.Context, snippets: typing.Dict[str, typing.Tuple[str, str, str]]):
         for url, snippet in snippets.items():
             ret, language, code = snippet
-            pages = pagify(code, page_length=2000 - len(f"```py\n{ret}\n```") - len(f"```{language}\n\n```"))
+            pages = pagify(code, shorten_by=len(f"```py\n{ret}\n```") + len(f"```{language}\n\n```"))
             pages = [f"```py\n{ret}\n```\n```{language}\n{page}\n```" for page in pages]
             menu = Menu(pages=pages)
             menu.extra_items.append(discord.ui.Button(style=discord.ButtonStyle.url, label="View on GitHub", url=url))

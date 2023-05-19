@@ -151,7 +151,7 @@ class YAMLConverter(commands.Converter):
             channel = await discord.ext.commands.TextChannelConverter().convert(
                 ctx, argument_dict["channel"]
             )
-            if channel is not None and hasattr(channel, "id"):
+            if channel is not None and hasattr(channel, "id") and channel.permissions_for(ctx.me).send_messages:
                 argument_dict["channel"] = channel.id
             else:
                 argument_dict["channel"] = ctx.channel.id
@@ -368,11 +368,12 @@ class DiscordModals(Cog):
         self, ctx: commands.Context, message: discord.Message, *, argument: YAMLConverter
     ) -> None:
         """Add a Modal for a message.
+
         Use YAML syntax to set up everything.
 
         **Example:**
         ```
-        [p]discordmodals add 1234567890
+        [p]discordmodals add <message>
         title: Report a bug
         button:
           label: Report

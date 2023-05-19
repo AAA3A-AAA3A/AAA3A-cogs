@@ -1419,6 +1419,13 @@ class TicketTool(settings, DashboardIntegration, Cog):
     def get_buttons(self, buttons: typing.List[dict]) -> discord.ui.View:
         view = discord.ui.View(timeout=None)
         for button in buttons:
+            if "emoji" in button:
+                try:
+                    int(button["emoji"])
+                except ValueError:
+                    pass
+                else:
+                    button["emoji"] = str(self.bot.get_emoji(int(button["emoji"])))
             button = discord.ui.Button(**button)
             button.callback = self.on_button_interaction
             view.add_item(button)
@@ -1426,7 +1433,17 @@ class TicketTool(settings, DashboardIntegration, Cog):
 
     def get_dropdown(self, placeholder: str, options: typing.List[dict]) -> discord.ui.View:
         view = discord.ui.View(timeout=None)
-        select_menu = discord.ui.Select(placeholder=placeholder, options=[discord.SelectOption(**option) for option in options], custom_id="create_ticket_dropdown")
+        select_menu = discord.ui.Select(placeholder=placeholder, custom_id="create_ticket_dropdown")
+        for option in options:
+            if "emoji" in option:
+                try:
+                    int(option["emoji"])
+                except ValueError:
+                    pass
+                else:
+                    option["emoji"] = str(self.bot.get_emoji(int(option["emoji"])))
+            option = discord.SelectOption(**option)
+            select_menu.append_option(option)
         select_menu.callback = partial(self.on_dropdown_interaction, select_menu=select_menu)
         view.add_item(select_menu)
         return view

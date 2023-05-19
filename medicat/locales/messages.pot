@@ -288,7 +288,7 @@ msgstr ""
 
 #: medicat\medicat.py:952
 #, docstring
-msgid "Get an embed for check loops status."
+msgid "Get an embed to check loops status."
 msgstr ""
 
 #: medicat\medicat.py:959

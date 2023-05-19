@@ -862,7 +862,7 @@ class Medicat(Cog):
     @is_owner_or_AAA3A()
     @medicat.command(hidden=True)
     async def getdebugloopsstatus(self, ctx: commands.Context) -> None:
-        """Get an embed for check loops status."""
+        """Get an embed to check loops status."""
         embeds = [loop.get_debug_embed() for loop in self.cogsutils.loops.values()]
         await Menu(pages=embeds).start(ctx)
 

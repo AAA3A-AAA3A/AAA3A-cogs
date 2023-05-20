@@ -115,7 +115,7 @@ class EditTextChannel(Cog):
     ) -> None:
         """List all text channels in the current guild."""
         description = "".join(
-            f"\n**•** **{channel.position + 1}** - {channel.mention} ({channel.id}) - {len(channel.members)} members"
+            f"\n**•** **{channel.position + 1}** - {channel.mention} - #{channel.name} ({channel.id}) - {len(channel.members)} members"
             for channel in sorted(ctx.guild.text_channels, key=lambda x: x.position)
         )
         embed: discord.Embed = discord.Embed(color=await ctx.embed_color())

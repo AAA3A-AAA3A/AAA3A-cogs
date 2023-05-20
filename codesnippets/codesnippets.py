@@ -27,7 +27,7 @@ GITHUB_RE = re.compile(
 )
 GITHUB_GIST_RE = re.compile(
     r"https://(?:www\.)?gist\.github\.com/([a-zA-Z0-9-]+)/(?P<gist_id>[a-zA-Z0-9]+)/*"
-    r"(?P<revision>[a-zA-Z0-9]*)/*#file-(?P<file_path>[^#>]+)"
+    r"(?P<revision>[a-zA-Z0-9]*)/*(#file-(?P<file_path>[^#>]+))?"
     r"((\?[^#->]+)?(-L?(?P<start_line>\d+)(([-~:]|(\.\.))L?(?P<end_line>\d+))?))?"
 )
 GITHUB_PR_DIFF_RE = re.compile(
@@ -172,7 +172,7 @@ class CodeSnippets(DashboardIntegration, Cog):
         self,
         gist_id: str,
         revision: str,
-        file_path: str,
+        file_path: typing.Optional[str] = None,
         start_line: typing.Optional[str] = None,
         end_line: typing.Optional[str] = None
     ) -> str:
@@ -182,6 +182,8 @@ class CodeSnippets(DashboardIntegration, Cog):
             response_format="json",
             headers=GITHUB_HEADERS,
         )
+        if len(gist_json["files"]) == 1 and file_path is None:
+            file_path = list(gist_json["files"])[0].lower().replace(".", "-")
         for gist_file in gist_json["files"]:
             if file_path == gist_file.lower().replace(".", "-"):
                 file_contents = await self._fetch_response(

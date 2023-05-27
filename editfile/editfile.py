@@ -107,7 +107,7 @@ class EditFile(Cog):
             pages = [
                 {"content": (header + box(p, lang="py")), "file": file}
                 for p in pagify(
-                    (b"\n".join(lines)).decode(encoding="utf-8"), shorten_by=len(header)
+                    (b"\n".join(lines)).decode(encoding="utf-8"), shorten_by=len(header) + 8
                 )
             ]
             if not pages:

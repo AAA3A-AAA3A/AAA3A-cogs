@@ -120,7 +120,7 @@ class GetLoc(Cog):
         except Exception:
             raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again."))
         if localisation is None:
-            raise commands.UserFeedbackCheckFailurectx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
                     "The address or contact details you have provided do not lead to any results. Are you sure of your input?"
                 )

@@ -208,11 +208,11 @@ class ReactToCommand(Cog):
         """Group of commands to use ReactToCommand."""
         pass
 
-    @reacttocommand.command()
+    @reacttocommand.command(aliases=["+"])
     async def add(
         self, ctx: commands.Context, message: discord.Message, emoji: Emoji, *, command: str
     ) -> None:
-        """Add a command-reaction for a message.
+        """Add a reaction-command for a message.
         There should be no prefix in the command.
         The command will be invoked with the permissions of the user who clicked on the reaction.
         This user must be able to see writing in the channel.
@@ -252,13 +252,13 @@ class ReactToCommand(Cog):
         config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = command
         await self.config.guild(ctx.guild).react_commands.set(config)
 
-    @reacttocommand.command()
+    @reacttocommand.command(aliases=["-"])
     async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji) -> None:
-        """Remove a command-reaction for a message."""
+        """Remove a reaction-command for a message."""
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
-                _("No command-reaction is configured for this message.")
+                _("No reaction-command is configured for this message.")
             )
         if f"{getattr(emoji, 'id', emoji)}" not in config[f"{message.channel.id}-{message.id}"]:
             raise commands.UserFeedbackCheckFailure(
@@ -275,11 +275,11 @@ class ReactToCommand(Cog):
 
     @reacttocommand.command()
     async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
-        """Clear all commands-reactions for a message."""
+        """Clear all reactions-commands for a message."""
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
-                _("No command-reaction is configured for this message.")
+                _("No reaction-command is configured for this message.")
             )
         for react in config[f"{message.channel.id}-{message.id}"]:
             try:
@@ -291,5 +291,5 @@ class ReactToCommand(Cog):
 
     @reacttocommand.command(hidden=True)
     async def purge(self, ctx: commands.Context) -> None:
-        """Clear all commands-reactions for a guild."""
+        """Clear all reactions-commands for a guild."""
         await self.config.guild(ctx.guild).react_commands.clear()

@@ -164,7 +164,7 @@ class RolesButtons(Cog):
         """Group of commands to use RolesButtons."""
         pass
 
-    @rolesbuttons.command()
+    @rolesbuttons.command(aliases=["+"])
     async def add(
         self,
         ctx: commands.Context,
@@ -320,7 +320,7 @@ class RolesButtons(Cog):
             f"{message.channel.id}-{message.id}", value=mode
         )
 
-    @rolesbuttons.command()
+    @rolesbuttons.command(aliases=["-"])
     async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji) -> None:
         """Remove a role-button for a message."""
         if message.author != ctx.guild.me:

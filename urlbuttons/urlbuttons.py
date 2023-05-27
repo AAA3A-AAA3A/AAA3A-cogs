@@ -53,7 +53,7 @@ class UrlButtons(Cog):
         """Group of commands to use UrlButtons."""
         pass
 
-    @urlbuttons.command()
+    @urlbuttons.command(aliases=["+"])
     async def add(
         self,
         ctx: commands.Context,
@@ -141,7 +141,7 @@ class UrlButtons(Cog):
         self.cogsutils.views.append(view)
         await self.config.guild(ctx.guild).url_buttons.set(config)
 
-    @urlbuttons.command()
+    @urlbuttons.command(aliases=["-"])
     async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji) -> None:
         """Remove a url-button for a message."""
         if message.author != ctx.guild.me:

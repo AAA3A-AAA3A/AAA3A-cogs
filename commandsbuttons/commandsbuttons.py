@@ -136,7 +136,7 @@ class CommandsButtons(Cog):
         """Group of commands to use CommandsButtons."""
         pass
 
-    @commandsbuttons.command()
+    @commandsbuttons.command(aliases=["+"])
     async def add(
         self,
         ctx: commands.Context,
@@ -269,7 +269,7 @@ class CommandsButtons(Cog):
         self.cogsutils.views.append(view)
         await self.config.guild(ctx.guild).commands_buttons.set(config)
 
-    @commandsbuttons.command()
+    @commandsbuttons.command(aliases=["-"])
     async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji) -> None:
         """Remove a command-button for a message."""
         if message.author != ctx.guild.me:

@@ -135,7 +135,7 @@ class DropdownsTexts(Cog):
         """Group of commands to use DropdownsTexts."""
         pass
 
-    @dropdownstexts.command()
+    @dropdownstexts.command(aliases=["+"])
     async def add(
         self,
         ctx: commands.Context,

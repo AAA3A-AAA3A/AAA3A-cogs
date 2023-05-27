@@ -682,7 +682,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
     async def ticket(self, ctx: commands.Context) -> None:
         """Commands for using the ticket system."""
 
-    @ticket.command(name="create")
+    @ticket.command(name="create", aliases=["+"])
     async def command_create(
         self,
         ctx: commands.Context,

@@ -363,7 +363,7 @@ class DiscordModals(Cog):
         """Group of commands to use ReactToCommand."""
         pass
 
-    @discordmodals.command()
+    @discordmodals.command(aliases=["+"])
     async def add(
         self, ctx: commands.Context, message: discord.Message, *, argument: YAMLConverter
     ) -> None:
@@ -442,7 +442,7 @@ class DiscordModals(Cog):
         }
         await self.config.guild(ctx.guild).modals.set(config)
 
-    @discordmodals.command()
+    @discordmodals.command(aliases=["-"])
     async def remove(self, ctx: commands.Context, message: discord.Message) -> None:
         """Remove a Modal for a message."""
         if message.author != ctx.guild.me:

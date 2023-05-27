@@ -272,7 +272,7 @@ class EditFile(Cog):
             )
         await ctx.send(_("The `{path}` file has been deleted.").format(path=path))
 
-    @editfile.command()
+    @editfile.command(aliases=["-"])
     async def delete(self, ctx: commands.Context, *, path: str) -> None:
         """Delete a file."""
         if not path.exists():

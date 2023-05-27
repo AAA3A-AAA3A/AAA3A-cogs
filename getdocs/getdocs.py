@@ -29,6 +29,7 @@ from fuzzywuzzy import fuzz
 from sphobjinv import DataObjStr, Inventory
 from prettytable import PrettyTable
 
+from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import humanize_list
 
 from .dashboard_integration import DashboardIntegration
@@ -62,7 +63,6 @@ def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
         def wrapper(*args: typing.Any, **kwargs: typing.Any):
             return run_blocking_func(func, *args, **kwargs)
         return wrapper
-
     return decorator
 
 
@@ -699,7 +699,7 @@ class Source:
                     manuals.insert(i, (manual, self.url + manual))
                 manual = "tutorial/datastructures.html"  # not found by RTFM caching task
                 manuals.insert(i + 1, (manual, self.url + manual))
-            for name, manual in manuals:
+            async for name, manual in AsyncIter(manuals, delay=1, steps=1):  # for name, manual in manuals:
                 try:
                     documentations = await self._get_all_manual_documentations(manual)
                     self._docs_cache.extend(documentations)
@@ -1380,7 +1380,7 @@ class Source:
 
         elements = await bs4(await self._get_html(page_url))
         results: typing.List[Documentation] = []
-        for element in elements:
+        async for element in AsyncIter(elements, delay=0.1, steps=1):  # for element in elements:
             result = await self._get_documentation(element, page_url)
             if item_name is not None:
                 return result
@@ -1567,7 +1567,7 @@ class Source:
         #         name = f"discord.{name}"
         #     elif f"discord.ext.commands.{name}" in self._raw_rtfm_cache_without_std:
         #         name = f"discord.ext.commands.{name}"
-        if self.name not in ["discordapi", "git"] and discord.utils.get(self._docs_cache, name=name) is None:
+        if self.name not in ["discordapi", "git"] and discord.utils.get(self._docs_cache, name=name) is not None:
             item = discord.utils.get(self._rtfm_cache.objects, name=name)
             location = item.uri
             if location.endswith("$"):

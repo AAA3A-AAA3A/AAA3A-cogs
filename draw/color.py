@@ -3,12 +3,12 @@ import discord  # isort:skip
 import typing  # isort:skip
 import typing_extensions  # isort:skip
 
-import aiohttp
 import asyncio
 import io
 import re
-
 from functools import cached_property
+
+import aiohttp
 from PIL import Image
 
 IMAGE_EXTENSION = "PNG"
@@ -77,9 +77,7 @@ class Color:
         return Image.new("RGBA", (100, 100), self.RGBA)
 
     async def to_emoji(self, guild: discord.Guild) -> discord.Emoji:
-        return await guild.create_custom_emoji(
-            name=self.hex, image=await self.to_bytes()
-        )
+        return await guild.create_custom_emoji(name=self.hex, image=await self.to_bytes())
 
     @classmethod
     async def from_emoji(
@@ -126,10 +124,13 @@ class Color:
         return cls(RGBA)
 
     @classmethod
-    def mix_colors(cls, colors: typing.List[typing.Union[typing_extensions.Self, typing.Tuple[int, int, int, int]]]) -> typing_extensions.Self:
-        colors = [
-            color.RGBA if isinstance(color, Color) else color for color in colors
-        ]
+    def mix_colors(
+        cls,
+        colors: typing.List[
+            typing.Union[typing_extensions.Self, typing.Tuple[int, int, int, int]]
+        ],
+    ) -> typing_extensions.Self:
+        colors = [color.RGBA if isinstance(color, Color) else color for color in colors]
         total_weight = len(colors)
         return cls(
             tuple(round(sum(color) / total_weight) for color in zip(*colors)),

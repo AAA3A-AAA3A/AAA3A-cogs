@@ -6,15 +6,20 @@ import typing  # isort:skip
 
 import asyncio
 import datetime
-import gists
 
+import gists
 from redbot.core.utils.chat_formatting import box
 
 _ = Translator("GistsHandler", __file__)
 
 
 class FilesSelect(discord.ui.Select):
-    def __init__(self, parent: discord.ui.View, files: typing.List[gists.File], current_file: typing.Optional[gists.File] = None) -> None:
+    def __init__(
+        self,
+        parent: discord.ui.View,
+        files: typing.List[gists.File],
+        current_file: typing.Optional[gists.File] = None,
+    ) -> None:
         self._parent: discord.ui.View = parent
         self._options = [
             discord.SelectOption(label=file.name, value=file.name, default=file == current_file)
@@ -83,10 +88,15 @@ class CreateGistModal(discord.ui.Modal):
         elif lowered in ("no", "n", "false", "f", "0", "disable", "off"):
             public = False
         else:
-            await interaction.response.send_message(_("{public.value} is not a recognised boolean option.").format(public=self.public), ephemeral=True)
+            await interaction.response.send_message(
+                _("{public.value} is not a recognised boolean option.").format(public=self.public),
+                ephemeral=True,
+            )
             return
         try:
-            gist = await self._parent.cog.gists_client.create_gist(files=[file], description=description, public=public)
+            gist = await self._parent.cog.gists_client.create_gist(
+                files=[file], description=description, public=public
+            )
         except gists.AuthorizationFailure:
             await interaction.response.send_message(_("GitHub token is invalid or expired."))
             return
@@ -95,7 +105,9 @@ class CreateGistModal(discord.ui.Modal):
         self._parent._deleted: bool = False
         self._parent._deleted_at: datetime.datetime = None
         await self._parent._update()
-        await interaction.response.send_message(_("Gist `{gist.id}` created.").format(gist=gist), ephemeral=True)
+        await interaction.response.send_message(
+            _("Gist `{gist.id}` created.").format(gist=gist), ephemeral=True
+        )
 
 
 class EditGistModal(discord.ui.Modal):
@@ -167,7 +179,9 @@ class EditGistModal(discord.ui.Modal):
         files = self.gist.files
         files.remove(self.file)
         if old_file_content != "":
-            old_file = gists.File(name=old_file_old_name, new_name=old_file_name, content=old_file_content)
+            old_file = gists.File(
+                name=old_file_old_name, new_name=old_file_name, content=old_file_content
+            )
             files.append(old_file)
         else:
             old_file = None
@@ -185,15 +199,24 @@ class EditGistModal(discord.ui.Modal):
             await interaction.response.send_message(_("GitHub token is invalid or expired."))
             return
         except gists.NotFound:
-            await interaction.response.send_message(_("You're not allowed to edit this gist."), ephemeral=True)
+            await interaction.response.send_message(
+                _("You're not allowed to edit this gist."), ephemeral=True
+            )
             return
         self._parent.file = old_file or new_file
         await self._parent._update()
-        await interaction.response.send_message(_("Gist `{gist.id}` updated.").format(gist=self.gist), ephemeral=True)
+        await interaction.response.send_message(
+            _("Gist `{gist.id}` updated.").format(gist=self.gist), ephemeral=True
+        )
 
 
 class GistsHandlerView(discord.ui.View):
-    def __init__(self, cog: commands.Cog, gist: typing.Optional[gists.Gist] = None, file: typing.Optional[gists.File] = None) -> None:
+    def __init__(
+        self,
+        cog: commands.Cog,
+        gist: typing.Optional[gists.Gist] = None,
+        file: typing.Optional[gists.File] = None,
+    ) -> None:
         super().__init__()
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = None
@@ -229,7 +252,9 @@ class GistsHandlerView(discord.ui.View):
     async def on_timeout(self) -> None:
         for child in self.children:
             child: discord.ui.Item
-            if hasattr(child, "disabled") and not (isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url):
+            if hasattr(child, "disabled") and not (
+                isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url
+            ):
                 child.disabled = True
         try:
             await self._message.edit(view=self)
@@ -253,18 +278,27 @@ class GistsHandlerView(discord.ui.View):
             self.delete_gist.disabled = False
             if self._files_select is not None:
                 self.remove_item(self._files_select)
-            self._files_select: FilesSelect = FilesSelect(parent=self, files=self.gist.files, current_file=self.file)
+            self._files_select: FilesSelect = FilesSelect(
+                parent=self, files=self.gist.files, current_file=self.file
+            )
             self.add_item(self._files_select)
             if self._button_url is not None:
                 self.remove_item(self._button_url)
-            self._button_url: discord.ui.Button = discord.ui.Button(label="View on GitHub", url=self.gist.url, style=discord.ButtonStyle.url)
+            self._button_url: discord.ui.Button = discord.ui.Button(
+                label="View on GitHub", url=self.gist.url, style=discord.ButtonStyle.url
+            )
             self.add_item(self._button_url)
         if self._message is None:
             self._message: discord.Message = await self.ctx.send(embed=self._embed, view=self)
         else:
             self._message: discord.Message = await self._message.edit(embed=self._embed, view=self)
 
-    async def get_embed(self, ctx: commands.Context, gist: typing.Optional[gists.Gist] = None, file: typing.Optional[gists.File] = None) -> discord.Embed:
+    async def get_embed(
+        self,
+        ctx: commands.Context,
+        gist: typing.Optional[gists.Gist] = None,
+        file: typing.Optional[gists.File] = None,
+    ) -> discord.Embed:
         embed: discord.Embed = discord.Embed(color=await ctx.embed_color())
         if gist is None:
             embed.title = "Gist not provided."
@@ -273,28 +307,43 @@ class GistsHandlerView(discord.ui.View):
             embed.title = f"[DELETED] {gist.id}" if self._deleted else gist.id
             embed.url = gist.url
             embed.description = gist.description
-            embed.set_author(name=self.gist.owner["login"], url=self.gist.owner["html_url"], icon_url=self.gist.owner["avatar_url"])
+            embed.set_author(
+                name=self.gist.owner["login"],
+                url=self.gist.owner["html_url"],
+                icon_url=self.gist.owner["avatar_url"],
+            )
             updated_at = f"{discord.utils.format_dt(gist.updated_at)} ({discord.utils.format_dt(gist.updated_at, style='R')})"
             created_at = f"{discord.utils.format_dt(gist.created_at)} ({discord.utils.format_dt(gist.created_at, style='R')})"
             if self._deleted_at is not None:
                 deleted_at = f"{discord.utils.format_dt(self._deleted_at)} ({discord.utils.format_dt(self._deleted_at, style='R')})"
             embed.add_field(
                 name="Updates:",
-                value=f"Created at: {created_at}\nLast updated at: {updated_at}" + (f"\nDeleted at: {deleted_at}" if self._deleted_at is not None else ""),
+                value=f"Created at: {created_at}\nLast updated at: {updated_at}"
+                + (f"\nDeleted at: {deleted_at}" if self._deleted_at is not None else ""),
                 inline=True,
             )
             embed.add_field(name="Public State:", value=str(gist.public), inline=True)
             embed.url = f"{gist.url}#file-{file.name.replace('.', '-').replace('/', '-')}"
-            length = len(f"```{file.name.split('.')[-1]}\n\n```") if file.name.split(".")[-1] != "md" else 0
+            length = (
+                len(f"```{file.name.split('.')[-1]}\n\n```")
+                if file.name.split(".")[-1] != "md"
+                else 0
+            )
             content = file.content.replace("`", "`\u200b")
-            content = (f"{content[:1024 - 4 - length]}\n..." if len(content) > (1024 - length) else content)
+            content = (
+                f"{content[:1024 - 4 - length]}\n..."
+                if len(content) > (1024 - length)
+                else content
+            )
             if file.name.split(".")[-1] != "md":
                 content = box(content, lang=file.name.split(".")[-1])
             embed.add_field(name=file.name, value=content, inline=False)
         return embed
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page")
-    async def close_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    async def close_page(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:
@@ -332,13 +381,15 @@ class GistsHandlerView(discord.ui.View):
             await interaction.response.send_message(_("GitHub token is invalid or expired."))
             return
         except gists.NotFound:
-            await interaction.response.send_message(_("You're not allowed to delete this gist."), ephemeral=True)
+            await interaction.response.send_message(
+                _("You're not allowed to delete this gist."), ephemeral=True
+            )
             return
         self._deleted: bool = True
-        self._deleted_at: datetime.datetime = datetime.datetime.now(
-            datetime.timezone.utc
+        self._deleted_at: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)
+        await interaction.response.send_message(
+            _("Gist `{gist.id}` deleted.").format(gist=self.gist), ephemeral=True
         )
-        await interaction.response.send_message(_("Gist `{gist.id}` deleted.").format(gist=self.gist), ephemeral=True)
         await self._update()
 
     async def _callback(

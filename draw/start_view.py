@@ -6,7 +6,12 @@ import typing  # isort:skip
 import asyncio
 
 from .board import Board
-from .constants import MAIN_COLORS, base_colors_options, base_height_or_width_select_options, IMAGE_EXTENSION
+from .constants import (
+    IMAGE_EXTENSION,
+    MAIN_COLORS,
+    base_colors_options,
+    base_height_or_width_select_options,
+)  # NOQA
 from .view import DrawView
 
 _ = Translator("Draw", __file__)
@@ -60,7 +65,9 @@ class StartDrawView(discord.ui.View):
     async def on_timeout(self) -> None:
         for child in self.children:
             child: discord.ui.Item
-            if hasattr(child, "disabled") and not (isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url):
+            if hasattr(child, "disabled") and not (
+                isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url
+            ):
                 child.disabled = True
         try:
             await self._message.edit(view=self)
@@ -70,9 +77,7 @@ class StartDrawView(discord.ui.View):
 
     @property
     def board(self) -> Board:
-        self._board.modify(
-            height=self.height, width=self.width, background=self.background
-        )
+        self._board.modify(height=self.height, width=self.width, background=self.background)
         return self._board
 
     async def _update(self) -> None:
@@ -86,14 +91,18 @@ class StartDrawView(discord.ui.View):
         discord.utils.get(self.select_width.options, value=int(self.width)).default = True
         if self._message is None:
             self._message: discord.Message = await self.ctx.send(
-                _("Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`.").format(height=self.height, width=self.width, background=self.background),
+                _(
+                    "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`."
+                ).format(height=self.height, width=self.width, background=self.background),
                 embed=self._embed,
                 file=file,
                 view=self,
             )
         else:
             self._message: discord.Message = await self._message.edit(
-                content=_("Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`.").format(height=self.height, width=self.width, background=self.background),
+                content=_(
+                    "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`."
+                ).format(height=self.height, width=self.width, background=self.background),
                 embed=self._embed,
                 attachments=[file],
                 view=self,
@@ -106,7 +115,9 @@ class StartDrawView(discord.ui.View):
         return embed
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page")
-    async def close_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    async def close_page(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:
@@ -132,23 +143,33 @@ class StartDrawView(discord.ui.View):
         self._ready.set()
 
     @discord.ui.select(options=base_colors_options(), placeholder="Select Board Background.")
-    async def select_background(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
+    async def select_background(
+        self, interaction: discord.Interaction, select: discord.ui.Select
+    ) -> None:
         await interaction.response.defer()
         if self.background == select.values[0]:
             return
         self.background: str = select.values[0]
         await self._update()
 
-    @discord.ui.select(options=base_height_or_width_select_options("height"), placeholder="Select Board Height.")
-    async def select_height(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
+    @discord.ui.select(
+        options=base_height_or_width_select_options("height"), placeholder="Select Board Height."
+    )
+    async def select_height(
+        self, interaction: discord.Interaction, select: discord.ui.Select
+    ) -> None:
         await interaction.response.defer()
         if self.height == int(select.values[0]):
             return
         self.height: str = int(select.values[0])
         await self._update()
 
-    @discord.ui.select(options=base_height_or_width_select_options("width"), placeholder="Select Board Width.")
-    async def select_width(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
+    @discord.ui.select(
+        options=base_height_or_width_select_options("width"), placeholder="Select Board Width."
+    )
+    async def select_width(
+        self, interaction: discord.Interaction, select: discord.ui.Select
+    ) -> None:
         await interaction.response.defer()
         if self.width == int(select.values[0]):
             return

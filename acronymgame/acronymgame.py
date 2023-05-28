@@ -7,7 +7,6 @@ import typing  # isort:skip
 
 from .view import AcronymGameView
 
-
 # Credits:
 # General repo credits.
 # Thanks to Flame for his tests which allowed to discover several errors!

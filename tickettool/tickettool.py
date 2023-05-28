@@ -6,11 +6,11 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import datetime
-import chat_exporter
 import io
 from copy import deepcopy
 from functools import partial
 
+import chat_exporter
 from redbot.core import modlog
 from redbot.core.utils.chat_formatting import pagify
 
@@ -271,19 +271,25 @@ class TicketTool(settings, DashboardIntegration, Cog):
                         for channel_id in guilds_data[guild]["tickets"]:
                             if "panel" not in guilds_data[guild]["tickets"][channel_id]:
                                 continue
-                            guilds_data[guild]["tickets"][channel_id]["profile"] = guilds_data[guild]["tickets"][channel_id]["panel"]
+                            guilds_data[guild]["tickets"][channel_id]["profile"] = guilds_data[
+                                guild
+                            ]["tickets"][channel_id]["panel"]
                             del guilds_data[guild]["tickets"][channel_id]["panel"]
                     if "buttons" in guilds_data[guild]:
                         for message_id in guilds_data[guild]["buttons"]:
                             if "panel" not in guilds_data[guild]["buttons"][message_id]:
                                 continue
-                            guilds_data[guild]["buttons"][message_id]["profile"] = guilds_data[guild]["buttons"][message_id]["panel"]
+                            guilds_data[guild]["buttons"][message_id]["profile"] = guilds_data[
+                                guild
+                            ]["buttons"][message_id]["panel"]
                             del guilds_data[guild]["buttons"][message_id]["panel"]
                     if "dropdowns" in guilds_data[guild]:
                         for message_id in guilds_data[guild]["dropdowns"]:
                             if "panel" not in guilds_data[guild]["dropdowns"][message_id]:
                                 continue
-                            guilds_data[guild]["dropdowns"][message_id]["profile"] = guilds_data[guild]["dropdowns"][message_id]["panel"]
+                            guilds_data[guild]["dropdowns"][message_id]["profile"] = guilds_data[
+                                guild
+                            ]["dropdowns"][message_id]["panel"]
                             del guilds_data[guild]["dropdowns"][message_id]["panel"]
             CONFIG_SCHEMA = 3
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
@@ -469,7 +475,13 @@ class TicketTool(settings, DashboardIntegration, Cog):
             return f"{author.name} ({author.id}) - {reason}"
 
     async def get_embed_important(
-        self, ticket, more: bool, author: discord.Member, title: str, description: str, reason: typing.Optional[str] = None
+        self,
+        ticket,
+        more: bool,
+        author: discord.Member,
+        title: str,
+        description: str,
+        reason: typing.Optional[str] = None,
     ) -> discord.Embed:
         config = await self.get_config(ticket.guild, ticket.profile)
         actual_color = config["color"]
@@ -529,11 +541,15 @@ class TicketTool(settings, DashboardIntegration, Cog):
         embed.add_field(inline=False, name=_("Reason:"), value=f"{reason}")
         return embed
 
-    async def get_embed_action(self, ticket, author: discord.Member, action: str, reason: typing.Optional[str] = None) -> discord.Embed:
+    async def get_embed_action(
+        self, ticket, author: discord.Member, action: str, reason: typing.Optional[str] = None
+    ) -> discord.Embed:
         config = await self.get_config(ticket.guild, ticket.profile)
         actual_color = config["color"]
         embed: discord.Embed = discord.Embed()
-        embed.title = _("Ticket [{ticket.profile}] {ticket.id} - Action taken").format(ticket=ticket)
+        embed.title = _("Ticket [{ticket.profile}] {ticket.id} - Action taken").format(
+            ticket=ticket
+        )
         embed.description = f"{action}"
         embed.color = actual_color
         embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
@@ -1171,7 +1187,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
         pages = list(pagify(description, page_length=6000))
         embeds = []
         for page in pages:
-            embed: discord.Embed = discord.Embed(title=f"Tickets in this guild - Profile {profile}")
+            embed: discord.Embed = discord.Embed(
+                title=f"Tickets in this guild - Profile {profile}"
+            )
             embed.description = page
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
@@ -1196,10 +1214,24 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 ]
             else:
                 profile = "main"
-            modal = discord.ui.Modal(title="Create a Ticket", timeout=180, custom_id="create_ticket_modal")
+            modal = discord.ui.Modal(
+                title="Create a Ticket", timeout=180, custom_id="create_ticket_modal"
+            )
             modal.on_submit = lambda interaction: interaction.response.defer(ephemeral=True)
-            profile_input = discord.ui.TextInput(label="Profile", style=discord.TextStyle.short, default=profile, max_length=10, required=True)
-            reason_input = discord.ui.TextInput(label="Why are you creating this ticket?", style=discord.TextStyle.long, max_length=1000, required=False, placeholder="No reason provided.")
+            profile_input = discord.ui.TextInput(
+                label="Profile",
+                style=discord.TextStyle.short,
+                default=profile,
+                max_length=10,
+                required=True,
+            )
+            reason_input = discord.ui.TextInput(
+                label="Why are you creating this ticket?",
+                style=discord.TextStyle.long,
+                max_length=1000,
+                required=False,
+                placeholder="No reason provided.",
+            )
             modal.add_item(profile_input)
             modal.add_item(reason_input)
             await interaction.response.send_modal(modal)
@@ -1233,9 +1265,17 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     _("You have chosen to create a ticket."), ephemeral=True
                 )
         elif interaction.data["custom_id"] == "close_ticket_button":
-            modal = discord.ui.Modal(title="Close the Ticket", timeout=180, custom_id="close_ticket_modal")
+            modal = discord.ui.Modal(
+                title="Close the Ticket", timeout=180, custom_id="close_ticket_modal"
+            )
             modal.on_submit = lambda interaction: interaction.response.defer(ephemeral=True)
-            reason_input = discord.ui.TextInput(label="Why are you closing this ticket?", style=discord.TextStyle.long, max_length=1000, required=False, placeholder="No reason provided.")
+            reason_input = discord.ui.TextInput(
+                label="Why are you closing this ticket?",
+                style=discord.TextStyle.long,
+                max_length=1000,
+                required=False,
+                placeholder="No reason provided.",
+            )
             modal.add_item(reason_input)
             await interaction.response.send_modal(modal)
             timeout = await modal.wait()
@@ -1284,7 +1324,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 author=interaction.user, channel=interaction.channel, command="ticket delete"
             )
 
-    async def on_dropdown_interaction(self, interaction: discord.Interaction, select_menu: discord.ui.Select) -> None:
+    async def on_dropdown_interaction(
+        self, interaction: discord.Interaction, select_menu: discord.ui.Select
+    ) -> None:
         options = select_menu.values
         if len(options) == 0:
             if not interaction.response.is_done():
@@ -1331,9 +1373,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         config = await self.get_config(interaction.guild, profile)
         if config["embed_button"]["rename_channel_dropdown"]:
             try:
-                ticket: Ticket = await self.get_ticket(
-                    ctx.guild.get_channel(ctx.ticket.channel)
-                )
+                ticket: Ticket = await self.get_ticket(ctx.guild.get_channel(ctx.ticket.channel))
                 if ticket is not None:
                     await ticket.rename(
                         new_name=f"{option.emoji}-{option.value}_{interaction.user.id}".replace(
@@ -1433,7 +1473,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
 
     def get_dropdown(self, placeholder: str, options: typing.List[dict]) -> discord.ui.View:
         view = discord.ui.View(timeout=None)
-        select_menu = discord.ui.Select(placeholder=placeholder, custom_id="create_ticket_dropdown")
+        select_menu = discord.ui.Select(
+            placeholder=placeholder, custom_id="create_ticket_dropdown"
+        )
         for option in options:
             if "emoji" in option:
                 try:

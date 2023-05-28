@@ -91,10 +91,7 @@ class AutoTraceback(DashboardIntegration, Cog):
         self.tracebacks.append(traceback_error)
         if ctx.author.id not in ctx.bot.owner_ids:
             return
-        pages = [
-            box(page, lang="py")
-            for page in pagify(traceback_error, shorten_by=15)
-        ]
+        pages = [box(page, lang="py") for page in pagify(traceback_error, shorten_by=15)]
         try:
             await Menu(pages=pages, timeout=180, delete_after_timeout=False).start(ctx)
         except discord.HTTPException:

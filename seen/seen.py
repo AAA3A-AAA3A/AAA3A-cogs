@@ -13,7 +13,6 @@ from copy import deepcopy
 
 from redbot.core.utils.chat_formatting import box, pagify
 
-
 # Credits:
 # General repo credits.
 # Thanks to @aikaterna on Discord for the cog idea and a part of the code (https://github.com/aikaterna/aikaterna-cogs/blob/v3/seen/seen.py)!
@@ -490,7 +489,12 @@ class Seen(Cog):
         for guild in members_data:
             for member in members_data[guild]:
                 if for_count:
-                    if any([custom_id is not None for custom_id in members_data[guild][member].values()]):
+                    if any(
+                        [
+                            custom_id is not None
+                            for custom_id in members_data[guild][member].values()
+                        ]
+                    ):
                         members_count += 1
                     continue
                 for custom_id in members_data[guild][member].values():
@@ -520,7 +524,9 @@ class Seen(Cog):
         # Categories
         for category in categories_data:
             if for_count:
-                if any([custom_id is not None for custom_id in categories_data[category].values()]):
+                if any(
+                    [custom_id is not None for custom_id in categories_data[category].values()]
+                ):
                     categories_count += 1
                 continue
             for custom_id in categories_data[category].values():
@@ -910,7 +916,9 @@ class Seen(Cog):
             await ctx.send(embed=embed)
             return
         embed: discord.Embed = discord.Embed()
-        embed.title = f"Seen Board for the {_object.capitalize()}" + (f" - ({_type})" if _type is not None else "")
+        embed.title = f"Seen Board for the {_object.capitalize()}" + (
+            f" - ({_type})" if _type is not None else ""
+        )
         embed.timestamp = datetime.datetime.now()
         embeds = []
         description = []
@@ -1259,7 +1267,9 @@ class Seen(Cog):
     ) -> None:
         """View a Seen Board for members/roles/channels/categories/guilds/users!"""
         if _object in ["guilds", "users"] and ctx.author.id not in ctx.bot.owner_ids:
-            raise commands.UserFeedbackCheckFailure(_("You're not allowed to view the Seen board for guilds and users."))
+            raise commands.UserFeedbackCheckFailure(
+                _("You're not allowed to view the Seen board for guilds and users.")
+            )
         await self.send_board(ctx, _object=_object, _type=_type, reverse=reverse)
 
     @commands.is_owner()

@@ -7,7 +7,6 @@ import typing  # isort:skip
 
 from redbot.core.utils.chat_formatting import box, pagify
 
-
 _ = Translator("DiscordEdit", __file__)
 
 ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
@@ -28,6 +27,7 @@ class PositionConverter(commands.Converter):
             )
         position -= 1
         return position
+
 
 class PermissionConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> str:
@@ -111,7 +111,9 @@ class EditVoiceChannel(Cog):
             for channel in sorted(ctx.guild.voice_channels, key=lambda x: x.position)
         )
         embed: discord.Embed = discord.Embed(color=await ctx.embed_color())
-        embed.title = _("List of voice channels in {guild.name} ({guild.id})").format(guild=ctx.guild)
+        embed.title = _("List of voice channels in {guild.name} ({guild.id})").format(
+            guild=ctx.guild
+        )
         embeds = []
         pages = pagify(description, page_length=4096)
         for page in pages:

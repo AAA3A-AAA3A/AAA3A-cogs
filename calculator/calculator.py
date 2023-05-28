@@ -8,11 +8,13 @@ import typing  # isort:skip
 from .view import CalculatorView  # isort:skip
 
 import datetime
-from expr import evaluate, EvaluatorError
 from math import e, pi, tau
+
+from expr import EvaluatorError, evaluate
+from redbot.core.utils.chat_formatting import box
+
 # from TagScriptEngine import Interpreter, block
 
-from redbot.core.utils.chat_formatting import box
 
 # Credits:
 # General repo credits.
@@ -130,15 +132,9 @@ class Calculator(Cog):
         embed.color = actual_color
         embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
         if ctx.guild:
-            embed.set_footer(
-                text=ctx.guild.name,
-                icon_url=ctx.guild.icon
-            )
+            embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
         else:
-            embed.set_footer(
-                text=ctx.author.name,
-                icon_url=ctx.author.display_avatar
-            )
+            embed.set_footer(text=ctx.author.name, icon_url=ctx.author.display_avatar)
         return embed
 
     async def input_formatter(self, expression: str, new: str) -> str:

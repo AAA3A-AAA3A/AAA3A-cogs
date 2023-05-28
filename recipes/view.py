@@ -66,7 +66,9 @@ class RecipesView(discord.ui.View):
     async def on_timeout(self) -> None:
         for child in self.children:
             child: discord.ui.Item
-            if hasattr(child, "disabled") and not (isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url):
+            if hasattr(child, "disabled") and not (
+                isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url
+            ):
                 child.disabled = True
         try:
             await self._message.edit(view=self)
@@ -75,7 +77,9 @@ class RecipesView(discord.ui.View):
         self._ready.set()
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page")
-    async def close_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    async def close_page(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:
@@ -89,6 +93,13 @@ class RecipesView(discord.ui.View):
 
     async def _callback(self, interaction: discord.Interaction, option: discord.SelectOption):
         await interaction.response.defer()
-        embed: discord.Embed = discord.Embed(title=f"Instructions {option.value}", color=await self.ctx.embed_color())
-        embed.description = "\n\n".join([f"**{n}.** {instruction}" for n, instruction in enumerate(self.recipe.instructions[option.value], start=1)])
+        embed: discord.Embed = discord.Embed(
+            title=f"Instructions {option.value}", color=await self.ctx.embed_color()
+        )
+        embed.description = "\n\n".join(
+            [
+                f"**{n}.** {instruction}"
+                for n, instruction in enumerate(self.recipe.instructions[option.value], start=1)
+            ]
+        )
         await Menu(pages=[embed]).start(self.ctx)

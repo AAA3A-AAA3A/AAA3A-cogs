@@ -15,7 +15,6 @@ from pathlib import Path
 from redbot.core import data_manager
 from redbot.core.utils.chat_formatting import box, pagify
 
-
 # Credits:
 # General repo credits.
 

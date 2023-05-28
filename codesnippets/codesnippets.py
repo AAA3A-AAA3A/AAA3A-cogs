@@ -5,14 +5,13 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import aiohttp
 import asyncio
 import re
 import textwrap
-
 from collections import deque
 from urllib.parse import quote_plus
 
+import aiohttp
 from redbot.core.utils.chat_formatting import pagify
 
 from .dashboard_integration import DashboardIntegration
@@ -86,7 +85,7 @@ class CodeSnippets(DashboardIntegration, Cog):
             GITLAB_RE: self.fetch_gitlab_snippet,
             BITBUCKET_RE: self.fetch_bitbucket_snippet,
             PASTEBIN_RE: self.fetch_pastebin_snippet,
-            HASTEBIN_RE: self.fetch_hastebin_snippet
+            HASTEBIN_RE: self.fetch_hastebin_snippet,
         }
         self._session: aiohttp.ClientSession = None
         self.antispam_cache: typing.Dict[discord.abc.Messageable, deque[tuple, 5]] = {}
@@ -98,7 +97,9 @@ class CodeSnippets(DashboardIntegration, Cog):
         ] = {
             "channels": {
                 "path": ["channels"],
-                "converter": typing.List[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]],
+                "converter": typing.List[
+                    typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
+                ],
                 "description": "Channels where the cog have to send automatically code snippets from URLs.",
             },
         }
@@ -140,7 +141,7 @@ class CodeSnippets(DashboardIntegration, Cog):
         for possible_ref in refs:
             if path.startswith(possible_ref["name"] + "/"):
                 ref = possible_ref["name"]
-                file_path = path[len(ref) + 1:]
+                file_path = path[len(ref) + 1 :]
                 break
         return ref, file_path
 
@@ -149,7 +150,7 @@ class CodeSnippets(DashboardIntegration, Cog):
         repo: str,
         path: str,
         start_line: typing.Optional[str] = None,
-        end_line: typing.Optional[str] = None
+        end_line: typing.Optional[str] = None,
     ) -> str:
         """Fetches a snippet from a GitHub repo."""
         branches = await self._fetch_response(
@@ -157,7 +158,9 @@ class CodeSnippets(DashboardIntegration, Cog):
             response_format="json",
             headers=GITHUB_HEADERS,
         )
-        tags = await self._fetch_response(f"https://api.github.com/repos/{repo}/tags", response_format="json")
+        tags = await self._fetch_response(
+            f"https://api.github.com/repos/{repo}/tags", response_format="json"
+        )
         refs = branches + tags
         ref, file_path = self._find_ref(path, refs)
 
@@ -174,7 +177,7 @@ class CodeSnippets(DashboardIntegration, Cog):
         revision: str,
         file_path: typing.Optional[str] = None,
         start_line: typing.Optional[str] = None,
-        end_line: typing.Optional[str] = None
+        end_line: typing.Optional[str] = None,
     ) -> str:
         """Fetches a snippet from a GitHub gist."""
         gist_json = await self._fetch_response(
@@ -199,7 +202,7 @@ class CodeSnippets(DashboardIntegration, Cog):
         repo: str,
         pr_number: str,
         start_line: typing.Optional[str] = None,
-        end_line: typing.Optional[str] = None
+        end_line: typing.Optional[str] = None,
     ) -> str:
         """Fetches a snippet from a GitHub PR diff."""
         file_contents = await self._fetch_response(
@@ -207,7 +210,9 @@ class CodeSnippets(DashboardIntegration, Cog):
             response_format="text",
             headers={"Accept": "application/vnd.github.v3.diff"},
         )
-        ret, _, code = self._snippet_to_codeblock(file_contents, f"Diff Pull Request {pr_number} in {repo}", start_line, end_line)
+        ret, _, code = self._snippet_to_codeblock(
+            file_contents, f"Diff Pull Request {pr_number} in {repo}", start_line, end_line
+        )
         return ret, "diff", code
 
     async def fetch_github_commit_diff_snippet(
@@ -215,7 +220,7 @@ class CodeSnippets(DashboardIntegration, Cog):
         repo: str,
         commit_hash: str,
         start_line: typing.Optional[str] = None,
-        end_line: typing.Optional[str] = None
+        end_line: typing.Optional[str] = None,
     ) -> str:
         """Fetches a snippet from a GitHub Commit diff."""
         file_contents = await self._fetch_response(
@@ -223,7 +228,9 @@ class CodeSnippets(DashboardIntegration, Cog):
             response_format="text",
             headers={"Accept": "application/vnd.github.v3.diff"},
         )
-        ret, _, code = self._snippet_to_codeblock(file_contents, f"Diff Commit `{commit_hash}` in {repo}", start_line, end_line)
+        ret, _, code = self._snippet_to_codeblock(
+            file_contents, f"Diff Commit `{commit_hash}` in {repo}", start_line, end_line
+        )
         return ret, "diff", code
 
     async def fetch_gitlab_snippet(
@@ -231,7 +238,7 @@ class CodeSnippets(DashboardIntegration, Cog):
         repo: str,
         path: str,
         start_line: typing.Optional[str] = None,
-        end_line: typing.Optional[str] = None
+        end_line: typing.Optional[str] = None,
     ) -> str:
         """Fetches a snippet from a GitLab repo."""
         enc_repo = quote_plus(repo)
@@ -239,7 +246,10 @@ class CodeSnippets(DashboardIntegration, Cog):
             f"https://gitlab.com/api/v4/projects/{enc_repo}/repository/branches",
             response_format="json",
         )
-        tags = await self._fetch_response(f"https://gitlab.com/api/v4/projects/{enc_repo}/repository/tags", response_format="json")
+        tags = await self._fetch_response(
+            f"https://gitlab.com/api/v4/projects/{enc_repo}/repository/tags",
+            response_format="json",
+        )
         refs = branches + tags
         ref, file_path = self._find_ref(path, refs)
         enc_ref = quote_plus(ref)
@@ -256,38 +266,57 @@ class CodeSnippets(DashboardIntegration, Cog):
         ref: str,
         file_path: str,
         start_line: typing.Optional[str] = None,
-        end_line: typing.Optional[str] = None
+        end_line: typing.Optional[str] = None,
     ) -> str:
         """Fetches a snippet from a BitBucket repo."""
-        file_contents = await self._fetch_response(f"https://bitbucket.org/{quote_plus(repo)}/raw/{quote_plus(ref)}/{quote_plus(file_path)}", response_format="text")
+        file_contents = await self._fetch_response(
+            f"https://bitbucket.org/{quote_plus(repo)}/raw/{quote_plus(ref)}/{quote_plus(file_path)}",
+            response_format="text",
+        )
         return self._snippet_to_codeblock(file_contents, file_path, start_line, end_line)
 
     async def fetch_pastebin_snippet(
         self,
         paste_id: str,
         start_line: typing.Optional[str] = None,
-        end_line: typing.Optional[str] = None
+        end_line: typing.Optional[str] = None,
     ) -> str:
         """Fetches a snippet from a Pastebin paste."""
-        file_contents = await self._fetch_response(f"https://pastebin.com/raw/{paste_id}", response_format="text")
-        ret, _, code = self._snippet_to_codeblock(file_contents, f"Paste {paste_id}", start_line, end_line)
+        file_contents = await self._fetch_response(
+            f"https://pastebin.com/raw/{paste_id}", response_format="text"
+        )
+        ret, _, code = self._snippet_to_codeblock(
+            file_contents, f"Paste {paste_id}", start_line, end_line
+        )
         return ret, "py", code
 
     async def fetch_hastebin_snippet(
         self,
         paste_id: str,
         start_line: typing.Optional[str] = None,
-        end_line: typing.Optional[str] = None
+        end_line: typing.Optional[str] = None,
     ) -> str:
         """Fetches a snippet from a Hastebin paste."""
         api_tokens = await self.bot.get_shared_api_tokens(service_name="github")
         if (token := api_tokens.get("token")) is None:
             raise RuntimeError("No Hastebin token.")
-        file_contents = await self._fetch_response(f"https://hastebin.com/raw/{paste_id}", response_format="text", headers={"Authentification": f"Bearer {token}"})
-        ret, _, code = self._snippet_to_codeblock(file_contents, f"Paste {paste_id}", start_line, end_line)
+        file_contents = await self._fetch_response(
+            f"https://hastebin.com/raw/{paste_id}",
+            response_format="text",
+            headers={"Authentification": f"Bearer {token}"},
+        )
+        ret, _, code = self._snippet_to_codeblock(
+            file_contents, f"Paste {paste_id}", start_line, end_line
+        )
         return ret, "py", code
 
-    def _snippet_to_codeblock(self, file_contents: str, file_path: str, start_line: typing.Optional[str] = None, end_line: typing.Optional[str] = None) -> str:
+    def _snippet_to_codeblock(
+        self,
+        file_contents: str,
+        file_path: str,
+        start_line: typing.Optional[str] = None,
+        end_line: typing.Optional[str] = None,
+    ) -> str:
         split_file_contents = file_contents.split("\n")
         if start_line is None and end_line is None:
             start_line = 1
@@ -305,7 +334,7 @@ class CodeSnippets(DashboardIntegration, Cog):
         start_line = max(1, start_line)
         end_line = min(len(split_file_contents), end_line)
 
-        code = "\n".join(split_file_contents[start_line - 1:end_line])
+        code = "\n".join(split_file_contents[start_line - 1 : end_line])
         code = textwrap.dedent(code).rstrip().replace("`", "`\u200b")
 
         language = file_path.split("/")[-1].split(".")[-1]
@@ -323,7 +352,13 @@ class CodeSnippets(DashboardIntegration, Cog):
             return ret, language, code
         return "", "", ""
 
-    async def parse_snippets(self, content: str, limit: typing.Optional[int] = None, is_listener: typing.Optional[bool] = False, channel: typing.Optional[discord.abc.Messageable] = None) -> typing.Dict[str, str]:
+    async def parse_snippets(
+        self,
+        content: str,
+        limit: typing.Optional[int] = None,
+        is_listener: typing.Optional[bool] = False,
+        channel: typing.Optional[discord.abc.Messageable] = None,
+    ) -> typing.Dict[str, str]:
         all_snippets = {}
         i = 0
         for pattern, handler in self.pattern_handlers.items():
@@ -332,7 +367,10 @@ class CodeSnippets(DashboardIntegration, Cog):
                 if limit is not None and i > limit:
                     return all_snippets
                 if is_listener:
-                    if channel in self.antispam_cache and tuple(match.groupdict().items()) in self.antispam_cache[channel]:
+                    if (
+                        channel in self.antispam_cache
+                        and tuple(match.groupdict().items()) in self.antispam_cache[channel]
+                    ):
                         continue
                     if channel not in self.antispam_cache:
                         self.antispam_cache[channel] = deque(maxlen=5)
@@ -346,24 +384,41 @@ class CodeSnippets(DashboardIntegration, Cog):
                 except (RuntimeError, aiohttp.ClientResponseError) as e:
                     if e.status == 404:
                         continue
-                    self.log.error(f"Failed to fetch code snippet from {match[0]!r}: {e.status} for GET {e.request_info.real_url.human_repr()}.", exc_info=e)
+                    self.log.error(
+                        f"Failed to fetch code snippet from {match[0]!r}: {e.status} for GET {e.request_info.real_url.human_repr()}.",
+                        exc_info=e,
+                    )
         return all_snippets
 
-    async def send_snippets(self, ctx: commands.Context, snippets: typing.Dict[str, typing.Tuple[str, str, str]]):
+    async def send_snippets(
+        self, ctx: commands.Context, snippets: typing.Dict[str, typing.Tuple[str, str, str]]
+    ):
         for url, snippet in snippets.items():
             ret, language, code = snippet
-            pages = pagify(code, shorten_by=len(f"```py\n{ret}\n```") + len(f"```{language}\n\n```"))
+            pages = pagify(
+                code, shorten_by=len(f"```py\n{ret}\n```") + len(f"```{language}\n\n```")
+            )
             pages = [f"```py\n{ret}\n```\n```{language}\n{page}\n```" for page in pages]
             menu = Menu(pages=pages)
-            menu.extra_items.append(discord.ui.Button(style=discord.ButtonStyle.url, label="View on GitHub", url=url))
+            menu.extra_items.append(
+                discord.ui.Button(style=discord.ButtonStyle.url, label="View on GitHub", url=url)
+            )
             asyncio.create_task(menu.start(ctx))
 
     @commands.hybrid_command(aliases=["codesnippet"])
-    async def codesnippets(self, ctx: commands.Context, limit: typing.Optional[commands.Range[int, 1, 10]] = 3, *, urls: str) -> None:
+    async def codesnippets(
+        self,
+        ctx: commands.Context,
+        limit: typing.Optional[commands.Range[int, 1, 10]] = 3,
+        *,
+        urls: str,
+    ) -> None:
         """Send code content from a GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL."""
         snippets = await self.parse_snippets(content=urls, limit=limit)
         if not snippets:
-            raise commands.UserFeedbackCheckFailure(_("No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found."))
+            raise commands.UserFeedbackCheckFailure(
+                _("No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found.")
+            )
         await self.send_snippets(ctx, snippets=snippets)
 
     @commands.Cog.listener()
@@ -377,7 +432,9 @@ class CodeSnippets(DashboardIntegration, Cog):
         if message.channel.id not in await self.config.guild(message.guild).channels():
             return
         context = await self.bot.get_context(message)
-        snippets = await self.parse_snippets(content=message.content, limit=3, is_listener=True, channel=message.channel)
+        snippets = await self.parse_snippets(
+            content=message.content, limit=3, is_listener=True, channel=message.channel
+        )
         if not snippets:
             return
         await self.send_snippets(context, snippets=snippets)
@@ -390,19 +447,31 @@ class CodeSnippets(DashboardIntegration, Cog):
         pass
 
     @configuration.command()
-    async def addchannel(self, ctx: commands.Context, channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]) -> None:
+    async def addchannel(
+        self,
+        ctx: commands.Context,
+        channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+    ) -> None:
         """Add a channel where the cog have to send automatically code snippets from URLs."""
         channels = await self.config.guild(ctx.guild).channels()
         if channel.id in channels:
-            raise commands.UserFeedbackCheckFailure(_("The cog is already enabled in this channel"))
+            raise commands.UserFeedbackCheckFailure(
+                _("The cog is already enabled in this channel")
+            )
         channels.append(channel.id)
         await self.config.guild(ctx.guild).channels.set(channels)
 
     @configuration.command()
-    async def removechannel(self, ctx: commands.Context, channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]) -> None:
+    async def removechannel(
+        self,
+        ctx: commands.Context,
+        channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+    ) -> None:
         """Remove a channel where the cog have to send automatically code snippets from URLs."""
         channels = await self.config.guild(ctx.guild).channels()
         if channel.id not in channels:
-            raise commands.UserFeedbackCheckFailure(_("The cog is already disabled in this channel"))
+            raise commands.UserFeedbackCheckFailure(
+                _("The cog is already disabled in this channel")
+            )
         channels.remove(channel.id)
         await self.config.guild(ctx.guild).channels.set(channels)

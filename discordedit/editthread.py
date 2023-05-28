@@ -35,6 +35,7 @@ class Emoji(commands.EmojiConverter):
             return argument
         return await super().convert(ctx, argument)
 
+
 class ForumTagConverter(discord.ext.commands.Converter):
     async def convert(
         self, ctx: commands.Context, argument: str

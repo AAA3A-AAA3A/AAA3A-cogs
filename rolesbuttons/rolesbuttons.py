@@ -55,7 +55,9 @@ class RolesButtons(Cog):
                         exc_info=e,
                     )
 
-    async def on_button_interaction(self, interaction: discord.Interaction, config_identifier: str) -> None:
+    async def on_button_interaction(
+        self, interaction: discord.Interaction, config_identifier: str
+    ) -> None:
         if await self.bot.cog_disabled_in_guild(self, interaction.guild):
             return
         if not interaction.data["custom_id"].startswith("roles_buttons"):
@@ -64,14 +66,14 @@ class RolesButtons(Cog):
             await interaction.response.defer(ephemeral=True)
         config = await self.config.guild(interaction.guild).roles_buttons.all()
         if f"{interaction.channel.id}-{interaction.message.id}" not in config:
-            await interaction.followup.send(
-                _("This message is not in Config."), ephemeral=True
-            )
+            await interaction.followup.send(_("This message is not in Config."), ephemeral=True)
             return
         if config_identifier not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
             await interaction.followup.send(_("This button is not in Config."), ephemeral=True)
             return
-        role_id = config[f"{interaction.channel.id}-{interaction.message.id}"][config_identifier]["role"]
+        role_id = config[f"{interaction.channel.id}-{interaction.message.id}"][config_identifier][
+            "role"
+        ]
         role = interaction.guild.get_role(role_id)
         if role is None:
             await interaction.followup.send(
@@ -134,7 +136,9 @@ class RolesButtons(Cog):
             for emoji in config[f"{interaction.channel.id}-{interaction.message.id}"]:
                 if emoji == config_identifier:
                     continue
-                other_role_id = config[f"{interaction.channel.id}-{interaction.message.id}"][emoji]["role"]
+                other_role_id = config[f"{interaction.channel.id}-{interaction.message.id}"][
+                    emoji
+                ]["role"]
                 other_role = interaction.guild.get_role(other_role_id)
                 if other_role is None or other_role not in interaction.user.roles:
                     continue
@@ -393,10 +397,14 @@ class RolesButtons(Cog):
             button = discord.ui.Button(
                 label=config[message][config_identifier]["text_button"],
                 emoji=b,
-                style=discord.ButtonStyle(config[message][config_identifier].get("style_button", 2)),
+                style=discord.ButtonStyle(
+                    config[message][config_identifier].get("style_button", 2)
+                ),
                 custom_id=f"roles_buttons {config_identifier}",
                 disabled=False,
             )
-            button.callback = partial(self.on_button_interaction, config_identifier=config_identifier)
+            button.callback = partial(
+                self.on_button_interaction, config_identifier=config_identifier
+            )
             view.add_item(button)
         return view

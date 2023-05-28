@@ -15,26 +15,25 @@ import subprocess
 import sys
 import tempfile
 import time
+from dataclasses import is_dataclass
+from urllib.parse import ParseResult, urljoin, urlparse
+
+import aiohttp
+from bs4 import BeautifulSoup, NavigableString, ResultSet, SoupStrainer, Tag
+from fuzzywuzzy import fuzz
+from prettytable import PrettyTable
+from redbot.core.utils import AsyncIter
+from redbot.core.utils.chat_formatting import humanize_list
+from sphobjinv import DataObjStr, Inventory
+
+from .dashboard_integration import DashboardIntegration
+from .types import Attribute, Attributes, Documentation, Examples, Parameters, SearchResults
+from .view import GetDocsView
 
 # from playwright._impl._api_types import TimeoutError as PlaywrightTimeoutError
 # from playwright.async_api import async_playwright
 # from aiolimiter import AsyncLimiter
 
-import aiohttp
-from bs4 import BeautifulSoup, NavigableString, ResultSet, SoupStrainer, Tag
-from urllib.parse import ParseResult, urljoin, urlparse
-
-from dataclasses import is_dataclass
-from fuzzywuzzy import fuzz
-from sphobjinv import DataObjStr, Inventory
-from prettytable import PrettyTable
-
-from redbot.core.utils import AsyncIter
-from redbot.core.utils.chat_formatting import humanize_list
-
-from .dashboard_integration import DashboardIntegration
-from .types import Attribute, Attributes, Documentation, Examples, Parameters, SearchResults
-from .view import GetDocsView
 
 # Credits:
 # General repo credits.
@@ -62,7 +61,9 @@ def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
         @functools.wraps(func)
         def wrapper(*args: typing.Any, **kwargs: typing.Any):
             return run_blocking_func(func, *args, **kwargs)
+
         return wrapper
+
     return decorator
 
 
@@ -74,9 +75,17 @@ def get_object_size(obj: typing.Any) -> int:
         elif isinstance(obj, typing.Tuple):
             size += sum(get_object_size(item) for item in obj)
         elif isinstance(obj, typing.Dict):
-            size += sum(get_object_size(key) + get_object_size(value) for key, value in obj.items() if isinstance(key, str) and not key.startswith('_'))
+            size += sum(
+                get_object_size(key) + get_object_size(value)
+                for key, value in obj.items()
+                if isinstance(key, str) and not key.startswith("_")
+            )
         elif is_dataclass(obj):
-            size += sum(get_object_size(key) + get_object_size(getattr(obj, key)) for key in obj.__dataclass_fields__ if isinstance(key, str) and not key.startswith('_'))
+            size += sum(
+                get_object_size(key) + get_object_size(getattr(obj, key))
+                for key in obj.__dataclass_fields__
+                if isinstance(key, str) and not key.startswith("_")
+            )
     except RecursionError:
         pass
     return size
@@ -136,7 +145,11 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
         "aliases": ["pythongit"],
     },
     "aiomysql": {"url": "https://aiomysql.readthedocs.io/en/stable/", "icon_url": None},
-    "asyncpg": {"url": "https://magicstack.github.io/asyncpg/current/", "icon_url": None, "aliases": ["apg"]},
+    "asyncpg": {
+        "url": "https://magicstack.github.io/asyncpg/current/",
+        "icon_url": None,
+        "aliases": ["apg"],
+    },
     "flask": {
         "url": "https://flask.palletsprojects.com/",
         "icon_url": "https://flask.palletsprojects.com/en/2.2.x/_images/flask-logo.png",
@@ -292,7 +305,7 @@ class GetDocs(DashboardIntegration, Cog):
     )
     @app_commands.describe(
         source="The name of the documentation to use.",
-        query="The documentation node/query. (`random` to get a random documentation)",    
+        query="The documentation node/query. (`random` to get a random documentation)",
     )
     async def getdocs(
         self,
@@ -345,7 +358,7 @@ class GetDocs(DashboardIntegration, Cog):
         source="The name of the documentation to use.",
         limit="The limit of objects to be sent.",
         with_std="Also display links to non-API documentation.",
-        query="Your search. (`events` to get all dpy events, for `discord.py`, `redbot` and `pylav` source only)",   
+        query="Your search. (`events` to get all dpy events, for `discord.py`, `redbot` and `pylav` source only)",
     )
     async def rtfm(
         self,
@@ -409,13 +422,17 @@ class GetDocs(DashboardIntegration, Cog):
         command.app_command._params = _params3
 
     async def query_autocomplete(
-        self, interaction: discord.Interaction, current: str, exclude_std: typing.Optional[bool] = True
+        self,
+        interaction: discord.Interaction,
+        current: str,
+        exclude_std: typing.Optional[bool] = True,
     ) -> typing.Tuple["Source", typing.List[app_commands.Choice[str]]]:
         source = None
         if "source" in interaction.namespace and interaction.namespace.source:
             try:
                 _source = await SourceConverter().convert(
-                    await commands.Context.from_interaction(interaction), interaction.namespace.source
+                    await commands.Context.from_interaction(interaction),
+                    interaction.namespace.source,
                 )
             except commands.BadArgument:
                 source = "discord.py"
@@ -554,18 +571,16 @@ class GetDocs(DashboardIntegration, Cog):
             table.add_row(
                 [
                     source,
-                    self._docs_stats.get(
-                        source, {"manuals": None, "documentations": None}
-                    )["manuals"],
-                    self._docs_stats.get(
-                        source, {"manuals": None, "documentations": None}
-                    )["documentations"],
+                    self._docs_stats.get(source, {"manuals": None, "documentations": None})[
+                        "manuals"
+                    ],
+                    self._docs_stats.get(source, {"manuals": None, "documentations": None})[
+                        "documentations"
+                    ],
                     f"{str(self._caching_time[source])}s"
                     if source in self._caching_time
                     else None,
-                    sizeof_fmt(self._docs_sizes[source])
-                    if source in self._docs_sizes
-                    else None,
+                    sizeof_fmt(self._docs_sizes[source]) if source in self._docs_sizes else None,
                 ]
             )
         await Menu(pages=str(table), lang="py").start(ctx)
@@ -641,7 +656,11 @@ class Source:
         loop = asyncio.get_running_loop()
         self._rtfm_cache = await loop.run_in_executor(None, partial)
         for item in self._rtfm_cache.objects:
-            if self.name == "redbot" and len(item.name.split("-")) > 2 and item.name.split("-")[1] == "command":
+            if (
+                self.name == "redbot"
+                and len(item.name.split("-")) > 2
+                and item.name.split("-")[1] == "command"
+            ):
                 item.role = "command"
             self._raw_rtfm_cache_with_std.append(item.name)
             if item.domain != "std":
@@ -664,7 +683,9 @@ class Source:
             return self._docs_cache
         if self.name == "discordapi":
             try:
-                _, manuals, documentations = await (await executor()(self._build_discordapi_docs_cache)())
+                _, manuals, documentations = await (
+                    await executor()(self._build_discordapi_docs_cache)()
+                )
             except TypeError:
                 _, manuals, documentations = await self._build_discordapi_docs_cache()
             self._docs_cache.extend(documentations)
@@ -699,7 +720,9 @@ class Source:
                     manuals.insert(i, (manual, self.url + manual))
                 manual = "tutorial/datastructures.html"  # not found by RTFM caching task
                 manuals.insert(i + 1, (manual, self.url + manual))
-            async for name, manual in AsyncIter(manuals, delay=1, steps=1):  # for name, manual in manuals:
+            async for name, manual in AsyncIter(
+                manuals, delay=1, steps=1
+            ):  # for name, manual in manuals:
                 try:
                     documentations = await self._get_all_manual_documentations(manual)
                     self._docs_cache.extend(documentations)
@@ -814,9 +837,15 @@ class Source:
                                 continue
                             for _match in re.compile(r"]\(#DOCS_(.*?)\)").findall(description):
                                 if len(_match.split("/")) == 2:
-                                    description = description.replace(f"#DOCS_{_match}", f"{self.url}{_match.split('/')[0].split('_')[0].lower()}/{'_'.join(_match.split('/')[0].split('_')[1:]).lower().replace('_', '-')}#{_match.split('/')[1]}")
+                                    description = description.replace(
+                                        f"#DOCS_{_match}",
+                                        f"{self.url}{_match.split('/')[0].split('_')[0].lower()}/{'_'.join(_match.split('/')[0].split('_')[1:]).lower().replace('_', '-')}#{_match.split('/')[1]}",
+                                    )
                                 else:
-                                    description = description.replace(f"#DOCS_{_match}", f"{self.url}{_match.split('_')[0].lower()}/{'_'.join(_match.split('_')[1:]).lower().replace('_', '-')}")
+                                    description = description.replace(
+                                        f"#DOCS_{_match}",
+                                        f"{self.url}{_match.split('_')[0].lower()}/{'_'.join(_match.split('_')[1:]).lower().replace('_', '-')}",
+                                    )
                             # Get fields.
                             fields = {
                                 field.split("\n")[0]: "\n".join(field.split("\n")[1:])
@@ -997,7 +1026,13 @@ class Source:
                 full_name = self._get_text(div[1], parsed_url=manual[1]).strip()
                 description = self._get_text(div[2], parsed_url=manual[1])
                 parameters = self._get_text(div[3], parsed_url=manual[1])
-                examples = Examples([self._get_text(div[4], parsed_url=manual[1]).strip().replace("\n\n\n\n", "\n")])
+                examples = Examples(
+                    [
+                        self._get_text(div[4], parsed_url=manual[1])
+                        .strip()
+                        .replace("\n\n\n\n", "\n")
+                    ]
+                )
                 # Add to RTFM cache.
                 _object = DataObjStr(
                     name=_name,
@@ -1099,7 +1134,7 @@ class Source:
                     domain="py",
                     role="method",
                     priority="1",
-                    uri=page_url[len(self.url):] + "#$",
+                    uri=page_url[len(self.url) :] + "#$",
                     dispname="-",
                 )
                 setattr(_object, "fake", True)
@@ -1361,7 +1396,9 @@ class Source:
             attributes=attributes,
         )
 
-    async def _get_all_manual_documentations(self, page_url: str, item_name: typing.Optional[str] = None) -> typing.List[Documentation]:
+    async def _get_all_manual_documentations(
+        self, page_url: str, item_name: typing.Optional[str] = None
+    ) -> typing.List[Documentation]:
         @executor()
         def bs4(content: str):
             strainer = SoupStrainer("dl")
@@ -1387,7 +1424,7 @@ class Source:
             if result is not None:
                 results.append(result)
         # Add attributes for Python stdtypes.
-        if self.name == "python" and page_url[len(self.url):] in [
+        if self.name == "python" and page_url[len(self.url) :] in [
             "library/stdtypes.html",
             "tutorial/datastructures.html",
         ]:
@@ -1399,9 +1436,9 @@ class Source:
                     )
                     if parent is not None:
                         parent.attributes.methods[
-                            documentation.name[len(parent_name) + 1:]
+                            documentation.name[len(parent_name) + 1 :]
                         ] = Attribute(
-                            name=documentation.name[(len(parent_name) + 1) * 2:],
+                            name=documentation.name[(len(parent_name) + 1) * 2 :],
                             role="",
                             url=documentation.url,
                             description=documentation.description.split("\n")[0],
@@ -1567,7 +1604,10 @@ class Source:
         #         name = f"discord.{name}"
         #     elif f"discord.ext.commands.{name}" in self._raw_rtfm_cache_without_std:
         #         name = f"discord.ext.commands.{name}"
-        if self.name not in ["discordapi", "git"] and discord.utils.get(self._docs_cache, name=name) is not None:
+        if (
+            self.name not in ["discordapi", "git"]
+            and discord.utils.get(self._docs_cache, name=name) is not None
+        ):
             item = discord.utils.get(self._rtfm_cache.objects, name=name)
             location = item.uri
             if location.endswith("$"):
@@ -1575,7 +1615,9 @@ class Source:
             if location.endswith("#"):
                 location = location[:-1]
             page_url = urljoin(self.url, location)
-            documentation = await self._get_all_manual_documentations(page_url=page_url, item_name=name)
+            documentation = await self._get_all_manual_documentations(
+                page_url=page_url, item_name=name
+            )
             if not documentation:
                 return
             self._docs_cache.append(documentation)

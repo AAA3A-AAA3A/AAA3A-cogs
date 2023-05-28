@@ -10,6 +10,7 @@ def dashboard_page(*args, **kwargs):
     def decorator(func: typing.Callable):
         func.__dashboard_decorator_params__ = (args, kwargs)
         return func
+
     return decorator
 
 
@@ -51,7 +52,10 @@ class DashboardIntegration:
             elif len(attachment_url.split("_")) >= 3:
                 attachment_url = f"{attachment_url.split('_')[0]}/{attachment_url.split('_')[1]}/{'_'.join(attachment_url.split('_')[2:])}"
             attachment_url = f"https://cdn.discordapp.com/attachments/{attachment_url}"
-        return {"status": 0, "web-content": web_content_transcript.replace("ATTACHMENT_URL", attachment_url)}
+        return {
+            "status": 0,
+            "web-content": web_content_transcript.replace("ATTACHMENT_URL", attachment_url),
+        }
 
 
 web_content = """

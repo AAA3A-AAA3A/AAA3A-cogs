@@ -9,7 +9,6 @@ from functools import partial
 
 from .converters import Emoji, EmojiLabelTextConverter
 
-
 # Credits:
 # General repo credits.
 # Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
@@ -71,13 +70,9 @@ class DropdownsTexts(Cog):
             await interaction.response.defer(ephemeral=True)
         config = await self.config.guild(interaction.guild).dropdowns_texts.all()
         if f"{interaction.channel.id}-{interaction.message.id}" not in config:
-            await interaction.followup.send(
-                _("This message is not in Config."), ephemeral=True
-            )
+            await interaction.followup.send(_("This message is not in Config."), ephemeral=True)
             return
-        options = [
-            option for option in dropdown.options if option.value == selected_options[0]
-        ]
+        options = [option for option in dropdown.options if option.value == selected_options[0]]
         emoji = options[0].emoji
 
         class FakeContext:
@@ -103,18 +98,16 @@ class DropdownsTexts(Cog):
             return
         if interaction.channel.permissions_for(interaction.guild.me).embed_links:
             embed: discord.Embed = discord.Embed()
-            embed.title = config[f"{interaction.channel.id}-{interaction.message.id}"][
-                f"{emoji}"
-            ]["label"]
+            embed.title = config[f"{interaction.channel.id}-{interaction.message.id}"][f"{emoji}"][
+                "label"
+            ]
             embed.description = config[f"{interaction.channel.id}-{interaction.message.id}"][
                 f"{emoji}"
             ]["text"]
             await interaction.followup.send(embed=embed, ephemeral=True)
         else:
             await interaction.followup.send(
-                config[f"{interaction.channel.id}-{interaction.message.id}"][f"{emoji}"][
-                    "text"
-                ],
+                config[f"{interaction.channel.id}-{interaction.message.id}"][f"{emoji}"]["text"],
                 ephemeral=True,
             )
 

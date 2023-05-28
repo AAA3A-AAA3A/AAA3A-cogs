@@ -3,10 +3,10 @@ from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 
-import aiohttp
 import asyncio
-
 from io import BytesIO
+
+import aiohttp
 
 from .types import Word
 
@@ -50,7 +50,9 @@ class DictionaryView(discord.ui.View):
     async def on_timeout(self) -> None:
         for child in self.children:
             child: discord.ui.Item
-            if hasattr(child, "disabled") and not (isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url):
+            if hasattr(child, "disabled") and not (
+                isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url
+            ):
                 child.disabled = True
         try:
             await self._message.edit(view=self)
@@ -59,7 +61,9 @@ class DictionaryView(discord.ui.View):
         self._ready.set()
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page")
-    async def close_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    async def close_page(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:
@@ -71,11 +75,29 @@ class DictionaryView(discord.ui.View):
             pass
         self._ready.set()
 
-    @discord.ui.button(label="Phonetics", custom_id="show_phonetics", style=discord.ButtonStyle.secondary)
-    async def show_phonetics(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    @discord.ui.button(
+        label="Phonetics", custom_id="show_phonetics", style=discord.ButtonStyle.secondary
+    )
+    async def show_phonetics(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         await interaction.response.defer()
         embed: discord.Embed = discord.Embed(title="Phonetics", color=await self.ctx.embed_color())
-        embed.description = "\n".join([(f"**•** [**`{phonetic['text'] or 'Name not provided'}`**]({phonetic['audio_url']})" + (f" ({phonetic['audio_url'].split('/')[-1]})" if phonetic['audio_url'] else "")) if phonetic['audio_url'] else f"**•** **`{phonetic['text']}`**" for phonetic in self.word.phonetics])
+        embed.description = "\n".join(
+            [
+                (
+                    f"**•** [**`{phonetic['text'] or 'Name not provided'}`**]({phonetic['audio_url']})"
+                    + (
+                        f" ({phonetic['audio_url'].split('/')[-1]})"
+                        if phonetic["audio_url"]
+                        else ""
+                    )
+                )
+                if phonetic["audio_url"]
+                else f"**•** **`{phonetic['text']}`**"
+                for phonetic in self.word.phonetics
+            ]
+        )
         files = []
         for phonetic in self.word.phonetics:
             if phonetic["audio_url"] is None:
@@ -84,8 +106,12 @@ class DictionaryView(discord.ui.View):
                 files.append(phonetic["audio_file"])
                 continue
             try:
-                async with self.cog._session.get(phonetic["audio_url"], raise_for_status=True) as r:
-                    file = discord.File(BytesIO(await r.read()), filename=phonetic["audio_url"].split("/")[-1])
+                async with self.cog._session.get(
+                    phonetic["audio_url"], raise_for_status=True
+                ) as r:
+                    file = discord.File(
+                        BytesIO(await r.read()), filename=phonetic["audio_url"].split("/")[-1]
+                    )
             except (aiohttp.InvalidURL, aiohttp.ClientResponseError):
                 continue
             phonetic["audio_file"] = file

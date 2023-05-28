@@ -3,6 +3,7 @@ import typing  # isort:skip
 
 from .color import Color
 
+
 def base_colors_options() -> typing.List[discord.SelectOption]:
     return [
         discord.SelectOption(label="Red", emoji="🟥", value="🟥"),
@@ -16,6 +17,8 @@ def base_colors_options() -> typing.List[discord.SelectOption]:
         discord.SelectOption(label="White", emoji="⬜", value="⬜"),
         discord.SelectOption(label="Transparent", emoji=None, value="transparent"),
     ]
+
+
 MAIN_COLORS_DICT: typing.Dict[str, Color] = {
     "🟥": Color((255, 0, 0, 255)),
     "🟧": Color((255, 130, 0, 255)),
@@ -31,10 +34,16 @@ MAIN_COLORS: typing.List[str] = list(MAIN_COLORS_DICT.keys()) + ["transparent"]
 
 MIN_HEIGHT_OR_WIDTH: int = 5
 MAX_HEIGHT_OR_WIDTH: int = 17
-def base_height_or_width_select_options(prefix: typing.Optional[str] = "") -> typing.List[discord.SelectOption]:
+
+
+def base_height_or_width_select_options(
+    prefix: typing.Optional[str] = "",
+) -> typing.List[discord.SelectOption]:
     return [
-        discord.SelectOption(label=f"{f'{prefix} = ' if prefix else prefix}{n}", value=n) for n in range(MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH + 1)
+        discord.SelectOption(label=f"{f'{prefix} = ' if prefix else prefix}{n}", value=n)
+        for n in range(MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH + 1)
     ]
+
 
 ROW_ICONS_DICT: typing.Dict[str, int] = {
     "🇦": 799628816846815233,
@@ -103,7 +112,7 @@ LETTER_TO_NUMBER: typing.Dict[str, int] = {
     "W": 22,
     "X": 23,
     "Y": 24,
-    "Z": 25
+    "Z": 25,
 }
 ALPHABETS: typing.Tuple[str] = tuple(LETTER_TO_NUMBER.keys())
 NUMBERS: typing.Tuple[int] = tuple(LETTER_TO_NUMBER.values())
@@ -112,6 +121,13 @@ u200b: str = "\u200b"
 PADDING: str = f" {u200b}" * 6
 LB: str = "\n"
 
-DEFAULT_CACHE: typing.List[typing.Union[str, int]] = list(MAIN_COLORS_DICT.keys()) + list(MAIN_COLORS_DICT.values()) + ROW_ICONS + COLUMN_ICONS + list(ROW_ICONS_DICT.values()) + list(COLUMN_ICONS_DICT.values())
+DEFAULT_CACHE: typing.List[typing.Union[str, int]] = (
+    list(MAIN_COLORS_DICT.keys())
+    + list(MAIN_COLORS_DICT.values())
+    + ROW_ICONS
+    + COLUMN_ICONS
+    + list(ROW_ICONS_DICT.values())
+    + list(COLUMN_ICONS_DICT.values())
+)
 
 IMAGE_EXTENSION = "PNG"

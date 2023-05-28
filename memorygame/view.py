@@ -82,7 +82,10 @@ class MemoryGameView(discord.ui.View):
     async def on_timeout(self) -> None:
         for child in self.children:
             child: discord.ui.Item
-            if hasattr(child, "disabled") and not (isinstance(child, discord.ui.Button) and (child.style == discord.ButtonStyle.url or child.custom_id == "​")):
+            if hasattr(child, "disabled") and not (
+                isinstance(child, discord.ui.Button)
+                and (child.style == discord.ButtonStyle.url or child.custom_id == "​")
+            ):
                 child.disabled = True
         try:
             await self._message.edit(view=self)
@@ -226,7 +229,9 @@ class MemoryGameView(discord.ui.View):
         embed.set_author(
             name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar
         )
-        embed.description = _("You won in {game_time} seconds, with {tries} tries and {wrong_matches} wrong matches!").format(game_time=game_time, tries=self._tries, wrong_matches=self._wrong_matches)
+        embed.description = _(
+            "You won in {game_time} seconds, with {tries} tries and {wrong_matches} wrong matches!"
+        ).format(game_time=game_time, tries=self._tries, wrong_matches=self._wrong_matches)
         self._message: discord.Message = await self._message.edit(embed=embed, view=self)
         await self.on_timeout()
         self.stop()
@@ -244,7 +249,9 @@ class MemoryGameView(discord.ui.View):
         embed.set_author(
             name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar
         )
-        embed.description = _("You lose, because you tried too many times ({tries} tries and {wrong_matches} wrong matches).").format(tries=self._tries, wrong_matches=self._wrong_matches)
+        embed.description = _(
+            "You lose, because you tried too many times ({tries} tries and {wrong_matches} wrong matches)."
+        ).format(tries=self._tries, wrong_matches=self._wrong_matches)
         self._message: discord.Message = await self._message.edit(embed=embed, view=self)
         await self.on_timeout()
         self.stop()

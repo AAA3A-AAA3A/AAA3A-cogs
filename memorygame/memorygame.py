@@ -7,13 +7,12 @@ import typing  # isort:skip
 
 import io
 from copy import deepcopy
-from prettytable import PrettyTable
 
+from prettytable import PrettyTable
 from redbot.core.utils.chat_formatting import box, pagify
 
 from .dashboard_integration import DashboardIntegration
 from .view import MemoryGameView
-
 
 # Credits:
 # General repo credits.

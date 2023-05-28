@@ -260,9 +260,7 @@ class SearchArgs:
 
         return parser.parse_args(arguments)
 
-    async def convert(
-        self, ctx: commands.Context, arguments
-    ) -> typing.Any:
+    async def convert(self, ctx: commands.Context, arguments) -> typing.Any:
         self.ctx = ctx
         args = self.parse_arguments(arguments)
         if args.authors is not None:

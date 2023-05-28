@@ -6,13 +6,11 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import asyncio
-
 from functools import partial
 
 from redbot.core.utils.chat_formatting import inline
 
 from .converters import Emoji, EmojiCommandConverter
-
 
 # Credits:
 # General repo credits.
@@ -64,7 +62,9 @@ class CommandsButtons(Cog):
                         exc_info=e,
                     )
 
-    async def on_button_interaction(self, interaction: discord.Interaction, config_identifier: str) -> None:
+    async def on_button_interaction(
+        self, interaction: discord.Interaction, config_identifier: str
+    ) -> None:
         if await self.bot.cog_disabled_in_guild(self, interaction.guild):
             return
         if not interaction.data["custom_id"].startswith("commands_buttons"):
@@ -73,9 +73,7 @@ class CommandsButtons(Cog):
             await interaction.response.defer(ephemeral=True)
         config = await self.config.guild(interaction.guild).commands_buttons.all()
         if f"{interaction.channel.id}-{interaction.message.id}" not in config:
-            await interaction.followup.send(
-                _("This message is not in Config."), ephemeral=True
-            )
+            await interaction.followup.send(_("This message is not in Config."), ephemeral=True)
             return
         if config_identifier not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
             await interaction.followup.send(_("This button is not in Config."), ephemeral=True)
@@ -338,10 +336,14 @@ class CommandsButtons(Cog):
             button = discord.ui.Button(
                 label=config[message][config_identifier]["text_button"],
                 emoji=b,
-                style=discord.ButtonStyle(config[message][config_identifier].get("style_button", 2)),
+                style=discord.ButtonStyle(
+                    config[message][config_identifier].get("style_button", 2)
+                ),
                 custom_id=f"commands_buttons {config_identifier}",
                 disabled=False,
             )
-            button.callback = partial(self.on_button_interaction, config_identifier=config_identifier)
+            button.callback = partial(
+                self.on_button_interaction, config_identifier=config_identifier
+            )
             view.add_item(button)
         return view

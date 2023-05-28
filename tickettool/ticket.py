@@ -423,7 +423,9 @@ class Ticket:
         new_name = new_name.replace(f"{emoji_close}-", "", 1)
         new_name = f"{emoji_open}-{new_name}"
         if isinstance(self.channel, discord.TextChannel):
-            await self.channel.edit(name=new_name, category=config["category_open"], reason=_reason)
+            await self.channel.edit(
+                name=new_name, category=config["category_open"], reason=_reason
+            )
         else:
             await self.channel.edit(name=new_name, archived=False, reason=_reason)
         if self.logs_messages:
@@ -473,9 +475,7 @@ class Ticket:
                 ],
             )
             try:
-                self.first_message = await self.channel.fetch_message(
-                    int(self.first_message.id)
-                )
+                self.first_message = await self.channel.fetch_message(int(self.first_message.id))
                 await self.first_message.edit(view=view)
             except discord.HTTPException:
                 pass
@@ -557,9 +557,7 @@ class Ticket:
                 ],
             )
             try:
-                self.first_message = await self.channel.fetch_message(
-                    int(self.first_message.id)
-                )
+                self.first_message = await self.channel.fetch_message(int(self.first_message.id))
                 await self.first_message.edit(view=view)
             except discord.HTTPException:
                 pass
@@ -646,7 +644,10 @@ class Ticket:
         return self
 
     async def rename(
-        self, new_name: str, author: typing.Optional[discord.Member] = None, reason: typing.Optional[str] = None
+        self,
+        new_name: str,
+        author: typing.Optional[discord.Member] = None,
+        reason: typing.Optional[str] = None,
     ) -> typing.Any:
         _reason = await self.cog.get_audit_reason(
             guild=self.guild,
@@ -684,7 +685,7 @@ class Ticket:
                 description=_("The ticket was deleted by {ticket.deleted_by}.").format(
                     ticket=self
                 ),
-                reason=reason
+                reason=reason,
             )
             try:
                 transcript = await chat_exporter.export(
@@ -735,7 +736,10 @@ class Ticket:
         return self
 
     async def claim_ticket(
-        self, member: discord.Member, author: typing.Optional[discord.Member] = None, reason: typing.Optional[str] = None
+        self,
+        member: discord.Member,
+        author: typing.Optional[discord.Member] = None,
+        reason: typing.Optional[str] = None,
     ) -> typing.Any:
         if self.status != "open":
             raise commands.UserFeedbackCheckFailure(
@@ -803,9 +807,7 @@ class Ticket:
                 ],
             )
             try:
-                self.first_message = await self.channel.fetch_message(
-                    int(self.first_message.id)
-                )
+                self.first_message = await self.channel.fetch_message(int(self.first_message.id))
                 await self.first_message.edit(view=view)
             except discord.HTTPException:
                 pass
@@ -818,7 +820,10 @@ class Ticket:
         return self
 
     async def unclaim_ticket(
-        self, member: discord.Member, author: typing.Optional[discord.Member] = None, reason: typing.Optional[str] = None
+        self,
+        member: discord.Member,
+        author: typing.Optional[discord.Member] = None,
+        reason: typing.Optional[str] = None,
     ) -> typing.Any:
         if self.status != "open":
             raise commands.UserFeedbackCheckFailure(
@@ -879,9 +884,7 @@ class Ticket:
                 ],
             )
             try:
-                self.first_message = await self.channel.fetch_message(
-                    int(self.first_message.id)
-                )
+                self.first_message = await self.channel.fetch_message(int(self.first_message.id))
                 await self.first_message.edit(view=view)
             except discord.HTTPException:
                 pass
@@ -894,7 +897,10 @@ class Ticket:
         return self
 
     async def change_owner(
-        self, member: discord.Member, author: typing.Optional[discord.Member] = None, reason: typing.Optional[str] = None
+        self,
+        member: discord.Member,
+        author: typing.Optional[discord.Member] = None,
+        reason: typing.Optional[str] = None,
     ) -> typing.Any:
         if not isinstance(self.channel, discord.TextChannel):
             raise commands.UserFeedbackCheckFailure(

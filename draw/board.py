@@ -4,14 +4,24 @@ import typing  # isort:skip
 import typing_extensions  # isort:skip
 
 import io
+from dataclasses import dataclass
 
 import numpy as np
 from PIL import Image, ImageDraw
 
-from dataclasses import dataclass
-
 from .color import Color
-from .constants import MAIN_COLORS, MAIN_COLORS_DICT, ROW_ICONS_DICT, ROW_ICONS, COLUMN_ICONS_DICT, COLUMN_ICONS, u200b, PADDING, LB, IMAGE_EXTENSION
+from .constants import (
+    COLUMN_ICONS,
+    COLUMN_ICONS_DICT,
+    IMAGE_EXTENSION,
+    LB,
+    MAIN_COLORS,
+    MAIN_COLORS_DICT,
+    PADDING,
+    ROW_ICONS,
+    ROW_ICONS_DICT,
+    u200b,
+)  # NOQA
 
 
 @dataclass
@@ -59,8 +69,8 @@ class Board:
         self.clear_cursors()
 
     def set_attributes(self) -> None:
-        self.row_labels: typing.Tuple[str] = ROW_ICONS[:self.height]
-        self.col_labels: typing.Tuple[str] = COLUMN_ICONS[:self.width]
+        self.row_labels: typing.Tuple[str] = ROW_ICONS[: self.height]
+        self.col_labels: typing.Tuple[str] = COLUMN_ICONS[: self.width]
         self.centre: typing.Tuple[int, int] = (
             len(self.row_labels) // 2,
             len(self.col_labels) // 2,
@@ -71,7 +81,9 @@ class Board:
         self.cursor_row, self.cursor_col = self.centre
         self.cursor_row_max = len(self.row_labels) - 1
         self.cursor_col_max = len(self.col_labels) - 1
-        self.cursor_coords: typing.List[typing.Tuple[int, int]] = [(self.cursor_row, self.cursor_col)]
+        self.cursor_coords: typing.List[typing.Tuple[int, int]] = [
+            (self.cursor_row, self.cursor_col)
+        ]
 
     def __str__(self) -> str:
         """Method that gives a formatted version of the board with row/col labels."""
@@ -137,9 +149,31 @@ class Board:
                     if pixel == "transparent":
                         if self.cursor_display:
                             if (_y - 2, _x - 2) in self.cursor_coords:
-                                draw.rounded_rectangle((x, y, x + size, y + size), radius=3, fill=None, outline=(18, 18, 20, 255) if getattr(MAIN_COLORS_DICT.get(self.cursor, self.cursor), "RGBA", (0, 0, 0, 0)) == (0, 0, 0, 255) else (MAIN_COLORS_DICT.get(self.cursor, self.cursor).RGBA if isinstance(MAIN_COLORS_DICT.get(self.cursor, self.cursor), Color) and self.cursor != "transparent" else (255, 0, 0, 255)), width=2)
+                                draw.rounded_rectangle(
+                                    (x, y, x + size, y + size),
+                                    radius=3,
+                                    fill=None,
+                                    outline=(18, 18, 20, 255)
+                                    if getattr(
+                                        MAIN_COLORS_DICT.get(self.cursor, self.cursor),
+                                        "RGBA",
+                                        (0, 0, 0, 0),
+                                    )
+                                    == (0, 0, 0, 255)
+                                    else (
+                                        MAIN_COLORS_DICT.get(self.cursor, self.cursor).RGBA
+                                        if isinstance(
+                                            MAIN_COLORS_DICT.get(self.cursor, self.cursor), Color
+                                        )
+                                        and self.cursor != "transparent"
+                                        else (255, 0, 0, 255)
+                                    ),
+                                    width=2,
+                                )
                             else:
-                                draw.rounded_rectangle((x, y, x + size, y + size), radius=3, outline=(0, 0, 0, 255))
+                                draw.rounded_rectangle(
+                                    (x, y, x + size, y + size), radius=3, outline=(0, 0, 0, 255)
+                                )
                         x += size + sp
                         continue
                     image: Image = await self.cog.get_pixel(MAIN_COLORS_DICT.get(pixel, pixel))
@@ -149,11 +183,31 @@ class Board:
                 # if self.cursor_display and (_y - 2, _x - 2) in self.cursor_coords:
                 #     d.ellipse((0, 0, image.width, image.height), fill=255)
                 # else:
-                d.rounded_rectangle((0, 0, image.width, image.height), radius=3 if self.cursor_display else 0, fill=255)
+                d.rounded_rectangle(
+                    (0, 0, image.width, image.height),
+                    radius=3 if self.cursor_display else 0,
+                    fill=255,
+                )
                 image.putalpha(mask)
                 img.paste(image, (x, y, x + size, y + size))
                 if self.cursor_display and (_y - 2, _x - 2) in self.cursor_coords:
-                    draw.rounded_rectangle((x, y, x + size, y + size), radius=3, fill=None, outline=(18, 18, 20, 255) if getattr(MAIN_COLORS_DICT.get(self.cursor, self.cursor), "RGBA", (0, 0, 0, 0)) == (0, 0, 0, 255) else (MAIN_COLORS_DICT.get(self.cursor, self.cursor).RGBA if isinstance(MAIN_COLORS_DICT.get(self.cursor, self.cursor), Color) and self.cursor != "transparent" else (255, 0, 0, 255)), width=2)
+                    draw.rounded_rectangle(
+                        (x, y, x + size, y + size),
+                        radius=3,
+                        fill=None,
+                        outline=(18, 18, 20, 255)
+                        if getattr(
+                            MAIN_COLORS_DICT.get(self.cursor, self.cursor), "RGBA", (0, 0, 0, 0)
+                        )
+                        == (0, 0, 0, 255)
+                        else (
+                            MAIN_COLORS_DICT.get(self.cursor, self.cursor).RGBA
+                            if isinstance(MAIN_COLORS_DICT.get(self.cursor, self.cursor), Color)
+                            and self.cursor != "transparent"
+                            else (255, 0, 0, 255)
+                        ),
+                        width=2,
+                    )
                 x += size + sp
             y += size + sp
         return img
@@ -192,7 +246,9 @@ class Board:
             (self.height == height, self.width == width, self.background == background)
         ):  # the attributes haven't been changed
             return
-        if np.array_equal(self.initial_board, self.board):  # Board has only background, so replace all pixels.
+        if np.array_equal(
+            self.initial_board, self.board
+        ):  # Board has only background, so replace all pixels.
             self.__init__(cog=self.cog, height=height, width=width, background=background)
             return
         overlay = self.board
@@ -202,9 +258,7 @@ class Board:
         # Coordinates of the centre of the base board
         base_centre = Coords(base.shape[1] // 2, base.shape[0] // 2)
         # Difference between the centres
-        centre_diff = Coords(
-            base_centre.x - overlay_centre.x, base_centre.y - overlay_centre.y
-        )
+        centre_diff = Coords(base_centre.x - overlay_centre.x, base_centre.y - overlay_centre.y)
         # Coordinates where the overlay board should crop from
         # x = overlay's centre's width MINUS base's centre's width, if greater than 0, else 0
         # y = overlay's centre's height MINUS base's centre's height, if greater than 0, else 0
@@ -232,11 +286,11 @@ class Board:
             min(overlay.shape[0], base.shape[0]) + base_overlay_from.y,
         )
         # Crops overlay board if necessary (i.e. if base < overlay)
-        overlay = overlay[overlay_from.y:overlay_to.y, overlay_from.x:overlay_to.x]
+        overlay = overlay[overlay_from.y : overlay_to.y, overlay_from.x : overlay_to.x]
         # Pastes cropped overlay board on top of the selected portion of base board
         base[
-            base_overlay_from.y:base_overlay_to.y,
-            base_overlay_from.x:base_overlay_to.x,
+            base_overlay_from.y : base_overlay_to.y,
+            base_overlay_from.x : base_overlay_to.x,
         ] = overlay
         # return Board.from_board(base, background=background)
         self.__init__(cog=self.cog, height=len(base), width=len(base[0]), background=background)
@@ -262,7 +316,13 @@ class Board:
         return self.board[row, col]
 
     @classmethod
-    def from_board(cls, cog: commands.Cog, board: np.ndarray, *, background: typing.Optional[str] = MAIN_COLORS[-1]) -> typing_extensions.Self:
+    def from_board(
+        cls,
+        cog: commands.Cog,
+        board: np.ndarray,
+        *,
+        background: typing.Optional[str] = MAIN_COLORS[-1],
+    ) -> typing_extensions.Self:
         height = len(board)
         width = len(board[0])
         board_obj = cls(cog=cog, height=height, width=width, background=background)
@@ -270,7 +330,9 @@ class Board:
         return board_obj
 
     @classmethod
-    def from_str(cls, string: str, *, background: typing.Optional[str] = None) -> typing_extensions.Self:
+    def from_str(
+        cls, string: str, *, background: typing.Optional[str] = None
+    ) -> typing_extensions.Self:
         lines = string.split("\n")[2:]
         board = [line.split(PADDING)[-1].split("\u200b") for line in lines]
         board = cls.from_board(np.array(board, dtype="object"), background=background)
@@ -278,9 +340,7 @@ class Board:
         return board
 
     def clear(self) -> None:
-        self.draw(
-            self.background, coords=np.array(np.where(self.board != self.background)).T
-        )
+        self.draw(self.background, coords=np.array(np.where(self.board != self.background)).T)
         self.clear_cursors()
 
     def draw(
@@ -302,16 +362,14 @@ class Board:
         if all(cursor_matches):
             return False
 
-        self.board_history = self.board_history[:self.board_index + 1]
+        self.board_history = self.board_history[: self.board_index + 1]
         self.board = self.board.copy()
         for row, col in coords:
             self.board[row, col] = color_pixel
         return True
 
     def clear_cursors(self, *, empty: typing.Optional[bool] = False) -> None:
-        self.cursor_coords = (
-            [(self.cursor_row, self.cursor_col)] if empty is False else []
-        )
+        self.cursor_coords = [(self.cursor_row, self.cursor_col)] if empty is False else []
 
     def move_cursor(
         self,

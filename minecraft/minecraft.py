@@ -6,15 +6,14 @@ import discord  # isort:skip
 import typing  # isort:skip
 import typing_extensions  # isort:skip
 
-import aiohttp
 import asyncio
 import base64
 import re
-
 from io import BytesIO
-from mcstatus import JavaServer
 from uuid import UUID
 
+import aiohttp
+from mcstatus import JavaServer
 from redbot.core.utils.chat_formatting import box, pagify
 
 # Credits:
@@ -45,15 +44,21 @@ class MCPlayer:
         except aiohttp.ContentTypeError:
             response_data = None
         except aiohttp.ClientResponseError as e:
-            raise commands.BadArgument(_("Unable to get data from Minecraft API: {e.message}.").format(e=e))
+            raise commands.BadArgument(
+                _("Unable to get data from Minecraft API: {e.message}.").format(e=e)
+            )
         if response_data is None or "id" not in response_data:
-            raise commands.BadArgument(_("{argument} not found on Mojang servers.").format(argument=argument))
+            raise commands.BadArgument(
+                _("{argument} not found on Mojang servers.").format(argument=argument)
+            )
         uuid = str(response_data["id"])
         name = str(response_data["name"])
         try:
             return cls(name, uuid)
         except ValueError:
-            raise commands.BadArgument(_("{argument} is found, but has incorrect UUID.").format(argument=argument))
+            raise commands.BadArgument(
+                _("{argument} is found, but has incorrect UUID.").format(argument=argument)
+            )
 
 
 @cog_i18n(_)
@@ -103,12 +108,17 @@ class Minecraft(Cog):
             check_players = all_channels[channel_id]["check_players"]
             for server_url in servers:
                 try:
-                    server: JavaServer = await self.bot.loop.run_in_executor(None, JavaServer.lookup, server_url)
+                    server: JavaServer = await self.bot.loop.run_in_executor(
+                        None, JavaServer.lookup, server_url
+                    )
                     status = await server.async_status()
                 except (asyncio.CancelledError, TimeoutError):
                     continue
                 except Exception as e:
-                    self.log.error(f"No data found for {server_url} server in {channel.id} channel in {channel.guild.id} guild.", exc_info=e)
+                    self.log.error(
+                        f"No data found for {server_url} server in {channel.id} channel in {channel.guild.id} guild.",
+                        exc_info=e,
+                    )
                     continue
                 if check_players:
                     players = {player["id"]: player for player in status.raw["players"]["sample"]}
@@ -120,7 +130,13 @@ class Minecraft(Cog):
                     self.cache[channel.id][server_url] = {"server": server, "status": status}
                     continue
                 if status.raw != self.cache[channel.id][server_url]["status"].raw:
-                    if "This server is offline." in (await self.clear_mcformatting(status.description)) and "This server is offline." in (await self.clear_mcformatting(self.cache[channel.id][server_url]["status"].description)):  # Minecraft ADS
+                    if "This server is offline." in (
+                        await self.clear_mcformatting(status.description)
+                    ) and "This server is offline." in (
+                        await self.clear_mcformatting(
+                            self.cache[channel.id][server_url]["status"].description
+                        )
+                    ):  # Minecraft ADS
                         continue
                     embed, icon = await self.get_embed(server, status)
                     await channel.send(embed=embed, file=icon)
@@ -200,7 +216,9 @@ class Minecraft(Cog):
         pass
 
     @minecraft.command()
-    async def getplayerskin(self, ctx: commands.Context, player: MCPlayer, overlay: bool = False) -> None:
+    async def getplayerskin(
+        self, ctx: commands.Context, player: MCPlayer, overlay: bool = False
+    ) -> None:
         """Get Minecraft Java player skin by name."""
         uuid = player.uuid
         stripname = player.name.strip("_")
@@ -210,17 +228,25 @@ class Minecraft(Cog):
                 f"https://crafatar.com/renders/head/{uuid}",
                 params="overlay" if overlay else None,
             ) as s:
-                files.append(discord.File(BytesIO(await s.read()), filename=f"{stripname}_head.png"))
+                files.append(
+                    discord.File(BytesIO(await s.read()), filename=f"{stripname}_head.png")
+                )
             async with self._session.get(f"https://crafatar.com/skins/{uuid}") as s:
                 files.append(discord.File(BytesIO(await s.read()), filename=f"{stripname}.png"))
             async with self._session.get(
                 f"https://crafatar.com/renders/body/{uuid}.png",
                 params="overlay" if overlay else None,
             ) as s:
-                files.append(discord.File(BytesIO(await s.read()), filename=f"{stripname}_body.png"))
+                files.append(
+                    discord.File(BytesIO(await s.read()), filename=f"{stripname}_body.png")
+                )
         except aiohttp.ClientResponseError as e:
-            raise commands.UserFeedbackCheckFailure(_("Unable to get data from Crafatar: {}").format(e.message))
-        embed: discord.Embed = discord.Embed(timestamp=ctx.message.created_at, color=await ctx.embed_color())
+            raise commands.UserFeedbackCheckFailure(
+                _("Unable to get data from Crafatar: {}").format(e.message)
+            )
+        embed: discord.Embed = discord.Embed(
+            timestamp=ctx.message.created_at, color=await ctx.embed_color()
+        )
         embed.set_author(
             name=player.name,
             icon_url=f"attachment://{stripname}_head.png",
@@ -235,16 +261,24 @@ class Minecraft(Cog):
     async def getserver(self, ctx: commands.Context, server_url: str) -> None:
         """Get informations about a Minecraft Java server."""
         try:
-            server: JavaServer = await self.bot.loop.run_in_executor(None, JavaServer.lookup, server_url.lower())
+            server: JavaServer = await self.bot.loop.run_in_executor(
+                None, JavaServer.lookup, server_url.lower()
+            )
             status = await server.async_status()
         except Exception:
-            raise commands.UserFeedbackCheckFailure(_("No data could be found on this Minecraft server. Maybe it doesn't exist or the data is temporarily unavailable."))
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "No data could be found on this Minecraft server. Maybe it doesn't exist or the data is temporarily unavailable."
+                )
+            )
         embed, icon = await self.get_embed(server, status)
         await ctx.send(embed=embed, file=icon)
 
     @commands.admin_or_permissions(manage_guild=True)
     @minecraft.command()
-    async def addserver(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], server_url: str) -> None:
+    async def addserver(
+        self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], server_url: str
+    ) -> None:
         """Add a Minecraft Java server in Config to get automatically new status."""
         if channel is None:
             channel = ctx.channel
@@ -256,7 +290,9 @@ class Minecraft(Cog):
 
     @commands.admin_or_permissions(manage_guild=True)
     @minecraft.command()
-    async def removeserver(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], server_url: str) -> None:
+    async def removeserver(
+        self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], server_url: str
+    ) -> None:
         """Remove a Minecraft Java server in Config."""
         if channel is None:
             channel = ctx.channel
@@ -268,7 +304,9 @@ class Minecraft(Cog):
 
     @commands.admin_or_permissions(manage_guild=True)
     @minecraft.command()
-    async def checkplayers(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], state: bool) -> None:
+    async def checkplayers(
+        self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], state: bool
+    ) -> None:
         """Remove a Minecraft Java server in Config."""
         if channel is None:
             channel = ctx.channel

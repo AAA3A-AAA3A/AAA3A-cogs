@@ -73,7 +73,9 @@ class GetDocsView(discord.ui.View):
     async def on_timeout(self) -> None:
         for child in self.children:
             child: discord.ui.Item
-            if hasattr(child, "disabled") and not (isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url):
+            if hasattr(child, "disabled") and not (
+                isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url
+            ):
                 child.disabled = True
         try:
             await self._message.edit(view=self)
@@ -116,9 +118,13 @@ class GetDocsView(discord.ui.View):
         # ):
         #     content = "⚠️ The documentation cache is not yet fully built, building now."
         if self._message is None:
-            self._message: discord.Message = await self.ctx.send(content=content, embed=embed, view=self)
+            self._message: discord.Message = await self.ctx.send(
+                content=content, embed=embed, view=self
+            )
         else:
-            self._message: discord.Message = await self._message.edit(content=content, embed=embed, view=self)
+            self._message: discord.Message = await self._message.edit(
+                content=content, embed=embed, view=self
+            )
         self._mode = "documentation"
 
     async def _callback(

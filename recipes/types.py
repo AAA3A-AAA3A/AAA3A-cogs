@@ -20,10 +20,14 @@ class SearchResults:
     def to_embeds(
         self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
     ) -> typing.List[discord.Embed]:
-        description = "\n".join(f"**•** [**`{name}`**]({url})" for name, url in self.results.items())
+        description = "\n".join(
+            f"**•** [**`{name}`**]({url})" for name, url in self.results.items()
+        )
         embeds = []
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
-        embed: discord.Embed = discord.Embed(title=f'Results for "{self.query}" query', url=self.url, color=embed_color)
+        embed: discord.Embed = discord.Embed(
+            title=f'Results for "{self.query}" query', url=self.url, color=embed_color
+        )
         embed.set_footer(text="Fetched from Food52.")
         for page in pages:
             e = embed.copy()
@@ -59,12 +63,24 @@ class Recipe:
         self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
     ) -> typing.List[discord.Embed]:
         embed: discord.Embed = discord.Embed(title=self.name, url=self.url, color=embed_color)
-        embed.set_author(name=self.author["name"], url=self.author["url"], icon_url="https://forum.mtasa.com/uploads/monthly_2016_10/Anonyme.png.4060431ce866962fa496657f752d5613.png")
+        embed.set_author(
+            name=self.author["name"],
+            url=self.author["url"],
+            icon_url="https://forum.mtasa.com/uploads/monthly_2016_10/Anonyme.png.4060431ce866962fa496657f752d5613.png",
+        )
         embed.description = self.description
         embed.add_field(name="Yield:", value=self._yield, inline=True)
         if self.rating:
-            embed.add_field(name="Note:", value=f"{self.rating['value']}/5 with {self.rating['count']} votes", inline=True)
-        embed.add_field(name="Ingredients:", value="\n".join([f"**•** {ingredient}" for ingredient in self.ingredients]), inline=False)
+            embed.add_field(
+                name="Note:",
+                value=f"{self.rating['value']}/5 with {self.rating['count']} votes",
+                inline=True,
+            )
+        embed.add_field(
+            name="Ingredients:",
+            value="\n".join([f"**•** {ingredient}" for ingredient in self.ingredients]),
+            inline=False,
+        )
         if self.prep_time:
             embed.add_field(name="Preparation Time:", value=self.prep_time, inline=True)
         if self.cook_time:

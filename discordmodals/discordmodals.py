@@ -5,10 +5,10 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import yaml
-
 from copy import deepcopy
 from functools import partial
+
+import yaml
 
 # Credits:
 # General repo credits.
@@ -79,7 +79,14 @@ class YAMLConverter(commands.Converter):
                 _("The argument `/button/modal` must be a list of TextInputs.")
             )
         required_arguments = ["label"]
-        optional_arguments = ["style", "required", "default", "placeholder", "min_length", "max_length"]
+        optional_arguments = [
+            "style",
+            "required",
+            "default",
+            "placeholder",
+            "min_length",
+            "max_length",
+        ]
         for count, input in enumerate(argument_dict["modal"], start=1):
             count += 1
             for arg in required_arguments:
@@ -151,7 +158,11 @@ class YAMLConverter(commands.Converter):
             channel = await discord.ext.commands.TextChannelConverter().convert(
                 ctx, argument_dict["channel"]
             )
-            if channel is not None and hasattr(channel, "id") and channel.permissions_for(ctx.me).send_messages:
+            if (
+                channel is not None
+                and hasattr(channel, "id")
+                and channel.permissions_for(ctx.me).send_messages
+            ):
                 argument_dict["channel"] = channel.id
             else:
                 argument_dict["channel"] = ctx.channel.id
@@ -221,9 +232,13 @@ class DiscordModals(Cog):
                     if "submit" in list(guilds_data[guild]["modals"].values())[0]["messages"]:
                         break
                     for modal in guilds_data[guild]["modals"]:
-                        guilds_data[guild]["modals"][modal]["messages"]["submit"] = guilds_data[guild]["modals"][modal]["messages"]["done"]
+                        guilds_data[guild]["modals"][modal]["messages"]["submit"] = guilds_data[
+                            guild
+                        ]["modals"][modal]["messages"]["done"]
                         del guilds_data[guild]["modals"][modal]["messages"]["done"]
-                        guilds_data[guild]["modals"][modal]["button"] = guilds_data[guild]["modals"][modal]["button"]["buttons"][0]
+                        guilds_data[guild]["modals"][modal]["button"] = guilds_data[guild][
+                            "modals"
+                        ][modal]["button"]["buttons"][0]
                         for key in ["members", "check", "function", "function_args"]:
                             if key in guilds_data[guild]["modals"][modal]["modal"]:
                                 del guilds_data[guild]["modals"][modal]["modal"][key]
@@ -243,7 +258,9 @@ class DiscordModals(Cog):
                 try:
                     button = all_guilds[guild]["modals"][modal]["button"]
                     if "custom_id" not in button:
-                        button["custom_id"] = f"DiscordModals_{self.cogsutils.generate_key(length=10)}"
+                        button[
+                            "custom_id"
+                        ] = f"DiscordModals_{self.cogsutils.generate_key(length=10)}"
                     button["style"] = discord.ButtonStyle(button["style"])
                     button = discord.ui.Button(**button)
                     button.callback = self.send_modal
@@ -262,7 +279,9 @@ class DiscordModals(Cog):
         if f"{interaction.message.channel.id}-{interaction.message.id}" not in config:
             return
         try:
-            modal_config = config[f"{interaction.message.channel.id}-{interaction.message.id}"]["modal"]
+            modal_config = config[f"{interaction.message.channel.id}-{interaction.message.id}"][
+                "modal"
+            ]
             modal = discord.ui.Modal(
                 title=modal_config["title"],
                 timeout=modal_config["timeout"],
@@ -286,7 +305,9 @@ class DiscordModals(Cog):
                     _("Sorry. An error has occurred."), ephemeral=True
                 )
 
-    async def send_embed_with_responses(self, interaction: discord.Interaction, inputs: typing.List[discord.ui.TextInput]) -> None:
+    async def send_embed_with_responses(
+        self, interaction: discord.Interaction, inputs: typing.List[discord.ui.TextInput]
+    ) -> None:
         config = await self.config.guild(interaction.message.guild).modals()
         if f"{interaction.message.channel.id}-{interaction.message.id}" not in config:
             return
@@ -327,7 +348,11 @@ class DiscordModals(Cog):
                 )
             for _input in inputs:
                 try:
-                    embed.add_field(name=_input.label, value=_input.value.strip() or "Not provided.", inline=False)
+                    embed.add_field(
+                        name=_input.label,
+                        value=_input.value.strip() or "Not provided.",
+                        inline=False,
+                    )
                 except Exception:
                     pass
             embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)
@@ -431,9 +456,19 @@ class DiscordModals(Cog):
         modal.on_submit = partial(self.send_embed_with_responses, inputs=inputs)
         config[f"{message.channel.id}-{message.id}"] = {
             "title": argument["title"],
-            "button": {"style": button.style.value, "label": button.label, "emoji": str(button.emoji), "custom_id": button.custom_id},
+            "button": {
+                "style": button.style.value,
+                "label": button.label,
+                "emoji": str(button.emoji),
+                "custom_id": button.custom_id,
+            },
             "channel": argument["channel"],
-            "modal": {"title": modal.title, "timeout": modal.timeout, "custom_id": modal.custom_id, "inputs": argument["modal"]},
+            "modal": {
+                "title": modal.title,
+                "timeout": modal.timeout,
+                "custom_id": modal.custom_id,
+                "inputs": argument["modal"],
+            },
             "anonymous": argument["anonymous"],
             "messages": {
                 "error": argument["messages"]["error"],

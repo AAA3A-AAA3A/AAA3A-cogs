@@ -10,6 +10,7 @@ def dashboard_page(*args, **kwargs):
     def decorator(func: typing.Callable):
         func.__dashboard_decorator_params__ = (args, kwargs)
         return func
+
     return decorator
 
 
@@ -49,7 +50,14 @@ class DashboardIntegration:
         return {"status": 0, "sources": list(self.documentations.keys())}
 
     @dashboard_page(name="rtfm", hidden=True)
-    async def rpc_callback_rtfm(self, source: str, query: str, limit: typing.Optional[int] = 10, with_std: typing.Optional[bool] = True, **kwargs) -> dict:
+    async def rpc_callback_rtfm(
+        self,
+        source: str,
+        query: str,
+        limit: typing.Optional[int] = 10,
+        with_std: typing.Optional[bool] = True,
+        **kwargs,
+    ) -> dict:
         if isinstance(limit, str):
             try:
                 limit = int(limit)
@@ -79,7 +87,10 @@ class DashboardIntegration:
             return {"status": 1, "message": "Documentation not found."}
         documentation = documentation.__dict__.copy()
         documentation["source"] = documentation["source"].name
-        documentation["attributes"] = {key: {k: v.__dict__ for k, v in value.items()} for key, value in documentation["attributes"].__dict__.items()}
+        documentation["attributes"] = {
+            key: {k: v.__dict__ for k, v in value.items()}
+            for key, value in documentation["attributes"].__dict__.items()
+        }
         return {"status": 0, "source": source, "documentation": documentation}
 
 

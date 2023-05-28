@@ -146,7 +146,7 @@ class ExportChannel(Cog):
         )
         view = discord.ui.View()
         view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
         )
         await message.edit(embed=embed, view=view)
 
@@ -179,7 +179,7 @@ class ExportChannel(Cog):
         )
         view = discord.ui.View()
         view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
         )
         await message.edit(embed=embed, view=view)
 
@@ -213,7 +213,7 @@ class ExportChannel(Cog):
         )
         view = discord.ui.View()
         view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
         )
         await message.edit(embed=embed, view=view)
 
@@ -247,7 +247,7 @@ class ExportChannel(Cog):
         )
         view = discord.ui.View()
         view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
         )
         await message.edit(embed=embed, view=view)
 
@@ -282,7 +282,7 @@ class ExportChannel(Cog):
         )
         view = discord.ui.View()
         view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
         )
         await message.edit(embed=embed, view=view)
 
@@ -320,7 +320,7 @@ class ExportChannel(Cog):
         )
         view = discord.ui.View()
         view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
         )
         await message.edit(embed=embed, view=view)
 
@@ -355,6 +355,6 @@ class ExportChannel(Cog):
         )
         view = discord.ui.View()
         view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
         )
         await message.edit(embed=embed, view=view)

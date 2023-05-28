@@ -30,6 +30,7 @@ class PositionConverter(commands.Converter):
         position = _list[position - 1]
         return position + 1
 
+
 class PermissionsConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> discord.Permissions:
         try:

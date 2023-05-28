@@ -5,15 +5,32 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import asyncio
-import emoji as _emoji
 import re
 
+import emoji as _emoji
 from redbot.core.utils.chat_formatting import humanize_list
 
 from .board import Board
 from .color import Color
-from .constants import base_colors_options, MAIN_COLORS_DICT, ALPHABETS, NUMBERS, LETTER_TO_NUMBER, IMAGE_EXTENSION
-from .tools import Tool, BrushTool, EraseTool, EyedropperTool, FillTool, ReplaceTool, DarkenTool, LightenTool, InverseTool
+from .constants import (
+    ALPHABETS,
+    IMAGE_EXTENSION,
+    LETTER_TO_NUMBER,
+    MAIN_COLORS_DICT,
+    NUMBERS,
+    base_colors_options,
+)  # NOQA
+from .tools import (
+    BrushTool,
+    DarkenTool,
+    EraseTool,
+    EyedropperTool,
+    FillTool,
+    InverseTool,
+    LightenTool,
+    ReplaceTool,
+    Tool,
+)  # NOQA
 
 _ = Translator("Draw", __file__)
 
@@ -130,7 +147,9 @@ class ToolsMenu(discord.ui.Select):
         tool = self.tools[value]
         # If the tool selected is one of these, use it directly instead of equipping.
         if tool.auto_use:
-            if await tool.use(interaction=interaction):  # This is to decide whether or not to edit the message, depending on if the tool was used successfully.
+            if await tool.use(
+                interaction=interaction
+            ):  # This is to decide whether or not to edit the message, depending on if the tool was used successfully.
                 await self.view._update()
         # Else, equip the tool (to the primary tool button slot).
         else:
@@ -160,9 +179,7 @@ class ColorsMenu(discord.ui.Select):
                 emoji=ADD_EMOJIS_EMOJI,
                 value="emoji",
             ),
-            discord.SelectOption(
-                label="Mix Colors", emoji=MIX_COLORS_EMOJI, value="mix"
-            ),
+            discord.SelectOption(label="Mix Colors", emoji=MIX_COLORS_EMOJI, value="mix"),
         ]
         options = options or default_options
         self.END_INDEX = len(default_options)  # The ending index of default options
@@ -218,20 +235,22 @@ class ColorsMenu(discord.ui.Select):
         self, sent_emojis: typing.List[typing.Union[discord.Emoji, discord.PartialEmoji, Color]]
     ) -> typing.Dict[typing.Union[discord.Emoji, discord.PartialEmoji, Color], str]:
         added_emojis = {
-            sent_emoji: "Already exists."
-            if self.emoji_to_option(sent_emoji)
-            else "Added."
+            sent_emoji: "Already exists." if self.emoji_to_option(sent_emoji) else "Added."
             for sent_emoji in sent_emojis
         }
         replaced_emojis = {}
         for added_emoji, status in added_emojis.items():
             if status != "Added.":
                 continue
-            if isinstance(added_emoji, discord.Emoji) or (isinstance(added_emoji, discord.PartialEmoji) and added_emoji.is_custom_emoji()):
+            if isinstance(added_emoji, discord.Emoji) or (
+                isinstance(added_emoji, discord.PartialEmoji) and added_emoji.is_custom_emoji()
+            ):
                 name = f"{added_emoji.name} ({added_emoji.id})"
                 emoji = added_emoji
                 value = str(added_emoji.id)
-            elif isinstance(added_emoji, discord.PartialEmoji) and not added_emoji.is_custom_emoji():
+            elif (
+                isinstance(added_emoji, discord.PartialEmoji) and not added_emoji.is_custom_emoji()
+            ):
                 name = added_emoji.name
                 emoji = added_emoji
                 value = added_emoji.name
@@ -274,11 +293,12 @@ class ColorsMenu(discord.ui.Select):
         await notification.edit(f"{response}..." if len(response) > 2500 else response)
         await self.view._update()
 
-    def extract_emojis(self, content: str) -> typing.List[typing.Union[discord.PartialEmoji, Color]]:
+    def extract_emojis(
+        self, content: str
+    ) -> typing.List[typing.Union[discord.PartialEmoji, Color]]:
         # Get any unicode emojis from the content and list them as SentEmoji objects.
         unicode_emojis = [
-            discord.PartialEmoji.from_str(emoji)
-            for emoji in _emoji.distinct_emoji_list(content)
+            discord.PartialEmoji.from_str(emoji) for emoji in _emoji.distinct_emoji_list(content)
         ]
         # Get any flag/regional indicator emojis from the content and list them as SentEmoji objects.
         FLAG_EMOJI_REGEX = re.compile("[\U0001F1E6-\U0001F1FF]")
@@ -303,8 +323,10 @@ class ColorsMenu(discord.ui.Select):
 
         # If the "Add Color(s)" option was selected. Always takes first priority.
         if "color" in self.values:
+
             def check(m):
                 return m.author == interaction.user and m.channel == interaction.channel
+
             notification = await self.view.create_notification(
                 _(
                     "Please type all the colors you want to add. They can be either or all of:"
@@ -313,7 +335,7 @@ class ColorsMenu(discord.ui.Select):
                     "\n• Any emoji whose main color you want to extract (e.g. 🐸 will give 77b255)"
                     "\n• Any image file (first 5 abundant colors will be extracted)."
                 ),
-                interaction=interaction
+                interaction=interaction,
             )
             try:
                 msg = await self.bot.wait_for("message", timeout=30, check=check)
@@ -374,11 +396,15 @@ class ColorsMenu(discord.ui.Select):
 
         # First it checks if the "Add Emoji(s)" option was selected. Takes second priority.
         elif "emoji" in self.values:
+
             def check(m):
                 return m.author == interaction.user and m.channel == interaction.channel
+
             notification = await self.view.create_notification(
-                _("Please send a message containing the emojis you want to add to your palette. E.g. `😎 I like turtles 🐢`."),
-                interaction=interaction
+                _(
+                    "Please send a message containing the emojis you want to add to your palette. E.g. `😎 I like turtles 🐢`."
+                ),
+                interaction=interaction,
             )
             try:
                 msg = await self.bot.wait_for("message", timeout=30, check=check)
@@ -417,13 +443,20 @@ class ColorsMenu(discord.ui.Select):
         # If multiple options were selected.
         elif len(self.values) > 1:
             selected_options = [self.value_to_option(value) for value in self.values]
-            selected_colors = [str(option.value) for option in selected_options if option.value.startswith("#") or option.value in MAIN_COLORS_DICT]
+            selected_colors = [
+                str(option.value)
+                for option in selected_options
+                if option.value.startswith("#") or option.value in MAIN_COLORS_DICT
+            ]
             notification = await self.view.create_notification(
-                f'Mixing colors {humanize_list(selected_colors)}...',
+                f"Mixing colors {humanize_list(selected_colors)}...",
                 emoji="🔀",
                 interaction=interaction,
             )
-            colors = [MAIN_COLORS_DICT.get(str(color)) or (Color.from_hex(color[1:])) for color in selected_colors]
+            colors = [
+                MAIN_COLORS_DICT.get(str(color)) or (Color.from_hex(color[1:]))
+                for color in selected_colors
+            ]
             mixed_color = Color.mix_colors(colors)
             label = (await mixed_color.get_name()) + f" (#{mixed_color.hex})"
             option = discord.SelectOption(
@@ -480,7 +513,9 @@ class DrawView(discord.ui.View):
 
         self._ready: asyncio.Event = asyncio.Event()
 
-    async def start(self, ctx: commands.Context, message: typing.Optional[discord.Message] = None) -> None:
+    async def start(
+        self, ctx: commands.Context, message: typing.Optional[discord.Message] = None
+    ) -> None:
         self.ctx: commands.Context = ctx
         self._message = message
         await self._update()
@@ -499,7 +534,9 @@ class DrawView(discord.ui.View):
         self.board.clear_cursors(empty=True)
         for child in self.children:
             child: discord.ui.Item
-            if hasattr(child, "disabled") and not (isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url):
+            if hasattr(child, "disabled") and not (
+                isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url
+            ):
                 child.disabled = True
         try:
             await self._update()
@@ -539,9 +576,9 @@ class DrawView(discord.ui.View):
                     [
                         (
                             f"{str(n.emoji)} "
-                            + (
-                                n.content if idx == 0 else n.get_truncated_content()
-                            ).replace("\n", "\n> ")
+                            + (n.content if idx == 0 else n.get_truncated_content()).replace(
+                                "\n", "\n> "
+                            )
                         )  # Put each notification into seperate quotes
                         if len(n.content) != 0
                         else ""  # Show only non-empty notifications
@@ -634,18 +671,14 @@ class DrawView(discord.ui.View):
 
     def update_buttons(self) -> None:
         self.secondary_page_button.style = (
-            discord.ButtonStyle.success
-            if self.secondary_page
-            else discord.ButtonStyle.secondary
+            discord.ButtonStyle.success if self.secondary_page else discord.ButtonStyle.secondary
         )
         self.undo.disabled = self.board.board_index == 0 or self.disabled
         self.undo.label = f"{self.board.board_index} ↶"
         self.redo.disabled = (
             self.board.board_index == len(self.board.board_history) - 1
         ) or self.disabled
-        self.redo.label = (
-            f"↷ {(len(self.board.board_history) - 1) - self.board.board_index}"
-        )
+        self.redo.label = f"↷ {(len(self.board.board_history) - 1) - self.board.board_index}"
 
     async def move_cursor(
         self,
@@ -669,7 +702,9 @@ class DrawView(discord.ui.View):
         await self._update()
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page")
-    async def stop_button(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    async def stop_button(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:
@@ -681,32 +716,22 @@ class DrawView(discord.ui.View):
             pass
         self._ready.set()
 
-    @discord.ui.button(
-        emoji=UP_LEFT_EMOJI, style=discord.ButtonStyle.primary
-    )
-    async def up_left(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    @discord.ui.button(emoji=UP_LEFT_EMOJI, style=discord.ButtonStyle.primary)
+    async def up_left(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer()
         row_move = -1
         col_move = -1
         await self.move_cursor(interaction, row_move=row_move, col_move=col_move)
 
-    @discord.ui.button(
-        emoji=UP_EMOJI, style=discord.ButtonStyle.primary
-    )
+    @discord.ui.button(emoji=UP_EMOJI, style=discord.ButtonStyle.primary)
     async def up(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer()
         row_move = -1
         col_move = 0
         await self.move_cursor(interaction, row_move=row_move, col_move=col_move)
 
-    @discord.ui.button(
-        emoji=UP_RIGHT_EMOJI, style=discord.ButtonStyle.primary
-    )
-    async def up_right(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    @discord.ui.button(emoji=UP_RIGHT_EMOJI, style=discord.ButtonStyle.primary)
+    async def up_right(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer()
         row_move = -1
         col_move = 1
@@ -730,9 +755,7 @@ class DrawView(discord.ui.View):
             self.board.board_index += 1
         await self._update()
 
-    @discord.ui.button(
-        label="Clear", style=discord.ButtonStyle.danger
-    )
+    @discord.ui.button(label="Clear", style=discord.ButtonStyle.danger)
     async def clear(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer()
         self.secondary_page = False
@@ -742,18 +765,14 @@ class DrawView(discord.ui.View):
         self.load_items()
         await self._update()
 
-    @discord.ui.button(
-        emoji=LEFT_EMOJI, style=discord.ButtonStyle.primary
-    )
+    @discord.ui.button(emoji=LEFT_EMOJI, style=discord.ButtonStyle.primary)
     async def left(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer()
         row_move = 0
         col_move = -1
         await self.move_cursor(interaction, row_move=row_move, col_move=col_move)
 
-    @discord.ui.button(
-        emoji=RIGHT_EMOJI, style=discord.ButtonStyle.primary
-    )
+    @discord.ui.button(emoji=RIGHT_EMOJI, style=discord.ButtonStyle.primary)
     async def right(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer()
         row_move = 0
@@ -761,29 +780,21 @@ class DrawView(discord.ui.View):
         await self.move_cursor(interaction, row_move=row_move, col_move=col_move)
 
     # 3rd / Last Row
-    @discord.ui.button(
-        emoji=DOWN_LEFT_EMOJI, style=discord.ButtonStyle.primary
-    )
-    async def down_left(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    @discord.ui.button(emoji=DOWN_LEFT_EMOJI, style=discord.ButtonStyle.primary)
+    async def down_left(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer()
         row_move = 1
         col_move = -1
         await self.move_cursor(interaction, row_move=row_move, col_move=col_move)
 
-    @discord.ui.button(
-        emoji=DOWN_EMOJI, style=discord.ButtonStyle.primary
-    )
+    @discord.ui.button(emoji=DOWN_EMOJI, style=discord.ButtonStyle.primary)
     async def down(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer()
         row_move = 1
         col_move = 0
         await self.move_cursor(interaction, row_move=row_move, col_move=col_move)
 
-    @discord.ui.button(
-        emoji=DOWN_RIGHT_EMOJI, style=discord.ButtonStyle.primary
-    )
+    @discord.ui.button(emoji=DOWN_RIGHT_EMOJI, style=discord.ButtonStyle.primary)
     async def down_right(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
@@ -800,7 +811,14 @@ class DrawView(discord.ui.View):
 
         def check(m):
             return m.author == interaction.user and m.channel == interaction.channel
-        notification = await self.create_notification(_("Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`, `A`, `10`, etc."), emoji="🔠", interaction=interaction)
+
+        notification = await self.create_notification(
+            _(
+                "Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`, `A`, `10`, etc."
+            ),
+            emoji="🔠",
+            interaction=interaction,
+        )
         try:
             msg = await self.ctx.bot.wait_for("message", timeout=30, check=check)
         except asyncio.TimeoutError:
@@ -812,8 +830,8 @@ class DrawView(discord.ui.View):
             pass
 
         cell: str = msg.content.upper()
-        ABC = ALPHABETS[:self.board.cursor_row_max + 1]
-        NUM = NUMBERS[:self.board.cursor_col_max + 1]
+        ABC = ALPHABETS[: self.board.cursor_row_max + 1]
+        NUM = NUMBERS[: self.board.cursor_col_max + 1]
         end_row_key = None
         end_col_key = None
 
@@ -830,16 +848,27 @@ class DrawView(discord.ui.View):
             start_col_key = int(match["start_col"])
             if match["end_row"] is not None:
                 end_row_key = match["end_row"]
-                end_col_key = int(match["end_col"]) if match["end_col"] is not None else start_col_key
+                end_col_key = (
+                    int(match["end_col"]) if match["end_col"] is not None else start_col_key
+                )
         else:
             match = re.match(ROW_OR_COL_REGEX, cell)
             if match is not None:
-                start_row_key = match["row"] if match["row"] is not None else ABC[self.board.cursor_row]
-                start_col_key = int(match["col"]) if match["col"] is not None else self.board.cursor_col
+                start_row_key = (
+                    match["row"] if match["row"] is not None else ABC[self.board.cursor_row]
+                )
+                start_col_key = (
+                    int(match["col"]) if match["col"] is not None else self.board.cursor_col
+                )
             else:
                 return await notification.edit("Aborted.")
 
-        if start_row_key not in ABC or start_col_key not in NUM or (end_row_key is not None and end_row_key not in ABC) or (end_col_key is not None and end_col_key not in NUM):
+        if (
+            start_row_key not in ABC
+            or start_col_key not in NUM
+            or (end_row_key is not None and end_row_key not in ABC)
+            or (end_col_key is not None and end_col_key not in NUM)
+        ):
             return await notification.edit("Aborted.")
 
         if end_row_key is None and end_col_key is None:
@@ -869,7 +898,9 @@ class DrawView(discord.ui.View):
             )
             await self.move_cursor(interaction, row_move=row_move, col_move=col_move)
 
-    @discord.ui.button(label="Auto Draw", emoji=AUTO_DRAW_EMOJI, style=discord.ButtonStyle.secondary)
+    @discord.ui.button(
+        label="Auto Draw", emoji=AUTO_DRAW_EMOJI, style=discord.ButtonStyle.secondary
+    )
     async def set_auto_draw(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
@@ -882,7 +913,9 @@ class DrawView(discord.ui.View):
             interaction=interaction,
         )
 
-    @discord.ui.button(label="Select an area", emoji=SELECT_EMOJI, style=discord.ButtonStyle.secondary)
+    @discord.ui.button(
+        label="Select an area", emoji=SELECT_EMOJI, style=discord.ButtonStyle.secondary
+    )
     async def select_area(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
@@ -902,15 +935,22 @@ class DrawView(discord.ui.View):
             self.select = not self.select
         await self._update()
 
-    @discord.ui.button(label="Raw Paint", emoji=RAW_PAINT_EMOJI, style=discord.ButtonStyle.secondary)
-    async def raw_paint(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    @discord.ui.button(
+        label="Raw Paint", emoji=RAW_PAINT_EMOJI, style=discord.ButtonStyle.secondary
+    )
+    async def raw_paint(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer()
 
         def check(m):
             return m.author == interaction.user and m.channel == interaction.channel
-        notification = await self.create_notification(_('Please type the cells with the main colors names. One color for each line, separated from the cell by a ":". Example: `A1:red\nB7-C9:green`.'), emoji=RAW_PAINT_EMOJI, interaction=interaction)
+
+        notification = await self.create_notification(
+            _(
+                'Please type the cells with the main colors names. One color for each line, separated from the cell by a ":". Example: `A1:red\nB7-C9:green`.'
+            ),
+            emoji=RAW_PAINT_EMOJI,
+            interaction=interaction,
+        )
         try:
             msg = await self.ctx.bot.wait_for("message", timeout=30, check=check)
         except asyncio.TimeoutError:
@@ -927,8 +967,8 @@ class DrawView(discord.ui.View):
             cell: str = line.split(":")[0].strip().upper()
             color: str = line.split(":")[1].strip().lower()
 
-            ABC = ALPHABETS[:self.board.cursor_row_max + 1]
-            NUM = NUMBERS[:self.board.cursor_col_max + 1]
+            ABC = ALPHABETS[: self.board.cursor_row_max + 1]
+            NUM = NUMBERS[: self.board.cursor_col_max + 1]
             end_row_key = None
             end_col_key = None
 
@@ -945,17 +985,30 @@ class DrawView(discord.ui.View):
                 start_col_key = int(match["start_col"])
                 if match["end_row"] is not None:
                     end_row_key = match["end_row"]
-                    end_col_key = int(match["end_col"]) if match["end_col"] is not None else start_col_key
+                    end_col_key = (
+                        int(match["end_col"]) if match["end_col"] is not None else start_col_key
+                    )
             else:
                 match = re.match(ROW_OR_COL_REGEX, cell)
                 if match is not None:
-                    start_row_key = match["row"] if match["row"] is not None else ABC[self.board.cursor_row]
-                    start_col_key = int(match["col"]) if match["col"] is not None else self.board.cursor_col
+                    start_row_key = (
+                        match["row"] if match["row"] is not None else ABC[self.board.cursor_row]
+                    )
+                    start_col_key = (
+                        int(match["col"]) if match["col"] is not None else self.board.cursor_col
+                    )
                 else:
                     return await notification.edit(f"Aborted. No cell match in line {i}.")
 
-            if start_row_key not in ABC or start_col_key not in NUM or (end_row_key is not None and end_row_key not in ABC) or (end_col_key is not None and end_col_key not in NUM):
-                return await notification.edit(f"Aborted. Wrong letter/num for cell(s) in line {i}.")
+            if (
+                start_row_key not in ABC
+                or start_col_key not in NUM
+                or (end_row_key is not None and end_row_key not in ABC)
+                or (end_col_key is not None and end_col_key not in NUM)
+            ):
+                return await notification.edit(
+                    f"Aborted. Wrong letter/num for cell(s) in line {i}."
+                )
 
             colors = {option.label.lower(): option.value for option in base_colors_options()}
             if color not in colors:
@@ -963,7 +1016,9 @@ class DrawView(discord.ui.View):
             color = colors[color]
 
             if end_row_key is None and end_col_key is None:
-                self.board.draw(color=color, coords=[(LETTER_TO_NUMBER[start_row_key], start_col_key)])
+                self.board.draw(
+                    color=color, coords=[(LETTER_TO_NUMBER[start_row_key], start_col_key)]
+                )
             else:
                 self.board.draw(
                     color=color,
@@ -975,14 +1030,17 @@ class DrawView(discord.ui.View):
                         )
                         for row in range(
                             min(LETTER_TO_NUMBER[start_row_key], LETTER_TO_NUMBER[end_row_key]),
-                            max(LETTER_TO_NUMBER[start_row_key], LETTER_TO_NUMBER[end_row_key]) + 1,
+                            max(LETTER_TO_NUMBER[start_row_key], LETTER_TO_NUMBER[end_row_key])
+                            + 1,
                         )
                     ],
                 )
 
         await notification.edit("Draw paint successful.")
 
-    @discord.ui.button(label="Cursor Display", emoji=CURSOR_DISPLAY_EMOJI, style=discord.ButtonStyle.success)
+    @discord.ui.button(
+        label="Cursor Display", emoji=CURSOR_DISPLAY_EMOJI, style=discord.ButtonStyle.success
+    )
     async def set_cursor_display(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:

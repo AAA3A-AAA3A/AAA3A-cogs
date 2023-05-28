@@ -5,16 +5,23 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import aiohttp
 import asyncio
 import io
-
-from PIL import Image, ImageFilter, UnidentifiedImageError
 from urllib.parse import quote_plus
+
+import aiohttp
+from PIL import Image, ImageFilter, UnidentifiedImageError
 
 from .board import Board
 from .color import Color
-from .constants import base_colors_options, MAIN_COLORS, MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH, DEFAULT_CACHE, IMAGE_EXTENSION
+from .constants import (
+    DEFAULT_CACHE,
+    IMAGE_EXTENSION,
+    MAIN_COLORS,
+    MAX_HEIGHT_OR_WIDTH,
+    MIN_HEIGHT_OR_WIDTH,
+    base_colors_options,
+)  # NOQA
 from .start_view import StartDrawView
 
 # Credits:
@@ -35,7 +42,9 @@ class Draw(Cog):
 
         self._session: aiohttp.ClientSession = None
         self.drawings: typing.Dict[discord.Message, StartDrawView] = {}
-        self.cache: typing.Dict[typing.Union[str, int, typing.Tuple[int, int, int, int]]] = {}  # Unicode emojis, colors RGB and Discord custom emojis ids.
+        self.cache: typing.Dict[
+            typing.Union[str, int, typing.Tuple[int, int, int, int]]
+        ] = {}  # Unicode emojis, colors RGB and Discord custom emojis ids.
 
         self.__authors__ = ["WitherredAway", "AAA3A"]
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
@@ -53,7 +62,13 @@ class Draw(Cog):
             await self._session.close()
         await super().cog_unload()
 
-    async def get_pixel(self, pixel: typing.Union[str, discord.Emoji, int, Color, typing.Tuple[int, int, int, typing.Optional[int]]], to_file: typing.Optional[bool] = False) -> typing.Union[Image, discord.File]:
+    async def get_pixel(
+        self,
+        pixel: typing.Union[
+            str, discord.Emoji, int, Color, typing.Tuple[int, int, int, typing.Optional[int]]
+        ],
+        to_file: typing.Optional[bool] = False,
+    ) -> typing.Union[Image, discord.File]:
         if isinstance(pixel, typing.Tuple) and len(pixel) in {3, 4}:
             pixel = Color(pixel)
         try:
@@ -94,7 +109,10 @@ class Draw(Cog):
                 try:
                     image = Image.open(io.BytesIO(image_bytes))
                 except (AttributeError, UnidentifiedImageError) as e:
-                    self.log.error(f"Error when retrieving the pixel {key} ({url}) image for the cache.", exc_info=e)
+                    self.log.error(
+                        f"Error when retrieving the pixel {key} ({url}) image for the cache.",
+                        exc_info=e,
+                    )
                     return Image.new("RGBA", (100, 100), (0, 0, 0, 0))
             try:
                 image = image.filter(ImageFilter.SHARPEN)  # Maybe useless.
@@ -109,15 +127,40 @@ class Draw(Cog):
         return image
 
     @commands.hybrid_command(aliases=["paint", "pixelart"])
-    @app_commands.choices(height=[app_commands.Choice(name=str(n), value=str(n)) for n in range(MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH + 1)], width=[app_commands.Choice(name=str(n), value=str(n)) for n in range(MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH + 1)], background=[app_commands.Choice(name=f"{option.emoji} {option.label}", value=option.value) for option in base_colors_options()])
-    async def draw(self, ctx: commands.Context, from_message: typing.Optional[commands.MessageConverter] = None, height: typing.Optional[commands.Range[int, MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH]] = 9, width: typing.Optional[commands.Range[int, MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH]] = 9, background: typing.Literal[*MAIN_COLORS] = MAIN_COLORS[-1]) -> None:
+    @app_commands.choices(
+        height=[
+            app_commands.Choice(name=str(n), value=str(n))
+            for n in range(MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH + 1)
+        ],
+        width=[
+            app_commands.Choice(name=str(n), value=str(n))
+            for n in range(MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH + 1)
+        ],
+        background=[
+            app_commands.Choice(name=f"{option.emoji} {option.label}", value=option.value)
+            for option in base_colors_options()
+        ],
+    )
+    async def draw(
+        self,
+        ctx: commands.Context,
+        from_message: typing.Optional[commands.MessageConverter] = None,
+        height: typing.Optional[commands.Range[int, MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH]] = 9,
+        width: typing.Optional[commands.Range[int, MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH]] = 9,
+        background: typing.Literal[*MAIN_COLORS] = MAIN_COLORS[-1],
+    ) -> None:
         """Make a pixel art on Discord."""
         if from_message is None:
             board = (height, width, background)
         else:
             if from_message not in self.drawings:
                 raise commands.UserFeedbackCheckFailure(_("This message isn't in the cache."))
-            board = Board(cog=self, height=self.drawings[from_message].board.height, width=self.drawings[from_message].width, background=background)
+            board = Board(
+                cog=self,
+                height=self.drawings[from_message].board.height,
+                width=self.drawings[from_message].width,
+                background=background,
+            )
             board.board_history = self.drawings[from_message].board.board_history.copy()
             board.board_index = self.drawings[from_message].board.board_index
         await StartDrawView(cog=self, board=board).start(ctx)

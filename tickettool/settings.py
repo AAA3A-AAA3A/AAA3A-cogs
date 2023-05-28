@@ -5,7 +5,6 @@ import typing  # isort:skip
 
 from .utils import EmojiLabelDescriptionValueConverter
 
-
 _ = Translator("TicketTool", __file__)
 
 
@@ -60,9 +59,7 @@ class settings(commands.Cog):
         embed.description = config["embed_button"]["description"].replace(
             "{prefix}", f"{ctx.prefix}"
         )
-        embed.set_image(
-            url=config["embed_button"]["image"]
-        )
+        embed.set_image(url=config["embed_button"]["image"])
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
         embed.set_footer(
@@ -93,7 +90,9 @@ class settings(commands.Cog):
             if len({value for __, __, __, value in reason_options}) != len(
                 [value for __, __, __, value in reason_options]
             ):
-                raise commands.UserFeedbackCheckFailure(_("A different value must be provided for each dropdown option."))
+                raise commands.UserFeedbackCheckFailure(
+                    _("A different value must be provided for each dropdown option.")
+                )
             if ctx.interaction is None and ctx.bot_permissions.add_reactions:
                 try:
                     for emoji, label, description, value in reason_options[:19]:

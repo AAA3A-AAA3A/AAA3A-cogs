@@ -9,14 +9,13 @@ import ast
 import datetime
 import inspect
 import io
-import rich
 import time
 import traceback
 import types
-
 from copy import copy
 from textwrap import dedent
 
+import rich
 from redbot.core.dev_commands import cleanup_code, sanitize_output
 from redbot.core.utils.chat_formatting import bold, box
 
@@ -238,7 +237,11 @@ class CtxVar(Cog):
     @commands.is_owner()
     @ctxvar.command(name="astdump", aliases=["dumpast"])
     async def _dump_ast(
-        self, ctx: commands.Context, include_attributes: typing.Optional[bool] = False, *, thing: str
+        self,
+        ctx: commands.Context,
+        include_attributes: typing.Optional[bool] = False,
+        *,
+        thing: str,
     ) -> None:
         """Execute `ast.dump(ast.parse(<code content>))` on the provided object (debug not async)."""
         Dev = ctx.bot.get_cog("Dev")
@@ -270,7 +273,12 @@ class CtxVar(Cog):
                 box("".join(traceback.format_exception_only(type(e), e)), lang="py")
             )
 
-        result = ast.dump(ast.parse(dedent("\n".join(inspect.getsourcelines(_object)[0]))), annotate_fields=True, include_attributes=include_attributes, indent=4)
+        result = ast.dump(
+            ast.parse(dedent("\n".join(inspect.getsourcelines(_object)[0]))),
+            annotate_fields=True,
+            include_attributes=include_attributes,
+            indent=4,
+        )
 
         await Menu(pages=result.strip(), lang="py").start(ctx)
 
@@ -299,9 +307,7 @@ class CtxVar(Cog):
                     pass
             Dev = ctx.bot.get_cog("Dev")
             if not Dev:
-                raise commands.UserFeedbackCheckFailure(
-                    _("No Discord object found.")
-                )
+                raise commands.UserFeedbackCheckFailure(_("No Discord object found."))
             thing = cleanup_code(argument)
             env = Dev.get_environment(ctx)
             env["getattr_static"] = inspect.getattr_static

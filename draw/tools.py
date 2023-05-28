@@ -8,6 +8,7 @@ from .board import Board
 from .color import Color
 from .constants import MAIN_COLORS_DICT
 
+
 class Tool(discord.ui.Button):
     """A template class for each of the tools."""
 
@@ -221,12 +222,11 @@ class ReplaceTool(Tool):
         """The method that is called when the tool is used."""
         color = self.board.cursor
         to_replace = self.board.cursor_pixel
-        return self.board.draw(
-            color, coords=np.array(np.where(self.board.board == to_replace)).T
-        )
+        return self.board.draw(color, coords=np.array(np.where(self.board.board == to_replace)).T)
 
 
 CHANGE_AMOUNT = 17  # Change amount for Lighten & Darken tools to allow exactly 15 changes from 0 or 255, respectively.
+
 
 class DarkenTool(Tool):
     @property
@@ -283,6 +283,7 @@ class LightenTool(DarkenTool):
         return min(
             value + CHANGE_AMOUNT, 255
         )  # The min func makes sure it doesn't go above 255 when increasing, for example, white.
+
 
 class InverseTool(DarkenTool):
     @property

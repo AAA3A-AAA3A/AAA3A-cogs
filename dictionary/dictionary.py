@@ -4,12 +4,12 @@ from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import typing  # isort:skip
 
-import aiohttp
-
 from urllib.parse import quote_plus
 
-from .view import DictionaryView
+import aiohttp
+
 from .types import Word
+from .view import DictionaryView
 
 # Credits:
 # General repo credits.
@@ -52,8 +52,27 @@ class Dictionary(Cog):
             url=url,
             source_url=json_content["sourceUrls"][0] if json_content.get("sourceUrls") else None,
             word=json_content["word"],
-            phonetics=[{"text": phonetic.get("text"), "audio_url": phonetic["audio"], "audio_file": None, "source_url": phonetic.get("sourceUrl")} for phonetic in json_content["phonetics"]],
-            meanings={meaning["partOfSpeech"]: [{"definition": definition["definition"], "synonyms": definition["synonyms"], "antonyms": definition["antonyms"], "example": definition.get("example")} for definition in meaning["definitions"]] for meaning in json_content["meanings"]}
+            phonetics=[
+                {
+                    "text": phonetic.get("text"),
+                    "audio_url": phonetic["audio"],
+                    "audio_file": None,
+                    "source_url": phonetic.get("sourceUrl"),
+                }
+                for phonetic in json_content["phonetics"]
+            ],
+            meanings={
+                meaning["partOfSpeech"]: [
+                    {
+                        "definition": definition["definition"],
+                        "synonyms": definition["synonyms"],
+                        "antonyms": definition["antonyms"],
+                        "example": definition.get("example"),
+                    }
+                    for definition in meaning["definitions"]
+                ]
+                for meaning in json_content["meanings"]
+            },
         )
         self.cache[query] = word
         return word

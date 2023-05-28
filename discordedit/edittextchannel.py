@@ -37,6 +37,7 @@ class PositionConverter(commands.Converter):
         position -= 1
         return position
 
+
 class PermissionConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> str:
         permissions = [
@@ -119,7 +120,9 @@ class EditTextChannel(Cog):
             for channel in sorted(ctx.guild.text_channels, key=lambda x: x.position)
         )
         embed: discord.Embed = discord.Embed(color=await ctx.embed_color())
-        embed.title = _("List of text channels in {guild.name} ({guild.id})").format(guild=ctx.guild)
+        embed.title = _("List of text channels in {guild.name} ({guild.id})").format(
+            guild=ctx.guild
+        )
         embeds = []
         pages = pagify(description, page_length=4096)
         for page in pages:

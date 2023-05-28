@@ -14,7 +14,9 @@ class RTFSItem:
 
 
 class RTFSResults:
-    def __init__(self, source, results: typing.List[typing.Tuple[str, str, str]]) -> None:  # set[str, str, bool]
+    def __init__(
+        self, source, results: typing.List[typing.Tuple[str, str, str]]
+    ) -> None:  # set[str, str, bool]
         self.source = source
         self.results: typing.List[RTFSItem] = results
 
@@ -24,7 +26,9 @@ class RTFSResults:
     def to_embeds(
         self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
     ) -> typing.List[discord.Embed]:
-        description = "\n".join(f"**•** [**`{name}`**]({url})" for name, _, url, __ in self.results)
+        description = "\n".join(
+            f"**•** [**`{name}`**]({url})" for name, _, url, __ in self.results
+        )
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
         embed = discord.Embed(color=embed_color)
         embed.set_author(
@@ -55,7 +59,9 @@ class SearchResults:
     def to_embeds(
         self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
     ) -> typing.List[discord.Embed]:
-        description = "\n".join(f"**•** [**`{name}`**]({url})" for name, _, url, __ in self.results)
+        description = "\n".join(
+            f"**•** [**`{name}`**]({url})" for name, _, url, __ in self.results
+        )
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
         embed = discord.Embed(color=embed_color)
         embed.set_author(
@@ -220,6 +226,7 @@ class Attributes:
                     embeds.append(embed)
         return embeds
 
+
 @dataclass(frozen=True)
 class Documentation:
     source: typing.Any
@@ -274,7 +281,10 @@ class Documentation:
                     value = list(pagify(value, page_length=field_limit, shorten_by=6))[0] + "\n..."
                 else:
                     value = (
-                        box(list(pagify(value, page_length=field_limit, shorten_by=16))[0], lang="py")
+                        box(
+                            list(pagify(value, page_length=field_limit, shorten_by=16))[0],
+                            lang="py",
+                        )
                         + "\n..."
                     )
             embed.add_field(name=name, value=value, inline=False)

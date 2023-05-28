@@ -7,7 +7,6 @@ import typing  # isort:skip
 
 from .converters import Emoji, EmojiUrlConverter
 
-
 # Credits:
 # General repo credits.# Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
 # Thanks to Kuro for the emoji converter (https://canary.discord.com/channels/133049272517001216/133251234164375552/1014520590239019048)!
@@ -191,9 +190,7 @@ class UrlButtons(Cog):
         """Clear all url-buttons for a guild."""
         await self.config.guild(ctx.guild).url_buttons.clear()
 
-    def get_buttons(
-        self, config: typing.Dict, message: discord.Message
-    ) -> discord.ui.View:
+    def get_buttons(self, config: typing.Dict, message: discord.Message) -> discord.ui.View:
         view = discord.ui.View()
         for button in config[f"{message.channel.id}-{message.id}"]:
             try:
@@ -205,9 +202,7 @@ class UrlButtons(Cog):
             view.add_item(
                 discord.ui.Button(
                     emoji=b,
-                    label=config[f"{message.channel.id}-{message.id}"][f"{button}"][
-                        "text_button"
-                    ],
+                    label=config[f"{message.channel.id}-{message.id}"][f"{button}"]["text_button"],
                     url=config[f"{message.channel.id}-{message.id}"][f"{button}"]["url"],
                 )
             )

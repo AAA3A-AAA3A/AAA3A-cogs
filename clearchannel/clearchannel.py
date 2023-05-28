@@ -6,6 +6,7 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 from AAA3A_utils.settings import CustomMessageConverter
+
 from .dashboard_integration import DashboardIntegration
 
 # Credits:

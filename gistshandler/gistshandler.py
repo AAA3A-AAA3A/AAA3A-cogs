@@ -48,7 +48,9 @@ class GistsHandler(Cog):
             await self.gists_client.authorize(token)
 
     @commands.Cog.listener()
-    async def on_red_api_tokens_update(self, service_name: str, api_tokens: typing.Mapping[str, str]) -> None:
+    async def on_red_api_tokens_update(
+        self, service_name: str, api_tokens: typing.Mapping[str, str]
+    ) -> None:
         if service_name != "github":
             return
         if (token := api_tokens.get("token")) is None:
@@ -57,12 +59,18 @@ class GistsHandler(Cog):
 
     @commands.is_owner()
     @commands.hybrid_command(aliases=["gisthandler"], usage="[gist_url_or_id] [file_name]")
-    async def gist(self, ctx: commands.Context, gist: GistConverter = None, file_name: str = None) -> None:
+    async def gist(
+        self, ctx: commands.Context, gist: GistConverter = None, file_name: str = None
+    ) -> None:
         """Create a new Gist and edit an existing one.
 
         You need to set up a GitHub token with `[p]set api github token,[TOKEN]` first.
         """
         if self.gists_client is None or self.gists_client.access_token is None:
-            raise commands.UserFeedbackCheckFailure(_("You need to set up a GitHub token with `{ctx.prefix}set api github token,[TOKEN]` first!").format(ctx=ctx))
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "You need to set up a GitHub token with `{ctx.prefix}set api github token,[TOKEN]` first!"
+                ).format(ctx=ctx)
+            )
         file = None if gist is None else discord.utils.get(gist.files, name=file_name)
         await GistsHandlerView(cog=self, gist=gist, file=file).start(ctx)

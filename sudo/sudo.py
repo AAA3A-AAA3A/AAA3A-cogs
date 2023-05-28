@@ -32,9 +32,7 @@ from copy import copy
 _ = Translator("Sudo", __file__)
 
 TimeDeltaConverter: commands.converter.timedelta = commands.TimedeltaConverter(
-    minimum=datetime.timedelta(seconds=10),
-    maximum=datetime.timedelta(days=1),
-    default_unit="m"
+    minimum=datetime.timedelta(seconds=10), maximum=datetime.timedelta(days=1), default_unit="m"
 )
 
 
@@ -64,7 +62,7 @@ class Sudo(Cog):
         context = await self.bot.get_context(message)
         if context.prefix is None:
             return
-        command = context.message.content[len(str(context.prefix)):]
+        command = context.message.content[len(str(context.prefix)) :]
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
@@ -145,7 +143,7 @@ class Sudo(Cog):
         self,
         ctx: commands.Context,
         *,
-        interval: TimeDeltaConverter = datetime.timedelta(minutes=5)
+        interval: TimeDeltaConverter = datetime.timedelta(minutes=5),
     ):
         """Sudo as the owner of the bot for the specified timeout.
         The time should be between 10 seconds and 1 day.

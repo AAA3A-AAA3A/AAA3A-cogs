@@ -138,7 +138,7 @@ class EditReminderModal(discord.ui.Modal):
 
 class ReminderView(discord.ui.View):
     def __init__(self, cog: commands.Cog, reminder, me_too: bool = True) -> None:
-        super().__init__(timeout=3600 * 12)
+        super().__init__(timeout=60 * 10)
         self.cog: commands.Cog = cog
 
         self.reminder = reminder

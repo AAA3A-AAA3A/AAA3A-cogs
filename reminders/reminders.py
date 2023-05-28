@@ -723,6 +723,115 @@ class Reminders(Cog):
         )
         view._message = message
 
+    @commands.guildowner_or_permissions(administrator=True)
+    @reminder.command()
+    async def say(
+        self,
+        ctx: commands.Context,
+        destination: typing.Optional[
+            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
+        ],
+        time: str,
+        *,
+        text: str,
+    ) -> None:
+        """Create a reminder who will say/send text.
+
+        You must use quotes if there are spaces in the time argument, just for this command.
+        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find intervals.
+
+        Allowed **absolutes** are:
+        • `eoy` - Remind at end of year at 17:00.
+        • `eom` - Remind at end of month at 17:00.
+        • `eow` - Remind at end of working week (or next friday) at 17:00.
+        • `eod` - Remind at end of day at 17:00.
+
+        Allowed **intervals** are:
+        • `years`/`year`/`y`
+        • `months`/`month`/`mo`
+        • `weeks`/`week`/`w`
+        • `days`/`day`/`d`
+        • `hours`/`hour`/`hrs`/`hr`/`h`
+        • `minutes`/`minute`/`mins`/`min`/`m`
+
+        You can combine **relative intervals** like this:
+        • `1y 1mo 2 days -5h`
+
+        **Timestamps** and **iso-timestamps** are supported:
+        • Be aware that specifying a timezone will ignore your timezone.
+
+        **Dates** are supported, you can try different formats:
+        • `5 jul`, `5th july`, `july 5`
+        • `23 sept at 3pm`, `23 sept at 15:00`
+        • `2030`
+        • `friday at 9h`
+
+        Note: the parser uses day-first and year-last: (`01/02/03` -> `1st February 2003`).
+        """
+        minimum_user_reminders = await self.config.maximum_user_reminders()
+        if (
+            len(self.cache.get(ctx.author.id, {})) > minimum_user_reminders
+            and ctx.author.id not in ctx.bot.owner_ids
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "You have reached the limit of {minimum_user_reminders} reminders per user."
+                ).format(minimum_user_reminders=minimum_user_reminders)
+            )
+        if not await self.config.fifo_allowed() and ctx.author.id not in ctx.bot.owner_ids:
+            raise commands.UserFeedbackCheckFailure(
+                _("You're not allowed to create FIFO/commands reminders.")
+            )
+        try:
+            utc_now, expires_at, interval = await TimeConverter().convert(ctx, time)
+        except commands.BadArgument as e:
+            raise commands.UserFeedbackCheckFailure(str(e))
+        if interval is not None:
+            if not await self.config.repeat_allowed() and ctx.author.id not in ctx.bot.owner_ids:
+                raise commands.UserFeedbackCheckFailure(
+                    _("You are not allowed to create repeating reminders.")
+                )
+            if interval.type == "sample":
+                _repeat_dict = interval.value.copy()
+                _repeat_dict.pop("years", None)
+                _repeat_dict.pop("months", None)
+                repeat_delta = datetime.timedelta(**_repeat_dict)
+                minimum_repeat = await self.config.minimum_repeat()
+                if (
+                    repeat_delta < datetime.timedelta(minutes=minimum_repeat)
+                    and ctx.author.id not in ctx.bot.owner_ids
+                ):
+                    raise commands.UserFeedbackCheckFailure(
+                        _(
+                            "The repeat timedelta must be greater than {minimum_repeat} minutes."
+                        ).format(minimum_repeat=minimum_repeat)
+                    )
+        if destination is None:
+            destination = ctx.channel
+        destination_user_permissions = destination.permissions_for(ctx.author)
+        destination_bot_permissions = destination.permissions_for(ctx.me)
+        if not destination_user_permissions.send_messages or not destination_bot_permissions.send_messages:
+            raise commands.UserFeedbackCheckFailure(
+                _("You can't or I can't send messages in this channel.")
+            )
+        content = {"type": "say", "text": text}
+        reminder = await self.create_reminder(
+            ctx,
+            content=content,
+            expires_at=expires_at,
+            interval=interval,
+            destination=destination.id,
+            created_at=utc_now,
+        )
+        view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
+        message = await ctx.send(
+            reminder.__str__(utc_now=utc_now),
+            view=view,
+            reference=ctx.message if ctx.interaction is None else None,
+            allowed_mentions=discord.AllowedMentions(replied_user=False),
+        )
+        view._message = message
+
     @reminder.command()
     async def timezone(self, ctx: commands.Context, timezone: TimezoneConverter) -> None:
         """Set your timezone for the time converter.

@@ -185,9 +185,13 @@ class Reminder:
             interval_string = f"in {interval_string}"
         return (
             _(
-                "{state}Okay, I will remind {target_mention} of {this} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
-            ) if self.content["type"] != "command" else _(
                 "{state}Okay, I will execute this command **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+            ) if self.content["type"] == "command" else (
+                _(
+                    "{state}Okay, I will say {this} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+                ) if self.content["type"] == "say" else _(
+                    "{state}Okay, I will execute this command **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+                )
             )
         ).format(
             state=f"{'[Snooze] ' if self.snooze else ''}{'[Me Too] ' if self.me_too else ''}",
@@ -211,29 +215,29 @@ class Reminder:
             "• **Created at**: {created_at_timestamp} ({created_in_timestamp})\n"
             "• **Interval**: {interval}\n"
             "• **Title**: {title}\n"
-            # "• **Content type**: `{content_type}`\n"
+            "• **Content type**: `{content_type}`\n"
             "• **Content**: {content}\n"
             "• **Destination**: {destination}\n"
             "• **Jump URL**: {jump_url}\n"
         ).format(
             expires_at_timestamp=f"<t:{int(self.next_expires_at.timestamp())}:F>",
-            expires_in_timestamp=self.get_interval_string(
+            expires_in_timestamp=self.cog.get_interval_string(
                 self.next_expires_at, use_timestamp=True
             ),
             created_at_timestamp=f"<t:{int(self.created_at.timestamp())}:F>",
-            created_in_timestamp=self.get_interval_string(self.created_at, use_timestamp=True),
+            created_in_timestamp=self.cog.get_interval_string(self.created_at, use_timestamp=True),
             interval=_("No interval.")
             if self.interval is None
             else (
                 _("Advanced interval.")
                 if self.interval.type == "advanced"
                 else _("every {interval_string}").format(
-                    interval_string=self.get_interval_string(
+                    interval_string=self.cog.get_interval_string(
                         dateutil.relativedelta.relativedelta(**self.interval.value)
                     )
                 )
             ),
-            title=self.title or _("Not provided."),
+            title=self.content.get("title") or _("Not provided."),
             content_type=self.content["type"],
             content=(
                 (
@@ -245,7 +249,7 @@ class Reminder:
                     if self.content["text"] is not None
                     else _("No content.")
                 )
-                if self.content["type"] == "text"
+                if self.content["type"] in ["text", "say"]
                 else (
                     f"Message {self.content['message_jump_url']}."
                     if self.content["type"] == "message"
@@ -399,7 +403,10 @@ class Reminder:
                     f"The invoker can't execute the command for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
                 )
         else:
-            embeds = [self.to_embed(utc_now=utc_now)]
+            if self.content["type"] == "text":
+                embeds = [self.to_embed(utc_now=utc_now)]
+            else:
+                embeds = []
             if self.content.get("embed") is not None:
                 e = discord.Embed.from_dict(self.content["embed"])
                 e.set_author(
@@ -417,34 +424,44 @@ class Reminder:
                     files.append(discord.File(BytesIO(file_content), filename=file_name))
             try:
                 reference = None
-                if self.content["type"] == "message" and destination.id == int(
-                    self.content["message_jump_url"].split("/")[-2]
-                ):
-                    if (
-                        message := destination.get_partial_message(
-                            int(self.content["message_jump_url"].split("/")[-1])
-                        )
-                    ) is not None:
-                        reference = message
-                elif destination.id == int(self.jump_url.split("/")[-2]):
-                    if (
-                        message := destination.get_partial_message(
-                            int(self.jump_url.split("/")[-1])
-                        )
-                    ) is not None:
-                        reference = message
-                view = SnoozeView(cog=self.cog, reminder=self)
-                message = await destination.send(
-                    embeds=embeds,
-                    files=files,
-                    content=self.target["mention"] if self.target is not None else None,
-                    allowed_mentions=discord.AllowedMentions(
-                        everyone=True, users=True, roles=True, replied_user=False
-                    ),
-                    view=view,
-                    reference=reference,
-                )
-                view._message = message
+                if self.content["type"] == "text":
+                    if self.content["type"] == "message" and destination.id == int(
+                        self.content["message_jump_url"].split("/")[-2]
+                    ):
+                        if (
+                            message := destination.get_partial_message(
+                                int(self.content["message_jump_url"].split("/")[-1])
+                            )
+                        ) is not None:
+                            reference = message
+                    elif destination.id == int(self.jump_url.split("/")[-2]):
+                        if (
+                            message := destination.get_partial_message(
+                                int(self.jump_url.split("/")[-1])
+                            )
+                        ) is not None:
+                            reference = message
+                    view = SnoozeView(cog=self.cog, reminder=self)
+                    message = await destination.send(
+                        embeds=embeds,
+                        files=files,
+                        content=self.target["mention"] if self.target is not None else None,
+                        allowed_mentions=discord.AllowedMentions(
+                            everyone=True, users=True, roles=True, replied_user=False
+                        ),
+                        view=view,
+                        reference=reference,
+                    )
+                    view._message = message
+                else:  # type `say`
+                    message = await destination.send(
+                        content=self.content["text"],
+                        embeds=embeds,
+                        files=files,
+                        # allowed_mentions=discord.AllowedMentions(
+                        #     everyone=True, users=True, roles=True, replied_user=False
+                        # ),
+                    )
             except discord.HTTPException:
                 if not testing:
                     await self.delete()

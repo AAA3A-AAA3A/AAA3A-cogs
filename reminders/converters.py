@@ -89,7 +89,17 @@ class TimeConverter(commands.Converter):
     ]:
         cog = ctx.bot.get_cog("Reminders")
         utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
-        timezone = (await cog.config.user(ctx.author).timezone()) or "UTC"
+        timezone = await cog.config.user(ctx.author).timezone()
+        if timezone is None:
+            if (timezone_cog := ctx.bot.get_cog("Timezone")) is not None:
+                try:
+                    timezone = timezone_cog.config.user(ctx.author).usertime()
+                except AttributeError:
+                    pass
+            if timezone is not None:
+                await cog.config.user(ctx.author).timezone.set(timezone)
+            else:
+                timezone = "UTC"
         tz = pytz.timezone(timezone)
         local_now = utc_now.astimezone(tz=tz)
 
@@ -112,16 +122,25 @@ class TimeConverter(commands.Converter):
             repeat_dict = parse_result["every"] if "every" in parse_result else None
             if "in" in parse_result:
                 expires_dict = parse_result["in"]
-            elif "on" in parse_result:
+            elif "on" in parse_result or "at" in parse_result:
                 try:
                     expires_datetime: datetime.datetime = dateutil.parser.parse(
-                        parse_result["on"].strip(),
+                        (parse_result.get("on") if "on" in parse_result else "at").strip(),
                         fuzzy=True,
                         dayfirst=True,
                         yearfirst=False,
                         ignoretz=False,
                         default=local_now.replace(hour=9, minute=0, second=0, microsecond=0),
                     )
+                    if expires_datetime.replace(
+                        hour=0, minute=0, second=0, microsecond=0
+                    ) == local_now.replace(
+                        hour=0, minute=0, second=0, microsecond=0
+                    ) and (
+                        expires_datetime.hour < local_now.hour
+                        or expires_datetime.minute < local_now.minute
+                    ):
+                        expires_datetime = expires_datetime.replace(day=expires_datetime.day + 1)
                 except dateutil.parser.ParserError:
                     expires_dict = None
                 else:
@@ -221,6 +240,15 @@ class TimeConverter(commands.Converter):
                     parsed_date = dateparser.parse(arg, settings={"TIMEZONE": timezone})
                     reminder_text = text
                 else:
+                    if parsed_date.replace(
+                        hour=0, minute=0, second=0, microsecond=0
+                    ) == local_now.replace(
+                        hour=0, minute=0, second=0, microsecond=0
+                    ) and (
+                        parsed_date.hour < local_now.hour
+                        or parsed_date.minute < local_now.minute
+                    ):
+                        parsed_date = parsed_date.replace(day=parsed_date.day + 1)
                     reminder_text = (
                         "".join(
                             [
@@ -415,6 +443,7 @@ class DurationParser:
         in_opt_time = Group(Optional(CaselessLiteral("in")) + full_time)("in")
         in_req_time = Group(CaselessLiteral("in") + full_time)("in")
         on_time = Group(CaselessLiteral("on") + SkipTo(every_time | StringEnd())("on"))("on")
+        at_time = Group(CaselessLiteral("at") + SkipTo(every_time | StringEnd())("at"))("at")
 
         reminder_text_capture = SkipTo(
             every_time | in_req_time | on_time | StringEnd()
@@ -436,6 +465,8 @@ class DurationParser:
 
         on_every_text = on_time + every_time + reminder_text
         text_on_every = reminder_text + on_time + every_time
+        at_every_text = at_time + every_time + reminder_text
+        text_at_every = reminder_text + at_time + every_time
 
         template = (
             in_every_text
@@ -448,6 +479,8 @@ class DurationParser:
             | text_in
             | on_every_text
             | text_on_every
+            | at_every_text
+            | text_at_every
             | every_text
             | text_every
         )
@@ -459,6 +492,8 @@ class DurationParser:
         parsed_dict = parsed.asDict()
         if "on" in parsed_dict:
             parsed_dict["on"] = parsed_dict["on"]["on"]
+        elif "at" in parsed_dict:
+            parsed_dict["at"] = parsed_dict["at"]["at"]
         if "in" in parsed_dict:
             parsed_dict["in"] = self.process_operations(parsed_dict["in"])
         if "every" in parsed_dict:

@@ -325,7 +325,7 @@ class Reminders(Cog):
         • `2030`
         • `friday at 9h`
 
-        Note: the parser uses day-first and year-least: (`01/02/03` -> `1st February 2003`)
+        Note: the parser uses day-first and year-last: (`01/02/03` -> `1st February 2003`)
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
         if (
@@ -466,7 +466,7 @@ class Reminders(Cog):
         • `2030`
         • `friday at 9h`
 
-        Note: the parser uses day-first and year-least: (`01/02/03` -> `1st February 2003`)
+        Note: the parser uses day-first and year-last: (`01/02/03` -> `1st February 2003`)
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
         if (
@@ -644,7 +644,7 @@ class Reminders(Cog):
         • `2030`
         • `friday at 9h`
 
-        Note: the parser uses day-first and year-least: (`01/02/03` -> `1st February 2003`).
+        Note: the parser uses day-first and year-last: (`01/02/03` -> `1st February 2003`).
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
         if (

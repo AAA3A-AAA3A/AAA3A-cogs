@@ -15,10 +15,14 @@ from .views import SnoozeView
 
 _ = Translator("Reminders", __file__)
 
-Content: typing.TypeAlias = typing.Dict[
+try:
+    from typing import TypeAlias
+except ImportError:
+    from typing_extensions import TypeAlias
+Content: TypeAlias = typing.Dict[
     str, typing.Union[str, typing.Dict[str, typing.Union[str, typing.Dict[str, str]]]]
 ]
-Data: typing.TypeAlias = typing.Dict[
+Data: TypeAlias = typing.Dict[
     str, typing.Union[str, int, bool, Content, typing.Dict[str, typing.Union[int, str]]]
 ]
 

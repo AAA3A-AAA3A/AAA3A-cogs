@@ -3,7 +3,7 @@
     "name": "Reminders",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
     "short": "Don't forget anything anymore! Reminders in DMs, channels or FIFO commands... With 'Me Too', snooze and buttons.",
-    "description": "Don't forget anything anymore! Reminders in DMs, channels or FIFO commands... With 'Me Too', snooze and buttons. You can migrate reminders from RemindMe by PaseCoreX.",
+    "description": "Don't forget anything anymore! Reminders in DMs, channels or FIFO commands... With 'Me Too', snooze and buttons. You can migrate reminders from RemindMe by PhasecoreX.",
     "tags": [
         "remind",
         "time",

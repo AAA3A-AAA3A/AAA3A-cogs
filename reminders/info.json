@@ -1,0 +1,19 @@
+{
+    "author": ["AAA3A"],
+    "name": "Reminders",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
+    "short": "Don't forget anything anymore! Reminders in DMs, channels or FIFO commands... With 'Me Too', snooze and buttons.",
+    "description": "Don't forget anything anymore! Reminders in DMs, channels or FIFO commands... With 'Me Too', snooze and buttons. You can migrate reminders from RemindMe by PaseCoreX.",
+    "tags": [
+        "remind",
+        "time",
+        "message",
+        "bell",
+        "schedule",
+        "fifo",
+        "command"
+    ],
+    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "pytz", "dateutil", "dateparser", "pyparsing", "validators"],
+    "min_bot_version": "3.5.0",
+    "end_user_data_statement": "This cog does store users reminders, who are deleted when triggered."
+}

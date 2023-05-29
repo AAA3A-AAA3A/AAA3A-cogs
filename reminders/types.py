@@ -73,6 +73,29 @@ class Interval:
             next_expires_at += repeat_delta
         return None
 
+@dataclass(frozen=False)
+class Intervals:
+    intervals: typing.List[Interval]
+
+    def to_json(self) -> typing.List[typing.Dict[str, typing.Union[str, typing.Dict[str, int]]]]:
+        return [interval.to_json() for interval in self.intervals]
+
+    @classmethod
+    def from_json(
+        cls, data: typing.List[typing.Dict[str, typing.Union[str, typing.Dict[str, int]]]]
+    ) -> typing_extensions.Self:
+        return cls(intervals=[Interval.from_json(interval) for interval in data])
+
+    def next_trigger(
+        self,
+        last_expires: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
+        utc_now: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
+        timezone: str = "UTC",
+    ) -> typing.Optional[datetime.datetime]:
+        next_triggers = [interval.next_trigger(last_expires=last_expires, utc_now=utc_now, timezone=timezone) for interval in self.intervals]
+        next_triggers = [next_trigger for next_trigger in next_triggers if next_trigger is not None]
+        return min(next_triggers, default=None)
+
 
 @dataclass(frozen=False)
 class Reminder:
@@ -92,7 +115,7 @@ class Reminder:
     expires_at: datetime.datetime
     last_expires_at: typing.Optional[datetime.datetime]
     next_expires_at: datetime.datetime
-    interval: typing.Optional[Interval]
+    intervals: typing.Optional[Intervals]
 
     def __eq__(self, other: "Reminder") -> bool:
         return (self.next_expires_at or datetime.datetime.now(tz=datetime.timezone.utc)) == (
@@ -132,7 +155,7 @@ class Reminder:
             "expires_at": int(self.expires_at.timestamp()),
             "last_expires_at": int(self.next_expires_at.timestamp()),
             "next_expires_at": int(self.next_expires_at.timestamp()),
-            "interval": self.interval.to_json() if self.interval is not None else self.interval,
+            "intervals": self.intervals.to_json() if self.intervals is not None else self.intervals,
         }
         if clean:
             for attr in [
@@ -140,7 +163,7 @@ class Reminder:
                 "me_too",
                 "destination",
                 "target",
-                "interval",
+                "intervals",
                 "last_expires_at",
             ]:
                 if not getattr(self, attr):
@@ -173,25 +196,26 @@ class Reminder:
             next_expires_at=datetime.datetime.fromtimestamp(
                 int(data["next_expires_at"]), tz=datetime.timezone.utc
             ),
-            interval=Interval.from_json(data["interval"])
-            if data.get("interval") is not None
-            else None,
+            intervals=Intervals.from_json(data["intervals"])
+            if data.get("intervals") is not None
+            else (Intervals.from_json([data["interval"]]) if data.get("interval") is not None else None),
         )
 
     def __str__(
         self, utc_now: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)
     ) -> str:
         and_every = ""
-        if self.interval is not None:
-            if self.interval.type == "sample":
+        if self.intervals is not None and len(self.intervals.intervals) == 1:
+            interval = self.intervals.intervals[0]
+            if interval.type == "sample":
                 and_every = _(", and then **every {interval}**").format(
                     interval=self.cog.get_interval_string(
-                        dateutil.relativedelta.relativedelta(**self.interval.value)
+                        dateutil.relativedelta.relativedelta(**interval.value)
                     )
                 )
-            elif self.interval.type == "cron":
+            elif interval.type == "cron":
                 descriptor = ExpressionDescriptor(
-                    expression=self.interval.value,
+                    expression=interval.value,
                     verbose=True,
                     casing_type=CasingTypeEnum.LowerCase,
                     locale_location="en",
@@ -231,14 +255,16 @@ class Reminder:
         )
 
     def get_info(self) -> str:
-        if self.interval is not None and self.interval.type == "cron":
-            descriptor = ExpressionDescriptor(
-                expression=self.interval.value,
-                verbose=True,
-                casing_type=CasingTypeEnum.Sentence,
-                locale_location="en",
-                use_24hour_time_format=True
-            )
+        if self.intervals is not None and len(self.intervals.intervals) == 1:
+            interval = self.intervals.intervals[0]
+            if interval.type == "cron":
+                descriptor = ExpressionDescriptor(
+                    expression=interval.value,
+                    verbose=True,
+                    casing_type=CasingTypeEnum.Sentence,
+                    locale_location="en",
+                    use_24hour_time_format=True
+                )
         return _(
             "• **Next Expires at**: {expires_at_timestamp} ({expires_in_timestamp})\n"
             "• **Created at**: {created_at_timestamp} ({created_in_timestamp})\n"
@@ -255,18 +281,18 @@ class Reminder:
             ),
             created_at_timestamp=f"<t:{int(self.created_at.timestamp())}:F>",
             created_in_timestamp=self.cog.get_interval_string(self.created_at, use_timestamp=True),
-            interval=_("No interval.")
-            if self.interval is None
+            interval=_("No interval(s).")
+            if self.intervals is None
             else (
-                _("Advanced interval.")
-                if self.interval.type == "advanced"
+                _("Advanced intervals.")
+                if len(self.intervals.intervals) > 1
                 else (
                     (
                         f"{descriptor.get_full_description()}."
-                    ) if self.interval.type == "cron" else (
+                    ) if self.intervals.intervals[0].type == "cron" else (
                         _("every {interval_string}").format(
                             interval_string=self.cog.get_interval_string(
-                                dateutil.relativedelta.relativedelta(**self.interval.value)
+                                dateutil.relativedelta.relativedelta(**self.intervals.intervals[0].value)
                             )
                         )
                     )
@@ -389,8 +415,8 @@ class Reminder:
         if not testing:
             self.last_expires_at = self.next_expires_at
             timezone = (await self.cog.config.user_from_id(self.user_id).timezone()) or "UTC"
-            if self.interval is not None:
-                self.next_expires_at = self.interval.next_trigger(
+            if self.intervals is not None:
+                self.next_expires_at = self.intervals.next_trigger(
                     last_expires=self.last_expires_at, utc_now=utc_now, timezone=timezone
                 )
             else:

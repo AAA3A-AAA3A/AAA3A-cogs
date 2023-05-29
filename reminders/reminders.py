@@ -21,7 +21,7 @@ from .converters import (
     TimeConverter,
     TimezoneConverter,
 )  # NOQA
-from .types import Content, Data, Interval, Reminder
+from .types import Content, Data, Intervals, Reminder
 from .views import ReminderView
 
 # Credits:
@@ -70,7 +70,7 @@ class Reminders(Cog):
 
     # To prevent circular imports...
     Reminder = Reminder
-    Interval = Interval
+    Intervals = Intervals
 
     def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
@@ -262,7 +262,7 @@ class Reminders(Cog):
         ctx: commands.Context,
         content: Content,
         expires_at: datetime.datetime,
-        interval: typing.Optional[Interval] = None,
+        intervals: typing.Optional[Intervals] = None,
         created_at: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
         **kwargs,
     ) -> Reminder:
@@ -283,7 +283,7 @@ class Reminders(Cog):
             expires_at=expires_at,
             last_expires_at=None,
             next_expires_at=expires_at,
-            interval=interval,
+            intervals=intervals,
         )
         reminder_kwargs.update(**kwargs)
         reminder = Reminder(**reminder_kwargs)
@@ -341,33 +341,34 @@ class Reminders(Cog):
             )
         try:
             if message_or_text is not None and not isinstance(message_or_text, discord.Message):
-                utc_now, expires_at, interval, message_or_text = await TimeConverter().convert(
+                utc_now, expires_at, intervals, message_or_text = await TimeConverter().convert(
                     ctx, time, content=message_or_text
                 )
             else:
-                utc_now, interval = await TimeConverter().convert(ctx, time)
+                utc_now, intervals = await TimeConverter().convert(ctx, time)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
-        if interval is not None:
+        if intervals is not None:
             if not await self.config.repeat_allowed() and ctx.author.id not in ctx.bot.owner_ids:
                 raise commands.UserFeedbackCheckFailure(
                     _("You are not allowed to create repeating reminders.")
                 )
-            if interval.type == "sample":
-                _repeat_dict = interval.value.copy()
-                _repeat_dict.pop("years", None)
-                _repeat_dict.pop("months", None)
-                repeat_delta = datetime.timedelta(**_repeat_dict)
-                minimum_repeat = await self.config.minimum_repeat()
-                if (
-                    repeat_delta < datetime.timedelta(minutes=minimum_repeat)
-                    and ctx.author.id not in ctx.bot.owner_ids
-                ):
-                    raise commands.UserFeedbackCheckFailure(
-                        _(
-                            "The repeat timedelta must be greater than {minimum_repeat} minutes."
-                        ).format(minimum_repeat=minimum_repeat)
-                    )
+            for interval in intervals.intervals:
+                if interval.type == "sample":
+                    _repeat_dict = interval.value.copy()
+                    _repeat_dict.pop("years", None)
+                    _repeat_dict.pop("months", None)
+                    repeat_delta = datetime.timedelta(**_repeat_dict)
+                    minimum_repeat = await self.config.minimum_repeat()
+                    if (
+                        repeat_delta < datetime.timedelta(minutes=minimum_repeat)
+                        and ctx.author.id not in ctx.bot.owner_ids
+                    ):
+                        raise commands.UserFeedbackCheckFailure(
+                            _(
+                                "The repeat timedelta must be greater than {minimum_repeat} minutes."
+                            ).format(minimum_repeat=minimum_repeat)
+                        )
         content = {}
         message_or_text = message_or_text or (
             ctx.message.reference.cached_message if ctx.message.reference is not None else None
@@ -410,7 +411,7 @@ class Reminders(Cog):
             ctx,
             content=content,
             expires_at=expires_at,
-            interval=interval,
+            intervals=intervals,
             created_at=utc_now,
         )
         view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
@@ -484,33 +485,34 @@ class Reminders(Cog):
             )
         try:
             if message_or_text is not None and not isinstance(message_or_text, discord.Message):
-                utc_now, expires_at, interval, message_or_text = await TimeConverter().convert(
+                utc_now, expires_at, intervals, message_or_text = await TimeConverter().convert(
                     ctx, time, content=message_or_text
                 )
             else:
-                utc_now, interval = await TimeConverter().convert(ctx, time)
+                utc_now, intervals = await TimeConverter().convert(ctx, time)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
-        if interval is not None:
+        if intervals is not None:
             if not await self.config.repeat_allowed() and ctx.author.id not in ctx.bot.owner_ids:
                 raise commands.UserFeedbackCheckFailure(
                     _("You are not allowed to create repeating reminders.")
                 )
-            if interval.type == "sample":
-                _repeat_dict = interval.value.copy()
-                _repeat_dict.pop("years", None)
-                _repeat_dict.pop("months", None)
-                repeat_delta = datetime.timedelta(**_repeat_dict)
-                minimum_repeat = await self.config.minimum_repeat()
-                if (
-                    repeat_delta < datetime.timedelta(minutes=minimum_repeat)
-                    and ctx.author.id not in ctx.bot.owner_ids
-                ):
-                    raise commands.UserFeedbackCheckFailure(
-                        _(
-                            "The repeat timedelta must be greater than {minimum_repeat} minutes."
-                        ).format(minimum_repeat=minimum_repeat)
-                    )
+            for interval in intervals.intervals:
+                if interval.type == "sample":
+                    _repeat_dict = interval.value.copy()
+                    _repeat_dict.pop("years", None)
+                    _repeat_dict.pop("months", None)
+                    repeat_delta = datetime.timedelta(**_repeat_dict)
+                    minimum_repeat = await self.config.minimum_repeat()
+                    if (
+                        repeat_delta < datetime.timedelta(minutes=minimum_repeat)
+                        and ctx.author.id not in ctx.bot.owner_ids
+                    ):
+                        raise commands.UserFeedbackCheckFailure(
+                            _(
+                                "The repeat timedelta must be greater than {minimum_repeat} minutes."
+                            ).format(minimum_repeat=minimum_repeat)
+                        )
         if destination is None:
             destination = ctx.channel
         else:
@@ -585,7 +587,7 @@ class Reminders(Cog):
             ctx,
             content=content,
             expires_at=expires_at,
-            interval=interval,
+            intervals=intervals,
             destination=destination.id,
             target={"id": target.id, "mention": target.mention},
             created_at=utc_now,
@@ -667,29 +669,30 @@ class Reminders(Cog):
                 _("You're not allowed to create FIFO/commands reminders.")
             )
         try:
-            utc_now, expires_at, interval = await TimeConverter().convert(ctx, time)
+            utc_now, expires_at, intervals = await TimeConverter().convert(ctx, time)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
-        if interval is not None:
+        if intervals is not None:
             if not await self.config.repeat_allowed() and ctx.author.id not in ctx.bot.owner_ids:
                 raise commands.UserFeedbackCheckFailure(
                     _("You are not allowed to create repeating reminders.")
                 )
-            if interval.type == "sample":
-                _repeat_dict = interval.value.copy()
-                _repeat_dict.pop("years", None)
-                _repeat_dict.pop("months", None)
-                repeat_delta = datetime.timedelta(**_repeat_dict)
-                minimum_repeat = await self.config.minimum_repeat()
-                if (
-                    repeat_delta < datetime.timedelta(minutes=minimum_repeat)
-                    and ctx.author.id not in ctx.bot.owner_ids
-                ):
-                    raise commands.UserFeedbackCheckFailure(
-                        _(
-                            "The repeat timedelta must be greater than {minimum_repeat} minutes."
-                        ).format(minimum_repeat=minimum_repeat)
-                    )
+            for interval in intervals.intervals:
+                if interval.type == "sample":
+                    _repeat_dict = interval.value.copy()
+                    _repeat_dict.pop("years", None)
+                    _repeat_dict.pop("months", None)
+                    repeat_delta = datetime.timedelta(**_repeat_dict)
+                    minimum_repeat = await self.config.minimum_repeat()
+                    if (
+                        repeat_delta < datetime.timedelta(minutes=minimum_repeat)
+                        and ctx.author.id not in ctx.bot.owner_ids
+                    ):
+                        raise commands.UserFeedbackCheckFailure(
+                            _(
+                                "The repeat timedelta must be greater than {minimum_repeat} minutes."
+                            ).format(minimum_repeat=minimum_repeat)
+                        )
         if destination is None:
             destination = ctx.channel
         destination_user_permissions = destination.permissions_for(ctx.author)
@@ -716,7 +719,7 @@ class Reminders(Cog):
             ctx,
             content=content,
             expires_at=expires_at,
-            interval=interval,
+            intervals=intervals,
             destination=destination.id,
             created_at=utc_now,
         )
@@ -787,29 +790,30 @@ class Reminders(Cog):
                 ).format(minimum_user_reminders=minimum_user_reminders)
             )
         try:
-            utc_now, expires_at, interval = await TimeConverter().convert(ctx, time)
+            utc_now, expires_at, intervals = await TimeConverter().convert(ctx, time)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
-        if interval is not None:
+        if intervals is not None:
             if not await self.config.repeat_allowed() and ctx.author.id not in ctx.bot.owner_ids:
                 raise commands.UserFeedbackCheckFailure(
                     _("You are not allowed to create repeating reminders.")
                 )
-            if interval.type == "sample":
-                _repeat_dict = interval.value.copy()
-                _repeat_dict.pop("years", None)
-                _repeat_dict.pop("months", None)
-                repeat_delta = datetime.timedelta(**_repeat_dict)
-                minimum_repeat = await self.config.minimum_repeat()
-                if (
-                    repeat_delta < datetime.timedelta(minutes=minimum_repeat)
-                    and ctx.author.id not in ctx.bot.owner_ids
-                ):
-                    raise commands.UserFeedbackCheckFailure(
-                        _(
-                            "The repeat timedelta must be greater than {minimum_repeat} minutes."
-                        ).format(minimum_repeat=minimum_repeat)
-                    )
+            for interval in intervals.intervals:
+                if interval.type == "sample":
+                    _repeat_dict = interval.value.copy()
+                    _repeat_dict.pop("years", None)
+                    _repeat_dict.pop("months", None)
+                    repeat_delta = datetime.timedelta(**_repeat_dict)
+                    minimum_repeat = await self.config.minimum_repeat()
+                    if (
+                        repeat_delta < datetime.timedelta(minutes=minimum_repeat)
+                        and ctx.author.id not in ctx.bot.owner_ids
+                    ):
+                        raise commands.UserFeedbackCheckFailure(
+                            _(
+                                "The repeat timedelta must be greater than {minimum_repeat} minutes."
+                            ).format(minimum_repeat=minimum_repeat)
+                        )
         if destination is None:
             destination = ctx.channel
         destination_user_permissions = destination.permissions_for(ctx.author)
@@ -823,7 +827,7 @@ class Reminders(Cog):
             ctx,
             content=content,
             expires_at=expires_at,
-            interval=interval,
+            intervals=intervals,
             destination=destination.id,
             created_at=utc_now,
         )
@@ -1020,7 +1024,7 @@ class Reminders(Cog):
                         "The repeat timedelta must be greater than {minimum_repeat} minutes."
                     ).format(minimum_repeat=minimum_repeat)
                 )
-        reminder.interval = Interval.from_json(repeat_dict)
+        reminder.intervals = Intervals.from_json([repeat_dict])
         await reminder.save()
         await ctx.send(
             _("The reminder **#{reminder_id}** has been successfully edited.").format(
@@ -1179,8 +1183,8 @@ class Reminders(Cog):
                         next_expires_at=datetime.datetime.fromtimestamp(
                             reminder_data["expires"], tz=datetime.timezone.utc
                         ),
-                        interval=Interval.from_json(
-                            {"type": "sample", "value": reminder_data["repeat"]}
+                        intervals=Intervals.from_json(
+                            [{"type": "sample", "value": reminder_data["repeat"]}]
                         )
                         if reminder_data.get("repeat")
                         else None,

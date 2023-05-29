@@ -219,7 +219,7 @@ class ReminderView(discord.ui.View):
             expires_at=self.reminder.next_expires_at,
             last_expires_at=None,
             next_expires_at=self.reminder.next_expires_at,
-            interval=self.reminder.interval,
+            intervals=self.reminder.intervals,
         )
         await reminder.save()
         self.me_too_members.append(interaction.user)
@@ -259,8 +259,8 @@ class SnoozeView(discord.ui.View):
         self.cog: commands.Cog = cog
 
         self.reminder = reminder
-        if self.reminder.interval is None:
-            self.remove_item(self.stop_interval)
+        if self.reminder.intervals is None:
+            self.remove_item(self.stop_intervals)
         if self.reminder.jump_url is not None:
             self.add_item(
                 discord.ui.Button(
@@ -320,7 +320,7 @@ class SnoozeView(discord.ui.View):
             expires_at=expires_at,
             last_expires_at=None,
             next_expires_at=expires_at,
-            interval=None,
+            intervals=None,
         )
         await reminder.save()
         await interaction.response.send_message(
@@ -410,9 +410,9 @@ class SnoozeView(discord.ui.View):
         await self.create_snooze_reminder(interaction=interaction, timedelta=delta)
 
     @discord.ui.button(
-        label="Stop Interval", style=discord.ButtonStyle.danger, custom_id="stop_interval", row=1
+        label="Stop Interval(s)", style=discord.ButtonStyle.danger, custom_id="stop_intervals", row=1
     )
-    async def stop_interval(
+    async def stop_intervals(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         self.reminder.next_expires_at = None

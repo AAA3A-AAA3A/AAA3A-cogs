@@ -95,7 +95,7 @@ class TimeConverter(commands.Converter):
         if timezone is None:
             if (timezone_cog := ctx.bot.get_cog("Timezone")) is not None:
                 try:
-                    timezone = timezone_cog.config.user(ctx.author).usertime()
+                    timezone = await timezone_cog.config.user(ctx.author).usertime()
                 except AttributeError:
                     pass
             if timezone is not None:
@@ -129,7 +129,7 @@ class TimeConverter(commands.Converter):
                 raise ValueError(f"• Cron trigger parsing: {' '.join([f'{arg}.' for arg in e.args])}")
             expires_datetime = cron_trigger.get_next_fire_time(previous_fire_time=None, now=local_now)
             expires_datetime = expires_datetime.astimezone(datetime.timezone.utc)
-            return expires_datetime, cog.Interval.from_json({"type": "cron", "value": argument})
+            return expires_datetime, cog.Intervals.from_json([{"type": "cron", "value": argument}])
 
         def parse_relative_date(
             arg: str, text: typing.Optional[str] = None
@@ -184,7 +184,7 @@ class TimeConverter(commands.Converter):
             expires_datetime = expires_datetime.astimezone(tz=datetime.timezone.utc)
             if repeat_dict is not None:
                 repeat_dict = {"type": "sample", "value": repeat_dict}
-                interval = cog.Interval.from_json(repeat_dict)
+                interval = cog.Intervals.from_json([repeat_dict])
             return (
                 expires_datetime,
                 interval,

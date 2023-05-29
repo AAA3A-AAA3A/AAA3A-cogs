@@ -29,16 +29,19 @@ class EditReminderModal(discord.ui.Modal):
 
         super().__init__(title=f"Edit Reminder #{self.reminder.id}")
 
-        self.title_input: discord.ui.TextInput = discord.ui.TextInput(
-            label="Title",
-            placeholder="(optional)",
-            default=self.reminder.content.get("title"),
-            style=discord.TextStyle.short,
-            max_length=200,
-            custom_id="title",
-            required=False,
-        )
-        self.add_item(self.title_input)
+        if self.reminder.content["type"] not in ["command", "say"]:
+            self.title_input: discord.ui.TextInput = discord.ui.TextInput(
+                label="Title",
+                placeholder="(optional)",
+                default=self.reminder.content.get("title"),
+                style=discord.TextStyle.short,
+                max_length=200,
+                custom_id="title",
+                required=False,
+            )
+            self.add_item(self.title_input)
+        else:
+            self.title_input = None
         if self.reminder.content["type"] == "text":
             self.content: discord.ui.TextInput = discord.ui.TextInput(
                 label="Text",
@@ -63,15 +66,18 @@ class EditReminderModal(discord.ui.Modal):
             self.add_item(self.content)
         else:
             self.content = None
-        self.image_url: discord.ui.TextInput = discord.ui.TextInput(
-            label="Image URL",
-            placeholder="(optional)",
-            default=self.reminder.content.get("image_url"),
-            style=discord.TextStyle.short,
-            custom_id="image_url",
-            required=False,
-        )
-        self.add_item(self.image_url)
+        if self.reminder.content["type"] not in ["command", "say"]:
+            self.image_url: discord.ui.TextInput = discord.ui.TextInput(
+                label="Image URL",
+                placeholder="(optional)",
+                default=self.reminder.content.get("image_url"),
+                style=discord.TextStyle.short,
+                custom_id="image_url",
+                required=False,
+            )
+            self.add_item(self.image_url)
+        else:
+            self.image_url = None
         self.next_expires_at: discord.ui.TextInput = discord.ui.TextInput(
             label="Next Expires at",
             placeholder="(required)",
@@ -83,7 +89,7 @@ class EditReminderModal(discord.ui.Modal):
         self.add_item(self.next_expires_at)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
-        if self.image_url.value is not None:
+        if self.image_url is not None and self.image_url.value is not None:
             try:
                 validators.url(self.image_url.value, public=True)
             except validators.ValidationFailure:
@@ -110,9 +116,9 @@ class EditReminderModal(discord.ui.Modal):
             self.reminder.content["text"] = self.content.value
         elif self.reminder.content["type"] == "command":
             self.reminder.content["command"] = self.content.value
-        if self.title_input.value is not None:
+        if self.title_input is not None and self.title_input.value is not None:
             self.reminder.content["title"] = self.title_input.value
-        if self.image_url.value is not None:
+        if self.image_url is not None and self.image_url.value is not None:
             self.reminder.content["image_url"] = self.image_url.value
         await self.reminder.save()
         if self._parent._message is not None:
@@ -179,11 +185,16 @@ class ReminderView(discord.ui.View):
         return True
 
     async def on_timeout(self) -> None:
-        if self._message is not None:
-            try:
-                await self._message.edit(view=None)
-            except discord.HTTPException:
-                pass
+        for child in self.children:
+            child: discord.ui.Item
+            if hasattr(child, "disabled") and not (
+                isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url
+            ):
+                child.disabled = True
+        try:
+            await self._message.edit(view=self)
+        except discord.HTTPException:
+            pass
         self._ready.set()
 
     @discord.ui.button(

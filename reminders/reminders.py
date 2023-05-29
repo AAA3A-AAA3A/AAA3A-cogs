@@ -705,7 +705,13 @@ class Reminders(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("You can't or I can't send messages in this channel.")
             )
-        content = {"type": "say", "text": text}
+        content = {
+            "type": "say",
+            "text": text,
+            "files": {
+                attachment.filename: attachment.url for attachment in ctx.message.attachments
+            },
+        }
         reminder = await self.create_reminder(
             ctx,
             content=content,
@@ -797,7 +803,7 @@ class Reminders(Cog):
         lists = []
         while reminders != []:
             li = reminders[: 15 if card else 5]
-            reminders = reminders[15 if card else 5 :]
+            reminders = reminders[15 if card else 5:]
             lists.append(li)
         embeds = []
         for li in lists:

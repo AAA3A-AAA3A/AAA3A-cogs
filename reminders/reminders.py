@@ -725,37 +725,40 @@ class Reminders(Cog):
     @reminder.command(aliases=["parsingtips"])
     async def timetips(self, ctx: commands.Context) -> None:
         """Show time parsing tips."""
-        tips = """
-        Allowed **absolutes** are:
-        • `eoy` - Remind at end of year at 17:00.
-        • `eom` - Remind at end of month at 17:00.
-        • `eow` - Remind at end of working week (or next friday) at 17:00.
-        • `eod` - Remind at end of day at 17:00.
+        tips = _(
+            """
+            Allowed **absolutes** are:
+            • `eoy` - Remind at end of year at 17:00.
+            • `eom` - Remind at end of month at 17:00.
+            • `eow` - Remind at end of working week (or next friday) at 17:00.
+            • `eod` - Remind at end of day at 17:00.
 
-        Allowed **intervals** are:
-        • `years`/`year`/`y`
-        • `months`/`month`/`mo`
-        • `weeks`/`week`/`w`
-        • `days`/`day`/`d`
-        • `hours`/`hour`/`hrs`/`hr`/`h`
-        • `minutes`/`minute`/`mins`/`min`/`m`
+            Allowed **intervals** are:
+            • `years`/`year`/`y`
+            • `months`/`month`/`mo`
+            • `weeks`/`week`/`w`
+            • `days`/`day`/`d`
+            • `hours`/`hour`/`hrs`/`hr`/`h`
+            • `minutes`/`minute`/`mins`/`min`/`m`
 
-        You can combine **relative intervals** like this:
-        • `1y 1mo 2 days -5h`
+            You can combine **relative intervals** like this:
+            • `1y 1mo 2 days, and -5h`
+            • `on 29th may at 18h, and every year`
 
-        **Timestamps** and **iso-timestamps** are supported:
-        • Be aware that specifying a timezone will ignore your timezone.
+            **Timestamps** and **iso-timestamps** are supported:
+            • Be aware that specifying a timezone will ignore your timezone.
 
-        **Dates** are supported, you can try different formats:
-        • `5 jul`, `5th july`, `july 5`
-        • `23 sept at 3pm`, `23 sept at 15:00`
-        • `2030`
-        • `friday at 9h`
-        Note: the parser uses day-first and year-last: (`01/02/03` -> `1st February 2003`)
+            **Dates** are supported, you can try different formats:
+            • `5 jul`, `5th july`, `july 5`
+            • `23 sept at 3pm`, `23 sept at 15:00`
+            • `2030`
+            • `friday at 9h`
+            Note: the parser uses day-first and year-last: (`01/02/03` -> `1st February 2003`)
 
-        **Cron triggers** are supported:
-        • Check https://crontab.guru/.
-        """
+            **Cron triggers** are supported:
+            • Check https://crontab.guru/.
+            """
+        )
         embed: discord.Embed = discord.Embed(title="Time parsing tips", color=await ctx.embed_color())
         embed.description = cleandoc(tips)
         await ctx.send(embed=embed)

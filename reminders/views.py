@@ -380,12 +380,12 @@ class IntervalsView(discord.ui.View):
         await interaction.response.send_modal(AddIntervalRuleModal(self))
 
     @discord.ui.button(
-        label="Delete Interval(s)",
+        label="Stop Interval(s)",
         emoji="🗑️",
         style=discord.ButtonStyle.danger,
-        custom_id="delete_intervals",
+        custom_id="stop_intervals",
     )
-    async def delete_reminder(
+    async def stop_intervals(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         self.reminder.intervals = None
@@ -565,7 +565,7 @@ class SnoozeView(discord.ui.View):
         await self.create_snooze_reminder(interaction=interaction, timedelta=delta)
 
     @discord.ui.button(
-        label="Stop Interval(s)", style=discord.ButtonStyle.danger, custom_id="stop_intervals", row=1
+        label="Stop Interval(s)", emoji="🗑️", style=discord.ButtonStyle.danger, custom_id="stop_intervals", row=1
     )
     async def stop_intervals(
         self, interaction: discord.Interaction, button: discord.ui.Button

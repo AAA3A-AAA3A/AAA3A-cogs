@@ -69,9 +69,11 @@ class IntervalRule:
             if next_expires_at is None:
                 return None
             next_expires_at = next_expires_at.astimezone(datetime.timezone.utc)
+        else:
+            return None
         while next_expires_at < utc_now:
             next_expires_at += repeat_delta
-        return None
+        return next_expires_at
 
     def get_info(self, cog: commands.Cog) -> str:
         if self.type == "sample":
@@ -221,8 +223,11 @@ class Reminder:
         self, utc_now: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)
     ) -> str:
         and_every = ""
-        if self.intervals is not None and len(self.intervals.rules) == 1:
-            and_every = _(", and then **{interval}**").format(interval=self.intervals.rules[0].get_info(cog=self.cog).lower().rstrip("."))
+        if self.intervals is not None:
+            if len(self.intervals.rules) == 1:
+                and_every = _(", and then **{interval}**").format(interval=self.intervals.rules[0].get_info(cog=self.cog).lower().rstrip("."))
+            else:
+                and_every = _(", with **advanced intervals**")
         interval_string = self.cog.get_interval_string(
             int(self.expires_at.timestamp() - utc_now.timestamp())
         )

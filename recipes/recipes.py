@@ -106,7 +106,7 @@ class Recipes(Cog):
             if "aggregateRating" in json_content
             else None,
             images_urls=json_content["image"],
-            ingredients=[unquote(ingredient) for ingredient in json_content["recipeIngredient"]],
+            ingredients=[unquote(ingredient).lstrip("<em>").rstrip("</em>") for ingredient in json_content["recipeIngredient"]],
             instructions=(
                 {
                     unquote(section["name"].title()): [

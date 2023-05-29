@@ -353,7 +353,7 @@ class Reminders(Cog):
                 raise commands.UserFeedbackCheckFailure(
                     _("You are not allowed to create repeating reminders.")
                 )
-            for interval in intervals.intervals:
+            for interval in intervals.rules:
                 if interval.type == "sample":
                     _repeat_dict = interval.value.copy()
                     _repeat_dict.pop("years", None)
@@ -415,7 +415,7 @@ class Reminders(Cog):
             created_at=utc_now,
         )
         view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
-        message = await ctx.send(
+        view._message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
             reference=ctx.message
@@ -423,7 +423,6 @@ class Reminders(Cog):
             else None,
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
-        view._message = message
 
     @commands.mod_or_permissions(mention_everyone=True)
     @commands.hybrid_command()
@@ -497,7 +496,7 @@ class Reminders(Cog):
                 raise commands.UserFeedbackCheckFailure(
                     _("You are not allowed to create repeating reminders.")
                 )
-            for interval in intervals.intervals:
+            for interval in intervals.rules:
                 if interval.type == "sample":
                     _repeat_dict = interval.value.copy()
                     _repeat_dict.pop("years", None)
@@ -593,7 +592,7 @@ class Reminders(Cog):
             created_at=utc_now,
         )
         view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
-        message = await ctx.send(
+        view._message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
             reference=ctx.message if ctx.interaction is None else None,
@@ -601,7 +600,6 @@ class Reminders(Cog):
                 everyone=False, users=False, roles=False, replied_user=False
             ),
         )
-        view._message = message
 
     @commands.hybrid_group(aliases=["reminders"])
     async def reminder(self, ctx: commands.Context) -> None:
@@ -677,7 +675,7 @@ class Reminders(Cog):
                 raise commands.UserFeedbackCheckFailure(
                     _("You are not allowed to create repeating reminders.")
                 )
-            for interval in intervals.intervals:
+            for interval in intervals.rules:
                 if interval.type == "sample":
                     _repeat_dict = interval.value.copy()
                     _repeat_dict.pop("years", None)
@@ -724,13 +722,12 @@ class Reminders(Cog):
             created_at=utc_now,
         )
         view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
-        message = await ctx.send(
+        view._message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
             reference=ctx.message if ctx.interaction is None else None,
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
-        view._message = message
 
     @commands.guildowner_or_permissions(administrator=True)
     @reminder.command()
@@ -798,7 +795,7 @@ class Reminders(Cog):
                 raise commands.UserFeedbackCheckFailure(
                     _("You are not allowed to create repeating reminders.")
                 )
-            for interval in intervals.intervals:
+            for interval in intervals.rules:
                 if interval.type == "sample":
                     _repeat_dict = interval.value.copy()
                     _repeat_dict.pop("years", None)
@@ -832,13 +829,12 @@ class Reminders(Cog):
             created_at=utc_now,
         )
         view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
-        message = await ctx.send(
+        view._message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
             reference=ctx.message if ctx.interaction is None else None,
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
-        view._message = message
 
     @reminder.command()
     async def timezone(self, ctx: commands.Context, timezone: TimezoneConverter) -> None:
@@ -919,8 +915,7 @@ class Reminders(Cog):
         )
         embed.description = reminder.get_info()
         view = ReminderView(cog=self, reminder=reminder, me_too=False)
-        message = await ctx.send(embed=embed, view=view)
-        view._message = message
+        view._message = await ctx.send(embed=embed, view=view)
 
     @reminder.command()
     async def text(

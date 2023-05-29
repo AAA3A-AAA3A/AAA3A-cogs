@@ -34,7 +34,7 @@ Data: TypeAlias = typing.Dict[
 
 
 @dataclass(frozen=False)
-class Interval:
+class IntervalRule:
     type: str
     value: typing.Optional[typing.Dict[str, int]]
 
@@ -73,18 +73,31 @@ class Interval:
             next_expires_at += repeat_delta
         return None
 
+    def get_info(self, cog: commands.Cog) -> str:
+        if self.type == "sample":
+            return f"Every {cog.get_interval_string(dateutil.relativedelta.relativedelta(**self.value))}."
+        elif self.type == "cron":
+            descriptor = ExpressionDescriptor(
+                expression=self.value,
+                verbose=True,
+                casing_type=CasingTypeEnum.Sentence,
+                locale_location="en",
+                use_24hour_time_format=True
+            )
+            return f"{descriptor.get_full_description()}."
+
 @dataclass(frozen=False)
 class Intervals:
-    intervals: typing.List[Interval]
+    rules: typing.List[IntervalRule]
 
     def to_json(self) -> typing.List[typing.Dict[str, typing.Union[str, typing.Dict[str, int]]]]:
-        return [interval.to_json() for interval in self.intervals]
+        return [rule.to_json() for rule in self.rules]
 
     @classmethod
     def from_json(
         cls, data: typing.List[typing.Dict[str, typing.Union[str, typing.Dict[str, int]]]]
     ) -> typing_extensions.Self:
-        return cls(intervals=[Interval.from_json(interval) for interval in data])
+        return cls(rules=[IntervalRule.from_json(rule) for rule in data])
 
     def next_trigger(
         self,
@@ -92,9 +105,12 @@ class Intervals:
         utc_now: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
         timezone: str = "UTC",
     ) -> typing.Optional[datetime.datetime]:
-        next_triggers = [interval.next_trigger(last_expires=last_expires, utc_now=utc_now, timezone=timezone) for interval in self.intervals]
+        next_triggers = [rule.next_trigger(last_expires=last_expires, utc_now=utc_now, timezone=timezone) for rule in self.rules]
         next_triggers = [next_trigger for next_trigger in next_triggers if next_trigger is not None]
         return min(next_triggers, default=None)
+
+    def get_info(self, cog: commands.Cog) -> str:
+        return "\n".join([f"**•** **{i}.** - {rule.get_info(cog=cog)}" for i, rule in enumerate(self.rules, start=1)])
 
 
 @dataclass(frozen=False)
@@ -205,17 +221,17 @@ class Reminder:
         self, utc_now: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)
     ) -> str:
         and_every = ""
-        if self.intervals is not None and len(self.intervals.intervals) == 1:
-            interval = self.intervals.intervals[0]
-            if interval.type == "sample":
+        if self.intervals is not None and len(self.intervals.rules) == 1:
+            rule = self.intervals.rules[0]
+            if rule.type == "sample":
                 and_every = _(", and then **every {interval}**").format(
                     interval=self.cog.get_interval_string(
-                        dateutil.relativedelta.relativedelta(**interval.value)
+                        dateutil.relativedelta.relativedelta(**rule.value)
                     )
                 )
-            elif interval.type == "cron":
+            elif rule.type == "cron":
                 descriptor = ExpressionDescriptor(
-                    expression=interval.value,
+                    expression=rule.value,
                     verbose=True,
                     casing_type=CasingTypeEnum.LowerCase,
                     locale_location="en",
@@ -255,16 +271,6 @@ class Reminder:
         )
 
     def get_info(self) -> str:
-        if self.intervals is not None and len(self.intervals.intervals) == 1:
-            interval = self.intervals.intervals[0]
-            if interval.type == "cron":
-                descriptor = ExpressionDescriptor(
-                    expression=interval.value,
-                    verbose=True,
-                    casing_type=CasingTypeEnum.Sentence,
-                    locale_location="en",
-                    use_24hour_time_format=True
-                )
         return _(
             "• **Next Expires at**: {expires_at_timestamp} ({expires_in_timestamp})\n"
             "• **Created at**: {created_at_timestamp} ({created_in_timestamp})\n"
@@ -285,18 +291,8 @@ class Reminder:
             if self.intervals is None
             else (
                 _("Advanced intervals.")
-                if len(self.intervals.intervals) > 1
-                else (
-                    (
-                        f"{descriptor.get_full_description()}."
-                    ) if self.intervals.intervals[0].type == "cron" else (
-                        _("every {interval_string}").format(
-                            interval_string=self.cog.get_interval_string(
-                                dateutil.relativedelta.relativedelta(**self.intervals.intervals[0].value)
-                            )
-                        )
-                    )
-                )
+                if len(self.intervals.rules) > 1
+                else self.intervals.rules[0].get_info()
             ),
             title=self.content.get("title") or _("Not provided."),
             content_type=self.content["type"],

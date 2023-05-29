@@ -118,14 +118,14 @@ class EditReminderModal(discord.ui.Modal):
         if self._parent._message is not None:
             try:
                 if self._parent._message.embeds:
-                    embed = self._parent.embeds[0].copy()
+                    embed = self._parent._message.embeds[0].copy()
                     embed.description = self.reminder.get_info()
                     if embed.description != self._parent.embeds[0].description:
-                        await self._parent._message.edit(embed=embed)
+                        self._parent._message = await self._parent._message.edit(embed=embed)
                 elif first_message:
                     content = self.reminder.__str__(utc_now=self.reminder.created_at)
                     if content != self._parent._message.content:
-                        await self._parent._message.edit(content=content)
+                        self._parent._message = await self._parent._message.edit(content=content)
             except discord.HTTPException:
                 pass
         await interaction.response.send_message(
@@ -150,7 +150,10 @@ class ReminderView(discord.ui.View):
         self._ready: asyncio.Event = asyncio.Event()
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if self.reminder.next_expires_at is None:
+        if (
+            self.reminder.next_expires_at is None
+            and interaction.data["custom_id"] != "cross_button"
+        ):
             await interaction.response.send_message(
                 "This reminder is already expired.", ephemeral=True
             )
@@ -196,6 +199,27 @@ class ReminderView(discord.ui.View):
             await self.cog.config.user_from_id(self.reminder.user_id).timezone() or "UTC"
         )
         await interaction.response.send_modal(EditReminderModal(self, timezone=timezone))
+
+    @discord.ui.button(
+        label="Add/Edit Interval Rule(s)",
+        emoji="🛠️",
+        style=discord.ButtonStyle.secondary,
+        custom_id="add_edit_interval_rules",
+    )
+    async def add_edit_interval_rules(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
+        embed: discord.Embed = discord.Embed(
+            title=_("Reminder #{reminder_id} Intervals Rules").format(reminder_id=self.reminder.id),
+            color=discord.Color.green(),
+        )
+        if self.reminder.intervals is None:
+            embed.description = _("No existing intervals rule(s).")
+        else:
+            embed.description = self.reminder.intervals.get_info(cog=self.cog)
+        view = IntervalsView(cog=self.cog, reminder=self.reminder)
+        await interaction.response.send_message(embed=embed, view=view)
+        view._message = await interaction.original_response()
 
     @discord.ui.button(
         label="Me Too", emoji="🔔", style=discord.ButtonStyle.secondary, custom_id="me_too"
@@ -244,6 +268,137 @@ class ReminderView(discord.ui.View):
         )
         await self.on_timeout()
         self.stop()
+
+    @discord.ui.button(emoji="✖️", style=discord.ButtonStyle.danger, custom_id="cross_button")
+    async def cross_button(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
+        await self._message.delete()
+        self.stop()
+
+class AddIntervalRuleModal(discord.ui.Modal):
+    def __init__(
+        self,
+        parent: discord.ui.View,
+    ) -> None:
+        self._parent: discord.ui.View = parent
+        self.reminder = self._parent.reminder
+
+        super().__init__(title=f"Add Interval Rule to Reminder #{self.reminder.id}")
+
+        self.interval_rule: discord.ui.TextInput = discord.ui.TextInput(
+            label="Interval Rule",
+            placeholder="(required)",
+            default=None,
+            style=discord.TextStyle.short,
+            max_length=200,
+            custom_id="interval_rule",
+            required=True,
+        )
+        self.add_item(self.interval_rule)
+
+    async def on_submit(self, interaction: discord.Interaction) -> None:
+        try:
+            __, __, intervals = await TimeConverter().convert(
+                await interaction.client.get_context(interaction.message),
+                self.interval_rule.value,
+            )
+        except commands.BadArgument as e:
+            await interaction.response.send_message(str(e), ephemeral=True)
+            return
+        if intervals is None:
+            await interaction.response.send_message(_("No interval found in your input."), ephemeral=True)
+            return
+        if self.reminder.intervals is None:
+            self.reminder.intervals = intervals
+        else:
+            self.reminder.intervals.rules.append(intervals.rules[0])
+        await self.reminder.save()
+        if self._parent._message is not None:
+            try:
+                embed = self._parent._message.embeds[0]
+                embed.description = self.reminder.intervals.get_info(cog=self._parent.cog)
+                self._parent._message = await self._parent._message.edit(embed=embed)
+            except discord.HTTPException:
+                pass
+        await interaction.response.send_message(
+            _("The reminder **#{reminder_id}** has been successfully edited.").format(
+                reminder_id=self.reminder.id
+            ),
+            ephemeral=True,
+        )
+
+
+class IntervalsView(discord.ui.View):
+    def __init__(self, cog: commands.Cog, reminder) -> None:
+        super().__init__(timeout=60 * 10)
+        self.cog: commands.Cog = cog
+
+        self.reminder = reminder
+
+        self._message: discord.Message = None
+        self._ready: asyncio.Event = asyncio.Event()
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id not in [self.reminder.user_id] + list(self.cog.bot.owner_ids):
+            await interaction.response.send_message(
+                "You are not allowed to use this interaction.", ephemeral=True
+            )
+            return False
+        if (
+            self.reminder.next_expires_at is None
+            and interaction.data["custom_id"] != "cross_button"
+        ):
+            await interaction.response.send_message(
+                "This reminder is already expired.", ephemeral=True
+            )
+            await self.on_timeout()
+            self.stop()
+            return False
+        return True
+
+    async def on_timeout(self) -> None:
+        if self._message is not None:
+            try:
+                await self._message.edit(view=None)
+            except discord.HTTPException:
+                pass
+        self._ready.set()
+
+    @discord.ui.button(
+        label="Add Interval Rule",
+        emoji="🛠️",
+        style=discord.ButtonStyle.secondary,
+        custom_id="add_interval_rule",
+    )
+    async def add_interval_rule(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
+        if self.reminder.intervals is not None and len(self.reminder.intervals.rules) > 10:
+            await interaction.response.send_message(_("A maximum of 10 interval rules per reminder is supported."), ephemeral=True)
+            return
+        await interaction.response.send_modal(AddIntervalRuleModal(self))
+
+    @discord.ui.button(
+        label="Delete Interval(s)",
+        emoji="🗑️",
+        style=discord.ButtonStyle.danger,
+        custom_id="delete_intervals",
+    )
+    async def delete_reminder(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
+        self.reminder.intervals = None
+        if self._message is not None:
+            try:
+                embed = self._message.embeds[0]
+                embed.description = _("No existing intervals rule(s).")
+                self._message = await self._message.edit(embed=embed)
+            except discord.HTTPException:
+                pass
+        await interaction.response.send_message(
+            _("Reminder **#{reminder_id}** edited.").format(reminder_id=self.reminder.id)
+        )
 
     @discord.ui.button(emoji="✖️", style=discord.ButtonStyle.danger, custom_id="cross_button")
     async def cross_button(

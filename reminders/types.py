@@ -222,22 +222,7 @@ class Reminder:
     ) -> str:
         and_every = ""
         if self.intervals is not None and len(self.intervals.rules) == 1:
-            rule = self.intervals.rules[0]
-            if rule.type == "sample":
-                and_every = _(", and then **every {interval}**").format(
-                    interval=self.cog.get_interval_string(
-                        dateutil.relativedelta.relativedelta(**rule.value)
-                    )
-                )
-            elif rule.type == "cron":
-                descriptor = ExpressionDescriptor(
-                    expression=rule.value,
-                    verbose=True,
-                    casing_type=CasingTypeEnum.LowerCase,
-                    locale_location="en",
-                    use_24hour_time_format=True
-                )
-                and_every = _(", and then **{interval}**").format(interval=descriptor.get_full_description())
+            and_every = _(", and then **{interval}**").format(interval=self.intervals.rules[0].get_info(cog=self.cog).lower().rstrip("."))
         interval_string = self.cog.get_interval_string(
             int(self.expires_at.timestamp() - utc_now.timestamp())
         )

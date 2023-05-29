@@ -3,7 +3,9 @@ from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import asyncio
 import datetime
+import functools
 import re
 
 import dateparser
@@ -30,6 +32,27 @@ from pyparsing import (
 )  # NOQA
 
 _ = Translator("Reminders", __file__)
+
+
+CT = typing.TypeVar(
+    "CT", bound=typing.Callable[..., typing.Any]
+)  # defined CT as a type variable that is bound to a callable that can take any argument and return any value.
+
+async def run_blocking_func(
+    func: typing.Callable[..., typing.Any], *args: typing.Any, **kwargs: typing.Any
+) -> typing.Any:
+    partial = functools.partial(func, *args, **kwargs)
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(None, partial)
+
+
+def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
+    def decorator(func: CT) -> CT:
+        @functools.wraps(func)
+        def wrapper(*args: typing.Any, **kwargs: typing.Any):
+            return run_blocking_func(func, *args, **kwargs)
+        return wrapper
+    return decorator
 
 
 class TimezoneConverter(commands.Converter):
@@ -105,6 +128,7 @@ class TimeConverter(commands.Converter):
         tz = pytz.timezone(timezone)
         local_now = utc_now.astimezone(tz=tz)
 
+        @executor()
         def parse_iso_date(arg: str) -> datetime.datetime:
             try:
                 dt: datetime.datetime = dateutil.parser.isoparse(arg)
@@ -115,6 +139,7 @@ class TimeConverter(commands.Converter):
             except ValueError as e:
                 raise ValueError(f"• Iso parsing: {' '.join(e.args)}")
 
+        @executor()
         def parse_timestamp(arg: str) -> datetime.datetime:
             try:
                 timestamp = float(arg)
@@ -122,6 +147,7 @@ class TimeConverter(commands.Converter):
             except ValueError as e:
                 raise ValueError(f"• Timestamp parsing: {' '.join([f'{arg}.' for arg in e.args])}")
 
+        @executor()
         def parse_cron_trigger(arg: str) -> datetime.datetime:
             try:
                 cron_trigger = CronTrigger.from_crontab(arg, timezone=tz)
@@ -131,6 +157,7 @@ class TimeConverter(commands.Converter):
             expires_datetime = expires_datetime.astimezone(datetime.timezone.utc)
             return expires_datetime, cog.Intervals.from_json([{"type": "cron", "value": argument}])
 
+        @executor()
         def parse_relative_date(
             arg: str, text: typing.Optional[str] = None
         ) -> typing.Tuple[datetime.datetime, typing.Optional[str], str]:
@@ -191,9 +218,11 @@ class TimeConverter(commands.Converter):
                 reminder_text.strip() if return_text and reminder_text else text,
             )
 
+        @executor()
         def parse_recurrent(arg: str) -> typing.Tuple[datetime.datetime, typing.Any]:
             raise ValueError("• Recurrent parsing: Not yet supported. Sorry...")
 
+        @executor()
         def parse_fuzzy_date(arg: str, text: typing.Optional[str] = None) -> datetime.datetime:
             if ctx.interaction is None and text is not None and " " not in arg:
                 return_text = True
@@ -295,27 +324,27 @@ class TimeConverter(commands.Converter):
         text = content
         info = []
         try:
-            remind_time = parse_iso_date(argument)
+            remind_time = await parse_iso_date(argument)
         except ValueError as e:
             info.append(e.args[0])
             try:
-                remind_time = parse_timestamp(argument)
+                remind_time = await parse_timestamp(argument)
             except ValueError as e:
                 info.append(e.args[0])
                 try:
-                    remind_time, interval = parse_cron_trigger(argument)
+                    remind_time, interval = await parse_cron_trigger(argument)
                 except ValueError as e:
                     info.append(e.args[0])
                     try:
-                        remind_time, interval, text = parse_relative_date(argument, text=content)
+                        remind_time, interval, text = await parse_relative_date(argument, text=content)
                     except ValueError as e:
                         info.append(e.args[0])
                         try:
-                            remind_time, interval = parse_recurrent(argument)
+                            remind_time, interval = await parse_recurrent(argument)
                         except ValueError as e:
                             info.append(e.args[0])
                             try:
-                                remind_time, text = parse_fuzzy_date(argument, text=content)
+                                remind_time, text = await parse_fuzzy_date(argument, text=content)
                             except ValueError as e:
                                 info.append(e.args[0])
 
@@ -387,28 +416,28 @@ class DurationParser:
 
         unit_years = CaselessLiteral("years") | CaselessLiteral("year") | CaselessLiteral("y")
         years = (
-            Combine(Optional(oneOf("+ -")) + Word(nums)).setParseAction(
+            Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
             )("years")
             + unit_years
         )
         unit_months = CaselessLiteral("months") | CaselessLiteral("month") | CaselessLiteral("mo")
         months = (
-            Combine(Optional(oneOf("+ -")) + Word(nums)).setParseAction(
+            Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
             )("months")
             + unit_months
         )
         unit_weeks = CaselessLiteral("weeks") | CaselessLiteral("week") | CaselessLiteral("w")
         weeks = (
-            Combine(Optional(oneOf("+ -")) + Word(nums)).setParseAction(
+            Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
             )("weeks")
             + unit_weeks
         )
         unit_days = CaselessLiteral("days") | CaselessLiteral("day") | CaselessLiteral("d")
         days = (
-            Combine(Optional(oneOf("+ -")) + Word(nums)).setParseAction(
+            Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
             )("days")
             + unit_days
@@ -421,7 +450,7 @@ class DurationParser:
             | CaselessLiteral("h")
         )
         hours = (
-            Combine(Optional(oneOf("+ -")) + Word(nums)).setParseAction(
+            Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
             )("hours")
             + unit_hours
@@ -434,7 +463,7 @@ class DurationParser:
             | CaselessLiteral("m")
         )
         minutes = (
-            Combine(Optional(oneOf("+ -")) + Word(nums)).setParseAction(
+            Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
             )("minutes")
             + unit_minutes
@@ -447,7 +476,7 @@ class DurationParser:
             | CaselessLiteral("s")
         )
         seconds = (
-            Combine(Optional(oneOf("+ -")) + Word(nums)).setParseAction(
+            Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
             )("seconds")
             + unit_seconds
@@ -457,9 +486,9 @@ class DurationParser:
         time_unit_separators = Optional(Literal(",")) + Optional(CaselessLiteral("and"))
         full_time = time_unit + ZeroOrMore(Suppress(Optional(time_unit_separators)) + time_unit)
 
-        every_time = Group(CaselessLiteral("every") + full_time)("every")
         in_opt_time = Group(Optional(CaselessLiteral("in")) + full_time)("in")
         in_req_time = Group(CaselessLiteral("in") + full_time)("in")
+        every_time = Group(CaselessLiteral("every") + full_time)("every")
         on_time = Group(CaselessLiteral("on") + SkipTo(every_time | StringEnd())("on"))("on")
         at_time = Group(CaselessLiteral("at") + SkipTo(every_time | StringEnd())("at"))("at")
 

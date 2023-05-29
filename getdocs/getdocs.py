@@ -43,10 +43,10 @@ from .view import GetDocsView
 
 _ = Translator("GetDocs", __file__)
 
+
 CT = typing.TypeVar(
     "CT", bound=typing.Callable[..., typing.Any]
 )  # defined CT as a type variable that is bound to a callable that can take any argument and return any value.
-
 
 async def run_blocking_func(
     func: typing.Callable[..., typing.Any], *args: typing.Any, **kwargs: typing.Any
@@ -61,9 +61,7 @@ def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
         @functools.wraps(func)
         def wrapper(*args: typing.Any, **kwargs: typing.Any):
             return run_blocking_func(func, *args, **kwargs)
-
         return wrapper
-
     return decorator
 
 

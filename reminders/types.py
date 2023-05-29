@@ -10,6 +10,10 @@ from io import BytesIO
 
 import aiohttp
 import dateutil
+import pytz
+
+from apscheduler.triggers.cron import CronTrigger
+from cron_descriptor import CasingTypeEnum, ExpressionDescriptor
 
 from .views import SnoozeView
 
@@ -35,7 +39,7 @@ class Interval:
     value: typing.Optional[typing.Dict[str, int]]
 
     def to_json(self) -> typing.Dict[str, typing.Union[str, typing.Dict[str, int]]]:
-        if self.type == "sample":
+        if self.type in ["sample", "cron"]:
             return {"type": self.type, "value": self.value}
         else:
             return {"type": self.type}
@@ -44,7 +48,7 @@ class Interval:
     def from_json(
         cls, data: typing.Dict[str, typing.Union[str, typing.Dict[str, int]]]
     ) -> typing_extensions.Self:
-        if data["type"] == "sample":
+        if data["type"] in ["sample", "cron"]:
             return cls(type=data["type"], value=data["value"])
         else:
             return cls(type=data["type"], value=None)
@@ -58,8 +62,15 @@ class Interval:
         if self.type == "sample":
             repeat_delta = dateutil.relativedelta.relativedelta(**self.value)
             next_expires_at = last_expires + repeat_delta
-            while next_expires_at < utc_now:
-                next_expires_at += repeat_delta
+        elif self.type == "cron":
+            tz = pytz.timezone(timezone)
+            cron_trigger = CronTrigger.from_crontab(self.value, timezone=tz)
+            next_expires_at = cron_trigger.get_next_fire_time(previous_fire_time=last_expires, now=utc_now.astimezone(tz))
+            if next_expires_at is None:
+                return None
+            next_expires_at = next_expires_at.astimezone(datetime.timezone.utc)
+        while next_expires_at < utc_now:
+            next_expires_at += repeat_delta
         return None
 
 
@@ -170,14 +181,23 @@ class Reminder:
     def __str__(
         self, utc_now: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)
     ) -> str:
+        and_every = ""
         if self.interval is not None:
-            and_every = _(", and then **every {interval}**").format(
-                interval=self.cog.get_interval_string(
-                    dateutil.relativedelta.relativedelta(**self.interval.value)
+            if self.interval.type == "sample":
+                and_every = _(", and then **every {interval}**").format(
+                    interval=self.cog.get_interval_string(
+                        dateutil.relativedelta.relativedelta(**self.interval.value)
+                    )
                 )
-            )
-        else:
-            and_every = ""
+            elif self.interval.type == "cron":
+                descriptor = ExpressionDescriptor(
+                    expression=self.interval.value,
+                    verbose=True,
+                    casing_type=CasingTypeEnum.LowerCase,
+                    locale_location="en",
+                    use_24hour_time_format=True
+                )
+                and_every = _(", and then **{interval}**").format(interval=descriptor.get_full_description())
         interval_string = self.cog.get_interval_string(
             int(self.expires_at.timestamp() - utc_now.timestamp())
         )
@@ -185,12 +205,12 @@ class Reminder:
             interval_string = f"in {interval_string}"
         return (
             _(
-                "{state}Okay, I will execute this command **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+                "{state}Okay, I will execute this command{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
             ) if self.content["type"] == "command" else (
                 _(
-                    "{state}Okay, I will say {this} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+                    "{state}Okay, I will say {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
                 ) if self.content["type"] == "say" else _(
-                    "{state}Okay, I will execute this command **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+                    "{state}Okay, I will execute this command{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
                 )
             )
         ).format(
@@ -203,6 +223,7 @@ class Reminder:
             )
             if self.content["type"] != "text" or self.content["text"] is not None
             else "that",
+            destination_mention=(_(" in {destination_mention}").format(destination_mention=destination.mention) if (destination := self.cog.bot.get_channel(self.destination)) is not None else _(" in {destination} (Not found.)".format(destination=self.destination))) if self.destination is not None else "",
             interval_string=interval_string,
             timestamp=f"<t:{int(self.expires_at.timestamp())}:F>",
             and_every=and_every,
@@ -210,6 +231,14 @@ class Reminder:
         )
 
     def get_info(self) -> str:
+        if self.interval is not None and self.interval.type == "cron":
+            descriptor = ExpressionDescriptor(
+                expression=self.interval.value,
+                verbose=True,
+                casing_type=CasingTypeEnum.Sentence,
+                locale_location="en",
+                use_24hour_time_format=True
+            )
         return _(
             "• **Next Expires at**: {expires_at_timestamp} ({expires_in_timestamp})\n"
             "• **Created at**: {created_at_timestamp} ({created_in_timestamp})\n"
@@ -231,9 +260,15 @@ class Reminder:
             else (
                 _("Advanced interval.")
                 if self.interval.type == "advanced"
-                else _("every {interval_string}").format(
-                    interval_string=self.cog.get_interval_string(
-                        dateutil.relativedelta.relativedelta(**self.interval.value)
+                else (
+                    (
+                        f"{descriptor.get_full_description()}."
+                    ) if self.interval.type == "cron" else (
+                        _("every {interval_string}").format(
+                            interval_string=self.cog.get_interval_string(
+                                dateutil.relativedelta.relativedelta(**self.interval.value)
+                            )
+                        )
                     )
                 )
             ),

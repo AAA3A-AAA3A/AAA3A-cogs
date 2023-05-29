@@ -9,6 +9,8 @@ import re
 import dateparser
 import dateutil
 import pytz
+
+from apscheduler.triggers.cron import CronTrigger
 from pyparsing import (
     CaselessLiteral,
     Combine,
@@ -103,6 +105,32 @@ class TimeConverter(commands.Converter):
         tz = pytz.timezone(timezone)
         local_now = utc_now.astimezone(tz=tz)
 
+        def parse_iso_date(arg: str) -> datetime.datetime:
+            try:
+                dt: datetime.datetime = dateutil.parser.isoparse(arg)
+                if dt.tzinfo is None:
+                    dt = dt.replace(tzinfo=tz)
+                dt = dt.astimezone(tz=datetime.timezone.utc)
+                return dt
+            except ValueError as e:
+                raise ValueError(f"• Iso parsing: {' '.join(e.args)}")
+
+        def parse_timestamp(arg: str) -> datetime.datetime:
+            try:
+                timestamp = float(arg)
+                return datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc)
+            except ValueError as e:
+                raise ValueError(f"• Timestamp parsing: {' '.join([f'{arg}.' for arg in e.args])}")
+
+        def parse_cron_trigger(arg: str) -> datetime.datetime:
+            try:
+                cron_trigger = CronTrigger.from_crontab(arg, timezone=tz)
+            except ValueError as e:
+                raise ValueError(f"• Cron trigger parsing: {' '.join([f'{arg}.' for arg in e.args])}")
+            expires_datetime = cron_trigger.get_next_fire_time(previous_fire_time=None, now=local_now)
+            expires_datetime = expires_datetime.astimezone(datetime.timezone.utc)
+            return expires_datetime, cog.Interval.from_json({"type": "cron", "value": argument})
+
         def parse_relative_date(
             arg: str, text: typing.Optional[str] = None
         ) -> typing.Tuple[datetime.datetime, typing.Optional[str], str]:
@@ -141,7 +169,7 @@ class TimeConverter(commands.Converter):
                         or expires_datetime.minute < local_now.minute
                     ):
                         expires_datetime = expires_datetime.replace(day=expires_datetime.day + 1)
-                except dateutil.parser.ParserError:
+                except (dateutil.parser.ParserError, OverflowError):
                     expires_dict = None
                 else:
                     expires_dict = expires_datetime
@@ -165,23 +193,6 @@ class TimeConverter(commands.Converter):
 
         def parse_recurrent(arg: str) -> typing.Tuple[datetime.datetime, typing.Any]:
             raise ValueError("• Recurrent parsing: Not yet supported. Sorry...")
-
-        def parse_iso_date(arg: str) -> datetime.datetime:
-            try:
-                dt: datetime.datetime = dateutil.parser.isoparse(arg)
-                if dt.tzinfo is None:
-                    dt = dt.replace(tzinfo=tz)
-                dt = dt.astimezone(tz=datetime.timezone.utc)
-                return dt
-            except ValueError as e:
-                raise ValueError(f"• Iso parsing: {' '.join(e.args)}")
-
-        def parse_timestamp(arg: str) -> datetime.datetime:
-            try:
-                timestamp = float(arg)
-                return datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc)
-            except ValueError as e:
-                raise ValueError(f"• Timestamp parsing: {' '.join([f'{arg}.' for arg in e.args])}")
 
         def parse_fuzzy_date(arg: str, text: typing.Optional[str] = None) -> datetime.datetime:
             if ctx.interaction is None and text is not None and " " not in arg:
@@ -235,9 +246,12 @@ class TimeConverter(commands.Converter):
                         ignoretz=False,
                         default=local_now.replace(hour=9, minute=0, second=0, microsecond=0),
                     )
-                except dateutil.parser.ParserError as e:
+                except (dateutil.parser.ParserError, OverflowError) as e:
                     dateutil_error = e
-                    parsed_date = dateparser.parse(arg, settings={"TIMEZONE": timezone})
+                    try:
+                        parsed_date = dateparser.parse(arg, settings={"TIMEZONE": timezone})
+                    except OverflowError:
+                        parsed_date = None
                     reminder_text = text
                 else:
                     if parsed_date.replace(
@@ -281,25 +295,29 @@ class TimeConverter(commands.Converter):
         text = content
         info = []
         try:
-            remind_time, interval, text = parse_relative_date(argument, text=content)
+            remind_time = parse_iso_date(argument)
         except ValueError as e:
             info.append(e.args[0])
             try:
-                remind_time, interval = parse_recurrent(argument)
+                remind_time = parse_timestamp(argument)
             except ValueError as e:
                 info.append(e.args[0])
                 try:
-                    remind_time = parse_iso_date(argument)
+                    remind_time, interval = parse_cron_trigger(argument)
                 except ValueError as e:
                     info.append(e.args[0])
                     try:
-                        remind_time = parse_timestamp(argument)
+                        remind_time, interval, text = parse_relative_date(argument, text=content)
                     except ValueError as e:
                         info.append(e.args[0])
                         try:
-                            remind_time, text = parse_fuzzy_date(argument, text=content)
+                            remind_time, interval = parse_recurrent(argument)
                         except ValueError as e:
                             info.append(e.args[0])
+                            try:
+                                remind_time, text = parse_fuzzy_date(argument, text=content)
+                            except ValueError as e:
+                                info.append(e.args[0])
 
         if remind_time is not None and isinstance(remind_time, datetime.datetime):
             remind_time.replace(second=0, microsecond=0)

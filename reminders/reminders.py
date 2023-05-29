@@ -82,7 +82,7 @@ class Reminders(Cog):
         )
         self.reminders_global: typing.Dict[str, typing.Union[int, bool]] = {
             "total_sent": 0,
-            "maximum_user_reminders": 20,  # except bot owners
+            "maximum_user_reminders": 30,  # except bot owners
             "me_too": True,
             "repeat_allowed": True,
             "minimum_repeat": 60 * 3,  # minutes, so 3 hours.
@@ -324,8 +324,10 @@ class Reminders(Cog):
         • `23 sept at 3pm`, `23 sept at 15:00`
         • `2030`
         • `friday at 9h`
-
         Note: the parser uses day-first and year-last: (`01/02/03` -> `1st February 2003`)
+
+        **Cron triggers** are supported:
+        • Check https://crontab.guru/.
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
         if (
@@ -465,8 +467,10 @@ class Reminders(Cog):
         • `23 sept at 3pm`, `23 sept at 15:00`
         • `2030`
         • `friday at 9h`
-
         Note: the parser uses day-first and year-last: (`01/02/03` -> `1st February 2003`)
+
+        **Cron triggers** are supported:
+        • Check https://crontab.guru/.
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
         if (
@@ -643,8 +647,10 @@ class Reminders(Cog):
         • `23 sept at 3pm`, `23 sept at 15:00`
         • `2030`
         • `friday at 9h`
-
         Note: the parser uses day-first and year-last: (`01/02/03` -> `1st February 2003`).
+
+        **Cron triggers** are supported:
+        • Check https://crontab.guru/.
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
         if (
@@ -765,8 +771,10 @@ class Reminders(Cog):
         • `23 sept at 3pm`, `23 sept at 15:00`
         • `2030`
         • `friday at 9h`
-
         Note: the parser uses day-first and year-last: (`01/02/03` -> `1st February 2003`).
+
+        **Cron triggers** are supported:
+        • Check https://crontab.guru/.
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
         if (
@@ -777,10 +785,6 @@ class Reminders(Cog):
                 _(
                     "You have reached the limit of {minimum_user_reminders} reminders per user."
                 ).format(minimum_user_reminders=minimum_user_reminders)
-            )
-        if not await self.config.fifo_allowed() and ctx.author.id not in ctx.bot.owner_ids:
-            raise commands.UserFeedbackCheckFailure(
-                _("You're not allowed to create FIFO/commands reminders.")
             )
         try:
             utc_now, expires_at, interval = await TimeConverter().convert(ctx, time)
@@ -877,6 +881,7 @@ class Reminders(Cog):
                 ),
                 color=await ctx.embed_color(),
             )
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_icon)
             for reminder in li:
                 embed.add_field(
                     name=f"Reminder #{reminder.id}", value=reminder.get_info(), inline=card

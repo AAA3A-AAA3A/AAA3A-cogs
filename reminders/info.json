@@ -13,7 +13,7 @@
         "fifo",
         "command"
     ],
-    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "pytz", "python-dateutil", "dateparser", "pyparsing", "validators"],
+    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "pytz", "python-dateutil", "dateparser", "pyparsing", "validators", "apscheduler"],
     "min_bot_version": "3.5.0",
     "end_user_data_statement": "This cog does store users reminders, who are deleted when triggered."
 }

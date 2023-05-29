@@ -138,11 +138,11 @@ class EditReminderModal(discord.ui.Modal):
 
 class ReminderView(discord.ui.View):
     def __init__(self, cog: commands.Cog, reminder, me_too: bool = True) -> None:
-        super().__init__(timeout=60 * 10)
+        super().__init__(timeout=3600 * 12)
         self.cog: commands.Cog = cog
 
         self.reminder = reminder
-        if not me_too:
+        if not me_too or self.reminder.content["type"] in ["command", "say"]:
             self.remove_item(self.me_too)
         self.me_too_members: typing.List[discord.Member] = []
 
@@ -150,6 +150,13 @@ class ReminderView(discord.ui.View):
         self._ready: asyncio.Event = asyncio.Event()
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if self.reminder.next_expires_at is None:
+            await interaction.response.send_message(
+                "This reminder is already expired.", ephemeral=True
+            )
+            await self.on_timeout()
+            self.stop()
+            return False
         if interaction.data["custom_id"] == "me_too":
             if (
                 interaction.user.id == self.reminder.user_id
@@ -230,6 +237,7 @@ class ReminderView(discord.ui.View):
     async def delete_reminder(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
+        self.reminder.next_expires_at = None
         await self.reminder.delete()
         await interaction.response.send_message(
             _("Reminder **#{reminder_id}** deleted.").format(reminder_id=self.reminder.id)
@@ -407,6 +415,7 @@ class SnoozeView(discord.ui.View):
     async def stop_interval(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
+        self.reminder.next_expires_at = None
         await self.reminder.delete()
         await interaction.response.send_message(
             _("Reminder **#{reminder_id}** deleted.").format(reminder_id=self.reminder.id)

@@ -563,8 +563,8 @@ class Reminders(Cog):
     ) -> None:
         """Create a FIFO/command reminder. The chosen command will be executed with you as invoker. Don't provide the prefix.
 
-        You must use quotes if there are spaces in the time argument, just for this command.
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find intervals.
+        You don't have to put quotes around the time argument.
         Use `[p]reminder timetips` to show tips for time parsing.
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
@@ -582,7 +582,7 @@ class Reminders(Cog):
                 _("You're not allowed to create FIFO/commands reminders.")
             )
         try:
-            utc_now, expires_at, intervals = await TimeConverter().convert(ctx, time)
+            utc_now, expires_at, intervals, command = await TimeConverter().convert(ctx, time, content=command)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if intervals is not None:
@@ -658,8 +658,8 @@ class Reminders(Cog):
     ) -> None:
         """Create a reminder who will say/send text.
 
-        You must use quotes if there are spaces in the time argument, just for this command.
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find intervals.
+        You don't have to put quotes around the time argument.
         Use `[p]reminder timetips` to show tips for time parsing.
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
@@ -673,7 +673,7 @@ class Reminders(Cog):
                 ).format(minimum_user_reminders=minimum_user_reminders)
             )
         try:
-            utc_now, expires_at, intervals = await TimeConverter().convert(ctx, time)
+            utc_now, expires_at, intervals, text = await TimeConverter().convert(ctx, time, content=text)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if intervals is not None:

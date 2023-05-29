@@ -282,7 +282,7 @@ class Reminder:
             else (
                 _("Advanced intervals.")
                 if len(self.intervals.rules) > 1
-                else self.intervals.rules[0].get_info()
+                else self.intervals.rules[0].get_info(cog=self.cog)
             ),
             title=self.content.get("title") or _("Not provided."),
             content_type=self.content["type"],

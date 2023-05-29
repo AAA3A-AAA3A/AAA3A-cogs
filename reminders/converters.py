@@ -275,7 +275,9 @@ class TimeConverter(commands.Converter):
                         ignoretz=False,
                         default=local_now.replace(hour=9, minute=0, second=0, microsecond=0),
                     )
-                except (dateutil.parser.ParserError, OverflowError) as e:
+                except OverflowError:
+                    pass
+                except dateutil.parser.ParserError as e:
                     dateutil_error = e
                     try:
                         parsed_date = dateparser.parse(arg, settings={"TIMEZONE": timezone})

@@ -169,7 +169,7 @@ class CodeSnippets(DashboardIntegration, Cog):
             response_format="text",
             headers=GITHUB_HEADERS,
         )
-        return self._snippet_to_codeblock(file_contents, file_path, start_line, end_line)
+        return self._snippet_to_codeblock(source="GitHub", file_contents=file_contents, file_path=file_path, start_line=start_line, end_line=end_line)
 
     async def fetch_github_gist_snippet(
         self,
@@ -194,8 +194,8 @@ class CodeSnippets(DashboardIntegration, Cog):
                     "text",
                     headers=GITHUB_HEADERS,
                 )
-                return self._snippet_to_codeblock(file_contents, gist_file, start_line, end_line)
-        return "", "", ""
+                return self._snippet_to_codeblock(source="GitHub Gist", file_contents=file_contents, file_path=gist_file, start_line=start_line, end_line=end_line)
+        return "GitHub Gist", "", "", ""
 
     async def fetch_github_pr_diff_snippet(
         self,
@@ -210,10 +210,10 @@ class CodeSnippets(DashboardIntegration, Cog):
             response_format="text",
             headers={"Accept": "application/vnd.github.v3.diff"},
         )
-        ret, _, code = self._snippet_to_codeblock(
-            file_contents, f"Diff Pull Request {pr_number} in {repo}", start_line, end_line
+        source, ret, __, code = self._snippet_to_codeblock(
+            source="GitHub", file_contents=file_contents, file_path=f"Diff Pull Request {pr_number} in {repo}", start_line=start_line, end_line=end_line
         )
-        return ret, "diff", code
+        return source, ret, "diff", code
 
     async def fetch_github_commit_diff_snippet(
         self,
@@ -228,10 +228,10 @@ class CodeSnippets(DashboardIntegration, Cog):
             response_format="text",
             headers={"Accept": "application/vnd.github.v3.diff"},
         )
-        ret, _, code = self._snippet_to_codeblock(
-            file_contents, f"Diff Commit `{commit_hash}` in {repo}", start_line, end_line
+        source, ret, __, code = self._snippet_to_codeblock(
+            source="GitHub", file_contents=file_contents, file_path=f"Diff Commit `{commit_hash}` in {repo}", start_line=start_line, end_line=end_line
         )
-        return ret, "diff", code
+        return source, ret, "diff", code
 
     async def fetch_gitlab_snippet(
         self,
@@ -258,7 +258,7 @@ class CodeSnippets(DashboardIntegration, Cog):
             f"https://gitlab.com/api/v4/projects/{enc_repo}/repository/files/{enc_file_path}/raw?ref={enc_ref}",
             response_format="text",
         )
-        return self._snippet_to_codeblock(file_contents, file_path, start_line, end_line)
+        return self._snippet_to_codeblock(source="GitLab", file_contents=file_contents, file_path=file_path, start_line=start_line, end_line=end_line)
 
     async def fetch_bitbucket_snippet(
         self,
@@ -273,7 +273,7 @@ class CodeSnippets(DashboardIntegration, Cog):
             f"https://bitbucket.org/{quote_plus(repo)}/raw/{quote_plus(ref)}/{quote_plus(file_path)}",
             response_format="text",
         )
-        return self._snippet_to_codeblock(file_contents, file_path, start_line, end_line)
+        return self._snippet_to_codeblock(source="BitBucket", file_contents=file_contents, file_path=file_path, start_line=start_line, end_line=end_line)
 
     async def fetch_pastebin_snippet(
         self,
@@ -285,10 +285,10 @@ class CodeSnippets(DashboardIntegration, Cog):
         file_contents = await self._fetch_response(
             f"https://pastebin.com/raw/{paste_id}", response_format="text"
         )
-        ret, _, code = self._snippet_to_codeblock(
-            file_contents, f"Paste {paste_id}", start_line, end_line
+        source, ret, __, code = self._snippet_to_codeblock(
+            source="PasteBin", file_contents=file_contents, file_path=f"Paste {paste_id}", start_line=start_line, end_line=end_line
         )
-        return ret, "py", code
+        return source, ret, "py", code
 
     async def fetch_hastebin_snippet(
         self,
@@ -305,13 +305,14 @@ class CodeSnippets(DashboardIntegration, Cog):
             response_format="text",
             headers={"Authentification": f"Bearer {token}"},
         )
-        ret, _, code = self._snippet_to_codeblock(
-            file_contents, f"Paste {paste_id}", start_line, end_line
+        source, ret, __, code = self._snippet_to_codeblock(
+            source="Hastebin", file_contents=file_contents, file_path=f"Paste {paste_id}", start_line=start_line, end_line=end_line
         )
-        return ret, "py", code
+        return source, ret, "py", code
 
     def _snippet_to_codeblock(
         self,
+        source: str,
         file_contents: str,
         file_path: str,
         start_line: typing.Optional[str] = None,
@@ -330,7 +331,7 @@ class CodeSnippets(DashboardIntegration, Cog):
         if start_line > end_line:
             start_line, end_line = end_line, start_line
         if start_line > len(split_file_contents) or end_line < 1:
-            return "", "", ""
+            return source, "", "", ""
         start_line = max(1, start_line)
         end_line = min(len(split_file_contents), end_line)
 
@@ -349,8 +350,8 @@ class CodeSnippets(DashboardIntegration, Cog):
             ret = f"`{file_path}` lines {start_line} to {end_line}."
 
         if len(code) > 0:
-            return ret, language, code
-        return "", "", ""
+            return source, ret, language, code
+        return source, "", "", ""
 
     async def parse_snippets(
         self,
@@ -377,9 +378,9 @@ class CodeSnippets(DashboardIntegration, Cog):
                     self.antispam_cache[channel].append(tuple(match.groupdict().items()))
                 try:
                     snippet = await handler(**match.groupdict())
-                    if snippet == ("", "", ""):
+                    if (snippet[1], snippet[2], snippet[3]) == ("", "", ""):
                         continue
-                    snippet = f"{snippet[0]}\n> {match.group()}", snippet[1], snippet[2]
+                    snippet = snippet[0], f"{snippet[1]}\n> {match.group()}", snippet[2], snippet[3]
                     all_snippets[match.group()] = snippet
                 except (RuntimeError, aiohttp.ClientResponseError) as e:
                     if e.status == 404:
@@ -394,14 +395,14 @@ class CodeSnippets(DashboardIntegration, Cog):
         self, ctx: commands.Context, snippets: typing.Dict[str, typing.Tuple[str, str, str]]
     ):
         for url, snippet in snippets.items():
-            ret, language, code = snippet
+            source, ret, language, code = snippet
             pages = pagify(
                 code, shorten_by=len(f"```py\n{ret}\n```") + len(f"```{language}\n\n```")
             )
             pages = [f"```py\n{ret}\n```\n```{language}\n{page}\n```" for page in pages]
             menu = Menu(pages=pages)
             menu.extra_items.append(
-                discord.ui.Button(style=discord.ButtonStyle.url, label="View on GitHub", url=url)
+                discord.ui.Button(style=discord.ButtonStyle.url, label=f"View on {source}", url=url)
             )
             asyncio.create_task(menu.start(ctx))
 

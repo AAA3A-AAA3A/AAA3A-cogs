@@ -322,7 +322,7 @@ class Reminders(Cog):
                 except commands.BadArgument:
                     pass
             else:
-                utc_now, intervals = await TimeConverter().convert(ctx, argument=time)
+                utc_now, expires_at, intervals = await TimeConverter().convert(ctx, argument=time)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if intervals is not None:
@@ -438,7 +438,7 @@ class Reminders(Cog):
                 except commands.BadArgument:
                     pass
             else:
-                utc_now, intervals = await TimeConverter().convert(ctx, argument=time)
+                utc_now, expires_at, intervals = await TimeConverter().convert(ctx, argument=time)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if intervals is not None:

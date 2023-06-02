@@ -15,6 +15,7 @@ import pytz
 from apscheduler.triggers.cron import CronTrigger
 from pyparsing import (
     CaselessLiteral,
+    WordEnd,
     Combine,
     Group,
     Literal,
@@ -30,6 +31,7 @@ from pyparsing import (
     oneOf,
     tokenMap,
 )  # NOQA
+from recurrent.event_parser import RecurringEvent
 
 _ = Translator("Reminders", __file__)
 
@@ -140,22 +142,45 @@ class TimeConverter(commands.Converter):
                 raise ValueError(f"• Iso parsing: {' '.join(e.args)}")
 
         @executor()
+        def parse_cron_trigger(arg: str, text: str) -> datetime.datetime:
+            if ctx.interaction is None and text is not None and " " not in arg:
+                to_parse = f"{arg} {' '.join(text.split(' ')[:4])}"
+                text = " ".join(text.split(" ")[4:])
+            else:
+                to_parse = arg
+            try:
+                cron_trigger = CronTrigger.from_crontab(to_parse, timezone=tz)
+            except ValueError as e:
+                raise ValueError(f"• Cron trigger parsing: {' '.join([f'{arg}.' for arg in e.args])}")
+            expires_datetime = cron_trigger.get_next_fire_time(previous_fire_time=None, now=local_now)
+            expires_datetime = expires_datetime.astimezone(tz=datetime.timezone.utc)
+            return expires_datetime, cog.Intervals.from_json([{"type": "cron", "value": to_parse, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp())}]), text
+
+        @executor()
         def parse_timestamp(arg: str) -> datetime.datetime:
             try:
                 timestamp = float(arg)
                 return datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc)
             except ValueError as e:
-                raise ValueError(f"• Timestamp parsing: {' '.join([f'{arg}.' for arg in e.args])}")
+                raise ValueError(f"• Timestamp parsing: {' '.join([f'{e_arg}.' for e_arg in e.args])}")
 
         @executor()
-        def parse_cron_trigger(arg: str) -> datetime.datetime:
-            try:
-                cron_trigger = CronTrigger.from_crontab(arg, timezone=tz)
-            except ValueError as e:
-                raise ValueError(f"• Cron trigger parsing: {' '.join([f'{arg}.' for arg in e.args])}")
-            expires_datetime = cron_trigger.get_next_fire_time(previous_fire_time=None, now=local_now)
-            expires_datetime = expires_datetime.astimezone(datetime.timezone.utc)
-            return expires_datetime, cog.Intervals.from_json([{"type": "cron", "value": argument}])
+        def parse_recurrent(arg: str) -> typing.Tuple[datetime.datetime, typing.Any]:
+            r = RecurringEvent(now_date=local_now.replace(hour=9, minute=0, second=0, microsecond=0), preferred_time_range=(0, 12))
+            rrule_string = r.parse(arg)
+            if rrule_string is None:
+                raise ValueError("• Recurrent parsing: Impossible to parse this RRULE.")
+            elif isinstance(rrule_string, datetime.datetime):  # `parse_fuzzy_date` is better for this.
+                # return rrule_string.astimezone(tz=datetime.timezone.utc), None
+                raise ValueError("• Recurrent parsing: Impossible to parse this RRULE.")
+            rrule = dateutil.rrule.rrulestr(rrule_string)
+            expires_datetime = rrule.after(local_now.replace(tzinfo=None), inc=True)
+            if expires_datetime is None:
+                raise ValueError("• Recurrent parsing: Impossible to parse this RRULE.")
+            expires_datetime = expires_datetime.astimezone(tz=datetime.timezone.utc)
+            # if expires_datetime <= utc_now.replace(minute=utc_now.minute + 1):
+            #     expires_datetime += dateutil.relativedelta.relativedelta(minutes=2)
+            return expires_datetime, cog.Intervals.from_json([{"type": "rrule", "value": rrule_string, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp())}])
 
         @executor()
         def parse_relative_date(
@@ -206,21 +231,21 @@ class TimeConverter(commands.Converter):
                 raise ValueError("• Relative date parsing: Impossible to parse this date.")
             if not isinstance(expires_dict, datetime.datetime):  # no "on" kwarg
                 expires_delta = dateutil.relativedelta.relativedelta(**expires_dict)
-                expires_datetime = local_now + expires_delta
+                try:
+                    expires_datetime = local_now + expires_delta
+                except OverflowError as e:
+                    raise ValueError(
+                        f"• Relative date parsing: {e}"
+                    )
             reminder_text = parse_result["text"] or None if "text" in parse_result else None
             expires_datetime = expires_datetime.astimezone(tz=datetime.timezone.utc)
             if repeat_dict is not None:
-                repeat_dict = {"type": "sample", "value": repeat_dict}
-                interval = cog.Intervals.from_json([repeat_dict])
+                interval = cog.Intervals.from_json([{"type": "sample", "value": repeat_dict, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp())}])
             return (
                 expires_datetime,
                 interval,
                 reminder_text.strip() if return_text and reminder_text else text,
             )
-
-        @executor()
-        def parse_recurrent(arg: str) -> typing.Tuple[datetime.datetime, typing.Any]:
-            raise ValueError("• Recurrent parsing: Not yet supported. Sorry...")
 
         @executor()
         def parse_fuzzy_date(arg: str, text: typing.Optional[str] = None) -> datetime.datetime:
@@ -241,7 +266,7 @@ class TimeConverter(commands.Converter):
                 ) + dateutil.relativedelta.relativedelta(
                     hours=17
                 )  # 17:00
-                reminder_text = to_parse[: match.start()] + to_parse[match.end() :]
+                reminder_text = to_parse[: match.start()] + to_parse[match.end():]
             elif match := eow_re.search(to_parse):
                 weekday = local_now.weekday()
                 days_ahead = (4 - weekday) % 7
@@ -249,21 +274,21 @@ class TimeConverter(commands.Converter):
                 parsed_date = next_friday.replace(
                     hour=17, minute=0, second=0, microsecond=0
                 )  # 17:00 on last day of week/next friday
-                reminder_text = to_parse[: match.start()] + to_parse[match.end() :]
+                reminder_text = to_parse[: match.start()] + to_parse[match.end():]
             elif match := eom_re.search(to_parse):
                 parsed_date = local_now.replace(
                     day=1, hour=0, minute=0, second=0, microsecond=0
                 ) + dateutil.relativedelta.relativedelta(
                     months=1, hours=-12
                 )  # 12:00 on last day of month
-                reminder_text = to_parse[: match.start()] + to_parse[match.end() :]
+                reminder_text = to_parse[: match.start()] + to_parse[match.end():]
             elif match := eoy_re.search(to_parse):
                 parsed_date = local_now.replace(
                     month=1, day=1, hour=0, minute=0, second=0, microsecond=0
                 ) + dateutil.relativedelta.relativedelta(
                     years=1, hours=-15
                 )  # 9:00 on last day of year
-                reminder_text = to_parse[: match.start()] + to_parse[match.end() :]
+                reminder_text = to_parse[: match.start()] + to_parse[match.end():]
             else:
                 try:
                     parsed_date, text_tuple = dateutil.parser.parse(
@@ -275,14 +300,18 @@ class TimeConverter(commands.Converter):
                         ignoretz=False,
                         default=local_now.replace(hour=9, minute=0, second=0, microsecond=0),
                     )
-                except OverflowError:
-                    pass
+                except OverflowError as e:
+                    raise ValueError(
+                        f"• Fuzzy parsing: {e}"
+                    )
                 except dateutil.parser.ParserError as e:
                     dateutil_error = e
                     try:
                         parsed_date = dateparser.parse(arg, settings={"TIMEZONE": timezone})
-                    except OverflowError:
-                        parsed_date = None
+                    except OverflowError as e:
+                        raise ValueError(
+                            f"• Fuzzy parsing: {e}"
+                        )
                     reminder_text = text
                 else:
                     if parsed_date.replace(
@@ -306,7 +335,7 @@ class TimeConverter(commands.Converter):
                     )
             if parsed_date is None:
                 raise ValueError(
-                    f"• Fuzzy parsing: Impossible to parse this date. {' '.join([f'{arg}.' for arg in dateutil_error.args])}"
+                    f"• Fuzzy parsing: Impossible to parse this date. {' '.join([f'{e_arg}.' for e_arg in dateutil_error.args])}"
                 )
 
             # if parsed_date.hour == 0 and parsed_date.minute == 0:
@@ -330,19 +359,19 @@ class TimeConverter(commands.Converter):
         except ValueError as e:
             info.append(e.args[0])
             try:
-                remind_time = await parse_timestamp(argument)
+                remind_time, interval, text = await parse_cron_trigger(argument, text=content)
             except ValueError as e:
                 info.append(e.args[0])
                 try:
-                    remind_time, interval = await parse_cron_trigger(argument)
+                    remind_time = await parse_timestamp(argument)
                 except ValueError as e:
                     info.append(e.args[0])
                     try:
-                        remind_time, interval, text = await parse_relative_date(argument, text=content)
+                        remind_time, interval = await parse_recurrent(argument)
                     except ValueError as e:
                         info.append(e.args[0])
                         try:
-                            remind_time, interval = await parse_recurrent(argument)
+                            remind_time, interval, text = await parse_relative_date(argument, text=content)
                         except ValueError as e:
                             info.append(e.args[0])
                             try:
@@ -352,7 +381,7 @@ class TimeConverter(commands.Converter):
 
         if remind_time is not None and isinstance(remind_time, datetime.datetime):
             remind_time.replace(second=0, microsecond=0)
-            if remind_time < utc_now:  # Negative intervals are not allowed.
+            if remind_time < utc_now.replace(second=0, microsecond=0):  # Negative intervals are not allowed.
                 info.append(
                     f"• Global check: The given date must be in the future. Interpreted date: <t:{int(remind_time.timestamp())}:F>."
                 )
@@ -367,7 +396,7 @@ class TimeConverter(commands.Converter):
                     remind_time = None
                 else:
                     if remind_time < utc_now + dateutil.relativedelta.relativedelta(minutes=1):
-                        info.append("• Global check: Reminder time must be at least 1 minute.")
+                        info.append("• Global check: Reminder time must be at least 1 minute.")  # RRULES don't understand that...
                         remind_time = None
         if remind_time is None:
             info = "\n".join(info)
@@ -376,10 +405,10 @@ class TimeConverter(commands.Converter):
         if content is None:
             return utc_now, remind_time, interval
         else:
-            return utc_now, remind_time, interval, text
+            return utc_now, remind_time, interval, (text or None)
 
 
-class ContentConverter(commands.Converter):
+class ContentConverter(commands.Converter):  # no longer used
     async def convert(
         self, ctx: commands.Context, argument: str
     ) -> typing.Union[discord.Message, str]:
@@ -416,28 +445,36 @@ class DurationParser:
     def __init__(self):
         ParserElement.enablePackrat()
 
-        unit_years = CaselessLiteral("years") | CaselessLiteral("year") | CaselessLiteral("y")
+        unit_years = (
+            CaselessLiteral("years") | CaselessLiteral("year") | CaselessLiteral("y")
+        ) + WordEnd()
         years = (
             Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
             )("years")
             + unit_years
         )
-        unit_months = CaselessLiteral("months") | CaselessLiteral("month") | CaselessLiteral("mo")
+        unit_months = (
+            CaselessLiteral("months") | CaselessLiteral("month") | CaselessLiteral("mo")
+        ) + WordEnd()
         months = (
             Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
             )("months")
             + unit_months
         )
-        unit_weeks = CaselessLiteral("weeks") | CaselessLiteral("week") | CaselessLiteral("w")
+        unit_weeks = (
+            CaselessLiteral("weeks") | CaselessLiteral("week") | CaselessLiteral("w")
+        ) + WordEnd()
         weeks = (
             Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
             )("weeks")
             + unit_weeks
         )
-        unit_days = CaselessLiteral("days") | CaselessLiteral("day") | CaselessLiteral("d")
+        unit_days = (
+            CaselessLiteral("days") | CaselessLiteral("day") | CaselessLiteral("d")
+        ) + WordEnd()
         days = (
             Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
@@ -450,7 +487,7 @@ class DurationParser:
             | CaselessLiteral("hrs")
             | CaselessLiteral("hr")
             | CaselessLiteral("h")
-        )
+        ) + WordEnd()
         hours = (
             Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
@@ -463,7 +500,7 @@ class DurationParser:
             | CaselessLiteral("mins")
             | CaselessLiteral("min")
             | CaselessLiteral("m")
-        )
+        ) + WordEnd()
         minutes = (
             Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
@@ -476,7 +513,7 @@ class DurationParser:
             | CaselessLiteral("secs")
             | CaselessLiteral("sec")
             | CaselessLiteral("s")
-        )
+        ) + WordEnd()
         seconds = (
             Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]

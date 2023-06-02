@@ -42,7 +42,7 @@ class EditReminderModal(discord.ui.Modal):
             self.add_item(self.title_input)
         else:
             self.title_input = None
-        if self.reminder.content["type"] == "text":
+        if self.reminder.content["type"] in ["text", "say"]:
             self.content: discord.ui.TextInput = discord.ui.TextInput(
                 label="Text",
                 placeholder="(required)",
@@ -150,7 +150,7 @@ class ReminderView(discord.ui.View):
         self.reminder = reminder
         if not me_too or self.reminder.content["type"] in ["command", "say"]:
             self.remove_item(self.me_too)
-        self.me_too_members: typing.List[discord.Member] = []
+        self.me_too_members: typing.Dict[discord.Member, typing.Any] = {}
 
         self._message: discord.Message = None
         self._ready: asyncio.Event = asyncio.Event()
@@ -167,15 +167,6 @@ class ReminderView(discord.ui.View):
             self.stop()
             return False
         if interaction.data["custom_id"] == "me_too":
-            if (
-                interaction.user.id == self.reminder.user_id
-                or interaction.user in self.me_too_members
-            ):
-                await interaction.response.send_message(
-                    "You are not allowed to create the same reminder several times.",
-                    ephemeral=True,
-                )
-                return False
             return True
         if interaction.user.id not in [self.reminder.user_id] + list(self.cog.bot.owner_ids):
             await interaction.response.send_message(
@@ -236,6 +227,19 @@ class ReminderView(discord.ui.View):
         label="Me Too", emoji="🔔", style=discord.ButtonStyle.secondary, custom_id="me_too"
     )
     async def me_too(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+        if interaction.user.id == self.reminder.user_id:
+            await interaction.response.send_message(
+                "You are not allowed to create the same reminder several times.",
+                ephemeral=True,
+            )
+            return
+        elif interaction.user in self.me_too_members:
+            reminder = self.me_too_members[interaction.user]
+            reminder.next_expires_at = None
+            await reminder.delete()
+            await interaction.response.send_message(
+                _("Reminder **#{reminder_id}** deleted.").format(reminder_id=reminder.id), ephemeral=True
+            )
         reminder_id = 1
         while reminder_id in self.cog.cache.get(interaction.user.id, {}):
             reminder_id += 1
@@ -257,7 +261,7 @@ class ReminderView(discord.ui.View):
             intervals=self.reminder.intervals,
         )
         await reminder.save()
-        self.me_too_members.append(interaction.user)
+        self.me_too_members[interaction.user] = reminder
         await interaction.response.send_message(
             reminder.__str__(utc_now=utc_now),
             ephemeral=True,

@@ -4,7 +4,10 @@ import discord  # isort:skip
 import typing  # isort:skip
 import typing_extensions  # isort:skip
 
+import asyncio
 import datetime
+import functools
+import re
 from dataclasses import dataclass
 from io import BytesIO
 
@@ -14,6 +17,7 @@ import pytz
 
 from apscheduler.triggers.cron import CronTrigger
 from cron_descriptor import CasingTypeEnum, ExpressionDescriptor
+from recurrent.event_parser import RecurringEvent
 
 from .views import SnoozeView
 
@@ -30,7 +34,26 @@ Data: TypeAlias = typing.Dict[
     str, typing.Union[str, int, bool, Content, typing.Dict[str, typing.Union[int, str]]]
 ]
 
-# Add Snooze View, add message interaction, add intervals, add rules, add converter...s
+
+CT = typing.TypeVar(
+    "CT", bound=typing.Callable[..., typing.Any]
+)  # defined CT as a type variable that is bound to a callable that can take any argument and return any value.
+
+async def run_blocking_func(
+    func: typing.Callable[..., typing.Any], *args: typing.Any, **kwargs: typing.Any
+) -> typing.Any:
+    partial = functools.partial(func, *args, **kwargs)
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(None, partial)
+
+
+def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
+    def decorator(func: CT) -> CT:
+        @functools.wraps(func)
+        def wrapper(*args: typing.Any, **kwargs: typing.Any):
+            return run_blocking_func(func, *args, **kwargs)
+        return wrapper
+    return decorator
 
 
 @dataclass(frozen=False)
@@ -38,55 +61,76 @@ class IntervalRule:
     type: str
     value: typing.Optional[typing.Dict[str, int]]
 
+    start_trigger: typing.Optional[datetime.datetime]
+    first_trigger: typing.Optional[datetime.datetime]
+
     def to_json(self) -> typing.Dict[str, typing.Union[str, typing.Dict[str, int]]]:
-        if self.type in ["sample", "cron"]:
-            return {"type": self.type, "value": self.value}
-        else:
-            return {"type": self.type}
+        return {"type": self.type, "value": self.value, "first_trigger": int(self.first_trigger.timestamp()) if self.first_trigger is not None else None, "start_trigger": int(self.start_trigger.timestamp()) if self.start_trigger is not None else None}
 
     @classmethod
     def from_json(
         cls, data: typing.Dict[str, typing.Union[str, typing.Dict[str, int]]]
     ) -> typing_extensions.Self:
-        if data["type"] in ["sample", "cron"]:
-            return cls(type=data["type"], value=data["value"])
-        else:
-            return cls(type=data["type"], value=None)
+        return cls(type=data["type"], value=data["value"], first_trigger=datetime.datetime.fromtimestamp(data["first_trigger"], tz=datetime.timezone.utc) if data.get("first_trigger") is not None else None, start_trigger=datetime.datetime.fromtimestamp(data["start_trigger"], tz=datetime.timezone.utc) if data.get("start_trigger") is not None else None)
 
+    @executor()
     def next_trigger(
         self,
-        last_expires: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
+        last_expires_at: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
         utc_now: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
         timezone: str = "UTC",
     ) -> typing.Optional[datetime.datetime]:
         if self.type == "sample":
             repeat_delta = dateutil.relativedelta.relativedelta(**self.value)
-            next_expires_at = last_expires + repeat_delta
+            next_expires_at = last_expires_at + repeat_delta
+            while next_expires_at < utc_now:
+                next_expires_at += repeat_delta
         elif self.type == "cron":
             tz = pytz.timezone(timezone)
             cron_trigger = CronTrigger.from_crontab(self.value, timezone=tz)
-            next_expires_at = cron_trigger.get_next_fire_time(previous_fire_time=last_expires, now=utc_now.astimezone(tz))
+            next_expires_at = last_expires_at
+            while next_expires_at == last_expires_at or next_expires_at < utc_now:
+                next_expires_at = cron_trigger.get_next_fire_time(previous_fire_time=last_expires_at, now=utc_now.astimezone(tz=tz))
+                if next_expires_at is None:
+                    return None
+                next_expires_at = next_expires_at.astimezone(tz=datetime.timezone.utc)
+        elif self.type == "rrule":
+            tz = pytz.timezone(timezone)
+            rrule = dateutil.rrule.rrulestr(self.value, dtstart=self.start_trigger.replace(tzinfo=None))
+            # next_expires_at = last_expires_at
+            # while next_expires_at == last_expires_at or next_expires_at < utc_now:
+            #     next_expires_at = rrule.after(next_expires_at.replace(tzinfo=None), inc=False)
+            #     if next_expires_at is None:
+            #         return None
+            #     next_expires_at = next_expires_at.astimezone(tz=datetime.timezone.utc)  # `astimezone` is not required
+            next_expires_at = rrule.after(utc_now.astimezone(tz=tz).replace(tzinfo=None), inc=False)
             if next_expires_at is None:
                 return None
-            next_expires_at = next_expires_at.astimezone(datetime.timezone.utc)
+            next_expires_at = next_expires_at.astimezone(tz=datetime.timezone.utc)  # `astimezone` is not required
         else:
             return None
-        while next_expires_at < utc_now:
-            next_expires_at += repeat_delta
         return next_expires_at
 
     def get_info(self, cog: commands.Cog) -> str:
         if self.type == "sample":
-            return f"Every {cog.get_interval_string(dateutil.relativedelta.relativedelta(**self.value))}."
+            return f"[{self.type.upper()}] Every {cog.get_interval_string(dateutil.relativedelta.relativedelta(**self.value))}."
         elif self.type == "cron":
             descriptor = ExpressionDescriptor(
                 expression=self.value,
                 verbose=True,
                 casing_type=CasingTypeEnum.Sentence,
-                locale_location="en",
+                locale_location="en_US",
                 use_24hour_time_format=True
             )
-            return f"{descriptor.get_full_description()}."
+            return f"[{self.type.upper()}] {descriptor.get_full_description()}."
+        elif self.type == "rrule":
+            r = RecurringEvent(preferred_time_range=(0, 12))
+            value = self.value
+            if (count_match := re.search(r"COUNT=(\d+)", value)) is not None:
+                value = value.replace(f"COUNT={count_match[1]}", f"COUNT={int(count_match[1]) - 1}")
+            return f"[{self.type.upper()}] {r.format(value).title()}."
+        else:
+            return None
 
 @dataclass(frozen=False)
 class Intervals:
@@ -101,13 +145,13 @@ class Intervals:
     ) -> typing_extensions.Self:
         return cls(rules=[IntervalRule.from_json(rule) for rule in data])
 
-    def next_trigger(
+    async def next_trigger(
         self,
-        last_expires: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
+        last_expires_at: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
         utc_now: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
         timezone: str = "UTC",
     ) -> typing.Optional[datetime.datetime]:
-        next_triggers = [rule.next_trigger(last_expires=last_expires, utc_now=utc_now, timezone=timezone) for rule in self.rules]
+        next_triggers = [await rule.next_trigger(last_expires_at=last_expires_at, utc_now=utc_now, timezone=timezone) for rule in self.rules]
         next_triggers = [next_trigger for next_trigger in next_triggers if next_trigger is not None]
         return min(next_triggers, default=None)
 
@@ -225,7 +269,7 @@ class Reminder:
         and_every = ""
         if self.intervals is not None:
             if len(self.intervals.rules) == 1:
-                and_every = _(", and then **{interval}**").format(interval=self.intervals.rules[0].get_info(cog=self.cog).lower().rstrip("."))
+                and_every = _(", and then **{interval}**").format(interval=self.intervals.rules[0].get_info(cog=self.cog).lower().split("]")[-1].rstrip("."))
             else:
                 and_every = _(", with **advanced intervals**")
         interval_string = self.cog.get_interval_string(
@@ -240,7 +284,7 @@ class Reminder:
                 _(
                     "{state}Okay, I will say {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
                 ) if self.content["type"] == "say" else _(
-                    "{state}Okay, I will execute this command{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+                    "{state}Okay, I will remind {target_mention}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
                 )
             )
         ).format(
@@ -268,6 +312,7 @@ class Reminder:
             "• **Title**: {title}\n"
             "• **Content type**: `{content_type}`\n"
             "• **Content**: {content}\n"
+            "• **Target**: {destination}\n"
             "• **Destination**: {destination}\n"
             "• **Jump URL**: {jump_url}\n"
         ).format(
@@ -303,6 +348,7 @@ class Reminder:
                     else f"Command `[p]{self.content['command']}` executed with your privilege rights."
                 )
             ),
+            target=f"{self.target['mention']} ({self.target['id']})" if self.target is not None else _("No target."),
             destination=_("In DMs")
             if self.destination is None
             else destination.mention
@@ -402,8 +448,8 @@ class Reminder:
             self.last_expires_at = self.next_expires_at
             timezone = (await self.cog.config.user_from_id(self.user_id).timezone()) or "UTC"
             if self.intervals is not None:
-                self.next_expires_at = self.intervals.next_trigger(
-                    last_expires=self.last_expires_at, utc_now=utc_now, timezone=timezone
+                self.next_expires_at = await self.intervals.next_trigger(
+                    last_expires_at=self.last_expires_at, utc_now=utc_now, timezone=timezone
                 )
             else:
                 self.next_expires_at = None

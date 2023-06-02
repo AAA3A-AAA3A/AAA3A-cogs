@@ -16,7 +16,6 @@ import pytz
 from redbot.core.utils.chat_formatting import humanize_list
 
 from .converters import (
-    ContentConverter,
     DurationParser,
     ExistingReminderConverter,
     ParseException,
@@ -68,7 +67,7 @@ async def remind_message_context_menu(interaction: discord.Interaction, message:
 
 @cog_i18n(_)
 class Reminders(Cog):
-    """Don't forget anything anymore! Reminders in DMs, channels or FIFO commands... With 'Me Too', snooze and buttons."""
+    """Don't forget anything anymore! Reminders in DMs, channels, FIFO commands sheduler, say sheduler... With 'Me Too', snooze and buttons."""
 
     # To prevent circular imports...
     Reminder = Reminder
@@ -84,10 +83,10 @@ class Reminders(Cog):
         )
         self.reminders_global: typing.Dict[str, typing.Union[int, bool]] = {
             "total_sent": 0,
-            "maximum_user_reminders": 30,  # except bot owners
+            "maximum_user_reminders": 20,  # except bot owners
             "me_too": True,
             "repeat_allowed": True,
-            "minimum_repeat": 60 * 3,  # minutes, so 3 hours.
+            "minimum_repeat": 60 * 1,  # minutes, so 1 hour.
             "fifo_allowed": False,
         }
         self.reminders_user: typing.Dict[str, typing.List[Data]] = {
@@ -108,6 +107,7 @@ class Reminders(Cog):
                 "path": ["maximum_user_reminders"],
                 "converter": commands.Range[int, 1, 125],
                 "description": "Change the reminders limit for a user.",
+                "aliases": ["maxuserreminders"],
             },
             "me_too": {
                 "path": ["me_too"],
@@ -294,13 +294,13 @@ class Reminders(Cog):
 
     @commands.hybrid_command()
     async def remindme(
-        self, ctx: commands.Context, time: str, *, message_or_text: ContentConverter = None
+        self, ctx: commands.Context, time: str, *, message_or_text: str = None
     ) -> None:
         """Create a reminder with optional reminder text or message.
 
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find intervals and your text.
         You don't have to put quotes around the time argument.
-        Use `[p]reminder timetips` to show tips for time parsing.
+        Use `[p]reminder timetips` to display tips for time parsing.
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
         if (
@@ -313,12 +313,16 @@ class Reminders(Cog):
                 ).format(minimum_user_reminders=minimum_user_reminders)
             )
         try:
-            if message_or_text is not None and not isinstance(message_or_text, discord.Message):
+            if message_or_text is not None:
                 utc_now, expires_at, intervals, message_or_text = await TimeConverter().convert(
-                    ctx, time, content=message_or_text
+                    ctx, argument=time, content=message_or_text
                 )
+                try:
+                    message_or_text: discord.Message = await commands.MessageConverter().convert(ctx, argument=message_or_text)
+                except commands.BadArgument:
+                    pass
             else:
-                utc_now, intervals = await TimeConverter().convert(ctx, time)
+                utc_now, intervals = await TimeConverter().convert(ctx, argument=time)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if intervals is not None:
@@ -391,9 +395,7 @@ class Reminders(Cog):
         view._message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
-            reference=ctx.message
-            if ctx.interaction is None and not getattr(ctx, "__is_mocked__", False)
-            else None,
+            reference=discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False),
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
 
@@ -408,13 +410,13 @@ class Reminders(Cog):
         target: typing.Optional[typing.Union[discord.User, discord.Role]],
         time: str,
         *,
-        message_or_text: ContentConverter = None,
+        message_or_text: str = None,
     ) -> None:
         """Create a reminder with optional reminder text or message, in a channel with an user/role ping.
 
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find intervals and your text.
         You don't have to put quotes around the time argument.
-        Use `[p]reminder timetips` to show tips for time parsing.
+        Use `[p]reminder timetips` to display tips for time parsing.
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
         if (
@@ -427,12 +429,16 @@ class Reminders(Cog):
                 ).format(minimum_user_reminders=minimum_user_reminders)
             )
         try:
-            if message_or_text is not None and not isinstance(message_or_text, discord.Message):
+            if message_or_text is not None:
                 utc_now, expires_at, intervals, message_or_text = await TimeConverter().convert(
-                    ctx, time, content=message_or_text
+                    ctx, argument=time, content=message_or_text
                 )
+                try:
+                    message_or_text: discord.Message = await commands.MessageConverter().convert(ctx, argument=message_or_text)
+                except commands.BadArgument:
+                    pass
             else:
-                utc_now, intervals = await TimeConverter().convert(ctx, time)
+                utc_now, intervals = await TimeConverter().convert(ctx, argument=time)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if intervals is not None:
@@ -539,7 +545,7 @@ class Reminders(Cog):
         view._message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
-            reference=ctx.message if ctx.interaction is None else None,
+            reference=discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False),
             allowed_mentions=discord.AllowedMentions(
                 everyone=False, users=False, roles=False, replied_user=False
             ),
@@ -565,7 +571,7 @@ class Reminders(Cog):
 
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find intervals.
         You don't have to put quotes around the time argument.
-        Use `[p]reminder timetips` to show tips for time parsing.
+        Use `[p]reminder timetips` to display tips for time parsing.
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
         if (
@@ -582,7 +588,7 @@ class Reminders(Cog):
                 _("You're not allowed to create FIFO/commands reminders.")
             )
         try:
-            utc_now, expires_at, intervals, command = await TimeConverter().convert(ctx, time, content=command)
+            utc_now, expires_at, intervals, command = await TimeConverter().convert(ctx, argument=time, content=command)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if intervals is not None:
@@ -640,7 +646,7 @@ class Reminders(Cog):
         view._message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
-            reference=ctx.message if ctx.interaction is None else None,
+            reference=discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False),
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
 
@@ -660,7 +666,7 @@ class Reminders(Cog):
 
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find intervals.
         You don't have to put quotes around the time argument.
-        Use `[p]reminder timetips` to show tips for time parsing.
+        Use `[p]reminder timetips` to display tips for time parsing.
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
         if (
@@ -673,7 +679,7 @@ class Reminders(Cog):
                 ).format(minimum_user_reminders=minimum_user_reminders)
             )
         try:
-            utc_now, expires_at, intervals, text = await TimeConverter().convert(ctx, time, content=text)
+            utc_now, expires_at, intervals, text = await TimeConverter().convert(ctx, argument=time, content=text)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if intervals is not None:
@@ -724,7 +730,7 @@ class Reminders(Cog):
         view._message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
-            reference=ctx.message if ctx.interaction is None else None,
+            reference=discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False),
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
 

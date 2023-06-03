@@ -333,7 +333,59 @@ class AddIntervalRuleModal(discord.ui.Modal):
             try:
                 embed = self._parent._message.embeds[0]
                 embed.description = self.reminder.intervals.get_info(cog=self._parent.cog)
-                self._parent._message = await self._parent._message.edit(embed=embed)
+                self._parent.remove_interval_rule.disabled = False
+                self._parent._message = await self._parent._message.edit(embed=embed, view=self._parent)
+            except discord.HTTPException:
+                pass
+        await interaction.response.send_message(
+            _("The reminder **#{reminder_id}** has been successfully edited.").format(
+                reminder_id=self.reminder.id
+            ),
+            ephemeral=True,
+        )
+
+class RemoveIntervalRuleModal(discord.ui.Modal):
+    def __init__(
+        self,
+        parent: discord.ui.View,
+    ) -> None:
+        self._parent: discord.ui.View = parent
+        self.reminder = self._parent.reminder
+
+        super().__init__(title=f"Remove Interval Rule from Reminder #{self.reminder.id}")
+
+        self.index_number_interval_rule: discord.ui.TextInput = discord.ui.TextInput(
+            label="Index Number Interval Rule",
+            placeholder="(required)",
+            default=None,
+            style=discord.TextStyle.short,
+            max_length=str(len(self.reminder.intervals.rules)),
+            custom_id="index_number_interval_rule",
+            required=True,
+        )
+        self.add_item(self.index_number_interval_rule)
+
+    async def on_submit(self, interaction: discord.Interaction) -> None:
+        try:
+            index_number_interval_rule = int(self.index_number_interval_rule.value)
+        except ValueError as e:
+            await interaction.response.send_message(str(e), ephemeral=True)
+            return
+        if self.reminder.intervals is None:
+            await interaction.response.send_message(_("No existing intervals rule(s)."), ephemeral=True)
+            return
+        try:
+            del self.reminder.intervals.rules[index_number_interval_rule - 1]
+        except ValueError:
+            await interaction.response.send_message(_("No existing interval rule found with this index number."), ephemeral=True)
+            return
+        await self.reminder.save()
+        if self._parent._message is not None:
+            try:
+                embed = self._parent._message.embeds[0]
+                embed.description = self.reminder.intervals.get_info(cog=self._parent.cog) or _("No existing intervals rule(s).")
+                self._parent.remove_interval_rule.disabled = not self.reminder.intervals.rules
+                self._parent._message = await self._parent._message.edit(embed=embed, view=self._parent)
             except discord.HTTPException:
                 pass
         await interaction.response.send_message(
@@ -393,6 +445,20 @@ class IntervalsView(discord.ui.View):
             await interaction.response.send_message(_("A maximum of 10 interval rules per reminder is supported."), ephemeral=True)
             return
         await interaction.response.send_modal(AddIntervalRuleModal(self))
+
+    @discord.ui.button(
+        label="Remove Interval Rule",
+        emoji="🛠️",
+        style=discord.ButtonStyle.secondary,
+        custom_id="remove_interval_rule",
+    )
+    async def remove_interval_rule(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
+        if self.reminder.intervals is None:
+            await interaction.response.send_message(_("No existing intervals rule(s)."), ephemeral=True)
+            return
+        await interaction.response.send_modal(RemoveIntervalRuleModal(self))
 
     @discord.ui.button(
         label="Stop Interval(s)",

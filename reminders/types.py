@@ -63,15 +63,22 @@ class IntervalRule:
 
     start_trigger: typing.Optional[datetime.datetime]
     first_trigger: typing.Optional[datetime.datetime]
+    last_trigger: typing.Optional[datetime.datetime]
 
     def to_json(self) -> typing.Dict[str, typing.Union[str, typing.Dict[str, int]]]:
-        return {"type": self.type, "value": self.value, "first_trigger": int(self.first_trigger.timestamp()) if self.first_trigger is not None else None, "start_trigger": int(self.start_trigger.timestamp()) if self.start_trigger is not None else None}
+        return {
+            "type": self.type,
+            "value": self.value,
+            "start_trigger": int(self.start_trigger.timestamp()) if self.start_trigger is not None else None,
+            "first_trigger": int(self.first_trigger.timestamp()) if self.first_trigger is not None else None,
+            "last_trigger": int(self.last_trigger.timestamp()) if self.last_trigger is not None else None,
+        }
 
     @classmethod
     def from_json(
         cls, data: typing.Dict[str, typing.Union[str, typing.Dict[str, int]]]
     ) -> typing_extensions.Self:
-        return cls(type=data["type"], value=data["value"], first_trigger=datetime.datetime.fromtimestamp(data["first_trigger"], tz=datetime.timezone.utc) if data.get("first_trigger") is not None else None, start_trigger=datetime.datetime.fromtimestamp(data["start_trigger"], tz=datetime.timezone.utc) if data.get("start_trigger") is not None else None)
+        return cls(type=data["type"], value=data["value"], start_trigger=datetime.datetime.fromtimestamp(data["start_trigger"], tz=datetime.timezone.utc) if data.get("start_trigger") is not None else None, first_trigger=datetime.datetime.fromtimestamp(data["first_trigger"], tz=datetime.timezone.utc) if data.get("first_trigger") is not None else None, last_trigger=datetime.datetime.fromtimestamp(data["last_trigger"], tz=datetime.timezone.utc) if data.get("last_trigger") is not None else None)
 
     @executor()
     def next_trigger(
@@ -80,6 +87,8 @@ class IntervalRule:
         utc_now: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
         timezone: str = "UTC",
     ) -> typing.Optional[datetime.datetime]:
+        if self.last_trigger > last_expires_at:
+            return self.last_trigger
         if self.type == "sample":
             repeat_delta = dateutil.relativedelta.relativedelta(**self.value)
             next_expires_at = last_expires_at + repeat_delta
@@ -109,6 +118,7 @@ class IntervalRule:
             next_expires_at = next_expires_at.astimezone(tz=datetime.timezone.utc)  # `astimezone` is not required
         else:
             return None
+        self.last_trigger = next_expires_at
         return next_expires_at
 
     def get_info(self, cog: commands.Cog) -> str:
@@ -269,7 +279,7 @@ class Reminder:
         and_every = ""
         if self.intervals is not None:
             if len(self.intervals.rules) == 1:
-                and_every = _(", and then **{interval}**").format(interval=self.intervals.rules[0].get_info(cog=self.cog).lower().split("]")[-1].rstrip("."))
+                and_every = _(", and then **{interval}**").format(interval=self.intervals.rules[0].get_info(cog=self.cog).lower().split("]")[-1].rstrip(".")[1:])
             else:
                 and_every = _(", with **advanced intervals**")
         interval_string = self.cog.get_interval_string(
@@ -451,6 +461,7 @@ class Reminder:
                 self.next_expires_at = await self.intervals.next_trigger(
                     last_expires_at=self.last_expires_at, utc_now=utc_now, timezone=timezone
                 )
+                await self.save()
             else:
                 self.next_expires_at = None
         if (user := self.cog.bot.get_user(self.user_id)) is None:

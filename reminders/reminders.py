@@ -28,7 +28,7 @@ from .views import ReminderView
 # Credits:
 # General repo credits.
 # Thanks to PhasecoreX for the Reminder design and several ideas with his RemindMe cog (not the code)!
-# Thanks to PhasecoreX for the code to parse relative durations (https://github.com/PhasecoreX/PCXCogs/blob/master/remindme/reminder_parse.py)! I added myself `òn` kwarg et allow the converter to parse `ìn` and `every` in the same time.
+# Thanks to PhasecoreX for the code to parse relative durations (https://github.com/PhasecoreX/PCXCogs/blob/master/remindme/reminder_parse.py)! I added myself `òn` kwarg, allow the converter to parse `ìn` and `every` in the same time, and did many improvents.
 
 _ = Translator("Reminders", __file__)
 
@@ -206,6 +206,7 @@ class Reminders(Cog):
         cache = {user_id: reminders.copy() for user_id, reminders in self.cache.copy().items()}
         for reminders in cache.values():
             for reminder in reminders.values():
+                reminder: Reminder
                 if reminder.next_expires_at is None:
                     await reminder.delete()
                     continue

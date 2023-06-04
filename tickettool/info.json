@@ -3,7 +3,7 @@
     "name": "TicketTool",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
     "short": "A cog to manage a tickets system!",
-    "description": "Have you ever wanted to set up a ticket system, with many options for the user and the support team, on your server? Then this cog is for you! It has many settings, buttons, a reaction to create the ticket, many commands working in the ticket channel, different roles with access to different options... There is also a system of panels!",
+    "description": "Have you ever wanted to set up a tickets system, with many options for the user and the support team, on your server? Then this cog is for you! It has many settings, buttons, a reaction to create the ticket, many commands working in the ticket channel, different roles with access to different options... There is also a system of panels!",
     "tags": [
         "ticket",
         "tool",

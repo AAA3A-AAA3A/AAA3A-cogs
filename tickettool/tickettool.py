@@ -27,7 +27,7 @@ _ = Translator("TicketTool", __file__)
 
 @cog_i18n(_)
 class TicketTool(settings, DashboardIntegration, Cog):
-    """A cog to manage a ticket system!"""
+    """A cog to manage a tickets system!"""
 
     def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
@@ -229,6 +229,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
     async def cog_load(self):
         await self.edit_config_schema()
         await self.settings.add_commands()
+        await modlog.register_casetype("ticket_created", default_setting=True, image="🎫", case_str="New Ticket")
         await self.load_buttons()
 
     async def edit_config_schema(self):
@@ -1266,7 +1267,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 )
         elif interaction.data["custom_id"] == "close_ticket_button":
             modal = discord.ui.Modal(
-                title="Close the Ticket", timeout=180, custom_id="close_ticket_modal"
+                title="Close Ticket", timeout=180, custom_id="close_ticket_modal"
             )
             modal.on_submit = lambda interaction: interaction.response.defer(ephemeral=True)
             reason_input = discord.ui.TextInput(

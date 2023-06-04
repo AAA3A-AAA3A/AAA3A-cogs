@@ -165,24 +165,6 @@ class TimeConverter(commands.Converter):
                 raise ValueError(f"• Timestamp parsing: {' '.join([f'{e_arg}.' for e_arg in e.args])}")
 
         @executor()
-        def parse_recurrent(arg: str) -> typing.Tuple[datetime.datetime, typing.Any]:
-            r = RecurringEvent(now_date=local_now.replace(hour=9, minute=0, second=0, microsecond=0), preferred_time_range=(0, 12))
-            rrule_string = r.parse(arg)
-            if rrule_string is None:
-                raise ValueError("• Recurrent parsing: Impossible to parse this RRULE.")
-            elif isinstance(rrule_string, datetime.datetime):  # `parse_fuzzy_date` is better for this.
-                # return rrule_string.astimezone(tz=datetime.timezone.utc), None
-                raise ValueError("• Recurrent parsing: Impossible to parse this RRULE.")
-            rrule = dateutil.rrule.rrulestr(rrule_string)
-            expires_datetime = rrule.after(local_now.replace(tzinfo=None), inc=True)
-            if expires_datetime is None:
-                raise ValueError("• Recurrent parsing: Impossible to parse this RRULE.")
-            expires_datetime = expires_datetime.astimezone(tz=datetime.timezone.utc)
-            # if expires_datetime <= utc_now.replace(minute=utc_now.minute + 1):
-            #     expires_datetime += dateutil.relativedelta.relativedelta(minutes=2)
-            return expires_datetime, cog.Intervals.from_json([{"type": "rrule", "value": rrule_string, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp())}])
-
-        @executor()
         def parse_relative_date(
             arg: str, text: typing.Optional[str] = None
         ) -> typing.Tuple[datetime.datetime, typing.Optional[str], str]:
@@ -246,6 +228,24 @@ class TimeConverter(commands.Converter):
                 interval,
                 reminder_text.strip() if return_text and reminder_text else text,
             )
+
+        @executor()
+        def parse_recurrent(arg: str) -> typing.Tuple[datetime.datetime, typing.Any]:
+            r = RecurringEvent(now_date=local_now.replace(hour=9, minute=0, second=0, microsecond=0), preferred_time_range=(0, 12))
+            rrule_string = r.parse(arg)
+            if rrule_string is None:
+                raise ValueError("• Recurrent parsing: Impossible to parse this RRULE.")
+            elif isinstance(rrule_string, datetime.datetime):  # `parse_fuzzy_date` is better for this.
+                # return rrule_string.astimezone(tz=datetime.timezone.utc), None
+                raise ValueError("• Recurrent parsing: Impossible to parse this RRULE.")
+            rrule = dateutil.rrule.rrulestr(rrule_string)
+            expires_datetime = rrule.after(local_now.replace(tzinfo=None), inc=True)
+            if expires_datetime is None:
+                raise ValueError("• Recurrent parsing: Impossible to parse this RRULE.")
+            expires_datetime = expires_datetime.astimezone(tz=datetime.timezone.utc)
+            # if expires_datetime <= utc_now.replace(minute=utc_now.minute + 1):
+            #     expires_datetime += dateutil.relativedelta.relativedelta(minutes=2)
+            return expires_datetime, cog.Intervals.from_json([{"type": "rrule", "value": rrule_string, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp())}])
 
         @executor()
         def parse_fuzzy_date(arg: str, text: typing.Optional[str] = None) -> datetime.datetime:
@@ -367,11 +367,11 @@ class TimeConverter(commands.Converter):
                 except ValueError as e:
                     info.append(e.args[0])
                     try:
-                        remind_time, interval = await parse_recurrent(argument)
+                        remind_time, interval, text = await parse_relative_date(argument, text=content)
                     except ValueError as e:
                         info.append(e.args[0])
                         try:
-                            remind_time, interval, text = await parse_relative_date(argument, text=content)
+                            remind_time, interval = await parse_recurrent(argument)
                         except ValueError as e:
                             info.append(e.args[0])
                             try:

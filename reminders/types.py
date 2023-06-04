@@ -129,7 +129,7 @@ class IntervalRule:
                 expression=self.value,
                 verbose=True,
                 casing_type=CasingTypeEnum.Sentence,
-                locale_location="en_US",
+                locale_code="en_US",
                 use_24hour_time_format=True
             )
             return f"[{self.type.upper()}] {descriptor.get_full_description()}."
@@ -294,7 +294,7 @@ class Reminder:
                 _(
                     "{state}Okay, I will say {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
                 ) if self.content["type"] == "say" else _(
-                    "{state}Okay, I will remind {target_mention}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+                    "{state}Okay, I will remind {target_mention} of {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
                 )
             )
         ).format(
@@ -305,8 +305,8 @@ class Reminder:
                 if self.content["type"] == "message"
                 else _("this")  # (_("this command") if self.content["type"] == "command" else _("this"))
             )
-            if self.content["type"] != "text" or self.content["text"] is not None
-            else "that",
+            if self.content["type"] != "command" and self.content["text"] is not None
+            else ("this command" if self.content["type"] == "command" else "that"),
             destination_mention=(_(" in {destination_mention}").format(destination_mention=destination.mention) if (destination := self.cog.bot.get_channel(self.destination)) is not None else _(" in {destination} (Not found.)".format(destination=self.destination))) if self.destination is not None else "",
             interval_string=interval_string,
             timestamp=f"<t:{int(self.expires_at.timestamp())}:F>",
@@ -331,7 +331,7 @@ class Reminder:
                 self.next_expires_at, use_timestamp=True
             ),
             created_at_timestamp=f"<t:{int(self.created_at.timestamp())}:F>",
-            created_in_timestamp=self.cog.get_interval_string(self.created_at, use_timestamp=True),
+            created_in_timestamp=self.cog.get_interval_string(self.created_at, use_timestamp=False),
             interval=_("No interval(s).")
             if self.intervals is None
             else (

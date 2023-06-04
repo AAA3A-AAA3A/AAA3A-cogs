@@ -808,9 +808,10 @@ class Reminders(Cog):
         elif sort == "id":
             reminders = list(sorted(reminders.values(), key=lambda r: r.id))
         lists = []
-        while reminders != []:
-            li = reminders[: 15 if card else 5]
-            reminders = reminders[15 if card else 5:]
+        _reminders = reminders.copy()
+        while _reminders != []:
+            li = _reminders[: 15 if card else 5]
+            _reminders = _reminders[15 if card else 5:]
             lists.append(li)
         embeds = []
         for li in lists:
@@ -822,6 +823,7 @@ class Reminders(Cog):
                 color=await ctx.embed_color(),
             )
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_icon)
+            embed.set_footer(text=_("You have {len_reminders} reminders.").format(len_reminders=len(reminders)))
             for reminder in li:
                 embed.add_field(
                     name=f"Reminder #{reminder.id}", value=reminder.get_info(), inline=card

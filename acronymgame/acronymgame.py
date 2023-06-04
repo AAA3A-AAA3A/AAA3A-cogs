@@ -9,6 +9,7 @@ from .view import AcronymGameView
 
 # Credits:
 # General repo credits.
+# Thanks to Lemon for the cog idea!
 # Thanks to Flame for his tests which allowed to discover several errors!
 # Thanks to Vertyco for ideas, and leaderboard code (https://github.com/vertyco/vrt-cogs/blob/main/pixl/pixl.py)!
 

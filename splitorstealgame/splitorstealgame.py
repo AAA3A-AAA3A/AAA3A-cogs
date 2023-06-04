@@ -9,6 +9,7 @@ from .view import SplitOrStealGameView
 
 # Credits:
 # General repo credits.
+# Thanks to Lemon for the cog idea!
 
 _ = Translator("SplitOrStealGame", __file__)
 

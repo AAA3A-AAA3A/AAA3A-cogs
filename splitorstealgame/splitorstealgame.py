@@ -25,7 +25,7 @@ class SplitOrStealGame(Cog):
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.guild_only()
-    @commands.hybrid_command(aliases=["sosg"])
+    @commands.hybrid_command(aliases=["sosg", "sos"])
     async def splitorstealgame(self, ctx: commands.Context) -> None:
         """
         Play a match of SplitOrSteal game.

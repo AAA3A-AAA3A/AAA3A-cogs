@@ -16,13 +16,13 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-Don't forget anything anymore! Reminders in channels, in DMs or FIFO commands...
+Don't forget anything anymore! Reminders in DMs, channels, FIFO commands sheduler, say sheduler... With 'Me Too', snooze and buttons.
 
 --------
 Commands
 --------
 
-Here are all the commands included in this cog (24):
+Here are all the commands included in this cog (26):
 
 * ``[p]remind [destination] [target] <time> [message_or_text=None]``
  Create a reminder with optional reminder text or message, in a channel with an user/role ping.
@@ -51,8 +51,14 @@ Here are all the commands included in this cog (24):
 * ``[p]reminder repeat <reminder> <repeat>``
  Edit the repeat of an existing Reminder from its ID.
 
+* ``[p]reminder say [destination] <time> <text>``
+ Create a reminder who will say/send text.
+
 * ``[p]reminder text <reminder> <text>``
  Edit the text of an existing Reminder from its ID.
+
+* ``[p]reminder timetips``
+ Show time parsing tips.
 
 * ``[p]reminder timezone <timezone>``
  Set your timezone for the time converter.

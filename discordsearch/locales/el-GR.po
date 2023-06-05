@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-15 15:47\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 18:22\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -17,32 +17,32 @@ msgstr ""
 "X-Crowdin-File-ID: 138\n"
 "Language: el_GR\n"
 
-#: discordsearch\discordsearch.py:39
+#: discordsearch\discordsearch.py:30
 #, docstring
 msgid "A cog to edit roles!"
 msgstr "Ένα γρανάζι για την επεξεργασία ρόλων!"
 
-#: discordsearch\discordsearch.py:105
+#: discordsearch\discordsearch.py:96
 msgid "You must provide at least one parameter."
 msgstr "Πρέπει να δώσετε τουλάχιστον μία παράμετρο."
 
-#: discordsearch\discordsearch.py:194
+#: discordsearch\discordsearch.py:185
 msgid "Look at the original message."
 msgstr "Κοιτάξτε το αρχικό μήνυμα."
 
-#: discordsearch\discordsearch.py:210
+#: discordsearch\discordsearch.py:201
 msgid "Search in #{channel.name} ({channel.id})"
 msgstr "Αναζήτηση στο #{channel.name} ({channel.id})"
 
-#: discordsearch\discordsearch.py:211
+#: discordsearch\discordsearch.py:202
 msgid "Sorry, I could not find any results."
 msgstr "Λυπάμαι, δεν μπόρεσα να βρω αποτελέσματα."
 
-#: discordsearch\discordsearch.py:224
+#: discordsearch\discordsearch.py:215
 msgid "Search in #{channel.name} ({channel.id}) in {total}s"
 msgstr "Αναζήτηση στο #{channel.name} ({channel.id}) στο {total}s"
 
-#: discordsearch\discordsearch.py:236
+#: discordsearch\discordsearch.py:227
 msgid "Unrecognized date/time."
 msgstr "Μη αναγνωρισμένη ημερομηνία/ώρα."
 

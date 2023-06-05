@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-03 17:04\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:29\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
@@ -17,26 +17,26 @@ msgstr ""
 "X-Crowdin-File-ID: 88\n"
 "Language: pt_PT\n"
 
-#: ip\ip.py:27
+#: ip\ip.py:21
 #, docstring
-msgid "A cog to get the ip address of the bot!"
-msgstr "Uma engrenagem para obter o endereço ip do bot!"
+msgid "A cog to get the ip address  of the bot's host machine!"
+msgstr "Uma engrenagem para obter o endereço IP da máquina anfitriã do bot!"
 
-#: ip\ip.py:73
+#: ip\ip.py:67
 #, docstring
-msgid "Get the ip address of the bot."
-msgstr "Obter o endereço ip do bot."
+msgid "Get the ip address of the bot's host machine."
+msgstr "Obtém o endereço IP da máquina anfitriã do bot."
 
-#: ip\ip.py:78
+#: ip\ip.py:72
 msgid "The ip address of your bot is `{ip}`."
 msgstr "O endereço ip do seu bot é `{ip}`."
 
-#: ip\ip.py:82
+#: ip\ip.py:76
 #, docstring
-msgid "Get the ip address website."
-msgstr "Obter o sítio web do endereço ip."
+msgid "Get the ip address website of the bot's host machine."
+msgstr "Obter o endereço IP do site da máquina anfitriã do bot."
 
-#: ip\ip.py:90
+#: ip\ip.py:83
 msgid "The Administrator Panel website is http://{ip}:{port}/."
 msgstr "O website do Painel de Administrador é{ip}:{port}/."
 

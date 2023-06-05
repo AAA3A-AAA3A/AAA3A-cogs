@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-02 17:31\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 18:22\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -17,32 +17,32 @@ msgstr ""
 "X-Crowdin-File-ID: 138\n"
 "Language: fr_FR\n"
 
-#: discordsearch\discordsearch.py:39
+#: discordsearch\discordsearch.py:30
 #, docstring
 msgid "A cog to edit roles!"
 msgstr "Un cog pour modifier les rôles !"
 
-#: discordsearch\discordsearch.py:105
+#: discordsearch\discordsearch.py:96
 msgid "You must provide at least one parameter."
 msgstr "Vous devez fournir au moins un paramètre."
 
-#: discordsearch\discordsearch.py:194
+#: discordsearch\discordsearch.py:185
 msgid "Look at the original message."
 msgstr "Regardez le message original."
 
-#: discordsearch\discordsearch.py:210
+#: discordsearch\discordsearch.py:201
 msgid "Search in #{channel.name} ({channel.id})"
 msgstr "Recherche dans #{channel.name} ({channel.id})"
 
-#: discordsearch\discordsearch.py:211
+#: discordsearch\discordsearch.py:202
 msgid "Sorry, I could not find any results."
 msgstr "Désolé, je n'ai trouvé aucun résultat."
 
-#: discordsearch\discordsearch.py:224
+#: discordsearch\discordsearch.py:215
 msgid "Search in #{channel.name} ({channel.id}) in {total}s"
 msgstr "Recherche dans #{channel.name} ({channel.id}) dans {total}s"
 
-#: discordsearch\discordsearch.py:236
+#: discordsearch\discordsearch.py:227
 msgid "Unrecognized date/time."
 msgstr "Date/heure non reconnue."
 

@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:25\n"
+"Last-Translator: \n"
+"Language-Team: Spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-ES\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/clearchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 78\n"
+"Language: es_ES\n"
+
+#: clearchannel\clearchannel.py:20
+#, docstring
+msgid "A cog to transfer all messages channel in a other channel!"
+msgstr "Un engranaje para transferir todos los mensajes de un canal a otro!"
+
+#: clearchannel\clearchannel.py:93
+msgid "⚠️ - ClearChannel"
+msgstr "⚠️ - ClearChannel"
+
+#: clearchannel\clearchannel.py:94
+msgid "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?"
+msgstr "¿Realmente quieres borrar TODOS los mensajes del canal {old_channel.mention} ({old_channel.id})?"
+
+#: clearchannel\clearchannel.py:104
+msgid "Clear Channel requested by {ctx.author} ({ctx.author.id})."
+msgstr "Clear Channel solicitado por {ctx.author} ({ctx.author.id})."
+
+#: clearchannel\clearchannel.py:110
+msgid "🗑️-Deleted-{old_channel.name}"
+msgstr "🗑️-Borrado-{old_channel.name}"
+
+#: clearchannel\clearchannel.py:124
+msgid "ClearChannel"
+msgstr "ClearChannel"
+
+#: clearchannel\clearchannel.py:125
+msgid "ALL the messages in this channel have been deleted..."
+msgstr "TODOS los mensajes de este canal han sido borrados..."
+
+#: clearchannel\clearchannel.py:143
+msgid "All messages in channel #{old_channel.name} ({old_channel.id}) have been deleted! You can find the new channel, with the same permissions: #{new_channel.name} ({new_channel.id})."
+msgstr "¡Todos los mensajes del canal #{old_channel.name} ({old_channel.id}) han sido borrados! Puedes encontrar el nuevo canal, con los mismos permisos: #{new_channel.name} ({new_channel.id})."
+

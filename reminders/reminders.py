@@ -557,6 +557,7 @@ class Reminders(Cog):
         """List, edit and delete existing reminders, or create FIFO/commands reminders."""
         pass
 
+    @commands.admin_or_permissions(administrator=True)
     @reminder.command(aliases=["command"])
     async def fifo(
         self,

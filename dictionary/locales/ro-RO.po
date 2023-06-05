@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:31\n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ro\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/dictionary/locales/messages.pot\n"
+"X-Crowdin-File-ID: 229\n"
+"Language: ro_RO\n"
+
+#: dictionary\dictionary.py:22
+#, docstring
+msgid "A cog to search an english term/word in the dictionary! Synonyms, antonyms, phonetics (with audio)..."
+msgstr "O rotiță pentru a căuta un termen/cuvânt englezesc în dicționar! Sinonime, antonime, fonetică (cu audio)..."
+
+#: dictionary\dictionary.py:85
+msgid "Word not found in English dictionary."
+msgstr "Cuvânt care nu se găsește în dicționarul englez."
+
+#: dictionary\view.py:33
+msgid "View the source"
+msgstr "Vezi sursa"
+

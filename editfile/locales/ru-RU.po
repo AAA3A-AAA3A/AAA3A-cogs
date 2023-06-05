@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-03 16:47\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 18:22\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -17,12 +17,12 @@ msgstr ""
 "X-Crowdin-File-ID: 86\n"
 "Language: ru_RU\n"
 
-#: editfile\editfile.py:38
+#: editfile\editfile.py:28
 #, docstring
 msgid "A cog to get a file and replace it from its path from Discord!"
 msgstr "Шестеренка для получения файла и замены его по пути из Discord!"
 
-#: editfile\editfile.py:60
+#: editfile\editfile.py:50
 #, docstring
 msgid "Get a file on the bot's host machine from its path.\n"
 "        `#L10` or `#L10-L30` is supported.\n"
@@ -31,37 +31,37 @@ msgstr "Получить файл на хост-машине бота по ег�
 "        Поддерживаются `#L10` или `#L10-L30`.\n"
 "        "
 
-#: editfile\editfile.py:65 editfile\editfile.py:144
+#: editfile\editfile.py:55 editfile\editfile.py:131
 msgid "Couldn't parse this input."
 msgstr "Не удалось разобрать этот ввод."
 
-#: editfile\editfile.py:77
+#: editfile\editfile.py:67
 msgid "Cowardly refusing to read a file with no size stat. (it may be empty, endless or inaccessible)."
 msgstr "Трусливый отказ от чтения файла, не имеющего статистики размера. (он может быть пустым, бесконечным или недоступным)."
 
-#: editfile\editfile.py:83
+#: editfile\editfile.py:73
 msgid "Cowardly refusing to read a file >128MB."
 msgstr "Трусливый отказ читать файл размером >128 МБ."
 
-#: editfile\editfile.py:101 editfile\editfile.py:274 editfile\editfile.py:284
-#: editfile\editfile.py:297 editfile\editfile.py:308
+#: editfile\editfile.py:91 editfile\editfile.py:256 editfile\editfile.py:266
+#: editfile\editfile.py:279 editfile\editfile.py:290
 msgid "This file cannot be found on the host machine."
 msgstr "Этот файл не может быть найден на хост-машине."
 
-#: editfile\editfile.py:105 editfile\editfile.py:171 editfile\editfile.py:278
-#: editfile\editfile.py:288 editfile\editfile.py:301 editfile\editfile.py:312
+#: editfile\editfile.py:95 editfile\editfile.py:158 editfile\editfile.py:260
+#: editfile\editfile.py:270 editfile\editfile.py:283 editfile\editfile.py:294
 msgid "The path you specified refers to a directory, not a file."
 msgstr "Указанный вами путь относится к каталогу, а не к файлу."
 
-#: editfile\editfile.py:126 editfile\editfile.py:162
+#: editfile\editfile.py:115 editfile\editfile.py:149
 msgid "There are only {len_lines} lines in this file."
 msgstr "В этом файле всего {len_lines} строк."
 
-#: editfile\editfile.py:131
+#: editfile\editfile.py:120
 msgid "Here are the contents of the file `{path}`."
 msgstr "Вот содержимое файла `{path}`."
 
-#: editfile\editfile.py:138
+#: editfile\editfile.py:125
 #, docstring
 msgid "Replace a file on the bot's host machine from its path.\n"
 "        `#L10` or `#L10-L30` is supported.\n"
@@ -70,58 +70,58 @@ msgstr "Заменить файл на хост-машине бота по ег�
 "        Поддерживается `#L10` или `#L10-L30`.\n"
 "        "
 
-#: editfile\editfile.py:167
+#: editfile\editfile.py:154
 msgid "This original file cannot be found on the host machine."
 msgstr "Этот оригинальный файл не может быть найден на хост-машине."
 
-#: editfile\editfile.py:175
+#: editfile\editfile.py:162
 msgid "You must send the command with an attachment that will be used to replace the original file."
 msgstr "Вы должны отправить команду с вложением, которое будет использовано для замены оригинального файла."
 
-#: editfile\editfile.py:200
+#: editfile\editfile.py:187
 msgid "This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly."
 msgstr "Это оригинальный/старый файл, доступный по пути `{path}`. Обычно этот файл заменен правильно."
 
-#: editfile\editfile.py:208
+#: editfile\editfile.py:195
 #, docstring
 msgid "Get a cog directory on the bot's host machine from its name."
 msgstr "Получите каталог cog на хост-машине бота из его имени."
 
-#: editfile\editfile.py:211
+#: editfile\editfile.py:198
 msgid "Could not find a cog with this name."
 msgstr "Не удалось найти зубца с таким названием."
 
-#: editfile\editfile.py:218
+#: editfile\editfile.py:205
 msgid "This cog had its data directory removed."
 msgstr "У этого зубца был удален каталог данных."
 
-#: editfile\editfile.py:220
+#: editfile\editfile.py:207
 msgid "This cog does not store any data."
 msgstr "Эта шестеренка не хранит никаких данных."
 
-#: editfile\editfile.py:241
+#: editfile\editfile.py:228
 #, docstring
 msgid "List all files/directories of a directory from its path."
 msgstr "Перечислить все файлы/каталоги каталога по его пути."
 
-#: editfile\editfile.py:245
+#: editfile\editfile.py:232
 msgid "This directory cannot be found on the host machine."
 msgstr "Этот каталог не может быть найден на хост-машине."
 
-#: editfile\editfile.py:249
+#: editfile\editfile.py:236
 msgid "The path you specified refers to a file, not a directory."
 msgstr "Указанный вами путь относится к файлу, а не к каталогу."
 
-#: editfile\editfile.py:270
+#: editfile\editfile.py:252
 #, docstring
 msgid "Rename a file."
 msgstr "Переименовать файл."
 
-#: editfile\editfile.py:290 editfile\editfile.py:314
+#: editfile\editfile.py:272 editfile\editfile.py:296
 msgid "The `{path}` file has been deleted."
 msgstr "Файл `{path}` был удален."
 
-#: editfile\editfile.py:294
+#: editfile\editfile.py:276
 #, docstring
 msgid "Delete a file."
 msgstr "Удалить файл."

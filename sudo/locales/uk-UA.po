@@ -1,0 +1,62 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:27\n"
+"Last-Translator: \n"
+"Language-Team: Ukrainian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: uk\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/sudo/locales/messages.pot\n"
+"X-Crowdin-File-ID: 100\n"
+"Language: uk_UA\n"
+
+#: sudo\sudo.py:41
+#, docstring
+msgid "A cog to allow bot owners to be normal users in terms of permissions!"
+msgstr "Гвинтик, який дозволяє власникам ботів бути звичайними користувачами з точки зору дозволів!"
+
+#: sudo\sudo.py:100
+#, docstring
+msgid "Sudo as the owner of the bot.\n\n"
+"        Use `[p]su`!\n"
+"        "
+msgstr "Sudo як власник бота.\n\n"
+"        Використовуйте `[p]su`!\n"
+"        "
+
+#: sudo\sudo.py:109
+#, docstring
+msgid "Unsudo as normal user.\n\n"
+"        Use `[p]unsu`!\n"
+"        "
+msgstr "Вийдіть з системи як звичайний користувач.\n\n"
+"        Використовуйте `[p]unsu`!\n"
+"        "
+
+#: sudo\sudo.py:120
+#, docstring
+msgid "Rise as the bot owner for the specified command only.\n\n"
+"        Use `[p]sudo`!\n"
+"        "
+msgstr "Вступайте від імені власника бота лише для вказаної команди.\n\n"
+"        Використовуйте `[p]sudo`!\n"
+"        "
+
+#: sudo\sudo.py:148
+#, docstring
+msgid "Sudo as the owner of the bot for the specified timeout.\n"
+"        The time should be between 10 seconds and 1 day.\n\n"
+"        Use `[p]sutimeout`!\n"
+"        "
+msgstr "Sudo як власника бота на вказаний таймаут.\n"
+"        Час має бути від 10 секунд до 1 доби.\n\n"
+"        Використовуйте `[p]sutimeout`!\n"
+"        "
+

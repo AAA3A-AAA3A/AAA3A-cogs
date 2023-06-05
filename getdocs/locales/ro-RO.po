@@ -1,0 +1,71 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:27\n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ro\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/getdocs/locales/messages.pot\n"
+"X-Crowdin-File-ID: 183\n"
+"Language: ro_RO\n"
+
+#: getdocs\getdocs.py:212 getdocs\getdocs.py:531
+msgid "This source doesn't exist."
+msgstr "Această sursă nu există."
+
+#: getdocs\getdocs.py:218
+#, docstring
+msgid "A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."
+msgstr "O rotiță pentru a obține și afișa unele documentații în Discord! Utilizați `[p]listsources` pentru a obține o listă cu toate sursele disponibile."
+
+#: getdocs\getdocs.py:342
+msgid "Documentations cache is not yet built."
+msgstr "Memoria cache a documentațiilor nu este încă construită."
+
+#: getdocs\getdocs.py:393
+msgid "No results found."
+msgstr "Nu s-au găsit rezultate."
+
+#: getdocs\getdocs.py:523
+#, docstring
+msgid "\n"
+"        Enable a Documentations source.\n"
+"        "
+msgstr "\n"
+"        Activați o sursă de documentare.\n"
+"        "
+
+#: getdocs\getdocs.py:529
+msgid "This source is already enabled."
+msgstr "Această sursă este deja activată."
+
+#: getdocs\getdocs.py:545
+#, docstring
+msgid "\n"
+"        Disable a Documentations source.\n"
+"        "
+msgstr "\n"
+"        Dezactivează o sursă de documentare.\n"
+"        "
+
+#: getdocs\getdocs.py:554
+#, docstring
+msgid "\n"
+"        Show stats about all documentations sources.\n"
+"        "
+msgstr "\n"
+"        Afișează statisticile despre toate sursele de documentare.\n"
+"        "
+
+#: getdocs\getdocs.py:1460
+msgid "RTFM caching isn't finished."
+msgstr "RTFM caching nu este terminat."
+

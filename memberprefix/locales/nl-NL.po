@@ -1,0 +1,51 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:27\n"
+"Last-Translator: \n"
+"Language-Team: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: nl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/memberprefix/locales/messages.pot\n"
+"X-Crowdin-File-ID: 92\n"
+"Language: nl_NL\n"
+
+#: memberprefix\memberprefix.py:20
+#, docstring
+msgid "A cog to allow a member to choose custom prefixes, just for them!"
+msgstr "Een tandwiel waarmee een lid aangepaste voorvoegsels kan kiezen, speciaal voor hem of haar!"
+
+#: memberprefix\memberprefix.py:165
+msgid "You now use this server or global prefixes."
+msgstr "Je gebruikt nu deze server of globale voorvoegsels."
+
+#: memberprefix\memberprefix.py:169
+msgid "A prefix is above the maximal length (25 characters).\n"
+"This is possible for global or per-server prefixes, but not for per-member prefixes."
+msgstr "Een prefix is langer dan de maximale lengte (25 tekens).\n"
+"Dit is mogelijk voor globale of per-server prefixen, maar niet voor prefixen per lid."
+
+#: memberprefix\memberprefix.py:175
+msgid "Prefixes cannot start with `/`, as it conflicts with Discord's slash commands."
+msgstr "Voorvoegsels kunnen niet beginnen met `/`, omdat dit conflicteert met de slash-commando's van Discord."
+
+#: memberprefix\memberprefix.py:179
+msgid "Prefix for you only set."
+msgstr "Voorvoegsel alleen voor jou ingesteld."
+
+#: memberprefix\memberprefix.py:181
+msgid "Prefixes for you only set."
+msgstr "Voorvoegsels alleen voor jou ingesteld."
+
+#: memberprefix\memberprefix.py:250
+#, docstring
+msgid "Clear all members prefixes for this guild."
+msgstr "Wis alle voorvoegsels van leden voor dit gilde."
+

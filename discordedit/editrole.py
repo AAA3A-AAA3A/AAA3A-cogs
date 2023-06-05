@@ -7,9 +7,11 @@ import typing  # isort:skip
 
 from redbot.core.utils.chat_formatting import box, pagify
 
-_ = Translator("DiscordEdit", __file__)
+def _(untranslated: str) -> str:  # `redgettext` will found these strings.
+    return untranslated
+ERROR_MESSAGE = _("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}")
 
-ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+_ = Translator("DiscordEdit", __file__)
 
 
 class PositionConverter(commands.Converter):

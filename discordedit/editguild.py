@@ -16,9 +16,11 @@ TimedeltaConverter = get_timedelta_converter(
     minimum=datetime.timedelta(seconds=0),
 )
 
-_ = Translator("DiscordEdit", __file__)
+def _(untranslated: str) -> str:  # `redgettext` will found these strings.
+    return untranslated
+ERROR_MESSAGE = _("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}")
 
-ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+_ = Translator("DiscordEdit", __file__)
 
 
 class LocaleConverter(commands.Converter):

@@ -13,12 +13,14 @@ import chat_exporter
 # General repo credits.
 # Thanks to Red's Cleanup cog for the converters and help with the message retrieval function! (https://github.com/Cog-Creators/Red-DiscordBot/blob/V3/develop/redbot/cogs/cleanup/converters.py#L12)
 
-_ = Translator("ExportChannel", __file__)
-
+def _(untranslated: str) -> str:  # `redgettext` will found these strings.
+    return untranslated
 RESULT_MESSAGE = _(
     "Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nThere are {count_messages} exported messages.\nRemember that exporting other users' messages from Discord does not respect the TOS."
 )
 LINK_MESSAGE = _("[Click here to view the transcript.]({url})")
+
+_ = Translator("ExportChannel", __file__)
 
 
 @cog_i18n(_)

@@ -15,9 +15,11 @@ from redbot.core.utils.tunnel import Tunnel
 # Thanks to Say from LaggronsDumb for the attachments in the single messages and webhooks! (https://github.com/laggron42/Laggrons-Dumb-Cogs/tree/v3/say)
 # Thanks to CruxCraft on GitHub for the idea of allowing channels from other servers! (https://github.com/AAA3A-AAA3A/AAA3A-cogs/issues/1)
 
-_ = Translator("TransferChannel", __file__)
+def _(untranslated: str) -> str:  # `redgettext` will found these strings.
+    return untranslated
+RESULT_MESSAGE = _("There are {count_messages} transfered messages from {source.mention} to {destination.mention}.")
 
-RESULT_MESSAGE = "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
+_ = Translator("TransferChannel", __file__)
 
 
 @cog_i18n(_)

@@ -21,8 +21,6 @@ from redbot.core.utils.chat_formatting import bold, box
 # Thanks to Jayro for Medicat!
 # Thanks to Matt because this cog is for him bot.
 
-_ = Translator("Medicat", __file__)
-
 MEDICAT_ICON_URL = None
 
 MEDICAT_GUILD = 829469886681972816
@@ -40,113 +38,115 @@ BOOTABLES_TOOLS_UPDATE_ROLE = None
 TEST_GUILD = 886147551890399253
 TEST_CHANNEL = 905737223348047914
 
+def _(untranslated: str) -> str:  # `redgettext` will found these strings.
+    return untranslated
 CUSTOM_COMMANDS = {
     "customtools": {
-        "title": (
+        "title": _(
             "Can I add my own bootable tools (iso, wim, vhd) or PortableApps softwares to Medicat USB?"
         ),
-        "description": (
+        "description": _(
             "Please feel free to modify MediCat to YOUR individual needs! 😄\nTo add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\nThen you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template.\nAbsolutely, I encourage it!"
         ),
     },
     "free": {
-        "title": ("Is Medicat free?"),
-        "description": (
+        "title": _("Is Medicat free?"),
+        "description": _(
             "Absolutely. I will never charge money for MediCat, or accept donations. However, feel free to share your ideas, questions, and concerns in this thread. That's how you can give back. 🙂"
         ),
     },
     "howinstall": {
-        "title": ("How do I install Medicat USB?"),
-        "description": (
+        "title": _("How do I install Medicat USB?"),
+        "description": _(
             "1) Install the latest version of Ventoy on your USB stick (<https://github.com/ventoy/Ventoy/releases> & <https://ventoy.net/en/doc_start.html>).\n2) Download the last version of Medicat USB with Torrent, Mega or Google Drive (<https://medicatusb.com/>).\n3) Extract the downloaded zips to the root of the USB stick.\nFull tutorial: <https://medicatusb.com/docs/installation/installing-medicat/>\nYou can also use the automatic installer of MON5TERMATT (<https://medicatusb.com/installer/>).\nWarning: do not forget to disable your antivirus software (see the `virus` command for more information)."
         ),
     },
     "kofi": {
-        "title": ("How to make a donation?"),
-        "description": (
+        "title": _("How to make a donation?"),
+        "description": _(
             "@Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\n@MON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\n@AAA3A (Medicat Developer): Nothing"
         ),
     },
     "medicatversion": {
-        "title": ("What is the latest version of Medicat USB?"),
-        "description": (
+        "title": _("What is the latest version of Medicat USB?"),
+        "description": _(
             "The latest version of Medicat USB is 21.12!\n||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||"
         ),
     },
     "menus": {
-        "title": ("How to download one of the menus?"),
-        "description": (
+        "title": _("How to download one of the menus?"),
+        "description": _(
             "Here are the latest links to download the latest versions of the menus:\n- Jayro's Lockîck: \n<https://mega.nz/file/ZtpwEDhR#4bCjUDri2hhUlCgv8Y1EmZVyUnGyhqZjCo0fazXLzqY>\n- AAA3A's Backup: \n<https://mega.nz/file/s8hATRbZ#C28qA8HWKi_xikC6AUG46DiXKIG2Qjl__-4MOl6SI7w>\n- AAA3A's Partition: \n<https://mega.nz/file/w8oFkKYQ#5BbIf7K6pyxYDlE6L4efPqtHUWtCMmx_kta_QHejhpk>\nHere is also a link that should never change to access the same folder containing all the menus: \n<https://mega.nz/folder/FtRCgLQL#KTq897WQiXCJT8OQ3cT9Tg>"
         ),
     },
     "minios": {
-        "title": ("Can I install Mini Windows 10 as my main OS?"),
-        "description": (
+        "title": _("Can I install Mini Windows 10 as my main OS?"),
+        "description": _(
             "No, it doesn't work like that. It's a WinPE image (Windows Pre-install Environment) that runs in memory. It's primary use is to troubleshoot a troublesome PC."
         ),
     },
     "missingfiles": {
-        "title": ("See what files are missing using the quick SFV program"),
-        "description": (
+        "title": _("See what files are missing using the quick SFV program"),
+        "description": _(
             "In order to see what files are missing using the quick SFV program, please scroll all the way to the top once it has finished scanning."
         ),
         "image_url": "https://media.discordapp.net/attachments/893780404031590421/1107907798278352956/Screenshot_22.png",
     },
     "noiso": {
-        "title": ("How do I download the Medicat USB iso file?"),
-        "description": (
+        "title": _("How do I download the Medicat USB iso file?"),
+        "description": _(
             "Medicat USB is not available as an iso file.\nPreviously, Medicat USB was available as an iso file. Now it uses Ventoy to run. It is currently impossible to put Ventoy and therefore Medicat USB in an iso file, or at least not without difficulties."
         ),
     },
     "portableapps": {
-        "title": ("Can I run the PortableApps on my current PC without booting up MediCat?"),
-        "description": (
+        "title": _("Can I run the PortableApps on my current PC without booting up MediCat?"),
+        "description": _(
             "Yes, just mount the MediCat USB, and open Start.exe to launch the platform. These are the same exact apps that get loaded within Mini Windows 10. So if you update them, they will show up updated in Mini Windows 10 as well."
         ),
     },
     "updateonly": {
-        "title": ("How can I update Medicat USB without having to install all the files again?"),
-        "description": (
+        "title": _("How can I update Medicat USB without having to install all the files again?"),
+        "description": _(
             "For the time being, you are in any case obliged to download all Medicat USB files again to update it. However, if you only want to keep your previous personal changes, you can save them somewhere and reproduce them on the new instance of the bootable USB stick.\nFor Medicat USB 22.06, @AAA3A is currently coding an update only script for Medicat USB, in batch. It will be downloaded with only the necessary files and will however only work from one version to another, after being prepared in advance."
         ),
     },
     "usbvhd": {
-        "title": ("What is the difference between Medicat USB and Medicat VHD?"),
-        "description": (
+        "title": _("What is the difference between Medicat USB and Medicat VHD?"),
+        "description": _(
             "**Medicat USB** is a bootable menu that runs on Ventoy and contains all the necessary tools for computer troubleshooting. It contains for example Malwarebytes bootable for virus scans, Mini Windows 10 for a winPE utility and Jayro's Lockpick for all things password related.\n<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>\n**Medicat VHD** is a full-featured windows, using the real performance of the computer. It is therefore much more powerful than Mini Windows 10. Moreover, all data is saved and you can find it again at each reboot. (Not intended to be used as an operating system).\n<https://gbatemp.net/threads/official-medicat-vhd-a-usb-bootable-windows-10-virtual-harddisk-for-pc-repair.581637/>\n**Jayro's Lockpick** is a winPE with a menu containing all the necessary tools to remove/bypass/retrieve a Windows password or even for a server.\n<https://gbatemp.net/threads/release-jayros-lockpick-a-bootable-password-removal-suite-winpe.579278/>\n**Malwarebytes bootable** is a very powerful antivirus. Since it is launched from a winPE, a potential virus cannot prevent it from running properly.\n<https://gbatemp.net/threads/unofficial-malwarebytes-bootable.481046/>\n**Medicat Second Opinion** is a set of 11 bootable antiviruses to clean viruses in a computer. But most of them only work on legacy BIOS and not UEFI.\n<https://gbatemp.net/threads/medicat-second-opinion-a-collection-of-bootable-antivirus-boot-disks-on-a-single-usb-device.577842/>"
         ),
     },
     "virus": {
-        "title": ("Why does my antivirus software detect Medicat as a virus?"),
-        "description": (
+        "title": _("Why does my antivirus software detect Medicat as a virus?"),
+        "description": _(
             "Medicat USB does not contain any viruses! If an antivirus software detects one of its files as such, it is a false positive.\nAs you know, Medicat USB contains tools that can reset a partition, find a password, and modify the system. Portable applications can be falsely flagged because of how they are cracked and packaged.\nFor these reasons all antivirus software's 'real-time scanning' should be disabled when installing, and sometimes even when using, Medicat USB.\nAll the scripts associated with the project (published by one of the 3 developers) and Ventoy do not have one either."
         ),
     },
     "whatmedicat": {
-        "title": ("What is Medicat USB?"),
-        "description": (
+        "title": _("What is Medicat USB?"),
+        "description": _(
             "Medicat USB contains tools to backup/restore data, to manage disks/partitions, to reset/bypass/find a Windows password, to use software with admin rights from a winPE, to do virus scans. In addition, it uses Ventoy, which allows you to add your own bootable tools with a simple copy and paste."
         ),
     },
     "whenupdate": {
-        "title": ("How often will Medicat be updated?"),
-        "description": (
+        "title": _("How often will Medicat be updated?"),
+        "description": _(
             "MediCat USB is now a rolling release, so will be regularly updated with major releases, and minor updates as needed (Typically monthly or bi-monthly). The links here will always be the latest version. The PortableApps are easily updatable by the user, once they have been 'burned' to USB."
         ),
     },
     "wimvhd": {
-        "title": ("Why doesn't Ventoy display Wim and VHD files?"),
-        "description": (
+        "title": _("Why doesn't Ventoy display Wim and VHD files?"),
+        "description": _(
             "You must download an additional plugin/file and place it in the `USB\\ventoy\\` folder (create it if necessary).\n\n**WimBoot Plugin (https://ventoy.net/en/plugin_wimboot.html):**\n- Download `ventoy_wimboot.img` file from <https://github.com/ventoy/wimiso/releases>.\n- Put the file under `ventoy` directory in the `ventoy partition` of the USB stick, that is `/ventoy/ventoy_wimboot.img` and that's all.\n\n**VhdBoot Plugin (<https://ventoy.net/en/plugin_vhdboot.html>):**\n- Download `ventoy_vhdboot.img` file from <https://github.com/ventoy/vhdiso/releases>.\n- Put the file under `ventoy` directory in the `ventoy` partition of the USB stick, that is `/ventoy/ventoy_vhdboot.img` and that's all."
         ),
     },
     "xy": {
-        "title": ("X & Y"),
-        "description": (
+        "title": _("X & Y"),
+        "description": _(
             "What is the context?\nIf you have any problems or would like to ask for help, please give information about what you are not able to do. Don't just say you don't understand how to make x software work, say where you are, what is wrong with it and what is the potential error. \nThank you for your understanding."
         ),
     },
-    "test": {"title": ("Test!"), "description": ("Test.")},
+    "test": {"title": _("Test!"), "description": _("Test.")},
 }
 
 BOOTABLES_TOOLS = {
@@ -261,6 +261,8 @@ BOOTABLES_TOOLS = {
         "regex": r"Parted Magic (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Boot ISO \(x64\)",
     },
 }
+
+_ = Translator("Medicat", __file__)
 
 
 @cog_i18n(_)

@@ -10,10 +10,11 @@ import json
 
 from redbot.core.utils.chat_formatting import box, humanize_list, pagify
 
+def _(untranslated: str) -> str:  # `redgettext` will found these strings.
+    return untranslated
+ERROR_MESSAGE = _("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}")
+
 _ = Translator("DiscordEdit", __file__)
-
-ERROR_MESSAGE = "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
-
 
 class AutoModRuleConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> discord.AutoModRule:

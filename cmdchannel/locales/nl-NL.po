@@ -1,0 +1,92 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:26\n"
+"Last-Translator: \n"
+"Language-Team: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: nl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/cmdchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 80\n"
+"Language: nl_NL\n"
+
+#: cmdchannel\cmdchannel.py:17
+#, docstring
+msgid "A cog to send the result of a command to another channel!"
+msgstr "Een tandwiel om het resultaat van een commando naar een ander kanaal te sturen!"
+
+#: cmdchannel\cmdchannel.py:75
+#, docstring
+msgid "Act as if the command had been typed in the channel of your choice.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
+"        If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).\n\n"
+"        Use `[p]cmdchannel`!\n"
+"        "
+msgstr "Doe alsof de opdracht in het kanaal van je keuze is getypt.\n"
+"        Het voorvoegsel moet niet worden ingevoerd als het een commando is. Het is alleen een bericht als de opdracht ongeldig is.\n"
+"        Als je geen kanaal opgeeft, wordt het huidige kanaal gebruikt, tenzij het commando dat je wilt gebruiken de naam van een bestaand kanaal is (help of test bijvoorbeeld).\n\n"
+"        Gebruik `[p]cmdchannel`!\n"
+"        "
+
+#: cmdchannel\cmdchannel.py:84 cmdchannel\cmdchannel.py:153
+msgid "To send commands to another server, you must be there."
+msgstr "Om commando's naar een andere server te sturen, moet je daar zijn."
+
+#: cmdchannel\cmdchannel.py:107
+#, docstring
+msgid "Act as if the command had been typed by imitating the specified user.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
+"        If you do not specify a user, the author will be used.\n\n"
+"        Use `[p]cmduser`!\n"
+"        "
+msgstr "Doe alsof het commando is getypt door de opgegeven gebruiker na te doen.\n"
+"        Het voorvoegsel moet niet worden ingevoerd als het een commando is. Het zal alleen een bericht zijn als het commando ongeldig is.\n"
+"        Als er geen gebruiker wordt opgegeven, wordt de auteur gebruikt.\n\n"
+"        Gebruik `[p]cmduser`!\n"
+"        "
+
+#: cmdchannel\cmdchannel.py:117 cmdchannel\cmdchannel.py:158
+msgid "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
+msgstr "Om een commando als een andere gebruiker te kunnen uitvoeren, moet de cog Dev geladen worden, om er zeker van te zijn dat je weet wat je doet."
+
+#: cmdchannel\cmdchannel.py:140
+#, docstring
+msgid "Act as if the command had been typed in the channel of your choice by imitating the specified user.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
+"        If you do not specify a user, the author will be used.\n\n"
+"        Use `[p]cmduserchannel`!\n"
+"        "
+msgstr "Doe alsof het commando in het kanaal van je keuze is getypt door de gespecificeerde gebruiker te imiteren.\n"
+"        Het voorvoegsel moet niet worden ingevoerd als het een commando is. Het zal alleen een bericht zijn als het commando ongeldig is.\n"
+"        Als je geen gebruiker opgeeft, wordt de auteur gebruikt.\n\n"
+"        Gebruik `[p]cmduserchannel`!\n"
+"        "
+
+#: cmdchannel\cmdchannel.py:174
+#, docstring
+msgid "Test variables."
+msgstr "Testvariabelen."
+
+#: cmdchannel\cmdchannel.py:176
+msgid "Testvar"
+msgstr "Testvar"
+
+#: cmdchannel\cmdchannel.py:177
+msgid "Variables:"
+msgstr "Variabelen:"
+
+#: cmdchannel\cmdchannel.py:178
+msgid "Author:"
+msgstr "Auteur:"
+
+#: cmdchannel\cmdchannel.py:179
+msgid "Channel:"
+msgstr "Kanaal:"
+

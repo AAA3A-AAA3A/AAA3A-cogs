@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-03 17:04\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:30\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "MIME-Version: 1.0\n"
@@ -17,115 +17,109 @@ msgstr ""
 "X-Crowdin-File-ID: 150\n"
 "Language: pt_BR\n"
 
-#: seen\seen.py:35
+#: seen\seen.py:25
 #, docstring
 msgid "A cog to check when a member/role/channel/category/user/guild was last active!"
 msgstr "Uma engrenagem para verificar quando um membro/role/canal/categoria/utilizador/guild estava activo pela última vez!"
 
-#: seen\seen.py:808 seen\seen.py:815
+#: seen\seen.py:798 seen\seen.py:805
 msgid "@{_object.display_name} was seen {seen}."
 msgstr "@{_object.display_name} foi visto {seen}."
 
-#: seen\seen.py:822
+#: seen\seen.py:812
 msgid "The role @&{_object.name} was seen {seen}."
 msgstr "O papel @&{_object.name} foi visto {seen}."
 
-#: seen\seen.py:829
+#: seen\seen.py:819
 msgid "The text channel #{_object.name} was seen {seen}."
 msgstr "O canal de texto #{_object.name} foi visto {seen}."
 
-#: seen\seen.py:836
+#: seen\seen.py:826
 msgid "The category {_object.name} was seen {seen}."
 msgstr "A categoria {_object.name} foi vista {seen}."
 
-#: seen\seen.py:843
+#: seen\seen.py:833
 msgid "The guild {_object.name} was seen {seen}."
 msgstr "O grémio {_object.name} foi visto {seen}."
 
-#: seen\seen.py:1097
+#: seen\seen.py:1087
 #, docstring
 msgid "Check when a member was last active!"
 msgstr "Verifique quando um membro esteve activo pela última vez!"
 
-#: seen\seen.py:1117
+#: seen\seen.py:1107
 #, docstring
 msgid "Check when a role was last active!"
 msgstr "Verifique quando um papel esteve activo pela última vez!"
 
-#: seen\seen.py:1136
+#: seen\seen.py:1126
 #, docstring
 msgid "Check when a channel was last active!"
 msgstr "Verifique quando um canal esteve activo pela última vez!"
 
-#: seen\seen.py:1143
+#: seen\seen.py:1133
 msgid "You do not have permission to view this channel."
 msgstr "Não tem permissão para ver este canal."
 
-#: seen\seen.py:1159
+#: seen\seen.py:1149
 #, docstring
 msgid "Check when a category was last active!"
 msgstr "Verifique quando uma categoria esteve activa pela última vez!"
 
-#: seen\seen.py:1172
+#: seen\seen.py:1162
 msgid "You do not have permission to view any of the channels in this category."
 msgstr "Não tem permissão para ver nenhum dos canais desta categoria."
 
-#: seen\seen.py:1189
+#: seen\seen.py:1179
 #, docstring
 msgid "Check when a old member was last active!"
 msgstr "Verifique quando um antigo membro esteve activo pela última vez!"
 
-#: seen\seen.py:1217
+#: seen\seen.py:1207
 #, docstring
 msgid "Check when a guild was last active!"
 msgstr "Verifique quando um grémio esteve activo pela última vez!"
 
-#: seen\seen.py:1237
+#: seen\seen.py:1227
 #, docstring
 msgid "Check when a user was last active!"
 msgstr "Verifique quando um utilizador esteve activo pela última vez!"
 
-#: seen\seen.py:1256
+#: seen\seen.py:1246
 #, docstring
 msgid "Check when a old user was last active!"
 msgstr "Verifique quando um antigo utilizador esteve activo pela última vez!"
 
+#: seen\seen.py:1268
+#, docstring
+msgid "View a Seen Board for members/roles/channels/categories/guilds/users!"
+msgstr "Ver um quadro de visualização para membros/funções/canais/categorias/guildas/utilizadores!"
+
+#: seen\seen.py:1271
+msgid "You're not allowed to view the Seen board for guilds and users."
+msgstr "Não tens permissão para ver o quadro \"Visto\" para guildas e utilizadores."
+
 #: seen\seen.py:1278
-#, docstring
-msgid "View a Seen Board for members/roles/channels/categories!"
-msgstr "Ver um Quadro Visto para membros/roles/canais/categorias!"
-
-#: seen\seen.py:1292
-#, docstring
-msgid "View a Seen Board for guilds!"
-msgstr "Ver um Quadro Visto para as guildas!"
-
-#: seen\seen.py:1307
-#, docstring
-msgid "View a Seen Board for users!"
-msgstr "Ver um Quadro Visto para os utilizadores!"
-
-#: seen\seen.py:1314
 #, docstring
 msgid "Get Config data stats."
 msgstr "Obter estatísticas de dados de configuração."
 
-#: seen\seen.py:1348
+#: seen\seen.py:1312
 #, docstring
 msgid "Enable or disable a listener."
 msgstr "Activar ou desactivar um ouvinte."
 
-#: seen\seen.py:1356
+#: seen\seen.py:1320
 #, docstring
 msgid "Asking Seen to ignore your actions."
 msgstr "Pedir a Visto para ignorar as suas acções."
 
-#: seen\seen.py:1370
+#: seen\seen.py:1334
 #, docstring
 msgid "Get an embed for check loop status."
 msgstr "Obter uma incorporação para verificar o estado do laço."
 
-#: seen\seen.py:1381
+#: seen\seen.py:1345
 #, docstring
 msgid "Purge Config for a specified _type or all."
 msgstr "Purge Config para um _tipo especificado ou todos."

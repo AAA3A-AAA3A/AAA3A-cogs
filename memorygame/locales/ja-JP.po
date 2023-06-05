@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-03 20:01\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:30\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -17,12 +17,25 @@ msgstr ""
 "X-Crowdin-File-ID: 185\n"
 "Language: ja_JP\n"
 
-#: memorygame\memorygame.py:34
+#: memorygame\memorygame.py:27
 #, docstring
 msgid "A cog to play to Memory game, with buttons, leaderboard and Red bank!"
 msgstr "ボタン、リーダーボード、レッドバンクを備えた、メモリーゲームに遊ぶための歯車です！"
 
-#: memorygame\memorygame.py:126
+#: memorygame\memorygame.py:171
 msgid "No one has played this game yet."
 msgstr "このゲームはまだ誰もプレイしていない。"
+
+#: memorygame\memorygame.py:214
+#, docstring
+msgid "Reset leaderboard in the guild."
+msgstr "ギルドのリーダーボードをリセットする。"
+
+#: memorygame\view.py:232
+msgid "You won in {game_time} seconds, with {tries} tries and {wrong_matches} wrong matches!"
+msgstr "{tries} のトライと {wrong_matches} の間違ったマッチングで、 {game_time} 秒で勝ちましたね！"
+
+#: memorygame\view.py:252
+msgid "You lose, because you tried too many times ({tries} tries and {wrong_matches} wrong matches)."
+msgstr "負けたのは、何度もトライしたからです（{tries} トライして、 {wrong_matches} 間違ってマッチした）。"
 

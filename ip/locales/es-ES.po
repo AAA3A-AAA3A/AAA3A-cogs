@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:25\n"
+"Last-Translator: \n"
+"Language-Team: Spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-ES\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/ip/locales/messages.pot\n"
+"X-Crowdin-File-ID: 88\n"
+"Language: es_ES\n"
+
+#: ip\ip.py:21
+#, docstring
+msgid "A cog to get the ip address  of the bot's host machine!"
+msgstr "Un engranaje para obtener la dirección ip de la máquina anfitriona del bot!"
+
+#: ip\ip.py:67
+#, docstring
+msgid "Get the ip address of the bot's host machine."
+msgstr "Obtener la dirección IP de la máquina host del bot."
+
+#: ip\ip.py:72
+msgid "The ip address of your bot is `{ip}`."
+msgstr "La dirección IP de tu bot es `{ip}`."
+
+#: ip\ip.py:76
+#, docstring
+msgid "Get the ip address website of the bot's host machine."
+msgstr "Obtén la dirección IP de la máquina anfitriona del bot."
+
+#: ip\ip.py:83
+msgid "The Administrator Panel website is http://{ip}:{port}/."
+msgstr "El sitio web del Panel del Administrador es http://{ip}:{port}/."
+

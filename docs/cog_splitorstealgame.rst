@@ -25,7 +25,7 @@ Commands
 Here are all the commands included in this cog (1):
 
 * ``[p]splitorstealgame``
- Play a random match of SplitOrSteal game.
+ Play a match of SplitOrSteal game.
 
 ------------
 Installation

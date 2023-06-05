@@ -16,7 +16,7 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to play to Acrononym game, with Modals!
+A cog to play a random match of Acrononym game, with Modals!
 
 --------
 Commands
@@ -25,7 +25,7 @@ Commands
 Here are all the commands included in this cog (1):
 
 * ``[p]acronymgame``
- Play to Acronym game.
+ Play a random match of Acronym game.
 
 ------------
 Installation

@@ -22,13 +22,16 @@ A cog to display informations about Minecraft Java users and servers, and notify
 Commands
 --------
 
-Here are all the commands included in this cog (7):
+Here are all the commands included in this cog (8):
 
 * ``[p]minecraft``
  Get informations about Minecraft Java.
 
 * ``[p]minecraft addserver [channel] <server_url>``
  Add a Minecraft Java server in Config to get automatically new status.
+
+* ``[p]minecraft checkplayers [channel] <state>``
+ Remove a Minecraft Java server in Config.
 
 * ``[p]minecraft forcecheck``
  Force check Minecraft Java servers in Config.

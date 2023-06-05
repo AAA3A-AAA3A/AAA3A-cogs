@@ -22,7 +22,7 @@ A cog to get and display some documentations in Discord! Use `[p]listsources` to
 Commands
 --------
 
-Here are all the commands included in this cog (11):
+Here are all the commands included in this cog (12):
 
 * ``[p]getdocs [source=None] [query=None]``
  View rich documentation for a specific node/query.
@@ -56,6 +56,9 @@ Here are all the commands included in this cog (11):
 
 * ``[p]setgetdocs showsettings [with_dev=False]``
  Show all settings for the cog with defaults and values.
+
+* ``[p]setgetdocs stats``
+ Show stats about all documentations sources.
 
 ------------
 Installation

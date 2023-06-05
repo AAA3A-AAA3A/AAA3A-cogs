@@ -22,10 +22,13 @@ A cog to list and display the contents of all sub-functions of `ctx`!
 Commands
 --------
 
-Here are all the commands included in this cog (5):
+Here are all the commands included in this cog (6):
 
 * ``[p]ctxvar``
  Commands for CtxVar.
+
+* ``[p]ctxvar astdump [include_attributes=False] <thing>``
+ Execute `ast.dump(ast.parse(<code content>))` on the provided object (debug not async).
 
 * ``[p]ctxvar ctx [message=None] [args=None]``
  Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes.

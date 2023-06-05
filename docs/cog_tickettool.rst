@@ -16,13 +16,13 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to manage a ticket system!
+A cog to manage a tickets system!
 
 --------
 Commands
 --------
 
-Here are all the commands included in this cog (45):
+Here are all the commands included in this cog (46):
 
 * ``[p]settickettool``
  Configure TicketTool for your server.
@@ -107,6 +107,9 @@ Here are all the commands included in this cog (45):
 
 * ``[p]settickettool supportrole <profile> <role>``
  Users with this role will be able to participate and claim the ticket.
+
+* ``[p]settickettool ticketrole <profile> <role>``
+ This role will be added automatically to open tickets owners.
 
 * ``[p]settickettool usercanclose <profile> <user_can_close>``
  Can the author of the ticket, if he/she does not have a role set up for the system, close the ticket himself?

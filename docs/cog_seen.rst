@@ -22,19 +22,13 @@ A cog to check when a member/role/channel/category/user/guild was last active!
 Commands
 --------
 
-Here are all the commands included in this cog (17):
+Here are all the commands included in this cog (15):
 
 * ``[p]seen ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] <_object>``
  Check when a member/role/channel/category was last active!
 
-* ``[p]seen board ["message"|"message_edit"|"reaction_add"|"reaction_remove"] ["members"|"roles"|"channels"|"categories"=members] [reverse=False]``
- View a Seen Board for members/roles/channels/categories!
-
-* ``[p]seen board guilds ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [reverse=False]``
- View a Seen Board for guilds!
-
-* ``[p]seen board users ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [reverse=False]``
- View a Seen Board for users!
+* ``[p]seen board ["message"|"message_edit"|"reaction_add"|"reaction_remove"] ["members"|"roles"|"channels"|"categories"|"guilds"|"users"=members] [reverse=False]``
+ View a Seen Board for members/roles/channels/categories/guilds/users!
 
 * ``[p]seen category ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [category=None]``
  Check when a category was last active!

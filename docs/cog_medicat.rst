@@ -22,7 +22,7 @@ This cog will only work on x server and therefore cannot be used by the general 
 Commands
 --------
 
-Here are all the commands included in this cog (21):
+Here are all the commands included in this cog (22):
 
 * ``[p]medicat``
  Commands of Medicat cog.
@@ -56,6 +56,9 @@ Here are all the commands included in this cog (21):
 
 * ``[p]medicat minios``
  Can I install Mini Windows 10 as my main OS?
+
+* ``[p]medicat missingfiles``
+ See what files are missing using the quick SFV program
 
 * ``[p]medicat noiso``
  How do I download the Medicat USB iso file?

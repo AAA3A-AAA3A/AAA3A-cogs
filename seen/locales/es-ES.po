@@ -1,0 +1,126 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:26\n"
+"Last-Translator: \n"
+"Language-Team: Spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-ES\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/seen/locales/messages.pot\n"
+"X-Crowdin-File-ID: 150\n"
+"Language: es_ES\n"
+
+#: seen\seen.py:25
+#, docstring
+msgid "A cog to check when a member/role/channel/category/user/guild was last active!"
+msgstr "Un engranaje para comprobar cuándo un miembro/rol/canal/categoría/usuario/ gremio estuvo activo por última vez!"
+
+#: seen\seen.py:798 seen\seen.py:805
+msgid "@{_object.display_name} was seen {seen}."
+msgstr "@{_object.display_name} se vio {seen}."
+
+#: seen\seen.py:812
+msgid "The role @&{_object.name} was seen {seen}."
+msgstr "El papel @&{_object.name} se vio {seen}."
+
+#: seen\seen.py:819
+msgid "The text channel #{_object.name} was seen {seen}."
+msgstr "El canal de texto #{_object.name} se veía {seen}."
+
+#: seen\seen.py:826
+msgid "The category {_object.name} was seen {seen}."
+msgstr "La categoría {_object.name} se vio {seen}."
+
+#: seen\seen.py:833
+msgid "The guild {_object.name} was seen {seen}."
+msgstr "El gremio {_object.name} se vio {seen}."
+
+#: seen\seen.py:1087
+#, docstring
+msgid "Check when a member was last active!"
+msgstr "Compruebe cuándo fue la última vez que un miembro estuvo activo!"
+
+#: seen\seen.py:1107
+#, docstring
+msgid "Check when a role was last active!"
+msgstr "Comprueba cuándo se activó un rol por última vez!"
+
+#: seen\seen.py:1126
+#, docstring
+msgid "Check when a channel was last active!"
+msgstr "Comprueba cuándo estuvo activo un canal por última vez!"
+
+#: seen\seen.py:1133
+msgid "You do not have permission to view this channel."
+msgstr "No tiene permiso para ver este canal."
+
+#: seen\seen.py:1149
+#, docstring
+msgid "Check when a category was last active!"
+msgstr "Compruebe cuándo se activó por última vez una categoría!"
+
+#: seen\seen.py:1162
+msgid "You do not have permission to view any of the channels in this category."
+msgstr "No tiene permiso para ver ninguno de los canales de esta categoría."
+
+#: seen\seen.py:1179
+#, docstring
+msgid "Check when a old member was last active!"
+msgstr "Compruebe cuándo fue la última vez que un antiguo miembro estuvo activo!"
+
+#: seen\seen.py:1207
+#, docstring
+msgid "Check when a guild was last active!"
+msgstr "Comprueba cuándo estuvo activo un gremio por última vez!"
+
+#: seen\seen.py:1227
+#, docstring
+msgid "Check when a user was last active!"
+msgstr "Comprueba cuándo estuvo activo un usuario por última vez!"
+
+#: seen\seen.py:1246
+#, docstring
+msgid "Check when a old user was last active!"
+msgstr "Comprueba cuándo estuvo activo por última vez un usuario antiguo!"
+
+#: seen\seen.py:1268
+#, docstring
+msgid "View a Seen Board for members/roles/channels/categories/guilds/users!"
+msgstr "¡Ver un Tablero Visto para miembros/roles/canales/categorías/ gremios/usuarios!"
+
+#: seen\seen.py:1271
+msgid "You're not allowed to view the Seen board for guilds and users."
+msgstr "No tienes permiso para ver el tablón de Seen para gremios y usuarios."
+
+#: seen\seen.py:1278
+#, docstring
+msgid "Get Config data stats."
+msgstr "Obtener estadísticas de datos de configuración."
+
+#: seen\seen.py:1312
+#, docstring
+msgid "Enable or disable a listener."
+msgstr "Activar o desactivar una escucha."
+
+#: seen\seen.py:1320
+#, docstring
+msgid "Asking Seen to ignore your actions."
+msgstr "Pedir a Seen que ignore tus acciones."
+
+#: seen\seen.py:1334
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "Obtener un embed para comprobar el estado del bucle."
+
+#: seen\seen.py:1345
+#, docstring
+msgid "Purge Config for a specified _type or all."
+msgstr "Purgar Config para un _tipo especificado o todos."
+

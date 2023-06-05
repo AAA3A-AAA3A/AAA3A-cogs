@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-02 21:52\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 18:22\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -17,12 +17,12 @@ msgstr ""
 "X-Crowdin-File-ID: 86\n"
 "Language: de_DE\n"
 
-#: editfile\editfile.py:38
+#: editfile\editfile.py:28
 #, docstring
 msgid "A cog to get a file and replace it from its path from Discord!"
 msgstr "Ein Zahnrad, um eine Datei aus Discord zu holen und sie in ihrem Pfad zu ersetzen!"
 
-#: editfile\editfile.py:60
+#: editfile\editfile.py:50
 #, docstring
 msgid "Get a file on the bot's host machine from its path.\n"
 "        `#L10` or `#L10-L30` is supported.\n"
@@ -31,37 +31,37 @@ msgstr "Holt eine Datei auf dem Host-Rechner des Bots aus dessen Pfad.\n"
 "        `#L10` oder `#L10-L30` wird unterstützt.\n"
 "        "
 
-#: editfile\editfile.py:65 editfile\editfile.py:144
+#: editfile\editfile.py:55 editfile\editfile.py:131
 msgid "Couldn't parse this input."
 msgstr "Diese Eingabe konnte nicht geparst werden."
 
-#: editfile\editfile.py:77
+#: editfile\editfile.py:67
 msgid "Cowardly refusing to read a file with no size stat. (it may be empty, endless or inaccessible)."
 msgstr "Feige Weigerung, eine Datei ohne Größenangabe zu lesen. (sie kann leer, endlos oder unzugänglich sein)."
 
-#: editfile\editfile.py:83
+#: editfile\editfile.py:73
 msgid "Cowardly refusing to read a file >128MB."
 msgstr "Feige Weigerung, eine Datei >128MB zu lesen."
 
-#: editfile\editfile.py:101 editfile\editfile.py:274 editfile\editfile.py:284
-#: editfile\editfile.py:297 editfile\editfile.py:308
+#: editfile\editfile.py:91 editfile\editfile.py:256 editfile\editfile.py:266
+#: editfile\editfile.py:279 editfile\editfile.py:290
 msgid "This file cannot be found on the host machine."
 msgstr "Diese Datei kann auf dem Host-Rechner nicht gefunden werden."
 
-#: editfile\editfile.py:105 editfile\editfile.py:171 editfile\editfile.py:278
-#: editfile\editfile.py:288 editfile\editfile.py:301 editfile\editfile.py:312
+#: editfile\editfile.py:95 editfile\editfile.py:158 editfile\editfile.py:260
+#: editfile\editfile.py:270 editfile\editfile.py:283 editfile\editfile.py:294
 msgid "The path you specified refers to a directory, not a file."
 msgstr "Der von Ihnen angegebene Pfad bezieht sich auf ein Verzeichnis, nicht auf eine Datei."
 
-#: editfile\editfile.py:126 editfile\editfile.py:162
+#: editfile\editfile.py:115 editfile\editfile.py:149
 msgid "There are only {len_lines} lines in this file."
 msgstr "Es gibt nur {len_lines} Zeilen in dieser Datei."
 
-#: editfile\editfile.py:131
+#: editfile\editfile.py:120
 msgid "Here are the contents of the file `{path}`."
 msgstr "Hier ist der Inhalt der Datei \"{path}\"."
 
-#: editfile\editfile.py:138
+#: editfile\editfile.py:125
 #, docstring
 msgid "Replace a file on the bot's host machine from its path.\n"
 "        `#L10` or `#L10-L30` is supported.\n"
@@ -70,58 +70,58 @@ msgstr "Ersetzen Sie eine Datei auf dem Host-Rechner des Bots durch ihren Pfad.\
 "        `#L10` oder `#L10-L30` wird unterstützt.\n"
 "        "
 
-#: editfile\editfile.py:167
+#: editfile\editfile.py:154
 msgid "This original file cannot be found on the host machine."
 msgstr "Diese Originaldatei kann auf dem Hostcomputer nicht gefunden werden."
 
-#: editfile\editfile.py:175
+#: editfile\editfile.py:162
 msgid "You must send the command with an attachment that will be used to replace the original file."
 msgstr "Sie müssen den Befehl mit einem Anhang senden, der als Ersatz für die Originaldatei verwendet wird."
 
-#: editfile\editfile.py:200
+#: editfile\editfile.py:187
 msgid "This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly."
 msgstr "Dies ist die ursprüngliche/alte Datei, die unter dem Pfad `{path}` verfügbar ist. Normalerweise ist diese Datei korrekt ersetzt worden."
 
-#: editfile\editfile.py:208
+#: editfile\editfile.py:195
 #, docstring
 msgid "Get a cog directory on the bot's host machine from its name."
 msgstr "Ermitteln Sie das Verzeichnis cog auf dem Host-Rechner des Bots anhand seines Namens."
 
-#: editfile\editfile.py:211
+#: editfile\editfile.py:198
 msgid "Could not find a cog with this name."
 msgstr "Ein Zahnrad mit diesem Namen konnte nicht gefunden werden."
 
-#: editfile\editfile.py:218
+#: editfile\editfile.py:205
 msgid "This cog had its data directory removed."
 msgstr "Das Datenverzeichnis dieses Rädchens wurde entfernt."
 
-#: editfile\editfile.py:220
+#: editfile\editfile.py:207
 msgid "This cog does not store any data."
 msgstr "Dieses Zahnrad speichert keine Daten."
 
-#: editfile\editfile.py:241
+#: editfile\editfile.py:228
 #, docstring
 msgid "List all files/directories of a directory from its path."
 msgstr "Alle Dateien/Verzeichnisse eines Verzeichnisses aus dessen Pfad auflisten."
 
-#: editfile\editfile.py:245
+#: editfile\editfile.py:232
 msgid "This directory cannot be found on the host machine."
 msgstr "Dieses Verzeichnis kann auf dem Host-Rechner nicht gefunden werden."
 
-#: editfile\editfile.py:249
+#: editfile\editfile.py:236
 msgid "The path you specified refers to a file, not a directory."
 msgstr "Der von Ihnen angegebene Pfad bezieht sich auf eine Datei, nicht auf ein Verzeichnis."
 
-#: editfile\editfile.py:270
+#: editfile\editfile.py:252
 #, docstring
 msgid "Rename a file."
 msgstr "Umbenennen einer Datei."
 
-#: editfile\editfile.py:290 editfile\editfile.py:314
+#: editfile\editfile.py:272 editfile\editfile.py:296
 msgid "The `{path}` file has been deleted."
 msgstr "Die Datei \"{path}\" wurde gelöscht."
 
-#: editfile\editfile.py:294
+#: editfile\editfile.py:276
 #, docstring
 msgid "Delete a file."
 msgstr "Löschen Sie eine Datei."

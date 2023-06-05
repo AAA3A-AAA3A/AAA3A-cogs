@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-02 17:31\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 18:22\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -17,34 +17,34 @@ msgstr ""
 "X-Crowdin-File-ID: 92\n"
 "Language: fr_FR\n"
 
-#: memberprefix\memberprefix.py:27
+#: memberprefix\memberprefix.py:20
 #, docstring
 msgid "A cog to allow a member to choose custom prefixes, just for them!"
 msgstr "Un bouton pour permettre à un membre de choisir des préfixes personnalisés, juste pour lui !"
 
-#: memberprefix\memberprefix.py:181
+#: memberprefix\memberprefix.py:165
 msgid "You now use this server or global prefixes."
 msgstr "Vous pouvez maintenant utiliser ce serveur ou des préfixes globaux."
 
-#: memberprefix\memberprefix.py:185
+#: memberprefix\memberprefix.py:169
 msgid "A prefix is above the maximal length (25 characters).\n"
 "This is possible for global or per-server prefixes, but not for per-member prefixes."
 msgstr "Un préfixe dépasse la longueur maximale (25 caractères).\n"
 "Cela est possible pour les préfixes globaux ou par serveur, mais pas pour les préfixes par membre."
 
-#: memberprefix\memberprefix.py:191
+#: memberprefix\memberprefix.py:175
 msgid "Prefixes cannot start with `/`, as it conflicts with Discord's slash commands."
 msgstr "Les préfixes ne peuvent pas commencer par `/`, car cela entre en conflit avec les commandes slash de Discord."
 
-#: memberprefix\memberprefix.py:195
+#: memberprefix\memberprefix.py:179
 msgid "Prefix for you only set."
 msgstr "Préfixe pour vous seul set."
 
-#: memberprefix\memberprefix.py:197
+#: memberprefix\memberprefix.py:181
 msgid "Prefixes for you only set."
 msgstr "Préfixes pour vous seul set."
 
-#: memberprefix\memberprefix.py:268
+#: memberprefix\memberprefix.py:250
 #, docstring
 msgid "Clear all members prefixes for this guild."
 msgstr "Effacer tous les préfixes des membres de cette guilde."

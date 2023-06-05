@@ -1,0 +1,60 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:31\n"
+"Last-Translator: \n"
+"Language-Team: Greek\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: el\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/gistshandler/locales/messages.pot\n"
+"X-Crowdin-File-ID: 233\n"
+"Language: el_GR\n"
+
+#: gistshandler\gistshandler.py:29
+msgid "Gist not found."
+msgstr "Δεν βρέθηκε το Gist."
+
+#: gistshandler\gistshandler.py:35
+#, docstring
+msgid "A cog to create new Gists and edit/delete existing ones!"
+msgstr "Ένα γρανάζι για να δημιουργείτε νέα Gists και να επεξεργάζεστε/διαγράφετε τα υπάρχοντα!"
+
+#: gistshandler\gistshandler.py:71
+msgid "You need to set up a GitHub token with `{ctx.prefix}set api github token,[TOKEN]` first!"
+msgstr "Πρέπει πρώτα να δημιουργήσετε ένα token του GitHub με το `{ctx.prefix}set api github token,[TOKEN]`!"
+
+#: gistshandler\view.py:92
+msgid "{public.value} is not a recognised boolean option."
+msgstr "{public.value} δεν είναι αναγνωρισμένη επιλογή boolean."
+
+#: gistshandler\view.py:101 gistshandler\view.py:199 gistshandler\view.py:381
+msgid "GitHub token is invalid or expired."
+msgstr "Το token του GitHub είναι άκυρο ή έχει λήξει."
+
+#: gistshandler\view.py:109
+msgid "Gist `{gist.id}` created."
+msgstr "Gist `{gist.id}` δημιουργήθηκε."
+
+#: gistshandler\view.py:203
+msgid "You're not allowed to edit this gist."
+msgstr "Δεν επιτρέπεται να επεξεργαστείτε αυτή την ουσία."
+
+#: gistshandler\view.py:209
+msgid "Gist `{gist.id}` updated."
+msgstr "Gist `{gist.id}` updated."
+
+#: gistshandler\view.py:385
+msgid "You're not allowed to delete this gist."
+msgstr "Δεν επιτρέπεται να διαγράψετε αυτό το κείμενο."
+
+#: gistshandler\view.py:391
+msgid "Gist `{gist.id}` deleted."
+msgstr "Gist `{gist.id}` deleted."
+

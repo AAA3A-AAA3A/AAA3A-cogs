@@ -1,0 +1,102 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:32\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/minecraft/locales/messages.pot\n"
+"X-Crowdin-File-ID: 235\n"
+"Language: fi_FI\n"
+
+#: minecraft\minecraft.py:48
+msgid "Unable to get data from Minecraft API: {e.message}."
+msgstr "Tietoja ei saada Minecraft API:sta: {e.message}."
+
+#: minecraft\minecraft.py:52
+msgid "{argument} not found on Mojang servers."
+msgstr "{argument} ei löydy Mojangin palvelimilta."
+
+#: minecraft\minecraft.py:60
+msgid "{argument} is found, but has incorrect UUID."
+msgstr "{argument} löytyy, mutta sen UUID-tunnus on väärä."
+
+#: minecraft\minecraft.py:66
+#, docstring
+msgid "A cog to display informations about Minecraft Java users and servers, and notify for each change of a server!"
+msgstr "Tietojen näyttämiseen Minecraft Java -käyttäjistä ja palvelimista, ja ilmoittaa jokaisesta palvelimen muutoksesta!"
+
+#: minecraft\minecraft.py:161
+msgid "Latency"
+msgstr "Viive"
+
+#: minecraft\minecraft.py:163
+msgid "Players"
+msgstr "Pelaajat"
+
+#: minecraft\minecraft.py:181
+msgid "Version"
+msgstr "Versio"
+
+#: minecraft\minecraft.py:182
+msgid "Protocol: {}"
+msgstr "Pöytäkirja: {}"
+
+#: minecraft\minecraft.py:222
+#, docstring
+msgid "Get Minecraft Java player skin by name."
+msgstr "Hae Minecraftin Java-pelaajan iho nimen perusteella."
+
+#: minecraft\minecraft.py:245
+msgid "Unable to get data from Crafatar: {}"
+msgstr "Tietoja ei saada Crafatarista: {}"
+
+#: minecraft\minecraft.py:257
+msgid "Provided by Crafatar."
+msgstr "Toimittanut Crafatar."
+
+#: minecraft\minecraft.py:262
+#, docstring
+msgid "Get informations about a Minecraft Java server."
+msgstr "Hanki tietoa Minecraft Java -palvelimesta."
+
+#: minecraft\minecraft.py:270
+msgid "No data could be found on this Minecraft server. Maybe it doesn't exist or the data is temporarily unavailable."
+msgstr "Tältä Minecraft-palvelimelta ei löytynyt tietoja. Ehkä sitä ei ole olemassa tai tiedot eivät ole tilapäisesti saatavilla."
+
+#: minecraft\minecraft.py:282
+#, docstring
+msgid "Add a Minecraft Java server in Config to get automatically new status."
+msgstr "Lisää Minecraft Java -palvelin Configiin saadaksesi automaattisesti uuden tilan."
+
+#: minecraft\minecraft.py:287
+msgid "This server has already been added."
+msgstr "Tämä palvelin on jo lisätty."
+
+#: minecraft\minecraft.py:296 minecraft\minecraft.py:310
+#, docstring
+msgid "Remove a Minecraft Java server in Config."
+msgstr "Poista Minecraftin Java-palvelin Configissa."
+
+#: minecraft\minecraft.py:301
+msgid "This server isn't in the Config."
+msgstr "Tämä palvelin ei ole Configissa."
+
+#: minecraft\minecraft.py:321
+#, docstring
+msgid "Force check Minecraft Java servers in Config."
+msgstr "Pakota tarkistamaan Minecraft Java -palvelimet Configissa."
+
+#: minecraft\minecraft.py:328
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "Hae upotus silmukan tilan tarkistamista varten."
+

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-03 17:05\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:30\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -17,65 +17,55 @@ msgstr ""
 "X-Crowdin-File-ID: 183\n"
 "Language: pl_PL\n"
 
-#: getdocs\getdocs.py:191
+#: getdocs\getdocs.py:212 getdocs\getdocs.py:531
 msgid "This source doesn't exist."
 msgstr "To źródło nie istnieje."
 
-#: getdocs\getdocs.py:197
+#: getdocs\getdocs.py:218
 #, docstring
-msgid "A cog to get and display Sphinx docs! Use `[p]listsources` to get a list of all the available sources."
-msgstr "Trybik do uzyskiwania i wyświetlania dokumentów Sphinxa! Użyj `[p]listsources` aby uzyskać listę wszystkich dostępnych źródeł."
+msgid "A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."
+msgstr "Tryb do pobierania i wyświetlania dokumentacji w Discordzie! Użyj `[p]listsources`, aby uzyskać listę wszystkich dostępnych źródeł."
 
-#: getdocs\getdocs.py:299
-msgid "Documentations cache is not yet built, building now."
-msgstr "Pamięć podręczna dokumentów nie jest jeszcze zbudowana, buduje się teraz."
+#: getdocs\getdocs.py:342
+msgid "Documentations cache is not yet built."
+msgstr "Pamięć podręczna dokumentacji nie została jeszcze utworzona."
 
-#: getdocs\getdocs.py:364
+#: getdocs\getdocs.py:393
 msgid "No results found."
 msgstr "Nie znaleziono żadnych wyników."
 
-#: getdocs\getdocs.py:477
+#: getdocs\getdocs.py:523
 #, docstring
 msgid "\n"
-"        Enable a documentations source.\n"
+"        Enable a Documentations source.\n"
 "        "
 msgstr "\n"
 "        Włącz źródło dokumentacji.\n"
 "        "
 
-#: getdocs\getdocs.py:482
+#: getdocs\getdocs.py:529
 msgid "This source is already enabled."
 msgstr "To źródło jest już włączone."
 
-#: getdocs\getdocs.py:495
+#: getdocs\getdocs.py:545
 #, docstring
 msgid "\n"
-"        Disable a documentations source.\n"
+"        Disable a Documentations source.\n"
 "        "
 msgstr "\n"
 "        Wyłączenie źródła dokumentacji.\n"
 "        "
 
-#: getdocs\getdocs.py:500
-msgid "This source is already disabled."
-msgstr "To źródło jest już wyłączone."
-
-#: getdocs\getdocs.py:506
+#: getdocs\getdocs.py:554
 #, docstring
 msgid "\n"
-"        Set the documentations source.\n\n"
-"        The default value was `discord.py`.\n"
+"        Show stats about all documentations sources.\n"
 "        "
 msgstr "\n"
-"        Ustaw źródło dokumentacji.\n\n"
-"        Domyślną wartością było `discord.py`.\n"
+"        Wyświetla statystyki dotyczące wszystkich źródeł dokumentacji.\n"
 "        "
 
-#: getdocs\getdocs.py:513
-msgid "This source is disabled."
-msgstr "To źródło jest wyłączone."
-
-#: getdocs\getdocs.py:1244
+#: getdocs\getdocs.py:1460
 msgid "RTFM caching isn't finished."
 msgstr "RTFM buforowanie nie jest zakończone."
 

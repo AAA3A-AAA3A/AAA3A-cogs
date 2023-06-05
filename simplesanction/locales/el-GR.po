@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-15 15:47\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:26\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Crowdin-File-ID: 98\n"
 "Language: el_GR\n"
 
-#: simplesanction\settings.py:38
+#: simplesanction\settings.py:29
 #, docstring
 msgid "Set a color for the embed.\n\n"
 "        ``color``: Color.\n"
@@ -28,24 +28,24 @@ msgstr "Ορίστε ένα χρώμα για την ενσωμάτωση.\n\n"
 "        Μπορείτε επίσης να χρησιμοποιήσετε το \"None\" αν θέλετε να επαναφέρετε το χρώμα.\n"
 "        "
 
-#: simplesanction\settings.py:52 simplesanction\settings.py:63
-#: simplesanction\settings.py:84 simplesanction\settings.py:97
+#: simplesanction\settings.py:43 simplesanction\settings.py:54
+#: simplesanction\settings.py:75 simplesanction\settings.py:88
 msgid "Configure the embed"
 msgstr "Διαμόρφωση της ενσωμάτωσης"
 
-#: simplesanction\settings.py:53
+#: simplesanction\settings.py:44
 msgid "Reset color:"
 msgstr "Επαναφορά χρώματος:"
 
-#: simplesanction\settings.py:54 simplesanction\settings.py:67
+#: simplesanction\settings.py:45 simplesanction\settings.py:58
 msgid "Color:"
 msgstr "Χρώμα:"
 
-#: simplesanction\settings.py:64
+#: simplesanction\settings.py:55
 msgid "Set color:"
 msgstr "Ορίστε το χρώμα:"
 
-#: simplesanction\settings.py:72
+#: simplesanction\settings.py:63
 #, docstring
 msgid "Set a thumbnail for the embed.\n\n"
 "        ``link``: Thumbnail link.\n"
@@ -56,19 +56,19 @@ msgstr "Ορίστε μια μικρογραφία για την ενσωμάτ�
 "        Μπορείτε επίσης να χρησιμοποιήσετε το \"None\" αν θέλετε να μηδενίσετε τη μικρογραφία.\n"
 "        "
 
-#: simplesanction\settings.py:85
+#: simplesanction\settings.py:76
 msgid "Reset thumbnail:"
 msgstr "Επαναφορά μικρογραφίας:"
 
-#: simplesanction\settings.py:88 simplesanction\settings.py:101
+#: simplesanction\settings.py:79 simplesanction\settings.py:92
 msgid "Thumbnail:"
 msgstr "Μικρογραφία:"
 
-#: simplesanction\settings.py:98
+#: simplesanction\settings.py:89
 msgid "Set thumbnail:"
 msgstr "Ορισμός μικρογραφίας:"
 
-#: simplesanction\settings.py:106
+#: simplesanction\settings.py:97
 #, docstring
 msgid "Enable or disable Show Author\n\n"
 "        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
@@ -77,15 +77,15 @@ msgstr "Ενεργοποίηση ή απενεργοποίηση Εμφάνισ�
 "        Χρησιμοποιήστε `True` (ή `yes`) για να ενεργοποιήσετε ή `False` (ή `no`) για να απενεργοποιήσετε.\n"
 "        "
 
-#: simplesanction\settings.py:114
+#: simplesanction\settings.py:105
 msgid "Show Author is already set on {state}."
 msgstr "Το Show Author έχει ήδη οριστεί στο {state}."
 
-#: simplesanction\settings.py:118
+#: simplesanction\settings.py:109
 msgid "Show Author state registered: {state}."
 msgstr "Εμφάνιση κατάστασης συγγραφέα καταχωρημένη: {state}."
 
-#: simplesanction\settings.py:122
+#: simplesanction\settings.py:113
 #, docstring
 msgid "Enable or disable Action Confirmation\n\n"
 "        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
@@ -94,15 +94,15 @@ msgstr "Ενεργοποίηση ή απενεργοποίηση Επιβεβα�
 "        Χρησιμοποιήστε `True` (ή `yes`) για να ενεργοποιήσετε ή `False` (ή `no`) για να απενεργοποιήσετε.\n"
 "        "
 
-#: simplesanction\settings.py:130
+#: simplesanction\settings.py:121
 msgid "Action Confirmation is already set on {state}."
 msgstr "Η Επιβεβαίωση ενέργειας έχει ήδη οριστεί στο {state}."
 
-#: simplesanction\settings.py:134
+#: simplesanction\settings.py:125
 msgid "Action Confirmation state registered: {state}."
 msgstr "Ενέργεια Κατάσταση επιβεβαίωσης καταχωρημένη: {state}."
 
-#: simplesanction\settings.py:140
+#: simplesanction\settings.py:131
 #, docstring
 msgid "Enable or disable Finish Message\n\n"
 "        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
@@ -111,11 +111,11 @@ msgstr "Ενεργοποίηση ή απενεργοποίηση του μηνύ
 "        Χρησιμοποιήστε `True` (ή `yes`) για να ενεργοποιήσετε ή `False` (ή `no`) για να απενεργοποιήσετε.\n"
 "        "
 
-#: simplesanction\settings.py:148
+#: simplesanction\settings.py:139
 msgid "Finish Message is already set on {state}."
 msgstr "Το μήνυμα Finish έχει ήδη οριστεί στο {state}."
 
-#: simplesanction\settings.py:158
+#: simplesanction\settings.py:149
 #, docstring
 msgid "Enable or disable Warn System Use\n\n"
 "        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
@@ -124,15 +124,15 @@ msgstr "Enable or disable Warn System Use\n\n"
 "        Χρησιμοποιήστε `True` (ή `yes`) για να ενεργοποιήσετε ή `False` (ή `no`) για να απενεργοποιήσετε.\n"
 "        "
 
-#: simplesanction\settings.py:166
+#: simplesanction\settings.py:157
 msgid "Warn System Use is already set on {state}."
 msgstr "Η επιλογή Warn System Use έχει ήδη ρυθμιστεί στο {state}."
 
-#: simplesanction\settings.py:170
+#: simplesanction\settings.py:161
 msgid "Warn System Use state registered: {state}."
 msgstr "Προειδοποίηση Κατάσταση χρήσης συστήματος καταχωρημένη: {state}."
 
-#: simplesanction\settings.py:176
+#: simplesanction\settings.py:167
 #, docstring
 msgid "Enable or disable Buttons Use\n\n"
 "        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
@@ -141,11 +141,11 @@ msgstr "Ενεργοποίηση ή απενεργοποίηση κουμπιώ�
 "        Χρησιμοποιήστε `True` (ή `yes`) για να ενεργοποιήσετε ή `False` (ή `no`) για να απενεργοποιήσετε.\n"
 "        "
 
-#: simplesanction\settings.py:184
+#: simplesanction\settings.py:175
 msgid "Way is already set on {way}."
 msgstr "Ο δρόμος έχει ήδη οριστεί στο {way}."
 
-#: simplesanction\settings.py:194
+#: simplesanction\settings.py:185
 #, docstring
 msgid "Enable or disable Reason Requiered\n\n"
 "        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
@@ -154,15 +154,15 @@ msgstr "Ενεργοποίηση ή απενεργοποίηση Reason Requiere
 "        Χρησιμοποιήστε `True` (ή `yes`) για να ενεργοποιήσετε ή `False` (ή `no`) για να απενεργοποιήσετε.\n"
 "        "
 
-#: simplesanction\settings.py:202
+#: simplesanction\settings.py:193
 msgid "Reason Required is already set on {state}."
 msgstr "Το Reason Required έχει ήδη οριστεί στο {state}."
 
-#: simplesanction\settings.py:206
+#: simplesanction\settings.py:197
 msgid "Reason Required state registered: {state}."
 msgstr "Αιτιολογία Απαιτούμενο κράτος καταχωρημένο: {state}."
 
-#: simplesanction\settings.py:210
+#: simplesanction\settings.py:201
 #, docstring
 msgid "Enable or disable Delete Embed\n\n"
 "        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
@@ -171,11 +171,11 @@ msgstr "Ενεργοποίηση ή απενεργοποίηση Διαγραφ�
 "        Χρησιμοποιήστε `True` (ή `yes`) για να ενεργοποιήσετε ή `False` (ή `no`) για να απενεργοποιήσετε.\n"
 "        "
 
-#: simplesanction\settings.py:218
+#: simplesanction\settings.py:209
 msgid "Delete Embed is already set on {state}."
 msgstr "Το Delete Embed έχει ήδη οριστεί στο {state}."
 
-#: simplesanction\settings.py:228
+#: simplesanction\settings.py:219
 #, docstring
 msgid "Enable or disable Delete Message\n\n"
 "        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
@@ -184,15 +184,15 @@ msgstr "Ενεργοποίηση ή απενεργοποίηση Διαγραφ�
 "        Χρησιμοποιήστε `True` (ή `yes`) για να ενεργοποιήσετε ή `False` (ή `no`) για να απενεργοποιήσετε.\n"
 "        "
 
-#: simplesanction\settings.py:236
+#: simplesanction\settings.py:227
 msgid "Delete Message is already set on {state}."
 msgstr "Το Delete Message έχει ήδη οριστεί στο {state}."
 
-#: simplesanction\settings.py:240
+#: simplesanction\settings.py:231
 msgid "Delete Message state registered: {state}."
 msgstr "Delete Message state registered: {state}."
 
-#: simplesanction\settings.py:244
+#: simplesanction\settings.py:235
 #, docstring
 msgid "Choose the timeout\n\n"
 "        Use a int. The default is 180 seconds.\n"
@@ -201,44 +201,24 @@ msgstr "Επιλέξτε το χρονικό όριο\n\n"
 "        Χρησιμοποιήστε ένα int. Η προεπιλογή είναι 180 δευτερόλεπτα.\n"
 "        "
 
-#: simplesanction\settings.py:253
+#: simplesanction\settings.py:244
 msgid "Timeout restored."
 msgstr "Το χρονικό όριο αποκαταστάθηκε."
 
-#: simplesanction\settings.py:256
+#: simplesanction\settings.py:247
 msgid "Timeout is already set on {timeout}."
 msgstr "Το χρονικό όριο έχει ήδη οριστεί στο {timeout}."
 
-#: simplesanction\settings.py:260
+#: simplesanction\settings.py:251
 msgid "Timeout state registered: {timeout}."
 msgstr "Κατάσταση χρονοκαθυστέρησης καταχωρήθηκε: {timeout}."
 
-#: simplesanction\simplesanction.py:50
+#: simplesanction\simplesanction.py:38
 #, docstring
 msgid "A cog to sanction a user!"
 msgstr "Ένα γρανάζι για την επιβολή κυρώσεων σε έναν χρήστη!"
 
-#: simplesanction\simplesanction.py:262
-msgid "You have chosen to sanction {inter.user.mention} ({inter.user.id}) in {inter.channel.mention}."
-msgstr "Έχετε επιλέξει να κυρώσετε το {inter.user.mention} ({inter.user.id}) στο {inter.channel.mention}."
-
-#: simplesanction\simplesanction.py:269 simplesanction\simplesanction.py:291
-msgid "An error has occurred in your interaction. Please try to use the real command instead of this contextual menu."
-msgstr "Προέκυψε σφάλμα στην αλληλεπίδρασή σας. Προσπαθήστε να χρησιμοποιήσετε την πραγματική εντολή αντί αυτού του μενού περιβάλλοντος."
-
-#: simplesanction\simplesanction.py:284
-msgid "You have chosen to sanction {inter.message.author.mention} ({inter.message.author.id}) in {inter.channel.mention}."
-msgstr "Έχετε επιλέξει να κυρώσετε το {inter.message.author.mention} ({inter.message.author.id}) στο {inter.channel.mention}."
-
-#: simplesanction\simplesanction.py:361
-msgid "You have chosen to sanction {user.mention} ({user.id}) in {inter.channel.mention}."
-msgstr "Έχετε επιλέξει να κυρώσετε το {user.mention} ({user.id}) στο {inter.channel.mention}."
-
-#: simplesanction\simplesanction.py:368
-msgid "An error has occurred in this interaction. Please try to use the real command instead of this contextual menu."
-msgstr "Συνέβη σφάλμα σε αυτή την αλληλεπίδραση. Προσπαθήστε να χρησιμοποιήσετε την πραγματική εντολή αντί αυτού του μενού περιβάλλοντος."
-
-#: simplesanction\simplesanction.py:448
+#: simplesanction\simplesanction.py:315
 #, docstring
 msgid "\n"
 "        - Sanction a user quickly and easily.\n\n"
@@ -255,10 +235,10 @@ msgstr "\n"
 "        - `[p]sanction 0 012345678987654321`\n"
 "        "
 
-#: simplesanction\simplesanction.py:489
+#: simplesanction\simplesanction.py:356
 #, docstring
 msgid "\n"
-"         - :information_source: Show info on an user.\n\n"
+"         - :information_source: Show info on a user.\n\n"
 "        Examples:\n"
 "        - `[p]sanction 1 @user`: UserInfo for no reason\n"
 "        - `[p]sanction 1 @user What are these roles?`: UserInfo for the reason \"What are these roles?\"\n"
@@ -272,10 +252,10 @@ msgstr "\n"
 "        - `[p]sanction 1 012345678987654321`: UserInfo με το αναγνωριστικό που δόθηκε.\n"
 "        "
 
-#: simplesanction\simplesanction.py:530
+#: simplesanction\simplesanction.py:397
 #, docstring
 msgid "\n"
-"         - ⚠️ Set a simple warning on an user.\n\n"
+"         - ⚠️ Set a simple warning on a user.\n\n"
 "        Examples:\n"
 "        - `[p]sanction 2 @user not`: Warn for no reason\n"
 "        - `[p]sanction 2 @user Insults`: Warn for the reason \"Insults\"\n"
@@ -289,7 +269,7 @@ msgstr "\n"
 "        - `[p]sanction 2 012345678987654321 Advertising`: Προειδοποίηση του χρήστη με το αναγνωριστικό που δόθηκε.\n"
 "        "
 
-#: simplesanction\simplesanction.py:571
+#: simplesanction\simplesanction.py:438
 #, docstring
 msgid "\n"
 "         - :hammer: Ban the member from the server.\n\n"
@@ -308,7 +288,7 @@ msgstr "\n"
 "        - `[p]sanction 3 012345678987654321 Advertising`: Απαγόρευση του χρήστη με το αναγνωριστικό που δόθηκε.\n"
 "        "
 
-#: simplesanction\simplesanction.py:614
+#: simplesanction\simplesanction.py:481
 #, docstring
 msgid "\n"
 "         - :repeat_one: Softban the member from the server.\n\n"
@@ -327,7 +307,7 @@ msgstr "\n"
 "        - `[p]sanction 4 012345678987654321 Advertising`: SoftBan του χρήστη με το αναγνωριστικό που δόθηκε.\n"
 "        "
 
-#: simplesanction\simplesanction.py:657
+#: simplesanction\simplesanction.py:524
 #, docstring
 msgid "\n"
 "         - :dash: Tempban the member from the server.\n\n"
@@ -348,7 +328,7 @@ msgstr "\n"
 "        - `[p]sanction 5 012345678987654321 Advertising`: Απαγόρευση του χρήστη με το αναγνωριστικό που δόθηκε.\n"
 "        "
 
-#: simplesanction\simplesanction.py:702
+#: simplesanction\simplesanction.py:569
 #, docstring
 msgid "\n"
 "         - :boot: Kick the member from the server.\n\n"
@@ -365,7 +345,7 @@ msgstr "\n"
 "        - `[p]sanction 6 012345678987654321 Advertising`: Κλωτσιά στον χρήστη με το αναγνωριστικό που δόθηκε.\n"
 "        "
 
-#: simplesanction\simplesanction.py:743
+#: simplesanction\simplesanction.py:610
 #, docstring
 msgid "\n"
 "         - :mute: Mute the user in all channels, including voice channels.\n\n"
@@ -382,7 +362,7 @@ msgstr "\n"
 "        - `[p]sanction 7 @user Advertising`: Άπειρη σίγαση για τον λόγο \"Advertising\"\n"
 "        "
 
-#: simplesanction\simplesanction.py:784
+#: simplesanction\simplesanction.py:651
 #, docstring
 msgid "\n"
 "         - :punch: Mute the user in this channel.\n\n"
@@ -399,7 +379,7 @@ msgstr "\n"
 "        - `[p]sanction 8 @user Advertising`: Άπειρη σίγαση για τον λόγο \"Advertising\"\n"
 "        "
 
-#: simplesanction\simplesanction.py:825
+#: simplesanction\simplesanction.py:692
 #, docstring
 msgid "\n"
 "         - :hourglass_flowing_sand: TempMute the user in all channels, including voice channels.\n\n"
@@ -418,7 +398,7 @@ msgstr "\n"
 "        - `[p]sanction 9 @user 3d Advertising`: 3 ημέρες σίγαση για τον λόγο \"Advertising\"\n"
 "        "
 
-#: simplesanction\simplesanction.py:868
+#: simplesanction\simplesanction.py:735
 #, docstring
 msgid "\n"
 "         - :hourglass: TempMute the user in this channel.\n\n"
@@ -437,252 +417,243 @@ msgstr "\n"
 "        - `[p]sanction 10 @user 3d Advertising`: 3 ημέρες σίγαση για τον λόγο \"Advertising\"\n"
 "        "
 
-#: simplesanction\simplesanction.py:939 simplesanction\simplesanction.py:964
+#: simplesanction\simplesanction.py:804 simplesanction\simplesanction.py:829
 msgid "Sanctioning a member"
 msgstr "Επιβολή κυρώσεων σε μέλος"
 
-#: simplesanction\simplesanction.py:940
+#: simplesanction\simplesanction.py:805
 msgid "Which member do you want to sanction? (Set `cancel` to cancel.)"
 msgstr "Ποιο μέλος θέλετε να τιμωρήσετε; (Ορίστε το `cancel` για ακύρωση.)"
 
-#: simplesanction\simplesanction.py:960 simplesanction\utils.py:148
-#: simplesanction\utils.py:176
+#: simplesanction\simplesanction.py:825 simplesanction\utils.py:54
+#: simplesanction\utils.py:84
 msgid "Timed out, please try again."
 msgstr "Ο χρόνος έχει λήξει, παρακαλώ προσπαθήστε ξανά."
 
-#: simplesanction\simplesanction.py:965 simplesanction\utils.py:218
+#: simplesanction\simplesanction.py:830 simplesanction\utils.py:147
 msgid "This tool allows you to easily sanction a server member.\n"
 "User mention: {user.mention} - User ID: {user.id}"
 msgstr "Αυτό το εργαλείο σας επιτρέπει να κυρώσετε εύκολα ένα μέλος του διακομιστή.\n"
 "Αναφορά χρήστη: {user.mention} - Αναγνωριστικό χρήστη: {user.id}"
 
-#: simplesanction\simplesanction.py:990 simplesanction\simplesanction.py:995
-#: simplesanction\utils.py:241
+#: simplesanction\simplesanction.py:853 simplesanction\simplesanction.py:858
+#: simplesanction\utils.py:168
 msgid "Reason:"
 msgstr "Λόγος:"
 
-#: simplesanction\simplesanction.py:991
+#: simplesanction\simplesanction.py:854
 msgid "The reason was not given and will not be asked later."
 msgstr "Ο λόγος δεν δόθηκε και δεν θα ζητηθεί αργότερα."
 
-#: simplesanction\simplesanction.py:998 simplesanction\utils.py:202
-#: simplesanction\utils.py:208 simplesanction\utils.py:246
-#: simplesanction\utils.py:252
+#: simplesanction\simplesanction.py:861 simplesanction\utils.py:120
+#: simplesanction\utils.py:126 simplesanction\utils.py:173
+#: simplesanction\utils.py:179
 msgid "Duration:"
 msgstr "Διάρκεια:"
 
-#: simplesanction\simplesanction.py:1007 simplesanction\simplesanction.py:1696
-#: simplesanction\simplesanction.py:1722 simplesanction\simplesanction.py:1748
-#: simplesanction\simplesanction.py:1774 simplesanction\simplesanction.py:1800
-#: simplesanction\simplesanction.py:1826 simplesanction\simplesanction.py:1852
-#: simplesanction\simplesanction.py:1878 simplesanction\simplesanction.py:1904
-#: simplesanction\simplesanction.py:1930
+#: simplesanction\simplesanction.py:869
 msgid "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
 msgstr "Χρησιμοποιείτε αυτή την εντολή σε λειτουργία Fake, οπότε δεν θα γίνει καμία ενέργεια, αλλά θα προσποιηθώ ότι δεν συμβαίνει κάτι τέτοιο."
 
-#: simplesanction\simplesanction.py:1690
-msgid "You are not the author of this command."
-msgstr "Δεν είστε ο συγγραφέας αυτής της εντολής."
-
-#: simplesanction\simplesanction.py:2021
+#: simplesanction\simplesanction.py:1567
 msgid "Sanctioning a member - ℹ️ UserInfo"
 msgstr "Επιβολή κυρώσεων σε μέλος - ℹ️ UserInfo"
 
-#: simplesanction\simplesanction.py:2022
+#: simplesanction\simplesanction.py:1568
 msgid "Here is the information about the user {user.name}!"
 msgstr "Εδώ είναι οι πληροφορίες σχετικά με τον χρήστη {user.name}!"
 
-#: simplesanction\simplesanction.py:2033
+#: simplesanction\simplesanction.py:1579
 msgid "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`."
 msgstr "Το γρανάζι Mod δεν έχει φορτωθεί. Για να το φορτώσετε, κάντε `{ctx.prefix}load mod`."
 
-#: simplesanction\simplesanction.py:2055 simplesanction\simplesanction.py:2068
-#: simplesanction\simplesanction.py:2081
+#: simplesanction\simplesanction.py:1601 simplesanction\simplesanction.py:1614
+#: simplesanction\simplesanction.py:1627
 msgid "Sanctioning a member - ⚠️ Warn"
 msgstr "Επιβολή κυρώσεων σε μέλος - ⚠️ Warn"
 
-#: simplesanction\simplesanction.py:2056
+#: simplesanction\simplesanction.py:1602
 msgid "Why do you want warn {user}? (Set `cancel` to cancel or `not` for none)"
 msgstr "Γιατί θέλετε να προειδοποιήσετε το {user}; (Ορίστε το `cancel` για ακύρωση ή το `not` για κανένα)"
 
-#: simplesanction\simplesanction.py:2069
+#: simplesanction\simplesanction.py:1615
 msgid "Do you really want to warn {user}?"
 msgstr "Θέλετε πραγματικά να προειδοποιήσετε το {user};"
 
-#: simplesanction\simplesanction.py:2082
+#: simplesanction\simplesanction.py:1628
 msgid "The user {user} has been received a warning!"
 msgstr "Ο χρήστης {user} έχει λάβει μια προειδοποίηση!"
 
-#: simplesanction\simplesanction.py:2094
+#: simplesanction\simplesanction.py:1640
 msgid "The cog Warnings is not loaded. To load it, do `{ctx.prefix}load warnings`. You can also install/load the WarnSystem cog."
 msgstr "Το γρανάζι Warnings δεν έχει φορτωθεί. Για να το φορτώσετε, κάντε `{ctx.prefix}load warnings`. Μπορείτε επίσης να εγκαταστήσετε/φορτώσετε το cog WarnSystem."
 
-#: simplesanction\simplesanction.py:2122 simplesanction\simplesanction.py:2135
-#: simplesanction\simplesanction.py:2148
+#: simplesanction\simplesanction.py:1670 simplesanction\simplesanction.py:1683
+#: simplesanction\simplesanction.py:1696
 msgid "Sanctioning a member - 🔨 Ban"
 msgstr "Επιβολή κυρώσεων σε ένα μέλος - 🔨 Απαγόρευση"
 
-#: simplesanction\simplesanction.py:2123
+#: simplesanction\simplesanction.py:1671
 msgid "Why do you want to ban {user}? (Set `cancel` to cancel or `not` to none)"
 msgstr "Γιατί θέλετε να απαγορεύσετε το {user}; (Ρυθμίστε το `cancel` σε cancel ή το `not` σε none)"
 
-#: simplesanction\simplesanction.py:2136
+#: simplesanction\simplesanction.py:1684
 msgid "Do you really want to ban {user}?"
 msgstr "Θέλετε πραγματικά να απαγορεύσετε το {user};"
 
-#: simplesanction\simplesanction.py:2149
+#: simplesanction\simplesanction.py:1697
 msgid "The user {user} has been banned!"
 msgstr "Ο χρήστης {user} έχει απαγορευτεί!"
 
-#: simplesanction\simplesanction.py:2161 simplesanction\simplesanction.py:2230
-#: simplesanction\simplesanction.py:2313 simplesanction\simplesanction.py:2384
+#: simplesanction\simplesanction.py:1709 simplesanction\simplesanction.py:1778
+#: simplesanction\simplesanction.py:1861 simplesanction\simplesanction.py:1932
 msgid "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`. You can also install/load the WarnSystem cog."
 msgstr "Το γρανάζι Mod δεν έχει φορτωθεί. Για να το φορτώσετε, κάντε `{ctx.prefix}load mod`. Μπορείτε επίσης να εγκαταστήσετε/φορτώσετε το cog WarnSystem."
 
-#: simplesanction\simplesanction.py:2191 simplesanction\simplesanction.py:2204
-#: simplesanction\simplesanction.py:2217
+#: simplesanction\simplesanction.py:1739 simplesanction\simplesanction.py:1752
+#: simplesanction\simplesanction.py:1765
 msgid "Sanctioning a member - 🔂 SoftBan"
 msgstr "Επιβολή κυρώσεων σε ένα μέλος - 🔂 SoftBan"
 
-#: simplesanction\simplesanction.py:2192
+#: simplesanction\simplesanction.py:1740
 msgid "Why do you want to softban {user}? (Set `cancel` to cancel or `not` to none)"
 msgstr "Γιατί θέλετε να κάνετε softban το {user}; (Ρυθμίστε το `cancel` σε cancel ή το `not` σε none)"
 
-#: simplesanction\simplesanction.py:2205
+#: simplesanction\simplesanction.py:1753
 msgid "Do you really want to softban {user}?"
 msgstr "Θέλετε πραγματικά να κάνετε softban το {user};"
 
-#: simplesanction\simplesanction.py:2218
+#: simplesanction\simplesanction.py:1766
 msgid "The user {user} has been softbanned!"
 msgstr "Ο χρήστης {user} έχει απαγορευτεί!"
 
-#: simplesanction\simplesanction.py:2259 simplesanction\simplesanction.py:2274
-#: simplesanction\simplesanction.py:2287 simplesanction\simplesanction.py:2300
+#: simplesanction\simplesanction.py:1807 simplesanction\simplesanction.py:1822
+#: simplesanction\simplesanction.py:1835 simplesanction\simplesanction.py:1848
 msgid "Sanctioning a member - 💨 TempBan"
 msgstr "Επιβολή κυρώσεων σε ένα μέλος - 💨 TempBan"
 
-#: simplesanction\simplesanction.py:2260
+#: simplesanction\simplesanction.py:1808
 msgid "How long do you want to tempban {user}? (Set `cancel` to cancel)"
 msgstr "Πόσο καιρό θέλετε να απαγορεύσετε το {user}; (Ορίστε `cancel` για ακύρωση)"
 
-#: simplesanction\simplesanction.py:2275
+#: simplesanction\simplesanction.py:1823
 msgid "Why do you want to tempban {user}? (Set `cancel` to cancel or `not` to none)"
 msgstr "Γιατί θέλεις να απαγορεύσεις το {user}; (Ρυθμίστε το `cancel` σε cancel ή το `not` σε none)"
 
-#: simplesanction\simplesanction.py:2288
+#: simplesanction\simplesanction.py:1836
 msgid "Do you really want to tempban {user}?"
 msgstr "Θέλετε πραγματικά να απαγορεύσετε το {user};"
 
-#: simplesanction\simplesanction.py:2301
+#: simplesanction\simplesanction.py:1849
 msgid "The user {user} has been tempban!"
 msgstr "Ο χρήστης {user} έχει αποκλειστεί!"
 
-#: simplesanction\simplesanction.py:2343 simplesanction\simplesanction.py:2356
-#: simplesanction\simplesanction.py:2371
+#: simplesanction\simplesanction.py:1891 simplesanction\simplesanction.py:1904
+#: simplesanction\simplesanction.py:1919
 msgid "Sanctioning a member - 👢 Kick"
 msgstr "Επιβολή κυρώσεων σε ένα μέλος - 👢 Κλωτσιά"
 
-#: simplesanction\simplesanction.py:2344 simplesanction\simplesanction.py:2357
+#: simplesanction\simplesanction.py:1892 simplesanction\simplesanction.py:1905
 msgid "Why do you want to kick {user}? (Set `cancel` to cancel or `not` to none)"
 msgstr "Γιατί θέλετε να κλωτσήσετε το {user}; (Ρυθμίστε το `cancel` σε cancel ή το `not` σε none)"
 
-#: simplesanction\simplesanction.py:2372
+#: simplesanction\simplesanction.py:1920
 msgid "The user {user} has been kicked!"
 msgstr "Ο χρήστης {user} έχει διαγραφεί!"
 
-#: simplesanction\simplesanction.py:2414 simplesanction\simplesanction.py:2427
-#: simplesanction\simplesanction.py:2440
+#: simplesanction\simplesanction.py:1962 simplesanction\simplesanction.py:1975
+#: simplesanction\simplesanction.py:1988
 msgid "Sanctioning a member - 🔇 Mute"
 msgstr "Επιβολή κυρώσεων σε μέλος - 🔇 Σίγαση"
 
-#: simplesanction\simplesanction.py:2415
+#: simplesanction\simplesanction.py:1963
 msgid "Why do you want to mute {user}? (Set `cancel` to cancel or `not` to none)"
 msgstr "Γιατί θέλετε να κάνετε σίγαση στο {user}; (Ορίστε το `cancel` για ακύρωση ή το `not` για κανένα)"
 
-#: simplesanction\simplesanction.py:2428
+#: simplesanction\simplesanction.py:1976
 msgid "Do you really want to mute {user}?"
 msgstr "Θέλετε πραγματικά να κάνετε σίγαση στο {user};"
 
-#: simplesanction\simplesanction.py:2441
+#: simplesanction\simplesanction.py:1989
 msgid "The user {user} has been muted!"
 msgstr "Ο χρήστης {user} έχει σιγήσει!"
 
-#: simplesanction\simplesanction.py:2453 simplesanction\simplesanction.py:2603
+#: simplesanction\simplesanction.py:2001 simplesanction\simplesanction.py:2151
 msgid "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`. You can also install/load the WarnSystem cog."
 msgstr "Το γρανάζι Mutes δεν έχει φορτωθεί. Για να το φορτώσετε, κάντε `{ctx.prefix}load mutes`. Μπορείτε επίσης να εγκαταστήσετε/φορτώσετε το cog WarnSystem."
 
-#: simplesanction\simplesanction.py:2483 simplesanction\simplesanction.py:2496
-#: simplesanction\simplesanction.py:2511
+#: simplesanction\simplesanction.py:2031 simplesanction\simplesanction.py:2044
+#: simplesanction\simplesanction.py:2059
 msgid "Sanctioning a member - 👊 MuteChannel"
 msgstr "Επιβολή κυρώσεων σε ένα μέλος - 👊 MuteChannel"
 
-#: simplesanction\simplesanction.py:2484
+#: simplesanction\simplesanction.py:2032
 msgid "Why do you want to mute {user} in {ctx.channel.mention}? (Set `cancel` to cancel or `not` to none)"
 msgstr "Γιατί θέλετε να κάνετε σίγαση του {user} στο {ctx.channel.mention}; (Ρυθμίστε το `cancel` σε cancel ή το `not` σε none)"
 
-#: simplesanction\simplesanction.py:2497
+#: simplesanction\simplesanction.py:2045
 msgid "Do you really want to mute {user} in {ctx.channel.mention}?"
 msgstr "Θέλετε πραγματικά να κάνετε σίγαση του {user} στο {ctx.channel.mention};"
 
-#: simplesanction\simplesanction.py:2512
+#: simplesanction\simplesanction.py:2060
 msgid "The user {user} has been muted in #{ctx.channel.name}!"
 msgstr "Ο χρήστης {user} έχει σιγήσει στο #{ctx.channel.name}!"
 
-#: simplesanction\simplesanction.py:2525 simplesanction\simplesanction.py:2689
+#: simplesanction\simplesanction.py:2073 simplesanction\simplesanction.py:2237
 msgid "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`."
 msgstr "Το γρανάζι Mutes δεν έχει φορτωθεί. Για να το φορτώσετε, κάντε `{ctx.prefix}load mutes`."
 
-#: simplesanction\simplesanction.py:2549 simplesanction\simplesanction.py:2564
-#: simplesanction\simplesanction.py:2577 simplesanction\simplesanction.py:2590
+#: simplesanction\simplesanction.py:2097 simplesanction\simplesanction.py:2112
+#: simplesanction\simplesanction.py:2125 simplesanction\simplesanction.py:2138
 msgid "Sanctioning a member - ⏳ TempMute"
 msgstr "Επιβολή κυρώσεων σε ένα μέλος - ⏳ TempMute"
 
-#: simplesanction\simplesanction.py:2550
+#: simplesanction\simplesanction.py:2098
 msgid "How long do you want to tempmute {user}? (Set `cancel` to cancel)"
 msgstr "Πόσο καιρό θέλετε να κάνετε προσωρινή σίγαση στο {user}; (Ορίστε το `cancel` για ακύρωση)"
 
-#: simplesanction\simplesanction.py:2565
+#: simplesanction\simplesanction.py:2113
 msgid "Why do you want to tempmute {user}? (Set `cancel` to cancel or `not` to none)"
 msgstr "Γιατί θέλετε να κάνετε προσωρινή σίγαση στο {user}; (Ρυθμίστε το `cancel` σε cancel ή το `not` σε none)"
 
-#: simplesanction\simplesanction.py:2578
+#: simplesanction\simplesanction.py:2126
 msgid "Do you really want to tempmute {user}?"
 msgstr "Θέλετε πραγματικά να κάνετε σιωπή στο {user};"
 
-#: simplesanction\simplesanction.py:2591
+#: simplesanction\simplesanction.py:2139
 msgid "The user {user} has been tempmuted!"
 msgstr "Ο χρήστης {user} έχει υποστεί τροποποίηση!"
 
-#: simplesanction\simplesanction.py:2632 simplesanction\simplesanction.py:2647
-#: simplesanction\simplesanction.py:2660 simplesanction\simplesanction.py:2675
+#: simplesanction\simplesanction.py:2180 simplesanction\simplesanction.py:2195
+#: simplesanction\simplesanction.py:2208 simplesanction\simplesanction.py:2223
 msgid "Sanctioning a member - ⌛ TempMuteChannel"
 msgstr "Επιβολή κυρώσεων σε ένα μέλος - ⌛ TempMuteChannel"
 
-#: simplesanction\simplesanction.py:2633
+#: simplesanction\simplesanction.py:2181
 msgid "How long do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` to cancel)"
 msgstr "Πόσο καιρό θέλετε να κάνετε προσωρινή σίγαση στο {user} στο {ctx.channel.mention}; (Ορίστε το `cancel` για ακύρωση)"
 
-#: simplesanction\simplesanction.py:2648
+#: simplesanction\simplesanction.py:2196
 msgid "Why do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` to cancel or `not` to none)"
 msgstr "Γιατί θέλετε να κάνετε tempmute το {user} στο {ctx.channel.mention}; (Ρυθμίστε το `cancel` σε cancel ή το `not` σε none)"
 
-#: simplesanction\simplesanction.py:2661
+#: simplesanction\simplesanction.py:2209
 msgid "Do you really want to tempmute {user} in {ctx.channel.mention}?"
 msgstr "Θέλετε πραγματικά να κάνετε προσωρινή χρήση του {user} στο {ctx.channel.mention};"
 
-#: simplesanction\simplesanction.py:2676
+#: simplesanction\simplesanction.py:2224
 msgid "The user {user} has been tempmuted in #{ctx.channel.name}!"
 msgstr "Ο χρήστης {user} έχει μεταβληθεί στο #{ctx.channel.name}!"
 
-#: simplesanction\utils.py:194
+#: simplesanction\utils.py:112
 msgid "The reason was not given."
 msgstr "Ο λόγος δεν δόθηκε."
 
-#: simplesanction\utils.py:209 simplesanction\utils.py:253
+#: simplesanction\utils.py:127 simplesanction\utils.py:180
 msgid "Infinity"
 msgstr "Άπειρο"
 
-#: simplesanction\utils.py:238
+#: simplesanction\utils.py:165
 msgid "If an error has occurred, it will be displayed below."
 msgstr "Εάν έχει προκύψει σφάλμα, αυτό θα εμφανιστεί παρακάτω."
 

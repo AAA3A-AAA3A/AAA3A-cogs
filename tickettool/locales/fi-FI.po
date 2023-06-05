@@ -1,0 +1,478 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:26\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/tickettool/locales/messages.pot\n"
+"X-Crowdin-File-ID: 102\n"
+"Language: fi_FI\n"
+
+#: tickettool\settings.py:14 tickettool\settings.py:17
+#: tickettool\tickettool.py:691 tickettool\tickettool.py:694
+#: tickettool\tickettool.py:713
+msgid "This profile does not exist."
+msgstr "Tätä profiilia ei ole olemassa."
+
+#: tickettool\settings.py:39
+#, docstring
+msgid "Send a message with a button to open a ticket or dropdown with possible reasons.\n\n"
+"        Example:\n"
+"        `[p]setticket message #general \"🐛|Report a bug|If you find a bug, report it here.|bug\" \"⚠️|Report a user|If you find a malicious user, report it here.|user\"`\n"
+"        `[p]setticket 1234567890-0987654321`\n"
+"        "
+msgstr "Lähetä viesti, jossa on painike tiketin avaamiseksi tai pudotusvalikko, jossa on mahdolliset syyt.\n\n"
+"        Esimerkki:\n"
+"        `[p]setticket message #general \"🐛|Report a bug|If you find a bug, report it here.|bug\" \"⚠️|Report a user|If you find a malicious user, report it here.|user\"`\n"
+"        `[p]setticket 1234567890-0987654321`\n"
+"        "
+
+#: tickettool\settings.py:51
+msgid "I have to be the author of the message for the interaction to work."
+msgstr "Minun on oltava viestin kirjoittaja, jotta vuorovaikutus toimisi."
+
+#: tickettool\settings.py:75 tickettool\tickettool.py:310
+msgid "Create ticket"
+msgstr "Luo lippu"
+
+#: tickettool\settings.py:94
+msgid "A different value must be provided for each dropdown option."
+msgstr "Jokaiselle pudotusvalinnalle on annettava eri arvo."
+
+#: tickettool\settings.py:102
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Valitsemasi emoji vaikuttaa virheelliseltä. Tarkista, että se on emoji. Jos sinulla on Nitro, olet saattanut käyttää muokatun emojin toisesta palvelimesta."
+
+#: tickettool\ticket.py:84
+msgid "No reason provided."
+msgstr "Syytä ei ole ilmoitettu."
+
+#: tickettool\ticket.py:216
+msgid "Creating the ticket {ticket.id}."
+msgstr "Lipun luominen {ticket.id}."
+
+#: tickettool\ticket.py:241 tickettool\ticket.py:456 tickettool\ticket.py:788
+#: tickettool\ticket.py:865 tickettool\tickettool.py:323
+msgid "Close"
+msgstr "Sulje"
+
+#: tickettool\ticket.py:248 tickettool\ticket.py:463 tickettool\ticket.py:545
+#: tickettool\ticket.py:795 tickettool\ticket.py:872
+#: tickettool\tickettool.py:337
+msgid "Claim"
+msgstr "Vaatimus"
+
+#: tickettool\ticket.py:255 tickettool\ticket.py:470 tickettool\ticket.py:552
+#: tickettool\ticket.py:802 tickettool\ticket.py:879
+#: tickettool\tickettool.py:344
+msgid "Delete"
+msgstr "Poista"
+
+#: tickettool\ticket.py:267 tickettool\ticket.py:367
+msgid "Ticket Created"
+msgstr "Lippu luotu"
+
+#: tickettool\ticket.py:268
+msgid "Thank you for creating a ticket on this server!"
+msgstr "Kiitos, että olet luonut tiketin tälle palvelimelle!"
+
+#: tickettool\ticket.py:280 tickettool\ticket.py:834
+msgid "🎟️ Ticket ID: {ticket.id}\n"
+"🔥 Channel ID: {ticket.channel.id}\n"
+"🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+"☢️ Ticket reason: {ticket.reason}\n"
+"👥 Ticket claimed by: Nobody."
+msgstr "🎟️ Lipun tunnus: {ticket.id}\n"
+" {ticket.channel.id}\n"
+"🕵️ Lipun luonut: 🔥 Channel ID: 🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+"☢️ Ticket reason: {ticket.reason}\n"
+"👥 Ticket claimed by: Nobody."
+
+#: tickettool\ticket.py:368
+msgid "The ticket was created by {ticket.created_by}."
+msgstr "Lipun on luonut {ticket.created_by}."
+
+#: tickettool\ticket.py:374
+msgid "Report on the creation of the ticket {ticket.id}."
+msgstr "Raportti lipun luomisesta {ticket.id}."
+
+#: tickettool\ticket.py:412
+msgid "Opening the ticket {ticket.id}."
+msgstr "Lipun avaaminen {ticket.id}."
+
+#: tickettool\ticket.py:433 tickettool\ticket.py:441
+msgid "Ticket Opened"
+msgstr "Lippu avattu"
+
+#: tickettool\ticket.py:442
+msgid "The ticket was opened by {ticket.opened_by}."
+msgstr "Lipun avasi {ticket.opened_by}."
+
+#: tickettool\ticket.py:448 tickettool\ticket.py:530
+msgid "Report on the close of the ticket {ticket.id}."
+msgstr "Raportti lipunmyynnin päättymisestä {ticket.id}."
+
+#: tickettool\ticket.py:538 tickettool\tickettool.py:330
+msgid "Re-open"
+msgstr "Avaa uudelleen"
+
+#: tickettool\ticket.py:576 tickettool\ticket.py:613
+#: tickettool\tickettool.py:906 tickettool\tickettool.py:948
+msgid "Cannot execute action on a text channel."
+msgstr "Toimintaa ei voida suorittaa tekstikanavalla."
+
+#: tickettool\ticket.py:603
+msgid "Report on the lock of the ticket {ticket.id}."
+msgstr "Raportti lipun lukituksesta {ticket.id}."
+
+#: tickettool\ticket.py:640
+msgid "Report on the unlock of the ticket {ticket.id}."
+msgstr "Raportti lipun lukituksen avaamisesta {ticket.id}."
+
+#: tickettool\ticket.py:656
+msgid "Renaming the ticket {ticket.id}. (`{ticket.channel.name}` to `{new_name}`)"
+msgstr "Lipun {ticket.id}uudelleen nimeäminen (`{ticket.channel.name}` muotoon `{new_name}`)."
+
+#: tickettool\ticket.py:666
+msgid "Ticket Renamed."
+msgstr "Lippu nimettiin uudelleen."
+
+#: tickettool\ticket.py:684
+msgid "Ticket Deleted"
+msgstr "Lippu poistettu"
+
+#: tickettool\ticket.py:685
+msgid "The ticket was deleted by {ticket.deleted_by}."
+msgstr "{ticket.deleted_by}poisti lipun."
+
+#: tickettool\ticket.py:708
+msgid "Report on the deletion of the ticket {ticket.id}."
+msgstr "Raportti lipun poistamisesta {ticket.id}."
+
+#: tickettool\ticket.py:725
+msgid "Deleting the ticket {ticket.id}."
+msgstr "Lipun poistaminen {ticket.id}."
+
+#: tickettool\ticket.py:746
+msgid "A ticket cannot be claimed if it is closed."
+msgstr "Jos lippu on suljettu, sitä ei voi lunastaa."
+
+#: tickettool\ticket.py:750
+msgid "A bot cannot claim a ticket."
+msgstr "Botti ei voi lunastaa lippua."
+
+#: tickettool\ticket.py:752
+msgid "🎟️ Ticket ID: {ticket.id}\n"
+"🔥 Channel ID: {ticket.channel.id}\n"
+"🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+"☢️ Ticket reason: {ticket.reason}\n"
+"👥 Ticket claimed by: @{ticket.claim.display_name} (@{ticket.claim.id})."
+msgstr "🎟️ Lipun tunnus: {ticket.id}\n"
+" {ticket.channel.id}\n"
+"🕵️ Lipun luonut: 🔥 Channel ID: 🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+"☢️ Ticket reason: {ticket.reason}\n"
+"👥 Ticket claimed by: @{ticket.claim.display_name} (@{ticket.claim.id})."
+
+#: tickettool\ticket.py:764
+msgid "Claiming the ticket {ticket.id}."
+msgstr "Lipun lunastaminen {ticket.id}."
+
+#: tickettool\ticket.py:816
+msgid "Ticket claimed."
+msgstr "Lippu lunastettu."
+
+#: tickettool\ticket.py:830
+msgid "A ticket cannot be unclaimed if it is closed."
+msgstr "Lippua ei voi jättää lunastamatta, jos se on suljettu."
+
+#: tickettool\ticket.py:847
+msgid "Unclaiming the ticket {ticket.id}."
+msgstr "Lipun peruuttaminen {ticket.id}."
+
+#: tickettool\ticket.py:893
+msgid "Ticket unclaimed."
+msgstr "Lippu lunastamatta."
+
+#: tickettool\ticket.py:907
+msgid "Cannot execute action on a thread channel."
+msgstr "Toimintoa ei voida suorittaa säikeen kanavalla."
+
+#: tickettool\ticket.py:914
+msgid "Changing owner of the ticket {ticket.id}."
+msgstr "Lipun omistajan vaihtaminen {ticket.id}."
+
+#: tickettool\ticket.py:918
+msgid "You cannot transfer ownership of a ticket to a bot."
+msgstr "Et voi siirtää lipun omistusoikeutta botille."
+
+#: tickettool\ticket.py:946
+msgid "Owner Modified."
+msgstr "Omistaja Muutettu."
+
+#: tickettool\ticket.py:965
+msgid "Adding a member to the ticket {ticket.id}."
+msgstr "Jäsenen lisääminen lippuun {ticket.id}."
+
+#: tickettool\ticket.py:972 tickettool\ticket.py:1007
+msgid "You cannot add a bot to a ticket. ({member})"
+msgstr "Et voi lisätä botteja tikettiin. ({member})"
+
+#: tickettool\ticket.py:976 tickettool\ticket.py:1011
+msgid "This member is already the owner of this ticket. ({member})"
+msgstr "Tämä jäsen on jo tämän lipun omistaja. ({member})"
+
+#: tickettool\ticket.py:982 tickettool\ticket.py:1017
+msgid "This member is an administrator for the ticket system. They will always have access to the ticket anyway. ({member})"
+msgstr "Tämä jäsen on tikettijärjestelmän ylläpitäjä. Hänellä on joka tapauksessa aina pääsy tikettiin. ({member})"
+
+#: tickettool\ticket.py:988 tickettool\ticket.py:1023
+msgid "This member already has access to this ticket. ({member})"
+msgstr "Tällä jäsenellä on jo pääsy tähän lippuun. ({member})"
+
+#: tickettool\ticket.py:1050
+msgid "Removing a member to the ticket {ticket.id}."
+msgstr "Jäsenen poistaminen lipusta {ticket.id}."
+
+#: tickettool\ticket.py:1056 tickettool\ticket.py:1086
+msgid "You cannot remove a bot to a ticket ({member})."
+msgstr "Et voi poistaa botin tikettiin ({member})."
+
+#: tickettool\ticket.py:1062 tickettool\ticket.py:1092
+msgid "You cannot remove the owner of this ticket. ({member})"
+msgstr "Et voi poistaa tämän lipun omistajaa. ({member})"
+
+#: tickettool\ticket.py:1068 tickettool\ticket.py:1098
+msgid "This member is an administrator for the ticket system. They will always have access to the ticket. ({member})"
+msgstr "Tämä jäsen on tikettijärjestelmän ylläpitäjä. Hänellä on aina pääsy tikettiin. ({member})"
+
+#: tickettool\ticket.py:1074 tickettool\ticket.py:1104
+msgid "This member is not in the list of those authorised to access the ticket. ({member})"
+msgstr "Tämä jäsen ei ole niiden henkilöiden luettelossa, joilla on oikeus käyttää lippua. ({member})"
+
+#: tickettool\tickettool.py:30
+#, docstring
+msgid "A cog to manage a tickets system!"
+msgstr "Hammasratas lippujärjestelmän hallinnoimiseksi!"
+
+#: tickettool\tickettool.py:87
+msgid "To get help on this server or to make an order for example, you can create a ticket.\n"
+"Just use the command `{prefix}ticket create` or click on the button below.\n"
+"You can then use the `{prefix}ticket` subcommands to manage your ticket."
+msgstr "Jos haluat saada apua palvelimesta tai tehdä esimerkiksi tilauksen, voit luoda tiketin.\n"
+"Käytä komentoa `{prefix}ticket create` tai klikkaa alla olevaa painiketta.\n"
+"Sen jälkeen voit käyttää `{prefix}ticket`-alikomentoja lippusi hallintaan."
+
+#: tickettool\tickettool.py:360
+msgid "Choose the reason for open a ticket."
+msgstr "Valitse syy lipun avaamiseen."
+
+#: tickettool\tickettool.py:471
+msgid "Action taken for the ticket system."
+msgstr "Toteutetut toimet lippujärjestelmää varten."
+
+#: tickettool\tickettool.py:505
+msgid "Ticket ID:"
+msgstr "Lipun tunnus:"
+
+#: tickettool\tickettool.py:508
+msgid "Owned by:"
+msgstr "Omistaa:"
+
+#: tickettool\tickettool.py:516
+msgid "Channel:"
+msgstr "Kanava:"
+
+#: tickettool\tickettool.py:523
+msgid "Closed by:"
+msgstr "Suljettu:"
+
+#: tickettool\tickettool.py:531
+msgid "Deleted by:"
+msgstr "Poistettu:"
+
+#: tickettool\tickettool.py:539
+msgid "Closed at:"
+msgstr "Suljettu:"
+
+#: tickettool\tickettool.py:542 tickettool\tickettool.py:566
+msgid "Reason:"
+msgstr "Syy:"
+
+#: tickettool\tickettool.py:551
+msgid "Ticket [{ticket.profile}] {ticket.id} - Action taken"
+msgstr "Lippu [{ticket.profile}] {ticket.id} - Toimiiko komissio?"
+
+#: tickettool\tickettool.py:710
+#, docstring
+msgid "Create a ticket."
+msgstr "Luo lippu."
+
+#: tickettool\tickettool.py:720
+msgid "The ticket system is not enabled on this server. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it."
+msgstr "Lippujärjestelmä ei ole käytössä tällä palvelimella. Pyydä tämän palvelimen ylläpitäjää käyttämään `{ctx.prefix}ticketset`-alikomentoja sen määrittämiseksi."
+
+#: tickettool\tickettool.py:726
+msgid "The category `open` or the category `close` have not been configured. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it."
+msgstr "Luokkaa `open` tai luokkaa `close` ei ole määritetty. Pyydä tämän palvelimen ylläpitäjää käyttämään `{ctx.prefix}ticketset`-alikomentoja sen määrittämiseksi."
+
+#: tickettool\tickettool.py:733
+msgid "Sorry. You have already reached the limit of {limit} open tickets."
+msgstr "Olen pahoillani. Olet jo saavuttanut {limit} avoimien lippujen rajan."
+
+#: tickettool\tickettool.py:743
+msgid "The bot does not have `manage_channels` permission on the `open` and `close` categories to allow the ticket system to function properly. Please notify an administrator of this server."
+msgstr "Botilla ei ole `manage_channels`-oikeutta kategorioihin `open` ja `close`, jotta lippujärjestelmä toimisi oikein. Ilmoita asiasta tämän palvelimen ylläpitäjälle."
+
+#: tickettool\tickettool.py:752
+msgid "The bot does not have `manage_channel` permission in the forum channel to allow the ticket system to function properly. Please notify an administrator of this server."
+msgstr "Botilla ei ole `manage_channel`-oikeutta foorumikanavalla, jotta tikettijärjestelmä toimisi oikein. Ilmoita asiasta tämän palvelimen ylläpitäjälle."
+
+#: tickettool\tickettool.py:776
+#, docstring
+msgid "Export all the messages of an existing ticket in html format.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        "
+msgstr "Vie kaikki olemassa olevan tiketin viestit html-muodossa.\n"
+"        Huomaa: kaikki liitetiedostot ja käyttäjän avatarit tallennetaan tässä tiedostossa olevan Discord-linkin kanssa.\n"
+"        "
+
+#: tickettool\tickettool.py:793
+msgid "Here is the html file of the transcript of all the messages in this ticket.\n"
+"Please note: all attachments and user avatars are saved with the Discord link in this file."
+msgstr "Tässä on html-tiedosto, jossa on kaikkien tämän tiketin viestien jäljennös.\n"
+"Huomaa: kaikki liitetiedostot ja käyttäjän avatarit tallennetaan tässä tiedostossa olevan Discord-linkin avulla."
+
+#: tickettool\tickettool.py:825
+#, docstring
+msgid "Open an existing ticket."
+msgstr "Avaa olemassa oleva lippu."
+
+#: tickettool\tickettool.py:830
+msgid "The ticket system is not enabled on this server."
+msgstr "Lippujärjestelmä ei ole käytössä tällä palvelimella."
+
+#: tickettool\tickettool.py:856
+#, docstring
+msgid "Close an existing ticket."
+msgstr "Sulje olemassa oleva lippu."
+
+#: tickettool\tickettool.py:867
+msgid "Do you really want to close the ticket {ticket.id}?"
+msgstr "Haluatko todella sulkea lipun {ticket.id}?"
+
+#: tickettool\tickettool.py:903
+#, docstring
+msgid "Lock an existing ticket."
+msgstr "Lukitse olemassa oleva lippu."
+
+#: tickettool\tickettool.py:910
+msgid "Do you really want to lock the ticket {ticket.id}?"
+msgstr "Haluatko todella lukita lipun {ticket.id}?"
+
+#: tickettool\tickettool.py:945
+#, docstring
+msgid "Unlock an existing locked ticket."
+msgstr "Avaa olemassa olevan lukitun lipun lukitus."
+
+#: tickettool\tickettool.py:973
+#, docstring
+msgid "Rename an existing ticket."
+msgstr "Nimeä olemassa oleva lippu uudelleen."
+
+#: tickettool\tickettool.py:999
+#, docstring
+msgid "Delete an existing ticket.\n"
+"        If a log channel is defined, an html file containing all the messages of this ticket will be generated.\n"
+"        (Attachments are not supported, as they are saved with their Discord link)\n"
+"        "
+msgstr "Poista olemassa oleva lippu.\n"
+"        Jos lokikanava on määritetty, luodaan html-tiedosto, joka sisältää kaikki tämän tiketin viestit.\n"
+"        (Liitetiedostoja ei tueta, koska ne tallennetaan Discord-linkin kanssa)\n"
+"        "
+
+#: tickettool\tickettool.py:1007
+msgid "Do you really want to delete all the messages of the ticket {ticket.id}?"
+msgstr "Haluatko todella poistaa kaikki lipun {ticket.id}viestit?"
+
+#: tickettool\tickettool.py:1010
+msgid "If a log channel is defined, an html file containing all the messages of this ticket will be generated. (Attachments are not supported, as they are saved with their Discord link)"
+msgstr "Jos lokikanava on määritelty, luodaan html-tiedosto, joka sisältää kaikki tämän lipun viestit. (Liitetiedostoja ei tueta, koska ne tallennetaan Discord-linkin kanssa)."
+
+#: tickettool\tickettool.py:1046
+#, docstring
+msgid "Claim an existing ticket."
+msgstr "Lunasta olemassa oleva lippu."
+
+#: tickettool\tickettool.py:1070
+#, docstring
+msgid "Unclaim an existing ticket."
+msgstr "Olemassa olevan lipun lunastuksen peruuttaminen."
+
+#: tickettool\tickettool.py:1096
+#, docstring
+msgid "Change the owner of an existing ticket."
+msgstr "Olemassa olevan lipun omistajan vaihtaminen."
+
+#: tickettool\tickettool.py:1122
+#, docstring
+msgid "Add a member to an existing ticket."
+msgstr "Jäsenen lisääminen olemassa olevaan lippuun."
+
+#: tickettool\tickettool.py:1147
+#, docstring
+msgid "Remove a member to an existing ticket."
+msgstr "Poistaa jäsenen olemassa olevasta tiketistä."
+
+#: tickettool\tickettool.py:1181
+msgid "No tickets to show."
+msgstr "Ei lippuja näytettäväksi."
+
+#: tickettool\tickettool.py:1249
+msgid "The profile for which this button was configured no longer exists."
+msgstr "Profiilia, jolle tämä painike määritettiin, ei enää ole."
+
+#: tickettool\tickettool.py:1262 tickettool\tickettool.py:1371
+msgid "You are not allowed to execute this command."
+msgstr "Et saa suorittaa tätä komentoa."
+
+#: tickettool\tickettool.py:1266
+msgid "You have chosen to create a ticket."
+msgstr "Olet päättänyt luoda lipun."
+
+#: tickettool\tickettool.py:1293
+msgid "You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+msgstr "Olet päättänyt sulkea tämän tiketin. Jos näin ei tehdä, sinulla ei ole tarvittavia oikeuksia tämän komennon suorittamiseen."
+
+#: tickettool\tickettool.py:1306
+msgid "You have chosen to re-open this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+msgstr "Olet päättänyt avata tämän lipun uudelleen. Jos näin ei ole tehty, sinulla ei ole tarvittavia oikeuksia tämän komennon suorittamiseen."
+
+#: tickettool\tickettool.py:1318
+msgid "You have chosen to claim this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+msgstr "Olet päättänyt lunastaa tämän lipun. Jos näin ei ole tehty, sinulla ei ole tarvittavia oikeuksia tämän komennon suorittamiseen."
+
+#: tickettool\tickettool.py:1347
+msgid "This message is not in TicketTool config."
+msgstr "Tämä viesti ei ole TicketToolin konfiguraatiossa."
+
+#: tickettool\tickettool.py:1356
+msgid "The profile for which this dropdown was configured no longer exists."
+msgstr "Profiilia, jolle tämä pudotusvalikko määritettiin, ei enää ole olemassa."
+
+#: tickettool\tickettool.py:1388
+msgid "You have chosen to create a ticket with the reason `{reason}`."
+msgstr "Olet päättänyt luoda tiketin, jonka syy on `{reason}`."
+
+#: tickettool\utils.py:105
+msgid "Emoji Label must be An emoji followed by an string, and optionnaly by a description and a value (for rename ticket channel), separated by either `;`, `,`, `|`, or `-`."
+msgstr "Emoji-tunnisteen on oltava Emoji, jota seuraa merkkijono ja mahdollisesti kuvaus ja arvo (jos haluat nimetä lippukanavan uudelleen), erotettuna joko `;`, `,`, `|` tai `-`."
+

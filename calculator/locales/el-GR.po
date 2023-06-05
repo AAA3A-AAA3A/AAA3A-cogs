@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-15 15:47\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 18:21\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -17,33 +17,28 @@ msgstr ""
 "X-Crowdin-File-ID: 76\n"
 "Language: el_GR\n"
 
-#: calculator\calculator.py:36
+#: calculator\calculator.py:29
 #, docstring
 msgid "A cog to do calculations from Discord with buttons!"
 msgstr "Ένα γρανάζι για να κάνετε υπολογισμούς από το Discord με κουμπιά!"
 
-#: calculator\calculator.py:121 calculator\calculator.py:361
-#: calculator\calculator.py:371 calculator\view.py:204 calculator\view.py:214
+#: calculator\calculator.py:110 calculator\view.py:206 calculator\view.py:213
 msgid "Error!"
 msgstr "Σφάλμα!"
 
-#: calculator\calculator.py:134
+#: calculator\calculator.py:123
 msgid "{ctx.me.display_name}'s Calculator"
 msgstr "{ctx.me.display_name}'s Calculator"
 
-#: calculator\calculator.py:207 calculator\view.py:17 calculator\view.py:84
+#: calculator\view.py:17 calculator\view.py:84
 msgid "Exit"
 msgstr "Έξοδος"
 
-#: calculator\calculator.py:249 calculator\view.py:37 calculator\view.py:104
+#: calculator\view.py:37 calculator\view.py:104
 msgid "Clear"
 msgstr "Σαφής"
 
-#: calculator\calculator.py:355
-msgid "Only the author of the command `{ctx.prefix}{ctx.command.name}` can interact with this message."
-msgstr "Μόνο ο συντάκτης της εντολής `{ctx.prefix}{ctx.command.name}` μπορεί να αλληλεπιδράσει με αυτό το μήνυμα."
-
-#: calculator\calculator.py:449 calculator\view.py:281
+#: calculator\view.py:280
 msgid "Nothing in your history."
 msgstr "Τίποτα στο ιστορικό σας."
 

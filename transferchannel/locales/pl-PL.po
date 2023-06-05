@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-03 17:03\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:29\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -17,49 +17,49 @@ msgstr ""
 "X-Crowdin-File-ID: 104\n"
 "Language: pl_PL\n"
 
-#: transferchannel\transferchannel.py:30
-#: transferchannel\transferchannel.py:251
+#: transferchannel\transferchannel.py:20
+#: transferchannel\transferchannel.py:241
 msgid "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
 msgstr "Istnieje {count_messages} przekazanych wiadomości z {source.mention} do {destination.mention}."
 
-#: transferchannel\transferchannel.py:35
+#: transferchannel\transferchannel.py:27
 #, docstring
 msgid "A cog to transfer all messages channel in a other channel!"
 msgstr "Trybik do przenoszenia wszystkich wiadomości kanał w inny kanał!"
 
-#: transferchannel\transferchannel.py:87
+#: transferchannel\transferchannel.py:79
 msgid "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
 msgstr "Przepraszam, nie mogę odczytać treści wiadomości w {source.mention} ({source.id})."
 
-#: transferchannel\transferchannel.py:95
+#: transferchannel\transferchannel.py:87
 msgid "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n"
 "`embed_links`."
 msgstr "Potrzebuję mieć wszystkie następujące uprawnienia dla {destination.mention} ({destination.id}) w {destination.guild.name} ({destination.guild.id}).\n"
 "`embed_links`."
 
-#: transferchannel\transferchannel.py:102
+#: transferchannel\transferchannel.py:94
 msgid "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n"
 "`manage_channels`"
 msgstr "Potrzebuję mieć wszystkie następujące uprawnienia dla {destination.mention} ({destination.id}) w {destination.guild.name} ({destination.guild.id}).\n"
 "`manage_channels`"
 
-#: transferchannel\transferchannel.py:132
+#: transferchannel\transferchannel.py:124
 msgid "Sorry. I could not find any message."
 msgstr "Przepraszam. Nie udało mi się znaleźć żadnej wiadomości."
 
-#: transferchannel\transferchannel.py:164
+#: transferchannel\transferchannel.py:154
 msgid "**Author:** {message.author.mention} ({message.author.id})"
 msgstr "**Autor:** {message.author.mention} ({message.author.id})"
 
-#: transferchannel\transferchannel.py:167
+#: transferchannel\transferchannel.py:157
 msgid "**Channel:** <#{message.channel.id}>"
 msgstr "**Kanał:** <#{message.channel.id}>"
 
-#: transferchannel\transferchannel.py:168
+#: transferchannel\transferchannel.py:158
 msgid "**Time (UTC):** {iso_format}"
 msgstr "**Czas (UTC):** {iso_format}"
 
-#: transferchannel\transferchannel.py:208
+#: transferchannel\transferchannel.py:198
 #, docstring
 msgid "Transfer all messages channel in a other channel. This might take a long time.\n\n"
 "        Remember that transfering other users' messages in does not respect the TOS.\n"
@@ -68,7 +68,7 @@ msgstr "Prześlij wszystkie wiadomości na inny kanał. Może to zająć dużo c
 "        Pamiętaj, że przenoszenie wiadomości innych użytkowników nie jest zgodne z TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:234
+#: transferchannel\transferchannel.py:224
 #, docstring
 msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
 "        Specify the number of messages since the end of the channel.\n"
@@ -79,7 +79,7 @@ msgstr "Przenieś część wiadomości kanału w innym kanale. Może to zająć 
 "        Pamiętaj, że przekazywanie wiadomości innych użytkowników nie jest zgodne z TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:265
+#: transferchannel\transferchannel.py:255
 #, docstring
 msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
 "        Specify the before message (id or link).\n"
@@ -90,7 +90,7 @@ msgstr "Przenieś część wiadomości kanału w innym kanale. Może to zająć 
 "        Pamiętaj, że przesyłanie wiadomości innych użytkowników nie jest zgodne z TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:292
+#: transferchannel\transferchannel.py:282
 #, docstring
 msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
 "        Specify the after message (id or link).\n"
@@ -101,7 +101,7 @@ msgstr "Przenieś część wiadomości kanału w innym kanale. Może to zająć 
 "        Pamiętaj, że przesyłanie wiadomości innych użytkowników nie jest zgodne z TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:320
+#: transferchannel\transferchannel.py:310
 #, docstring
 msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
 "        Specify the between messages (id or link).\n"
@@ -112,18 +112,18 @@ msgstr "Przenieś część wiadomości kanału w innym kanale. Może to zająć 
 "        Pamiętaj, że przesyłanie wiadomości innych użytkowników nie jest zgodne z TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:350
+#: transferchannel\transferchannel.py:338
 #, docstring
 msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
-"            Specify the member (id, name or mention).\n"
-"            Remember that transfering other users' messages in does not respect the TOS.\n"
-"            "
-msgstr "Przenieś część wiadomości kanału w innym kanale. Może to zająć dużo czasu.\n\n"
-"            Określ członka (id, nazwa lub wzmianka).\n"
-"            Pamiętaj, że przenoszenie wiadomości innych użytkowników nie jest zgodne z TOS.\n"
-"            "
+"        Specify the member (id, name or mention).\n"
+"        Remember that transfering other users' messages in does not respect the TOS.\n"
+"        "
+msgstr "Przesyłanie części wiadomości kanału do innego kanału. Może to zająć dużo czasu.\n\n"
+"        Określ członka (identyfikator, nazwę lub wzmiankę).\n"
+"        Pamiętaj, że przesyłanie wiadomości innych użytkowników nie jest zgodne z TOS.\n"
+"        "
 
-#: transferchannel\transferchannel.py:383
+#: transferchannel\transferchannel.py:371
 #, docstring
 msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
 "        Specify the bool option.\n"

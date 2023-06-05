@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils, Menu, Settings, Modal  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Menu, Settings  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -229,7 +229,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
     async def cog_load(self):
         await self.edit_config_schema()
         await self.settings.add_commands()
-        await modlog.register_casetype("ticket_created", default_setting=True, image="🎫", case_str="New Ticket")
+        await modlog.register_casetype("ticket_created", default_setting=True, image="🎟️", case_str="New Ticket")
         await self.load_buttons()
 
     async def edit_config_schema(self):

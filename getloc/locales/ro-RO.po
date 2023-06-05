@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:26\n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ro\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/getloc/locales/messages.pot\n"
+"X-Crowdin-File-ID: 148\n"
+"Language: ro_RO\n"
+
+#: getloc\getloc.py:26
+#, docstring
+msgid "A cog to display information about a location based on its address or geographical coordinates!"
+msgstr "O rotiță pentru a afișa informații despre o locație pe baza adresei sale sau a coordonatelor geografice!"
+
+#: getloc\getloc.py:121
+msgid "An error has occurred. Please try again."
+msgstr "S-a produs o eroare. Vă rugăm să încercați din nou."
+
+#: getloc\getloc.py:124
+msgid "The address or contact details you have provided do not lead to any results. Are you sure of your input?"
+msgstr "Adresa sau datele de contact pe care le-ați furnizat nu conduc la niciun rezultat. Sunteți sigur de datele introduse?"
+

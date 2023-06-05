@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-03 16:47\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:28\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -21,80 +21,76 @@ msgstr ""
 msgid "Dropdown Text must be an emoji, followed by a label and a text, separated by either `;`, `,`, `|`, or `-`."
 msgstr "Выпадающий текст должен быть эмодзи, за которым следует метка и текст, разделенные либо `;`, `,`, `|`, либо `-`."
 
-#: dropdownstexts\dropdownstexts.py:35
+#: dropdownstexts\dropdownstexts.py:22
 #, docstring
 msgid "A cog to have dropdowns-texts!"
 msgstr "Коготь, чтобы иметь выпадающие тексты!"
 
-#: dropdownstexts\dropdownstexts.py:98 dropdownstexts\dropdownstexts.py:165
+#: dropdownstexts\dropdownstexts.py:73
 msgid "This message is not in Config."
 msgstr "Это сообщение отсутствует в Config."
 
-#: dropdownstexts\dropdownstexts.py:125 dropdownstexts\dropdownstexts.py:188
+#: dropdownstexts\dropdownstexts.py:97
 msgid "This emoji is not in Config."
 msgstr "Этого эмодзи нет в Config."
 
-#: dropdownstexts\dropdownstexts.py:230
+#: dropdownstexts\dropdownstexts.py:141
 #, docstring
-msgid "Add a dropdown-text to a message."
-msgstr "Добавить выпадающий текст в сообщение."
+msgid "Add a dropdown-text for a message."
+msgstr "Добавьте выпадающий текст для сообщения."
 
-#: dropdownstexts\dropdownstexts.py:233 dropdownstexts\dropdownstexts.py:296
-#: dropdownstexts\dropdownstexts.py:363 dropdownstexts\dropdownstexts.py:394
+#: dropdownstexts\dropdownstexts.py:144 dropdownstexts\dropdownstexts.py:198
+#: dropdownstexts\dropdownstexts.py:254 dropdownstexts\dropdownstexts.py:280
 msgid "I have to be the author of the message for the role-button to work."
 msgstr "Я должен быть автором сообщения, чтобы кнопка роли работала."
 
-#: dropdownstexts\dropdownstexts.py:243 dropdownstexts\dropdownstexts.py:306
+#: dropdownstexts\dropdownstexts.py:154 dropdownstexts\dropdownstexts.py:208
 msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
 "I need the permissions to see the messages in that channel."
 msgstr "У меня недостаточно прав на канале, где находится указанное вами сообщение.\n"
 "Мне нужны разрешения, чтобы видеть сообщения в этом канале."
 
-#: dropdownstexts\dropdownstexts.py:251
+#: dropdownstexts\dropdownstexts.py:162
 msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "Выбранный вами эмодзи кажется недействительным. Проверьте, является ли это эмодзи. Если у вас есть Nitro, возможно, вы использовали пользовательский emoji с другого сервера."
 
-#: dropdownstexts\dropdownstexts.py:257 dropdownstexts\dropdownstexts.py:323
-msgid "Custom emojis are not supported by Dislash for dropdown menu options. Please wait for Red 3.5 with dpy2."
-msgstr "Пользовательские эмодзи не поддерживаются Dislash для выпадающих меню. Пожалуйста, подождите Red 3.5 с dpy2."
-
-#: dropdownstexts\dropdownstexts.py:266 dropdownstexts\dropdownstexts.py:332
+#: dropdownstexts\dropdownstexts.py:171 dropdownstexts\dropdownstexts.py:226
 msgid "I can't do more than 25 dropdown-texts for one message."
 msgstr "Я не могу сделать более 25 выпадающих текстов для одного сообщения."
 
-#: dropdownstexts\dropdownstexts.py:293
+#: dropdownstexts\dropdownstexts.py:195
 #, docstring
-msgid "Add dropdown-texts to a message."
-msgstr "Добавление выпадающих текстов в сообщение."
+msgid "Add dropdown-texts for a message."
+msgstr "Добавьте выпадающие тексты для сообщения."
 
-#: dropdownstexts\dropdownstexts.py:315
+#: dropdownstexts\dropdownstexts.py:217
 msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "Выбранный вами эмодзи кажется недопустимым. Проверьте, является ли это эмодзи. Если у вас есть Nitro, возможно, вы использовали пользовательский emoji с другого сервера."
 
-#: dropdownstexts\dropdownstexts.py:360
+#: dropdownstexts\dropdownstexts.py:251
 #, docstring
-msgid "Remove a dropdown-text to a message."
-msgstr "Удаление выпадающего текста в сообщении."
+msgid "Remove a dropdown-text for a message."
+msgstr "Удаление выпадающего текста для сообщения."
 
-#: dropdownstexts\dropdownstexts.py:368 dropdownstexts\dropdownstexts.py:399
+#: dropdownstexts\dropdownstexts.py:259 dropdownstexts\dropdownstexts.py:285
 msgid "No dropdown-texts is configured for this message."
 msgstr "Для этого сообщения не настроены выпадающие тексты."
 
-#: dropdownstexts\dropdownstexts.py:372
+#: dropdownstexts\dropdownstexts.py:263
 msgid "I wasn't watching for this dropdown-text on this message."
 msgstr "Я не следил за этим выпадающим текстом в этом сообщении."
 
-#: dropdownstexts\dropdownstexts.py:391
+#: dropdownstexts\dropdownstexts.py:277
 #, docstring
-msgid "Clear a dropdown-texts to a message."
-msgstr "Очистить выпадающий текст сообщения."
+msgid "Clear a dropdown-texts for a message."
+msgstr "Очистить выпадающий текст для сообщения."
 
-#: dropdownstexts\dropdownstexts.py:413
+#: dropdownstexts\dropdownstexts.py:296
 #, docstring
-msgid "Clear all dropdowns-texts to a **guild**."
-msgstr "Очистить все выпадающие сообщения для **гильдии**."
+msgid "Clear all dropdowns-texts for a guild."
+msgstr "Очистить все выпадающие тексты для гильдии."
 
-#: dropdownstexts\dropdownstexts.py:442 dropdownstexts\dropdownstexts.py:472
+#: dropdownstexts\dropdownstexts.py:326
 msgid "Select an option."
 msgstr "Выберите вариант."
 

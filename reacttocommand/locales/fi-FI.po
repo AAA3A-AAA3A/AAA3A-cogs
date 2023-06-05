@@ -1,0 +1,74 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:26\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/reacttocommand/locales/messages.pot\n"
+"X-Crowdin-File-ID: 94\n"
+"Language: fi_FI\n"
+
+#: reacttocommand\reacttocommand.py:37
+#, docstring
+msgid "A cog to allow a user to execute a command by clicking on a reaction!"
+msgstr "Hammasratas, jonka avulla käyttäjä voi suorittaa komennon klikkaamalla reaktiota!"
+
+#: reacttocommand\reacttocommand.py:215
+#, docstring
+msgid "Add a reaction-command for a message.\n"
+"        There should be no prefix in the command.\n"
+"        The command will be invoked with the permissions of the user who clicked on the reaction.\n"
+"        This user must be able to see writing in the channel.\n"
+"        "
+msgstr "Lisää viestin reaktiokomento.\n"
+"        Komennossa ei saa olla etuliitettä.\n"
+"        Komento käynnistetään sen käyttäjän oikeuksilla, joka napsautti reaktiota.\n"
+"        Tämän käyttäjän on voitava nähdä kanavalle kirjoittaminen.\n"
+"        "
+
+#: reacttocommand\reacttocommand.py:228
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to add reactions and to see the messages in that channel."
+msgstr "Minulla ei ole riittäviä oikeuksia kanavaan, jossa määrittämäsi viesti sijaitsee.\n"
+"Tarvitsen oikeudet lisätä reaktioita ja nähdä kyseisen kanavan viestit."
+
+#: reacttocommand\reacttocommand.py:238
+msgid "You have not specified a correct command."
+msgstr "Et ole antanut oikeaa komentoa."
+
+#: reacttocommand\reacttocommand.py:245
+msgid "An error has occurred. It is possible that the emoji you provided is invalid."
+msgstr "On tapahtunut virhe. On mahdollista, että antamasi emoji on virheellinen."
+
+#: reacttocommand\reacttocommand.py:257
+#, docstring
+msgid "Remove a reaction-command for a message."
+msgstr "Poista viestin reaktiokomento."
+
+#: reacttocommand\reacttocommand.py:261 reacttocommand\reacttocommand.py:282
+msgid "No reaction-command is configured for this message."
+msgstr "Tälle viestille ei ole määritetty reaktiokomentoa."
+
+#: reacttocommand\reacttocommand.py:265
+msgid "I wasn't watching for this reaction on this message."
+msgstr "En odottanut tällaista reaktiota tähän viestiin."
+
+#: reacttocommand\reacttocommand.py:278
+#, docstring
+msgid "Clear all reactions-commands for a message."
+msgstr "Tyhjentää kaikki viestin reaktiokäskyt."
+
+#: reacttocommand\reacttocommand.py:294
+#, docstring
+msgid "Clear all reactions-commands for a guild."
+msgstr "Tyhjennä kaikki killan reaktiokäskyt."
+

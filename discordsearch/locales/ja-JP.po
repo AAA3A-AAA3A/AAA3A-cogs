@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-03 20:01\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 18:22\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -17,32 +17,32 @@ msgstr ""
 "X-Crowdin-File-ID: 138\n"
 "Language: ja_JP\n"
 
-#: discordsearch\discordsearch.py:39
+#: discordsearch\discordsearch.py:30
 #, docstring
 msgid "A cog to edit roles!"
 msgstr "役割を編集するためのコグです！"
 
-#: discordsearch\discordsearch.py:105
+#: discordsearch\discordsearch.py:96
 msgid "You must provide at least one parameter."
 msgstr "少なくとも1つのパラメータを指定する必要があります。"
 
-#: discordsearch\discordsearch.py:194
+#: discordsearch\discordsearch.py:185
 msgid "Look at the original message."
 msgstr "元のメッセージを見てください。"
 
-#: discordsearch\discordsearch.py:210
+#: discordsearch\discordsearch.py:201
 msgid "Search in #{channel.name} ({channel.id})"
 msgstr "#{channel.name} で検索 ({channel.id})"
 
-#: discordsearch\discordsearch.py:211
+#: discordsearch\discordsearch.py:202
 msgid "Sorry, I could not find any results."
 msgstr "申し訳ありませんが、結果は見つかりませんでした。"
 
-#: discordsearch\discordsearch.py:224
+#: discordsearch\discordsearch.py:215
 msgid "Search in #{channel.name} ({channel.id}) in {total}s"
 msgstr "#{channel.name} で検索 ({channel.id}) in {total}s"
 
-#: discordsearch\discordsearch.py:236
+#: discordsearch\discordsearch.py:227
 msgid "Unrecognized date/time."
 msgstr "認識できない日付/時刻。"
 

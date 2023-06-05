@@ -1,0 +1,71 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:27\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/getdocs/locales/messages.pot\n"
+"X-Crowdin-File-ID: 183\n"
+"Language: fi_FI\n"
+
+#: getdocs\getdocs.py:212 getdocs\getdocs.py:531
+msgid "This source doesn't exist."
+msgstr "Tätä lähdettä ei ole olemassa."
+
+#: getdocs\getdocs.py:218
+#, docstring
+msgid "A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."
+msgstr "Pyörä, jolla voit hakea ja näyttää joitain dokumentteja Discordissa! Käytä `[p]listsources` saadaksesi luettelon kaikista saatavilla olevista lähteistä."
+
+#: getdocs\getdocs.py:342
+msgid "Documentations cache is not yet built."
+msgstr "Dokumenttien välimuistia ei ole vielä rakennettu."
+
+#: getdocs\getdocs.py:393
+msgid "No results found."
+msgstr "Tuloksia ei löytynyt."
+
+#: getdocs\getdocs.py:523
+#, docstring
+msgid "\n"
+"        Enable a Documentations source.\n"
+"        "
+msgstr "\n"
+"        Ota dokumentaatiolähde käyttöön.\n"
+"        "
+
+#: getdocs\getdocs.py:529
+msgid "This source is already enabled."
+msgstr "Tämä lähde on jo käytössä."
+
+#: getdocs\getdocs.py:545
+#, docstring
+msgid "\n"
+"        Disable a Documentations source.\n"
+"        "
+msgstr "\n"
+"        Poista dokumentaatiolähde käytöstä.\n"
+"        "
+
+#: getdocs\getdocs.py:554
+#, docstring
+msgid "\n"
+"        Show stats about all documentations sources.\n"
+"        "
+msgstr "\n"
+"        Näytä tilastot kaikista dokumentaatiolähteistä.\n"
+"        "
+
+#: getdocs\getdocs.py:1460
+msgid "RTFM caching isn't finished."
+msgstr "RTFM-välimuistitietokanta ei ole valmis."
+

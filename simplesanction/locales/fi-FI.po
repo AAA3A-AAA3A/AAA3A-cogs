@@ -1,0 +1,659 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:26\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/simplesanction/locales/messages.pot\n"
+"X-Crowdin-File-ID: 98\n"
+"Language: fi_FI\n"
+
+#: simplesanction\settings.py:29
+#, docstring
+msgid "Set a color for the embed.\n\n"
+"        ``color``: Color.\n"
+"        You can also use \"None\" if you wish to reset the color.\n"
+"        "
+msgstr "Aseta upotuksen väri.\n\n"
+"        ``väri``: Color.\n"
+"        Voit myös käyttää \"None\", jos haluat nollata värin.\n"
+"        "
+
+#: simplesanction\settings.py:43 simplesanction\settings.py:54
+#: simplesanction\settings.py:75 simplesanction\settings.py:88
+msgid "Configure the embed"
+msgstr "Määritä upotus"
+
+#: simplesanction\settings.py:44
+msgid "Reset color:"
+msgstr "Nollaa väri:"
+
+#: simplesanction\settings.py:45 simplesanction\settings.py:58
+msgid "Color:"
+msgstr "Väri:"
+
+#: simplesanction\settings.py:55
+msgid "Set color:"
+msgstr "Aseta väri:"
+
+#: simplesanction\settings.py:63
+#, docstring
+msgid "Set a thumbnail for the embed.\n\n"
+"        ``link``: Thumbnail link.\n"
+"        You can also use \"None\" if you wish to reset the thumbnail.\n"
+"        "
+msgstr "Aseta upotuksen pikkukuva.\n\n"
+"        ``linkki``: Pienoiskuvan linkki.\n"
+"        Voit myös käyttää arvoa \"None\", jos haluat nollata pikkukuvan.\n"
+"        "
+
+#: simplesanction\settings.py:76
+msgid "Reset thumbnail:"
+msgstr "Nollaa pikkukuvan:"
+
+#: simplesanction\settings.py:79 simplesanction\settings.py:92
+msgid "Thumbnail:"
+msgstr "Pienoiskuva:"
+
+#: simplesanction\settings.py:89
+msgid "Set thumbnail:"
+msgstr "Aseta pikkukuva:"
+
+#: simplesanction\settings.py:97
+#, docstring
+msgid "Enable or disable Show Author\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Ota käyttöön tai poista käytöstä Näytä tekijä\n\n"
+"        Ota käyttöön `True` (tai `yes`) tai poista käytöstä `False` (tai `no`).\n"
+"        "
+
+#: simplesanction\settings.py:105
+msgid "Show Author is already set on {state}."
+msgstr "Näytä tekijä on jo asetettu osoitteeseen {state}."
+
+#: simplesanction\settings.py:109
+msgid "Show Author state registered: {state}."
+msgstr "Näytä tekijän tila rekisteröity: {state}."
+
+#: simplesanction\settings.py:113
+#, docstring
+msgid "Enable or disable Action Confirmation\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Toiminnon vahvistuksen ottaminen käyttöön tai poistaminen käytöstä\n\n"
+"        Ota käyttöön `True` (tai `yes`) tai poista käytöstä `False` (tai `no`).\n"
+"        "
+
+#: simplesanction\settings.py:121
+msgid "Action Confirmation is already set on {state}."
+msgstr "Toiminnon vahvistus on jo asetettu osoitteessa {state}."
+
+#: simplesanction\settings.py:125
+msgid "Action Confirmation state registered: {state}."
+msgstr "Toimenpide Vahvistustila rekisteröity: {state}."
+
+#: simplesanction\settings.py:131
+#, docstring
+msgid "Enable or disable Finish Message\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Enable or disable Finish Message\n\n"
+"        Ota käyttöön `True` (tai `yes`) tai poista käytöstä `False` (tai `no`).\n"
+"        "
+
+#: simplesanction\settings.py:139
+msgid "Finish Message is already set on {state}."
+msgstr "Finish Message on jo asetettu osoitteessa {state}."
+
+#: simplesanction\settings.py:149
+#, docstring
+msgid "Enable or disable Warn System Use\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Ota käyttöön tai poista käytöstä Warn System Use\n\n"
+"        Ota käyttöön `True` (tai `yes`) tai poista käytöstä `False` (tai `no`).\n"
+"        "
+
+#: simplesanction\settings.py:157
+msgid "Warn System Use is already set on {state}."
+msgstr "Varoitusjärjestelmän käyttö on jo asetettu osoitteeseen {state}."
+
+#: simplesanction\settings.py:161
+msgid "Warn System Use state registered: {state}."
+msgstr "Warn System Use state registered: {state}."
+
+#: simplesanction\settings.py:167
+#, docstring
+msgid "Enable or disable Buttons Use\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Ota painikkeet käyttöön tai poista ne käytöstä Käytä\n\n"
+"        Ota käyttöön `True` (tai `yes`) tai poista käytöstä `False` (tai `no`).\n"
+"        "
+
+#: simplesanction\settings.py:175
+msgid "Way is already set on {way}."
+msgstr "Tie on jo asetettu osoitteessa {way}."
+
+#: simplesanction\settings.py:185
+#, docstring
+msgid "Enable or disable Reason Requiered\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Ota käyttöön tai poista käytöstä Reason Requiered\n\n"
+"        Ota käyttöön `True` (tai `yes`) tai poista käytöstä `False` (tai `no`).\n"
+"        "
+
+#: simplesanction\settings.py:193
+msgid "Reason Required is already set on {state}."
+msgstr "Reason Required on jo asetettu osoitteeseen {state}."
+
+#: simplesanction\settings.py:197
+msgid "Reason Required state registered: {state}."
+msgstr "Syy Vaadittu rekisteröintivaltio: {state}."
+
+#: simplesanction\settings.py:201
+#, docstring
+msgid "Enable or disable Delete Embed\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Ota käyttöön tai poista käytöstä Poista upotus\n\n"
+"        Ota käyttöön `True` (tai `yes`) tai poista käytöstä `False` (tai `no`).\n"
+"        "
+
+#: simplesanction\settings.py:209
+msgid "Delete Embed is already set on {state}."
+msgstr "Delete Embed on jo asetettu osoitteessa {state}."
+
+#: simplesanction\settings.py:219
+#, docstring
+msgid "Enable or disable Delete Message\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Ota käyttöön tai poista käytöstä Poista viesti\n\n"
+"        Ota käyttöön `True` (tai `yes`) tai poista käytöstä `False` (tai `no`).\n"
+"        "
+
+#: simplesanction\settings.py:227
+msgid "Delete Message is already set on {state}."
+msgstr "Poista viesti on jo asetettu osoitteessa {state}."
+
+#: simplesanction\settings.py:231
+msgid "Delete Message state registered: {state}."
+msgstr "Poista viestin tila rekisteröity: {state}."
+
+#: simplesanction\settings.py:235
+#, docstring
+msgid "Choose the timeout\n\n"
+"        Use a int. The default is 180 seconds.\n"
+"        "
+msgstr "Valitse aikakatkaisu\n\n"
+"        Käytä int. Oletusarvo on 180 sekuntia.\n"
+"        "
+
+#: simplesanction\settings.py:244
+msgid "Timeout restored."
+msgstr "Aikakatkaisu palautettu."
+
+#: simplesanction\settings.py:247
+msgid "Timeout is already set on {timeout}."
+msgstr "Aikakatkaisu on jo asetettu osoitteessa {timeout}."
+
+#: simplesanction\settings.py:251
+msgid "Timeout state registered: {timeout}."
+msgstr "Rekisteröity aikakatkaisutila: {timeout}."
+
+#: simplesanction\simplesanction.py:38
+#, docstring
+msgid "A cog to sanction a user!"
+msgstr "Käyttäjän sanktioimiseksi tarkoitettu hammasratas!"
+
+#: simplesanction\simplesanction.py:315
+#, docstring
+msgid "\n"
+"        - Sanction a user quickly and easily.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 0 @user`\n"
+"        - `[p]sanction 0 @user What are these roles?`\n"
+"        - `[p]sanction 0 012345678987654321`\n"
+"        "
+msgstr "\n"
+"        - Sanktioita käyttäjälle nopeasti ja helposti.\n\n"
+"        Esimerkkejä:\n"
+"[p]\n"
+"[p]- Mitkä ovat nämä roolit?`\n"
+"        - `[p]sanction 0 012345678987654321`\n"
+"        "
+
+#: simplesanction\simplesanction.py:356
+#, docstring
+msgid "\n"
+"         - :information_source: Show info on a user.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 1 @user`: UserInfo for no reason\n"
+"        - `[p]sanction 1 @user What are these roles?`: UserInfo for the reason \"What are these roles?\"\n"
+"        - `[p]sanction 1 012345678987654321`: UserInfo with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - :information_source: Näytä käyttäjän tiedot.\n\n"
+"        Esimerkkejä:\n"
+"        - `[p]sanction 1 @user`:\n"
+"        `[p]sanction 1 @user Mitä nämä roolit ovat?`: Käyttäjätieto syystä \"Mitkä ovat nämä roolit?\".\n"
+"        - `[p]sanction 1 012345678987654321`: UserInfo annetulla tunnuksella.\n"
+"        "
+
+#: simplesanction\simplesanction.py:397
+#, docstring
+msgid "\n"
+"         - ⚠️ Set a simple warning on a user.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 2 @user not`: Warn for no reason\n"
+"        - `[p]sanction 2 @user Insults`: Warn for the reason \"Insults\"\n"
+"        - `[p]sanction 2 012345678987654321 Advertising`: Warn the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - ⚠️ Aseta käyttäjälle yksinkertainen varoitus.\n\n"
+"        Esimerkkejä:\n"
+"        - `[p]sanction 2 @user not`: Varoittaa ilman syytä\n"
+"        - `[p]sanction 2 @user Insults`: Varoittaa syystä \"Insults\"\n"
+"        - `[p]sanction 2 012345678987654321 Advertising`: Varoita käyttäjää annetulla tunnuksella.\n"
+"        "
+
+#: simplesanction\simplesanction.py:438
+#, docstring
+msgid "\n"
+"         - :hammer: Ban the member from the server.\n\n"
+"        It won't delete messages by default.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 3 @user not`: Ban for no reason\n"
+"        - `[p]sanction 3 @user Insults`: Ban for the reason \"Insults\"\n"
+"        - `[p]sanction 3 012345678987654321 Advertising`: Ban the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - :hammer: Kiellä jäsen palvelimelta.\n\n"
+"        Se ei poista viestejä oletusarvoisesti.\n\n"
+"        Esimerkkejä:\n"
+"        - \"[p]sanction 3 @user not\": Bannaa ilman syytä\n"
+"        - `[p]sanction 3 @user Insults`: Bannataan syystä \"Insults\"\n"
+"        - `[p]sanction 3 012345678987654321 Advertising`: Kieltää käyttäjän annetulla tunnuksella.\n"
+"        "
+
+#: simplesanction\simplesanction.py:481
+#, docstring
+msgid "\n"
+"         - :repeat_one: Softban the member from the server.\n\n"
+"        This means that the user will be banned and immediately unbanned, so it will purge their messages in all channels.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 4 @user not`: SoftBan for no reason\n"
+"        - `[p]sanction 4 @user Insults`: SoftBan for the reason \"Insults\"\n"
+"        - `[p]sanction 4 012345678987654321 Advertising`: SoftBan the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - :repeat_one: Poista jäsen palvelimelta.\n\n"
+"        Tämä tarkoittaa, että käyttäjä bannataan ja poistetaan välittömästi, joten se poistaa hänen viestinsä kaikista kanavista.\n\n"
+"        Esimerkkejä:\n"
+"        - `[p]sanction 4 @user not`: SoftBan ilman syytä\n"
+"        - `[p]sanction 4 @user Insults`: SoftBan syystä \"Insults\"\n"
+"        - `[p]sanction 4 012345678987654321 Advertising`: SoftBan käyttäjälle annetulla tunnuksella.\n"
+"        "
+
+#: simplesanction\simplesanction.py:524
+#, docstring
+msgid "\n"
+"         - :dash: Tempban the member from the server.\n\n"
+"        It won't delete messages by default.\n\n"
+"        If you want to perform a temporary ban, provide the time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 5 @user not`: Ban for no reason\n"
+"        - `[p]sanction 5 @user 7d Insults`: 7 days ban for the reason \"Insults\"\n"
+"        - `[p]sanction 5 012345678987654321 Advertising`: Ban the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - :dash: Kieltää jäsenen poistamisen palvelimelta.\n\n"
+"        Se ei poista viestejä oletusarvoisesti.\n\n"
+"        Jos haluat suorittaa väliaikaisen bannin, anna aika ennen syytä.\n\n"
+"        Esimerkkejä:\n"
+"        - `[p]sanction 5 @user not`: Bann ilman syytä\n"
+"        - `[p]sanction 5 @user 7d Insults`: 7 päivän bannaus syystä \"Insults\"\n"
+"        - `[p]sanction 5 012345678987654321 Advertising`: Bannaa käyttäjä annetulla tunnuksella.\n"
+"        "
+
+#: simplesanction\simplesanction.py:569
+#, docstring
+msgid "\n"
+"         - :boot: Kick the member from the server.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 6 @user not`: Kick for no reason\n"
+"        - `[p]sanction 6 @user Insults`: Kick for the reason \"Insults\"\n"
+"        - `[p]sanction 6 012345678987654321 Advertising`: Kick the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - :boot: Potkaise jäsen pois palvelimelta.\n\n"
+"        Esimerkkejä:\n"
+"        - `[p]sanction 6 @user not`: Kick ilman syytä\n"
+"        - `[p]sanction 6 @user Insults`: Kick for the reason \"Insults\"\n"
+"        - `[p]sanction 6 012345678987654321 Advertising`: Potkaise käyttäjä, jolla on annettu tunnus.\n"
+"        "
+
+#: simplesanction\simplesanction.py:610
+#, docstring
+msgid "\n"
+"         - :mute: Mute the user in all channels, including voice channels.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 7 @user not`: Infinite mute for no reason\n"
+"        - `[p]sanction 7 @user Spam`:Infinite  mute for the reason \"Spam\"\n"
+"        - `[p]sanction 7 @user Advertising`: Infinite mute for the reason \"Advertising\"\n"
+"        "
+msgstr "\n"
+"         - :mute: Mykistä käyttäjä kaikilla kanavilla, myös äänikanavilla.\n\n"
+"        Esimerkkejä:\n"
+"        - `[p]sanction 7 @user not`: Loputon mykistys ilman syytä\n"
+"        - `[p]sanction 7 @user Spam`:Loputon mykistys syystä \"Spam\"\n"
+"        - `[p]sanction 7 @user Advertising`: Loputon mykistys syystä \"Mainonta\"\n"
+"        "
+
+#: simplesanction\simplesanction.py:651
+#, docstring
+msgid "\n"
+"         - :punch: Mute the user in this channel.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 8 @user not`: Infinite mute for no reason\n"
+"        - `[p]sanction 8 @user Spam`: Infinite mute for the reason \"Spam\"\n"
+"        - `[p]sanction 8 @user Advertising`: Infinite mute for the reason \"Advertising\"\n"
+"        "
+msgstr "\n"
+"         - :punch: Mykistä tämän kanavan käyttäjä.\n\n"
+"        Esimerkkejä:\n"
+"        - `[p]sanction 8 @user not`: Loputon mykistys ilman syytä\n"
+"        - `[p]sanction 8 @user Spam`: Loputon mykistys syystä \"Spam\"\n"
+"        - `[p]sanction 8 @user Advertising`: Loputon mykistys syystä \"Mainonta\"\n"
+"        "
+
+#: simplesanction\simplesanction.py:692
+#, docstring
+msgid "\n"
+"         - :hourglass_flowing_sand: TempMute the user in all channels, including voice channels.\n\n"
+"        You can set a timed mute by providing a valid time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 9 @user 30m not`: 30 minutes mute for no reason\n"
+"        - `[p]sanction 9 @user 5h Spam`: 5 hours mute for the reason \"Spam\"\n"
+"        - `[p]sanction 9 @user 3d Advertising`: 3 days mute for the reason \"Advertising\"\n"
+"        "
+msgstr "\n"
+"         - :hourglass_flowing_sand: TempMykistä käyttäjä kaikilla kanavilla, myös äänikanavilla.\n\n"
+"        Voit asettaa ajastetun mykistyksen antamalla voimassa olevan ajan ennen syytä.\n\n"
+"        Esimerkkejä:\n"
+"        - `[p]sanction 9 @user 30m not`: 30 minuutin mykistys ilman syytä\n"
+"        - `[p]sanction 9 @user 5h Spam`: 5 tunnin mykistys syystä \"Spam\"\n"
+"        - `[p]sanction 9 @user 3d Advertising`: 3 päivän mykistys syystä \"Mainonta\"\n"
+"        "
+
+#: simplesanction\simplesanction.py:735
+#, docstring
+msgid "\n"
+"         - :hourglass: TempMute the user in this channel.\n\n"
+"        You can set a timed mute by providing a valid time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 10 @user 30m not`: 30 minutes mute for no reason\n"
+"        - `[p]sanction 10 @user 5h Spam`: 5 hours mute for the reason \"Spam\"\n"
+"        - `[p]sanction 10 @user 3d Advertising`: 3 days mute for the reason \"Advertising\"\n"
+"        "
+msgstr "\n"
+"         - :hourglass: TempMykistää käyttäjän tällä kanavalla.\n\n"
+"        Voit asettaa ajastetun mykistyksen antamalla voimassa olevan ajan ennen syytä.\n\n"
+"        Esimerkkejä:\n"
+"        - `[p]sanction 10 @user 30m not`: 30 minuutin mykistys ilman syytä\n"
+"        - `[p]sanction 10 @user 5h Spam`: 5 tunnin mykistys syystä \"Spam\"\n"
+"        - `[p]sanction 10 @user 3d Advertising`: 3 päivän mykistys syystä \"Mainonta\"\n"
+"        "
+
+#: simplesanction\simplesanction.py:804 simplesanction\simplesanction.py:829
+msgid "Sanctioning a member"
+msgstr "Jäsenen rankaiseminen"
+
+#: simplesanction\simplesanction.py:805
+msgid "Which member do you want to sanction? (Set `cancel` to cancel.)"
+msgstr "Ketä jäsentä haluatte rangaista? (Aseta `cancel` peruuttaaksesi.)"
+
+#: simplesanction\simplesanction.py:825 simplesanction\utils.py:54
+#: simplesanction\utils.py:84
+msgid "Timed out, please try again."
+msgstr "Aika loppui, yritä uudelleen."
+
+#: simplesanction\simplesanction.py:830 simplesanction\utils.py:147
+msgid "This tool allows you to easily sanction a server member.\n"
+"User mention: {user.mention} - User ID: {user.id}"
+msgstr "Tämän työkalun avulla voit helposti sanktioida palvelimen jäsenen.\n"
+"Käyttäjän maininta: {user.mention} - Käyttäjän tunnus: {user.id}"
+
+#: simplesanction\simplesanction.py:853 simplesanction\simplesanction.py:858
+#: simplesanction\utils.py:168
+msgid "Reason:"
+msgstr "Syy:"
+
+#: simplesanction\simplesanction.py:854
+msgid "The reason was not given and will not be asked later."
+msgstr "Syytä ei kerrottu, eikä sitä kysytä myöhemmin."
+
+#: simplesanction\simplesanction.py:861 simplesanction\utils.py:120
+#: simplesanction\utils.py:126 simplesanction\utils.py:173
+#: simplesanction\utils.py:179
+msgid "Duration:"
+msgstr "Kesto:"
+
+#: simplesanction\simplesanction.py:869
+msgid "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
+msgstr "Käytät tätä komentoa Fake-tilassa, joten mitään toimenpiteitä ei tehdä, mutta teeskentelen, että näin ei ole."
+
+#: simplesanction\simplesanction.py:1567
+msgid "Sanctioning a member - ℹ️ UserInfo"
+msgstr "Jäsenen sanktiointi - ℹ️ UserInfo"
+
+#: simplesanction\simplesanction.py:1568
+msgid "Here is the information about the user {user.name}!"
+msgstr "Tässä on tietoa käyttäjästä {user.name}!"
+
+#: simplesanction\simplesanction.py:1579
+msgid "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`."
+msgstr "Hammasratas Modia ei ole ladattu. Voit ladata sen tekemällä `{ctx.prefix}load mod`."
+
+#: simplesanction\simplesanction.py:1601 simplesanction\simplesanction.py:1614
+#: simplesanction\simplesanction.py:1627
+msgid "Sanctioning a member - ⚠️ Warn"
+msgstr "Jäsenen rankaiseminen - ⚠️ Warn"
+
+#: simplesanction\simplesanction.py:1602
+msgid "Why do you want warn {user}? (Set `cancel` to cancel or `not` for none)"
+msgstr "Miksi haluat varoittaa {user}? (Aseta `cancel` peruuttamaan tai `not` ei peruuttamista varten.)"
+
+#: simplesanction\simplesanction.py:1615
+msgid "Do you really want to warn {user}?"
+msgstr "Haluatko todella varoittaa {user}?"
+
+#: simplesanction\simplesanction.py:1628
+msgid "The user {user} has been received a warning!"
+msgstr "Käyttäjä {user} on saanut varoituksen!"
+
+#: simplesanction\simplesanction.py:1640
+msgid "The cog Warnings is not loaded. To load it, do `{ctx.prefix}load warnings`. You can also install/load the WarnSystem cog."
+msgstr "Hammasta Varoitukset ei ole ladattu. Lataa se tekemällä `{ctx.prefix}load warnings`. Voit myös asentaa/ladata WarnSystem-cogin."
+
+#: simplesanction\simplesanction.py:1670 simplesanction\simplesanction.py:1683
+#: simplesanction\simplesanction.py:1696
+msgid "Sanctioning a member - 🔨 Ban"
+msgstr "Jäsenen rankaiseminen - 🔨 Kielto"
+
+#: simplesanction\simplesanction.py:1671
+msgid "Why do you want to ban {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "Miksi haluat kieltää {user}? (Aseta `cancel` arvoksi cancel tai `not` arvoksi none)."
+
+#: simplesanction\simplesanction.py:1684
+msgid "Do you really want to ban {user}?"
+msgstr "Haluatko todella kieltää {user}?"
+
+#: simplesanction\simplesanction.py:1697
+msgid "The user {user} has been banned!"
+msgstr "Käyttäjä {user} on bannattu!"
+
+#: simplesanction\simplesanction.py:1709 simplesanction\simplesanction.py:1778
+#: simplesanction\simplesanction.py:1861 simplesanction\simplesanction.py:1932
+msgid "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`. You can also install/load the WarnSystem cog."
+msgstr "Hammasratas Modia ei ole ladattu. Voit ladata sen tekemällä `{ctx.prefix}load mod`. Voit myös asentaa/ladata WarnSystem cogin."
+
+#: simplesanction\simplesanction.py:1739 simplesanction\simplesanction.py:1752
+#: simplesanction\simplesanction.py:1765
+msgid "Sanctioning a member - 🔂 SoftBan"
+msgstr "Jäsenen rankaiseminen - 🔂 SoftBan"
+
+#: simplesanction\simplesanction.py:1740
+msgid "Why do you want to softban {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "Miksi haluat softbanin {user}? (Aseta `cancel` arvoksi cancel tai `not` arvoksi none)."
+
+#: simplesanction\simplesanction.py:1753
+msgid "Do you really want to softban {user}?"
+msgstr "Haluatko todella softban {user}?"
+
+#: simplesanction\simplesanction.py:1766
+msgid "The user {user} has been softbanned!"
+msgstr "Käyttäjä {user} on saanut softbannin!"
+
+#: simplesanction\simplesanction.py:1807 simplesanction\simplesanction.py:1822
+#: simplesanction\simplesanction.py:1835 simplesanction\simplesanction.py:1848
+msgid "Sanctioning a member - 💨 TempBan"
+msgstr "Jäsenen rankaiseminen - 💨 TempBan"
+
+#: simplesanction\simplesanction.py:1808
+msgid "How long do you want to tempban {user}? (Set `cancel` to cancel)"
+msgstr "Kuinka kauan haluatte antaa tempbanin {user}? (Aseta `cancel` peruuttaaksesi)"
+
+#: simplesanction\simplesanction.py:1823
+msgid "Why do you want to tempban {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "Miksi haluatte kieltää {user}? (Aseta `cancel` arvoksi cancel tai `not` arvoksi none)."
+
+#: simplesanction\simplesanction.py:1836
+msgid "Do you really want to tempban {user}?"
+msgstr "Haluatko todella kieltää {user}?"
+
+#: simplesanction\simplesanction.py:1849
+msgid "The user {user} has been tempban!"
+msgstr "Käyttäjä {user} on saanut tempban!"
+
+#: simplesanction\simplesanction.py:1891 simplesanction\simplesanction.py:1904
+#: simplesanction\simplesanction.py:1919
+msgid "Sanctioning a member - 👢 Kick"
+msgstr "Jäsenen rankaiseminen - 👢 Potku"
+
+#: simplesanction\simplesanction.py:1892 simplesanction\simplesanction.py:1905
+msgid "Why do you want to kick {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "Miksi haluat potkia {user}? (Aseta `cancel` arvoksi cancel tai `not` arvoksi none)."
+
+#: simplesanction\simplesanction.py:1920
+msgid "The user {user} has been kicked!"
+msgstr "Käyttäjä {user} on potkaistu!"
+
+#: simplesanction\simplesanction.py:1962 simplesanction\simplesanction.py:1975
+#: simplesanction\simplesanction.py:1988
+msgid "Sanctioning a member - 🔇 Mute"
+msgstr "Jäsenen rankaiseminen - 🔇 Mykistys"
+
+#: simplesanction\simplesanction.py:1963
+msgid "Why do you want to mute {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "Miksi haluat mykistää {user}? (Aseta `cancel` peruuttamiseksi tai `not` ei ole)."
+
+#: simplesanction\simplesanction.py:1976
+msgid "Do you really want to mute {user}?"
+msgstr "Haluatko todella mykistää {user}?"
+
+#: simplesanction\simplesanction.py:1989
+msgid "The user {user} has been muted!"
+msgstr "Käyttäjä {user} on mykistetty!"
+
+#: simplesanction\simplesanction.py:2001 simplesanction\simplesanction.py:2151
+msgid "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`. You can also install/load the WarnSystem cog."
+msgstr "Hammasta Mute ei ole ladattu. Lataa se tekemällä `{ctx.prefix}load mutes`. Voit myös asentaa/ladata WarnSystem-ogin."
+
+#: simplesanction\simplesanction.py:2031 simplesanction\simplesanction.py:2044
+#: simplesanction\simplesanction.py:2059
+msgid "Sanctioning a member - 👊 MuteChannel"
+msgstr "Jäsenen rankaiseminen - 👊 MuteChannel (Mykistä kanava)"
+
+#: simplesanction\simplesanction.py:2032
+msgid "Why do you want to mute {user} in {ctx.channel.mention}? (Set `cancel` to cancel or `not` to none)"
+msgstr "Miksi haluat mykistää {user} osoitteessa {ctx.channel.mention}? (Aseta `cancel` arvoksi cancel tai `not` arvoksi none)."
+
+#: simplesanction\simplesanction.py:2045
+msgid "Do you really want to mute {user} in {ctx.channel.mention}?"
+msgstr "Haluatko todella mykistää {user} osoitteessa {ctx.channel.mention}?"
+
+#: simplesanction\simplesanction.py:2060
+msgid "The user {user} has been muted in #{ctx.channel.name}!"
+msgstr "Käyttäjä {user} on mykistetty osoitteessa #{ctx.channel.name}!"
+
+#: simplesanction\simplesanction.py:2073 simplesanction\simplesanction.py:2237
+msgid "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`."
+msgstr "Hammasta Mute ei ole ladattu. Lataa se tekemällä `{ctx.prefix}load mutes`."
+
+#: simplesanction\simplesanction.py:2097 simplesanction\simplesanction.py:2112
+#: simplesanction\simplesanction.py:2125 simplesanction\simplesanction.py:2138
+msgid "Sanctioning a member - ⏳ TempMute"
+msgstr "Jäsenen rankaiseminen - ⏳ TempMute"
+
+#: simplesanction\simplesanction.py:2098
+msgid "How long do you want to tempmute {user}? (Set `cancel` to cancel)"
+msgstr "Kuinka kauan haluat mykistää {user}? (Aseta `cancel` peruuttaaksesi)"
+
+#: simplesanction\simplesanction.py:2113
+msgid "Why do you want to tempmute {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "Miksi haluat mykistää {user}? (Aseta `cancel` arvoksi cancel tai `not` arvoksi none)."
+
+#: simplesanction\simplesanction.py:2126
+msgid "Do you really want to tempmute {user}?"
+msgstr "Haluatko todella mykistää {user}?"
+
+#: simplesanction\simplesanction.py:2139
+msgid "The user {user} has been tempmuted!"
+msgstr "Käyttäjä {user} on tempmuted!"
+
+#: simplesanction\simplesanction.py:2180 simplesanction\simplesanction.py:2195
+#: simplesanction\simplesanction.py:2208 simplesanction\simplesanction.py:2223
+msgid "Sanctioning a member - ⌛ TempMuteChannel"
+msgstr "Jäsenen rankaiseminen - ⌛ TempMuteChannel"
+
+#: simplesanction\simplesanction.py:2181
+msgid "How long do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` to cancel)"
+msgstr "Kuinka kauan haluatte mykistää {user} osoitteessa {ctx.channel.mention}? (Aseta `cancel` peruuttaaksesi)"
+
+#: simplesanction\simplesanction.py:2196
+msgid "Why do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` to cancel or `not` to none)"
+msgstr "Miksi haluat tempmute {user} osoitteessa {ctx.channel.mention}? (Aseta `cancel` arvoksi cancel tai `not` arvoksi none)."
+
+#: simplesanction\simplesanction.py:2209
+msgid "Do you really want to tempmute {user} in {ctx.channel.mention}?"
+msgstr "Haluatko todella tempmute {user} osoitteessa {ctx.channel.mention}?"
+
+#: simplesanction\simplesanction.py:2224
+msgid "The user {user} has been tempmuted in #{ctx.channel.name}!"
+msgstr "Käyttäjä {user} on tempmuted osoitteessa #{ctx.channel.name}!"
+
+#: simplesanction\utils.py:112
+msgid "The reason was not given."
+msgstr "Syytä ei kerrottu."
+
+#: simplesanction\utils.py:127 simplesanction\utils.py:180
+msgid "Infinity"
+msgstr "Infinity"
+
+#: simplesanction\utils.py:165
+msgid "If an error has occurred, it will be displayed below."
+msgstr "Jos on tapahtunut virhe, se näkyy alla."
+

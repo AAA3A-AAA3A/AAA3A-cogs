@@ -1,0 +1,659 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:27\n"
+"Last-Translator: \n"
+"Language-Team: Ukrainian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: uk\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/simplesanction/locales/messages.pot\n"
+"X-Crowdin-File-ID: 98\n"
+"Language: uk_UA\n"
+
+#: simplesanction\settings.py:29
+#, docstring
+msgid "Set a color for the embed.\n\n"
+"        ``color``: Color.\n"
+"        You can also use \"None\" if you wish to reset the color.\n"
+"        "
+msgstr "Задайте колір для вбудовування.\n\n"
+"        \"Колір\": Колір.\n"
+"        Ви також можете використати \"None\", якщо хочете скинути колір.\n"
+"        "
+
+#: simplesanction\settings.py:43 simplesanction\settings.py:54
+#: simplesanction\settings.py:75 simplesanction\settings.py:88
+msgid "Configure the embed"
+msgstr "Налаштуйте вбудовування"
+
+#: simplesanction\settings.py:44
+msgid "Reset color:"
+msgstr "Скинути колір:"
+
+#: simplesanction\settings.py:45 simplesanction\settings.py:58
+msgid "Color:"
+msgstr "Колір:"
+
+#: simplesanction\settings.py:55
+msgid "Set color:"
+msgstr "Встановити колір:"
+
+#: simplesanction\settings.py:63
+#, docstring
+msgid "Set a thumbnail for the embed.\n\n"
+"        ``link``: Thumbnail link.\n"
+"        You can also use \"None\" if you wish to reset the thumbnail.\n"
+"        "
+msgstr "Задайте мініатюру для вбудовування.\n\n"
+"        \"Посилання\": Посилання на мініатюру.\n"
+"        Ви також можете використати \"Ні\", якщо хочете скинути мініатюру.\n"
+"        "
+
+#: simplesanction\settings.py:76
+msgid "Reset thumbnail:"
+msgstr "Скинути мініатюру:"
+
+#: simplesanction\settings.py:79 simplesanction\settings.py:92
+msgid "Thumbnail:"
+msgstr "Ескіз:"
+
+#: simplesanction\settings.py:89
+msgid "Set thumbnail:"
+msgstr "Встановити мініатюру:"
+
+#: simplesanction\settings.py:97
+#, docstring
+msgid "Enable or disable Show Author\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Увімкнути або вимкнути Show Author\n\n"
+"        Використовуйте `True` (або `yes`) для увімкнення або `False` (або `no`) для вимкнення.\n"
+"        "
+
+#: simplesanction\settings.py:105
+msgid "Show Author is already set on {state}."
+msgstr "Показати автора вже встановлено на {state}."
+
+#: simplesanction\settings.py:109
+msgid "Show Author state registered: {state}."
+msgstr "Показати державу, в якій зареєстровано автора: {state}."
+
+#: simplesanction\settings.py:113
+#, docstring
+msgid "Enable or disable Action Confirmation\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Увімкнути або вимкнути підтвердження дій\n\n"
+"        Використовуйте `True` (або `yes`), щоб увімкнути або `False` (або `no`), щоб вимкнути.\n"
+"        "
+
+#: simplesanction\settings.py:121
+msgid "Action Confirmation is already set on {state}."
+msgstr "Підтвердження дій вже налаштовано на {state}."
+
+#: simplesanction\settings.py:125
+msgid "Action Confirmation state registered: {state}."
+msgstr "Підтвердження державної реєстрації дії: {state}."
+
+#: simplesanction\settings.py:131
+#, docstring
+msgid "Enable or disable Finish Message\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Увімкнути або вимкнути Finish Message\n\n"
+"        Використовуйте `True` (або `yes`) для увімкнення або `False` (або `no`) для вимкнення.\n"
+"        "
+
+#: simplesanction\settings.py:139
+msgid "Finish Message is already set on {state}."
+msgstr "Finish Message вже встановлено на {state}."
+
+#: simplesanction\settings.py:149
+#, docstring
+msgid "Enable or disable Warn System Use\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Увімкнути або вимкнути систему попереджень Використовуйте\n\n"
+"        Використовуйте `True` (або `yes`), щоб увімкнути або `False` (або `no`), щоб вимкнути.\n"
+"        "
+
+#: simplesanction\settings.py:157
+msgid "Warn System Use is already set on {state}."
+msgstr "Попередження про використання системи вже налаштовано на {state}."
+
+#: simplesanction\settings.py:161
+msgid "Warn System Use state registered: {state}."
+msgstr "Warn System Use зареєстровано за адресою: {state}."
+
+#: simplesanction\settings.py:167
+#, docstring
+msgid "Enable or disable Buttons Use\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Увімкнення або вимкнення кнопок Використовуйте\n\n"
+"        Використовуйте `True` (або `yes`) для увімкнення або `False` (або `no`) для вимкнення.\n"
+"        "
+
+#: simplesanction\settings.py:175
+msgid "Way is already set on {way}."
+msgstr "Шлях вже прокладений на {way}."
+
+#: simplesanction\settings.py:185
+#, docstring
+msgid "Enable or disable Reason Requiered\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Увімкнути або вимкнути Reason Required\n\n"
+"        Використовуйте `True` (або `yes`) для увімкнення або `False` (або `no`) для вимкнення.\n"
+"        "
+
+#: simplesanction\settings.py:193
+msgid "Reason Required is already set on {state}."
+msgstr "Причина Необхідна вже встановлена на {state}."
+
+#: simplesanction\settings.py:197
+msgid "Reason Required state registered: {state}."
+msgstr "Причина Необхідний стан зареєстровано: {state}."
+
+#: simplesanction\settings.py:201
+#, docstring
+msgid "Enable or disable Delete Embed\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Увімкнути або вимкнути Видалити Вставити\n\n"
+"        Використовуйте `True` (або `yes`), щоб увімкнути, або `False` (або `no`), щоб вимкнути.\n"
+"        "
+
+#: simplesanction\settings.py:209
+msgid "Delete Embed is already set on {state}."
+msgstr "Видалити вбудовування вже встановлено на {state}."
+
+#: simplesanction\settings.py:219
+#, docstring
+msgid "Enable or disable Delete Message\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Увімкнути або вимкнути видалення повідомлень\n\n"
+"        Використовуйте `True` (або `yes`) для увімкнення або `False` (або `no`) для вимкнення.\n"
+"        "
+
+#: simplesanction\settings.py:227
+msgid "Delete Message is already set on {state}."
+msgstr "Видалити повідомлення вже встановлено на {state}."
+
+#: simplesanction\settings.py:231
+msgid "Delete Message state registered: {state}."
+msgstr "Видалити Стан повідомлення зареєстровано: {state}."
+
+#: simplesanction\settings.py:235
+#, docstring
+msgid "Choose the timeout\n\n"
+"        Use a int. The default is 180 seconds.\n"
+"        "
+msgstr "Виберіть таймаут\n\n"
+"        Використовуйте int. За замовчуванням це 180 секунд.\n"
+"        "
+
+#: simplesanction\settings.py:244
+msgid "Timeout restored."
+msgstr "Тайм-аут відновлено."
+
+#: simplesanction\settings.py:247
+msgid "Timeout is already set on {timeout}."
+msgstr "Тайм-аут вже встановлено на {timeout}."
+
+#: simplesanction\settings.py:251
+msgid "Timeout state registered: {timeout}."
+msgstr "Timeout state зареєстровано: {timeout}."
+
+#: simplesanction\simplesanction.py:38
+#, docstring
+msgid "A cog to sanction a user!"
+msgstr "Гвинтик для покарання користувача!"
+
+#: simplesanction\simplesanction.py:315
+#, docstring
+msgid "\n"
+"        - Sanction a user quickly and easily.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 0 @user`\n"
+"        - `[p]sanction 0 @user What are these roles?`\n"
+"        - `[p]sanction 0 012345678987654321`\n"
+"        "
+msgstr "\n"
+"        - Санкціонуйте користувача швидко та легко.\n\n"
+"        Приклади:\n"
+"        - `[p]sanction 0 @user`\n"
+"        - `[p]sanction 0 @user Що це за ролі?`\n"
+"        - `[p]sanction 0 012345678987654321`\n"
+"        "
+
+#: simplesanction\simplesanction.py:356
+#, docstring
+msgid "\n"
+"         - :information_source: Show info on a user.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 1 @user`: UserInfo for no reason\n"
+"        - `[p]sanction 1 @user What are these roles?`: UserInfo for the reason \"What are these roles?\"\n"
+"        - `[p]sanction 1 012345678987654321`: UserInfo with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - :information_source: Показати інформацію про користувача.\n\n"
+"        Приклади:\n"
+"        - `[p]sanction 1 @user`: UserInfo без причини\n"
+"        - `[p]sanction 1 @user Що це за ролі? UserInfo з причини \"Що це за ролі?\"\n"
+"        - `[p]sanction 1 012345678987654321`: UserInfo з наданим ідентифікатором.\n"
+"        "
+
+#: simplesanction\simplesanction.py:397
+#, docstring
+msgid "\n"
+"         - ⚠️ Set a simple warning on a user.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 2 @user not`: Warn for no reason\n"
+"        - `[p]sanction 2 @user Insults`: Warn for the reason \"Insults\"\n"
+"        - `[p]sanction 2 012345678987654321 Advertising`: Warn the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - ⚠️ Встановити просте попередження для користувача.\n\n"
+"        Приклади:\n"
+"        - `[p]sanction 2 @user not`: Попередження без причини\n"
+"        - `[p]sanction 2 @user Insults`: Попередження з причини \"Образи\"\n"
+"        - `[p]sanction 2 012345678987654321 Реклама`: Попередження користувачеві з вказаним ID.\n"
+"        "
+
+#: simplesanction\simplesanction.py:438
+#, docstring
+msgid "\n"
+"         - :hammer: Ban the member from the server.\n\n"
+"        It won't delete messages by default.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 3 @user not`: Ban for no reason\n"
+"        - `[p]sanction 3 @user Insults`: Ban for the reason \"Insults\"\n"
+"        - `[p]sanction 3 012345678987654321 Advertising`: Ban the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - :hammer: Забанити користувача з сервера.\n\n"
+"        За замовчуванням не видаляє повідомлення.\n\n"
+"        Приклади:\n"
+"        - `[p]sanction 3 @user not`: Забанити без причини\n"
+"        - `[p]sanction 3 @user Insults`: Забанити з причини \"Образи\"\n"
+"        - `[p]sanction 3 012345678987654321 Реклама`: Забанити користувача з вказаним ID.\n"
+"        "
+
+#: simplesanction\simplesanction.py:481
+#, docstring
+msgid "\n"
+"         - :repeat_one: Softban the member from the server.\n\n"
+"        This means that the user will be banned and immediately unbanned, so it will purge their messages in all channels.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 4 @user not`: SoftBan for no reason\n"
+"        - `[p]sanction 4 @user Insults`: SoftBan for the reason \"Insults\"\n"
+"        - `[p]sanction 4 012345678987654321 Advertising`: SoftBan the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - :repeat_one: Софтбан користувача з сервера.\n\n"
+"        Це означає, що користувач буде забанений і одразу ж розбанений, тому його повідомлення в усіх каналах будуть очищені.\n\n"
+"        Приклади:\n"
+"        - `[p]sanction 4 @user not`: SoftBan без причини\n"
+"        - `[p]sanction 4 @user Insults`: Софтбан за причиною \"Образи\"\n"
+"        - `[p]sanction 4 012345678987654321 Реклама`: Софтбен користувача з наданим ID.\n"
+"        "
+
+#: simplesanction\simplesanction.py:524
+#, docstring
+msgid "\n"
+"         - :dash: Tempban the member from the server.\n\n"
+"        It won't delete messages by default.\n\n"
+"        If you want to perform a temporary ban, provide the time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 5 @user not`: Ban for no reason\n"
+"        - `[p]sanction 5 @user 7d Insults`: 7 days ban for the reason \"Insults\"\n"
+"        - `[p]sanction 5 012345678987654321 Advertising`: Ban the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - :dash: Тимчасово відключити користувача від сервера.\n\n"
+"        За замовчуванням це не призведе до видалення повідомлень.\n\n"
+"        Якщо ви хочете виконати тимчасову заборону, вкажіть час перед причиною.\n\n"
+"        Приклади:\n"
+"        - `[p]sanction 5 @user not`: Забанити без причини\n"
+"        - `[p]sanction 5 @user 7d Insults`: Забанити на 7 днів з причини \"Образи\"\n"
+"        - `[p]sanction 5 012345678987654321 Реклама`: Забанити користувача з вказаним ID.\n"
+"        "
+
+#: simplesanction\simplesanction.py:569
+#, docstring
+msgid "\n"
+"         - :boot: Kick the member from the server.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 6 @user not`: Kick for no reason\n"
+"        - `[p]sanction 6 @user Insults`: Kick for the reason \"Insults\"\n"
+"        - `[p]sanction 6 012345678987654321 Advertising`: Kick the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - :boot: Вигнати користувача з сервера.\n\n"
+"        Приклади:\n"
+"        - `[p]sanction 6 @user not`: Вигнати без причини\n"
+"        - `[p]sanction 6 @user Insults`: Вигнати з причини \"Образи\"\n"
+"        - `[p]sanction 6 012345678987654321 Реклама`: Вигнати користувача з вказаним ідентифікатором.\n"
+"        "
+
+#: simplesanction\simplesanction.py:610
+#, docstring
+msgid "\n"
+"         - :mute: Mute the user in all channels, including voice channels.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 7 @user not`: Infinite mute for no reason\n"
+"        - `[p]sanction 7 @user Spam`:Infinite  mute for the reason \"Spam\"\n"
+"        - `[p]sanction 7 @user Advertising`: Infinite mute for the reason \"Advertising\"\n"
+"        "
+msgstr "\n"
+"         - :mute: Вимкнення звуку користувача в усіх каналах, включаючи голосові канали.\n\n"
+"        Приклади:\n"
+"        - `[p]sanction 7 @user not`: Нескінченне відключення звуку без причини\n"
+"        - `[p]sanction 7 @user Spam`:Нескінченне відключення звуку з причини \"Спам\"\n"
+"        - `[p]sanction 7 @user Advertising`: Нескінченний ігнор з причини \"Реклама\"\n"
+"        "
+
+#: simplesanction\simplesanction.py:651
+#, docstring
+msgid "\n"
+"         - :punch: Mute the user in this channel.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 8 @user not`: Infinite mute for no reason\n"
+"        - `[p]sanction 8 @user Spam`: Infinite mute for the reason \"Spam\"\n"
+"        - `[p]sanction 8 @user Advertising`: Infinite mute for the reason \"Advertising\"\n"
+"        "
+msgstr "\n"
+"         - :punch: Вимкнути звук користувача в цьому каналі.\n\n"
+"        Приклади:\n"
+"        - `[p]sanction 8 @user not`: Нескінченне відключення звуку без причини\n"
+"        - `[p]sanction 8 @user Spam`: Нескінченний відключення звуку з причини \"Спам\"\n"
+"        - `[p]sanction 8 @user Реклама`: Нескінченний вимкнення звуку з причини \"Реклама\"\n"
+"        "
+
+#: simplesanction\simplesanction.py:692
+#, docstring
+msgid "\n"
+"         - :hourglass_flowing_sand: TempMute the user in all channels, including voice channels.\n\n"
+"        You can set a timed mute by providing a valid time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 9 @user 30m not`: 30 minutes mute for no reason\n"
+"        - `[p]sanction 9 @user 5h Spam`: 5 hours mute for the reason \"Spam\"\n"
+"        - `[p]sanction 9 @user 3d Advertising`: 3 days mute for the reason \"Advertising\"\n"
+"        "
+msgstr "\n"
+"         - :hourglass_flowing_sand: Тимчасово вимкнути користувача в усіх каналах, включно з голосовими.\n\n"
+"        Ви можете встановити тимчасове вимкнення, вказавши дійсний час перед причиною.\n\n"
+"        Приклади:\n"
+"        - `[p]sanction 9 @user 30m not`: 30 хвилин без причини\n"
+"        - `[p]sanction 9 @user 5h Spam`: 5 годин ігнорування з причини \"Спам\"\n"
+"        - `[p]санкція 9 @user 3d Реклама`: 3 дні без звуку з причини \"Реклама\"\n"
+"        "
+
+#: simplesanction\simplesanction.py:735
+#, docstring
+msgid "\n"
+"         - :hourglass: TempMute the user in this channel.\n\n"
+"        You can set a timed mute by providing a valid time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 10 @user 30m not`: 30 minutes mute for no reason\n"
+"        - `[p]sanction 10 @user 5h Spam`: 5 hours mute for the reason \"Spam\"\n"
+"        - `[p]sanction 10 @user 3d Advertising`: 3 days mute for the reason \"Advertising\"\n"
+"        "
+msgstr "\n"
+"         - :hourglass: Тимчасово вимкнути користувача в цьому каналі.\n\n"
+"        Ви можете встановити тимчасове вимкнення, вказавши дійсний час перед причиною.\n\n"
+"        Приклади:\n"
+"        - `[p]sanction 10 @user 30m not`: 30 хвилин без причини\n"
+"        - `[p]sanction 10 @user 5h Spam`: 5 годин ігнорування з причини \"Спам\"\n"
+"        - `[p]санкція 10 @user 3d Реклама`: 3 дні без звуку з причини \"Реклама\"\n"
+"        "
+
+#: simplesanction\simplesanction.py:804 simplesanction\simplesanction.py:829
+msgid "Sanctioning a member"
+msgstr "Застосування санкцій до учасника"
+
+#: simplesanction\simplesanction.py:805
+msgid "Which member do you want to sanction? (Set `cancel` to cancel.)"
+msgstr "Кого з учасників ви хочете покарати? (Встановіть `cancel` для скасування.)"
+
+#: simplesanction\simplesanction.py:825 simplesanction\utils.py:54
+#: simplesanction\utils.py:84
+msgid "Timed out, please try again."
+msgstr "Закінчився час, спробуйте ще раз."
+
+#: simplesanction\simplesanction.py:830 simplesanction\utils.py:147
+msgid "This tool allows you to easily sanction a server member.\n"
+"User mention: {user.mention} - User ID: {user.id}"
+msgstr "Цей інструмент дозволяє легко застосувати санкції до користувача сервера.\n"
+"Згадка про користувача: {user.mention} - Ідентифікатор користувача: {user.id}"
+
+#: simplesanction\simplesanction.py:853 simplesanction\simplesanction.py:858
+#: simplesanction\utils.py:168
+msgid "Reason:"
+msgstr "Причина:"
+
+#: simplesanction\simplesanction.py:854
+msgid "The reason was not given and will not be asked later."
+msgstr "Причина не була вказана і не буде вказана пізніше."
+
+#: simplesanction\simplesanction.py:861 simplesanction\utils.py:120
+#: simplesanction\utils.py:126 simplesanction\utils.py:173
+#: simplesanction\utils.py:179
+msgid "Duration:"
+msgstr "Тривалість:"
+
+#: simplesanction\simplesanction.py:869
+msgid "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
+msgstr "Ви використовуєте цю команду в режимі Fake, тому ніяких дій не буде виконано, але я зроблю вигляд, що це не так."
+
+#: simplesanction\simplesanction.py:1567
+msgid "Sanctioning a member - ℹ️ UserInfo"
+msgstr "Санкціонування учасника - ℹ️ UserInfo"
+
+#: simplesanction\simplesanction.py:1568
+msgid "Here is the information about the user {user.name}!"
+msgstr "Ось інформація про користувача {user.name}!"
+
+#: simplesanction\simplesanction.py:1579
+msgid "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`."
+msgstr "Гвинтик Mod не завантажено. Щоб завантажити його, виконайте `{ctx.prefix}load mod`."
+
+#: simplesanction\simplesanction.py:1601 simplesanction\simplesanction.py:1614
+#: simplesanction\simplesanction.py:1627
+msgid "Sanctioning a member - ⚠️ Warn"
+msgstr "Санкціонування учасника - ⚠️ Попередження"
+
+#: simplesanction\simplesanction.py:1602
+msgid "Why do you want warn {user}? (Set `cancel` to cancel or `not` for none)"
+msgstr "Чому ви хочете попереджати {user}? (Встановіть `cancel` для скасування або `not` для жодного)"
+
+#: simplesanction\simplesanction.py:1615
+msgid "Do you really want to warn {user}?"
+msgstr "Ви дійсно хочете попередити {user}?"
+
+#: simplesanction\simplesanction.py:1628
+msgid "The user {user} has been received a warning!"
+msgstr "Користувач {user} отримав попередження!"
+
+#: simplesanction\simplesanction.py:1640
+msgid "The cog Warnings is not loaded. To load it, do `{ctx.prefix}load warnings`. You can also install/load the WarnSystem cog."
+msgstr "Гвинтик Попередження не завантажено. Щоб завантажити його, виконайте `{ctx.prefix}load warnings`. Ви також можете встановити/завантажити гвинтик WarnSystem."
+
+#: simplesanction\simplesanction.py:1670 simplesanction\simplesanction.py:1683
+#: simplesanction\simplesanction.py:1696
+msgid "Sanctioning a member - 🔨 Ban"
+msgstr "Санкції до учасника - 🔨 бан"
+
+#: simplesanction\simplesanction.py:1671
+msgid "Why do you want to ban {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "Чому ви хочете забанити {user}? (Встановіть `cancel` у значення \"скасувати\" або `not` у значення \"ні\")"
+
+#: simplesanction\simplesanction.py:1684
+msgid "Do you really want to ban {user}?"
+msgstr "Ви дійсно хочете заборонити {user}?"
+
+#: simplesanction\simplesanction.py:1697
+msgid "The user {user} has been banned!"
+msgstr "Користувача {user} було заблоковано!"
+
+#: simplesanction\simplesanction.py:1709 simplesanction\simplesanction.py:1778
+#: simplesanction\simplesanction.py:1861 simplesanction\simplesanction.py:1932
+msgid "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`. You can also install/load the WarnSystem cog."
+msgstr "Гвинтик Mod не завантажено. Щоб завантажити його, виконайте `{ctx.prefix}load mod`. Ви також можете встановити/завантажити гвинтик WarnSystem."
+
+#: simplesanction\simplesanction.py:1739 simplesanction\simplesanction.py:1752
+#: simplesanction\simplesanction.py:1765
+msgid "Sanctioning a member - 🔂 SoftBan"
+msgstr "Санкціонування учасника - 🔂 SoftBan"
+
+#: simplesanction\simplesanction.py:1740
+msgid "Why do you want to softban {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "Чому ви хочете софтбан {user}? (Встановіть `cancel` на скасування або `not` на ні)"
+
+#: simplesanction\simplesanction.py:1753
+msgid "Do you really want to softban {user}?"
+msgstr "Ви дійсно хочете софтбан {user}?"
+
+#: simplesanction\simplesanction.py:1766
+msgid "The user {user} has been softbanned!"
+msgstr "Користувача {user} було забанено!"
+
+#: simplesanction\simplesanction.py:1807 simplesanction\simplesanction.py:1822
+#: simplesanction\simplesanction.py:1835 simplesanction\simplesanction.py:1848
+msgid "Sanctioning a member - 💨 TempBan"
+msgstr "Санкціонування учасника - 💨 TempBan"
+
+#: simplesanction\simplesanction.py:1808
+msgid "How long do you want to tempban {user}? (Set `cancel` to cancel)"
+msgstr "На скільки часу ви хочете тимчасово заборонити {user}? (Встановіть `cancel` для скасування)"
+
+#: simplesanction\simplesanction.py:1823
+msgid "Why do you want to tempban {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "Чому ви хочете тимчасово заборонити {user}? (Встановіть `cancel` на скасування або `not` на ні)"
+
+#: simplesanction\simplesanction.py:1836
+msgid "Do you really want to tempban {user}?"
+msgstr "Ви дійсно хочете тимчасово заборонити {user}?"
+
+#: simplesanction\simplesanction.py:1849
+msgid "The user {user} has been tempban!"
+msgstr "Користувача {user} було тимчасово забанено!"
+
+#: simplesanction\simplesanction.py:1891 simplesanction\simplesanction.py:1904
+#: simplesanction\simplesanction.py:1919
+msgid "Sanctioning a member - 👢 Kick"
+msgstr "Санкціонування учасника - 👢 Кіт"
+
+#: simplesanction\simplesanction.py:1892 simplesanction\simplesanction.py:1905
+msgid "Why do you want to kick {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "Чому ви хочете відкинути {user}? (Встановіть `cancel` на скасування або `not` на ні)"
+
+#: simplesanction\simplesanction.py:1920
+msgid "The user {user} has been kicked!"
+msgstr "Користувача {user} було заблоковано!"
+
+#: simplesanction\simplesanction.py:1962 simplesanction\simplesanction.py:1975
+#: simplesanction\simplesanction.py:1988
+msgid "Sanctioning a member - 🔇 Mute"
+msgstr "Санкціонування учасника - 🔇 Вимкнення звуку"
+
+#: simplesanction\simplesanction.py:1963
+msgid "Why do you want to mute {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "Чому ви хочете вимкнути звук {user}? (Встановіть `cancel` на скасування або `not` на ні)"
+
+#: simplesanction\simplesanction.py:1976
+msgid "Do you really want to mute {user}?"
+msgstr "Ви дійсно хочете вимкнути звук {user}?"
+
+#: simplesanction\simplesanction.py:1989
+msgid "The user {user} has been muted!"
+msgstr "Користувача {user} було вимкнено!"
+
+#: simplesanction\simplesanction.py:2001 simplesanction\simplesanction.py:2151
+msgid "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`. You can also install/load the WarnSystem cog."
+msgstr "Елемент Mutes не завантажено. Щоб завантажити його, виконайте `{ctx.prefix}load mutes`. Ви також можете встановити/завантажити гвинтик WarnSystem."
+
+#: simplesanction\simplesanction.py:2031 simplesanction\simplesanction.py:2044
+#: simplesanction\simplesanction.py:2059
+msgid "Sanctioning a member - 👊 MuteChannel"
+msgstr "Санкціонування учасника - 👊 MuteChannel"
+
+#: simplesanction\simplesanction.py:2032
+msgid "Why do you want to mute {user} in {ctx.channel.mention}? (Set `cancel` to cancel or `not` to none)"
+msgstr "Чому ви хочете вимкнути {user} в {ctx.channel.mention}? (Встановіть `cancel` на скасування або `not` на ні)"
+
+#: simplesanction\simplesanction.py:2045
+msgid "Do you really want to mute {user} in {ctx.channel.mention}?"
+msgstr "Ви дійсно хочете вимкнути звук {user} в {ctx.channel.mention}?"
+
+#: simplesanction\simplesanction.py:2060
+msgid "The user {user} has been muted in #{ctx.channel.name}!"
+msgstr "Користувача {user} було вимкнено в #{ctx.channel.name}!"
+
+#: simplesanction\simplesanction.py:2073 simplesanction\simplesanction.py:2237
+msgid "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`."
+msgstr "Елемент Mutes не завантажено. Щоб завантажити його, виконайте `{ctx.prefix}load mutes`."
+
+#: simplesanction\simplesanction.py:2097 simplesanction\simplesanction.py:2112
+#: simplesanction\simplesanction.py:2125 simplesanction\simplesanction.py:2138
+msgid "Sanctioning a member - ⏳ TempMute"
+msgstr "Санкціонування учасника - ⏳ TempMute"
+
+#: simplesanction\simplesanction.py:2098
+msgid "How long do you want to tempmute {user}? (Set `cancel` to cancel)"
+msgstr "На який час ви хочете приглушити звук {user}? (Встановіть `cancel` для скасування)"
+
+#: simplesanction\simplesanction.py:2113
+msgid "Why do you want to tempmute {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "Чому ви хочете приглушити звук {user}? (Встановіть `cancel` на скасування або `not` на ні)"
+
+#: simplesanction\simplesanction.py:2126
+msgid "Do you really want to tempmute {user}?"
+msgstr "Ви дійсно хочете приглушити звук {user}?"
+
+#: simplesanction\simplesanction.py:2139
+msgid "The user {user} has been tempmuted!"
+msgstr "Користувача {user} було спокушено!"
+
+#: simplesanction\simplesanction.py:2180 simplesanction\simplesanction.py:2195
+#: simplesanction\simplesanction.py:2208 simplesanction\simplesanction.py:2223
+msgid "Sanctioning a member - ⌛ TempMuteChannel"
+msgstr "Санкціонування учасника - ⌛ TempMuteChannel"
+
+#: simplesanction\simplesanction.py:2181
+msgid "How long do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` to cancel)"
+msgstr "На який час ви хочете замінити {user} на {ctx.channel.mention}? (Встановіть `cancel` для скасування)"
+
+#: simplesanction\simplesanction.py:2196
+msgid "Why do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` to cancel or `not` to none)"
+msgstr "Чому ви хочете перетворити {user} на {ctx.channel.mention}? (Встановіть `cancel` на скасування або `not` на ні)"
+
+#: simplesanction\simplesanction.py:2209
+msgid "Do you really want to tempmute {user} in {ctx.channel.mention}?"
+msgstr "Ви дійсно хочете перетворити {user} на {ctx.channel.mention}?"
+
+#: simplesanction\simplesanction.py:2224
+msgid "The user {user} has been tempmuted in #{ctx.channel.name}!"
+msgstr "Користувача {user} було замінено на #{ctx.channel.name}!"
+
+#: simplesanction\utils.py:112
+msgid "The reason was not given."
+msgstr "Причину не назвали."
+
+#: simplesanction\utils.py:127 simplesanction\utils.py:180
+msgid "Infinity"
+msgstr "Нескінченність"
+
+#: simplesanction\utils.py:165
+msgid "If an error has occurred, it will be displayed below."
+msgstr "Якщо сталася помилка, вона буде відображена нижче."
+

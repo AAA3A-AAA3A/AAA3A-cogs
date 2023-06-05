@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-02 17:31\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 18:21\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -17,33 +17,28 @@ msgstr ""
 "X-Crowdin-File-ID: 76\n"
 "Language: fr_FR\n"
 
-#: calculator\calculator.py:36
+#: calculator\calculator.py:29
 #, docstring
 msgid "A cog to do calculations from Discord with buttons!"
 msgstr "Un cog pour faire des calculs depuis Discord avec des boutons !"
 
-#: calculator\calculator.py:121 calculator\calculator.py:361
-#: calculator\calculator.py:371 calculator\view.py:204 calculator\view.py:214
+#: calculator\calculator.py:110 calculator\view.py:206 calculator\view.py:213
 msgid "Error!"
 msgstr "Erreur !"
 
-#: calculator\calculator.py:134
+#: calculator\calculator.py:123
 msgid "{ctx.me.display_name}'s Calculator"
 msgstr "Calculatrice de {ctx.me.display_name}"
 
-#: calculator\calculator.py:207 calculator\view.py:17 calculator\view.py:84
+#: calculator\view.py:17 calculator\view.py:84
 msgid "Exit"
 msgstr "Quitter"
 
-#: calculator\calculator.py:249 calculator\view.py:37 calculator\view.py:104
+#: calculator\view.py:37 calculator\view.py:104
 msgid "Clear"
 msgstr "Effacer"
 
-#: calculator\calculator.py:355
-msgid "Only the author of the command `{ctx.prefix}{ctx.command.name}` can interact with this message."
-msgstr "Seul l'auteur de la commande `{ctx.prefix}{ctx.command.name}` peut interagir avec ce message."
-
-#: calculator\calculator.py:449 calculator\view.py:281
+#: calculator\view.py:280
 msgid "Nothing in your history."
 msgstr "Rien dans votre historique."
 

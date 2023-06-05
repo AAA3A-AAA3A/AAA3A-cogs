@@ -1,0 +1,145 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:27\n"
+"Last-Translator: \n"
+"Language-Team: Ukrainian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: uk\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/commandsbuttons/locales/messages.pot\n"
+"X-Crowdin-File-ID: 181\n"
+"Language: uk_UA\n"
+
+#: commandsbuttons\commandsbuttons.py:26
+#, docstring
+msgid "A cog to allow a user to execute a command by clicking on a button!"
+msgstr "Гвинтик, який дозволяє користувачеві виконати команду, натиснувши на кнопку!"
+
+#: commandsbuttons\commandsbuttons.py:76
+msgid "This message is not in Config."
+msgstr "Цього повідомлення немає у конфігурації."
+
+#: commandsbuttons\commandsbuttons.py:79
+msgid "This button is not in Config."
+msgstr "Цієї кнопки немає в конфігурації."
+
+#: commandsbuttons\commandsbuttons.py:92
+msgid "The command don't exist."
+msgstr "Команди не існує."
+
+#: commandsbuttons\commandsbuttons.py:96
+msgid "You are not allowed to execute this command."
+msgstr "Ви не маєте права виконувати цю команду."
+
+#: commandsbuttons\commandsbuttons.py:148
+#, docstring
+msgid "Add a command-button for a message.\n\n"
+"        `primary`: 1\n"
+"        `secondary`: 2\n"
+"        `success`: 3\n"
+"        `danger`: 4\n"
+"        # Aliases\n"
+"        `blurple`: 1\n"
+"        `grey`: 2\n"
+"        `gray`: 2\n"
+"        `green`: 3\n"
+"        `red`: 4\n"
+"        "
+msgstr "Додавання командної кнопки для повідомлення.\n\n"
+"        `primary`: 1\n"
+"        `econdary`: 2\n"
+"        `uccess`: 3\n"
+"        `danger`: 4\n"
+"        # Псевдоніми\n"
+"        `blurple`: 1\n"
+"        `grey`: 2\n"
+"        `gray`: 2\n"
+"        `green`: 3\n"
+"        `red`: 4\n"
+"        "
+
+#: commandsbuttons\commandsbuttons.py:163
+#: commandsbuttons\commandsbuttons.py:224
+#: commandsbuttons\commandsbuttons.py:275
+msgid "I have to be the author of the message for the command-button to work."
+msgstr "Я маю бути автором повідомлення, щоб кнопка спрацювала."
+
+#: commandsbuttons\commandsbuttons.py:173
+#: commandsbuttons\commandsbuttons.py:238
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "Я не маю достатніх дозволів на каналі, де знаходиться вказане вами повідомлення.\n"
+"Мені потрібні дозволи для перегляду повідомлень у цьому каналі."
+
+#: commandsbuttons\commandsbuttons.py:183
+msgid "You have not specified a correct command."
+msgstr "Ви вказали неправильну команду."
+
+#: commandsbuttons\commandsbuttons.py:190
+msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Вибраний вами смайлик здається недійсним. Перевірте, чи це смайлик. Якщо у вас Nitro, можливо, ви використовували кастомний смайлик з іншого сервера."
+
+#: commandsbuttons\commandsbuttons.py:199
+msgid "I can't do more than 25 commands-buttons for one message."
+msgstr "Я не можу зробити більше 25 команд-кнопок для одного повідомлення."
+
+#: commandsbuttons\commandsbuttons.py:218
+#, docstring
+msgid "Add commands-buttons for a message.\n\n"
+"        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
+"        "
+msgstr "Додавання команд-кнопок для повідомлення.\n\n"
+"        ```[p]командних кнопок багато <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
+"        "
+
+#: commandsbuttons\commandsbuttons.py:228
+msgid "You have not specified any valid command-button."
+msgstr "Ви не вказали жодної правильної кнопки."
+
+#: commandsbuttons\commandsbuttons.py:248
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Вибраний вами смайлик здається недійсним. Перевірте, чи це смайлик. Якщо у вас Nitro, можливо, ви використовували кастомний смайлик з іншого сервера."
+
+#: commandsbuttons\commandsbuttons.py:257
+msgid "I can't do more than 25 roles-buttons for one message."
+msgstr "Я не можу зробити більше 25 ролей-кнопок для одного повідомлення."
+
+#: commandsbuttons\commandsbuttons.py:272
+#, docstring
+msgid "Remove a command-button for a message."
+msgstr "Видалити командну кнопку для повідомлення."
+
+#: commandsbuttons\commandsbuttons.py:280
+#: commandsbuttons\commandsbuttons.py:306
+msgid "No command-button is configured for this message."
+msgstr "Для цього повідомлення не налаштовано жодної командної кнопки."
+
+#: commandsbuttons\commandsbuttons.py:284
+msgid "I wasn't watching for this button on this message."
+msgstr "Я не бачив цієї кнопки в цьому повідомленні."
+
+#: commandsbuttons\commandsbuttons.py:298
+#, docstring
+msgid "Clear all commands-buttons for a message."
+msgstr "Очистити всі команди-кнопки для повідомлення."
+
+#: commandsbuttons\commandsbuttons.py:301
+msgid "I have to be the author of the message for the role-button to work."
+msgstr "Я маю бути автором повідомлення, щоб рольова кнопка спрацювала."
+
+#: commandsbuttons\commandsbuttons.py:317
+#, docstring
+msgid "Clear all commands-buttons for a guild."
+msgstr "Очистити всі команди-кнопки для гільдії."
+
+#: commandsbuttons\converters.py:35
+msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
+msgstr "Роль емодзі повинна бути емодзі, за яким слідує роль, відокремлена символами `;`, `,`, `|` або `-`."
+

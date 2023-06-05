@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-02 17:31\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:29\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -17,58 +17,58 @@ msgstr ""
 "X-Crowdin-File-ID: 94\n"
 "Language: fr_FR\n"
 
-#: reacttocommand\reacttocommand.py:44
+#: reacttocommand\reacttocommand.py:37
 #, docstring
 msgid "A cog to allow a user to execute a command by clicking on a reaction!"
 msgstr "Un cog pour permettre à un utilisateur d'exécuter une commande en cliquant sur une réaction !"
 
-#: reacttocommand\reacttocommand.py:220
+#: reacttocommand\reacttocommand.py:215
 #, docstring
-msgid "Add a command-reaction to a message.\n"
+msgid "Add a reaction-command for a message.\n"
 "        There should be no prefix in the command.\n"
 "        The command will be invoked with the permissions of the user who clicked on the reaction.\n"
 "        This user must be able to see writing in the channel.\n"
 "        "
-msgstr "Ajouter une commande-réaction à un message.\n"
+msgstr "Ajouter une commande de réaction pour un message.\n"
 "        La commande ne doit pas comporter de préfixe.\n"
 "        La commande sera invoquée avec les autorisations de l'utilisateur qui a cliqué sur la réaction.\n"
-"        Cet utilisateur doit être en mesure de voir l'écriture dans le canal.\n"
+"        Cet utilisateur doit être en mesure de voir les écrits dans le canal.\n"
 "        "
 
-#: reacttocommand\reacttocommand.py:233
+#: reacttocommand\reacttocommand.py:228
 msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
 "I need the permissions to add reactions and to see the messages in that channel."
 msgstr "Je n'ai pas les permissions suffisantes sur le canal où se trouve le message que vous avez indiqué.\n"
 "J'ai besoin d'autorisations pour ajouter des réactions et pour voir les messages dans ce canal."
 
-#: reacttocommand\reacttocommand.py:243
+#: reacttocommand\reacttocommand.py:238
 msgid "You have not specified a correct command."
 msgstr "Vous n'avez pas spécifié une commande correcte."
 
-#: reacttocommand\reacttocommand.py:250
+#: reacttocommand\reacttocommand.py:245
 msgid "An error has occurred. It is possible that the emoji you provided is invalid."
 msgstr "Une erreur s'est produite. Il est possible que l'emoji que vous avez fourni ne soit pas valide."
 
-#: reacttocommand\reacttocommand.py:262
+#: reacttocommand\reacttocommand.py:257
 #, docstring
-msgid "Remove a command-reaction to a message."
-msgstr "Supprimer une commande-réaction à un message."
+msgid "Remove a reaction-command for a message."
+msgstr "Supprimer une commande de réaction pour un message."
 
-#: reacttocommand\reacttocommand.py:266 reacttocommand\reacttocommand.py:287
-msgid "No command-reaction is configured for this message."
-msgstr "Aucune commande-réaction n'est configurée pour ce message."
+#: reacttocommand\reacttocommand.py:261 reacttocommand\reacttocommand.py:282
+msgid "No reaction-command is configured for this message."
+msgstr "Aucune commande de réaction n'est configurée pour ce message."
 
-#: reacttocommand\reacttocommand.py:270
+#: reacttocommand\reacttocommand.py:265
 msgid "I wasn't watching for this reaction on this message."
 msgstr "Je ne m'attendais pas à cette réaction sur ce message."
 
-#: reacttocommand\reacttocommand.py:283
+#: reacttocommand\reacttocommand.py:278
 #, docstring
-msgid "Clear all commands-reactions to a message."
-msgstr "Effacer toutes les commandes-réactions à un message."
+msgid "Clear all reactions-commands for a message."
+msgstr "Effacer toutes les réactions-commandes pour un message."
 
-#: reacttocommand\reacttocommand.py:299
+#: reacttocommand\reacttocommand.py:294
 #, docstring
-msgid "Clear all commands-reactions to a **guild**."
-msgstr "Effacer toutes les commandes-réactions à une **guilde**."
+msgid "Clear all reactions-commands for a guild."
+msgstr "Effacer toutes les commandes de réaction d'une guilde."
 

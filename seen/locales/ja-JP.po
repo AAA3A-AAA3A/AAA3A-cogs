@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-03 20:01\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:30\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -17,115 +17,109 @@ msgstr ""
 "X-Crowdin-File-ID: 150\n"
 "Language: ja_JP\n"
 
-#: seen\seen.py:35
+#: seen\seen.py:25
 #, docstring
 msgid "A cog to check when a member/role/channel/category/user/guild was last active!"
 msgstr "メンバー/ロール/チャンネル/カテゴリ/ユーザー/ギルドが最後にアクティブになったのはいつなのかを確認するためのコグです！"
 
-#: seen\seen.py:808 seen\seen.py:815
+#: seen\seen.py:798 seen\seen.py:805
 msgid "@{_object.display_name} was seen {seen}."
 msgstr "@{_object.display_name} が見られた {seen}。"
 
-#: seen\seen.py:822
+#: seen\seen.py:812
 msgid "The role @&{_object.name} was seen {seen}."
 msgstr "役 @&{_object.name} が見られた {seen}。"
 
-#: seen\seen.py:829
+#: seen\seen.py:819
 msgid "The text channel #{_object.name} was seen {seen}."
 msgstr "テキストチャンネル #{_object.name} を見ました {seen}。"
 
-#: seen\seen.py:836
+#: seen\seen.py:826
 msgid "The category {_object.name} was seen {seen}."
 msgstr "カテゴリー {_object.name} は、 {seen}を見た。"
 
-#: seen\seen.py:843
+#: seen\seen.py:833
 msgid "The guild {_object.name} was seen {seen}."
 msgstr "ギルド {_object.name} を見た {seen}。"
 
-#: seen\seen.py:1097
+#: seen\seen.py:1087
 #, docstring
 msgid "Check when a member was last active!"
 msgstr "メンバーが最後に活動したのはいつなのかを確認する！"
 
-#: seen\seen.py:1117
+#: seen\seen.py:1107
 #, docstring
 msgid "Check when a role was last active!"
 msgstr "ロールが最後にアクティブになったのはいつなのかを確認する！"
 
-#: seen\seen.py:1136
+#: seen\seen.py:1126
 #, docstring
 msgid "Check when a channel was last active!"
 msgstr "チャンネルが最後にアクティブになったのはいつなのかを確認する！"
 
-#: seen\seen.py:1143
+#: seen\seen.py:1133
 msgid "You do not have permission to view this channel."
 msgstr "このチャンネルを見る権限がありません。"
 
-#: seen\seen.py:1159
+#: seen\seen.py:1149
 #, docstring
 msgid "Check when a category was last active!"
 msgstr "カテゴリーが最後にアクティブになったのはいつなのかを確認する！"
 
-#: seen\seen.py:1172
+#: seen\seen.py:1162
 msgid "You do not have permission to view any of the channels in this category."
 msgstr "このカテゴリのチャンネルを視聴する許可はありません。"
 
-#: seen\seen.py:1189
+#: seen\seen.py:1179
 #, docstring
 msgid "Check when a old member was last active!"
 msgstr "旧メンバーが最後に活動したのはいつなのかを確認する！"
 
-#: seen\seen.py:1217
+#: seen\seen.py:1207
 #, docstring
 msgid "Check when a guild was last active!"
 msgstr "ギルドが最後にアクティブになったのはいつなのかを確認します！"
 
-#: seen\seen.py:1237
+#: seen\seen.py:1227
 #, docstring
 msgid "Check when a user was last active!"
 msgstr "ユーザーが最後にアクティブになったのはいつなのかを確認する！"
 
-#: seen\seen.py:1256
+#: seen\seen.py:1246
 #, docstring
 msgid "Check when a old user was last active!"
 msgstr "古いユーザーが最後にアクティブになったのはいつなのかを確認する！"
 
+#: seen\seen.py:1268
+#, docstring
+msgid "View a Seen Board for members/roles/channels/categories/guilds/users!"
+msgstr "メンバー/ロール/チャンネル/カテゴリー/ギルド/ユーザーのSeen Boardを表示します！"
+
+#: seen\seen.py:1271
+msgid "You're not allowed to view the Seen board for guilds and users."
+msgstr "ギルドやユーザー向けのSeenボードの閲覧が禁止されています。"
+
 #: seen\seen.py:1278
-#, docstring
-msgid "View a Seen Board for members/roles/channels/categories!"
-msgstr "メンバー/ロール/チャンネル/カテゴリのSeen Boardを表示します！"
-
-#: seen\seen.py:1292
-#, docstring
-msgid "View a Seen Board for guilds!"
-msgstr "ギルドのSeen Boardを見ることができます！"
-
-#: seen\seen.py:1307
-#, docstring
-msgid "View a Seen Board for users!"
-msgstr "ユーザー向けのSeen Boardを表示する！"
-
-#: seen\seen.py:1314
 #, docstring
 msgid "Get Config data stats."
 msgstr "Configデータの統計情報を取得します。"
 
-#: seen\seen.py:1348
+#: seen\seen.py:1312
 #, docstring
 msgid "Enable or disable a listener."
 msgstr "リスナーを有効化または無効化する。"
 
-#: seen\seen.py:1356
+#: seen\seen.py:1320
 #, docstring
 msgid "Asking Seen to ignore your actions."
 msgstr "Seenに自分の行動を無視するよう求める。"
 
-#: seen\seen.py:1370
+#: seen\seen.py:1334
 #, docstring
 msgid "Get an embed for check loop status."
 msgstr "ループの状態を確認するためのエンベデッドを取得します。"
 
-#: seen\seen.py:1381
+#: seen\seen.py:1345
 #, docstring
 msgid "Purge Config for a specified _type or all."
 msgstr "指定された_typeまたはすべてのConfigをパージします。"

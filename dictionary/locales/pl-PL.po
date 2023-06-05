@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:31\n"
+"Last-Translator: \n"
+"Language-Team: Polish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/dictionary/locales/messages.pot\n"
+"X-Crowdin-File-ID: 229\n"
+"Language: pl_PL\n"
+
+#: dictionary\dictionary.py:22
+#, docstring
+msgid "A cog to search an english term/word in the dictionary! Synonyms, antonyms, phonetics (with audio)..."
+msgstr "Trybik do wyszukiwania angielskiego terminu/słowa w słowniku! Synonimy, antonimy, fonetyka (z dźwiękiem)..."
+
+#: dictionary\dictionary.py:85
+msgid "Word not found in English dictionary."
+msgstr "Słowo nie występujące w słowniku języka angielskiego."
+
+#: dictionary\view.py:33
+msgid "View the source"
+msgstr "Zobacz źródło"
+

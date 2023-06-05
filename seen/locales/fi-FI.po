@@ -1,0 +1,126 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:26\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/seen/locales/messages.pot\n"
+"X-Crowdin-File-ID: 150\n"
+"Language: fi_FI\n"
+
+#: seen\seen.py:25
+#, docstring
+msgid "A cog to check when a member/role/channel/category/user/guild was last active!"
+msgstr "Tarkista, milloin jäsen/rooli/kanava/luokka/käyttäjä/kilta oli viimeksi aktiivinen!"
+
+#: seen\seen.py:798 seen\seen.py:805
+msgid "@{_object.display_name} was seen {seen}."
+msgstr "@{_object.display_name} nähtiin {seen}."
+
+#: seen\seen.py:812
+msgid "The role @&{_object.name} was seen {seen}."
+msgstr "Rooli @&{_object.name} nähtiin {seen}."
+
+#: seen\seen.py:819
+msgid "The text channel #{_object.name} was seen {seen}."
+msgstr "Tekstikanava #{_object.name} nähtiin {seen}."
+
+#: seen\seen.py:826
+msgid "The category {_object.name} was seen {seen}."
+msgstr "Luokka {_object.name} nähtiin {seen}."
+
+#: seen\seen.py:833
+msgid "The guild {_object.name} was seen {seen}."
+msgstr "Kilta {_object.name} nähtiin {seen}."
+
+#: seen\seen.py:1087
+#, docstring
+msgid "Check when a member was last active!"
+msgstr "Tarkista, milloin jäsen oli viimeksi aktiivinen!"
+
+#: seen\seen.py:1107
+#, docstring
+msgid "Check when a role was last active!"
+msgstr "Tarkista, milloin rooli oli viimeksi aktiivinen!"
+
+#: seen\seen.py:1126
+#, docstring
+msgid "Check when a channel was last active!"
+msgstr "Tarkista, milloin kanava oli viimeksi aktiivinen!"
+
+#: seen\seen.py:1133
+msgid "You do not have permission to view this channel."
+msgstr "Sinulla ei ole lupaa katsoa tätä kanavaa."
+
+#: seen\seen.py:1149
+#, docstring
+msgid "Check when a category was last active!"
+msgstr "Tarkista, milloin luokka oli viimeksi aktiivinen!"
+
+#: seen\seen.py:1162
+msgid "You do not have permission to view any of the channels in this category."
+msgstr "Sinulla ei ole lupaa katsoa mitään tämän kategorian kanavia."
+
+#: seen\seen.py:1179
+#, docstring
+msgid "Check when a old member was last active!"
+msgstr "Tarkista, milloin vanha jäsen oli viimeksi aktiivinen!"
+
+#: seen\seen.py:1207
+#, docstring
+msgid "Check when a guild was last active!"
+msgstr "Tarkista, milloin kilta oli viimeksi aktiivinen!"
+
+#: seen\seen.py:1227
+#, docstring
+msgid "Check when a user was last active!"
+msgstr "Tarkista, milloin käyttäjä oli viimeksi aktiivinen!"
+
+#: seen\seen.py:1246
+#, docstring
+msgid "Check when a old user was last active!"
+msgstr "Tarkista, milloin vanha käyttäjä oli viimeksi aktiivinen!"
+
+#: seen\seen.py:1268
+#, docstring
+msgid "View a Seen Board for members/roles/channels/categories/guilds/users!"
+msgstr "Katso Seen Board jäsenille/rooleille/kanaville/luokille/killoille/käyttäjille!"
+
+#: seen\seen.py:1271
+msgid "You're not allowed to view the Seen board for guilds and users."
+msgstr "Sinulla ei ole lupaa nähdä kiltojen ja käyttäjien Seen-taulua."
+
+#: seen\seen.py:1278
+#, docstring
+msgid "Get Config data stats."
+msgstr "Hae konfigurointitiedot."
+
+#: seen\seen.py:1312
+#, docstring
+msgid "Enable or disable a listener."
+msgstr "Ota kuuntelija käyttöön tai poista se käytöstä."
+
+#: seen\seen.py:1320
+#, docstring
+msgid "Asking Seen to ignore your actions."
+msgstr "Pyydät Seeniä olemaan välittämättä teoistasi."
+
+#: seen\seen.py:1334
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "Hae upotus silmukan tilan tarkistamista varten."
+
+#: seen\seen.py:1345
+#, docstring
+msgid "Purge Config for a specified _type or all."
+msgstr "Puhdista määritetyn _tyypin tai kaikkien konfigurointi."
+

@@ -1,0 +1,102 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:32\n"
+"Last-Translator: \n"
+"Language-Team: Greek\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: el\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/minecraft/locales/messages.pot\n"
+"X-Crowdin-File-ID: 235\n"
+"Language: el_GR\n"
+
+#: minecraft\minecraft.py:48
+msgid "Unable to get data from Minecraft API: {e.message}."
+msgstr "Δεν είναι δυνατή η λήψη δεδομένων από το Minecraft API: {e.message}."
+
+#: minecraft\minecraft.py:52
+msgid "{argument} not found on Mojang servers."
+msgstr "{argument} δεν βρέθηκε στους διακομιστές της Mojang."
+
+#: minecraft\minecraft.py:60
+msgid "{argument} is found, but has incorrect UUID."
+msgstr "{argument} βρέθηκε, αλλά έχει λανθασμένο UUID."
+
+#: minecraft\minecraft.py:66
+#, docstring
+msgid "A cog to display informations about Minecraft Java users and servers, and notify for each change of a server!"
+msgstr "Ένα γρανάζι για να εμφανίζει πληροφορίες σχετικά με τους χρήστες και τους διακομιστές του Minecraft Java και να ειδοποιεί για κάθε αλλαγή ενός διακομιστή!"
+
+#: minecraft\minecraft.py:161
+msgid "Latency"
+msgstr "Καθυστέρηση"
+
+#: minecraft\minecraft.py:163
+msgid "Players"
+msgstr "Παίκτες"
+
+#: minecraft\minecraft.py:181
+msgid "Version"
+msgstr "Έκδοση"
+
+#: minecraft\minecraft.py:182
+msgid "Protocol: {}"
+msgstr "Πρωτόκολλο: {}"
+
+#: minecraft\minecraft.py:222
+#, docstring
+msgid "Get Minecraft Java player skin by name."
+msgstr "Βρείτε το δέρμα παίκτη Minecraft Java με βάση το όνομα."
+
+#: minecraft\minecraft.py:245
+msgid "Unable to get data from Crafatar: {}"
+msgstr "Αδυναμία λήψης δεδομένων από το Crafatar: {}"
+
+#: minecraft\minecraft.py:257
+msgid "Provided by Crafatar."
+msgstr "Παρέχεται από το Crafatar."
+
+#: minecraft\minecraft.py:262
+#, docstring
+msgid "Get informations about a Minecraft Java server."
+msgstr "Λάβετε πληροφορίες σχετικά με έναν διακομιστή Minecraft Java."
+
+#: minecraft\minecraft.py:270
+msgid "No data could be found on this Minecraft server. Maybe it doesn't exist or the data is temporarily unavailable."
+msgstr "Δεν βρέθηκαν δεδομένα σε αυτόν τον διακομιστή Minecraft. Ίσως δεν υπάρχει ή τα δεδομένα δεν είναι προσωρινά διαθέσιμα."
+
+#: minecraft\minecraft.py:282
+#, docstring
+msgid "Add a Minecraft Java server in Config to get automatically new status."
+msgstr "Προσθέστε έναν διακομιστή Minecraft Java στο Config για να λάβετε αυτόματα νέα κατάσταση."
+
+#: minecraft\minecraft.py:287
+msgid "This server has already been added."
+msgstr "Αυτός ο διακομιστής έχει ήδη προστεθεί."
+
+#: minecraft\minecraft.py:296 minecraft\minecraft.py:310
+#, docstring
+msgid "Remove a Minecraft Java server in Config."
+msgstr "Κατάργηση ενός διακομιστή Java του Minecraft στο Config."
+
+#: minecraft\minecraft.py:301
+msgid "This server isn't in the Config."
+msgstr "Αυτός ο διακομιστής δεν βρίσκεται στο Config."
+
+#: minecraft\minecraft.py:321
+#, docstring
+msgid "Force check Minecraft Java servers in Config."
+msgstr "Αναγκαστικός έλεγχος των διακομιστών Minecraft Java στο Config."
+
+#: minecraft\minecraft.py:328
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "Λάβετε μια ενσωμάτωση για την κατάσταση του βρόχου ελέγχου."
+

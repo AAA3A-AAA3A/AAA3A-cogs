@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-03 17:05\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:30\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -17,12 +17,25 @@ msgstr ""
 "X-Crowdin-File-ID: 185\n"
 "Language: pl_PL\n"
 
-#: memorygame\memorygame.py:34
+#: memorygame\memorygame.py:27
 #, docstring
 msgid "A cog to play to Memory game, with buttons, leaderboard and Red bank!"
 msgstr "Trybik do gry w Memory, z przyciskami, leaderboardem i Red bankiem!"
 
-#: memorygame\memorygame.py:126
+#: memorygame\memorygame.py:171
 msgid "No one has played this game yet."
 msgstr "Nikt jeszcze nie grał w tę grę."
+
+#: memorygame\memorygame.py:214
+#, docstring
+msgid "Reset leaderboard in the guild."
+msgstr "Zresetowano tabelę liderów w gildii."
+
+#: memorygame\view.py:232
+msgid "You won in {game_time} seconds, with {tries} tries and {wrong_matches} wrong matches!"
+msgstr "Wygrałeś w {game_time} sekund, przy {tries} próbach i {wrong_matches} błędnych dopasowaniach!"
+
+#: memorygame\view.py:252
+msgid "You lose, because you tried too many times ({tries} tries and {wrong_matches} wrong matches)."
+msgstr "Przegrałeś, ponieważ próbowałeś zbyt wiele razy ({tries} prób i {wrong_matches} złych meczów)."
 

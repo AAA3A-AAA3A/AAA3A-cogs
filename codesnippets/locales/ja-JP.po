@@ -1,0 +1,46 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:31\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/codesnippets/locales/messages.pot\n"
+"X-Crowdin-File-ID: 227\n"
+"Language: ja_JP\n"
+
+#: codesnippets\codesnippets.py:65
+#, docstring
+msgid "A cog to send code content from a GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL!"
+msgstr "GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin のURLからコードコンテンツを送信するためのコグです！"
+
+#: codesnippets\codesnippets.py:421
+msgid "No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found."
+msgstr "GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin のURLは見つかりませんでした。"
+
+#: codesnippets\codesnippets.py:456
+#, docstring
+msgid "Add a channel where the cog have to send automatically code snippets from URLs."
+msgstr "URLからコードスニペットを自動送信するチャンネルを追加しました。"
+
+#: codesnippets\codesnippets.py:460
+msgid "The cog is already enabled in this channel"
+msgstr "このチャンネルでは、すでにコグが有効になっています"
+
+#: codesnippets\codesnippets.py:471
+#, docstring
+msgid "Remove a channel where the cog have to send automatically code snippets from URLs."
+msgstr "URLからコードスニペットを自動送信するチャンネルを削除しました。"
+
+#: codesnippets\codesnippets.py:475
+msgid "The cog is already disabled in this channel"
+msgstr "このチャンネルでは、すでにコグは無効化されています"
+

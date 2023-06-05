@@ -1,0 +1,169 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:26\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/discordmodals/locales/messages.pot\n"
+"X-Crowdin-File-ID: 84\n"
+"Language: fi_FI\n"
+
+#: discordmodals\discordmodals.py:27
+msgid "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)"
+msgstr "Virhe YAML: n jäsentämisessä. Varmista, että formaatti on kelvollinen (YAML-validointiohjelma voi auttaa)"
+
+#: discordmodals\discordmodals.py:37
+msgid "The argument `/{arg}` is required in the root in the YAML."
+msgstr "Argumentti `/{arg}` vaaditaan YAML: n juuressa."
+
+#: discordmodals\discordmodals.py:42
+msgid "The agument `/{arg}` is invalid in in the YAML. Check the spelling."
+msgstr "YAML: ssä on virheellinen argumentti `/{arg}`. Tarkista oikeinkirjoitus."
+
+#: discordmodals\discordmodals.py:52
+msgid "The argument `/button/{arg}` is required in the YAML."
+msgstr "YAML: ssä vaaditaan argumentti `/button/{arg}`."
+
+#: discordmodals\discordmodals.py:57
+msgid "The agument `/button/{arg}` is invalid in the YAML. Check the spelling."
+msgstr "YAML: ssä on virheellinen argumentti `/button/{arg}`. Tarkista oikeinkirjoitus."
+
+#: discordmodals\discordmodals.py:67 discordmodals\discordmodals.py:71
+msgid "The agument `/button/style` must be a number between 1 and 4."
+msgstr "Argumentin `/button/style` on oltava numero väliltä 1 ja 4."
+
+#: discordmodals\discordmodals.py:79
+msgid "The argument `/button/modal` must be a list of TextInputs."
+msgstr "Argumentin `/button/modal` on oltava TextInputs-luettelo."
+
+#: discordmodals\discordmodals.py:95
+msgid "The argument `/modal/{count}/{arg}` is required in the YAML."
+msgstr "YAML: ssä vaaditaan argumentti `/modal/{count}/{arg}`."
+
+#: discordmodals\discordmodals.py:102
+msgid "The agument `/modal/{count}/{arg}` is invalid in the YAML. Check the spelling."
+msgstr "YAML: ssä on virheellinen argumentti `/modal/{count}/{arg}`. Tarkista oikeinkirjoitus."
+
+#: discordmodals\discordmodals.py:112 discordmodals\discordmodals.py:118
+msgid "The agument `/modal/{count}/style` must be a number between 1 and 2."
+msgstr "Argumentin `/modal/{count}/style` on oltava numero välillä 1 ja 2."
+
+#: discordmodals\discordmodals.py:141
+msgid "The agument `/modal/{count}/required` must be a boolean (True or False)."
+msgstr "Argumentin `/modal/{count}/required` on oltava boolean (True tai False)."
+
+#: discordmodals\discordmodals.py:187
+#, docstring
+msgid "A cog to use Discord Modals, forms with graphic interface!"
+msgstr "Hammas käyttää Discord Modals, lomakkeet graafinen käyttöliittymä!"
+
+#: discordmodals\discordmodals.py:305 discordmodals\discordmodals.py:366
+msgid "Sorry. An error has occurred."
+msgstr "Olen pahoillani. On tapahtunut virhe."
+
+#: discordmodals\discordmodals.py:321
+msgid "The channel in which I was to send the results of this Modal no longer exists. Please notify an administrator of this server."
+msgstr "Kanavaa, johon minun piti lähettää tämän modaalin tulokset, ei enää ole. Ilmoita asiasta tämän palvelimen ylläpitäjälle."
+
+#: discordmodals\discordmodals.py:333
+msgid "I don't have sufficient permissions in the destination channel (view channel, send messages, send embeds). Please notify an administrator of this server."
+msgstr "Minulla ei ole riittäviä oikeuksia kohdekanavassa (kanavan tarkastelu, viestien lähettäminen, upotusten lähettäminen). Ilmoita asiasta tämän palvelimen ylläpitäjälle."
+
+#: discordmodals\discordmodals.py:370
+msgid "Thank you for sending this Modal!"
+msgstr "Kiitos tämän Modalin lähettämisestä!"
+
+#: discordmodals\discordmodals.py:395
+#, docstring
+msgid "Add a Modal for a message.\n\n"
+"        Use YAML syntax to set up everything.\n\n"
+"        **Example:**\n"
+"        ```\n"
+"        [p]discordmodals add <message>\n"
+"        title: Report a bug\n"
+"        button:\n"
+"          label: Report\n"
+"          emoji: ⚠️\n"
+"          style: 4 # blurple = 1, grey = 2, green = 3, red = 4\n"
+"        modal:\n"
+"          - label: What is the problem?\n"
+"            style: 2 # short = 1, paragraph = 2\n"
+"            required: True\n"
+"            default: None\n"
+"            placeholder: None\n"
+"            min_length: None\n"
+"            max_length: None\n"
+"        channel: general # id, mention, name\n"
+"        anonymous: False\n"
+"        messages:\n"
+"          error: Error!\n"
+"          submit: Form submitted.\n"
+"        ```\n"
+"        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous` and `messages` are not required.\n"
+"        "
+msgstr "Lisää modaali viestille.\n\n"
+"        Käytä YAML-syntaksia kaiken määrittämiseen.\n\n"
+"        **Esimerkki:**\n"
+"        ```\n"
+"        [p]discordmodals add <message>\n"
+"        title: Report a bug\n"
+"        button:\n"
+"          label: Report\n"
+"          emoji: ⚠️\n"
+"          style: 4 # blurple = 1, grey = 2, green = 3, red = 4\n"
+"        modal:\n"
+"          - label:\n"
+"            style: 2 # short = 1, paragraph = 2\n"
+"            required: True\n"
+"            default: None\n"
+"            placeholder: None\n"
+"            min_length: None\n"
+"            max_length: None\n"
+"        channel: general # id, mention, name\n"
+"        anonymous: False\n"
+"        messages:\n"
+"          error: Error!\n"
+"          submit: Lomake lähetetty.\n"
+"        ```\n"
+"        `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous` ja `messages` eivät ole pakollisia.\n"
+"        "
+
+#: discordmodals\discordmodals.py:425
+msgid "I have to be the author of the message for the button to work."
+msgstr "Minun on oltava viestin kirjoittaja, jotta painike toimisi."
+
+#: discordmodals\discordmodals.py:429
+msgid "This message already has a Modal."
+msgstr "Tässä viestissä on jo Modal."
+
+#: discordmodals\discordmodals.py:442
+msgid "Sorry. An error occurred when I tried to put the button on the message."
+msgstr "Olen pahoillani. Tapahtui virhe, kun yritin laittaa painiketta viestiin."
+
+#: discordmodals\discordmodals.py:482
+#, docstring
+msgid "Remove a Modal for a message."
+msgstr "Viestin modaalin poistaminen."
+
+#: discordmodals\discordmodals.py:485
+msgid "I have to be the author of the message for the Modal to work."
+msgstr "Minun on oltava viestin kirjoittaja, jotta modaali toimisi."
+
+#: discordmodals\discordmodals.py:489
+msgid "No Modal is configured for this message."
+msgstr "Tätä viestiä varten ei ole määritetty modaalia."
+
+#: discordmodals\discordmodals.py:499
+#, docstring
+msgid "Clear all Modals for a guild."
+msgstr "Tyhjennä kaikki killan modaalit."
+

@@ -103,7 +103,7 @@ class MemberPrefix(Cog):
         config = await self.config.member(ctx.author).all()
         if config["custom_prefixes"] == []:
             return
-        if ctx.message.id in self.cache_messages:
+        if ctx.message.id in self.cache_messages or ctx.assume_yes:
             self.cache_messages.remove(ctx.message.id)
             return
         raise commands.CheckFailure()

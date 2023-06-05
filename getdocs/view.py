@@ -329,7 +329,7 @@ class GetDocsView(discord.ui.View):
             self._message: discord.Message = await self._message.edit(embeds=embeds)
         self._mode = "attributes"
 
-    @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page", row=2)
+    @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page", row=1)
     async def close_page(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:

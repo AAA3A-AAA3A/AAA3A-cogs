@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-15 15:47\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:28\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -17,11 +17,11 @@ msgstr ""
 "X-Crowdin-File-ID: 90\n"
 "Language: el_GR\n"
 
-#: medicat\medicat.py:52
+#: medicat\medicat.py:45
 msgid "Can I add my own bootable tools (iso, wim, vhd) or PortableApps softwares to Medicat USB?"
 msgstr "Μπορώ να προσθέσω τα δικά μου εκκινήσιμα εργαλεία (iso, wim, vhd) ή λογισμικά PortableApps στο Medicat USB;"
 
-#: medicat\medicat.py:55
+#: medicat\medicat.py:48
 msgid "Please feel free to modify MediCat to YOUR individual needs! 😄\n"
 "To add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\n"
 "Then you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template.\n"
@@ -31,19 +31,19 @@ msgstr "Μη διστάσετε να τροποποιήσετε το MediCat σ�
 "Στη συνέχεια, μπορείτε να προσθέσετε ένα προσαρμοσμένο όνομα, εικονίδιο, περιγραφή, επεξεργαζόμενοι το αρχείο `USB\\ventoy\\ventoy.json` ακολουθώντας το πρότυπο.\n"
 "Απολύτως, το ενθαρρύνω!"
 
-#: medicat\medicat.py:60
+#: medicat\medicat.py:53
 msgid "Is Medicat free?"
 msgstr "Είναι το Medicat δωρεάν;"
 
-#: medicat\medicat.py:61
+#: medicat\medicat.py:54
 msgid "Absolutely. I will never charge money for MediCat, or accept donations. However, feel free to share your ideas, questions, and concerns in this thread. That's how you can give back. 🙂"
 msgstr "Απολύτως. Δεν θα χρεώσω ποτέ χρήματα για το MediCat, ούτε θα δεχτώ δωρεές. Ωστόσο, μη διστάσετε να μοιραστείτε τις ιδέες, τις ερωτήσεις και τις ανησυχίες σας σε αυτό το νήμα. Με αυτόν τον τρόπο μπορείτε να ανταποδώσετε. 🙂"
 
-#: medicat\medicat.py:66
+#: medicat\medicat.py:59
 msgid "How do I install Medicat USB?"
 msgstr "Πώς μπορώ να εγκαταστήσω το Medicat USB;"
 
-#: medicat\medicat.py:67
+#: medicat\medicat.py:60
 msgid "1) Install the latest version of Ventoy on your USB stick (<https://github.com/ventoy/Ventoy/releases> & <https://ventoy.net/en/doc_start.html>).\n"
 "2) Download the last version of Medicat USB with Torrent, Mega or Google Drive (<https://medicatusb.com/>).\n"
 "3) Extract the downloaded zips to the root of the USB stick.\n"
@@ -57,11 +57,11 @@ msgstr "1) Εγκαταστήστε την τελευταία έκδοση το�
 "Μπορείτε επίσης να χρησιμοποιήσετε τον αυτόματο εγκαταστάτη του MON5TERMATT (<https://medicatusb.com/installer/>).\n"
 "Προειδοποίηση: μην ξεχάσετε να απενεργοποιήσετε το λογισμικό προστασίας από ιούς (δείτε την εντολή `virus` για περισσότερες πληροφορίες)."
 
-#: medicat\medicat.py:72
+#: medicat\medicat.py:65
 msgid "How to make a donation?"
 msgstr "Πώς να κάνετε μια δωρεά;"
 
-#: medicat\medicat.py:73
+#: medicat\medicat.py:66
 msgid "@Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\n"
 "@MON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\n"
 "@AAA3A (Medicat Developer): Nothing"
@@ -69,21 +69,21 @@ msgstr "@Jayro (Δημιουργός του Medicat): <https://ko-fi.com/jayrojo
 "@MON5TERMATT (προγραμματιστής του Medicat): <https://ko-fi.com/mon5termatt>\n"
 "@AAA3A (προγραμματιστής του Medicat): Τίποτα"
 
-#: medicat\medicat.py:78
+#: medicat\medicat.py:71
 msgid "What is the latest version of Medicat USB?"
 msgstr "Ποια είναι η τελευταία έκδοση του Medicat USB;"
 
-#: medicat\medicat.py:79
+#: medicat\medicat.py:72
 msgid "The latest version of Medicat USB is 21.12!\n"
 "||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||"
 msgstr "Η τελευταία έκδοση του Medicat USB είναι η 21.12!\n"
 "||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||"
 
-#: medicat\medicat.py:84
+#: medicat\medicat.py:77
 msgid "How to download one of the menus?"
 msgstr "Πώς να κατεβάσετε ένα από τα μενού;"
 
-#: medicat\medicat.py:85
+#: medicat\medicat.py:78
 msgid "Here are the latest links to download the latest versions of the menus:\n"
 "- Jayro's Lockîck: \n"
 "<https://mega.nz/file/ZtpwEDhR#4bCjUDri2hhUlCgv8Y1EmZVyUnGyhqZjCo0fazXLzqY>\n"
@@ -103,13 +103,21 @@ msgstr "Εδώ είναι οι πιο πρόσφατοι σύνδεσμοι γι
 "Εδώ υπάρχει επίσης ένας σύνδεσμος που δεν πρέπει να αλλάξει ποτέ για πρόσβαση στον ίδιο φάκελο που περιέχει όλα τα μενού: \n"
 "<https://mega.nz/folder/FtRCgLQL#KTq897WQiXCJT8OQ3cT9Tg>"
 
-#: medicat\medicat.py:90
+#: medicat\medicat.py:83
 msgid "Can I install Mini Windows 10 as my main OS?"
 msgstr "Μπορώ να εγκαταστήσω τα Mini Windows 10 ως το κύριο λειτουργικό μου σύστημα;"
 
-#: medicat\medicat.py:91
+#: medicat\medicat.py:84
 msgid "No, it doesn't work like that. It's a WinPE image (Windows Pre-install Environment) that runs in memory. It's primary use is to troubleshoot a troublesome PC."
 msgstr "Όχι, δεν λειτουργεί έτσι. Είναι μια εικόνα WinPE (Windows Pre-install Environment) που εκτελείται στη μνήμη. Η κύρια χρήση του είναι η αντιμετώπιση προβλημάτων σε έναν προβληματικό υπολογιστή."
+
+#: medicat\medicat.py:89
+msgid "See what files are missing using the quick SFV program"
+msgstr "Δείτε ποια αρχεία λείπουν χρησιμοποιώντας το γρήγορο πρόγραμμα SFV"
+
+#: medicat\medicat.py:90
+msgid "In order to see what files are missing using the quick SFV program, please scroll all the way to the top once it has finished scanning."
+msgstr "Για να δείτε ποια αρχεία λείπουν χρησιμοποιώντας το γρήγορο πρόγραμμα SFV, μετακινηθείτε προς τα πάνω μόλις ολοκληρωθεί η σάρωση."
 
 #: medicat\medicat.py:96
 msgid "How do I download the Medicat USB iso file?"
@@ -166,8 +174,8 @@ msgstr "Το **Medicat USB** είναι ένα εκκινήσιμο μενού �
 "<https://gbatemp.net/threads/medicat-second-opinion-a-collection-of-bootable-antivirus-boot-disks-on-a-single-usb-device.577842/>"
 
 #: medicat\medicat.py:120
-msgid "Why does my antivirus software blame Medicat?"
-msgstr "Γιατί το λογισμικό προστασίας από ιούς κατηγορεί το Medicat;"
+msgid "Why does my antivirus software detect Medicat as a virus?"
+msgstr "Γιατί το λογισμικό προστασίας από ιούς εντοπίζει το Medicat ως ιό;"
 
 #: medicat\medicat.py:121
 msgid "Medicat USB does not contain any viruses! If an antivirus software detects one of its files as such, it is a false positive.\n"
@@ -235,73 +243,73 @@ msgstr "Δοκιμή!"
 msgid "Test."
 msgstr "Δοκιμή."
 
-#: medicat\medicat.py:268
+#: medicat\medicat.py:270
 #, docstring
 msgid "This cog will only work on x server and therefore cannot be used by the general public!"
 msgstr "Αυτό το γρανάζι θα λειτουργεί μόνο στον διακομιστή x και επομένως δεν μπορεί να χρησιμοποιηθεί από το ευρύ κοινό!"
 
-#: medicat\medicat.py:447
+#: medicat\medicat.py:428
 msgid "This Ventoy version doesn't exists."
 msgstr "Αυτή η έκδοση Ventoy δεν υπάρχει."
 
-#: medicat\medicat.py:483
+#: medicat\medicat.py:464
 msgid "Ventoy v{ventoy_version_str} has been released!"
 msgstr "Το Ventoy v{ventoy_version_str} έχει κυκλοφορήσει!"
 
-#: medicat\medicat.py:486
+#: medicat\medicat.py:467
 msgid "New features:"
 msgstr "Νέα χαρακτηριστικά:"
 
-#: medicat\medicat.py:491
+#: medicat\medicat.py:472
 msgid "Download this version:"
 msgstr "Κατεβάστε αυτή την έκδοση:"
 
-#: medicat\medicat.py:502 medicat\medicat.py:530
+#: medicat\medicat.py:480
 msgid "View on Ventoy Official Website"
 msgstr "Προβολή στην επίσημη ιστοσελίδα της Ventoy"
 
-#: medicat\medicat.py:608
+#: medicat\medicat.py:564
 msgid "{tool} now has a new version!"
 msgstr "{tool} έχει τώρα μια νέα έκδοση!"
 
-#: medicat\medicat.py:625 medicat\medicat.py:653
+#: medicat\medicat.py:578
 msgid "View on FCportables Official Website"
 msgstr "Προβολή στην επίσημη ιστοσελίδα της FCportables"
 
-#: medicat\medicat.py:781
+#: medicat\medicat.py:714
 #, docstring
 msgid "Get the latest version of Ventoy."
 msgstr "Αποκτήστε την τελευταία έκδοση του Ventoy."
 
-#: medicat\medicat.py:785 medicat\medicat.py:796
+#: medicat\medicat.py:718 medicat\medicat.py:729
 msgid "An error has occurred. Please try again."
 msgstr "Εμφανίστηκε σφάλμα. Προσπαθήστε ξανά."
 
-#: medicat\medicat.py:790
+#: medicat\medicat.py:723
 #, docstring
 msgid "Get a version of Ventoy."
 msgstr "Αποκτήστε μια έκδοση του Ventoy."
 
-#: medicat\medicat.py:801
+#: medicat\medicat.py:734
 #, docstring
 msgid "Get the latest versions of each Medicat USB bootable tool."
 msgstr "Αποκτήστε τις τελευταίες εκδόσεις κάθε εργαλείου εκκίνησης USB Medicat."
 
-#: medicat\medicat.py:840 medicat\medicat.py:862
+#: medicat\medicat.py:770
 msgid "View FCportables Official Website"
 msgstr "Δείτε την επίσημη ιστοσελίδα της FCportables"
 
-#: medicat\medicat.py:873
+#: medicat\medicat.py:788
 #, docstring
 msgid "Get the debug for a FCportables's tool."
 msgstr "Λάβετε το debug για ένα εργαλείο FCportables."
 
-#: medicat\medicat.py:952
+#: medicat\medicat.py:867
 #, docstring
-msgid "Get an embed for check loops status."
-msgstr "Λάβετε μια ενσωμάτωση για την κατάσταση των βρόχων ελέγχου."
+msgid "Get an embed to check loops status."
+msgstr "Πάρτε μια ενσωμάτωση για να ελέγξετε την κατάσταση των βρόχων."
 
-#: medicat\medicat.py:959
+#: medicat\medicat.py:874
 #, docstring
 msgid "Update Medicat cog directly."
 msgstr "Ενημερώστε απευθείας το γρανάζι Medicat."

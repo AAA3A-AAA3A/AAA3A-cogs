@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-03 17:05\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 18:23\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "MIME-Version: 1.0\n"
@@ -21,60 +21,56 @@ msgstr ""
 msgid "The cog is not fully charged."
 msgstr "A engrenagem não está totalmente carregada."
 
-#: runcode\runcode.py:46 runcode\runcode.py:253
+#: runcode\runcode.py:47 runcode\runcode.py:307
 msgid "Incorrect language identifier for your code.\n"
 "To list all the supported languages identifiers, please use `{ctx.prefix}setruncode listidentifiers`."
 msgstr "Identificador de linguagem incorrecto para o seu código.\n"
 "Para listar todos os identificadores de línguas suportados, utilize `{ctx.prefix}setruncode listidentifiers'."
 
-#: runcode\runcode.py:78 runcode\runcode.py:89
+#: runcode\runcode.py:90 runcode\runcode.py:106
 msgid "No flags in argument."
 msgstr "Sem bandeiras em discussão."
 
-#: runcode\runcode.py:94 runcode\runcode.py:98
-msgid "Not supported under dpy1."
-msgstr "Não suportado sob dpy1."
-
-#: runcode\runcode.py:103
+#: runcode\runcode.py:112
 #, docstring
 msgid "A cog to compile and run codes in some languages! Use `[p]setrundocs listlanguages` to get a list of all the available languages."
 msgstr "Uma engrenagem para compilar e executar códigos em algumas línguas! Utilize `[p]setrundocs listlanguages` para obter uma lista de todas as línguas disponíveis."
 
-#: runcode\runcode.py:197
+#: runcode\runcode.py:248
 msgid "File must be smaller than 20 kio."
 msgstr "O ficheiro deve ser inferior a 20 kio."
 
-#: runcode\runcode.py:233
+#: runcode\runcode.py:282
 msgid "Please provide the code!"
 msgstr "Por favor, forneça o código!"
 
-#: runcode\runcode.py:246
+#: runcode\runcode.py:298
 msgid "Incorrect syntax, please use Markdown's syntax for your code."
 msgstr "Sintaxe incorrecta, por favor use a sintaxe de Markdown para o seu código."
 
-#: runcode\runcode.py:309
+#: runcode\runcode.py:386
 msgid "The language of your code could not be found. Specify it with the `language` parameter."
 msgstr "A língua do seu código não pôde ser encontrada. Especifique-o com o parâmetro `linguagem`."
 
-#: runcode\runcode.py:332
+#: runcode\runcode.py:415
 msgid "`{engine}` is not a correct engine for {code_language}\n"
 "To list all the available engine for it, please use `{ctx.prefix}setruncode listengines {code_language}`."
 msgstr "{engine}` não é um motor correcto para {code_language}\n"
 "Para listar todo o motor disponível para o mesmo, por favor utilize `{ctx.prefix}setruncode listengines {code_language}`."
 
-#: runcode\runcode.py:339
+#: runcode\runcode.py:428
 msgid "There is no options available for compilation using `{engine}`.\n"
 "Ignoring this option."
 msgstr "Não há opções disponíveis para a compilação utilizando `{engine}`.\n"
 "Ignorando esta opção."
 
-#: runcode\runcode.py:348
+#: runcode\runcode.py:441
 msgid "There is no options available for runtime execution `{engine}`.\n"
 "Ignoring this option."
 msgstr "Não há opções disponíveis para execução em tempo de execução `{engine}`.\n"
 "Ignorando esta opção."
 
-#: runcode\runcode.py:473
+#: runcode\runcode.py:577
 #, docstring
 msgid "\n"
 "        Shows a list of all the available languages, or Wandbox or Tio API.\n"
@@ -83,7 +79,7 @@ msgstr "\n"
 "        Mostra uma lista de todas as línguas disponíveis, ou Wandbox ou Tio API.\n"
 "        "
 
-#: runcode\runcode.py:490
+#: runcode\runcode.py:598
 #, docstring
 msgid "\n"
 "        Shows a list of all the available engines for a specified language, only for Wandbox API.\n\n"
@@ -96,7 +92,7 @@ msgstr "\n"
 "        - `língua`: O nome da língua.\n"
 "        "
 
-#: runcode\runcode.py:511
+#: runcode\runcode.py:626
 #, docstring
 msgid "\n"
 "        Lists all the languages identifiers recognized by the bot, only for Wandbox API.\n"
@@ -105,7 +101,7 @@ msgstr "\n"
 "        Lista todos os identificadores linguísticos reconhecidos pelo bot, apenas para Wandbox API.\n"
 "        "
 
-#: runcode\runcode.py:526
+#: runcode\runcode.py:643
 #, docstring
 msgid "\n"
 "        Lists all the languages extensions.\n"

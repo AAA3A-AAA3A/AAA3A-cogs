@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-15 15:47\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:29\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -17,39 +17,55 @@ msgstr ""
 "X-Crowdin-File-ID: 82\n"
 "Language: el_GR\n"
 
-#: ctxvar\ctxvar.py:33
+#: ctxvar\ctxvar.py:31
 #, docstring
 msgid "A cog to list and display the contents of all sub-functions of `ctx`!"
 msgstr "Ένα γρανάζι για τη λίστα και την εμφάνιση των περιεχομένων όλων των υπολειτουργιών της `ctx`!"
 
-#: ctxvar\ctxvar.py:54
+#: ctxvar\ctxvar.py:52
 #, docstring
 msgid "Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."
 msgstr "Εμφάνιση μιας λίστας όλων των χαρακτηριστικών και των τιμών τους της περίπτωσης της κλάσης 'ctx' ή των υπο-χαρακτηριστικών της."
 
-#: ctxvar\ctxvar.py:58 ctxvar\ctxvar.py:123 ctxvar\ctxvar.py:179
+#: ctxvar\ctxvar.py:56 ctxvar\ctxvar.py:118 ctxvar\ctxvar.py:169
+#: ctxvar\ctxvar.py:250
 msgid "The cog Dev must be loaded, to make sure you know what you are doing."
 msgstr "Το γρανάζι Dev πρέπει να φορτωθεί, για να βεβαιωθείτε ότι ξέρετε τι κάνετε."
 
-#: ctxvar\ctxvar.py:69
+#: ctxvar\ctxvar.py:67
 msgid "The argument you specified is not a subclass of the instance."
 msgstr "Το όρισμα που καθορίσατε δεν είναι υποκλάση της περίπτωσης."
 
-#: ctxvar\ctxvar.py:76
+#: ctxvar\ctxvar.py:74
 msgid "Here are all the variables and their associated values that can be used in this instance class."
 msgstr "Ακολουθούν όλες οι μεταβλητές και οι σχετικές τιμές τους που μπορούν να χρησιμοποιηθούν σε αυτή την κλάση παραδείγματος."
 
-#: ctxvar\ctxvar.py:119
+#: ctxvar\ctxvar.py:114
 #, docstring
 msgid "Display a list of all attributes of the provided object (debug not async)."
 msgstr "Εμφάνιση μιας λίστας όλων των χαρακτηριστικών του παρεχόμενου αντικειμένου (debug not async)."
 
-#: ctxvar\ctxvar.py:140 ctxvar\ctxvar.py:196
+#: ctxvar\ctxvar.py:135 ctxvar\ctxvar.py:186 ctxvar\ctxvar.py:267
+#: ctxvar\ctxvar.py:326
 msgid "I couldn't find any cog, command, or object named `{thing}`."
 msgstr "Δεν μπόρεσα να βρω κανένα γρανάζι, εντολή ή αντικείμενο με το όνομα `{thing}`."
 
-#: ctxvar\ctxvar.py:175
+#: ctxvar\ctxvar.py:165
 #, docstring
 msgid "Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."
 msgstr "Εκτέλεση της εντολής `rich.help(obj=object, ...)` στο αντικείμενο που παρέχεται (debug not async)."
+
+#: ctxvar\ctxvar.py:246
+#, docstring
+msgid "Execute `ast.dump(ast.parse(<code content>))` on the provided object (debug not async)."
+msgstr "Εκτέλεση του `ast.dump(ast.parse(<code content>))` στο παρεχόμενο αντικείμενο (debug όχι ασύγχρονη)."
+
+#: ctxvar\ctxvar.py:310
+msgid "No Discord object found."
+msgstr "Δεν βρέθηκε αντικείμενο Discord."
+
+#: ctxvar\ctxvar.py:338
+#, docstring
+msgid "List attributes of the provided object like dpy objects (debug not async)."
+msgstr "Λίστα χαρακτηριστικών του παρεχόμενου αντικειμένου όπως τα αντικείμενα dpy (debug όχι ασύγχρονη)."
 

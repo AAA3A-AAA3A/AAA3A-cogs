@@ -1,0 +1,102 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:32\n"
+"Last-Translator: \n"
+"Language-Team: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: nl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/minecraft/locales/messages.pot\n"
+"X-Crowdin-File-ID: 235\n"
+"Language: nl_NL\n"
+
+#: minecraft\minecraft.py:48
+msgid "Unable to get data from Minecraft API: {e.message}."
+msgstr "Kan geen gegevens ophalen uit Minecraft API: {e.message}."
+
+#: minecraft\minecraft.py:52
+msgid "{argument} not found on Mojang servers."
+msgstr "{argument} niet gevonden op Mojang-servers."
+
+#: minecraft\minecraft.py:60
+msgid "{argument} is found, but has incorrect UUID."
+msgstr "{argument} is gevonden, maar heeft een onjuiste UUID."
+
+#: minecraft\minecraft.py:66
+#, docstring
+msgid "A cog to display informations about Minecraft Java users and servers, and notify for each change of a server!"
+msgstr "Een tandwiel om informatie weer te geven over Minecraft Java gebruikers en servers, en te waarschuwen voor elke verandering van een server!"
+
+#: minecraft\minecraft.py:161
+msgid "Latency"
+msgstr "Latency"
+
+#: minecraft\minecraft.py:163
+msgid "Players"
+msgstr "Spelers"
+
+#: minecraft\minecraft.py:181
+msgid "Version"
+msgstr "Versie"
+
+#: minecraft\minecraft.py:182
+msgid "Protocol: {}"
+msgstr "Protocol: {}"
+
+#: minecraft\minecraft.py:222
+#, docstring
+msgid "Get Minecraft Java player skin by name."
+msgstr "Haal Minecraft Java speler skin op naam."
+
+#: minecraft\minecraft.py:245
+msgid "Unable to get data from Crafatar: {}"
+msgstr "Kan geen gegevens ophalen uit Crafatar: {}"
+
+#: minecraft\minecraft.py:257
+msgid "Provided by Crafatar."
+msgstr "Geleverd door Crafatar."
+
+#: minecraft\minecraft.py:262
+#, docstring
+msgid "Get informations about a Minecraft Java server."
+msgstr "Krijg informatie over een Minecraft Java server."
+
+#: minecraft\minecraft.py:270
+msgid "No data could be found on this Minecraft server. Maybe it doesn't exist or the data is temporarily unavailable."
+msgstr "Er konden geen gegevens worden gevonden op deze Minecraft-server. Misschien bestaat het niet of zijn de gegevens tijdelijk niet beschikbaar."
+
+#: minecraft\minecraft.py:282
+#, docstring
+msgid "Add a Minecraft Java server in Config to get automatically new status."
+msgstr "Voeg een Minecraft Java-server toe in Config om automatisch een nieuwe status te krijgen."
+
+#: minecraft\minecraft.py:287
+msgid "This server has already been added."
+msgstr "Deze server is al toegevoegd."
+
+#: minecraft\minecraft.py:296 minecraft\minecraft.py:310
+#, docstring
+msgid "Remove a Minecraft Java server in Config."
+msgstr "Verwijder een Minecraft Java-server in Config."
+
+#: minecraft\minecraft.py:301
+msgid "This server isn't in the Config."
+msgstr "Deze server staat niet in de Config."
+
+#: minecraft\minecraft.py:321
+#, docstring
+msgid "Force check Minecraft Java servers in Config."
+msgstr "Forceer het controleren van Minecraft Java-servers in Config."
+
+#: minecraft\minecraft.py:328
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "Een insluiting krijgen om de lusstatus te controleren."
+

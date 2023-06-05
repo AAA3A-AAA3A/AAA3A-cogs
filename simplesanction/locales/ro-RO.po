@@ -1,0 +1,659 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:26\n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ro\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/simplesanction/locales/messages.pot\n"
+"X-Crowdin-File-ID: 98\n"
+"Language: ro_RO\n"
+
+#: simplesanction\settings.py:29
+#, docstring
+msgid "Set a color for the embed.\n\n"
+"        ``color``: Color.\n"
+"        You can also use \"None\" if you wish to reset the color.\n"
+"        "
+msgstr "Setați o culoare pentru inserție.\n\n"
+"        ``color``: Culoare.\n"
+"        De asemenea, puteți utiliza \"None\" dacă doriți să resetați culoarea.\n"
+"        "
+
+#: simplesanction\settings.py:43 simplesanction\settings.py:54
+#: simplesanction\settings.py:75 simplesanction\settings.py:88
+msgid "Configure the embed"
+msgstr "Configurați încorporarea"
+
+#: simplesanction\settings.py:44
+msgid "Reset color:"
+msgstr "Resetați culoarea:"
+
+#: simplesanction\settings.py:45 simplesanction\settings.py:58
+msgid "Color:"
+msgstr "Culoare:"
+
+#: simplesanction\settings.py:55
+msgid "Set color:"
+msgstr "Setați culoarea:"
+
+#: simplesanction\settings.py:63
+#, docstring
+msgid "Set a thumbnail for the embed.\n\n"
+"        ``link``: Thumbnail link.\n"
+"        You can also use \"None\" if you wish to reset the thumbnail.\n"
+"        "
+msgstr "Setați o miniatură pentru inserare.\n\n"
+"        ``link``: Link pentru miniatură.\n"
+"        De asemenea, puteți utiliza \"None\" dacă doriți să resetați miniatura.\n"
+"        "
+
+#: simplesanction\settings.py:76
+msgid "Reset thumbnail:"
+msgstr "Resetați miniatura:"
+
+#: simplesanction\settings.py:79 simplesanction\settings.py:92
+msgid "Thumbnail:"
+msgstr "Miniatură:"
+
+#: simplesanction\settings.py:89
+msgid "Set thumbnail:"
+msgstr "Setați miniatura:"
+
+#: simplesanction\settings.py:97
+#, docstring
+msgid "Enable or disable Show Author\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Activează sau dezactivează Afișare autor\n\n"
+"        Folosiți `True` (sau `yes`) pentru a activa sau `False` (sau `no`) pentru a dezactiva.\n"
+"        "
+
+#: simplesanction\settings.py:105
+msgid "Show Author is already set on {state}."
+msgstr "Arată autorul este deja setat pe {state}."
+
+#: simplesanction\settings.py:109
+msgid "Show Author state registered: {state}."
+msgstr "Arată starea autorului înregistrat: {state}."
+
+#: simplesanction\settings.py:113
+#, docstring
+msgid "Enable or disable Action Confirmation\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Activați sau dezactivați Action Confirmation\n\n"
+"        Utilizați `True` (sau `yes`) pentru a activa sau `False` (sau `no`) pentru a dezactiva.\n"
+"        "
+
+#: simplesanction\settings.py:121
+msgid "Action Confirmation is already set on {state}."
+msgstr "Confirmarea acțiunii este deja setată pe {state}."
+
+#: simplesanction\settings.py:125
+msgid "Action Confirmation state registered: {state}."
+msgstr "Acțiune Starea de confirmare înregistrată: {state}."
+
+#: simplesanction\settings.py:131
+#, docstring
+msgid "Enable or disable Finish Message\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Activează sau dezactivează Finish Message\n\n"
+"        Folosiți `True` (sau `yes`) pentru a activa sau `False` (sau `no`) pentru a dezactiva.\n"
+"        "
+
+#: simplesanction\settings.py:139
+msgid "Finish Message is already set on {state}."
+msgstr "Finish Message este deja setat pe {state}."
+
+#: simplesanction\settings.py:149
+#, docstring
+msgid "Enable or disable Warn System Use\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Activați sau dezactivați Warn System Use\n\n"
+"        Utilizați `True` (sau `yes`) pentru a activa sau `False` (sau `no`) pentru a dezactiva.\n"
+"        "
+
+#: simplesanction\settings.py:157
+msgid "Warn System Use is already set on {state}."
+msgstr "Utilizarea sistemului de avertizare este deja setată pe {state}."
+
+#: simplesanction\settings.py:161
+msgid "Warn System Use state registered: {state}."
+msgstr "Avertizare Sistem Utilizare stare de utilizare înregistrată: {state}."
+
+#: simplesanction\settings.py:167
+#, docstring
+msgid "Enable or disable Buttons Use\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Activare sau dezactivare butoane Utilizați\n\n"
+"        Utilizați `True` (sau `yes`) pentru a activa sau `False` (sau `no`) pentru a dezactiva.\n"
+"        "
+
+#: simplesanction\settings.py:175
+msgid "Way is already set on {way}."
+msgstr "Calea este deja stabilită pe {way}."
+
+#: simplesanction\settings.py:185
+#, docstring
+msgid "Enable or disable Reason Requiered\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Activați sau dezactivați Reason Requiered\n\n"
+"        Utilizați `True` (sau `yes`) pentru a activa sau `False` (sau `no`) pentru a dezactiva.\n"
+"        "
+
+#: simplesanction\settings.py:193
+msgid "Reason Required is already set on {state}."
+msgstr "Motivul necesar este deja setat pe {state}."
+
+#: simplesanction\settings.py:197
+msgid "Reason Required state registered: {state}."
+msgstr "Motivul pentru care este necesar ca statul să fie înregistrat: {state}."
+
+#: simplesanction\settings.py:201
+#, docstring
+msgid "Enable or disable Delete Embed\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Enable or disable Delete Embed\n\n"
+"        Utilizați `True` (sau `yes`) pentru a activa sau `False` (sau `no`) pentru a dezactiva.\n"
+"        "
+
+#: simplesanction\settings.py:209
+msgid "Delete Embed is already set on {state}."
+msgstr "Delete Embed este deja setat pe {state}."
+
+#: simplesanction\settings.py:219
+#, docstring
+msgid "Enable or disable Delete Message\n\n"
+"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+"        "
+msgstr "Activați sau dezactivați Ștergerea mesajului\n\n"
+"        Utilizați `True` (sau `yes`) pentru a activa sau `False` (sau `no`) pentru a dezactiva.\n"
+"        "
+
+#: simplesanction\settings.py:227
+msgid "Delete Message is already set on {state}."
+msgstr "Ștergerea mesajului este deja setată pe {state}."
+
+#: simplesanction\settings.py:231
+msgid "Delete Message state registered: {state}."
+msgstr "Ștergerea mesajului Starea mesajului înregistrat: {state}."
+
+#: simplesanction\settings.py:235
+#, docstring
+msgid "Choose the timeout\n\n"
+"        Use a int. The default is 180 seconds.\n"
+"        "
+msgstr "Alegeți timeout-ul\n\n"
+"        Utilizați un int. Valoarea implicită este de 180 de secunde.\n"
+"        "
+
+#: simplesanction\settings.py:244
+msgid "Timeout restored."
+msgstr "Timeout restabilit."
+
+#: simplesanction\settings.py:247
+msgid "Timeout is already set on {timeout}."
+msgstr "Timeout este deja setat pe {timeout}."
+
+#: simplesanction\settings.py:251
+msgid "Timeout state registered: {timeout}."
+msgstr "Starea de timeout înregistrată: {timeout}."
+
+#: simplesanction\simplesanction.py:38
+#, docstring
+msgid "A cog to sanction a user!"
+msgstr "O rotiță pentru a sancționa un utilizator!"
+
+#: simplesanction\simplesanction.py:315
+#, docstring
+msgid "\n"
+"        - Sanction a user quickly and easily.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 0 @user`\n"
+"        - `[p]sanction 0 @user What are these roles?`\n"
+"        - `[p]sanction 0 012345678987654321`\n"
+"        "
+msgstr "\n"
+"        - Sancționați un utilizator rapid și ușor.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 0 @user`\n"
+"        - `[p]sanction 0 @user Care sunt aceste roluri?`\n"
+"        - `[p]sanction 0 012345678987654321`\n"
+"        "
+
+#: simplesanction\simplesanction.py:356
+#, docstring
+msgid "\n"
+"         - :information_source: Show info on a user.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 1 @user`: UserInfo for no reason\n"
+"        - `[p]sanction 1 @user What are these roles?`: UserInfo for the reason \"What are these roles?\"\n"
+"        - `[p]sanction 1 012345678987654321`: UserInfo with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - :information_source: Afișează informații despre un utilizator.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 1 @user`: UserInfo fără motiv\n"
+"        - `[p]sanction 1 @user Ce sunt aceste roluri?`: UserInfo pentru motivul \"Care sunt aceste roluri?\".\n"
+"        - `[p]sanction 1 012345678987654321`: UserInfo cu ID-ul furnizat.\n"
+"        "
+
+#: simplesanction\simplesanction.py:397
+#, docstring
+msgid "\n"
+"         - ⚠️ Set a simple warning on a user.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 2 @user not`: Warn for no reason\n"
+"        - `[p]sanction 2 @user Insults`: Warn for the reason \"Insults\"\n"
+"        - `[p]sanction 2 012345678987654321 Advertising`: Warn the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - ⚠️ Setați un avertisment simplu pentru un utilizator.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 2 @user not`: Avertizează fără motiv\n"
+"        - `[p]sanction 2 @user Insults`: Avertizează pentru motivul \"Insults\"\n"
+"        - `[p]sanction 2 012345678987654321 Advertising`: Avertizează utilizatorul cu ID-ul furnizat.\n"
+"        "
+
+#: simplesanction\simplesanction.py:438
+#, docstring
+msgid "\n"
+"         - :hammer: Ban the member from the server.\n\n"
+"        It won't delete messages by default.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 3 @user not`: Ban for no reason\n"
+"        - `[p]sanction 3 @user Insults`: Ban for the reason \"Insults\"\n"
+"        - `[p]sanction 3 012345678987654321 Advertising`: Ban the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - :hammer: Interziceți membrul de pe server.\n\n"
+"        În mod implicit, nu va șterge mesajele.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 3 @user not`: Interzice fără motiv\n"
+"        - `[p]sanction 3 @user Insults`: Ban pentru motivul \"insulte\"\n"
+"        - `[p]sanction 3 012345678987654321 Advertising`: Interziceți utilizatorul cu ID-ul furnizat.\n"
+"        "
+
+#: simplesanction\simplesanction.py:481
+#, docstring
+msgid "\n"
+"         - :repeat_one: Softban the member from the server.\n\n"
+"        This means that the user will be banned and immediately unbanned, so it will purge their messages in all channels.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 4 @user not`: SoftBan for no reason\n"
+"        - `[p]sanction 4 @user Insults`: SoftBan for the reason \"Insults\"\n"
+"        - `[p]sanction 4 012345678987654321 Advertising`: SoftBan the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - :repeat_one: Interziceți accesul membrului la server.\n\n"
+"        Acest lucru înseamnă că utilizatorul va fi banat și imediat debranșat, astfel încât va curăța mesajele sale din toate canalele.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 4 @user not`: SoftBan pentru nici un motiv\n"
+"        - `[p]sanction 4 @user Insults`: SoftBan pentru motivul \"insulte\"\n"
+"        - `[p]sanction 4 012345678987654321 Advertising`: SoftBan pentru utilizatorul cu ID-ul furnizat.\n"
+"        "
+
+#: simplesanction\simplesanction.py:524
+#, docstring
+msgid "\n"
+"         - :dash: Tempban the member from the server.\n\n"
+"        It won't delete messages by default.\n\n"
+"        If you want to perform a temporary ban, provide the time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 5 @user not`: Ban for no reason\n"
+"        - `[p]sanction 5 @user 7d Insults`: 7 days ban for the reason \"Insults\"\n"
+"        - `[p]sanction 5 012345678987654321 Advertising`: Ban the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - :dash: Tempban de pe server.\n\n"
+"        În mod implicit, nu va șterge mesajele.\n\n"
+"        Dacă doriți să efectuați un ban temporar, furnizați timpul înainte de motiv.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 5 @user not`: Ban fără motiv\n"
+"        - `[p]sanction 5 @user 7d Insults`: Ban de 7 zile pentru motivul \"Insults\"\n"
+"        - `[p]sanction 5 01234567878987654321 Advertising`: Interziceți utilizatorul cu ID-ul furnizat.\n"
+"        "
+
+#: simplesanction\simplesanction.py:569
+#, docstring
+msgid "\n"
+"         - :boot: Kick the member from the server.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 6 @user not`: Kick for no reason\n"
+"        - `[p]sanction 6 @user Insults`: Kick for the reason \"Insults\"\n"
+"        - `[p]sanction 6 012345678987654321 Advertising`: Kick the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - :boot: Scoateți membrul de pe server.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 6 @user not`: Lovitură fără motiv\n"
+"        - `[p]sanction 6 @user Insults`: Lovitură pentru motivul \"Insults\"\n"
+"        - `[p]sanction 6 012345678987654321 Advertising`: Lovește utilizatorul cu ID-ul furnizat.\n"
+"        "
+
+#: simplesanction\simplesanction.py:610
+#, docstring
+msgid "\n"
+"         - :mute: Mute the user in all channels, including voice channels.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 7 @user not`: Infinite mute for no reason\n"
+"        - `[p]sanction 7 @user Spam`:Infinite  mute for the reason \"Spam\"\n"
+"        - `[p]sanction 7 @user Advertising`: Infinite mute for the reason \"Advertising\"\n"
+"        "
+msgstr "\n"
+"         - :mute: Puneți utilizatorul în surdină pe toate canalele, inclusiv pe canalele de voce.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 7 @user not`: Mutere infinită fără motiv\n"
+"        - `[p]sanction 7 @user Spam`: Mutere infinită pentru motivul \"Spam\"\n"
+"        - `[p]sanction 7 @user Advertising`: Mute la infinit pentru motivul \"Advertising\"\n"
+"        "
+
+#: simplesanction\simplesanction.py:651
+#, docstring
+msgid "\n"
+"         - :punch: Mute the user in this channel.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 8 @user not`: Infinite mute for no reason\n"
+"        - `[p]sanction 8 @user Spam`: Infinite mute for the reason \"Spam\"\n"
+"        - `[p]sanction 8 @user Advertising`: Infinite mute for the reason \"Advertising\"\n"
+"        "
+msgstr "\n"
+"         - :punch: Puneți în surdină utilizatorul de pe acest canal.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 8 @user not`: Mutere infinită fără motiv\n"
+"        - `[p]sanction 8 @user Spam`: Mutere infinită pentru motivul \"Spam\"\n"
+"        - `[p]sanction 8 @user Advertising`: Mutere infinită pentru motivul \"Advertising\"\n"
+"        "
+
+#: simplesanction\simplesanction.py:692
+#, docstring
+msgid "\n"
+"         - :hourglass_flowing_sand: TempMute the user in all channels, including voice channels.\n\n"
+"        You can set a timed mute by providing a valid time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 9 @user 30m not`: 30 minutes mute for no reason\n"
+"        - `[p]sanction 9 @user 5h Spam`: 5 hours mute for the reason \"Spam\"\n"
+"        - `[p]sanction 9 @user 3d Advertising`: 3 days mute for the reason \"Advertising\"\n"
+"        "
+msgstr "\n"
+"         - :hourglass_flowing_sand: TempMutează utilizatorul pe toate canalele, inclusiv pe canalele de voce.\n\n"
+"        Puteți seta o mute temporizată, furnizând o oră validă înainte de motiv.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 9 @user 30m not`: 30 de minute de mute fără motiv\n"
+"        - `[p]sanction 9 @user 5h Spam`: 5 ore de mute pentru motivul \"Spam\"\n"
+"        - `[p]sanction 9 @user 3d Advertising`: 3 zile mute pentru motivul \"Advertising\"\n"
+"        "
+
+#: simplesanction\simplesanction.py:735
+#, docstring
+msgid "\n"
+"         - :hourglass: TempMute the user in this channel.\n\n"
+"        You can set a timed mute by providing a valid time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 10 @user 30m not`: 30 minutes mute for no reason\n"
+"        - `[p]sanction 10 @user 5h Spam`: 5 hours mute for the reason \"Spam\"\n"
+"        - `[p]sanction 10 @user 3d Advertising`: 3 days mute for the reason \"Advertising\"\n"
+"        "
+msgstr "\n"
+"         - :hourglass: TempMute utilizatorul din acest canal.\n\n"
+"        Puteți seta o mute temporizată furnizând o oră validă înainte de motiv.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 10 @user 30m not`: 30 de minute de mute fără motiv\n"
+"        - `[p]sanction 10 @user 5h Spam`: 5 ore de mute pentru motivul \"Spam\"\n"
+"        - `[p]sanction 10 @user 3d Advertising`: 3 zile mute pentru motivul \"Advertising\"\n"
+"        "
+
+#: simplesanction\simplesanction.py:804 simplesanction\simplesanction.py:829
+msgid "Sanctioning a member"
+msgstr "Sancționarea unui membru"
+
+#: simplesanction\simplesanction.py:805
+msgid "Which member do you want to sanction? (Set `cancel` to cancel.)"
+msgstr "Ce membru doriți să sancționați? (Setați `cancel` pentru a anula.)"
+
+#: simplesanction\simplesanction.py:825 simplesanction\utils.py:54
+#: simplesanction\utils.py:84
+msgid "Timed out, please try again."
+msgstr "Timed out, vă rugăm să încercați din nou."
+
+#: simplesanction\simplesanction.py:830 simplesanction\utils.py:147
+msgid "This tool allows you to easily sanction a server member.\n"
+"User mention: {user.mention} - User ID: {user.id}"
+msgstr "Acest instrument vă permite să sancționați cu ușurință un membru al serverului.\n"
+"Mențiune utilizator: {user.mention} - ID utilizator: {user.id}"
+
+#: simplesanction\simplesanction.py:853 simplesanction\simplesanction.py:858
+#: simplesanction\utils.py:168
+msgid "Reason:"
+msgstr "Motivul:"
+
+#: simplesanction\simplesanction.py:854
+msgid "The reason was not given and will not be asked later."
+msgstr "Motivul nu a fost dat și nici nu va fi întrebat ulterior."
+
+#: simplesanction\simplesanction.py:861 simplesanction\utils.py:120
+#: simplesanction\utils.py:126 simplesanction\utils.py:173
+#: simplesanction\utils.py:179
+msgid "Duration:"
+msgstr "Durata:"
+
+#: simplesanction\simplesanction.py:869
+msgid "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
+msgstr "Folosiți această comandă în modul Fake, deci nu se va lua nicio măsură, dar voi pretinde că nu este cazul."
+
+#: simplesanction\simplesanction.py:1567
+msgid "Sanctioning a member - ℹ️ UserInfo"
+msgstr "Sancționarea unui membru - ℹ️ UserInfo"
+
+#: simplesanction\simplesanction.py:1568
+msgid "Here is the information about the user {user.name}!"
+msgstr "Iată informațiile despre utilizatorul {user.name}!"
+
+#: simplesanction\simplesanction.py:1579
+msgid "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`."
+msgstr "Mod de rotiță Mod nu este încărcat. Pentru a-l încărca, faceți `{ctx.prefix}load mod`."
+
+#: simplesanction\simplesanction.py:1601 simplesanction\simplesanction.py:1614
+#: simplesanction\simplesanction.py:1627
+msgid "Sanctioning a member - ⚠️ Warn"
+msgstr "Sancționarea unui membru - ⚠️ Avertisment"
+
+#: simplesanction\simplesanction.py:1602
+msgid "Why do you want warn {user}? (Set `cancel` to cancel or `not` for none)"
+msgstr "De ce vrei să avertizezi {user}? (Setați `cancel` pentru anulare sau `not` pentru niciuna)"
+
+#: simplesanction\simplesanction.py:1615
+msgid "Do you really want to warn {user}?"
+msgstr "Chiar vrei să avertizezi {user}?"
+
+#: simplesanction\simplesanction.py:1628
+msgid "The user {user} has been received a warning!"
+msgstr "Utilizatorul {user} a primit un avertisment!"
+
+#: simplesanction\simplesanction.py:1640
+msgid "The cog Warnings is not loaded. To load it, do `{ctx.prefix}load warnings`. You can also install/load the WarnSystem cog."
+msgstr "Roata dințată Avertizări nu este încărcată. Pentru a-l încărca, faceți `{ctx.prefix}load warnings`. De asemenea, puteți instala/încărca și cog-ul WarnSystem."
+
+#: simplesanction\simplesanction.py:1670 simplesanction\simplesanction.py:1683
+#: simplesanction\simplesanction.py:1696
+msgid "Sanctioning a member - 🔨 Ban"
+msgstr "Sancționarea unui membru - 🔨 Interzicere"
+
+#: simplesanction\simplesanction.py:1671
+msgid "Why do you want to ban {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "De ce vrei să interzici {user}? (Setați `cancel` la cancel sau `not` la none)"
+
+#: simplesanction\simplesanction.py:1684
+msgid "Do you really want to ban {user}?"
+msgstr "Chiar vrei să interzici {user}?"
+
+#: simplesanction\simplesanction.py:1697
+msgid "The user {user} has been banned!"
+msgstr "Utilizatorul {user} a fost interzis!"
+
+#: simplesanction\simplesanction.py:1709 simplesanction\simplesanction.py:1778
+#: simplesanction\simplesanction.py:1861 simplesanction\simplesanction.py:1932
+msgid "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`. You can also install/load the WarnSystem cog."
+msgstr "Mod de roți dințate nu este încărcat. Pentru a-l încărca, faceți `{ctx.prefix}load mod`. De asemenea, puteți instala/încărca și cog-ul WarnSystem."
+
+#: simplesanction\simplesanction.py:1739 simplesanction\simplesanction.py:1752
+#: simplesanction\simplesanction.py:1765
+msgid "Sanctioning a member - 🔂 SoftBan"
+msgstr "Sancționarea unui membru - 🔂 SoftBan"
+
+#: simplesanction\simplesanction.py:1740
+msgid "Why do you want to softban {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "De ce vrei să faci softban {user}? (Setați `cancel` la cancel sau `not` la none)"
+
+#: simplesanction\simplesanction.py:1753
+msgid "Do you really want to softban {user}?"
+msgstr "Chiar vrei să faci softban {user}?"
+
+#: simplesanction\simplesanction.py:1766
+msgid "The user {user} has been softbanned!"
+msgstr "Utilizatorul {user} a fost softbanat!"
+
+#: simplesanction\simplesanction.py:1807 simplesanction\simplesanction.py:1822
+#: simplesanction\simplesanction.py:1835 simplesanction\simplesanction.py:1848
+msgid "Sanctioning a member - 💨 TempBan"
+msgstr "Sancționarea unui membru - 💨 TempBan"
+
+#: simplesanction\simplesanction.py:1808
+msgid "How long do you want to tempban {user}? (Set `cancel` to cancel)"
+msgstr "Cât timp vrei să tempban {user}? (Setați `cancel` pentru a anula)"
+
+#: simplesanction\simplesanction.py:1823
+msgid "Why do you want to tempban {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "De ce vreți să vă temporizați {user}? (Setați `cancel` la cancel sau `not` la none)"
+
+#: simplesanction\simplesanction.py:1836
+msgid "Do you really want to tempban {user}?"
+msgstr "Chiar vreți să vă temporizați {user}?"
+
+#: simplesanction\simplesanction.py:1849
+msgid "The user {user} has been tempban!"
+msgstr "Utilizatorul {user} a fost tempban!"
+
+#: simplesanction\simplesanction.py:1891 simplesanction\simplesanction.py:1904
+#: simplesanction\simplesanction.py:1919
+msgid "Sanctioning a member - 👢 Kick"
+msgstr "Sancționarea unui membru - 👢 Kick"
+
+#: simplesanction\simplesanction.py:1892 simplesanction\simplesanction.py:1905
+msgid "Why do you want to kick {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "De ce vrei să dai cu piciorul la {user}? (Setați `cancel` la cancel sau `not` la none)"
+
+#: simplesanction\simplesanction.py:1920
+msgid "The user {user} has been kicked!"
+msgstr "Utilizatorul {user} a fost dat afară!"
+
+#: simplesanction\simplesanction.py:1962 simplesanction\simplesanction.py:1975
+#: simplesanction\simplesanction.py:1988
+msgid "Sanctioning a member - 🔇 Mute"
+msgstr "Sancționarea unui membru - 🔇 Mute"
+
+#: simplesanction\simplesanction.py:1963
+msgid "Why do you want to mute {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "De ce vreți să puneți surdină la {user}? (Setați `cancel` la anulare sau `not` la niciunul)"
+
+#: simplesanction\simplesanction.py:1976
+msgid "Do you really want to mute {user}?"
+msgstr "Chiar vreți să puneți pe mute {user}?"
+
+#: simplesanction\simplesanction.py:1989
+msgid "The user {user} has been muted!"
+msgstr "Utilizatorul {user} a fost dezactivat!"
+
+#: simplesanction\simplesanction.py:2001 simplesanction\simplesanction.py:2151
+msgid "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`. You can also install/load the WarnSystem cog."
+msgstr "Rotița Mutes nu este încărcată. Pentru a-l încărca, faceți `{ctx.prefix}load mutes`. De asemenea, puteți instala/încărca și cog-ul WarnSystem."
+
+#: simplesanction\simplesanction.py:2031 simplesanction\simplesanction.py:2044
+#: simplesanction\simplesanction.py:2059
+msgid "Sanctioning a member - 👊 MuteChannel"
+msgstr "Sancționarea unui membru - 👊 MuteChannel"
+
+#: simplesanction\simplesanction.py:2032
+msgid "Why do you want to mute {user} in {ctx.channel.mention}? (Set `cancel` to cancel or `not` to none)"
+msgstr "De ce doriți să dezactivați {user} în {ctx.channel.mention}? (Setați `cancel` la anulare sau `not` la niciunul)"
+
+#: simplesanction\simplesanction.py:2045
+msgid "Do you really want to mute {user} in {ctx.channel.mention}?"
+msgstr "Chiar vreți să dezactivați {user} în {ctx.channel.mention}?"
+
+#: simplesanction\simplesanction.py:2060
+msgid "The user {user} has been muted in #{ctx.channel.name}!"
+msgstr "Utilizatorul {user} a fost dezactivat în #{ctx.channel.name}!"
+
+#: simplesanction\simplesanction.py:2073 simplesanction\simplesanction.py:2237
+msgid "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`."
+msgstr "Rotița Mutes nu este încărcată. Pentru a-l încărca, faceți `{ctx.prefix}load mutes`."
+
+#: simplesanction\simplesanction.py:2097 simplesanction\simplesanction.py:2112
+#: simplesanction\simplesanction.py:2125 simplesanction\simplesanction.py:2138
+msgid "Sanctioning a member - ⏳ TempMute"
+msgstr "Sancționarea unui membru - ⏳ TempMute"
+
+#: simplesanction\simplesanction.py:2098
+msgid "How long do you want to tempmute {user}? (Set `cancel` to cancel)"
+msgstr "Cât timp doriți să temporizați {user}? (Setați `cancel` pentru a anula)"
+
+#: simplesanction\simplesanction.py:2113
+msgid "Why do you want to tempmute {user}? (Set `cancel` to cancel or `not` to none)"
+msgstr "De ce vreți să temporizați {user}? (Setați `cancel` la cancel sau `not` la none)"
+
+#: simplesanction\simplesanction.py:2126
+msgid "Do you really want to tempmute {user}?"
+msgstr "Chiar vreți să temporizați {user}?"
+
+#: simplesanction\simplesanction.py:2139
+msgid "The user {user} has been tempmuted!"
+msgstr "Utilizatorul {user} a fost tempmutat!"
+
+#: simplesanction\simplesanction.py:2180 simplesanction\simplesanction.py:2195
+#: simplesanction\simplesanction.py:2208 simplesanction\simplesanction.py:2223
+msgid "Sanctioning a member - ⌛ TempMuteChannel"
+msgstr "Sancționarea unui membru - ⌛ TempMuteChannel"
+
+#: simplesanction\simplesanction.py:2181
+msgid "How long do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` to cancel)"
+msgstr "Cât timp doriți să temporizați {user} în {ctx.channel.mention}? (Setați `cancel` pentru a anula)"
+
+#: simplesanction\simplesanction.py:2196
+msgid "Why do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` to cancel or `not` to none)"
+msgstr "De ce doriți să temperați {user} în {ctx.channel.mention}? (Setați `cancel` la cancel sau `not` la none)"
+
+#: simplesanction\simplesanction.py:2209
+msgid "Do you really want to tempmute {user} in {ctx.channel.mention}?"
+msgstr "Chiar vreți să temporizați {user} în {ctx.channel.mention}?"
+
+#: simplesanction\simplesanction.py:2224
+msgid "The user {user} has been tempmuted in #{ctx.channel.name}!"
+msgstr "Utilizatorul {user} a fost temperat în #{ctx.channel.name}!"
+
+#: simplesanction\utils.py:112
+msgid "The reason was not given."
+msgstr "Motivul nu a fost precizat."
+
+#: simplesanction\utils.py:127 simplesanction\utils.py:180
+msgid "Infinity"
+msgstr "Infinit"
+
+#: simplesanction\utils.py:165
+msgid "If an error has occurred, it will be displayed below."
+msgstr "În cazul în care a apărut o eroare, aceasta va fi afișată mai jos."
+

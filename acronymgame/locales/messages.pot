@@ -1,0 +1,89 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: acronymgame\acronymgame.py:21
+#, docstring
+msgid "A cog to play a random match of Acrononym game, with Modals!"
+msgstr ""
+
+#: acronymgame\view.py:38
+msgid "You have already joined this game, with `{answer}` answer."
+msgstr ""
+
+#: acronymgame\view.py:46
+msgid "Sorry, maximum 20 players."
+msgstr ""
+
+#: acronymgame\view.py:51
+msgid "Sorry, the vote has already started."
+msgstr ""
+
+#: acronymgame\view.py:57
+msgid "Sorry, the number of words in your answer must be {len_words}."
+msgstr ""
+
+#: acronymgame\view.py:66
+msgid ""
+"Sorry, the initial of each word in your answer must be each letter of the "
+"acronym ({acronym})."
+msgstr ""
+
+#: acronymgame\view.py:78
+msgid ""
+"Join the game by clicking on the button below and entering your acronym. "
+"Maximum 20 players.\n"
+msgstr ""
+
+#: acronymgame\view.py:83
+msgid "Game joined with `{answer}` answer."
+msgstr ""
+
+#: acronymgame\view.py:130
+msgid ""
+"Join the game by clicking on the button below and entering your acronym. "
+"Maximum 20 players."
+msgstr ""
+
+#: acronymgame\view.py:145
+msgid "At least three players are needed to play."
+msgstr ""
+
+#: acronymgame\view.py:154
+msgid ""
+"Use the dropdown below to vote for the best answer for the random acronym. "
+"All guild members can vote.\n"
+msgstr ""
+
+#: acronymgame\view.py:167
+msgid "No vote given."
+msgstr ""
+
+#: acronymgame\view.py:197
+msgid "Here is the leaderboard for this game:"
+msgstr ""
+
+#: acronymgame\view.py:203
+msgid "Winner{s}: {winners}!"
+msgstr ""
+
+#: acronymgame\view.py:238
+msgid "You have already voted in this game."
+msgstr ""
+
+#: acronymgame\view.py:244
+msgid "You can't vote for yourself."
+msgstr ""
+
+#: acronymgame\view.py:250
+msgid "Vote given for answer {num}."
+msgstr ""

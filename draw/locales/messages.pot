@@ -1,0 +1,54 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: draw\draw.py:38
+#, docstring
+msgid "A cog to make pixel arts on Discord!"
+msgstr ""
+
+#: draw\draw.py:157
+msgid "This message isn't in the cache."
+msgstr ""
+
+#: draw\start_view.py:94 draw\start_view.py:103
+msgid ""
+"Create a new Draw Board with `height = {height}`, `width = {width}` and "
+"`background = {background}`."
+msgstr ""
+
+#: draw\view.py:331
+msgid ""
+"Please type all the colors you want to add. They can be either or all of:\n"
+"• The hex codes (e.g. `ff64c4` or `ff64c4ff` to include alpha) **separated by space**,\n"
+"• The RGB(A) values separated by space or comma or both (e.g. `(255 100 196)` or `(255, 100, 196, 125)`) of each color **surrounded by brackets**\n"
+"• Any emoji whose main color you want to extract (e.g. 🐸 will give 77b255)\n"
+"• Any image file (first 5 abundant colors will be extracted)."
+msgstr ""
+
+#: draw\view.py:404
+msgid ""
+"Please send a message containing the emojis you want to add to your palette."
+" E.g. `😎 I like turtles 🐢`."
+msgstr ""
+
+#: draw\view.py:816
+msgid ""
+"Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`,"
+" `A`, `10`, etc."
+msgstr ""
+
+#: draw\view.py:948
+msgid ""
+"Please type the cells with the main colors names. One color for each line, separated from the cell by a \":\". Example: `A1:red\n"
+"B7-C9:green`."
+msgstr ""

@@ -1,0 +1,45 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: codesnippets\codesnippets.py:65
+#, docstring
+msgid ""
+"A cog to send code content from a "
+"GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL!"
+msgstr ""
+
+#: codesnippets\codesnippets.py:421
+msgid "No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found."
+msgstr ""
+
+#: codesnippets\codesnippets.py:456
+#, docstring
+msgid ""
+"Add a channel where the cog have to send automatically code snippets from "
+"URLs."
+msgstr ""
+
+#: codesnippets\codesnippets.py:460
+msgid "The cog is already enabled in this channel"
+msgstr ""
+
+#: codesnippets\codesnippets.py:471
+#, docstring
+msgid ""
+"Remove a channel where the cog have to send automatically code snippets from"
+" URLs."
+msgstr ""
+
+#: codesnippets\codesnippets.py:475
+msgid "The cog is already disabled in this channel"
+msgstr ""

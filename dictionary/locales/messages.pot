@@ -11,19 +11,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: getloc\getloc.py:26
+#: dictionary\dictionary.py:22
 #, docstring
 msgid ""
-"A cog to display information about a location based on its address or "
-"geographical coordinates!"
+"A cog to search an english term/word in the dictionary! Synonyms, antonyms, "
+"phonetics (with audio)..."
 msgstr ""
 
-#: getloc\getloc.py:121
-msgid "An error has occurred. Please try again."
+#: dictionary\dictionary.py:85
+msgid "Word not found in English dictionary."
 msgstr ""
 
-#: getloc\getloc.py:124
-msgid ""
-"The address or contact details you have provided do not lead to any results."
-" Are you sure of your input?"
+#: dictionary\view.py:33
+msgid "View the source"
 msgstr ""

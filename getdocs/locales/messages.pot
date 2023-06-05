@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,63 +11,53 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: getdocs\getdocs.py:191
+#: getdocs\getdocs.py:212 getdocs\getdocs.py:531
 msgid "This source doesn't exist."
 msgstr ""
 
-#: getdocs\getdocs.py:197
+#: getdocs\getdocs.py:218
 #, docstring
 msgid ""
-"A cog to get and display Sphinx docs! Use `[p]listsources` to get a list of "
-"all the available sources."
+"A cog to get and display some documentations in Discord! Use "
+"`[p]listsources` to get a list of all the available sources."
 msgstr ""
 
-#: getdocs\getdocs.py:299
-msgid "Documentations cache is not yet built, building now."
+#: getdocs\getdocs.py:342
+msgid "Documentations cache is not yet built."
 msgstr ""
 
-#: getdocs\getdocs.py:364
+#: getdocs\getdocs.py:393
 msgid "No results found."
 msgstr ""
 
-#: getdocs\getdocs.py:477
+#: getdocs\getdocs.py:523
 #, docstring
 msgid ""
 "\n"
-"        Enable a documentations source.\n"
+"        Enable a Documentations source.\n"
 "        "
 msgstr ""
 
-#: getdocs\getdocs.py:482
+#: getdocs\getdocs.py:529
 msgid "This source is already enabled."
 msgstr ""
 
-#: getdocs\getdocs.py:495
+#: getdocs\getdocs.py:545
 #, docstring
 msgid ""
 "\n"
-"        Disable a documentations source.\n"
+"        Disable a Documentations source.\n"
 "        "
 msgstr ""
 
-#: getdocs\getdocs.py:500
-msgid "This source is already disabled."
-msgstr ""
-
-#: getdocs\getdocs.py:506
+#: getdocs\getdocs.py:554
 #, docstring
 msgid ""
 "\n"
-"        Set the documentations source.\n"
-"\n"
-"        The default value was `discord.py`.\n"
+"        Show stats about all documentations sources.\n"
 "        "
 msgstr ""
 
-#: getdocs\getdocs.py:513
-msgid "This source is disabled."
-msgstr ""
-
-#: getdocs\getdocs.py:1244
+#: getdocs\getdocs.py:1460
 msgid "RTFM caching isn't finished."
 msgstr ""

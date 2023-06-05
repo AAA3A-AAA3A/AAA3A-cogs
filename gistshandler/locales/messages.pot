@@ -1,0 +1,55 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: gistshandler\gistshandler.py:29
+msgid "Gist not found."
+msgstr ""
+
+#: gistshandler\gistshandler.py:35
+#, docstring
+msgid "A cog to create new Gists and edit/delete existing ones!"
+msgstr ""
+
+#: gistshandler\gistshandler.py:71
+msgid ""
+"You need to set up a GitHub token with `{ctx.prefix}set api github "
+"token,[TOKEN]` first!"
+msgstr ""
+
+#: gistshandler\view.py:92
+msgid "{public.value} is not a recognised boolean option."
+msgstr ""
+
+#: gistshandler\view.py:101 gistshandler\view.py:199 gistshandler\view.py:381
+msgid "GitHub token is invalid or expired."
+msgstr ""
+
+#: gistshandler\view.py:109
+msgid "Gist `{gist.id}` created."
+msgstr ""
+
+#: gistshandler\view.py:203
+msgid "You're not allowed to edit this gist."
+msgstr ""
+
+#: gistshandler\view.py:209
+msgid "Gist `{gist.id}` updated."
+msgstr ""
+
+#: gistshandler\view.py:385
+msgid "You're not allowed to delete this gist."
+msgstr ""
+
+#: gistshandler\view.py:391
+msgid "Gist `{gist.id}` deleted."
+msgstr ""

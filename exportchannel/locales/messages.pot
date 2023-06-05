@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: exportchannel\exportchannel.py:25
+#: exportchannel\exportchannel.py:18
 msgid ""
 "Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\n"
 "Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
@@ -19,26 +19,26 @@ msgid ""
 "Remember that exporting other users' messages from Discord does not respect the TOS."
 msgstr ""
 
-#: exportchannel\exportchannel.py:26
+#: exportchannel\exportchannel.py:21
 msgid "[Click here to view the transcript.]({url})"
 msgstr ""
 
-#: exportchannel\exportchannel.py:31
+#: exportchannel\exportchannel.py:28
 #, docstring
 msgid "A cog to export all or part of a channel's messages to an html file!"
 msgstr ""
 
-#: exportchannel\exportchannel.py:45
+#: exportchannel\exportchannel.py:42
 msgid ""
 "Sorry, I can't read the content of the messages in {channel.mention} "
 "({channel.id})."
 msgstr ""
 
-#: exportchannel\exportchannel.py:75
+#: exportchannel\exportchannel.py:72
 msgid "Sorry. I could not find any message."
 msgstr ""
 
-#: exportchannel\exportchannel.py:146
+#: exportchannel\exportchannel.py:131
 #, docstring
 msgid ""
 "Export all of a channel's messages to an html file.\n"
@@ -48,7 +48,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: exportchannel\exportchannel.py:175
+#: exportchannel\exportchannel.py:159
 #, docstring
 msgid ""
 "Export part of a channel's messages to an html file.\n"
@@ -59,7 +59,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: exportchannel\exportchannel.py:212
+#: exportchannel\exportchannel.py:195
 #, docstring
 msgid ""
 "Export part of a channel's messages to an html file.\n"
@@ -70,7 +70,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: exportchannel\exportchannel.py:247
+#: exportchannel\exportchannel.py:229
 #, docstring
 msgid ""
 "Export part of a channel's messages to an html file.\n"
@@ -81,7 +81,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: exportchannel\exportchannel.py:283
+#: exportchannel\exportchannel.py:264
 #, docstring
 msgid ""
 "Export part of a channel's messages to an html file.\n"
@@ -92,7 +92,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: exportchannel\exportchannel.py:319
+#: exportchannel\exportchannel.py:299
 #, docstring
 msgid ""
 "Export part of a channel's messages to an html file.\n"
@@ -103,7 +103,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: exportchannel\exportchannel.py:358
+#: exportchannel\exportchannel.py:337
 #, docstring
 msgid ""
 "Export part of a channel's messages to an html file.\n"

@@ -1,0 +1,58 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:31\n"
+"Last-Translator: \n"
+"Language-Team: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: nl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/draw/locales/messages.pot\n"
+"X-Crowdin-File-ID: 231\n"
+"Language: nl_NL\n"
+
+#: draw\draw.py:38
+#, docstring
+msgid "A cog to make pixel arts on Discord!"
+msgstr "Een radertje om pixelkunst te maken op Discord!"
+
+#: draw\draw.py:157
+msgid "This message isn't in the cache."
+msgstr "Dit bericht staat niet in de cache."
+
+#: draw\start_view.py:94 draw\start_view.py:103
+msgid "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`."
+msgstr "Maak een nieuw Tekenbord met `hoogte = {height}`, `breedte = {width}` en `achtergrond = {background}`."
+
+#: draw\view.py:331
+msgid "Please type all the colors you want to add. They can be either or all of:\n"
+"• The hex codes (e.g. `ff64c4` or `ff64c4ff` to include alpha) **separated by space**,\n"
+"• The RGB(A) values separated by space or comma or both (e.g. `(255 100 196)` or `(255, 100, 196, 125)`) of each color **surrounded by brackets**\n"
+"• Any emoji whose main color you want to extract (e.g. 🐸 will give 77b255)\n"
+"• Any image file (first 5 abundant colors will be extracted)."
+msgstr "Voer alle kleuren in die je wilt toevoegen. Dit kunnen alle of een van de volgende kleuren zijn:\n"
+"- De hexcodes (bijv. `ff64c4` of `ff64c4ff` om alfa in te sluiten) **gescheiden door spatie**,\n"
+"- De RGB(A)-waarden gescheiden door spatie of komma of beide (bijv. `(255 100 196)` of `(255, 100, 196, 125)`) van elke kleur **omgeven door haakjes**\n"
+"- Elke emoji waarvan je de hoofdkleur wilt extraheren (bijv. 🐸 geeft 77b255)\n"
+"- Elk willekeurig afbeeldingsbestand (de eerste 5 overvloedige kleuren worden geëxtraheerd)."
+
+#: draw\view.py:404
+msgid "Please send a message containing the emojis you want to add to your palette. E.g. `😎 I like turtles 🐢`."
+msgstr "Stuur een bericht met de emoji's die je aan je palet wilt toevoegen. Bijvoorbeeld `😎 Ik hou van schildpadden 🐢`."
+
+#: draw\view.py:816
+msgid "Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`, `A`, `10`, etc."
+msgstr "Typ de cel waar je de cursor naartoe wilt verplaatsen. Bijvoorbeeld `A1`, `a1`, `A10`, `A`, `10`, etc."
+
+#: draw\view.py:948
+msgid "Please type the cells with the main colors names. One color for each line, separated from the cell by a \":\". Example: `A1:red\n"
+"B7-C9:green`."
+msgstr "Typ de cellen met de namen van de hoofdkleuren. Eén kleur voor elke regel, gescheiden van de cel door een \":\". Voorbeeld: `A1:rood\n"
+"B7-C9:groen`."
+

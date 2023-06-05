@@ -1,0 +1,92 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:26\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/cmdchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 80\n"
+"Language: fi_FI\n"
+
+#: cmdchannel\cmdchannel.py:17
+#, docstring
+msgid "A cog to send the result of a command to another channel!"
+msgstr "Hammasratas, jolla lähetetään komennon tulos toiselle kanavalle!"
+
+#: cmdchannel\cmdchannel.py:75
+#, docstring
+msgid "Act as if the command had been typed in the channel of your choice.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
+"        If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).\n\n"
+"        Use `[p]cmdchannel`!\n"
+"        "
+msgstr "Toimi ikään kuin komento olisi kirjoitettu valitsemallasi kanavalla.\n"
+"        Etuliitettä ei saa syöttää, jos kyseessä on komento. Se on vain viesti, jos komento on virheellinen.\n"
+"        Jos et määritä kanavaa, käytetään nykyistä kanavaa, ellei haluamasi komento ole olemassa olevan kanavan nimi (esimerkiksi help tai test).\n\n"
+"        Käytä `[p]cmdchannel`!\n"
+"        "
+
+#: cmdchannel\cmdchannel.py:84 cmdchannel\cmdchannel.py:153
+msgid "To send commands to another server, you must be there."
+msgstr "Jos haluat lähettää komentoja toiselle palvelimelle, sinun on oltava siellä."
+
+#: cmdchannel\cmdchannel.py:107
+#, docstring
+msgid "Act as if the command had been typed by imitating the specified user.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
+"        If you do not specify a user, the author will be used.\n\n"
+"        Use `[p]cmduser`!\n"
+"        "
+msgstr "Toimi ikään kuin komento olisi kirjoitettu jäljittelemällä määritettyä käyttäjää.\n"
+"        Etuliitettä ei saa syöttää, jos kyseessä on komento. Se on vain viesti, jos komento on virheellinen.\n"
+"        Jos et määritä käyttäjää, käytetään kirjoittajaa.\n\n"
+"        Käytä `[p]cmduser`!\n"
+"        "
+
+#: cmdchannel\cmdchannel.py:117 cmdchannel\cmdchannel.py:158
+msgid "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
+msgstr "Jotta voit suorittaa komennon toisena käyttäjänä, cog Dev on ladattava, jotta tiedät varmasti, mitä olet tekemässä."
+
+#: cmdchannel\cmdchannel.py:140
+#, docstring
+msgid "Act as if the command had been typed in the channel of your choice by imitating the specified user.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
+"        If you do not specify a user, the author will be used.\n\n"
+"        Use `[p]cmduserchannel`!\n"
+"        "
+msgstr "Toimi ikään kuin komento olisi kirjoitettu valitsemallasi kanavalla jäljittelemällä määritettyä käyttäjää.\n"
+"        Etuliitettä ei saa syöttää, jos kyseessä on komento. Se on vain viesti, jos komento on virheellinen.\n"
+"        Jos et määritä käyttäjää, käytetään kirjoittajaa.\n\n"
+"        Käytä `[p]cmduserchannel`!\n"
+"        "
+
+#: cmdchannel\cmdchannel.py:174
+#, docstring
+msgid "Test variables."
+msgstr "Testimuuttujat."
+
+#: cmdchannel\cmdchannel.py:176
+msgid "Testvar"
+msgstr "Testvar"
+
+#: cmdchannel\cmdchannel.py:177
+msgid "Variables:"
+msgstr "Muuttujat:"
+
+#: cmdchannel\cmdchannel.py:178
+msgid "Author:"
+msgstr "Kirjoittaja:"
+
+#: cmdchannel\cmdchannel.py:179
+msgid "Channel:"
+msgstr "Kanava:"
+

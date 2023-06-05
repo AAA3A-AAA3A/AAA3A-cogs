@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-15 15:48\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:28\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -17,34 +17,30 @@ msgstr ""
 "X-Crowdin-File-ID: 181\n"
 "Language: el_GR\n"
 
-#: commandsbuttons\commandsbuttons.py:38
+#: commandsbuttons\commandsbuttons.py:26
 #, docstring
 msgid "A cog to allow a user to execute a command by clicking on a button!"
 msgstr "Ένα γρανάζι που επιτρέπει στον χρήστη να εκτελέσει μια εντολή κάνοντας κλικ σε ένα κουμπί!"
 
-#: commandsbuttons\commandsbuttons.py:112
-#: commandsbuttons\commandsbuttons.py:187
+#: commandsbuttons\commandsbuttons.py:76
 msgid "This message is not in Config."
 msgstr "Αυτό το μήνυμα δεν είναι στο Config."
 
-#: commandsbuttons\commandsbuttons.py:144
-#: commandsbuttons\commandsbuttons.py:208
-msgid "This emoji is not in Config."
-msgstr "Αυτό το emoji δεν είναι στο Config."
+#: commandsbuttons\commandsbuttons.py:79
+msgid "This button is not in Config."
+msgstr "Αυτό το κουμπί δεν είναι στη Ρύθμιση."
 
-#: commandsbuttons\commandsbuttons.py:157
-#: commandsbuttons\commandsbuttons.py:219
+#: commandsbuttons\commandsbuttons.py:92
 msgid "The command don't exist."
 msgstr "Η εντολή δεν υπάρχει."
 
-#: commandsbuttons\commandsbuttons.py:161
-#: commandsbuttons\commandsbuttons.py:223
+#: commandsbuttons\commandsbuttons.py:96
 msgid "You are not allowed to execute this command."
 msgstr "Δεν επιτρέπεται η εκτέλεση αυτής της εντολής."
 
-#: commandsbuttons\commandsbuttons.py:275
+#: commandsbuttons\commandsbuttons.py:148
 #, docstring
-msgid "Add a command-button to a message.\n\n"
+msgid "Add a command-button for a message.\n\n"
 "        `primary`: 1\n"
 "        `secondary`: 2\n"
 "        `success`: 3\n"
@@ -56,7 +52,7 @@ msgid "Add a command-button to a message.\n\n"
 "        `green`: 3\n"
 "        `red`: 4\n"
 "        "
-msgstr "Προσθήκη ενός κουμπιού εντολών σε ένα μήνυμα.\n\n"
+msgstr "Προσθέστε ένα κουμπί εντολών για ένα μήνυμα.\n\n"
 "        `primary`: 1\n"
 "        `δευτερεύον`: 2\n"
 "        `επιτυχία`: 3\n"
@@ -69,79 +65,79 @@ msgstr "Προσθήκη ενός κουμπιού εντολών σε ένα μ
 "        `red`: 4\n"
 "        "
 
-#: commandsbuttons\commandsbuttons.py:290
-#: commandsbuttons\commandsbuttons.py:354
-#: commandsbuttons\commandsbuttons.py:408
+#: commandsbuttons\commandsbuttons.py:163
+#: commandsbuttons\commandsbuttons.py:224
+#: commandsbuttons\commandsbuttons.py:275
 msgid "I have to be the author of the message for the command-button to work."
 msgstr "Πρέπει να είμαι ο συντάκτης του μηνύματος για να λειτουργήσει το κουμπί εντολών."
 
-#: commandsbuttons\commandsbuttons.py:300
-#: commandsbuttons\commandsbuttons.py:368
+#: commandsbuttons\commandsbuttons.py:173
+#: commandsbuttons\commandsbuttons.py:238
 msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
 "I need the permissions to see the messages in that channel."
 msgstr "Δεν έχω επαρκή δικαιώματα στο κανάλι στο οποίο βρίσκεται το μήνυμα που προσδιορίσατε.\n"
 "Χρειάζομαι τα δικαιώματα για να δω τα μηνύματα σε αυτό το κανάλι."
 
-#: commandsbuttons\commandsbuttons.py:310
+#: commandsbuttons\commandsbuttons.py:183
 msgid "You have not specified a correct command."
 msgstr "Δεν έχετε καθορίσει μια σωστή εντολή."
 
-#: commandsbuttons\commandsbuttons.py:317
+#: commandsbuttons\commandsbuttons.py:190
 msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "Το emoji που επιλέξατε φαίνεται άκυρο. Ελέγξτε ότι πρόκειται για emoji. Αν έχετε Nitro, μπορεί να έχετε χρησιμοποιήσει ένα προσαρμοσμένο emoji από άλλο διακομιστή."
 
-#: commandsbuttons\commandsbuttons.py:326
+#: commandsbuttons\commandsbuttons.py:199
 msgid "I can't do more than 25 commands-buttons for one message."
 msgstr "Δεν μπορώ να κάνω περισσότερες από 25 εντολές-κουμπιά για ένα μήνυμα."
 
-#: commandsbuttons\commandsbuttons.py:348
+#: commandsbuttons\commandsbuttons.py:218
 #, docstring
-msgid "Add commands-buttons to a message.\n\n"
+msgid "Add commands-buttons for a message.\n\n"
 "        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
 "        "
-msgstr "Προσθήκη εντολών-κουμπιών σε ένα μήνυμα.\n\n"
+msgstr "Προσθήκη εντολών-κουμπιών για ένα μήνυμα.\n\n"
 "        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
 "        "
 
-#: commandsbuttons\commandsbuttons.py:358
+#: commandsbuttons\commandsbuttons.py:228
 msgid "You have not specified any valid command-button."
 msgstr "Δεν έχετε καθορίσει κανένα έγκυρο κουμπί εντολών."
 
-#: commandsbuttons\commandsbuttons.py:378
+#: commandsbuttons\commandsbuttons.py:248
 msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "Ένα emoji που επιλέξατε φαίνεται άκυρο. Ελέγξτε ότι πρόκειται για emoji. Αν έχετε Nitro, μπορεί να έχετε χρησιμοποιήσει ένα προσαρμοσμένο emoji από άλλο διακομιστή."
 
-#: commandsbuttons\commandsbuttons.py:387
+#: commandsbuttons\commandsbuttons.py:257
 msgid "I can't do more than 25 roles-buttons for one message."
 msgstr "Δεν μπορώ να κάνω περισσότερους από 25 ρόλους-κουμπιά για ένα μήνυμα."
 
-#: commandsbuttons\commandsbuttons.py:405
+#: commandsbuttons\commandsbuttons.py:272
 #, docstring
-msgid "Remove a command-button to a message."
-msgstr "Αφαίρεση ενός κουμπιού εντολών σε ένα μήνυμα."
+msgid "Remove a command-button for a message."
+msgstr "Αφαίρεση ενός κουμπιού εντολών για ένα μήνυμα."
 
-#: commandsbuttons\commandsbuttons.py:413
-#: commandsbuttons\commandsbuttons.py:444
+#: commandsbuttons\commandsbuttons.py:280
+#: commandsbuttons\commandsbuttons.py:306
 msgid "No command-button is configured for this message."
 msgstr "Δεν έχει ρυθμιστεί κουμπί εντολών για αυτό το μήνυμα."
 
-#: commandsbuttons\commandsbuttons.py:417
+#: commandsbuttons\commandsbuttons.py:284
 msgid "I wasn't watching for this button on this message."
 msgstr "Δεν πρόσεχα αυτό το κουμπί σε αυτό το μήνυμα."
 
-#: commandsbuttons\commandsbuttons.py:436
+#: commandsbuttons\commandsbuttons.py:298
 #, docstring
-msgid "Clear all commands-buttons to a message."
-msgstr "Καθαρισμός όλων των εντολών-κουμπιών σε ένα μήνυμα."
+msgid "Clear all commands-buttons for a message."
+msgstr "Καθαρισμός όλων των εντολών-κουμπιών για ένα μήνυμα."
 
-#: commandsbuttons\commandsbuttons.py:439
+#: commandsbuttons\commandsbuttons.py:301
 msgid "I have to be the author of the message for the role-button to work."
 msgstr "Πρέπει να είμαι ο συντάκτης του μηνύματος για να λειτουργήσει το κουμπί ρόλου."
 
-#: commandsbuttons\commandsbuttons.py:458
+#: commandsbuttons\commandsbuttons.py:317
 #, docstring
-msgid "Clear all commands-buttons to a **guild**."
-msgstr "Καθαρίστε όλες τις εντολές-κουμπιά σε μια **γέφυρα**."
+msgid "Clear all commands-buttons for a guild."
+msgstr "Καθαρίστε όλες τις εντολές-κουμπιά για μια συντεχνία."
 
 #: commandsbuttons\converters.py:35
 msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."

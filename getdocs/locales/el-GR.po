@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-15 15:48\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:30\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -17,65 +17,55 @@ msgstr ""
 "X-Crowdin-File-ID: 183\n"
 "Language: el_GR\n"
 
-#: getdocs\getdocs.py:191
+#: getdocs\getdocs.py:212 getdocs\getdocs.py:531
 msgid "This source doesn't exist."
 msgstr "Αυτή η πηγή δεν υπάρχει."
 
-#: getdocs\getdocs.py:197
+#: getdocs\getdocs.py:218
 #, docstring
-msgid "A cog to get and display Sphinx docs! Use `[p]listsources` to get a list of all the available sources."
-msgstr "Ένα γρανάζι για να λαμβάνετε και να εμφανίζετε τα έγγραφα του Sphinx! Χρησιμοποιήστε το `[p]listsources` για να λάβετε μια λίστα με όλες τις διαθέσιμες πηγές."
+msgid "A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."
+msgstr "Ένα γρανάζι για να λαμβάνετε και να εμφανίζετε κάποια έγγραφα στο Discord! Χρησιμοποιήστε το `[p]listsources` για να λάβετε μια λίστα με όλες τις διαθέσιμες πηγές."
 
-#: getdocs\getdocs.py:299
-msgid "Documentations cache is not yet built, building now."
-msgstr "Η κρυφή μνήμη τεκμηρίωσης δεν έχει ακόμη δημιουργηθεί, δημιουργείται τώρα."
+#: getdocs\getdocs.py:342
+msgid "Documentations cache is not yet built."
+msgstr "Η κρυφή μνήμη τεκμηρίωσης δεν έχει ακόμη δημιουργηθεί."
 
-#: getdocs\getdocs.py:364
+#: getdocs\getdocs.py:393
 msgid "No results found."
 msgstr "Δεν βρέθηκαν αποτελέσματα."
 
-#: getdocs\getdocs.py:477
+#: getdocs\getdocs.py:523
 #, docstring
 msgid "\n"
-"        Enable a documentations source.\n"
+"        Enable a Documentations source.\n"
 "        "
 msgstr "\n"
-"        Ενεργοποίηση μιας πηγής τεκμηρίωσης.\n"
+"        Ενεργοποιήστε μια πηγή τεκμηρίωσης.\n"
 "        "
 
-#: getdocs\getdocs.py:482
+#: getdocs\getdocs.py:529
 msgid "This source is already enabled."
 msgstr "Αυτή η πηγή είναι ήδη ενεργοποιημένη."
 
-#: getdocs\getdocs.py:495
+#: getdocs\getdocs.py:545
 #, docstring
 msgid "\n"
-"        Disable a documentations source.\n"
+"        Disable a Documentations source.\n"
 "        "
 msgstr "\n"
 "        Απενεργοποίηση μιας πηγής τεκμηρίωσης.\n"
 "        "
 
-#: getdocs\getdocs.py:500
-msgid "This source is already disabled."
-msgstr "Αυτή η πηγή είναι ήδη απενεργοποιημένη."
-
-#: getdocs\getdocs.py:506
+#: getdocs\getdocs.py:554
 #, docstring
 msgid "\n"
-"        Set the documentations source.\n\n"
-"        The default value was `discord.py`.\n"
+"        Show stats about all documentations sources.\n"
 "        "
 msgstr "\n"
-"        Ορίστε την πηγή τεκμηρίωσης.\n\n"
-"        Η προεπιλεγμένη τιμή ήταν `discord.py`.\n"
+"        Εμφάνιση στατιστικών για όλες τις πηγές τεκμηρίωσης.\n"
 "        "
 
-#: getdocs\getdocs.py:513
-msgid "This source is disabled."
-msgstr "Αυτή η πηγή είναι απενεργοποιημένη."
-
-#: getdocs\getdocs.py:1244
+#: getdocs\getdocs.py:1460
 msgid "RTFM caching isn't finished."
 msgstr "Η προσωρινή αποθήκευση RTFM δεν έχει τελειώσει."
 

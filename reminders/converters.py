@@ -30,6 +30,8 @@ from pyparsing import (
     nums,
     oneOf,
     tokenMap,
+    FollowedBy,
+    Regex,
 )  # NOQA
 from recurrent.event_parser import RecurringEvent
 
@@ -405,7 +407,7 @@ class TimeConverter(commands.Converter):
         if content is None:
             return utc_now, remind_time, interval
         else:
-            return utc_now, remind_time, interval, (text or None)
+            return utc_now, remind_time, interval, text.strip() if text is not None else None
 
 
 class ContentConverter(commands.Converter):  # no longer used
@@ -447,7 +449,7 @@ class DurationParser:
 
         unit_years = (
             CaselessLiteral("years") | CaselessLiteral("year") | CaselessLiteral("y")
-        ) + WordEnd()
+        ) + (FollowedBy(Regex(r"\d+[a-zA-Z]+")) | WordEnd())
         years = (
             Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
@@ -456,7 +458,7 @@ class DurationParser:
         )
         unit_months = (
             CaselessLiteral("months") | CaselessLiteral("month") | CaselessLiteral("mo")
-        ) + WordEnd()
+        ) + (FollowedBy(Regex(r"\d+[a-zA-Z]+")) | WordEnd())
         months = (
             Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
@@ -465,7 +467,7 @@ class DurationParser:
         )
         unit_weeks = (
             CaselessLiteral("weeks") | CaselessLiteral("week") | CaselessLiteral("w")
-        ) + WordEnd()
+        ) + (FollowedBy(Regex(r"\d+[a-zA-Z]+")) | WordEnd())
         weeks = (
             Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
@@ -474,7 +476,7 @@ class DurationParser:
         )
         unit_days = (
             CaselessLiteral("days") | CaselessLiteral("day") | CaselessLiteral("d")
-        ) + WordEnd()
+        ) + (FollowedBy(Regex(r"\d+[a-zA-Z]+")) | WordEnd())
         days = (
             Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
@@ -487,7 +489,7 @@ class DurationParser:
             | CaselessLiteral("hrs")
             | CaselessLiteral("hr")
             | CaselessLiteral("h")
-        ) + WordEnd()
+        ) + (FollowedBy(Regex(r"\d+[a-zA-Z]+")) | WordEnd())
         hours = (
             Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
@@ -500,7 +502,7 @@ class DurationParser:
             | CaselessLiteral("mins")
             | CaselessLiteral("min")
             | CaselessLiteral("m")
-        ) + WordEnd()
+        ) + (FollowedBy(Regex(r"\d+[a-zA-Z]+")) | WordEnd())
         minutes = (
             Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]
@@ -513,7 +515,7 @@ class DurationParser:
             | CaselessLiteral("secs")
             | CaselessLiteral("sec")
             | CaselessLiteral("s")
-        ) + WordEnd()
+        ) + (FollowedBy(Regex(r"\d+[a-zA-Z]+")) | WordEnd())
         seconds = (
             Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]

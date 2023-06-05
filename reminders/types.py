@@ -98,6 +98,8 @@ class IntervalRule:
             tz = pytz.timezone(timezone)
             cron_trigger = CronTrigger.from_crontab(self.value, timezone=tz)
             next_expires_at = last_expires_at
+            if next_expires_at is None:
+                return None
             while next_expires_at == last_expires_at or next_expires_at < utc_now:
                 next_expires_at = cron_trigger.get_next_fire_time(previous_fire_time=last_expires_at, now=utc_now.astimezone(tz=tz))
                 if next_expires_at is None:
@@ -318,7 +320,7 @@ class Reminder:
         return _(
             "• **Next Expires at**: {expires_at_timestamp} ({expires_in_timestamp})\n"
             "• **Created at**: {created_at_timestamp} ({created_in_timestamp})\n"
-            "• **Interval**: {interval}\n"
+            "• **Interval(s)**: {intervals}\n"
             "• **Title**: {title}\n"
             "• **Content type**: `{content_type}`\n"
             "• **Content**: {content}\n"
@@ -332,7 +334,7 @@ class Reminder:
             ),
             created_at_timestamp=f"<t:{int(self.created_at.timestamp())}:F>",
             created_in_timestamp=self.cog.get_interval_string(self.created_at, use_timestamp=False),
-            interval=_("No interval(s).")
+            intervals=_("No interval(s).")
             if self.intervals is None
             else (
                 _("Advanced intervals.")
@@ -551,7 +553,7 @@ class Reminder:
                         files=files,
                         content=self.target["mention"] if self.target is not None else None,
                         allowed_mentions=discord.AllowedMentions(
-                            everyone=True, users=True, roles=True, replied_user=False
+                            everyone=destination.permissions_for(user).mention_everyone, users=True, roles=destination.permissions_for(user).mention_everyone, replied_user=False
                         ),
                         view=view,
                         reference=reference,

@@ -156,7 +156,7 @@ class TimeConverter(commands.Converter):
                 raise ValueError(f"• Cron trigger parsing: {' '.join([f'{arg}.' for arg in e.args])}")
             expires_datetime = cron_trigger.get_next_fire_time(previous_fire_time=None, now=local_now)
             expires_datetime = expires_datetime.astimezone(tz=datetime.timezone.utc)
-            return expires_datetime, cog.Intervals.from_json([{"type": "cron", "value": to_parse, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp())}]), text
+            return expires_datetime, cog.Repeat.from_json([{"type": "cron", "value": to_parse, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp()), "last_trigger": int(expires_datetime.timestamp())}]), text
 
         @executor()
         def parse_timestamp(arg: str) -> datetime.datetime:
@@ -182,7 +182,7 @@ class TimeConverter(commands.Converter):
                 raise ValueError(
                     f"• Relative date parsing: Impossible to parse this date. {str(e)[:100]}"
                 )
-            interval = None
+            repeat = None
             repeat_dict = parse_result["every"] if "every" in parse_result else None
             if "in" in parse_result:
                 expires_dict = parse_result["in"]
@@ -224,10 +224,10 @@ class TimeConverter(commands.Converter):
             reminder_text = parse_result["text"] or None if "text" in parse_result else None
             expires_datetime = expires_datetime.astimezone(tz=datetime.timezone.utc)
             if repeat_dict is not None:
-                interval = cog.Intervals.from_json([{"type": "sample", "value": repeat_dict, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp())}])
+                repeat = cog.Repeat.from_json([{"type": "sample", "value": repeat_dict, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp()), "last_trigger": int(expires_datetime.timestamp())}])
             return (
                 expires_datetime,
-                interval,
+                repeat,
                 reminder_text.strip() if return_text and reminder_text else text,
             )
 
@@ -247,7 +247,7 @@ class TimeConverter(commands.Converter):
             expires_datetime = expires_datetime.astimezone(tz=datetime.timezone.utc)
             # if expires_datetime <= utc_now.replace(minute=utc_now.minute + 1):
             #     expires_datetime += dateutil.relativedelta.relativedelta(minutes=2)
-            return expires_datetime, cog.Intervals.from_json([{"type": "rrule", "value": rrule_string, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp())}])
+            return expires_datetime, cog.Repeat.from_json([{"type": "rrule", "value": rrule_string, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp()), "last_trigger": int(expires_datetime.timestamp())}])
 
         @executor()
         def parse_fuzzy_date(arg: str, text: typing.Optional[str] = None) -> datetime.datetime:
@@ -353,7 +353,7 @@ class TimeConverter(commands.Converter):
             return parsed_date, reminder_text.strip() if return_text and reminder_text else text
 
         remind_time = None
-        interval = None
+        repeat = None
         text = content
         info = []
         try:
@@ -361,7 +361,7 @@ class TimeConverter(commands.Converter):
         except ValueError as e:
             info.append(e.args[0])
             try:
-                remind_time, interval, text = await parse_cron_trigger(argument, text=content)
+                remind_time, repeat, text = await parse_cron_trigger(argument, text=content)
             except ValueError as e:
                 info.append(e.args[0])
                 try:
@@ -369,11 +369,11 @@ class TimeConverter(commands.Converter):
                 except ValueError as e:
                     info.append(e.args[0])
                     try:
-                        remind_time, interval, text = await parse_relative_date(argument, text=content)
+                        remind_time, repeat, text = await parse_relative_date(argument, text=content)
                     except ValueError as e:
                         info.append(e.args[0])
                         try:
-                            remind_time, interval = await parse_recurrent(argument)
+                            remind_time, repeat = await parse_recurrent(argument)
                         except ValueError as e:
                             info.append(e.args[0])
                             try:
@@ -405,9 +405,9 @@ class TimeConverter(commands.Converter):
             raise commands.BadArgument(f"Error(s) during parsing the input:\n{info}")
 
         if content is None:
-            return utc_now, remind_time, interval
+            return utc_now, remind_time, repeat
         else:
-            return utc_now, remind_time, interval, text.strip() if text is not None else None
+            return utc_now, remind_time, repeat, text.strip() if text is not None else None
 
 
 class ContentConverter(commands.Converter):  # no longer used

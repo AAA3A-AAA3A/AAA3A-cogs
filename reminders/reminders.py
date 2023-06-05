@@ -22,7 +22,7 @@ from .converters import (
     TimeConverter,
     TimezoneConverter,
 )  # NOQA
-from .types import Content, Data, Intervals, Reminder
+from .types import Content, Data, Repeat, Reminder
 from .views import ReminderView
 
 # Credits:
@@ -71,7 +71,7 @@ class Reminders(Cog):
 
     # To prevent circular imports...
     Reminder = Reminder
-    Intervals = Intervals
+    Repeat = Repeat
 
     def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
@@ -156,7 +156,7 @@ class Reminders(Cog):
                 if user_id not in self.cache:
                     self.cache[user_id] = {}
                 self.cache[user_id][int(reminder_id)] = reminder
-        self.cogsutils.create_loop(function=self.reminders_loop, name="Reminders", seconds=30)
+        self.cogsutils.create_loop(function=self.reminders_loop, name="Reminders", minutes=1)
 
     async def cog_unload(self) -> None:
         self.bot.tree.remove_command(remind_message_context_menu.name)
@@ -265,7 +265,7 @@ class Reminders(Cog):
         ctx: commands.Context,
         content: Content,
         expires_at: datetime.datetime,
-        intervals: typing.Optional[Intervals] = None,
+        repeat: typing.Optional[Repeat] = None,
         created_at: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
         **kwargs,
     ) -> Reminder:
@@ -286,7 +286,7 @@ class Reminders(Cog):
             expires_at=expires_at,
             last_expires_at=None,
             next_expires_at=expires_at,
-            intervals=intervals,
+            repeat=repeat,
         )
         reminder_kwargs.update(**kwargs)
         reminder = Reminder(**reminder_kwargs)
@@ -299,7 +299,7 @@ class Reminders(Cog):
     ) -> None:
         """Create a reminder with optional reminder text or message.
 
-        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find intervals and your text.
+        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.
         You don't have to put quotes around the time argument.
         Use `[p]reminder timetips` to display tips for time parsing.
         """
@@ -315,7 +315,7 @@ class Reminders(Cog):
             )
         try:
             if message_or_text is not None:
-                utc_now, expires_at, intervals, message_or_text = await TimeConverter().convert(
+                utc_now, expires_at, repeat, message_or_text = await TimeConverter().convert(
                     ctx, argument=time, content=message_or_text
                 )
                 try:
@@ -323,17 +323,17 @@ class Reminders(Cog):
                 except commands.BadArgument:
                     pass
             else:
-                utc_now, expires_at, intervals = await TimeConverter().convert(ctx, argument=time)
+                utc_now, expires_at, repeat = await TimeConverter().convert(ctx, argument=time)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
-        if intervals is not None:
+        if repeat is not None:
             if not await self.config.repeat_allowed() and ctx.author.id not in ctx.bot.owner_ids:
                 raise commands.UserFeedbackCheckFailure(
                     _("You are not allowed to create repeating reminders.")
                 )
-            for interval in intervals.rules:
-                if interval.type == "sample":
-                    _repeat_dict = interval.value.copy()
+            for rule in repeat.rules:
+                if rule.type == "sample":
+                    _repeat_dict = rule.value.copy()
                     _repeat_dict.pop("years", None)
                     _repeat_dict.pop("months", None)
                     repeat_delta = datetime.timedelta(**_repeat_dict)
@@ -389,7 +389,7 @@ class Reminders(Cog):
             ctx,
             content=content,
             expires_at=expires_at,
-            intervals=intervals,
+            repeat=repeat,
             created_at=utc_now,
         )
         view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
@@ -415,7 +415,7 @@ class Reminders(Cog):
     ) -> None:
         """Create a reminder with optional reminder text or message, in a channel with an user/role ping.
 
-        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find intervals and your text.
+        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.
         You don't have to put quotes around the time argument.
         Use `[p]reminder timetips` to display tips for time parsing.
         """
@@ -431,7 +431,7 @@ class Reminders(Cog):
             )
         try:
             if message_or_text is not None:
-                utc_now, expires_at, intervals, message_or_text = await TimeConverter().convert(
+                utc_now, expires_at, repeat, message_or_text = await TimeConverter().convert(
                     ctx, argument=time, content=message_or_text
                 )
                 try:
@@ -439,17 +439,17 @@ class Reminders(Cog):
                 except commands.BadArgument:
                     pass
             else:
-                utc_now, expires_at, intervals = await TimeConverter().convert(ctx, argument=time)
+                utc_now, expires_at, repeat = await TimeConverter().convert(ctx, argument=time)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
-        if intervals is not None:
+        if repeat is not None:
             if not await self.config.repeat_allowed() and ctx.author.id not in ctx.bot.owner_ids:
                 raise commands.UserFeedbackCheckFailure(
                     _("You are not allowed to create repeating reminders.")
                 )
-            for interval in intervals.rules:
-                if interval.type == "sample":
-                    _repeat_dict = interval.value.copy()
+            for rule in repeat.rules:
+                if rule.type == "sample":
+                    _repeat_dict = rule.value.copy()
                     _repeat_dict.pop("years", None)
                     _repeat_dict.pop("months", None)
                     repeat_delta = datetime.timedelta(**_repeat_dict)
@@ -537,7 +537,7 @@ class Reminders(Cog):
             ctx,
             content=content,
             expires_at=expires_at,
-            intervals=intervals,
+            repeat=repeat,
             destination=destination.id,
             target={"id": target.id, "mention": target.mention},
             created_at=utc_now,
@@ -570,7 +570,7 @@ class Reminders(Cog):
     ) -> None:
         """Create a FIFO/command reminder. The chosen command will be executed with you as invoker. Don't provide the prefix.
 
-        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find intervals.
+        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.
         You don't have to put quotes around the time argument.
         Use `[p]reminder timetips` to display tips for time parsing.
         """
@@ -589,17 +589,17 @@ class Reminders(Cog):
                 _("You're not allowed to create FIFO/commands reminders.")
             )
         try:
-            utc_now, expires_at, intervals, command = await TimeConverter().convert(ctx, argument=time, content=command)
+            utc_now, expires_at, repeat, command = await TimeConverter().convert(ctx, argument=time, content=command)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
-        if intervals is not None:
+        if repeat is not None:
             if not await self.config.repeat_allowed() and ctx.author.id not in ctx.bot.owner_ids:
                 raise commands.UserFeedbackCheckFailure(
                     _("You are not allowed to create repeating reminders.")
                 )
-            for interval in intervals.rules:
-                if interval.type == "sample":
-                    _repeat_dict = interval.value.copy()
+            for rule in repeat.rules:
+                if rule.type == "sample":
+                    _repeat_dict = rule.value.copy()
                     _repeat_dict.pop("years", None)
                     _repeat_dict.pop("months", None)
                     repeat_delta = datetime.timedelta(**_repeat_dict)
@@ -626,7 +626,7 @@ class Reminders(Cog):
         )
         if not context.valid:
             raise commands.UserFeedbackCheckFailure(_("This command doesn't exist."))
-        if (
+        elif (
             not await context.command.can_run(context)
             or not destination_user_permissions.send_messages
             or not destination_bot_permissions.send_messages
@@ -634,12 +634,14 @@ class Reminders(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("You can't execute this command, in this context.")
             )
+        elif context.command.qualified_name in ["shutdown", "restart", "load", "unload", "reload"]:
+            raise commands.UserFeedbackCheckFailure(_("The command `{command.qualified_name}` can't be scheduled, because it's a suspicious command.").format(command=context.command))
         content = {"type": "command", "command": command, "command_invoker": ctx.author.id}
         reminder = await self.create_reminder(
             ctx,
             content=content,
             expires_at=expires_at,
-            intervals=intervals,
+            repeat=repeat,
             destination=destination.id,
             created_at=utc_now,
         )
@@ -665,7 +667,7 @@ class Reminders(Cog):
     ) -> None:
         """Create a reminder who will say/send text.
 
-        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find intervals.
+        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.
         You don't have to put quotes around the time argument.
         Use `[p]reminder timetips` to display tips for time parsing.
         """
@@ -680,17 +682,17 @@ class Reminders(Cog):
                 ).format(minimum_user_reminders=minimum_user_reminders)
             )
         try:
-            utc_now, expires_at, intervals, text = await TimeConverter().convert(ctx, argument=time, content=text)
+            utc_now, expires_at, repeat, text = await TimeConverter().convert(ctx, argument=time, content=text)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
-        if intervals is not None:
+        if repeat is not None:
             if not await self.config.repeat_allowed() and ctx.author.id not in ctx.bot.owner_ids:
                 raise commands.UserFeedbackCheckFailure(
                     _("You are not allowed to create repeating reminders.")
                 )
-            for interval in intervals.rules:
-                if interval.type == "sample":
-                    _repeat_dict = interval.value.copy()
+            for rule in repeat.rules:
+                if rule.type == "sample":
+                    _repeat_dict = rule.value.copy()
                     _repeat_dict.pop("years", None)
                     _repeat_dict.pop("months", None)
                     repeat_delta = datetime.timedelta(**_repeat_dict)
@@ -723,7 +725,7 @@ class Reminders(Cog):
             ctx,
             content=content,
             expires_at=expires_at,
-            intervals=intervals,
+            repeat=repeat,
             destination=destination.id,
             created_at=utc_now,
         )
@@ -1120,7 +1122,7 @@ class Reminders(Cog):
                         next_expires_at=datetime.datetime.fromtimestamp(
                             reminder_data["expires"], tz=datetime.timezone.utc
                         ),
-                        intervals=Intervals.from_json(
+                        repeat=Repeat.from_json(
                             [{"type": "sample", "value": reminder_data["repeat"]}]
                         )
                         if reminder_data.get("repeat")

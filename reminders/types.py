@@ -57,7 +57,7 @@ def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
 
 
 @dataclass(frozen=False)
-class IntervalRule:
+class RepeatRule:
     type: str
     value: typing.Optional[typing.Dict[str, int]]
 
@@ -87,6 +87,7 @@ class IntervalRule:
         utc_now: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
         timezone: str = "UTC",
     ) -> typing.Optional[datetime.datetime]:
+        self.last_trigger = self.last_trigger or self.start_trigger or last_expires_at
         if self.last_trigger > last_expires_at:
             return self.last_trigger
         if self.type == "sample":
@@ -145,8 +146,8 @@ class IntervalRule:
             return None
 
 @dataclass(frozen=False)
-class Intervals:
-    rules: typing.List[IntervalRule]
+class Repeat:
+    rules: typing.List[RepeatRule]
 
     def to_json(self) -> typing.List[typing.Dict[str, typing.Union[str, typing.Dict[str, int]]]]:
         return [rule.to_json() for rule in self.rules]
@@ -155,7 +156,7 @@ class Intervals:
     def from_json(
         cls, data: typing.List[typing.Dict[str, typing.Union[str, typing.Dict[str, int]]]]
     ) -> typing_extensions.Self:
-        return cls(rules=[IntervalRule.from_json(rule) for rule in data])
+        return cls(rules=[RepeatRule.from_json(rule) for rule in data])
 
     async def next_trigger(
         self,
@@ -189,7 +190,7 @@ class Reminder:
     expires_at: datetime.datetime
     last_expires_at: typing.Optional[datetime.datetime]
     next_expires_at: datetime.datetime
-    intervals: typing.Optional[Intervals]
+    repeat: typing.Optional[Repeat]
 
     def __eq__(self, other: "Reminder") -> bool:
         return (self.next_expires_at or datetime.datetime.now(tz=datetime.timezone.utc)) == (
@@ -229,7 +230,7 @@ class Reminder:
             "expires_at": int(self.expires_at.timestamp()),
             "last_expires_at": int(self.next_expires_at.timestamp()),
             "next_expires_at": int(self.next_expires_at.timestamp()),
-            "intervals": self.intervals.to_json() if self.intervals is not None else self.intervals,
+            "repeat": self.repeat.to_json() if self.repeat is not None else self.repeat,
         }
         if clean:
             for attr in [
@@ -237,7 +238,7 @@ class Reminder:
                 "me_too",
                 "destination",
                 "target",
-                "intervals",
+                "repeat",
                 "last_expires_at",
             ]:
                 if not getattr(self, attr):
@@ -270,20 +271,20 @@ class Reminder:
             next_expires_at=datetime.datetime.fromtimestamp(
                 int(data["next_expires_at"]), tz=datetime.timezone.utc
             ),
-            intervals=Intervals.from_json(data["intervals"])
-            if data.get("intervals") is not None
-            else (Intervals.from_json([data["interval"]]) if data.get("interval") is not None else None),
+            repeat=Repeat.from_json((data.get("repeat") or data.get("intervals")))
+            if (data.get("repeat") or data.get("intervals")) is not None
+            else None,
         )
 
     def __str__(
         self, utc_now: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)
     ) -> str:
         and_every = ""
-        if self.intervals is not None:
-            if len(self.intervals.rules) == 1:
-                and_every = _(", and then **{interval}**").format(interval=self.intervals.rules[0].get_info(cog=self.cog).lower().split("]")[-1].rstrip(".")[1:])
+        if self.repeat is not None:
+            if len(self.repeat.rules) == 1:
+                and_every = _(", and then **{interval}**").format(interval=self.repeat.rules[0].get_info(cog=self.cog).lower().split("]")[-1].rstrip(".")[1:])
             else:
-                and_every = _(", with **advanced intervals**")
+                and_every = _(", with **advanced repeat rules**")
         interval_string = self.cog.get_interval_string(
             int(self.expires_at.timestamp() - utc_now.timestamp())
         )
@@ -320,7 +321,7 @@ class Reminder:
         return _(
             "• **Next Expires at**: {expires_at_timestamp} ({expires_in_timestamp})\n"
             "• **Created at**: {created_at_timestamp} ({created_in_timestamp})\n"
-            "• **Interval(s)**: {intervals}\n"
+            "• **Repeat**: {repeat}\n"
             "• **Title**: {title}\n"
             "• **Content type**: `{content_type}`\n"
             "• **Content**: {content}\n"
@@ -334,12 +335,12 @@ class Reminder:
             ),
             created_at_timestamp=f"<t:{int(self.created_at.timestamp())}:F>",
             created_in_timestamp=self.cog.get_interval_string(self.created_at, use_timestamp=False),
-            intervals=_("No interval(s).")
-            if self.intervals is None
+            repeat=_("No existing repeat rule(s).")
+            if self.repeat is None
             else (
-                _("Advanced intervals.")
-                if len(self.intervals.rules) > 1
-                else self.intervals.rules[0].get_info(cog=self.cog)
+                _("Advanced repeat rules.")
+                if len(self.repeat.rules) > 1
+                else self.repeat.rules[0].get_info(cog=self.cog)
             ),
             title=self.content.get("title") or _("Not provided."),
             content_type=self.content["type"],
@@ -459,8 +460,8 @@ class Reminder:
         if not testing:
             self.last_expires_at = self.next_expires_at
             timezone = (await self.cog.config.user_from_id(self.user_id).timezone()) or "UTC"
-            if self.intervals is not None:
-                self.next_expires_at = await self.intervals.next_trigger(
+            if self.repeat is not None:
+                self.next_expires_at = await self.repeat.next_trigger(
                     last_expires_at=self.last_expires_at, utc_now=utc_now, timezone=timezone
                 )
                 await self.save()
@@ -494,8 +495,14 @@ class Reminder:
                     f"Command invoker not found for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
                 )
             context: commands.Context = await self.cog.cogsutils.invoke_command(
-                author=invoker, channel=destination, command=self.content["command"]
+                author=invoker, channel=destination, command=self.content["command"], assume_yes=True
             )
+            # for cog_name in ("CustomCommands", "Alias"):
+            #     if (cog := self.cog.bot.get_cog(cog_name)) is not None:
+            #         for handler_name in ("on_message", "on_message_without_command"):
+            #             if (msg_handler := getattr(cog, handler_name, None)) is not None:
+            #                 await msg_handler(context.message)
+            #                 break
             if not context.valid:  # don't delete the reminder (cog unloaded for example)
                 raise RuntimeError(
                     f"Command not found for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has not been deleted."

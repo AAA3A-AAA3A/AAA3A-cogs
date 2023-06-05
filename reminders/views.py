@@ -203,23 +203,23 @@ class ReminderView(discord.ui.View):
         await interaction.response.send_modal(EditReminderModal(self, timezone=timezone))
 
     @discord.ui.button(
-        label="Add/Edit Interval Rule(s)",
+        label="Add/Edit Repeat Rule(s)",
         emoji="🛠️",
         style=discord.ButtonStyle.secondary,
-        custom_id="add_edit_interval_rules",
+        custom_id="add_edit_repeat_rules",
     )
     async def add_edit_interval_rules(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         embed: discord.Embed = discord.Embed(
-            title=_("Reminder #{reminder_id} Intervals Rules").format(reminder_id=self.reminder.id),
+            title=_("Reminder #{reminder_id} Repeat Rules").format(reminder_id=self.reminder.id),
             color=discord.Color.green(),
         )
-        if self.reminder.intervals is None:
-            embed.description = _("No existing intervals rule(s).")
+        if self.reminder.repeat is None:
+            embed.description = _("No existing repeat rule(s).")
         else:
-            embed.description = self.reminder.intervals.get_info(cog=self.cog)
-        view = IntervalsView(cog=self.cog, reminder=self.reminder)
+            embed.description = self.reminder.repeat.get_info(cog=self.cog)
+        view = RepeatView(cog=self.cog, reminder=self.reminder)
         await interaction.response.send_message(embed=embed, view=view)
         view._message = await interaction.original_response()
 
@@ -258,7 +258,7 @@ class ReminderView(discord.ui.View):
             expires_at=self.reminder.next_expires_at,
             last_expires_at=None,
             next_expires_at=self.reminder.next_expires_at,
-            intervals=self.reminder.intervals,
+            repeat=self.reminder.repeat,
         )
         await reminder.save()
         self.me_too_members[interaction.user] = reminder
@@ -291,7 +291,7 @@ class ReminderView(discord.ui.View):
         await self._message.delete()
         self.stop()
 
-class AddIntervalRuleModal(discord.ui.Modal):
+class AddRepeatRuleModal(discord.ui.Modal):
     def __init__(
         self,
         parent: discord.ui.View,
@@ -299,40 +299,40 @@ class AddIntervalRuleModal(discord.ui.Modal):
         self._parent: discord.ui.View = parent
         self.reminder = self._parent.reminder
 
-        super().__init__(title=f"Add Interval Rule to Reminder #{self.reminder.id}")
+        super().__init__(title=f"Add Repeat Rule to Reminder #{self.reminder.id}")
 
-        self.interval_rule: discord.ui.TextInput = discord.ui.TextInput(
-            label="Interval Rule",
+        self.repeat_rule: discord.ui.TextInput = discord.ui.TextInput(
+            label="Repeat Rule",
             placeholder="(required)",
             default=None,
             style=discord.TextStyle.short,
             max_length=200,
-            custom_id="interval_rule",
+            custom_id="repeat_rule",
             required=True,
         )
-        self.add_item(self.interval_rule)
+        self.add_item(self.repeat_rule)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
         try:
-            __, __, intervals = await TimeConverter().convert(
+            __, __, repeat = await TimeConverter().convert(
                 await interaction.client.get_context(interaction.message),
-                self.interval_rule.value,
+                self.repeat_rule.value,
             )
         except commands.BadArgument as e:
             await interaction.response.send_message(str(e), ephemeral=True)
             return
-        if intervals is None:
+        if repeat is None:
             await interaction.response.send_message(_("No interval found in your input."), ephemeral=True)
             return
-        if self.reminder.intervals is None:
-            self.reminder.intervals = intervals
+        if self.reminder.repeat is None:
+            self.reminder.repeat = repeat
         else:
-            self.reminder.intervals.rules.append(intervals.rules[0])
+            self.reminder.repeat.rules.append(repeat.rules[0])
         await self.reminder.save()
         if self._parent._message is not None:
             try:
                 embed = self._parent._message.embeds[0]
-                embed.description = self.reminder.intervals.get_info(cog=self._parent.cog)
+                embed.description = self.reminder.repeat.get_info(cog=self._parent.cog)
                 self._parent.remove_interval_rule.disabled = False
                 self._parent._message = await self._parent._message.edit(embed=embed, view=self._parent)
             except discord.HTTPException:
@@ -344,7 +344,7 @@ class AddIntervalRuleModal(discord.ui.Modal):
             ephemeral=True,
         )
 
-class RemoveIntervalRuleModal(discord.ui.Modal):
+class RemoveRepeatRuleModal(discord.ui.Modal):
     def __init__(
         self,
         parent: discord.ui.View,
@@ -352,39 +352,39 @@ class RemoveIntervalRuleModal(discord.ui.Modal):
         self._parent: discord.ui.View = parent
         self.reminder = self._parent.reminder
 
-        super().__init__(title=f"Remove Interval Rule from Reminder #{self.reminder.id}")
+        super().__init__(title=f"Remove Repeat Rule from Reminder #{self.reminder.id}")
 
-        self.index_number_interval_rule: discord.ui.TextInput = discord.ui.TextInput(
-            label="Index Number Interval Rule",
+        self.index_number_repeat_rule: discord.ui.TextInput = discord.ui.TextInput(
+            label="Index Number Repeat Rule",
             placeholder="(required)",
             default=None,
             style=discord.TextStyle.short,
-            max_length=str(len(self.reminder.intervals.rules)),
-            custom_id="index_number_interval_rule",
+            max_length=str(len(self.reminder.repeat.rules)),
+            custom_id="index_number_repeat_rule",
             required=True,
         )
-        self.add_item(self.index_number_interval_rule)
+        self.add_item(self.index_number_repeat_rule)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
         try:
-            index_number_interval_rule = int(self.index_number_interval_rule.value)
+            index_number_repeat_rule = int(self.index_number_repeat_rule.value)
         except ValueError as e:
             await interaction.response.send_message(str(e), ephemeral=True)
             return
-        if self.reminder.intervals is None:
-            await interaction.response.send_message(_("No existing intervals rule(s)."), ephemeral=True)
+        if self.reminder.repeat is None:
+            await interaction.response.send_message(_("No existing repeat rule(s)."), ephemeral=True)
             return
         try:
-            del self.reminder.intervals.rules[index_number_interval_rule - 1]
+            del self.reminder.repeat.rules[index_number_repeat_rule - 1]
         except ValueError:
-            await interaction.response.send_message(_("No existing interval rule found with this index number."), ephemeral=True)
+            await interaction.response.send_message(_("No existing repeat rule found with this index number."), ephemeral=True)
             return
         await self.reminder.save()
         if self._parent._message is not None:
             try:
                 embed = self._parent._message.embeds[0]
-                embed.description = self.reminder.intervals.get_info(cog=self._parent.cog) or _("No existing intervals rule(s).")
-                self._parent.remove_interval_rule.disabled = not self.reminder.intervals.rules
+                embed.description = self.reminder.repeat.get_info(cog=self._parent.cog) or _("No existing repeat rule(s).")
+                self._parent.remove_interval_rule.disabled = not self.reminder.repeat.rules
                 self._parent._message = await self._parent._message.edit(embed=embed, view=self._parent)
             except discord.HTTPException:
                 pass
@@ -396,7 +396,7 @@ class RemoveIntervalRuleModal(discord.ui.Modal):
         )
 
 
-class IntervalsView(discord.ui.View):
+class RepeatView(discord.ui.View):
     def __init__(self, cog: commands.Cog, reminder) -> None:
         super().__init__(timeout=60 * 10)
         self.cog: commands.Cog = cog
@@ -433,47 +433,47 @@ class IntervalsView(discord.ui.View):
         self._ready.set()
 
     @discord.ui.button(
-        label="Add Interval Rule",
+        label="Add Repeat Rule",
         emoji="🛠️",
         style=discord.ButtonStyle.secondary,
-        custom_id="add_interval_rule",
+        custom_id="add_repeat_rule",
     )
-    async def add_interval_rule(
+    async def add_repeat_rule(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        if self.reminder.intervals is not None and len(self.reminder.intervals.rules) > 10:
-            await interaction.response.send_message(_("A maximum of 10 interval rules per reminder is supported."), ephemeral=True)
+        if self.reminder.repeat is not None and len(self.reminder.repeat.rules) > 10:
+            await interaction.response.send_message(_("A maximum of 10 repeat rules per reminder is supported."), ephemeral=True)
             return
-        await interaction.response.send_modal(AddIntervalRuleModal(self))
+        await interaction.response.send_modal(AddRepeatRuleModal(self))
 
     @discord.ui.button(
-        label="Remove Interval Rule",
+        label="Remove Repeat Rule",
         emoji="🛠️",
         style=discord.ButtonStyle.secondary,
-        custom_id="remove_interval_rule",
+        custom_id="remove_repeat_rule",
     )
-    async def remove_interval_rule(
+    async def remove_repeat_rule(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        if self.reminder.intervals is None:
-            await interaction.response.send_message(_("No existing intervals rule(s)."), ephemeral=True)
+        if self.reminder.repeat is None:
+            await interaction.response.send_message(_("No existing repeat rule(s)."), ephemeral=True)
             return
-        await interaction.response.send_modal(RemoveIntervalRuleModal(self))
+        await interaction.response.send_modal(RemoveRepeatRuleModal(self))
 
     @discord.ui.button(
-        label="Stop Interval(s)",
+        label="Stop Repeat",
         emoji="🗑️",
         style=discord.ButtonStyle.danger,
-        custom_id="stop_intervals",
+        custom_id="stop_repeat",
     )
-    async def stop_intervals(
+    async def stop_repeat(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        self.reminder.intervals = None
+        self.reminder.repeat = None
         if self._message is not None:
             try:
                 embed = self._message.embeds[0]
-                embed.description = _("No existing intervals rule(s).")
+                embed.description = _("No existing repeat rule(s).")
                 self._message = await self._message.edit(embed=embed)
             except discord.HTTPException:
                 pass
@@ -495,8 +495,8 @@ class SnoozeView(discord.ui.View):
         self.cog: commands.Cog = cog
 
         self.reminder = reminder
-        if self.reminder.intervals is None:
-            self.remove_item(self.stop_intervals)
+        if self.reminder.repeat is None:
+            self.remove_item(self.stop_repeat)
         if self.reminder.jump_url is not None:
             self.add_item(
                 discord.ui.Button(
@@ -556,7 +556,7 @@ class SnoozeView(discord.ui.View):
             expires_at=expires_at,
             last_expires_at=None,
             next_expires_at=expires_at,
-            intervals=None,
+            repeat=None,
         )
         await reminder.save()
         await interaction.response.send_message(
@@ -646,9 +646,9 @@ class SnoozeView(discord.ui.View):
         await self.create_snooze_reminder(interaction=interaction, timedelta=delta)
 
     @discord.ui.button(
-        label="Stop Interval(s)", emoji="🗑️", style=discord.ButtonStyle.danger, custom_id="stop_intervals", row=1
+        label="Stop Repeat", emoji="🗑️", style=discord.ButtonStyle.danger, custom_id="stop_repeat", row=1
     )
-    async def stop_intervals(
+    async def stop_repeat(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         self.reminder.next_expires_at = None

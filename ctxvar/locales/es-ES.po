@@ -1,0 +1,71 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:25\n"
+"Last-Translator: \n"
+"Language-Team: Spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-ES\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/ctxvar/locales/messages.pot\n"
+"X-Crowdin-File-ID: 82\n"
+"Language: es_ES\n"
+
+#: ctxvar\ctxvar.py:31
+#, docstring
+msgid "A cog to list and display the contents of all sub-functions of `ctx`!"
+msgstr "¡Un engranaje para listar y mostrar el contenido de todas las subfunciones de `ctx`!"
+
+#: ctxvar\ctxvar.py:52
+#, docstring
+msgid "Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."
+msgstr "Muestra una lista de todos los atributos y sus valores de la instancia de clase 'ctx' o sus subatributos."
+
+#: ctxvar\ctxvar.py:56 ctxvar\ctxvar.py:118 ctxvar\ctxvar.py:169
+#: ctxvar\ctxvar.py:250
+msgid "The cog Dev must be loaded, to make sure you know what you are doing."
+msgstr "El engranaje Dev debe estar cargado, para asegurarse de que sabe lo que está haciendo."
+
+#: ctxvar\ctxvar.py:67
+msgid "The argument you specified is not a subclass of the instance."
+msgstr "El argumento especificado no es una subclase de la instancia."
+
+#: ctxvar\ctxvar.py:74
+msgid "Here are all the variables and their associated values that can be used in this instance class."
+msgstr "Aquí están todas las variables y sus valores asociados que se pueden utilizar en esta clase de instancia."
+
+#: ctxvar\ctxvar.py:114
+#, docstring
+msgid "Display a list of all attributes of the provided object (debug not async)."
+msgstr "Muestra una lista de todos los atributos del objeto proporcionado (debug no async)."
+
+#: ctxvar\ctxvar.py:135 ctxvar\ctxvar.py:186 ctxvar\ctxvar.py:267
+#: ctxvar\ctxvar.py:326
+msgid "I couldn't find any cog, command, or object named `{thing}`."
+msgstr "No he podido encontrar ningún engranaje, comando u objeto llamado `{thing}`."
+
+#: ctxvar\ctxvar.py:165
+#, docstring
+msgid "Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."
+msgstr "Ejecuta `rich.help(obj=objeto, ...)` sobre el objeto proporcionado (debug no async)."
+
+#: ctxvar\ctxvar.py:246
+#, docstring
+msgid "Execute `ast.dump(ast.parse(<code content>))` on the provided object (debug not async)."
+msgstr "Ejecuta `ast.dump(ast.parse(<code content>))` sobre el objeto proporcionado (debug no async)."
+
+#: ctxvar\ctxvar.py:310
+msgid "No Discord object found."
+msgstr "No se ha encontrado ningún objeto Discord."
+
+#: ctxvar\ctxvar.py:338
+#, docstring
+msgid "List attributes of the provided object like dpy objects (debug not async)."
+msgstr "Lista los atributos del objeto proporcionado como objetos dpy (debug no async)."
+

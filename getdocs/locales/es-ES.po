@@ -1,0 +1,71 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:27\n"
+"Last-Translator: \n"
+"Language-Team: Spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-ES\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/getdocs/locales/messages.pot\n"
+"X-Crowdin-File-ID: 183\n"
+"Language: es_ES\n"
+
+#: getdocs\getdocs.py:212 getdocs\getdocs.py:531
+msgid "This source doesn't exist."
+msgstr "Esta fuente no existe."
+
+#: getdocs\getdocs.py:218
+#, docstring
+msgid "A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."
+msgstr "¡Un engranaje para obtener y mostrar algunas documentaciones en Discord! Utilice `[p]listsources` para obtener una lista de todas las fuentes disponibles."
+
+#: getdocs\getdocs.py:342
+msgid "Documentations cache is not yet built."
+msgstr "La caché de documentación aún no se ha creado."
+
+#: getdocs\getdocs.py:393
+msgid "No results found."
+msgstr "No se han encontrado resultados."
+
+#: getdocs\getdocs.py:523
+#, docstring
+msgid "\n"
+"        Enable a Documentations source.\n"
+"        "
+msgstr "\n"
+"        Habilitar una fuente de documentación.\n"
+"        "
+
+#: getdocs\getdocs.py:529
+msgid "This source is already enabled."
+msgstr "Esta fuente ya está activada."
+
+#: getdocs\getdocs.py:545
+#, docstring
+msgid "\n"
+"        Disable a Documentations source.\n"
+"        "
+msgstr "\n"
+"        Desactivar una fuente de documentación.\n"
+"        "
+
+#: getdocs\getdocs.py:554
+#, docstring
+msgid "\n"
+"        Show stats about all documentations sources.\n"
+"        "
+msgstr "\n"
+"        Mostrar estadísticas sobre todas las fuentes de documentación.\n"
+"        "
+
+#: getdocs\getdocs.py:1460
+msgid "RTFM caching isn't finished."
+msgstr "La caché RTFM no está terminada."
+

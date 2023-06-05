@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:27\n"
+"Last-Translator: \n"
+"Language-Team: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: nl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/getloc/locales/messages.pot\n"
+"X-Crowdin-File-ID: 148\n"
+"Language: nl_NL\n"
+
+#: getloc\getloc.py:26
+#, docstring
+msgid "A cog to display information about a location based on its address or geographical coordinates!"
+msgstr "Een tandwiel om informatie over een locatie weer te geven op basis van het adres of de geografische coördinaten!"
+
+#: getloc\getloc.py:121
+msgid "An error has occurred. Please try again."
+msgstr "Er is een fout opgetreden. Probeer het opnieuw."
+
+#: getloc\getloc.py:124
+msgid "The address or contact details you have provided do not lead to any results. Are you sure of your input?"
+msgstr "Het adres of de contactgegevens die u hebt opgegeven, leiden niet tot resultaten. Bent u zeker van uw invoer?"
+

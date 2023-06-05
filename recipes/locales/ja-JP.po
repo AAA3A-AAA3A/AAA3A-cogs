@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:32\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/recipes/locales/messages.pot\n"
+"X-Crowdin-File-ID: 237\n"
+"Language: ja_JP\n"
+
+#: recipes\recipes.py:33
+#, docstring
+msgid "A cog to search and show a cooking recipe!"
+msgstr "料理のレシピを検索して表示するための歯車です！"
+
+#: recipes\recipes.py:137 recipes\recipes.py:154
+msgid "No recipe found."
+msgstr "レシピは見つかりませんでした。"
+
+#: recipes\recipes.py:143
+msgid "Error in parsing the response.\n"
+"{error}"
+msgstr "レスポンスのパースでエラーが発生しました。\n"
+"{error}"
+
+#: recipes\recipes.py:159
+msgid "View results on Food52"
+msgstr "Food52の結果を見る"
+
+#: recipes\view.py:47
+msgid "View recipe on Food52"
+msgstr "Food52でレシピを見る"
+

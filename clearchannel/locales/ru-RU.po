@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-03 16:47\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 18:22\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -17,36 +17,36 @@ msgstr ""
 "X-Crowdin-File-ID: 78\n"
 "Language: ru_RU\n"
 
-#: clearchannel\clearchannel.py:25
+#: clearchannel\clearchannel.py:20
 #, docstring
 msgid "A cog to transfer all messages channel in a other channel!"
 msgstr "Зубчатка для передачи всех сообщений канала в другой канал!"
 
-#: clearchannel\clearchannel.py:98
+#: clearchannel\clearchannel.py:93
 msgid "⚠️ - ClearChannel"
 msgstr "⚠️ - ClearChannel"
 
-#: clearchannel\clearchannel.py:99
+#: clearchannel\clearchannel.py:94
 msgid "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?"
 msgstr "Вы действительно хотите удалить ВСЕ сообщения с канала {old_channel.mention} ({old_channel.id})?"
 
-#: clearchannel\clearchannel.py:109
+#: clearchannel\clearchannel.py:104
 msgid "Clear Channel requested by {ctx.author} ({ctx.author.id})."
 msgstr "Clear Channel по запросу {ctx.author} ({ctx.author.id})."
 
-#: clearchannel\clearchannel.py:115
+#: clearchannel\clearchannel.py:110
 msgid "🗑️-Deleted-{old_channel.name}"
 msgstr "🗑️ - Удалено -{old_channel.name}"
 
-#: clearchannel\clearchannel.py:129
+#: clearchannel\clearchannel.py:124
 msgid "ClearChannel"
 msgstr "ClearChannel"
 
-#: clearchannel\clearchannel.py:130
+#: clearchannel\clearchannel.py:125
 msgid "ALL the messages in this channel have been deleted..."
 msgstr "ВСЕ сообщения в этом канале были удалены..."
 
-#: clearchannel\clearchannel.py:156
+#: clearchannel\clearchannel.py:143
 msgid "All messages in channel #{old_channel.name} ({old_channel.id}) have been deleted! You can find the new channel, with the same permissions: #{new_channel.name} ({new_channel.id})."
 msgstr "Все сообщения в канале #{old_channel.name} ({old_channel.id}) были удалены! Вы можете найти новый канал с теми же правами: #{new_channel.name} ({new_channel.id})."
 

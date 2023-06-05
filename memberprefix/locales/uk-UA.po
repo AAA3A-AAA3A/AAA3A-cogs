@@ -1,0 +1,51 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:27\n"
+"Last-Translator: \n"
+"Language-Team: Ukrainian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: uk\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/memberprefix/locales/messages.pot\n"
+"X-Crowdin-File-ID: 92\n"
+"Language: uk_UA\n"
+
+#: memberprefix\memberprefix.py:20
+#, docstring
+msgid "A cog to allow a member to choose custom prefixes, just for them!"
+msgstr "Гвинтик, який дозволяє користувачеві обирати власні префікси, тільки для нього!"
+
+#: memberprefix\memberprefix.py:165
+msgid "You now use this server or global prefixes."
+msgstr "Тепер ви використовуєте цей сервер або глобальні префікси."
+
+#: memberprefix\memberprefix.py:169
+msgid "A prefix is above the maximal length (25 characters).\n"
+"This is possible for global or per-server prefixes, but not for per-member prefixes."
+msgstr "Префікс перевищує максимальну довжину (25 символів).\n"
+"Це можливо для глобальних або серверних префіксів, але не для префіксів для кожного члена."
+
+#: memberprefix\memberprefix.py:175
+msgid "Prefixes cannot start with `/`, as it conflicts with Discord's slash commands."
+msgstr "Префікси не можуть починатися з `/`, оскільки це суперечить командам косої риски у Discord."
+
+#: memberprefix\memberprefix.py:179
+msgid "Prefix for you only set."
+msgstr "Префікс встановлюється тільки для вас."
+
+#: memberprefix\memberprefix.py:181
+msgid "Prefixes for you only set."
+msgstr "Префікси задаються тільки для вас."
+
+#: memberprefix\memberprefix.py:250
+#, docstring
+msgid "Clear all members prefixes for this guild."
+msgstr "Очистіть префікси всіх членів цієї гільдії."
+

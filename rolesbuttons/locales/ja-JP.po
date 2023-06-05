@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-04-02 18:58+0200\n"
-"PO-Revision-Date: 2023-04-03 20:01\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:28\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -41,54 +41,46 @@ msgstr "{role.mention} の役割は、ディスコードの階層で最も高い
 msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
 msgstr "絵文字 役割は絵文字の後に `;`, `,`, `|`, `-` のいずれかで区切られた役割でなければなりません。"
 
-#: rolesbuttons\rolesbuttons.py:34
+#: rolesbuttons\rolesbuttons.py:23
 #, docstring
 msgid "A cog to have roles-buttons!"
 msgstr "ロールボタンを持つための歯車です！"
 
-#: rolesbuttons\rolesbuttons.py:107 rolesbuttons\rolesbuttons.py:223
+#: rolesbuttons\rolesbuttons.py:69
 msgid "This message is not in Config."
 msgstr "このメッセージはConfigではありません。"
 
-#: rolesbuttons\rolesbuttons.py:139 rolesbuttons\rolesbuttons.py:244
-msgid "This emoji is not in Config."
-msgstr "この絵文字はConfigにはありません。"
+#: rolesbuttons\rolesbuttons.py:72
+msgid "This button is not in Config."
+msgstr "このボタンはConfigにはありません。"
 
-#: rolesbuttons\rolesbuttons.py:150 rolesbuttons\rolesbuttons.py:250
-msgid "The role ({role_id}) I have to put you in no longer exists. Please notify an administrator of this server."
-msgstr "あなたを入れるべき役割({role_id})がもう存在しない。このサーバーの管理者にお知らせください。"
+#: rolesbuttons\rolesbuttons.py:80
+msgid "The role ({role_id}) I have to give you no longer exists. Please notify an administrator of this server."
+msgstr "あなたに与えるべき役割({role_id})は、もう存在しないのです。このサーバーの管理者にお知らせください。"
 
-#: rolesbuttons\rolesbuttons.py:165
+#: rolesbuttons\rolesbuttons.py:99
 msgid "Role-button of {interaction.message.id} in {interaction.channel.id}."
 msgstr "{interaction.channel.id}の {interaction.message.id} のロールボタン。"
 
-#: rolesbuttons\rolesbuttons.py:171 rolesbuttons\rolesbuttons.py:271
-msgid "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
-msgstr "{role.mention} ({role.id}) の役割をあなたに追加することができませんでした。このサーバーの管理者にお知らせください。"
+#: rolesbuttons\rolesbuttons.py:105
+msgid "I could not add the {role.mention} role to you. Please notify an administrator of this server."
+msgstr "{role.mention} のロールをあなたに追加できませんでした。このサーバーの管理者にお知らせください。"
 
-#: rolesbuttons\rolesbuttons.py:179 rolesbuttons\rolesbuttons.py:279
-msgid "You now have the role {role.mention} ({role.id})."
-msgstr "あなたは今、 {role.mention} ({role.id}) という役割を担っています。"
+#: rolesbuttons\rolesbuttons.py:113
+msgid "You now have the {role.mention} role."
+msgstr "これで、 {role.mention} の役割を果たしました。"
 
-#: rolesbuttons\rolesbuttons.py:190 rolesbuttons\rolesbuttons.py:290
-msgid "I could not remove the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
-msgstr "{role.mention} ({role.id}) の役割をあなたに外すことができませんでした。このサーバーの管理者にお知らせください。"
+#: rolesbuttons\rolesbuttons.py:124
+msgid "I could not remove the role {role.mention} ({role.id}) role from you. Please notify an administrator of this server."
+msgstr "{role.mention} ({role.id}) のロールをあなたから削除することができませんでした。このサーバーの管理者にお知らせください。"
 
-#: rolesbuttons\rolesbuttons.py:198
-msgid "I removed the role {role.mention} ({role.id})."
-msgstr "{role.mention} ({role.id}) という役割を外しました。"
+#: rolesbuttons\rolesbuttons.py:132
+msgid "You no longer have the role {role.mention} ({role.id})."
+msgstr "{role.mention} ({role.id}) という役割はもうありません。"
 
-#: rolesbuttons\rolesbuttons.py:265
-msgid "Role-button of {inter.message.id} in {channel.id}."
-msgstr "{channel.id}の {inter.message.id} のロールボタン。"
-
-#: rolesbuttons\rolesbuttons.py:298
-msgid "I did remove the role {role.mention} ({role.id})."
-msgstr "{role.mention} ({role.id}) という役割は外しました。"
-
-#: rolesbuttons\rolesbuttons.py:332
+#: rolesbuttons\rolesbuttons.py:182
 #, docstring
-msgid "Add a role-button to a message.\n\n"
+msgid "Add a role-button for a message.\n\n"
 "        `primary`: 1\n"
 "        `secondary`: 2\n"
 "        `success`: 3\n"
@@ -100,7 +92,7 @@ msgid "Add a role-button to a message.\n\n"
 "        `green`: 3\n"
 "        `red`: 4\n"
 "        "
-msgstr "メッセージにロールボタンを追加する。\n\n"
+msgstr "メッセージのロールボタンを追加する。\n\n"
 "        `primary`：1\n"
 "        `secondary`: 2\n"
 "        `success`：3\n"
@@ -113,83 +105,87 @@ msgstr "メッセージにロールボタンを追加する。\n\n"
 "        `red`：4\n"
 "        "
 
-#: rolesbuttons\rolesbuttons.py:347 rolesbuttons\rolesbuttons.py:403
-#: rolesbuttons\rolesbuttons.py:465 rolesbuttons\rolesbuttons.py:479
-#: rolesbuttons\rolesbuttons.py:511
+#: rolesbuttons\rolesbuttons.py:197 rolesbuttons\rolesbuttons.py:250
+#: rolesbuttons\rolesbuttons.py:316 rolesbuttons\rolesbuttons.py:332
+#: rolesbuttons\rolesbuttons.py:361
 msgid "I have to be the author of the message for the role-button to work."
 msgstr "role-buttonが機能するためには、私がメッセージの作成者である必要があります。"
 
-#: rolesbuttons\rolesbuttons.py:357 rolesbuttons\rolesbuttons.py:417
+#: rolesbuttons\rolesbuttons.py:207 rolesbuttons\rolesbuttons.py:264
 msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
 "I need the permissions to see the messages in that channel."
 msgstr "指定されたメッセージがあるチャンネルのパーミッションが十分ではありません。\n"
 "そのチャンネルのメッセージを見るためのパーミッションが必要です。"
 
-#: rolesbuttons\rolesbuttons.py:366
+#: rolesbuttons\rolesbuttons.py:216
 msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "選択した絵文字が無効のようです。絵文字であることを確認してください。Nitroをご利用の場合、他のサーバーのカスタム絵文字を使用した可能性があります。"
 
-#: rolesbuttons\rolesbuttons.py:375 rolesbuttons\rolesbuttons.py:436
+#: rolesbuttons\rolesbuttons.py:225 rolesbuttons\rolesbuttons.py:283
 msgid "I can't do more than 25 roles-buttons for one message."
 msgstr "1つのメッセージに対して25個以上のロールボタンをすることはできない。"
 
-#: rolesbuttons\rolesbuttons.py:397
+#: rolesbuttons\rolesbuttons.py:244
 #, docstring
-msgid "Add roles-buttons to a message.\n\n"
+msgid "Add roles-buttons for a message.\n\n"
 "        ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```\n"
 "        "
-msgstr "メッセージにロールスボタンを追加する。\n\n"
+msgstr "メッセージのロールボタンを追加する。\n\n"
 "        ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3``\n"
 "        "
 
-#: rolesbuttons\rolesbuttons.py:407
+#: rolesbuttons\rolesbuttons.py:254
 msgid "You have not specified any valid role-button."
 msgstr "有効なロールボタンが指定されていません。"
 
-#: rolesbuttons\rolesbuttons.py:427
+#: rolesbuttons\rolesbuttons.py:274
 msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "選択した絵文字が無効のようです。絵文字であることを確認してください。Nitroをご利用の場合、他のサーバーのカスタム絵文字を使用した可能性があります。"
 
-#: rolesbuttons\rolesbuttons.py:454
+#: rolesbuttons\rolesbuttons.py:303
 #, docstring
 msgid "Choose a mode for a roles-buttons message.\n\n"
 "        Type `add_or_remove`:\n"
-"        Users get the role if they do not already have it, or lose it.\n"
+"        - Users get the role if they do not already have it, or lose it.\n"
 "        Type `add_only`:\n"
-"        Users can only get the role, but only manual action will remove it.\n"
+"        - Users can only get the role, but only manual action will remove it.\n"
 "        Type `remove_only`:\n"
-"        Users can only lose a role, and will not be able to get it again without a manual action.\n"
+"        - Users can only lose a role, and will not be able to get it again without a manual action.\n"
+"        Type `replace`:\n"
+"        - Same as add_or_remove, but the roles from this message will be mutually exclusive, and getting one will remove the previous.\n"
 "        "
 msgstr "roles-buttonsメッセージのモードを選択します。\n\n"
-"        add_or_remove`と入力します：\n"
-"        ユーザがまだロールを持っていない場合、ロールを取得するか、ロールを失う。\n"
-"        タイプ `add_only`：\n"
-"        ユーザはロールを取得することしかできませんが、手動操作でのみロールを削除することができます。\n"
-"        タイプ `remove_only`：\n"
-"        ユーザーはロールを失うことしかできず、手動で操作しない限り再びロールを取得することはできません。\n"
+"        Type `add_or_remove`:\n"
+"        - ユーザーはロールをまだ持っていない場合、ロールを取得するか、失うことになります。\n"
+"        Type `add_only`:\n"
+"        - ユーザーはロールを取得することしかできませんが、手動操作でのみロールを削除することができます。\n"
+"        Type `remove_only`:\n"
+"        - ユーザーはロールを失うことだけができ、手動で操作しない限り再び得ることはできない。\n"
+"        Type `replace`:\n"
+"        - add_or_removeと同じですが、このメッセージのロールは相互に排他的であり、1つ取得すると前のロールは削除されます。\n"
 "        "
 
-#: rolesbuttons\rolesbuttons.py:470 rolesbuttons\rolesbuttons.py:484
-#: rolesbuttons\rolesbuttons.py:516
+#: rolesbuttons\rolesbuttons.py:321 rolesbuttons\rolesbuttons.py:337
+#: rolesbuttons\rolesbuttons.py:366
 msgid "No role-button is configured for this message."
 msgstr "このメッセージには、ロールボタンは設定されていません。"
 
-#: rolesbuttons\rolesbuttons.py:476
+#: rolesbuttons\rolesbuttons.py:329
 #, docstring
-msgid "Remove a role-button to a message."
+msgid "Remove a role-button for a message."
 msgstr "メッセージのロールボタンを削除する。"
 
-#: rolesbuttons\rolesbuttons.py:488
+#: rolesbuttons\rolesbuttons.py:341
 msgid "I wasn't watching for this button on this message."
 msgstr "このメッセージでこのボタンを見ていたわけではありません。"
 
-#: rolesbuttons\rolesbuttons.py:508
+#: rolesbuttons\rolesbuttons.py:358
 #, docstring
-msgid "Clear all roles-buttons to a message."
-msgstr "メッセージにすべてのロールボタンをクリアする。"
+msgid "Clear all roles-buttons for a message."
+msgstr "メッセージのロールボタンをすべて消去する。"
 
-#: rolesbuttons\rolesbuttons.py:531
+#: rolesbuttons\rolesbuttons.py:378
 #, docstring
-msgid "Clear all roles-buttons to a **guild**."
-msgstr "すべてのロールボタンを**ギルド**にクリアする。"
+msgid "Clear all roles-buttons for a guild."
+msgstr "ギルドのロールボタンをすべて消去する。"
 

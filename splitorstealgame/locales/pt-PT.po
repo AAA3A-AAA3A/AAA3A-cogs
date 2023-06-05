@@ -1,0 +1,84 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:32\n"
+"Last-Translator: \n"
+"Language-Team: Portuguese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pt-PT\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/splitorstealgame/locales/messages.pot\n"
+"X-Crowdin-File-ID: 241\n"
+"Language: pt_PT\n"
+
+#: splitorstealgame\splitorstealgame.py:19
+#, docstring
+msgid "A cog to play a match of SplitOrSteal game!"
+msgstr "Uma engrenagem para jogar uma partida do jogo SplitOrSteal!"
+
+#: splitorstealgame\view.py:33
+msgid "Join the game by clicking on the button below. 2 players will be selected randomly."
+msgstr "Participe no jogo clicando no botão abaixo. Serão seleccionados aleatoriamente 2 jogadores."
+
+#: splitorstealgame\view.py:50
+msgid "At least two players are needed to play."
+msgstr "São necessários pelo menos dois jogadores para jogar."
+
+#: splitorstealgame\view.py:60
+msgid "The two players are {player_A.mention} and {player_B.mention}.\n"
+"You have to click the button that you choose (`split` or `steal`).\n"
+"• If you both choose `split` both of them win.\n"
+"• If you both choose `steal`, both of you loose.\n"
+"• if one of you chooses `split` and one of you chooses `steal`, the one who choose `steal` will win."
+msgstr "Os dois jogadores são {player_A.mention} e {player_B.mention}.\n"
+"Têm de clicar no botão que escolherem (`split` ou `steal`).\n"
+"- Se ambos escolherem `split`, ambos ganham.\n"
+"- Se ambos escolherem \"roubar\", ambos perdem.\n"
+"- Se um de vocês escolher `split` e outro escolher `steal`, aquele que escolher `steal` ganhará."
+
+#: splitorstealgame\view.py:84
+msgid "At least one player has stopped playing."
+msgstr "Pelo menos um jogador deixou de jogar."
+
+#: splitorstealgame\view.py:87
+msgid "{player_A.display_name} and {player_B.display_name}, you both chose `split` and therefore both win."
+msgstr "{player_A.display_name} e {player_B.display_name}, ambos escolheram `split` e, portanto, ambos ganham."
+
+#: splitorstealgame\view.py:91
+msgid "{player_A.display_name} and {player_B.display_name}, you both chose `steal` and therefore both loose."
+msgstr "{player_A.display_name} e {player_B.display_name}, ambos escolheram \"roubar\" e, portanto, ambos perdem."
+
+#: splitorstealgame\view.py:95
+msgid "{player_A.display_name} chose `split` and {player_B.display_name} chose `steal`, and therefore {player_A.display_name} win."
+msgstr "{player_A.display_name} escolheu `split` e {player_B.display_name} escolheu `steal`, pelo que {player_A.display_name} ganhou."
+
+#: splitorstealgame\view.py:99
+msgid "{player_B.display_name} chose `split` and {player_A.display_name} chose `steal`, and therefore {player_B.display_name} win."
+msgstr "{player_B.display_name} escolheu `split` e {player_A.display_name} escolheu `steal`, pelo que {player_B.display_name} ganhou."
+
+#: splitorstealgame\view.py:128
+msgid "You have already joined this game."
+msgstr "Já entraste neste jogo."
+
+#: splitorstealgame\view.py:131
+msgid "You have joined this game."
+msgstr "Entraste neste jogo."
+
+#: splitorstealgame\view.py:138 splitorstealgame\view.py:148
+msgid "You have already chose `{original_response}`."
+msgstr "Já seleccionou `{original_response}`."
+
+#: splitorstealgame\view.py:141
+msgid "You have chose `split`."
+msgstr "Escolheu `split`."
+
+#: splitorstealgame\view.py:151
+msgid "You have chose `steal`."
+msgstr "Escolheu `steal`."
+

@@ -1,0 +1,168 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:27\n"
+"Last-Translator: \n"
+"Language-Team: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: nl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/discordmodals/locales/messages.pot\n"
+"X-Crowdin-File-ID: 84\n"
+"Language: nl_NL\n"
+
+#: discordmodals\discordmodals.py:27
+msgid "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)"
+msgstr "Fout bij het parsen van YAML. Controleer of het formaat geldig is (een YAML-validator kan helpen)"
+
+#: discordmodals\discordmodals.py:37
+msgid "The argument `/{arg}` is required in the root in the YAML."
+msgstr "Het argument `/{arg}` is vereist in de root in de YAML."
+
+#: discordmodals\discordmodals.py:42
+msgid "The agument `/{arg}` is invalid in in the YAML. Check the spelling."
+msgstr "Het agument `/{arg}` is ongeldig in de YAML. Controleer de spelling."
+
+#: discordmodals\discordmodals.py:52
+msgid "The argument `/button/{arg}` is required in the YAML."
+msgstr "Het argument `/button/{arg}` is vereist in de YAML."
+
+#: discordmodals\discordmodals.py:57
+msgid "The agument `/button/{arg}` is invalid in the YAML. Check the spelling."
+msgstr "Het agument `/button/{arg}` is ongeldig in de YAML. Controleer de spelling."
+
+#: discordmodals\discordmodals.py:67 discordmodals\discordmodals.py:71
+msgid "The agument `/button/style` must be a number between 1 and 4."
+msgstr "Het agument `/button/style` moet een getal tussen 1 en 4 zijn."
+
+#: discordmodals\discordmodals.py:79
+msgid "The argument `/button/modal` must be a list of TextInputs."
+msgstr "Het argument `/button/modal` moet een lijst van TextInputs zijn."
+
+#: discordmodals\discordmodals.py:95
+msgid "The argument `/modal/{count}/{arg}` is required in the YAML."
+msgstr "Het argument `/modal/{count}/{arg}` is vereist in de YAML."
+
+#: discordmodals\discordmodals.py:102
+msgid "The agument `/modal/{count}/{arg}` is invalid in the YAML. Check the spelling."
+msgstr "Het agument `/modal/{count}/{arg}` is ongeldig in de YAML. Controleer de spelling."
+
+#: discordmodals\discordmodals.py:112 discordmodals\discordmodals.py:118
+msgid "The agument `/modal/{count}/style` must be a number between 1 and 2."
+msgstr "Het agument `/modal/{count}/style` moet een getal tussen 1 en 2 zijn."
+
+#: discordmodals\discordmodals.py:141
+msgid "The agument `/modal/{count}/required` must be a boolean (True or False)."
+msgstr "Het agument `/modal/{count}/required` moet een boolean zijn (True of False)."
+
+#: discordmodals\discordmodals.py:187
+#, docstring
+msgid "A cog to use Discord Modals, forms with graphic interface!"
+msgstr "Een radertje om Discord Modals, formulieren met grafische interface te gebruiken!"
+
+#: discordmodals\discordmodals.py:305 discordmodals\discordmodals.py:366
+msgid "Sorry. An error has occurred."
+msgstr "Sorry. Er is een fout opgetreden."
+
+#: discordmodals\discordmodals.py:321
+msgid "The channel in which I was to send the results of this Modal no longer exists. Please notify an administrator of this server."
+msgstr "Het kanaal waarin ik de resultaten van deze Modal moest verzenden, bestaat niet meer. Breng een beheerder van deze server op de hoogte."
+
+#: discordmodals\discordmodals.py:333
+msgid "I don't have sufficient permissions in the destination channel (view channel, send messages, send embeds). Please notify an administrator of this server."
+msgstr "Ik heb niet voldoende rechten in de bestemmingschatroom (chatroom bekijken, berichten verzenden, embeds verzenden). Breng een beheerder van deze server op de hoogte."
+
+#: discordmodals\discordmodals.py:370
+msgid "Thank you for sending this Modal!"
+msgstr "Bedankt voor het sturen van deze Modal!"
+
+#: discordmodals\discordmodals.py:395
+#, docstring
+msgid "Add a Modal for a message.\n\n"
+"        Use YAML syntax to set up everything.\n\n"
+"        **Example:**\n"
+"        ```\n"
+"        [p]discordmodals add <message>\n"
+"        title: Report a bug\n"
+"        button:\n"
+"          label: Report\n"
+"          emoji: ⚠️\n"
+"          style: 4 # blurple = 1, grey = 2, green = 3, red = 4\n"
+"        modal:\n"
+"          - label: What is the problem?\n"
+"            style: 2 # short = 1, paragraph = 2\n"
+"            required: True\n"
+"            default: None\n"
+"            placeholder: None\n"
+"            min_length: None\n"
+"            max_length: None\n"
+"        channel: general # id, mention, name\n"
+"        anonymous: False\n"
+"        messages:\n"
+"          error: Error!\n"
+"          submit: Form submitted.\n"
+"        ```\n"
+"        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous` and `messages` are not required.\n"
+"        "
+msgstr "Voeg een Modal toe voor een bericht.\n\n"
+"        Gebruik de YAML-syntaxis om alles in te stellen.\n\n"
+"        **Voorbeeld:**\n"
+"        ```\n"
+"        [p]discordmodals toevoegen <message>\n"
+"        titel: Rapporteer een bug\n"
+"        knop:\n"
+"          label: Rapporteer\n"
+"          emoji: ⚠️\n"
+"          stijl: 4 # blurple = 1, grey = 2, green = 3, red = 4\n"
+"        modal:\n"
+"          - label: Wat is het probleem?\n"
+"            style: 2 # short = 1, paragraph = 2\n"
+"            required: True\n"
+"            default: Geen\n"
+"            placeholder: Geen\n"
+"            min_lengte: Geen\n"
+"            max_length: Geen\n"
+"        channel: general # id, mention, name\n"
+"        anonymous: False\n"
+"        berichten:\n"
+"          error: Error!\n"
+"          submit: Formulier verzonden.\n\n"
+"        De `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous` en `messages` zijn niet verplicht.\n"
+"        "
+
+#: discordmodals\discordmodals.py:425
+msgid "I have to be the author of the message for the button to work."
+msgstr "Ik moet de auteur van het bericht zijn om de knop te laten werken."
+
+#: discordmodals\discordmodals.py:429
+msgid "This message already has a Modal."
+msgstr "Dit bericht heeft al een Modal."
+
+#: discordmodals\discordmodals.py:442
+msgid "Sorry. An error occurred when I tried to put the button on the message."
+msgstr "Sorry. Er trad een fout op toen ik probeerde de knop op het bericht te zetten."
+
+#: discordmodals\discordmodals.py:482
+#, docstring
+msgid "Remove a Modal for a message."
+msgstr "Modal voor een bericht verwijderen."
+
+#: discordmodals\discordmodals.py:485
+msgid "I have to be the author of the message for the Modal to work."
+msgstr "Ik moet de auteur van het bericht zijn om het Modal te laten werken."
+
+#: discordmodals\discordmodals.py:489
+msgid "No Modal is configured for this message."
+msgstr "Er is geen modus geconfigureerd voor dit bericht."
+
+#: discordmodals\discordmodals.py:499
+#, docstring
+msgid "Clear all Modals for a guild."
+msgstr "Wis alle Modals voor een gilde."
+

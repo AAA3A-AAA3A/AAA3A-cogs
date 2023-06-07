@@ -178,7 +178,7 @@ BOOTABLES_TOOLS = {
     "Macrium Reflect": {
         "url": "https://www.fcportables.com/macrium-reflect-rescue-winpe/",
         "category": "USB\\Backup_and_Recovery\\",
-        "regex": r"Macrium Reflect (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Server Plus WinPE \(x64\)",
+        "regex": r"Macrium Reflect Server Plus (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) WinPE \(x64\)",
     },
     "MiniTool ShadowMaker Business Deluxe": {
         "url": "https://www.fcportables.com/shadowmaker-pro/",

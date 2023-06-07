@@ -286,26 +286,26 @@ class Medicat(Cog):
             "last_bootables_tools_versions": {
                 "Acronis Cyber Backup": "12.5",
                 "Acronis True Image": "2021.6",
-                "AOMEI Backupper Technician Plus": "6.9.1",
-                "EaseUS Data Recovery Wizard": "15.2.0.0",
-                "EaseUS Todo Backup": "13.5.0",
-                "Macrium Reflect": "8.0.6758",
-                "MiniTool ShadowMaker Business Deluxe": "3.6.1",
-                "MiniTool Power Data Recovery": "10.2",
+                "AOMEI Backupper Technician Plus": "7.2.3",
+                "EaseUS Data Recovery Wizard": "15.2",
+                "EaseUS Todo Backup": "2023",
+                "Macrium Reflect": "8.1.7544",
+                "MiniTool ShadowMaker Business Deluxe": "4.1.0",
+                "MiniTool Power Data Recovery": "11.5",
                 "Boot Repair Disk": "2021-12-16",
-                "EasyUEFI Technician": "4.9.2",
-                "SystemRescue": "9.02",
+                "EasyUEFI Technician": "5.0",
+                "SystemRescue": "10.01",
                 "Ultimate Boot": "5.3.8",
-                "HDAT2": "7.4",
-                "Memtest86 Pro": "9.4.1000",
+                "HDAT2": "7.5",
+                "Memtest86 Pro": "10.4.1000",
                 "Active@ Boot Disk": "22.0",
                 "Acronis Disk Director": "12.5.163",
-                "AOMEI Partition Assistant Technician Edition": "9.7.0",
-                "EaseUS Partition Master": "16.8",
-                "MiniTool Partition Wizard Technician": "12.6",
-                "NIUBI Partition Editor Technician Edition": "7.8.7",
+                "AOMEI Partition Assistant Technician Edition": "10.0.0",
+                "EaseUS Partition Master": "17.8.0",
+                "MiniTool Partition Wizard Technician": "12.7",
+                "NIUBI Partition Editor Technician Edition": "9.6.0",
                 "Paragon Hard Disk Manager Advanced": "17.20.11",
-                "Parted Magic": "2022.01.18",
+                "Parted Magic": "2023.05.21",
             },
         }
         self.config.register_global(**self.medicat_global)
@@ -709,7 +709,7 @@ class Medicat(Cog):
         )
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
-    @medicat.command()
+    @medicat.command(aliases=["lastventoyversion"])
     async def getlastventoyversion(self, ctx: commands.Context) -> None:
         """Get the latest version of Ventoy."""
         try:
@@ -718,7 +718,7 @@ class Medicat(Cog):
             raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again."))
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
-    @medicat.command()
+    @medicat.command(aliases=["ventoyversion"])
     async def getventoyversion(self, ctx: commands.Context, version: str) -> None:
         """Get a version of Ventoy."""
         try:
@@ -729,7 +729,7 @@ class Medicat(Cog):
             raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again."))
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
-    @medicat.command()
+    @medicat.command(aliases=["lastbootablestoolsversions"])
     async def getlastbootablestoolsversions(self, ctx: commands.Context) -> None:
         """Get the latest versions of each Medicat USB bootable tool."""
         result = {}
@@ -784,7 +784,7 @@ class Medicat(Cog):
 
     @is_owner_or_AAA3A()
     @medicat.command(hidden=True)
-    async def debuglastbootablestoolsversions(self, ctx: commands.Context, *, url: str) -> None:
+    async def debugbootabletoolversion(self, ctx: commands.Context, *, url: str) -> None:
         """Get the debug for a FCportables's tool."""
         try:
             result = {

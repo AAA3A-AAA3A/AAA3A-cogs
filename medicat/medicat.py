@@ -163,7 +163,7 @@ BOOTABLES_TOOLS = {
     "AOMEI Backupper Technician Plus": {
         "url": "https://www.fcportables.com/aomei-backupper-boot/",
         "category": "USB\\Backup_and_Recovery\\",
-        "regex": r"Portable AOMEI Backupper Technician Plus (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \+ Boot WinPE",
+        "regex": r"Portable AOMEI Backupper Technician Plus (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \+ WinPE",
     },
     "EaseUS Data Recovery Wizard": {
         "url": "https://www.fcportables.com/easeus-recovery-wizard-winpe/",
@@ -198,7 +198,7 @@ BOOTABLES_TOOLS = {
     "EasyUEFI Technician": {
         "url": "https://www.fcportables.com/easyuefi-portable-winpe/",
         "category": "USB\\Boot_Repair\\",
-        "regex": r"Portable EasyUEFI Technician (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \+ WinPE \(x64\)",
+        "regex": r"Portable EasyUEFI Enterprise (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \+ WinPE",
     },
     "SystemRescue": {
         "url": "https://www.fcportables.com/systemrescuecd/",

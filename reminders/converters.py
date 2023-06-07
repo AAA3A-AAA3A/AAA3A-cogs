@@ -345,11 +345,6 @@ class TimeConverter(commands.Converter):
             #     parsed_date = parsed_date.replace(hour=9)
             # parsed_date = parsed_date.replace(tzinfo=tz)
             parsed_date = parsed_date.astimezone(tz=datetime.timezone.utc)
-            if return_text:
-                if reminder_text.split(" ")[0].lower() == "to":
-                    reminder_text = reminder_text[2:]
-                elif reminder_text.split(" ")[0].lower() == "that":
-                    reminder_text = reminder_text[4:]
             return parsed_date, reminder_text.strip() if return_text and reminder_text else text
 
         remind_time = None
@@ -403,6 +398,11 @@ class TimeConverter(commands.Converter):
         if remind_time is None:
             info = "\n".join(info)
             raise commands.BadArgument(f"Error(s) during parsing the input:\n{info}")
+        if text is not None:
+            if text.split(" ")[0].lower() == "to":
+                text = text[2:]
+            elif text.split(" ")[0].lower() == "that":
+                text = text[4:]
 
         if content is None:
             return utc_now, remind_time, repeat

@@ -178,7 +178,7 @@ class Reminder:
     user_id: int
 
     id: int
-    jump_url: str
+    jump_url: typing.Optional[str]
     snooze: bool
     me_too: bool
 
@@ -234,6 +234,7 @@ class Reminder:
         }
         if clean:
             for attr in [
+                "jump_url",
                 "snooze",
                 "me_too",
                 "destination",
@@ -251,7 +252,7 @@ class Reminder:
             cog=cog,
             user_id=user_id,
             id=data["id"],
-            jump_url=data["jump_url"],
+            jump_url=data.get("jump_url"),
             snooze=data.get("snooze", False),
             me_too=data.get("me_too", False),
             content=data["content"],
@@ -408,7 +409,7 @@ class Reminder:
             embed.set_author(name=user.display_name, icon_url=user.display_avatar)
         embed.add_field(
             name="\u200B",
-            value=f"[Jump to the original message.]({self.jump_url}) • Created the <t:{int(self.created_at.timestamp())}:F>.",
+            value=(f"[Jump to the original message.]({self.jump_url}) • " if self.jump_url is not None else "") + f"Created the <t:{int(self.created_at.timestamp())}:F>.",
             inline=False,
         )
         interval_string = self.cog.get_interval_string(
@@ -516,7 +517,7 @@ class Reminder:
                     f"The invoker can't execute the command for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
                 )
         else:
-            if self.content["type"] == "text":
+            if self.content["type"] in ["text", "message"]:
                 embeds = [self.to_embed(utc_now=utc_now)]
             else:
                 embeds = []
@@ -537,7 +538,7 @@ class Reminder:
                     files.append(discord.File(BytesIO(file_content), filename=file_name))
             try:
                 reference = None
-                if self.content["type"] == "text":
+                if self.content["type"] in ["text", "message"]:
                     if self.content["type"] == "message" and destination.id == int(
                         self.content["message_jump_url"].split("/")[-2]
                     ):
@@ -554,7 +555,10 @@ class Reminder:
                             )
                         ) is not None:
                             reference = message
-                    view = SnoozeView(cog=self.cog, reminder=self)
+                    if await self.cog.config.snooze_view:
+                        view = SnoozeView(cog=self.cog, reminder=self)
+                    else:
+                        view = None
                     message = await destination.send(
                         embeds=embeds,
                         files=files,
@@ -565,15 +569,16 @@ class Reminder:
                         view=view,
                         reference=reference,
                     )
-                    view._message = message
+                    if await self.cog.config.snooze_view:
+                        view._message = message
                 else:  # type `say`
                     message = await destination.send(
                         content=self.content["text"],
                         embeds=embeds,
                         files=files,
-                        # allowed_mentions=discord.AllowedMentions(
-                        #     everyone=True, users=True, roles=True, replied_user=False
-                        # ),
+                        allowed_mentions=discord.AllowedMentions(
+                            everyone=destination.permissions_for(user).mention_everyone, users=True, roles=destination.permissions_for(user).mention_everyone, replied_user=False
+                        ),
                     )
             except discord.HTTPException:
                 if not testing:

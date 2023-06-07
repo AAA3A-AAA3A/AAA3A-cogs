@@ -208,7 +208,7 @@ class ReminderView(discord.ui.View):
         style=discord.ButtonStyle.secondary,
         custom_id="add_edit_repeat_rules",
     )
-    async def add_edit_interval_rules(
+    async def add_edit_repeat_rules(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         embed: discord.Embed = discord.Embed(
@@ -322,7 +322,7 @@ class AddRepeatRuleModal(discord.ui.Modal):
             await interaction.response.send_message(str(e), ephemeral=True)
             return
         if repeat is None:
-            await interaction.response.send_message(_("No interval found in your input."), ephemeral=True)
+            await interaction.response.send_message(_("No repeat rule found in your input."), ephemeral=True)
             return
         if self.reminder.repeat is None:
             self.reminder.repeat = repeat
@@ -333,7 +333,8 @@ class AddRepeatRuleModal(discord.ui.Modal):
             try:
                 embed = self._parent._message.embeds[0]
                 embed.description = self.reminder.repeat.get_info(cog=self._parent.cog)
-                self._parent.remove_interval_rule.disabled = False
+                self._parent.remove_repeat_rule.disabled = False
+                self._parent.stop_repeat.disabled = False
                 self._parent._message = await self._parent._message.edit(embed=embed, view=self._parent)
             except discord.HTTPException:
                 pass
@@ -384,7 +385,8 @@ class RemoveRepeatRuleModal(discord.ui.Modal):
             try:
                 embed = self._parent._message.embeds[0]
                 embed.description = self.reminder.repeat.get_info(cog=self._parent.cog) or _("No existing repeat rule(s).")
-                self._parent.remove_interval_rule.disabled = not self.reminder.repeat.rules
+                self._parent.remove_repeat_rule.disabled = not self.reminder.repeat.rules
+                self._parent.stop_repeat.disabled = not self.reminder.repeat.rules
                 self._parent._message = await self._parent._message.edit(embed=embed, view=self._parent)
             except discord.HTTPException:
                 pass
@@ -402,6 +404,8 @@ class RepeatView(discord.ui.View):
         self.cog: commands.Cog = cog
 
         self.reminder = reminder
+        self.remove_repeat_rule.disabled = not self.reminder.repeat.rules
+        self.stop_repeat.disabled = not self.reminder.repeat.rules
 
         self._message: discord.Message = None
         self._ready: asyncio.Event = asyncio.Event()

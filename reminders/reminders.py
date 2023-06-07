@@ -88,6 +88,7 @@ class Reminders(Cog):
             "repeat_allowed": True,
             "minimum_repeat": 60 * 1,  # minutes, so 1 hour.
             "fifo_allowed": False,
+            "snooze_view": True,
         }
         self.reminders_user: typing.Dict[str, typing.List[Data]] = {
             "timezone": None,
@@ -128,6 +129,11 @@ class Reminders(Cog):
                 "path": ["fifo_allowed"],
                 "converter": bool,
                 "description": "Allow or deny commands reminders for users (except bot owners).",
+            },
+            "snooze_view": {
+                "path": ["snooze_view"],
+                "converter": bool,
+                "description": "Send Snooze view/buttons when reminders sending.",
             },
         }
         self.settings: Settings = Settings(

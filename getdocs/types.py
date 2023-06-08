@@ -287,5 +287,5 @@ class Documentation:
                         )
                         + "\n..."
                     )
-            embed.add_field(name=name, value=value, inline=False)
+            embed.add_field(name=f"{name}:", value=value, inline=False)
         return embed

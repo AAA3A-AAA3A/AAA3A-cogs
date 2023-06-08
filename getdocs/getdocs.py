@@ -1228,7 +1228,10 @@ class Source:
         for child in documentation.find_all(
             "div", class_=["highlight-python3", "highlight-default", "highlight"], recursive=True
         ):
-            examples.append(child.find("pre").text.strip())
+            example = child.find("pre").text.strip()
+            if example in examples:
+                continue
+            examples.append(example)
 
         # Fields
         fields = {}
@@ -1253,6 +1256,8 @@ class Source:
                 if "class" not in field.attrs:
                     continue
                 key = field.text
+                if key[-1] == ":":
+                    key = key[:-1]
                 values: typing.List[Tag] = [x for x in field.next_siblings if isinstance(x, Tag)][
                     0
                 ].find_all("p")
@@ -1263,8 +1268,12 @@ class Source:
                         text = self._get_text(element, parsed_url)
                         texts.append(text.replace("\n", " "))
                     if key == "Raises" and not texts[0].startswith(("[", "**")):
-                        elements[-1].extend(texts)
-                        continue
+                        try:
+                            elements[-1].extend(texts)
+                        except IndexError:
+                            pass
+                        else:
+                            continue
                     elements.append(texts)
                 if key.startswith("Parameters") and "Parameters" not in fields:  # PyLav by Draper.
                     key = "Parameters"
@@ -1602,9 +1611,10 @@ class Source:
         #         name = f"discord.{name}"
         #     elif f"discord.ext.commands.{name}" in self._raw_rtfm_cache_without_std:
         #         name = f"discord.ext.commands.{name}"
+        documentation = discord.utils.get(self._docs_cache, name=name)
         if (
             self.name not in ["discordapi", "git"]
-            and discord.utils.get(self._docs_cache, name=name) is not None
+            and documentation is None
         ):
             item = discord.utils.get(self._rtfm_cache.objects, name=name)
             location = item.uri
@@ -1616,8 +1626,8 @@ class Source:
             documentation = await self._get_all_manual_documentations(
                 page_url=page_url, item_name=name
             )
-            if not documentation:
+            if documentation is None:
                 return
             self._docs_cache.append(documentation)
             return documentation
-        return discord.utils.get(self._docs_cache, name=name)
+        return documentation

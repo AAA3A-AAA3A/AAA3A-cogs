@@ -149,7 +149,7 @@ class Examples(typing.List):
                     .replace("APPLICATION_ID", str(ctx.bot.application_id))
                 )
             embed = discord.Embed(
-                title=f"Example {i}:" if len(self) > 1 else "Example:",
+                title=f"Example {i}:" if len(self) > 1 or True else "Example:",  # Always include the example index...
                 description=(box(example, lang="py") if "```" not in example else example)[:4096],
                 color=embed_color,
             )

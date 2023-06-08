@@ -1182,18 +1182,22 @@ class Source:
         _full_name = parse_method_role(full_name)
         full_name = (f"{_full_name[0]} " if _full_name[0] is not None else "") + _full_name[1]
 
-        # Description
+        # Description & Examples
         description: typing.List[str] = []
+        examples = Examples()
         for child in documentation.children:
             child: Tag = child
             if isinstance(child, NavigableString):
                 continue
             if child.name == "div":
-                if child.attrs.get("class") is not None and child.attrs.get("class")[0].startswith(
-                    "highlight"
-                ):
+                if child.attrs.get("class") is not None and child.attrs.get("class")[0].startswith("highlight"):
+                    example = child.find("pre").text.strip()
+                    if example not in examples:
+                        examples.append(example)
+                    example_index = examples.index(example) + 1
                     if len(description) > 1 and description[-1].endswith(":"):
-                        del description[-1]
+                        # del description[-1]
+                        description[-1] = f"{description[-1]} [See Example **#{example_index}**]"
                     continue
                 else:
                     break
@@ -1224,14 +1228,14 @@ class Source:
         description = "\n\n".join(description).strip()
 
         # Examples
-        examples = Examples()
-        for child in documentation.find_all(
-            "div", class_=["highlight-python3", "highlight-default", "highlight"], recursive=True
-        ):
-            example = child.find("pre").text.strip()
-            if example in examples:
-                continue
-            examples.append(example)
+        # examples = Examples()
+        # for child in documentation.find_all(
+        #     "div", class_=["highlight-python3", "highlight-default", "highlight", "highlight-pycon3"], recursive=True
+        # ):
+        #     example = child.find("pre").text.strip()
+        #     if example in examples:
+        #         continue
+        #     examples.append(example)
 
         # Fields
         fields = {}
@@ -1416,7 +1420,7 @@ class Source:
             if self._rtfm_cache is not None and (
                 self._rtfm_caching_task is None or not self._rtfm_caching_task.currently_running
             ):
-                e1 = soup.find_all("dt", id=[name for name in self._raw_rtfm_cache_without_std])
+                e1 = soup.find_all("dt", id=list(self._raw_rtfm_cache_without_std))
             else:
                 e1 = ResultSet(strainer)
             e2 = soup.find_all("dt", class_="sig sig-object py")

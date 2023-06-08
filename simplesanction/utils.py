@@ -126,7 +126,7 @@ class utils:
                         name=_("Duration:"),
                         value=_("Infinity"),
                     )
-            return await CogsUtils(bot=self.bot).ConfirmationAsk(self=self, embed=embed)
+            return await CogsUtils(bot=self.bot).ConfirmationAsk(embed=embed)
 
     async def finish_message(
         self,

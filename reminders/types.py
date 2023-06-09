@@ -555,7 +555,8 @@ class Reminder:
                             )
                         ) is not None:
                             reference = message
-                    if await self.cog.config.snooze_view:
+                    snooze_view_enabled = await self.cog.config.snooze_view()
+                    if snooze_view_enabled:
                         view = SnoozeView(cog=self.cog, reminder=self)
                     else:
                         view = None
@@ -569,7 +570,7 @@ class Reminder:
                         view=view,
                         reference=reference,
                     )
-                    if await self.cog.config.snooze_view:
+                    if snooze_view_enabled:
                         view._message = message
                 else:  # type `say`
                     message = await destination.send(

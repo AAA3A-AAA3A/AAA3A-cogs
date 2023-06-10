@@ -213,6 +213,11 @@ class SourceConverter(commands.Converter):
         return argument.lower()
 
 
+class StrConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> str:
+        return argument
+
+
 @cog_i18n(_)
 class GetDocs(DashboardIntegration, Cog):
     """A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."""
@@ -228,7 +233,7 @@ class GetDocs(DashboardIntegration, Cog):
         self.getdocs_global: typing.Dict[str, typing.Union[str, bool, typing.List[str]]] = {
             "default_source": "discord.py",
             "caching": True,
-            "disabled_sources": [],
+            "disabled_sources": ["git", "aiomysql", "asyncpg", "flask", "gitpython", "mango", "matplotlib", "motor", "numpy", "poccolo", "pillow", "psutil", "redis", "sphinx", "sqlite", "starlite", "websockets"],
         }
         self.config.register_global(**self.getdocs_global)
 
@@ -517,36 +522,42 @@ class GetDocs(DashboardIntegration, Cog):
         """
         pass
 
-    @configuration.command(name="enablesource")
-    @app_commands.describe(source="The source to enable.")
-    async def _source_enable(self, ctx: commands.Context, source: str) -> None:
+    @configuration.command(name="enablesources", aliases=["enablesource"])
+    @app_commands.describe(sources="The source(s) to enable.")
+    async def _sources_enable(self, ctx: commands.Context, sources: commands.Greedy[StrConverter]) -> None:
         """
-        Enable a Documentations source.
+        Enable Documentations source(s).
         """
         disabled_sources: typing.List[str] = await self.config.disabled_sources()
-        if source not in disabled_sources:
-            if source in self.documentations:
-                raise commands.UserFeedbackCheckFailure(_("This source is already enabled."))
-            else:
-                raise commands.UserFeedbackCheckFailure(_("This source doesn't exist."))
-        disabled_sources.append(source)
+        for source in sources:
+            if source not in disabled_sources:
+                if source in self.documentations:
+                    raise commands.UserFeedbackCheckFailure(_("The source `{source}` is already enabled.").format(source=source))
+                else:
+                    raise commands.UserFeedbackCheckFailure(_("The source `{source}` doesn't exist.").format(source=source))
+            disabled_sources.remove(source)
+            self.documentations[source] = Source(
+                self,
+                name=source,
+                url=BASE_URLS[source]["url"],
+                icon_url=BASE_URLS[source]["icon_url"],
+            )
+            asyncio.create_task(self.documentations[source].load())
         await self.config.disabled_sources.set(disabled_sources)
-        self.documentations[source] = Source(
-            self,
-            name=source,
-            url=BASE_URLS[source]["url"],
-            icon_url=BASE_URLS[source]["icon_url"],
-        )
-        asyncio.create_task(self.documentations[source].load())
 
-    @configuration.command(name="disablesource")
-    @app_commands.describe(source="The source to disable.")
-    async def _source_disable(self, ctx: commands.Context, source: SourceConverter) -> None:
+    @configuration.command(name="disablesources", aliases=["disablesource"])
+    @app_commands.describe(sources="The source(s) to disable.")
+    async def _sources_disable(self, ctx: commands.Context, sources: commands.Greedy[SourceConverter]) -> None:
         """
-        Disable a Documentations source.
+        Disable Documentations source(s).
         """
         disabled_sources: typing.List[str] = await self.config.disabled_sources()
-        disabled_sources.remove(source)
+        for source in sources:
+            if source in disabled_sources:
+                raise commands.UserFeedbackCheckFailure(_("The source `{source}` is already disabled.").format(source=source))
+            elif source not in self.documentations:
+                raise commands.UserFeedbackCheckFailure(_("The source `{source}` doesn't exist.").format(source=source))
+            disabled_sources.append(source)
         await self.config.disabled_sources.set(disabled_sources)
 
     @configuration.command(name="stats")

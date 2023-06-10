@@ -15,7 +15,7 @@ _ = Translator("Dictionary", __file__)
 
 class DictionaryView(discord.ui.View):
     def __init__(self, cog: commands.Cog, word: Word) -> None:
-        super().__init__()
+        super().__init__(timeout=180)
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = None
 

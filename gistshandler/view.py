@@ -217,7 +217,7 @@ class GistsHandlerView(discord.ui.View):
         gist: typing.Optional[gists.Gist] = None,
         file: typing.Optional[gists.File] = None,
     ) -> None:
-        super().__init__()
+        super().__init__(timeout=180)
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = None
 

@@ -373,7 +373,7 @@ class AutoModRulesSelect(discord.ui.Select):
 
 class ChannelsRolesSelectView(discord.ui.View):
     def __init__(self, parent: discord.ui.View, rule: discord.AutoModRule) -> None:
-        super().__init__()
+        super().__init__(timeout=180)
         self._parent: discord.ui.View = parent
         self.rule: discord.AutoModRule = rule
 
@@ -431,7 +431,7 @@ class EditAutoModRuleView(discord.ui.View):
         rules: typing.List[discord.AutoModRule],
         rule: typing.Optional[discord.AutoModRule] = None,
     ) -> None:
-        super().__init__()
+        super().__init__(timeout=180)
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = None
 

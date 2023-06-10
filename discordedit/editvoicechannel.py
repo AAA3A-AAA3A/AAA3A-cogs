@@ -418,7 +418,7 @@ class EditVoiceChannel(Cog):
     ) -> None:
         """Delete voice channel."""
         await self.check_voice_channel(ctx, channel)
-        if not confirmation:
+        if not confirmation and not ctx.assume_yes:
             embed: discord.Embed = discord.Embed()
             embed.title = _("⚠️ - Delete voice channel")
             embed.description = _(

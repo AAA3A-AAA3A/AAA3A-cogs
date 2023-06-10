@@ -175,7 +175,7 @@ class EditGuild(Cog):
     ) -> None:
         """Edit guild owner (if the bot is bot owner)."""
         guild = ctx.guild
-        if not confirmation:
+        if not confirmation and not ctx.assume_yes:
             embed: discord.Embed = discord.Embed()
             embed.title = _(":⚠️ - Change Guild Owner")
             embed.description = _(

@@ -292,7 +292,7 @@ class EditThread(Cog):
     ) -> None:
         """Delete a thread."""
         await self.check_thread(ctx, thread)
-        if not confirmation:
+        if not confirmation and not ctx.assume_yes:
             embed: discord.Embed = discord.Embed()
             embed.title = _("⚠️ - Delete thread")
             embed.description = _(

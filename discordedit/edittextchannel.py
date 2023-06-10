@@ -478,7 +478,7 @@ class EditTextChannel(Cog):
         if channel is None:
             channel = ctx.channel
         await self.check_text_channel(ctx, channel)
-        if not confirmation:
+        if not confirmation and not ctx.assume_yes:
             embed: discord.Embed = discord.Embed()
             embed.title = _("⚠️ - Delete text channel")
             embed.description = _(

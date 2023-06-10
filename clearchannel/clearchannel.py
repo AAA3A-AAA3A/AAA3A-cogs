@@ -88,7 +88,7 @@ class ClearChannel(DashboardIntegration, Cog):
         old_channel = ctx.channel
         channel_position = old_channel.position
 
-        if not confirmation:
+        if not confirmation and not ctx.assume_yes:
             embed: discord.Embed = discord.Embed()
             embed.title = _("⚠️ - ClearChannel")
             embed.description = _(

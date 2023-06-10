@@ -78,7 +78,7 @@ class Action:
                     return
             else:
                 reason = _("The reason was not given.")
-        if not confirmation and self.confirmation_ask_message is not None and not await self.cog.cogsutils.ConfirmationAsk(ctx, content=_(self.confirmation_ask_message).format(member=member, duration=str(parse_timedelta(duration)) if duration is not None else None, reason=reason, channel=ctx.channel)):
+        if not confirmation and self.confirmation_ask_message is not None and not await self.cog.cogsutils.ConfirmationAsk(ctx, content=_(self.confirmation_ask_message).format(member=member, duration=str(parse_timedelta(duration)) if duration is not None else None, reason=reason, channel=ctx.channel)) and not ctx.assume_yes:
             await self.cog.cogsutils.delete_message(ctx.message)
             return
         if finish_message_enabled and self.finish_message is not None:

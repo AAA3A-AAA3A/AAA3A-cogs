@@ -983,7 +983,7 @@ class Reminders(Cog):
         """Clear all your existing reminders."""
         if ctx.author.id not in self.cache or not self.cache[ctx.author.id]:
             raise commands.BadArgument(_("You haven't any reminders."))
-        if not confirmation:
+        if not confirmation and not ctx.assume_yes:
             embed: discord.Embed = discord.Embed()
             embed.title = _("⚠️ - Reminders")
             embed.description = _("Do you really want to remove ALL your reminders?")
@@ -1047,7 +1047,7 @@ class Reminders(Cog):
         """Clear all existing reminders for a user."""
         if user.id not in self.cache or not self.cache[user.id]:
             raise commands.BadArgument(_("This user haven't any reminders."))
-        if not confirmation:
+        if not confirmation and not ctx.assume_yes:
             embed: discord.Embed = discord.Embed()
             embed.title = _("⚠️ - Reminders")
             embed.description = _(

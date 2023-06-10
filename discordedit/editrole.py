@@ -222,7 +222,7 @@ class EditRole(Cog):
     ) -> None:
         """Delete a role."""
         await self.check_role(ctx, role)
-        if not confirmation:
+        if not confirmation and not ctx.assume_yes:
             embed: discord.Embed = discord.Embed()
             embed.title = _("⚠️ - Delete role")
             embed.description = _(

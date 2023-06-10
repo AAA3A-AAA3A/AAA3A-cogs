@@ -314,7 +314,7 @@ class EditAutoMod(Cog):
         confirmation: bool = False,
     ) -> None:
         """Delete automod rule."""
-        if not confirmation:
+        if not confirmation and not ctx.assume_yes:
             embed: discord.Embed = discord.Embed()
             embed.title = _("⚠️ - Delete AutoMod rule")
             embed.description = _(

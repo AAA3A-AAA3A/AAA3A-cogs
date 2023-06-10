@@ -862,7 +862,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         if confirmation is None:
             config = await self.get_config(ticket.guild, ticket.profile)
             confirmation = not config["close_confirmation"]
-        if not confirmation:
+        if not confirmation and not ctx.assume_yes:
             embed: discord.Embed = discord.Embed()
             embed.title = _("Do you really want to close the ticket {ticket.id}?").format(
                 ticket=ticket
@@ -905,7 +905,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         if isinstance(ticket.channel, discord.TextChannel):
             raise commands.UserFeedbackCheckFailure(_("Cannot execute action on a text channel."))
         config = await self.get_config(ticket.guild, ticket.profile)
-        if not confirmation:
+        if not confirmation and not ctx.assume_yes:
             embed: discord.Embed = discord.Embed()
             embed.title = _("Do you really want to lock the ticket {ticket.id}?").format(
                 ticket=ticket
@@ -1002,7 +1002,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         """
         ticket: Ticket = await self.get_ticket(ctx.channel)
         config = await self.get_config(ticket.guild, ticket.profile)
-        if not confirmation:
+        if not confirmation and not ctx.assume_yes:
             embed: discord.Embed = discord.Embed()
             embed.title = _(
                 "Do you really want to delete all the messages of the ticket {ticket.id}?"

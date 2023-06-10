@@ -281,9 +281,9 @@ class Ticket:
                 "🎟️ Ticket ID: {ticket.id}\n"
                 "🔥 Channel ID: {ticket.channel.id}\n"
                 "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
-                "☢️ Ticket reason: {ticket.reason}\n"
+                "☢️ Ticket reason: {short_reason}\n"
                 "👥 Ticket claimed by: Nobody."
-            ).format(ticket=self)
+            ).format(ticket=self, short_reason=f"{self.reason[:700]}...".replace("\n", " ") if len(self.reason) > 700 else self.reason.replace("\n", " "))
             await self.channel.edit(topic=topic)
             self.first_message = await self.channel.send(
                 f"{self.created_by.mention}{optionnal_ping}",
@@ -753,9 +753,9 @@ class Ticket:
             "🎟️ Ticket ID: {ticket.id}\n"
             "🔥 Channel ID: {ticket.channel.id}\n"
             "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
-            "☢️ Ticket reason: {ticket.reason}\n"
+            "☢️ Ticket reason: {short_reason}\n"
             "👥 Ticket claimed by: @{ticket.claim.display_name} (@{ticket.claim.id})."
-        ).format(ticket=self)
+        ).format(ticket=self, short_reason=f"{self.reason[:700]}...".replace("\n", " ") if len(self.reason) > 700 else self.reason.replace("\n", " "))
         if isinstance(self.channel, discord.TextChannel):
             _reason = await self.cog.get_audit_reason(
                 guild=self.guild,
@@ -835,9 +835,9 @@ class Ticket:
             "🎟️ Ticket ID: {ticket.id}\n"
             "🔥 Channel ID: {ticket.channel.id}\n"
             "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
-            "☢️ Ticket reason: {ticket.reason}\n"
+            "☢️ Ticket reason: {short_reason}\n"
             "👥 Ticket claimed by: Nobody."
-        ).format(ticket=self)
+        ).format(ticket=self, short_reason=f"{self.reason[:700]}...".replace("\n", " ") if len(self.reason) > 700 else self.reason.replace("\n", " "))
         await self.channel.edit(topic=topic)
         if isinstance(self.channel, discord.TextChannel):
             _reason = await self.cog.get_audit_reason(

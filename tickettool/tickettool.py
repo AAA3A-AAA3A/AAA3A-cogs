@@ -539,7 +539,8 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     name=_("Closed at:"),
                     value=f"{ticket.closed_at}",
                 )
-        embed.add_field(inline=False, name=_("Reason:"), value=f"{reason}")
+        reason_pages = list(pagify(reason, page_length=1020))
+        embed.add_field(inline=False, name=_("Reason:"), value=f"{reason_pages[0]}\n..." if len(reason_pages) > 1 else reason)
         return embed
 
     async def get_embed_action(

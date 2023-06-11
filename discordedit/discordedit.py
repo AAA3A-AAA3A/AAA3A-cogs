@@ -2,7 +2,7 @@ from AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 
-from .editautomod import EditAutoMod
+# from .editautomod import EditAutoMod
 from .editguild import EditGuild
 from .editrole import EditRole
 from .edittextchannel import EditTextChannel

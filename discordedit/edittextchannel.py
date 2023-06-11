@@ -71,7 +71,7 @@ class EditTextChannel(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I can not let you edit the text channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
+                    "I can not let you edit the text channel {channel.mention} ({channel.id}) because you don't have the `manage_channel` permission."
                 ).format(channel=channel)
             )
         if not self.cogsutils.check_permissions_for(
@@ -79,7 +79,7 @@ class EditTextChannel(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I can not edit the text channel {channel.mention} ({channel.id}) because you don't have the `manage_channel` permission."
+                    "I can not edit the text channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
                 ).format(channel=channel)
             )
         return True

@@ -6,6 +6,7 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import datetime
+import re
 
 from redbot.core.commands.converter import get_timedelta_converter
 from redbot.core.utils.chat_formatting import box, pagify
@@ -75,6 +76,7 @@ class EditThread(Cog):
             )
             and ctx.author.id != ctx.guild.owner.id
             and ctx.author.id not in ctx.bot.owner_ids
+            and ctx.author != thread.owner
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(

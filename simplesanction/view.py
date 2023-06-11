@@ -96,7 +96,7 @@ class SimpleSanctionView(discord.ui.View):
         self._ready.set()
 
     async def get_embed(self) -> discord.Embed:
-        embed: discord.Embed = discord.Embed(title=_("Sanction a Member"), color=await self.ctx.embed_color())
+        embed: discord.Embed = discord.Embed(title=_("Sanction Member"), color=await self.ctx.embed_color())
         embed.description = _(
             "This tool allows you to easily sanction a server member.\nMember mention: {member.mention} - Member ID: {member.id}"
         ).format(member=self.member)

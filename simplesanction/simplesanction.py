@@ -611,7 +611,7 @@ class SimpleSanction(Cog):
 
         if member is None:
             embed: discord.Embed = discord.Embed()
-            embed.title = _("Sanction a Member")
+            embed.title = _("Sanction Member")
             embed.description = _(
                 "Which member do you want to sanction? (Type `cancel` to cancel.)"
             )

@@ -38,17 +38,17 @@ class Action:
         }
 
     async def process(self, ctx: commands.Context, member: discord.Member, duration: typing.Optional[str] = None, reason: typing.Optional[str] = "The reason was not given.", finish_message_enabled: typing.Optional[bool] = True, reason_required: typing.Optional[bool] = True, confirmation: typing.Optional[bool] = False, show_author: typing.Optional[bool] = True, fake_action: typing.Optional[bool] = False) -> bool:
-        if (await self.cog.config.guild(ctx.guild).warn_system_use()) and self.warn_system_command is not None:
-            cog_required = "WarnSystem"
+        if (await self.cog.config.guild(ctx.guild).warn_system_use()) and self.warn_system_command is not None and ctx.bot.get_cog("WarnSystem") is not None:
+            use_warn_system = True
         else:
-            cog_required = self.cog_required
-        if cog_required is not None and not ctx.bot.get_cog(cog_required):
-            await ctx.send(
-                _(
-                    "The cog `{cog_required}` is not loaded. Please load it, with the command `{prefix}load {cog_required_lowered}`."
-                ).format(prefix=ctx.prefix, cog_required=cog_required, cog_required_lowered=cog_required.lower())
-            )
-            return False
+            use_warn_system = False
+            if self.cog_required is not None and not ctx.bot.get_cog(self.cog_required):
+                await ctx.send(
+                    _(
+                        "The cog `{cog_required}` is not loaded. Please load it, with the command `{prefix}load {cog_required_lowered}`."
+                    ).format(prefix=ctx.prefix, cog_required=self.cog_required, cog_required_lowered=self.cog_required.lower())
+                )
+                return False
         if duration is None and self.duration_ask_message is not None:
             duration_message = await ctx.send(_(self.duration_ask_message).format(member=member, duration=str(parse_timedelta(duration)) if duration is not None else None, reason=reason, channel=ctx.channel))
             try:
@@ -83,7 +83,7 @@ class Action:
             return
         if finish_message_enabled and self.finish_message is not None:
             embed: discord.Embed = discord.Embed()
-            embed.title = f"Sanction a Member - {self.emoji} {self.label}"
+            embed.title = f"Sanction Member - {self.emoji} {self.label}"
             embed.description = _(
                 "This cog allows you to easily sanction a server member.\nMember mention: {member.mention} - Member ID: {member.id}"
             ).format(member=member)
@@ -101,7 +101,10 @@ class Action:
                 )
             embed.add_field(
                 name="\u200B",
-                value=_(self.finish_message).format(member=member, duration=str(parse_timedelta(duration)) if duration is not None else None, reason=reason, channel=ctx.channel),
+                value=(
+                    _(self.finish_message).format(member=member, duration=str(parse_timedelta(duration)) if duration is not None else None, reason=reason, channel=ctx.channel)
+                    + _("\n*The command may have failed. If so, an error will be displayed below.*")
+                ),
                 inline=False,
             )
             embed.add_field(name=_("Reason:"), value=f"{reason}")
@@ -122,10 +125,7 @@ class Action:
         else:
             finish_message = None
         if not fake_action:
-            if (await self.cog.config.guild(ctx.guild).warn_system_use()) and self.warn_system_command is not None:
-                command = self.warn_system_command
-            else:
-                command = self.command
+            command = self.warn_system_command if use_warn_system else self.command
             command = command.format(member=member, duration=str(parse_timedelta(duration)) if duration is not None else None, reason=reason, channel=ctx.channel)
             await self.cog.cogsutils.invoke_command(
                 author=ctx.author,

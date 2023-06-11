@@ -21,6 +21,19 @@ ERROR_MESSAGE = _("I attempted to do something that Discord denied me permission
 _ = Translator("DiscordEdit", __file__)
 
 
+class EmojiOrUrlConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str):
+        try:
+            return await discord.ext.commands.converter.CONVERTER_MAPPING[discord.Emoji]().convert(
+                ctx, argument
+            )
+        except commands.BadArgument:
+            pass
+        if argument.startswith("<") and argument.endswith(">"):
+            argument = argument[1:-1]
+        return argument
+
+
 class PositionConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> int:
         try:
@@ -178,18 +191,6 @@ class EditRole(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
-
-    class EmojiOrUrlConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, argument: str):
-            try:
-                return await discord.ext.commands.converter.CONVERTER_MAPPING[discord.Emoji]().convert(
-                    ctx, argument
-                )
-            except commands.BadArgument:
-                pass
-            if argument.startswith("<") and argument.endswith(">"):
-                argument = argument[1:-1]
-            return argument
 
     @editrole.command(name="displayicon", aliases=["icon"])
     async def editrole_display_icon(

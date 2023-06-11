@@ -22,7 +22,7 @@ from .converters import (
     TimeConverter,
     TimezoneConverter,
 )  # NOQA
-from .types import Content, Data, Repeat, Reminder
+from .types import Content, Data, RepeatRule, Repeat, Reminder
 from .views import ReminderView
 
 # Credits:
@@ -72,6 +72,7 @@ class Reminders(Cog):
     # To prevent circular imports...
     Reminder = Reminder
     Repeat = Repeat
+    RepeatRule = RepeatRule
 
     def __init__(self, bot: Red) -> None:
         self.bot: Red = bot

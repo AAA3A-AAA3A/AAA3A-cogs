@@ -69,7 +69,7 @@ class RepeatRule:
     def to_json(self) -> typing.Dict[str, typing.Union[str, typing.Dict[str, int]]]:
         return {
             "type": self.type,
-            "value": self.value,
+            "value": int(self.value.timestamp()) if self.type == "date" else self.value,
             "start_trigger": int(self.start_trigger.timestamp()) if self.start_trigger is not None else None,
             "first_trigger": int(self.first_trigger.timestamp()) if self.first_trigger is not None else None,
             "last_trigger": int(self.last_trigger.timestamp()) if self.last_trigger is not None else None,
@@ -79,6 +79,8 @@ class RepeatRule:
     def from_json(
         cls, data: typing.Dict[str, typing.Union[str, typing.Dict[str, int]]]
     ) -> typing_extensions.Self:
+        if data["type"] == "date":
+            return cls(type=data["type"], value=datetime.datetime.fromtimestamp(int(data["value"]), tz=datetime.timezone.utc), start_trigger=datetime.datetime.fromtimestamp(data["start_trigger"], tz=datetime.timezone.utc) if data.get("start_trigger") is not None else None, first_trigger=datetime.datetime.fromtimestamp(data["first_trigger"], tz=datetime.timezone.utc) if data.get("first_trigger") is not None else None, last_trigger=datetime.datetime.fromtimestamp(data["last_trigger"], tz=datetime.timezone.utc) if data.get("last_trigger") is not None else None)
         return cls(type=data["type"], value=data["value"], start_trigger=datetime.datetime.fromtimestamp(data["start_trigger"], tz=datetime.timezone.utc) if data.get("start_trigger") is not None else None, first_trigger=datetime.datetime.fromtimestamp(data["first_trigger"], tz=datetime.timezone.utc) if data.get("first_trigger") is not None else None, last_trigger=datetime.datetime.fromtimestamp(data["last_trigger"], tz=datetime.timezone.utc) if data.get("last_trigger") is not None else None)
 
     @executor()
@@ -120,6 +122,8 @@ class RepeatRule:
             if next_expires_at is None:
                 return None
             next_expires_at = next_expires_at.astimezone(tz=datetime.timezone.utc)  # `astimezone` is not required
+        elif self.type == "date":
+            return self.value
         else:
             return None
         self.last_trigger = next_expires_at
@@ -143,6 +147,8 @@ class RepeatRule:
             if (count_match := re.search(r"COUNT=(\d+)", value)) is not None:
                 value = value.replace(f"COUNT={count_match[1]}", f"COUNT={int(count_match[1]) - 1}")
             return f"[{self.type.upper()}] {r.format(value).title()}."
+        elif self.type == "date":
+            return f"[{self.type.upper()}] <t:{int(self.value.timestamp())}:F> (<t:{int(self.value.timestamp())}:R>)."
         else:
             return None
 

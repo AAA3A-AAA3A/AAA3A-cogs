@@ -99,8 +99,10 @@ class EditReminderModal(discord.ui.Modal):
                 )
                 return
         try:
+            fake_context: commands.Context = await interaction.client.get_context(interaction.message)
+            fake_context.author = interaction.user
             __, expires_at, __ = await TimeConverter().convert(
-                await interaction.client.get_context(interaction.message),
+                fake_context,
                 self.next_expires_at.value,
             )
         except commands.BadArgument as e:
@@ -314,20 +316,24 @@ class AddRepeatRuleModal(discord.ui.Modal):
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
         try:
-            __, __, repeat = await TimeConverter().convert(
-                await interaction.client.get_context(interaction.message),
-                self.repeat_rule.value,
+            fake_context: commands.Context = await interaction.client.get_context(interaction.message)
+            fake_context.author = interaction.user
+            __, expires_datetime, repeat = await TimeConverter().convert(
+                fake_context,
+                argument=self.repeat_rule.value,
             )
         except commands.BadArgument as e:
             await interaction.response.send_message(str(e), ephemeral=True)
             return
-        if repeat is None:
-            await interaction.response.send_message(_("No repeat rule found in your input."), ephemeral=True)
-            return
+        # if repeat is None:
+        #     await interaction.response.send_message(_("No repeat rule found in your input."), ephemeral=True)
+        #     return
         if self.reminder.repeat is None:
-            self.reminder.repeat = repeat
-        else:
+            self.reminder.repeat = self._parent.cog.Repeat(rules=[])
+        if repeat is not None:
             self.reminder.repeat.rules.append(repeat.rules[0])
+        else:
+            self.reminder.repeat.rules.append(self._parent.cog.RepeatRule.from_json({"type": "date", "value": int(expires_datetime.timestamp())}))
         await self.reminder.save()
         if self._parent._message is not None:
             try:
@@ -404,8 +410,8 @@ class RepeatView(discord.ui.View):
         self.cog: commands.Cog = cog
 
         self.reminder = reminder
-        self.remove_repeat_rule.disabled = not self.reminder.repeat.rules
-        self.stop_repeat.disabled = not self.reminder.repeat.rules
+        self.remove_repeat_rule.disabled = self.reminder.repeat is None or not self.reminder.repeat.rules
+        self.stop_repeat.disabled = self.reminder.repeat is None or not self.reminder.repeat.rules
 
         self._message: discord.Message = None
         self._ready: asyncio.Event = asyncio.Event()

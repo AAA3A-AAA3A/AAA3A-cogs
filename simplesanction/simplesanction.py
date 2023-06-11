@@ -124,6 +124,7 @@ class SimpleSanction(Cog):
         )
 
     async def cog_load(self) -> None:
+        await self.settings.add_commands()
         self.bot.tree.add_command(sanction_member_context_menu)
 
     async def cog_unload(self) -> None:

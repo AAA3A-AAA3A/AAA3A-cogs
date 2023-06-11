@@ -63,7 +63,7 @@ class SimpleSanction(Cog):
             force_registration=True,
         )
         self.sanction_guild: typing.Dict[str, typing.Union[str, bool, int]] = {
-            "warn_system_use": True,
+            "use_warn_system": True,
             "reason_required": True,
             "show_author": True,
             "action_confirmation": True,
@@ -80,7 +80,7 @@ class SimpleSanction(Cog):
             str, typing.Dict[str, typing.Union[typing.List[str], typing.Any, str]]
         ] = {
             "use_warn_system": {
-                "path": ["warn_system_use"],
+                "path": ["use_warn_system"],
                 "converter": bool,
                 "description": "Use WarnSystem by Laggron for the sanctions.",
                 "aliases": ["warnsystemuse"]

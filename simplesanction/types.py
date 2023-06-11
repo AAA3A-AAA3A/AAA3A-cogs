@@ -38,7 +38,7 @@ class Action:
         }
 
     async def process(self, ctx: commands.Context, member: discord.Member, duration: typing.Optional[str] = None, reason: typing.Optional[str] = "The reason was not given.", finish_message_enabled: typing.Optional[bool] = True, reason_required: typing.Optional[bool] = True, confirmation: typing.Optional[bool] = False, show_author: typing.Optional[bool] = True, fake_action: typing.Optional[bool] = False) -> bool:
-        if (await self.cog.config.guild(ctx.guild).warn_system_use()) and self.warn_system_command is not None and ctx.bot.get_cog("WarnSystem") is not None:
+        if (await self.cog.config.guild(ctx.guild).use_warn_system()) and self.warn_system_command is not None and ctx.bot.get_cog("WarnSystem") is not None:
             use_warn_system = True
         else:
             use_warn_system = False

@@ -124,6 +124,7 @@ class SimpleSanctionView(discord.ui.View):
             embed.add_field(
                 inline=False, name=_("Duration:"), value=f"{parse_timedelta(self.duration)}"
             )
+        return embed
 
     async def _callback(self, interaction: discord.Interaction):
         if self.fake_action:

@@ -1,5 +1,5 @@
 ﻿from AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
-from redbot.core import commands, Config  # isort:skip
+from redbot.core import commands, app_commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
@@ -31,6 +31,23 @@ class TimeDeltaConverter(commands.Converter):
             return argument
         else:
             raise BadArgument()
+
+
+@app_commands.context_menu(name="Sanction Member")
+async def sanction_member_context_menu(interaction: discord.Interaction, member: discord.Member):
+    await interaction.response.defer()
+    cog = interaction.client.get_cog("SimpleSanction")
+    context = await cog.cogsutils.invoke_command(
+        author=interaction.user,
+        channel=interaction.channel,
+        command=f"sanction {member.id}",
+    )
+    if not await context.command.can_run(context):
+        await interaction.followup.send(
+            _("You're not allowed to execute the `[p]sanction` command in this channel."),
+            ephemeral=True,
+        )
+        return
 
 
 @cog_i18n(_)
@@ -105,6 +122,13 @@ class SimpleSanction(Cog):
             can_edit=True,
             commands_group=self.configuration,
         )
+
+    async def cog_load(self) -> None:
+        self.bot.tree.add_command(sanction_member_context_menu)
+
+    async def cog_unload(self) -> None:
+        self.bot.tree.remove_command(sanction_member_context_menu.name)
+        await super().cog_unload()
 
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)

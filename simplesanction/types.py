@@ -127,13 +127,19 @@ class Action:
         if not fake_action:
             command = self.warn_system_command if use_warn_system else self.command
             command = command.format(member=member, duration=str(parse_timedelta(duration)) if duration is not None else None, reason=reason, channel=ctx.channel)
-            await self.cog.cogsutils.invoke_command(
+            context = await self.cog.cogsutils.invoke_command(
                 author=ctx.author,
                 channel=ctx.channel,
                 command=command,
                 prefix=ctx.prefix,
                 message=ctx.message,
             )
+            if not context.valid:
+                raise commands.UserFeedbackCheckFailure(_("This command doesn't exist."))
+            elif await context.command.can_run(context):
+                raise commands.UserFeedbackCheckFailure(
+                    _("You can't execute this command, in this context.")
+                )
         if finish_message is not None:
             try:
                 await finish_message.add_reaction("✅")

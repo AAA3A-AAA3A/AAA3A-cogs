@@ -207,10 +207,11 @@ class EditRole(Cog):
             display_icon = await ctx.message.attachments[0].read()  # Read an optional attachment.
         elif display_icon is not None:
             if isinstance(display_icon, discord.Emoji):
-                emoji_url = f"https://cdn.discordapp.com/emojis/{display_icon.id}.png"
-                async with aiohttp.ClientSession() as session:
-                    async with session.get(emoji_url) as r:
-                        display_icon = await r.read()  # Get emoji data.
+                # emoji_url = f"https://cdn.discordapp.com/emojis/{display_icon.id}.png"
+                # async with aiohttp.ClientSession() as session:
+                #     async with session.get(emoji_url) as r:
+                #         display_icon = await r.read()  # Get emoji data.
+                display_icon = await display_icon.read()
             elif display_icon.strip("\N{VARIATION SELECTOR-16}") in EMOJI_DATA:
                 display_icon = display_icon
             else:

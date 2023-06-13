@@ -318,7 +318,7 @@ class Reminder:
             )
             if self.content["type"] != "command" and self.content["text"] is not None
             else ("this command" if self.content["type"] == "command" else "that"),
-            destination_mention=(_(" in {destination_mention}").format(destination_mention=destination.mention) if (destination := self.cog.bot.get_channel(self.destination)) is not None else _(" in {destination} (Not found.)").format(destination=self.destination)) if self.destination is not None else "",
+            destination_mention=(_(" in {destination_mention}").format(destination_mention=(f"{destination.recipient}'s DMs" if isinstance(destination, discord.DMChannel) else destination.mention)) if (destination := self.cog.bot.get_channel(self.destination)) is not None else _(" in {destination} (Not found.)").format(destination=self.destination)) if self.destination is not None else "",
             interval_string=interval_string,
             timestamp=f"<t:{int(self.expires_at.timestamp())}:F>",
             and_every=and_every,
@@ -372,7 +372,7 @@ class Reminder:
             target=f"{self.target['mention']} ({self.target['id']})" if self.target is not None else _("No target."),
             destination=_("In DMs")
             if self.destination is None
-            else destination.mention
+            else (f"{destination.recipient}'s DMs ({destination.id})" if isinstance(destination, discord.DMChannel) else f"{destination.mention} ({destination.id})")
             if (destination := self.cog.bot.get_channel(self.destination)) is not None
             else f"{self.destination} (Not found.)",
             jump_url=self.jump_url,
@@ -563,10 +563,7 @@ class Reminder:
                         ) is not None:
                             reference = message
                     snooze_view_enabled = await self.cog.config.snooze_view()
-                    if snooze_view_enabled:
-                        view = SnoozeView(cog=self.cog, reminder=self)
-                    else:
-                        view = None
+                    view = SnoozeView(cog=self.cog, reminder=self) if snooze_view_enabled else None
                     message = await destination.send(
                         embeds=embeds,
                         files=files,

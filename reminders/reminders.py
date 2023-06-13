@@ -307,7 +307,7 @@ class Reminders(Cog):
         """Create a reminder with optional reminder text or message.
 
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.
-        You don't have to put quotes around the time argument.
+        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.
         Use `[p]reminder timetips` to display tips for time parsing.
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
@@ -407,6 +407,7 @@ class Reminders(Cog):
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
 
+    @commands.guild_only()
     @commands.mod_or_permissions(mention_everyone=True)
     @commands.hybrid_command()
     async def remind(
@@ -423,7 +424,7 @@ class Reminders(Cog):
         """Create a reminder with optional reminder text or message, in a channel with an user/role ping.
 
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.
-        You don't have to put quotes around the time argument.
+        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.
         Use `[p]reminder timetips` to display tips for time parsing.
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
@@ -564,6 +565,7 @@ class Reminders(Cog):
         """List, edit and delete existing reminders, or create FIFO/commands reminders."""
         pass
 
+    @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
     @reminder.command(aliases=["command"])
     async def fifo(
@@ -579,7 +581,7 @@ class Reminders(Cog):
         """Create a FIFO/command reminder. The chosen command will be executed with you as invoker. Don't provide the prefix.
 
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.
-        You don't have to put quotes around the time argument.
+        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.
         Use `[p]reminder timetips` to display tips for time parsing.
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
@@ -661,6 +663,7 @@ class Reminders(Cog):
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
 
+    @commands.guild_only()
     @commands.guildowner_or_permissions(administrator=True)
     @reminder.command()
     async def say(
@@ -676,7 +679,7 @@ class Reminders(Cog):
         """Create a reminder who will say/send text.
 
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.
-        You don't have to put quotes around the time argument.
+        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.
         Use `[p]reminder timetips` to display tips for time parsing.
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
@@ -765,18 +768,19 @@ class Reminders(Cog):
             • `minutes`/`minute`/`mins`/`min`/`m`
 
             You can combine **relative intervals** like this:
-            • `1y 1mo 2 days, and -5h`
+            • `[in] 1y 1mo 2 days, and -5h`
             • `on 29th may at 18h, and every year`
 
             **Timestamps** and **iso-timestamps** are supported:
-            • Be aware that specifying a timezone will ignore your timezone.
+            • For ISO, be aware that specifying a timezone will ignore your timezone.
 
             **Dates** are supported, you can try different formats:
             • `5 jul`, `5th july`, `july 5`
             • `23 sept at 3pm`, `23 sept at 15:00`
             • `2030`
+            • `[at] 10pm`
             • `friday at 9h`
-            Note: the parser uses day-first and year-last: (`01/02/03` -> `1st February 2003`)
+            Note: the parser uses day-first and year-last (`01/02/03` -> `1st February 2003`).
 
             **Cron triggers** are supported:
             • Check https://crontab.guru/.
@@ -827,13 +831,12 @@ class Reminders(Cog):
         for li in lists:
             embed: discord.Embed = discord.Embed(
                 title=_("Your Reminders"),
-                description=_("Use `{clean_prefix}reminder edit #ID` to edit a reminder.").format(
-                    clean_prefix=ctx.clean_prefix
+                description=_("You have {len_reminders} reminders. Use `{clean_prefix}reminder edit #ID` to edit a reminder.").format(
+                    len_reminders=len(reminders), clean_prefix=ctx.clean_prefix
                 ),
                 color=await ctx.embed_color(),
             )
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_icon)
-            embed.set_footer(text=_("You have {len_reminders} reminders.").format(len_reminders=len(reminders)))
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             for reminder in li:
                 embed.add_field(
                     name=f"Reminder #{reminder.id}", value=reminder.get_info(), inline=card

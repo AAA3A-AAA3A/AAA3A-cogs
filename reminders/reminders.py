@@ -1140,4 +1140,3 @@ class Reminders(Cog):
                         else None,
                     )
                     await reminder.save()
-                    self.log.error(f"{reminder.user_id}-{reminder.id}")

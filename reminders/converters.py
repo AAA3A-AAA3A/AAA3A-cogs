@@ -323,7 +323,7 @@ class TimeConverter(commands.Converter):
                         hour=0, minute=0, second=0, microsecond=0
                     ) and (
                         parsed_date.hour < local_now.hour
-                        or parsed_date.minute < local_now.minute
+                        or (parsed_date.hour == local_now.hour and parsed_date.minute < local_now.minute)
                     ):
                         parsed_date = parsed_date.replace(day=parsed_date.day + 1)
                     reminder_text = (

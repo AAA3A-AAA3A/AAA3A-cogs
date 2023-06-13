@@ -155,14 +155,15 @@ class DropdownsTexts(Cog):
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
                 )
             )
-        try:
-            await ctx.message.add_reaction(emoji)
-        except discord.HTTPException:
-            raise commands.UserFeedbackCheckFailure(
-                _(
-                    "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+        if ctx.interaction is None and ctx.bot_permissions.add_reactions:
+            try:
+                await ctx.message.add_reaction(emoji)
+            except discord.HTTPException:
+                raise commands.UserFeedbackCheckFailure(
+                    _(
+                        "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+                    )
                 )
-            )
         config = await self.config.guild(ctx.guild).dropdowns_texts.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
@@ -209,15 +210,16 @@ class DropdownsTexts(Cog):
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
                 )
             )
-        try:
-            for emoji, label, text in dropdown_texts[:19]:
-                await ctx.message.add_reaction(emoji)
-        except discord.HTTPException:
-            raise commands.UserFeedbackCheckFailure(
-                _(
-                    "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+        if ctx.interaction is None and ctx.bot_permissions.add_reactions:
+            try:
+                for emoji, label, text in dropdown_texts[:19]:
+                    await ctx.message.add_reaction(emoji)
+            except discord.HTTPException:
+                raise commands.UserFeedbackCheckFailure(
+                    _(
+                        "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+                    )
                 )
-            )
         config = await self.config.guild(ctx.guild).dropdowns_texts.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}

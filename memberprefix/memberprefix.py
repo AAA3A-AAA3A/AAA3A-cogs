@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -40,7 +40,29 @@ class MemberPrefix(Cog):
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
+        _settings: typing.Dict[
+            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
+        ] = {
+            "use_normal_prefixes": {
+                "path": ["use_normal_prefixes"],
+                "converter": bool,
+                "description": "Use server/global prefixes in addition to those customized for each member.",
+            },
+        }
+        self.settings: Settings = Settings(
+            bot=self.bot,
+            cog=self,
+            config=self.config,
+            group=self.config.GLOBAL,
+            settings=_settings,
+            global_path=[],
+            use_profiles_system=False,
+            can_edit=True,
+            commands_group=self.configuration,
+        )
+
     async def cog_load(self) -> None:
+        await self.settings.add_commands()
         self.bot.command_prefix = self.prefix_manager
 
     async def cog_unload(self) -> None:
@@ -151,23 +173,18 @@ class MemberPrefix(Cog):
         else:
             await ctx.send(_("Prefixes for you only set."))
 
-    @commands.guild_only()
-    @commands.guildowner_or_permissions(administrator=True)
-    @commands.hybrid_group()
-    async def setmemberprefix(self, ctx: commands.Context) -> None:
-        """Configure MemberPrefix."""
-        await self.config.clear_all_members(guild=ctx.guild)
-
-    @setmemberprefix.command()
-    async def memberprefixpurge(self, ctx: commands.Context) -> None:
-        """Clear all members prefixes for this guild."""
-        await self.config.clear_all_members(guild=ctx.guild)
-
     @commands.is_owner()
-    @setmemberprefix.command()
-    async def resetmemberprefix(self, ctx: commands.Context, user: discord.User, guild: discord.Guild = None) -> None:
-        """Clear prefixes for a specified member in a specified server (or the current)."""
-        guild = guild or ctx.guild
-        if (member := guild.get_member(user.id)) is None:
-            raise commands.UserFeedbackCheckFailure(_("This user isn't in this server."))
-        await self.config.member(member).clear()
+    @commands.guild_only()
+    @commands.hybrid_group(name="setmemberprefix")
+    async def configuration(self, ctx: commands.Context) -> None:
+        """Configure MemberPrefix."""
+
+    @configuration.command()
+    async def memberprefixpurge(self, ctx: commands.Context, guild: discord.Guild) -> None:
+        """Clear all members prefixes for a specified server."""
+        await self.config.clear_all_members(guild=guild)
+
+    @configuration.command()
+    async def resetmemberprefix(self, ctx: commands.Context, guild: discord.Guild, user: discord.User) -> None:
+        """Clear prefixes for a specified member in a specified server."""
+        await self.config.member_from_ids(guild.id, user.id).clear()

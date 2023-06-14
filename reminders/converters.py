@@ -163,9 +163,13 @@ class TimeConverter(commands.Converter):
         def parse_timestamp(arg: str) -> datetime.datetime:
             try:
                 timestamp = float(arg)
-                return datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc)
+                remind_time = datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc)
             except ValueError as e:
                 raise ValueError(f"• Timestamp parsing: {' '.join([f'{e_arg}.' for e_arg in e.args])}")
+            else:
+                if remind_time < utc_now:
+                    raise ValueError(f"• Timestamp parsing: ")
+                return remind_time
 
         @executor()
         def parse_relative_date(
@@ -380,21 +384,23 @@ class TimeConverter(commands.Converter):
         if remind_time is not None and isinstance(remind_time, datetime.datetime):
             remind_time.replace(second=0, microsecond=0)
             if remind_time < utc_now.replace(second=0, microsecond=0):  # Negative intervals are not allowed.
-                info.append(
+                info = [  # info.append(
                     f"• Global check: The given date must be in the future. Interpreted date: <t:{int(remind_time.timestamp())}:F>."
-                )
+                ]
                 remind_time = None
             else:
                 try:
                     datetime.datetime.timestamp(remind_time)
                 except OSError:  # protect against out of epoch dates
-                    info.append(
+                    info = [  # info.append(
                         "• Global check: The given date is exceeding the linux epoch. Please choose an earlier date."
-                    )
+                    ]
                     remind_time = None
                 else:
                     if remind_time < utc_now + dateutil.relativedelta.relativedelta(minutes=1):
-                        info.append("• Global check: Reminder time must be at least 1 minute.")  # RRULES don't understand that...
+                        info = [  # info.append(
+                            "• Global check: Reminder time must be at least 1 minute."  # RRULES don't understand that...
+                        ]
                         remind_time = None
         if remind_time is None:
             info = "\n".join(info)

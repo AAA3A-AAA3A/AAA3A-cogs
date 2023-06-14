@@ -22,20 +22,20 @@ from .dashboard_integration import DashboardIntegration
 
 GITHUB_RE = re.compile(
     r"https://(?:www\.)?github\.com/(?P<repo>[a-zA-Z0-9-]+/[\w.-]+)/blob/(?P<path>[^#>]+)"
-    r"((\?[^#>]+)?(#L?(?P<start_line>\d+)(([-~:]|(\.\.))L?(?P<end_line>\d+))?))?"
+    r"((\?[^#>]+)?(#L?L?(?P<start_line>\d+)(([-~:]|(\.\.))L?L?(?P<end_line>\d+))?))?"
 )
 GITHUB_GIST_RE = re.compile(
     r"https://(?:www\.)?gist\.github\.com/([a-zA-Z0-9-]+)/(?P<gist_id>[a-zA-Z0-9]+)/*"
     r"(?P<revision>[a-zA-Z0-9]*)/*(#file-(?P<file_path>[^#>]+))?"
-    r"((\?[^#->]+)?(-L?(?P<start_line>\d+)(([-~:]|(\.\.))L?(?P<end_line>\d+))?))?"
+    r"((\?[^#->]+)?(-L?L?(?P<start_line>\d+)(([-~:]|(\.\.))L?L?(?P<end_line>\d+))?))?"
 )
 GITHUB_PR_DIFF_RE = re.compile(
     r"https://(?:www\.)?github\.com/(?P<repo>[a-zA-Z0-9-]+/[\w.-]+)/pull/(?P<pr_number>\d+)"
-    r"((\?[^#>]+)?(#L?(?P<start_line>\d+)(([-~:]|(\.\.))L?(?P<end_line>\d+))?))?"
+    r"((\?[^#>]+)?(#L?L?(?P<start_line>\d+)(([-~:]|(\.\.))L?L?(?P<end_line>\d+))?))?"
 )
 GITHUB_COMMIT_DIFF_RE = re.compile(
     r"https://(?:www\.)?github\.com/(?P<repo>[a-zA-Z0-9-]+/[\w.-]+)/commit/(?P<commit_hash>[a-zA-Z0-9]*)"
-    r"((\?[^#>]+)?(#L?(?P<start_line>\d+)(([-~:]|(\.\.))L?(?P<end_line>\d+))?))?"
+    r"((\?[^#>]+)?(#L?L?(?P<start_line>\d+)(([-~:]|(\.\.))L?L?(?P<end_line>\d+))?))?"
 )
 GITLAB_RE = re.compile(
     r"https://(?:www\.)?gitlab\.com/(?P<repo>[\w.-]+/[\w.-]+)/\-/blob/(?P<path>[^#>]+)"
@@ -421,9 +421,12 @@ class CodeSnippets(DashboardIntegration, Cog):
                 _("No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found.")
             )
         await self.send_snippets(ctx, snippets=snippets)
+        ctx.count_messages = len(snippets)
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message) -> None:
+        if await self.bot.cog_disabled_in_guild(cog=self, guild=message.guild) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
+            return
         if message.webhook_id is not None or message.author.bot:
             return
         if message.guild is None:

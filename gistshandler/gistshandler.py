@@ -58,6 +58,7 @@ class GistsHandler(Cog):
         await self.gists_client.authorize(token)
 
     @commands.is_owner()
+    @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["gisthandler"], usage="[gist_url_or_id] [file_name]")
     async def gist(
         self, ctx: commands.Context, gist: GistConverter = None, file_name: str = None

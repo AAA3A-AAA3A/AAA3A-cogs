@@ -82,6 +82,8 @@ class AutoTraceback(DashboardIntegration, Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError) -> None:
+        if await self.bot.cog_disabled_in_guild(cog=self, guild=ctx.guild):
+            return
         if isinstance(error, IGNORED_ERRORS):
             return
         traceback_error = "".join(

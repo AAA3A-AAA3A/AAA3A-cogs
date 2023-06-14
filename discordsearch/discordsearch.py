@@ -6,16 +6,20 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import argparse
+import asyncio
 import datetime
+import functools
 import re
 from time import monotonic
+import multiprocessing
 
 import dateparser
-from redbot.core.utils.chat_formatting import bold, underline
+from redbot.core.utils.chat_formatting import bold, underline, box
 from redbot.core.utils.common_filters import URL_RE
 
 # Credits:
 # General repo credits.
+# Thanks to Trusty for the secure way to manage user Regexes (https://github.com/TrustyJAID/Trusty-cogs/blob/master/retrigger/triggerhandler.py#L542-L606)!
 
 _ = Translator("DiscordSearch", __file__)
 
@@ -32,11 +36,14 @@ class DiscordSearch(Cog):
     def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
 
+        self.re_pool: multiprocessing.Pool = multiprocessing.Pool()
+
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
     @commands.cooldown(rate=3, per=30, type=commands.BucketType.user)
+    @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(name="discordsearch", aliases=["dsearch"])
     async def discordsearch(
         self,
@@ -56,7 +63,7 @@ class DiscordSearch(Cog):
         `--content "AAA3A-cogs"`
         `--regex "\\[p\\]"`
         `--contain link --contain embed --contain file`
-        `--limit 100`
+        `--limit 100` (It's the limit of the number of messages taken into account in the search, not the number of results.)
         """
         if not args:
             await ctx.send_help()
@@ -78,19 +85,17 @@ class DiscordSearch(Cog):
         if channel is None:
             channel = ctx.channel
         if all(
-            [
-                setting is None
-                for setting in [
-                    authors,
-                    mentions,
-                    before,
-                    after,
-                    pinned,
-                    content,
-                    regex,
-                    contains,
-                    limit,
-                ]
+            setting is None
+            for setting in [
+                authors,
+                mentions,
+                before,
+                after,
+                pinned,
+                content,
+                regex,
+                contains,
+                limit,
             ]
         ):
             raise commands.UserFeedbackCheckFailure(_("You must provide at least one parameter."))
@@ -113,14 +118,15 @@ class DiscordSearch(Cog):
             bold("Before:") + " " + f"{before}",
             bold("After:") + " " + f"{after}",
             bold("Pinned:") + " " + f"{pinned}",
-            bold("Content:") + " " + (f"`{content}`" if content is not None else "None"),
+            bold("Content:")
+            + " "
+            + (f"`{content}`" if content is not None else "None"),
             bold("Regex:") + " " + f"{regex}",
             bold("Contains:")
             + " "
-            + (", ".join([contain for contain in contains]) if contains is not None else "None"),
+            + (", ".join(list(contains)) if contains is not None else "None"),
             bold("Limit:") + " " + f"{limit}",
         ]
-        args_str = "\n".join(args_str)
         start = monotonic()
         messages: typing.List[discord.Message] = []
         async for message in channel.history(
@@ -131,20 +137,38 @@ class DiscordSearch(Cog):
             if authors is not None and message.author not in authors:
                 continue
             if mentions is not None and not any(
-                [True for mention in message.mentions if mention in mentions]
+                True for mention in message.mentions if mention in mentions
             ):
                 continue
-            if pinned is not None and not message.pinned == pinned:
+            if pinned is not None and message.pinned != pinned:
                 continue
-            if content is not None and not (
-                content.lower() in message.content.lower()
-                or any(
-                    [content.lower() in str(embed.to_dict()).lower() for embed in message.embeds]
+            if (
+                content is not None
+                and content.lower() not in message.content.lower()
+                and all(
+                    content.lower() not in str(embed.to_dict()).lower()
+                    for embed in message.embeds
                 )
             ):
                 continue
-            if regex is not None and regex.findall(message.content) == []:
-                continue
+            if regex is not None and message.content is not None:
+                # Thanks Trusty for this.
+                try:
+                    trigger_timeout = 1
+                    process = self.re_pool.apply_async(regex.findall, (message.content,))
+                    task = functools.partial(process.get, timeout=trigger_timeout)
+                    loop = asyncio.get_running_loop()
+                    new_task = loop.run_in_executor(None, task)
+                    search = await asyncio.wait_for(new_task, timeout=trigger_timeout + 5)
+                except (multiprocessing.TimeoutError, asyncio.TimeoutError):
+                    raise commands.UserFeedbackCheckFailure(_("Your regex process took too long. Removing from memory."))
+                except ValueError:
+                    continue
+                except Exception as e:
+                    raise commands.UserFeedbackCheckFailure(_("There is an error in your regex.\n{e}").format(e=box(str(e), lang="py")))
+                else:
+                    if not search:
+                        continue
             if contains is not None:
                 if "link" in contains:
                     regex = URL_RE.findall(message.content.lower())
@@ -156,14 +180,10 @@ class DiscordSearch(Cog):
                     continue
             messages.append(message)
         embeds = []
-        if len(messages) == 0:
-            not_found = True
-        else:
-            not_found = False
+        not_found = len(messages) == 0
+        args_str = "\n".join(args_str)
         if not not_found:
-            count = 0
-            for message in messages:
-                count += 1
+            for count, message in enumerate(messages, start=1):
                 embed: discord.Embed = discord.Embed()
                 embed.title = f"Search in #{channel.name} ({channel.id})"
                 embed.description = args_str
@@ -205,7 +225,7 @@ class DiscordSearch(Cog):
                 url="https://us.123rf.com/450wm/sommersby/sommersby1610/sommersby161000062/66918773-recherche-ic%C3%B4ne-plate-recherche-ic%C3%B4ne-conception-recherche-ic%C3%B4ne-web-vecteur-loupe.jpg"
             )
             embed.set_footer(
-                text=f"Page 1/1",
+                text="Page 1/1",
                 icon_url="https://us.123rf.com/450wm/sommersby/sommersby1610/sommersby161000062/66918773-recherche-ic%C3%B4ne-plate-recherche-ic%C3%B4ne-conception-recherche-ic%C3%B4ne-web-vecteur-loupe.jpg",
             )
             embeds.append(embed)

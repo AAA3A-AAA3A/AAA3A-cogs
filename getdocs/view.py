@@ -95,14 +95,15 @@ class GetDocsView(discord.ui.View):
             i += 1
         if documentation is None:
             raise RuntimeError("No results found.")
-        if parameters_button := discord.utils.get(self.children, custom_id="show_parameters"):
-            parameters_button.disabled = not documentation.parameters and (
-                self.source.name != "discordapi" or not documentation.fields
-            )
-        if examples_button := discord.utils.get(self.children, custom_id="show_examples"):
-            examples_button.disabled = not bool(documentation.examples)
-        if attributes_button := discord.utils.get(self.children, custom_id="show_attributes"):
-            attributes_button.disabled = not bool(documentation.attributes)
+
+        self.show_parameters.label = "Show Parameters"
+        self.show_examples.label = "Show Examples"
+        self.show_attributes.label = "Show Attributes"
+        self.show_parameters.disabled = not documentation.parameters and (
+            self.source.name != "discordapi" or not documentation.fields
+        )
+        self.show_examples.disabled = not bool(documentation.examples)
+        self.show_attributes.disabled = not bool(documentation.attributes)
 
         if back_button := discord.utils.get(self.children, custom_id="back_button"):
             self.remove_item(back_button)
@@ -155,6 +156,10 @@ class GetDocsView(discord.ui.View):
         ):  # back / self._message.embeds[0].title.startswith("Parameters")
             await self._update(self._current.name)
             return
+        else:
+            self.show_parameters.label = "Hide Parameters"
+            self.show_examples.label = "Show Examples"
+            self.show_attributes.label = "Show Attributes"
 
         # Attributes pagination
         back_button: discord.ui.Button = discord.utils.get(self.children, custom_id="back_button")
@@ -210,7 +215,7 @@ class GetDocsView(discord.ui.View):
             embeds = self._current.parameters.to_embeds(embed_color=await self.ctx.embed_color())
 
         if len(embeds) == 1:
-            self._message: discord.Message = await self._message.edit(embed=embeds[0])
+            self._message: discord.Message = await self._message.edit(embed=embeds[0], view=self)
         else:
 
             async def _back_button(interaction: discord.Interaction):
@@ -259,6 +264,10 @@ class GetDocsView(discord.ui.View):
         ):  # back / self._message.embeds[0].title.startswith("Example") and self._message.embeds[0].title.endswith(":")
             await self._update(self._current.name)
             return
+        else:
+            self.show_parameters.label = "Show Parameters"
+            self.show_examples.label = "Hide Examples"
+            self.show_attributes.label = "Show Attributes"
 
         if back_button := discord.utils.get(self.children, custom_id="back_button"):
             self.remove_item(back_button)
@@ -291,6 +300,10 @@ class GetDocsView(discord.ui.View):
         ):  # back / self._message.embeds[0].title.startswith(tuple([x.title() for x in self._current.attributes.__dataclass_fields__.keys()]))
             await self._update(self._current.name)
             return
+        else:
+            self.show_parameters.label = "Show Parameters"
+            self.show_examples.label = "Show Examples"
+            self.show_attributes.label = "Hide Attributes"
 
         # Attributes pagination
         if back_button := discord.utils.get(self.children, custom_id="back_button"):
@@ -326,7 +339,7 @@ class GetDocsView(discord.ui.View):
             self.add_item(next_button)
             self._message: discord.Message = await self._message.edit(embed=embeds[0], view=self)
         else:
-            self._message: discord.Message = await self._message.edit(embeds=embeds)
+            self._message: discord.Message = await self._message.edit(embeds=embeds, view=self)
         self._mode = "attributes"
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page", row=1)

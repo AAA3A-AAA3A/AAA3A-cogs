@@ -220,7 +220,7 @@ class AcronymGameView(discord.ui.View):
 
     def get_acronym(self) -> str:
         return "".join(
-            [random.choice(string.ascii_uppercase) for __ in range(random.choice(range(4, 5)))]
+            [random.choice(string.ascii_uppercase) for __ in range(4)]  # range(random.choice(range(4, 5)))
         )
 
     @discord.ui.button(label="Join Game", emoji="🎮", style=discord.ButtonStyle.success)

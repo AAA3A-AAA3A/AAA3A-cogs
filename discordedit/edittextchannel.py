@@ -63,9 +63,7 @@ class EditTextChannel(Cog):
         self, ctx: commands.Context, channel: discord.TextChannel
     ) -> bool:
         if (
-            not self.cogsutils.check_permissions_for(
-                channel=channel, user=ctx.author, check=["manage_channel"]
-            )
+            not channel.permissions_for(ctx.author).manage_channels
             and ctx.author.id != ctx.guild.owner.id
             and ctx.author.id not in ctx.bot.owner_ids
         ):
@@ -74,9 +72,7 @@ class EditTextChannel(Cog):
                     "I can not let you edit the text channel {channel.mention} ({channel.id}) because you don't have the `manage_channel` permission."
                 ).format(channel=channel)
             )
-        if not self.cogsutils.check_permissions_for(
-            channel=channel, user=ctx.guild.me, check=["manage_channel"]
-        ):
+        if not channel.permissions_for(ctx.me).manage_channels:
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "I can not edit the text channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
@@ -86,6 +82,7 @@ class EditTextChannel(Cog):
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_channels=True)
+    @commands.bot_has_permissions(manage_channels=True)
     @commands.hybrid_group()
     async def edittextchannel(self, ctx: commands.Context) -> None:
         """Commands for edit a text channel."""
@@ -111,6 +108,7 @@ class EditTextChannel(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
+    @commands.bot_has_permissions(embed_links=True)
     @edittextchannel.command(name="list")
     async def edittextchannel_list(
         self,
@@ -387,6 +385,8 @@ class EditTextChannel(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
+    @commands.has_permissions(manage_roles=True)
+    @commands.bot_has_permissions(manage_roles=True)
     @edittextchannel.command(name="permissions", aliases=["overwrites", "perms"])
     async def edittextchannel_permissions(
         self,
@@ -400,35 +400,35 @@ class EditTextChannel(Cog):
     ) -> None:
         """Edit text channel permissions/overwrites.
 
-        create_instant_invite
-        manage_channels
-        add_reactions
-        priority_speaker
-        stream
-        read_messages
-        send_messages
-        send_tts_messages
-        manage_messages
-        embed_links
-        attach_files
-        read_message_history
-        mention_everyone
-        external_emojis
-        connect
-        speak
-        mute_members
-        deafen_members
-        move_members
-        use_voice_activation
-        manage_roles
-        manage_webhooks
-        use_application_commands
-        request_to_speak
-        manage_threads
-        create_public_threads
-        create_private_threads
-        external_stickers
-        send_messages_in_threads
+        • `create_instant_invite`
+        • `manage_channels`
+        • `add_reactions`
+        • `priority_speaker`
+        • `stream`
+        • `read_messages`
+        • `send_messages`
+        • `send_tts_messages`
+        • `manage_messages`
+        • `embed_links`
+        • `attach_files`
+        • `read_message_history`
+        • `mention_everyone`
+        • `external_emojis`
+        • `connect`
+        • `speak`
+        • `mute_members`
+        • `deafen_members`
+        • `move_members`
+        • `use_voice_activation`
+        • `manage_roles`
+        • `manage_webhooks`
+        • `use_application_commands`
+        • `request_to_speak`
+        • `manage_threads`
+        • `create_public_threads`
+        • `create_private_threads`
+        • `external_stickers`
+        • `send_messages_in_threads`
         """
         if channel is None:
             channel = ctx.channel
@@ -442,10 +442,19 @@ class EditTextChannel(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("You need to provide a role or user you want to edit permissions for.")
             )
+        for target in targets:
+            if target <= ctx.author.top_role:
+                raise commands.UserFeedbackCheckFailure(_("You cannot change the permissions of a role lower down the hierarchy than your top role."))
+            if target <= ctx.me.top_role:
+                raise commands.UserFeedbackCheckFailure(_("I cannot change the permissions of a role lower down the hierarchy than my top role."))
         if not permissions:
             raise commands.UserFeedbackCheckFailure(
                 _("You need to provide at least one permission.")
             )
+        channel_permissions = channel.permissions_for(ctx.author)
+        for permission in permissions:
+            if not getattr(channel_permissions, permission):
+                raise commands.UserFeedbackCheckFailure(_("You do not have {permission_name} permission in this channel.").format(permission_name=permission))
         overwrites = channel.overwrites
         for target in targets:
             if target in overwrites:
@@ -479,14 +488,21 @@ class EditTextChannel(Cog):
             channel = ctx.channel
         await self.check_text_channel(ctx, channel)
         if not confirmation and not ctx.assume_yes:
-            embed: discord.Embed = discord.Embed()
-            embed.title = _("⚠️ - Delete text channel")
-            embed.description = _(
-                "Do you really want to delete the text channel {channel.mention} ({channel.id})?"
-            ).format(channel=channel)
-            embed.color = 0xF00020
+            if ctx.bot_permissions.embed_links:
+                embed: discord.Embed = discord.Embed()
+                embed.title = _("⚠️ - Delete text channel")
+                embed.description = _(
+                    "Do you really want to delete the text channel {channel.mention} ({channel.id})?"
+                ).format(channel=channel)
+                embed.color = 0xF00020
+                content = ctx.author.mention
+            else:
+                embed = None
+                content = f"{ctx.author.mention} " + _(
+                    "Do you really want to delete the text channel {channel.mention} ({channel.id})?"
+                ).format(channel=channel)
             if not await self.cogsutils.ConfirmationAsk(
-                ctx, content=f"{ctx.author.mention}", embed=embed
+                ctx, content=content, embed=embed
             ):
                 await self.cogsutils.delete_message(ctx.message)
                 return

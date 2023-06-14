@@ -28,6 +28,7 @@ class AcronymGame(Cog):
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.guild_only()
+    @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["acro", "acronym"])
     async def acronymgame(self, ctx: commands.Context) -> None:
         """

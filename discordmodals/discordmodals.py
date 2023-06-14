@@ -10,10 +10,25 @@ from functools import partial
 
 import yaml
 
+try:
+    from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
+except ImportError:
+    from emoji import EMOJI_DATA  # emoji>=2.0.0
+
 # Credits:
 # General repo credits.
 
 _ = Translator("DiscordModals", __file__)
+
+
+class Emoji(commands.EmojiConverter):
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Union[discord.PartialEmoji, str]:
+        argument = argument.strip("\N{VARIATION SELECTOR-16}")
+        if argument in EMOJI_DATA:
+            return argument
+        return await super().convert(ctx, argument)
 
 
 class YAMLConverter(commands.Converter):
@@ -40,7 +55,7 @@ class YAMLConverter(commands.Converter):
             if arg not in required_arguments + optional_arguments:
                 raise discord.ext.commands.BadArgument(
                     _(
-                        "The agument `/{arg}` is invalid in in the YAML. Check the spelling."
+                        "The argument `/{arg}` is invalid in in the YAML. Check the spelling."
                     ).format(arg=arg)
                 )
         # button
@@ -55,20 +70,22 @@ class YAMLConverter(commands.Converter):
             if arg not in required_arguments + optional_arguments:
                 raise discord.ext.commands.BadArgument(
                     _(
-                        "The agument `/button/{arg}` is invalid in the YAML. Check the spelling."
+                        "The argument `/button/{arg}` is invalid in the YAML. Check the spelling."
                     ).format(arg=arg)
                 )
+        if "emoji" in argument_dict["button"]:
+            argument_dict["button"]["emoji"] = await Emoji().convert(ctx, argument=argument_dict["button"]["emoji"])
         if "style" in argument_dict["button"]:
             argument_dict["button"]["style"] = str(argument_dict["button"]["style"])
             try:
                 style = int(argument_dict["button"]["style"])
             except ValueError:
                 raise discord.ext.commands.BadArgument(
-                    _("The agument `/button/style` must be a number between 1 and 4.")
+                    _("The argument `/button/style` must be a number between 1 and 4.")
                 )
             if not 1 <= style <= 4:
                 raise discord.ext.commands.BadArgument(
-                    _("The agument `/button/style` must be a number between 1 and 4.")
+                    _("The argument `/button/style` must be a number between 1 and 4.")
                 )
             argument_dict["button"]["style"] = style
         else:
@@ -100,7 +117,7 @@ class YAMLConverter(commands.Converter):
                 if arg not in required_arguments + optional_arguments:
                     raise discord.ext.commands.BadArgument(
                         _(
-                            "The agument `/modal/{count}/{arg}` is invalid in the YAML. Check the spelling."
+                            "The argument `/modal/{count}/{arg}` is invalid in the YAML. Check the spelling."
                         ).format(count=count, arg=arg)
                     )
             if "style" in input:
@@ -110,13 +127,13 @@ class YAMLConverter(commands.Converter):
                 except ValueError:
                     raise discord.ext.commands.BadArgument(
                         _(
-                            "The agument `/modal/{count}/style` must be a number between 1 and 2."
+                            "The argument `/modal/{count}/style` must be a number between 1 and 2."
                         ).format(count=count)
                     )
                 if not 1 <= style <= 2:
                     raise discord.ext.commands.BadArgument(
                         _(
-                            "The agument `/modal/{count}/style` must be a number between 1 and 2."
+                            "The argument `/modal/{count}/style` must be a number between 1 and 2."
                         ).format(count=count)
                     )
                 input["style"] = style
@@ -139,7 +156,7 @@ class YAMLConverter(commands.Converter):
                 except discord.ext.commands.BadBoolArgument:
                     raise discord.ext.commands.BadArgument(
                         _(
-                            "The agument `/modal/{count}/required` must be a boolean (True or False)."
+                            "The argument `/modal/{count}/required` must be a boolean (True or False)."
                         ).format(count=count)
                     )
             else:
@@ -324,11 +341,8 @@ class DiscordModals(Cog):
                     ephemeral=True,
                 )
                 return
-            if not self.cogsutils.check_permissions_for(
-                channel=channel,
-                user=interaction.guild.me,
-                check=["embed_links", "send_messages", "view_channel"],
-            ):
+            channel_permissions = channel.permissions_for(interaction.guild.me)
+            if not all([channel_permissions.view_channel, channel_permissions.send_messages, channel_permissions.embed_links]):
                 await interaction.followup.send(
                     _(
                         "I don't have sufficient permissions in the destination channel (view channel, send messages, send embeds). Please notify an administrator of this server."
@@ -420,13 +434,15 @@ class DiscordModals(Cog):
         ```
         The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous` and `messages` are not required.
         """
-        if message.author != ctx.guild.me:
+        if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the button to work.")
             )
         config = await self.config.guild(ctx.guild).modals.all()
         if f"{message.channel.id}-{message.id}" in config:
             raise commands.UserFeedbackCheckFailure(_("This message already has a Modal."))
+        elif message.components:
+            raise commands.UserFeedbackCheckFailure(_("This message already has components."))
         try:
             button = argument["button"]
             button["style"] = discord.ButtonStyle(button["style"])
@@ -480,7 +496,7 @@ class DiscordModals(Cog):
     @discordmodals.command(aliases=["-"])
     async def remove(self, ctx: commands.Context, message: discord.Message) -> None:
         """Remove a Modal for a message."""
-        if message.author != ctx.guild.me:
+        if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the Modal to work.")
             )

@@ -5,6 +5,12 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import sys
+if sys.version_info >= (3, 11):
+    from typing import Literal
+else:
+    from typing_extensions import Literal
+
 import asyncio
 import io
 from urllib.parse import quote_plus
@@ -147,7 +153,7 @@ class Draw(Cog):
         from_message: typing.Optional[commands.MessageConverter] = None,
         height: typing.Optional[commands.Range[int, MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH]] = 9,
         width: typing.Optional[commands.Range[int, MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH]] = 9,
-        background: typing.Literal[*MAIN_COLORS] = MAIN_COLORS[-1],
+        background: Literal[*MAIN_COLORS] = MAIN_COLORS[-1],
     ) -> None:
         """Make a pixel art on Discord."""
         if from_message is None:

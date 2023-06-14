@@ -23,6 +23,17 @@ LINK_MESSAGE = _("[Click here to view the transcript.]({url})")
 _ = Translator("ExportChannel", __file__)
 
 
+class MessageOrObjectConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> typing.Union[discord.Message, discord.Object]:
+        try:
+            await commands.MessageConverter().convert(ctx, argument=argument)
+        except commands.BadArgument as e:
+            try:
+                await commands.ObjectConverter().convert(ctx, argument=argument)
+            except commands.BadArgument:
+                raise e
+
+
 @cog_i18n(_)
 class ExportChannel(Cog):
     """A cog to export all or part of a channel's messages to an html file!"""
@@ -33,11 +44,8 @@ class ExportChannel(Cog):
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     async def check_channel(self, ctx: commands.Context, channel: discord.TextChannel) -> None:
-        if not self.cogsutils.check_permissions_for(
-            channel=channel,
-            user=ctx.me,
-            check=["view_channel", "read_messages", "read_message_history"],
-        ):
+        channel_permissions = ctx.channel.permissions_for(channel)
+        if not all([channel_permissions.view_channel, channel_permissions.read_messages, channel_permissions.read_message_history]):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
@@ -50,8 +58,8 @@ class ExportChannel(Cog):
         channel: discord.TextChannel,
         number: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
-        before: typing.Optional[discord.Message] = None,
-        after: typing.Optional[discord.Message] = None,
+        before: typing.Optional[typing.Union[discord.Message, discord.Object]] = None,
+        after: typing.Optional[typing.Union[discord.Message, discord.Object]] = None,
         user_id: typing.Optional[int] = None,
         bot: typing.Optional[bool] = None,
     ) -> typing.Tuple[int, typing.List[discord.Message]]:
@@ -122,9 +130,10 @@ class ExportChannel(Cog):
 
     @commands.guild_only()
     @commands.guildowner_or_permissions(administrator=True)
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
     @commands.hybrid_group(name="exportchannel", aliases=["exportmessages"])
     async def exportchannel(self, ctx: commands.Context) -> None:
-        """Commands for export all or part of a channel's messages to an html file."""
+        """Commands to export all or part of a channel's messages to an html file."""
 
     @exportchannel.command()
     async def all(self, ctx: commands.Context, channel: discord.TextChannel = None) -> None:
@@ -136,7 +145,7 @@ class ExportChannel(Cog):
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
-        count_messages, messages, file = await self.export_messages(ctx, channel=channel)
+        count_messages, __, file = await self.export_messages(ctx, channel=channel)
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
         )
@@ -165,7 +174,7 @@ class ExportChannel(Cog):
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
-        count_messages, messages, file = await self.export_messages(
+        count_messages, __, file = await self.export_messages(
             ctx,
             channel=channel,
             limit=limit if channel != ctx.channel else limit + 1,
@@ -190,18 +199,18 @@ class ExportChannel(Cog):
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
-        before: discord.Message,
+        before: MessageOrObjectConverter,
     ) -> None:
         """Export part of a channel's messages to an html file.
 
-        Specify the before message (id or link).
+        Specify the before message (id or link) or a valid snowflake.
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         Remember that exporting other users' messages from Discord does not respect the TOS.
         """
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
-        count_messages, messages, file = await self.export_messages(
+        count_messages, __, file = await self.export_messages(
             ctx, channel=channel, before=before
         )
         message = await ctx.send(
@@ -224,18 +233,18 @@ class ExportChannel(Cog):
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
-        after: discord.Message,
+        after: MessageOrObjectConverter,
     ) -> None:
         """Export part of a channel's messages to an html file.
 
-        Specify the after message (id or link).
+        Specify the after message (id or link) or a valid snowflake.
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         Remember that exporting other users' messages from Discord does not respect the TOS.
         """
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
-        count_messages, messages, file = await self.export_messages(
+        count_messages, __, file = await self.export_messages(
             ctx, channel=channel, after=after
         )
         message = await ctx.send(
@@ -258,19 +267,19 @@ class ExportChannel(Cog):
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
-        before: discord.Message,
-        after: discord.Message,
+        before: MessageOrObjectConverter,
+        after: MessageOrObjectConverter,
     ) -> None:
         """Export part of a channel's messages to an html file.
 
-        Specify the before and after messages (id or link).
+        Specify the before and after messages (id or link) or a valid snowflake.
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         Remember that exporting other users' messages from Discord does not respect the TOS.
         """
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
-        count_messages, messages, file = await self.export_messages(
+        count_messages, __, file = await self.export_messages(
             ctx, channel=channel, before=before, after=after
         )
         message = await ctx.send(
@@ -298,14 +307,14 @@ class ExportChannel(Cog):
     ) -> None:
         """Export part of a channel's messages to an html file.
 
-        Specify the member (id, name or mention).
+        Specify the user/member (id, name or mention).
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         Remember that exporting other users' messages from Discord does not respect the TOS.
         """
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
-        count_messages, messages, file = await self.export_messages(
+        count_messages, __, file = await self.export_messages(
             ctx,
             channel=channel,
             user_id=user.id if isinstance(user, discord.Member) else user,
@@ -343,7 +352,7 @@ class ExportChannel(Cog):
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
-        count_messages, messages, file = await self.export_messages(
+        count_messages, __, file = await self.export_messages(
             ctx, channel=channel, bot=bot, limit=limit
         )
         message = await ctx.send(

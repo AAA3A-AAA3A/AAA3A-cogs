@@ -25,7 +25,10 @@ _ = Translator("EditFile", __file__)
 
 @cog_i18n(_)
 class EditFile(Cog):
-    """A cog to get a file and replace it from its path from Discord!"""
+    """A cog to get a file and replace it from its path from Discord!
+
+    ⚠️ This cog can be very dangerous, since it allows direct read/write/delete of files on the bot’s machine, considering the fact that reading the wrong file can expose sensitive information like tokens and deleting the wrong file can corrupt the bot or the system entirely.
+    """
 
     def __init__(self, bot: Red):
         self.bot: Red = bot
@@ -201,11 +204,7 @@ class EditFile(Cog):
         cog_data_path = Path(data_manager.cog_data_path() / cog_obj.qualified_name).resolve()
         if not cog_data_path.exists():
             cog_data_path = None
-            reason = (
-                _("This cog had its data directory removed.")
-                if isinstance(getattr(cog_obj, "config", None), Config)
-                else _("This cog does not store any data.")
-            )
+            reason = _("This cog has not yet stored any persistent data in its data folder.")
         list_files = "\n".join(
             [
                 f"- {file}"
@@ -269,7 +268,7 @@ class EditFile(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("The path you specified refers to a directory, not a file.")
             )
-        await ctx.send(_("The `{path}` file has been deleted.").format(path=path))
+        await ctx.send(_("The `{path}` file has been renamed.").format(path=path))
 
     @editfile.command(aliases=["-"])
     async def delete(self, ctx: commands.Context, *, path: str) -> None:

@@ -233,7 +233,7 @@ class GetDocs(DashboardIntegration, Cog):
         self.getdocs_global: typing.Dict[str, typing.Union[str, bool, typing.List[str]]] = {
             "default_source": "discord.py",
             "caching": True,
-            "disabled_sources": ["git", "aiomysql", "asyncpg", "flask", "gitpython", "mango", "matplotlib", "motor", "numpy", "poccolo", "pillow", "psutil", "redis", "sphinx", "sqlite", "starlite", "websockets"],
+            "enabled_sources": ["discord.py", "redbot", "aiohttp", "discordapi"],
         }
         self.config.register_global(**self.getdocs_global)
 
@@ -285,9 +285,9 @@ class GetDocs(DashboardIntegration, Cog):
         # self._bcontext = await self._browser.new_context()
         self._load_time = int(time.monotonic())
         self._session: aiohttp.ClientSession = aiohttp.ClientSession()
-        disabled_sources = await self.config.disabled_sources()
+        enabled_sources = await self.config.enabled_sources()
         for source in BASE_URLS:
-            if source in disabled_sources:
+            if source not in enabled_sources:
                 continue
             self.documentations[source] = Source(
                 self,
@@ -303,6 +303,7 @@ class GetDocs(DashboardIntegration, Cog):
             await self._session.close()
         await super().cog_unload()
 
+    @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(
         aliases=["getdoc", "docs", "doc"],
     )
@@ -323,39 +324,43 @@ class GetDocs(DashboardIntegration, Cog):
         The name must be exact, or else rtfm is invoked instead.
 
         Arguments:
-        - `source`: The name of the documentation to use. Defaults to `discord.py`.
+        - `source`: The name of the documentation to use. Defaults to the one configured with `[p]setgetdocs defaultsource`.
         - `query`: The documentation node/query. (`random` to get a random documentation)
         """
-        if source is None:
-            source = await self.config.default_source()
-            if source not in self.documentations:
-                source = "discord.py"
-        source: Source = self.documentations[source]
-        if query is None:
-            embed = discord.Embed(description=source.url)
-            embed.set_author(
-                name=f"{source.name} Documentation",
-                icon_url=source.icon_url,
-            )
-            view = discord.ui.View()
-            view.add_item(discord.ui.Button(label="Click to view", url=source.url))
-            await ctx.send(embed=embed, view=view)
-            return
-        if query == "random":
-            if not source._docs_cache:
-                raise commands.UserFeedbackCheckFailure(
-                    _("Documentations cache is not yet built.")
-                )
-            choice: Documentation = random.choice(source._docs_cache)
-            if not any([choice.parameters, choice.examples, choice.attributes]):
-                await ctx.send(embed=choice.to_embed(embed_color=await ctx.embed_color()))
-                return
-            query = choice.name
         try:
-            await GetDocsView(cog=self, query=query.strip(), source=source).start(ctx)
-        except RuntimeError as e:
-            raise commands.UserFeedbackCheckFailure(str(e))
+            if source is None:
+                source = await self.config.default_source()
+                if source not in self.documentations:
+                    source = "discord.py"
+            source: Source = self.documentations[source]
+            if query is None:
+                embed = discord.Embed(description=source.url)
+                embed.set_author(
+                    name=f"{source.name} Documentation",
+                    icon_url=source.icon_url,
+                )
+                view = discord.ui.View()
+                view.add_item(discord.ui.Button(label="Click to view", url=source.url))
+                await ctx.send(embed=embed, view=view)
+                return
+            if query == "random":
+                if not source._docs_cache:
+                    raise commands.UserFeedbackCheckFailure(
+                        _("Documentations cache is not yet built.")
+                    )
+                choice: Documentation = random.choice(source._docs_cache)
+                if not any([choice.parameters, choice.examples, choice.attributes]):
+                    await ctx.send(embed=choice.to_embed(embed_color=await ctx.embed_color()))
+                    return
+                query = choice.name
+            try:
+                await GetDocsView(cog=self, query=query.strip(), source=source).start(ctx)
+            except RuntimeError as e:
+                raise commands.UserFeedbackCheckFailure(str(e))
+        except GeneratorExit as e:
+            await self.cog_command_error(ctx, commands.CommandInvokeError(e))
 
+    @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["rtfd"])
     @app_commands.describe(
         source="The name of the documentation to use.",
@@ -368,7 +373,7 @@ class GetDocs(DashboardIntegration, Cog):
         ctx: commands.Context,
         source: typing.Optional[SourceConverter] = None,
         limit: typing.Optional[int] = 10,
-        with_std: typing.Optional[bool] = True,
+        with_std: typing.Optional[bool] = False,
         *,
         query: typing.Optional[str] = "",
     ) -> None:
@@ -378,7 +383,7 @@ class GetDocs(DashboardIntegration, Cog):
         The name must be exact, or else rtfm is invoked instead.
 
         Arguments:
-        - `source`: The name of the documentation to use.
+        - `source`: The name of the documentation to use. Defaults to the one configured with `[p]setgetdocs defaultsource`.
         - `limit`: The limit of objects to be sent.
         - `with_std`: Also display links to non-API documentation.
         - `query`: Your search. (`events` to get all dpy events, for `discord.py`, `redbot` and `pylav` source only)
@@ -402,27 +407,39 @@ class GetDocs(DashboardIntegration, Cog):
         else:
             await Menu(pages=embeds).start(ctx)
 
-    async def _cogsutils_add_hybrid_commands(
-        self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]
-    ) -> None:
-        if command.app_command is None:
-            return
-        if not isinstance(command, commands.HybridCommand):
-            return
-        if "source" in command.app_command._params:
-            command.app_command._params["source"].required = True
-            command.app_command._params["source"].default = "discord.py"
-            command.app_command._params["source"].choices = [
-                app_commands.Choice(name=source, value=source)
-                for source in list(self.documentations.keys())
-            ][:25]
-        if "query" in command.app_command._params:
-            command.app_command._params["query"].required = True
-        _params1 = command.app_command._params.copy()
-        _params2 = list(command.app_command._params.keys())
-        _params2 = sorted(_params2, key=lambda x: _params1[x].required, reverse=True)
-        _params3 = {key: _params1[key] for key in _params2}
-        command.app_command._params = _params3
+    # async def _cogsutils_add_hybrid_commands(
+    #     self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]
+    # ) -> None:
+    #     if command.app_command is None:
+    #         return
+    #     if not isinstance(command, commands.HybridCommand):
+    #         return
+    #     if "source" in command.app_command._params:
+    #         command.app_command._params["source"].required = True
+    #         command.app_command._params["source"].default = await self.config.default_source()
+    #         command.app_command._params["source"].choices = [
+    #             app_commands.Choice(name=source, value=source)
+    #             for source in list(self.documentations.keys())
+    #         ][:25]
+    #     if "query" in command.app_command._params:
+    #         command.app_command._params["query"].required = True
+    #     _params1 = command.app_command._params.copy()
+    #     _params2 = list(command.app_command._params.keys())
+    #     _params2 = sorted(_params2, key=lambda x: _params1[x].required, reverse=True)
+    #     _params3 = {key: _params1[key] for key in _params2}
+    #     command.app_command._params = _params3
+
+    @getdocs.autocomplete("source")
+    async def getdocs_source_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> typing.List[app_commands.Choice[str]]:
+        return [app_commands.Choice(name=source, value=source) for source in self.documentations if source.lower().startswith(current.lower())][:25]
+
+    @rtfm.autocomplete("source")
+    async def rtfm_source_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> typing.List[app_commands.Choice[str]]:
+        return [app_commands.Choice(name=source, value=source) for source in self.documentations if source.lower().startswith(current.lower())][:25]
 
     async def query_autocomplete(
         self,
@@ -467,7 +484,7 @@ class GetDocs(DashboardIntegration, Cog):
     async def rtfm_query_autocomplete(
         self, interaction: discord.Interaction, current: str
     ) -> typing.List[app_commands.Choice[str]]:
-        exclude_std = False
+        exclude_std = True
         if "with_std" in interaction.namespace:
             exclude_std = not interaction.namespace.with_std
         source, result = await self.query_autocomplete(
@@ -477,6 +494,7 @@ class GetDocs(DashboardIntegration, Cog):
             result.insert(0, app_commands.Choice(name="events", value="events"))
         return result[:25]
 
+    @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(
         name="listsources", aliases=["listdocsources", "listrtfmsources", "listsource"]
     )
@@ -528,22 +546,22 @@ class GetDocs(DashboardIntegration, Cog):
         """
         Enable Documentations source(s).
         """
-        disabled_sources: typing.List[str] = await self.config.disabled_sources()
+        enabled_sources: typing.List[str] = await self.config.enabled_sources()
         for source in sources:
-            if source not in disabled_sources:
-                if source in self.documentations:
-                    raise commands.UserFeedbackCheckFailure(_("The source `{source}` is already enabled.").format(source=source))
-                else:
-                    raise commands.UserFeedbackCheckFailure(_("The source `{source}` doesn't exist.").format(source=source))
-            disabled_sources.remove(source)
+            if source in enabled_sources and source in self.documentations:
+                raise commands.UserFeedbackCheckFailure(_("The source `{source}` is already enabled.").format(source=source))
+            elif source not in BASE_URLS:
+                raise commands.UserFeedbackCheckFailure(_("The source `{source}` doesn't exist.").format(source=source))
+            enabled_sources.append(source)
             self.documentations[source] = Source(
                 self,
                 name=source,
                 url=BASE_URLS[source]["url"],
                 icon_url=BASE_URLS[source]["icon_url"],
+                aliases=BASE_URLS[source]["aliases"],
             )
             asyncio.create_task(self.documentations[source].load())
-        await self.config.disabled_sources.set(disabled_sources)
+        await self.config.enabled_sources.set(enabled_sources)
 
     @configuration.command(name="disablesources", aliases=["disablesource"])
     @app_commands.describe(sources="The source(s) to disable.")
@@ -551,14 +569,14 @@ class GetDocs(DashboardIntegration, Cog):
         """
         Disable Documentations source(s).
         """
-        disabled_sources: typing.List[str] = await self.config.disabled_sources()
+        enabled_sources: typing.List[str] = await self.config.enabled_sources()
         for source in sources:
-            if source in disabled_sources:
+            if source not in enabled_sources:
                 raise commands.UserFeedbackCheckFailure(_("The source `{source}` is already disabled.").format(source=source))
             elif source not in self.documentations:
                 raise commands.UserFeedbackCheckFailure(_("The source `{source}` doesn't exist.").format(source=source))
-            disabled_sources.append(source)
-        await self.config.disabled_sources.set(disabled_sources)
+            enabled_sources.remove(source)
+        await self.config.enabled_sources.set(enabled_sources)
 
     @configuration.command(name="stats")
     async def stats(self, ctx: commands.Context) -> None:
@@ -1489,7 +1507,7 @@ class Source:
             collection: typing.Iterable[typing.Union[str, typing.Any]],
             key: typing.Optional[typing.Callable] = None,
         ) -> typing.List[typing.Union[str, typing.Any]]:
-            if self.name != "python":
+            if self.name != None:  # "python":
                 matches = []
                 pat = ".*?".join(map(re.escape, text))
                 regex = re.compile(pat, flags=re.IGNORECASE)

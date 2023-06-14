@@ -109,6 +109,8 @@ Credits
 
 * Individual credits in each cog.
 
+* Thanks to Flame for his review of my repo and his (very) detailed advices on how to improve my cogs/codes!
+
 * Thanks to 26, Aika, Yami, Jack, Flame, Draper, Zeph and others for the discussions that helped me develop my cogs!
 
 * Thanks to Kreusada because his repo served as a model for mine! Everything in the documentation uses the layout of his.

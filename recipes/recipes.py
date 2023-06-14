@@ -129,6 +129,7 @@ class Recipes(Cog):
         self.cache[url] = recipe
         return recipe
 
+    @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command()
     async def recipe(self, ctx: commands.Context, *, query: str) -> None:
         """Show a recipe of Food52, from a query."""
@@ -144,6 +145,7 @@ class Recipes(Cog):
             )
         await RecipesView(cog=self, recipe=recipe).start(ctx)
 
+    @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["searchrecipe"])
     async def searchrecipes(
         self, ctx: commands.Context, limit: typing.Optional[int] = 15, *, query: str

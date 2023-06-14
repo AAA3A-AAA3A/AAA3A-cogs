@@ -58,7 +58,7 @@ class MemoryGame(DashboardIntegration, Cog):
         ] = {
             "max_wrong_matches": {
                 "path": ["max_wrong_matches"],
-                "converter": int,
+                "converter": commands.Range[int, 0, 50],
                 "description": "Set the maximum tries for each game. Use `0` for no limit.",
             },
             "red_economy": {
@@ -68,17 +68,17 @@ class MemoryGame(DashboardIntegration, Cog):
             },
             "max_prize": {
                 "path": ["max_prize"],
-                "converter": int,
+                "converter": commands.Range[int, 1000, 50000],
                 "description": "Set the max prize for Red bank system and cog leaderboard. Default is 5000.",
             },
             "reduction_per_second": {
                 "path": ["max_prize"],
-                "converter": int,
+                "converter": commands.Range[int, 0, 30],
                 "description": "Set the reduction per second of prize for Red bank system and cog leaderboard. Default is 5.",
             },
             "reduction_per_wrong_match": {
                 "path": ["max_prize"],
-                "converter": int,
+                "converter": commands.Range[int, 0, 30],
                 "description": "Set the reduction per wrong match of prize for Red bank system and cog leaderboard. Default is 15.",
             },
         }
@@ -141,6 +141,7 @@ class MemoryGame(DashboardIntegration, Cog):
         file = io.BytesIO(str(data).encode(encoding="utf-8"))
         return {f"{self.qualified_name}.json": file}
 
+    @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command()
     async def memorygame(
         self, ctx: commands.Context, difficulty: typing.Literal["3x3", "4x4", "5x5"] = "5x5"
@@ -156,6 +157,7 @@ class MemoryGame(DashboardIntegration, Cog):
             cog=self, difficulty=difficulty, max_wrong_matches=max_wrong_matches
         ).start(ctx)
 
+    @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command()
     async def memorygameleaderboard(self, ctx: commands.Context) -> None:
         """

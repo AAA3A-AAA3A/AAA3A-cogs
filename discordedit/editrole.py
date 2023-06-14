@@ -90,7 +90,7 @@ class EditRole(Cog):
                     "I can not let you edit @{role.name} ({role.id}) because that role is higher than or equal to your highest role in the Discord hierarchy."
                 ).format(role=role),
             )
-        if not ctx.guild.me.top_role > role:
+        if not ctx.me.top_role > role:
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "I can not edit @{role.name} ({role.id}) because that role is higher than or equal to my highest role in the Discord hierarchy."
@@ -126,6 +126,7 @@ class EditRole(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
+    @commands.bot_has_permissions(embed_links=True)
     @editrole.command(name="list")
     async def editrole_list(
         self,
@@ -302,14 +303,21 @@ class EditRole(Cog):
         """Delete a role."""
         await self.check_role(ctx, role)
         if not confirmation and not ctx.assume_yes:
-            embed: discord.Embed = discord.Embed()
-            embed.title = _("⚠️ - Delete role")
-            embed.description = _(
-                "Do you really want to delete the role {role.mention} ({role.id})?"
-            ).format(role=role)
-            embed.color = 0xF00020
+            if ctx.bot_permissions.embed_links:
+                embed: discord.Embed = discord.Embed()
+                embed.title = _("⚠️ - Delete role")
+                embed.description = _(
+                    "Do you really want to delete the role {role.mention} ({role.id})?"
+                ).format(role=role)
+                embed.color = 0xF00020
+                content = ctx.author.mention
+            else:
+                embed = None
+                content = f"{ctx.author.mention} " + _(
+                    "Do you really want to delete the role {role.mention} ({role.id})?"
+                ).format(role=role)
             if not await self.cogsutils.ConfirmationAsk(
-                ctx, content=f"{ctx.author.mention}", embed=embed
+                ctx, content=content, embed=embed
             ):
                 await self.cogsutils.delete_message(ctx.message)
                 return

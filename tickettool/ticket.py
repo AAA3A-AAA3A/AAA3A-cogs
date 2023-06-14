@@ -206,7 +206,6 @@ class Ticket:
     async def create(self) -> typing.Any:
         config = await self.cog.get_config(self.guild, self.profile)
         logschannel = config["logschannel"]
-        emoji_open = config["emoji_open"]
         ping_role = config["ping_role"]
         self.id = config["last_nb"] + 1
         _reason = await self.cog.get_audit_reason(
@@ -229,10 +228,11 @@ class Ticket:
                 "shortdate": self.created_at.strftime("%m-%d"),
                 "longdate": self.created_at.strftime("%m-%d-%Y"),
                 "time": self.created_at.strftime("%I-%M-%p"),
+                "emoji": config["emoji_open"],
             }
             name = config["dynamic_channel_name"].format(**to_replace).replace(" ", "-")
         except (KeyError, AttributeError):
-            name = f"{emoji_open}-ticket-{self.id}"
+            raise commands.UserFeedbackCheckFailure(_("The dynamic channel name does not contain correct variable names and must be re-configured with `[p]settickettool dynamicchannelname`."))
 
         view = self.cog.get_buttons(
             buttons=[
@@ -270,20 +270,20 @@ class Ticket:
         )
         if config["forum_channel"] is None:
             overwrites = await utils().get_overwrites(self)
+            topic = _(
+                "🎟️ Ticket ID: {ticket.id}\n"
+                # "🔥 Channel ID: {ticket.channel.id}\n"
+                "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+                "☢️ Ticket reason: {short_reason}\n"
+                # "👥 Ticket claimed by: Nobody."
+            ).format(ticket=self, short_reason=f"{self.reason[:700]}...".replace("\n", " ") if len(self.reason) > 700 else self.reason.replace("\n", " "))
             self.channel: discord.TextChannel = await self.guild.create_text_channel(
                 name,
                 overwrites=overwrites,
                 category=config["category_open"],
-                topic=self.reason,
+                topic=topic,
                 reason=_reason,
             )
-            topic = _(
-                "🎟️ Ticket ID: {ticket.id}\n"
-                "🔥 Channel ID: {ticket.channel.id}\n"
-                "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
-                "☢️ Ticket reason: {short_reason}\n"
-                "👥 Ticket claimed by: Nobody."
-            ).format(ticket=self, short_reason=f"{self.reason[:700]}...".replace("\n", " ") if len(self.reason) > 700 else self.reason.replace("\n", " "))
             await self.channel.edit(topic=topic)
             self.first_message = await self.channel.send(
                 f"{self.created_by.mention}{optionnal_ping}",
@@ -354,6 +354,7 @@ class Ticket:
                     "shortdate": self.created_at.strftime("%m-%d"),
                     "longdate": self.created_at.strftime("%m-%d-%Y"),
                     "time": self.created_at.strftime("%I-%M-%p"),
+                    "emoji": config["emoji_open"],
                 }
                 embed.description = config["custom_message"].format(**to_replace)
                 await self.channel.send(embed=embed)
@@ -749,13 +750,13 @@ class Ticket:
         if member.bot:
             raise commands.UserFeedbackCheckFailure(_("A bot cannot claim a ticket."))
         self.claim = member
-        topic = _(
-            "🎟️ Ticket ID: {ticket.id}\n"
-            "🔥 Channel ID: {ticket.channel.id}\n"
-            "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
-            "☢️ Ticket reason: {short_reason}\n"
-            "👥 Ticket claimed by: @{ticket.claim.display_name} (@{ticket.claim.id})."
-        ).format(ticket=self, short_reason=f"{self.reason[:700]}...".replace("\n", " ") if len(self.reason) > 700 else self.reason.replace("\n", " "))
+        # topic = _(
+        #     "🎟️ Ticket ID: {ticket.id}\n"
+        #     "🔥 Channel ID: {ticket.channel.id}\n"
+        #     "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+        #     "☢️ Ticket reason: {short_reason}\n"
+        #     "👥 Ticket claimed by: @{ticket.claim.display_name} (@{ticket.claim.id})."
+        # ).format(ticket=self, short_reason=f"{self.reason[:700]}...".replace("\n", " ") if len(self.reason) > 700 else self.reason.replace("\n", " "))
         if isinstance(self.channel, discord.TextChannel):
             _reason = await self.cog.get_audit_reason(
                 guild=self.guild,
@@ -779,7 +780,7 @@ class Ticket:
                     send_messages=False,
                     view_channel=True,
                 )
-            await self.channel.edit(topic=topic, overwrites=overwrites, reason=_reason)
+            await self.channel.edit(overwrites=overwrites, reason=_reason)  # topic=topic, 
         if self.first_message is not None:
             view = self.cog.get_buttons(
                 buttons=[
@@ -831,14 +832,13 @@ class Ticket:
             )
         config = await self.cog.get_config(self.guild, self.profile)
         self.claim = None
-        topic = _(
-            "🎟️ Ticket ID: {ticket.id}\n"
-            "🔥 Channel ID: {ticket.channel.id}\n"
-            "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
-            "☢️ Ticket reason: {short_reason}\n"
-            "👥 Ticket claimed by: Nobody."
-        ).format(ticket=self, short_reason=f"{self.reason[:700]}...".replace("\n", " ") if len(self.reason) > 700 else self.reason.replace("\n", " "))
-        await self.channel.edit(topic=topic)
+        # topic = _(
+        #     "🎟️ Ticket ID: {ticket.id}\n"
+        #     "🔥 Channel ID: {ticket.channel.id}\n"
+        #     "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+        #     "☢️ Ticket reason: {short_reason}\n"
+        #     "👥 Ticket claimed by: Nobody."
+        # ).format(ticket=self, short_reason=f"{self.reason[:700]}...".replace("\n", " ") if len(self.reason) > 700 else self.reason.replace("\n", " "))
         if isinstance(self.channel, discord.TextChannel):
             _reason = await self.cog.get_audit_reason(
                 guild=self.guild,
@@ -857,6 +857,7 @@ class Ticket:
                 )
                 await self.channel.edit(overwrites=overwrites, reason=_reason)
             await self.channel.set_permissions(member, overwrite=None, reason=_reason)
+            # await self.channel.edit(topic=topic)
         if self.first_message is not None:
             view = self.cog.get_buttons(
                 buttons=[

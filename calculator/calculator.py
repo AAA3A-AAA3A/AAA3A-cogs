@@ -76,26 +76,26 @@ class Calculator(Cog):
             pass
         expression = "".join(lst)
         expression = expression.replace(",", ".")
-        expression = expression.replace(":", "/")
         expression = expression.replace(" ", "")
-        expression = expression.replace("π", str(pi))
-        expression = expression.replace("pi", str(pi))
-        expression = expression.replace("τ", str(tau))
-        expression = expression.replace("tau", str(tau))
-        expression = expression.replace("e", str(e))
-        expression = expression.replace("x", "*")
+        expression = expression.replace(":", "/")
         expression = expression.replace("÷", "/")
-        expression = expression.replace("**2", "^2")
-        expression = expression.replace("**3", "^3")
         expression = expression.replace("**", "^")
+        expression = expression.replace("x", "*")
         expression = expression.replace("√", "sqrt")
         for x in self.x:
             if self.x[x] in expression:
                 expression = expression.replace(self.x[x], f"^{x}")
+        variables = {
+            "π": pi,
+            "pi": pi,
+            "τ": tau,
+            "tau": tau,
+            "e": e,
+        }
         # if "sqrt" in expression and "^" not in expression:
         try:
-            result = evaluate(expression)
-        except EvaluatorError:
+            result = evaluate(expression, variables=variables)
+        except (EvaluatorError, TypeError):  # TypeError: 'Token' object is not subscriptable, for `A(5)`.
             result = None
         # else:
         #     engine_input = "{m:" + expression + "}"
@@ -107,7 +107,7 @@ class Calculator(Cog):
                 result = "∞"
         except Exception:
             result = None
-        return f"{result}" if result is not None else _("Error!")
+        return f"{result}".replace(",", " ") if result is not None else _("Error!")
 
     async def get_embed(
         self, ctx: commands.Context, expression: str, result: str
@@ -146,7 +146,7 @@ class Calculator(Cog):
             lst.remove("|")
         except Exception:
             index = 0
-        if new in {"abs", "cos", "sin", "tan", "In", "√"}:
+        if new in {"abs", "cos", "sin", "tan", "ln", "√"}:
             lst.insert(index, f"{new}(")
             lst.insert(index + 1, ")")
         elif new == "X²":
@@ -154,19 +154,22 @@ class Calculator(Cog):
         elif new == "X³":
             lst.insert(index, "³")
         elif new == "Xˣ":
-            lst.insert(index, "^")
-        elif len(lst) > 1 and lst[index - 1] == "^":
-            try:
-                lst.insert(index, self.x[new])
-                lst.remove("^")
-                index -= 1
-            except Exception:
-                lst.insert(index, new)
+            # lst.insert(index, "^")
+            lst.insert(index, "^(")
+            lst.insert(index + 1, ")")
+        # elif len(lst) > 1 and lst[index - 1] == "^":
+        #     try:
+        #         lst.insert(index, self.x[new])
+        #         lst.remove("^")
+        #         index -= 1
+        #     except Exception:
+        #         lst.insert(index, new)
         else:
             lst.insert(index, new)
         lst.insert(index + 1, "|")
         return "".join(lst)
 
+    @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(name="calculate", aliases=["calc"])
     async def _calculate(self, ctx: commands.Context, *, calculation: str = None) -> None:
         """Calculate a simple expression."""

@@ -109,7 +109,7 @@ class TioFlagsConverter(commands.FlagConverter):
 
 @cog_i18n(_)
 class RunCode(Cog):
-    """A cog to compile and run codes in some languages! Use `[p]setrundocs listlanguages` to get a list of all the available languages."""
+    """A cog to compile and run codes in some languages! Use `[p]setruncode listlanguages` to get a list of all the available languages."""
 
     def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
@@ -264,7 +264,7 @@ class RunCode(Cog):
                 regex_gist = r"^https:\/\/gist\.github\.com\/([a-zA-Z0-9_-]+)\/([a-zA-Z0-9]+)$"
                 regex_pastebin = r"^https:\/\/(www\.)?pastebin\.com\/(raw\/)?([a-zA-Z0-9]+)$"
                 if (match := re.match(regex_gist, url)) is not None:
-                    username, gist_id = match.groups()
+                    __, gist_id = match.groups()
                     api_url = f"https://api.github.com/gists/{gist_id}"
                     async with self._session.get(api_url) as r:
                         response = await r.json()
@@ -284,11 +284,11 @@ class RunCode(Cog):
         if ctx.interaction is None:
             begin = code.find("```")
             language_identifier = code[
-                begin + 3 : code[begin + 3 :].find("\n") + begin + 3
+                begin + 3: code[begin + 3:].find("\n") + begin + 3
             ].lower()
             no_code = False
             try:
-                end = code[begin + 3 + len(language_identifier) :].rfind("```")
+                end = code[begin + 3 + len(language_identifier):].rfind("```")
             except IndexError:
                 no_code = True
             if begin == -1 or end == -1:
@@ -314,7 +314,7 @@ class RunCode(Cog):
             if len(lines) == 1 and lines[0] == "":
                 lines = []
             _code = code[
-                (begin + 4 + len(language_identifier)) : (
+                (begin + 4 + len(language_identifier)): (
                     end + begin + 2 + len(language_identifier)
                 )
             ]
@@ -326,7 +326,7 @@ class RunCode(Cog):
             "c": "#include <stdio.h>\nint main() {code}",
             "cpp": "#include <iostream>\nint main() {code}",
             "cs": "using System;class Program {static void Main(string[] args) {code}}",
-            "java": "public class Main {public static void main(String[] args) {code}}",
+            "java": "public class prog {public static void main(String[] args) {code}}",  # Main.java
             "rust": "fn main() {code}",
             "d": "import std.stdio; void main(){code}",
             "kotlin": "fun main(args: Array<String>) {code}",
@@ -511,23 +511,23 @@ class RunCode(Cog):
         self.history[ctx.author].append(response)
         await response.send(ctx, verbose=verbose)
 
-    async def _cogsutils_add_hybrid_commands(
-        self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]
-    ) -> None:
-        if command.app_command is None:
-            return
-        if not isinstance(command, commands.HybridCommand):
-            return
-        if "language" in command.app_command._params and command.qualified_name == "runcode":
-            command.app_command._params["language"].required = True
-            command.app_command._params["language"].default = "Python"
-        if "code" in command.app_command._params:
-            command.app_command._params["code"].required = True
-        _params1 = command.app_command._params.copy()
-        _params2 = list(command.app_command._params.keys())
-        _params2 = sorted(_params2, key=lambda x: _params1[x].required, reverse=True)
-        _params3 = {key: _params1[key] for key in _params2}
-        command.app_command._params = _params3
+    # async def _cogsutils_add_hybrid_commands(
+    #     self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]
+    # ) -> None:
+    #     if command.app_command is None:
+    #         return
+    #     if not isinstance(command, commands.HybridCommand):
+    #         return
+    #     if "language" in command.app_command._params and command.qualified_name == "runcode":
+    #         command.app_command._params["language"].required = True
+    #         command.app_command._params["language"].default = "Python"
+    #     if "code" in command.app_command._params:
+    #         command.app_command._params["code"].required = True
+    #     _params1 = command.app_command._params.copy()
+    #     _params2 = list(command.app_command._params.keys())
+    #     _params2 = sorted(_params2, key=lambda x: _params1[x].required, reverse=True)
+    #     _params3 = {key: _params1[key] for key in _params2}
+    #     command.app_command._params = _params3
 
     @runcode.autocomplete("language")
     async def runcode_language_autocomplete(

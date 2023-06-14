@@ -36,15 +36,16 @@ class MemberPrefix(Cog):
         self.config.register_global(**self.memberprefix_global)
         self.config.register_member(**self.memberprefix_member)
 
-        self.cache_messages: typing.List[discord.Message] = []
+        self.original_prefix_manager = self.bot.command_prefix
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     async def cog_load(self) -> None:
-        self.bot.before_invoke(self.before_invoke)
+        self.bot.command_prefix = self.prefix_manager
 
     async def cog_unload(self) -> None:
-        self.bot.remove_before_invoke_hook(self.before_invoke)
+        if self.original_prefix_manager is not None:
+            self.bot.command_prefix = self.original_prefix_manager
         await super().cog_unload()
 
     async def red_delete_data_for_user(
@@ -91,53 +92,24 @@ class MemberPrefix(Cog):
         file = io.BytesIO(str(data).encode(encoding="utf-8"))
         return {f"{self.qualified_name}.json": file}
 
-    async def before_invoke(self, ctx: commands.Context) -> None:
-        if ctx.guild is None:
-            return
-        if ctx.interaction is not None:
-            return
-        if await self.config.use_normal_prefixes():
-            return
-        if not isinstance(ctx.author, discord.Member):
-            ctx.author = ctx.guild.get_member(ctx.author.id)
-        config = await self.config.member(ctx.author).all()
-        if config["custom_prefixes"] == []:
-            return
-        if ctx.message.id in self.cache_messages or ctx.assume_yes:
-            self.cache_messages.remove(ctx.message.id)
-            return
-        raise commands.CheckFailure()
-
-    @commands.Cog.listener()
-    async def on_message(self, message: discord.Message) -> None:
-        if message.webhook_id is not None or message.author.bot:
-            return
-        if message.guild is None:
-            return
-        if not await self.bot.allowed_by_whitelist_blacklist(message.author):
-            return
-        if not isinstance(message.author, discord.Member):
-            message.author = message.guild.get_member(message.author.id)
-        config = await self.config.member(message.author).all()
-        if config["custom_prefixes"] == []:
-            return
-        prefixes = config["custom_prefixes"]
-        ctx = await self.get_context_with_custom_prefixes(
-            origin=message, prefixes=prefixes, cls=commands.context.Context
-        )
-        if ctx is None:
-            ctx = await self.get_context_with_custom_prefixes(
-                origin=message,
-                prefixes=[f"<@{self.bot.user.id}> ", f"<@!{self.bot.user.id}> "],
-                cls=commands.context.Context,
-            )
-            if ctx is not None and ctx.valid and ctx.command == self.memberprefix:
-                self.cache_messages.append(ctx.message.id)
-                await self.bot.invoke(ctx)
-            return
-        if ctx.valid:
-            self.cache_messages.append(ctx.message.id)
-            await self.bot.invoke(ctx)
+    async def prefix_manager(self, bot: Red, message: discord.Message) -> typing.List[str]:
+        if message.guild is None or await bot.cog_disabled_in_guild(cog=self, guild=message.guild) or not await bot.allowed_by_whitelist_blacklist(who=message.author):
+            prefixes = await bot._prefix_cache.get_prefixes(message.guild)
+            if bot._cli_flags.mentionable:
+                return discord.ext.commands.when_mentioned_or(*prefixes)(bot, message)
+            return prefixes
+        custom_prefixes = await self.config.member_from_ids(message.guild.id, message.author.id).custom_prefixes()
+        if custom_prefixes == []:
+            prefixes = await bot._prefix_cache.get_prefixes(message.guild)
+            if bot._cli_flags.mentionable:
+                return discord.ext.commands.when_mentioned_or(*prefixes)(bot, message)
+        else:
+            if await self.config.use_normal_prefixes():
+                prefixes = await bot._prefix_cache.get_prefixes(message.guild)
+            prefixes.extend(custom_prefixes)
+            prefixes = sorted(prefixes, reverse=True)
+            return discord.ext.commands.when_mentioned_or(*prefixes)(bot, message)
+        return prefixes
 
     class StrConverter(commands.Converter):
         async def convert(self, ctx: commands.Context, argument: str) -> str:
@@ -161,9 +133,8 @@ class MemberPrefix(Cog):
         """
         if len(prefixes) == 0:
             await self.config.member(ctx.author).custom_prefixes.clear()
-            raise commands.UserFeedbackCheckFailure(
-                _("You now use this server or global prefixes.")
-            )
+            await ctx.send(_("You now use this server or global prefixes."))
+            return
         if any(len(x) > 25 for x in prefixes):
             raise commands.UserFeedbackCheckFailure(
                 _(
@@ -180,72 +151,23 @@ class MemberPrefix(Cog):
         else:
             await ctx.send(_("Prefixes for you only set."))
 
-    async def get_context_with_custom_prefixes(
-        self, origin: discord.Message, prefixes: typing.List, *, cls=commands.context.Context
-    ) -> None:
-        r"""|coro|
-
-        Returns the invocation context from the message or interaction.
-
-        This is a more low-level counter-part for :meth:`.process_commands`
-        to allow users more fine grained control over the processing.
-
-        The returned context is not guaranteed to be a valid invocation
-        context, :attr:`.Context.valid` must be checked to make sure it is.
-        If the context is not valid then it is not a valid candidate to be
-        invoked under :meth:`~.Bot.invoke`.
-
-        .. note::
-
-            In order for the custom context to be used inside an interaction-based
-            context (such as :class:`HybridCommand`) then this method must be
-            overridden to return that class.
-
-        .. versionchanged:: 2.0
-
-            ``message`` parameter is now positional-only and renamed to ``origin``.
-        Parameters
-        -----------
-        origin: Union[:class:`discord.Message`, :class:`discord.Interaction`]
-            The message or interaction to get the invocation context from.
-        cls
-            The factory class that will be used to create the context.
-            By default, this is :class:`.Context`. Should a custom
-            class be provided, it must be similar enough to :class:`.Context`\'s
-            interface.
-
-        Returns
-        --------
-        :class:`.Context`
-            The invocation context. The type of this can change via the
-            ``cls`` parameter.
-        """
-        if isinstance(origin, discord.Interaction):
-            return
-        view = discord.ext.commands.view.StringView(origin.content)
-        ctx = cls(prefix=None, view=view, bot=self.bot, message=origin)
-        if origin.author.id == self.bot.user.id:  # type: ignore
-            return ctx
-        prefix = prefixes
-        invoked_prefix = prefix
-        if isinstance(prefix, str):
-            if not view.skip_string(prefix):
-                return ctx
-        elif origin.content.startswith(tuple(prefix)):
-            invoked_prefix = discord.utils.find(view.skip_string, prefix)
-        else:
-            return ctx
-        if self.bot.strip_after_prefix:
-            view.skip_ws()
-        invoker = view.get_word()
-        ctx.invoked_with = invoker
-        ctx.prefix = invoked_prefix
-        ctx.command = self.bot.all_commands.get(invoker)
-        return ctx
-
     @commands.guild_only()
     @commands.guildowner_or_permissions(administrator=True)
-    @commands.command(hidden=True)
+    @commands.hybrid_group()
+    async def setmemberprefix(self, ctx: commands.Context) -> None:
+        """Configure MemberPrefix."""
+        await self.config.clear_all_members(guild=ctx.guild)
+
+    @setmemberprefix.command()
     async def memberprefixpurge(self, ctx: commands.Context) -> None:
         """Clear all members prefixes for this guild."""
         await self.config.clear_all_members(guild=ctx.guild)
+
+    @commands.is_owner()
+    @setmemberprefix.command()
+    async def resetmemberprefix(self, ctx: commands.Context, user: discord.User, guild: discord.Guild = None) -> None:
+        """Clear prefixes for a specified member in a specified server (or the current)."""
+        guild = guild or ctx.guild
+        if (member := guild.get_member(user.id)) is None:
+            raise commands.UserFeedbackCheckFailure(_("This user isn't in this server."))
+        await self.config.member(member).clear()

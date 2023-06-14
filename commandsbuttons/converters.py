@@ -31,10 +31,13 @@ class EmojiCommandConverter(discord.ext.commands.Converter):
         try:
             emoji, command = arg_split
         except Exception:
+            # emoji = None
+            # command = arg_split[0]
             raise discord.ext.commands.BadArgument(
                 _(
                     "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
                 )
             )
+        # if emoji is not None:
         emoji = await Emoji().convert(ctx, emoji.strip())
         return emoji, command

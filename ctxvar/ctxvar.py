@@ -26,6 +26,58 @@ from redbot.core.utils.chat_formatting import bold, box
 _ = Translator("CtxVar", __file__)
 
 
+class WhatIsConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str):
+        _types = [
+            discord.Guild,
+            discord.TextChannel,
+            discord.VoiceChannel,
+            discord.ForumChannel,
+            discord.Thread,
+            discord.Member,
+            discord.User,
+            discord.Role,
+            discord.Emoji,
+            discord.Message,
+            discord.Invite,
+        ]
+        # _types = list(discord.ext.commands.converter.CONVERTER_MAPPING.keys())[1:]
+        for _type in _types:
+            try:
+                return await discord.ext.commands.converter.CONVERTER_MAPPING[_type]().convert(
+                    ctx, argument
+                )
+            except commands.BadArgument:
+                pass
+        Dev = ctx.bot.get_cog("Dev")
+        if not Dev:
+            raise commands.UserFeedbackCheckFailure(_("No Discord object found."))
+        thing = cleanup_code(argument)
+        env = Dev.get_environment(ctx)
+        env["getattr_static"] = inspect.getattr_static
+        try:
+            tree = ast.parse(thing, "<dir>", "eval")
+            if isinstance(tree.body, ast.Attribute) and isinstance(tree.body.ctx, ast.Load):
+                tree.body = ast.Call(
+                    func=ast.Name(id="getattr_static", ctx=ast.Load()),
+                    args=[tree.body.value, ast.Constant(value=tree.body.attr)],
+                    keywords=[],
+                )
+                tree = ast.fix_missing_locations(tree)
+            _object = eval(compile(tree, "<dir>", "eval"), env)
+        except NameError:
+            raise commands.UserFeedbackCheckFailure(
+                _("I couldn't find any cog, command, or object named `{thing}`.").format(
+                    thing=thing
+                )
+            )
+        except Exception as e:
+            raise commands.UserFeedbackCheckFailure(
+                box("".join(traceback.format_exception_only(type(e), e)), lang="py")
+            )
+        return _object
+
+
 @cog_i18n(_)
 class CtxVar(Cog):
     """A cog to list and display the contents of all sub-functions of `ctx`!"""
@@ -36,12 +88,13 @@ class CtxVar(Cog):
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.is_owner()
-    @commands.hybrid_group(invoke_without_subcommand=True)
+    @commands.hybrid_group()
     async def ctxvar(self, ctx: commands.Context) -> None:
         """Commands for CtxVar."""
         pass
 
     @commands.is_owner()
+    @commands.bot_has_permissions(embed_links=True)
     @ctxvar.command()
     async def ctx(
         self,
@@ -281,57 +334,6 @@ class CtxVar(Cog):
         )
 
         await Menu(pages=result.strip(), lang="py").start(ctx)
-
-    class WhatIsConverter(commands.Converter):
-        async def convert(self, ctx: commands.Context, argument: str):
-            _types = [
-                discord.Guild,
-                discord.TextChannel,
-                discord.VoiceChannel,
-                discord.ForumChannel,
-                discord.Thread,
-                discord.Invite,
-                discord.Member,
-                discord.User,
-                discord.Role,
-                discord.Emoji,
-                discord.Message,
-            ]
-            # _types = list(discord.ext.commands.converter.CONVERTER_MAPPING.keys())[1:]
-            for _type in _types:
-                try:
-                    return await discord.ext.commands.converter.CONVERTER_MAPPING[_type]().convert(
-                        ctx, argument
-                    )
-                except commands.BadArgument:
-                    pass
-            Dev = ctx.bot.get_cog("Dev")
-            if not Dev:
-                raise commands.UserFeedbackCheckFailure(_("No Discord object found."))
-            thing = cleanup_code(argument)
-            env = Dev.get_environment(ctx)
-            env["getattr_static"] = inspect.getattr_static
-            try:
-                tree = ast.parse(thing, "<dir>", "eval")
-                if isinstance(tree.body, ast.Attribute) and isinstance(tree.body.ctx, ast.Load):
-                    tree.body = ast.Call(
-                        func=ast.Name(id="getattr_static", ctx=ast.Load()),
-                        args=[tree.body.value, ast.Constant(value=tree.body.attr)],
-                        keywords=[],
-                    )
-                    tree = ast.fix_missing_locations(tree)
-                _object = eval(compile(tree, "<dir>", "eval"), env)
-            except NameError:
-                raise commands.UserFeedbackCheckFailure(
-                    _("I couldn't find any cog, command, or object named `{thing}`.").format(
-                        thing=thing
-                    )
-                )
-            except Exception as e:
-                raise commands.UserFeedbackCheckFailure(
-                    box("".join(traceback.format_exception_only(type(e), e)), lang="py")
-                )
-            return _object
 
     @ctxvar.command(name="whatis")
     async def _whatis(self, ctx: commands.Context, *, thing: WhatIsConverter) -> None:

@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
+from AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -78,6 +78,7 @@ class Dictionary(Cog):
         return word
 
     @commands.hybrid_command()
+    @commands.bot_has_permissions(embed_links=True)
     async def dictionary(self, ctx: commands.Context, query: str) -> None:
         """Search a word in the english dictionnary."""
         word = await self.get_word(query)

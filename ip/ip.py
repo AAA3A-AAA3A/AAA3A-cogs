@@ -40,7 +40,7 @@ class Ip(Cog):
         ] = {
             "port": {
                 "path": ["port"],
-                "converter": str,
+                "converter": commands.Range[str, 4, 4],
                 "description": "Set the port.",
             },
         }
@@ -55,6 +55,9 @@ class Ip(Cog):
             can_edit=True,
             commands_group=self.ip_group,
         )
+
+    async def cog_load(self) -> None:
+        await self.settings.add_commands()
 
     @commands.is_owner()
     @commands.hybrid_group(name="ip")

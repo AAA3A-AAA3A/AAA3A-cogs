@@ -39,6 +39,8 @@ class CmdChannel(Cog):
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message) -> None:
+        if await self.bot.cog_disabled_in_guild(cog=self, guild=message.guild) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
+            return
         if message.webhook_id is not None or message.author.bot:
             return
         context = await self.bot.get_context(message)
@@ -74,7 +76,6 @@ class CmdChannel(Cog):
     ) -> None:
         """Act as if the command had been typed in the channel of your choice.
         The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.
-        If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).
 
         Use `[p]cmdchannel`!
         """
@@ -106,7 +107,6 @@ class CmdChannel(Cog):
     ) -> None:
         """Act as if the command had been typed by imitating the specified user.
         The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.
-        If you do not specify a user, the author will be used.
 
         Use `[p]cmduser`!
         """
@@ -139,7 +139,6 @@ class CmdChannel(Cog):
     ) -> None:
         """Act as if the command had been typed in the channel of your choice by imitating the specified user.
         The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.
-        If you do not specify a user, the author will be used.
 
         Use `[p]cmduserchannel`!
         """

@@ -71,9 +71,7 @@ class EditThread(Cog):
 
     async def check_thread(self, ctx: commands.Context, thread: discord.Thread) -> bool:
         if (
-            not self.cogsutils.check_permissions_for(
-                channel=thread, user=ctx.author, check=["manage_channel"]
-            )
+            not thread.permissions_for(ctx.author).manage_channels
             and ctx.author.id != ctx.guild.owner.id
             and ctx.author.id not in ctx.bot.owner_ids
             and ctx.author != thread.owner
@@ -83,9 +81,7 @@ class EditThread(Cog):
                     "I can not let you edit the thread {thread.mention} ({thread.id}) because I don't have the `manage_channel` permission."
                 ).format(thread=thread)
             )
-        if not self.cogsutils.check_permissions_for(
-            channel=thread, user=ctx.guild.me, check=["manage_channel"]
-        ):
+        if not thread.permissions_for(ctx.me).manage_channels:
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "I can not edit the thread {thread.mention} ({thread.id}) because you don't have the `manage_channel` permission."
@@ -94,12 +90,14 @@ class EditThread(Cog):
         return True
 
     @commands.guild_only()
-    @commands.admin_or_permissions(manage_channels=True)
+    @commands.admin_or_can_manage_channel(allow_thread_owner=True)
+    @commands.bot_has_permissions(manage_channels=True)
     @commands.hybrid_group()
     async def editthread(self, ctx: commands.Context) -> None:
         """Commands for edit a text channel."""
         pass
 
+    @commands.admin_or_permissions(manage_channels=True)
     @editthread.command(name="create")
     async def editthread_create(
         self,
@@ -123,6 +121,7 @@ class EditThread(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
+    @commands.bot_has_permissions(embed_links=True)
     @editthread.command(name="list")
     async def editthread_list(
         self,
@@ -295,14 +294,21 @@ class EditThread(Cog):
         """Delete a thread."""
         await self.check_thread(ctx, thread)
         if not confirmation and not ctx.assume_yes:
-            embed: discord.Embed = discord.Embed()
-            embed.title = _("⚠️ - Delete thread")
-            embed.description = _(
-                "Do you really want to delete the thread {thread.mention} ({thread.id})?"
-            ).format(thread=thread)
-            embed.color = 0xF00020
+            if ctx.bot_permissions.embed_links:
+                embed: discord.Embed = discord.Embed()
+                embed.title = _("⚠️ - Delete thread")
+                embed.description = _(
+                    "Do you really want to delete the thread {thread.mention} ({thread.id})?"
+                ).format(thread=thread)
+                embed.color = 0xF00020
+                content = ctx.author.mention
+            else:
+                embed = None
+                content = f"{ctx.author.mention} " + _(
+                    "Do you really want to delete the thread {thread.mention} ({thread.id})?"
+                ).format(thread=thread)
             if not await self.cogsutils.ConfirmationAsk(
-                ctx, content=f"{ctx.author.mention}", embed=embed
+                ctx, content=content, embed=embed
             ):
                 await self.cogsutils.delete_message(ctx.message)
                 return

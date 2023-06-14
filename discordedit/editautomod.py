@@ -147,6 +147,7 @@ class EditAutoMod(Cog):
             )
         await ctx.send(_("AutoMod rule {rule.name} ({rule.id}) created.").format(rule=rule))
 
+    @commands.bot_has_permissions(embed_links=True)
     @editautomod.command(name="list")
     async def editautomod_list(
         self,
@@ -315,14 +316,21 @@ class EditAutoMod(Cog):
     ) -> None:
         """Delete automod rule."""
         if not confirmation and not ctx.assume_yes:
-            embed: discord.Embed = discord.Embed()
-            embed.title = _("⚠️ - Delete AutoMod rule")
-            embed.description = _(
-                "Do you really want to delete the AutoMod rule {rule.name} ({rule.id}) in {guild.name} ({guild.id})?"
-            ).format(rule=rule, guild=ctx.guild)
-            embed.color = 0xF00020
+            if ctx.bot_permissions.embed_links:
+                embed: discord.Embed = discord.Embed()
+                embed.title = _("⚠️ - Delete AutoMod rule")
+                embed.description = _(
+                    "Do you really want to delete the AutoMod rule {rule.name} ({rule.id}) in {guild.name} ({guild.id})?"
+                ).format(rule=rule, guild=ctx.guild)
+                embed.color = 0xF00020
+                content = ctx.author.mention
+            else:
+                embed = None
+                content = f"{ctx.author.mention} " + _(
+                    "Do you really want to delete the AutoMod rule {rule.name} ({rule.id}) in {guild.name} ({guild.id})?"
+                ).format(rule=rule, guild=ctx.guild)
             if not await self.cogsutils.ConfirmationAsk(
-                ctx, content=f"{ctx.author.mention}", embed=embed
+                ctx, content=content, embed=embed
             ):
                 await self.cogsutils.delete_message(ctx.message)
                 return

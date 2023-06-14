@@ -176,14 +176,21 @@ class EditGuild(Cog):
         """Edit guild owner (if the bot is bot owner)."""
         guild = ctx.guild
         if not confirmation and not ctx.assume_yes:
-            embed: discord.Embed = discord.Embed()
-            embed.title = _(":⚠️ - Change Guild Owner")
-            embed.description = _(
-                "Do you really want to change guild owner of the guild {guild.name} ({guild.id})?"
-            ).format(guild=guild)
-            embed.color = 0xF00020
+            if ctx.bot_permissions.embed_links:
+                embed: discord.Embed = discord.Embed()
+                embed.title = _(":⚠️ - Change Guild Owner")
+                embed.description = _(
+                    "Do you really want to change guild owner of the guild {guild.name} ({guild.id})?"
+                ).format(guild=guild)
+                embed.color = 0xF00020
+                content = ctx.author.mention
+            else:
+                embed = None
+                content = f"{ctx.author.mention} " + _(
+                    "Do you really want to change guild owner of the guild {guild.name} ({guild.id})?"
+                ).format(guild=guild)
             if not await self.cogsutils.ConfirmationAsk(
-                ctx, content=f"{ctx.author.mention}", embed=embed
+                ctx, content=content, embed=embed
             ):
                 await self.cogsutils.delete_message(ctx.message)
                 return
@@ -431,15 +438,22 @@ class EditGuild(Cog):
     ) -> None:
         """Delete guild (if the bot is owner)."""
         guild = ctx.guild
-        if not confirmation:
-            embed: discord.Embed = discord.Embed()
-            embed.title = _("⚠️ - Delete Guild")
-            embed.description = _(
-                "Do you really want to delete the guild {guild.name} ({guild.id})?"
-            ).format(guild=guild)
-            embed.color = 0xF00020
+        if not confirmation and not ctx.assume_yes:
+            if ctx.bot_permissions.embed_links:
+                embed: discord.Embed = discord.Embed()
+                embed.title = _("⚠️ - Delete Guild")
+                embed.description = _(
+                    "Do you really want to delete the guild {guild.name} ({guild.id})?"
+                ).format(guild=guild)
+                embed.color = 0xF00020
+                content = ctx.author.mention
+            else:
+                embed = None
+                content = f"{ctx.author.mention} " + _(
+                    "Do you really want to delete the guild {guild.name} ({guild.id})?"
+                ).format(guild=guild)
             if not await self.cogsutils.ConfirmationAsk(
-                ctx, content=f"{ctx.author.mention}", embed=embed
+                ctx, content=content, embed=embed
             ):
                 await self.cogsutils.delete_message(ctx.message)
                 return

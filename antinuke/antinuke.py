@@ -138,6 +138,8 @@ class AntiNuke(DashboardIntegration, Cog):
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, old_channel: discord.abc.GuildChannel) -> None:
         """Remove all permissions from a user if they delete a channel."""
+        if await self.bot.cog_disabled_in_guild(cog=self, guild=old_channel.guild):
+            return
         config = await self.config.guild(old_channel.guild).all()
         logschannel = config["logschannel"]
         actual_state_enabled = config["enabled"]
@@ -262,7 +264,7 @@ class AntiNuke(DashboardIntegration, Cog):
             if old_roles := [
                 r
                 for r in old_roles
-                if r.position < ctx.guild.me.top_role.position and not r.managed
+                if r.position < ctx.me.top_role.position and not r.managed
             ]:
                 # await user.edit(roles=old_roles, reason=f"All former roles of {user} ({user.id}) have been restored at the request of the server owner.")
                 await user.add_roles(

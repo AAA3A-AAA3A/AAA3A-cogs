@@ -46,7 +46,7 @@ class settings(commands.Cog):
             channel = ctx.channel
         if reason_options == []:
             reason_options = None
-        if message is not None and message.author != ctx.guild.me:
+        if message is not None and message.author != ctx.me:
             await ctx.send(
                 _("I have to be the author of the message for the interaction to work.")
             )

@@ -79,7 +79,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 "close_confirmation": False,
                 "emoji_open": "❓",
                 "emoji_close": "🔒",
-                "dynamic_channel_name": "❓-ticket-{ticket.id}",
+                "dynamic_channel_name": "{emoji}-ticket-{ticket_id}",
                 "last_nb": 0000,
                 "custom_message": None,
                 "embed_button": {
@@ -155,17 +155,17 @@ class TicketTool(settings, DashboardIntegration, Cog):
             "dynamic_channel_name": {
                 "path": ["dynamic_channel_name"],
                 "converter": str,
-                "description": "Set the template that will be used to name the channel when creating a ticket.\n\n`{ticket_id}` - Ticket number\n`{owner_display_name}` - user's nick or name\n`{owner_name}` - user's name\n`{owner_id}` - user's id\n`{guild_name}` - guild's name\n`{guild_id}` - guild's id\n`{bot_display_name}` - bot's nick or name\n`{bot_name}` - bot's name\n`{bot_id}` - bot's id\n`{shortdate}` - mm-dd\n`{longdate}` - mm-dd-yyyy\n`{time}` - hh-mm AM/PM according to bot host system time\n\nIf, when creating the ticket, an error occurs with this name, another name will be used automatically.",
+                "description": "Set the template that will be used to name the channel when creating a ticket.\n\n`{ticket_id}` - Ticket number\n`{owner_display_name}` - user's nick or name\n`{owner_name}` - user's name\n`{owner_id}` - user's id\n`{guild_name}` - guild's name\n`{guild_id}` - guild's id\n`{bot_display_name}` - bot's nick or name\n`{bot_name}` - bot's name\n`{bot_id}` - bot's id\n`{shortdate}` - mm-dd\n`{longdate}` - mm-dd-yyyy\n`{time}` - hh-mm AM/PM according to bot host system time\n`{emoji}` - The open/closed emoji.",
             },
             "nb_max": {
                 "path": ["nb_max"],
-                "converter": int,
-                "description": "Sets the maximum number of open tickets a user can have on the system at any one time (for the profile only).",
+                "converter": commands.Range[int, 1, None],
+                "description": "Sets the maximum number of open tickets a user can have on the system at any one time (for a profile only).",
             },
             "custom_message": {
                 "path": ["custom_message"],
                 "converter": str,
-                "description": "This message will be sent in the ticket channel when the ticket is opened.\n\n`{ticket_id}` - Ticket number\n`{owner_display_name}` - user's nick or name\n`{owner_name}` - user's name\n`{owner_id}` - user's id\n`{guild_name}` - guild's name\n`{guild_id}` - guild's id\n`{bot_display_name}` - bot's nick or name\n`{bot_name}` - bot's name\n`{bot_id}` - bot's id\n`{shortdate}` - mm-dd\n`{longdate}` - mm-dd-yyyy\n`{time}` - hh-mm AM/PM according to bot host system time",
+                "description": "This message will be sent in the ticket channel when the ticket is opened.\n\n`{ticket_id}` - Ticket number\n`{owner_display_name}` - user's nick or name\n`{owner_name}` - user's name\n`{owner_id}` - user's id\n`{guild_name}` - guild's name\n`{guild_id}` - guild's id\n`{bot_display_name}` - bot's nick or name\n`{bot_name}` - bot's name\n`{bot_id}` - bot's id\n`{shortdate}` - mm-dd\n`{longdate}` - mm-dd-yyyy\n`{time}` - hh-mm AM/PM according to bot host system time\n`{emoji}` - The open/closed emoji.",
                 "style": discord.ButtonStyle(2),
             },
             "user_can_close": {
@@ -229,7 +229,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
     async def cog_load(self):
         await self.edit_config_schema()
         await self.settings.add_commands()
-        await modlog.register_casetype("ticket_created", default_setting=True, image="🎟️", case_str="New Ticket")
+        try:
+            await modlog.register_casetype("ticket_created", default_setting=True, image="🎟️", case_str="New Ticket")
+        except RuntimeError:  # The case is already registered.
+            pass
         await self.load_buttons()
 
     async def edit_config_schema(self):
@@ -698,18 +701,26 @@ class TicketTool(settings, DashboardIntegration, Cog):
     @commands.guild_only()
     @commands.hybrid_group(name="ticket")
     async def ticket(self, ctx: commands.Context) -> None:
-        """Commands for using the ticket system."""
+        """Commands for using the ticket system.
+
+        Many commands to manage tickets appear when you run help in a ticket channel.
+        """
 
     @ticket.command(name="create", aliases=["+"])
     async def command_create(
         self,
         ctx: commands.Context,
-        profile: typing.Optional[ProfileConverter] = "main",
+        profile: typing.Optional[ProfileConverter] = None,
         *,
         reason: typing.Optional[str] = "No reason provided.",
     ) -> None:
-        """Create a ticket."""
+        """Create a ticket.
+
+        If only one profile has been created on this server, you don't need to specify its name.
+        """
         profiles = await self.config.guild(ctx.guild).profiles()
+        if profile is None and len(profiles) == 1:
+            profile = profiles[0]
         if profile not in profiles:
             raise commands.UserFeedbackCheckFailure(_("This profile does not exist."))
         config = await self.get_config(ctx.guild, profile)
@@ -719,13 +730,13 @@ class TicketTool(settings, DashboardIntegration, Cog):
         if not config["enable"]:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "The ticket system is not enabled on this server. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it."
+                    "The ticket system is not enabled on this server. Please ask an administrator of this server to use the `{ctx.prefix}settickettool` subcommands to configure it."
                 ).format(ctx=ctx)
             )
         if forum_channel is None and (category_open is None or category_close is None):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "The category `open` or the category `close` have not been configured. Please ask an administrator of this server to use the `{ctx.prefix}ticketset` subcommands to configure it."
+                    "The category `open` or the category `close` have not been configured. Please ask an administrator of this server to use the `{ctx.prefix}settickettool` subcommands to configure it."
                 ).format(ctx=ctx)
             )
         if not await self.check_limit(ctx.author, profile):
@@ -737,8 +748,8 @@ class TicketTool(settings, DashboardIntegration, Cog):
             )
         if forum_channel is None:
             if (
-                not category_open.permissions_for(ctx.guild.me).manage_channels
-                or not category_close.permissions_for(ctx.guild.me).manage_channels
+                not category_open.permissions_for(ctx.me).manage_channels
+                or not category_close.permissions_for(ctx.me).manage_channels
             ):
                 raise commands.UserFeedbackCheckFailure(
                     _(
@@ -746,8 +757,8 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     )
                 )
         elif (
-            not forum_channel.permissions_for(ctx.guild.me).create_private_threads
-            or not forum_channel.permissions_for(ctx.guild.me).create_public_threads
+            not forum_channel.permissions_for(ctx.me).create_private_threads
+            or not forum_channel.permissions_for(ctx.me).create_public_threads
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
@@ -1157,8 +1168,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ctx: commands.Context,
         profile: ProfileConverter,
         status: typing.Optional[typing.Literal["open", "close", "all"]],
-        member: typing.Optional[discord.Member],
+        owner: typing.Optional[discord.Member],
     ) -> None:
+        """List existings tickets for a profile. You can provide a status and/or a ticket owner."""
         if status is None:
             status = "open"
         tickets = await self.config.guild(ctx.guild).tickets.all()
@@ -1174,7 +1186,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             ticket: Ticket = await self.get_ticket(channel)
             if (
                 ticket.profile == profile
-                and (member is None or ticket.owner == member)
+                and (owner is None or ticket.owner == owner)
                 and (status == "all" or ticket.status == status)
             ):
                 tickets_to_show.append(ticket)
@@ -1400,6 +1412,8 @@ class TicketTool(settings, DashboardIntegration, Cog):
         channel = guild.get_channel(payload.channel_id)
         member = guild.get_member(payload.user_id)
         if member == guild.me or member.bot:
+            return
+        if await self.bot.cog_disabled_in_guild(cog=self, guild=guild) or not await self.bot.allowed_by_whitelist_blacklist(who=member):
             return
         profile = "main"
         profiles = await self.config.guild(guild).profiles()

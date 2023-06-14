@@ -22,6 +22,17 @@ RESULT_MESSAGE = _("There are {count_messages} transfered messages from {source.
 _ = Translator("TransferChannel", __file__)
 
 
+class MessageOrObjectConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> typing.Union[discord.Message, discord.Object]:
+        try:
+            await commands.MessageConverter().convert(ctx, argument=argument)
+        except commands.BadArgument as e:
+            try:
+                await commands.ObjectConverter().convert(ctx, argument=argument)
+            except commands.BadArgument:
+                raise e
+
+
 @cog_i18n(_)
 class TransferChannel(Cog):
     """A cog to transfer all messages channel in a other channel!"""
@@ -70,26 +81,23 @@ class TransferChannel(Cog):
         destination: discord.TextChannel,
         way: str,
     ) -> None:
-        if not self.cogsutils.check_permissions_for(
-            channel=source,
-            user=ctx.me,
-            check=["view_channel", "read_messages", "read_message_history"],
-        ):
+        source_permissions = source.permissions_for(source.guild.me)
+        if not all([source_permissions.view_channel, source_permissions.read_messages, source_permissions.read_message_history]):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
-                ).format()
+                ).format(source=source)
             )
-        permissions = destination.permissions_for(destination.guild.me)
-        if way == "embed":
-            if not permissions.embed_links:
+        destination_permissions = destination.permissions_for(destination.guild.me)
+        if way == "embeds":
+            if not destination_permissions.embed_links:
                 raise commands.UserFeedbackCheckFailure(
                     _(
                         "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
                     ).format(destination=destination)
                 )
         elif way == "webhook":
-            if not permissions.manage_webhooks:
+            if not destination_permissions.manage_webhooks:
                 raise commands.UserFeedbackCheckFailure(
                     _(
                         "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
@@ -102,8 +110,8 @@ class TransferChannel(Cog):
         channel: discord.TextChannel,
         number: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
-        before: typing.Optional[discord.Message] = None,
-        after: typing.Optional[discord.Message] = None,
+        before: typing.Optional[typing.Union[discord.Message, discord.Object]] = None,
+        after: typing.Optional[typing.Union[discord.Message, discord.Object]] = None,
         user_id: typing.Optional[int] = None,
         bot: typing.Optional[bool] = None,
     ) -> typing.Tuple[int, typing.List[discord.Message]]:
@@ -135,7 +143,10 @@ class TransferChannel(Cog):
         count_messages, messages = await self.get_messages(ctx, channel=source, **kwargs)
         messages.reverse()
         for message in messages:
-            files = await Tunnel.files_from_attatch(message)
+            if destination.permissions_for(destination.guild.me).attach_files:
+                files = await Tunnel.files_from_attatch(message)
+            else:
+                files = []
             if way == "embeds":
                 embed = self.embed_from_msg(message)
                 await destination.send(embed=embed)
@@ -182,9 +193,9 @@ class TransferChannel(Cog):
         `source` is partial name or ID of the source channel
         `destination` is partial name or ID of the destination channel
         `way` is the used way
-          - `embed` Do you want to transfer the message as an embed?
-          - `webhook` Do you want to send the messages with webhooks (name and avatar of the original author)?
-          - `message`Do you want to transfer the message as a simple message?
+        - `embed` Do you want to transfer the message as an embed?
+        - `webhook` Do you want to send the messages with webhooks (name and avatar of the original author)?
+        - `message`Do you want to transfer the message as a simple message?
         Remember that transfering other users' messages in does not respect the TOS."""
 
     @transferchannel.command()
@@ -203,7 +214,7 @@ class TransferChannel(Cog):
             await ctx.send_help()
             return
         await self.check_channels(ctx, source, destination, way)
-        count_messages, messages = await self.transfer_messages(
+        count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way
         )
         await ctx.send(
@@ -230,7 +241,7 @@ class TransferChannel(Cog):
             await ctx.send_help()
             return
         await self.check_channels(ctx, source, destination, way)
-        count_messages, messages = await self.transfer_messages(
+        count_messages, __ = await self.transfer_messages(
             ctx,
             source=source,
             destination=destination,
@@ -250,18 +261,18 @@ class TransferChannel(Cog):
         source: discord.TextChannel,
         destination: discord.TextChannel,
         way: typing.Literal["embeds", "webhooks", "messages"],
-        before: discord.Message,
+        before: MessageOrObjectConverter,
     ) -> None:
         """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
 
-        Specify the before message (id or link).
+        Specify the before message (id or link) or a valid Discord snowflake.
         Remember that transfering other users' messages in does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             await ctx.send_help()
             return
         await self.check_channels(ctx, source, destination, way)
-        count_messages, messages = await self.transfer_messages(
+        count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, before=before
         )
         await ctx.send(
@@ -277,18 +288,18 @@ class TransferChannel(Cog):
         source: discord.TextChannel,
         destination: discord.TextChannel,
         way: typing.Literal["embeds", "webhooks", "messages"],
-        after: discord.Message,
+        after: MessageOrObjectConverter,
     ) -> None:
         """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
 
-        Specify the after message (id or link).
+        Specify the after message (id or link) or a valid Discord snowflake.
         Remember that transfering other users' messages in does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             await ctx.send_help()
             return
         await self.check_channels(ctx, source, destination, way)
-        count_messages, messages = await self.transfer_messages(
+        count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, after=after
         )
         await ctx.send(
@@ -304,19 +315,19 @@ class TransferChannel(Cog):
         source: discord.TextChannel,
         destination: discord.TextChannel,
         way: typing.Literal["embeds", "webhooks", "messages"],
-        before: discord.Message,
-        after: discord.Message,
+        before: MessageOrObjectConverter,
+        after: MessageOrObjectConverter,
     ) -> None:
         """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
 
-        Specify the between messages (id or link).
+        Specify the between messages (id or link) or a valid snowflake.
         Remember that transfering other users' messages in does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             await ctx.send_help()
             return
         await self.check_channels(ctx, source, destination, way)
-        count_messages, messages = await self.transfer_messages(
+        count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, before=before, after=after
         )
         await ctx.send(
@@ -337,14 +348,14 @@ class TransferChannel(Cog):
     ) -> None:
         """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
 
-        Specify the member (id, name or mention).
+        Specify the user/member (id, name or mention).
         Remember that transfering other users' messages in does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             await ctx.send_help()
             return
         await self.check_channels(ctx, source, destination, way)
-        count_messages, messages = await self.transfer_messages(
+        count_messages, __ = await self.transfer_messages(
             ctx,
             source=source,
             destination=destination,
@@ -377,7 +388,7 @@ class TransferChannel(Cog):
             await ctx.send_help()
             return
         await self.check_channels(ctx, source, destination, way)
-        count_messages, messages = await self.transfer_messages(
+        count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, bot=bot, limit=limit
         )
         await ctx.send(

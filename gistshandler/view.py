@@ -265,6 +265,7 @@ class GistsHandlerView(discord.ui.View):
     async def _update(self) -> None:
         self._embed: discord.Embed = await self.get_embed(self.ctx, gist=self.gist, file=self.file)
         if self.gist is None:
+            self.view_content.disabled = True
             self.edit_gist.disabled = True
             self.delete_gist.disabled = True
             if self._files_select is not None:
@@ -274,6 +275,7 @@ class GistsHandlerView(discord.ui.View):
                 self.remove_item(self._button_url)
                 self._button_url = None
         else:
+            self.view_content.disabled = False
             self.edit_gist.disabled = False
             self.delete_gist.disabled = False
             if self._files_select is not None:

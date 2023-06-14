@@ -123,7 +123,7 @@ class Reminders(Cog):
             },
             "minimum_repeat": {
                 "path": ["minimum_repeat"],
-                "converter": int,
+                "converter": commands.Range[int, 10, None],
                 "description": "Change the minimum minutes number for a repeat time.",
             },
             "fifo_allowed": {
@@ -493,6 +493,11 @@ class Reminders(Cog):
                         destination=destination.mention
                     )
                 )
+        channel_permissions = destination.permissions_for(ctx.me)
+        if not channel_permissions.send_messages:
+            raise commands.UserFeedbackCheckFailure(_("I can't send messages in this channel."))
+        elif not channel_permissions.embed_links:
+            raise commands.UserFeedbackCheckFailure(_("I can't send embeds in this channel."))
         if target is None:
             target = ctx.author
         elif (
@@ -719,6 +724,9 @@ class Reminders(Cog):
                         )
         if destination is None:
             destination = ctx.channel
+        channel_permissions = destination.permissions_for(ctx.me)
+        if not channel_permissions.send_messages:
+            raise commands.UserFeedbackCheckFailure(_("I can't send messages in this channel."))
         destination_user_permissions = destination.permissions_for(ctx.author)
         destination_bot_permissions = destination.permissions_for(ctx.me)
         if not destination_user_permissions.send_messages or not destination_bot_permissions.send_messages:
@@ -748,6 +756,7 @@ class Reminders(Cog):
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
 
+    @commands.bot_has_permissions(embed_links=True)
     @reminder.command(aliases=["parsingtips"])
     async def timetips(self, ctx: commands.Context) -> None:
         """Show time parsing tips."""
@@ -901,7 +910,7 @@ class Reminders(Cog):
     async def expires(
         self, ctx: commands.Context, reminder: ExistingReminderConverter, *, time: str
     ) -> None:
-        """Edit the text of an existing Reminder from its ID.
+        """Edit the expires time of an existing Reminder from its ID.
 
         - Use `last` to edit your last created reminder.
         - Use `next` to edit your next triggered reminder.

@@ -48,15 +48,15 @@ class MemoryGameView(discord.ui.View):
         self._solution, self._solution_display = self.get_emojis()
         for row, _list in enumerate(self._solution_display):
             for emoji in _list:
-                if emoji != "​":
+                if emoji != "\u200c":
                     custom_id = self.cog.cogsutils.generate_key(
                         length=5, existing_keys=self._custom_ids
                     )
                     self._custom_ids[custom_id] = emoji
                 else:
                     custom_id = emoji
-                button = discord.ui.Button(label="​", row=row, custom_id=custom_id)
-                if emoji == "​":
+                button = discord.ui.Button(label="\u200c", row=row, custom_id=custom_id)
+                if emoji == "\u200c":
                     button.disabled = True
                 button.callback = self.callback
                 self.add_item(button)
@@ -84,7 +84,7 @@ class MemoryGameView(discord.ui.View):
             child: discord.ui.Item
             if hasattr(child, "disabled") and not (
                 isinstance(child, discord.ui.Button)
-                and (child.style == discord.ButtonStyle.url or child.custom_id == "​")
+                and (child.style == discord.ButtonStyle.url or child.custom_id == "\u200c")
             ):
                 child.disabled = True
         try:
@@ -100,7 +100,7 @@ class MemoryGameView(discord.ui.View):
             solution = emojis * 2
             random.shuffle(solution)
             raw = solution.copy()
-            raw.insert(4, "​")  # invisible character
+            raw.insert(4, "\u200c")  # invisible character
             solution_display = [
                 raw[:3],
                 raw[3:6],
@@ -122,7 +122,7 @@ class MemoryGameView(discord.ui.View):
             solution = emojis * 2
             random.shuffle(solution)
             raw = solution.copy()
-            raw.insert(12, "​")  # invisible character
+            raw.insert(12, "\u200c")  # invisible character
             solution_display = [raw[:5], raw[5:10], raw[10:15], raw[15:20], raw[20:25]]
         return solution, solution_display
 
@@ -130,7 +130,7 @@ class MemoryGameView(discord.ui.View):
         await interaction.response.defer()
         async with self._lock:
             if (
-                interaction.data["custom_id"] == "​"
+                interaction.data["custom_id"] == "\u200c"
                 or self._custom_ids[interaction.data["custom_id"]] in self._found
             ):
                 return
@@ -160,8 +160,8 @@ class MemoryGameView(discord.ui.View):
                 await asyncio.sleep(1)
                 button1.style = discord.ButtonStyle.secondary
                 button2.style = discord.ButtonStyle.secondary
-                button1.label = "​"
-                button2.label = "​"
+                button1.label = "\u200c"
+                button2.label = "\u200c"
                 self._message: discord.Message = await self._message.edit(view=self)
                 self._selected = None
                 self._wrong_matches += 1
@@ -185,7 +185,7 @@ class MemoryGameView(discord.ui.View):
     async def win(self):
         self._selected = None
         for child in self._children:
-            if isinstance(child, discord.ui.Button) and child.custom_id != "​":
+            if isinstance(child, discord.ui.Button) and child.custom_id != "\u200c":
                 child.label = self._custom_ids[child.custom_id]
                 child.style = discord.ButtonStyle.success
                 if self._custom_ids[child.custom_id] not in self._found:
@@ -194,6 +194,7 @@ class MemoryGameView(discord.ui.View):
             self._tries = len(self._found)
         self._end = time.monotonic()
         game_time = int(self._end - self._start)
+        final_prize = None
         if self.ctx.guild is not None:
             config = await self.cog.config.guild(self.ctx.guild).all()
             max_prize = config["max_prize"]
@@ -232,6 +233,8 @@ class MemoryGameView(discord.ui.View):
         embed.description = _(
             "You won in {game_time} seconds, with {tries} tries and {wrong_matches} wrong matches!"
         ).format(game_time=game_time, tries=self._tries, wrong_matches=self._wrong_matches)
+        if final_prize is not None:
+            embed.description += _("You've won {final_prize} credits on the bank economy system!")
         self._message: discord.Message = await self._message.edit(embed=embed, view=self)
         await self.on_timeout()
         self.stop()

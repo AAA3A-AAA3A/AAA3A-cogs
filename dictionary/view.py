@@ -99,21 +99,22 @@ class DictionaryView(discord.ui.View):
             ]
         )
         files = []
-        for phonetic in self.word.phonetics:
-            if phonetic["audio_url"] is None:
-                continue
-            if phonetic["audio_file"] is not None:
-                files.append(phonetic["audio_file"])
-                continue
-            try:
-                async with self.cog._session.get(
-                    phonetic["audio_url"], raise_for_status=True
-                ) as r:
-                    file = discord.File(
-                        BytesIO(await r.read()), filename=phonetic["audio_url"].split("/")[-1]
-                    )
-            except (aiohttp.InvalidURL, aiohttp.ClientResponseError):
-                continue
-            phonetic["audio_file"] = file
-            files.append(file)
+        if self.ctx.bot_permissions.attach_files:
+            for phonetic in self.word.phonetics:
+                if phonetic["audio_url"] is None:
+                    continue
+                if phonetic["audio_file"] is not None:
+                    files.append(phonetic["audio_file"])
+                    continue
+                try:
+                    async with self.cog._session.get(
+                        phonetic["audio_url"], raise_for_status=True
+                    ) as r:
+                        file = discord.File(
+                            BytesIO(await r.read()), filename=phonetic["audio_url"].split("/")[-1]
+                        )
+                except (aiohttp.InvalidURL, aiohttp.ClientResponseError):
+                    continue
+                phonetic["audio_file"] = file
+                files.append(file)
         await Menu(pages=[{"embed": embed, "files": files}]).start(self.ctx)

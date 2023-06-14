@@ -111,7 +111,7 @@ SCIENTIST_BUTTONS = [
         "emoji": "📄",
         "custom_id": "history_button",
     },
-    {"style": 2, "label": "In", "emoji": None, "custom_id": "In"},
+    {"style": 2, "label": "ln", "emoji": None, "custom_id": "ln"},
     {"style": 2, "label": "√", "emoji": None, "custom_id": "√"},
     {"style": 1, "label": "-", "emoji": None, "custom_id": "-"},
     {

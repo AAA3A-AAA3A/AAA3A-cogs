@@ -31,11 +31,14 @@ class EmojiUrlConverter(discord.ext.commands.Converter):
         try:
             emoji, url = arg_split
         except Exception:
+            # emoji = None
+            # url = arg_split[0]
             raise discord.ext.commands.BadArgument(
                 _(
                     "Emoji Url must be an emoji followed by a url separated by either `;`, `,`, `|`, or `-`."
                 )
             )
+        # if emoji is not None:
         emoji = await Emoji().convert(ctx, emoji.strip())
         url = str(url)
         if url.startswith("<") and url.endswith(">"):

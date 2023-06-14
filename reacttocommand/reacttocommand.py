@@ -65,28 +65,23 @@ class ReactToCommand(Cog):
 
     async def edit_config_schema(self) -> None:
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
-        ALL_CONFIG_GUILD = await self.config.all()
-        if ALL_CONFIG_GUILD == self.reacttocommand_guild:
-            CONFIG_SCHEMA = self.CONFIG_SCHEMA
-            await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
-            return
         if CONFIG_SCHEMA is None:
             CONFIG_SCHEMA = 1
             await self.config.CONFIG_SCHEMA(CONFIG_SCHEMA)
         if CONFIG_SCHEMA == self.CONFIG_SCHEMA:
             return
         if CONFIG_SCHEMA == 1:
-            for guild in await self.config.all_guilds():
-                react_commands = await self.config.guild_from_id(guild).react_command()
-                await self.config.guild_from_id(guild).react_commands.set(react_commands)
-                await self.config.guild_from_id(guild).react_command.clear()
+            for guild_id in await self.config.all_guilds():
+                react_commands = await self.config.guild_from_id(guild_id).react_command()
+                await self.config.guild_from_id(guild_id).react_commands.set(react_commands)
+                await self.config.guild_from_id(guild_id).react_command.clear()
             CONFIG_SCHEMA = 2
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         if CONFIG_SCHEMA < self.CONFIG_SCHEMA:
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         self.log.info(
-            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.__class__.__name__} cog."
+            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog."
         )
 
     @commands.Cog.listener()
@@ -100,14 +95,29 @@ class ReactToCommand(Cog):
             return
         if payload.member.bot:
             return
-        if await self.bot.cog_disabled_in_guild(self, guild):
+        if await self.bot.cog_disabled_in_guild(cog=self, guild=guild) or not await self.bot.allowed_by_whitelist_blacklist(who=payload.member):
             return
         config = await self.config.guild(guild).react_commands.all()
         if f"{payload.channel_id}-{payload.message_id}" not in config:
             return
-        emoji = (
-            f"{getattr(Emoji().convert(payload.emoji), 'id', Emoji().convert(str(payload.emoji)))}"
-        )
+        emoji = payload.emoji
+
+        class FakeContext:
+            def __init__(
+                self,
+                bot: Red,
+                author: discord.Member,
+                guild: discord.Guild,
+                channel: discord.TextChannel,
+            ):
+                self.bot: Red = bot
+                self.author: discord.Member = author
+                self.guild: discord.Guild = guild
+                self.channel: discord.TextChannel = channel
+
+        fake_context = FakeContext(self.bot, payload.member, guild, channel)
+        emoji = await Emoji().convert(fake_context, str(emoji))
+        emoji = f"{getattr(emoji, 'id', emoji)}"
         message = await channel.fetch_message(payload.message_id)
         try:
             await message.remove_reaction(emoji, payload.member)
@@ -213,16 +223,17 @@ class ReactToCommand(Cog):
         self, ctx: commands.Context, message: discord.Message, emoji: Emoji, *, command: str
     ) -> None:
         """Add a reaction-command for a message.
+
         There should be no prefix in the command.
         The command will be invoked with the permissions of the user who clicked on the reaction.
         This user must be able to see writing in the channel.
         """
-        permissions = message.channel.permissions_for(ctx.guild.me)
+        channel_permissions = message.channel.permissions_for(ctx.me)
         if (
-            not permissions.add_reactions
-            or not permissions.read_message_history
-            or not permissions.read_messages
-            or not permissions.view_channel
+            not channel_permissions.view_channel
+            or not channel_permissions.read_messages
+            or not channel_permissions.read_message_history
+            or not channel_permissions.add_reactions
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
@@ -237,15 +248,14 @@ class ReactToCommand(Cog):
                 raise commands.UserFeedbackCheckFailure(
                     _("You have not specified a correct command.")
                 )
-        if ctx.interaction is None and ctx.bot_permissions.add_reactions:
-            try:
-                await ctx.message.add_reaction(emoji)
-            except discord.HTTPException:
-                raise commands.UserFeedbackCheckFailure(
-                    _(
-                        "An error has occurred. It is possible that the emoji you provided is invalid."
-                    )
+        try:
+            await message.add_reaction(emoji)
+        except discord.HTTPException:
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "An error has occurred. It is possible that the emoji you provided is invalid."
                 )
+            )
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
             config[f"{message.channel.id}-{message.id}"] = {}
@@ -268,7 +278,7 @@ class ReactToCommand(Cog):
         if config[f"{message.channel.id}-{message.id}"] == {}:
             del config[f"{message.channel.id}-{message.id}"]
         try:
-            await message.remove_reaction(f"{emoji}", ctx.guild.me)
+            await message.remove_reaction(f"{emoji}", ctx.me)
         except discord.HTTPException:
             pass
         await self.config.guild(ctx.guild).react_commands.set(config)
@@ -283,7 +293,7 @@ class ReactToCommand(Cog):
             )
         for react in config[f"{message.channel.id}-{message.id}"]:
             try:
-                await message.remove_reaction(f"{react}", ctx.guild.me)
+                await message.remove_reaction(f"{react}", ctx.me)
             except discord.HTTPException:
                 pass
         del config[f"{message.channel.id}-{message.id}"]

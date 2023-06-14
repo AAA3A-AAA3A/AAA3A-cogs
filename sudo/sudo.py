@@ -38,7 +38,10 @@ TimeDeltaConverter: commands.converter.timedelta = commands.TimedeltaConverter(
 
 @cog_i18n(_)
 class Sudo(Cog):
-    """A cog to allow bot owners to be normal users in terms of permissions!"""
+    """A cog to allow bot owners to be normal users in terms of permissions!
+
+    ⚠️ This cog makes bot owners unable to be perceived as bot owners in commands while the cog is loaded unless the `[p]su` command is used.
+    """
 
     def __init__(self, bot: Red):
         self.bot: Red = bot
@@ -57,6 +60,8 @@ class Sudo(Cog):
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message):
+        if await self.bot.cog_disabled_in_guild(cog=self, guild=message.guild) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
+            return
         if message.webhook_id is not None or message.author.bot:
             return
         context = await self.bot.get_context(message)

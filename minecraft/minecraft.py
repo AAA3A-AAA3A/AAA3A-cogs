@@ -147,6 +147,7 @@ class Minecraft(Cog):
             title=f"{server.address.host}:{server.address.port}",
             description=box(await self.clear_mcformatting(status.description)),
         )
+        embed.color = discord.Color.red() if "This server is offline." in await self.clear_mcformatting(status.description) else discord.Color.green()
         icon_file = None
         icon = (
             discord.File(
@@ -215,6 +216,7 @@ class Minecraft(Cog):
         """Get informations about Minecraft Java."""
         pass
 
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
     @minecraft.command()
     async def getplayerskin(
         self, ctx: commands.Context, player: MCPlayer, overlay: bool = False
@@ -307,7 +309,7 @@ class Minecraft(Cog):
     async def checkplayers(
         self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], state: bool
     ) -> None:
-        """Remove a Minecraft Java server in Config."""
+        """Include players joining or leaving the server in notifications."""
         if channel is None:
             channel = ctx.channel
         await self.config.channel(channel).check_players.set(state)

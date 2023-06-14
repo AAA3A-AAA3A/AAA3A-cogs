@@ -1,4 +1,4 @@
-﻿from AAA3A_utils import Cog, CogsUtils  # isort:skip
+﻿from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -33,11 +33,16 @@ class CommandsButtons(Cog):
             identifier=205192943327321000143939875896557571750,  # 370638632963
             force_registration=True,
         )
+        self.CONFIG_SCHEMA = 2
+        self.commands_buttons_global: typing.Dict[str, typing.Optional[int]] = {
+            "CONFIG_SCHEMA": None,
+        }
         self.commands_buttons_guild: typing.Dict[
             str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]
         ] = {
             "commands_buttons": {},
         }
+        self.config.register_global(**self.commands_buttons_global)
         self.config.register_guild(**self.commands_buttons_guild)
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
@@ -45,7 +50,37 @@ class CommandsButtons(Cog):
         self.cache: typing.List[commands.Context] = []
 
     async def cog_load(self) -> None:
+        await self.edit_config_schema()
         await self.load_buttons()
+
+    async def edit_config_schema(self) -> None:
+        CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
+        if CONFIG_SCHEMA is None:
+            CONFIG_SCHEMA = 1
+            await self.config.CONFIG_SCHEMA(CONFIG_SCHEMA)
+        if CONFIG_SCHEMA == self.CONFIG_SCHEMA:
+            return
+        if CONFIG_SCHEMA == 1:
+            for guild_id in await self.config.all_guilds():
+                commands_buttons = await self.config.guild_from_id(guild_id).commands_buttons()
+                for message in commands_buttons:
+                    message_data = commands_buttons[message].copy()
+                    for emoji in message_data:
+                        data = commands_buttons[message].pop(emoji)
+                        data["emoji"] = emoji
+                        config_identifier = self.cogsutils.generate_key(
+                            length=5, existing_keys=commands_buttons[message]
+                        )
+                        commands_buttons[message][config_identifier] = data
+                await self.config.guild_from_id(guild_id).commands_buttons.set(commands_buttons)
+            CONFIG_SCHEMA = 2
+            await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
+        if CONFIG_SCHEMA < self.CONFIG_SCHEMA:
+            CONFIG_SCHEMA = self.CONFIG_SCHEMA
+            await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
+        self.log.info(
+            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog."
+        )
 
     async def load_buttons(self) -> None:
         all_guilds = await self.config.all_guilds()
@@ -139,7 +174,7 @@ class CommandsButtons(Cog):
         self,
         ctx: commands.Context,
         message: discord.Message,
-        emoji: Emoji,
+        emoji: typing.Optional[Emoji],
         command: str,
         style_button: typing.Optional[typing.Literal["1", "2", "3", "4"]] = "2",
         *,
@@ -147,33 +182,35 @@ class CommandsButtons(Cog):
     ) -> None:
         """Add a command-button for a message.
 
-        `primary`: 1
-        `secondary`: 2
-        `success`: 3
-        `danger`: 4
+        (Use the number for the color.)
+        • `primary`: 1
+        • `secondary`: 2
+        • `success`: 3
+        • `danger`: 4
         # Aliases
-        `blurple`: 1
-        `grey`: 2
-        `gray`: 2
-        `green`: 3
-        `red`: 4
+        • `blurple`: 1
+        • `grey`: 2
+        • `gray`: 2
+        • `green`: 3
+        • `red`: 4
         """
-        if message.author != ctx.guild.me:
+        if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the command-button to work.")
             )
-        permissions = message.channel.permissions_for(ctx.guild.me)
+        channel_permissions = message.channel.permissions_for(ctx.me)
         if (
-            not permissions.add_reactions
-            or not permissions.read_message_history
-            or not permissions.read_messages
-            or not permissions.view_channel
+            not channel_permissions.view_channel
+            or not channel_permissions.read_messages
+            or not channel_permissions.read_message_history
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
                 )
             )
+        if emoji is None and text_button is None:
+            raise commands.UserFeedbackCheckFailure(_("You have to specify at least an emoji or a label."))
         if ctx.prefix != "/":
             msg = ctx.message
             msg.content = f"{ctx.prefix}{command}"
@@ -182,7 +219,7 @@ class CommandsButtons(Cog):
                 raise commands.UserFeedbackCheckFailure(
                     _("You have not specified a correct command.")
                 )
-        if ctx.interaction is None and ctx.bot_permissions.add_reactions:
+        if emoji is not None and ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
                 await ctx.message.add_reaction(emoji)
             except discord.HTTPException:
@@ -193,12 +230,18 @@ class CommandsButtons(Cog):
                 )
         config = await self.config.guild(ctx.guild).commands_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
+            if message.components:
+                raise commands.UserFeedbackCheckFailure(_("This message already has components."))
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) > 25:
             raise commands.UserFeedbackCheckFailure(
                 _("I can't do more than 25 commands-buttons for one message.")
             )
-        config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = {
+        config_identifier = self.cogsutils.generate_key(
+            length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
+        )
+        config[f"{message.channel.id}-{message.id}"][config_identifier] = {
+            "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
             "command": command,
             "style_button": int(style_button),
             "text_button": text_button,
@@ -219,7 +262,7 @@ class CommandsButtons(Cog):
 
         ```[p]commandsbuttons bulk <message> ":reaction1:|ping" ":reaction2:|ping" :reaction3:|ping"```
         """
-        if message.author != ctx.guild.me:
+        if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the command-button to work.")
             )
@@ -227,12 +270,11 @@ class CommandsButtons(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("You have not specified any valid command-button.")
             )
-        permissions = message.channel.permissions_for(ctx.guild.me)
+        channel_permissions = message.channel.permissions_for(ctx.me)
         if (
-            not permissions.add_reactions
-            or not permissions.read_message_history
-            or not permissions.read_messages
-            or not permissions.view_channel
+            not channel_permissions.view_channel
+            or not channel_permissions.read_messages
+            or not channel_permissions.read_message_history
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
@@ -241,7 +283,9 @@ class CommandsButtons(Cog):
             )
         if ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
-                for emoji, command in commands_buttons[:19]:
+                for emoji, __ in commands_buttons[:19]:
+                    if emoji is None:
+                        continue
                     await ctx.message.add_reaction(emoji)
             except discord.HTTPException:
                 raise commands.UserFeedbackCheckFailure(
@@ -251,13 +295,19 @@ class CommandsButtons(Cog):
                 )
         config = await self.config.guild(ctx.guild).commands_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
+            if message.components:
+                raise commands.UserFeedbackCheckFailure(_("This message already has components."))
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) + len(commands_buttons) > 25:
             raise commands.UserFeedbackCheckFailure(
                 _("I can't do more than 25 roles-buttons for one message.")
             )
         for emoji, command in commands_buttons:
-            config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = {
+            config_identifier = self.cogsutils.generate_key(
+                length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
+            )
+            config[f"{message.channel.id}-{message.id}"][config_identifier] = {
+                "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
                 "command": command,
                 "style_button": 2,
                 "text_button": None,
@@ -267,10 +317,54 @@ class CommandsButtons(Cog):
         self.cogsutils.views.append(view)
         await self.config.guild(ctx.guild).commands_buttons.set(config)
 
+    @commands.bot_has_permissions(embed_links=True)
+    @commandsbuttons.command()
+    async def list(self, ctx: commands.Context, message: discord.Message = None) -> None:
+        commands_buttons = await self.config.guild(ctx.guild).commands_buttons()
+        for command_button in commands_buttons:
+            commands_buttons[command_button]["message"] = command_button
+        if message is None:
+            _commands_buttons = list(commands_buttons.values()).copy()
+        elif f"{message.channel.id}-{message.id}" not in commands_buttons:
+            raise commands.UserFeedbackCheckFailure(
+                _("No command-button is configured for this message.")
+            )
+        else:
+            _commands_buttons = commands_buttons.copy()
+            _commands_buttons = [commands_buttons[f"{message.channel.id}-{message.id}"]]
+        if not _commands_buttons:
+            raise commands.UserFeedbackCheckFailure(_("No commands-buttons in this server."))
+        lists = []
+        while _commands_buttons != []:
+            li = _commands_buttons[:5]
+            _commands_buttons = _commands_buttons[5:]
+            lists.append(li)
+        embeds = []
+        for li in lists:
+            embed: discord.Embed = discord.Embed(
+                title=_("Commands Buttons"),
+                description=_("There is {len_commands_buttons} commands buttons in this server.").format(
+                    len_commands_buttons=len(commands_buttons)
+                ),
+                color=await ctx.embed_color(),
+            )
+            embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
+            for command_button in li:
+                value = _("Message Jump Link: {message_jump_link}\n").format(message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{command_button['message'].replace('-', '/')}")
+                value += "\n".join([f"`• {config_identifier}` - Emoji {data['emoji']} - Label {data['text_button']} - Command `[p]{data['command']}`" for config_identifier, data in command_button.items() if config_identifier != "message"])
+                embed.add_field(
+                    name="\u200B", value=value, inline=False
+                )
+            embeds.append(embed)
+        await Menu(pages=embeds).start(ctx)
+
     @commandsbuttons.command(aliases=["-"])
-    async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji) -> None:
-        """Remove a command-button for a message."""
-        if message.author != ctx.guild.me:
+    async def remove(self, ctx: commands.Context, message: discord.Message, config_identifier: str) -> None:
+        """Remove a command-button for a message.
+
+        Use `[p]commandsbuttons list <message>` to find the config identifier.
+        """
+        if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the command-button to work.")
             )
@@ -279,24 +373,24 @@ class CommandsButtons(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("No command-button is configured for this message.")
             )
-        if f"{getattr(emoji, 'id', emoji)}" not in config[f"{message.channel.id}-{message.id}"]:
+        if config_identifier not in config[f"{message.channel.id}-{message.id}"]:
             raise commands.UserFeedbackCheckFailure(
                 _("I wasn't watching for this button on this message.")
             )
-        del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
+        del config[f"{message.channel.id}-{message.id}"][config_identifier]
         if config[f"{message.channel.id}-{message.id}"] == {}:
             del config[f"{message.channel.id}-{message.id}"]
             await message.edit(view=None)
         else:
             view = self.get_buttons(config, message)
             await message.edit(view=view)
-        self.cogsutils.views.append(view)
+            self.cogsutils.views.append(view)
         await self.config.guild(ctx.guild).commands_buttons.set(config)
 
     @commandsbuttons.command()
     async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
         """Clear all commands-buttons for a message."""
-        if message.author != ctx.guild.me:
+        if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.")
             )
@@ -327,12 +421,15 @@ class CommandsButtons(Cog):
         )
         view = discord.ui.View(timeout=None)
         for config_identifier in config[message]:
-            try:
-                int(config_identifier)
-            except ValueError:
-                b = config_identifier
+            if config[message][config_identifier]["emoji"] is not None:
+                try:
+                    int(config[message][config_identifier]["emoji"])
+                except ValueError:
+                    b = config[message][config_identifier]["emoji"]
+                else:
+                    b = str(self.bot.get_emoji(int(config[message][config_identifier]["emoji"])))
             else:
-                b = str(self.bot.get_emoji(int(config_identifier)))
+                b = None
             button = discord.ui.Button(
                 label=config[message][config_identifier]["text_button"],
                 emoji=b,

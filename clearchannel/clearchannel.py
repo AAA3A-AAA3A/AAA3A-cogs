@@ -82,6 +82,7 @@ class ClearChannel(DashboardIntegration, Cog):
     @commands.hybrid_command(name="clearchannel")
     async def cleanup_channel(self, ctx: commands.Context, confirmation: bool = False) -> None:
         """Delete ALL messages from the current channel by duplicating it and then deleting it.
+
         For security reasons, only the server owner and the bot owner can use the command. Use the "permissions" tool for more options.
         """
         config = await self.config.guild(ctx.guild).all()

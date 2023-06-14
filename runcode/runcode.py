@@ -325,7 +325,7 @@ class RunCode(Cog):
             "python": "async def func():\ncode",
             "c": "#include <stdio.h>\nint main() {code}",
             "cpp": "#include <iostream>\nint main() {code}",
-            "cs": "using System;class Program {static void Main(string[] args) {code}}",
+            "cs": "using System;class Main {static void Main(string[] args) {code}}" if ctx.command == self.runtio else "using System;class Program {static void Main(string[] args) {code}}",
             "java": "public class prog {public static void main(String[] args) {code}}",  # Main.java
             "rust": "fn main() {code}",
             "d": "import std.stdio; void main(){code}",

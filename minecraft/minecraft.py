@@ -259,6 +259,7 @@ class Minecraft(Cog):
         embed.set_footer(text=_("Provided by Crafatar."), icon_url="https://crafatar.com/logo.png")
         await ctx.send(embed=embed, files=files)
 
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
     @minecraft.command()
     async def getserver(self, ctx: commands.Context, server_url: str) -> None:
         """Get informations about a Minecraft Java server."""
@@ -284,6 +285,17 @@ class Minecraft(Cog):
         """Add a Minecraft Java server in Config to get automatically new status."""
         if channel is None:
             channel = ctx.channel
+        channel_permissions = channel.permissions_for(ctx.me)
+        if (
+            not channel_permissions.view_channel
+            or not channel_permissions.read_messages
+            or not channel_permissions.read_message_history
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "I don't have sufficient permissions in this channel to send messages with embeds."
+                )
+            )
         servers = await self.config.channel(channel).servers()
         if server_url.lower() in servers:
             raise commands.UserFeedbackCheckFailure(_("This server has already been added."))

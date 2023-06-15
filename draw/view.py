@@ -35,22 +35,22 @@ from .tools import (
 _ = Translator("Draw", __file__)
 
 ADD_COLORS_EMOJI = "🏳️‍🌈"
-ADD_EMOJIS_EMOJI = "<:emojismiley:1056857231125123152>"  # "😃"
+ADD_EMOJIS_EMOJI = discord.PartialEmoji(name="emojismiley", id=1056857231125123152)  # "😃"
 MIX_COLORS_EMOJI = "🔀"
-SET_CURSOR_EMOJI = "<:ABCD:1032565203608547328>"
-AUTO_DRAW_EMOJI = "<:auto_draw:1032565224903016449>"  # "🔄"
-SELECT_EMOJI = "<:select_tool:1037847279169704028>"  # "📓"
+SET_CURSOR_EMOJI = discord.PartialEmoji(name="ABCD", id=1032565203608547328)
+AUTO_DRAW_EMOJI = discord.PartialEmoji(name="auto_draw", id=1032565224903016449)  # "🔄"
+SELECT_EMOJI = discord.PartialEmoji(name="select_tool", id=1037847279169704028)  # "📓"
 CURSOR_DISPLAY_EMOJI = "📍"
 RAW_PAINT_EMOJI = "📤"
 
-UP_LEFT_EMOJI = "<:up_left:1032565175930343484>"  # "↖️"
-UP_EMOJI = "<:up:1032564978676400148>"  # "⬆️"
-UP_RIGHT_EMOJI = "<:up_right:1032564997869543464>"  # "↗️"
-LEFT_EMOJI = "<:left:1032565106934022185>"  # "⬅️"
-RIGHT_EMOJI = "<:right:1032565019352764438>"  # "➡️"
-DOWN_LEFT_EMOJI = "<:down_left:1032565090223935518>"  # "↙️"
-DOWN_EMOJI = "<:down:1032565072981131324>"  # "⬇️"
-DOWN_RIGHT_EMOJI = "<:down_right:1032565043604230214>"  # "↘️"
+UP_LEFT_EMOJI = discord.PartialEmoji(name="up_left", id=1032565175930343484)  # "↖️"
+UP_EMOJI = discord.PartialEmoji(name="up", id=1032564978676400148)  # "⬆️"
+UP_RIGHT_EMOJI = discord.PartialEmoji(name="up_right", id=1032564997869543464)  # "↗️"
+LEFT_EMOJI = discord.PartialEmoji(name="left", id=1032565106934022185)  # "⬅️"
+RIGHT_EMOJI = discord.PartialEmoji(name="right", id=1032565019352764438)  # "➡️"
+DOWN_LEFT_EMOJI = discord.PartialEmoji(name="down_left", id=1032565090223935518)  # "↙️"
+DOWN_EMOJI = discord.PartialEmoji(name="down", id=1032565072981131324)  # "⬇️"
+DOWN_RIGHT_EMOJI = discord.PartialEmoji(name="down_right", id=1032565043604230214)  # "↘️"
 
 
 class Notification:

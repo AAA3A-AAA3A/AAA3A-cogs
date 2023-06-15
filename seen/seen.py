@@ -613,20 +613,20 @@ class Seen(Cog):
             elif isinstance(_object, discord.Member):
                 all_data_config = await self.config.member(_object).all()
                 all_data_cache = (
-                    self.cache["members"].get(_object.guild.id, {}).get(_object.id, {})
+                    self.cache["members"].get((_object if isinstance(_object, discord.Guild) else _object.guild).id, {}).get(_object.id, {})
                 )
             elif isinstance(_object, discord.Role):
                 all_data_config = await self.config.role(_object).all()
-                all_data_cache = self.cache["roles"].get(_object.guild.id, {}).get(_object.id, {})
+                all_data_cache = self.cache["roles"].get((_object if isinstance(_object, discord.Guild) else _object.guild).id, {}).get(_object.id, {})
             elif isinstance(_object, discord.TextChannel):
                 all_data_config = await self.config.channel(_object).all()
                 all_data_cache = (
-                    self.cache["channels"].get(_object.guild.id, {}).get(_object.id, {})
+                    self.cache["channels"].get((_object if isinstance(_object, discord.Guild) else _object.guild).id, {}).get(_object.id, {})
                 )
             elif isinstance(_object, discord.CategoryChannel):
                 all_data_config = await self.config.channel(_object).all()
                 all_data_cache = (
-                    self.cache["categories"].get(_object.guild.id, {}).get(_object.id, {})
+                    self.cache["categories"].get((_object if isinstance(_object, discord.Guild) else _object.guild).id, {}).get(_object.id, {})
                 )
             elif isinstance(_object, discord.Guild):
                 all_data_config = await self.config.guild(_object).all()
@@ -737,27 +737,27 @@ class Seen(Cog):
                 "<@" + action["member"] + ">"
             )
         elif isinstance(_object, discord.Member):
-            member = _object.guild.get_member(action["member"]) or (  # getattr(_object.guild.get_member(action["member"]), "display_name", None)
+            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(action["member"]) or (  # getattr((_object if isinstance(_object, discord.Guild) else _object.guild).get_member(action["member"]), "display_name", None)
                 "<@" + action["member"] + ">"
             )
         elif isinstance(_object, discord.Role):
-            member = _object.guild.get_member(action["member"]) or (
+            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(action["member"]) or (
                 "<@" + action["member"] + ">"
             )
         elif isinstance(_object, discord.TextChannel):
-            member = _object.guild.get_member(action["member"]) or (
+            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(action["member"]) or (
                 "<@" + action["member"] + ">"
             )
         elif isinstance(_object, discord.CategoryChannel):
-            member = _object.guild.get_member(action["member"]) or (
+            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(action["member"]) or (
                 "<@" + action["member"] + ">"
             )
         elif isinstance(_object, discord.Guild):
-            member = _object.guild.get_member(action["member"]) or (
+            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(action["member"]) or (
                 "<@" + action["member"] + ">"
             )
         else:
-            member = _object.guild.get_member(action["member"]) or (
+            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(action["member"]) or (
                 "<@" + action["member"] + ">"
             )
         reaction = action["reaction"] if "reaction" in action else None
@@ -1093,7 +1093,7 @@ class Seen(Cog):
     async def on_reaction_remove(
         self, reaction: discord.Reaction, user: typing.Union[discord.Member, discord.User]
     ) -> None:
-        if await self.bot.cog_disabled_in_guild(cog=self, guild=reaction.message.guild) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
+        if await self.bot.cog_disabled_in_guild(cog=self, guild=reaction.message.guild) or not await self.bot.allowed_by_whitelist_blacklist(who=user):
             return
         if reaction.message.guild is None:
             return

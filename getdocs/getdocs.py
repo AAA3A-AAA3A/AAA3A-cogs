@@ -447,17 +447,16 @@ class GetDocs(DashboardIntegration, Cog):
         current: str,
         exclude_std: typing.Optional[bool] = True,
     ) -> typing.Tuple["Source", typing.List[app_commands.Choice[str]]]:
-        source = None
         if "source" in interaction.namespace and interaction.namespace.source:
             try:
-                _source = await SourceConverter().convert(
+                source = await SourceConverter().convert(
                     await commands.Context.from_interaction(interaction),
                     interaction.namespace.source,
                 )
             except commands.BadArgument:
-                source = "discord.py"
-            else:
-                source = _source
+                source = await self.config.default_source()
+        else:
+            source = await self.config.default_source()
         if source not in self.documentations:
             return []
         source = self.documentations[source]

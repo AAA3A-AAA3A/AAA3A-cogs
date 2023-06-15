@@ -1482,13 +1482,13 @@ class Seen(Cog):
                         # Users
                         if int(member_id) not in new_users_data:
                             new_users_data[int(member_id)] = {}
-                        if "message" not in new_users_data[int(member_id)] or data["seen"] > new_global_data["message"][new_users_data[int(member_id)]["message"]]:
+                        if "message" not in new_users_data[int(member_id)] or data["seen"] > new_global_data["message"][new_users_data[int(member_id)]["message"]]["seen"]:
                             new_users_data[int(member_id)]["message"] = custom_id
                         # Members
                         if int(guild_id) not in new_members_data:
                             new_members_data[int(guild_id)] = {}
                         if int(member_id) not in new_members_data[int(guild_id)]:
                             new_members_data[int(guild_id)][int(member_id)] = {}
-                        if "message" not in new_members_data[int(guild_id)][int(member_id)] or data["seen"] > new_global_data["message"][new_members_data[int(guild_id)][int(member_id)]["message"]]:
+                        if "message" not in new_members_data[int(guild_id)][int(member_id)] or data["seen"] > new_global_data["message"][new_members_data[int(guild_id)][int(member_id)]["message"]]["seen"]:
                             new_members_data[int(guild_id)][int(member_id)]["message"] = custom_id
         await self.config.set(new_global_data)

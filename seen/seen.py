@@ -764,11 +764,11 @@ class Seen(Cog):
         if _type == "message":
             action = _("[This message]({message_link}) has been sent by {member_mention}.").format(message_link=message_link, member_mention=getattr(member, "mention", member))
         elif _type == "message_edit":
-            action = _("[This message]({message_link}) has been edited by {member}.").format(message_link=message_link, member_mention=getattr(member, "mention", member))
+            action = _("[This message]({message_link}) has been edited by {member_mention}.").format(message_link=message_link, member_mention=getattr(member, "mention", member))
         elif _type == "reaction_add":
-            action = _("The reaction {reaction} has been added to [this message]({message_link}) by {member}.").format(reaction=reaction, message_link=message_link, member_mention=getattr(member, "mention", member))
+            action = _("The reaction {reaction} has been added to [this message]({message_link}) by {member_mention}.").format(reaction=reaction, message_link=message_link, member_mention=getattr(member, "mention", member))
         elif _type == "reaction_remove":
-            action = _("The reaction {reaction} has been removed to the [this message]({message_link}) by {member}.").format(reaction=reaction, message_link=message_link, member_mention=getattr(member, "mention", member))
+            action = _("The reaction {reaction} has been removed to the [this message]({message_link}) by {member_mention}.").format(reaction=reaction, message_link=message_link, member_mention=getattr(member, "mention", member))
         return time, seen, action
 
     async def send_seen(
@@ -906,7 +906,7 @@ class Seen(Cog):
     ) -> None:
         await self.save_to_config()
         if _object == "users":
-            prefix = "@"
+            # prefix = "@"
             users = await self.config.all_users()
             all_data = {
                 ctx.bot.get_user(user): data
@@ -914,7 +914,7 @@ class Seen(Cog):
                 if ctx.bot.get_user(user) is not None
             }
         elif _object == "members":
-            prefix = "@"
+            # prefix = "@"
             members = await self.config.all_members(ctx.guild)
             all_data = {
                 ctx.guild.get_member(member): data
@@ -922,7 +922,7 @@ class Seen(Cog):
                 if ctx.guild.get_member(member) is not None
             }
         elif _object == "roles":
-            prefix = "@&"
+            # prefix = "@&"
             roles = await self.config.all_roles()
             all_data = {
                 ctx.guild.get_role(role): data
@@ -930,7 +930,7 @@ class Seen(Cog):
                 if ctx.guild.get_role(role) is not None
             }
         elif _object == "channels":
-            prefix = "#"
+            # prefix = "#"
             channels = await self.config.all_channels()
             all_data = {
                 ctx.guild.get_channel(channel): data
@@ -939,7 +939,7 @@ class Seen(Cog):
                 and ctx.guild.get_channel(channel).type == discord.ChannelType.text
             }
         elif _object == "categories":
-            prefix = ""
+            # prefix = ""
             categories = await self.config.all_channels()
             all_data = {
                 ctx.guild.get_channel(category): data
@@ -948,7 +948,7 @@ class Seen(Cog):
                 and ctx.guild.get_channel(category).type == discord.ChannelType.category
             }
         elif _object == "guilds":
-            prefix = ""
+            # prefix = ""
             guilds = await self.config.all_guilds()
             all_data = {
                 ctx.bot.get_guild(guild): data
@@ -971,7 +971,7 @@ class Seen(Cog):
             await ctx.send(embed=embed)
             return
         embed: discord.Embed = discord.Embed()
-        embed.title = f"Seen Board for the {_object.capitalize()}" + (
+        embed.title = f"Seen Board {_object.capitalize()}" + (
             f" - ({_type})" if _type is not None else ""
         )
         embed.timestamp = datetime.datetime.now()
@@ -983,7 +983,7 @@ class Seen(Cog):
         ):
             seen = y[1]
             description.append(
-                f"{all_count + 1 - count if reverse else count} - **{prefix}{getattr(x, 'display_name', getattr(x, 'name', x))}**: {seen}."
+                f"• **{all_count + 1 - count if reverse else count}** - **{getattr(x, 'mention', getattr(x, 'name', x))}**: {seen}."  # {prefix}{getattr(x, 'display_name', getattr(x, 'name', x))}
             )
         description = "\n".join(description)
         for text in pagify(description):

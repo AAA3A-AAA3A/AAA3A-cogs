@@ -174,11 +174,11 @@ class CommandsButtons(Cog):
         self,
         ctx: commands.Context,
         message: discord.Message,
-        emoji: typing.Optional[Emoji],
         command: str,
+        emoji: typing.Optional[Emoji],
         style_button: typing.Optional[typing.Literal["1", "2", "3", "4"]] = "2",
         *,
-        text_button: typing.Optional[str] = None,
+        text_button: typing.Optional[commands.Range[str, 1, 100]] = None,
     ) -> None:
         """Add a command-button for a message.
 
@@ -209,8 +209,6 @@ class CommandsButtons(Cog):
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
                 )
             )
-        if emoji is None and text_button is None:
-            raise commands.UserFeedbackCheckFailure(_("You have to specify at least an emoji or a label."))
         if ctx.prefix != "/":
             msg = ctx.message
             msg.content = f"{ctx.prefix}{command}"
@@ -219,6 +217,8 @@ class CommandsButtons(Cog):
                 raise commands.UserFeedbackCheckFailure(
                     _("You have not specified a correct command.")
                 )
+        if emoji is None and text_button is None:
+            raise commands.UserFeedbackCheckFailure(_("You have to specify at least an emoji or a label."))
         if emoji is not None and ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
                 await ctx.message.add_reaction(emoji)
@@ -241,8 +241,8 @@ class CommandsButtons(Cog):
             length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
         )
         config[f"{message.channel.id}-{message.id}"][config_identifier] = {
-            "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
             "command": command,
+            "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
             "style_button": int(style_button),
             "text_button": text_button,
         }
@@ -283,7 +283,15 @@ class CommandsButtons(Cog):
             )
         if ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
-                for emoji, __ in commands_buttons[:19]:
+                for emoji, command in commands_buttons[:19]:
+                    if ctx.prefix != "/":
+                        msg = ctx.message
+                        msg.content = f"{ctx.prefix}{command}"
+                        new_ctx = await ctx.bot.get_context(msg)
+                        if not new_ctx.valid:
+                            raise commands.UserFeedbackCheckFailure(
+                                _("At least one of these commands is invalid.")
+                            )
                     if emoji is None:
                         continue
                     await ctx.message.add_reaction(emoji)
@@ -307,8 +315,8 @@ class CommandsButtons(Cog):
                 length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
             )
             config[f"{message.channel.id}-{message.id}"][config_identifier] = {
-                "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
                 "command": command,
+                "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
                 "style_button": 2,
                 "text_button": None,
             }

@@ -208,11 +208,11 @@ class RolesButtons(Cog):
         self,
         ctx: commands.Context,
         message: discord.Message,
-        emoji: typing.Optional[Emoji],
         role: discord.Role,  # commands.Greedy[discord.Role]
+        emoji: typing.Optional[Emoji],
         style_button: typing.Optional[typing.Literal["1", "2", "3", "4"]] = "2",
         *,
-        text_button: typing.Optional[str] = None,
+        text_button: typing.Optional[commands.Range[str, 1, 100]] = None,
     ) -> None:
         """Add a role-button for a message.
 
@@ -267,8 +267,8 @@ class RolesButtons(Cog):
             length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
         )
         config[f"{message.channel.id}-{message.id}"][config_identifier] = {
-            "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
             "role": role.id,  # [role.id for role in set(roles)]
+            "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
             "style_button": int(style_button),
             "text_button": text_button,
         }
@@ -333,8 +333,8 @@ class RolesButtons(Cog):
                 length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
             )
             config[f"{message.channel.id}-{message.id}"][config_identifier] = {
-                "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
                 "role": role.id,
+                "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
                 "style_button": 2,
                 "text_button": None,
             }

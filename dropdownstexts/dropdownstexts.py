@@ -149,9 +149,9 @@ class DropdownsTexts(Cog):
         ctx: commands.Context,
         message: discord.Message,
         emoji: typing.Optional[Emoji],
-        label: str,
+        label: commands.Range[str, 1, 100],
         *,
-        text: str,
+        text: commands.Range[str, 1, 1000],
     ) -> None:
         """Add a dropdown-text for a message."""
         if message.author != ctx.me:

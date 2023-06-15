@@ -94,10 +94,10 @@ class UrlButtons(Cog):
         self,
         ctx: commands.Context,
         message: discord.Message,
-        emoji: typing.Optional[Emoji],
         url: str,
+        emoji: typing.Optional[Emoji],
         *,
-        text_button: typing.Optional[str] = None,
+        text_button: typing.Optional[commands.Range[str, 1, 100]] = None,
     ) -> None:
         """Add a url-button for a message."""
         if message.author != ctx.me:
@@ -115,6 +115,8 @@ class UrlButtons(Cog):
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
                 )
             )
+        if not url.startswith("http"):
+            raise commands.UserFeedbackCheckFailure(_("Url must start with `https` or `http`."))
         if emoji is None and text_button is None:
             raise commands.UserFeedbackCheckFailure(_("You have to specify at least an emoji or a label."))
         if emoji is not None and ctx.interaction is None and ctx.bot_permissions.add_reactions:
@@ -126,8 +128,6 @@ class UrlButtons(Cog):
                         "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
                     )
                 )
-        if not url.startswith("http"):
-            raise commands.UserFeedbackCheckFailure(_("Url must start with `https` or `http`."))
         config = await self.config.guild(ctx.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             if message.components:
@@ -141,8 +141,8 @@ class UrlButtons(Cog):
             length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
         )
         config[f"{message.channel.id}-{message.id}"][config_identifier] = {
-            "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
             "url": url,
+            "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
             "text_button": text_button,
         }
         view = self.get_buttons(config, message)
@@ -195,8 +195,8 @@ class UrlButtons(Cog):
                 length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
             )
             config[f"{message.channel.id}-{message.id}"][config_identifier] = {
-                "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
                 "url": url,
+                "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
                 "text_button": None,
             }
         view = self.get_buttons(config, message)

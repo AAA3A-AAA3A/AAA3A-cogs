@@ -293,7 +293,7 @@ class DropdownsTexts(Cog):
             break_line = "\n"
             for dropdown_text in li:
                 value = _("Message Jump Link: {message_jump_link}\n").format(message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{dropdown_text['message'].replace('-', '/')}")
-                value += "\n".join([f"`• {config_identifier}` - Emoji {data['emoji']} - Label {data['label']} - Text `[p]{data['text'].replace(break_line, ' ')}`" for config_identifier, data in dropdown_text.items() if config_identifier != "message"])
+                value += "\n".join([f"• `{config_identifier}` - Emoji {data['emoji']} - Label `{data['label']}` - Text `{data['text'].replace(break_line, ' ')}`" for config_identifier, data in dropdown_text.items() if config_identifier != "message"])
                 embed.add_field(
                     name="\u200B", value=value, inline=False
                 )

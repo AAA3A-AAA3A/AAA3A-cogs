@@ -443,10 +443,10 @@ class EditTextChannel(Cog):
                 _("You need to provide a role or user you want to edit permissions for.")
             )
         for target in targets:
-            if target <= ctx.author.top_role:
-                raise commands.UserFeedbackCheckFailure(_("You cannot change the permissions of a role lower down the hierarchy than your top role."))
-            if target <= ctx.me.top_role:
-                raise commands.UserFeedbackCheckFailure(_("I cannot change the permissions of a role lower down the hierarchy than my top role."))
+            if (target if isinstance(target, discord.Role) else target.top_role) <= ctx.author.top_role:
+                raise commands.UserFeedbackCheckFailure(_("You cannot change the permissions of a role/member higher up the hierarchy than your top role."))
+            if (target if isinstance(target, discord.Role) else target.top_role) <= ctx.me.top_role:
+                raise commands.UserFeedbackCheckFailure(_("I cannot change the permissions of a role/member higher up the hierarchy than my top role."))
         if not permissions:
             raise commands.UserFeedbackCheckFailure(
                 _("You need to provide at least one permission.")

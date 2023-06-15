@@ -38,12 +38,24 @@ class settings(commands.Cog):
     ) -> None:
         """Send a message with a button to open a ticket or dropdown with possible reasons.
 
-        Example:
-        `[p]setticket message #general "🐛|Report a bug|If you find a bug, report it here.|bug" "⚠️|Report a user|If you find a malicious user, report it here.|user"`
-        `[p]setticket 1234567890-0987654321`
+        Examples:
+        - `[p]settickettool message <profile> #general "🐛|Report a bug|If you find a bug, report it here.|bug" "⚠️|Report a user|If you find a malicious user, report it here.|user"`
+        - `[p]settickettool <profile> 1234567890-0987654321`
         """
         if channel is None:
-            channel = ctx.channel
+            channel = message.channel if message is not None else ctx.channel
+        channel_permissions = channel.permissions_for(ctx.me)
+        if (
+            not channel_permissions.view_channel
+            or not channel_permissions.read_messages
+            or not channel_permissions.read_message_history
+            or not channel_permissions.send_messages
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "I don't have sufficient permissions in this channel to view it and to send messages into."
+                )
+            )
         if reason_options == []:
             reason_options = None
         if message is not None and message.author != ctx.me:

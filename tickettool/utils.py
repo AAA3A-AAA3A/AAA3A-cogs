@@ -88,7 +88,7 @@ class EmojiLabelDescriptionValueConverter(discord.ext.commands.Converter):
     async def convert(
         self, ctx: commands.Context, argument: str
     ) -> typing.Tuple[str, typing.Union[discord.PartialEmoji, str]]:
-        arg_split = re.split(r";|,|\||-", argument)
+        arg_split = re.split(r";|\||-", argument)
         try:
             try:
                 emoji, label, description, value = arg_split
@@ -103,7 +103,7 @@ class EmojiLabelDescriptionValueConverter(discord.ext.commands.Converter):
         except Exception:
             raise discord.ext.commands.BadArgument(
                 _(
-                    "Emoji Label must be An emoji followed by an string, and optionnaly by a description and a value (for rename ticket channel), separated by either `;`, `,`, `|`, or `-`."
+                    "Emoji Label must be An emoji followed by a label, and optionnaly by a description and a value (for rename ticket channel), separated by either `;`, `,`, `|`, or `-`."
                 )
             )
         emoji = await Emoji().convert(ctx, emoji)

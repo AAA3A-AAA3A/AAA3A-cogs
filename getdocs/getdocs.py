@@ -1455,6 +1455,8 @@ class Source:
             return ResultSet(strainer, set(e1 + e2))
 
         elements = await bs4(await self._get_html(page_url))
+        if item_name is not None and not elements:
+            return None
         results: typing.List[Documentation] = []
         async for element in AsyncIter(elements, delay=0.1, steps=1):  # for element in elements:
             result = await self._get_documentation(element, page_url)

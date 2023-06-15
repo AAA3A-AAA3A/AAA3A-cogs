@@ -1475,9 +1475,9 @@ class Seen(Cog):
                                 "others": [],
                             },
                         )
-                        if "message" not in self.cache["global"]:
-                            self.cache["global"]["message"] = {}
-                        self.cache["global"]["message"][custom_id] = data
+                        if "message" not in new_global_data:
+                            new_global_data["message"] = {}
+                        new_global_data["message"][custom_id] = data
                         self.cache["existing_keys"].append(custom_id)
                         # Users
                         if int(member_id) not in new_users_data:

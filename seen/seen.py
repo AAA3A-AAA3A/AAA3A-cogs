@@ -79,7 +79,7 @@ class Seen(Cog):
             "existing_keys": [],
         }
 
-        self.__author__ = ["AAA3A", "aikaterna"]
+        self.__author__: typing.List[str] = ["AAA3A", "aikaterna"]
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @property

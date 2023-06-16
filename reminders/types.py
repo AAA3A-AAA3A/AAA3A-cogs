@@ -544,6 +544,13 @@ class Reminder:
                             file_content = await r.read()
                     files.append(discord.File(BytesIO(file_content), filename=file_name))
             try:
+                if destination.guild is not None:
+                    if (member := destination.guild.get_member(user.id)) is None:
+                        raise RuntimeError(
+                            f"Member {self.user_id} not found in the guild {destination.guild.id} for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
+                        )
+                else:
+                    member = user
                 reference = None
                 if self.content["type"] in ["text", "message"]:
                     if self.content["type"] == "message" and destination.id == int(
@@ -569,7 +576,7 @@ class Reminder:
                         files=files,
                         content=self.target["mention"] if self.target is not None else None,
                         allowed_mentions=discord.AllowedMentions(
-                            everyone=destination.permissions_for(user).mention_everyone, users=True, roles=destination.permissions_for(user).mention_everyone, replied_user=False
+                            everyone=destination.permissions_for(member).mention_everyone, users=True, roles=destination.permissions_for(member).mention_everyone, replied_user=False
                         ),
                         view=view,
                         reference=reference,
@@ -582,7 +589,7 @@ class Reminder:
                         embeds=embeds,
                         files=files,
                         allowed_mentions=discord.AllowedMentions(
-                            everyone=destination.permissions_for(user).mention_everyone, users=True, roles=destination.permissions_for(user).mention_everyone, replied_user=False
+                            everyone=destination.permissions_for(member).mention_everyone, users=True, roles=destination.permissions_for(member).mention_everyone, replied_user=False
                         ),
                     )
             except discord.HTTPException:

@@ -145,7 +145,7 @@ class TimeConverter(commands.Converter):
                 raise ValueError(f"• Iso parsing: {' '.join(e.args)}")
 
         @executor()
-        def parse_cron_trigger(arg: str, text: str) -> datetime.datetime:
+        def parse_cron_trigger(arg: str, text: typing.Optional[str] = None) -> datetime.datetime:
             if ctx.interaction is None and text is not None and " " not in arg and not (text.startswith(tuple(discord.ext.commands.view._all_quotes)) and text.endswith(tuple(discord.ext.commands.view._all_quotes))):
                 to_parse = f"{arg} {' '.join(text.split(' ')[:4])}"
                 text = " ".join(text.split(" ")[4:])
@@ -157,7 +157,7 @@ class TimeConverter(commands.Converter):
                 raise ValueError(f"• Cron trigger parsing: {' '.join([f'{arg}.' for arg in e.args])}")
             expires_datetime = cron_trigger.get_next_fire_time(previous_fire_time=None, now=local_now)
             expires_datetime = expires_datetime.astimezone(tz=datetime.timezone.utc)
-            return expires_datetime, cog.Repeat.from_json([{"type": "cron", "value": to_parse, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp()), "last_trigger": int(expires_datetime.timestamp())}]), text.strip("".join(discord.ext.commands.view._all_quotes))
+            return expires_datetime, cog.Repeat.from_json([{"type": "cron", "value": to_parse, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp()), "last_trigger": int(expires_datetime.timestamp())}]), (text.strip("".join(discord.ext.commands.view._all_quotes)) if text is not None else None)
 
         @executor()
         def parse_timestamp(arg: str) -> datetime.datetime:
@@ -233,7 +233,7 @@ class TimeConverter(commands.Converter):
             return (
                 expires_datetime,
                 repeat,
-                reminder_text.strip() if return_text and reminder_text else text.strip("".join(discord.ext.commands.view._all_quotes)),
+                reminder_text.strip() if return_text and reminder_text else (text.strip("".join(discord.ext.commands.view._all_quotes)) if text is not None else None),
             )
 
         @executor()
@@ -350,7 +350,7 @@ class TimeConverter(commands.Converter):
             #     parsed_date = parsed_date.replace(hour=9)
             # parsed_date = parsed_date.replace(tzinfo=tz)
             parsed_date = parsed_date.astimezone(tz=datetime.timezone.utc)
-            return parsed_date, reminder_text.strip() if return_text and reminder_text else text.strip("".join(discord.ext.commands.view._all_quotes))
+            return parsed_date, reminder_text.strip() if return_text and reminder_text else (text.strip("".join(discord.ext.commands.view._all_quotes)) if text is not None else None)
 
         remind_time = None
         repeat = None

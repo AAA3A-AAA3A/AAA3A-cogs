@@ -238,7 +238,7 @@ class RunCode(Cog):
         ctx: commands.Context,
         code: typing.Optional[str],
         provided_language: typing.Optional[str],
-    ):
+    ) -> typing.Tuple[str, str]:
         _language = provided_language
         _code = None
 

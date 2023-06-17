@@ -403,7 +403,7 @@ class Reminders(Cog):
         view._message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
-            reference=discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False),
+            reference=ctx.message.to_reference(fail_if_not_exists=False),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
 
@@ -559,7 +559,7 @@ class Reminders(Cog):
         view._message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
-            reference=discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False),
+            reference=ctx.message.to_reference(fail_if_not_exists=False),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(
                 everyone=False, users=False, roles=False, replied_user=False
             ),
@@ -567,7 +567,7 @@ class Reminders(Cog):
 
     @commands.hybrid_group(aliases=["reminders"])
     async def reminder(self, ctx: commands.Context) -> None:
-        """List, edit and delete existing reminders, or create FIFO/commands reminders."""
+        """List, edit and delete existing reminders, or create FIFO/commands or Say reminders."""
         pass
 
     @commands.guild_only()
@@ -664,7 +664,7 @@ class Reminders(Cog):
         view._message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
-            reference=discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False),
+            reference=ctx.message.to_reference(fail_if_not_exists=False),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
 
@@ -752,7 +752,7 @@ class Reminders(Cog):
         view._message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
-            reference=discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False),
+            reference=ctx.message.to_reference(fail_if_not_exists=False),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
 

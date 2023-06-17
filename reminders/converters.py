@@ -168,7 +168,7 @@ class TimeConverter(commands.Converter):
                 raise ValueError(f"• Timestamp parsing: {' '.join([f'{e_arg}.' for e_arg in e.args])}")
             else:
                 if remind_time < utc_now:
-                    raise ValueError(f"• Timestamp parsing: ")
+                    raise ValueError("• Timestamp parsing: The timestamp isn't in the future.")
                 return remind_time
 
         @executor()
@@ -268,15 +268,21 @@ class TimeConverter(commands.Converter):
             eom_re = re.compile(r"\b(end of month)|eom\b", re.IGNORECASE)
             eoy_re = re.compile(r"\b(end of year)|eoy\b", re.IGNORECASE)
             if match := eod_re.search(to_parse):
-                parsed_date = local_now.replace(
+                if local_now.hour >= 17:
+                    today_or_next_day = local_now.replace(day=local_now.day + 1)
+                else:
+                    today_or_next_day = local_now
+                parsed_date = today_or_next_day.replace(
                     hour=0, minute=0, second=0, microsecond=0
                 ) + dateutil.relativedelta.relativedelta(
                     hours=17
                 )  # 17:00
                 reminder_text = to_parse[: match.start()] + to_parse[match.end():]
             elif match := eow_re.search(to_parse):
-                weekday = local_now.weekday()
-                days_ahead = (4 - weekday) % 7
+                if local_now.weekday == 4 and local_now.hour >= 17:
+                    days_ahead = 7
+                else:
+                    days_ahead = (4 - local_now.weekday) % 7
                 next_friday = local_now + dateutil.relativedelta.relativedelta(days=days_ahead)
                 parsed_date = next_friday.replace(
                     hour=17, minute=0, second=0, microsecond=0

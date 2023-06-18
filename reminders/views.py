@@ -45,12 +45,12 @@ class EditReminderModal(discord.ui.Modal):
         if self.reminder.content["type"] in ["text", "say"]:
             self.content: discord.ui.TextInput = discord.ui.TextInput(
                 label="Text",
-                placeholder="(required)",
+                placeholder="(required)" if self.reminder.content["type"] == "say" else "(optional)",
                 default=self.reminder.content["text"],
                 style=discord.TextStyle.paragraph,
                 max_length=MAX_REMINDER_LENGTH,
                 custom_id="text",
-                required=True,
+                required=self.reminder.content["type"] == "say",
             )
             self.add_item(self.content)
         elif self.reminder.content["type"] == "command":
@@ -98,22 +98,23 @@ class EditReminderModal(discord.ui.Modal):
                     ephemeral=True,
                 )
                 return
-        try:
-            fake_context: commands.Context = await interaction.client.get_context(interaction.message)
-            fake_context.author = interaction.user
-            __, expires_at, __ = await TimeConverter().convert(
-                fake_context,
-                self.next_expires_at.value,
-            )
-        except commands.BadArgument as e:
-            await interaction.response.send_message(str(e), ephemeral=True)
-            return
-        if self.reminder.expires_at == self.reminder.next_expires_at:
-            first_message = True
-            self.reminder.expires_at = expires_at
-        else:
-            first_message = False
-        self.reminder.next_expires_at = expires_at
+        if self.next_expires_at.value != self.reminder.next_expires_at.astimezone(tz=self.timezone).isoformat():
+            try:
+                fake_context: commands.Context = await interaction.client.get_context(interaction.message)
+                fake_context.author = interaction.user
+                __, expires_at, __ = await TimeConverter().convert(
+                    fake_context,
+                    self.next_expires_at.value,
+                )
+            except commands.BadArgument as e:
+                await interaction.response.send_message(str(e), ephemeral=True)
+                return
+            if self.reminder.expires_at == self.reminder.next_expires_at:
+                first_message = True
+                self.reminder.expires_at = expires_at
+            else:
+                first_message = False
+            self.reminder.next_expires_at = expires_at
         if self.reminder.content["type"] == "text":
             self.reminder.content["text"] = self.content.value
         elif self.reminder.content["type"] == "command":

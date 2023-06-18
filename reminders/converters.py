@@ -155,10 +155,10 @@ class TimeConverter(commands.Converter):
                 cron_trigger = CronTrigger.from_crontab(to_parse, timezone=tz)
             except ValueError as e:
                 raise ValueError(f"• Cron trigger parsing: {' '.join([f'{arg}.' for arg in e.args])}.")
-            expires_datetime = cron_trigger.get_next_fire_time(previous_fire_time=None, now=local_now)
-            expires_datetime = expires_datetime.astimezone(tz=datetime.timezone.utc)
+            expires_at = cron_trigger.get_next_fire_time(previous_fire_time=None, now=local_now)
+            expires_at = expires_at.astimezone(tz=datetime.timezone.utc)
             try:
-                return expires_datetime, cog.Repeat.from_json([{"type": "cron", "value": to_parse, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp()), "last_trigger": int(expires_datetime.timestamp())}]), (text.strip("".join(discord.ext.commands.view._all_quotes)) if text is not None else None)
+                return expires_at, cog.Repeat.from_json([{"type": "cron", "value": to_parse, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_at.timestamp()), "last_trigger": int(expires_at.timestamp())}]), (text.strip("".join(discord.ext.commands.view._all_quotes)) if text is not None else None)
             except OSError as e:
                 raise ValueError(
                     f"• Cron trigger parsing: {e}."
@@ -168,13 +168,13 @@ class TimeConverter(commands.Converter):
         def parse_timestamp(arg: str) -> datetime.datetime:
             try:
                 timestamp = float(arg)
-                remind_time = datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc)
+                expires_at = datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc)
             except ValueError as e:
                 raise ValueError(f"• Timestamp parsing: {' '.join([f'{e_arg}.' for e_arg in e.args])}.")
             else:
-                if remind_time < utc_now:
+                if expires_at < utc_now:
                     raise ValueError("• Timestamp parsing: The timestamp isn't in the future.")
-                return remind_time
+                return expires_at
 
         @executor()
         def parse_relative_date(
@@ -198,7 +198,7 @@ class TimeConverter(commands.Converter):
                 expires_dict = parse_result["in"]
             elif "on" in parse_result or "at" in parse_result:
                 try:
-                    expires_datetime: datetime.datetime = dateutil.parser.parse(
+                    expires_at: datetime.datetime = dateutil.parser.parse(
                         (parse_result.get("on") if "on" in parse_result else "at").strip(),
                         fuzzy=True,
                         dayfirst=True,
@@ -206,19 +206,19 @@ class TimeConverter(commands.Converter):
                         ignoretz=False,
                         default=local_now.replace(hour=9, minute=0, second=0, microsecond=0),
                     )
-                    if expires_datetime.replace(
+                    if expires_at.replace(
                         hour=0, minute=0, second=0, microsecond=0
                     ) == local_now.replace(
                         hour=0, minute=0, second=0, microsecond=0
                     ) and (
-                        expires_datetime.hour < local_now.hour
-                        or expires_datetime.minute < local_now.minute
+                        expires_at.hour < local_now.hour
+                        or expires_at.minute < local_now.minute
                     ):
-                        expires_datetime = expires_datetime.replace(day=expires_datetime.day + 1)
+                        expires_at = expires_at.replace(day=expires_at.day + 1)
                 except (dateutil.parser.ParserError, OverflowError):
                     expires_dict = None
                 else:
-                    expires_dict = expires_datetime
+                    expires_dict = expires_at
             else:
                 expires_dict = repeat_dict
             if not expires_dict:
@@ -226,22 +226,22 @@ class TimeConverter(commands.Converter):
             if not isinstance(expires_dict, datetime.datetime):  # no "on" kwarg
                 expires_delta = dateutil.relativedelta.relativedelta(**expires_dict)
                 try:
-                    expires_datetime = local_now + expires_delta
+                    expires_at = local_now + expires_delta
                 except OverflowError as e:
                     raise ValueError(
                         f"• Relative date parsing: {e}."
                     )
             reminder_text = parse_result["text"] or None if "text" in parse_result else None
-            expires_datetime = expires_datetime.astimezone(tz=datetime.timezone.utc)
+            expires_at = expires_at.astimezone(tz=datetime.timezone.utc)
             if repeat_dict is not None:
                 try:
-                    repeat = cog.Repeat.from_json([{"type": "sample", "value": repeat_dict, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp()), "last_trigger": int(expires_datetime.timestamp())}])
+                    repeat = cog.Repeat.from_json([{"type": "sample", "value": repeat_dict, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_at.timestamp()), "last_trigger": int(expires_at.timestamp())}])
                 except OSError as e:
                     raise ValueError(
                         f"• Relative date parsing: {e}."
                     )
             return (
-                expires_datetime,
+                expires_at,
                 repeat,
                 reminder_text.strip() if return_text and reminder_text else (text.strip("".join(discord.ext.commands.view._all_quotes)) if text is not None else None),
             )
@@ -256,14 +256,14 @@ class TimeConverter(commands.Converter):
                 # return rrule_string.astimezone(tz=datetime.timezone.utc), None
                 raise ValueError("• Recurrent parsing: Impossible to parse this RRULE.")
             rrule = dateutil.rrule.rrulestr(rrule_string)
-            expires_datetime = rrule.after(local_now.replace(tzinfo=None), inc=True)
-            if expires_datetime is None:
+            expires_at = rrule.after(local_now.replace(tzinfo=None), inc=True)
+            if expires_at is None:
                 raise ValueError("• Recurrent parsing: Impossible to parse this RRULE.")
-            expires_datetime = expires_datetime.astimezone(tz=datetime.timezone.utc)
-            # if expires_datetime <= utc_now.replace(minute=utc_now.minute + 1):
-            #     expires_datetime += dateutil.relativedelta.relativedelta(minutes=2)
+            expires_at = expires_at.astimezone(tz=datetime.timezone.utc)
+            # if expires_at <= utc_now.replace(minute=utc_now.minute + 1):
+            #     expires_at += dateutil.relativedelta.relativedelta(minutes=2)
             try:
-                return expires_datetime, cog.Repeat.from_json([{"type": "rrule", "value": rrule_string, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp()), "last_trigger": int(expires_datetime.timestamp())}])
+                return expires_at, cog.Repeat.from_json([{"type": "rrule", "value": rrule_string, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_at.timestamp()), "last_trigger": int(expires_at.timestamp())}])
             except OSError as e:
                 raise ValueError(
                     f"• Recurrent parsing: {e}."
@@ -373,57 +373,58 @@ class TimeConverter(commands.Converter):
             parsed_date = parsed_date.astimezone(tz=datetime.timezone.utc)
             return parsed_date, reminder_text.strip() if return_text and reminder_text else (text.strip("".join(discord.ext.commands.view._all_quotes)) if text is not None else None)
 
-        remind_time = None
+        expires_at = None
         repeat = None
         text = content
         info = []
         try:
-            remind_time = await parse_iso_date(argument)
+            expires_at = await parse_iso_date(argument)
         except ValueError as e:
             info.append(e.args[0])
             try:
-                remind_time, repeat, text = await parse_cron_trigger(argument, text=content)
+                expires_at, repeat, text = await parse_cron_trigger(argument, text=content)
             except ValueError as e:
                 info.append(e.args[0])
                 try:
-                    remind_time = await parse_timestamp(argument)
+                    expires_at = await parse_timestamp(argument)
                 except ValueError as e:
                     info.append(e.args[0])
                     try:
-                        remind_time, repeat, text = await parse_relative_date(argument, text=content)
+                        expires_at, repeat, text = await parse_relative_date(argument, text=content)
                     except ValueError as e:
                         info.append(e.args[0])
                         try:
-                            remind_time, repeat = await parse_recurrent(argument)
+                            expires_at, repeat = await parse_recurrent(argument)
                         except ValueError as e:
                             info.append(e.args[0])
                             try:
-                                remind_time, text = await parse_fuzzy_date(argument, text=content)
+                                expires_at, text = await parse_fuzzy_date(argument, text=content)
                             except ValueError as e:
                                 info.append(e.args[0])
 
-        if remind_time is not None and isinstance(remind_time, datetime.datetime):
-            remind_time.replace(second=0, microsecond=0)
-            if remind_time < utc_now.replace(second=0, microsecond=0):  # Negative intervals are not allowed.
+        if expires_at is not None and isinstance(expires_at, datetime.datetime):
+            if expires_at < utc_now.replace(second=0, microsecond=0):  # Negative intervals are not allowed.
                 info = [  # info.append(
-                    f"• Global check: The given date must be in the future. Interpreted date: <t:{int(remind_time.timestamp())}:F>."
+                    f"• Global check: The given date must be in the future. Interpreted date: <t:{int(expires_at.timestamp())}:F>."
                 ]
-                remind_time = None
+                expires_at = None
             else:
                 try:
-                    datetime.datetime.timestamp(remind_time)
+                    datetime.datetime.timestamp(expires_at)
                 except OSError:  # protect against out of epoch dates
                     info = [  # info.append(
                         "• Global check: The given date is exceeding the linux epoch. Please choose an earlier date."
                     ]
-                    remind_time = None
+                    expires_at = None
                 else:
-                    if remind_time < utc_now + dateutil.relativedelta.relativedelta(minutes=1):
+                    if expires_at < utc_now + dateutil.relativedelta.relativedelta(minutes=1):
                         info = [  # info.append(
                             "• Global check: Reminder time must be at least 1 minute."  # RRULES don't understand that...
                         ]
-                        remind_time = None
-        if remind_time is None:
+                        expires_at = None
+                    else:
+                        expires_at = expires_at.replace(second=0, microsecond=0)
+        if expires_at is None:
             info = "\n".join(info)
             raise commands.BadArgument(f"Error(s) during parsing the input:\n{info}")
         if text is not None:
@@ -433,9 +434,9 @@ class TimeConverter(commands.Converter):
                 text = text[4:]
 
         if content is None:
-            return utc_now, remind_time, repeat
+            return utc_now, expires_at, repeat
         else:
-            return utc_now, remind_time, repeat, text.strip() if text is not None else None
+            return utc_now, expires_at, repeat, text.strip() if text is not None else None
 
 
 class ContentConverter(commands.Converter):  # no longer used

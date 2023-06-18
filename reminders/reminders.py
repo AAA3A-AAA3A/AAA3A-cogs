@@ -89,6 +89,7 @@ class Reminders(Cog):
             "repeat_allowed": True,
             "minimum_repeat": 60 * 1,  # minutes, so 1 hour.
             "fifo_allowed": False,
+            "creation_view": True,
             "snooze_view": True,
         }
         self.reminders_user: typing.Dict[str, typing.List[Data]] = {
@@ -131,6 +132,11 @@ class Reminders(Cog):
                 "converter": bool,
                 "description": "Allow or deny commands reminders for users (except bot owners).",
             },
+            "creation_view": {
+                "path": ["creation_view"],
+                "converter": bool,
+                "description": "Send Creation view/buttons when reminders creation.",
+            },
             "snooze_view": {
                 "path": ["snooze_view"],
                 "converter": bool,
@@ -159,7 +165,11 @@ class Reminders(Cog):
         all_reminders = await self.config.all_users()
         for user_id in all_reminders:
             for reminder_id, reminder_data in all_reminders[user_id].get("reminders", {}).items():
-                reminder = Reminder.from_json(cog=self, user_id=user_id, data=reminder_data)
+                try:
+                    reminder = Reminder.from_json(cog=self, user_id=user_id, data=reminder_data)
+                except OSError:
+                    await self.config.user_from_id(user_id).clear_raw("reminders", reminder_id)
+                    continue
                 if user_id not in self.cache:
                     self.cache[user_id] = {}
                 self.cache[user_id][int(reminder_id)] = reminder
@@ -217,7 +227,7 @@ class Reminders(Cog):
                 if reminder.next_expires_at is None:
                     await reminder.delete()
                     continue
-                if reminder.next_expires_at <= utc_now:
+                if reminder.next_expires_at.replace(second=0, microsecond=0) <= utc_now:
                     executed = True
                     try:
                         await reminder.process(utc_now=utc_now)
@@ -253,6 +263,9 @@ class Reminders(Cog):
         years, rem = divmod(total_secs, 3600 * 24 * 365)
         if years > 0:
             result.append(f"{years} year" + ("s" if years > 1 else ""))
+        months, rem = divmod(rem, 3600 * 24 * 7 * 4)
+        if months > 0:
+            result.append(f"{months} month" + ("s" if months > 1 else ""))
         weeks, rem = divmod(rem, 3600 * 24 * 7)
         if weeks > 0:
             result.append(f"{weeks} week" + ("s" if weeks > 1 else ""))
@@ -399,13 +412,18 @@ class Reminders(Cog):
             repeat=repeat,
             created_at=utc_now,
         )
-        view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
-        view._message = await ctx.send(
+        if await self.config.creation_view():
+            view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
+        else:
+            view = None
+        message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
             reference=ctx.message.to_reference(fail_if_not_exists=False),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
+        if view is not None:
+            view._message = message
 
     @commands.guild_only()
     @commands.hybrid_command()
@@ -554,8 +572,11 @@ class Reminders(Cog):
             targets=[{"id": target.id, "mention": target.mention} for target in targets],
             created_at=utc_now,
         )
-        view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
-        view._message = await ctx.send(
+        if await self.config.creation_view():
+            view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
+        else:
+            view = None
+        message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
             reference=ctx.message.to_reference(fail_if_not_exists=False),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
@@ -563,6 +584,8 @@ class Reminders(Cog):
                 everyone=False, users=False, roles=False, replied_user=False
             ),
         )
+        if view is not None:
+            view._message = message
 
     @commands.hybrid_group(aliases=["reminders"])
     async def reminder(self, ctx: commands.Context) -> None:
@@ -659,13 +682,18 @@ class Reminders(Cog):
             destination=destination.id,
             created_at=utc_now,
         )
-        view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
-        view._message = await ctx.send(
+        if await self.config.creation_view():
+            view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
+        else:
+            view = None
+        message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
             reference=ctx.message.to_reference(fail_if_not_exists=False),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
+        if view is not None:
+            view._message = message
 
     @commands.guild_only()
     @commands.guildowner_or_permissions(administrator=True)
@@ -747,13 +775,18 @@ class Reminders(Cog):
             destination=destination.id,
             created_at=utc_now,
         )
-        view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
-        view._message = await ctx.send(
+        if await self.config.creation_view():
+            view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
+        else:
+            view = None
+        message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
             reference=ctx.message.to_reference(fail_if_not_exists=False),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
+        if view is not None:
+            view._message = message
 
     @commands.bot_has_permissions(embed_links=True)
     @reminder.command(aliases=["parsingtips"])
@@ -865,13 +898,13 @@ class Reminders(Cog):
             await reminder.delete()
         if len(reminders) == 1:
             await ctx.send(
-                _("The reminder {reminder_id} has been successfully removed.").format(
+                _("Your reminder {reminder_id} has been successfully removed.").format(
                     reminder_id=f"**#{reminders[0].id}**"
                 )
             )
         else:
             await ctx.send(
-                _("The reminders {reminders_ids} have been successfully removed.").format(
+                _("Your reminders {reminders_ids} have been successfully removed.").format(
                     reminders_ids=humanize_list([f"**#{reminder.id}**" for reminder in reminders])
                 )
             )
@@ -910,7 +943,7 @@ class Reminders(Cog):
         reminder.content = content
         await reminder.save()
         await ctx.send(
-            _("The reminder **#{reminder_id}** has been successfully edited.").format(
+            _("Your reminder **#{reminder_id}** has been successfully edited.").format(
                 reminder_id=reminder.id
             )
         )
@@ -934,7 +967,7 @@ class Reminders(Cog):
         reminder.next_expires_at = expires_at
         await reminder.save()
         await ctx.send(
-            _("The reminder **#{reminder_id}** has been successfully edited.").format(
+            _("Your reminder **#{reminder_id}** has been successfully edited.").format(
                 reminder_id=reminder.id
             )
         )
@@ -992,10 +1025,10 @@ class Reminders(Cog):
                         "The repeat timedelta must be greater than {minimum_repeat} minutes."
                     ).format(minimum_repeat=minimum_repeat)
                 )
-        reminder.intervals = Intervals.from_json([repeat_dict])
+        reminder.intervals = Repeat.from_json([repeat_dict])
         await reminder.save()
         await ctx.send(
-            _("The reminder **#{reminder_id}** has been successfully edited.").format(
+            _("Your reminder **#{reminder_id}** has been successfully edited.").format(
                 reminder_id=reminder.id
             )
         )

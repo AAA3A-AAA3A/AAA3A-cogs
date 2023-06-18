@@ -133,7 +133,16 @@ class RepeatRule:
 
     def get_info(self, cog: commands.Cog) -> str:
         if self.type == "sample":
-            return f"[{self.type.upper()}] Every {cog.get_interval_string(dateutil.relativedelta.relativedelta(**self.value))}."
+            value = self.value.copy()
+            if "years" in value:
+                if "days" not in value:
+                    value["days"] = 0
+                value["days"] += value.pop("years") * 365
+            if "months" in value:
+                if "days" not in value:
+                    value["days"] = 0
+                value["days"] += value.pop("months") * 7 * 4
+            return f"[{self.type.upper()}] Every {cog.get_interval_string(datetime.timedelta(**value))}."
         elif self.type == "cron":
             descriptor = ExpressionDescriptor(
                 expression=self.value,

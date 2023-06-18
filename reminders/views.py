@@ -137,7 +137,7 @@ class EditReminderModal(discord.ui.Modal):
             except discord.HTTPException:
                 pass
         await interaction.response.send_message(
-            _("The reminder **#{reminder_id}** has been successfully edited.").format(
+            _("Your reminder **#{reminder_id}** has been successfully edited.").format(
                 reminder_id=self.reminder.id
             ),
             ephemeral=True,
@@ -345,7 +345,7 @@ class AddRepeatRuleModal(discord.ui.Modal):
             except discord.HTTPException:
                 pass
         await interaction.response.send_message(
-            _("The reminder **#{reminder_id}** has been successfully edited.").format(
+            _("Your reminder **#{reminder_id}** has been successfully edited.").format(
                 reminder_id=self.reminder.id
             ),
             ephemeral=True,
@@ -397,7 +397,7 @@ class RemoveRepeatRuleModal(discord.ui.Modal):
             except discord.HTTPException:
                 pass
         await interaction.response.send_message(
-            _("The reminder **#{reminder_id}** has been successfully edited.").format(
+            _("Your reminder **#{reminder_id}** has been successfully edited.").format(
                 reminder_id=self.reminder.id
             ),
             ephemeral=True,

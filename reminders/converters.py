@@ -142,7 +142,7 @@ class TimeConverter(commands.Converter):
                 dt = dt.astimezone(tz=datetime.timezone.utc)
                 return dt
             except ValueError as e:
-                raise ValueError(f"• Iso parsing: {' '.join(e.args)}")
+                raise ValueError(f"• Iso parsing: {' '.join(e.args)}.")
 
         @executor()
         def parse_cron_trigger(arg: str, text: typing.Optional[str] = None) -> datetime.datetime:
@@ -154,10 +154,15 @@ class TimeConverter(commands.Converter):
             try:
                 cron_trigger = CronTrigger.from_crontab(to_parse, timezone=tz)
             except ValueError as e:
-                raise ValueError(f"• Cron trigger parsing: {' '.join([f'{arg}.' for arg in e.args])}")
+                raise ValueError(f"• Cron trigger parsing: {' '.join([f'{arg}.' for arg in e.args])}.")
             expires_datetime = cron_trigger.get_next_fire_time(previous_fire_time=None, now=local_now)
             expires_datetime = expires_datetime.astimezone(tz=datetime.timezone.utc)
-            return expires_datetime, cog.Repeat.from_json([{"type": "cron", "value": to_parse, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp()), "last_trigger": int(expires_datetime.timestamp())}]), (text.strip("".join(discord.ext.commands.view._all_quotes)) if text is not None else None)
+            try:
+                return expires_datetime, cog.Repeat.from_json([{"type": "cron", "value": to_parse, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp()), "last_trigger": int(expires_datetime.timestamp())}]), (text.strip("".join(discord.ext.commands.view._all_quotes)) if text is not None else None)
+            except OSError as e:
+                raise ValueError(
+                    f"• Cron trigger parsing: {e}."
+                )
 
         @executor()
         def parse_timestamp(arg: str) -> datetime.datetime:
@@ -165,7 +170,7 @@ class TimeConverter(commands.Converter):
                 timestamp = float(arg)
                 remind_time = datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc)
             except ValueError as e:
-                raise ValueError(f"• Timestamp parsing: {' '.join([f'{e_arg}.' for e_arg in e.args])}")
+                raise ValueError(f"• Timestamp parsing: {' '.join([f'{e_arg}.' for e_arg in e.args])}.")
             else:
                 if remind_time < utc_now:
                     raise ValueError("• Timestamp parsing: The timestamp isn't in the future.")
@@ -224,12 +229,17 @@ class TimeConverter(commands.Converter):
                     expires_datetime = local_now + expires_delta
                 except OverflowError as e:
                     raise ValueError(
-                        f"• Relative date parsing: {e}"
+                        f"• Relative date parsing: {e}."
                     )
             reminder_text = parse_result["text"] or None if "text" in parse_result else None
             expires_datetime = expires_datetime.astimezone(tz=datetime.timezone.utc)
             if repeat_dict is not None:
-                repeat = cog.Repeat.from_json([{"type": "sample", "value": repeat_dict, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp()), "last_trigger": int(expires_datetime.timestamp())}])
+                try:
+                    repeat = cog.Repeat.from_json([{"type": "sample", "value": repeat_dict, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp()), "last_trigger": int(expires_datetime.timestamp())}])
+                except OSError as e:
+                    raise ValueError(
+                        f"• Relative date parsing: {e}."
+                    )
             return (
                 expires_datetime,
                 repeat,
@@ -252,7 +262,12 @@ class TimeConverter(commands.Converter):
             expires_datetime = expires_datetime.astimezone(tz=datetime.timezone.utc)
             # if expires_datetime <= utc_now.replace(minute=utc_now.minute + 1):
             #     expires_datetime += dateutil.relativedelta.relativedelta(minutes=2)
-            return expires_datetime, cog.Repeat.from_json([{"type": "rrule", "value": rrule_string, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp()), "last_trigger": int(expires_datetime.timestamp())}])
+            try:
+                return expires_datetime, cog.Repeat.from_json([{"type": "rrule", "value": rrule_string, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_datetime.timestamp()), "last_trigger": int(expires_datetime.timestamp())}])
+            except OSError as e:
+                raise ValueError(
+                    f"• Recurrent parsing: {e}."
+                )
 
         @executor()
         def parse_fuzzy_date(arg: str, text: typing.Optional[str] = None) -> datetime.datetime:

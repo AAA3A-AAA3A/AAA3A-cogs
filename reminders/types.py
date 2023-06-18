@@ -20,6 +20,8 @@ from apscheduler.triggers.cron import CronTrigger
 from cron_descriptor import CasingTypeEnum, ExpressionDescriptor
 from recurrent.event_parser import RecurringEvent
 
+from redbot.core.utils.chat_formatting import humanize_list
+
 from .views import SnoozeView
 
 _ = Translator("Reminders", __file__)
@@ -191,7 +193,7 @@ class Reminder:
 
     content: Content  # {"type": ..., "title": None, "text": None, "embed": ..., "message_author": {"display_name": ..., "display_avatar": ..., "mention": ...}, "image_url": ..., "command": ..., "invoker": ...}
     destination: typing.Optional[int]  # channel or dm
-    target: typing.Optional[typing.Dict[str, typing.Union[int, str]]]
+    targets: typing.Optional[typing.List[typing.Dict[str, typing.Union[int, str]]]]
 
     created_at: datetime.datetime
     expires_at: datetime.datetime
@@ -232,7 +234,7 @@ class Reminder:
             "me_too": self.me_too,
             "content": self.content,
             "destination": self.destination,
-            "target": self.target,
+            "targets": self.targets,
             "created_at": int(self.created_at.timestamp()),
             "expires_at": int(self.expires_at.timestamp()),
             "last_expires_at": int(self.next_expires_at.timestamp()),
@@ -245,7 +247,7 @@ class Reminder:
                 "snooze",
                 "me_too",
                 "destination",
-                "target",
+                "targets",
                 "repeat",
                 "last_expires_at",
             ]:
@@ -264,7 +266,7 @@ class Reminder:
             me_too=data.get("me_too", False),
             content=data["content"],
             destination=data.get("destination"),
-            target=data.get("target"),
+            targets=data.get("targets", data.get("target")),
             created_at=datetime.datetime.fromtimestamp(
                 int(data["created_at"]), tz=datetime.timezone.utc
             ),
@@ -305,12 +307,12 @@ class Reminder:
                 _(
                     "{state}Okay, I will say {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
                 ) if self.content["type"] == "say" else _(
-                    "{state}Okay, I will remind {target_mention} of {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+                    "{state}Okay, I will remind {targets_mentions} of {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
                 )
             )
         ).format(
             state=f"{'[Snooze] ' if self.snooze else ''}{'[Me Too] ' if self.me_too else ''}",
-            target_mention=self.target["mention"] if self.target is not None else _("you"),
+            targets_mentions=humanize_list([target["mention"] for target in self.targets]) if self.targets is not None else _("you"),
             this=(
                 _("this message")
                 if self.content["type"] == "message"
@@ -333,7 +335,7 @@ class Reminder:
             "• **Title**: {title}\n"
             "• **Content type**: `{content_type}`\n"
             "• **Content**: {content}\n"
-            "• **Target**: {destination}\n"
+            "• **Targets**: {targets}\n"
             "• **Destination**: {destination}\n"
             "• **Jump URL**: {jump_url}\n"
         ).format(
@@ -369,7 +371,7 @@ class Reminder:
                     else f"Command `[p]{self.content['command']}` executed with your privilege rights."
                 )
             ),
-            target=f"{self.target['mention']} ({self.target['id']})" if self.target is not None else _("No target."),
+            targets=humanize_list([f"{target['mention']} ({target['id']})" for target in self.targets]) if self.targets is not None else _("No target."),
             destination=_("In DMs")
             if self.destination is None
             else (f"{destination.recipient}'s DMs ({destination.id})" if isinstance(destination, discord.DMChannel) else f"{destination.mention} ({destination.id})")
@@ -410,7 +412,7 @@ class Reminder:
         )
         if (
             self.destination is not None
-            and (self.target is None or self.target["id"] != self.user_id)
+            and (self.targets is None or len(self.targets) != 1 or self.targets[0]["id"] != self.user_id)
             and (user := self.cog.bot.get_user(self.user_id))
         ):
             embed.set_author(name=user.display_name, icon_url=user.display_avatar)
@@ -574,7 +576,7 @@ class Reminder:
                     message = await destination.send(
                         embeds=embeds,
                         files=files,
-                        content=self.target["mention"] if self.target is not None else None,
+                        content=humanize_list([target["mention"] for target in self.targets]) if self.targets is not None else None,
                         allowed_mentions=discord.AllowedMentions(
                             everyone=destination.permissions_for(member).mention_everyone, users=True, roles=destination.permissions_for(member).mention_everyone, replied_user=False
                         ),

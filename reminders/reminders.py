@@ -288,7 +288,7 @@ class Reminders(Cog):
             me_too=False,
             content=content,
             destination=None,
-            target=None,
+            targets=None,
             created_at=created_at,
             expires_at=expires_at,
             last_expires_at=None,
@@ -408,7 +408,6 @@ class Reminders(Cog):
         )
 
     @commands.guild_only()
-    @commands.mod_or_permissions(mention_everyone=True)
     @commands.hybrid_command()
     async def remind(
         self,
@@ -416,7 +415,7 @@ class Reminders(Cog):
         destination: typing.Optional[
             typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
         ],
-        target: typing.Optional[typing.Union[discord.User, discord.Role]],
+        targets: commands.Greedy[typing.Union[discord.User, discord.Role]],
         time: str,
         *,
         message_or_text: str = None,
@@ -498,17 +497,17 @@ class Reminders(Cog):
             raise commands.UserFeedbackCheckFailure(_("I can't send messages in this channel."))
         elif not channel_permissions.embed_links:
             raise commands.UserFeedbackCheckFailure(_("I can't send embeds in this channel."))
-        if target is None:
-            target = ctx.author
-        elif (
-            isinstance(target, discord.Role)
-            and not destination.permissions_for(ctx.author).mention_everyone
-        ):
-            raise commands.UserFeedbackCheckFailure(
-                _("You can't mention roles in {destination}.").format(
-                    destination=destination.mention
-                )
-            )
+        if not targets:
+            targets = [ctx.author]
+        else:
+            targets = list(targets)
+            if not destination.permissions_for(ctx.author).mention_everyone and (
+                len(targets) > 3
+                or any(isinstance(target, discord.Role) for target in targets)
+            ):
+                raise commands.UserFeedbackCheckFailure(_("Since you don't have the `mention everyone` permission, you can't create a reminder that will mention more than 3 people or mention role(s)."))
+            if len(targets) > 10:
+                raise commands.UserFeedbackCheckFailure(_("Due to the message character limit, you can only mention a maximum of 10 users or roles."))
         message_or_text = message_or_text or (
             ctx.message.reference.cached_message if ctx.message.reference is not None else None
         )
@@ -552,7 +551,7 @@ class Reminders(Cog):
             expires_at=expires_at,
             repeat=repeat,
             destination=destination.id,
-            target={"id": target.id, "mention": target.mention},
+            targets=[{"id": target.id, "mention": target.mention} for target in targets],
             created_at=utc_now,
         )
         view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
@@ -854,18 +853,28 @@ class Reminders(Cog):
         await Menu(pages=embeds).start(ctx)
 
     @reminder.command(aliases=["delete", "-"])
-    async def remove(self, ctx: commands.Context, reminder: ExistingReminderConverter) -> None:
+    async def remove(self, ctx: commands.Context, reminders: commands.Greedy[ExistingReminderConverter]) -> None:
         """Remove an existing Reminder from its ID.
 
         - Use `last` to remove your last created reminder.
         - Use `next` to remove your next triggered reminder.
         """
-        await reminder.delete()
-        await ctx.send(
-            _("The reminder **#{reminder_id}** has been successfully removed.").format(
-                reminder_id=reminder.id
+        if not reminders:
+            return await ctx.send_help()
+        for reminder in reminders:
+            await reminder.delete()
+        if len(reminders) == 1:
+            await ctx.send(
+                _("The reminder {reminder_id} has been successfully removed.").format(
+                    reminder_id=f"**#{reminders[0].id}**"
+                )
             )
-        )
+        else:
+            await ctx.send(
+                _("The reminders {reminders_ids} have been successfully removed.").format(
+                    reminders_ids=humanize_list([f"**#{reminder.id}**" for reminder in reminders])
+                )
+            )
 
     @reminder.command()
     async def edit(self, ctx: commands.Context, reminder: ExistingReminderConverter) -> None:
@@ -1013,22 +1022,22 @@ class Reminders(Cog):
             pass
         await ctx.send(_("All your reminders have been successfully removed."))
 
-    async def _cogsutils_add_hybrid_commands(
-        self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]
-    ) -> None:
-        if command.app_command is None:
-            return
-        if not isinstance(command, commands.HybridCommand):
-            return
-        if "message_or_text" in command.app_command._params:
-            command.app_command._params["message_or_text"].required = True
-        if "target" in command.app_command._params and command.qualified_name == "remind":
-            command.app_command._params["target"].required = True
-        _params1 = command.app_command._params.copy()
-        _params2 = list(command.app_command._params.keys())
-        _params2 = sorted(_params2, key=lambda x: _params1[x].required, reverse=True)
-        _params3 = {key: _params1[key] for key in _params2}
-        command.app_command._params = _params3
+    # async def _cogsutils_add_hybrid_commands(
+    #     self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]
+    # ) -> None:
+    #     if command.app_command is None:
+    #         return
+    #     if not isinstance(command, commands.HybridCommand):
+    #         return
+    #     if "message_or_text" in command.app_command._params:
+    #         command.app_command._params["message_or_text"].required = True
+    #     if "targets" in command.app_command._params and command.qualified_name == "remind":
+    #         command.app_command._params["targets"].required = True
+    #     _params1 = command.app_command._params.copy()
+    #     _params2 = list(command.app_command._params.keys())
+    #     _params2 = sorted(_params2, key=lambda x: _params1[x].required, reverse=True)
+    #     _params3 = {key: _params1[key] for key in _params2}
+    #     command.app_command._params = _params3
 
     @timezone.autocomplete("timezone")
     async def timezone_timezone_autocomplete(
@@ -1131,7 +1140,7 @@ class Reminders(Cog):
                         title=None,
                         content={"type": "text", "text": reminder_data["text"]},
                         destination=None,
-                        target=None,
+                        targets=None,
                         created_at=datetime.datetime.fromtimestamp(
                             reminder_data["created"], tz=datetime.timezone.utc
                         ),

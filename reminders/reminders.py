@@ -1171,6 +1171,7 @@ class Reminders(Cog):
                         id=reminder_id,
                         jump_url=reminder_data["jump_link"],
                         snooze=False,
+                        me_too=False,
                         content={"type": "text", "text": reminder_data["text"]},
                         destination=None,
                         targets=None,

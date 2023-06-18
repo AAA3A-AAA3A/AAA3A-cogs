@@ -173,7 +173,7 @@ class Reminders(Cog):
                 if user_id not in self.cache:
                     self.cache[user_id] = {}
                 self.cache[user_id][int(reminder_id)] = reminder
-        self.cogsutils.create_loop(function=self.reminders_loop, name="Reminders", minutes=1)
+        self.cogsutils.create_loop(function=self.reminders_loop, name="Reminders", seconds=15)
 
     async def cog_unload(self) -> None:
         self.bot.tree.remove_command(remind_message_context_menu.name)
@@ -227,7 +227,7 @@ class Reminders(Cog):
                 if reminder.next_expires_at is None:
                     await reminder.delete()
                     continue
-                if reminder.next_expires_at.replace(second=0, microsecond=0) <= utc_now:
+                if reminder.next_expires_at <= utc_now:
                     executed = True
                     try:
                         await reminder.process(utc_now=utc_now)
@@ -1154,6 +1154,7 @@ class Reminders(Cog):
         )
         await self.config.set(new_global_data)
         utc_now = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+        old_config.init_custom("REMINDER", 2)
         old_reminders_data = await old_config.custom("REMINDER").all()
         for user_id in old_reminders_data:
             reminder_id = 1
@@ -1170,7 +1171,6 @@ class Reminders(Cog):
                         id=reminder_id,
                         jump_url=reminder_data["jump_link"],
                         snooze=False,
-                        title=None,
                         content={"type": "text", "text": reminder_data["text"]},
                         destination=None,
                         targets=None,

@@ -403,7 +403,7 @@ class TimeConverter(commands.Converter):
                                 info.append(e.args[0])
 
         if expires_at is not None and isinstance(expires_at, datetime.datetime):
-            if expires_at < utc_now.replace(second=0, microsecond=0):  # Negative intervals are not allowed.
+            if expires_at < utc_now:  # Negative intervals are not allowed. / .replace(second=0, microsecond=0)
                 info = [  # info.append(
                     f"• Global check: The given date must be in the future. Interpreted date: <t:{int(expires_at.timestamp())}:F>."
                 ]
@@ -422,8 +422,12 @@ class TimeConverter(commands.Converter):
                             "• Global check: Reminder time must be at least 1 minute."  # RRULES don't understand that...
                         ]
                         expires_at = None
-                    else:
-                        expires_at = expires_at.replace(second=0, microsecond=0)
+                    # else:
+                    #     if expires_at.second != 0:
+                    #         if expires_at.minute == 59 or expires_at.second <= 30:
+                    #             expires_at = expires_at.replace(day=(expires_at.day + 1) if expires_at.minute == 59 and expires_at.hour == 23 else expires_at.day, hour=(0 if expires_at.hour == 23 else (expires_at.hour + 1)) if expires_at.minute == 59 else expires_at.hour, minute=0 if expires_at.minute == 59 else (expires_at.minute + 1), second=0, microsecond=0)
+                    #         else:
+                    #             expires_at = expires_at.replace(second=0, microsecond=0)
         if expires_at is None:
             info = "\n".join(info)
             raise commands.BadArgument(f"Error(s) during parsing the input:\n{info}")

@@ -173,7 +173,7 @@ class Reminders(Cog):
                 if user_id not in self.cache:
                     self.cache[user_id] = {}
                 self.cache[user_id][int(reminder_id)] = reminder
-        self.cogsutils.create_loop(function=self.reminders_loop, name="Reminders", seconds=15)
+        self.cogsutils.create_loop(function=self.reminders_loop, name="Reminders", minutes=1)
 
     async def cog_unload(self) -> None:
         self.bot.tree.remove_command(remind_message_context_menu.name)

@@ -434,10 +434,12 @@ class TimeConverter(commands.Converter):
             info = "\n".join(info)
             raise commands.BadArgument(f"Error(s) during parsing the input:\n{info}")
         if text is not None:
+            if text.split(" ")[0].lower() == "tomorrow" and text.split(" ")[1].lower() == "at":
+                text = text[12:]
             if text.split(" ")[0].lower() == "to" and text.split(" ")[1].lower() != "do":
-                text = text[2:]
+                text = text[3:]
             elif text.split(" ")[0].lower() == "that":
-                text = text[4:]
+                text = text[5:]
 
         if content is None:
             return utc_now, expires_at, repeat

@@ -110,11 +110,9 @@ class EditReminderModal(discord.ui.Modal):
                 await interaction.response.send_message(str(e), ephemeral=True)
                 return
             if self.reminder.expires_at == self.reminder.next_expires_at:
-                first_message = True
                 self.reminder.expires_at = expires_at
-            else:
-                first_message = False
             self.reminder.next_expires_at = expires_at
+        first_message = self.reminder.expires_at == self.reminder.next_expires_at
         if self.reminder.content["type"] == "text":
             self.reminder.content["text"] = self.content.value
         elif self.reminder.content["type"] == "command":

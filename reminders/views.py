@@ -129,7 +129,7 @@ class EditReminderModal(discord.ui.Modal):
                 if self._parent._message.embeds:
                     embed = self._parent._message.embeds[0].copy()
                     embed.description = self.reminder.get_info()
-                    if embed.description != self._parent.embeds[0].description:
+                    if embed.description != self._parent._message.embeds[0].description:
                         self._parent._message = await self._parent._message.edit(embed=embed)
                 elif first_message:
                     content = self.reminder.__str__(utc_now=self.reminder.created_at)

@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2022 AAA3A
+Copyright (c) 2021-present AAA3A
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,4 +22,5 @@ SOFTWARE.
 
 The files under the `sudo` folder is licensed under GNU GENERAL PUBLIC LICENSE (https://github.com/Cog-Creators/Red-DiscordBot/blob/V3/develop/LICENSE).
 The files under the `draw` and `gistshandler` folders is licensed under GNU GENERAL PUBLIC LICENSE (https://github.com/WitherredAway/Yeet/blob/master/LICENSE).
+The files under the `lintcodes` folder is licensed under Mozilla Public License Version 2.0 (https://github.com/rtk-rnjn/Parrot/blob/main/LICENSE.md).
 The files under the `reminders` folder is licensed under GNU GENERAL PUBLIC LICENSE (https://github.com/PhasecoreX/PCXCogs/blob/master/LICENSE).

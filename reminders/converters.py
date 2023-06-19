@@ -16,6 +16,7 @@ import pytz
 from apscheduler.triggers.cron import CronTrigger
 from pyparsing import (
     CaselessLiteral,
+    Keyword,
     WordEnd,
     Combine,
     Group,
@@ -560,11 +561,11 @@ class DurationParser:
         time_unit_separators = Optional(Literal(",")) + Optional(CaselessLiteral("and"))
         full_time = time_unit + ZeroOrMore(Suppress(Optional(time_unit_separators)) + time_unit)
 
-        in_opt_time = Group(Optional(CaselessLiteral("in")) + full_time)("in")
-        in_req_time = Group(CaselessLiteral("in") + full_time)("in")
-        every_time = Group(CaselessLiteral("every") + full_time)("every")
-        on_time = Group(CaselessLiteral("on") + SkipTo(every_time | StringEnd())("on"))("on")
-        at_time = Group(CaselessLiteral("at") + SkipTo(every_time | StringEnd())("at"))("at")
+        in_opt_time = Group(Optional(Keyword("in")) + full_time)("in")
+        in_req_time = Group(Keyword("in") + full_time)("in")
+        every_time = Group(Keyword("every") + full_time)("every")
+        on_time = Group(Keyword("on") + SkipTo(every_time | StringEnd())("on"))("on")
+        at_time = Group(Keyword("at") + SkipTo(every_time | StringEnd())("at"))("at")
 
         reminder_text_capture = SkipTo(
             every_time | in_req_time | on_time | StringEnd()

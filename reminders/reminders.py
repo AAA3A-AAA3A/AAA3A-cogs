@@ -887,13 +887,14 @@ class Reminders(Cog):
 
     @reminder.command(aliases=["delete", "-"])
     async def remove(self, ctx: commands.Context, reminders: commands.Greedy[ExistingReminderConverter]) -> None:
-        """Remove an existing Reminder from its ID.
+        """Remove existing Reminder(s) from their IDs.
 
         - Use `last` to remove your last created reminder.
         - Use `next` to remove your next triggered reminder.
         """
         if not reminders:
             return await ctx.send_help()
+        reminders = list(set(reminders))
         for reminder in reminders:
             await reminder.delete()
         if len(reminders) == 1:

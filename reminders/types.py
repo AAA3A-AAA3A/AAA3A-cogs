@@ -210,6 +210,9 @@ class Reminder:
     next_expires_at: datetime.datetime
     repeat: typing.Optional[Repeat]
 
+    def __hash__(self) -> str:
+        return hash((self.user_id, self.id, self.jump_url, self.snooze, self.me_too, self.created_at, self.expires_at, self.next_expires_at))
+
     def __eq__(self, other: "Reminder") -> bool:
         return (self.next_expires_at or datetime.datetime.now(tz=datetime.timezone.utc)) == (
             other.next_expires_at or datetime.datetime.now(tz=datetime.timezone.utc)

@@ -396,11 +396,7 @@ class CodeSnippets(DashboardIntegration, Cog):
     ):
         for url, snippet in snippets.items():
             source, ret, language, code = snippet
-            pages = pagify(
-                code, shorten_by=len(f"```py\n{ret}\n```") + len(f"```{language}\n\n```")
-            )
-            pages = [f"```py\n{ret}\n```\n```{language}\n{page}\n```" for page in pages]
-            menu = Menu(pages=pages)
+            menu = Menu(pages=code, prefix=ret, lang=language)
             menu.extra_items.append(
                 discord.ui.Button(style=discord.ButtonStyle.url, label=f"View on {source}", url=url)
             )

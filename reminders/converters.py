@@ -119,7 +119,7 @@ class TimeConverter(commands.Converter):
         typing.Tuple[datetime.datetime, datetime.datetime, typing.Optional[dict]],
     ]:
         cog = ctx.bot.get_cog("Reminders")
-        utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+        utc_now = datetime.datetime.now(tz=datetime.timezone.utc).replace(second=0, microsecond=0)
         timezone = await cog.config.user(ctx.author).timezone()
         if timezone is None:
             if (timezone_cog := ctx.bot.get_cog("Timezone")) is not None:

@@ -319,7 +319,7 @@ class AddRepeatRuleModal(discord.ui.Modal):
         try:
             fake_context: commands.Context = await interaction.client.get_context(interaction.message)
             fake_context.author = interaction.user
-            __, expires_datetime, repeat = await TimeConverter().convert(
+            utc_now, expires_at, repeat = await TimeConverter().convert(
                 fake_context,
                 argument=self.repeat_rule.value,
             )
@@ -334,7 +334,7 @@ class AddRepeatRuleModal(discord.ui.Modal):
         if repeat is not None:
             self.reminder.repeat.rules.append(repeat.rules[0])
         else:
-            self.reminder.repeat.rules.append(self._parent.cog.RepeatRule.from_json({"type": "date", "value": int(expires_datetime.timestamp())}))
+            self.reminder.repeat.rules.append(self._parent.cog.RepeatRule.from_json({"type": "date", "value": int(expires_at.timestamp()), "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_at.timestamp()), "last_trigger": int(expires_at.timestamp())}))
         await self.reminder.save()
         if self._parent._message is not None:
             try:

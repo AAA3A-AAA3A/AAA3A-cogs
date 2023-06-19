@@ -92,7 +92,7 @@ class RepeatRule:
         utc_now: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
         timezone: str = "UTC",
     ) -> typing.Optional[datetime.datetime]:
-        self.last_trigger = self.last_trigger or self.start_trigger or last_expires_at
+        self.last_trigger = self.last_trigger or last_expires_at
         if self.last_trigger > last_expires_at:
             return self.last_trigger
         if self.type == "sample":

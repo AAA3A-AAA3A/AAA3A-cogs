@@ -298,9 +298,14 @@ class UrlButtons(Cog):
         """Clear all url-buttons for a guild."""
         await self.config.guild(ctx.guild).url_buttons.clear()
 
-    def get_buttons(self, config: typing.Dict, message: discord.Message) -> discord.ui.View:
+    def get_buttons(self, config: typing.Dict, message: typing.Union[discord.Message, str]) -> discord.ui.View:
+        message = (
+            f"{message.channel.id}-{message.id}"
+            if isinstance(message, discord.Message)
+            else message
+        )
         view = discord.ui.View()
-        for config_identifier in config[f"{message.channel.id}-{message.id}"]:
+        for config_identifier in config[message]:
             if config[message][config_identifier]["emoji"] is not None:
                 try:
                     int(config[message][config_identifier]["emoji"])
@@ -313,8 +318,8 @@ class UrlButtons(Cog):
             view.add_item(
                 discord.ui.Button(
                     emoji=b,
-                    label=config[f"{message.channel.id}-{message.id}"][config_identifier]["text_button"],
-                    url=config[f"{message.channel.id}-{message.id}"][config_identifier]["url"],
+                    label=config[message][config_identifier]["text_button"],
+                    url=config[message][config_identifier]["url"],
                 )
             )
         return view

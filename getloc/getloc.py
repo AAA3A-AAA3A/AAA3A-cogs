@@ -5,6 +5,8 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import asyncio
+import functools
 import io
 import logging
 import time
@@ -16,9 +18,30 @@ from mpl_toolkits.basemap import Basemap
 
 # Credits:
 # General repo credits.
-# Thanks to this tutorial (https://makersportal.com/blog/2018/8/16/rotating-globe-in-python-using-basemap-toolkit) for the map!
+# Thanks to this tutorial (https://makersportal.com/blog/2018/8/16/rotating-globe-in-python-using-basemap-toolkit) to generate the map!
 
 _ = Translator("GetLoc", __file__)
+
+
+CT = typing.TypeVar(
+    "CT", bound=typing.Callable[..., typing.Any]
+)  # defined CT as a type variable that is bound to a callable that can take any argument and return any value.
+
+async def run_blocking_func(
+    func: typing.Callable[..., typing.Any], *args: typing.Any, **kwargs: typing.Any
+) -> typing.Any:
+    partial = functools.partial(func, *args, **kwargs)
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(None, partial)
+
+
+def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
+    def decorator(func: CT) -> CT:
+        @functools.wraps(func)
+        def wrapper(*args: typing.Any, **kwargs: typing.Any):
+            return run_blocking_func(func, *args, **kwargs)
+        return wrapper
+    return decorator
 
 
 @cog_i18n(_)
@@ -30,12 +53,15 @@ class GetLoc(Cog):
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
-    async def get_map(self, title: str, latitude: float, longitude: float) -> io.BytesIO:
+    @executor()
+    def get_map(self, title: str, latitude: float, longitude: float) -> io.BytesIO:
+        # Don't spam the console...
         if "pyproj" in logging.Logger.manager.loggerDict:
             logging.Logger.manager.loggerDict["pyproj"].setLevel(logging.INFO)
         if "matplotlib.font_manager" in logging.Logger.manager.loggerDict:
             logging.Logger.manager.loggerDict["matplotlib.font_manager"].setLevel(logging.INFO)
-        # fig = plt.figure(figsize=(7, 6))
+        # Reset the figure.
+        plt.clf()
         # set perspective angle
         lat_viewing_angle = latitude
         lon_viewing_angle = longitude
@@ -127,8 +153,8 @@ class GetLoc(Cog):
             )
         message = {
             "Display Name": str(localisation.raw.get("display_name", None)),
-            "Longitude": str(localisation.raw.get("lon", None)),
-            "Latitude": str(localisation.raw.get("lat", None)),
+            "Latitude": str(localisation.latitude),
+            "Longitude": str(localisation.longitude),
             "Country": str(localisation.raw["address"].get("country", None)),
             "Country code": str(localisation.raw["address"].get("country_code", None)),
             "Region": str(localisation.raw["address"].get("region", None)),
@@ -149,7 +175,7 @@ class GetLoc(Cog):
         if with_map:
             embed.set_image(url="attachment://map.png")
             _map = await self.get_map(
-                title=message["City"] + ", " + message["Country"],
+                title=", ".join(message['Display Name'].split(", ")[:2]),  # (Latitude {localisation.latitude}) ; Longitude {localisation.longitude})",
                 latitude=localisation.latitude,
                 longitude=localisation.longitude,
             )

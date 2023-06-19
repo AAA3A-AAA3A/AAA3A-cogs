@@ -1,4 +1,4 @@
-﻿from AAA3A_utils import Cog, CogsUtils, Loop, Menu, Settings  # isort:skip
+﻿from AAA3A_utils import Cog, CogsUtils, Loop, Menu, Settings, Loop  # isort:skip
 from redbot.core import commands, app_commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -277,6 +277,10 @@ class GetDocs(DashboardIntegration, Cog):
             can_edit=True,
             commands_group=self.configuration,
         )
+
+    @property
+    def loops(self) -> typing.List[Loop]:
+        return list(self.cogsutils.loops.values())
 
     async def cog_load(self) -> None:
         await self.settings.add_commands()
@@ -610,6 +614,12 @@ class GetDocs(DashboardIntegration, Cog):
                 ]
             )
         await Menu(pages=str(table), lang="py").start(ctx)
+
+    @configuration.command(hidden=True)
+    async def getdebugloopsstatus(self, ctx: commands.Context) -> None:
+        """Get an embed to check loops status."""
+        embeds = [loop.get_debug_embed() for loop in self.cogsutils.loops.values()]
+        await Menu(pages=embeds).start(ctx)
 
 
 class Source:

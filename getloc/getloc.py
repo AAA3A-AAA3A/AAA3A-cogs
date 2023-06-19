@@ -1,5 +1,5 @@
 from AAA3A_utils import Cog, CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
+from redbot.core import commands, errors  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
@@ -14,7 +14,12 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 from geopy import Nominatim
-from mpl_toolkits.basemap import Basemap
+try:
+    from mpl_toolkits.basemap import Basemap
+except ImportError:
+    raise errors.CogLoadError(
+        "The module `mpl_toolkits.basemap` were not found. Please execute the command `[p]pipinstall basemap`. A restart of the bot isn't necessary."
+    )
 
 # Credits:
 # General repo credits.

@@ -159,7 +159,7 @@ class TimeConverter(commands.Converter):
             expires_at = cron_trigger.get_next_fire_time(previous_fire_time=None, now=local_now)
             expires_at = expires_at.astimezone(tz=datetime.timezone.utc)
             try:
-                return expires_at, cog.Repeat.from_json([{"type": "cron", "value": to_parse, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_at.timestamp()), "last_trigger": int(expires_at.timestamp())}]), (text.strip("".join(discord.ext.commands.view._all_quotes)) if text is not None else None)
+                return expires_at, cog.Repeat.from_json([{"type": "cron", "value": to_parse, "start_trigger": int(utc_now.timestamp()), "first_trigger": None, "last_trigger": None}]), (text.strip("".join(discord.ext.commands.view._all_quotes)) if text is not None else None)
             except OSError as e:
                 raise ValueError(
                     f"• Cron trigger parsing: {e}."
@@ -236,7 +236,7 @@ class TimeConverter(commands.Converter):
             expires_at = expires_at.astimezone(tz=datetime.timezone.utc)
             if repeat_dict is not None:
                 try:
-                    repeat = cog.Repeat.from_json([{"type": "sample", "value": repeat_dict, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_at.timestamp()), "last_trigger": int(expires_at.timestamp())}])
+                    repeat = cog.Repeat.from_json([{"type": "sample", "value": repeat_dict, "start_trigger": int(utc_now.timestamp()), "first_trigger": None, "last_trigger": None}])
                 except OSError as e:
                     raise ValueError(
                         f"• Relative date parsing: {e}."
@@ -264,7 +264,7 @@ class TimeConverter(commands.Converter):
             # if expires_at <= utc_now.replace(minute=utc_now.minute + 1):
             #     expires_at += dateutil.relativedelta.relativedelta(minutes=2)
             try:
-                return expires_at, cog.Repeat.from_json([{"type": "rrule", "value": rrule_string, "start_trigger": int(utc_now.timestamp()), "first_trigger": int(expires_at.timestamp()), "last_trigger": int(expires_at.timestamp())}])
+                return expires_at, cog.Repeat.from_json([{"type": "rrule", "value": rrule_string, "start_trigger": int(utc_now.timestamp()), "first_trigger": None, "last_trigger": None}])
             except OSError as e:
                 raise ValueError(
                     f"• Recurrent parsing: {e}."
@@ -404,6 +404,7 @@ class TimeConverter(commands.Converter):
                                 info.append(e.args[0])
 
         if expires_at is not None and isinstance(expires_at, datetime.datetime):
+            expires_at = expires_at.replace(second=0, microsecond=0)
             if expires_at < utc_now:  # Negative intervals are not allowed. / .replace(second=0, microsecond=0)
                 info = [  # info.append(
                     f"• Global check: The given date must be in the future. Interpreted date: <t:{int(expires_at.timestamp())}:F>."
@@ -423,12 +424,12 @@ class TimeConverter(commands.Converter):
                             "• Global check: Reminder time must be at least 1 minute."  # RRULES don't understand that...
                         ]
                         expires_at = None
-                    else:
-                        if expires_at.second != 0:
-                            if expires_at.minute == 59 or expires_at.second <= 30:
-                                expires_at = expires_at.replace(day=(expires_at.day + 1) if expires_at.minute == 59 and expires_at.hour == 23 else expires_at.day, hour=(0 if expires_at.hour == 23 else (expires_at.hour + 1)) if expires_at.minute == 59 else expires_at.hour, minute=0 if expires_at.minute == 59 else (expires_at.minute + 1), second=0, microsecond=0)
-                            else:
-                                expires_at = expires_at.replace(second=0, microsecond=0)
+                    # else:
+                    #     if expires_at.second != 0:
+                    #         if expires_at.minute == 59 or expires_at.second <= 30:
+                    #             expires_at = expires_at.replace(day=(expires_at.day + 1) if expires_at.minute == 59 and expires_at.hour == 23 else expires_at.day, hour=(0 if expires_at.hour == 23 else (expires_at.hour + 1)) if expires_at.minute == 59 else expires_at.hour, minute=0 if expires_at.minute == 59 else (expires_at.minute + 1), second=0, microsecond=0)
+                    #         else:
+                    #             expires_at = expires_at.replace(second=0, microsecond=0)
         if expires_at is None:
             info = "\n".join(info)
             raise commands.BadArgument(f"Error(s) during parsing the input:\n{info}")

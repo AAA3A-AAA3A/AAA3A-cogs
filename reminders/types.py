@@ -128,6 +128,8 @@ class RepeatRule:
             return self.value
         else:
             return None
+        if self.first_trigger is None:
+            self.first_trigger = next_expires_at
         self.last_trigger = next_expires_at
         return next_expires_at
 
@@ -558,13 +560,12 @@ class Reminder:
                             file_content = await r.read()
                     files.append(discord.File(BytesIO(file_content), filename=file_name))
             try:
-                if destination.guild is not None:
-                    if (member := destination.guild.get_member(user.id)) is None:
-                        raise RuntimeError(
-                            f"Member {self.user_id} not found in the guild {destination.guild.id} for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
-                        )
-                else:
+                if destination.guild is None:
                     member = user
+                elif (member := destination.guild.get_member(user.id)) is None:
+                    raise RuntimeError(
+                        f"Member {self.user_id} not found in the guild {destination.guild.id} for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
+                    )
                 reference = None
                 if self.content["type"] in ["text", "message"]:
                     if self.content["type"] == "message" and destination.id == int(
@@ -612,6 +613,9 @@ class Reminder:
                 raise RuntimeError(
                     f"The message was not sent correctly for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
                 )
+            total_sent = await self.cog.config.total_sent()
+            total_sent += 1
+            await self.cog.config.total_sent.set(total_sent)
             if self.next_expires_at is None and not testing:
                 await self.delete()
             return context if self.content["type"] == "command" else message

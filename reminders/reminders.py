@@ -845,6 +845,7 @@ class Reminders(Cog):
         self,
         ctx: commands.Context,
         card: typing.Optional[bool] = False,
+        content_type: typing.Optional[typing.Literal["text", "command", "say"]] = None,
         sort: typing.Literal["expire", "created", "id"] = "expire",
     ) -> None:
         """List your existing reminders.
@@ -856,6 +857,8 @@ class Reminders(Cog):
         """
         if ctx.author.id not in self.cache or not (reminders := self.cache[ctx.author.id]):
             raise commands.BadArgument(_("You haven't any reminders."))
+        if content_type is not None:
+            reminders = {reminder_id: reminder for reminder_id, reminder in reminders.items() if reminder.content["type"] == content_type}
         if sort == "expire":
             reminders = list(sorted(reminders.values(), key=lambda r: r.next_expires_at))
         elif sort == "created":
@@ -871,9 +874,9 @@ class Reminders(Cog):
         embeds = []
         for li in lists:
             embed: discord.Embed = discord.Embed(
-                title=_("Your Reminders"),
-                description=_("You have {len_reminders} reminders. Use `{clean_prefix}reminder edit #ID` to edit a reminder.").format(
-                    len_reminders=len(reminders), clean_prefix=ctx.clean_prefix
+                title=_("Your Reminders") + (_(" (Content type `{content_type}`)").format(content_type=content_type) if content_type is not None else ""),
+                description=_("You have {len_reminders} reminders{of_this_content_type}. Use `{clean_prefix}reminder edit #ID` to edit a reminder.").format(
+                    len_reminders=len(reminders), of_this_content_type=_(" of this content type") if content_type is not None else "", clean_prefix=ctx.clean_prefix
                 ),
                 color=await ctx.embed_color(),
             )
@@ -1148,13 +1151,13 @@ class Reminders(Cog):
         new_global_data = await self.config.all()
         new_global_data["total_sent"] += old_global_data.get("total_sent", 0)
         new_global_data["me_too"] = old_global_data.get(
-            "me_too", self.config._defaults[Config.GLOBAL]["me_too"]
+            "me_too", await self.config.me_too()
         )
         new_global_data["maximum_user_reminders"] = old_global_data.get(
-            "max_user_reminders", self.config._defaults[Config.GLOBAL]["maximum_user_reminders"]
+            "max_user_reminders", await self.config.maximum_user_reminders()
         )
         await self.config.set(new_global_data)
-        utc_now = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+        utc_now_timestamp = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
         old_config.init_custom("REMINDER", 2)
         old_reminders_data = await old_config.custom("REMINDER").all()
         for user_id in old_reminders_data:
@@ -1162,7 +1165,7 @@ class Reminders(Cog):
             for __, reminder_data in old_reminders_data[user_id].items():
                 if (
                     ctx.bot.get_user(int(user_id)) is not None
-                    and reminder_data["expires"] >= utc_now
+                    and reminder_data["expires"] >= utc_now_timestamp
                 ):
                     while reminder_id in self.cache.get(int(user_id), {}):
                         reminder_id += 1
@@ -1187,9 +1190,58 @@ class Reminders(Cog):
                             reminder_data["expires"], tz=datetime.timezone.utc
                         ),
                         repeat=Repeat.from_json(
-                            [{"type": "sample", "value": reminder_data["repeat"]}]
+                            [{"type": "sample", "value": reminder_data["repeat"], "start_trigger": None, "first_trigger": None, "last_trigger": None}]
                         )
                         if reminder_data.get("repeat")
                         else None,
+                    )
+                    await reminder.save()
+
+    @configuration.command()
+    async def migratefromfifo(self, ctx: commands.Context) -> None:
+        """Migrate Reminders from FIFO by Fox."""
+        old_config: Config = Config.get_conf(
+            "FIFO", identifier=70737079, force_registration=True, cog_name="FIFO"
+        )
+        utc_now = datetime.datetime.now(datetime.timezone.utc)
+        old_guilds_data = await old_config.all_guilds()
+        for guild_id in old_guilds_data:
+            reminder_id = 1
+            for __, reminder_data in old_guilds_data[guild_id].get("tasks", {}).items():
+                user_id = reminder_data["author_id"]
+                if ctx.bot.get_user(user_id) is not None:
+                    while reminder_id in self.cache.get(user_id, {}):
+                        reminder_id += 1
+                    timezone = await self.config.user_from_id(user_id).timezone()
+                    triggers = []
+                    for trigger in reminder_data["data"]["triggers"]:
+                        if trigger["type"] == "interval":
+                            triggers.append({"type": "sample", "value": trigger["time_data"], "start_trigger": None, "first_trigger": None, "last_trigger": None})
+                        elif trigger["type"] == "date":
+                            triggers.append({"type": "date", "value": int(dateutil.parser.isoparse(trigger["time_data"]).replace(tzinfo=datetime.timezone.utc).timestamp()), "start_trigger": None, "first_trigger": None, "last_trigger": None})
+                        elif trigger["type"] == "cron":
+                            triggers.append({"type": "cron", "value": trigger["time_data"], "start_trigger": None, "first_trigger": None, "last_trigger": None})
+                            if trigger["tzinfo"] and timezone is None:
+                                timezone = trigger["tzinfo"]
+                                await self.config.user_from_id(user_id).timezone.set(timezone)
+                    repeat = Repeat.from_json(triggers)
+                    expires_at = await repeat.next_trigger(last_expires_at=utc_now, utc_now=utc_now, timezone=timezone or "UTC")
+                    if expires_at < utc_now:
+                        continue
+                    reminder = Reminder(
+                        cog=self,
+                        user_id=user_id,
+                        id=reminder_id,
+                        jump_url=f"https://discord.com/channels/{reminder_data['guild_id']}/{reminder_data['channel_id']}/0",
+                        snooze=False,
+                        me_too=False,
+                        content={"type": "command", "command": reminder_data["data"]["command_str"], "command_invoker": user_id},
+                        destination=reminder_data["channel_id"],
+                        targets=None,
+                        created_at=utc_now,
+                        expires_at=expires_at,
+                        last_expires_at=None,
+                        next_expires_at=expires_at,
+                        repeat=repeat
                     )
                     await reminder.save()

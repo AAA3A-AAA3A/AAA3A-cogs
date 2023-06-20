@@ -62,16 +62,16 @@ class EditTextChannel(Cog):
     async def check_text_channel(
         self, ctx: commands.Context, channel: discord.TextChannel
     ) -> bool:
-        if (
-            not channel.permissions_for(ctx.author).manage_channels
-            and ctx.author.id != ctx.guild.owner.id
-            and ctx.author.id not in ctx.bot.owner_ids
-        ):
-            raise commands.UserFeedbackCheckFailure(
-                _(
-                    "I can not let you edit the text channel {channel.mention} ({channel.id}) because you don't have the `manage_channel` permission."
-                ).format(channel=channel)
-            )
+        # if (
+        #     not channel.permissions_for(ctx.author).manage_channels
+        #     and ctx.author.id != ctx.guild.owner.id
+        #     and ctx.author.id not in ctx.bot.owner_ids
+        # ):
+        #     raise commands.UserFeedbackCheckFailure(
+        #         _(
+        #             "I can not let you edit the text channel {channel.mention} ({channel.id}) because you don't have the `manage_channel` permission."
+        #         ).format(channel=channel)
+        #     )
         if not channel.permissions_for(ctx.me).manage_channels:
             raise commands.UserFeedbackCheckFailure(
                 _(
@@ -424,6 +424,9 @@ class EditTextChannel(Cog):
     ) -> None:
         """Edit text channel permissions/overwrites.
 
+        You may not specify `True` or `False` to reset the permission(s).
+        With this command, you can only modify the permissions of a role or member below you in the hierarchy. You must possess the permissions you wish to modify.
+
         • `create_instant_invite`
         • `manage_channels`
         • `add_reactions`
@@ -467,7 +470,13 @@ class EditTextChannel(Cog):
                 _("You need to provide a role or user you want to edit permissions for.")
             )
         for target in targets:
-            if (target if isinstance(target, discord.Role) else target.top_role) >= ctx.author.top_role:
+            if (
+                ctx.author != ctx.guild.owner
+                and (
+                    target if isinstance(target, discord.Role) else target.top_role
+                )
+                >= ctx.author.top_role
+            ):
                 raise commands.UserFeedbackCheckFailure(_("You cannot change the permissions of a role/member higher up the hierarchy than your top role."))
             if (target if isinstance(target, discord.Role) else target.top_role) >= ctx.me.top_role:
                 raise commands.UserFeedbackCheckFailure(_("I cannot change the permissions of a role/member higher up the hierarchy than my top role."))
@@ -478,7 +487,7 @@ class EditTextChannel(Cog):
         channel_permissions = channel.permissions_for(ctx.author)
         for permission in permissions:
             if not getattr(channel_permissions, permission):
-                raise commands.UserFeedbackCheckFailure(_("You do not have {permission_name} permission in this channel.").format(permission_name=permission))
+                raise commands.UserFeedbackCheckFailure(_("You don't have the permission {permission_name} in this channel.").format(permission_name=permission))
         overwrites = channel.overwrites
         for target in targets:
             if target in overwrites:

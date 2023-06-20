@@ -70,17 +70,17 @@ class EditThread(Cog):
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     async def check_thread(self, ctx: commands.Context, thread: discord.Thread) -> bool:
-        if (
-            not thread.permissions_for(ctx.author).manage_channels
-            and ctx.author.id != ctx.guild.owner.id
-            and ctx.author.id not in ctx.bot.owner_ids
-            and ctx.author != thread.owner
-        ):
-            raise commands.UserFeedbackCheckFailure(
-                _(
-                    "I can not let you edit the thread {thread.mention} ({thread.id}) because I don't have the `manage_channel` permission."
-                ).format(thread=thread)
-            )
+        # if (
+        #     not thread.permissions_for(ctx.author).manage_channels
+        #     and ctx.author.id != ctx.guild.owner.id
+        #     and ctx.author.id not in ctx.bot.owner_ids
+        #     and ctx.author != thread.owner
+        # ):
+        #     raise commands.UserFeedbackCheckFailure(
+        #         _(
+        #             "I can not let you edit the thread {thread.mention} ({thread.id}) because I don't have the `manage_channel` permission."
+        #         ).format(thread=thread)
+        #     )
         if not thread.permissions_for(ctx.me).manage_channels:
             raise commands.UserFeedbackCheckFailure(
                 _(

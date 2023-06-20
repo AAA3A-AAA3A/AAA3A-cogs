@@ -243,7 +243,7 @@ class Reminders(Cog):
                 datetime.datetime, dateutil.relativedelta.relativedelta, datetime.timedelta
             ]
         ],
-        utc_now: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
+        utc_now: datetime.datetime = None,
         use_timestamp: bool = False,
     ) -> str:
         if expires is None:
@@ -251,6 +251,8 @@ class Reminders(Cog):
         if use_timestamp:
             expires = expires.replace(tzinfo=datetime.timezone.utc)
             return f"<t:{int(expires.timestamp())}:R>"
+        if utc_now is None:
+            utc_now = datetime.datetime.now(datetime.timezone.utc)
         if isinstance(expires, datetime.datetime):
             delta = expires - utc_now
         elif isinstance(expires, datetime.timedelta):

@@ -385,6 +385,30 @@ class EditTextChannel(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
+    @edittextchannel.command(name="defaultthreadslowmodedelay")
+    async def edittextchannel_default_thread_slowmode_delay(
+        self,
+        ctx: commands.Context,
+        channel: typing.Optional[discord.TextChannel],
+        default_thread_slowmode_delay: commands.Range[int, 0, 21_600],
+    ) -> None:
+        """Edit text channel default thread slowmode delay.
+
+        The new default thread slowmode delay in seconds for threads created in this channel. Must be between 0 and 21600 (6 hours) seconds.
+        """
+        if channel is None:
+            channel = ctx.channel
+        await self.check_text_channel(ctx, channel)
+        try:
+            await channel.edit(
+                default_thread_slowmode_delay=default_thread_slowmode_delay,
+                reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
+            )
+        except discord.HTTPException as e:
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
+
     @commands.has_permissions(manage_roles=True)
     @commands.bot_has_permissions(manage_roles=True)
     @edittextchannel.command(name="permissions", aliases=["overwrites", "perms"])

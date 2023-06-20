@@ -30,7 +30,7 @@ class LintCodes(Cog):
 
         self._session: aiohttp.ClientSession = None
 
-        self.__author__: typing.List[str] = ["AAA3A", "rtk-rnjn"]
+        self.__authors__: typing.List[str] = ["rtk-rnjn", "AAA3A"]
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     async def cog_load(self) -> None:

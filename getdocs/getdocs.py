@@ -637,12 +637,12 @@ class GetDocs(DashboardIntegration, Cog):
                         "type": "string",
                         "description": "The name of the object/method to search."
                     },
-                    "required": [
-                        "source",
-                        "query"
-                    ]
                 }
-            }
+            },
+            "required": [
+                "source",
+                "query"
+            ]
         }
         async def function(bot: Red, source: str, query: str, *args, **kwargs):
             if source not in self.documentations.keys():
@@ -655,13 +655,17 @@ class GetDocs(DashboardIntegration, Cog):
             if documentation is None:
                 return "No documentation found for this query."
             BREAK_LINE = "\n"
-            return (
+            result = (
                 f"**Name**: {documentation.name}\n"
                 f"**Signature:** {documentation.full_name}\n"
                 f"**Description:** {documentation.description.replace(BREAK_LINE, ' ')}\n"
                 f"**Parameters:** {humanize_list([inline(parameter.split(' ')[0].strip('**')) for parameter in documentation.parameters]) or 'No parameter(s)'}.\n"
-                f"**Attributes:** {humanize_list([inline(attribute.name) for attribute in documentation.attributes.attributes.values()]) or 'No attribute(s)'}.\n"
             )
+            for _type in ["attributes", "properties", "methods"]:
+                if getattr(documentation.attributes, _type):
+                    # result += f"**{_type.capitalize()}:**\n{BREAK_LINE.join([f'• {inline(attribute.name)}' for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()]) or 'No attribute(s)'}.\n"
+                    result += f"**{_type.capitalize()}:** {humanize_list([inline(attribute.name) for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()]) or 'No attribute(s)'}.\n"
+            return result
         if assistant_cog is None:
             return function
         await assistant_cog.register_function(cog=self, schema=schema, function=function)

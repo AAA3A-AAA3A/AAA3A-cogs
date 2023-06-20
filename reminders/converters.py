@@ -295,10 +295,10 @@ class TimeConverter(commands.Converter):
                 )  # 17:00
                 reminder_text = to_parse[: match.start()] + to_parse[match.end():]
             elif match := eow_re.search(to_parse):
-                if local_now.weekday == 4 and local_now.hour >= 17:
+                if local_now.weekday() == 4 and local_now.hour >= 17:
                     days_ahead = 7
                 else:
-                    days_ahead = (4 - local_now.weekday) % 7
+                    days_ahead = (4 - local_now.weekday()) % 7
                 next_friday = local_now + dateutil.relativedelta.relativedelta(days=days_ahead)
                 parsed_date = next_friday.replace(
                     hour=17, minute=0, second=0, microsecond=0

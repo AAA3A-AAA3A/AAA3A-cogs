@@ -217,7 +217,9 @@ class Reminders(Cog):
         file = io.BytesIO(str(data).encode(encoding="utf-8"))
         return {f"{self.qualified_name}.json": file}
 
-    async def reminders_loop(self, utc_now: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)) -> bool:
+    async def reminders_loop(self, utc_now: datetime.datetime = None) -> bool:
+        if utc_now is None:
+            utc_now = datetime.datetime.now(datetime.timezone.utc)
         executed = False
         cache = {user_id: reminders.copy() for user_id, reminders in self.cache.copy().items()}
         for reminders in cache.values():

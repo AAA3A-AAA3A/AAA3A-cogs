@@ -308,7 +308,7 @@ class Reminder:
             if len(self.repeat.rules) == 1:
                 and_every = _(", and then **{interval}**").format(interval=self.repeat.rules[0].get_info(cog=self.cog).lower().split("]")[-1].rstrip(".")[1:])
             else:
-                and_every = _(", with **advanced repeat rules**")
+                and_every = _(", with **{nb_repeat_rules} repeat rules**").format(nb_repeat_rules=len(self.repeat.rules))
         interval_string = self.cog.get_interval_string(
             int(self.expires_at.timestamp() - utc_now.timestamp())
         )
@@ -362,7 +362,7 @@ class Reminder:
             repeat=_("No existing repeat rule(s).")
             if self.repeat is None
             else (
-                _("Advanced repeat rules.")
+                _("{nb_repeat_rules} repeat rules.").format(nb_repeat_rules=len(self.repeat.rules))
                 if len(self.repeat.rules) > 1
                 else self.repeat.rules[0].get_info(cog=self.cog)
             ),

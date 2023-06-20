@@ -114,13 +114,15 @@ class EditReminderModal(discord.ui.Modal):
             self.reminder.next_expires_at = expires_at
         first_message = self.reminder.expires_at == self.reminder.next_expires_at
         if self.reminder.content["type"] == "text":
+            self.reminder.content["text"] = self.content.value or None
+        elif self.reminder.content["type"] == "say":
             self.reminder.content["text"] = self.content.value
         elif self.reminder.content["type"] == "command":
             self.reminder.content["command"] = self.content.value
         if self.title_input is not None and self.title_input.value is not None:
-            self.reminder.content["title"] = self.title_input.value
+            self.reminder.content["title"] = self.title_input.value or None
         if self.image_url is not None and self.image_url.value is not None:
-            self.reminder.content["image_url"] = self.image_url.value
+            self.reminder.content["image_url"] = self.image_url.value or None
         await self.reminder.save()
         if self._parent._message is not None:
             try:

@@ -364,7 +364,7 @@ class Reminder:
                 self.next_expires_at, use_timestamp=True
             ),
             created_at_timestamp=f"<t:{int(self.created_at.timestamp())}:F>",
-            created_in_timestamp=self.cog.get_interval_string(self.created_at, use_timestamp=False),
+            created_in_timestamp=self.cog.get_interval_string(self.created_at, use_timestamp=True),
             repeat=_("No existing repeat rule(s).")
             if self.repeat is None
             else (
@@ -391,7 +391,7 @@ class Reminder:
                     else f"Command `[p]{self.content['command']}` executed with your privilege rights."
                 )
             ),
-            targets=humanize_list([f"{target['mention']} ({target['id']})" for target in self.targets]) if self.targets is not None else _("No target."),
+            targets=humanize_list([f"{target['mention']} ({target['id']})" for target in self.targets]) if self.targets is not None else _("No target(s)."),
             destination=_("In DMs")
             if self.destination is None
             else (f"{destination.recipient}'s DMs ({destination.id})" if isinstance(destination, discord.DMChannel) else f"{destination.mention} ({destination.id})")

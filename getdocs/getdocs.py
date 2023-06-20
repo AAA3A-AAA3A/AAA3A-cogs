@@ -23,7 +23,7 @@ from bs4 import BeautifulSoup, NavigableString, ResultSet, SoupStrainer, Tag
 from fuzzywuzzy import fuzz
 from prettytable import PrettyTable
 from redbot.core.utils import AsyncIter
-from redbot.core.utils.chat_formatting import humanize_list
+from redbot.core.utils.chat_formatting import humanize_list, inline
 from sphobjinv import DataObjStr, Inventory
 
 from .dashboard_integration import DashboardIntegration
@@ -620,6 +620,51 @@ class GetDocs(DashboardIntegration, Cog):
         """Get an embed to check loops status."""
         embeds = [loop.get_debug_embed() for loop in self.cogsutils.loops.values()]
         await Menu(pages=embeds).start(ctx)
+
+    @commands.Cog.listener()
+    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Add GetDocs as Assistant third party/integration.
+        schema = {
+            "name": "get_documentation",
+            "description": f"Get the documentation for a `query` from a source in the following: {humanize_list([f'`{source}`' for source in self.documentations])}.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "source": {
+                        "type": "string",
+                        "description": f"The name of the documentation source ({humanize_list([f'`{source}`' for source in self.documentations])})."
+                    },
+                    "query": {
+                        "type": "string",
+                        "description": "The name of the object/method to search."
+                    },
+                    "required": [
+                        "source",
+                        "query"
+                    ]
+                }
+            }
+        }
+        async def function(bot: Red, source: str, query: str, *args, **kwargs):
+            if source not in self.documentations.keys():
+                return f"This source doesn't exist! Valid sources are: {humanize_list([f'`{source}`' for source in self.documentations])}."
+            source = self.documentations[source]
+            results = await source.search(query, limit=1, exclude_std=True)
+            if not results.results:
+                return "No documentation found for this query."
+            documentation = await source.get_documentation(results.results[0][1])
+            if documentation is None:
+                return "No documentation found for this query."
+            BREAK_LINE = "\n"
+            return (
+                f"**Name**: {documentation.name}\n"
+                f"**Signature:** {documentation.full_name}\n"
+                f"**Description:** {documentation.description.replace(BREAK_LINE, ' ')}\n"
+                f"**Parameters:** {humanize_list([inline(parameter.split(' ')[0].strip('**')) for parameter in documentation.parameters]) or 'No parameter(s)'}.\n"
+                f"**Attributes:** {humanize_list([inline(attribute.name) for attribute in documentation.attributes.attributes.values()]) or 'No attribute(s)'}.\n"
+            )
+        if assistant_cog is None:
+            return function
+        await assistant_cog.register_function(cog=self, schema=schema, function=function)
 
 
 class Source:

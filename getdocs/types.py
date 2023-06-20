@@ -160,7 +160,7 @@ class Examples(typing.List):
 @dataclass(frozen=True)
 class Attribute:
     name: str
-    role: str
+    role: typing.Optional[str]
     url: str
     description: str
 

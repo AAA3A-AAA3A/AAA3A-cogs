@@ -637,12 +637,12 @@ class GetDocs(DashboardIntegration, Cog):
                         "type": "string",
                         "description": "The name of the object/method to search."
                     },
-                }
+                },
+                "required": [
+                    "source",
+                    "query"
+                ]
             },
-            "required": [
-                "source",
-                "query"
-            ]
         }
         async def function(bot: Red, source: str, query: str, *args, **kwargs):
             if source not in self.documentations.keys():

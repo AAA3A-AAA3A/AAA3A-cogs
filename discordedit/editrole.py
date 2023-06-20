@@ -53,21 +53,31 @@ class PositionConverter(commands.Converter):
         return position + 1
 
 
-class PermissionsConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> discord.Permissions:
-        try:
-            permissions = int(argument)
-        except ValueError:
-            raise commands.BadArgument(_("The permissions must be an integer."))
-        permissions_none = discord.Permissions.none().value
-        permissions_all = discord.Permissions.all().value
-        if permissions <= permissions_none or permissions >= permissions_all:
-            raise commands.BadArgument(
-                _(
-                    "The indicated permissions value must be between {permissions_none} and {permissions_all}."
-                ).format(permissions_none=permissions_none, permissions_all=permissions_all)
-            )
-        return discord.Permissions(permissions=permissions)
+class PermissionConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> str:
+        permissions = [
+            key for key, value in dict(discord.Permissions.all_channel()).items() if value
+        ]
+        if argument not in permissions:
+            raise commands.BadArgument(_("This permission is invalid."))
+        return argument
+
+
+# class PermissionsConverter(commands.Converter):
+#     async def convert(self, ctx: commands.Context, argument: str) -> discord.Permissions:
+#         try:
+#             permissions = int(argument)
+#         except ValueError:
+#             raise commands.BadArgument(_("The permissions must be an integer."))
+#         permissions_none = discord.Permissions.none().value
+#         permissions_all = discord.Permissions.all().value
+#         if permissions <= permissions_none or permissions >= permissions_all:
+#             raise commands.BadArgument(
+#                 _(
+#                     "The indicated permissions value must be between {permissions_none} and {permissions_all}."
+#                 ).format(permissions_none=permissions_none, permissions_all=permissions_all)
+#             )
+#         return discord.Permissions(permissions=permissions)
 
 
 @cog_i18n(_)
@@ -154,7 +164,7 @@ class EditRole(Cog):
         try:
             await role.edit(
                 name=name,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the role {role.name} ({role.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -170,7 +180,7 @@ class EditRole(Cog):
         try:
             await role.edit(
                 color=color,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the role {role.name} ({role.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -179,14 +189,16 @@ class EditRole(Cog):
 
     @editrole.command(name="hoist")
     async def editrole_hoist(
-        self, ctx: commands.Context, role: discord.Role, hoist: bool
+        self, ctx: commands.Context, role: discord.Role, hoist: bool = None
     ) -> None:
         """Edit role hoist."""
         await self.check_role(ctx, role)
+        if hoist is None:
+            hoist = not role.hoist
         try:
             await role.edit(
                 hoist=hoist,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the role {role.name} ({role.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -231,7 +243,7 @@ class EditRole(Cog):
         try:
             await role.edit(
                 display_icon=display_icon,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the role {role.name} ({role.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -240,14 +252,16 @@ class EditRole(Cog):
 
     @editrole.command(name="mentionable")
     async def editrole_mentionable(
-        self, ctx: commands.Context, role: discord.Role, mentionable: bool
+        self, ctx: commands.Context, role: discord.Role, mentionable: bool = None
     ) -> None:
         """Edit role mentionable."""
         await self.check_role(ctx, role)
+        if mentionable is None:
+            mentionable = not role.mentionable
         try:
             await role.edit(
                 mentionable=mentionable,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the role {role.name} ({role.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -266,7 +280,7 @@ class EditRole(Cog):
         try:
             await role.edit(
                 position=position,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the role {role.name} ({role.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -275,18 +289,56 @@ class EditRole(Cog):
 
     @editrole.command(name="permissions")
     async def editrole_permissions(
-        self, ctx: commands.Context, role: discord.Role, permissions: PermissionsConverter
+        self, ctx: commands.Context, role: discord.Role, true_or_false: bool, permissions: commands.Greedy[PermissionConverter]
     ) -> None:
         """Edit role permissions.
 
-        Warning: You must use the permissions value in numbers (admnistrator=8).
-        You can use: https://discordapi.com/permissions.html
+        You must possess the permissions you wish to modify.
+
+        • `create_instant_invite`
+        • `manage_channels`
+        • `add_reactions`
+        • `priority_speaker`
+        • `stream`
+        • `read_messages`
+        • `send_messages`
+        • `send_tts_messages`
+        • `manage_messages`
+        • `embed_links`
+        • `attach_files`
+        • `read_message_history`
+        • `mention_everyone`
+        • `external_emojis`
+        • `connect`
+        • `speak`
+        • `mute_members`
+        • `deafen_members`
+        • `move_members`
+        • `use_voice_activation`
+        • `manage_roles`
+        • `manage_webhooks`
+        • `use_application_commands`
+        • `request_to_speak`
+        • `manage_threads`
+        • `create_public_threads`
+        • `create_private_threads`
+        • `external_stickers`
+        • `send_messages_in_threads`
         """
         await self.check_role(ctx, role)
+        if not permissions:
+            raise commands.UserFeedbackCheckFailure(
+                _("You need to provide at least one permission.")
+            )
+        role_permissions = role.permissions
+        for permission in permissions:
+            if not getattr(ctx.author.guild_permissions, permission):
+                raise commands.UserFeedbackCheckFailure(_("You don't have the permission {permission_name} in this guild.").format(permission_name=permission))
+            setattr(role_permissions, permission, true_or_false)
         try:
             await role.edit(
-                permissions=permissions,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the role {role.name} ({role.id}).",
+                permissions=role_permissions,
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the role {role.name} ({role.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(

@@ -178,7 +178,7 @@ class EditAutoMod(Cog):
         try:
             await rule.edit(
                 name=name,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the rule {rule.name} ({rule.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the rule {rule.name} ({rule.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -195,7 +195,7 @@ class EditAutoMod(Cog):
     #     try:
     #         await rule.edit(
     #             event_type=event_type,
-    #             reason=f"{ctx.author} ({ctx.author.id}) has modified the rule {rule.name} ({rule.id}).",
+    #             reason=f"{ctx.author} ({ctx.author.id}) has edited the rule {rule.name} ({rule.id}).",
     #         )
     #     except discord.HTTPException as e:
     #         raise commands.UserFeedbackCheckFailure(
@@ -219,7 +219,7 @@ class EditAutoMod(Cog):
         try:
             await rule.edit(
                 trigger=trigger,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the rule {rule.name} ({rule.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the rule {rule.name} ({rule.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -243,7 +243,7 @@ class EditAutoMod(Cog):
         try:
             await rule.edit(
                 actions=actions,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the rule {rule.name} ({rule.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the rule {rule.name} ({rule.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -258,7 +258,7 @@ class EditAutoMod(Cog):
         try:
             await rule.edit(
                 enabled=enabled,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the rule {rule.name} ({rule.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the rule {rule.name} ({rule.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -277,7 +277,7 @@ class EditAutoMod(Cog):
         try:
             await rule.edit(
                 exempt_roles=exempt_roles,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the rule {rule.name} ({rule.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the rule {rule.name} ({rule.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -300,7 +300,7 @@ class EditAutoMod(Cog):
         try:
             await rule.edit(
                 exempt_channels=exempt_channels,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the rule {rule.name} ({rule.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the rule {rule.name} ({rule.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -396,7 +396,7 @@ class ChannelsRolesSelectView(discord.ui.View):
         try:
             self._parent.rule = self.rule = await self.rule.edit(
                 exempt_channels=exempt_channels,
-                reason=f"{self._parent.ctx.author} ({self._parent.ctx.author.id}) has modified the rule {self.rule.name} ({self.rule.id}).",
+                reason=f"{self._parent.ctx.author} ({self._parent.ctx.author.id}) has edited the rule {self.rule.name} ({self.rule.id}).",
             )
         except discord.HTTPException as e:
             await interaction.response.send_message(
@@ -404,7 +404,7 @@ class ChannelsRolesSelectView(discord.ui.View):
             )
             return
         await interaction.response.send_message(
-            _("Rule `{rule.name} ({rule.id})` modified.").format(rule=self.rule), ephemeral=True
+            _("Rule `{rule.name} ({rule.id})` edited.").format(rule=self.rule), ephemeral=True
         )
         await self._parent._update()
 
@@ -419,7 +419,7 @@ class ChannelsRolesSelectView(discord.ui.View):
         try:
             self._parent.rule = self.rule = await self.rule.edit(
                 exempt_roles=exempt_roles,
-                reason=f"{self._parent.ctx.author} ({self._parent.ctx.author.id}) has modified the rule {self.rule.name} ({self.rule.id}).",
+                reason=f"{self._parent.ctx.author} ({self._parent.ctx.author.id}) has edited the rule {self.rule.name} ({self.rule.id}).",
             )
         except discord.HTTPException as e:
             await interaction.response.send_message(
@@ -427,7 +427,7 @@ class ChannelsRolesSelectView(discord.ui.View):
             )
             return
         await interaction.response.send_message(
-            _("Rule `{rule.name} ({rule.id})` modified.").format(rule=self.rule), ephemeral=True
+            _("Rule `{rule.name} ({rule.id})` edited.").format(rule=self.rule), ephemeral=True
         )
         await self._parent._update()
 
@@ -634,7 +634,7 @@ class EditAutoModRuleView(discord.ui.View):
         try:
             self.rule = await self.rule.edit(
                 enabled=not self.rule.enabled,
-                reason=f"{self.ctx.author} ({self.ctx.author.id}) has modified the rule {self.rule.name} ({self.rule.id}).",
+                reason=f"{self.ctx.author} ({self.ctx.author.id}) has edited the rule {self.rule.name} ({self.rule.id}).",
             )
         except discord.HTTPException as e:
             await interaction.response.send_message(

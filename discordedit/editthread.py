@@ -69,7 +69,7 @@ class EditThread(Cog):
 
         self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
-    async def check_thread(self, ctx: commands.Context, thread: discord.Thread) -> bool:
+    async def check_thread(self, ctx: commands.Context, thread: typing.Optional[discord.Thread]) -> bool:
         # if (
         #     not thread.permissions_for(ctx.author).manage_channels
         #     and ctx.author.id != ctx.guild.owner.id
@@ -146,14 +146,20 @@ class EditThread(Cog):
 
     @editthread.command(name="name")
     async def editthread_name(
-        self, ctx: commands.Context, thread: discord.Thread, name: str
+        self, ctx: commands.Context, thread: typing.Optional[discord.Thread], name: str
     ) -> None:
         """Edit thread name."""
+        if thread is None:
+            if isinstance(ctx.channel, discord.Thread):
+                thread = ctx.channel
+            else:
+                await ctx.send_help()
+                return
         await self.check_thread(ctx, thread)
         try:
             await thread.edit(
                 name=name,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the thread #{thread.name} ({thread.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the thread #{thread.name} ({thread.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -162,14 +168,21 @@ class EditThread(Cog):
 
     @editthread.command(name="archived")
     async def editthread_archived(
-        self, ctx: commands.Context, thread: discord.Thread, archived: bool
+        self, ctx: commands.Context, thread: typing.Optional[discord.Thread], archived: bool = None
     ) -> None:
         """Edit thread archived."""
+        if thread is None:
+            if isinstance(ctx.channel, discord.Thread):
+                thread = ctx.channel
+            else:
+                await ctx.send_help()
+                return
         await self.check_thread(ctx, thread)
+        archived = not thread.archived
         try:
             await thread.edit(
                 archived=archived,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the thread #{thread.name} ({thread.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the thread #{thread.name} ({thread.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -178,14 +191,22 @@ class EditThread(Cog):
 
     @editthread.command(name="locked")
     async def editthread_locked(
-        self, ctx: commands.Context, thread: discord.Thread, locked: bool
+        self, ctx: commands.Context, thread: typing.Optional[discord.Thread], locked: bool = None
     ) -> None:
         """Edit thread locked."""
+        if thread is None:
+            if isinstance(ctx.channel, discord.Thread):
+                thread = ctx.channel
+            else:
+                await ctx.send_help()
+                return
         await self.check_thread(ctx, thread)
+        if locked is None:
+            locked = not thread.locked
         try:
             await thread.edit(
                 locked=locked,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the thread #{thread.name} ({thread.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the thread #{thread.name} ({thread.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -194,14 +215,20 @@ class EditThread(Cog):
 
     @editthread.command(name="pinned")
     async def editthread_pinned(
-        self, ctx: commands.Context, thread: discord.Thread, pinned: bool
+        self, ctx: commands.Context, thread: typing.Optional[discord.Thread], pinned: bool
     ) -> None:
         """Edit thread pinned."""
+        if thread is None:
+            if isinstance(ctx.channel, discord.Thread):
+                thread = ctx.channel
+            else:
+                await ctx.send_help()
+                return
         await self.check_thread(ctx, thread)
         try:
             await thread.edit(
                 pinned=pinned,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the thread #{thread.name} ({thread.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the thread #{thread.name} ({thread.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -210,14 +237,22 @@ class EditThread(Cog):
 
     @editthread.command(name="invitable")
     async def editthread_invitable(
-        self, ctx: commands.Context, thread: discord.Thread, invitable: bool
+        self, ctx: commands.Context, thread: typing.Optional[discord.Thread], invitable: bool = None
     ) -> None:
         """Edit thread invitable."""
+        if thread is None:
+            if isinstance(ctx.channel, discord.Thread):
+                thread = ctx.channel
+            else:
+                await ctx.send_help()
+                return
         await self.check_thread(ctx, thread)
+        if invitable is None:
+            invitable = not thread.invitable
         try:
             await thread.edit(
                 invitable=invitable,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the thread #{thread.name} ({thread.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the thread #{thread.name} ({thread.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -228,15 +263,21 @@ class EditThread(Cog):
     async def editthread_auto_archive_duration(
         self,
         ctx: commands.Context,
-        thread: discord.Thread,
+        thread: typing.Optional[discord.Thread],
         auto_archive_duration: typing.Literal["60", "1440", "4320", "10080"],
     ) -> None:
         """Edit thread auto archive duration."""
+        if thread is None:
+            if isinstance(ctx.channel, discord.Thread):
+                thread = ctx.channel
+            else:
+                await ctx.send_help()
+                return
         await self.check_thread(ctx, thread)
         try:
             await thread.edit(
                 auto_archive_duration=auto_archive_duration,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the thread #{thread.name} ({thread.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the thread #{thread.name} ({thread.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -245,14 +286,20 @@ class EditThread(Cog):
 
     @editthread.command(name="slowmodedelay")
     async def editthread_slowmode_delay(
-        self, ctx: commands.Context, thread: discord.Thread, slowmode_delay: TimedeltaConverter
+        self, ctx: commands.Context, thread: typing.Optional[discord.Thread], slowmode_delay: TimedeltaConverter
     ) -> None:
         """Edit thread slowmode delay."""
+        if thread is None:
+            if isinstance(ctx.channel, discord.Thread):
+                thread = ctx.channel
+            else:
+                await ctx.send_help()
+                return
         await self.check_thread(ctx, thread)
         try:
             await thread.edit(
                 slowmode_delay=slowmode_delay,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the thread #{thread.name} ({thread.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the thread #{thread.name} ({thread.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -263,7 +310,7 @@ class EditThread(Cog):
     async def editthread_applied_tags(
         self,
         ctx: commands.Context,
-        thread: discord.Thread,
+        thread: typing.Optional[discord.Thread],
         applied_tags: commands.Greedy[ForumTagConverter],
     ) -> None:
         """Edit thread applied tags.
@@ -273,11 +320,17 @@ class EditThread(Cog):
         [p]editthread appliedtags "Reporting|⚠️|True" "Bug|🐛"
         ```
         """
+        if thread is None:
+            if isinstance(ctx.channel, discord.Thread):
+                thread = ctx.channel
+            else:
+                await ctx.send_help()
+                return
         await self.check_thread(ctx, thread)
         try:
             await thread.edit(
                 applied_tags=list(applied_tags),
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the thread #{thread.name} ({thread.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the thread #{thread.name} ({thread.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -288,10 +341,16 @@ class EditThread(Cog):
     async def editthread_delete(
         self,
         ctx: commands.Context,
-        thread: discord.Thread,
+        thread: typing.Optional[discord.Thread],
         confirmation: bool = False,
     ) -> None:
         """Delete a thread."""
+        if thread is None:
+            if isinstance(ctx.channel, discord.Thread):
+                thread = ctx.channel
+            else:
+                await ctx.send_help()
+                return
         await self.check_thread(ctx, thread)
         if not confirmation and not ctx.assume_yes:
             if ctx.bot_permissions.embed_links:

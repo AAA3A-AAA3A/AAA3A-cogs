@@ -92,7 +92,7 @@ class EditVoiceChannel(Cog):
             await ctx.guild.create_voice_channel(
                 name=name,
                 category=category,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{name}.",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the voice channel #!{name}.",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -180,7 +180,7 @@ class EditVoiceChannel(Cog):
         try:
             await channel.edit(
                 name=name,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the voice channel #!{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -205,7 +205,7 @@ class EditVoiceChannel(Cog):
         try:
             await channel.edit(
                 bitrate=bitrate,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the voice channel #!{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -214,14 +214,16 @@ class EditVoiceChannel(Cog):
 
     @editvoicechannel.command(name="nsfw")
     async def editvoicechannel_nsfw(
-        self, ctx: commands.Context, channel: discord.VoiceChannel, nsfw: bool
+        self, ctx: commands.Context, channel: discord.VoiceChannel, nsfw: bool = None
     ) -> None:
         """Edit voice channel nsfw."""
         await self.check_voice_channel(ctx, channel)
+        if nsfw is None:
+            nsfw = not channel.nsfw
         try:
             await channel.edit(
                 nsfw=nsfw,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the voice channel #!{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -243,7 +245,7 @@ class EditVoiceChannel(Cog):
         try:
             await channel.edit(
                 user_limit=user_limit,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the voice channel #!{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -263,7 +265,7 @@ class EditVoiceChannel(Cog):
         try:
             await channel.edit(
                 position=position,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel !{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the voice channel !{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -272,14 +274,16 @@ class EditVoiceChannel(Cog):
 
     @editvoicechannel.command(name="syncpermissions")
     async def editvoicechannel_sync_permissions(
-        self, ctx: commands.Context, channel: discord.VoiceChannel, sync_permissions: bool
+        self, ctx: commands.Context, channel: discord.VoiceChannel, sync_permissions: bool = None
     ) -> None:
         """Edit voice channel sync permissions."""
         await self.check_voice_channel(ctx, channel)
+        if sync_permissions is None:
+            sync_permissions = not channel.permissions_synced
         try:
             await channel.edit(
                 sync_permissions=sync_permissions,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the voice channel #!{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -298,7 +302,7 @@ class EditVoiceChannel(Cog):
         try:
             await channel.edit(
                 category=category,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the voice channel #!{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -322,7 +326,7 @@ class EditVoiceChannel(Cog):
         try:
             await channel.edit(
                 video_quality_mode=video_quality_mode,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #!{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the voice channel #!{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -420,7 +424,7 @@ class EditVoiceChannel(Cog):
         try:
             await channel.edit(
                 overwrites=overwrites,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the voice channel #{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the voice channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(

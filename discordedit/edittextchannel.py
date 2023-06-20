@@ -195,7 +195,7 @@ class EditTextChannel(Cog):
         try:
             await channel.edit(
                 name=name,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -213,7 +213,7 @@ class EditTextChannel(Cog):
         try:
             await channel.edit(
                 topic=topic,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -239,7 +239,7 @@ class EditTextChannel(Cog):
         try:
             await channel.edit(
                 position=position,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -248,16 +248,18 @@ class EditTextChannel(Cog):
 
     @edittextchannel.command(name="nsfw")
     async def edittextchannel_nsfw(
-        self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], nsfw: bool
+        self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], nsfw: bool = None
     ) -> None:
         """Edit text channel nsfw."""
         if channel is None:
             channel = ctx.channel
         await self.check_text_channel(ctx, channel)
+        if nsfw is None:
+            nsfw = not channel.nsfw
         try:
             await channel.edit(
                 nsfw=nsfw,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -269,16 +271,18 @@ class EditTextChannel(Cog):
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
-        sync_permissions: bool,
+        sync_permissions: bool = None,
     ) -> None:
         """Edit text channel syncpermissions with category."""
         if channel is None:
             channel = ctx.channel
         await self.check_text_channel(ctx, channel)
+        if sync_permissions is None:
+            sync_permissions = not channel.permissions_synced
         try:
             await channel.edit(
                 sync_permissions=sync_permissions,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -299,7 +303,7 @@ class EditTextChannel(Cog):
         try:
             await channel.edit(
                 category=category,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -327,7 +331,7 @@ class EditTextChannel(Cog):
         try:
             await channel.edit(
                 slowmode_delay=slowmode_delay,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -354,7 +358,7 @@ class EditTextChannel(Cog):
         try:
             await channel.edit(
                 type=_type,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -378,7 +382,7 @@ class EditTextChannel(Cog):
         try:
             await channel.edit(
                 default_auto_archive_duration=int(default_auto_archive_duration),
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -402,7 +406,7 @@ class EditTextChannel(Cog):
         try:
             await channel.edit(
                 default_thread_slowmode_delay=default_thread_slowmode_delay,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
@@ -502,7 +506,7 @@ class EditTextChannel(Cog):
         try:
             await channel.edit(
                 overwrites=overwrites,
-                reason=f"{ctx.author} ({ctx.author.id}) has modified the text channel #{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(

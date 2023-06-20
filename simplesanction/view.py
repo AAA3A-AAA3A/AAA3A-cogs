@@ -134,7 +134,7 @@ class SimpleSanctionView(discord.ui.View):
                 ),
                 ephemeral=True,
             )
-        else:
-            await interaction.response.defer()
+        # else:
+        #     await interaction.response.defer()
         action: Action = self.cog.actions[interaction.data["custom_id"]]
-        await action.process(self.ctx, member=self.member, duration=self.duration, reason=self.reason, finish_message_enabled=self.finish_message_enabled, reason_required=await self.cog.config.guild(self.ctx.guild).reason_required(), confirmation=self.confirmation, show_author=self.show_author, fake_action=self.fake_action)
+        await action.process(self.ctx, interaction=interaction, member=self.member, duration=self.duration, reason=self.reason, finish_message_enabled=self.finish_message_enabled, reason_required=await self.cog.config.guild(self.ctx.guild).reason_required(), confirmation=self.confirmation, show_author=self.show_author, fake_action=self.fake_action)

@@ -644,7 +644,7 @@ class GetDocs(DashboardIntegration, Cog):
                 ]
             },
         }
-        async def function(bot: Red, source: str, query: str, *args, **kwargs):
+        async def get_documentation(bot: Red, source: str, query: str, *args, **kwargs):
             if source not in self.documentations.keys():
                 return f"This source doesn't exist! Valid sources are: {humanize_list([f'`{source}`' for source in self.documentations])}."
             source = self.documentations[source]
@@ -667,8 +667,8 @@ class GetDocs(DashboardIntegration, Cog):
                     result += f"{_type.capitalize()}: {humanize_list([inline(attribute.name) for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()]) or 'No attribute(s)'}.\n"
             return result
         if assistant_cog is None:
-            return function
-        await assistant_cog.register_function(cog=self, schema=schema, function=function)
+            return get_documentation
+        await assistant_cog.register_function(cog=self, schema=schema, function=get_documentation)
 
 
 class Source:

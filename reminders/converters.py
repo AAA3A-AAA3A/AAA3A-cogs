@@ -436,7 +436,7 @@ class TimeConverter(commands.Converter):
         if text is not None:
             if text.split(" ")[0].lower() == "tomorrow" and text.split(" ")[1].lower() == "at":
                 text = text[12:]
-            if text.split(" ")[0].lower() == "to" and text.split(" ")[1].lower() != "do":
+            if text.split(" ")[0].lower() == "to" and text.split(" ")[1].lower() != "do:":
                 text = text[3:]
             elif text.split(" ")[0].lower() == "that":
                 text = text[5:]

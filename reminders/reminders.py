@@ -1248,3 +1248,34 @@ class Reminders(Cog):
                         repeat=repeat
                     )
                     await reminder.save()
+
+    @commands.Cog.listener()
+    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+        schema = {
+            "name": "get_existing_user_reminders",
+            "description": "Get the 5 next existing reminders for the user and their content.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                },
+                "required": [
+                ]
+            },
+        }
+        async def get_existing_user_reminders(user: typing.Union[discord.Member, discord.User], *args, **kwargs):
+            if not (reminders := self.cache.get(user.id, {})):
+                return "This user haven't any reminders."
+            reminders = sorted(reminders.values(), key=lambda reminder: reminder.next_expires_at)[:5]
+            data = {
+                "Next 5 existing user's Reminders": "\n\n" + "\n\n".join([f"Reminder #{reminder.id}:\n{reminder.get_info().replace('**', '')}" for reminder in reminders]),
+                # "Next 5 existing user's Reminders": "\n" + "\n".join([f"• Reminder #{reminder.id}: {reminder.to_json(clean=True)}" for reminder in reminders]),
+            }
+            result = ""
+            for key, value in data.items():
+                if value is None:
+                    continue
+                result += f"{key}: {value}\n"
+            return result
+        if assistant_cog is None:
+            return get_existing_user_reminders
+        await assistant_cog.register_function(cog=self, schema=schema, function=get_existing_user_reminders)

@@ -8,6 +8,8 @@ from urllib.parse import quote_plus
 
 import aiohttp
 
+from redbot.core.utils.chat_formatting import humanize_list
+
 from .types import Word
 from .view import DictionaryView
 
@@ -85,3 +87,58 @@ class Dictionary(Cog):
         if word is None:
             raise commands.UserFeedbackCheckFailure(_("Word not found in English dictionary."))
         await DictionaryView(cog=self, word=word).start(ctx)
+
+    @commands.Cog.listener()
+    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+        schema = {
+            "name": "get_word_in_dictionary",
+            "description": "Get the meanings, the definition, the synonyms and the antonyms of an English word.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "The word to search in the English dictionary."
+                    },
+                },
+                "required": [
+                    "query"
+                ]
+            },
+        }
+        async def get_word_in_dictionary(query: str, *args, **kwargs):
+            word = await self.get_word(query)
+            if word is None:
+                return "Word not found in English dictionary."
+            meanings = ""
+            for meaning in word.meanings:
+                meanings += "\n\n" + "\n".join(
+                    [
+                        (f"{n}. " if len(word.meanings[meaning]) > 1 else "")
+                        + f"{definition['definition']}"
+                        + (
+                            f"\n- Synonyms: {humanize_list(definition['synonyms'])}"
+                            if definition["synonyms"]
+                            else ""
+                        )
+                        + (
+                            f"\n- Antonyms: {humanize_list(definition['antonyms'])}"
+                            if definition["antonyms"]
+                            else ""
+                        )
+                        for n, definition in enumerate(word.meanings[meaning], start=1)
+                    ]
+                )
+            data = {
+                "Word": word.word,
+                "Meanings": meanings,
+            }
+            result = ""
+            for key, value in data.items():
+                if value is None:
+                    continue
+                result += f"{key}: {value}\n"
+            return result
+        if assistant_cog is None:
+            return get_word_in_dictionary
+        await assistant_cog.register_function(cog=self, schema=schema, function=get_word_in_dictionary)

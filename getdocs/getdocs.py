@@ -622,7 +622,7 @@ class GetDocs(DashboardIntegration, Cog):
         await Menu(pages=embeds).start(ctx)
 
     @commands.Cog.listener()
-    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Add GetDocs as Assistant third party/integration.
+    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
         schema = {
             "name": "get_documentation",
             "description": f"Get the documentation for a `query` from a source in the following: {humanize_list([f'`{source}`' for source in self.documentations])}.",
@@ -644,7 +644,7 @@ class GetDocs(DashboardIntegration, Cog):
                 ]
             },
         }
-        async def get_documentation(bot: Red, source: str, query: str, *args, **kwargs):
+        async def get_documentation(source: str, query: str, *args, **kwargs):
             if source not in self.documentations.keys():
                 return f"This source doesn't exist! Valid sources are: {humanize_list([f'`{source}`' for source in self.documentations])}."
             source = self.documentations[source]
@@ -654,17 +654,21 @@ class GetDocs(DashboardIntegration, Cog):
             documentation = await source.get_documentation(results.results[0][1])
             if documentation is None:
                 return "No documentation found for this query."
-            BREAK_LINE = "\n"
-            result = (
-                f"Name: {documentation.name}\n"
-                f"Signature: {documentation.full_name}\n"
-                f"Description: {documentation.description.replace(BREAK_LINE, ' ')}\n"
-                f"Parameters: {humanize_list([inline(parameter.split(' ')[0].strip('**')) for parameter in documentation.parameters]) or 'No parameter(s)'}.\n"
-            )
+            data = {
+                "Name": documentation.name,
+                "Signature": documentation.full_name,
+                "Description": documentation.description.replace("\n", ' '),
+                "Parameters": f"{humanize_list([inline(parameter.split(' ')[0].strip('**')) for parameter in documentation.parameters])}." if documentation.parameters else "No parameter(s)"
+            }
             for _type in ["attributes", "properties", "methods"]:
                 if getattr(documentation.attributes, _type):
                     # result += f"{_type.capitalize()}:\n{BREAK_LINE.join([f'• {inline(attribute.name)}' for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()]) or 'No attribute(s)'}.\n"
-                    result += f"{_type.capitalize()}: {humanize_list([inline(attribute.name) for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()]) or 'No attribute(s)'}.\n"
+                    data[_type.capitalize()] = f"{humanize_list([inline(attribute.name) for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()])}."
+            result = ""
+            for key, value in data.items():
+                if value is None:
+                    continue
+                result += f"{key}: {value}\n"
             return result
         if assistant_cog is None:
             return get_documentation

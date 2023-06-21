@@ -162,9 +162,9 @@ class Minecraft(Cog):
         embed.add_field(name=_("Latency"), value=f"{status.latency:.2f} ms")
         embed.add_field(
             name=_("Players"),
-            value="{0.players.online}/{0.players.max}\n{1}".format(
-                status,
-                box(
+            value="{status.players.online}/{status.players.max}\n{players_list}".format(
+                status=status,
+                players_list=box(
                     list(
                         pagify(
                             await self.clear_mcformatting(
@@ -180,9 +180,7 @@ class Minecraft(Cog):
         )
         embed.add_field(
             name=_("Version"),
-            value=("{}" + "\n" + _("Protocol: {}")).format(
-                status.version.name, status.version.protocol
-            ),
+            value=f"{status.version.name}\nProtocol: {status.version.protocol}",
         )
         if icon_file is not None:
             icon_file.close()
@@ -271,7 +269,7 @@ class Minecraft(Cog):
         except Exception:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "No data could be found on this Minecraft server. Maybe it doesn't exist or the data is temporarily unavailable."
+                    "No data could be found for this Minecraft server. Maybe it doesn't exist or its data are temporarily unavailable."
                 )
             )
         embed, icon = await self.get_embed(server, status)
@@ -342,3 +340,47 @@ class Minecraft(Cog):
         """Get an embed for check loop status."""
         embeds = [loop.get_debug_embed() for loop in self.cogsutils.loops.values()]
         await Menu(pages=embeds).start(ctx)
+
+    @commands.Cog.listener()
+    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+        schema = {
+            "name": "get_minecraft_java_server",
+            "description": "Get informations about a Minecraft Java server.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "server_url": {
+                        "type": "string",
+                        "description": "The URL of the Minecraft Java server."
+                    },
+                },
+                "required": [
+                    "server_url"
+                ]
+            },
+        }
+        async def get_minecraft_java_server(server_url: str, *args, **kwargs):
+            try:
+                server: JavaServer = await self.bot.loop.run_in_executor(
+                    None, JavaServer.lookup, server_url.lower()
+                )
+                status = await server.async_status()
+            except Exception:
+                return "No data could be found for this Minecraft Java server."
+            data = {
+                "Host & Port": f"{server.address.host}:{server.address.port}",
+                "Description": box(await self.clear_mcformatting(status.description)),
+                "Status": "Offline" if "This server is offline." in await self.clear_mcformatting(status.description) else "Online",
+                "Latency": f"{status.latency:.2f} ms",
+                "Players": f"{status.players.online}/{status.players.max}",
+                "Version & Protocol": f"{status.version.name}\nProtocol: {status.version.protocol}",
+            }
+            result = ""
+            for key, value in data.items():
+                if value is None:
+                    continue
+                result += f"{key}: {value}\n"
+            return result
+        if assistant_cog is None:
+            return get_minecraft_java_server
+        await assistant_cog.register_function(cog=self, schema=schema, function=get_minecraft_java_server)

@@ -12,7 +12,8 @@ from urllib.parse import quote_plus, unquote_plus
 
 import aiohttp
 from bs4 import BeautifulSoup
-from redbot.core.utils.chat_formatting import box
+
+from redbot.core.utils.chat_formatting import box, humanize_list
 
 from .types import Recipe, SearchResults
 from .view import RecipesView
@@ -95,7 +96,7 @@ class Recipes(Cog):
             },
             description=unquote(json_content["description"].replace("BREAK_LINE", "\n")),
             _yield=unquote(json_content["recipeYield"].strip()),
-            prep_time=json_content["prepTime"][2:].lower(),
+            preparation_time=json_content["prepTime"][2:].lower(),
             cook_time=json_content["cookTime"][2:].lower(),
             rating=(
                 {
@@ -164,3 +165,62 @@ class Recipes(Cog):
             )
         )
         await menu.start(ctx)
+
+    @commands.Cog.listener()
+    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+        schema = {
+            "name": "get_recipe",
+            "description": "Get a recipe from the website Food52, from a query.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "The name of the recipe to search."
+                    },
+                },
+                "required": [
+                    "query"
+                ]
+            },
+        }
+        async def get_recipe(query: str, *args, **kwargs):
+            __, results = await self.get_query_results(query, limit=1)
+            if not results.results:
+                return "No recipe found."
+            url = list(results.results.values())[0]
+            try:
+                recipe = await self.get_recipe(url)
+            except json.JSONDecodeError:
+                return "Error in parsing the response."
+            data = {
+                "Name": recipe.name,
+                "Category": recipe.category,
+                "Cuisine": recipe.cuisine,
+                "Description": recipe.description,
+                "Yield": recipe._yield,
+                "Preparation time": recipe.preparation_time,
+                "Cook time": recipe.cook_time,
+                "Ingredients": humanize_list(recipe.ingredients),
+                "Instructions": "\n" + "\n\n".join(
+                    [
+                        f"\n\n• {section}\n"
+                        "\n".join(
+                            [
+                                f"    **{n}.** {instruction}"
+                                for n, instruction in enumerate(recipe.instructions[section], start=1)
+                            ]
+                        )
+                        for section in recipe.instructions
+                    ]
+                ),
+            }
+            result = ""
+            for key, value in data.items():
+                if value is None:
+                    continue
+                result += f"{key}: {value}\n"
+            return result
+        if assistant_cog is None:
+            return get_recipe
+        await assistant_cog.register_function(cog=self, schema=schema, function=get_recipe)

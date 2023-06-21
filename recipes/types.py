@@ -45,7 +45,7 @@ class Recipe:
     author: typing.Dict[str, str]
     description: str
     _yield: str
-    prep_time: str
+    preparation_time: str
     cook_time: str
     rating: typing.Optional[typing.Dict[str, typing.Union[float, int]]]
     images_urls: typing.List[str]
@@ -81,8 +81,8 @@ class Recipe:
             value="\n".join([f"**•** {ingredient}" for ingredient in self.ingredients]),
             inline=False,
         )
-        if self.prep_time:
-            embed.add_field(name="Preparation Time:", value=self.prep_time, inline=True)
+        if self.preparation_time:
+            embed.add_field(name="Preparation Time:", value=self.preparation_time, inline=True)
         if self.cook_time:
             embed.add_field(name="Cook Time:", value=self.cook_time, inline=True)
         if len(self.images_urls) == 0:

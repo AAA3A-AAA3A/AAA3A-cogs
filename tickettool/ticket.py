@@ -334,7 +334,7 @@ class Ticket:
             if config["view_role"] is not None:
                 members.extend(config["view_role"].members)
             for member in members:
-                self.channel.add_user(member)
+                await self.channel.add_user(member)
         if config["create_modlog"]:
             await self.cog.create_modlog(self, "ticket_created", _reason)
         if config["custom_message"] is not None:

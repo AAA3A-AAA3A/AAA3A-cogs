@@ -12,6 +12,7 @@ import textwrap
 
 import aiohttp
 from fuzzywuzzy import fuzz
+
 from redbot.core.utils.chat_formatting import box, humanize_list, pagify
 
 from .data import LANGUAGES_FILES_EXTENSIONS, LANGUAGES_IDENTIFIERS, LANGUAGES_IMAGES
@@ -652,3 +653,55 @@ class RunCode(Cog):
         embed = discord.Embed(title="Languages extensions", color=await ctx.embed_color())
         embed.description = result
         await ctx.send(embed=embed)
+
+    # @commands.Cog.listener()
+    # async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+    #     schema = {
+    #         "name": "execute_code",
+    #         "description": "Execute a code, from a code language and the code. Possible languages are {humanize_list(self.wandbox_languages)}.",
+    #         "parameters": {
+    #             "type": "object",
+    #             "properties": {
+    #                 "language": {
+    #                     "type": "string",
+    #                     "description": f"The code language. Possible languages are {humanize_list(self.wandbox_languages)}."
+    #                 },
+    #                 "code": {
+    #                     "type": "string",
+    #                     "description": "The code to execute."
+    #                 },
+    #             },
+    #             "required": [
+    #                 "language",
+    #                 "code"
+    #             ]
+    #         },
+    #     }
+    #     async def execute_code(language: str, code: str, *args, **kwargs):
+    #         if language not in self.wandbox_languages:
+    #             return "This language doesn't exist."
+    #         request = WandboxRequest(cog=self, save=True, code=code, engine=list(list(self.wandbox_languages[language].values())[0].values())[0], stdin="", compiler_options="", runtime_options="")
+    #         try:
+    #             response = await request.fetch_response()
+    #         except RuntimeError:
+    #             return "The external server returned an error."
+    #         data = {
+    #             "Run time": response.run_time,
+    #             "Status": response.status,
+    #             "Signal": response.signal,
+    #             "Compiler output": response.compiler_output,
+    #             "Compiler error": response.compiler_error,
+    #             "Compiler message": response.compiler_message,
+    #             "Program output": response.program_output,
+    #             "Program error": response.program_error,
+    #             "Program message": response.program_message,
+    #         }
+    #         result = ""
+    #         for key, value in data.items():
+    #             if value is None:
+    #                 continue
+    #             result += f"{key}: {value}\n"
+    #         return result
+    #     if assistant_cog is None:
+    #         return execute_code
+    #     await assistant_cog.register_function(cog=self, schema=schema, function=execute_code)

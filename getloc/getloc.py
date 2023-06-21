@@ -156,31 +156,31 @@ class GetLoc(Cog):
                     "The address or contact details you have provided do not lead to any results. Are you sure of your input?"
                 )
             )
-        message = {
-            "Display Name": str(localisation.raw.get("display_name", None)),
-            "Latitude": str(localisation.latitude),
-            "Longitude": str(localisation.longitude),
-            "Country": str(localisation.raw["address"].get("country", None)),
-            "Country code": str(localisation.raw["address"].get("country_code", None)),
-            "Region": str(localisation.raw["address"].get("region", None)),
-            "State": str(localisation.raw["address"].get("state", None)),
-            "County": str(localisation.raw["address"].get("county", None)),
-            "Municipality": str(localisation.raw["address"].get("municipality", None)),
-            "City": str(localisation.raw["address"].get("city", None)),
-            "Post code": str(localisation.raw["address"].get("postcode", None)),
-            "Road": str(localisation.raw["address"].get("road", None)),
+        data = {
+            "Display Name": localisation.raw.get("display_name", None),
+            "Latitude": localisation.latitude,
+            "Longitude": localisation.longitude,
+            "Country": localisation.raw["address"].get("country", None),
+            "Country code": localisation.raw["address"].get("country_code", None),
+            "Region": localisation.raw["address"].get("region", None),
+            "State": localisation.raw["address"].get("state", None),
+            "County": localisation.raw["address"].get("county", None),
+            "Municipality": localisation.raw["address"].get("municipality", None),
+            "City": localisation.raw["address"].get("city", None),
+            "Post code": localisation.raw["address"].get("postcode", None),
+            "Road": localisation.raw["address"].get("road", None),
         }
         embed: discord.Embed = discord.Embed()
         embed.title = "Location"
         embed.set_thumbnail(
             url="https://img.myloview.fr/papiers-peints/globe-terrestre-dessin-colore-700-218492153.jpg"
         )
-        embed.description = "\n".join([f"**{name}**: {value}" for name, value in message.items()])
+        embed.description = "\n".join([f"**{name}**: {value}" for name, value in data.items()])
 
         if with_map:
             embed.set_image(url="attachment://map.png")
             _map = await self.get_map(
-                title=", ".join(message['Display Name'].split(", ")[:2]),  # (Latitude {localisation.latitude}) ; Longitude {localisation.longitude})",
+                title=", ".join(data['Display Name'].split(", ")[:2]),  # (Latitude {localisation.latitude}) ; Longitude {localisation.longitude})",
                 latitude=localisation.latitude,
                 longitude=localisation.longitude,
             )
@@ -198,3 +198,50 @@ class GetLoc(Cog):
         await ctx.reply(
             embed=embed, file=file, allowed_mentions=discord.AllowedMentions(replied_user=False)
         )
+
+    @commands.Cog.listener()
+    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+        schema = {
+            "name": "get_informations_about_a_place",
+            "description": "Get informations about a place in the world, from a fuzzy location query.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "The place to search in the world."
+                    },
+                },
+                "required": [
+                    "query"
+                ]
+            },
+        }
+        async def get_informations_about_a_place(query: str, *args, **kwargs):
+            loc = Nominatim(user_agent="GetLoc")
+            try:
+                localisation = loc.geocode(query=query, addressdetails=True)
+            except Exception:
+                return "An error has occurred."
+            if localisation is None:
+                return "The provided address or contact details do not lead to any results."
+            data = {
+                "Display Name": localisation.raw.get("display_name", None),
+                "Latitude": localisation.latitude,
+                "Longitude": localisation.longitude,
+                "Country": localisation.raw["address"].get("country", None),
+                "Country code": localisation.raw["address"].get("country_code", None),
+                "Region": localisation.raw["address"].get("region", None),
+                "State": localisation.raw["address"].get("state", None),
+                "City": localisation.raw["address"].get("city", None),
+                "Post code": localisation.raw["address"].get("postcode", None),
+            }
+            result = ""
+            for key, value in data.items():
+                if value is None:
+                    continue
+                result += f"{key}: {value}\n"
+            return result
+        if assistant_cog is None:
+            return get_informations_about_a_place
+        await assistant_cog.register_function(cog=self, schema=schema, function=get_informations_about_a_place)

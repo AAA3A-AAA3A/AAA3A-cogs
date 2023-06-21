@@ -16,5 +16,5 @@
     ],
     "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "pytz", "python-dateutil", "dateparser", "pyparsing", "validators", "apscheduler", "cron-descriptor", "recurrent"],
     "min_bot_version": "3.5.0",
-    "end_user_data_statement": "This cog does store users reminders, who are deleted when triggered."
+    "end_user_data_statement": "This cog does store users reminders, who are deleted when triggered. The content of the 5 next user's reminders can be communicated to OpenAI if the user requests information on their own existing reminders using the Vert's Assistant cog."
 }

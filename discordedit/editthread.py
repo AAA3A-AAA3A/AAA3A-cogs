@@ -107,15 +107,19 @@ class EditThread(Cog):
         *,
         name: str,
     ) -> None:
-        """Create a thread."""
+        """Create a thread.
+        
+        You'll join it automatically.
+        """
         if channel is None:
             channel = ctx.channel
         try:
-            await channel.create_thread(
+            thread = await channel.create_thread(
                 name=name,
                 message=message,
                 reason=f"{ctx.author} ({ctx.author.id}) has created the thread #{name}.",
             )
+            await thread.add_user(ctx.author)
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
@@ -332,6 +336,46 @@ class EditThread(Cog):
                 applied_tags=list(applied_tags),
                 reason=f"{ctx.author} ({ctx.author.id}) has edited the thread #{thread.name} ({thread.id}).",
             )
+        except discord.HTTPException as e:
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
+
+    @editthread.command(name="adduser", aliases=["addmember"])
+    async def editthread_add_user(
+        self, ctx: commands.Context, thread: typing.Optional[discord.Thread], member: discord.Member
+    ) -> None:
+        """Add member to thread."""
+        if thread is None:
+            if isinstance(ctx.channel, discord.Thread):
+                thread = ctx.channel
+            else:
+                await ctx.send_help()
+                return
+        if discord.utils.get(await thread.fetch_members(), id=member.id) is not None:
+            raise commands.UserFeedbackCheckFailure("This member is already in this thread.")
+        await self.check_thread(ctx, thread)
+        try:
+            await thread.add_user(member)
+        except discord.HTTPException as e:
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
+
+    @editthread.command(name="removeuser", aliases=["removemember"])
+    async def editthread_remove_user(
+        self, ctx: commands.Context, thread: typing.Optional[discord.Thread], member: discord.Member
+    ) -> None:
+        """Remove member from thread."""
+        if thread is None:
+            if isinstance(ctx.channel, discord.Thread):
+                thread = ctx.channel
+            else:
+                await ctx.send_help()
+                return
+        await self.check_thread(ctx, thread)
+        try:
+            await thread.remove_user(member)
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))

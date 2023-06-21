@@ -133,12 +133,7 @@ class Dictionary(Cog):
                 "Word": word.word,
                 "Meanings": meanings,
             }
-            result = ""
-            for key, value in data.items():
-                if value is None:
-                    continue
-                result += f"{key}: {value}\n"
-            return result
+            return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
         if assistant_cog is None:
             return get_word_in_dictionary
         await assistant_cog.register_function(cog=self, schema=schema, function=get_word_in_dictionary)

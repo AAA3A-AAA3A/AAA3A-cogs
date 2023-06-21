@@ -664,12 +664,7 @@ class GetDocs(DashboardIntegration, Cog):
                 if getattr(documentation.attributes, _type):
                     # result += f"{_type.capitalize()}:\n{BREAK_LINE.join([f'• {inline(attribute.name)}' for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()]) or 'No attribute(s)'}.\n"
                     data[_type.capitalize()] = f"{humanize_list([inline(attribute.name) for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()])}."
-            result = ""
-            for key, value in data.items():
-                if value is None:
-                    continue
-                result += f"{key}: {value}\n"
-            return result
+            return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
         if assistant_cog is None:
             return get_documentation
         await assistant_cog.register_function(cog=self, schema=schema, function=get_documentation)

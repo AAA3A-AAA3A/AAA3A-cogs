@@ -1270,12 +1270,7 @@ class Reminders(Cog):
                 "Next 5 existing user's Reminders": "\n\n" + "\n\n".join([f"Reminder #{reminder.id}:\n{reminder.get_info().replace('**', '')}" for reminder in reminders]),
                 # "Next 5 existing user's Reminders": "\n" + "\n".join([f"• Reminder #{reminder.id}: {reminder.to_json(clean=True)}" for reminder in reminders]),
             }
-            result = ""
-            for key, value in data.items():
-                if value is None:
-                    continue
-                result += f"{key}: {value}\n"
-            return result
+            return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
         if assistant_cog is None:
             return get_existing_user_reminders
         await assistant_cog.register_function(cog=self, schema=schema, function=get_existing_user_reminders)

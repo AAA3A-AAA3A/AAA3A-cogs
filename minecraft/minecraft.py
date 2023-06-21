@@ -375,12 +375,7 @@ class Minecraft(Cog):
                 "Players": f"{status.players.online}/{status.players.max}",
                 "Version & Protocol": f"{status.version.name}\nProtocol: {status.version.protocol}",
             }
-            result = ""
-            for key, value in data.items():
-                if value is None:
-                    continue
-                result += f"{key}: {value}\n"
-            return result
+            return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
         if assistant_cog is None:
             return get_minecraft_java_server
         await assistant_cog.register_function(cog=self, schema=schema, function=get_minecraft_java_server)

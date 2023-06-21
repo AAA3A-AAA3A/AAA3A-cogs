@@ -236,12 +236,7 @@ class GetLoc(Cog):
                 "City": localisation.raw["address"].get("city", None),
                 "Post code": localisation.raw["address"].get("postcode", None),
             }
-            result = ""
-            for key, value in data.items():
-                if value is None:
-                    continue
-                result += f"{key}: {value}\n"
-            return result
+            return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
         if assistant_cog is None:
             return get_informations_about_a_place
         await assistant_cog.register_function(cog=self, schema=schema, function=get_informations_about_a_place)

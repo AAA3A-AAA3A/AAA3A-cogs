@@ -219,7 +219,7 @@ class MemoryGameView(discord.ui.View):
                     max_prize
                     - (game_time * reduction_per_second)
                     - (self._wrong_matches * reduction_per_wrong_match)
-                ) * (int(self.difficulty[0]) / 4)
+                ) * (int(self.difficulty[0]) / 5)
                 try:
                     await bank.deposit_credits(self.ctx.author, final_prize)
                 except BalanceTooHigh as e:

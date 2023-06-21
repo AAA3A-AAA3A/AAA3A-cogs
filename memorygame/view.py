@@ -20,7 +20,7 @@ class MemoryGameView(discord.ui.View):
     def __init__(
         self,
         cog: commands.Cog,
-        difficulty: typing.Literal["3x3", "4x4", "5x5"],
+        difficulty: typing.Literal["3x3", "4x4", "5x5"] = "5x5",
         max_wrong_matches: typing.Optional[int] = None,
     ) -> None:
         super().__init__(timeout=60 * 10)
@@ -219,7 +219,7 @@ class MemoryGameView(discord.ui.View):
                     max_prize
                     - (game_time * reduction_per_second)
                     - (self._wrong_matches * reduction_per_wrong_match)
-                )
+                ) * (int(self.difficulty[0]) / 4)
                 try:
                     await bank.deposit_credits(self.ctx.author, final_prize)
                 except BalanceTooHigh as e:

@@ -650,7 +650,7 @@ class Seen(Cog):
                 or self.cache["global"].get(_type, {}).get(x, {}).get("seen"),
                 reverse=True,
             )[0]
-            data = global_data[_type][custom_id]
+            data = global_data[_type].get(custom_id, {}) or self.cache["global"][_type][custom_id]
             if data["seen"] is None or data["action"] is None:
                 return None
         else:

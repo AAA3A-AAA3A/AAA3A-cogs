@@ -42,7 +42,7 @@ class AutoTraceback(DashboardIntegration, Cog):
 
     @commands.is_owner()
     @commands.hybrid_command()
-    async def traceback(self, ctx: commands.Context, public: bool = True) -> None:
+    async def traceback(self, ctx: commands.Context, public: typing.Optional[bool] = True, index: int = 0) -> None:
         """Sends to the owner the last command exception that has occurred.
 
         If public (yes is specified), it will be sent to the chat instead.
@@ -55,10 +55,15 @@ class AutoTraceback(DashboardIntegration, Cog):
 
         **Arguments:**
             - `[public]` - Whether to send the traceback to the current context. Default is `True`.
+            - `[index]`  - The error index. 0 is the last.
         """
-        if not ctx.bot._last_exception:
+        if not self.tracebacks and not ctx.bot._last_exception:
             raise commands.UserFeedbackCheckFailure(_("No exception has occurred yet."))
-        _last_exception = ctx.bot._last_exception.split("\n")
+        try:
+            _last_exception = self.tracebacks[-(index + 1)]
+        except IndexError:
+            _last_exception = ctx.bot._last_exception
+        _last_exception = _last_exception.split("\n")
         _last_exception[0] = _last_exception[0] + (
             "" if _last_exception[0].endswith(":") else ":\n"
         )
@@ -89,6 +94,11 @@ class AutoTraceback(DashboardIntegration, Cog):
         traceback_error = "".join(
             traceback.format_exception(type(error), error, error.__traceback__)
         )
+        _traceback_error = traceback_error.split("\n")
+        _traceback_error[0] = _traceback_error[0] + (
+            "" if _traceback_error[0].endswith(":") else ":\n"
+        )
+        traceback_error = "\n".join(_traceback_error)
         traceback_error = self.cogsutils.replace_var_paths(traceback_error)
         self.tracebacks.append(traceback_error)
         if ctx.author.id not in ctx.bot.owner_ids:
@@ -98,3 +108,34 @@ class AutoTraceback(DashboardIntegration, Cog):
             await Menu(pages=pages, timeout=180, delete_after_timeout=False).start(ctx)
         except discord.HTTPException:
             pass
+
+    @commands.Cog.listener()
+    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+        schema = {
+            "name": "get_last_command_error_traceback",
+            "description": "Get the traceback of the last command error occured on the bot.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                },
+                "required": [
+                ]
+            },
+        }
+        async def get_last_command_error_traceback(user: typing.Union[discord.Member, discord.User], *args, **kwargs):
+            if user.id not in self.bot.owner_ids:
+                return "Only bot owners can view errors tracebacks."
+            if not self.tracebacks and not self.bot._last_exception:
+                return "No last command error recorded."
+            try:
+                last_traceback = self.tracebacks[-1]
+            except IndexError:
+                last_traceback = self.bot._last_exception
+            last_traceback = self.cogsutils.replace_var_paths(last_traceback)
+            data = {
+                "Last command error traceback": f"\n{last_traceback}",
+            }
+            return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
+        if assistant_cog is None:
+            return get_last_command_error_traceback
+        await assistant_cog.register_function(cog=self, schema=schema, function=get_last_command_error_traceback)

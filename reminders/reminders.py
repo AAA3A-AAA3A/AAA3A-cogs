@@ -1265,7 +1265,7 @@ class Reminders(Cog):
         async def get_existing_user_reminders(user: typing.Union[discord.Member, discord.User], *args, **kwargs):
             if not (reminders := self.cache.get(user.id, {})):
                 return "This user haven't any reminders."
-            reminders = sorted(reminders.values(), key=lambda reminder: reminder.next_expires_at)[:5]
+            reminders = sorted([reminder for reminder in reminders.values() if reminder.content["type"] in ["text", "message"]], key=lambda reminder: reminder.next_expires_at)[:5]
             data = {
                 "Next 5 existing user's Reminders": "\n\n" + "\n\n".join([f"Reminder #{reminder.id}:\n{reminder.get_info().replace('**', '')}" for reminder in reminders]),
                 # "Next 5 existing user's Reminders": "\n" + "\n".join([f"• Reminder #{reminder.id}: {reminder.to_json(clean=True)}" for reminder in reminders]),

@@ -77,8 +77,9 @@ class Minecraft(Cog):
             force_registration=True,
         )
         self.minecraft_channel: typing.Dict[str, typing.List[str]] = {
-            "servers": [],
+            "servers": {},
             "check_players": False,
+            "edit_last_message": False,
         }
         self.config.register_channel(**self.minecraft_channel)
 
@@ -139,7 +140,18 @@ class Minecraft(Cog):
                     ):  # Minecraft ADS
                         continue
                     embed, icon = await self.get_embed(server, status)
-                    await channel.send(embed=embed, file=icon)
+                    servers = await self.config.channel(channel).servers()
+                    if isinstance(servers, typing.List):
+                        servers = {server: None for server in servers}
+                    if await self.config.channel(channel).edit_last_message() and servers[server_url] is not None:
+                        try:
+                            message = await channel.get_partial_message(servers[server_url]).edit(embed=embed, attachments=[icon])
+                        except discord.HTTPException:
+                            message = await channel.send(embed=embed, file=icon)
+                    else:
+                        message = await channel.send(embed=embed, file=icon)
+                    servers[server_url] = message.id
+                    await self.config.channel(channel).servers.set(servers)
                     self.cache[channel.id][server_url] = {"server": server, "status": status}
 
     async def get_embed(self, server: JavaServer, status) -> discord.Embed:
@@ -297,7 +309,9 @@ class Minecraft(Cog):
         servers = await self.config.channel(channel).servers()
         if server_url.lower() in servers:
             raise commands.UserFeedbackCheckFailure(_("This server has already been added."))
-        servers.append(server_url.lower())
+        if isinstance(servers, typing.List):
+            servers = {server: None for server in servers}
+        servers[server_url.lower()] = None  # last message
         await self.config.channel(channel).servers.set(servers)
 
     @commands.admin_or_permissions(manage_guild=True)
@@ -311,7 +325,9 @@ class Minecraft(Cog):
         servers = await self.config.channel(channel).servers()
         if server_url.lower() not in servers:
             raise commands.UserFeedbackCheckFailure(_("This server isn't in the Config."))
-        servers.remove(server_url.lower())
+        if isinstance(servers, typing.List):
+            servers = {server: None for server in servers}
+        del servers[server_url.lower()]
         await self.config.channel(channel).servers.set(servers)
 
     @commands.admin_or_permissions(manage_guild=True)
@@ -326,6 +342,16 @@ class Minecraft(Cog):
         if not state:
             for server_url in self.cache[channel.id]:
                 self.cache[channel.id][server_url]["status"].raw["players"]["sample"] = {}
+
+    @commands.admin_or_permissions(manage_guild=True)
+    @minecraft.command()
+    async def editlastmessage(
+        self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], state: bool
+    ) -> None:
+        """Edit the last message sent for changes."""
+        if channel is None:
+            channel = ctx.channel
+        await self.config.channel(channel).edit_last_message.set(state)
 
     @commands.is_owner()
     @minecraft.command(hidden=True)
@@ -373,7 +399,8 @@ class Minecraft(Cog):
                 "Status": "Offline" if "This server is offline." in await self.clear_mcformatting(status.description) else "Online",
                 "Latency": f"{status.latency:.2f} ms",
                 "Players": f"{status.players.online}/{status.players.max}",
-                "Version & Protocol": f"{status.version.name}\nProtocol: {status.version.protocol}",
+                "Version": status.version.name,
+                "Protocol": status.version.protocol,
             }
             return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
         if assistant_cog is None:

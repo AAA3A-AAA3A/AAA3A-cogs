@@ -231,7 +231,7 @@ class Attributes:
 class Documentation:
     source: typing.Any
     name: str
-    full_name: str
+    signature: str
     description: str
     parameters: typing.Union[Parameters[str, str], str]
     examples: Examples[str]
@@ -250,8 +250,8 @@ class Documentation:
         self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
     ) -> discord.Embed:
         description = (
-            f"{box(self.full_name, lang='py' if self.source.name != 'git' else 'ini')}\n"
-            if self.full_name
+            f"{box(self.signature, lang='py' if self.source.name != 'git' else 'ini')}\n"
+            if self.signature
             else ""
         ) + f"{self.description}".strip()
         embed = discord.Embed(

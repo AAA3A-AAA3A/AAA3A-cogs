@@ -625,7 +625,7 @@ class GetDocs(DashboardIntegration, Cog):
     async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
         schema = {
             "name": "get_documentation",
-            "description": f"Get the documentation for an object from one of the following sources: {humanize_list([f'`{source}`' for source in self.documentations])}.",
+            "description": f"Get the documentation for an object/method from one of the following sources: {humanize_list([f'`{source}`' for source in self.documentations])}.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -656,7 +656,7 @@ class GetDocs(DashboardIntegration, Cog):
                 return "No documentation found for this query."
             data = {
                 "Name": documentation.name,
-                "Signature": documentation.full_name,
+                "Signature": documentation.signature,
                 "Description": documentation.description.replace("\n", ' '),
                 "Parameters": f"{humanize_list([inline(parameter.split(' ')[0].strip('**')) for parameter in documentation.parameters])}." if documentation.parameters else "No parameter(s)"
             }
@@ -902,7 +902,7 @@ class Source:
                         for _documentation in _documentations:
                             if not _documentation:
                                 continue
-                            # Get name and full_name.
+                            # Get name and signature.
                             _name = _documentation.split("\n")[0]
                             _documentation = "\n".join(_documentation.split("\n")[1:])
                             if _documentation.startswith(
@@ -910,12 +910,12 @@ class Source:
                             ) or _documentation.startswith(f"### {_name}"):
                                 _documentation = "\n".join(_documentation.split("\n")[1:])
                             if len(_name.split(" % ")) == 2:
-                                full_name = _name.split(" % ")[1]
+                                signature = _name.split(" % ")[1]
                                 _name = _name.split(" % ")[0]
-                                for _match in re.compile(r"{.*?#DOCS_(.*?)}").findall(full_name):
-                                    full_name = full_name.replace(f"#DOCS_{_match}", "")
+                                for _match in re.compile(r"{.*?#DOCS_(.*?)}").findall(signature):
+                                    signature = signature.replace(f"#DOCS_{_match}", "")
                             else:
-                                full_name = ""
+                                signature = ""
                             description = _documentation.split("###### ")[0]
                             if not description:
                                 continue
@@ -956,9 +956,9 @@ class Source:
                                         else:
                                             value += f"**{' | '.join([_row for _row in row if _row != ''])}**"
                                     fields[field] = value
-                            if full_name:  # Create a custom example for each endpoint.
-                                _method = full_name.split(" ")[0]
-                                _path = full_name.split(" ")[1]
+                            if signature:  # Create a custom example for each endpoint.
+                                _method = signature.split(" ")[0]
+                                _path = signature.split(" ")[1]
                                 example = "from discord.http import Route"
                                 _kwargs = re.compile(r"{(.*?)}").findall(_path)
                                 if _kwargs:
@@ -1047,7 +1047,7 @@ class Source:
                             _object = DataObjStr(
                                 name=_name,
                                 domain="py",
-                                role="endpoint" if full_name else _subdir,
+                                role="endpoint" if signature else _subdir,
                                 priority="1",
                                 uri=f"{self.url}{_subdir}/{_file}#{_name.lower().replace('_', '-').replace(' ', '-')}",
                                 dispname="-",
@@ -1062,7 +1062,7 @@ class Source:
                                 self,
                                 name=_name,
                                 url=f"{self.url}{_subdir}/{_file}#{_name.lower().replace('_', '-').replace(' ', '-')}",
-                                full_name=full_name,
+                                signature=signature,
                                 description=description,
                                 parameters=None,
                                 examples=examples,
@@ -1107,7 +1107,7 @@ class Source:
                 # Get informations.
                 div = _documentation.find_all("div", class_="sectionbody")
                 _name = self._get_text(div[0], parsed_url=manual[1]).strip()
-                full_name = self._get_text(div[1], parsed_url=manual[1]).strip()
+                signature = self._get_text(div[1], parsed_url=manual[1]).strip()
                 description = self._get_text(div[2], parsed_url=manual[1])
                 parameters = self._get_text(div[3], parsed_url=manual[1])
                 examples = Examples(
@@ -1136,7 +1136,7 @@ class Source:
                     self,
                     name=_name,
                     url=manual[1],
-                    full_name=full_name,
+                    signature=signature,
                     description=description,
                     parameters=parameters,
                     examples=examples,
@@ -1204,14 +1204,14 @@ class Source:
 
     @executor()
     def _get_documentation(self, element: Tag, page_url: str) -> Documentation:
-        full_name = element.text
-        full_name = full_name.strip().replace("¶", "").replace("", "").replace("\n", "")
-        if full_name.endswith("[source]"):
-            full_name = full_name[:-8]
-        elif full_name.endswith("[source]#"):
-            full_name = full_name[:-9]
+        signature = element.text
+        signature = signature.strip().replace("¶", "").replace("", "").replace("\n", "")
+        if signature.endswith("[source]"):
+            signature = signature[:-8]
+        elif signature.endswith("[source]#"):
+            signature = signature[:-9]
         if self.name == "python" and page_url == self.url + "tutorial/datastructures.html":
-            name = full_name.strip("\n").split("(")[0]
+            name = signature.strip("\n").split("(")[0]
             if discord.utils.get(self._rtfm_cache.objects, name=name) is None:
                 _object = DataObjStr(
                     name=name,
@@ -1265,8 +1265,8 @@ class Source:
                 _role = None
             return _role, _name
 
-        _full_name = parse_method_role(full_name)
-        full_name = (f"{_full_name[0]} " if _full_name[0] is not None else "") + _full_name[1]
+        _signature = parse_method_role(signature)
+        signature = (f"{_signature[0]} " if _signature[0] is not None else "") + _signature[1]
 
         # Description & Examples
         description: typing.List[str] = []
@@ -1485,7 +1485,7 @@ class Source:
             self,
             name=name,
             url=url,
-            full_name=full_name,
+            signature=signature,
             description=description,
             parameters=parameters,
             examples=examples,

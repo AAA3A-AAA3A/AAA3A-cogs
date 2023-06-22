@@ -300,6 +300,7 @@ class Minecraft(Cog):
             not channel_permissions.view_channel
             or not channel_permissions.read_messages
             or not channel_permissions.read_message_history
+            or not channel_permissions.embed_links
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(

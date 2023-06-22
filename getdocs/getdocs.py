@@ -625,13 +625,13 @@ class GetDocs(DashboardIntegration, Cog):
     async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
         schema = {
             "name": "get_documentation",
-            "description": f"Get the documentation for a `query` from a source in the following: {humanize_list([f'`{source}`' for source in self.documentations])}.",
+            "description": f"Get the documentation for an object from one of the following sources: {humanize_list([f'`{source}`' for source in self.documentations])}.",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "source": {
                         "type": "string",
-                        "description": f"The name of the documentation source ({humanize_list([f'`{source}`' for source in self.documentations])})."
+                        "description": "The name of the documentation source."
                     },
                     "query": {
                         "type": "string",

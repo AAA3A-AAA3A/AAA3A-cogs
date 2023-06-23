@@ -46,9 +46,7 @@ class EditVoiceChannel(Cog):
     """A cog to edit voice channels!"""
 
     def __init__(self, bot: Red) -> None:  # Never executed except manually.
-        self.bot: Red = bot
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
+        super().__init__(bot=bot)
 
     async def check_voice_channel(
         self, ctx: commands.Context, channel: discord.VoiceChannel
@@ -454,10 +452,10 @@ class EditVoiceChannel(Cog):
                 content = f"{ctx.author.mention} " + _(
                     "Do you really want to delete the voice channel {channel.mention} ({channel.id})?"
                 ).format(channel=channel)
-            if not await self.cogsutils.ConfirmationAsk(
+            if not await CogsUtils.ConfirmationAsk(
                 ctx, content=content, embed=embed
             ):
-                await self.cogsutils.delete_message(ctx.message)
+                await CogsUtils.delete_message(ctx.message)
                 return
         try:
             await channel.delete(

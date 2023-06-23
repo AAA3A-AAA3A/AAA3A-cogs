@@ -122,6 +122,7 @@ class GetDocsView(discord.ui.View):
             self._message: discord.Message = await self.ctx.send(
                 content=content, embed=embed, view=self
             )
+            self.cog.views[self._message] = self
         else:
             self._message: discord.Message = await self._message.edit(
                 content=content, embed=embed, view=self

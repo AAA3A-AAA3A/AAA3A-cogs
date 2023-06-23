@@ -303,7 +303,7 @@ class TioResponse:
                 output = output[:start] + output[end + 2 :]
             except ValueError:
                 pass
-            output = CogsUtils().replace_var_paths(output)
+            output = CogsUtils.replace_var_paths(output)
             await Menu(pages=output, lang="py").start(ctx)
             return
         embed: discord.Embed = discord.Embed(

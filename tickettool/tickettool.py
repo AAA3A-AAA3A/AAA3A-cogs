@@ -30,7 +30,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
     """A cog to manage a tickets system!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -100,8 +100,6 @@ class TicketTool(settings, DashboardIntegration, Cog):
         }
         self.config.register_global(**self.tickettool_global)
         self.config.register_guild(**self.tickettool_guild)
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], typing.Any, str]]
@@ -318,7 +316,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 ],
             )
             self.bot.add_view(view)
-            self.cogsutils.views.append(view)
+            self.views["New Ticket View"] = view
             view = self.get_buttons(
                 buttons=[
                     {
@@ -352,12 +350,16 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 ],
             )
             self.bot.add_view(view)
-            self.cogsutils.views.append(view)
+            self.views["Existing Ticket View"] = view
         except Exception as e:
             self.log.error("The Buttons View could not be added correctly.", exc_info=e)
         all_guilds = await self.config.all_guilds()
         for guild in all_guilds:
-            for dropdown in all_guilds[guild]["dropdowns"]:
+            for message in all_guilds[guild]["dropdowns"]:
+                channel = self.bot.get_channel(int((str(message).split("-"))[0]))
+                if channel is None:
+                    continue
+                message_id = int((str(message).split("-"))[1])
                 try:
                     view = self.get_dropdown(
                         placeholder=_("Choose the reason for open a ticket."),
@@ -369,14 +371,14 @@ class TicketTool(settings, DashboardIntegration, Cog):
                                 "emoji": reason_option["emoji"],
                                 "default": False,
                             }
-                            for reason_option in all_guilds[guild]["dropdowns"][dropdown]
+                            for reason_option in all_guilds[guild]["dropdowns"][message]
                         ],
                     )
-                    self.bot.add_view(view, message_id=int((str(dropdown).split("-"))[1]))
-                    self.cogsutils.views.append(view)
+                    self.bot.add_view(view, message_id=message_id)
+                    self.views[discord.PartialMessage(channel=channel, id=message_id)] = view
                 except Exception as e:
                     self.log.error(
-                        f"The Dropdown View could not be added correctly for the {guild}-{dropdown} message.",
+                        f"The Dropdown View could not be added correctly for the `{guild}-{message}` message.",
                         exc_info=e,
                     )
 
@@ -885,7 +887,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 url=ctx.author.display_avatar,
                 icon_url=ctx.author.display_avatar,
             )
-            response = await self.cogsutils.ConfirmationAsk(ctx, embed=embed)
+            response = await CogsUtils.ConfirmationAsk(ctx, embed=embed)
             if not response:
                 return
         await ticket.close(ctx.author, reason=reason)
@@ -928,7 +930,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 url=ctx.author.display_avatar,
                 icon_url=ctx.author.display_avatar,
             )
-            response = await self.cogsutils.ConfirmationAsk(ctx, embed=embed)
+            response = await CogsUtils.ConfirmationAsk(ctx, embed=embed)
             if not response:
                 return
         await ticket.lock(ctx.author, reason=reason)
@@ -1028,7 +1030,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 url=ctx.author.display_avatar,
                 icon_url=ctx.author.display_avatar,
             )
-            response = await self.cogsutils.ConfirmationAsk(ctx, embed=embed)
+            response = await CogsUtils.ConfirmationAsk(ctx, embed=embed)
             if not response:
                 return
         await ticket.delete(ctx.author, reason=reason)
@@ -1264,7 +1266,8 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     ephemeral=True,
                 )
                 return
-            ctx = await self.cogsutils.invoke_command(
+            ctx = await CogsUtils.invoke_command(
+                bot=interaction.client,
                 author=interaction.user,
                 channel=interaction.channel,
                 command=f"ticket create {profile}" + (f" {reason}" if reason != "" else ""),
@@ -1297,7 +1300,8 @@ class TicketTool(settings, DashboardIntegration, Cog):
             if timeout:
                 return
             reason = reason_input.value or ""
-            ctx = await self.cogsutils.invoke_command(
+            ctx = await CogsUtils.invoke_command(
+                bot=interaction.client,
                 author=interaction.user,
                 channel=interaction.channel,
                 command=("ticket close" + (f" {reason}" if reason != "" else "")),
@@ -1312,8 +1316,11 @@ class TicketTool(settings, DashboardIntegration, Cog):
             except discord.HTTPException:
                 pass
         elif interaction.data["custom_id"] == "open_ticket_button":
-            ctx = await self.cogsutils.invoke_command(
-                author=interaction.user, channel=interaction.channel, command="ticket open"
+            ctx = await CogsUtils.invoke_command(
+                bot=interaction.client,
+                author=interaction.user,
+                channel=interaction.channel,
+                command="ticket open",
             )
             try:
                 await interaction.followup.send(
@@ -1325,8 +1332,11 @@ class TicketTool(settings, DashboardIntegration, Cog):
             except discord.HTTPException:
                 pass
         elif interaction.data["custom_id"] == "claim_ticket_button":
-            ctx = await self.cogsutils.invoke_command(
-                author=interaction.user, channel=interaction.channel, command="ticket claim"
+            ctx = await CogsUtils.invoke_command(
+                bot=interaction.client,
+                author=interaction.user,
+                channel=interaction.channel,
+                command="ticket claim",
             )
             await interaction.followup.send(
                 _(
@@ -1335,8 +1345,11 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 ephemeral=True,
             )
         elif interaction.data["custom_id"] == "delete_ticket_button":
-            ctx = await self.cogsutils.invoke_command(
-                author=interaction.user, channel=interaction.channel, command="ticket delete"
+            ctx = await CogsUtils.invoke_command(
+                bot=interaction.client,
+                author=interaction.user,
+                channel=interaction.channel, 
+                ommand="ticket delete",
             )
 
     async def on_dropdown_interaction(
@@ -1373,7 +1386,8 @@ class TicketTool(settings, DashboardIntegration, Cog):
             return
         option = [option for option in select_menu.options if option.value == options[0]][0]
         reason = f"{option.emoji} - {option.label}"
-        ctx = await self.cogsutils.invoke_command(
+        ctx = await CogsUtils.invoke_command(
+            bot=interaction.client,
             author=interaction.user,
             channel=interaction.channel,
             command=f"ticket create {profile} {reason}",
@@ -1428,8 +1442,11 @@ class TicketTool(settings, DashboardIntegration, Cog):
             permissions = channel.permissions_for(guild.me)
             if not permissions.read_messages and not permissions.read_message_history:
                 return
-            await self.cogsutils.invoke_command(
-                author=member, channel=channel, command="ticket create"
+            await CogsUtils.invoke_command(
+                bot=self.bot,
+                author=member,
+                channel=channel,
+                command="ticket create",
             )
         return
 

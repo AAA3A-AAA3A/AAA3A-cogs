@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
+from AAA3A_utils import Cog, Settings  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -21,7 +21,7 @@ class Ip(Cog):
     """A cog to get the ip address  of the bot's host machine!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -32,8 +32,6 @@ class Ip(Cog):
             "port": "0000",  # Port.
         }
         self.config.register_global(**self.ip_global)
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
@@ -57,6 +55,7 @@ class Ip(Cog):
         )
 
     async def cog_load(self) -> None:
+        await super().cog_load()
         await self.settings.add_commands()
 
     @commands.is_owner()

@@ -29,7 +29,7 @@ class Calculator(Cog):
     """A cog to do calculations from Discord with buttons!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -65,8 +65,6 @@ class Calculator(Cog):
         self.history: typing.Dict[
             typing.Union[discord.Member, discord.User], typing.Tuple[str]
         ] = {}
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     async def calculate(self, expression: str) -> str:
         lst = list(expression)

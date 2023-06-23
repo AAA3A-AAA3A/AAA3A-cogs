@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils, Menu, Loop  # isort:skip
+from AAA3A_utils import Cog, Loop, CogsUtils, Menu  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -25,7 +25,8 @@ class Seen(Cog):
     """A cog to check when a member/role/channel/category/user/guild was last active!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
+        self.__authors__: typing.List[str] = ["AAA3A", "aikaterna"]
 
         self.config: Config = Config.get_conf(
             self,
@@ -79,16 +80,15 @@ class Seen(Cog):
             "existing_keys": [],
         }
 
-        self.__author__: typing.List[str] = ["AAA3A", "aikaterna"]
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
-
-    @property
-    def loops(self) -> typing.List[Loop]:
-        return list(self.cogsutils.loops.values())
-
     async def cog_load(self) -> None:
-        self.cogsutils.create_loop(
-            function=self.save_to_config, name="Save Seen Config", minutes=1
+        await super().cog_load()
+        self.loops.append(
+            Loop(
+                cog=self,
+                name="Save Seen Config",
+                function=self.save_to_config,
+                minutes=1,
+            )
         )
 
     async def cog_unload(self) -> None:
@@ -310,7 +310,7 @@ class Seen(Cog):
     ) -> None:
         if not isinstance(channel, discord.TextChannel):
             return
-        custom_id = self.cogsutils.generate_key(
+        custom_id = CogsUtils.generate_key(
             length=10,
             existing_keys=self.cache["existing_keys"],
             strings_used={
@@ -1377,6 +1377,10 @@ class Seen(Cog):
         for _type in _types:
             config[_type] = state
         await self.config.listeners.set(config)
+        if state:
+            await ctx.send(_("Listener enabled for this/these type(s)."))
+        else:
+            await ctx.send(_("Listener disabled for this/these type(s)."))
 
     @seen.command()
     async def ignoreme(self, ctx: commands.Context) -> None:
@@ -1398,7 +1402,7 @@ class Seen(Cog):
     @seen.command(hidden=True)
     async def getdebugloopsstatus(self, ctx: commands.Context) -> None:
         """Get an embed for check loop status."""
-        embeds = [loop.get_debug_embed() for loop in self.cogsutils.loops.values()]
+        embeds = [loop.get_debug_embed() for loop in self.loops]
         await Menu(pages=embeds).start(ctx)
 
     @commands.is_owner()
@@ -1415,6 +1419,7 @@ class Seen(Cog):
             await self.config.clear_all_roles()
             await self.config.clear_all_channels()
             await self.config.clear_all_guilds()
+            await ctx.send(_("All Seen data purged."))
         else:
             if _type == "user":
                 await self.config.clear_all_users()
@@ -1426,6 +1431,7 @@ class Seen(Cog):
                 await self.config.clear_all_channels()
             if _type == "guild":
                 await self.config.clear_all_guilds()
+            await ctx.send(_("Seen data purged for this type."))
 
     @commands.is_owner()
     @seen.command()
@@ -1464,7 +1470,7 @@ class Seen(Cog):
                             },
                         }
                         # Global
-                        custom_id = self.cogsutils.generate_key(
+                        custom_id = CogsUtils.generate_key(
                             length=10,
                             existing_keys=self.cache["existing_keys"],
                             strings_used={
@@ -1492,3 +1498,4 @@ class Seen(Cog):
                         if "message" not in new_members_data[int(guild_id)][int(member_id)] or data["seen"] > new_global_data["message"][new_members_data[int(guild_id)][int(member_id)]["message"]]["seen"]:
                             new_members_data[int(guild_id)][int(member_id)]["message"] = custom_id
         await self.config.set(new_global_data)
+        await ctx.send(_("Data successfully migrated from Seen by Aikaterna."))

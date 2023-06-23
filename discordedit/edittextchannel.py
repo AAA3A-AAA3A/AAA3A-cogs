@@ -55,9 +55,7 @@ class EditTextChannel(Cog):
     """A cog to edit text channels!"""
 
     def __init__(self, bot: Red) -> None:  # Never executed except manually.
-        self.bot: Red = bot
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
+        super().__init__(bot=bot)
 
     async def check_text_channel(
         self, ctx: commands.Context, channel: discord.TextChannel
@@ -538,10 +536,10 @@ class EditTextChannel(Cog):
                 content = f"{ctx.author.mention} " + _(
                     "Do you really want to delete the text channel {channel.mention} ({channel.id})?"
                 ).format(channel=channel)
-            if not await self.cogsutils.ConfirmationAsk(
+            if not await CogsUtils.ConfirmationAsk(
                 ctx, content=content, embed=embed
             ):
-                await self.cogsutils.delete_message(ctx.message)
+                await CogsUtils.delete_message(ctx.message)
                 return
         try:
             await channel.delete(

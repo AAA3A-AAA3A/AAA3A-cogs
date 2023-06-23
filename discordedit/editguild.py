@@ -38,13 +38,11 @@ class EditGuild(Cog):
     """A cog to edit guilds!"""
 
     def __init__(self, bot: Red) -> None:  # Never executed except manually.
-        self.bot: Red = bot
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
+        super().__init__(bot=bot)
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_guild=True)
-    @commands.bot_has_guild_permissions(manage_guild=True)
+    @commands.bot_has_permissions(manage_guild=True)
     @commands.hybrid_group()
     async def editguild(self, ctx: commands.Context) -> None:
         """Commands for edit a guild."""
@@ -189,10 +187,10 @@ class EditGuild(Cog):
                 content = f"{ctx.author.mention} " + _(
                     "Do you really want to change guild owner of the guild {guild.name} ({guild.id})?"
                 ).format(guild=guild)
-            if not await self.cogsutils.ConfirmationAsk(
+            if not await CogsUtils.ConfirmationAsk(
                 ctx, content=content, embed=embed
             ):
-                await self.cogsutils.delete_message(ctx.message)
+                await CogsUtils.delete_message(ctx.message)
                 return
         try:
             await guild.edit(
@@ -454,10 +452,10 @@ class EditGuild(Cog):
                 content = f"{ctx.author.mention} " + _(
                     "Do you really want to delete the guild {guild.name} ({guild.id})?"
                 ).format(guild=guild)
-            if not await self.cogsutils.ConfirmationAsk(
+            if not await CogsUtils.ConfirmationAsk(
                 ctx, content=content, embed=embed
             ):
-                await self.cogsutils.delete_message(ctx.message)
+                await CogsUtils.delete_message(ctx.message)
                 return
         try:
             await guild.delete()

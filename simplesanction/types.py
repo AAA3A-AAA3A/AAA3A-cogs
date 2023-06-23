@@ -1,3 +1,4 @@
+from AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
@@ -77,8 +78,8 @@ class Action:
                 try:
                     pred = MessagePredicate.same_context(ctx)
                     msg = await ctx.bot.wait_for("message", timeout=60, check=pred)
-                    await self.cog.cogsutils.delete_message(duration_message)
-                    await self.cog.cogsutils.delete_message(msg)
+                    await CogsUtils.delete_message(duration_message)
+                    await CogsUtils.delete_message(msg)
                     if msg.content.lower() == "cancel":
                         return
                     duration = msg.content
@@ -91,8 +92,8 @@ class Action:
                     try:
                         pred = MessagePredicate.same_context(ctx)
                         msg = await ctx.bot.wait_for("message", timeout=60, check=pred)
-                        await self.cog.cogsutils.delete_message(reason_message)
-                        await self.cog.cogsutils.delete_message(msg)
+                        await CogsUtils.delete_message(reason_message)
+                        await CogsUtils.delete_message(msg)
                         if msg.content.lower() == "cancel":
                             return
                         reason = _("The reason was not given.") if reason == "not" else msg.content
@@ -102,8 +103,8 @@ class Action:
                 else:
                     reason = _("The reason was not given.")
 
-        if not confirmation and self.confirmation_ask_message is not None and not await self.cog.cogsutils.ConfirmationAsk(ctx, content=_(self.confirmation_ask_message).format(member=member, duration=str(parse_timedelta(duration)) if duration is not None else None, reason=reason, channel=ctx.channel)) and not ctx.assume_yes:
-            await self.cog.cogsutils.delete_message(ctx.message)
+        if not confirmation and self.confirmation_ask_message is not None and not await CogsUtils.ConfirmationAsk(ctx, content=_(self.confirmation_ask_message).format(member=member, duration=str(parse_timedelta(duration)) if duration is not None else None, reason=reason, channel=ctx.channel)) and not ctx.assume_yes:
+            await CogsUtils.delete_message(ctx.message)
             return
 
         if finish_message_enabled and self.finish_message is not None:
@@ -153,7 +154,8 @@ class Action:
         if not fake_action:
             command = self.warn_system_command if use_warn_system else self.command
             command = command.format(member=member, duration=str(parse_timedelta(duration)) if duration is not None else None, reason=reason, channel=ctx.channel)
-            context = await self.cog.cogsutils.invoke_command(
+            context = await CogsUtils.invoke_command(
+                bot=ctx.bot,
                 author=ctx.author,
                 channel=ctx.channel,
                 command=command,

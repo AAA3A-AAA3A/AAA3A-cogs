@@ -54,9 +54,7 @@ class GetLoc(Cog):
     """A cog to display information about a location based on its address or geographical coordinates!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
+        super().__init__(bot=bot)
 
     @executor()
     def get_map(self, title: str, latitude: float, longitude: float) -> io.BytesIO:

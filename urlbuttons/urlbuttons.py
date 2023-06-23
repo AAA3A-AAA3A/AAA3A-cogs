@@ -5,7 +5,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from .converters import Emoji, EmojiUrlConverter
+from .converters import UrlConverter, Emoji, EmojiUrlConverter
 
 # Credits:
 # General repo credits.# Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
@@ -19,7 +19,7 @@ class UrlButtons(Cog):
     """A cog to have url-buttons!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -38,9 +38,8 @@ class UrlButtons(Cog):
         self.config.register_global(**self.url_buttons_global)
         self.config.register_guild(**self.url_buttons_guild)
 
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
-
     async def cog_load(self) -> None:
+        await super().cog_load()
         await self.edit_config_schema()
 
     async def edit_config_schema(self) -> None:
@@ -58,7 +57,7 @@ class UrlButtons(Cog):
                     for emoji in message_data:
                         data = url_buttons[message].pop(emoji)
                         data["emoji"] = emoji
-                        config_identifier = self.cogsutils.generate_key(
+                        config_identifier = CogsUtils.generate_key(
                             length=5, existing_keys=url_buttons[message]
                         )
                         url_buttons[message][config_identifier] = data
@@ -84,6 +83,7 @@ class UrlButtons(Cog):
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_messages=True)
+    @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_group()
     async def urlbuttons(self, ctx: commands.Context) -> None:
         """Group of commands to use UrlButtons."""
@@ -94,7 +94,7 @@ class UrlButtons(Cog):
         self,
         ctx: commands.Context,
         message: discord.Message,
-        url: str,
+        url: UrlConverter,
         emoji: typing.Optional[Emoji],
         *,
         text_button: typing.Optional[commands.Range[str, 1, 100]] = None,
@@ -137,7 +137,7 @@ class UrlButtons(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("I can't do more than 25 url-buttons for one message.")
             )
-        config_identifier = self.cogsutils.generate_key(
+        config_identifier = CogsUtils.generate_key(
             length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
         )
         config[f"{message.channel.id}-{message.id}"][config_identifier] = {
@@ -147,8 +147,8 @@ class UrlButtons(Cog):
         }
         view = self.get_buttons(config, message)
         await message.edit(view=view)
-        self.cogsutils.views.append(view)
         await self.config.guild(ctx.guild).url_buttons.set(config)
+        await self.list(ctx=ctx, message=message)
 
     @urlbuttons.command()
     async def bulk(
@@ -191,7 +191,7 @@ class UrlButtons(Cog):
                 _("I can't do more than 25 url-buttons for one message.")
             )
         for emoji, url in url_buttons:
-            config_identifier = self.cogsutils.generate_key(
+            config_identifier = CogsUtils.generate_key(
                 length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
             )
             config[f"{message.channel.id}-{message.id}"][config_identifier] = {
@@ -201,8 +201,57 @@ class UrlButtons(Cog):
             }
         view = self.get_buttons(config, message)
         await message.edit(view=view)
-        self.cogsutils.views.append(view)
         await self.config.guild(ctx.guild).url_buttons.set(config)
+        await self.list(ctx=ctx, message=message)
+
+    @urlbuttons.command(aliases=["-"])
+    async def remove(self, ctx: commands.Context, message: discord.Message, config_identifier: str) -> None:
+        """Remove a url-button for a message.
+
+        Use `[p]urlbuttons list <message>` to find the config identifier.
+        """
+        if message.author != ctx.me:
+            raise commands.UserFeedbackCheckFailure(
+                _("I have to be the author of the message for the role-button to work.")
+            )
+        config = await self.config.guild(ctx.guild).url_buttons.all()
+        if f"{message.channel.id}-{message.id}" not in config:
+            raise commands.UserFeedbackCheckFailure(
+                _("No url-button is configured for this message.")
+            )
+        if config_identifier not in config[f"{message.channel.id}-{message.id}"]:
+            raise commands.UserFeedbackCheckFailure(
+                _("I wasn't watching for this button on this message.")
+            )
+        del config[f"{message.channel.id}-{message.id}"][config_identifier]
+        if config[f"{message.channel.id}-{message.id}"] == {}:
+            del config[f"{message.channel.id}-{message.id}"]
+            await message.edit(view=None)
+        else:
+            view = self.get_buttons(config, message)
+            await message.edit(view=view)
+        await self.config.guild(ctx.guild).url_buttons.set(config)
+        await self.list(ctx=ctx, message=message)
+
+    @urlbuttons.command()
+    async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
+        """Clear all url-buttons for a message."""
+        if message.author != ctx.me:
+            raise commands.UserFeedbackCheckFailure(
+                _("I have to be the author of the message for the url-button to work.")
+            )
+        config = await self.config.guild(ctx.guild).url_buttons.all()
+        if f"{message.channel.id}-{message.id}" not in config:
+            raise commands.UserFeedbackCheckFailure(
+                _("No role-button is configured for this message.")
+            )
+        try:
+            await message.edit(view=None)
+        except discord.HTTPException:
+            pass
+        del config[f"{message.channel.id}-{message.id}"]
+        await self.config.guild(ctx.guild).url_buttons.set(config)
+        await ctx.send(_("Url-buttons cleared for this message."))
 
     @commands.bot_has_permissions(embed_links=True)
     @urlbuttons.command()
@@ -245,58 +294,11 @@ class UrlButtons(Cog):
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
 
-    @urlbuttons.command(aliases=["-"])
-    async def remove(self, ctx: commands.Context, message: discord.Message, config_identifier: str) -> None:
-        """Remove a url-button for a message.
-
-        Use `[p]urlbuttons list <message>` to find the config identifier.
-        """
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.")
-            )
-        config = await self.config.guild(ctx.guild).url_buttons.all()
-        if f"{message.channel.id}-{message.id}" not in config:
-            raise commands.UserFeedbackCheckFailure(
-                _("No url-button is configured for this message.")
-            )
-        if config_identifier not in config[f"{message.channel.id}-{message.id}"]:
-            raise commands.UserFeedbackCheckFailure(
-                _("I wasn't watching for this button on this message.")
-            )
-        del config[f"{message.channel.id}-{message.id}"][config_identifier]
-        if config[f"{message.channel.id}-{message.id}"] == {}:
-            del config[f"{message.channel.id}-{message.id}"]
-            await message.edit(view=None)
-        else:
-            view = self.get_buttons(config, message)
-            await message.edit(view=view)
-            self.cogsutils.views.append(view)
-        await self.config.guild(ctx.guild).url_buttons.set(config)
-
-    @urlbuttons.command()
-    async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
-        """Clear all url-buttons for a message."""
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the url-button to work.")
-            )
-        config = await self.config.guild(ctx.guild).url_buttons.all()
-        if f"{message.channel.id}-{message.id}" not in config:
-            raise commands.UserFeedbackCheckFailure(
-                _("No role-button is configured for this message.")
-            )
-        try:
-            await message.edit(view=None)
-        except discord.HTTPException:
-            pass
-        del config[f"{message.channel.id}-{message.id}"]
-        await self.config.guild(ctx.guild).url_buttons.set(config)
-
     @urlbuttons.command(hidden=True)
     async def purge(self, ctx: commands.Context) -> None:
         """Clear all url-buttons for a guild."""
         await self.config.guild(ctx.guild).url_buttons.clear()
+        await ctx.send(_("All url-buttons purged."))
 
     def get_buttons(self, config: typing.Dict, message: typing.Union[discord.Message, str]) -> discord.ui.View:
         message = (

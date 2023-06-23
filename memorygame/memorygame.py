@@ -23,11 +23,11 @@ _ = Translator("MemoryGame", __file__)
 
 
 @cog_i18n(_)
-class MemoryGame(DashboardIntegration, Cog):
+class MemoryGame(Cog, DashboardIntegration):
     """A cog to play to Memory game, with buttons, leaderboard and Red bank!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -48,10 +48,6 @@ class MemoryGame(DashboardIntegration, Cog):
         }
         self.config.register_guild(**self.memorygame_guild)
         self.config.register_member(**self.memorygame_member)
-
-        self.games: typing.Dict[discord.Message, MemoryGameView] = {}
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
@@ -140,6 +136,10 @@ class MemoryGame(DashboardIntegration, Cog):
             return {}
         file = io.BytesIO(str(data).encode(encoding="utf-8"))
         return {f"{self.qualified_name}.json": file}
+
+    @property
+    def games(self) -> typing.Dict[discord.Message, MemoryGameView]:
+        return self.views
 
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command()

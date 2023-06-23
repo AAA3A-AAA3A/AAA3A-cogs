@@ -29,7 +29,7 @@ class Emoji(commands.EmojiConverter):
         argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument
-        return await super().convert(ctx, argument)
+        return await super().convert(ctx, argument=argument)
 
 
 @cog_i18n(_)
@@ -37,7 +37,7 @@ class ReactToCommand(Cog):
     """A cog to allow a user to execute a command by clicking on a reaction!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -56,11 +56,10 @@ class ReactToCommand(Cog):
         self.config.register_global(**self.reacttocommand_global)
         self.config.register_guild(**self.reacttocommand_guild)
 
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
-
         self.cache: typing.List[commands.Context] = []
 
     async def cog_load(self) -> None:
+        await super().cog_load()
         await self.edit_config_schema()
 
     async def edit_config_schema(self) -> None:
@@ -134,7 +133,8 @@ class ReactToCommand(Cog):
         ):
             return
         command = config[f"{payload.channel_id}-{payload.message_id}"][emoji]
-        context = await self.cogsutils.invoke_command(
+        context = await CogsUtils.invoke_command(
+            bot=self.bot,
             author=payload.member,
             channel=channel,
             command=command,
@@ -261,6 +261,7 @@ class ReactToCommand(Cog):
             config[f"{message.channel.id}-{message.id}"] = {}
         config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"] = command
         await self.config.guild(ctx.guild).react_commands.set(config)
+        await ctx.send(_("Reaction-command added to this message."))
 
     @reacttocommand.command(aliases=["-"])
     async def remove(self, ctx: commands.Context, message: discord.Message, emoji: Emoji) -> None:
@@ -282,6 +283,7 @@ class ReactToCommand(Cog):
         except discord.HTTPException:
             pass
         await self.config.guild(ctx.guild).react_commands.set(config)
+        await ctx.send(_("Reaction-command removed from this message."))
 
     @reacttocommand.command()
     async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
@@ -298,8 +300,10 @@ class ReactToCommand(Cog):
                 pass
         del config[f"{message.channel.id}-{message.id}"]
         await self.config.guild(ctx.guild).react_commands.set(config)
+        await ctx.send(_("Reactions-commands cleared for this message."))
 
     @reacttocommand.command(hidden=True)
     async def purge(self, ctx: commands.Context) -> None:
         """Clear all reactions-commands for a guild."""
         await self.config.guild(ctx.guild).react_commands.clear()
+        await ctx.send(_("All reactions-commands purged."))

@@ -34,14 +34,13 @@ class Recipes(Cog):
     """A cog to search and show a cooking recipe!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self._session: aiohttp.ClientSession = None
         self.cache: typing.Dict[str, Recipe] = {}
 
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
-
     async def cog_load(self) -> None:
+        await super().cog_load()
         self._session: aiohttp.ClientSession = aiohttp.ClientSession()
 
     async def cog_unload(self) -> None:

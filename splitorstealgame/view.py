@@ -39,7 +39,7 @@ class SplitOrStealGameView(discord.ui.View):
         self.add_item(self.join_button)
         self._mode = "join"
         self._message: discord.Message = await self.ctx.send(embed=embed, view=self)
-        self.cog.games[self._message] = self
+        self.cog.views[self._message] = self
         await asyncio.sleep(60)
         self._mode = "play"
         initial_players = self.initial_players.copy()

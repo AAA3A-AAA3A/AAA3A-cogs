@@ -23,7 +23,7 @@ class RolesButtons(Cog):
     """A cog to have roles-buttons!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -40,9 +40,8 @@ class RolesButtons(Cog):
         self.config.register_global(**self.roles_buttons_global)
         self.config.register_guild(**self.roles_buttons_guild)
 
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
-
     async def cog_load(self) -> None:
+        await super().cog_load()
         await self.edit_config_schema()
         await self.load_buttons()
 
@@ -61,7 +60,7 @@ class RolesButtons(Cog):
                     for emoji in message_data:
                         data = roles_buttons[message].pop(emoji)
                         data["emoji"] = emoji
-                        config_identifier = self.cogsutils.generate_key(
+                        config_identifier = CogsUtils.generate_key(
                             length=5, existing_keys=roles_buttons[message]
                         )
                         roles_buttons[message][config_identifier] = data
@@ -80,13 +79,17 @@ class RolesButtons(Cog):
         for guild in all_guilds:
             config = all_guilds[guild]["roles_buttons"]
             for message in config:
+                channel = self.bot.get_channel(int((str(message).split("-"))[0]))
+                if channel is None:
+                    continue
+                message_id = int((str(message).split("-"))[1])
                 try:
                     view = self.get_buttons(config=config, message=message)
-                    self.bot.add_view(view, message_id=int((str(message).split("-"))[1]))
-                    self.cogsutils.views.append(view)
+                    self.bot.add_view(view, message_id=message_id)
+                    self.views[discord.PartialMessage(channel=channel, id=message_id)] = view
                 except Exception as e:
                     self.log.error(
-                        f"The Button View could not be added correctly for the {guild}-{message} message.",
+                        f"The Button View could not be added correctly for the `{guild}-{message}` message.",
                         exc_info=e,
                     )
 
@@ -197,7 +200,7 @@ class RolesButtons(Cog):
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_roles=True)
-    @commands.bot_has_guild_permissions(manage_roles=True)
+    @commands.bot_has_permissions(manage_roles=True, embed_links=True)
     @commands.hybrid_group()
     async def rolesbuttons(self, ctx: commands.Context) -> None:
         """Group of commands to use RolesButtons."""
@@ -263,7 +266,7 @@ class RolesButtons(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("I can't do more than 25 roles-buttons for one message.")
             )
-        config_identifier = self.cogsutils.generate_key(
+        config_identifier = CogsUtils.generate_key(
             length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
         )
         config[f"{message.channel.id}-{message.id}"][config_identifier] = {
@@ -273,9 +276,10 @@ class RolesButtons(Cog):
             "text_button": text_button,
         }
         view = self.get_buttons(config, message)
-        await message.edit(view=view)
-        self.cogsutils.views.append(view)
+        message = await message.edit(view=view)
+        self.views[message] = view
         await self.config.guild(ctx.guild).roles_buttons.set(config)
+        await self.list(ctx=ctx, message=message)
 
     @rolesbuttons.command()
     async def bulk(
@@ -329,7 +333,7 @@ class RolesButtons(Cog):
                 _("I can't do more than 25 roles-buttons for one message.")
             )
         for emoji, role in roles_buttons:
-            config_identifier = self.cogsutils.generate_key(
+            config_identifier = CogsUtils.generate_key(
                 length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
             )
             config[f"{message.channel.id}-{message.id}"][config_identifier] = {
@@ -339,9 +343,10 @@ class RolesButtons(Cog):
                 "text_button": None,
             }
         view = self.get_buttons(config, message)
-        await message.edit(view=view)
-        self.cogsutils.views.append(view)
+        message = await message.edit(view=view)
+        self.views[message] = view
         await self.config.guild(ctx.guild).roles_buttons.set(config)
+        await self.list(ctx=ctx, message=message)
 
     @rolesbuttons.command()
     async def mode(
@@ -350,7 +355,7 @@ class RolesButtons(Cog):
         message: discord.Message,
         mode: typing.Literal["add_or_remove", "add_only", "remove_only", "replace"],
     ) -> None:
-        """Choose a mode for a roles-buttons message.
+        """Choose a mode for the roles-buttons of a message.
 
         Type `add_or_remove`:
         - Users get the role if they do not already have it, or lose it.
@@ -373,6 +378,61 @@ class RolesButtons(Cog):
         await self.config.guild(ctx.guild).modes.set_raw(
             f"{message.channel.id}-{message.id}", value=mode
         )
+        await ctx.send(_("Mode set for the roles-buttons of this message."))
+
+    @rolesbuttons.command(aliases=["-"])
+    async def remove(self, ctx: commands.Context, message: discord.Message, config_identifier: str) -> None:
+        """Remove a role-button for a message.
+
+        Use `[p]rolesbuttons list <message>` to find the config identifier.
+        """
+        if message.author != ctx.me:
+            raise commands.UserFeedbackCheckFailure(
+                _("I have to be the author of the message for the role-button to work.")
+            )
+        config = await self.config.guild(ctx.guild).roles_buttons.all()
+        if f"{message.channel.id}-{message.id}" not in config:
+            raise commands.UserFeedbackCheckFailure(
+                _("No role-button is configured for this message.")
+            )
+        if config_identifier not in config[f"{message.channel.id}-{message.id}"]:
+            raise commands.UserFeedbackCheckFailure(
+                _("I wasn't watching for this button on this message.")
+            )
+        del config[f"{message.channel.id}-{message.id}"][config_identifier]
+        if config[f"{message.channel.id}-{message.id}"] == {}:
+            del config[f"{message.channel.id}-{message.id}"]
+            await message.edit(view=None)
+            await self.config.guild(ctx.guild).modes.clear_raw(
+                f"{message.channel.id}-{message.id}"
+            )
+        else:
+            view = self.get_buttons(config, message)
+            message = await message.edit(view=view)
+            self.views[message] = view
+        await self.config.guild(ctx.guild).roles_buttons.set(config)
+        await self.list(ctx=ctx, message=message)
+
+    @rolesbuttons.command()
+    async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
+        """Clear all roles-buttons for a message."""
+        if message.author != ctx.me:
+            raise commands.UserFeedbackCheckFailure(
+                _("I have to be the author of the message for the role-button to work.")
+            )
+        config = await self.config.guild(ctx.guild).roles_buttons.all()
+        if f"{message.channel.id}-{message.id}" not in config:
+            raise commands.UserFeedbackCheckFailure(
+                _("No role-button is configured for this message.")
+            )
+        try:
+            await message.edit(view=None)
+        except discord.HTTPException:
+            pass
+        del config[f"{message.channel.id}-{message.id}"]
+        await self.config.guild(ctx.guild).roles_buttons.set(config)
+        await self.config.guild(ctx.guild).modes.clear_raw(f"{message.channel.id}-{message.id}")
+        await ctx.send(_("Roles-buttons cleared for this message."))
 
     @commands.bot_has_permissions(embed_links=True)
     @rolesbuttons.command()
@@ -415,62 +475,11 @@ class RolesButtons(Cog):
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
 
-    @rolesbuttons.command(aliases=["-"])
-    async def remove(self, ctx: commands.Context, message: discord.Message, config_identifier: str) -> None:
-        """Remove a role-button for a message.
-
-        Use `[p]rolesbuttons list <message>` to find the config identifier.
-        """
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.")
-            )
-        config = await self.config.guild(ctx.guild).roles_buttons.all()
-        if f"{message.channel.id}-{message.id}" not in config:
-            raise commands.UserFeedbackCheckFailure(
-                _("No role-button is configured for this message.")
-            )
-        if config_identifier not in config[f"{message.channel.id}-{message.id}"]:
-            raise commands.UserFeedbackCheckFailure(
-                _("I wasn't watching for this button on this message.")
-            )
-        del config[f"{message.channel.id}-{message.id}"][config_identifier]
-        if config[f"{message.channel.id}-{message.id}"] == {}:
-            del config[f"{message.channel.id}-{message.id}"]
-            await message.edit(view=None)
-            await self.config.guild(ctx.guild).modes.clear_raw(
-                f"{message.channel.id}-{message.id}"
-            )
-        else:
-            view = self.get_buttons(config, message)
-            await message.edit(view=view)
-            self.cogsutils.views.append(view)
-        await self.config.guild(ctx.guild).roles_buttons.set(config)
-
-    @rolesbuttons.command()
-    async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
-        """Clear all roles-buttons for a message."""
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.")
-            )
-        config = await self.config.guild(ctx.guild).roles_buttons.all()
-        if f"{message.channel.id}-{message.id}" not in config:
-            raise commands.UserFeedbackCheckFailure(
-                _("No role-button is configured for this message.")
-            )
-        try:
-            await message.edit(view=None)
-        except discord.HTTPException:
-            pass
-        del config[f"{message.channel.id}-{message.id}"]
-        await self.config.guild(ctx.guild).roles_buttons.set(config)
-        await self.config.guild(ctx.guild).modes.clear_raw(f"{message.channel.id}-{message.id}")
-
     @rolesbuttons.command(hidden=True)
     async def purge(self, ctx: commands.Context) -> None:
         """Clear all roles-buttons for a guild."""
         await self.config.guild(ctx.guild).roles_buttons.clear()
+        await ctx.send(_("All roles-buttons purged."))
 
     def get_buttons(
         self, config: typing.Dict[str, dict], message: typing.Union[discord.Message, str]

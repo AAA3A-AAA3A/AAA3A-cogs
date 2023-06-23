@@ -85,9 +85,7 @@ class EditRole(Cog):
     """A cog to edit roles!"""
 
     def __init__(self, bot: Red) -> None:  # Never performed except manually.
-        self.bot: Red = bot
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
+        super().__init__(bot=bot)
 
     async def check_role(self, ctx: commands.Context, role: discord.Role) -> bool:
         if (
@@ -110,7 +108,7 @@ class EditRole(Cog):
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_roles=True)
-    @commands.bot_has_guild_permissions(manage_roles=True)
+    @commands.bot_has_permissions(manage_roles=True)
     @commands.hybrid_group()
     async def editrole(self, ctx: commands.Context) -> None:
         """Commands for edit a role."""
@@ -368,10 +366,10 @@ class EditRole(Cog):
                 content = f"{ctx.author.mention} " + _(
                     "Do you really want to delete the role {role.mention} ({role.id})?"
                 ).format(role=role)
-            if not await self.cogsutils.ConfirmationAsk(
+            if not await CogsUtils.ConfirmationAsk(
                 ctx, content=content, embed=embed
             ):
-                await self.cogsutils.delete_message(ctx.message)
+                await CogsUtils.delete_message(ctx.message)
                 return
         try:
             await role.delete(

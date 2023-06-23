@@ -180,6 +180,7 @@ class CalculatorView(discord.ui.View):
         self._message: discord.Message = await self.ctx.send(
             embed=await self.cog.get_embed(self.ctx, self._expression, self._result), view=self
         )
+        self.cog.views[self._message] = self
         return self._message
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:

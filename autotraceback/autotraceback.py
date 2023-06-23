@@ -30,15 +30,13 @@ IGNORED_ERRORS = (
 
 
 @cog_i18n(_)
-class AutoTraceback(DashboardIntegration, Cog):
+class AutoTraceback(Cog, DashboardIntegration):
     """A cog to display the error traceback of a command automatically after the error!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.tracebacks: typing.List[str] = []
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.is_owner()
     @commands.hybrid_command()
@@ -71,7 +69,7 @@ class AutoTraceback(DashboardIntegration, Cog):
             "" if _last_exception[0].endswith(":") else ":\n"
         )
         _last_exception = "\n".join(_last_exception)
-        _last_exception = self.cogsutils.replace_var_paths(_last_exception)
+        _last_exception = CogsUtils.replace_var_paths(_last_exception)
         if public:
             try:
                 await Menu(pages=_last_exception, timeout=180, lang="py").start(ctx)
@@ -102,7 +100,7 @@ class AutoTraceback(DashboardIntegration, Cog):
             "" if _traceback_error[0].endswith(":") else ":\n"
         )
         traceback_error = "\n".join(_traceback_error)
-        traceback_error = self.cogsutils.replace_var_paths(traceback_error)
+        traceback_error = CogsUtils.replace_var_paths(traceback_error)
         self.tracebacks.append(traceback_error)
         if ctx.author.id not in ctx.bot.owner_ids:
             return
@@ -131,7 +129,7 @@ class AutoTraceback(DashboardIntegration, Cog):
             if not self.bot._last_exception:
                 return "No last command error recorded."
             last_traceback = self.bot._last_exception
-            last_traceback = self.cogsutils.replace_var_paths(last_traceback)
+            last_traceback = CogsUtils.replace_var_paths(last_traceback)
             data = {
                 "Last command error traceback": f"\n{last_traceback}",
             }

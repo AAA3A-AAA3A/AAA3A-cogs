@@ -292,6 +292,7 @@ class GistsHandlerView(discord.ui.View):
             self.add_item(self._button_url)
         if self._message is None:
             self._message: discord.Message = await self.ctx.send(embed=self._embed, view=self)
+            self.cog.views[self._message] = self
         else:
             self._message: discord.Message = await self._message.edit(embed=self._embed, view=self)
 

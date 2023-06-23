@@ -20,7 +20,7 @@ class Emoji(commands.EmojiConverter):
         argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument
-        return await super().convert(ctx, argument)
+        return await super().convert(ctx, argument=argument)
 
 
 class RoleHierarchyConverter(discord.ext.commands.RoleConverter):
@@ -34,7 +34,7 @@ class RoleHierarchyConverter(discord.ext.commands.RoleConverter):
                 "I require manage roles permission to use this command."
             )
         try:
-            role = await commands.RoleConverter().convert(ctx, argument)
+            role = await commands.RoleConverter().convert(ctx, argument=argument)
         except commands.BadArgument:
             raise
         else:

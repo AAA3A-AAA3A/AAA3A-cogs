@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils, Loop, Menu  # isort:skip
+from AAA3A_utils import Cog, Loop, Menu  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -66,7 +66,7 @@ class Minecraft(Cog):
     """A cog to display informations about Minecraft Java users and servers, and notify for each change of a server!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self._session: aiohttp.ClientSession = None
         self.cache: typing.Dict[int, typing.Dict[str, dict]] = {}
@@ -83,15 +83,17 @@ class Minecraft(Cog):
         }
         self.config.register_channel(**self.minecraft_channel)
 
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
-
-    @property
-    def loops(self) -> typing.List[Loop]:
-        return list(self.cogsutils.loops.values())
-
     async def cog_load(self) -> None:
+        await super().cog_load()
         self._session: aiohttp.ClientSession = aiohttp.ClientSession()
-        self.cogsutils.create_loop(self.check_servers, name="Minecraft Servers Checker", minutes=1)
+        self.loops.append(
+            Loop(
+                cog=self,
+                name="Check Minecraft Servers",
+                function=self.check_servers,
+                minutes=1,
+            )
+        )
 
     async def cog_unload(self) -> None:
         await self._session.close()
@@ -314,6 +316,7 @@ class Minecraft(Cog):
             servers = {server: None for server in servers}
         servers[server_url.lower()] = None  # last message
         await self.config.channel(channel).servers.set(servers)
+        await ctx.send(_("Server added to this channel."))
 
     @commands.admin_or_permissions(manage_guild=True)
     @minecraft.command()
@@ -330,6 +333,7 @@ class Minecraft(Cog):
             servers = {server: None for server in servers}
         del servers[server_url.lower()]
         await self.config.channel(channel).servers.set(servers)
+        await ctx.send(_("Server removed from this channel."))
 
     @commands.admin_or_permissions(manage_guild=True)
     @minecraft.command()
@@ -343,6 +347,9 @@ class Minecraft(Cog):
         if not state:
             for server_url in self.cache[channel.id]:
                 self.cache[channel.id][server_url]["status"].raw["players"]["sample"] = {}
+            await ctx.send(_("I will not check players for the notifications."))
+        else:
+            await ctx.send(_("I will check players for the notifications."))
 
     @commands.admin_or_permissions(manage_guild=True)
     @minecraft.command()
@@ -353,19 +360,24 @@ class Minecraft(Cog):
         if channel is None:
             channel = ctx.channel
         await self.config.channel(channel).edit_last_message.set(state)
+        if not state:
+            await ctx.send(_("I will not edit my last message for the notifications."))
+        else:
+            await ctx.send(_("I will edit my last message for the notifications."))
 
     @commands.is_owner()
     @minecraft.command(hidden=True)
     async def forcecheck(self, ctx: commands.Context) -> None:
         """Force check Minecraft Java servers in Config."""
         await self.check_servers()
+        await ctx.send(_("Servers checked."))
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
     @minecraft.command(hidden=True)
     async def getdebugloopsstatus(self, ctx: commands.Context):
         """Get an embed for check loop status."""
-        embeds = [loop.get_debug_embed() for loop in self.cogsutils.loops.values()]
+        embeds = [loop.get_debug_embed() for loop in self.loops]
         await Menu(pages=embeds).start(ctx)
 
     @commands.Cog.listener()

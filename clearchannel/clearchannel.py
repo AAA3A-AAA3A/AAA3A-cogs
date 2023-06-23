@@ -16,11 +16,11 @@ _ = Translator("ClearChannel", __file__)
 
 
 @cog_i18n(_)
-class ClearChannel(DashboardIntegration, Cog):
+class ClearChannel(Cog, DashboardIntegration):
     """A cog to transfer all messages channel in a other channel!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -34,8 +34,6 @@ class ClearChannel(DashboardIntegration, Cog):
             "custom_message": {},
         }
         self.config.register_guild(**self.clearchannel_guild)
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
@@ -96,10 +94,10 @@ class ClearChannel(DashboardIntegration, Cog):
                 "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?"
             ).format(old_channel=old_channel)
             embed.color = 0xF00020
-            if not await self.cogsutils.ConfirmationAsk(
+            if not await CogsUtils.ConfirmationAsk(
                 ctx, content=f"{ctx.author.mention}", embed=embed
             ):
-                await self.cogsutils.delete_message(ctx.message)
+                await CogsUtils.delete_message(ctx.message)
                 return
 
         reason = _("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(ctx=ctx)

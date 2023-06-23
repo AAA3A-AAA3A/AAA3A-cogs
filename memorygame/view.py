@@ -1,3 +1,4 @@
+from AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
@@ -49,7 +50,7 @@ class MemoryGameView(discord.ui.View):
         for row, _list in enumerate(self._solution_display):
             for emoji in _list:
                 if emoji != "\u200c":
-                    custom_id = self.cog.cogsutils.generate_key(
+                    custom_id = CogsUtils.generate_key(
                         length=5, existing_keys=self._custom_ids
                     )
                     self._custom_ids[custom_id] = emoji
@@ -67,7 +68,7 @@ class MemoryGameView(discord.ui.View):
             name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar
         )
         self._message: discord.Message = await self.ctx.send(embed=embed, view=self)
-        self.cog.games[self._message] = self
+        self.cog.views[self._message] = self
         self._start = time.monotonic()
         return self._message
 

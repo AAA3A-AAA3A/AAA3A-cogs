@@ -554,6 +554,7 @@ class DrawView(discord.ui.View):
                 file=file,
                 view=self,
             )
+            self.cog.views[self._message] = self
         else:
             self._message: discord.Message = await self._message.edit(
                 content=None,

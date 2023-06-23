@@ -36,6 +36,7 @@ class DictionaryView(discord.ui.View):
                 )
             )
         self._message: discord.Message = await self.ctx.send(embed=embed, view=self)
+        self.cog.views[self._message] = self
         await self._ready.wait()
         return self._message
 

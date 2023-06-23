@@ -36,7 +36,7 @@ class Emoji(commands.EmojiConverter):
         argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument
-        return await super().convert(ctx, argument)
+        return await super().convert(ctx, argument=argument)
 
 
 class ForumTagConverter(discord.ext.commands.Converter):
@@ -65,9 +65,7 @@ class EditThread(Cog):
     """A cog to edit threads!"""
 
     def __init__(self, bot: Red) -> None:  # Never executed except manually.
-        self.bot: Red = bot
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
+        super().__init__(bot=bot)
 
     async def check_thread(self, ctx: commands.Context, thread: typing.Optional[discord.Thread]) -> bool:
         # if (
@@ -410,10 +408,10 @@ class EditThread(Cog):
                 content = f"{ctx.author.mention} " + _(
                     "Do you really want to delete the thread {thread.mention} ({thread.id})?"
                 ).format(thread=thread)
-            if not await self.cogsutils.ConfirmationAsk(
+            if not await CogsUtils.ConfirmationAsk(
                 ctx, content=content, embed=embed
             ):
-                await self.cogsutils.delete_message(ctx.message)
+                await CogsUtils.delete_message(ctx.message)
                 return
         try:
             await thread.delete()  # Not supported: reason=f"{ctx.author} ({ctx.author.id}) has deleted the thread #{thread.name} ({thread.id})."

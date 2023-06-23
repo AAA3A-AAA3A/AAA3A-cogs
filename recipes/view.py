@@ -52,6 +52,7 @@ class RecipesView(discord.ui.View):
         if self.recipe.instructions:
             self.add_item(InstructionsSectionsSelect(parent=self, recipe=self.recipe))
         self._message: discord.Message = await self.ctx.send(embeds=embeds, view=self)
+        self.cog.views[self._message] = self
         await self._ready.wait()
         return self._message
 

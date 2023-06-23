@@ -34,11 +34,9 @@ class DiscordSearch(Cog):
     """A cog to edit roles!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.re_pool: multiprocessing.Pool = multiprocessing.Pool()
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)

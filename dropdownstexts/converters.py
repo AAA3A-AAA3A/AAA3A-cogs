@@ -20,7 +20,7 @@ class Emoji(commands.EmojiConverter):
         argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument
-        return await super().convert(ctx, argument)
+        return await super().convert(ctx, argument=argument)
 
 
 class EmojiLabelTextConverter(discord.ext.commands.Converter):

@@ -1,4 +1,4 @@
-﻿from AAA3A_utils import Cog, CogsUtils, Menu, Loop  # isort:skip
+﻿from AAA3A_utils import Cog, Loop, CogsUtils, Menu  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -270,7 +270,7 @@ class Medicat(Cog):
     """This cog will only work on x server and therefore cannot be used by the general public!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -312,20 +312,27 @@ class Medicat(Cog):
 
         self._session: aiohttp.ClientSession = None
 
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
-
-    @property
-    def loops(self) -> typing.List[Loop]:
-        return list(self.cogsutils.loops.values())
-
     async def cog_load(self) -> None:
+        await super().cog_load()
         global MEDICAT_ICON_URL
         MEDICAT_ICON_URL = (await self.bot.fetch_invite("medicat")).guild.icon.url
         await self.edit_config_schema()
         self._session: aiohttp.ClientSession = aiohttp.ClientSession()
-        self.cogsutils.create_loop(function=self.ventoy_updates, name="Ventoy Updates", hours=1)
-        self.cogsutils.create_loop(
-            function=self.bootables_tools_updates, name="Bootables Tools Updates", hours=1
+        self.loops.append(
+            Loop(
+                cog=self,
+                name="Check Ventoy Updates",
+                function=self.ventoy_updates,
+                hours=1,
+            )
+        )
+        self.loops.append(
+            Loop(
+                cog=self,
+                name="Check Bootables Tools Updates",
+                function=self.bootables_tools_updates,
+                hours=1,
+            )
         )
         self.CC_added: asyncio.Event = asyncio.Event()
         await self.add_custom_commands()
@@ -483,7 +490,7 @@ class Medicat(Cog):
                 )
             )
             try:
-                hook: discord.Webhook = await self.cogsutils.get_hook(channel)
+                hook: discord.Webhook = await CogsUtils.get_hook(bot=self.bot, channel=channel)
                 message: discord.Message = await hook.send(
                     content=role.mention if role is not None else None,
                     embed=embed,
@@ -581,7 +588,7 @@ class Medicat(Cog):
                 )
             )
             try:
-                hook: discord.Webhook = await self.cogsutils.get_hook(channel)
+                hook: discord.Webhook = await CogsUtils.get_hook(bot=self.bot, channel=channel)
                 message: discord.Message = await hook.send(
                     content=role.mention if role is not None else None,
                     embed=embed,
@@ -702,7 +709,8 @@ class Medicat(Cog):
         command_name = command.split(" ")[0]
         if command_name not in CUSTOM_COMMANDS:
             return
-        await self.cogsutils.invoke_command(
+        await CogsUtils.invoke_command(
+            bot=self.bot,
             author=context.author,
             channel=context.channel,
             command=f"medicat {command}",
@@ -774,7 +782,7 @@ class Medicat(Cog):
             )
         )
         try:
-            hook: discord.Webhook = await self.cogsutils.get_hook(ctx.channel)
+            hook: discord.Webhook = await CogsUtils.get_hook(bot=self.bot, channel=ctx.channel)
             await hook.send(
                 embed=embed,
                 username="Bootables Tools Updates",
@@ -867,7 +875,7 @@ class Medicat(Cog):
     @medicat.command(hidden=True)
     async def getdebugloopsstatus(self, ctx: commands.Context) -> None:
         """Get an embed to check loops status."""
-        embeds = [loop.get_debug_embed() for loop in self.cogsutils.loops.values()]
+        embeds = [loop.get_debug_embed() for loop in self.loops]
         await Menu(pages=embeds).start(ctx)
 
     @is_owner_or_AAA3A()
@@ -888,5 +896,5 @@ class Medicat(Cog):
             await ctx.bot.invoke(context)
         except Exception as e:
             traceback_error = "".join(traceback.format_exception(type(e), e, e.__traceback__))
-            traceback_error = self.cogsutils.replace_var_paths(traceback_error)
+            traceback_error = CogsUtils.replace_var_paths(traceback_error)
             await Menu(pages=traceback_error, timeout=30, lang="py").start(ctx)

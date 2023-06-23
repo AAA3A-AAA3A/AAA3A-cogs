@@ -44,10 +44,8 @@ class Sudo(Cog):
     """
 
     def __init__(self, bot: Red):
-        self.bot: Red = bot
-
+        super().__init__(bot=bot)
         self.__authors__: typing.List[str] = ["AAA3A", "Draper", "jack1142 (Jackenmen#6607)"]
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     async def cog_load(self):
         self.all_owner_ids = copy(self.bot.owner_ids)
@@ -73,7 +71,8 @@ class Sudo(Cog):
         command_name = command.split(" ")[0]
         if command_name not in ["su", "unsu", "sutimeout"]:
             return
-        await self.cogsutils.invoke_command(
+        await CogsUtils.invoke_command(
+            bot=self.bot,
             author=context.author,
             channel=context.channel,
             command=f"sudo {command}",
@@ -127,7 +126,8 @@ class Sudo(Cog):
         Use `[p]sudo`!
         """
         ctx.bot.owner_ids.add(ctx.author.id)
-        await self.cogsutils.invoke_command(
+        await CogsUtils.invoke_command(
+            bot=ctx.bot,
             author=ctx.author,
             channel=ctx.channel,
             command=command,

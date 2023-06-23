@@ -1,5 +1,5 @@
 from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
+from redbot.core import commands  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
@@ -31,9 +31,7 @@ class EditFile(Cog):
     """
 
     def __init__(self, bot: Red):
-        self.bot: Red = bot
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
+        super().__init__(bot=bot)
 
     @commands.is_owner()
     @commands.hybrid_group(aliases=["fileedit"])
@@ -61,7 +59,7 @@ class EditFile(Cog):
         if match[2] is not None:
             start = int(match[2])
             line_span = start, int(match[3] or start)
-        path = self.cogsutils.replace_var_paths(path, reverse=True)
+        path = CogsUtils.replace_var_paths(path, reverse=True)
         path = Path(path)
         try:
             size = os.path.getsize(path)
@@ -97,7 +95,7 @@ class EditFile(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("The path you specified refers to a directory, not a file.")
             )
-        path = Path(self.cogsutils.replace_var_paths(str(path)))
+        path = Path(CogsUtils.replace_var_paths(str(path)))
         if menu:
             len_lines = len(content.split(b"\n"))
             line = (
@@ -136,7 +134,7 @@ class EditFile(Cog):
         if match[2]:
             start = int(match[2])
             line_span = start, int(match[3] or start)
-        path = self.cogsutils.replace_var_paths(path, reverse=True)
+        path = CogsUtils.replace_var_paths(path, reverse=True)
         path = Path(path)
         try:
             with open(file=path, mode="rb") as file:
@@ -185,7 +183,7 @@ class EditFile(Cog):
             lines = new_file_content.split(b"\n")
         with open(path, "wb") as file:
             file.write(b"\n".join(lines))
-        path = Path(self.cogsutils.replace_var_paths(str(path)))
+        path = Path(CogsUtils.replace_var_paths(str(path)))
         await ctx.send(
             _(
                 "This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly."
@@ -219,13 +217,13 @@ class EditFile(Cog):
             + "\n\n"
             + f"Files `.py`:\n{list_files}"
         )
-        message = self.cogsutils.replace_var_paths(message)
-        await ctx.send(box(f"{message}"))
+        message = CogsUtils.replace_var_paths(message)
+        await ctx.send(box(message))
 
     @editfile.command()
     async def listdir(self, ctx: commands.Context, *, path: str) -> None:
         """List all files/directories of a directory from its path."""
-        path = Path(self.cogsutils.replace_var_paths(path, reverse=True))
+        path = Path(CogsUtils.replace_var_paths(path, reverse=True))
         if not path.exists():
             raise commands.UserFeedbackCheckFailure(
                 _("This directory cannot be found on the host machine.")
@@ -243,13 +241,13 @@ class EditFile(Cog):
                 message += "\n" + f"- [FILE] {file}"
             elif path_file.is_dir():
                 message += "\n" + f"- [DIR] {file}"
-        message = self.cogsutils.replace_var_paths(message)
+        message = CogsUtils.replace_var_paths(message)
         await Menu(pages=message, lang="ini").start(ctx)
 
     @editfile.command()
     async def rename(self, ctx: commands.Context, new_name: str, *, path: str) -> None:
         """Rename a file."""
-        path = Path(self.cogsutils.replace_var_paths(path))
+        path = Path(CogsUtils.replace_var_paths(path))
         if not path.exists():
             raise commands.UserFeedbackCheckFailure(
                 _("This file cannot be found on the host machine.")
@@ -281,7 +279,7 @@ class EditFile(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("The path you specified refers to a directory, not a file.")
             )
-        path: Path = Path(self.cogsutils.replace_var_paths(path))
+        path: Path = Path(CogsUtils.replace_var_paths(path))
         try:
             path.unlink()
         except FileNotFoundError:

@@ -21,11 +21,11 @@ class AcronymGame(Cog):
     """A cog to play a random match of Acrononym game, with Modals!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
-        self.games: typing.Dict[discord.Message, AcronymGameView] = {}
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
+    @property
+    def games(self) -> typing.Dict[discord.Message, AcronymGameView]:
+        return self.views
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)

@@ -4,6 +4,7 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import re
+import validators
 
 try:
     from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
@@ -13,6 +14,19 @@ except ImportError:
 _ = Translator("UrlButtons", __file__)
 
 
+class UrlConverter(commands.Converter):
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> str:
+        if url.startswith("<") and url.endswith(">"):
+            url = url[1:-1]
+        try:
+            validators.url(url, public=True)
+        except validators.ValidationFailure:
+            raise commands.BadArgument(_("It's not a valid public URL."))
+        return url
+
+
 class Emoji(commands.EmojiConverter):
     async def convert(
         self, ctx: commands.Context, argument: str
@@ -20,7 +34,7 @@ class Emoji(commands.EmojiConverter):
         argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument
-        return await super().convert(ctx, argument)
+        return await super().convert(ctx, argument=argument)
 
 
 class EmojiUrlConverter(discord.ext.commands.Converter):
@@ -40,9 +54,5 @@ class EmojiUrlConverter(discord.ext.commands.Converter):
             )
         # if emoji is not None:
         emoji = await Emoji().convert(ctx, emoji.strip())
-        url = str(url)
-        if url.startswith("<") and url.endswith(">"):
-            url = url[1:-1]
-        if not url.startswith("http"):
-            raise discord.ext.commands.BadArgument(_("Url must start with `https` or `http`."))
+        url = await UrlConverter().convert(ctx, argument=url)
         return emoji, url

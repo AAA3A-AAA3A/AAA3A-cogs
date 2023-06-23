@@ -83,9 +83,7 @@ class CtxVar(Cog):
     """A cog to list and display the contents of all sub-functions of `ctx`!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
+        super().__init__(bot=bot)
 
     @commands.is_owner()
     @commands.hybrid_group()
@@ -147,7 +145,7 @@ class CtxVar(Cog):
                             inline=True,
                             name=f"{x}",
                             value=box(
-                                self.cogsutils.replace_var_paths(
+                                CogsUtils.replace_var_paths(
                                     sanitize_output(ctx, str(getattr(instance, x))[:100])
                                 ),
                                 "py",
@@ -206,7 +204,7 @@ class CtxVar(Cog):
             del result[-1]
             result = "".join(result)
         result += "\n]"
-        result = self.cogsutils.replace_var_paths(sanitize_output(ctx, result))
+        result = CogsUtils.replace_var_paths(sanitize_output(ctx, result))
 
         await Menu(pages=result.strip(), lang="py").start(ctx)
 
@@ -283,7 +281,7 @@ class CtxVar(Cog):
                     console=console,
                 )
             result = console.file.getvalue()
-        result = self.cogsutils.replace_var_paths(sanitize_output(ctx, result))
+        result = CogsUtils.replace_var_paths(sanitize_output(ctx, result))
 
         await Menu(pages=result.strip(), lang="py").start(ctx)
 

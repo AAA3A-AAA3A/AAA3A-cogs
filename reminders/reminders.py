@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils, Settings, Loop, Menu  # isort:skip
+from AAA3A_utils import Cog, Loop, CogsUtils, Settings, Menu  # isort:skip
 from redbot.core import commands, app_commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -53,6 +53,7 @@ async def remind_message_context_menu(interaction: discord.Interaction, message:
     if timeout:
         return
     context = await cog.cogsutils.invoke_command(
+        bot=interaction.client,
         author=interaction.user,
         channel=interaction.channel,
         command=f"remindme {time_input.value} {message.jump_url}",
@@ -75,7 +76,7 @@ class Reminders(Cog):
     RepeatRule = RepeatRule
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -100,8 +101,6 @@ class Reminders(Cog):
         self.config.register_user(**self.reminders_user)
 
         self.cache: typing.Dict[int, typing.Dict[int, Reminder]] = {}
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
@@ -155,11 +154,8 @@ class Reminders(Cog):
             commands_group=self.configuration,
         )
 
-    @property
-    def loops(self) -> typing.List[Loop]:
-        return list(self.cogsutils.loops.values())
-
     async def cog_load(self) -> None:
+        await super().cog_load()
         await self.settings.add_commands()
         self.bot.tree.add_command(remind_message_context_menu)
         all_reminders = await self.config.all_users()
@@ -173,7 +169,14 @@ class Reminders(Cog):
                 if user_id not in self.cache:
                     self.cache[user_id] = {}
                 self.cache[user_id][int(reminder_id)] = reminder
-        self.cogsutils.create_loop(function=self.reminders_loop, name="Reminders", minutes=1)
+        self.loops.append(
+            Loop(
+                cog=self,
+                name="Check Reminders",
+                function=self.reminders_loop,
+                minutes=1,
+            )
+        )
 
     async def cog_unload(self) -> None:
         self.bot.tree.remove_command(remind_message_context_menu.name)
@@ -427,6 +430,7 @@ class Reminders(Cog):
         )
         if view is not None:
             view._message = message
+            self.views[message] = view
 
     @commands.guild_only()
     @commands.hybrid_command()
@@ -496,7 +500,8 @@ class Reminders(Cog):
         else:
             destination_user_permissions = destination.permissions_for(ctx.author)
             destination_bot_permissions = destination.permissions_for(ctx.me)
-            context = await self.cogsutils.invoke_command(
+            context = await CogsUtils.invoke_command(
+                bot=ctx.bot,
                 author=ctx.author,
                 channel=destination,
                 command="remind",
@@ -589,6 +594,7 @@ class Reminders(Cog):
         )
         if view is not None:
             view._message = message
+            self.views[message] = view
 
     @commands.hybrid_group(aliases=["reminders"])
     async def reminder(self, ctx: commands.Context) -> None:
@@ -657,7 +663,8 @@ class Reminders(Cog):
             destination = ctx.channel
         destination_user_permissions = destination.permissions_for(ctx.author)
         destination_bot_permissions = destination.permissions_for(ctx.me)
-        context = await self.cogsutils.invoke_command(
+        context = await CogsUtils.invoke_command(
+            bot=ctx.bot,
             author=ctx.author,
             channel=destination,
             command=command,
@@ -697,6 +704,7 @@ class Reminders(Cog):
         )
         if view is not None:
             view._message = message
+            self.views[message] = view
 
     @commands.guild_only()
     @commands.guildowner_or_permissions(administrator=True)
@@ -790,6 +798,7 @@ class Reminders(Cog):
         )
         if view is not None:
             view._message = message
+            self.views[message] = view
 
     @commands.bot_has_permissions(embed_links=True)
     @reminder.command(aliases=["parsingtips"])
@@ -928,7 +937,9 @@ class Reminders(Cog):
         )
         embed.description = reminder.get_info()
         view = ReminderView(cog=self, reminder=reminder, me_too=False)
-        view._message = await ctx.send(embed=embed, view=view)
+        message = await ctx.send(embed=embed, view=view)
+        view._message = message
+        self.views[message] = view
 
     @reminder.command()
     async def text(
@@ -1050,10 +1061,10 @@ class Reminders(Cog):
             embed.title = _("⚠️ - Reminders")
             embed.description = _("Do you really want to remove ALL your reminders?")
             embed.color = 0xF00020
-            if not await self.cogsutils.ConfirmationAsk(
+            if not await CogsUtils.ConfirmationAsk(
                 ctx, content=f"{ctx.author.mention}", embed=embed
             ):
-                await self.cogsutils.delete_message(ctx.message)
+                await CogsUtils.delete_message(ctx.message)
                 return
         await self.config.user(ctx.author).reminders.clear()
         try:
@@ -1116,10 +1127,10 @@ class Reminders(Cog):
                 "Do you really want to remove ALL {user.display_name}'s reminders?"
             ).format(user=user)
             embed.color = 0xF00020
-            if not await self.cogsutils.ConfirmationAsk(
+            if not await CogsUtils.ConfirmationAsk(
                 ctx, content=f"{ctx.author.mention}", embed=embed
             ):
-                await self.cogsutils.delete_message(ctx.message)
+                await CogsUtils.delete_message(ctx.message)
                 return
         await self.config.user(user).reminders.clear()
         try:
@@ -1131,7 +1142,7 @@ class Reminders(Cog):
     @configuration.command(hidden=True)
     async def getdebugloopsstatus(self, ctx: commands.Context) -> None:
         """Get an embed to check loops status."""
-        embeds = [loop.get_debug_embed() for loop in self.cogsutils.loops.values()]
+        embeds = [loop.get_debug_embed() for loop in self.loops]
         await Menu(pages=embeds).start(ctx)
 
     @configuration.command()
@@ -1199,6 +1210,7 @@ class Reminders(Cog):
                         else None,
                     )
                     await reminder.save()
+        await ctx.send(_("Data successfully migrated from RemindMe by PhasecoreX."))
 
     @configuration.command()
     async def migratefromfifo(self, ctx: commands.Context) -> None:
@@ -1248,6 +1260,7 @@ class Reminders(Cog):
                         repeat=repeat
                     )
                     await reminder.save()
+        await ctx.send(_("Data successfully migrated from FIFO by Fox."))
 
     @commands.Cog.listener()
     async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.

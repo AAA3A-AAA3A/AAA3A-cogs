@@ -19,11 +19,11 @@ class SplitOrStealGame(Cog):
     """A cog to play a match of SplitOrSteal game!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
-        self.games: typing.Dict[discord.Message, SplitOrStealGameView] = {}
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
+    @property
+    def games(self) -> typing.Dict[discord.Message, SplitOrStealGameView]:
+        return self.views
 
     @commands.guild_only()
     @commands.hybrid_command(aliases=["splitorsteal", "sosg", "sos"])

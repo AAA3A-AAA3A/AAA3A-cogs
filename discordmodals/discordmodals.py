@@ -28,7 +28,7 @@ class Emoji(commands.EmojiConverter):
         argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument
-        return await super().convert(ctx, argument)
+        return await super().convert(ctx, argument=argument)
 
 
 class YAMLConverter(commands.Converter):
@@ -204,7 +204,7 @@ class DiscordModals(Cog):
     """A cog to use Discord Modals, forms with graphic interface!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -223,9 +223,8 @@ class DiscordModals(Cog):
         self.config.register_global(**self.discordmodals_global)
         self.config.register_guild(**self.discordmodals_guild)
 
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
-
     async def cog_load(self) -> None:
+        await super().cog_load()
         await self.edit_config_schema()
         await self.load_buttons()
 
@@ -271,23 +270,27 @@ class DiscordModals(Cog):
     async def load_buttons(self) -> None:
         all_guilds = await self.config.all_guilds()
         for guild in all_guilds:
-            for modal in all_guilds[guild]["modals"]:
+            for message in all_guilds[guild]["modals"]:
+                channel = self.bot.get_channel(int((str(message).split("-"))[0]))
+                if channel is None:
+                    continue
+                message_id = int((str(message).split("-"))[1])
                 try:
-                    button = all_guilds[guild]["modals"][modal]["button"]
+                    button = all_guilds[guild]["modals"][message]["button"]
                     if "custom_id" not in button:
                         button[
                             "custom_id"
-                        ] = f"DiscordModals_{self.cogsutils.generate_key(length=10)}"
+                        ] = f"DiscordModals_{CogsUtils.generate_key(length=10)}"
                     button["style"] = discord.ButtonStyle(button["style"])
                     button = discord.ui.Button(**button)
                     button.callback = self.send_modal
                     view = discord.ui.View(timeout=None)
                     view.add_item(button)
-                    self.bot.add_view(view, message_id=int((str(modal).split("-"))[1]))
-                    self.cogsutils.views.append(view)
+                    self.bot.add_view(view, message_id=message_id)
+                    self.views[discord.PartialMessage(channel=channel, id=message_id)] = view
                 except Exception as e:
                     self.log.error(
-                        f"The Button View could not be added correctly for the {guild}-{modal} message.",
+                        f"The Button View could not be added correctly for the `{guild}-{message}` message.",
                         exc_info=e,
                     )
 
@@ -446,13 +449,13 @@ class DiscordModals(Cog):
         try:
             button = argument["button"]
             button["style"] = discord.ButtonStyle(button["style"])
-            button["custom_id"] = f"DiscordModals_{self.cogsutils.generate_key(length=10)}"
+            button["custom_id"] = f"DiscordModals_{CogsUtils.generate_key(length=10)}"
             button = discord.ui.Button(**button)
             button.callback = self.send_modal
             view = discord.ui.View(timeout=None)
             view.add_item(button)
-            await message.edit(view=view)
-            self.cogsutils.views.append(view)
+            message = await message.edit(view=view)
+            self.views[message] = view
         except discord.HTTPException:
             raise commands.UserFeedbackCheckFailure(
                 _("Sorry. An error occurred when I tried to put the button on the message.")
@@ -460,7 +463,7 @@ class DiscordModals(Cog):
         modal = discord.ui.Modal(
             title=argument["title"],
             timeout=None,
-            custom_id=f"DiscordModals_{self.cogsutils.generate_key(length=10)}",
+            custom_id=f"DiscordModals_{CogsUtils.generate_key(length=10)}",
         )
         inputs = []
         for _input in argument["modal"]:
@@ -492,6 +495,7 @@ class DiscordModals(Cog):
             },
         }
         await self.config.guild(ctx.guild).modals.set(config)
+        await ctx.send(_("Modal created."))
 
     @discordmodals.command(aliases=["-"])
     async def remove(self, ctx: commands.Context, message: discord.Message) -> None:
@@ -514,3 +518,4 @@ class DiscordModals(Cog):
     async def purge(self, ctx: commands.Context) -> None:
         """Clear all Modals for a guild."""
         await self.config.guild(ctx.guild).modals.clear()
+        await ctx.send(_("All Modals purged."))

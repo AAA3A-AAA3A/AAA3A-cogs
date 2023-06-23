@@ -56,6 +56,7 @@ class SimpleSanctionView(discord.ui.View):
             button.callback = self._callback
             self.add_item(button)
         self._message: discord.Message = await self.ctx.send(embed=embed, view=self)
+        self.cog.views[self._message] = self
         await self._ready.wait()
         return self._message
 

@@ -1,3 +1,4 @@
+from AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
@@ -22,7 +23,7 @@ from recurrent.event_parser import RecurringEvent
 
 from redbot.core.utils.chat_formatting import humanize_list
 
-from .views import SnoozeView
+from .views import SnoozeView, ReminderView, RepeatView
 
 _ = Translator("Reminders", __file__)
 
@@ -409,6 +410,11 @@ class Reminder:
         return self
 
     async def delete(self) -> None:
+        for view in self.cog.views.values():
+            if isinstance(view, (ReminderView, RepeatView)) and view.reminder == self and not view.is_finished():
+                await view.on_timeout()
+                view.stop()
+        self.next_expires_at = None
         try:
             del self.cog.cache[self.user_id][self.id]
         except KeyError:
@@ -528,8 +534,12 @@ class Reminder:
                 raise RuntimeError(
                     f"Command invoker not found for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
                 )
-            context: commands.Context = await self.cog.cogsutils.invoke_command(
-                author=invoker, channel=destination, command=self.content["command"], assume_yes=True
+            context: commands.Context = await CogsUtils.invoke_command(
+                bot=self.cog.bot,
+                author=invoker,
+                channel=destination,
+                command=self.content["command"],
+                assume_yes=True,
             )
             # for cog_name in ("CustomCommands", "Alias"):
             #     if (cog := self.cog.bot.get_cog(cog_name)) is not None:
@@ -608,6 +618,7 @@ class Reminder:
                     )
                     if snooze_view_enabled:
                         view._message = message
+                        self.cog.views[message] = view
                 else:  # type `say`
                     message = await destination.send(
                         content=self.content["text"],

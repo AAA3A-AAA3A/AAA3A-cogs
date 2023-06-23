@@ -35,13 +35,12 @@ class GistsHandler(Cog):
     """A cog to create new Gists and edit/delete existing ones!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.gists_client: gists.Client = None
 
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
-
     async def cog_load(self) -> None:
+        await super().cog_load()
         api_tokens = await self.bot.get_shared_api_tokens(service_name="github")
         self.gists_client = gists.Client()
         if (token := api_tokens.get("token")) is not None:

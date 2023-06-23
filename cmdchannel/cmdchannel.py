@@ -1,5 +1,5 @@
 from AAA3A_utils import Cog, CogsUtils  # isort:skip
-from redbot.core import commands, Config  # isort:skip
+from redbot.core import commands  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
@@ -17,13 +17,13 @@ class CmdChannel(Cog):
     """A cog to send the result of a command to another channel!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
-        self.config: Config = Config.get_conf(
-            self,
-            identifier=205192943327321000143939875896557571750,  # 793502759720
-            force_registration=True,
-        )
+        # self.config: Config = Config.get_conf(
+        #     self,
+        #     identifier=205192943327321000143939875896557571750,  # 793502759720
+        #     force_registration=True,
+        # )
         # self.cmd_guild: typing.Dict[
         #     str, typing.Union[typing.Optional[discord.TextChannel], bool]
         # ] = {
@@ -34,8 +34,6 @@ class CmdChannel(Cog):
         #     "informationmessage_cmdchannel": False,  # Enable the information message.
         # }
         # self.config.register_guild(**self.cmd_guild)
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message) -> None:
@@ -53,7 +51,8 @@ class CmdChannel(Cog):
         if command_name not in ["cmduser", "cmduserchannel"]:
             return
         command = command[3:]
-        await self.cogsutils.invoke_command(
+        await CogsUtils.invoke_command(
+            bot=self.bot,
             author=context.author,
             channel=context.channel,
             command=f"cmdchannel {command}",
@@ -87,7 +86,8 @@ class CmdChannel(Cog):
         if not command and not ctx.message.embeds and not ctx.message.attachments:
             await ctx.send_help()
             return
-        await self.cogsutils.invoke_command(
+        await CogsUtils.invoke_command(
+            bot=ctx.bot,
             author=ctx.author,
             channel=channel,
             command=command,
@@ -118,7 +118,8 @@ class CmdChannel(Cog):
                     "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
                 )
             )
-        await self.cogsutils.invoke_command(
+        await CogsUtils.invoke_command(
+            bot=ctx.bot,
             author=user,
             channel=ctx.channel,
             command=command,
@@ -159,7 +160,8 @@ class CmdChannel(Cog):
                 )
             )
 
-        await self.cogsutils.invoke_command(
+        await CogsUtils.invoke_command(
+            bot=ctx.bot,
             author=user,
             channel=channel,
             command=command,

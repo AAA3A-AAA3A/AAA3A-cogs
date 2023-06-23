@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
+from AAA3A_utils import Cog  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red, NotMessage  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -20,7 +20,7 @@ class MemberPrefix(Cog):
     """A cog to allow a member to choose custom prefixes, just for them!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -37,8 +37,6 @@ class MemberPrefix(Cog):
         self.config.register_member(**self.memberprefix_member)
 
         self.original_prefix_manager = self.bot.command_prefix
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
         # _settings: typing.Dict[
         #     str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
@@ -62,6 +60,7 @@ class MemberPrefix(Cog):
         # )
 
     async def cog_load(self) -> None:
+        await super().cog_load()
         # await self.settings.add_commands()
         self.bot.command_prefix = self.prefix_manager
 
@@ -173,11 +172,13 @@ class MemberPrefix(Cog):
         """Configure MemberPrefix."""
 
     @configuration.command()
-    async def memberprefixpurge(self, ctx: commands.Context, guild: discord.Guild) -> None:
-        """Clear all members prefixes for a specified server."""
-        await self.config.clear_all_members(guild=guild)
-
-    @configuration.command()
     async def resetmemberprefix(self, ctx: commands.Context, guild: discord.Guild, user: discord.User) -> None:
         """Clear prefixes for a specified member in a specified server."""
         await self.config.member_from_ids(guild.id, user.id).clear()
+        await ctx.send(_("Prefixes cleared for this member in this guild."))
+
+    @configuration.command(hidden=True)
+    async def purge(self, ctx: commands.Context, guild: discord.Guild) -> None:
+        """Clear all members prefixes for a specified server."""
+        await self.config.clear_all_members(guild=guild)
+        await ctx.send(_("All members prefixes purged in this guild."))

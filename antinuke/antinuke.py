@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
+from AAA3A_utils import Cog, Settings  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -17,11 +17,11 @@ _ = Translator("AntiNuke", __file__)
 
 
 @cog_i18n(_)
-class AntiNuke(DashboardIntegration, Cog):
+class AntiNuke(Cog, DashboardIntegration):
     """A cog to remove all permissions from a person who deletes a channel!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -41,8 +41,6 @@ class AntiNuke(DashboardIntegration, Cog):
         }
         self.config.register_guild(**self.antinuke_guild)
         self.config.register_member(**self.antinuke_member)
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
@@ -87,6 +85,7 @@ class AntiNuke(DashboardIntegration, Cog):
         )
 
     async def cog_load(self) -> None:
+        await super().cog_load()
         await self.settings.add_commands()
 
     async def red_delete_data_for_user(

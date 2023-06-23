@@ -38,9 +38,7 @@ class TransferChannel(Cog):
     """A cog to transfer all messages channel in a other channel!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
+        super().__init__(bot=bot)
 
     def embed_from_msg(self, message: discord.Message) -> discord.Embed:
         content = message.content
@@ -151,7 +149,7 @@ class TransferChannel(Cog):
                 embed = self.embed_from_msg(message)
                 await destination.send(embed=embed)
             elif way == "webhooks":
-                hook = await self.cogsutils.get_hook(destination)
+                hook = await CogsUtils.get_hook(bot=ctx.bot, channel=destination)
                 await hook.send(
                     username=message.author.display_name,
                     avatar_url=message.author.display_avatar,

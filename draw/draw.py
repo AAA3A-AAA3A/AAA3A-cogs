@@ -29,6 +29,7 @@ from .constants import (
     base_colors_options,
 )  # NOQA
 from .start_view import StartDrawView
+from .view import DrawView
 
 # Credits:
 # General repo credits.
@@ -44,18 +45,16 @@ class Draw(Cog):
     """A cog to make pixel arts on Discord!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
+        self.__authors__: typing.List[str] = ["WitherredAway", "AAA3A"]
 
         self._session: aiohttp.ClientSession = None
-        self.drawings: typing.Dict[discord.Message, StartDrawView] = {}
         self.cache: typing.Dict[
             typing.Union[str, int, typing.Tuple[int, int, int, int]]
         ] = {}  # Unicode emojis, colors RGB and Discord custom emojis ids.
 
-        self.__authors__ = ["WitherredAway", "AAA3A"]
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
-
     async def cog_load(self) -> None:
+        await super().cog_load()
         self._session: aiohttp.ClientSession = aiohttp.ClientSession()
         asyncio.create_task(self.generate_cache())
 
@@ -67,6 +66,10 @@ class Draw(Cog):
         if self._session is not None:
             await self._session.close()
         await super().cog_unload()
+
+    @property
+    def drawings(self) -> typing.Dict[discord.Message, DrawView]:
+        return self.views
 
     async def get_pixel(
         self,

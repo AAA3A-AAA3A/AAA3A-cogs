@@ -1,4 +1,4 @@
-﻿from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
+﻿from AAA3A_utils import Cog, Menu  # isort:skip
 from redbot.core import commands, app_commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -89,7 +89,7 @@ class WandboxFlagsConverter(commands.FlagConverter):  # , prefix="--", delimiter
     async def convert(self, ctx: commands.Context, argument: str) -> typing.Any:
         if ":" not in argument:
             raise commands.BadArgument(_("No flags in argument."))
-        return super().conver(ctx, argument)
+        return super().convert(ctx, argument=argument)
 
 
 class TioFlagsConverter(commands.FlagConverter):
@@ -105,7 +105,7 @@ class TioFlagsConverter(commands.FlagConverter):
     async def convert(self, ctx: commands.Context, argument: str) -> typing.Any:
         if ":" not in argument:
             raise commands.BadArgument(_("No flags in argument."))
-        return super().conver(ctx, argument)
+        return super().convert(ctx, argument=argument)
 
 
 @cog_i18n(_)
@@ -113,7 +113,7 @@ class RunCode(Cog):
     """A cog to compile and run codes in some languages! Use `[p]setruncode listlanguages` to get a list of all the available languages."""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.wandbox_languages: typing.Dict[
             str, typing.Dict[str, typing.Dict[str, WandboxEngine]]
@@ -125,9 +125,8 @@ class RunCode(Cog):
             typing.Union[discord.Member, discord.User], typing.List[WandboxResponse, TioResponse]
         ] = {}
 
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
-
     async def cog_load(self) -> None:
+        await super().cog_load()
         self._session: aiohttp.ClientSession = aiohttp.ClientSession()
         asyncio.create_task(self.load_wandbox_languages())
         asyncio.create_task(self.load_tio_languages())

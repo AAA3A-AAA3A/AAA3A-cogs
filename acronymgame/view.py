@@ -135,7 +135,7 @@ class AcronymGameView(discord.ui.View):
         embed.add_field(name="End time for joining", value=f"<t:{end_time}:T> (<t:{end_time}:R>)")
         self._mode = "join"
         self._message: discord.Message = await self.ctx.send(embed=embed, view=self)
-        self.cog.games[self._message] = self
+        self.cog.views[self._message] = self
         await asyncio.sleep(120)
         self._mode = "vote"
         if len(self.players) < 3:

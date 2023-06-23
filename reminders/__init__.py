@@ -6,7 +6,7 @@ import sys
 
 try:
     import AAA3A_utils
-except ImportError:
+except ModuleNotFoundError:
     raise errors.CogLoadError(
         "The needed utils to run the cog were not found. Please execute the command `[p]pipinstall git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git`. A restart of the bot isn't necessary."
     )
@@ -17,7 +17,7 @@ for module in modules:
     importlib.reload(sys.modules[module])
 del AAA3A_utils
 import AAA3A_utils
-AAA3A_utils.dev.CogsUtils = AAA3A_utils.CogsUtils
+AAA3A_utils.dev.Cog = AAA3A_utils.Cog
 __version__ = AAA3A_utils.__version__
 with open(os.path.join(os.path.dirname(__file__), "utils_version.json"), mode="r") as f:
     data = json.load(f)
@@ -41,4 +41,4 @@ __red_end_user_data_statement__ = get_end_user_data_statement(file=__file__)
 
 async def setup(bot: Red) -> None:
     cog = Reminders(bot)
-    await cog.cogsutils.add_cog(bot)
+    await bot.add_cog(cog)

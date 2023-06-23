@@ -48,7 +48,6 @@ class StartDrawView(discord.ui.View):
     async def start(self, ctx: commands.Context) -> None:
         self.ctx: commands.Context = ctx
         await self._update()
-        self.cog.drawings[self._message] = self
         await self._ready.wait()
         if self.draw_view is not None:
             await self.draw_view._ready.wait()

@@ -1,3 +1,4 @@
+from AAA3A_utils import Cog  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
@@ -19,7 +20,7 @@ class ProfileConverter(commands.Converter):
 
 
 @cog_i18n(_)
-class settings(commands.Cog):
+class settings(Cog):
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
     @commands.hybrid_group(name="settickettool", aliases=["tickettoolset"])
@@ -95,7 +96,7 @@ class settings(commands.Cog):
                 message = await channel.send(embed=embed, view=view)
             else:
                 await message.edit(view=view)
-            self.cogsutils.views.append(view)
+            self.views[message] = view
             buttons_config[f"{message.channel.id}-{message.id}"] = {"profile": profile}
             await self.config.guild(ctx.guild).buttons.set(buttons_config)
         else:
@@ -142,8 +143,8 @@ class settings(commands.Cog):
             if message is None:
                 message = await channel.send(embed=embed, view=view)
             else:
-                await message.edit(view=view)
-            self.cogsutils.views.append(view)
+                message = await message.edit(view=view)
+            self.views[message] = view
             dropdowns_config[f"{message.channel.id}-{message.id}"] = [
                 {
                     "profile": profile,

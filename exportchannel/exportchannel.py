@@ -39,9 +39,7 @@ class ExportChannel(Cog):
     """A cog to export all or part of a channel's messages to an html file!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
+        super().__init__(bot=bot)
 
     async def check_channel(self, ctx: commands.Context, channel: discord.TextChannel) -> None:
         channel_permissions = ctx.channel.permissions_for(ctx.me)

@@ -1,4 +1,4 @@
-﻿from AAA3A_utils import Cog, CogsUtils, Loop, Menu, Settings, Loop  # isort:skip
+﻿from AAA3A_utils import Cog, Loop, CogsUtils, Menu, Settings  # isort:skip
 from redbot.core import commands, app_commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -209,7 +209,7 @@ class SourceConverter(commands.Converter):
                     argument = name
                     found = True
             if not found:
-                raise commands.BadArgument(_("This source doesn't exist."))
+                raise commands.BadArgument(_("Please provide a valid documentations source."))
         return argument.lower()
 
 
@@ -219,11 +219,12 @@ class StrConverter(commands.Converter):
 
 
 @cog_i18n(_)
-class GetDocs(DashboardIntegration, Cog):
+class GetDocs(Cog, DashboardIntegration):
     """A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
+        self.__authors__: typing.List[str] = ["AAA3A", "amyrinbot"]
 
         self.config: Config = Config.get_conf(
             self,
@@ -248,9 +249,6 @@ class GetDocs(DashboardIntegration, Cog):
         # self._bcontext = None
         self._session: aiohttp.ClientSession = None
         # self._rate_limit = AsyncLimiter(100, 30)
-
-        self.__authors__: typing.List[str] = ["AAA3A", "amyrinbot"]
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
@@ -278,11 +276,8 @@ class GetDocs(DashboardIntegration, Cog):
             commands_group=self.configuration,
         )
 
-    @property
-    def loops(self) -> typing.List[Loop]:
-        return list(self.cogsutils.loops.values())
-
     async def cog_load(self) -> None:
+        await super().cog_load()
         await self.settings.add_commands()
         # self._playwright = await async_playwright().start()
         # self._browser = await self._playwright.chromium.launch()
@@ -335,6 +330,8 @@ class GetDocs(DashboardIntegration, Cog):
             if source is None:
                 source = await self.config.default_source()
                 if source not in self.documentations:
+                    if "discord.py" not in self.documentations:
+                        raise commands.UserFeedbackCheckFailure(_("Please provide a valid documentations source."))
                     source = "discord.py"
             source: Source = self.documentations[source]
             if query is None:
@@ -395,6 +392,8 @@ class GetDocs(DashboardIntegration, Cog):
         if source is None:
             source = await self.config.default_source()
             if source not in self.documentations:
+                if "discord.py" not in self.documentations:
+                    raise commands.UserFeedbackCheckFailure(_("Please provide a valid documentations source."))
                 source = "discord.py"
         source: Source = self.documentations[source]
         if query in ["", "events"]:
@@ -618,7 +617,7 @@ class GetDocs(DashboardIntegration, Cog):
     @configuration.command(hidden=True)
     async def getdebugloopsstatus(self, ctx: commands.Context) -> None:
         """Get an embed to check loops status."""
-        embeds = [loop.get_debug_embed() for loop in self.cogsutils.loops.values()]
+        embeds = [loop.get_debug_embed() for loop in self.loops]
         await Menu(pages=embeds).start(ctx)
 
     @commands.Cog.listener()
@@ -713,20 +712,35 @@ class Source:
 
     async def load(self) -> None:
         if self.name not in ["discordapi", "git"]:
-            self._rtfm_caching_task = self.cog.cogsutils.create_loop(
-                self._build_rtfm_cache, name=f"{self.name}: Build RTFM Cache", limit_count=1
+            self._rtfm_caching_task = self.cog.loops.append(
+                Loop(
+                    cog=self.cog,
+                    name=f"{self.name}: Build RTFM Cache",
+                    function=self._build_rtfm_cache,
+                    limit_count=1,
+                )
             )
             while self._rtfm_cache is None or (
                 self._rtfm_caching_task is not None and self._rtfm_caching_task.currently_running
             ):
                 await asyncio.sleep(1)
-        self._docs_caching_task = self.cog.cogsutils.create_loop(
-            self._build_docs_cache,
-            name=f"{self.name}: Build Documentations Cache",
-            limit_count=1,
+        self._docs_caching_task = self.cog.loops.append(
+            Loop(
+                cog=self.cog,
+                name=f"{self.name}: Build Documentations Cache",
+                function=self._build_docs_cache,
+                limit_count=1,
+            )
         )
         # if not self._rtfs_cache:
-        #     self._rtfs_caching_task = self.cog.cogsutils.create_loop(self._build_rtfs_cache, name=f"{self.name}: Build RTFS Cache", limit_count=1)
+        #     self._rtfs_caching_task = self.cog.loops.append(
+        #         Loop(
+        #             cog=self.cog,
+        #             name=f"{self.name}: Build RTFS Cache",
+        #             function=self._build_rtfs_cache,
+        #             limit_count=1,
+        #         )
+        #     )
 
     async def _build_rtfm_cache(self, recache: bool = False) -> Inventory:
         if self._rtfm_cache is not None and not recache:
@@ -1663,7 +1677,7 @@ class Source:
             if location.endswith("$"):
                 location = location[:-1] + obj.name
             if not self.url.startswith("http"):
-                location = self.cog.cogsutils.replace_var_paths(location)
+                location = CogsUtils.replace_var_paths(location)
             return urljoin(self.url, location)
 
         if self.name in ["discord.py", "redbot", "pylav"] and query == "events":

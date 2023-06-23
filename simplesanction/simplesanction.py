@@ -37,10 +37,12 @@ class TimeDeltaConverter(commands.Converter):
 async def sanction_member_context_menu(interaction: discord.Interaction, member: discord.Member):
     await interaction.response.defer()
     cog = interaction.client.get_cog("SimpleSanction")
-    context = await cog.cogsutils.invoke_command(
+    context = await CogsUtils.invoke_command(
+        bot=interaction.client,
         author=interaction.user,
         channel=interaction.channel,
         command=f"sanction {member.id}",
+        interaction=interaction,
     )
     if not await context.command.can_run(context):
         await interaction.followup.send(
@@ -55,7 +57,7 @@ class SimpleSanction(Cog):
     """A cog to sanction members, with buttons!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -73,8 +75,6 @@ class SimpleSanction(Cog):
         self.config.register_guild(**self.sanction_guild)
 
         self.actions: typing.Dict[str, Action] = {key: Action(cog=self, key=key, **value) for key, value in ACTIONS_DICT.items()}
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], typing.Any, str]]
@@ -124,6 +124,7 @@ class SimpleSanction(Cog):
         )
 
     async def cog_load(self) -> None:
+        await super().cog_load()
         await self.settings.add_commands()
         self.bot.tree.add_command(sanction_member_context_menu)
 
@@ -625,8 +626,8 @@ class SimpleSanction(Cog):
                     timeout=60,
                     check=pred,
                 )
-                await self.cogsutils.delete_message(message)
-                await self.cogsutils.delete_message(msg)
+                await CogsUtils.delete_message(message)
+                await CogsUtils.delete_message(msg)
                 if msg.content.lower() == "cancel":
                     return
                 member = pred.result

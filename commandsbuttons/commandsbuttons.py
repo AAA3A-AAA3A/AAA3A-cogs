@@ -26,7 +26,7 @@ class CommandsButtons(Cog):
     """A cog to allow a user to execute a command by clicking on a button!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -45,11 +45,10 @@ class CommandsButtons(Cog):
         self.config.register_global(**self.commands_buttons_global)
         self.config.register_guild(**self.commands_buttons_guild)
 
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
-
         self.cache: typing.List[commands.Context] = []
 
     async def cog_load(self) -> None:
+        await super().cog_load()
         await self.edit_config_schema()
         await self.load_buttons()
 
@@ -68,7 +67,7 @@ class CommandsButtons(Cog):
                     for emoji in message_data:
                         data = commands_buttons[message].pop(emoji)
                         data["emoji"] = emoji
-                        config_identifier = self.cogsutils.generate_key(
+                        config_identifier = CogsUtils.generate_key(
                             length=5, existing_keys=commands_buttons[message]
                         )
                         commands_buttons[message][config_identifier] = data
@@ -87,13 +86,17 @@ class CommandsButtons(Cog):
         for guild in all_guilds:
             config = all_guilds[guild]["commands_buttons"]
             for message in config:
+                channel = self.bot.get_channel(int((str(message).split("-"))[0]))
+                if channel is None:
+                    continue
+                message_id = int((str(message).split("-"))[1])
                 try:
                     view = self.get_buttons(config=config, message=message)
-                    self.bot.add_view(view, message_id=int((str(message).split("-"))[1]))
-                    self.cogsutils.views.append(view)
+                    self.bot.add_view(view, message_id=message_id)
+                    self.views[discord.PartialMessage(channel=channel, id=message_id)] = view
                 except Exception as e:
                     self.log.error(
-                        f"The Button View could not be added correctly for the {guild}-{message} message.",
+                        f"The Button View could not be added correctly for the `{guild}-{message}` message.",
                         exc_info=e,
                     )
 
@@ -116,7 +119,8 @@ class CommandsButtons(Cog):
         command = config[f"{interaction.channel.id}-{interaction.message.id}"][config_identifier][
             "command"
         ]
-        context = await self.cogsutils.invoke_command(
+        context = await CogsUtils.invoke_command(
+            bot=interaction.client,
             author=interaction.user,
             channel=interaction.channel,
             command=command,
@@ -164,6 +168,7 @@ class CommandsButtons(Cog):
 
     @commands.guild_only()
     @commands.is_owner()
+    @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_group()
     async def commandsbuttons(self, ctx: commands.Context) -> None:
         """Group of commands to use CommandsButtons."""
@@ -237,7 +242,7 @@ class CommandsButtons(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("I can't do more than 25 commands-buttons for one message.")
             )
-        config_identifier = self.cogsutils.generate_key(
+        config_identifier = CogsUtils.generate_key(
             length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
         )
         config[f"{message.channel.id}-{message.id}"][config_identifier] = {
@@ -247,9 +252,10 @@ class CommandsButtons(Cog):
             "text_button": text_button,
         }
         view = self.get_buttons(config, message)
-        await message.edit(view=view)
-        self.cogsutils.views.append(view)
+        message = await message.edit(view=view)
+        self.views[message] = view
         await self.config.guild(ctx.guild).commands_buttons.set(config)
+        await self.list(ctx=ctx, message=message)
 
     @commandsbuttons.command()
     async def bulk(
@@ -311,7 +317,7 @@ class CommandsButtons(Cog):
                 _("I can't do more than 25 roles-buttons for one message.")
             )
         for emoji, command in commands_buttons:
-            config_identifier = self.cogsutils.generate_key(
+            config_identifier = CogsUtils.generate_key(
                 length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
             )
             config[f"{message.channel.id}-{message.id}"][config_identifier] = {
@@ -321,9 +327,60 @@ class CommandsButtons(Cog):
                 "text_button": None,
             }
         view = self.get_buttons(config, message)
-        await message.edit(view=view)
-        self.cogsutils.views.append(view)
+        message = await message.edit(view=view)
+        self.views[message] = view
         await self.config.guild(ctx.guild).commands_buttons.set(config)
+        await self.list(ctx=ctx, message=message)
+
+    @commandsbuttons.command(aliases=["-"])
+    async def remove(self, ctx: commands.Context, message: discord.Message, config_identifier: str) -> None:
+        """Remove a command-button for a message.
+
+        Use `[p]commandsbuttons list <message>` to find the config identifier.
+        """
+        if message.author != ctx.me:
+            raise commands.UserFeedbackCheckFailure(
+                _("I have to be the author of the message for the command-button to work.")
+            )
+        config = await self.config.guild(ctx.guild).commands_buttons.all()
+        if f"{message.channel.id}-{message.id}" not in config:
+            raise commands.UserFeedbackCheckFailure(
+                _("No command-button is configured for this message.")
+            )
+        if config_identifier not in config[f"{message.channel.id}-{message.id}"]:
+            raise commands.UserFeedbackCheckFailure(
+                _("I wasn't watching for this button on this message.")
+            )
+        del config[f"{message.channel.id}-{message.id}"][config_identifier]
+        if config[f"{message.channel.id}-{message.id}"] == {}:
+            del config[f"{message.channel.id}-{message.id}"]
+            await message.edit(view=None)
+        else:
+            view = self.get_buttons(config, message)
+            message = await message.edit(view=view)
+            self.views[message] = view
+        await self.config.guild(ctx.guild).commands_buttons.set(config)
+        await self.list(ctx=ctx, message=message)
+
+    @commandsbuttons.command()
+    async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
+        """Clear all commands-buttons for a message."""
+        if message.author != ctx.me:
+            raise commands.UserFeedbackCheckFailure(
+                _("I have to be the author of the message for the role-button to work.")
+            )
+        config = await self.config.guild(ctx.guild).commands_buttons.all()
+        if f"{message.channel.id}-{message.id}" not in config:
+            raise commands.UserFeedbackCheckFailure(
+                _("No command-button is configured for this message.")
+            )
+        try:
+            await message.edit(view=None)
+        except discord.HTTPException:
+            pass
+        del config[f"{message.channel.id}-{message.id}"]
+        await self.config.guild(ctx.guild).commands_buttons.set(config)
+        await ctx.send(_("Commands-buttons cleared for this message."))
 
     @commands.bot_has_permissions(embed_links=True)
     @commandsbuttons.command()
@@ -366,58 +423,11 @@ class CommandsButtons(Cog):
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
 
-    @commandsbuttons.command(aliases=["-"])
-    async def remove(self, ctx: commands.Context, message: discord.Message, config_identifier: str) -> None:
-        """Remove a command-button for a message.
-
-        Use `[p]commandsbuttons list <message>` to find the config identifier.
-        """
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the command-button to work.")
-            )
-        config = await self.config.guild(ctx.guild).commands_buttons.all()
-        if f"{message.channel.id}-{message.id}" not in config:
-            raise commands.UserFeedbackCheckFailure(
-                _("No command-button is configured for this message.")
-            )
-        if config_identifier not in config[f"{message.channel.id}-{message.id}"]:
-            raise commands.UserFeedbackCheckFailure(
-                _("I wasn't watching for this button on this message.")
-            )
-        del config[f"{message.channel.id}-{message.id}"][config_identifier]
-        if config[f"{message.channel.id}-{message.id}"] == {}:
-            del config[f"{message.channel.id}-{message.id}"]
-            await message.edit(view=None)
-        else:
-            view = self.get_buttons(config, message)
-            await message.edit(view=view)
-            self.cogsutils.views.append(view)
-        await self.config.guild(ctx.guild).commands_buttons.set(config)
-
-    @commandsbuttons.command()
-    async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
-        """Clear all commands-buttons for a message."""
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.")
-            )
-        config = await self.config.guild(ctx.guild).commands_buttons.all()
-        if f"{message.channel.id}-{message.id}" not in config:
-            raise commands.UserFeedbackCheckFailure(
-                _("No command-button is configured for this message.")
-            )
-        try:
-            await message.edit(view=None)
-        except discord.HTTPException:
-            pass
-        del config[f"{message.channel.id}-{message.id}"]
-        await self.config.guild(ctx.guild).commands_buttons.set(config)
-
     @commandsbuttons.command(hidden=True)
     async def purge(self, ctx: commands.Context) -> None:
         """Clear all commands-buttons for a guild."""
         await self.config.guild(ctx.guild).commands_buttons.clear()
+        await ctx.send(_("All commands-buttons purged."))
 
     def get_buttons(
         self, config: typing.Dict[str, dict], message: typing.Union[discord.Message, str]

@@ -1,18 +1,16 @@
-from AAA3A_utils import Cog, CogsUtils, Menu, Settings  # isort:skip
+from AAA3A_utils import Cog, Menu, Settings  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import aiohttp
 import asyncio
 import re
 import textwrap
 from collections import deque
 from urllib.parse import quote_plus
-
-import aiohttp
-from redbot.core.utils.chat_formatting import pagify
 
 from .dashboard_integration import DashboardIntegration
 
@@ -61,11 +59,11 @@ _ = Translator("CodeSnippets", __file__)
 
 
 @cog_i18n(_)
-class CodeSnippets(DashboardIntegration, Cog):
+class CodeSnippets(Cog, DashboardIntegration):
     """A cog to send code content from a GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -89,8 +87,6 @@ class CodeSnippets(DashboardIntegration, Cog):
         }
         self._session: aiohttp.ClientSession = None
         self.antispam_cache: typing.Dict[discord.abc.Messageable, deque[tuple, 5]] = {}
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
 
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
@@ -116,6 +112,7 @@ class CodeSnippets(DashboardIntegration, Cog):
         )
 
     async def cog_load(self) -> None:
+        await super().cog_load()
         self._session: aiohttp.ClientSession = aiohttp.ClientSession()
         await self.settings.add_commands()
 

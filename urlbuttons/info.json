@@ -8,7 +8,7 @@
         "url",
         "button"
     ],
-    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "emoji"],
+    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "validators", "emoji"],
     "min_bot_version": "3.5.0",
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

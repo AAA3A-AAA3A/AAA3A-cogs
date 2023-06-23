@@ -1,3 +1,4 @@
+from AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -291,7 +292,7 @@ class Ticket:
                 view=view,
                 allowed_mentions=discord.AllowedMentions(users=True, roles=True),
             )
-            self.cog.cogsutils.views.append(view)
+            CogsUtils.views.append(view)
         else:
             if isinstance(config["forum_channel"], discord.ForumChannel):
                 forum_channel: discord.ForumChannel = config["forum_channel"]
@@ -322,8 +323,8 @@ class Ticket:
                     view=view,
                     allowed_mentions=discord.AllowedMentions(users=True, roles=True),
                 )
-                self.cog.cogsutils.views.append(view)
-            self.cog.cogsutils.views.append(view)
+                CogsUtils.views.append(view)
+            CogsUtils.views.append(view)
             members = [self.owner]
             if self.claim is not None:
                 members.append(self.claim)

@@ -22,7 +22,7 @@ class DropdownsTexts(Cog):
     """A cog to have dropdowns-texts!"""
 
     def __init__(self, bot: Red) -> None:
-        self.bot: Red = bot
+        super().__init__(bot=bot)
 
         self.config: Config = Config.get_conf(
             self,
@@ -39,9 +39,8 @@ class DropdownsTexts(Cog):
         self.config.register_global(**self.dropdowns_texts_global)
         self.config.register_guild(**self.dropdowns_texts_guild)
 
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
-
     async def cog_load(self) -> None:
+        await super().cog_load()
         await self.edit_config_schema()
         await self.load_dropdowns()
 
@@ -60,7 +59,7 @@ class DropdownsTexts(Cog):
                     for emoji in message_data:
                         data = dropdowns_texts[message].pop(emoji)
                         data["emoji"] = emoji
-                        config_identifier = self.cogsutils.generate_key(
+                        config_identifier = CogsUtils.generate_key(
                             length=5, existing_keys=dropdowns_texts[message]
                         )
                         dropdowns_texts[message][config_identifier] = data
@@ -78,14 +77,18 @@ class DropdownsTexts(Cog):
         all_guilds = await self.config.all_guilds()
         for guild in all_guilds:
             config = all_guilds[guild]["dropdowns_texts"]
-            for dropdown_text in config:
+            for message in config:
+                channel = self.bot.get_channel(int((str(message).split("-"))[0]))
+                if channel is None:
+                    continue
+                message_id = int((str(message).split("-"))[1])
                 try:
-                    view = self.get_dropdown(config=config, message=dropdown_text)
-                    self.bot.add_view(view, message_id=int((str(dropdown_text).split("-"))[1]))
-                    self.cogsutils.views.append(view)
+                    view = self.get_dropdown(config=config, message=message)
+                    self.bot.add_view(view, message_id=message_id)
+                    self.views[discord.PartialMessage(channel=channel, id=message_id)] = view
                 except Exception as e:
                     self.log.error(
-                        f"The Dropdown View could not be added correctly for the {guild}-{dropdown_text} message.",
+                        f"The Dropdown View could not be added correctly for the `{guild}-{message}` message.",
                         exc_info=e,
                     )
 
@@ -138,6 +141,7 @@ class DropdownsTexts(Cog):
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_messages=True)
+    @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_group()
     async def dropdownstexts(self, ctx: commands.Context) -> None:
         """Group of commands to use DropdownsTexts."""
@@ -187,7 +191,7 @@ class DropdownsTexts(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("I can't do more than 25 dropdown-texts for one message.")
             )
-        config_identifier = self.cogsutils.generate_key(
+        config_identifier = CogsUtils.generate_key(
             length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
         )
         config[f"{message.channel.id}-{message.id}"][config_identifier] = {
@@ -196,9 +200,10 @@ class DropdownsTexts(Cog):
             "text": text,
         }
         view = self.get_dropdown(config=config, message=message)
-        await message.edit(view=view)
-        self.cogsutils.views.append(view)
+        message = await message.edit(view=view)
+        self.views[message] = view
         await self.config.guild(ctx.guild).dropdowns_texts.set(config)
+        await self.list(ctx=ctx, message=message)
 
     @dropdownstexts.command()
     async def bulk(
@@ -245,7 +250,7 @@ class DropdownsTexts(Cog):
                 _("I can't do more than 25 dropdown-texts for one message.")
             )
         for emoji, label, text in dropdown_texts:
-            config_identifier = self.cogsutils.generate_key(
+            config_identifier = CogsUtils.generate_key(
                 length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
             )
             config[f"{message.channel.id}-{message.id}"][config_identifier] = {
@@ -254,9 +259,65 @@ class DropdownsTexts(Cog):
                 "text": text,
             }
         view = self.get_dropdown(config=config, message=message)
-        await message.edit(view=view)
-        self.cogsutils.views.append(view)
+        message = await message.edit(view=view)
+        self.views[message] = view
         await self.config.guild(ctx.guild).dropdowns_texts.set(config)
+        await self.list(ctx=ctx, message=message)
+
+    @dropdownstexts.command()
+    async def remove(
+        self,
+        ctx: commands.Context,
+        message: discord.Message,
+        config_identifier: str,
+    ) -> None:
+        """Remove a dropdown-text for a message.
+
+        Use `[p]dropdownstexts list <message>` to find the config identifier.
+        """
+        if message.author != ctx.me:
+            raise commands.UserFeedbackCheckFailure(
+                _("I have to be the author of the message for the role-button to work.")
+            )
+        config = await self.config.guild(ctx.guild).dropdowns_texts.all()
+        if f"{message.channel.id}-{message.id}" not in config:
+            raise commands.UserFeedbackCheckFailure(
+                _("No dropdown-texts is configured for this message.")
+            )
+        if config_identifier not in config[f"{message.channel.id}-{message.id}"]:
+            raise commands.UserFeedbackCheckFailure(
+                _("I wasn't watching for this dropdown-text on this message.")
+            )
+        del config[f"{message.channel.id}-{message.id}"][config_identifier]
+        if config[f"{message.channel.id}-{message.id}"] == {}:
+            del config[f"{message.channel.id}-{message.id}"]
+            await message.edit(view=None)
+        else:
+            view = self.get_dropdown(config=config, message=message)
+            message = await message.edit(view=view)
+            self.views[message] = view
+        await self.config.guild(ctx.guild).dropdowns_texts.set(config)
+        await self.list(ctx=ctx, message=message)
+
+    @dropdownstexts.command()
+    async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
+        """Clear a dropdown-texts for a message."""
+        if message.author != ctx.me:
+            raise commands.UserFeedbackCheckFailure(
+                _("I have to be the author of the message for the role-button to work.")
+            )
+        config = await self.config.guild(ctx.guild).dropdowns_texts.all()
+        if f"{message.channel.id}-{message.id}" not in config:
+            raise commands.UserFeedbackCheckFailure(
+                _("No dropdown-texts is configured for this message.")
+            )
+        try:
+            await message.edit(view=None)
+        except discord.HTTPException:
+            pass
+        del config[f"{message.channel.id}-{message.id}"]
+        await self.config.guild(ctx.guild).dropdowns_texts.set(config)
+        await ctx.send(_("Dropdown-texts cleared for this message."))
 
     @commands.bot_has_permissions(embed_links=True)
     @dropdownstexts.command()
@@ -300,63 +361,11 @@ class DropdownsTexts(Cog):
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
 
-    @dropdownstexts.command()
-    async def remove(
-        self,
-        ctx: commands.Context,
-        message: discord.Message,
-        config_identifier: str,
-    ) -> None:
-        """Remove a dropdown-text for a message.
-
-        Use `[p]dropdownstexts list <message>` to find the config identifier.
-        """
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.")
-            )
-        config = await self.config.guild(ctx.guild).dropdowns_texts.all()
-        if f"{message.channel.id}-{message.id}" not in config:
-            raise commands.UserFeedbackCheckFailure(
-                _("No dropdown-texts is configured for this message.")
-            )
-        if config_identifier not in config[f"{message.channel.id}-{message.id}"]:
-            raise commands.UserFeedbackCheckFailure(
-                _("I wasn't watching for this dropdown-text on this message.")
-            )
-        del config[f"{message.channel.id}-{message.id}"][config_identifier]
-        if config[f"{message.channel.id}-{message.id}"] == {}:
-            del config[f"{message.channel.id}-{message.id}"]
-            await message.edit(view=None)
-        else:
-            view = self.get_dropdown(config=config, message=message)
-            await message.edit(view=view)
-            self.cogsutils.views.append(view)
-        await self.config.guild(ctx.guild).dropdowns_texts.set(config)
-
-    @dropdownstexts.command()
-    async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
-        """Clear a dropdown-texts for a message."""
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.")
-            )
-        config = await self.config.guild(ctx.guild).dropdowns_texts.all()
-        if f"{message.channel.id}-{message.id}" not in config:
-            raise commands.UserFeedbackCheckFailure(
-                _("No dropdown-texts is configured for this message.")
-            )
-        try:
-            await message.edit(view=None)
-        except discord.HTTPException:
-            pass
-        del config[f"{message.channel.id}-{message.id}"]
-        await self.config.guild(ctx.guild).dropdowns_texts.set(config)
-
     @dropdownstexts.command(hidden=True)
     async def purge(self, ctx: commands.Context) -> None:
         """Clear all dropdowns-texts for a guild."""
         await self.config.guild(ctx.guild).dropdowns_texts.clear()
+        await ctx.send(_("All dropdowns-texts purged."))
 
     def get_dropdown(
         self, config: typing.Dict, message: typing.Union[discord.Message, str]

@@ -98,13 +98,11 @@ class EditAutoMod(Cog):
     """A cog to edit AutoMod rules!"""
 
     def __init__(self, bot: Red) -> None:  # Never executed except manually.
-        self.bot: Red = bot
-
-        self.cogsutils: CogsUtils = CogsUtils(cog=self)
+        super().__init__(bot=bot)
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_guild=True)
-    @commands.bot_has_guild_permissions(manage_guild=True)
+    @commands.bot_has_permissions(manage_guild=True)
     @commands.hybrid_group()
     async def editautomod(self, ctx: commands.Context) -> None:
         """Commands for edit an AutoMod rule."""
@@ -329,10 +327,10 @@ class EditAutoMod(Cog):
                 content = f"{ctx.author.mention} " + _(
                     "Do you really want to delete the AutoMod rule {rule.name} ({rule.id}) in {guild.name} ({guild.id})?"
                 ).format(rule=rule, guild=ctx.guild)
-            if not await self.cogsutils.ConfirmationAsk(
+            if not await CogsUtils.ConfirmationAsk(
                 ctx, content=content, embed=embed
             ):
-                await self.cogsutils.delete_message(ctx.message)
+                await CogsUtils.delete_message(ctx.message)
                 return
         try:
             await rule.delete(
@@ -512,6 +510,7 @@ class EditAutoModRuleView(discord.ui.View):
             self._rules_select = None
         if self._message is None:
             self._message: discord.Message = await self.ctx.send(embed=self._embed, view=self)
+            self.cog.views[self._message] = self
         else:
             self._message: discord.Message = await self._message.edit(embed=self._embed, view=self)
 

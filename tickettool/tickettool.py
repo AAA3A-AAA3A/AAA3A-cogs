@@ -1348,8 +1348,8 @@ class TicketTool(settings, DashboardIntegration, Cog):
             ctx = await CogsUtils.invoke_command(
                 bot=interaction.client,
                 author=interaction.user,
-                channel=interaction.channel, 
-                ommand="ticket delete",
+                channel=interaction.channel,
+                command="ticket delete",
             )
 
     async def on_dropdown_interaction(

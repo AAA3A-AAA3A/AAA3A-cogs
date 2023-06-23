@@ -1,4 +1,3 @@
-from AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -51,12 +50,15 @@ class Ticket:
     ):
         self.bot: Red = bot
         self.cog: commands.Cog = cog
+
         self.profile: str = profile
         self.id: int = id
+
         self.owner: discord.Member = owner
         self.guild: discord.Guild = guild
         self.channel: typing.Union[discord.TextChannel, discord.Thread] = channel
         self.claim: discord.Member = claim
+
         self.created_by: discord.Member = created_by
         self.opened_by: discord.Member = opened_by
         self.closed_by: discord.Member = closed_by
@@ -64,7 +66,9 @@ class Ticket:
         self.renamed_by: discord.Member = renamed_by
         self.locked_by: discord.Member = locked_by
         self.unlocked_by: discord.Member = unlocked_by
+
         self.members: typing.List[discord.Member] = members
+
         self.created_at: datetime.datetime = created_at
         self.opened_at: datetime.datetime = opened_at
         self.closed_at: datetime.datetime = closed_at
@@ -72,8 +76,10 @@ class Ticket:
         self.renamed_at: datetime.datetime = renamed_at
         self.locked_at: datetime.datetime = locked_at
         self.unlocked_at: datetime.datetime = unlocked_at
+
         self.status: str = status
         self.reason: str = reason
+
         self.logs_messages: bool = logs_messages
         self.save_data: bool = save_data
         self.first_message: discord.Message = first_message
@@ -292,7 +298,7 @@ class Ticket:
                 view=view,
                 allowed_mentions=discord.AllowedMentions(users=True, roles=True),
             )
-            CogsUtils.views.append(view)
+            self.cog.views[self.first_message] = view
         else:
             if isinstance(config["forum_channel"], discord.ForumChannel):
                 forum_channel: discord.ForumChannel = config["forum_channel"]
@@ -323,8 +329,7 @@ class Ticket:
                     view=view,
                     allowed_mentions=discord.AllowedMentions(users=True, roles=True),
                 )
-                CogsUtils.views.append(view)
-            CogsUtils.views.append(view)
+            self.cog.views[self.first_message] = view
             members = [self.owner]
             if self.claim is not None:
                 members.append(self.claim)

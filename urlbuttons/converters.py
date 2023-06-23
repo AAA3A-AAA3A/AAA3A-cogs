@@ -18,13 +18,13 @@ class UrlConverter(commands.Converter):
     async def convert(
         self, ctx: commands.Context, argument: str
     ) -> str:
-        if url.startswith("<") and url.endswith(">"):
-            url = url[1:-1]
+        if argument.startswith("<") and argument.endswith(">"):
+            argument = argument[1:-1]
         try:
-            validators.url(url, public=True)
+            validators.url(argument, public=True)
         except validators.ValidationFailure:
             raise commands.BadArgument(_("It's not a valid public URL."))
-        return url
+        return argument
 
 
 class Emoji(commands.EmojiConverter):

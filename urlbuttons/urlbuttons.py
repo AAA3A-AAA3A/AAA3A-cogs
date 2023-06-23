@@ -148,7 +148,7 @@ class UrlButtons(Cog):
         view = self.get_buttons(config, message)
         await message.edit(view=view)
         await self.config.guild(ctx.guild).url_buttons.set(config)
-        await self.list(ctx=ctx, message=message)
+        await self.list.callback(self, ctx, message=message)
 
     @urlbuttons.command()
     async def bulk(
@@ -202,7 +202,7 @@ class UrlButtons(Cog):
         view = self.get_buttons(config, message)
         await message.edit(view=view)
         await self.config.guild(ctx.guild).url_buttons.set(config)
-        await self.list(ctx=ctx, message=message)
+        await self.list.callback(self, ctx, message=message)
 
     @urlbuttons.command(aliases=["-"])
     async def remove(self, ctx: commands.Context, message: discord.Message, config_identifier: str) -> None:
@@ -231,7 +231,7 @@ class UrlButtons(Cog):
             view = self.get_buttons(config, message)
             await message.edit(view=view)
         await self.config.guild(ctx.guild).url_buttons.set(config)
-        await self.list(ctx=ctx, message=message)
+        await self.list.callback(self, ctx, message=message)
 
     @urlbuttons.command()
     async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
@@ -280,7 +280,7 @@ class UrlButtons(Cog):
             embed: discord.Embed = discord.Embed(
                 title=_("URL Buttons"),
                 description=_("There is {len_url_buttons} URL buttons in this server.").format(
-                    lenurl_buttons=len(url_buttons)
+                    len_url_buttons=len(url_buttons)
                 ),
                 color=await ctx.embed_color(),
             )

@@ -279,7 +279,7 @@ class RolesButtons(Cog):
         message = await message.edit(view=view)
         self.views[message] = view
         await self.config.guild(ctx.guild).roles_buttons.set(config)
-        await self.list(ctx=ctx, message=message)
+        await self.list.callback(self, ctx, message=message)
 
     @rolesbuttons.command()
     async def bulk(
@@ -346,7 +346,7 @@ class RolesButtons(Cog):
         message = await message.edit(view=view)
         self.views[message] = view
         await self.config.guild(ctx.guild).roles_buttons.set(config)
-        await self.list(ctx=ctx, message=message)
+        await self.list.callback(self, ctx, message=message)
 
     @rolesbuttons.command()
     async def mode(
@@ -411,7 +411,7 @@ class RolesButtons(Cog):
             message = await message.edit(view=view)
             self.views[message] = view
         await self.config.guild(ctx.guild).roles_buttons.set(config)
-        await self.list(ctx=ctx, message=message)
+        await self.list.callback(self, ctx, message=message)
 
     @rolesbuttons.command()
     async def clear(self, ctx: commands.Context, message: discord.Message) -> None:

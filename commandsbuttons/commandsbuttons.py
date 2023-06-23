@@ -255,7 +255,7 @@ class CommandsButtons(Cog):
         message = await message.edit(view=view)
         self.views[message] = view
         await self.config.guild(ctx.guild).commands_buttons.set(config)
-        await self.list(ctx=ctx, message=message)
+        await self.list.callback(self, ctx, message=message)
 
     @commandsbuttons.command()
     async def bulk(
@@ -330,7 +330,7 @@ class CommandsButtons(Cog):
         message = await message.edit(view=view)
         self.views[message] = view
         await self.config.guild(ctx.guild).commands_buttons.set(config)
-        await self.list(ctx=ctx, message=message)
+        await self.list.callback(self, ctx, message=message)
 
     @commandsbuttons.command(aliases=["-"])
     async def remove(self, ctx: commands.Context, message: discord.Message, config_identifier: str) -> None:
@@ -360,7 +360,7 @@ class CommandsButtons(Cog):
             message = await message.edit(view=view)
             self.views[message] = view
         await self.config.guild(ctx.guild).commands_buttons.set(config)
-        await self.list(ctx=ctx, message=message)
+        await self.list.callback(self, ctx, message=message)
 
     @commandsbuttons.command()
     async def clear(self, ctx: commands.Context, message: discord.Message) -> None:

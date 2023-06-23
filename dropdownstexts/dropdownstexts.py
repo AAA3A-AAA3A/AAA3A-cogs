@@ -203,7 +203,7 @@ class DropdownsTexts(Cog):
         message = await message.edit(view=view)
         self.views[message] = view
         await self.config.guild(ctx.guild).dropdowns_texts.set(config)
-        await self.list(ctx=ctx, message=message)
+        await self.list.callback(self, ctx, message=message)
 
     @dropdownstexts.command()
     async def bulk(
@@ -262,7 +262,7 @@ class DropdownsTexts(Cog):
         message = await message.edit(view=view)
         self.views[message] = view
         await self.config.guild(ctx.guild).dropdowns_texts.set(config)
-        await self.list(ctx=ctx, message=message)
+        await self.list.callback(self, ctx, message=message)
 
     @dropdownstexts.command()
     async def remove(
@@ -297,7 +297,7 @@ class DropdownsTexts(Cog):
             message = await message.edit(view=view)
             self.views[message] = view
         await self.config.guild(ctx.guild).dropdowns_texts.set(config)
-        await self.list(ctx=ctx, message=message)
+        await self.list.callback(self, ctx, message=message)
 
     @dropdownstexts.command()
     async def clear(self, ctx: commands.Context, message: discord.Message) -> None:

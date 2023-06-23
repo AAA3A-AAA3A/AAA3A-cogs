@@ -157,11 +157,12 @@ class Minecraft(Cog):
                     self.cache[channel.id][server_url] = {"server": server, "status": status}
 
     async def get_embed(self, server: JavaServer, status) -> discord.Embed:
+        server_description = await self.clear_mcformatting(status.description)
         embed: discord.Embed = discord.Embed(
             title=f"{server.address.host}:{server.address.port}",
-            description=box(await self.clear_mcformatting(status.description)),
+            description=box(server_description),
         )
-        embed.color = discord.Color.red() if "This server is offline." in await self.clear_mcformatting(status.description) else discord.Color.green()
+        embed.color = discord.Color.red() if "This server is offline." in server_description else (discord.Color.orange() if "This server is currently stopping." in server_description else discord.Color.green())
         icon_file = None
         icon = (
             discord.File(
@@ -406,10 +407,11 @@ class Minecraft(Cog):
                 status = await server.async_status()
             except Exception:
                 return "No data could be found for this Minecraft Java server."
+            server_description = await self.clear_mcformatting(status.description)
             data = {
                 "Host & Port": f"{server.address.host}:{server.address.port}",
-                "Description": box(await self.clear_mcformatting(status.description)),
-                "Status": "Offline" if "This server is offline." in await self.clear_mcformatting(status.description) else "Online",
+                "Description": box(server_description),
+                "Status": "Offline." if "This server is offline." in server_description else ("Currently stopping." if "This server is currently stopping." in server_description else "Online."),
                 "Latency": f"{status.latency:.2f} ms",
                 "Players": f"{status.players.online}/{status.players.max}",
                 "Version": status.version.name,

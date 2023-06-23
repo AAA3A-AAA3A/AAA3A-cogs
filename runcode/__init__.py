@@ -18,6 +18,8 @@ for module in modules:
 del AAA3A_utils
 import AAA3A_utils
 AAA3A_utils.dev.Cog = AAA3A_utils.Cog
+AAA3A_utils.cog.DevEnv = AAA3A_utils.DevEnv
+AAA3A_utils.dev.SharedCog = AAA3A_utils.SharedCog
 __version__ = AAA3A_utils.__version__
 with open(os.path.join(os.path.dirname(__file__), "utils_version.json"), mode="r") as f:
     data = json.load(f)

@@ -87,20 +87,18 @@ class TransferChannel(Cog):
                 ).format(source=source)
             )
         destination_permissions = destination.permissions_for(destination.guild.me)
-        if way == "embeds":
-            if not destination_permissions.embed_links:
-                raise commands.UserFeedbackCheckFailure(
-                    _(
-                        "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`embed_links`."
-                    ).format(destination=destination)
-                )
-        elif way == "webhook":
-            if not destination_permissions.manage_webhooks:
-                raise commands.UserFeedbackCheckFailure(
-                    _(
-                        "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n`manage_channels`"
-                    ).format(destination=destination)
-                )
+        if not destination_permissions.send_messages or not destination_permissions.embed_links:
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "I need to have all the permissions to send messages with embeds in {destination.guild.name} ({destination.guild.id})."
+                ).format(destination=destination)
+            )
+        if way == "webhook" and not destination_permissions.manage_webhooks:
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "I need to have all the permission to create webhooks in {destination.guild.name} ({destination.guild.id})."
+                ).format(destination=destination)
+            )
 
     async def get_messages(
         self,
@@ -211,7 +209,7 @@ class TransferChannel(Cog):
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             await ctx.send_help()
             return
-        await self.check_channels(ctx, source, destination, way)
+        await self.check_channels(ctx, source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way
         )
@@ -238,7 +236,7 @@ class TransferChannel(Cog):
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             await ctx.send_help()
             return
-        await self.check_channels(ctx, source, destination, way)
+        await self.check_channels(ctx, source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx,
             source=source,
@@ -269,7 +267,7 @@ class TransferChannel(Cog):
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             await ctx.send_help()
             return
-        await self.check_channels(ctx, source, destination, way)
+        await self.check_channels(ctx, source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, before=before
         )
@@ -296,7 +294,7 @@ class TransferChannel(Cog):
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             await ctx.send_help()
             return
-        await self.check_channels(ctx, source, destination, way)
+        await self.check_channels(ctx, source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, after=after
         )
@@ -324,7 +322,7 @@ class TransferChannel(Cog):
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             await ctx.send_help()
             return
-        await self.check_channels(ctx, source, destination, way)
+        await self.check_channels(ctx, source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, before=before, after=after
         )
@@ -352,7 +350,7 @@ class TransferChannel(Cog):
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             await ctx.send_help()
             return
-        await self.check_channels(ctx, source, destination, way)
+        await self.check_channels(ctx, source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx,
             source=source,
@@ -385,7 +383,7 @@ class TransferChannel(Cog):
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             await ctx.send_help()
             return
-        await self.check_channels(ctx, source, destination, way)
+        await self.check_channels(ctx, source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, bot=bot, limit=limit
         )

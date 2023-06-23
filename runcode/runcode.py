@@ -136,6 +136,14 @@ class RunCode(Cog):
             await self._session.close()
         await super().cog_unload()
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     async def load_wandbox_languages(
         self, force: typing.Optional[bool] = False
     ) -> typing.Dict[str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]]:

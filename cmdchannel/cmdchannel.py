@@ -35,6 +35,14 @@ class CmdChannel(Cog):
         # }
         # self.config.register_guild(**self.cmd_guild)
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message) -> None:
         if await self.bot.cog_disabled_in_guild(cog=self, guild=message.guild) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):

@@ -228,6 +228,14 @@ class DiscordModals(Cog):
         await self.edit_config_schema()
         await self.load_buttons()
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     async def edit_config_schema(self) -> None:
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
         ALL_CONFIG_GLOBAL = await self.config.all()
@@ -281,7 +289,7 @@ class DiscordModals(Cog):
                         button[
                             "custom_id"
                         ] = f"DiscordModals_{CogsUtils.generate_key(length=10)}"
-                    button["style"] = discord.ButtonStyle(button["style"])
+                    button["style"] = discord.ButtonStyle(button.get("style", discord.ButtonStyle.secondary))  # `style` can don't exist in modals after the data migration
                     button = discord.ui.Button(**button)
                     button.callback = self.send_modal
                     view = discord.ui.View(timeout=None)

@@ -38,6 +38,14 @@ class AutoTraceback(Cog, DashboardIntegration):
 
         self.tracebacks: typing.List[str] = []
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     @commands.is_owner()
     @commands.hybrid_command()
     async def traceback(self, ctx: commands.Context, public: typing.Optional[bool] = True, index: int = 0) -> None:

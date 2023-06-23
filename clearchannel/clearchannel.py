@@ -74,6 +74,14 @@ class ClearChannel(Cog, DashboardIntegration):
     async def cog_load(self):
         await self.settings.add_commands()
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     @commands.guild_only()
     @commands.guildowner()
     @commands.bot_has_permissions(manage_channels=True)

@@ -99,6 +99,14 @@ class Minecraft(Cog):
         await self._session.close()
         await super().cog_unload()
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     async def check_servers(self) -> None:
         all_channels = await self.config.all_channels()
         for channel_id in all_channels:

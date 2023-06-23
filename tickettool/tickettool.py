@@ -233,6 +233,14 @@ class TicketTool(settings, DashboardIntegration, Cog):
             pass
         await self.load_buttons()
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete. Don't delete operational tickets."""
+        return
+
+    # async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+    #     """Nothing to get."""
+    #     return {}
+
     async def edit_config_schema(self):
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
         if CONFIG_SCHEMA is None:

@@ -58,6 +58,14 @@ class Ip(Cog):
         await super().cog_load()
         await self.settings.add_commands()
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     @commands.is_owner()
     @commands.hybrid_group(name="ip")
     async def ip_group(self, ctx: commands.Context) -> None:

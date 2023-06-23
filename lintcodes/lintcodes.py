@@ -40,6 +40,14 @@ class LintCodes(Cog):
             await self._session.close()
         await super().cog_unload()
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     async def get_code_from_context(
         self,
         ctx: commands.Context,

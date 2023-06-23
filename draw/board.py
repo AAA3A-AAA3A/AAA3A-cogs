@@ -3,12 +3,6 @@ import discord  # isort:skip
 import typing  # isort:skip
 import typing_extensions  # isort:skip
 
-import sys
-if sys.version_info >= (3, 11):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
-
 import io
 from dataclasses import dataclass
 
@@ -47,7 +41,7 @@ class Board:
         *,
         height: typing.Optional[int] = 9,
         width: typing.Optional[int] = 9,
-        background: typing.Optional[Literal[*MAIN_COLORS]] = MAIN_COLORS[-1],
+        background: typing.Optional[typing.Literal["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "transparent"]] = MAIN_COLORS[-1],  # Literal[*MAIN_COLORS]
     ) -> None:
         self.cog: commands.Cog = cog
 
@@ -243,7 +237,7 @@ class Board:
         *,
         height: typing.Optional[int] = None,
         width: typing.Optional[int] = None,
-        background: typing.Optional[Literal[*MAIN_COLORS]] = None,
+        background: typing.Optional[typing.Literal["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "transparent"]] = None,  # typing.Literal[*MAIN_COLORS]
     ) -> None:
         height = height or self.height
         width = width or self.width

@@ -1,15 +1,10 @@
-from AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog  # isort:skip
 from redbot.core import commands, app_commands  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import sys
-if sys.version_info >= (3, 11):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
 
 import asyncio
 import io
@@ -57,6 +52,14 @@ class Draw(Cog):
         await super().cog_load()
         self._session: aiohttp.ClientSession = aiohttp.ClientSession()
         asyncio.create_task(self.generate_cache())
+
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
 
     async def generate_cache(self) -> None:
         for pixel in DEFAULT_CACHE:
@@ -156,7 +159,7 @@ class Draw(Cog):
         from_message: typing.Optional[commands.MessageConverter] = None,
         height: typing.Optional[commands.Range[int, MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH]] = 9,
         width: typing.Optional[commands.Range[int, MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH]] = 9,
-        background: Literal[*MAIN_COLORS] = MAIN_COLORS[-1],
+        background: typing.Literal["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "transparent"] = MAIN_COLORS[-1],  # typing.Literal[*MAIN_COLORS]
     ) -> None:
         """Make a pixel art on Discord."""
         if from_message is None:

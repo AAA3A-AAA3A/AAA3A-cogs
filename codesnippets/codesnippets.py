@@ -121,6 +121,14 @@ class CodeSnippets(Cog, DashboardIntegration):
             await self._session.close()
         await super().cog_unload()
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     async def _fetch_response(self, url: str, response_format: str, **kwargs) -> typing.Any:
         if "github.com" in url:
             api_tokens = await self.bot.get_shared_api_tokens(service_name="github")

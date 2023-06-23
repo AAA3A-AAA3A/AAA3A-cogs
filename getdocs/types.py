@@ -2,6 +2,8 @@ from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import sys
+
 from dataclasses import dataclass
 
 from redbot.core.utils.chat_formatting import box, pagify
@@ -233,7 +235,10 @@ class Documentation:
     name: str
     signature: str
     description: str
-    parameters: typing.Union[Parameters[str, str], str]
+    if sys.version_info >= (3, 11):
+        parameters: typing.Union[Parameters[str, str], str]
+    else:
+        parameters: typing.Any
     examples: Examples[str]
     url: str
     fields: typing.Dict[str, str]

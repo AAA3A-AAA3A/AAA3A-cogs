@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -8,9 +8,9 @@ import typing  # isort:skip
 from .view import CalculatorView  # isort:skip
 
 import datetime
-from math import e, pi, tau
 
 from expr import EvaluatorError, evaluate
+from expr.builtin import pi, tau
 from redbot.core.utils.chat_formatting import box
 
 # from TagScriptEngine import Interpreter, block
@@ -66,6 +66,14 @@ class Calculator(Cog):
             typing.Union[discord.Member, discord.User], typing.Tuple[str]
         ] = {}
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     async def calculate(self, expression: str) -> str:
         lst = list(expression)
         try:
@@ -83,18 +91,19 @@ class Calculator(Cog):
         for x in self.x:
             if self.x[x] in expression:
                 expression = expression.replace(self.x[x], f"^{x}")
-        variables = {
-            "π": pi,
-            "pi": pi,
-            "τ": tau,
-            "tau": tau,
-            "e": e,
+        builtins = {
+            "abs": abs,
         }
-        # if "sqrt" in expression and "^" not in expression:
+        constants = {
+            "π": pi,
+            "τ": tau,
+        }
         try:
-            result = evaluate(expression, variables=variables)
+            result = evaluate(expression, builtins=builtins, constants=constants)
         except (EvaluatorError, TypeError):  # TypeError: 'Token' object is not subscriptable, for `A(5)`.
             result = None
+        # if "sqrt" in expression and "^" not in expression:
+        #     ...
         # else:
         #     engine_input = "{m:" + expression + "}"
         #     result = self.engine.process(engine_input).body

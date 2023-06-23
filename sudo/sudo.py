@@ -56,6 +56,14 @@ class Sudo(Cog):
         self.all_owner_ids.clear()
         await super().cog_unload()
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message):
         if await self.bot.cog_disabled_in_guild(cog=self, guild=message.guild) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):

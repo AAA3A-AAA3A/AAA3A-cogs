@@ -337,6 +337,14 @@ class Medicat(Cog):
         self.CC_added: asyncio.Event = asyncio.Event()
         await self.add_custom_commands()
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     async def edit_config_schema(self) -> None:
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
         ALL_CONFIG_GLOBAL = await self.config.all()

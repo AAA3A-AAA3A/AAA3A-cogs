@@ -25,6 +25,14 @@ class SplitOrStealGame(Cog):
     def games(self) -> typing.Dict[discord.Message, SplitOrStealGameView]:
         return self.views
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     @commands.guild_only()
     @commands.hybrid_command(aliases=["splitorsteal", "sosg", "sos"])
     async def splitorstealgame(self, ctx: commands.Context) -> None:

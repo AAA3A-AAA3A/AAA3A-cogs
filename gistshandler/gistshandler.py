@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -44,7 +44,18 @@ class GistsHandler(Cog):
         api_tokens = await self.bot.get_shared_api_tokens(service_name="github")
         self.gists_client = gists.Client()
         if (token := api_tokens.get("token")) is not None:
-            await self.gists_client.authorize(token)
+            try:
+                await self.gists_client.authorize(token)
+            except gists.AuthorizationFailure as e:
+                self.log.error("The GitHub token is invalid.", exc_info=e)
+
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
 
     @commands.Cog.listener()
     async def on_red_api_tokens_update(
@@ -54,7 +65,10 @@ class GistsHandler(Cog):
             return
         if (token := api_tokens.get("token")) is None:
             return
-        await self.gists_client.authorize(token)
+        try:
+            await self.gists_client.authorize(token)
+        except gists.AuthorizationFailure as e:
+            self.log.error("The GitHub token is invalid.", exc_info=e)
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)

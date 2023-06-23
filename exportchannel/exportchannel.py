@@ -41,6 +41,14 @@ class ExportChannel(Cog):
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     async def check_channel(self, ctx: commands.Context, channel: discord.TextChannel) -> None:
         channel_permissions = channel.permissions_for(ctx.me)
         if not all([channel_permissions.view_channel, channel_permissions.read_messages, channel_permissions.read_message_history]):

@@ -38,6 +38,14 @@ class DiscordSearch(Cog):
 
         self.re_pool: multiprocessing.Pool = multiprocessing.Pool()
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     @commands.guild_only()
     @commands.admin_or_permissions(administrator=True)
     @commands.cooldown(rate=3, per=30, type=commands.BucketType.user)

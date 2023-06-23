@@ -302,6 +302,14 @@ class GetDocs(Cog, DashboardIntegration):
             await self._session.close()
         await super().cog_unload()
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(
         aliases=["getdoc", "docs", "doc"],

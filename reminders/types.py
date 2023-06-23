@@ -285,7 +285,7 @@ class Reminder:
             me_too=data.get("me_too", False),
             content=data["content"],
             destination=data.get("destination"),
-            targets=data.get("targets", data.get("target")),
+            targets=data.get("targets", [data.get("target")] if data.get("target") is not None else None),
             created_at=datetime.datetime.fromtimestamp(
                 int(data["created_at"]), tz=datetime.timezone.utc
             ),

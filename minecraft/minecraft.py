@@ -54,7 +54,7 @@ class MCPlayer:
         uuid = str(response_data["id"])
         name = str(response_data["name"])
         try:
-            return cls(name, uuid)
+            return cls(name=name, uuid=uuid)
         except ValueError:
             raise commands.BadArgument(
                 _("{argument} is found, but has incorrect UUID.").format(argument=argument)
@@ -111,9 +111,7 @@ class Minecraft(Cog):
             check_players = all_channels[channel_id]["check_players"]
             for server_url in servers:
                 try:
-                    server: JavaServer = await self.bot.loop.run_in_executor(
-                        None, JavaServer.lookup, server_url
-                    )
+                    server: JavaServer = await JavaServer.async_lookup(address=server_url.lower())
                     status = await server.async_status()
                 except (asyncio.CancelledError, TimeoutError):
                     continue
@@ -277,21 +275,19 @@ class Minecraft(Cog):
     async def getserver(self, ctx: commands.Context, server_url: str) -> None:
         """Get informations about a Minecraft Java server."""
         try:
-            server: JavaServer = await self.bot.loop.run_in_executor(
-                None, JavaServer.lookup, server_url.lower()
-            )
+            server: JavaServer = await JavaServer.async_lookup(address=server_url.lower())
             status = await server.async_status()
         except Exception:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "No data could be found for this Minecraft server. Maybe it doesn't exist or its data are temporarily unavailable."
+                    "No data found for this Minecraft server. Maybe it doesn't exist or its data are temporarily unavailable."
                 )
             )
         embed, icon = await self.get_embed(server, status)
         await ctx.send(embed=embed, file=icon)
 
     @commands.admin_or_permissions(manage_guild=True)
-    @minecraft.command()
+    @minecraft.command(aliases=["add", "+"])
     async def addserver(
         self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], server_url: str
     ) -> None:
@@ -313,6 +309,15 @@ class Minecraft(Cog):
         servers = await self.config.channel(channel).servers()
         if server_url.lower() in servers:
             raise commands.UserFeedbackCheckFailure(_("This server has already been added."))
+        try:
+            server: JavaServer = await JavaServer.async_lookup(address=server_url.lower())
+            await server.async_status()
+        except Exception:
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "No data found for this Minecraft server. Maybe it doesn't exist or its data are temporarily unavailable."
+                )
+            )
         if isinstance(servers, typing.List):
             servers = {server: None for server in servers}
         servers[server_url.lower()] = None  # last message
@@ -320,7 +325,7 @@ class Minecraft(Cog):
         await ctx.send(_("Server added to this channel."))
 
     @commands.admin_or_permissions(manage_guild=True)
-    @minecraft.command()
+    @minecraft.command(aliases=["remove", "-"])
     async def removeserver(
         self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], server_url: str
     ) -> None:
@@ -401,12 +406,10 @@ class Minecraft(Cog):
         }
         async def get_minecraft_java_server(server_url: str, *args, **kwargs):
             try:
-                server: JavaServer = await self.bot.loop.run_in_executor(
-                    None, JavaServer.lookup, server_url.lower()
-                )
+                server: JavaServer = await JavaServer.async_lookup(address=server_url.lower())
                 status = await server.async_status()
             except Exception:
-                return "No data could be found for this Minecraft Java server."
+                return "No data found for this Minecraft Java server."
             server_description = await self.clear_mcformatting(status.description)
             data = {
                 "Host & Port": f"{server.address.host}:{server.address.port}",

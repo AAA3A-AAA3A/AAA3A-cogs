@@ -80,7 +80,7 @@ class Draw(Cog):
             str, discord.Emoji, int, Color, typing.Tuple[int, int, int, typing.Optional[int]]
         ],
         to_file: typing.Optional[bool] = False,
-    ) -> typing.Union[Image, discord.File]:
+    ) -> typing.Union[Image.Image, discord.File]:
         if isinstance(pixel, typing.Tuple) and len(pixel) in {3, 4}:
             pixel = Color(pixel)
         try:

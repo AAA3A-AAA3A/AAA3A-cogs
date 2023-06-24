@@ -60,10 +60,10 @@ class Color:
         image_bytes = io.BytesIO(self._to_bytes())
         return discord.File(image_bytes, filename=f"{self.hex}.{IMAGE_EXTENSION.lower()}")
 
-    async def to_image(self) -> Image:
+    async def to_image(self) -> Image.Image:
         return await self.loop.run_in_executor(None, self._to_image)
 
-    def _to_image(self) -> Image:
+    def _to_image(self) -> Image.Image:
         # # If you pass in an emoji, it uses that as base
         # # Else it uses the base_emoji property which uses 🟪
         # base_emoji = self.base_emoji

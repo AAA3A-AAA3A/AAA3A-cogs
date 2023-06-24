@@ -237,9 +237,10 @@ class Documentation:
     description: str
     if sys.version_info >= (3, 11):
         parameters: typing.Union[Parameters[str, str], str]
+        examples: Examples[str]
     else:
         parameters: typing.Any
-    examples: Examples[str]
+        examples: Examples
     url: str
     fields: typing.Dict[str, str]
     attributes: Attributes

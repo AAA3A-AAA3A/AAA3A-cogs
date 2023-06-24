@@ -137,13 +137,13 @@ class Board:
                     if cursor == "transparent":
                         x += size + sp
                         continue
-                    image: Image = await self.cog.get_pixel(MAIN_COLORS_DICT.get(cursor, cursor))
+                    image: Image.Image = await self.cog.get_pixel(MAIN_COLORS_DICT.get(cursor, cursor))
                 elif _x == 0 and _y > 1:
                     emoji = row_labels[_y - 2]
-                    image: Image = await self.cog.get_pixel(emoji)
+                    image: Image.Image = await self.cog.get_pixel(emoji)
                 elif _y == 0 and _x > 1:
                     emoji = col_labels[_x - 2]
-                    image: Image = await self.cog.get_pixel(emoji)
+                    image: Image.Image = await self.cog.get_pixel(emoji)
                 else:
                     pixel = self.board[_y - 2, _x - 2]
                     if pixel == "transparent":
@@ -176,7 +176,7 @@ class Board:
                                 )
                         x += size + sp
                         continue
-                    image: Image = await self.cog.get_pixel(MAIN_COLORS_DICT.get(pixel, pixel))
+                    image: Image.Image = await self.cog.get_pixel(MAIN_COLORS_DICT.get(pixel, pixel))
                 image = image.resize((size, size))
                 mask = Image.new("L", image.size, 0)
                 d = ImageDraw.Draw(mask)
@@ -213,7 +213,7 @@ class Board:
         return img
 
     async def to_file(self) -> discord.File:
-        img: Image = await self.to_image()
+        img: Image.Image = await self.to_image()
         buffer = io.BytesIO()
         img.save(buffer, format=IMAGE_EXTENSION, optimize=True)
         buffer.seek(0)

@@ -289,7 +289,7 @@ class DiscordModals(Cog):
                         button[
                             "custom_id"
                         ] = f"DiscordModals_{CogsUtils.generate_key(length=10)}"
-                    button["style"] = discord.ButtonStyle(button.get("style", discord.ButtonStyle.secondary))  # `style` can don't exist in modals after the data migration
+                    button["style"] = discord.ButtonStyle(button["style"]) if "style" in button else discord.ButtonStyle.secondary  # `style` can don't exist in modals after the data migration
                     button = discord.ui.Button(**button)
                     button.callback = self.send_modal
                     view = discord.ui.View(timeout=None)

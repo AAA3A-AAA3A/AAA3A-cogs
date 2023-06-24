@@ -295,7 +295,7 @@ class UrlButtons(Cog):
             embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
             for url_button in li:
                 value = _("Message Jump Link: {message_jump_link}\n").format(message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{url_button['message'].replace('-', '/')}")
-                value += "\n".join([f"• `{config_identifier}` - Emoji {data['emoji']} - Label `{data['text_button']}` - URL `{data['url']}`" for config_identifier, data in url_button.items() if config_identifier != "message"])
+                value += "\n".join([f"• `{config_identifier}` - Emoji {ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'].isdigit() else data['emoji']} - Label `{data['text_button']}` - URL `{data['url']}`" for config_identifier, data in url_button.items() if config_identifier != "message"])
                 embed.add_field(
                     name="\u200B", value=value, inline=False
                 )

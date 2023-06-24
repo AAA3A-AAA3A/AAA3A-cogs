@@ -238,11 +238,6 @@ class DiscordModals(Cog):
 
     async def edit_config_schema(self) -> None:
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
-        ALL_CONFIG_GLOBAL = await self.config.all()
-        if ALL_CONFIG_GLOBAL == self.config._defaults[self.config.GLOBAL]:
-            CONFIG_SCHEMA = self.CONFIG_SCHEMA
-            await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
-            return
         if CONFIG_SCHEMA is None:
             CONFIG_SCHEMA = 1
             await self.config.CONFIG_SCHEMA(CONFIG_SCHEMA)
@@ -260,9 +255,14 @@ class DiscordModals(Cog):
                             guild
                         ]["modals"][modal]["messages"]["done"]
                         del guilds_data[guild]["modals"][modal]["messages"]["done"]
-                        guilds_data[guild]["modals"][modal]["button"] = guilds_data[guild][
-                            "modals"
-                        ][modal]["button"]["buttons"][0]
+                        button_data = {
+                            "style": discord.ButtonStyle.secondary.value,
+                            "label": None,
+                            "emoji": None,
+                            "custom_id": f"DiscordModals_{CogsUtils.generate_key(length=10)}",
+                        }
+                        button_data.update(**guilds_data[guild]["modals"][modal]["button"]["buttons"][0])
+                        guilds_data[guild]["modals"][modal]["button"] = button_data
                         for key in ["members", "check", "function", "function_args"]:
                             if key in guilds_data[guild]["modals"][modal]["modal"]:
                                 del guilds_data[guild]["modals"][modal]["modal"][key]
@@ -289,7 +289,7 @@ class DiscordModals(Cog):
                         button[
                             "custom_id"
                         ] = f"DiscordModals_{CogsUtils.generate_key(length=10)}"
-                    button["style"] = discord.ButtonStyle(button["style"]) if "style" in button else discord.ButtonStyle.secondary  # `style` can don't exist in modals after the data migration
+                    button["style"] = discord.ButtonStyle(button["style"])  # if "style" in button else discord.ButtonStyle.secondary  # `style` can don't exist in modals after the data migration
                     button = discord.ui.Button(**button)
                     button.callback = self.send_modal
                     view = discord.ui.View(timeout=None)

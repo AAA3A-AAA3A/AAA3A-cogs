@@ -17,7 +17,10 @@ _ = Translator("ClearChannel", __file__)
 
 @cog_i18n(_)
 class ClearChannel(Cog, DashboardIntegration):
-    """A cog to transfer all messages channel in a other channel!"""
+    """A cog to delete ALL messages of a channel!
+
+    ⚠ The channel will be cloned, and then **deleted**.
+    """
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -89,7 +92,8 @@ class ClearChannel(Cog, DashboardIntegration):
     async def cleanup_channel(self, ctx: commands.Context, confirmation: bool = False) -> None:
         """Delete ALL messages from the current channel by duplicating it and then deleting it.
 
-        For security reasons, only the server owner and the bot owner can use the command. Use the "permissions" tool for more options.
+        For security reasons, only the server owner and the bot owner can use the command. Use the "permissions" cog for more options.
+        ⚠ The channel will be cloned, and then **deleted**.
         """
         config = await self.config.guild(ctx.guild).all()
         old_channel = ctx.channel
@@ -99,7 +103,7 @@ class ClearChannel(Cog, DashboardIntegration):
             embed: discord.Embed = discord.Embed()
             embed.title = _("⚠️ - ClearChannel")
             embed.description = _(
-                "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?"
+                "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?\n⚠ The channel will be cloned, and then **deleted**."
             ).format(old_channel=old_channel)
             embed.color = 0xF00020
             if not await CogsUtils.ConfirmationAsk(

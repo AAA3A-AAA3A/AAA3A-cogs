@@ -138,6 +138,7 @@ class Draw(Cog):
             return discord.File(buffer, filename=f"pixel.{IMAGE_EXTENSION.lower()}")
         return image
 
+    @commands.bot_has_permissions(embed_links=True, attach_files=True)
     @commands.hybrid_command(aliases=["paint", "pixelart"])
     @app_commands.choices(
         height=[

@@ -119,7 +119,7 @@ class Board:
         sp = 1 if self.cursor_display else 0
         _width = size * (width + 1) + sp * width + round(size / 4)
         _height = size * (height + 1) + sp * height + round(size / 4)
-        img = Image.new("RGBA", (_width, _height), (0, 0, 0, 0))
+        img: Image.Image = Image.new("RGBA", (_width, _height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(img)
         y = 0
         for _y in range(0 if self.cursor_display else 2, height + 2):

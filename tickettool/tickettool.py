@@ -225,6 +225,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         )
 
     async def cog_load(self):
+        await super().cog_load()
         await self.edit_config_schema()
         await self.settings.add_commands()
         try:

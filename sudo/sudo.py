@@ -48,6 +48,7 @@ class Sudo(Cog):
         self.__authors__: typing.List[str] = ["AAA3A", "Draper", "jack1142 (Jackenmen#6607)"]
 
     async def cog_load(self):
+        await super().cog_load()
         self.all_owner_ids = copy(self.bot.owner_ids)
         self.bot.owner_ids.clear()
 

@@ -413,8 +413,8 @@ class EditTextChannel(Cog):
 
     @commands.has_permissions(manage_roles=True)
     @commands.bot_has_permissions(manage_roles=True)
-    @edittextchannel.command(name="permissions", aliases=["overwrites", "perms"])
-    async def edittextchannel_permissions(
+    @edittextchannel.command(name="overwrites", aliases=["permissions", "perms"])
+    async def edittextchannel_overwrites(
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
@@ -424,10 +424,10 @@ class EditTextChannel(Cog):
         true_or_false: typing.Optional[bool],
         permissions: commands.Greedy[PermissionConverter],
     ) -> None:
-        """Edit text channel permissions/overwrites.
+        """Edit text channel overwrites/permissions.
 
         You may not specify `True` or `False` to reset the permission(s).
-        With this command, you can only modify the permissions of a role or member below you in the hierarchy. You must possess the permissions you wish to modify.
+        You must possess the permissions you wish to modify.
 
         • `create_instant_invite`
         • `manage_channels`
@@ -471,17 +471,17 @@ class EditTextChannel(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("You need to provide a role or user you want to edit permissions for.")
             )
-        for target in targets:
-            if (
-                ctx.author != ctx.guild.owner
-                and (
-                    target if isinstance(target, discord.Role) else target.top_role
-                )
-                >= ctx.author.top_role
-            ):
-                raise commands.UserFeedbackCheckFailure(_("You cannot change the permissions of a role/member higher up the hierarchy than your top role."))
-            if (target if isinstance(target, discord.Role) else target.top_role) >= ctx.me.top_role:
-                raise commands.UserFeedbackCheckFailure(_("I cannot change the permissions of a role/member higher up the hierarchy than my top role."))
+        # for target in targets:
+        #     if (
+        #         ctx.author != ctx.guild.owner
+        #         and (
+        #             target if isinstance(target, discord.Role) else target.top_role
+        #         )
+        #         >= ctx.author.top_role
+        #     ):
+        #         raise commands.UserFeedbackCheckFailure(_("You cannot change the permissions of a role/member higher up the hierarchy than your top role."))
+        #     if (target if isinstance(target, discord.Role) else target.top_role) >= ctx.me.top_role:
+        #         raise commands.UserFeedbackCheckFailure(_("I cannot change the permissions of a role/member higher up the hierarchy than my top role."))
         if not permissions:
             raise commands.UserFeedbackCheckFailure(
                 _("You need to provide at least one permission.")

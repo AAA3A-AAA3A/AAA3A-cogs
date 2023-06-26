@@ -275,6 +275,11 @@ class Ticket:
             description=_("Thank you for creating a ticket on this server!"),
             reason=self.reason,
         )
+        if config["ticket_role"] is not None and self.owner:
+            try:
+                await self.owner.add_roles(config["ticket_role"], reason=_reason)
+            except discord.HTTPException:
+                pass
         if config["forum_channel"] is None:
             overwrites = await utils().get_overwrites(self)
             topic = _(
@@ -339,8 +344,14 @@ class Ticket:
                 members.extend(config["support_role"].members)
             if config["view_role"] is not None:
                 members.extend(config["view_role"].members)
+            adding_error = False
             for member in members:
-                await self.channel.add_user(member)
+                try:
+                    await self.channel.add_user(member)
+                except discord.HTTPException:  # The bot haven't the permission `manage_messages` in the parent text channel.
+                    adding_error = True
+            if adding_error:
+                await self.channel.send(_("⚠ At least one user (the ticket owner or a team member) could not be added to the ticket thread. If the server uses a forum channel for tickets, then the user does not have access to it. If the server uses private threads in a text channel, the bot does not have the `manage_messages` permission in this channel."))
         if config["create_modlog"]:
             await self.cog.create_modlog(self, "ticket_created", _reason)
         if config["custom_message"] is not None:
@@ -381,11 +392,6 @@ class Ticket:
                 _("Report on the creation of the ticket {ticket.id}.").format(ticket=self),
                 embed=embed,
             )
-        if config["ticket_role"] is not None and self.owner:
-            try:
-                await self.owner.add_roles(config["ticket_role"], reason=_reason)
-            except discord.HTTPException:
-                pass
         await self.cog.config.guild(self.guild).profiles.set_raw(
             self.profile, "last_nb", value=self.id
         )

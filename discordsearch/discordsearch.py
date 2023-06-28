@@ -254,7 +254,7 @@ class DateConverter(commands.Converter):
         return parsed
 
 
-# class SearchArgs(discord.ext.commands.flags.FlagConverter, case_insensitive=False, prefix="--", delimiter=" "):
+# class SearchArgs(commands.FlagConverter, case_insensitive=False, prefix="--", delimiter=" "):
 #     authors: commands.Greedy[discord.Member]
 #     mentions: commands.Greedy[discord.Member]
 #     before: DateConverter
@@ -292,7 +292,7 @@ class SearchArgs:
         if args.authors is not None:
             self.authors = []
             for author in args.authors:
-                author = await discord.ext.commands.MemberConverter().convert(ctx, author)
+                author = await commands.MemberConverter().convert(ctx, author)
                 if author is None:
                     raise commands.BadArgument("`--author` must be a member.")
                 self.authors.append(author)
@@ -301,7 +301,7 @@ class SearchArgs:
         if args.mentions is not None:
             self.mentions = []
             for mention in args.mentions:
-                mention = await discord.ext.commands.MemberConverter().convert(ctx, mention)
+                mention = await commands.MemberConverter().convert(ctx, mention)
                 if mention is None:
                     raise commands.BadArgument("`--mention` must be a member.")
                 self.mentions.append(mention)

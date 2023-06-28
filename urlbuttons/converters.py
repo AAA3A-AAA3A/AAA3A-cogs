@@ -37,7 +37,7 @@ class Emoji(commands.EmojiConverter):
         return await super().convert(ctx, argument=argument)
 
 
-class EmojiUrlConverter(discord.ext.commands.Converter):
+class EmojiUrlConverter(commands.Converter):
     async def convert(
         self, ctx: commands.Context, argument: str
     ) -> typing.Tuple[str, typing.Union[discord.PartialEmoji, str]]:
@@ -47,7 +47,7 @@ class EmojiUrlConverter(discord.ext.commands.Converter):
         except Exception:
             # emoji = None
             # url = arg_split[0]
-            raise discord.ext.commands.BadArgument(
+            raise commands.BadArgument(
                 _(
                     "Emoji Url must be an emoji followed by a url separated by either `;`, `,`, `|`, or `-`."
                 )

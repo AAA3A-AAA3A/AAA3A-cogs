@@ -84,7 +84,7 @@ class Emoji(commands.EmojiConverter):
         return await super().convert(ctx, argument=argument)
 
 
-class EmojiLabelDescriptionValueConverter(discord.ext.commands.Converter):
+class EmojiLabelDescriptionValueConverter(commands.Converter):
     async def convert(
         self, ctx: commands.Context, argument: str
     ) -> typing.Tuple[str, typing.Union[discord.PartialEmoji, str]]:
@@ -101,7 +101,7 @@ class EmojiLabelDescriptionValueConverter(discord.ext.commands.Converter):
                     description = None
                     value = label
         except Exception:
-            raise discord.ext.commands.BadArgument(
+            raise commands.BadArgument(
                 _(
                     "Emoji Label must be An emoji followed by a label, and optionnaly by a description and a value (for rename ticket channel), separated by either `;`, `,`, `|`, or `-`."
                 )

@@ -23,7 +23,7 @@ class Emoji(commands.EmojiConverter):
         return await super().convert(ctx, argument=argument)
 
 
-class EmojiLabelTextConverter(discord.ext.commands.Converter):
+class EmojiLabelTextConverter(commands.Converter):
     async def convert(
         self, ctx: commands.Context, argument: str
     ) -> typing.Tuple[discord.Role, typing.Union[discord.PartialEmoji, str]]:
@@ -35,7 +35,7 @@ class EmojiLabelTextConverter(discord.ext.commands.Converter):
             # try:
             #     label, text = arg_split
             # except Exception:
-            raise discord.ext.commands.BadArgument(
+            raise commands.BadArgument(
                 _(
                     "Dropdown Text must be an emoji, followed by a label and a text, separated by either `;`, `,`, `|`, or `-`."
                 )

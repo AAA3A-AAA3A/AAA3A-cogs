@@ -23,7 +23,7 @@ class Emoji(commands.EmojiConverter):
         return await super().convert(ctx, argument=argument)
 
 
-class EmojiCommandConverter(discord.ext.commands.Converter):
+class EmojiCommandConverter(commands.Converter):
     async def convert(
         self, ctx: commands.Context, argument: str
     ) -> typing.Tuple[discord.Role, typing.Union[discord.PartialEmoji, str]]:
@@ -33,7 +33,7 @@ class EmojiCommandConverter(discord.ext.commands.Converter):
         except Exception:
             # emoji = None
             # command = arg_split[0]
-            raise discord.ext.commands.BadArgument(
+            raise commands.BadArgument(
                 _(
                     "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
                 )

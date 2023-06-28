@@ -123,7 +123,7 @@ class MemberPrefix(Cog):
             prefixes = await bot._prefix_cache.get_prefixes(message.guild)
         prefixes.extend(custom_prefixes)
         prefixes = sorted(prefixes, reverse=True)
-        return discord.ext.commands.when_mentioned_or(*prefixes)(bot, message)
+        return commands.when_mentioned_or(*prefixes)(bot, message)
 
     class StrConverter(commands.Converter):
         async def convert(self, ctx: commands.Context, argument: str) -> str:

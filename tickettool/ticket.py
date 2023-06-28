@@ -203,6 +203,8 @@ class Ticket:
         if self.first_message is not None:
             self.first_message = int(self.first_message.id)
         json = self.__dict__
+        for key in ["bot", "cog"]:
+            del json[key]
         if clean:
             for key in ["claim", "opened_by", "closed_by", "deleted_by", "renamed_by", "locked_by", "unlocked_by", "opened_at", "closed_at", "deleted_at", "renamed_at", "locked_at", "unlocked_at"]:
                 if json[key] is None:

@@ -33,7 +33,7 @@ class utils:
                 attach_files=True,
                 manage_messages=True,
                 manage_channels=True,
-                manage_permissions=True,
+                # manage_permissions=True,
             ),
             ticket.guild.default_role: discord.PermissionOverwrite(
                 view_channel=False,

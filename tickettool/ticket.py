@@ -80,9 +80,9 @@ class Ticket:
         self.status: str = status
         self.reason: str = reason
 
+        self.first_message: discord.Message = first_message
         self.logs_messages: bool = logs_messages
         self.save_data: bool = save_data
-        self.first_message: discord.Message = first_message
 
     @staticmethod
     def instance(
@@ -116,9 +116,9 @@ class Ticket:
             unlocked_at=None,
             status="open",
             reason=reason,
+            first_message=None,
             logs_messages=True,
             save_data=True,
-            first_message=None,
         )
         return ticket
 
@@ -132,38 +132,36 @@ class Ticket:
             owner=json["owner"],
             guild=json["guild"],
             channel=json["channel"],
-            claim=json["claim"],
+            claim=json.get("claim"),
             created_by=json["created_by"],
-            opened_by=json["opened_by"],
-            closed_by=json["closed_by"],
-            deleted_by=json["deleted_by"],
-            renamed_by=json["renamed_by"],
-            locked_by=json.get("renamed_by"),
+            opened_by=json.get("opened_by"),
+            closed_by=json.get("closed_by"),
+            deleted_by=json.get("deleted_by"),
+            renamed_by=json.get("renamed_by"),
+            locked_by=json.get("locked_by"),
             unlocked_by=json.get("unlocked_by"),
-            members=json["members"],
+            members=json.get("members"),
             created_at=json["created_at"],
-            opened_at=json["opened_at"],
-            closed_at=json["closed_at"],
-            deleted_at=json["deleted_at"],
-            renamed_at=json["renamed_at"],
+            opened_at=json.get("opened_at"),
+            closed_at=json.get("closed_at"),
+            deleted_at=json.get("deleted_at"),
+            renamed_at=json.get("renamed_at"),
             locked_at=json.get("locked_at"),
             unlocked_at=json.get("unlocked_at"),
             status=json["status"],
             reason=json["reason"],
-            logs_messages=json["logs_messages"],
-            save_data=json["save_data"],
             first_message=json["first_message"],
+            logs_messages=json.get("logs_messages", True),
+            save_data=json.get("save_data", True),
         )
         return ticket
 
-    async def save(self) -> typing.Dict[str, typing.Any]:
+    async def save(self, clean: bool = True) -> typing.Dict[str, typing.Any]:
         if not self.save_data:
             return
         cog = self.cog
         guild = self.guild
         channel = self.channel
-        self.bot = None
-        self.cog = None
         if self.owner is not None:
             self.owner = int(getattr(self.owner, "id", self.owner))
         if self.guild is not None:
@@ -205,10 +203,19 @@ class Ticket:
         if self.first_message is not None:
             self.first_message = int(self.first_message.id)
         json = self.__dict__
+        if clean:
+            for key in ["claim", "opened_by", "closed_by", "deleted_by", "renamed_by", "locked_by", "unlocked_by", "opened_at", "closed_at", "deleted_at", "renamed_at", "locked_at", "unlocked_at"]:
+                if json[key] is None:
+                    del json[key]
+            if json["members"] == []:
+                del json["members"]
+            for key in ["logs_messages", "save_data"]:
+                if json[key]:
+                    del json[key]
         data = await cog.config.guild(guild).tickets.all()
         data[str(channel.id)] = json
         await cog.config.guild(guild).tickets.set(data)
-        return data
+        return json
 
     async def create(self) -> typing.Any:
         config = await self.cog.get_config(self.guild, self.profile)
@@ -280,118 +287,126 @@ class Ticket:
                 await self.owner.add_roles(config["ticket_role"], reason=_reason)
             except discord.HTTPException:
                 pass
-        if config["forum_channel"] is None:
-            overwrites = await utils().get_overwrites(self)
-            topic = _(
-                "🎟️ Ticket ID: {ticket.id}\n"
-                # "🔥 Channel ID: {ticket.channel.id}\n"
-                "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
-                "☢️ Ticket reason: {short_reason}\n"
-                # "👥 Ticket claimed by: Nobody."
-            ).format(ticket=self, short_reason=f"{self.reason[:700]}...".replace("\n", " ") if len(self.reason) > 700 else self.reason.replace("\n", " "))
-            self.channel: discord.TextChannel = await self.guild.create_text_channel(
-                name,
-                overwrites=overwrites,
-                category=config["category_open"],
-                topic=topic,
-                reason=_reason,
-            )
-            await self.channel.edit(topic=topic)
-            self.first_message = await self.channel.send(
-                f"{self.created_by.mention}{optionnal_ping}",
-                embed=embed,
-                view=view,
-                allowed_mentions=discord.AllowedMentions(users=True, roles=True),
-            )
-            self.cog.views[self.first_message] = view
-        else:
-            if isinstance(config["forum_channel"], discord.ForumChannel):
-                forum_channel: discord.ForumChannel = config["forum_channel"]
-                result: discord.channel.ThreadWithMessage = await forum_channel.create_thread(
-                    name=name,
-                    content=f"{self.created_by.mention}{optionnal_ping}",
-                    embed=embed,
-                    view=view,
-                    allowed_mentions=discord.AllowedMentions(users=True, roles=True),
-                    auto_archive_duration=10080,
+        try:
+            if config["forum_channel"] is None:
+                overwrites = await utils().get_overwrites(self)
+                topic = _(
+                    "🎟️ Ticket ID: {ticket.id}\n"
+                    # "🔥 Channel ID: {ticket.channel.id}\n"
+                    "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+                    "☢️ Ticket reason: {short_reason}\n"
+                    # "👥 Ticket claimed by: Nobody."
+                ).format(ticket=self, short_reason=f"{self.reason[:700]}...".replace("\n", " ") if len(self.reason) > 700 else self.reason.replace("\n", " "))
+                self.channel: discord.TextChannel = await self.guild.create_text_channel(
+                    name,
+                    overwrites=overwrites,
+                    category=config["category_open"],
+                    topic=topic,
                     reason=_reason,
                 )
-                self.channel: discord.Thread = result.thread
-                self.first_message: discord.Message = result.message
-            else:  # isinstance(config["forum_channel"], discord.TextChannel)
-                forum_channel: discord.TextChannel = config["forum_channel"]
-                self.channel: discord.Thread = await forum_channel.create_thread(
-                    name=name,
-                    message=None,  # Private thread.
-                    type=discord.ChannelType.private_thread,
-                    invitable=False,
-                    auto_archive_duration=10080,
-                    reason=_reason,
-                )
+                await self.channel.edit(topic=topic)
                 self.first_message = await self.channel.send(
                     f"{self.created_by.mention}{optionnal_ping}",
                     embed=embed,
                     view=view,
                     allowed_mentions=discord.AllowedMentions(users=True, roles=True),
                 )
-            self.cog.views[self.first_message] = view
-            members = [self.owner]
-            if self.claim is not None:
-                members.append(self.claim)
-            if config["admin_role"] is not None:
-                members.extend(config["admin_role"].members)
-            if config["support_role"] is not None:
-                members.extend(config["support_role"].members)
-            if config["view_role"] is not None:
-                members.extend(config["view_role"].members)
-            adding_error = False
-            for member in members:
+                self.cog.views[self.first_message] = view
+            else:
+                if isinstance(config["forum_channel"], discord.ForumChannel):
+                    forum_channel: discord.ForumChannel = config["forum_channel"]
+                    result: discord.channel.ThreadWithMessage = await forum_channel.create_thread(
+                        name=name,
+                        content=f"{self.created_by.mention}{optionnal_ping}",
+                        embed=embed,
+                        view=view,
+                        allowed_mentions=discord.AllowedMentions(users=True, roles=True),
+                        auto_archive_duration=10080,
+                        reason=_reason,
+                    )
+                    self.channel: discord.Thread = result.thread
+                    self.first_message: discord.Message = result.message
+                else:  # isinstance(config["forum_channel"], discord.TextChannel)
+                    forum_channel: discord.TextChannel = config["forum_channel"]
+                    self.channel: discord.Thread = await forum_channel.create_thread(
+                        name=name,
+                        message=None,  # Private thread.
+                        type=discord.ChannelType.private_thread,
+                        invitable=False,
+                        auto_archive_duration=10080,
+                        reason=_reason,
+                    )
+                    self.first_message = await self.channel.send(
+                        f"{self.created_by.mention}{optionnal_ping}",
+                        embed=embed,
+                        view=view,
+                        allowed_mentions=discord.AllowedMentions(users=True, roles=True),
+                    )
+                self.cog.views[self.first_message] = view
+                members = [self.owner]
+                if self.claim is not None:
+                    members.append(self.claim)
+                if config["admin_role"] is not None:
+                    members.extend(config["admin_role"].members)
+                if config["support_role"] is not None:
+                    members.extend(config["support_role"].members)
+                if config["view_role"] is not None:
+                    members.extend(config["view_role"].members)
+                adding_error = False
+                for member in members:
+                    try:
+                        await self.channel.add_user(member)
+                    except discord.HTTPException:  # The bot haven't the permission `manage_messages` in the parent text channel.
+                        adding_error = True
+                if adding_error:
+                    await self.channel.send(_("⚠ At least one user (the ticket owner or a team member) could not be added to the ticket thread. Maybe the user the user doesn't have access to the parent forum/text channel. If the server uses private threads in a text channel, the bot does not have the `manage_messages` permission in this channel."))
+            if config["create_modlog"]:
+                await self.cog.create_modlog(self, "ticket_created", _reason)
+            if config["custom_message"] is not None:
                 try:
-                    await self.channel.add_user(member)
-                except discord.HTTPException:  # The bot haven't the permission `manage_messages` in the parent text channel.
-                    adding_error = True
-            if adding_error:
-                await self.channel.send(_("⚠ At least one user (the ticket owner or a team member) could not be added to the ticket thread. If the server uses a forum channel for tickets, then the user does not have access to it. If the server uses private threads in a text channel, the bot does not have the `manage_messages` permission in this channel."))
-        if config["create_modlog"]:
-            await self.cog.create_modlog(self, "ticket_created", _reason)
-        if config["custom_message"] is not None:
-            try:
-                embed: discord.Embed = discord.Embed()
-                embed.title = "Custom Message"
-                to_replace = {
-                    "ticket_id": str(self.id),
-                    "owner_display_name": self.owner.display_name,
-                    "owner_name": self.owner.name,
-                    "owner_id": str(self.owner.id),
-                    "guild_name": self.guild.name,
-                    "guild_id": self.guild.id,
-                    "bot_display_name": self.guild.me.display_name,
-                    "bot_name": self.bot.user.name,
-                    "bot_id": str(self.bot.user.id),
-                    "shortdate": self.created_at.strftime("%m-%d"),
-                    "longdate": self.created_at.strftime("%m-%d-%Y"),
-                    "time": self.created_at.strftime("%I-%M-%p"),
-                    "emoji": config["emoji_open"],
-                }
-                embed.description = config["custom_message"].format(**to_replace)
-                await self.channel.send(embed=embed)
-            except (KeyError, AttributeError, discord.HTTPException):
-                pass
-        if logschannel is not None:
-            embed = await self.cog.get_embed_important(
-                self,
-                True,
-                author=self.created_by,
-                title=_("Ticket Created"),
-                description=_("The ticket was created by {ticket.created_by}.").format(
-                    ticket=self
-                ),
-                reason=self.reason,
-            )
-            await logschannel.send(
-                _("Report on the creation of the ticket {ticket.id}.").format(ticket=self),
-                embed=embed,
-            )
+                    embed: discord.Embed = discord.Embed()
+                    embed.title = "Custom Message"
+                    to_replace = {
+                        "ticket_id": str(self.id),
+                        "owner_display_name": self.owner.display_name,
+                        "owner_name": self.owner.name,
+                        "owner_id": str(self.owner.id),
+                        "guild_name": self.guild.name,
+                        "guild_id": self.guild.id,
+                        "bot_display_name": self.guild.me.display_name,
+                        "bot_name": self.bot.user.name,
+                        "bot_id": str(self.bot.user.id),
+                        "shortdate": self.created_at.strftime("%m-%d"),
+                        "longdate": self.created_at.strftime("%m-%d-%Y"),
+                        "time": self.created_at.strftime("%I-%M-%p"),
+                        "emoji": config["emoji_open"],
+                    }
+                    embed.description = config["custom_message"].format(**to_replace)
+                    await self.channel.send(embed=embed)
+                except (KeyError, AttributeError, discord.HTTPException):
+                    pass
+            if logschannel is not None:
+                embed = await self.cog.get_embed_important(
+                    self,
+                    True,
+                    author=self.created_by,
+                    title=_("Ticket Created"),
+                    description=_("The ticket was created by {ticket.created_by}.").format(
+                        ticket=self
+                    ),
+                    reason=self.reason,
+                )
+                await logschannel.send(
+                    _("Report on the creation of the ticket {ticket.id}.").format(ticket=self),
+                    embed=embed,
+                )
+        except Exception:
+            if config["ticket_role"] is not None and self.owner:
+                try:
+                    await self.owner.remove_roles(config["ticket_role"], reason=_reason)
+                except discord.HTTPException:
+                    pass
+            raise
         await self.cog.config.guild(self.guild).profiles.set_raw(
             self.profile, "last_nb", value=self.id
         )
@@ -917,7 +932,7 @@ class Ticket:
     ) -> typing.Any:
         if not isinstance(self.channel, discord.TextChannel):
             raise commands.UserFeedbackCheckFailure(
-                _("Cannot execute action on a thread channel.")
+                _("Cannot execute action in a thread channel.")
             )
         config = await self.cog.get_config(self.guild, self.profile)
         _reason = await self.cog.get_audit_reason(
@@ -1013,6 +1028,7 @@ class Ticket:
                 )
             await self.channel.edit(overwrites=overwrites, reason=_reason)
         else:
+            adding_error = False
             for member in members:
                 if author is not None:
                     if member.bot:
@@ -1037,9 +1053,14 @@ class Ticket:
                                 member=member
                             )
                         )
-                    await self.channel.add_user(member)
+                    try:
+                        await self.channel.add_user(member)
+                    except discord.HTTPException:  # The bot haven't the permission `manage_messages` in the parent text channel.
+                        adding_error = True
                 if member not in self.members:
                     self.members.append(member)
+            if adding_error:
+                await self.channel.send(_("⚠ At least one user (the ticket owner or a team member) could not be added to the ticket thread. Maybe the user the user doesn't have access to the parent forum/text channel. If the server uses private threads in a text channel, the bot does not have the `manage_messages` permission in this channel."))
         await self.save()
         return self
 

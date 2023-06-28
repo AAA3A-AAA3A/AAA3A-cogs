@@ -1332,12 +1332,19 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 command="ticket open",
             )
             try:
-                await interaction.followup.send(
-                    _(
-                        "You have chosen to re-open this ticket. If this is not done, you do not have the necessary permissions to execute this command."
-                    ),
-                    ephemeral=True,
-                )
+                if not await ctx.command.can_run(
+                    ctx, change_permission_state=True
+                ):  # await discord.utils.async_all(check(ctx) for check in ctx.command.checks)
+                    await interaction.followup.send(
+                        _("You are not allowed to execute this command."), ephemeral=True
+                    )
+                else:
+                    await interaction.followup.send(
+                        _(
+                            "You have chosen to re-open this ticket."
+                        ),
+                        ephemeral=True,
+                    )
             except discord.HTTPException:
                 pass
         elif interaction.data["custom_id"] == "claim_ticket_button":
@@ -1347,12 +1354,19 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 channel=interaction.channel,
                 command="ticket claim",
             )
-            await interaction.followup.send(
-                _(
-                    "You have chosen to claim this ticket. If this is not done, you do not have the necessary permissions to execute this command."
-                ),
-                ephemeral=True,
-            )
+            if not await ctx.command.can_run(
+                ctx, change_permission_state=True
+            ):  # await discord.utils.async_all(check(ctx) for check in ctx.command.checks)
+                await interaction.followup.send(
+                    _("You are not allowed to execute this command."), ephemeral=True
+                )
+            else:
+                await interaction.followup.send(
+                    _(
+                        "You have chosen to claim this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+                    ),
+                    ephemeral=True,
+                )
         elif interaction.data["custom_id"] == "delete_ticket_button":
             ctx = await CogsUtils.invoke_command(
                 bot=interaction.client,
@@ -1360,6 +1374,12 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 channel=interaction.channel,
                 command="ticket delete",
             )
+            if not await ctx.command.can_run(
+                ctx, change_permission_state=True
+            ):  # await discord.utils.async_all(check(ctx) for check in ctx.command.checks)
+                await interaction.followup.send(
+                    _("You are not allowed to execute this command."), ephemeral=True
+                )
 
     async def on_dropdown_interaction(
         self, interaction: discord.Interaction, select_menu: discord.ui.Select
@@ -1411,7 +1431,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         config = await self.get_config(interaction.guild, profile)
         if config["embed_button"]["rename_channel_dropdown"]:
             try:
-                ticket: Ticket = await self.get_ticket(ctx.guild.get_channel(ctx.ticket.channel))
+                ticket: Ticket = await self.get_ticket(config["forum_channel"].get_thread(ctx.ticket.channel) if config["forum_channel"] is not None else ctx.guild.get_channel(ctx.ticket.channel))
                 if ticket is not None:
                     await ticket.rename(
                         new_name=f"{option.emoji}-{option.value}_{interaction.user.id}".replace(

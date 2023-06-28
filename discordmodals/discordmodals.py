@@ -399,7 +399,7 @@ class DiscordModals(Cog):
                 except Exception:
                     pass
             embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)
-        await channel.send(None if config.get("pings") is None else humanize_list(config.get("pings")[:2000]), embed=embed, allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=True))
+            await channel.send(None if config.get("pings") is None else humanize_list(config.get("pings"))[:2000], embed=embed, allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=True))
         except Exception as e:
             self.log.error(
                 f"The Modal of the {interaction.message.guild.id}-{interaction.message.channel.id}-{interaction.message.id} message did not work properly.",

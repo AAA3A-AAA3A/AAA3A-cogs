@@ -8,12 +8,15 @@ import typing  # isort:skip
 from copy import deepcopy
 from functools import partial
 
+import re
 import yaml
 
 try:
     from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
 except ImportError:
     from emoji import EMOJI_DATA  # emoji>=2.0.0
+
+from redbot.core.utils.chat_formatting import humanize_list
 
 # Credits:
 # General repo credits.
@@ -31,6 +34,17 @@ class Emoji(commands.EmojiConverter):
         return await super().convert(ctx, argument=argument)
 
 
+class RoleOrMemberConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> typing.Union[discord.Role, discord.Member]:
+        try:
+            return await commands.RoleConverter().convert(ctx, argument=argument)
+        except commands.BadArgument as e:
+            try:
+                return await commands.MemberConverter().convert(ctx, argument=argument)
+            except commands.BadArgument:
+                raise e
+
+
 class YAMLConverter(commands.Converter):
     async def convert(
         self, ctx: commands.Context, argument: str
@@ -38,22 +52,22 @@ class YAMLConverter(commands.Converter):
         try:
             argument_dict = yaml.safe_load(argument)
         except Exception:
-            raise discord.ext.commands.BadArgument(
+            raise commands.BadArgument(
                 _(
                     "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)"
                 )
             )
         # general
         required_arguments = ["title", "button", "modal"]
-        optional_arguments = ["channel", "anonymous", "messages"]
+        optional_arguments = ["channel", "anonymous", "messages", "pings"]
         for arg in required_arguments:
             if arg not in argument_dict:
-                raise discord.ext.commands.BadArgument(
+                raise commands.BadArgument(
                     _("The argument `/{arg}` is required in the root in the YAML.").format(arg=arg)
                 )
         for arg in argument_dict:
             if arg not in required_arguments + optional_arguments:
-                raise discord.ext.commands.BadArgument(
+                raise commands.BadArgument(
                     _(
                         "The argument `/{arg}` is invalid in in the YAML. Check the spelling."
                     ).format(arg=arg)
@@ -63,12 +77,12 @@ class YAMLConverter(commands.Converter):
         optional_arguments = ["emoji", "style"]
         for arg in required_arguments:
             if arg not in argument_dict["button"]:
-                raise discord.ext.commands.BadArgument(
+                raise commands.BadArgument(
                     _("The argument `/button/{arg}` is required in the YAML.").format(arg=arg)
                 )
         for arg in argument_dict["button"]:
             if arg not in required_arguments + optional_arguments:
-                raise discord.ext.commands.BadArgument(
+                raise commands.BadArgument(
                     _(
                         "The argument `/button/{arg}` is invalid in the YAML. Check the spelling."
                     ).format(arg=arg)
@@ -80,11 +94,11 @@ class YAMLConverter(commands.Converter):
             try:
                 style = int(argument_dict["button"]["style"])
             except ValueError:
-                raise discord.ext.commands.BadArgument(
+                raise commands.BadArgument(
                     _("The argument `/button/style` must be a number between 1 and 4.")
                 )
             if not 1 <= style <= 4:
-                raise discord.ext.commands.BadArgument(
+                raise commands.BadArgument(
                     _("The argument `/button/style` must be a number between 1 and 4.")
                 )
             argument_dict["button"]["style"] = style
@@ -92,7 +106,7 @@ class YAMLConverter(commands.Converter):
             argument_dict["button"]["style"] = 2
         # modal
         if not isinstance(argument_dict["modal"], typing.List):
-            raise discord.ext.commands.BadArgument(
+            raise commands.BadArgument(
                 _("The argument `/button/modal` must be a list of TextInputs.")
             )
         required_arguments = ["label"]
@@ -108,14 +122,14 @@ class YAMLConverter(commands.Converter):
             count += 1
             for arg in required_arguments:
                 if arg not in input:
-                    raise discord.ext.commands.BadArgument(
+                    raise commands.BadArgument(
                         _("The argument `/modal/{count}/{arg}` is required in the YAML.").format(
                             count=count, arg=arg
                         )
                     )
             for arg in input:
                 if arg not in required_arguments + optional_arguments:
-                    raise discord.ext.commands.BadArgument(
+                    raise commands.BadArgument(
                         _(
                             "The argument `/modal/{count}/{arg}` is invalid in the YAML. Check the spelling."
                         ).format(count=count, arg=arg)
@@ -125,13 +139,13 @@ class YAMLConverter(commands.Converter):
                 try:
                     style = int(input["style"])
                 except ValueError:
-                    raise discord.ext.commands.BadArgument(
+                    raise commands.BadArgument(
                         _(
                             "The argument `/modal/{count}/style` must be a number between 1 and 2."
                         ).format(count=count)
                     )
                 if not 1 <= style <= 2:
-                    raise discord.ext.commands.BadArgument(
+                    raise commands.BadArgument(
                         _(
                             "The argument `/modal/{count}/style` must be a number between 1 and 2."
                         ).format(count=count)
@@ -148,13 +162,13 @@ class YAMLConverter(commands.Converter):
                     elif lowered in {"no", "n", "false", "f", "0", "disable", "off"}:
                         return False
                     else:
-                        raise discord.ext.commands.BadBoolArgument(lowered)
+                        raise commands.BadBoolArgument(lowered)
 
                 input["required"] = str(input["required"])
                 try:
                     input["required"] = convert_to_bool(input["required"])
-                except discord.ext.commands.BadBoolArgument:
-                    raise discord.ext.commands.BadArgument(
+                except commands.BadBoolArgument:
+                    raise commands.BadArgument(
                         _(
                             "The argument `/modal/{count}/required` must be a boolean (True or False)."
                         ).format(count=count)
@@ -172,7 +186,7 @@ class YAMLConverter(commands.Converter):
         # channel
         if "channel" in argument_dict:
             argument_dict["channel"] = str(argument_dict["channel"])
-            channel = await discord.ext.commands.TextChannelConverter().convert(
+            channel = await commands.TextChannelConverter().convert(
                 ctx, argument_dict["channel"]
             )
             if (
@@ -196,6 +210,10 @@ class YAMLConverter(commands.Converter):
                 argument_dict["messages"]["submit"] = None
         else:
             argument_dict["messages"] = {"error": None, "submit": None}
+        if "pings" not in argument_dict:
+            argument_dict["pings"] = None
+        else:
+            argument_dict["pings"] = [(await RoleOrMemberConverter().convert(ctx, argument=ping.strip())).mention for ping in re.split(r",|;|\||-", argument_dict["pings"])]
         return argument_dict
 
 
@@ -381,7 +399,7 @@ class DiscordModals(Cog):
                 except Exception:
                     pass
             embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)
-            await channel.send(embed=embed)
+        await channel.send(None if config.get("pings") is None else humanize_list(config.get("pings")[:2000]), embed=embed, allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=True))
         except Exception as e:
             self.log.error(
                 f"The Modal of the {interaction.message.guild.id}-{interaction.message.channel.id}-{interaction.message.id} message did not work properly.",
@@ -407,10 +425,10 @@ class DiscordModals(Cog):
         await self.config.guild(message.guild).modals.set(config)
 
     @commands.guild_only()
-    @commands.mod_or_permissions(manage_guild=True)
+    @commands.admin_or_permissions(manage_guild=True)
     @commands.hybrid_group()
     async def discordmodals(self, ctx: commands.Context) -> None:
-        """Group of commands to use ReactToCommand."""
+        """Group of commands to use DiscordModals."""
         pass
 
     @discordmodals.command(aliases=["+"])
@@ -442,8 +460,9 @@ class DiscordModals(Cog):
         messages:
           error: Error!
           submit: Form submitted.
+        pings: user1, user2, role1, role2
         ```
-        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous` and `messages` are not required.
+        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous`, `messages` and `pings` are not required.
         """
         if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
@@ -501,6 +520,7 @@ class DiscordModals(Cog):
                 "error": argument["messages"]["error"],
                 "submit": argument["messages"]["submit"],
             },
+            "pings": argument["pings"],
         }
         await self.config.guild(ctx.guild).modals.set(config)
         await ctx.send(_("Modal created."))

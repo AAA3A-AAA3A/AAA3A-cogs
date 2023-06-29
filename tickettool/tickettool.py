@@ -642,23 +642,23 @@ class TicketTool(settings, DashboardIntegration, Cog):
 
             ticket: Ticket = await ctx.bot.get_cog("TicketTool").get_ticket(ctx.channel)
             if ticket is None:
-                return False
+                raise commands.CheckFailure(_("You're not in a ticket."))
             config = await ctx.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.profile)
             if status is not None and ticket.status != status:
-                return False
+                raise commands.CheckFailure(_("This ticket isn't {status}ed.").format(status=status))
             if claim is not None:
                 if ticket.claim is not None:
                     check = True
                 elif ticket.claim is None:
                     check = False
                 if check != claim:
-                    return False
+                    raise commands.CheckFailure(_("This ticket is {status}.").format(status="claimed" if check else "unclaimed"))
             if (
                 locked is not None
                 and not isinstance(ticket.channel, discord.TextChannel)
                 and ticket.channel.locked != locked
             ):
-                return False
+                raise commands.CheckFailure(_("You're not allowed to lock this ticket."))
             if ctx.author.id in ctx.bot.owner_ids:
                 return True
             if (
@@ -696,7 +696,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 return True
             if claim_staff and ctx.author == ticket.claim:
                 return True
-            return bool(members and ctx.author in ticket.members)
+            if members and ctx.author in ticket.members:
+                return True
+            raise commands.CheckFailure(_("You're not allowed to view this ticket."))
 
         return commands.check(pred)
 
@@ -832,7 +834,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         status="close",
         ticket_owner=True,
         admin_role=True,
-        support_role=False,
+        support_role=True,
         ticket_role=False,
         view_role=False,
         guild_owner=True,
@@ -1077,7 +1079,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         status=None,
         ticket_owner=False,
         admin_role=True,
-        support_role=False,
+        support_role=True,
         ticket_role=False,
         view_role=False,
         guild_owner=True,

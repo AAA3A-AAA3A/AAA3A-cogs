@@ -640,10 +640,11 @@ class TicketTool(settings, DashboardIntegration, Cog):
             if not ticket_check:
                 return True
 
-            ticket: Ticket = await ctx.bot.get_cog("TicketTool").get_ticket(ctx.channel)
+            cog = ctx.bot.get_cog("TicketTool")
+            ticket: Ticket = await cog.get_ticket(ctx.channel)
             if ticket is None:
                 raise commands.CheckFailure(_("You're not in a ticket."))
-            config = await ctx.bot.get_cog("TicketTool").get_config(ticket.guild, ticket.profile)
+            config = await cog.get_config(ticket.guild, ticket.profile)
             if status is not None and ticket.status != status:
                 raise commands.CheckFailure(_("This ticket isn't {status}ed.").format(status=status))
             if claim is not None:
@@ -675,7 +676,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             ):
                 return True
             if (
-                support_role
+                (support_role or (ctx.command == cog.command_delete and config["delete_on_close"]))
                 and config["support_role"] is not None
                 and ctx.author in config["support_role"].members
             ):

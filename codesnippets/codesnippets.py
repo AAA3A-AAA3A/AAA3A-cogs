@@ -51,6 +51,10 @@ HASTEBIN_RE = re.compile(
     r"https://(?:www\.)?hastebin\.com/(?P<paste_id>[a-zA-Z0-9]+)/*"
     r"((\?[^->]+)?(#L?(?P<start_line>\d+)(([-~:]|(\.\.))L?(?P<end_line>\d+))?))?"
 )
+GITEA_RE = re.compile(
+    r"https://(?:www\.)?gitea\.(?P<domain>[^/]+)/(?P<repo>[a-zA-Z0-9-]+/[\w.-]+)/src/branch/(?P<path>[^#>]+)"
+    r"((\?[^#>]+)?(#L?L?(?P<start_line>\d+)(([-~:]|(\.\.))L?L?(?P<end_line>\d+))?))?"
+)
 
 
 GITHUB_HEADERS = {"Accept": "application/vnd.github.v3.raw"}
@@ -84,6 +88,7 @@ class CodeSnippets(Cog, DashboardIntegration):
             BITBUCKET_RE: self.fetch_bitbucket_snippet,
             PASTEBIN_RE: self.fetch_pastebin_snippet,
             HASTEBIN_RE: self.fetch_hastebin_snippet,
+            GITEA_RE: self.fetch_gitea_snippet,
         }
         self._session: aiohttp.ClientSession = None
         self.antispam_cache: typing.Dict[discord.abc.Messageable, deque[tuple, 5]] = {}
@@ -314,6 +319,22 @@ class CodeSnippets(Cog, DashboardIntegration):
             source="Hastebin", file_contents=file_contents, file_path=f"Paste {paste_id}", start_line=start_line, end_line=end_line
         )
         return source, ret, "py", code
+
+    async def fetch_gitea_snippet(
+        self,
+        domain: str,
+        repo: str,
+        path: str,
+        start_line: typing.Optional[str] = None,
+        end_line: typing.Optional[str] = None,
+    ) -> str:
+        """Fetches a snippet from a GitHub repo."""
+        file_contents = await self._fetch_response(
+            f"https://gitea.{domain}/{repo}/raw/branch/{path}",
+            response_format="text",
+            headers=GITHUB_HEADERS,
+        )
+        return self._snippet_to_codeblock(source="Gitea", file_contents=file_contents, file_path=path, start_line=start_line, end_line=end_line)
 
     def _snippet_to_codeblock(
         self,

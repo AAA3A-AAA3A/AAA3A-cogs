@@ -453,7 +453,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket.renamed_by = ticket.guild.get_member(ticket.renamed_by) or ticket.renamed_by
         ticket.locked_by = ticket.guild.get_member(ticket.locked_by) or ticket.locked_by
         ticket.unlocked_by = ticket.guild.get_member(ticket.unlocked_by) or ticket.unlocked_by
-        members = ticket.members
+        members = ticket.members or []
         ticket.members = []
         ticket.members.extend(channel.guild.get_member(m) for m in members)
         if ticket.created_at is not None:

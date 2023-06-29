@@ -196,6 +196,11 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
         "url": "https://websockets.readthedocs.io/en/latest/",
         "icon_url": "https://repository-images.githubusercontent.com/9113587/aa03b380-afdb-11eb-8e88-2c7542e1670f",
     },
+    "warcraftapi": {  # Special source.
+        "url": "https://wowpedia.fandom.com/wiki/World_of_Warcraft_API",
+        "icon_url": "https://static.wikia.nocookie.net/wowpedia/images/e/e6/Site-logo.png",
+        "aliases": ["warcraft"],
+    },
 }
 
 
@@ -298,9 +303,9 @@ class GetDocs(Cog, DashboardIntegration):
             asyncio.create_task(self.documentations[source].load())
 
     async def cog_unload(self) -> None:
+        await super().cog_unload()  # Close loops before session closing.
         if self._session is not None:
             await self._session.close()
-        await super().cog_unload()
 
     async def red_delete_data_for_user(self, *args, **kwargs) -> None:
         """Nothing to delete."""
@@ -719,11 +724,11 @@ class Source:
     ###################
 
     async def load(self) -> None:
-        if self.name not in ["discordapi", "git"]:
+        if not hasattr(self, f"_build_{self.name}_docs_cache"):
             self._rtfm_caching_task = self.cog.loops.append(
                 Loop(
                     cog=self.cog,
-                    name=f"{self.name}: Build RTFM Cache",
+                    name=f"`{self.name}`: Build RTFM Cache",
                     function=self._build_rtfm_cache,
                     limit_count=1,
                 )
@@ -735,7 +740,7 @@ class Source:
         self._docs_caching_task = self.cog.loops.append(
             Loop(
                 cog=self.cog,
-                name=f"{self.name}: Build Documentations Cache",
+                name=f"`{self.name}`: Build Documentations Cache",
                 function=self._build_docs_cache,
                 limit_count=1,
             )
@@ -744,7 +749,7 @@ class Source:
         #     self._rtfs_caching_task = self.cog.loops.append(
         #         Loop(
         #             cog=self.cog,
-        #             name=f"{self.name}: Build RTFS Cache",
+        #             name=f"`{self.name}`: Build RTFS Cache",
         #             function=self._build_rtfs_cache,
         #             limit_count=1,
         #         )
@@ -753,7 +758,7 @@ class Source:
     async def _build_rtfm_cache(self, recache: bool = False) -> Inventory:
         if self._rtfm_cache is not None and not recache:
             return self._rtfm_cache
-        self.cog.log.debug(f"{self.name}: Starting RTFM caching...")
+        self.cog.log.debug(f"`{self.name}`: Starting RTFM caching...")
         partial = (
             functools.partial(Inventory, url=self._rtfm_cache_url)
             if self.url.startswith("http")
@@ -771,7 +776,7 @@ class Source:
             self._raw_rtfm_cache_with_std.append(item.name)
             if item.domain != "std":
                 self._raw_rtfm_cache_without_std.append(item.name)
-        self.cog.log.debug(f"{self.name}: RTFM cache built.")
+        self.cog.log.debug(f"`{self.name}`: RTFM cache built.")
         return self._rtfm_cache
 
     async def _build_docs_cache(
@@ -781,29 +786,19 @@ class Source:
             return self._docs_cache
         self._docs_cache = []
         self._result_docs_cache = {}
-        self.cog.log.debug(f"{self.name}: Starting Documentations caching...")
+        self.cog.log.debug(f"`{self.name}`: Starting Documentations caching...")
         start = time.monotonic()
         self.cog._docs_stats[self.name] = {"manuals": 0, "documentations": 0}
 
-        if not (await self.cog.config.caching()) and self.name not in ["discordapi", "git"]:
+        if not (await self.cog.config.caching()) and not hasattr(self, f"_build_{self.name}_docs_cache"):
             return self._docs_cache
-        if self.name == "discordapi":
+        if hasattr(self, f"_build_{self.name}_docs_cache"):
             try:
                 _, manuals, documentations = await (
-                    await executor()(self._build_discordapi_docs_cache)()
+                    await executor()(getattr(self, f"_build_{self.name}_docs_cache"))()
                 )
             except TypeError:
-                _, manuals, documentations = await self._build_discordapi_docs_cache()
-            self._docs_cache.extend(documentations)
-            self.cog._docs_stats[self.name]["manuals"] += len(manuals)
-            self.cog._docs_stats["GLOBAL"]["manuals"] += len(manuals)
-            self.cog._docs_stats[self.name]["documentations"] += len(documentations)
-            self.cog._docs_stats["GLOBAL"]["documentations"] += len(documentations)
-        elif self.name == "git":
-            try:
-                _, manuals, documentations = await (await executor()(self._build_git_docs_cache)())
-            except TypeError:
-                _, manuals, documentations = await self._build_git_docs_cache()
+                _, manuals, documentations = await getattr(self, f"_build_{self.name}_docs_cache")()
             self._docs_cache.extend(documentations)
             self.cog._docs_stats[self.name]["manuals"] += len(manuals)
             self.cog._docs_stats["GLOBAL"]["manuals"] += len(manuals)
@@ -831,17 +826,17 @@ class Source:
             ):  # for name, manual in manuals:
                 try:
                     documentations = await self._get_all_manual_documentations(manual)
-                    self._docs_cache.extend(documentations)
+                    # self._docs_cache.extend(documentations)
                     self.cog._docs_stats[self.name]["manuals"] += 1
                     self.cog._docs_stats["GLOBAL"]["manuals"] += 1
                     self.cog._docs_stats[self.name]["documentations"] += len(documentations)
                     self.cog._docs_stats["GLOBAL"]["documentations"] += len(documentations)
                     self.cog.log.trace(
-                        f"{self.name}: `{name}` documentation added to documentation cache."
+                        f"`{self.name}`: `{name}` documentation added to documentation cache."
                     )
                 except Exception as e:
                     self.cog.log.debug(
-                        f"{self.name}: Error occured while trying to cache `{name}` documentation.",
+                        f"`{self.name}`: Error occured while trying to cache `{name}` documentation.",
                         exc_info=e,
                     )
                     self._docs_caching_progress[name] = e
@@ -856,7 +851,7 @@ class Source:
         self.cog._docs_sizes[self.name] = size
         self.cog._docs_sizes["GLOBAL"] += size
         self.cog.log.debug(
-            f"{self.name}: Successfully cached {amount} Documentations/{len(manuals)} manuals."
+            f"`{self.name}`: Successfully cached {amount} Documentations/{len(manuals)} manuals."
         )
         return self._docs_cache
 
@@ -864,7 +859,7 @@ class Source:
         self,
     ) -> typing.Tuple[Inventory, typing.List[str], typing.List[Documentation]]:
         self._rtfm_cache = Inventory()
-        self._rtfm_cache.project = self.name
+        self._rtfm_cache.project = "Discord API"
         self._rtfm_cache.version = "1.0"
         manuals = []
         documentations = []
@@ -878,7 +873,7 @@ class Source:
             result = await loop.run_in_executor(None, partial)
             if result.returncode != 0:
                 self.cog.log.error(
-                    f"{self.name}: Error occured while trying to clone Discord API Docs's GitHub repo."
+                    f"`{self.name}`: Error occured while trying to clone Discord API Docs's GitHub repo."
                 )
                 return self._rtfm_cache, [], []
             # Iter files.
@@ -1092,12 +1087,13 @@ class Source:
                                 attributes=Attributes(attributes={}, properties={}, methods={}),
                             )
                             documentations.append(documentation)
+                            self._docs_cache.append(documentation)
                         self.cog.log.trace(
-                            f"{self.name}: `{name}` documentation added to documentation cache."
+                            f"`{self.name}`: `{name}` documentation added to documentation cache."
                         )
                     except Exception as e:
                         self.cog.log.debug(
-                            f"{self.name}: Error occured while trying to cache `{name}` documentation.",
+                            f"`{self.name}`: Error occured while trying to cache `{name}` documentation.",
                             exc_info=e,
                         )
                         self._docs_caching_progress[name] = e
@@ -1107,7 +1103,7 @@ class Source:
         self,
     ) -> typing.Tuple[Inventory, typing.List[str], typing.List[Documentation]]:
         self._rtfm_cache = Inventory()
-        self._rtfm_cache.project = self.name
+        self._rtfm_cache.project = "Git"
         self._rtfm_cache.version = "1.0"
         manuals = []
         documentations = []
@@ -1166,12 +1162,113 @@ class Source:
                     attributes=Attributes(attributes={}, properties={}, methods={}),
                 )
                 documentations.append(documentation)
+                self._docs_cache.append(documentation)
                 self.cog.log.trace(
-                    f"{self.name}: `{manual[0]}` documentation added to documentation cache."
+                    f"`{self.name}`: `{manual[0]}` documentation added to documentation cache."
                 )
             except Exception as e:
                 self.cog.log.debug(
-                    f"{self.name}: Error occured while trying to cache `{manual[0]}` documentation.",
+                    f"`{self.name}`: Error occured while trying to cache `{manual[0]}` documentation.",
+                    exc_info=e,
+                )
+                self._docs_caching_progress[manual[0]] = e
+        return self._rtfm_cache, manuals, documentations
+
+    async def _build_warcraftapi_docs_cache(
+        self,
+    ) -> typing.Tuple[Inventory, typing.List[str], typing.List[Documentation]]:
+        self._rtfm_cache = Inventory()
+        self._rtfm_cache.project = "Warcraft API"
+        self._rtfm_cache.version = "1.0"
+        manuals = []
+        documentations = []
+        # Find manuals.
+        content = await self._get_html(self.url)
+        soup = BeautifulSoup(content, "lxml")
+        manuals.extend(
+            (potential_manual.text.strip(), self.url.split("/wiki")[0] + potential_manual.attrs["href"])
+            for potential_manual in soup.find_all("a")
+            if potential_manual.attrs.get("href") is not None
+            and potential_manual.attrs["href"].startswith("/wiki/API_") and potential_manual.text.strip() not in ["API changes", "loadstring"]
+        )
+        # Iter manuals.
+        for manual in manuals:
+            try:
+                _name = manual[0]
+                manual_content = await self._get_html(manual[1])
+                soup = BeautifulSoup(manual_content, "lxml")
+                # Get "Main Section".
+                # soup = BeautifulSoup(manual_content[:manual_content.index('<a href="/wiki/Wowpedia:Interface_customization" title="Wowpedia:Interface customization">Main Menu</a>')], "lxml")
+                # soup = BeautifulSoup(manual_content[:manual_content.index(str(soup.find("a", title="Wowpedia:Interface customization")))], "lxml")
+                # Get informations.
+                try:
+                    description = soup.find("p").text.strip()
+                    signature = soup.find("pre").text.strip()
+                except AttributeError:
+                    continue
+                fields = {}
+                try:
+                    fields_labels = soup.find_all("span", class_="mw-headline")
+                    fields_values = soup.find_all(("dl", "ul"))
+                    for field_value in fields_values.copy():
+                        if field_value.name == "ul":
+                            text = self._get_text(field_value, parsed_url=self.url.split("/wiki")[0])
+                            if len(text.split("\n\n")) > 1 or "WoW API" in text or "Hyperlinks" in text:
+                                fields_values.remove(field_value)
+                    used_fields_values = set()
+                    for field_label in fields_labels:
+                        _field_value = self._get_text(fields_values.pop(0), parsed_url=self.url.split("/wiki")[0])
+                        while _field_value.replace(" ", "") in used_fields_values:
+                            _field_value = self._get_text(fields_values.pop(0), parsed_url=self.url.split("/wiki")[0])
+                        used_fields_values.add(_field_value.replace(" ", ""))
+                        lines = _field_value.split("\n")
+                        field_value = (
+                            "".join(
+                                f"**{line.strip()}**\n"
+                                if i % 2 == 0
+                                else f"> {line.split(' - ')[0].strip()} - {' - '.join(line.split(' - ')[1:]).strip()}\n"
+                                for i, line in enumerate(lines)
+                            )
+                            if len(lines) % 2 == 0
+                            else _field_value
+                        )
+                        fields[field_label.text.strip()] = field_value
+                except IndexError:
+                    pass
+                # Add to RTFM cache.
+                _object = DataObjStr(
+                    name=_name,
+                    domain="py",
+                    role="endpoint",
+                    priority="1",
+                    uri=manual[1],
+                    dispname="-",
+                )
+                setattr(_object, "fake", True)
+                self._rtfm_cache.objects.append(_object)
+                self._raw_rtfm_cache_with_std.append(_object.name)
+                if _object.domain != "std":
+                    self._raw_rtfm_cache_without_std.append(_object.name)
+                # Add to Documentations cache.
+                documentation = Documentation(
+                    self,
+                    name=_name,
+                    url=manual[1],
+                    signature=signature,
+                    description=description,
+                    parameters={},
+                    examples=Examples(),
+                    fields=fields,
+                    attributes=Attributes(attributes={}, properties={}, methods={}),
+                )
+                documentations.append(documentation)
+                self._docs_cache.append(documentation)
+                self.cog.log.trace(
+                    f"`{self.name}`: `{manual[0]}` documentation added to documentation cache."
+                )
+            except Exception as e:
+                self.cog.log.debug(
+                    f"`{self.name}`: Error occured while trying to cache `{manual[0]}` documentation.",
                     exc_info=e,
                 )
                 self._docs_caching_progress[manual[0]] = e
@@ -1727,7 +1824,7 @@ class Source:
         #         name = f"discord.ext.commands.{name}"
         documentation = discord.utils.get(self._docs_cache, name=name)
         if (
-            self.name not in ["discordapi", "git"]
+            self.name not in ["discordapi", "git", "warcraftapi"]
             and documentation is None
         ):
             item = discord.utils.get(self._rtfm_cache.objects, name=name)

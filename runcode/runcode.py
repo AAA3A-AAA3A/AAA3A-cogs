@@ -89,7 +89,7 @@ class WandboxFlagsConverter(commands.FlagConverter):  # , prefix="--", delimiter
     async def convert(self, ctx: commands.Context, argument: str) -> typing.Any:
         if ":" not in argument:
             raise commands.BadArgument(_("No flags in argument."))
-        return super().convert(ctx, argument=argument)
+        return await super().convert(ctx, argument=argument)
 
 
 class TioFlagsConverter(commands.FlagConverter):
@@ -105,7 +105,7 @@ class TioFlagsConverter(commands.FlagConverter):
     async def convert(self, ctx: commands.Context, argument: str) -> typing.Any:
         if ":" not in argument:
             raise commands.BadArgument(_("No flags in argument."))
-        return super().convert(ctx, argument=argument)
+        return await super().convert(ctx, argument=argument)
 
 
 @cog_i18n(_)

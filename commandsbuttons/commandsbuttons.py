@@ -50,7 +50,7 @@ class CommandsButtons(Cog):
     async def cog_load(self) -> None:
         await super().cog_load()
         await self.edit_config_schema()
-        await self.load_buttons()
+        asyncio.create_task(self.load_buttons())
 
     async def red_delete_data_for_user(self, *args, **kwargs) -> None:
         """Nothing to delete."""
@@ -90,6 +90,7 @@ class CommandsButtons(Cog):
         )
 
     async def load_buttons(self) -> None:
+        await self.bot.wait_until_red_ready()
         all_guilds = await self.config.all_guilds()
         for guild in all_guilds:
             config = all_guilds[guild]["commands_buttons"]

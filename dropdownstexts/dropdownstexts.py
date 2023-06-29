@@ -5,6 +5,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import asyncio
 from functools import partial
 
 from .converters import Emoji, EmojiLabelTextConverter
@@ -42,7 +43,7 @@ class DropdownsTexts(Cog):
     async def cog_load(self) -> None:
         await super().cog_load()
         await self.edit_config_schema()
-        await self.load_dropdowns()
+        asyncio.create_task(self.load_dropdowns())
 
     async def red_delete_data_for_user(self, *args, **kwargs) -> None:
         """Nothing to delete."""
@@ -82,6 +83,7 @@ class DropdownsTexts(Cog):
         )
 
     async def load_dropdowns(self) -> None:
+        await self.bot.wait_until_red_ready()
         all_guilds = await self.config.all_guilds()
         for guild in all_guilds:
             config = all_guilds[guild]["dropdowns_texts"]

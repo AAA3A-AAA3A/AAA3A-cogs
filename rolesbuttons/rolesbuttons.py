@@ -5,6 +5,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import asyncio
 from functools import partial
 
 from .converters import Emoji, EmojiRoleConverter
@@ -43,7 +44,7 @@ class RolesButtons(Cog):
     async def cog_load(self) -> None:
         await super().cog_load()
         await self.edit_config_schema()
-        await self.load_buttons()
+        asyncio.create_task(self.load_buttons())
 
     async def red_delete_data_for_user(self, *args, **kwargs) -> None:
         """Nothing to delete."""
@@ -83,6 +84,7 @@ class RolesButtons(Cog):
         )
 
     async def load_buttons(self) -> None:
+        await self.bot.wait_until_red_ready()
         all_guilds = await self.config.all_guilds()
         for guild in all_guilds:
             config = all_guilds[guild]["roles_buttons"]
@@ -208,7 +210,7 @@ class RolesButtons(Cog):
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_roles=True)
-    @commands.bot_has_permissions(manage_roles=True, embed_links=True)
+    # @commands.bot_has_permissions(manage_roles=True, embed_links=True)
     @commands.hybrid_group()
     async def rolesbuttons(self, ctx: commands.Context) -> None:
         """Group of commands to use RolesButtons."""

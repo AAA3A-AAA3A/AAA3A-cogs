@@ -213,7 +213,7 @@ class YAMLConverter(commands.Converter):
         if "pings" not in argument_dict:
             argument_dict["pings"] = None
         else:
-            argument_dict["pings"] = [(await RoleOrMemberConverter().convert(ctx, argument=ping.strip())).mention for ping in re.split(r",|;|\||-", argument_dict["pings"])]
+            argument_dict["pings"] = [(await RoleOrMemberConverter().convert(ctx, argument=ping.strip())).mention for ping in re.split(r",|;|\||-", str(argument_dict["pings"]))]
         return argument_dict
 
 
@@ -382,7 +382,7 @@ class DiscordModals(Cog):
             embed: discord.Embed = discord.Embed()
             embed.title = config["title"]
             if not config.get("anonymous"):
-                embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar)
+                embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar)
                 embed.color = interaction.user.color
             else:
                 embed.set_author(

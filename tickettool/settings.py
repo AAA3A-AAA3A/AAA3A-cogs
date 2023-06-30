@@ -83,22 +83,13 @@ class settings(Cog):
         )
         if reason_options is None:
             buttons_config = await self.config.guild(ctx.guild).buttons.all()
-            if emoji is not None:
-                emoji = f"{getattr(emoji, 'id', emoji)}"
-                try:
-                    int(emoji)
-                except ValueError:
-                    e = emoji
-                else:
-                    e = self.bot.get_emoji(int(emoji))
-            else:
-                e = None
+            emoji = f"{getattr(emoji, 'id', emoji)}"
             view = self.get_buttons(
                 buttons=[
                     {
                         "style": discord.ButtonStyle(2),
                         "label": label or _("Create ticket"),
-                        "emoji": e or "🎟️",
+                        "emoji": emoji or "🎟️",
                         "custom_id": "create_ticket_button",
                         "disabled": False,
                     }
@@ -130,24 +121,16 @@ class settings(Cog):
                     )
                     return
             dropdowns_config = await self.config.guild(ctx.guild).dropdowns.all()
-            all_options = []
-            for emoji, label, description, value in reason_options:
-                emoji = f"{getattr(emoji, 'id', emoji)}"
-                try:
-                    int(emoji)
-                except ValueError:
-                    e = emoji
-                else:
-                    e = self.bot.get_emoji(int(emoji))
-                all_options.append(
-                    {
-                        "label": label,
-                        "value": value,
-                        "description": description,
-                        "emoji": e,
-                        "default": False,
-                    }
-                )
+            all_options = [
+                {
+                    "label": label,
+                    "value": value,
+                    "description": description,
+                    "emoji": f"{getattr(emoji, 'id', emoji)}",
+                    "default": False,
+                }
+                for emoji, label, description, value in reason_options
+            ]
             view = self.get_dropdown(
                 placeholder=config["embed_button"]["placeholder_dropdown"],
                 options=all_options,
@@ -160,7 +143,7 @@ class settings(Cog):
             dropdowns_config[f"{message.channel.id}-{message.id}"] = [
                 {
                     "profile": profile,
-                    "emoji": emoji.id if hasattr(emoji, "id") else emoji,
+                    "emoji": f"{getattr(emoji, 'id', emoji)}",
                     "label": label,
                     "description": description,
                     "value": value,

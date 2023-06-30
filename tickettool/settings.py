@@ -36,6 +36,7 @@ class settings(Cog):
         channel: typing.Optional[discord.TextChannel],
         message: typing.Optional[commands.MessageConverter],
         reason_options: commands.Greedy[EmojiLabelDescriptionValueConverter],
+        label: str = None,
     ) -> None:
         """Send a message with a button to open a ticket or dropdown with possible reasons.
 
@@ -85,7 +86,7 @@ class settings(Cog):
                 buttons=[
                     {
                         "style": discord.ButtonStyle(2),
-                        "label": _("Create ticket"),
+                        "label": label or _("Create ticket"),
                         "emoji": "🎟️",
                         "custom_id": "create_ticket_button",
                         "disabled": False,

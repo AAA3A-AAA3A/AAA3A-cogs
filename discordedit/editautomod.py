@@ -85,7 +85,7 @@ class AutoModRuleActionsConverter(commands.Converter):
             try:
                 discord.AutoModAction
                 automod_action = discord.AutoModRuleAction.from_data(
-                    type=action_type, data=action_dict["data"]
+                    data=action_dict["data"]
                 )
             except (TypeError, ValueError, KeyError):
                 raise commands.BadArgument(_("Invalid action metadata."))

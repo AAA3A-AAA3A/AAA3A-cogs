@@ -83,12 +83,22 @@ class settings(Cog):
         )
         if reason_options is None:
             buttons_config = await self.config.guild(ctx.guild).buttons.all()
+            if emoji is not None:
+                emoji = f"{getattr(emoji, 'id', emoji)}"
+                try:
+                    int(emoji)
+                except ValueError:
+                    e = emoji
+                else:
+                    e = self.bot.get_emoji(int(emoji))
+            else:
+                e = None
             view = self.get_buttons(
                 buttons=[
                     {
                         "style": discord.ButtonStyle(2),
                         "label": label or _("Create ticket"),
-                        "emoji": emoji or "🎟️",
+                        "emoji": e or "🎟️",
                         "custom_id": "create_ticket_button",
                         "disabled": False,
                     }

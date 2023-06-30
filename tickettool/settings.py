@@ -120,7 +120,7 @@ class settings(Cog):
             dropdowns_config = await self.config.guild(ctx.guild).dropdowns.all()
             all_options = []
             for emoji, label, description, value in reason_options:
-                emoji = emoji.id if hasattr(emoji, "id") else emoji
+                emoji = f"{getattr(emoji, 'id', emoji)}"
                 try:
                     int(emoji)
                 except ValueError:

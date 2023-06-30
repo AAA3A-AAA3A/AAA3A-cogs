@@ -5,6 +5,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import asyncio
 import datetime
 import io
 from copy import deepcopy
@@ -232,7 +233,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             await modlog.register_casetype("ticket_created", default_setting=True, image="🎟️", case_str="New Ticket")
         except RuntimeError:  # The case is already registered.
             pass
-        await self.load_buttons()
+        asyncio.create_task(self.load_buttons())
 
     async def red_delete_data_for_user(self, *args, **kwargs) -> None:
         """Nothing to delete. Don't delete operational tickets."""
@@ -312,6 +313,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         )
 
     async def load_buttons(self) -> None:
+        await self.bot.wait_until_red_ready()
         try:
             view = self.get_buttons(
                 buttons=[
@@ -370,18 +372,30 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     continue
                 message_id = int((str(message).split("-"))[1])
                 try:
-                    view = self.get_dropdown(
-                        placeholder=_("Choose the reason for open a ticket."),
-                        options=[
+                    options = []
+                    for reason_option in all_guilds[guild]["dropdowns"][message]:
+                        emoji = reason_option["emoji"]
+                        # if emoji is not None:
+                        try:
+                            int(emoji)
+                        except ValueError:
+                            e = emoji
+                        else:
+                            e = self.bot.get_emoji(int(emoji))
+                        # else:
+                        #     e = None
+                        options.append(
                             {
                                 "label": reason_option["label"],
                                 "value": reason_option.get("value", reason_option["label"]),
                                 "description": reason_option.get("description", None),
-                                "emoji": reason_option["emoji"],
+                                "emoji": e,
                                 "default": False,
                             }
-                            for reason_option in all_guilds[guild]["dropdowns"][message]
-                        ],
+                        )
+                    view = self.get_dropdown(
+                        placeholder=_("Choose the reason for open a ticket."),
+                        options=options,
                     )
                     self.bot.add_view(view, message_id=message_id)
                     self.views[discord.PartialMessage(channel=channel, id=message_id)] = view

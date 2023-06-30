@@ -4,7 +4,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from .utils import EmojiLabelDescriptionValueConverter
+from .utils import EmojiLabelDescriptionValueConverter, Emoji
 
 _ = Translator("TicketTool", __file__)
 
@@ -36,6 +36,7 @@ class settings(Cog):
         channel: typing.Optional[discord.TextChannel],
         message: typing.Optional[commands.MessageConverter],
         reason_options: commands.Greedy[EmojiLabelDescriptionValueConverter],
+        emoji: typing.Optional[Emoji] = None,
         label: str = None,
     ) -> None:
         """Send a message with a button to open a ticket or dropdown with possible reasons.
@@ -87,7 +88,7 @@ class settings(Cog):
                     {
                         "style": discord.ButtonStyle(2),
                         "label": label or _("Create ticket"),
-                        "emoji": "🎟️",
+                        "emoji": emoji or "🎟️",
                         "custom_id": "create_ticket_button",
                         "disabled": False,
                     }

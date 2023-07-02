@@ -41,18 +41,13 @@ class DashboardIntegration:
                 )
         dashboard_cog.rpc.third_parties_handler.add_third_party(self)
 
-    async def cog_unload(self) -> None:
-        if (dashboard_cog := self.bot.get_cog("Dashboard")) is not None:
-            dashboard_cog.rpc.third_parties_handler.remove_third_party(self)
-
     @dashboard_page(name=None)
     async def rpc_callback(self, user: discord.User, **kwargs) -> dict:
         if user.id not in self.bot.owner_ids:
             return {"status": 1, "error_message": "You're not a bot owner!"}
         tracebacks = self.tracebacks.copy()
         if not tracebacks:
-            return {"status": 0, "web-content": web_content_without_results, "items": tracebacks}
-        tracebacks.reverse()
+            return {"status": 0, "web-content": web_content_without_results}
         return {"status": 0, "web-content": web_content, "items": tracebacks}
 
 
@@ -117,7 +112,7 @@ web_content = """
 <script>
     $(document).ready(function() {
         var items = {{ items|tojson }};
-        var currentIndex = 0;
+        var currentIndex = items.length - 1;;
         var pageSize = 1;
         var numPages = Math.ceil(items.length / pageSize);
         function displayMenu() {

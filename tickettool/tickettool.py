@@ -374,22 +374,12 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 try:
                     options = []
                     for reason_option in all_guilds[guild]["dropdowns"][message]:
-                        emoji = reason_option["emoji"]
-                        # if emoji is not None:
-                        try:
-                            int(emoji)
-                        except ValueError:
-                            e = emoji
-                        else:
-                            e = self.bot.get_emoji(int(emoji))
-                        # else:
-                        #     e = None
                         options.append(
                             {
                                 "label": reason_option["label"],
                                 "value": reason_option.get("value", reason_option["label"]),
                                 "description": reason_option.get("description", None),
-                                "emoji": e,
+                                "emoji": reason_option["emoji"],  # reason_option.get("emoji")
                                 "default": False,
                             }
                         )
@@ -1572,8 +1562,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
 
     @commands.Cog.listener()
     async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+        if assistant_cog is None:
+            return self.get_open_tickets_list_in_server_for_assistant
         schema = {
-            "name": "get_open_tickets_list_in_server",
+            "name": "get_open_tickets_list_in_server_for_assistant",
             "description": "Get open tickets for the user in this server, and their reason.",
             "parameters": {
                 "type": "object",
@@ -1583,38 +1575,37 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 ]
             },
         }
-        async def get_open_tickets_list_in_server(user: discord.Member, *args, **kwargs):
-            if not isinstance(user, discord.Member):
-                return "The command isn't executed in a server."
-            tickets = await self.config.guild(user.guild).tickets.all()
-            tickets_to_show = []
-            for channel_id in tickets:
-                config = await self.get_config(user.guild, profile=tickets[channel_id]["profile"])
-                if config["forum_channel"] is not None:
-                    channel = config["forum_channel"].get_thread(int(channel_id))
-                else:
-                    channel = user.guild.get_channel(int(channel_id))
-                if channel is None:
-                    continue
-                ticket: Ticket = await self.get_ticket(channel)
-                if (
-                    (ticket.owner is not None and ticket.owner == user)
-                    and ticket.status == "open"
-                ):
-                    tickets_to_show.append(ticket)
-            if not tickets_to_show:
-                raise commands.UserFeedbackCheckFailure(_("No open tickets by this user in this server."))
-            BREAK_LINE = "\n"
-            open_tickets = "\n" + "\n".join(
-                [
-                    f"• #{ticket.id} - {ticket.channel.mention} - {ticket.reason.split(BREAK_LINE)[0][:50]}"
-                    for ticket in sorted(tickets_to_show, key=lambda x: x.id)
-                ]
-            )
-            data = {
-                "Open Tickets": open_tickets,
-            }
-            return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
-        if assistant_cog is None:
-            return get_open_tickets_list_in_server
-        await assistant_cog.register_function(cog=self, schema=schema, function=get_open_tickets_list_in_server)
+        await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
+
+    async def get_open_tickets_list_in_server_for_assistant(self, user: discord.Member, *args, **kwargs):
+        if not isinstance(user, discord.Member):
+            return "The command isn't executed in a server."
+        tickets = await self.config.guild(user.guild).tickets.all()
+        tickets_to_show = []
+        for channel_id in tickets:
+            config = await self.get_config(user.guild, profile=tickets[channel_id]["profile"])
+            if config["forum_channel"] is not None:
+                channel = config["forum_channel"].get_thread(int(channel_id))
+            else:
+                channel = user.guild.get_channel(int(channel_id))
+            if channel is None:
+                continue
+            ticket: Ticket = await self.get_ticket(channel)
+            if (
+                (ticket.owner is not None and ticket.owner == user)
+                and ticket.status == "open"
+            ):
+                tickets_to_show.append(ticket)
+        if not tickets_to_show:
+            raise commands.UserFeedbackCheckFailure(_("No open tickets by this user in this server."))
+        BREAK_LINE = "\n"
+        open_tickets = "\n" + "\n".join(
+            [
+                f"• #{ticket.id} - {ticket.channel.mention} - {ticket.reason.split(BREAK_LINE)[0][:50]}"
+                for ticket in sorted(tickets_to_show, key=lambda x: x.id)
+            ]
+        )
+        data = {
+            "Open Tickets": open_tickets,
+        }
+        return [f"{key}: {value}\n" for key, value in data.items() if value is not None]

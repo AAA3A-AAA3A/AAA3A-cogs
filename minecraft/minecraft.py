@@ -396,8 +396,10 @@ class Minecraft(Cog):
 
     @commands.Cog.listener()
     async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+        if assistant_cog is None:
+            return self.get_minecraft_java_server_for_assistant
         schema = {
-            "name": "get_minecraft_java_server",
+            "name": "get_minecraft_java_server_for_assistant",
             "description": "Get informations about a Minecraft Java server.",
             "parameters": {
                 "type": "object",
@@ -412,23 +414,22 @@ class Minecraft(Cog):
                 ]
             },
         }
-        async def get_minecraft_java_server(server_url: str, *args, **kwargs):
-            try:
-                server: JavaServer = await JavaServer.async_lookup(address=server_url.lower())
-                status = await server.async_status()
-            except Exception:
-                return "No data found for this Minecraft Java server."
-            server_description = await self.clear_mcformatting(status.description)
-            data = {
-                "Host & Port": f"{server.address.host}:{server.address.port}",
-                "Description": box(server_description),
-                "Status": "Offline." if "This server is offline." in server_description else ("Currently stopping." if "This server is currently stopping." in server_description else "Online."),
-                "Latency": f"{status.latency:.2f} ms",
-                "Players": f"{status.players.online}/{status.players.max}",
-                "Version": status.version.name,
-                "Protocol": status.version.protocol,
-            }
-            return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
-        if assistant_cog is None:
-            return get_minecraft_java_server
-        await assistant_cog.register_function(cog=self, schema=schema, function=get_minecraft_java_server)
+        await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
+
+    async def get_minecraft_java_server_for_assistant(self, server_url: str, *args, **kwargs):
+        try:
+            server: JavaServer = await JavaServer.async_lookup(address=server_url.lower())
+            status = await server.async_status()
+        except Exception:
+            return "No data found for this Minecraft Java server."
+        server_description = await self.clear_mcformatting(status.description)
+        data = {
+            "Host & Port": f"{server.address.host}:{server.address.port}",
+            "Description": box(server_description),
+            "Status": "Offline." if "This server is offline." in server_description else ("Currently stopping." if "This server is currently stopping." in server_description else "Online."),
+            "Latency": f"{status.latency:.2f} ms",
+            "Players": f"{status.players.online}/{status.players.max}",
+            "Version": status.version.name,
+            "Protocol": status.version.protocol,
+        }
+        return [f"{key}: {value}\n" for key, value in data.items() if value is not None]

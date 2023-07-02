@@ -97,8 +97,10 @@ class Dictionary(Cog):
 
     @commands.Cog.listener()
     async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+        if assistant_cog is None:
+            return self.get_word_in_dictionary_for_assistant
         schema = {
-            "name": "get_word_in_dictionary",
+            "name": "get_word_in_dictionary_for_assistant",
             "description": "Get the meanings, the definition, the synonyms and the antonyms of an English word.",
             "parameters": {
                 "type": "object",
@@ -113,34 +115,33 @@ class Dictionary(Cog):
                 ]
             },
         }
-        async def get_word_in_dictionary(query: str, *args, **kwargs):
-            word = await self.get_word(query)
-            if word is None:
-                return "Word not found in English dictionary."
-            meanings = ""
-            for meaning in word.meanings:
-                meanings += "\n\n" + "\n".join(
-                    [
-                        (f"{n}. " if len(word.meanings[meaning]) > 1 else "")
-                        + f"{definition['definition']}"
-                        + (
-                            f"\n- Synonyms: {humanize_list(definition['synonyms'])}"
-                            if definition["synonyms"]
-                            else ""
-                        )
-                        + (
-                            f"\n- Antonyms: {humanize_list(definition['antonyms'])}"
-                            if definition["antonyms"]
-                            else ""
-                        )
-                        for n, definition in enumerate(word.meanings[meaning], start=1)
-                    ]
-                )
+        await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
+
+    async def get_word_in_dictionary_for_assistant(self, query: str, *args, **kwargs):
+        word = await self.get_word(query)
+        if word is None:
+            return "Word not found in English dictionary."
+        meanings = ""
+        for meaning in word.meanings:
+            meanings += "\n\n" + "\n".join(
+                [
+                    (f"{n}. " if len(word.meanings[meaning]) > 1 else "")
+                    + f"{definition['definition']}"
+                    + (
+                        f"\n- Synonyms: {humanize_list(definition['synonyms'])}"
+                        if definition["synonyms"]
+                        else ""
+                    )
+                    + (
+                        f"\n- Antonyms: {humanize_list(definition['antonyms'])}"
+                        if definition["antonyms"]
+                        else ""
+                    )
+                    for n, definition in enumerate(word.meanings[meaning], start=1)
+                ]
+            )
             data = {
                 "Word": word.word,
                 "Meanings": meanings,
             }
             return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
-        if assistant_cog is None:
-            return get_word_in_dictionary
-        await assistant_cog.register_function(cog=self, schema=schema, function=get_word_in_dictionary)

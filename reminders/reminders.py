@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, Loop, CogsUtils, Settings, Menu  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Loop, Settings, Menu  # isort:skip
 from redbot.core import commands, app_commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -37,7 +37,6 @@ MAX_REMINDER_LENGTH = 1500
 
 @app_commands.context_menu(name="Remind Me this Message")
 async def remind_message_context_menu(interaction: discord.Interaction, message: discord.Message):
-    cog = interaction.client.get_cog("Reminders")
     modal = discord.ui.Modal(title="Remind Me this Message")
     time_input = discord.ui.TextInput(
         label="Time",
@@ -52,11 +51,11 @@ async def remind_message_context_menu(interaction: discord.Interaction, message:
     timeout = await modal.wait()
     if timeout:
         return
-    context = await cog.cogsutils.invoke_command(
+    context = await CogsUtils.invoke_command(
         bot=interaction.client,
         author=interaction.user,
         channel=interaction.channel,
-        command=f"remindme {time_input.value} {message.jump_url}",
+        command=f'remindme "{time_input.value}" {message.jump_url}',
     )
     if not await context.command.can_run(context):
         await interaction.followup.send(
@@ -328,6 +327,15 @@ class Reminders(Cog):
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.
         You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.
         Use `[p]reminder timetips` to display tips for time parsing.
+
+        **Examples:**
+        - `[p]remindme in 8min45sec to do that thing`
+        - `[p]remindme to water my plants in 2 hours`
+        - `[p]remindme in 3 days`
+        - `[p]remindme 8h`
+        - `[p]remindme every 1 week to take out the trash`
+        - `[p]remindme in 1 hour <message_link>`
+        - `[p]remindme at 10h to add some feature to my codes`
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
         if (
@@ -450,6 +458,9 @@ class Reminders(Cog):
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.
         You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.
         Use `[p]reminder timetips` to display tips for time parsing.
+
+        Examples:
+        - `[p]remind #destination @user1 @user2 @user2 in 2 hours to buy a gift`
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
         if (
@@ -619,6 +630,9 @@ class Reminders(Cog):
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.
         You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.
         Use `[p]reminder timetips` to display tips for time parsing.
+
+        Examples:
+        - `[p]reminder fifo #destination "at 10h every day" ping
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
         if (
@@ -724,6 +738,9 @@ class Reminders(Cog):
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.
         You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.
         Use `[p]reminder timetips` to display tips for time parsing.
+
+        Examples:
+        - `[p]reminder say #destination "at 9h every day" Hello everyone!
         """
         minimum_user_reminders = await self.config.maximum_user_reminders()
         if (
@@ -1264,8 +1281,10 @@ class Reminders(Cog):
 
     @commands.Cog.listener()
     async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+        if assistant_cog is None:
+            return self.get_existing_user_reminders_for_assistant
         schema = {
-            "name": "get_existing_user_reminders",
+            "name": "get_existing_user_reminders_for_assistant",
             "description": "Get the 5 next existing reminders for the user and their content.",
             "parameters": {
                 "type": "object",
@@ -1275,15 +1294,14 @@ class Reminders(Cog):
                 ]
             },
         }
-        async def get_existing_user_reminders(user: typing.Union[discord.Member, discord.User], *args, **kwargs):
-            if not (reminders := self.cache.get(user.id, {})):
-                return "This user haven't any reminders."
-            reminders = sorted([reminder for reminder in reminders.values() if reminder.content["type"] in ["text", "message"]], key=lambda reminder: reminder.next_expires_at)[:5]
-            data = {
-                "Next 5 existing user's Reminders": "\n\n" + "\n\n".join([f"Reminder #{reminder.id}:\n{reminder.get_info().replace('**', '')}" for reminder in reminders]),
-                # "Next 5 existing user's Reminders": "\n" + "\n".join([f"• Reminder #{reminder.id}: {reminder.to_json(clean=True)}" for reminder in reminders]),
-            }
-            return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
-        if assistant_cog is None:
-            return get_existing_user_reminders
-        await assistant_cog.register_function(cog=self, schema=schema, function=get_existing_user_reminders)
+        await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
+
+    async def get_existing_user_reminders_for_assistant(self, user: typing.Union[discord.Member, discord.User], *args, **kwargs):
+        if not (reminders := self.cache.get(user.id, {})):
+            return "This user haven't any reminders."
+        reminders = sorted([reminder for reminder in reminders.values() if reminder.content["type"] in ["text", "message"]], key=lambda reminder: reminder.next_expires_at)[:5]
+        data = {
+            "Next 5 existing user's Reminders": "\n\n" + "\n\n".join([f"Reminder #{reminder.id}:\n{reminder.get_info().replace('**', '')}" for reminder in reminders]),
+            # "Next 5 existing user's Reminders": "\n" + "\n".join([f"• Reminder #{reminder.id}: {reminder.to_json(clean=True)}" for reminder in reminders]),
+        }
+        return [f"{key}: {value}\n" for key, value in data.items() if value is not None]

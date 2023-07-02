@@ -120,8 +120,10 @@ class AutoTraceback(Cog, DashboardIntegration):
 
     @commands.Cog.listener()
     async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+        if assistant_cog is None:
+            return self.get_last_command_error_traceback_for_assistant
         schema = {
-            "name": "get_last_command_error_traceback",
+            "name": "get_last_command_error_traceback_for_assistant",
             "description": "Get the traceback of the last command error occured on the bot.",
             "parameters": {
                 "type": "object",
@@ -131,17 +133,16 @@ class AutoTraceback(Cog, DashboardIntegration):
                 ]
             },
         }
-        async def get_last_command_error_traceback(user: typing.Union[discord.Member, discord.User], *args, **kwargs):
-            if user.id not in self.bot.owner_ids:
-                return "Only bot owners can view errors tracebacks."
-            if not self.bot._last_exception:
-                return "No last command error recorded."
-            last_traceback = self.bot._last_exception
-            last_traceback = CogsUtils.replace_var_paths(last_traceback)
-            data = {
-                "Last command error traceback": f"\n{last_traceback}",
-            }
-            return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
-        if assistant_cog is None:
-            return get_last_command_error_traceback
-        await assistant_cog.register_function(cog=self, schema=schema, function=get_last_command_error_traceback)
+        await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
+
+    async def get_last_command_error_traceback_for_assistant(self, user: typing.Union[discord.Member, discord.User], *args, **kwargs):
+        if user.id not in self.bot.owner_ids:
+            return "Only bot owners can view errors tracebacks."
+        if not self.bot._last_exception:
+            return "No last command error recorded."
+        last_traceback = self.bot._last_exception
+        last_traceback = CogsUtils.replace_var_paths(last_traceback)
+        data = {
+            "Last command error traceback": f"\n{last_traceback}",
+        }
+        return [f"{key}: {value}\n" for key, value in data.items() if value is not None]

@@ -378,7 +378,7 @@ class GetDocs(Cog, DashboardIntegration):
     @commands.hybrid_command(aliases=["rtfd"])
     @app_commands.describe(
         source="The name of the documentation to use.",
-        limit="The limit of objects to be sent.",
+        limit="The limit of items to be sent.",
         with_std="Also display links to non-API documentation.",
         query="Your search. (`events` to get all dpy events, for `discord.py`, `redbot` and `pylav` source only)",
     )
@@ -392,9 +392,7 @@ class GetDocs(Cog, DashboardIntegration):
         query: typing.Optional[str] = "",
     ) -> None:
         """
-        Show all attributes matching your search.
-
-        The name must be exact, or else rtfm is invoked instead.
+        Show all items matching your search.
 
         Arguments:
         - `source`: The name of the documentation to use. Defaults to the one configured with `[p]setgetdocs defaultsource`.
@@ -635,8 +633,10 @@ class GetDocs(Cog, DashboardIntegration):
 
     @commands.Cog.listener()
     async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+        if assistant_cog is None:
+            return self.get_documentation_for_assistant
         schema = {
-            "name": "get_documentation",
+            "name": "get_documentation_for_assistant",
             "description": f"Get the documentation for an object/method from one of the following sources: {humanize_list([f'`{source}`' for source in self.documentations])}.",
             "parameters": {
                 "type": "object",
@@ -656,30 +656,29 @@ class GetDocs(Cog, DashboardIntegration):
                 ]
             },
         }
-        async def get_documentation(source: str, query: str, *args, **kwargs):
-            if source not in self.documentations.keys():
-                return f"This source doesn't exist! Valid sources are: {humanize_list([f'`{source}`' for source in self.documentations])}."
-            source = self.documentations[source]
-            results = await source.search(query, limit=1, exclude_std=True)
-            if not results.results:
-                return "No documentation found for this query."
-            documentation = await source.get_documentation(results.results[0][1])
-            if documentation is None:
-                return "No documentation found for this query."
-            data = {
-                "Name": documentation.name,
-                "Signature": documentation.signature,
-                "Description": documentation.description.replace("\n", ' '),
-                "Parameters": f"{humanize_list([inline(parameter.split(' ')[0].strip('**')) for parameter in documentation.parameters])}." if documentation.parameters else "No parameter(s)"
-            }
-            for _type in ["attributes", "properties", "methods"]:
-                if getattr(documentation.attributes, _type):
-                    # result += f"{_type.capitalize()}:\n{BREAK_LINE.join([f'• {inline(attribute.name)}' for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()]) or 'No attribute(s)'}.\n"
-                    data[_type.capitalize()] = f"{humanize_list([inline(attribute.name) for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()])}."
-            return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
-        if assistant_cog is None:
-            return get_documentation
-        await assistant_cog.register_function(cog=self, schema=schema, function=get_documentation)
+        await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
+
+    async def get_documentation_for_assistant(self, source: str, query: str, *args, **kwargs):
+        if source not in self.documentations.keys():
+            return f"This source doesn't exist! Valid sources are: {humanize_list([f'`{source}`' for source in self.documentations])}."
+        source = self.documentations[source]
+        results = await source.search(query, limit=1, exclude_std=True)
+        if not results.results:
+            return "No documentation found for this query."
+        documentation = await source.get_documentation(results.results[0][1])
+        if documentation is None:
+            return "No documentation found for this query."
+        data = {
+            "Name": documentation.name,
+            "Signature": documentation.signature,
+            "Description": documentation.description.replace("\n", ' '),
+            "Parameters": f"{humanize_list([inline(parameter.split(' ')[0].strip('**')) for parameter in documentation.parameters])}." if documentation.parameters else "No parameter(s)"
+        }
+        for _type in ["attributes", "properties", "methods"]:
+            if getattr(documentation.attributes, _type):
+                # result += f"{_type.capitalize()}:\n{BREAK_LINE.join([f'• {inline(attribute.name)}' for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()]) or 'No attribute(s)'}.\n"
+                data[_type.capitalize()] = f"{humanize_list([inline(attribute.name) for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()])}."
+        return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
 
 
 class Source:

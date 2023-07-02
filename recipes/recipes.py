@@ -175,8 +175,10 @@ class Recipes(Cog):
 
     @commands.Cog.listener()
     async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+        if assistant_cog is None:
+            return get_recipe_for_assistant
         schema = {
-            "name": "get_recipe",
+            "name": "get_recipe_for_assistant",
             "description": "Get a recipe from the website Food52, from a query.",
             "parameters": {
                 "type": "object",
@@ -191,38 +193,37 @@ class Recipes(Cog):
                 ]
             },
         }
-        async def get_recipe(query: str, *args, **kwargs):
-            __, results = await self.get_query_results(query, limit=1)
-            if not results.results:
-                return "No recipe found."
-            url = list(results.results.values())[0]
-            try:
-                recipe = await self.get_recipe(url)
-            except json.JSONDecodeError:
-                return "Error in parsing the response."
-            data = {
-                "Name": recipe.name,
-                "Category": recipe.category,
-                "Cuisine": recipe.cuisine,
-                "Description": recipe.description,
-                "Yield": recipe._yield,
-                "Preparation time": recipe.preparation_time,
-                "Cook time": recipe.cook_time,
-                "Ingredients": humanize_list(recipe.ingredients),
-                "Instructions": "\n" + "\n\n".join(
-                    [
-                        f"\n\n• {section}\n"
-                        "\n".join(
-                            [
-                                f"    **{n}.** {instruction}"
-                                for n, instruction in enumerate(recipe.instructions[section], start=1)
-                            ]
-                        )
-                        for section in recipe.instructions
-                    ]
-                ),
-            }
-            return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
-        if assistant_cog is None:
-            return get_recipe
-        await assistant_cog.register_function(cog=self, schema=schema, function=get_recipe)
+        await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
+
+    async def get_recipe_for_assistant(self, query: str, *args, **kwargs):
+        __, results = await self.get_query_results(query, limit=1)
+        if not results.results:
+            return "No recipe found."
+        url = list(results.results.values())[0]
+        try:
+            recipe = await self.get_recipe(url)
+        except json.JSONDecodeError:
+            return "Error in parsing the response."
+        data = {
+            "Name": recipe.name,
+            "Category": recipe.category,
+            "Cuisine": recipe.cuisine,
+            "Description": recipe.description,
+            "Yield": recipe._yield,
+            "Preparation time": recipe.preparation_time,
+            "Cook time": recipe.cook_time,
+            "Ingredients": humanize_list(recipe.ingredients),
+            "Instructions": "\n" + "\n\n".join(
+                [
+                    f"\n\n• {section}\n"
+                    "\n".join(
+                        [
+                            f"    **{n}.** {instruction}"
+                            for n, instruction in enumerate(recipe.instructions[section], start=1)
+                        ]
+                    )
+                    for section in recipe.instructions
+                ]
+            ),
+        }
+        return [f"{key}: {value}\n" for key, value in data.items() if value is not None]

@@ -207,8 +207,10 @@ class GetLoc(Cog):
 
     @commands.Cog.listener()
     async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+        if assistant_cog is None:
+            return self.get_informations_about_place_for_assistant
         schema = {
-            "name": "get_informations_about_a_place",
+            "name": "get_informations_about_place_for_assistant",
             "description": "Get informations about a place in the world, from a fuzzy location query.",
             "parameters": {
                 "type": "object",
@@ -223,26 +225,25 @@ class GetLoc(Cog):
                 ]
             },
         }
-        async def get_informations_about_a_place(query: str, *args, **kwargs):
-            loc = Nominatim(user_agent="GetLoc")
-            try:
-                localisation = loc.geocode(query=query, addressdetails=True)
-            except Exception:
-                return "An error has occurred."
-            if localisation is None:
-                return "The provided address or contact details do not lead to any results."
-            data = {
-                "Display Name": localisation.raw.get("display_name", None),
-                "Latitude": localisation.latitude,
-                "Longitude": localisation.longitude,
-                "Country": localisation.raw["address"].get("country", None),
-                "Country code": localisation.raw["address"].get("country_code", None),
-                "Region": localisation.raw["address"].get("region", None),
-                "State": localisation.raw["address"].get("state", None),
-                "City": localisation.raw["address"].get("city", None),
-                "Post code": localisation.raw["address"].get("postcode", None),
-            }
-            return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
-        if assistant_cog is None:
-            return get_informations_about_a_place
-        await assistant_cog.register_function(cog=self, schema=schema, function=get_informations_about_a_place)
+        await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
+
+    async def get_informations_about_place_for_assistant(self, query: str, *args, **kwargs):
+        loc = Nominatim(user_agent="GetLoc")
+        try:
+            localisation = loc.geocode(query=query, addressdetails=True)
+        except Exception:
+            return "An error has occurred."
+        if localisation is None:
+            return "The provided address or contact details do not lead to any results."
+        data = {
+            "Display Name": localisation.raw.get("display_name", None),
+            "Latitude": localisation.latitude,
+            "Longitude": localisation.longitude,
+            "Country": localisation.raw["address"].get("country", None),
+            "Country code": localisation.raw["address"].get("country_code", None),
+            "Region": localisation.raw["address"].get("region", None),
+            "State": localisation.raw["address"].get("state", None),
+            "City": localisation.raw["address"].get("city", None),
+            "Post code": localisation.raw["address"].get("postcode", None),
+        }
+        return [f"{key}: {value}\n" for key, value in data.items() if value is not None]

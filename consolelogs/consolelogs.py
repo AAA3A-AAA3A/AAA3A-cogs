@@ -41,7 +41,7 @@ CONSOLE_LOG_RE = re.compile(r"^\[(?P<time_str>.*?)\] \[(?P<level>.*?)\] (?P<logg
 @dataclass(frozen=False)
 class ConsoleLog:
     time: datetime.datetime
-    time_timestamp: float
+    time_timestamp: int
     time_str: str
     level: typing.Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE", "NODE"]
     logger_name: str
@@ -136,7 +136,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
             kwargs = match.groupdict()
             time = datetime.datetime.strptime(kwargs["time_str"], "%Y-%m-%d %H:%M:%S")
             kwargs["time"] = time
-            kwargs["time_timestamp"] = time.timestamp()
+            kwargs["time_timestamp"] = int(time.timestamp())
             console_logs.append(ConsoleLog(**kwargs))
 
         # Add Red INTRO.
@@ -177,18 +177,6 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 console_log.__str__(with_ansi=not ctx.author.is_on_mobile(), with_extra_break_line=view is not None)
                 for console_log in console_logs_to_display
         ]
-        if view is not None:
-            try:
-                view = console_logs_to_display_str.index(console_logs_to_display_str[view])  # Handle negative index.
-            except IndexError:
-                view = len(console_logs_to_display_str)
-            pages = []
-            for i, console_log_to_display_str in enumerate(console_logs_to_display_str):
-                if i == view:
-                    page_index = len(pages)
-                pages.extend(list(pagify(console_log_to_display_str, shorten_by=10)))
-        else:
-            pages = list(pagify(("\n" * lines_break).join(console_logs_to_display_str), shorten_by=10))
         levels = ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE", "NODE"]
         prefix = [
             f"{len(console_logs)} logs",
@@ -204,6 +192,18 @@ class ConsoleLogs(Cog, DashboardIntegration):
             ],
         ]
         prefix = box(f"Total stats: {humanize_list(prefix)}", lang="py")
+        if view is not None:
+            try:
+                view = console_logs_to_display_str.index(console_logs_to_display_str[view])  # Handle negative index.
+            except IndexError:
+                view = len(console_logs_to_display_str)
+            pages = []
+            for i, console_log_to_display_str in enumerate(console_logs_to_display_str):
+                if i == view:
+                    page_index = len(pages)
+                pages.extend(list(pagify(console_log_to_display_str, shorten_by=10 + len(prefix))))
+        else:
+            pages = list(pagify(("\n" * lines_break).join(console_logs_to_display_str), shorten_by=10 + len(prefix)))
         menu = Menu(pages=pages, prefix=prefix, lang="py" if ctx.author.is_on_mobile() else "ansi")
         menu._current_page = page_index if view is not None else [i for i, page in enumerate(pages) if any(line.startswith(("[", f"{Fore.BLACK}[")) for line in page.split("\n"))][-1]
         await menu.start(ctx)

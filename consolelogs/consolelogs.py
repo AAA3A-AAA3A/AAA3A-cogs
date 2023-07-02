@@ -15,8 +15,11 @@ from dataclasses import dataclass
 
 from redbot import __version__ as red_version
 from redbot.core import data_manager
-from redbot.core._events import INTRO
 from redbot.core.utils.chat_formatting import box, humanize_list, pagify
+try:
+    from redbot.core._events import INTRO
+except ModuleNotFoundError:  # Lemon's fork.
+    INTRO = ""
 
 from rich import box as rich_box
 from rich.table import Table

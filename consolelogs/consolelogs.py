@@ -227,7 +227,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
     @consolelogs.command()
     async def scroll(self, ctx: commands.Context, lines_break: typing.Optional[commands.Range[int, 1, 5]] = 2, level: typing.Optional[typing.Literal["critical", "error", "warning", "info", "debug", "trace", "node"]] = None, logger_name: typing.Optional[str] = None) -> None:
         """Scroll the console logs, for all levels/loggers or provided level/logger name."""
-        await self.send_console_logs(ctx, level=level.upper() if level is not None else None, logger_name=logger_name, view=False, lines_break=lines_break)
+        await self.send_console_logs(ctx, level=level.upper() if level is not None else None, logger_name=logger_name, view=None, lines_break=lines_break)
 
     @consolelogs.command(aliases=["listloggers"])
     async def stats(self, ctx: commands.Context) -> None:

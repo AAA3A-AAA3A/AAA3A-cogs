@@ -165,7 +165,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         console_logs = self.console_logs
         console_logs_to_display = [
             console_log for console_log in console_logs
-            if (level is None or console_log.level == level.upper())
+            if (level is None or console_log.level == level)
             and (logger_name is None or console_log.logger_name == logger_name)
         ]
         if not console_logs_to_display:
@@ -209,12 +209,12 @@ class ConsoleLogs(Cog, DashboardIntegration):
     @commands.hybrid_group(invoke_without_command=True)
     async def consolelogs(self, ctx: commands.Context, index: typing.Optional[int] = -1, level: typing.Optional[typing.Literal["critical", "error", "warning", "info", "debug", "trace", "node"]] = None, logger_name: typing.Optional[str] = None) -> None:
         """View a console log, for a provided level/logger name."""
-        await self.view(ctx, index=index, level=level.upper(), logger_name=logger_name)
+        await self.view(ctx, index=index, level=level.upper() if level is not None else None, logger_name=logger_name)
 
     @consolelogs.command()
     async def view(self, ctx: commands.Context, index: typing.Optional[int] = -1, level: typing.Optional[typing.Literal["critical", "error", "warning", "info", "debug", "trace", "node"]] = None, logger_name: typing.Optional[str] = None) -> None:
         """View the console logs one by one, for all levels/loggers or provided level/logger name."""
-        await self.send_console_logs(ctx, level=level.upper(), logger_name=logger_name, view=index)
+        await self.send_console_logs(ctx, level=level.upper() if level is not None else None, logger_name=logger_name, view=index)
 
     @consolelogs.command(aliases=["error"])
     async def errors(self, ctx: commands.Context, index: typing.Optional[int] = -1, logger_name: typing.Optional[str] = None) -> None:
@@ -224,7 +224,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
     @consolelogs.command()
     async def scroll(self, ctx: commands.Context, lines_break: typing.Optional[commands.Range[int, 1, 5]] = 2, level: typing.Optional[typing.Literal["critical", "error", "warning", "info", "debug", "trace", "node"]] = None, logger_name: typing.Optional[str] = None) -> None:
         """Scroll the console logs, for all levels/loggers or provided level/logger name."""
-        await self.send_console_logs(ctx, level=level.upper(), logger_name=logger_name, view=False, lines_break=lines_break)
+        await self.send_console_logs(ctx, level=level.upper() if level is not None else None, logger_name=logger_name, view=False, lines_break=lines_break)
 
     @consolelogs.command(aliases=["listloggers"])
     async def stats(self, ctx: commands.Context) -> None:

@@ -161,9 +161,9 @@ class MemberPrefix(Cog):
             )
         await self.config.member(ctx.author).custom_prefixes.set(prefixes)
         if len(prefixes) == 1:
-            await ctx.send(_("Prefix for you only set. You can use current prefixes or mention the bot to invoke a command, or reinitialize your prefixes with the same command if you forget them."))
+            await ctx.send(_("Prefix for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."))
         else:
-            await ctx.send(_("Prefixes for you only set. You can use current prefixes or mention the bot to invoke a command, or reinitialize your prefixes with the same command if you forget them."))
+            await ctx.send(_("Prefixes for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."))
 
     @commands.is_owner()
     @commands.guild_only()

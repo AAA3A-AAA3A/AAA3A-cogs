@@ -7,7 +7,6 @@ import typing  # isort:skip
 
 import asyncio
 
-from discord.ext.commands import BadArgument
 from redbot.core.commands.converter import parse_timedelta, timedelta
 from redbot.core.utils.predicates import MessagePredicate
 
@@ -30,19 +29,18 @@ class TimeDeltaConverter(commands.Converter):
         if delta is not None:
             return argument
         else:
-            raise BadArgument()
+            raise commands.BadArgument("Wrong timedelta.")
 
 
 @app_commands.context_menu(name="Sanction Member")
 async def sanction_member_context_menu(interaction: discord.Interaction, member: discord.Member):
     await interaction.response.defer()
-    cog = interaction.client.get_cog("SimpleSanction")
     context = await CogsUtils.invoke_command(
         bot=interaction.client,
         author=interaction.user,
         channel=interaction.channel,
-        command=f"sanction {member.id}",
-        interaction=interaction,
+        command=f"sanction 00 {member.id}",
+        # interaction=interaction,
     )
     if not await context.command.can_run(context):
         await interaction.followup.send(

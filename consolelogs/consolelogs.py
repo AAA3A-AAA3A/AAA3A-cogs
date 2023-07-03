@@ -204,8 +204,9 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 pages.extend(list(pagify(console_log_to_display_str, shorten_by=10 + len(prefix))))
         else:
             pages = list(pagify(("\n" * lines_break).join(console_logs_to_display_str), shorten_by=10 + len(prefix)))
+            page_index = [i for i, page in enumerate(pages) if any(line.startswith(("[", f"{Fore.BLACK}[")) for line in page.split("\n"))][-1]
         menu = Menu(pages=pages, prefix=prefix, lang="py" if ctx.author.is_on_mobile() else "ansi")
-        menu._current_page = page_index if view is not None else [i for i, page in enumerate(pages) if any(line.startswith(("[", f"{Fore.BLACK}[")) for line in page.split("\n"))][-1]
+        menu._current_page = page_index
         await menu.start(ctx)
 
     @commands.is_owner()

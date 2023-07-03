@@ -2,8 +2,8 @@
     "author": ["AAA3A", "Tobotimus"],
     "name": "ConsoleLogs",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
-    "short": "A cog to display the console logs, with buttons and filter options!",
-    "description": "A cog to display the error traceback of a command automatically after the error! If you are developing cogs for Red for example, you don't need to use the traceback command every time you run a new command.",
+    "short": "A cog to display the console logs, with buttons and filter options, and to send commands errors in configurated channels!",
+    "description": "A cog to display the console logs, with buttons and filter options, and to send commands errors in configurated channels!",
     "tags": [
         "error",
         "console",

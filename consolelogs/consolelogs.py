@@ -1,5 +1,5 @@
 ﻿from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
+from redbot.core import commands, Config  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
@@ -8,6 +8,7 @@ import typing  # isort:skip
 import datetime
 import logging
 import re
+import traceback
 
 from collections import Counter
 from colorama import Fore
@@ -30,12 +31,25 @@ from .dashboard_integration import DashboardIntegration
 
 # Credits:
 # General repo credits.
-# Thanks to Tobotimus for the part to get logs files lines (https://github.com/Tobotimus/Tobo-Cogs/blob/V3/errorlogs/errorlogs.py).
+# Thanks to Tobotimus for the part to get logs files lines (https://github.com/Tobotimus/Tobo-Cogs/blob/V3/errorlogs/errorlogs.py)!
+# Thanks to Trusty for the part to get the "message" content for slash commands (https://github.com/TrustyJAID/Trusty-cogs/blob/master/extendedmodlog/eventmixin.py#L222-L249!
 
 _ = Translator("ConsoleLogs", __file__)
 
 LATEST_LOG_RE = re.compile(r"latest(?:-part(?P<part>\d+))?\.log")
 CONSOLE_LOG_RE = re.compile(r"^\[(?P<time_str>.*?)\] \[(?P<level>.*?)\] (?P<logger_name>.*?): (?P<message>.*)")
+
+IGNORED_ERRORS = (
+    commands.UserInputError,
+    commands.DisabledCommand,
+    commands.CommandNotFound,
+    commands.CheckFailure,
+    commands.NoPrivateMessage,
+    commands.CommandOnCooldown,
+    commands.MaxConcurrencyReached,
+    commands.BadArgument,
+    commands.BadBoolArgument,
+)
 
 
 @dataclass(frozen=False)
@@ -73,11 +87,24 @@ class ConsoleLog:
 
 @cog_i18n(_)
 class ConsoleLogs(Cog, DashboardIntegration):
-    """A cog to display the console logs, with buttons and filter options!"""
+    """A cog to display the console logs, with buttons and filter options, and to send commands errors in configurated channels!"""
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
         self.__authors__: typing.List[str] = ["AAA3A", "Tobotimus"]
+
+        self.config: Config = Config.get_conf(
+            self,
+            identifier=205192943327321000143939875896557571750,
+            force_registration=True,
+        )
+        self.consolelogs_channel = {
+            "enabled": False,
+            "global_errors": False,
+            "prefixed_commands_errors": True,
+            "slash_commands_errors": True,
+        }
+        self.config.register_channel(**self.consolelogs_channel)
 
         self.RED_INTRO: str = None
 
@@ -137,6 +164,11 @@ class ConsoleLogs(Cog, DashboardIntegration):
             time = datetime.datetime.strptime(kwargs["time_str"], "%Y-%m-%d %H:%M:%S")
             kwargs["time"] = time
             kwargs["time_timestamp"] = int(time.timestamp())
+            message = kwargs["message"].split("\n")
+            kwargs["message"] = (
+                f"{message[0]}{'.' if not message[0].endswith(('.', '!', '?')) and message[0][0] == message[0][0].upper() else ''}\n"
+                + "\n".join(kwargs["message"].split("\n")[1:])
+            ).strip()
             console_logs.append(ConsoleLog(**kwargs))
 
         # Add Red INTRO.
@@ -191,7 +223,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 )
             ],
         ]
-        prefix = box(f"Total stats: {humanize_list(prefix)}", lang="py")
+        prefix = box(f"Total stats: {humanize_list(prefix)}.", lang="py")
         if view is not None:
             try:
                 view = console_logs_to_display_str.index(console_logs_to_display_str[view])  # Handle negative index.
@@ -252,3 +284,139 @@ class ConsoleLogs(Cog, DashboardIntegration):
             ):
                 stats += f"\n• {stat[1]} {stat[0]}"
         await Menu(pages=list(pagify(stats, page_length=500)), lang="py").start(ctx)
+
+    @consolelogs.command(aliases=["+"])
+    async def addchannel(self, ctx: commands.Context, channel: discord.TextChannel, global_errors: typing.Optional[bool] = True, prefixed_commands_errors: typing.Optional[bool] = True, slash_commands_errors: typing.Optional[bool] = True) -> None:
+        """Enable errors logging in a channel.
+
+        **Parameters:**
+        - `global_errors`: Log errors for the entire bot, not just the current server.
+        - `prefixed_commands_errors`: Log prefixed commands errors.
+        - `slash_commands_errors`: Log slash commands errors.
+        """
+        channel_permissions = channel.permissions_for(ctx.me)
+        if not all([channel_permissions.view_channel, channel_permissions.send_messages, channel_permissions.embed_links]):
+            raise commands.UserFeedbackCheckFailure(_("I don't have the permissions to send embeds in this channel."))
+        await self.config.channel(channel).enabled.set(True)
+        await self.config.channel(channel).global_errors.set(global_errors)
+        await self.config.channel(channel).prefixed_commands_errors.set(prefixed_commands_errors)
+        await self.config.channel(channel).slash_commands_errors.set(slash_commands_errors)
+        await ctx.send(_("Errors logging enabled in {channel.mention}.").format(channel=channel))
+
+    @consolelogs.command(aliases=["-"])
+    async def removechannel(self, ctx: commands.Context, channel: discord.TextChannel) -> None:
+        """Disable errors logging in a channel."""
+        if not await self.config.channel(channel).enabled():
+            raise commands.UserFeedbackCheckFailure(_("Errors logging isn't enabled in this channel."))
+        await self.config.channel(channel).clear()
+        await ctx.send(_("Errors logging disabled in {channel.mention}.").format(channel=channel))
+
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError) -> None:
+        if await self.bot.cog_disabled_in_guild(cog=self, guild=ctx.guild):
+            return
+        if isinstance(error, IGNORED_ERRORS):
+            return
+        destinations = {
+            channel: config
+            for channel_id, config in (await self.config.all_channels()).items()
+            if config["enabled"] and (channel := ctx.bot.get_channel(channel_id)) is not None and channel.permissions_for(ctx.me).send_messages
+        }
+        if not destinations:
+            return
+
+        # Thanks to Trusty for this part.
+        if ctx.interaction:
+            data = ctx.interaction.data
+            com_id = data.get("id")
+            root_command = data.get("name")
+            sub_commands = ""
+            arguments = ""
+            for option in data.get("options", []):
+                if option["type"] in (1, 2):
+                    sub_commands += " " + option["name"]
+                else:
+                    option_name = option["name"]
+                    option_value = option.get("value")
+                    arguments += f"{option_name}: {option_value}"
+                for sub_option in option.get("options", []):
+                    if sub_option["type"] in (1, 2):
+                        sub_commands += " " + sub_option["name"]
+                    else:
+                        sub_option_name = sub_option.get("name")
+                        sub_option_value = sub_option.get("value")
+                        arguments += f"{sub_option_name}: {sub_option_value}"
+                    for arg in sub_option.get("options", []):
+                        arg_option_name = arg.get("name")
+                        arg_option_value = arg.get("value")
+                        arguments += f"{arg_option_name}: {arg_option_value} "
+            command_name = f"{root_command}{sub_commands}"
+            com_str = f"</{command_name}:{com_id}> {arguments}"
+        else:
+            com_str = ctx.message.content
+
+        embed = discord.Embed(
+            title=f"⚠ Exception in command `{ctx.command.qualified_name}`! ¯\\_(ツ)_/¯",
+            color=discord.Color.red(),
+            timestamp=ctx.message.created_at,
+            description=f">>> {com_str}",
+        )
+        embed.add_field(name="Invoker:", value=f"{ctx.author.mention}\n{ctx.author} ({ctx.author.id})")
+        embed.add_field(name="Message:", value=f"[Jump to message.]({ctx.message.jump_url})")
+        embed.add_field(name="Channel:", value=f"{ctx.channel.mention}\n{ctx.channel} ({ctx.channel.id})" if ctx.guild is not None else str(ctx.channel))
+        if ctx.guild is not None:
+            embed.add_field(name="Guild:", value=f"{ctx.guild.name} ({ctx.guild.id})")
+        view = discord.ui.View()
+        view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="Jump to Message", url=ctx.message.jump_url))
+        if ctx.guild is not None and "COMMUNITY" in ctx.guild.features:
+            guild_invite = None
+            if "VANITY_URL" in ctx.guild.features:
+                try:
+                    guild_invite = await ctx.guild.vanity_invite()
+                except discord.HTTPException:
+                    pass
+            if guild_invite is None:
+                try:
+                    invites = await ctx.guild.invites()
+                except discord.HTTPException:
+                    pass
+                else:
+                    for inv in invites:
+                        if not (inv.max_uses or inv.max_age or inv.temporary):
+                            guild_invite = inv
+            if guild_invite is None:
+                channels_and_perms = zip(
+                    ctx.guild.text_channels,
+                    map(lambda x: x.permissions_for(ctx.guild.me), ctx.guild.text_channels),
+                )
+                channel = next(
+                    (channel for channel, perms in channels_and_perms if perms.create_instant_invite),
+                    None,
+                )
+                if channel is not None:
+                    try:
+                        guild_invite = await channel.create_invite(max_age=86400)
+                    except discord.HTTPException:
+                        pass
+            if guild_invite is not None:
+                view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="Guild Invite", url=guild_invite))
+        traceback_error = "".join(
+            traceback.format_exception(type(error), error, error.__traceback__)
+        )
+        _traceback_error = traceback_error.split("\n")
+        _traceback_error[0] = _traceback_error[0] + (
+            "" if _traceback_error[0].endswith(":") else ":\n"
+        )
+        traceback_error = "\n".join(_traceback_error)
+        traceback_error = CogsUtils.replace_var_paths(traceback_error)
+        pages = [box(page, lang="py") for page in pagify(traceback_error, shorten_by=10)]
+        for channel, config in destinations.items():
+            if not config["global_errors"] and ctx.guild != channel.guild:
+                continue
+            if not config["prefixed_commands_errors"] and ctx.interaction is None:
+                continue
+            if not config["slash_commands_errors"] and ctx.interaction is not None:
+                continue
+            await channel.send(embed=embed, view=view)
+            for page in pages:
+                await ctx.send(page)

@@ -724,35 +724,32 @@ class Source:
 
     async def load(self) -> None:
         if not hasattr(self, f"_build_{self.name}_docs_cache"):
-            self._rtfm_caching_task = self.cog.loops.append(
-                Loop(
-                    cog=self.cog,
-                    name=f"`{self.name}`: Build RTFM Cache",
-                    function=self._build_rtfm_cache,
-                    limit_count=1,
-                )
+            self._rtfm_caching_task: Loop = Loop(
+                cog=self.cog,
+                name=f"`{self.name}`: Build RTFM Cache",
+                function=self._build_rtfm_cache,
+                limit_count=1,
             )
+            self.cog.loops.append(self._rtfm_caching_task)
             while self._rtfm_cache is None or (
                 self._rtfm_caching_task is not None and self._rtfm_caching_task.currently_running
             ):
                 await asyncio.sleep(1)
-        self._docs_caching_task = self.cog.loops.append(
-            Loop(
-                cog=self.cog,
-                name=f"`{self.name}`: Build Documentations Cache",
-                function=self._build_docs_cache,
-                limit_count=1,
-            )
+        self._docs_caching_task: Loop = Loop(
+            cog=self.cog,
+            name=f"`{self.name}`: Build Documentations Cache",
+            function=self._build_docs_cache,
+            limit_count=1,
         )
+        self.cog.loops.append(self._docs_caching_task)
         # if not self._rtfs_cache:
-        #     self._rtfs_caching_task = self.cog.loops.append(
-        #         Loop(
-        #             cog=self.cog,
-        #             name=f"`{self.name}`: Build RTFS Cache",
-        #             function=self._build_rtfs_cache,
-        #             limit_count=1,
-        #         )
+        #     self._rtfs_caching_task: Loop = Loop(
+        #         cog=self.cog,
+        #         name=f"`{self.name}`: Build RTFS Cache",
+        #         function=self._build_rtfs_cache,
+        #         limit_count=1,
         #     )
+        #     self.cog.loops.append(self._rtfs_caching_task)
 
     async def _build_rtfm_cache(self, recache: bool = False) -> Inventory:
         if self._rtfm_cache is not None and not recache:

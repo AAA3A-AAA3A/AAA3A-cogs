@@ -2,8 +2,8 @@
     "author": ["AAA3A", "Tobotimus"],
     "name": "ConsoleLogs",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
-    "short": "A cog to display the console logs, with buttons and filter options, and to send commands errors in configurated channels!",
-    "description": "A cog to display the console logs, with buttons and filter options, and to send commands errors in configurated channels!",
+    "short": "A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!",
+    "description": "A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!",
     "tags": [
         "error",
         "console",

@@ -1,4 +1,4 @@
-﻿from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
+﻿from AAA3A_utils import Cog, CogsUtils, Menu, Loop  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -87,7 +87,7 @@ class ConsoleLog:
 
 @cog_i18n(_)
 class ConsoleLogs(Cog, DashboardIntegration):
-    """A cog to display the console logs, with buttons and filter options, and to send commands errors in configurated channels!"""
+    """A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!"""
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -103,10 +103,12 @@ class ConsoleLogs(Cog, DashboardIntegration):
             "global_errors": False,
             "prefixed_commands_errors": True,
             "slash_commands_errors": True,
+            "dpy_ignored_exceptions": False,
         }
         self.config.register_channel(**self.consolelogs_channel)
 
         self.RED_INTRO: str = None
+        self._last_console_log_sent_timestamp: int = None
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -136,6 +138,16 @@ class ConsoleLogs(Cog, DashboardIntegration):
             )
         )
         self.RED_INTRO += f"\nLoaded {len(self.bot.cogs)} cogs with {len(self.bot.commands)} commands"
+
+        self._last_console_log_sent_timestamp: int = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
+        self.loops.append(
+            Loop(
+                cog=self,
+                name="Check Console Logs",
+                function=self.check_console_logs,
+                minutes=1,
+            )
+        )
 
     @property
     def console_logs(self) -> typing.List[ConsoleLog]:
@@ -287,13 +299,15 @@ class ConsoleLogs(Cog, DashboardIntegration):
         await Menu(pages=list(pagify(stats, page_length=500)), lang="py").start(ctx)
 
     @consolelogs.command(aliases=["+"])
-    async def addchannel(self, ctx: commands.Context, channel: discord.TextChannel, global_errors: typing.Optional[bool] = True, prefixed_commands_errors: typing.Optional[bool] = True, slash_commands_errors: typing.Optional[bool] = True) -> None:
+    async def addchannel(self, ctx: commands.Context, channel: discord.TextChannel, global_errors: typing.Optional[bool] = True, prefixed_commands_errors: typing.Optional[bool] = True, slash_commands_errors: typing.Optional[bool] = True, dpy_ignored_exceptions: typing.Optional[bool] = False) -> None:
         """Enable errors logging in a channel.
 
         **Parameters:**
-        - `global_errors`: Log errors for the entire bot, not just the current server.
+        - `channel`: The channel where the commands errors will be sent.
+        - `global_errors`: Log errors for the entire bot, not just the channel server.
         - `prefixed_commands_errors`: Log prefixed commands errors.
         - `slash_commands_errors`: Log slash commands errors.
+        - `dpy_ignored_exceptions`: Log dpy ignored exceptions (events listeners and Views errors).
         """
         channel_permissions = channel.permissions_for(ctx.me)
         if not all([channel_permissions.view_channel, channel_permissions.send_messages, channel_permissions.embed_links]):
@@ -302,6 +316,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         await self.config.channel(channel).global_errors.set(global_errors)
         await self.config.channel(channel).prefixed_commands_errors.set(prefixed_commands_errors)
         await self.config.channel(channel).slash_commands_errors.set(slash_commands_errors)
+        await self.config.channel(channel).dpy_ignored_exceptions.set(dpy_ignored_exceptions)
         await ctx.send(_("Errors logging enabled in {channel.mention}.").format(channel=channel))
 
     @consolelogs.command(aliases=["-"])
@@ -312,6 +327,12 @@ class ConsoleLogs(Cog, DashboardIntegration):
         await self.config.channel(channel).clear()
         await ctx.send(_("Errors logging disabled in {channel.mention}.").format(channel=channel))
 
+    @consolelogs.command(hidden=True)
+    async def getdebugloopsstatus(self, ctx: commands.Context) -> None:
+        """Get an embed to check loops status."""
+        embeds = [loop.get_debug_embed() for loop in self.loops]
+        await Menu(pages=embeds).start(ctx)
+
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError) -> None:
         if await self.bot.cog_disabled_in_guild(cog=self, guild=ctx.guild):
@@ -321,7 +342,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         destinations = {
             channel: config
             for channel_id, config in (await self.config.all_channels()).items()
-            if config["enabled"] and (channel := ctx.bot.get_channel(channel_id)) is not None and channel.permissions_for(ctx.me).send_messages
+            if config["enabled"] and (channel := ctx.bot.get_channel(channel_id)) is not None and channel.permissions_for(channel.guild.me).send_messages
         }
         if not destinations:
             return
@@ -421,3 +442,37 @@ class ConsoleLogs(Cog, DashboardIntegration):
             await channel.send(embed=embed, view=view)
             for page in pages:
                 await ctx.send(page)
+
+    async def check_console_logs(self) -> None:
+        destinations = {
+            channel: config
+            for channel_id, config in (await self.config.all_channels()).items()
+            if config["enabled"] and config["dpy_ignored_exceptions"] and (channel := self.bot.get_channel(channel_id)) is not None and channel.permissions_for(channel.guild.me).send_messages
+        }
+        if not destinations:
+            return
+        console_logs = self.console_logs
+        console_logs_to_send: typing.List[typing.Tuple[discord.Embed, typing.List[str]]] = []
+        for console_log in console_logs:
+            if self._last_console_log_sent_timestamp is None or self._last_console_log_sent_timestamp >= console_log.time_timestamp:
+                self._last_console_log_sent_timestamp = console_log.time_timestamp
+                continue
+            self._last_console_log_sent_timestamp = console_log.time_timestamp
+            if (
+                console_log.level not in ["CRITICAL", "ERROR"]
+                or console_log.logger_name.split(".")[0] != "discord"
+                or not console_log.message.split("\n")[0].startswith("Ignoring exception ")
+            ):
+                continue
+            embed: discord.Embed = discord.Embed(color=discord.Color.dark_embed())
+            embed.title = console_log.message.split("\n")[0]
+            embed.timestamp = console_log.time
+            embed.add_field(name="Error level:", value=f"`{console_log.level}`")
+            embed.add_field(name="Logger name:", value=f"`{console_log.logger_name}`")
+            pages = [box(page, lang="py") for page in list(pagify(console_log.__str__(with_ansi=False, with_extra_break_line=True), shorten_by=10))]
+            console_logs_to_send.append((embed, pages))
+        for channel in destinations:
+            for (embed, pages) in console_logs_to_send:
+                await channel.send(embed=embed)
+                for page in pages:
+                    await channel.send(page)

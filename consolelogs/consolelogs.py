@@ -147,6 +147,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         ]
         if not console_logs_files:
             return []
+        console_logs_files.reverse()
         console_logs_lines = []
         for console_logs_file in console_logs_files:
             with console_logs_file.open(mode="rt") as f:

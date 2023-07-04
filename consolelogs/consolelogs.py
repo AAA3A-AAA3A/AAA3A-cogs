@@ -480,8 +480,8 @@ class ConsoleLogs(Cog, DashboardIntegration):
             embed: discord.Embed = discord.Embed(color=discord.Color.dark_embed())
             embed.title = console_log.message.split("\n")[0]
             embed.timestamp = console_log.time
-            embed.add_field(name="Error level:", value=f"`{console_log.level}`")
             embed.add_field(name="Logger name:", value=f"`{console_log.logger_name}`")
+            embed.add_field(name="Error level:", value=f"`{console_log.level}`")
             pages = [box(page, lang="py") for page in list(pagify(console_log.__str__(with_ansi=False, with_extra_break_line=True), shorten_by=10))]
             console_logs_to_send.append((embed, pages))
         for channel in destinations:

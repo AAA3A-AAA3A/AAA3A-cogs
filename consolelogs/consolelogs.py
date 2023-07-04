@@ -214,7 +214,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         console_logs_to_display = [
             console_log for console_log in console_logs
             if (level is None or console_log.level == level)
-            and (logger_name is None or console_log.logger_name == logger_name)
+            and (logger_name is None or ".".join(console_log.logger_name.split(".")[:len(logger_name.split("."))]) == logger_name)
         ]
         if not console_logs_to_display:
             raise commands.UserFeedbackCheckFailure(_("No logs to display."))
@@ -223,7 +223,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 for console_log in console_logs_to_display
         ]
         levels = ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE", "NODE"]
-        prefix = [
+        total_stats = [
             f"{len(console_logs)} logs",
             f"{len({console_log.logger_name for console_log in console_logs})} loggers",
             *[
@@ -236,7 +236,20 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 )
             ],
         ]
-        prefix = box(f"Total stats: {humanize_list(prefix)}.", lang="py")
+        current_stats = [
+            f"{len(console_logs_to_display)} logs",
+            f"{len({console_log.logger_name for console_log in console_logs_to_display})} loggers",
+            *[
+                f"{stat[1]} {stat[0]}"
+                for stat in sorted(
+                    Counter(
+                        [console_log.level for console_log in console_logs_to_display]
+                    ).items(),
+                    key=lambda x: levels.index(x[0]) if x[0] in levels else 10,
+                )
+            ],
+        ]
+        prefix = box(f"Total stats: {humanize_list(total_stats)}." + (f"\nCurrent stats: {humanize_list(current_stats)}." if total_stats != current_stats else ""), lang="py")
         if view is not None:
             try:
                 view = console_logs_to_display_str.index(console_logs_to_display_str[view])  # Handle negative index.
@@ -421,7 +434,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
                     except discord.HTTPException:
                         pass
             if guild_invite is not None:
-                view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="Guild Invite", url=guild_invite))
+                view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="Guild Invite", url=guild_invite.url))
         traceback_error = "".join(
             traceback.format_exception(type(error), error, error.__traceback__)
         )

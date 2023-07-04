@@ -157,7 +157,7 @@ class ReactToCommand(Cog):
             self.cache.remove(ctx)
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: commands.Context, error: Exception) -> None:
+    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError, unhandled_by_cog: bool = False) -> None:
         if ctx not in self.cache:
             return
         self.cache.remove(ctx)

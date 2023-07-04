@@ -95,7 +95,7 @@ class AutoTraceback(Cog, DashboardIntegration):
                 )
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError) -> None:
+    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError, unhandled_by_cog: bool = False) -> None:
         if await self.bot.cog_disabled_in_guild(cog=self, guild=ctx.guild):
             return
         if isinstance(error, IGNORED_ERRORS):

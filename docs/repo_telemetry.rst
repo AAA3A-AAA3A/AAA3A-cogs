@@ -152,7 +152,7 @@ handler with ``unhandled_by_cog=True``.
 .. code-block:: python
 
     # In the cog class
-    async def cog_command_error(self, ctx: "commands.Context", error: "CommandError"):
+    async def cog_command_error(self, ctx: "commands.Context", error: "CommandError", unhandled_by_cog: bool = False):
         await self.bot.on_command_error(ctx, error, unhandled_by_cog=True)  # type:ignore  # Ensure main bot error handler still handles it as normal
         # Sentry logging here
 

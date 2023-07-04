@@ -337,6 +337,7 @@ class DiscordModals(Cog):
             for _input in modal_config["inputs"]:
                 _input["style"] = discord.TextStyle(_input["style"])
                 text_input = discord.ui.TextInput(**_input)
+                text_input.max_length = 1024 if text_input.max_length is None else min(text_input.max_length, 1024)
                 inputs.append(text_input)
                 modal.add_item(text_input)
             modal.on_submit = partial(self.send_embed_with_responses, inputs=inputs)

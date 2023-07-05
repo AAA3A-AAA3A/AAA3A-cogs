@@ -98,12 +98,13 @@ class ConsoleLogs(Cog, DashboardIntegration):
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
-        self.consolelogs_channel = {
+        self.consolelogs_channel: typing.Dict[str, bool] = {
             "enabled": False,
             "global_errors": False,
             "prefixed_commands_errors": True,
             "slash_commands_errors": True,
             "dpy_ignored_exceptions": False,
+            "guild_invite": False,
         }
         self.config.register_channel(**self.consolelogs_channel)
 
@@ -312,7 +313,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         await Menu(pages=list(pagify(stats, page_length=500)), lang="py").start(ctx)
 
     @consolelogs.command(aliases=["+"])
-    async def addchannel(self, ctx: commands.Context, channel: discord.TextChannel, global_errors: typing.Optional[bool] = True, prefixed_commands_errors: typing.Optional[bool] = True, slash_commands_errors: typing.Optional[bool] = True, dpy_ignored_exceptions: typing.Optional[bool] = False) -> None:
+    async def addchannel(self, ctx: commands.Context, channel: discord.TextChannel, global_errors: typing.Optional[bool] = True, prefixed_commands_errors: typing.Optional[bool] = True, slash_commands_errors: typing.Optional[bool] = True, dpy_ignored_exceptions: typing.Optional[bool] = False, guild_invite: typing.Optional[bool] = False) -> None:
         """Enable errors logging in a channel.
 
         **Parameters:**
@@ -321,6 +322,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         - `prefixed_commands_errors`: Log prefixed commands errors.
         - `slash_commands_errors`: Log slash commands errors.
         - `dpy_ignored_exceptions`: Log dpy ignored exceptions (events listeners and Views errors).
+        - `guild_invite`: Add a button "Guild Invite" in commands errors logs, only for community servers.
         """
         channel_permissions = channel.permissions_for(ctx.me)
         if not all([channel_permissions.view_channel, channel_permissions.send_messages, channel_permissions.embed_links]):
@@ -330,6 +332,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         await self.config.channel(channel).prefixed_commands_errors.set(prefixed_commands_errors)
         await self.config.channel(channel).slash_commands_errors.set(slash_commands_errors)
         await self.config.channel(channel).dpy_ignored_exceptions.set(dpy_ignored_exceptions)
+        await self.config.channel(channel).guild_invite.set(guild_invite)
         await ctx.send(_("Errors logging enabled in {channel.mention}.").format(channel=channel))
 
     @consolelogs.command(aliases=["-"])
@@ -353,9 +356,9 @@ class ConsoleLogs(Cog, DashboardIntegration):
         if isinstance(error, IGNORED_ERRORS):
             return
         destinations = {
-            channel: config
-            for channel_id, config in (await self.config.all_channels()).items()
-            if config["enabled"] and (channel := ctx.bot.get_channel(channel_id)) is not None and channel.permissions_for(channel.guild.me).send_messages
+            channel: settings
+            for channel_id, settings in (await self.config.all_channels()).items()
+            if settings["enabled"] and (channel := ctx.bot.get_channel(channel_id)) is not None and channel.permissions_for(channel.guild.me).send_messages
         }
         if not destinations:
             return
@@ -445,22 +448,22 @@ class ConsoleLogs(Cog, DashboardIntegration):
         traceback_error = "\n".join(_traceback_error)
         traceback_error = CogsUtils.replace_var_paths(traceback_error)
         pages = [box(page, lang="py") for page in pagify(traceback_error, shorten_by=10)]
-        for channel, config in destinations.items():
-            if not config["global_errors"] and ctx.guild != channel.guild:
+        for channel, settings in destinations.items():
+            if not settings["global_errors"] and ctx.guild != channel.guild:
                 continue
-            if not config["prefixed_commands_errors"] and ctx.interaction is None:
+            if not settings["prefixed_commands_errors"] and ctx.interaction is None:
                 continue
-            if not config["slash_commands_errors"] and ctx.interaction is not None:
+            if not settings["slash_commands_errors"] and ctx.interaction is not None:
                 continue
-            await channel.send(embed=embed, view=view)
+            await channel.send(embed=embed, view=view if settings["guild_invite"] else None)
             for page in pages:
                 await channel.send(page)
 
     async def check_console_logs(self) -> None:
         destinations = {
-            channel: config
-            for channel_id, config in (await self.config.all_channels()).items()
-            if config["enabled"] and config["dpy_ignored_exceptions"] and (channel := self.bot.get_channel(channel_id)) is not None and channel.permissions_for(channel.guild.me).send_messages
+            channel: settings
+            for channel_id, settings in (await self.config.all_channels()).items()
+            if settings["enabled"] and settings["dpy_ignored_exceptions"] and (channel := self.bot.get_channel(channel_id)) is not None and channel.permissions_for(channel.guild.me).send_messages
         }
         if not destinations:
             return

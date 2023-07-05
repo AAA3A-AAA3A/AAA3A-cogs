@@ -1213,6 +1213,8 @@ class Source:
                                 fields_values.remove(field_value)
                     used_fields_values = set()
                     for field_label in fields_labels:
+                        if field_label.text.strip().lower() in ["patch changes"]:
+                            continue
                         _field_value = self._get_text(fields_values.pop(0), parsed_url=self.url.split("/wiki")[0])
                         while _field_value.replace(" ", "") in used_fields_values:
                             _field_value = self._get_text(fields_values.pop(0), parsed_url=self.url.split("/wiki")[0])

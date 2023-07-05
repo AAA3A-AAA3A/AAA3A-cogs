@@ -1209,7 +1209,7 @@ class Source:
                     for field_value in fields_values.copy():
                         if field_value.name == "ul":
                             text = self._get_text(field_value, parsed_url=self.url.split("/wiki")[0])
-                            if len(text.split("\n\n")) > 1 or "WoW API" in text or "Hyperlinks" in text or "mainline" in text or "Wowprogramming" in text:
+                            if len(text.split("\n\n")) > 1 or "WoW API" in text or "Hyperlinks" in text or "mainline" in text or "Wowprogramming" in text or "Townlong Yak" in text:
                                 fields_values.remove(field_value)
                     used_fields_values = set()
                     for field_label in fields_labels:
@@ -1222,7 +1222,7 @@ class Source:
                             "".join(
                                 f"**{line.strip()}**\n"
                                 if i % 2 == 0
-                                else f"> {line.split(' - ')[0].strip()} - {' - '.join(line.split(' - ')[1:]).strip()}\n"
+                                else f"> {line.split(' - ')[0].strip()}{' - ' if line.split(' - ')[1:] else ''}{' - '.join(line.split(' - ')[1:]).strip()}\n"
                                 for i, line in enumerate(lines)
                             )
                             if len(lines) % 2 == 0

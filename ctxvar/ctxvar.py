@@ -21,7 +21,6 @@ from redbot.core.utils.chat_formatting import bold, box
 
 # Credits:
 # General repo credits.
-# Thanks to @YamiKaitou on Discord for the technique in the init file to load the interaction client only if it is not loaded! Before this fix, when a user clicked on a button, the actions would be launched about 10 times, which caused huge spam and a loop in the channel.
 
 _ = Translator("CtxVar", __file__)
 

@@ -762,7 +762,8 @@ class TicketTool(settings, DashboardIntegration, Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("Sorry. You have already reached the limit of {limit} open tickets.").format(
                     limit=limit
-                )
+                ),
+                "delete_after"  # An extra arg checked in `commands.Cog.cog_command_error`.
             )
         if forum_channel is None:
             if (

@@ -76,9 +76,10 @@ class Recipe:
                 value=f"{self.rating['value']}/5 with {self.rating['count']} votes",
                 inline=True,
             )
+        ingredients = "\n".join([f"**•** {ingredient}" for ingredient in self.ingredients])
         embed.add_field(
             name="Ingredients:",
-            value="\n".join([f"**•** {ingredient}" for ingredient in self.ingredients]),
+            value=f"{ingredients[:1020]}\n..." if len(ingredients) > 1024 else ingredients,
             inline=False,
         )
         if self.preparation_time:

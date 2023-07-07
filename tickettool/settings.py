@@ -36,7 +36,7 @@ class settings(Cog):
         channel: typing.Optional[discord.TextChannel],
         message: typing.Optional[commands.MessageConverter],
         reason_options: commands.Greedy[EmojiLabelDescriptionValueConverter],
-        emoji: typing.Optional[Emoji] = None,
+        emoji: typing.Optional[Emoji] = "🎟️",
         label: str = None,
     ) -> None:
         """Send a message with a button to open a ticket or dropdown with possible reasons.
@@ -83,13 +83,12 @@ class settings(Cog):
         )
         if reason_options is None:
             buttons_config = await self.config.guild(ctx.guild).buttons.all()
-            emoji = f"{getattr(emoji, 'id', emoji)}"
             view = self.get_buttons(
                 buttons=[
                     {
                         "style": discord.ButtonStyle(2),
                         "label": label or _("Create ticket"),
-                        "emoji": emoji or "🎟️",
+                        "emoji": f"{getattr(emoji, 'id', emoji)}",
                         "custom_id": "create_ticket_button",
                         "disabled": False,
                     }

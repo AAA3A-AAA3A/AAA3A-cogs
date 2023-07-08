@@ -1,7 +1,5 @@
 from redbot.core import errors  # isort:skip
 import importlib
-import json
-import os
 import sys
 
 try:
@@ -16,10 +14,9 @@ modules = sorted(
 for module in modules:
     importlib.reload(sys.modules[module])
 del AAA3A_utils
-import AAA3A_utils
-AAA3A_utils.dev.Cog = AAA3A_utils.Cog
-AAA3A_utils.cog.DevEnv = AAA3A_utils.DevEnv
-AAA3A_utils.dev.SharedCog = AAA3A_utils.SharedCog
+# import AAA3A_utils
+# import json
+# import os
 # __version__ = AAA3A_utils.__version__
 # with open(os.path.join(os.path.dirname(__file__), "utils_version.json"), mode="r") as f:
 #     data = json.load(f)

@@ -561,7 +561,7 @@ class Reminder:
                 )
         else:
             if self.content["type"] in ["text", "message"]:
-                embeds = [self.to_embed(utc_now=utc_now)]
+                embeds = [self.to_embed(utc_now=utc_now, embed_color=self.cog.bot._color)]
             else:
                 embeds = []
             if self.content.get("embed") is not None:

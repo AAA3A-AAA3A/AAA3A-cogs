@@ -372,17 +372,22 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     continue
                 message_id = int((str(message).split("-"))[1])
                 try:
-                    options = []
-                    for reason_option in all_guilds[guild]["dropdowns"][message]:
-                        options.append(
-                            {
-                                "label": reason_option["label"],
-                                "value": reason_option.get("value", reason_option["label"]),
-                                "description": reason_option.get("description", None),
-                                "emoji": reason_option["emoji"],  # reason_option.get("emoji")
-                                "default": False,
-                            }
-                        )
+                    options = [
+                        {
+                            "label": reason_option["label"],
+                            "value": reason_option.get(
+                                "value", reason_option["label"]
+                            ),
+                            "description": reason_option.get("description", None),
+                            "emoji": reason_option[
+                                "emoji"
+                            ],  # reason_option.get("emoji")
+                            "default": False,
+                        }
+                        for reason_option in all_guilds[guild]["dropdowns"][
+                            message
+                        ]
+                    ]
                     view = self.get_dropdown(
                         placeholder=_("Choose the reason for open a ticket."),
                         options=options,
@@ -1392,10 +1397,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
     async def on_dropdown_interaction(
         self, interaction: discord.Interaction, select_menu: discord.ui.Select
     ) -> None:
+        if not interaction.response.is_done():
+            await interaction.response.defer()
         options = select_menu.values
         if len(options) == 0:
-            if not interaction.response.is_done():
-                await interaction.response.defer()
             return
         permissions = interaction.channel.permissions_for(interaction.user)
         if not permissions.read_messages and not permissions.send_messages:
@@ -1403,8 +1408,6 @@ class TicketTool(settings, DashboardIntegration, Cog):
         permissions = interaction.channel.permissions_for(interaction.guild.me)
         if not permissions.read_messages and not permissions.read_message_history:
             return
-        if not interaction.response.is_done():
-            await interaction.response.defer(ephemeral=True)
         dropdowns = await self.config.guild(interaction.guild).dropdowns()
         if f"{interaction.message.channel.id}-{interaction.message.id}" not in dropdowns:
             await interaction.followup.send(

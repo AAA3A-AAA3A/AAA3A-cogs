@@ -134,7 +134,7 @@ class EditReminderModal(discord.ui.Modal):
                 elif first_message:
                     content = self.reminder.__str__(utc_now=self.reminder.created_at)
                     if content != self._parent._message.content:
-                        self._parent._message = await self._parent._message.edit(content=content)
+                        self._parent._message = await self._parent._message.edit(content=content, allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False))
             except discord.HTTPException:
                 pass
         await interaction.response.send_message(

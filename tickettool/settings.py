@@ -123,7 +123,7 @@ class settings(Cog):
             all_options = [
                 {
                     "label": label,
-                    "value": value,
+                    "value": value.strip(),
                     "description": description,
                     "emoji": f"{getattr(emoji, 'id', emoji)}",
                     "default": False,
@@ -145,7 +145,7 @@ class settings(Cog):
                     "emoji": f"{getattr(emoji, 'id', emoji)}",
                     "label": label,
                     "description": description,
-                    "value": value,
+                    "value": value.strip(),
                 }
                 for emoji, label, description, value in reason_options
             ]

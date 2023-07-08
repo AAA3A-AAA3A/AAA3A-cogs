@@ -377,7 +377,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                             "label": reason_option["label"],
                             "value": reason_option.get(
                                 "value", reason_option["label"]
-                            ),
+                            ).strip(),
                             "description": reason_option.get("description", None),
                             "emoji": reason_option[
                                 "emoji"
@@ -1548,7 +1548,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
     def get_dropdown(self, placeholder: str, options: typing.List[dict]) -> discord.ui.View:
         view = discord.ui.View(timeout=None)
         select_menu = discord.ui.Select(
-            placeholder=placeholder, custom_id="create_ticket_dropdown"
+            placeholder=placeholder, custom_id="create_ticket_dropdown", min_values=0, max_values=1
         )
         for option in options:
             if "emoji" in option:

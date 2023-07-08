@@ -404,8 +404,6 @@ class ConsoleLogs(Cog, DashboardIntegration):
         embed.add_field(name="Channel:", value=f"{ctx.channel.mention}\n{ctx.channel} ({ctx.channel.id})" if ctx.guild is not None else str(ctx.channel))
         if ctx.guild is not None:
             embed.add_field(name="Guild:", value=f"{ctx.guild.name} ({ctx.guild.id})")
-        view = discord.ui.View()
-        view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="Jump to Message", url=ctx.message.jump_url))
         if ctx.guild is not None and "COMMUNITY" in ctx.guild.features:
             guild_invite = None
             if "VANITY_URL" in ctx.guild.features:
@@ -436,8 +434,6 @@ class ConsoleLogs(Cog, DashboardIntegration):
                         guild_invite = await channel.create_invite(max_age=86400)
                     except discord.HTTPException:
                         pass
-            if guild_invite is not None:
-                view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="Guild Invite", url=guild_invite.url))
         traceback_error = "".join(
             traceback.format_exception(type(error), error, error.__traceback__)
         )
@@ -455,7 +451,11 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 continue
             if not settings["slash_commands_errors"] and ctx.interaction is not None:
                 continue
-            await channel.send(embed=embed, view=view if settings["guild_invite"] else None)
+            view = discord.ui.View()
+            view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="Jump to Message", url=ctx.message.jump_url))
+            if settings["guild_invite"] and guild_invite is not None:
+                view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="Guild Invite", url=guild_invite.url))
+            await channel.send(embed=embed, view=view)
             for page in pages:
                 await channel.send(page)
 

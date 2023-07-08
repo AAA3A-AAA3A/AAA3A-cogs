@@ -915,7 +915,7 @@ class DrawView(discord.ui.View):
         )
 
     @discord.ui.button(
-        label="Select an area", emoji=SELECT_EMOJI, style=discord.ButtonStyle.secondary
+        label="Select an Area", emoji=SELECT_EMOJI, style=discord.ButtonStyle.secondary
     )
     async def select_area(
         self, interaction: discord.Interaction, button: discord.ui.Button

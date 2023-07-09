@@ -13,6 +13,7 @@ import logging
 import os
 import re
 import sys
+import textwrap
 import time
 import traceback
 from functools import partial
@@ -189,10 +190,15 @@ class DevEnv(typing.Dict[str, typing.Any]):
         env.update(base_env)
         if is_dev(bot=ctx.bot):  # My own Dev environment.
             env.update(cls.get_env(ctx.bot, ctx))
-        env.update({"devenv": env})
         dev_space = getattr(ctx.bot.get_cog("Dev"), "dev_space", AttributeError())
-        env.update({"devspace": dev_space})
-        env.update({"dev_space": dev_space})
+        env.update(
+            {
+                "devenv": env,
+                "devspace": dev_space,
+                "dev_space": dev_space,
+                "source": lambda _object: env["print"](textwrap.dedent(inspect.getsource(_object))),
+            }
+        )
         return env
 
     def get_formatted_env(
@@ -502,6 +508,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 if ctx.bot.get_cog("AAA3A_utils") is not None
                 else None,
                 "get_url": lambda ctx: get_url,
+                # TextWrap
+                "textwrap": lambda ctx: textwrap,
                 # Search attr
                 "get": lambda ctx: get,
                 # `reference`

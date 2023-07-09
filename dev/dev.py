@@ -7,6 +7,7 @@ import typing  # isort:skip
 
 import ast
 import asyncio
+import collections
 import contextlib
 import io
 import itertools
@@ -101,8 +102,20 @@ class DevOutput(dev_commands.DevOutput):
                     and not printed
                     or self.result is not None
                 ):
+                    if output_mode == "str":
+                        result = str(self.result)
+                    elif (
+                        isinstance(self.result, collections.abc.Iterable)
+                        and not (
+                            output_mode == "repr"
+                            and isinstance(self.result, str)
+                        )
+                    ):
+                        result = self.result
+                    else:
+                        result = repr(self.result)
                     try:
-                        console.print(str(self.result) if output_mode == "str" else (repr(self.result) if output_mode == "repr" and isinstance(self.result, str) else self.result))
+                        console.print(result)
                     except Exception as exc:
                         console.print(self.format_exception(exc).strip())
             output = captured.get().strip()

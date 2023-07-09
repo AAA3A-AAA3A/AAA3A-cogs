@@ -426,7 +426,7 @@ class CodeSnippets(Cog, DashboardIntegration):
             menu.extra_items.append(
                 discord.ui.Button(style=discord.ButtonStyle.url, label=f"View on {source}", url=url)
             )
-            asyncio.create_task(menu.start(ctx))
+            await menu.start(ctx, wait=False)
 
     @commands.hybrid_command(aliases=["codesnippet"])
     async def codesnippets(

@@ -220,7 +220,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         if not console_logs_to_display:
             raise commands.UserFeedbackCheckFailure(_("No logs to display."))
         console_logs_to_display_str = [
-                console_log.__str__(with_ansi=not ctx.author.is_on_mobile(), with_extra_break_line=view is not None)
+                console_log.__str__(with_ansi=not (ctx.author.is_on_mobile() if isinstance(ctx.author, discord.Member) else False), with_extra_break_line=view is not None)
                 for console_log in console_logs_to_display
         ]
         levels = ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE", "NODE"]
@@ -264,7 +264,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         else:
             pages = list(pagify(("\n" * lines_break).join(console_logs_to_display_str), shorten_by=10 + len(prefix)))
             page_index = [i for i, page in enumerate(pages) if any(line.startswith(("[", f"{Fore.BLACK}[")) for line in page.split("\n"))][-1]
-        menu = Menu(pages=pages, prefix=prefix, lang="py" if ctx.author.is_on_mobile() else "ansi")
+        menu = Menu(pages=pages, prefix=prefix, lang="py" if (ctx.author.is_on_mobile() if isinstance(ctx.author, discord.Member) else False) else "ansi")
         menu._current_page = page_index
         await menu.start(ctx)
 

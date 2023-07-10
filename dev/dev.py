@@ -463,7 +463,7 @@ class Dev(Cog, dev_commands.Dev):
                     map(discord.Guild.get_member, ctx.bot.guilds, itertools.repeat(ctx.author.id)),
                 )
             )
-        mobile = member.status == member.mobile_status
+        mobile = member.is_on_mobile() if isinstance(member, discord.Member) else False
         if await self.config.ansi_formatting():
             _console_custom_kwargs: typing.Dict[str, typing.Any] = {
                 "width": 37 if mobile else 80,

@@ -395,7 +395,7 @@ class Reminders(Cog):
                 )
                 if message_or_text.clean_content
                 else None,
-                "embed": message_or_text.embeds[0] if message_or_text.embeds else None,
+                "embed": message_or_text.embeds[0].to_dict() if message_or_text.embeds else None,
                 "message_author": {
                     "display_name": message_or_text.author.display_name,
                     "display_avatar": message_or_text.author.display_avatar.url,
@@ -558,7 +558,7 @@ class Reminders(Cog):
                 )
                 if message_or_text.clean_content
                 else None,
-                "embed": message_or_text.embeds[0] if message_or_text.embeds else None,
+                "embed": message_or_text.embeds[0].to_dict() if message_or_text.embeds else None,
                 "message_author": {
                     "display_name": message_or_text.author.display_name,
                     "display_avatar": message_or_text.author.display_avatar.url,

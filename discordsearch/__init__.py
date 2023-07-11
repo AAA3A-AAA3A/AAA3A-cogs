@@ -12,7 +12,10 @@ modules = sorted(
     [module for module in sys.modules if module.split(".")[0] == "AAA3A_utils"], reverse=True
 )
 for module in modules:
-    importlib.reload(sys.modules[module])
+    try:
+        importlib.reload(sys.modules[module])
+    except ModuleNotFoundError:
+        pass
 del AAA3A_utils
 # import AAA3A_utils
 # import json

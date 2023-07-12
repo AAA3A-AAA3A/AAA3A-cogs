@@ -6,6 +6,7 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import asyncio
+import inspect
 from functools import partial
 
 from redbot.core.utils.chat_formatting import inline
@@ -116,18 +117,33 @@ class CommandsButtons(Cog):
             return
         if not interaction.data["custom_id"].startswith("commands_buttons"):
             return
-        if not interaction.response.is_done():
-            await interaction.response.defer(ephemeral=True)
         config = await self.config.guild(interaction.guild).commands_buttons.all()
         if f"{interaction.channel.id}-{interaction.message.id}" not in config:
-            await interaction.followup.send(_("This message is not in Config."), ephemeral=True)
+            await interaction.response.send_message(_("This message is not in Config."), ephemeral=True)
             return
         if config_identifier not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
-            await interaction.followup.send(_("This button is not in Config."), ephemeral=True)
+            await interaction.response.send_message(_("This button is not in Config."), ephemeral=True)
             return
         command = config[f"{interaction.channel.id}-{interaction.message.id}"][config_identifier][
             "command"
         ]
+        if (command_object := interaction.client.get_command(command)) is not None and command_object.params:
+            params = command_object.params
+            if len(params) > 5:
+                params = {name: param for name, param in params.items() if not param.required}
+            modal = discord.ui.Modal(title="Invoke Command")
+            modal.on_submit = lambda interaction: interaction.response.defer()
+            text_inputs: typing.List[discord.ui.TextInput] = []
+            for name, param in params.items():
+                text_input = discord.ui.TextInput(label=name.replace("_", " ").title(), style=discord.TextStyle.short, placeholder=repr(param)[repr(param).index(":", 12) + 1:-2][:100], default=str(param.default) if param.default != inspect._empty and False else None, required=param.required)
+                text_inputs.append(text_input)
+                modal.add_item(text_input)
+            await interaction.response.send_modal(modal)
+            if await modal.wait():
+                return  # Timeout.
+            command += " " + " ".join([(f'"{text_input.value}"' if " " in text_input.value else text_input.value) for text_input in text_inputs if text_input.value and str(text_input.value) != text_input.default])
+        else:
+            await interaction.response.defer(ephemeral=True)
         context = await CogsUtils.invoke_command(
             bot=interaction.client,
             author=interaction.user,
@@ -137,7 +153,7 @@ class CommandsButtons(Cog):
             __is_mocked__=True,
         )
         if not isinstance(context, commands.Context) or not context.valid:
-            await interaction.followup.send(_("The command don't exist."), ephemeral=True)
+            await interaction.followup.send(_("This command doesn't exist."), ephemeral=True)
             return
         if not await context.command.can_run(context):
             await interaction.followup.send(

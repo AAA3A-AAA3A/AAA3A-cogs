@@ -6,6 +6,9 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import aiohttp
+import datetime
+import functools
+import inspect
 
 from redbot.core.utils.chat_formatting import box, pagify
 
@@ -120,7 +123,7 @@ class EditRole(Cog):
         ctx: commands.Context,
         color: typing.Optional[commands.ColorConverter] = None,
         *,
-        name: str,
+        name: commands.Range[str, 1, 100],
     ) -> None:
         """Create a role."""
         try:
@@ -156,7 +159,7 @@ class EditRole(Cog):
         await Menu(pages=embeds).start(ctx)
 
     @editrole.command(name="name")
-    async def editrole_name(self, ctx: commands.Context, role: discord.Role, *, name: str) -> None:
+    async def editrole_name(self, ctx: commands.Context, role: discord.Role, *, name: commands.Range[str, 1, 100]) -> None:
         """Edit role name."""
         await self.check_role(ctx, role)
         try:
@@ -379,3 +382,145 @@ class EditRole(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
+
+    @editrole.command(name="view")
+    async def editrole_view(
+        self,
+        ctx: commands.Context,
+        role: discord.Role,
+    ) -> None:
+        """View and edit role."""
+        await self.check_role(ctx, role)
+        embed_color = await ctx.embed_color()
+
+        parameters = {
+            "name": {"converter": commands.Range[str, 1, 100]},
+            "color": {"converter": discord.Color},
+            "hoist": {"converter": bool},
+            "mentionable": {"converter": bool},
+            "position": {"converter": PositionConverter},
+        }
+        parameters_to_split = list(parameters)
+        splitted_parameters = []
+        while parameters_to_split != []:
+            li = parameters_to_split[:5]
+            parameters_to_split = parameters_to_split[5:]
+            splitted_parameters.append(li)
+
+        def get_embed() -> discord.Embed:
+            embed: discord.Embed = discord.Embed(title=f"Role {role.name} ({role.id})", color=embed_color)
+            embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
+            embed.description = "\n".join([f"• `{parameter}`: {repr(getattr(role, parameters[parameter].get('attribute_name', parameter)))}" for parameter in parameters])
+            return embed
+
+        async def button_edit_role(interaction: discord.Interaction, button_index: int) -> None:
+            modal: discord.ui.Modal = discord.ui.Modal(title="Edit Role")
+            modal.on_submit = lambda interaction: interaction.response.defer()
+            text_inputs: typing.Dict[str, discord.ui.TextInput] = {}
+            for parameter in splitted_parameters[button_index]:
+                text_input = discord.ui.TextInput(
+                    label=parameter.replace("_", " ").title(),
+                    style=discord.TextStyle.short,
+                    placeholder=repr(parameters[parameter]["converter"]),
+                    default=str(attribute) if (attribute := getattr(role, parameters[parameter].get("attribute_name", parameter))) is not None else None,
+                    required=False,
+                )
+                text_inputs[parameter] = text_input
+                modal.add_item(text_input)
+            await interaction.response.send_modal(modal)
+            if await modal.wait():
+                return  # Timeout.
+            kwargs = {}
+            for parameter in text_inputs:
+                if not text_inputs[parameter].value:
+                    if parameters[parameter]["converter"] is bool:
+                        continue
+                    kwargs[parameter] = None
+                    continue
+                if text_inputs[parameter].value == str(text_inputs[parameter].default):
+                    continue
+                try:
+                    value = await discord.ext.commands.converter.run_converters(
+                        ctx,
+                        converter=parameters[parameter]["converter"],
+                        argument=text_inputs[parameter].value,
+                        param=discord.ext.commands.parameters.Parameter(
+                            name=parameter,
+                            kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                            annotation=parameters[parameter]["converter"],
+                        ),
+                    )
+                except discord.ext.commands.errors.CommandError as e:
+                    await ctx.send(
+                        f"An error occurred when using the `{parameter}`"
+                        f" converter:\n{box(e, lang='py')}"
+                    )
+                    return None
+                else:
+                    if parameter == "auto_archive_duration":
+                        value = int(value)
+                    kwargs[parameter] = value
+            try:
+                await role.edit(
+                    **kwargs,
+                    reason=f"{ctx.author} ({ctx.author.id}) has edited the role {role.name} ({role.id}).",
+                )
+            except discord.HTTPException as e:
+                raise commands.UserFeedbackCheckFailure(
+                    _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                )
+            else:
+                try:
+                    await interaction.message.edit(embed=get_embed())
+                except discord.HTTPException:
+                    pass
+
+        view: discord.ui.View = discord.ui.View()
+
+        async def interaction_check(interaction: discord.Interaction) -> bool:
+            if interaction.user.id not in [ctx.author.id] + list(ctx.bot.owner_ids):
+                await interaction.response.send_message(
+                    "You are not allowed to use this interaction.", ephemeral=True
+                )
+                return False
+            return True
+        view.interaction_check = interaction_check
+
+        for button_index in range(len(splitted_parameters)):
+            button = discord.ui.Button(label=f"Edit Role {button_index + 1}"if len(splitted_parameters) > 1 else "Edit Role", style=discord.ButtonStyle.secondary)
+            button.callback = functools.partial(button_edit_role, button_index=button_index)
+            view.add_item(button)
+
+        async def delete_button_callback(interaction: discord.Interaction) -> None:
+            await interaction.response.defer()
+            ctx = await CogsUtils.invoke_command(
+                bot=interaction.client,
+                author=interaction.user,
+                channel=interaction.channel,
+                command=f"editrole delete {role.id}",
+            )
+            if not await discord.utils.async_all(
+                check(ctx) for check in ctx.command.checks
+            ):
+                await interaction.followup.send(
+                    _("You are not allowed to execute this command."), ephemeral=True
+                )
+                return
+        delete_button = discord.ui.Button(label="Delete Role", style=discord.ButtonStyle.danger)
+        delete_button.callback = delete_button_callback
+        view.add_item(delete_button)
+
+        message = await ctx.send(embed=get_embed(), view=view)
+
+        async def on_timeout() -> None:
+            for child in view.children:
+                child: discord.ui.Item
+                if hasattr(child, "disabled") and not (
+                    isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url
+                ):
+                    child.disabled = True
+            try:
+                await message.edit(view=view)
+            except discord.HTTPException:
+                pass
+        view.on_timeout = on_timeout

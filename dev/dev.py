@@ -204,16 +204,19 @@ class DevOutput(dev_commands.DevOutput):
 
     async def run_eval(self) -> None:
         self.env.update({"dev_output": self})
-        parse = ast.parse("async def func():\n%s" % textwrap.indent(self.raw_source, "  "))
         try:
-            return_found = [d for d in parse.body[0].body if isinstance(d, ast.Return)][0]
-        except IndexError:
-            line = len(self.raw_source.split("\n"))
-        else:
-            line = return_found.lineno - 2
-        _raw_source = self.raw_source.split("\n")
-        _raw_source.insert(line, textwrap.indent("dev_output._locals.update(**locals())", ""))
-        self.raw_source = "\n".join(_raw_source)
+            parse = ast.parse("async def func():\n%s" % textwrap.indent(self.raw_source, "  "))
+            try:
+                return_found = [d for d in parse.body[0].body if isinstance(d, ast.Return)][0]
+            except IndexError:
+                line = len(self.raw_source.split("\n"))
+            else:
+                line = return_found.lineno - 2
+            _raw_source = self.raw_source.split("\n")
+            _raw_source.insert(line, textwrap.indent("dev_output._locals.update(**locals())", ""))
+            self.raw_source = "\n".join(_raw_source)
+        except SyntaxError:
+            pass
         self.env.update(**self._locals)
         _console_custom_kwargs: typing.Dict[str, typing.Any] = self.env.get(
             "_console_custom",

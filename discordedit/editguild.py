@@ -658,24 +658,25 @@ class EditGuild(Cog):
             button.callback = functools.partial(button_edit_guild, button_index=button_index)
             view.add_item(button)
 
-        async def delete_button_callback(interaction: discord.Interaction) -> None:
-            await interaction.response.defer()
-            ctx = await CogsUtils.invoke_command(
-                bot=interaction.client,
-                author=interaction.user,
-                channel=interaction.channel,
-                command="editguild delete",
-            )
-            if not await discord.utils.async_all(
-                check(ctx) for check in ctx.command.checks
-            ):
-                await interaction.followup.send(
-                    _("You are not allowed to execute this command."), ephemeral=True
+        if guild.owner == ctx.me and ctx.author.id in ctx.owner_ids:
+            async def delete_button_callback(interaction: discord.Interaction) -> None:
+                await interaction.response.defer()
+                ctx = await CogsUtils.invoke_command(
+                    bot=interaction.client,
+                    author=interaction.user,
+                    channel=interaction.channel,
+                    command="editguild delete",
                 )
-                return
-        delete_button = discord.ui.Button(label="Delete Guild", style=discord.ButtonStyle.danger)
-        delete_button.callback = delete_button_callback
-        view.add_item(delete_button)
+                if not await discord.utils.async_all(
+                    check(ctx) for check in ctx.command.checks
+                ):
+                    await interaction.followup.send(
+                        _("You are not allowed to execute this command."), ephemeral=True
+                    )
+                    return
+            delete_button = discord.ui.Button(label="Delete Guild", style=discord.ButtonStyle.danger)
+            delete_button.callback = delete_button_callback
+            view.add_item(delete_button)
 
         message = await ctx.send(embed=get_embed(), view=view)
 

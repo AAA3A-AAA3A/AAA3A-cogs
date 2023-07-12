@@ -5,6 +5,8 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+from copy import copy
+
 from redbot.core.utils.chat_formatting import box, pagify
 
 def _(untranslated: str) -> str:  # `redgettext` will found these strings.
@@ -408,7 +410,8 @@ class EditVoiceChannel(Cog):
         for permission in permissions:
             if not getattr(channel_permissions, permission):
                 raise commands.UserFeedbackCheckFailure(_("You don't have the permission {permission_name} in this channel.").format(permission_name=permission))
-        overwrites = channel.overwrites
+        bot_channel_permissions = channel.permissions_for(ctx.me)
+        overwrites = channel.overwrites.copy()
         for target in targets:
             if target in overwrites:
                 overwrites[target].update(
@@ -419,6 +422,14 @@ class EditVoiceChannel(Cog):
                     **{permission: true_or_false for permission in permissions}
                 )
                 overwrites[target] = perm
+        fake_channel_object = copy(channel)
+        fake_channel_object.overwrites = overwrites
+        new_channel_permissions = fake_channel_object.permissions_for(ctx.author)
+        if [permission for permission in dict(new_channel_permissions) if getattr(channel_permissions, permission) is True and getattr(new_channel_permissions, permission) is False]:
+            raise commands.UserFeedbackCheckFailure(_("You cannot remove permissions from you in this channel."))
+        new_bot_channel_permissions = fake_channel_object.permissions_for(ctx.me)
+        if [permission for permission in dict(new_bot_channel_permissions) if getattr(bot_channel_permissions, permission) is True and getattr(new_bot_channel_permissions, permission) is False]:
+            raise commands.UserFeedbackCheckFailure(_("You cannot remove permissions from the bot in this channel."))
         try:
             await channel.edit(
                 overwrites=overwrites,

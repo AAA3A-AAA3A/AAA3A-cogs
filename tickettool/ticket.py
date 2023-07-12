@@ -536,12 +536,6 @@ class Ticket:
         new_name = f"{self.channel.name}"
         new_name = new_name.replace(f"{emoji_open}-", "", 1)
         new_name = f"{emoji_close}-{new_name}"
-        if isinstance(self.channel, discord.TextChannel):
-            await self.channel.edit(
-                name=new_name, category=config["category_close"], reason=_reason
-            )
-        else:
-            await self.channel.edit(name=new_name, archived=True, reason=_reason)
         if self.logs_messages:
             embed = await self.cog.get_embed_action(
                 self, author=self.closed_by, action="Ticket Closed", reason=reason
@@ -591,6 +585,12 @@ class Ticket:
                 await self.first_message.edit(view=view)
             except discord.HTTPException:
                 pass
+        if isinstance(self.channel, discord.TextChannel):
+            await self.channel.edit(
+                name=new_name, category=config["category_close"], reason=_reason
+            )
+        else:
+            await self.channel.edit(name=new_name, archived=True, reason=_reason)
         if config["ticket_role"] is not None and self.owner:
             try:
                 await self.owner.remove_roles(config["ticket_role"], reason=_reason)
@@ -614,7 +614,6 @@ class Ticket:
         logschannel = config["logschannel"]
         self.locked_by = author
         self.locked_at = datetime.datetime.now()
-        await self.channel.edit(locked=True, reason=_reason)
         if self.logs_messages:
             embed = await self.cog.get_embed_action(
                 self, author=self.locked_by, action="Ticket Locked", reason=reason
@@ -633,6 +632,7 @@ class Ticket:
                     _("Report on the lock of the ticket {ticket.id}."),
                     embed=embed,
                 )
+        await self.channel.edit(locked=True, reason=_reason)
         await self.save()
         return self
 
@@ -651,7 +651,6 @@ class Ticket:
         logschannel = config["logschannel"]
         self.unlocked_by = author
         self.unlocked_at = datetime.datetime.now()
-        await self.channel.edit(locked=False, reason=_reason)
         if self.logs_messages:
             embed = await self.cog.get_embed_action(
                 self, author=self.unlocked_by, action="Ticket Unlocked"
@@ -670,6 +669,7 @@ class Ticket:
                     _("Report on the unlock of the ticket {ticket.id}."),
                     embed=embed,
                 )
+        await self.channel.edit(locked=False, reason=_reason)
         await self.save()
         return self
 

@@ -573,7 +573,7 @@ class DurationParser:
         reminder_text_capture = SkipTo(
             every_time | in_req_time | on_time | StringEnd()
         ).setParseAction(tokenMap(str.strip))
-        reminder_text_optional_prefix = Optional(Suppress(CaselessLiteral("to")))
+        reminder_text_optional_prefix = Optional(Suppress(Keyword("to")))
         reminder_text = reminder_text_optional_prefix + reminder_text_capture("text")
 
         in_every_text = in_opt_time + every_time + reminder_text

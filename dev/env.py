@@ -197,6 +197,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "devspace": dev_space,
                 "dev_space": dev_space,
                 "source": lambda _object: env["print"](textwrap.dedent(inspect.getsource(_object))),
+                "gs": lambda _object: env["print"](textwrap.dedent(inspect.getsource(_object))),
             }
         )
         return env
@@ -494,7 +495,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "typing": lambda ctx: typing,
                 # Inspect
                 "inspect": lambda ctx: inspect,
-                "gs": lambda ctx: inspect.getsource,
+                # "gs": lambda ctx: inspect.getsource,
                 # logging
                 "logging": lambda ctx: logging,
                 # Date & Time

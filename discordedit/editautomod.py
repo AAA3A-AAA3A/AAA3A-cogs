@@ -108,7 +108,7 @@ class EditAutoMod(Cog):
         """Commands for edit an AutoMod rule."""
         pass
 
-    @editautomod.command(name="create")
+    @editautomod.command(name="create", aliases=["new", "+"])
     async def editautomod_create(
         self,
         ctx: commands.Context,
@@ -263,7 +263,7 @@ class EditAutoMod(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editautomod.command(name="exemptroles")
+    @editautomod.command(name="exemptroles", aliases=["exempt_roles"])
     async def editautomod_exempt_roles(
         self,
         ctx: commands.Context,
@@ -282,7 +282,7 @@ class EditAutoMod(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editautomod.command(name="exemptchannels")
+    @editautomod.command(name="exemptchannels", aliases=["exempt_channels"])
     async def editautomod_exempt_channels(
         self,
         ctx: commands.Context,
@@ -305,7 +305,7 @@ class EditAutoMod(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editautomod.command(name="delete")
+    @editautomod.command(name="delete", aliases=["-"])
     async def editautomod_delete(
         self,
         ctx: commands.Context,

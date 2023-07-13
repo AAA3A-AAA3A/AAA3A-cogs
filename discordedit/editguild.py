@@ -6,11 +6,11 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import datetime
-import inspect
-import functools
 
 from redbot.core.commands.converter import get_timedelta_converter
 from redbot.core.utils.chat_formatting import box
+
+from .view import DiscordEditView
 
 TimedeltaConverter = get_timedelta_converter(
     default_unit="s",
@@ -35,6 +35,43 @@ class LocaleConverter(commands.Converter):
             )
 
 
+class VerificationLevelConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> int:
+        if argument.lower() in discord.VerificationLevel._enum_member_names_:
+            return getattr(discord.VerificationLevel, argument.lower())
+        try:
+            verification_level = int(argument)
+        except ValueError:
+            raise commands.BadArgument(_("The verification level must be `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` or `4`."))
+        if verification_level in {0, 1, 2, 3, 4}:
+            return discord.VerificationLevel(verification_level)
+        else:
+            raise commands.BadArgument(_("The verification level must be `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` or `4`."))
+
+
+class DefaultNotificationsConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> int:
+        try:
+            notifications_level = int(argument)
+        except ValueError:
+            raise commands.BadArgument(_("The video quality mode must be `0` or `1`."))
+        if notifications_level in {0, 1}:
+            return discord.NotificationLevel(notifications_level)
+        else:
+            raise commands.BadArgument(_("The video quality mode must be `0` or `1`."))
+
+
+class SystemChannelFlagsConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> int:
+        try:
+            _system_channel_flags = int(argument)
+        except ValueError:
+            raise commands.BadArgument(_("The video quality mode must be `0` or `1`."))
+        system_channel_flags = discord.SystemChannelFlags()
+        system_channel_flags.value = _system_channel_flags
+        return system_channel_flags
+
+
 @cog_i18n(_)
 class EditGuild(Cog):
     """A cog to edit guilds!"""
@@ -51,7 +88,7 @@ class EditGuild(Cog):
         pass
 
     @commands.is_owner()
-    @editguild.command(name="create")
+    @editguild.command(name="create", aliases=["new", "+"])
     async def editguild_create(
         self, ctx: commands.Context, name: commands.Range[str, 2, 100], template_code: typing.Optional[str] = None
     ) -> None:
@@ -135,7 +172,7 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="afkchannel")
+    @editguild.command(name="afkchannel", aliases=["afk_channel"])
     async def editguild_afk_channel(
         self, ctx: commands.Context, *, afk_channel: typing.Optional[discord.VoiceChannel] = None
     ) -> None:
@@ -151,7 +188,7 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="afktimeout")
+    @editguild.command(name="afktimeout", aliases=["afk_timeout"])
     async def editguild_afk_timeout(self, ctx: commands.Context, afk_timeout: int) -> None:
         """Edit guild afktimeout."""
         guild = ctx.guild
@@ -204,9 +241,9 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="verificationlevel")
+    @editguild.command(name="verificationlevel", aliases=["verification_level"])
     async def editguild_verification_level(
-        self, ctx: commands.Context, verification_level: discord.VerificationLevel
+        self, ctx: commands.Context, verification_level: VerificationLevelConverter
     ) -> None:
         """Edit guild verification level."""
         guild = ctx.guild
@@ -220,13 +257,12 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="defaultnotifications", aliases=["notificationslevel"])
+    @editguild.command(name="defaultnotifications", aliases=["notificationslevel", "default_notifications"])
     async def editguild_default_notifications(
-        self, ctx: commands.Context, default_notifications: typing.Literal["0", "1"]
+        self, ctx: commands.Context, default_notifications: DefaultNotificationsConverter
     ) -> None:
         """Edit guild notification level."""
         guild = ctx.guild
-        default_notifications = discord.NotificationLevel(int(default_notifications))
         try:
             await guild.edit(
                 default_notifications=default_notifications,
@@ -237,7 +273,7 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="explicitcontentfilter")
+    @editguild.command(name="explicitcontentfilter", aliases=["explicit_content_filter"])
     async def editguild_explicit_content_filter(
         self, ctx: commands.Context, explicit_content_filter: discord.ContentFilter
     ) -> None:
@@ -253,7 +289,7 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="vanitycode")
+    @editguild.command(name="vanitycode", aliases=["vanity_code"])
     async def editguild_vanity_code(self, ctx: commands.Context, vanity_code: str) -> None:
         """Edit guild vanity code."""
         guild = ctx.guild
@@ -267,7 +303,7 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="systemchannel")
+    @editguild.command(name="systemchannel", aliases=["system_channel"])
     async def editguild_system_channel(
         self, ctx: commands.Context, system_channel: typing.Optional[discord.TextChannel] = None
     ) -> None:
@@ -283,17 +319,15 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="systemchannelflags")
+    @editguild.command(name="systemchannelflags", aliases=["system_channel_flags"])
     async def editguild_system_channel_flags(
-        self, ctx: commands.Context, system_channel_flags: int
+        self, ctx: commands.Context, system_channel_flags: SystemChannelFlagsConverter
     ) -> None:
         """Edit guild system channel flags."""
         guild = ctx.guild
-        _system_channel_flags = discord.SystemChannelFlags()
-        _system_channel_flags.value = system_channel_flags
         try:
             await guild.edit(
-                system_channel_flags=_system_channel_flags,
+                system_channel_flags=system_channel_flags,
                 reason=f"{ctx.author} ({ctx.author.id}) has edited the guild {guild.name} ({guild.id}).",
             )
         except discord.HTTPException as e:
@@ -301,7 +335,7 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="preferredlocale")
+    @editguild.command(name="preferredlocale", aliases=["preferred_locale"])
     async def editguild_preferred_locale(
         self, ctx: commands.Context, preferred_locale: LocaleConverter
     ) -> None:
@@ -349,7 +383,7 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="ruleschannel")
+    @editguild.command(name="ruleschannel", aliases=["rules_channel"])
     async def editguild_rules_channel(
         self, ctx: commands.Context, rules_channel: typing.Optional[discord.TextChannel] = None
     ) -> None:
@@ -365,7 +399,7 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="publicupdateschannel")
+    @editguild.command(name="publicupdateschannel", aliases=["public_updates_channel"])
     async def editguild_public_updates_channel(
         self,
         ctx: commands.Context,
@@ -383,7 +417,7 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="premiumprogressbarenabled")
+    @editguild.command(name="premiumprogressbarenabled", aliases=["premium_progress_bar_enabled"])
     async def editguild_premium_progress_bar_enabled(
         self, ctx: commands.Context, premium_progress_bar_enabled: bool = None
     ) -> None:
@@ -415,7 +449,7 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="invitesdisabled")
+    @editguild.command(name="invitesdisabled", aliases=["invites_disabled"])
     async def editguild_invites_disabled(
         self, ctx: commands.Context, invites_disabled: bool
     ) -> None:
@@ -431,7 +465,7 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="widgetenabled", with_app_command=False)
+    @editguild.command(name="widgetenabled", aliases=["widget_enabled"], with_app_command=False)
     async def editguild_widget_enabled(
         self, ctx: commands.Context, widget_enabled: bool
     ) -> None:
@@ -447,7 +481,7 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="widgetchannel", with_app_command=False)
+    @editguild.command(name="widgetchannel", aliases=["widget_channel"], with_app_command=False)
     async def editguild_widget_channel(
         self, ctx: commands.Context, widget_channel: discord.abc.GuildChannel = None
     ) -> None:
@@ -463,7 +497,7 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="raidalertsdisabled", with_app_command=False)
+    @editguild.command(name="raidalertsdisabled", aliases=["raid_alerts_disabled"], with_app_command=False)
     async def editguild_raid_alerts_disabled(
         self, ctx: commands.Context, raid_alerts_disabled: bool
     ) -> None:
@@ -479,7 +513,7 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="safetyalertschannel", with_app_command=False)
+    @editguild.command(name="safetyalertschannel", aliases=["safety_alerts_channel"], with_app_command=False)
     async def editguild_safety_alerts_channel(
         self, ctx: commands.Context, safety_alerts_channel: discord.TextChannel = None
     ) -> None:
@@ -496,7 +530,7 @@ class EditGuild(Cog):
             )
 
     @commands.is_owner()
-    @editguild.command(name="delete")
+    @editguild.command(name="delete", aliases=["-"])
     async def editguild_delete(
         self,
         ctx: commands.Context,
@@ -545,10 +579,10 @@ class EditGuild(Cog):
             "community": {"converter": bool},
             "afk_channel": {"converter": discord.VoiceChannel},
             "afk_timeout": {"converter": int},
-            "verification_level": {"converter": discord.VerificationLevel},
-            "default_notifications": {"converter": discord.NotificationLevel},
+            "verification_level": {"converter": VerificationLevelConverter},
+            "default_notifications": {"converter": DefaultNotificationsConverter},
             "system_channel": {"converter": discord.TextChannel},
-            "system_channel_flags": {"converter": int},
+            "system_channel_flags": {"converter": SystemChannelFlagsConverter},
             "preferred_locale": {"converter": LocaleConverter},
             "rules_channel": {"converter": discord.TextChannel},
             "public_updates_channel": {"converter": discord.TextChannel},
@@ -560,12 +594,6 @@ class EditGuild(Cog):
             "raid_alerts_disabled": {"converter": bool},
             "safety_alerts_channel": {"converter": discord.TextChannel},
         }
-        parameters_to_split = list(parameters)
-        splitted_parameters = []
-        while parameters_to_split != []:
-            li = parameters_to_split[:5]
-            parameters_to_split = parameters_to_split[5:]
-            splitted_parameters.append(li)
 
         def get_embed() -> discord.Embed:
             embed: discord.Embed = discord.Embed(title=f"Guild {guild.name} ({guild.id})", color=embed_color)
@@ -573,123 +601,11 @@ class EditGuild(Cog):
             embed.description = "\n".join([f"• `{parameter}`: {repr(getattr(guild, parameters[parameter].get('attribute_name', parameter)))}" for parameter in parameters if hasattr(guild, parameter)])
             return embed
 
-        async def button_edit_guild(interaction: discord.Interaction, button_index: int) -> None:
-            modal: discord.ui.Modal = discord.ui.Modal(title="Edit Guild")
-            modal.on_submit = lambda interaction: interaction.response.defer()
-            text_inputs: typing.Dict[str, discord.ui.TextInput] = {}
-            for parameter in splitted_parameters[button_index]:
-                text_input = discord.ui.TextInput(
-                    label=parameter.replace("_", " ").title(),
-                    style=discord.TextStyle.short,
-                    placeholder=repr(parameters[parameter]["converter"]),
-                    default=str(attribute) if (attribute := getattr(guild, parameters[parameter].get("attribute_name", parameter), None)) is not None else None,
-                    required=False,
-                )
-                text_inputs[parameter] = text_input
-                modal.add_item(text_input)
-            await interaction.response.send_modal(modal)
-            if await modal.wait():
-                return  # Timeout.
-            kwargs = {}
-            for parameter in text_inputs:
-                if not text_inputs[parameter].value:
-                    if parameters[parameter]["converter"] is bool:
-                        continue
-                    kwargs[parameter] = None
-                    continue
-                if text_inputs[parameter].value == str(text_inputs[parameter].default):
-                    continue
-                try:
-                    value = await discord.ext.commands.converter.run_converters(
-                        ctx,
-                        converter=parameters[parameter]["converter"],
-                        argument=text_inputs[parameter].value,
-                        param=discord.ext.commands.parameters.Parameter(
-                            name=parameter,
-                            kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
-                            annotation=parameters[parameter]["converter"],
-                        ),
-                    )
-                except discord.ext.commands.errors.CommandError as e:
-                    await ctx.send(
-                        f"An error occurred when using the `{parameter}`"
-                        f" converter:\n{box(e, lang='py')}"
-                    )
-                    return None
-                else:
-                    if parameter == "default_notifications":
-                        value = int(value)
-                    elif parameter == "system_channel_flags":
-                        _system_channel_flags = discord.SystemChannelFlags()
-                        _system_channel_flags.value = value
-                        value = _system_channel_flags
-                    elif parameter == "video_quality_mode":
-                        value = int(value)
-                    kwargs[parameter] = value
-            try:
-                await guild.edit(
-                    **kwargs,
-                    reason=f"{ctx.author} ({ctx.author.id}) has edited the guild {guild.name} ({guild.id}).",
-                )
-            except discord.HTTPException as e:
-                raise commands.UserFeedbackCheckFailure(
-                    _(ERROR_MESSAGE).format(error=box(e, lang="py"))
-                )
-            else:
-                try:
-                    await interaction.message.edit(embed=get_embed())
-                except discord.HTTPException:
-                    pass
-
-        view: discord.ui.View = discord.ui.View()
-
-        async def interaction_check(interaction: discord.Interaction) -> bool:
-            if interaction.user.id not in [ctx.author.id] + list(ctx.bot.owner_ids):
-                await interaction.response.send_message(
-                    "You are not allowed to use this interaction.", ephemeral=True
-                )
-                return False
-            return True
-
-        view.interaction_check = interaction_check
-
-        for button_index in range(len(splitted_parameters)):
-            button = discord.ui.Button(label=f"Edit Guild {button_index + 1}"if len(splitted_parameters) > 1 else "Edit Guild", style=discord.ButtonStyle.secondary)
-            button.callback = functools.partial(button_edit_guild, button_index=button_index)
-            view.add_item(button)
-
-        if guild.owner == ctx.me and ctx.author.id in ctx.owner_ids:
-            async def delete_button_callback(interaction: discord.Interaction) -> None:
-                await interaction.response.defer()
-                ctx = await CogsUtils.invoke_command(
-                    bot=interaction.client,
-                    author=interaction.user,
-                    channel=interaction.channel,
-                    command="editguild delete",
-                )
-                if not await discord.utils.async_all(
-                    check(ctx) for check in ctx.command.checks
-                ):
-                    await interaction.followup.send(
-                        _("You are not allowed to execute this command."), ephemeral=True
-                    )
-                    return
-            delete_button = discord.ui.Button(label="Delete Guild", style=discord.ButtonStyle.danger)
-            delete_button.callback = delete_button_callback
-            view.add_item(delete_button)
-
-        message = await ctx.send(embed=get_embed(), view=view)
-
-        async def on_timeout() -> None:
-            for child in view.children:
-                child: discord.ui.Item
-                if hasattr(child, "disabled") and not (
-                    isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url
-                ):
-                    child.disabled = True
-            try:
-                await message.edit(view=view)
-            except discord.HTTPException:
-                pass
-
-        view.on_timeout = on_timeout
+        await DiscordEditView(
+            cog=self,
+            _object=guild,
+            parameters=parameters,
+            get_embed_function=get_embed,
+            audit_log_reason=f"{ctx.author} ({ctx.author.id}) has edited the guild {guild.name} ({guild.id}).",
+            _object_qualified_name="Guild",
+        ).start(ctx)

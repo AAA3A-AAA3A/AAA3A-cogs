@@ -6,8 +6,6 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import datetime
-import inspect
-import functools
 import re
 
 from redbot.core.commands.converter import get_timedelta_converter
@@ -17,6 +15,8 @@ try:
     from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
 except ImportError:
     from emoji import EMOJI_DATA  # emoji>=2.0.0
+
+from .view import DiscordEditView
 
 TimedeltaConverter = get_timedelta_converter(
     default_unit="s",
@@ -98,7 +98,7 @@ class EditThread(Cog):
         pass
 
     @commands.admin_or_permissions(manage_channels=True)
-    @editthread.command(name="create")
+    @editthread.command(name="create", aliases=["new", "+"])
     async def editthread_create(
         self,
         ctx: commands.Context,
@@ -263,12 +263,12 @@ class EditThread(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editthread.command(name="autoarchiveduration")
+    @editthread.command(name="autoarchiveduration", aliases=["auto_archive_duration"])
     async def editthread_auto_archive_duration(
         self,
         ctx: commands.Context,
         thread: typing.Optional[discord.Thread],
-        auto_archive_duration: typing.Literal["60", "1440", "4320", "10080"],
+        auto_archive_duration: typing.Literal[60, 1440, 4320, 10080],
     ) -> None:
         """Edit thread auto archive duration."""
         if thread is None:
@@ -288,7 +288,7 @@ class EditThread(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editthread.command(name="slowmodedelay")
+    @editthread.command(name="slowmodedelay", aliases=["slowmode_delay"])
     async def editthread_slowmode_delay(
         self, ctx: commands.Context, thread: typing.Optional[discord.Thread], slowmode_delay: TimedeltaConverter
     ) -> None:
@@ -310,7 +310,7 @@ class EditThread(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editthread.command(name="appliedtags")
+    @editthread.command(name="appliedtags", aliases=["applied_tags"])
     async def editthread_applied_tags(
         self,
         ctx: commands.Context,
@@ -341,7 +341,7 @@ class EditThread(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editthread.command(name="adduser", aliases=["addmember"])
+    @editthread.command(name="adduser", aliases=["addmember", "add_user", "add_member"])
     async def editthread_add_user(
         self, ctx: commands.Context, thread: typing.Optional[discord.Thread], member: discord.Member
     ) -> None:
@@ -362,7 +362,7 @@ class EditThread(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editthread.command(name="removeuser", aliases=["removemember"])
+    @editthread.command(name="removeuser", aliases=["removemember", "remove_user", "remove_member"])
     async def editthread_remove_user(
         self, ctx: commands.Context, thread: typing.Optional[discord.Thread], member: discord.Member
     ) -> None:
@@ -422,7 +422,7 @@ class EditThread(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editthread.command(name="view")
+    @editthread.command(name="view", aliases=["-"])
     async def editthread_view(
         self,
         ctx: commands.Context,
@@ -444,15 +444,9 @@ class EditThread(Cog):
             "locked": {"converter": bool},
             "pinned": {"converter": bool},
             "invitable": {"converter": bool},
-            "auto_archive_duration": {"converter": typing.Literal["60", "1440", "4320", "10080"]},
+            "auto_archive_duration": {"converter": typing.Literal[60, 1440, 4320, 10080]},
             "slowmode_delay": {"converter": commands.Range[int, 0, 21_600]},
         }
-        parameters_to_split = list(parameters)
-        splitted_parameters = []
-        while parameters_to_split != []:
-            li = parameters_to_split[:5]
-            parameters_to_split = parameters_to_split[5:]
-            splitted_parameters.append(li)
 
         def get_embed() -> discord.Embed:
             embed: discord.Embed = discord.Embed(title=f"Thread #{thread.name} ({thread.id})", color=embed_color)
@@ -460,114 +454,11 @@ class EditThread(Cog):
             embed.description = "\n".join([f"• `{parameter}`: {repr(getattr(thread, parameters[parameter].get('attribute_name', parameter)))}" for parameter in parameters if hasattr(thread, parameter)])
             return embed
 
-        async def button_edit_thread(interaction: discord.Interaction, button_index: int) -> None:
-            modal: discord.ui.Modal = discord.ui.Modal(title="Edit Thread")
-            modal.on_submit = lambda interaction: interaction.response.defer()
-            text_inputs: typing.Dict[str, discord.ui.TextInput] = {}
-            for parameter in splitted_parameters[button_index]:
-                text_input = discord.ui.TextInput(
-                    label=parameter.replace("_", " ").title(),
-                    style=discord.TextStyle.short,
-                    placeholder=repr(parameters[parameter]["converter"]),
-                    default=str(attribute) if (attribute := getattr(thread, parameters[parameter].get("attribute_name", parameter), None)) is not None else None,
-                    required=False,
-                )
-                text_inputs[parameter] = text_input
-                modal.add_item(text_input)
-            await interaction.response.send_modal(modal)
-            if await modal.wait():
-                return  # Timeout.
-            kwargs = {}
-            for parameter in text_inputs:
-                if not text_inputs[parameter].value:
-                    if parameters[parameter]["converter"] is bool:
-                        continue
-                    kwargs[parameter] = None
-                    continue
-                if text_inputs[parameter].value == str(text_inputs[parameter].default):
-                    continue
-                try:
-                    value = await discord.ext.commands.converter.run_converters(
-                        ctx,
-                        converter=parameters[parameter]["converter"],
-                        argument=text_inputs[parameter].value,
-                        param=discord.ext.commands.parameters.Parameter(
-                            name=parameter,
-                            kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
-                            annotation=parameters[parameter]["converter"],
-                        ),
-                    )
-                except discord.ext.commands.errors.CommandError as e:
-                    await ctx.send(
-                        f"An error occurred when using the `{parameter}`"
-                        f" converter:\n{box(e, lang='py')}"
-                    )
-                    return None
-                else:
-                    if parameter == "auto_archive_duration":
-                        value = int(value)
-                    kwargs[parameter] = value
-            try:
-                await thread.edit(
-                    **kwargs,
-                    reason=f"{ctx.author} ({ctx.author.id}) has edited the thread #{thread.name} ({thread.id}).",
-                )
-            except discord.HTTPException as e:
-                raise commands.UserFeedbackCheckFailure(
-                    _(ERROR_MESSAGE).format(error=box(e, lang="py"))
-                )
-            else:
-                try:
-                    await interaction.message.edit(embed=get_embed())
-                except discord.HTTPException:
-                    pass
-
-        view: discord.ui.View = discord.ui.View()
-
-        async def interaction_check(interaction: discord.Interaction) -> bool:
-            if interaction.user.id not in [ctx.author.id] + list(ctx.bot.owner_ids):
-                await interaction.response.send_message(
-                    "You are not allowed to use this interaction.", ephemeral=True
-                )
-                return False
-            return True
-        view.interaction_check = interaction_check
-
-        for button_index in range(len(splitted_parameters)):
-            button = discord.ui.Button(label=f"Edit Thread {button_index + 1}"if len(splitted_parameters) > 1 else "Edit Thread", style=discord.ButtonStyle.secondary)
-            button.callback = functools.partial(button_edit_thread, button_index=button_index)
-            view.add_item(button)
-
-        async def delete_button_callback(interaction: discord.Interaction) -> None:
-            await interaction.response.defer()
-            ctx = await CogsUtils.invoke_command(
-                bot=interaction.client,
-                author=interaction.user,
-                channel=interaction.channel,
-                command=f"editthread delete {thread.id}",
-            )
-            if not await discord.utils.async_all(
-                check(ctx) for check in ctx.command.checks
-            ):
-                await interaction.followup.send(
-                    _("You are not allowed to execute this command."), ephemeral=True
-                )
-                return
-        delete_button = discord.ui.Button(label="Delete Thread", style=discord.ButtonStyle.danger)
-        delete_button.callback = delete_button_callback
-        view.add_item(delete_button)
-
-        message = await ctx.send(embed=get_embed(), view=view)
-
-        async def on_timeout() -> None:
-            for child in view.children:
-                child: discord.ui.Item
-                if hasattr(child, "disabled") and not (
-                    isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url
-                ):
-                    child.disabled = True
-            try:
-                await message.edit(view=view)
-            except discord.HTTPException:
-                pass
-        view.on_timeout = on_timeout
+        await DiscordEditView(
+            cog=self,
+            _object=thread,
+            parameters=parameters,
+            get_embed_function=get_embed,
+            audit_log_reason=f"{ctx.author} ({ctx.author.id}) has edited the thread #{thread.name} ({thread.id}).",
+            _object_qualified_name="Thread",
+        ).start(ctx)

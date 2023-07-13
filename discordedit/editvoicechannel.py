@@ -6,12 +6,12 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import datetime
-import functools
-import inspect
 from copy import copy
 
 from redbot.core.commands.converter import get_timedelta_converter
 from redbot.core.utils.chat_formatting import box, pagify
+
+from .view import DiscordEditView
 
 TimedeltaConverter = get_timedelta_converter(
     default_unit="s",
@@ -53,6 +53,18 @@ class PermissionConverter(commands.Converter):
         return argument
 
 
+class VideoQualityModeConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> int:
+        try:
+            video_quality_mode = int(argument)
+        except ValueError:
+            raise commands.BadArgument(_("The video quality mode must be `1` or `2`."))
+        if video_quality_mode in {1, 2}:
+            return discord.VideoQualityMode(video_quality_mode)
+        else:
+            raise commands.BadArgument(_("The video quality mode must be `1` or `2`."))
+
+
 @cog_i18n(_)
 class EditVoiceChannel(Cog):
     """A cog to edit voice channels!"""
@@ -89,7 +101,7 @@ class EditVoiceChannel(Cog):
         """Commands for edit a voice channel."""
         pass
 
-    @editvoicechannel.command(name="create")
+    @editvoicechannel.command(name="create", aliases=["new", "+"])
     async def editvoicechannel_create(
         self,
         ctx: commands.Context,
@@ -240,7 +252,7 @@ class EditVoiceChannel(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editvoicechannel.command(name="userlimit")
+    @editvoicechannel.command(name="userlimit", aliases=["user_limit"])
     async def editvoicechannel_user_limit(
         self, ctx: commands.Context, channel: discord.VoiceChannel, user_limit: commands.Range[int, 0, 99]
     ) -> None:
@@ -279,7 +291,7 @@ class EditVoiceChannel(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editvoicechannel.command(name="syncpermissions")
+    @editvoicechannel.command(name="syncpermissions", aliases=["sync_permissions"])
     async def editvoicechannel_sync_permissions(
         self, ctx: commands.Context, channel: discord.VoiceChannel, sync_permissions: bool = None
     ) -> None:
@@ -316,7 +328,7 @@ class EditVoiceChannel(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editvoicechannel.command(name="slowmodedelay")
+    @editvoicechannel.command(name="slowmodedelay", aliases=["slowmode_delay"])
     async def editvoicechannel_slowmode_delay(
         self,
         ctx: commands.Context,
@@ -342,12 +354,12 @@ class EditVoiceChannel(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editvoicechannel.command(name="videoqualitymode")
+    @editvoicechannel.command(name="videoqualitymode", aliases=["video_quality_mode"])
     async def editvoicechannel_video_quality_mode(
         self,
         ctx: commands.Context,
         channel: discord.VoiceChannel,
-        video_quality_mode: typing.Literal["1", "2"],
+        video_quality_mode: VideoQualityModeConverter,
     ) -> None:
         """Edit voice channel video quality mode.
 
@@ -355,7 +367,6 @@ class EditVoiceChannel(Cog):
         full = 2
         """
         await self.check_voice_channel(ctx, channel)
-        video_quality_mode = discord.VideoQualityMode(int(video_quality_mode))
         try:
             await channel.edit(
                 video_quality_mode=video_quality_mode,
@@ -510,7 +521,7 @@ class EditVoiceChannel(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editvoicechannel.command(name="view")
+    @editvoicechannel.command(name="view", aliases=["-"])
     async def editvoicechannel_view(
         self,
         ctx: commands.Context,
@@ -529,14 +540,8 @@ class EditVoiceChannel(Cog):
             "sync_permissions": {"converter": bool, "attribute_name": "permissions_synced"},
             "category": {"converter": discord.CategoryChannel},
             "slowmode_delay": {"converter": commands.Range[int, 0, 21_600]},
-            "video_quality_mode": {"converter": typing.Literal["1", "2"]},
+            "video_quality_mode": {"converter": VideoQualityModeConverter},
         }
-        parameters_to_split = list(parameters)
-        splitted_parameters = []
-        while parameters_to_split != []:
-            li = parameters_to_split[:5]
-            parameters_to_split = parameters_to_split[5:]
-            splitted_parameters.append(li)
 
         def get_embed() -> discord.Embed:
             embed: discord.Embed = discord.Embed(title=f"Voice Channel #!{channel.name} ({channel.id})", color=embed_color)
@@ -544,114 +549,11 @@ class EditVoiceChannel(Cog):
             embed.description = "\n".join([f"• `{parameter}`: {repr(getattr(channel, parameters[parameter].get('attribute_name', parameter)))}" for parameter in parameters])
             return embed
 
-        async def button_edit_voice_channel(interaction: discord.Interaction, button_index: int) -> None:
-            modal: discord.ui.Modal = discord.ui.Modal(title="Edit Voice Channel")
-            modal.on_submit = lambda interaction: interaction.response.defer()
-            text_inputs: typing.Dict[str, discord.ui.TextInput] = {}
-            for parameter in splitted_parameters[button_index]:
-                text_input = discord.ui.TextInput(
-                    label=parameter.replace("_", " ").title(),
-                    style=discord.TextStyle.short,
-                    placeholder=repr(parameters[parameter]["converter"]),
-                    default=str(attribute) if (attribute := getattr(channel, parameters[parameter].get("attribute_name", parameter))) is not None else None,
-                    required=False,
-                )
-                text_inputs[parameter] = text_input
-                modal.add_item(text_input)
-            await interaction.response.send_modal(modal)
-            if await modal.wait():
-                return  # Timeout.
-            kwargs = {}
-            for parameter in text_inputs:
-                if not text_inputs[parameter].value:
-                    if parameters[parameter]["converter"] is bool:
-                        continue
-                    kwargs[parameter] = None
-                    continue
-                if text_inputs[parameter].value == str(text_inputs[parameter].default):
-                    continue
-                try:
-                    value = await discord.ext.commands.converter.run_converters(
-                        ctx,
-                        converter=parameters[parameter]["converter"],
-                        argument=text_inputs[parameter].value,
-                        param=discord.ext.commands.parameters.Parameter(
-                            name=parameter,
-                            kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
-                            annotation=parameters[parameter]["converter"],
-                        ),
-                    )
-                except discord.ext.commands.errors.CommandError as e:
-                    await ctx.send(
-                        f"An error occurred when using the `{parameter}`"
-                        f" converter:\n{box(e, lang='py')}"
-                    )
-                    return None
-                else:
-                    if parameter == "video_quality_mode":
-                        value = int(value)
-                    kwargs[parameter] = value
-            try:
-                await channel.edit(
-                    **kwargs,
-                    reason=f"{ctx.author} ({ctx.author.id}) has edited the voice channel #!{channel.name} ({channel.id}).",
-                )
-            except discord.HTTPException as e:
-                raise commands.UserFeedbackCheckFailure(
-                    _(ERROR_MESSAGE).format(error=box(e, lang="py"))
-                )
-            else:
-                try:
-                    await interaction.message.edit(embed=get_embed())
-                except discord.HTTPException:
-                    pass
-
-        view: discord.ui.View = discord.ui.View()
-
-        async def interaction_check(interaction: discord.Interaction) -> bool:
-            if interaction.user.id not in [ctx.author.id] + list(ctx.bot.owner_ids):
-                await interaction.response.send_message(
-                    "You are not allowed to use this interaction.", ephemeral=True
-                )
-                return False
-            return True
-        view.interaction_check = interaction_check
-
-        for button_index in range(len(splitted_parameters)):
-            button = discord.ui.Button(label=f"Edit Voice Channel {button_index + 1}"if len(splitted_parameters) > 1 else "Edit Voice Channel", style=discord.ButtonStyle.secondary)
-            button.callback = functools.partial(button_edit_voice_channel, button_index=button_index)
-            view.add_item(button)
-
-        async def delete_button_callback(interaction: discord.Interaction) -> None:
-            await interaction.response.defer()
-            ctx = await CogsUtils.invoke_command(
-                bot=interaction.client,
-                author=interaction.user,
-                channel=interaction.channel,
-                command=f"editvoicechannel delete {channel.id}",
-            )
-            if not await discord.utils.async_all(
-                check(ctx) for check in ctx.command.checks
-            ):
-                await interaction.followup.send(
-                    _("You are not allowed to execute this command."), ephemeral=True
-                )
-                return
-        delete_button = discord.ui.Button(label="Delete Voice Channel", style=discord.ButtonStyle.danger)
-        delete_button.callback = delete_button_callback
-        view.add_item(delete_button)
-
-        message = await ctx.send(embed=get_embed(), view=view)
-
-        async def on_timeout() -> None:
-            for child in view.children:
-                child: discord.ui.Item
-                if hasattr(child, "disabled") and not (
-                    isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url
-                ):
-                    child.disabled = True
-            try:
-                await message.edit(view=view)
-            except discord.HTTPException:
-                pass
-        view.on_timeout = on_timeout
+        await DiscordEditView(
+            cog=self,
+            _object=channel,
+            parameters=parameters,
+            get_embed_function=get_embed,
+            audit_log_reason=f"{ctx.author} ({ctx.author.id}) has edited the voice channel #{channel.name} ({channel.id}).",
+            _object_qualified_name="Voice Channel",
+        ).start(ctx)

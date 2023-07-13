@@ -6,12 +6,12 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import datetime
-import functools
-import inspect
 from copy import copy
 
 from redbot.core.commands.converter import get_timedelta_converter
 from redbot.core.utils.chat_formatting import box, pagify
+
+from .view import DiscordEditView
 
 TimedeltaConverter = get_timedelta_converter(
     default_unit="s",
@@ -53,6 +53,20 @@ class PermissionConverter(commands.Converter):
         return argument
 
 
+class ChannelTypeConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> int:
+        if argument.lower() in discord.ChannelType._enum_member_names_:
+            return getattr(discord.ChannelType, argument.lower())
+        try:
+            channel_type = int(argument)
+        except ValueError:
+            raise commands.BadArgument(_("The channel type must be `text`, `news`, `0` or `5`."))
+        if channel_type in {0, 5}:
+            return discord.ChannelType(channel_type)
+        else:
+            raise commands.BadArgument(_("The channel type must be `text`, `news`, `0` or `5`."))
+
+
 @cog_i18n(_)
 class EditTextChannel(Cog):
     """A cog to edit text channels!"""
@@ -89,7 +103,7 @@ class EditTextChannel(Cog):
         """Commands for edit a text channel."""
         pass
 
-    @edittextchannel.command(name="create")
+    @edittextchannel.command(name="create", aliases=["new", "+"])
     async def edittextchannel_create(
         self,
         ctx: commands.Context,
@@ -267,7 +281,7 @@ class EditTextChannel(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @edittextchannel.command(name="syncpermissions")
+    @edittextchannel.command(name="syncpermissions", aliases=["sync_permissions"])
     async def edittextchannel_sync_permissions(
         self,
         ctx: commands.Context,
@@ -311,7 +325,7 @@ class EditTextChannel(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @edittextchannel.command(name="slowmodedelay")
+    @edittextchannel.command(name="slowmodedelay", aliases=["slowmode_delay"])
     async def edittextchannel_slowmode_delay(
         self,
         ctx: commands.Context,
@@ -344,7 +358,7 @@ class EditTextChannel(Cog):
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
-        _type: typing.Literal["0", "5"],
+        _type: ChannelTypeConverter,
     ) -> None:
         """Edit text channel type.
 
@@ -355,7 +369,6 @@ class EditTextChannel(Cog):
         if channel is None:
             channel = ctx.channel
         await self.check_text_channel(ctx, channel)
-        _type = discord.ChannelType(int(_type))
         try:
             await channel.edit(
                 type=_type,
@@ -366,12 +379,12 @@ class EditTextChannel(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @edittextchannel.command(name="defaultautoarchiveduration")
+    @edittextchannel.command(name="defaultautoarchiveduration", aliases=["default_auto_archive_duration"])
     async def edittextchannel_default_auto_archive_duration(
         self,
         ctx: commands.Context,
         channel: typing.Optional[discord.TextChannel],
-        default_auto_archive_duration: typing.Literal["60", "1440", "4320", "10080"],
+        default_auto_archive_duration: typing.Literal[60, 1440, 4320, 10080],
     ) -> None:
         """Edit text channel default auto archive duration.
 
@@ -382,7 +395,7 @@ class EditTextChannel(Cog):
         await self.check_text_channel(ctx, channel)
         try:
             await channel.edit(
-                default_auto_archive_duration=int(default_auto_archive_duration),
+                default_auto_archive_duration=default_auto_archive_duration,
                 reason=f"{ctx.author} ({ctx.author.id}) has edited the text channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
@@ -390,7 +403,7 @@ class EditTextChannel(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @edittextchannel.command(name="defaultthreadslowmodedelay")
+    @edittextchannel.command(name="defaultthreadslowmodedelay", aliases=["default_thread_slowmode_delay"])
     async def edittextchannel_default_thread_slowmode_delay(
         self,
         ctx: commands.Context,
@@ -523,7 +536,7 @@ class EditTextChannel(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @edittextchannel.command(name="delete")
+    @edittextchannel.command(name="delete", aliases=["-"])
     async def edittextchannel_delete(
         self,
         ctx: commands.Context,
@@ -582,16 +595,10 @@ class EditTextChannel(Cog):
             "sync_permissions": {"converter": bool, "attribute_name": "permissions_synced"},
             "category": {"converter": discord.CategoryChannel},
             "slowmode_delay": {"converter": commands.Range[int, 0, 21_600]},
-            "type": {"converter": typing.Literal["0", "5"]},
-            "default_auto_archive_duration": {"converter": typing.Literal["60", "1440", "4320", "10080"]},
+            "type": {"converter": ChannelTypeConverter},
+            "default_auto_archive_duration": {"converter": typing.Literal[60, 1440, 4320, 10080]},
             "default_thread_slowmode_delay": {"converter": commands.Range[int, 0, 21_600]},
         }
-        parameters_to_split = list(parameters)
-        splitted_parameters = []
-        while parameters_to_split != []:
-            li = parameters_to_split[:5]
-            parameters_to_split = parameters_to_split[5:]
-            splitted_parameters.append(li)
 
         def get_embed() -> discord.Embed:
             embed: discord.Embed = discord.Embed(title=f"Text Channel #{channel.name} ({channel.id})", color=embed_color)
@@ -599,116 +606,11 @@ class EditTextChannel(Cog):
             embed.description = "\n".join([f"• `{parameter}`: {repr(getattr(channel, parameters[parameter].get('attribute_name', parameter)))}" for parameter in parameters])
             return embed
 
-        async def button_edit_text_channel(interaction: discord.Interaction, button_index: int) -> None:
-            modal: discord.ui.Modal = discord.ui.Modal(title="Edit Text Channel")
-            modal.on_submit = lambda interaction: interaction.response.defer()
-            text_inputs: typing.Dict[str, discord.ui.TextInput] = {}
-            for parameter in splitted_parameters[button_index]:
-                text_input = discord.ui.TextInput(
-                    label=parameter.replace("_", " ").title(),
-                    style=discord.TextStyle.short,
-                    placeholder=repr(parameters[parameter]["converter"]),
-                    default=str(attribute) if (attribute := getattr(channel, parameters[parameter].get("attribute_name", parameter))) is not None else None,
-                    required=False,
-                )
-                text_inputs[parameter] = text_input
-                modal.add_item(text_input)
-            await interaction.response.send_modal(modal)
-            if await modal.wait():
-                return  # Timeout.
-            kwargs = {}
-            for parameter in text_inputs:
-                if not text_inputs[parameter].value:
-                    if parameters[parameter]["converter"] is bool:
-                        continue
-                    kwargs[parameter] = None
-                    continue
-                if text_inputs[parameter].value == str(text_inputs[parameter].default):
-                    continue
-                try:
-                    value = await discord.ext.commands.converter.run_converters(
-                        ctx,
-                        converter=parameters[parameter]["converter"],
-                        argument=text_inputs[parameter].value,
-                        param=discord.ext.commands.parameters.Parameter(
-                            name=parameter,
-                            kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
-                            annotation=parameters[parameter]["converter"],
-                        ),
-                    )
-                except discord.ext.commands.errors.CommandError as e:
-                    await ctx.send(
-                        f"An error occurred when using the `{parameter}`"
-                        f" converter:\n{box(e, lang='py')}"
-                    )
-                    return None
-                else:
-                    if parameter == "type":
-                        value = discord.ChannelType(int(value))
-                    elif parameter == "default_auto_archive_duration":
-                        value = int(value)
-                    kwargs[parameter] = value
-            try:
-                await channel.edit(
-                    **kwargs,
-                    reason=f"{ctx.author} ({ctx.author.id}) has edited the text channel #{channel.name} ({channel.id}).",
-                )
-            except discord.HTTPException as e:
-                raise commands.UserFeedbackCheckFailure(
-                    _(ERROR_MESSAGE).format(error=box(e, lang="py"))
-                )
-            else:
-                try:
-                    await interaction.message.edit(embed=get_embed())
-                except discord.HTTPException:
-                    pass
-
-        view: discord.ui.View = discord.ui.View()
-
-        async def interaction_check(interaction: discord.Interaction) -> bool:
-            if interaction.user.id not in [ctx.author.id] + list(ctx.bot.owner_ids):
-                await interaction.response.send_message(
-                    "You are not allowed to use this interaction.", ephemeral=True
-                )
-                return False
-            return True
-        view.interaction_check = interaction_check
-
-        for button_index in range(len(splitted_parameters)):
-            button = discord.ui.Button(label=f"Edit Text Channel {button_index + 1}"if len(splitted_parameters) > 1 else "Edit Text Channel", style=discord.ButtonStyle.secondary)
-            button.callback = functools.partial(button_edit_text_channel, button_index=button_index)
-            view.add_item(button)
-
-        async def delete_button_callback(interaction: discord.Interaction) -> None:
-            await interaction.response.defer()
-            ctx = await CogsUtils.invoke_command(
-                bot=interaction.client,
-                author=interaction.user,
-                channel=interaction.channel,
-                command=f"edittextchannel delete {channel.id}",
-            )
-            if not await discord.utils.async_all(
-                check(ctx) for check in ctx.command.checks
-            ):
-                await interaction.followup.send(
-                    _("You are not allowed to execute this command."), ephemeral=True
-                )
-                return
-        delete_button = discord.ui.Button(label="Delete Text Channel", style=discord.ButtonStyle.danger)
-        delete_button.callback = delete_button_callback
-        view.add_item(delete_button)
-
-        message = await ctx.send(embed=get_embed(), view=view)
-
-        async def on_timeout() -> None:
-            for child in view.children:
-                child: discord.ui.Item
-                if hasattr(child, "disabled") and not (
-                    isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url
-                ):
-                    child.disabled = True
-            try:
-                await message.edit(view=view)
-            except discord.HTTPException:
-                pass
-        view.on_timeout = on_timeout
+        await DiscordEditView(
+            cog=self,
+            _object=channel,
+            parameters=parameters,
+            get_embed_function=get_embed,
+            audit_log_reason=f"{ctx.author} ({ctx.author.id}) has edited the text channel #{channel.name} ({channel.id}).",
+            _object_qualified_name="Text Channel",
+        ).start(ctx)

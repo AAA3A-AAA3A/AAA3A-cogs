@@ -211,7 +211,7 @@ class TempRoles(Cog):
     async def assign(self, ctx: commands.Context, member: discord.Member, role: discord.Role, *, time: TimeConverter) -> None:
         """Assign/Add a TempRole to a member, for a specified duration."""
         if role in member.roles:
-            raise commands.UserFeedbackCheckFailure(_("This member already has {role.mention} ({role.id}).").format(role=role), allowed_mentions=discord.AllowedMentions(roles=False))
+            raise commands.UserFeedbackCheckFailure(_("This member already has {role.mention} ({role.id}).").format(role=role))
         if role >= ctx.guild.me.top_role or (role >= ctx.author.top_role and ctx.author != ctx.guild.owner):
             raise commands.UserFeedbackCheckFailure(_("This role cannot be assigned due to the Discord role hierarchy."))
         if ctx.author != ctx.guild.owner and (member.top_role >= ctx.author.top_role or member == ctx.guild.owner):
@@ -352,7 +352,7 @@ class TempRoles(Cog):
         - `max_time`: The minimum time for the self temp role. `none` to disable. Defaults is 52 weeks.
         """
         if role >= ctx.guild.me.top_role or (role >= ctx.author.top_role and ctx.author != ctx.guild.owner):
-            raise commands.UserFeedbackCheckFailure(_("The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy.").format(role=role), allowed_mentions=discord.AllowedMentions(roles=False))
+            raise commands.UserFeedbackCheckFailure(_("The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy.").format(role=role))
         allowed_self_temp_roles = await self.config.guild(ctx.guild).allowed_self_temp_roles()
         if str(role.id) in allowed_self_temp_roles:
             raise commands.UserFeedbackCheckFailure(_("This role is already an allowed self temp role."))

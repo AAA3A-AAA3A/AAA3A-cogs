@@ -1,4 +1,4 @@
-﻿from AAA3A_utils import Cog, Menu, Settings  # isort:skip
+﻿from AAA3A_utils import Cog, Menu, Settings, CogsUtils  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -9,6 +9,7 @@ import ast
 import asyncio
 import collections
 import contextlib
+import datetime
 import io
 import itertools
 import rich
@@ -28,6 +29,13 @@ from .env import ctxconsole, Exit, DevSpace, DevEnv
 # Thanks to Zeph for many ideas and a big part of the code (code removed from public)!
 
 _ = Translator("Dev", __file__)
+
+TimeConverter: commands.converter.TimedeltaConverter = commands.converter.TimedeltaConverter(
+    minimum=datetime.timedelta(minutes=1),
+    maximum=None,
+    allowed_units=None,
+    default_unit="minutes",
+)
 
 
 class SolarizedCustom(get_style_by_name("solarized-dark")):
@@ -325,9 +333,10 @@ class Dev(Cog, dev_commands.Dev):
 
         self._last_result: typing.Optional[typing.Any] = None
         self._last_locals: typing.Dict[typing.Union[discord.Member, discord.User], typing.Dict[str, typing.Any]] = {}
+        self.dev_outputs: typing.Dict[discord.Message, DevOutput] = {}
         self.sessions: typing.Dict[int, bool] = {}
         self._repl_tasks: typing.List[asyncio.Task] = []
-        self.dev_outputs: typing.Dict[discord.Message, DevOutput] = {}
+        self._bypass_cooldowns_task: typing.Optional[asyncio.Task] = None
 
         self.config: Config = Config.get_conf(
             self,
@@ -341,6 +350,7 @@ class Dev(Cog, dev_commands.Dev):
             "ansi_formatting": False,
             "send_interactive": False,
             "use_last_locals": False,
+            "downloader_already_agreed": False,
         }
         self.config.register_global(**self.dev_global)
 
@@ -377,6 +387,11 @@ class Dev(Cog, dev_commands.Dev):
                 "converter": bool,
                 "description": "Use the last locals for each evals. Locals are only registered for `[p]eval`, but can be used in other commands.",
             },
+            "downloader_already_agreed": {
+                "path": ["downloader_already_agreed"],
+                "converter": bool,
+                "description": "If enabled, Downloader will no longer prompt you to type `I agree` when adding a repo, even after a bot restart.",
+            },
         }
         self.settings: Settings = Settings(
             bot=self.bot,
@@ -393,6 +408,8 @@ class Dev(Cog, dev_commands.Dev):
     async def cog_load(self) -> None:
         await super().cog_load()
         await self.settings.add_commands()
+        if await self.config.downloader_already_agreed() and (downloader_cog := self.bot.get_cog("Downloader")) is not None:
+            downloader_cog.already_agreed = True
 
     async def cog_unload(self) -> None:
         core_dev: dev_commands.Dev = dev_commands.Dev()
@@ -657,6 +674,33 @@ class Dev(Cog, dev_commands.Dev):
             await ctx.send(_("The REPL session in this channel has been resumed."))
         else:
             await ctx.send(_("The REPL session in this channel is now paused."))
+
+    @commands.is_owner()
+    @commands.hybrid_command()
+    async def bypasscooldowns(self, ctx: commands.Context, toggle: typing.Optional[bool] = None, *, time: TimeConverter = None) -> None:
+        """Give bot owners the ability to bypass cooldowns.
+
+        Does not persist through restarts.
+        """
+        if toggle is None:
+            toggle = not ctx.bot._bypass_cooldowns
+        if self._bypass_cooldowns_task is not None:
+            self._bypass_cooldowns_task.cancel()
+        ctx.bot._bypass_cooldowns = toggle
+        if toggle:
+            await ctx.send(_("Bot owners will now bypass all commands with cooldowns{optional_duration}.").format(optional_duration="" if time is None else f" for {CogsUtils.get_interval_string(time)}"))
+        else:
+            await ctx.send(_("Bot owners will no longer bypass all commands with cooldowns{optional_duration}.").format(optional_duration="" if time is None else f" for {CogsUtils.get_interval_string(time)}"))
+        if time is not None:
+            task = asyncio.create_task(asyncio.sleep(time.total_seconds()))
+            self._bypass_cooldowns_task: asyncio.Task = task
+            try:
+                await task
+            except asyncio.CancelledError:
+                return
+            finally:
+                self._bypass_cooldowns_task: asyncio.Task = None
+            ctx.bot._bypass_cooldowns = not toggle
 
     @commands.is_owner()
     @commands.hybrid_group(name="setdev")

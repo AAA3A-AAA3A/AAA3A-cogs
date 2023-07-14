@@ -19,7 +19,7 @@ from redbot.core.utils.chat_formatting import humanize_list, pagify
 _ = Translator("TempRoles", __file__)
 
 TimeConverter: commands.converter.TimedeltaConverter = commands.converter.TimedeltaConverter(
-    minimum=datetime.timedelta(minutes=10),
+    minimum=datetime.timedelta(minutes=1),
     maximum=None,
     allowed_units=None,
     default_unit="days",

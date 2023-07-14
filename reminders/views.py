@@ -221,7 +221,7 @@ class ReminderView(discord.ui.View):
         if self.reminder.repeat is None:
             embed.description = _("No existing repeat rule(s).")
         else:
-            embed.description = self.reminder.repeat.get_info(cog=self.cog)
+            embed.description = self.reminder.repeat.get_info()
         view = RepeatView(cog=self.cog, reminder=self.reminder)
         await interaction.response.send_message(embed=embed, view=view)
         view._message = await interaction.original_response()
@@ -339,7 +339,7 @@ class AddRepeatRuleModal(discord.ui.Modal):
         if self._parent._message is not None:
             try:
                 embed = self._parent._message.embeds[0]
-                embed.description = self.reminder.repeat.get_info(cog=self._parent.cog)
+                embed.description = self.reminder.repeat.get_info()
                 self._parent.remove_repeat_rule.disabled = False
                 self._parent.stop_repeat.disabled = False
                 self._parent._message = await self._parent._message.edit(embed=embed, view=self._parent)
@@ -391,7 +391,7 @@ class RemoveRepeatRuleModal(discord.ui.Modal):
         if self._parent._message is not None:
             try:
                 embed = self._parent._message.embeds[0]
-                embed.description = self.reminder.repeat.get_info(cog=self._parent.cog) or _("No existing repeat rule(s).")
+                embed.description = self.reminder.repeat.get_info() or _("No existing repeat rule(s).")
                 self._parent.remove_repeat_rule.disabled = not self.reminder.repeat.rules
                 self._parent.stop_repeat.disabled = not self.reminder.repeat.rules
                 self._parent._message = await self._parent._message.edit(embed=embed, view=self._parent)

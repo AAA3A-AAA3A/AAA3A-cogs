@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, Loop, Menu  # isort:skip
+from AAA3A_utils import Cog, Loop, CogsUtils, Menu  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -153,52 +153,6 @@ class TempRoles(Cog):
                     del members_data[guild_id]
         return executed
 
-    def get_interval_string(
-        self,
-        expires: typing.Optional[
-            typing.Union[
-                datetime.datetime, datetime.timedelta
-            ]
-        ],
-        utc_now: datetime.datetime = None,
-        use_timestamp: bool = False,
-    ) -> str:
-        """Copy-paste from Reminders cog."""
-        if expires is None:
-            return "No future occurrence."
-        if use_timestamp:
-            expires = expires.replace(tzinfo=datetime.timezone.utc)
-            return f"<t:{int(expires.timestamp())}:R>"
-        if utc_now is None:
-            utc_now = datetime.datetime.now(datetime.timezone.utc)
-        if isinstance(expires, datetime.datetime):
-            delta = expires - utc_now
-        elif isinstance(expires, datetime.timedelta):
-            delta = expires
-        else:
-            delta = datetime.timedelta(seconds=expires)
-        result = []
-        total_secs = int(max(0, delta.total_seconds()))
-        years, rem = divmod(total_secs, 3600 * 24 * 365)
-        if years > 0:
-            result.append(f"{years} year" + ("s" if years > 1 else ""))
-        months, rem = divmod(rem, 3600 * 24 * 7 * 4)
-        if months > 0:
-            result.append(f"{months} month" + ("s" if months > 1 else ""))
-        weeks, rem = divmod(rem, 3600 * 24 * 7)
-        if weeks > 0:
-            result.append(f"{weeks} week" + ("s" if weeks > 1 else ""))
-        days, rem = divmod(rem, 3600 * 24)
-        if days > 0:
-            result.append(f"{days} day" + ("s" if days > 1 else ""))
-        hours, rem = divmod(rem, 3600)
-        if hours > 0:
-            result.append(f"{hours} hour" + ("s" if hours > 1 else ""))
-        mins, rem = divmod(rem, 60)
-        if mins > 0:
-            result.append(f"{mins} minute" + ("s" if mins > 1 else ""))
-        return humanize_list(result) if result else "just now"  # "0 minute"
-
     @commands.guild_only()
     @commands.bot_has_permissions(manage_roles=True)
     @commands.hybrid_group(aliases=["temprole"])
@@ -224,7 +178,7 @@ class TempRoles(Cog):
         except OverflowError:
             raise commands.UserFeedbackCheckFailure(_("The time set is way too high, consider setting something reasonable."))
         end_time = end_time.replace(second=0 if end_time.second < 30 else 30)
-        time_string = self.get_interval_string(time)
+        time_string = CogsUtils.get_interval_string(time)
         await member.add_roles(
             role,
             reason=("Self " if ctx.command.name == "selfassign" else "") + f"Temp Role assigned by {ctx.author} ({ctx.author.id}), expires in {time_string}."
@@ -379,11 +333,11 @@ class TempRoles(Cog):
         if allowed_self_temp_roles[str(role.id)]["min_time"] is not None:
             min_time = datetime.timedelta(seconds=allowed_self_temp_roles[str(role.id)]["min_time"])
             if time < min_time:
-                raise commands.UserFeedbackCheckFailure(_("The time for this role must be greater than {min_time_string}.").format(min_time_string=self.get_interval_string(min_time)))
+                raise commands.UserFeedbackCheckFailure(_("The time for this role must be greater than {min_time_string}.").format(min_time_string=CogsUtils.get_interval_string(min_time)))
         if allowed_self_temp_roles[str(role.id)]["max_time"] is not None:
             max_time = datetime.timedelta(seconds=allowed_self_temp_roles[str(role.id)]["max_time"])
             if time > max_time:
-                raise commands.UserFeedbackCheckFailure(_("The time for this role must be less than {max_time_string}.").format(max_time_string=self.get_interval_string(max_time)))
+                raise commands.UserFeedbackCheckFailure(_("The time for this role must be less than {max_time_string}.").format(max_time_string=CogsUtils.get_interval_string(max_time)))
         await self.assign.callback(self, ctx, member=ctx.author, role=role, time=time)
 
     @temproles.command(aliases=["selfremove"])
@@ -401,7 +355,7 @@ class TempRoles(Cog):
         if (member_temp_roles := {temp_role: end_time for temp_role_id, end_time in (await self.config.member(ctx.author).temp_roles()).items() if (temp_role := ctx.guild.get_role(int(temp_role_id))) is not None}):
             description += f"**Your current Temp Roles:**\n{BREAK_LINE.join([f'• {temp_role.mention} ({temp_role.id}) - Expires <t:{int(end_time)}:R>.' for temp_role, end_time in member_temp_roles.items()])}\n\n"
         if (allowed_self_temp_roles := {role: (data["min_time"], data["max_time"]) for role_id, data in (await self.config.guild(ctx.guild).allowed_self_temp_roles()).items() if (role := ctx.guild.get_role(int(role_id))) is not None}):
-            description += f"**Allowed self Temp Roles on this server:**\n{BREAK_LINE.join([f'• {role.mention} ({role.id}) - Min time `{self.get_interval_string(min_time) if min_time is not None else None}`. - Max time `{self.get_interval_string(max_time) if max_time is not None else None}`.' for role, (min_time, max_time) in allowed_self_temp_roles.items()])}"
+            description += f"**Allowed self Temp Roles on this server:**\n{BREAK_LINE.join([f'• {role.mention} ({role.id}) - Min time `{CogsUtils.get_interval_string(min_time) if min_time is not None else None}`. - Max time `{CogsUtils.get_interval_string(max_time) if max_time is not None else None}`.' for role, (min_time, max_time) in allowed_self_temp_roles.items()])}"
         embeds = []
         pages = list(pagify(description, page_length=3000))
         for page in pages:

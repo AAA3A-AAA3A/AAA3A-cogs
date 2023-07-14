@@ -136,7 +136,7 @@ class RepeatRule:
         self.last_trigger = next_expires_at
         return next_expires_at
 
-    def get_info(self, cog: commands.Cog) -> str:
+    def get_info(self) -> str:
         if self.type == "sample":
             value = self.value.copy()
             if "years" in value:
@@ -147,7 +147,7 @@ class RepeatRule:
                 if "days" not in value:
                     value["days"] = 0
                 value["days"] += value.pop("months") * 7 * 4
-            return f"[{self.type.upper()}] Every {cog.get_interval_string(datetime.timedelta(**value))}."
+            return f"[{self.type.upper()}] Every {CogsUtils.get_interval_string(datetime.timedelta(**value))}."
         elif self.type == "cron":
             descriptor = ExpressionDescriptor(
                 expression=self.value,
@@ -193,8 +193,8 @@ class Repeat:
         next_triggers = [next_trigger for next_trigger in next_triggers if next_trigger is not None]
         return min(next_triggers, default=None)
 
-    def get_info(self, cog: commands.Cog) -> str:
-        return "\n".join([f"**•** **{i}.** - {rule.get_info(cog=cog)}" for i, rule in enumerate(self.rules, start=1)])
+    def get_info(self) -> str:
+        return "\n".join([f"**•** **{i}.** - {rule.get_info()}" for i, rule in enumerate(self.rules, start=1)])
 
 
 @dataclass(frozen=False)
@@ -313,10 +313,10 @@ class Reminder:
         and_every = ""
         if self.repeat is not None:
             if len(self.repeat.rules) == 1:
-                and_every = _(", and then **{interval}**").format(interval=self.repeat.rules[0].get_info(cog=self.cog).lower().split("]")[-1].rstrip(".")[1:])
+                and_every = _(", and then **{interval}**").format(interval=self.repeat.rules[0].get_info().lower().split("]")[-1].rstrip(".")[1:])
             else:
                 and_every = _(", with **{nb_repeat_rules} repeat rules**").format(nb_repeat_rules=len(self.repeat.rules))
-        interval_string = self.cog.get_interval_string(
+        interval_string = CogsUtils.get_interval_string(
             int(self.expires_at.timestamp() - utc_now.timestamp())
         )
         if interval_string != "just now":
@@ -361,17 +361,17 @@ class Reminder:
             "• **Jump URL**: {jump_url}\n"
         ).format(
             expires_at_timestamp=f"<t:{int(self.next_expires_at.timestamp())}:F>",
-            expires_in_timestamp=self.cog.get_interval_string(
+            expires_in_timestamp=CogsUtils.get_interval_string(
                 self.next_expires_at, use_timestamp=True
             ),
             created_at_timestamp=f"<t:{int(self.created_at.timestamp())}:F>",
-            created_in_timestamp=self.cog.get_interval_string(self.created_at, use_timestamp=True),
+            created_in_timestamp=CogsUtils.get_interval_string(self.created_at, use_timestamp=True),
             repeat=_("No existing repeat rule(s).")
             if self.repeat is None
             else (
                 _("{nb_repeat_rules} repeat rules.").format(nb_repeat_rules=len(self.repeat.rules))
                 if len(self.repeat.rules) > 1
-                else self.repeat.rules[0].get_info(cog=self.cog)
+                else self.repeat.rules[0].get_info()
             ),
             title=self.content.get("title") or _("Not provided."),
             content_type=self.content["type"],
@@ -449,7 +449,7 @@ class Reminder:
             value=(f"[Jump to the original message.]({self.jump_url}) • " if self.jump_url is not None else "") + f"Created the <t:{int(self.created_at.timestamp())}:F>.",
             inline=False,
         )
-        interval_string = self.cog.get_interval_string(
+        interval_string = CogsUtils.get_interval_string(
             int(
                 (self.last_expires_at or self.next_expires_at).timestamp()
                 - self.created_at.timestamp()
@@ -482,10 +482,10 @@ class Reminder:
         if delayed:
             footer += _(
                 "This was supposed to send {interval_string} ago. I might be having network or server issues, or perhaps I just started up. Sorry about that!\n\n"
-            ).format(interval_string=self.cog.get_interval_string(delayed))
+            ).format(interval_string=CogsUtils.get_interval_string(delayed))
         if self.next_expires_at is not None:
             footer += _("Next trigger in {interval_string}.").format(
-                interval_string=self.cog.get_interval_string(self.next_expires_at)
+                interval_string=CogsUtils.get_interval_string(self.next_expires_at)
             )
         embed.set_footer(text=footer or None)
         return embed

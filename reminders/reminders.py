@@ -238,53 +238,6 @@ class Reminders(Cog):
                         self.log.error(str(e), exc_info=e)
         return executed
 
-    def get_interval_string(
-        self,
-        expires: typing.Optional[
-            typing.Union[
-                datetime.datetime, dateutil.relativedelta.relativedelta, datetime.timedelta
-            ]
-        ],
-        utc_now: datetime.datetime = None,
-        use_timestamp: bool = False,
-    ) -> str:
-        if expires is None:
-            return "No future occurrence."
-        if use_timestamp:
-            expires = expires.replace(tzinfo=datetime.timezone.utc)
-            return f"<t:{int(expires.timestamp())}:R>"
-        if utc_now is None:
-            utc_now = datetime.datetime.now(datetime.timezone.utc)
-        if isinstance(expires, datetime.datetime):
-            delta = expires - utc_now
-        elif isinstance(expires, datetime.timedelta):
-            delta = expires
-        elif isinstance(expires, dateutil.relativedelta.relativedelta):
-            delta = (utc_now + expires) - utc_now
-        else:
-            delta = datetime.timedelta(seconds=expires)
-        result = []
-        total_secs = int(max(0, delta.total_seconds()))
-        years, rem = divmod(total_secs, 3600 * 24 * 365)
-        if years > 0:
-            result.append(f"{years} year" + ("s" if years > 1 else ""))
-        months, rem = divmod(rem, 3600 * 24 * 7 * 4)
-        if months > 0:
-            result.append(f"{months} month" + ("s" if months > 1 else ""))
-        weeks, rem = divmod(rem, 3600 * 24 * 7)
-        if weeks > 0:
-            result.append(f"{weeks} week" + ("s" if weeks > 1 else ""))
-        days, rem = divmod(rem, 3600 * 24)
-        if days > 0:
-            result.append(f"{days} day" + ("s" if days > 1 else ""))
-        hours, rem = divmod(rem, 3600)
-        if hours > 0:
-            result.append(f"{hours} hour" + ("s" if hours > 1 else ""))
-        mins, rem = divmod(rem, 60)
-        if mins > 0:
-            result.append(f"{mins} minute" + ("s" if mins > 1 else ""))
-        return humanize_list(result) if result else "just now"  # "0 minute"
-
     async def create_reminder(
         self,
         ctx: commands.Context,

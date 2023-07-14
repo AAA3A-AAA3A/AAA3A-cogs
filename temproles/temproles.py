@@ -344,12 +344,12 @@ class TempRoles(Cog):
 
     @commands.admin_or_permissions(administrator=True)
     @temproles.command()
-    async def addallowedselftemprole(self, ctx: commands.Context, role: discord.Role, min_time: typing.Optional[OptionalTimeConverter] = datetime.timedelta(days=1), max_time: typing.Optional[OptionalTimeConverter] = datetime.timedelta(weeks=52)) -> None:
+    async def addallowedselftemprole(self, ctx: commands.Context, role: discord.Role, min_time: typing.Optional[OptionalTimeConverter] = datetime.timedelta(days=1), max_time: typing.Optional[OptionalTimeConverter] = datetime.timedelta(days=365)) -> None:
         """Add an allowed self Temp Role.
 
         **Parameters:**
         - `min_time`: The minimum time for the self temp role. `none` to disable. Defaults is 1 day.
-        - `max_time`: The minimum time for the self temp role. `none` to disable. Defaults is 52 weeks.
+        - `max_time`: The minimum time for the self temp role. `none` to disable. Defaults is 365 days.
         """
         if role >= ctx.guild.me.top_role or (role >= ctx.author.top_role and ctx.author != ctx.guild.owner):
             raise commands.UserFeedbackCheckFailure(_("The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy.").format(role=role))

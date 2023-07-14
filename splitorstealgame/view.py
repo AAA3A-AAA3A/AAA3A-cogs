@@ -90,13 +90,13 @@ class SplitOrStealGameView(discord.ui.View):
             await self._message.reply(
                 _("{player_A.display_name} and {player_B.display_name}, you both chose `steal` and therefore both loose.").format(player_A=player_A, player_B=player_B)
             )
-        elif self.players[player_A] == "split" and self.players[player_B] == "steal":
-            await self._message.reply(
-                _("{player_A.display_name} chose `split` and {player_B.display_name} chose `steal`, and therefore {player_A.display_name} win.").format(player_A=player_A, player_B=player_B)
-            )
         elif self.players[player_A] == "steal" and self.players[player_B] == "split":
             await self._message.reply(
-                _("{player_B.display_name} chose `split` and {player_A.display_name} chose `steal`, and therefore {player_B.display_name} win.").format(player_A=player_A, player_B=player_B)
+                _("{player_A.display_name} chose `steal` and {player_B.display_name} chose `split`, and therefore {player_A.display_name} win.").format(player_A=player_A, player_B=player_B)
+            )
+        elif self.players[player_A] == "split" and self.players[player_B] == "steal":
+            await self._message.reply(
+                _("{player_B.display_name} chose `steal` and {player_A.display_name} chose `split`, and therefore {player_B.display_name} win.").format(player_A=player_A, player_B=player_B)
             )
         return self._message
 

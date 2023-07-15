@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 18:21\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:19\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -22,11 +22,11 @@ msgstr ""
 msgid "A cog to do calculations from Discord with buttons!"
 msgstr "Un ingranaggio per fare calcoli da Discord con i pulsanti!"
 
-#: calculator\calculator.py:110 calculator\view.py:206 calculator\view.py:213
+#: calculator\calculator.py:120 calculator\view.py:207 calculator\view.py:214
 msgid "Error!"
 msgstr "Errore!"
 
-#: calculator\calculator.py:123
+#: calculator\calculator.py:133
 msgid "{ctx.me.display_name}'s Calculator"
 msgstr "{ctx.me.display_name}Calcolatrice"
 
@@ -38,7 +38,7 @@ msgstr "Uscita"
 msgid "Clear"
 msgstr "Libero"
 
-#: calculator\view.py:280
+#: calculator\view.py:281
 msgid "Nothing in your history."
 msgstr "Non c'è nulla nella vostra storia."
 

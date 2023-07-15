@@ -31,7 +31,7 @@ from .env import ctxconsole, Exit, DevSpace, DevEnv
 _ = Translator("Dev", __file__)
 
 TimeConverter: commands.converter.TimedeltaConverter = commands.converter.TimedeltaConverter(
-    minimum=datetime.timedelta(minutes=1),
+    minimum=None,
     maximum=None,
     allowed_units=None,
     default_unit="minutes",
@@ -699,7 +699,7 @@ class Dev(Cog, dev_commands.Dev):
             except asyncio.CancelledError:
                 return
             finally:
-                self._bypass_cooldowns_task: asyncio.Task = None
+                self._bypass_cooldowns_task = None
             ctx.bot._bypass_cooldowns = not toggle
 
     @commands.is_owner()

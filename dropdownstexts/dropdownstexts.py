@@ -227,6 +227,10 @@ class DropdownsTexts(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.")
             )
+        if len(dropdown_texts) == 0:
+            raise commands.UserFeedbackCheckFailure(
+                _("You have not specified any valid dropdown-text.")
+            )
         channel_permissions = message.channel.permissions_for(ctx.me)
         if (
             not channel_permissions.view_channel
@@ -392,16 +396,16 @@ class DropdownsTexts(Cog):
                 try:
                     int(config[message][config_identifier]["emoji"])
                 except ValueError:
-                    o = config[message][config_identifier]["emoji"]
+                    e = config[message][config_identifier]["emoji"]
                 else:
-                    o = self.bot.get_emoji(int(config[message][config_identifier]["emoji"]))
+                    e = self.bot.get_emoji(int(config[message][config_identifier]["emoji"]))
             else:
-                o = None
+                e = None
             options.append(
                 discord.SelectOption(
                     label=config[message][config_identifier]["label"],
                     value=config_identifier,
-                    emoji=o,
+                    emoji=e,
                 )
             )
             # all_options.append({"label": config[message][option]["label"], "emoji": e})

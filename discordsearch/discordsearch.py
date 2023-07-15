@@ -9,12 +9,12 @@ import argparse
 import asyncio
 import datetime
 import functools
+import multiprocessing
 import re
 from time import monotonic
-import multiprocessing
 
 import dateparser
-from redbot.core.utils.chat_formatting import bold, underline, box
+from redbot.core.utils.chat_formatting import bold, box, underline
 from redbot.core.utils.common_filters import URL_RE
 
 # Credits:
@@ -124,9 +124,7 @@ class DiscordSearch(Cog):
             bold("Before:") + " " + f"{before}",
             bold("After:") + " " + f"{after}",
             bold("Pinned:") + " " + f"{pinned}",
-            bold("Content:")
-            + " "
-            + (f"`{content}`" if content is not None else "None"),
+            bold("Content:") + " " + (f"`{content}`" if content is not None else "None"),
             bold("Regex:") + " " + f"{regex}",
             bold("Contains:")
             + " "
@@ -152,8 +150,7 @@ class DiscordSearch(Cog):
                 content is not None
                 and content.lower() not in message.content.lower()
                 and all(
-                    content.lower() not in str(embed.to_dict()).lower()
-                    for embed in message.embeds
+                    content.lower() not in str(embed.to_dict()).lower() for embed in message.embeds
                 )
             ):
                 continue
@@ -167,11 +164,15 @@ class DiscordSearch(Cog):
                     new_task = loop.run_in_executor(None, task)
                     search = await asyncio.wait_for(new_task, timeout=trigger_timeout + 5)
                 except (multiprocessing.TimeoutError, asyncio.TimeoutError):
-                    raise commands.UserFeedbackCheckFailure(_("Your regex process took too long. Removing from memory."))
+                    raise commands.UserFeedbackCheckFailure(
+                        _("Your regex process took too long. Removing from memory.")
+                    )
                 except ValueError:
                     continue
                 except Exception as e:
-                    raise commands.UserFeedbackCheckFailure(_("There is an error in your regex.\n{e}").format(e=box(str(e), lang="py")))
+                    raise commands.UserFeedbackCheckFailure(
+                        _("There is an error in your regex.\n{e}").format(e=box(str(e), lang="py"))
+                    )
                 else:
                     if not search:
                         continue

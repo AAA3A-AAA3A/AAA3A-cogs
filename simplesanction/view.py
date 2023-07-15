@@ -24,7 +24,7 @@ class SimpleSanctionView(discord.ui.View):
         reason_required: typing.Optional[bool] = True,
         confirmation: typing.Optional[bool] = False,
         show_author: typing.Optional[bool] = True,
-        fake_action: typing.Optional[bool] = False
+        fake_action: typing.Optional[bool] = False,
     ) -> None:
         super().__init__(timeout=180)
         self.cog: commands.Cog = cog
@@ -51,7 +51,7 @@ class SimpleSanctionView(discord.ui.View):
                 style=discord.ButtonStyle.secondary,
                 label=value["label"],
                 emoji=value["emoji"],
-                custom_id=key
+                custom_id=key,
             )
             button.callback = self._callback
             self.add_item(button)
@@ -97,7 +97,9 @@ class SimpleSanctionView(discord.ui.View):
         self._ready.set()
 
     async def get_embed(self) -> discord.Embed:
-        embed: discord.Embed = discord.Embed(title=_("Sanction Member"), color=await self.ctx.embed_color())
+        embed: discord.Embed = discord.Embed(
+            title=_("Sanction Member"), color=await self.ctx.embed_color()
+        )
         embed.description = _(
             "This tool allows you to easily sanction a server member.\nMember mention: {member.mention} - Member ID: {member.id}"
         ).format(member=self.member)
@@ -116,7 +118,9 @@ class SimpleSanctionView(discord.ui.View):
         embed.add_field(
             inline=False,
             name="Possible actions:",
-            value=" - ".join([f"{action.emoji} {action.label}" for action in self.cog.actions.values()]),
+            value=" - ".join(
+                [f"{action.emoji} {action.label}" for action in self.cog.actions.values()]
+            ),
             # value=f"ℹ️ UserInfo - ⚠️ Warn - 🔨 Ban - 🔂 SoftBan - 💨 TempBan\n👢 Kick - 🔇 Mute - 👊 MuteChannel - ⏳ TempMute\n⌛ TempMuteChannel - ❌ Cancel",
         )
         if self.reason is not None:
@@ -138,4 +142,15 @@ class SimpleSanctionView(discord.ui.View):
         # else:
         #     await interaction.response.defer()
         action: Action = self.cog.actions[interaction.data["custom_id"]]
-        await action.process(self.ctx, interaction=interaction, member=self.member, duration=self.duration, reason=self.reason, finish_message_enabled=self.finish_message_enabled, reason_required=await self.cog.config.guild(self.ctx.guild).reason_required(), confirmation=self.confirmation, show_author=self.show_author, fake_action=self.fake_action)
+        await action.process(
+            self.ctx,
+            interaction=interaction,
+            member=self.member,
+            duration=self.duration,
+            reason=self.reason,
+            finish_message_enabled=self.finish_message_enabled,
+            reason_required=await self.cog.config.guild(self.ctx.guild).reason_required(),
+            confirmation=self.confirmation,
+            show_author=self.show_author,
+            fake_action=self.fake_action,
+        )

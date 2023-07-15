@@ -45,7 +45,9 @@ class EditReminderModal(discord.ui.Modal):
         if self.reminder.content["type"] in ["text", "say"]:
             self.content: discord.ui.TextInput = discord.ui.TextInput(
                 label="Text",
-                placeholder="(required)" if self.reminder.content["type"] == "say" else "(optional)",
+                placeholder="(required)"
+                if self.reminder.content["type"] == "say"
+                else "(optional)",
                 default=self.reminder.content["text"],
                 style=discord.TextStyle.paragraph,
                 max_length=MAX_REMINDER_LENGTH,
@@ -98,9 +100,14 @@ class EditReminderModal(discord.ui.Modal):
                     ephemeral=True,
                 )
                 return
-        if self.next_expires_at.value != self.reminder.next_expires_at.astimezone(tz=self.timezone).isoformat():
+        if (
+            self.next_expires_at.value
+            != self.reminder.next_expires_at.astimezone(tz=self.timezone).isoformat()
+        ):
             try:
-                fake_context: commands.Context = await interaction.client.get_context(interaction.message)
+                fake_context: commands.Context = await interaction.client.get_context(
+                    interaction.message
+                )
                 fake_context.author = interaction.user
                 __, expires_at, __ = await TimeConverter().convert(
                     fake_context,
@@ -134,7 +141,12 @@ class EditReminderModal(discord.ui.Modal):
                 elif first_message:
                     content = self.reminder.__str__(utc_now=self.reminder.created_at)
                     if content != self._parent._message.content:
-                        self._parent._message = await self._parent._message.edit(content=content, allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False))
+                        self._parent._message = await self._parent._message.edit(
+                            content=content,
+                            allowed_mentions=discord.AllowedMentions(
+                                everyone=False, users=False, roles=False, replied_user=False
+                            ),
+                        )
             except discord.HTTPException:
                 pass
         await interaction.response.send_message(
@@ -241,7 +253,8 @@ class ReminderView(discord.ui.View):
             reminder.next_expires_at = None
             await reminder.delete()
             await interaction.response.send_message(
-                _("Reminder **#{reminder_id}** deleted.").format(reminder_id=reminder.id), ephemeral=True
+                _("Reminder **#{reminder_id}** deleted.").format(reminder_id=reminder.id),
+                ephemeral=True,
             )
         reminder_id = 1
         while reminder_id in self.cog.cache.get(interaction.user.id, {}):
@@ -294,6 +307,7 @@ class ReminderView(discord.ui.View):
         await self._message.delete()
         self.stop()
 
+
 class AddRepeatRuleModal(discord.ui.Modal):
     def __init__(
         self,
@@ -317,7 +331,9 @@ class AddRepeatRuleModal(discord.ui.Modal):
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
         try:
-            fake_context: commands.Context = await interaction.client.get_context(interaction.message)
+            fake_context: commands.Context = await interaction.client.get_context(
+                interaction.message
+            )
             fake_context.author = interaction.user
             utc_now, expires_at, repeat = await TimeConverter().convert(
                 fake_context,
@@ -334,7 +350,17 @@ class AddRepeatRuleModal(discord.ui.Modal):
         if repeat is not None:
             self.reminder.repeat.rules.append(repeat.rules[0])
         else:
-            self.reminder.repeat.rules.append(self._parent.cog.RepeatRule.from_json({"type": "date", "value": int(expires_at.timestamp()), "start_trigger": int(utc_now.timestamp()), "first_trigger": None, "last_trigger": None}))
+            self.reminder.repeat.rules.append(
+                self._parent.cog.RepeatRule.from_json(
+                    {
+                        "type": "date",
+                        "value": int(expires_at.timestamp()),
+                        "start_trigger": int(utc_now.timestamp()),
+                        "first_trigger": None,
+                        "last_trigger": None,
+                    }
+                )
+            )
         await self.reminder.save()
         if self._parent._message is not None:
             try:
@@ -342,7 +368,9 @@ class AddRepeatRuleModal(discord.ui.Modal):
                 embed.description = self.reminder.repeat.get_info()
                 self._parent.remove_repeat_rule.disabled = False
                 self._parent.stop_repeat.disabled = False
-                self._parent._message = await self._parent._message.edit(embed=embed, view=self._parent)
+                self._parent._message = await self._parent._message.edit(
+                    embed=embed, view=self._parent
+                )
             except discord.HTTPException:
                 pass
         await interaction.response.send_message(
@@ -351,6 +379,7 @@ class AddRepeatRuleModal(discord.ui.Modal):
             ),
             ephemeral=True,
         )
+
 
 class RemoveRepeatRuleModal(discord.ui.Modal):
     def __init__(
@@ -380,21 +409,29 @@ class RemoveRepeatRuleModal(discord.ui.Modal):
             await interaction.response.send_message(str(e), ephemeral=True)
             return
         if self.reminder.repeat is None:
-            await interaction.response.send_message(_("No existing repeat rule(s)."), ephemeral=True)
+            await interaction.response.send_message(
+                _("No existing repeat rule(s)."), ephemeral=True
+            )
             return
         try:
             del self.reminder.repeat.rules[index_number_repeat_rule - 1]
         except ValueError:
-            await interaction.response.send_message(_("No existing repeat rule found with this index number."), ephemeral=True)
+            await interaction.response.send_message(
+                _("No existing repeat rule found with this index number."), ephemeral=True
+            )
             return
         await self.reminder.save()
         if self._parent._message is not None:
             try:
                 embed = self._parent._message.embeds[0]
-                embed.description = self.reminder.repeat.get_info() or _("No existing repeat rule(s).")
+                embed.description = self.reminder.repeat.get_info() or _(
+                    "No existing repeat rule(s)."
+                )
                 self._parent.remove_repeat_rule.disabled = not self.reminder.repeat.rules
                 self._parent.stop_repeat.disabled = not self.reminder.repeat.rules
-                self._parent._message = await self._parent._message.edit(embed=embed, view=self._parent)
+                self._parent._message = await self._parent._message.edit(
+                    embed=embed, view=self._parent
+                )
             except discord.HTTPException:
                 pass
         await interaction.response.send_message(
@@ -411,7 +448,9 @@ class RepeatView(discord.ui.View):
         self.cog: commands.Cog = cog
 
         self.reminder = reminder
-        self.remove_repeat_rule.disabled = self.reminder.repeat is None or not self.reminder.repeat.rules
+        self.remove_repeat_rule.disabled = (
+            self.reminder.repeat is None or not self.reminder.repeat.rules
+        )
         self.stop_repeat.disabled = self.reminder.repeat is None or not self.reminder.repeat.rules
 
         self._message: discord.Message = None
@@ -453,7 +492,9 @@ class RepeatView(discord.ui.View):
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         if self.reminder.repeat is not None and len(self.reminder.repeat.rules) > 10:
-            await interaction.response.send_message(_("A maximum of 10 repeat rules per reminder is supported."), ephemeral=True)
+            await interaction.response.send_message(
+                _("A maximum of 10 repeat rules per reminder is supported."), ephemeral=True
+            )
             return
         await interaction.response.send_modal(AddRepeatRuleModal(self))
 
@@ -467,7 +508,9 @@ class RepeatView(discord.ui.View):
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         if self.reminder.repeat is None:
-            await interaction.response.send_message(_("No existing repeat rule(s)."), ephemeral=True)
+            await interaction.response.send_message(
+                _("No existing repeat rule(s)."), ephemeral=True
+            )
             return
         await interaction.response.send_modal(RemoveRepeatRuleModal(self))
 
@@ -657,7 +700,11 @@ class SnoozeView(discord.ui.View):
         await self.create_snooze_reminder(interaction=interaction, timedelta=delta)
 
     @discord.ui.button(
-        label="Stop Repeat", emoji="🗑️", style=discord.ButtonStyle.danger, custom_id="stop_repeat", row=1
+        label="Stop Repeat",
+        emoji="🗑️",
+        style=discord.ButtonStyle.danger,
+        custom_id="stop_repeat",
+        row=1,
     )
     async def stop_repeat(
         self, interaction: discord.Interaction, button: discord.ui.Button

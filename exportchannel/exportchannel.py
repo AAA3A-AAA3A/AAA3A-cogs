@@ -13,8 +13,11 @@ import chat_exporter
 # General repo credits.
 # Thanks to Red's Cleanup cog for the converters and help with the message retrieval function! (https://github.com/Cog-Creators/Red-DiscordBot/blob/V3/develop/redbot/cogs/cleanup/converters.py#L12)
 
+
 def _(untranslated: str) -> str:  # `redgettext` will found these strings.
     return untranslated
+
+
 RESULT_MESSAGE = _(
     "Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nThere are {count_messages} exported messages.\nRemember that exporting other users' messages from Discord does not respect the TOS."
 )
@@ -24,7 +27,9 @@ _ = Translator("ExportChannel", __file__)
 
 
 class MessageOrObjectConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.Union[discord.Message, discord.Object]:
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Union[discord.Message, discord.Object]:
         try:
             await commands.MessageConverter().convert(ctx, argument=argument)
         except commands.BadArgument as e:
@@ -51,7 +56,13 @@ class ExportChannel(Cog):
 
     async def check_channel(self, ctx: commands.Context, channel: discord.TextChannel) -> None:
         channel_permissions = channel.permissions_for(ctx.me)
-        if not all([channel_permissions.view_channel, channel_permissions.read_messages, channel_permissions.read_message_history]):
+        if not all(
+            [
+                channel_permissions.view_channel,
+                channel_permissions.read_messages,
+                channel_permissions.read_message_history,
+            ]
+        ):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
@@ -216,9 +227,7 @@ class ExportChannel(Cog):
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
-        count_messages, __, file = await self.export_messages(
-            ctx, channel=channel, before=before
-        )
+        count_messages, __, file = await self.export_messages(ctx, channel=channel, before=before)
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
         )
@@ -250,9 +259,7 @@ class ExportChannel(Cog):
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
-        count_messages, __, file = await self.export_messages(
-            ctx, channel=channel, after=after
-        )
+        count_messages, __, file = await self.export_messages(ctx, channel=channel, after=after)
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
         )

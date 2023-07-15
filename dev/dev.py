@@ -12,16 +12,15 @@ import contextlib
 import datetime
 import io
 import itertools
-import rich
 import sys
 import textwrap
-from pygments.styles import get_style_by_name
 
+import rich
+from pygments.styles import get_style_by_name
 from redbot.core import dev_commands
 from redbot.core.utils.predicates import MessagePredicate
 
-from .env import ctxconsole, Exit, DevSpace, DevEnv
-
+from .env import DevEnv, DevSpace, Exit, ctxconsole
 
 # Credits:
 # General repo credits.
@@ -87,15 +86,13 @@ class DevOutput(dev_commands.DevOutput):
                 "color_system": None,
                 "tab_size": 2,
                 "soft_wrap": False,
-            }
+            },
         )
         with redirect(**_console_custom_kwargs) as console:
             with console.capture() as captured:
-                if (formatted_imports := self.env.get_formatted_imports()):
+                if formatted_imports := self.env.get_formatted_imports():
                     console.print(
-                        rich.syntax.Syntax(
-                            formatted_imports, "pycon", theme=SolarizedCustom
-                        )
+                        rich.syntax.Syntax(formatted_imports, "pycon", theme=SolarizedCustom)
                     )
                 if self.prints:
                     console.print(self.prints)
@@ -112,12 +109,8 @@ class DevOutput(dev_commands.DevOutput):
                 ):
                     if output_mode == "str":
                         result = str(self.result)
-                    elif (
-                        isinstance(self.result, collections.abc.Iterable)
-                        and not (
-                            output_mode == "repr"
-                            and isinstance(self.result, str)
-                        )
+                    elif isinstance(self.result, collections.abc.Iterable) and not (
+                        output_mode == "repr" and isinstance(self.result, str)
                     ):
                         result = self.result
                     else:
@@ -129,11 +122,21 @@ class DevOutput(dev_commands.DevOutput):
             output = captured.get().strip()
         return dev_commands.sanitize_output(self.ctx, output)
 
-    async def send(self, *, tick: bool = True, output_mode: typing.Literal["repr", "repr_or_str", "str"] = "repr", ansi_formatting: bool = False, send_interactive: bool = False, wait: bool = True) -> None:
+    async def send(
+        self,
+        *,
+        tick: bool = True,
+        output_mode: typing.Literal["repr", "repr_or_str", "str"] = "repr",
+        ansi_formatting: bool = False,
+        send_interactive: bool = False,
+        wait: bool = True,
+    ) -> None:
         if send_interactive:
             await super().send(tick=tick)
         elif pages := self.__str__(output_mode=output_mode):
-            await Menu(pages=pages, lang="ansi" if ansi_formatting else "py").start(self.ctx, wait=wait)
+            await Menu(pages=pages, lang="ansi" if ansi_formatting else "py").start(
+                self.ctx, wait=wait
+            )
         if tick:
             if self.formatted_exc:
                 await self.ctx.react_quietly(reaction="❌")
@@ -142,7 +145,13 @@ class DevOutput(dev_commands.DevOutput):
 
     @classmethod
     async def from_debug(
-        cls, ctx: commands.Context, *, source: str, source_cache: dev_commands.SourceCache, env: typing.Dict[str, typing.Any], **kwargs
+        cls,
+        ctx: commands.Context,
+        *,
+        source: str,
+        source_cache: dev_commands.SourceCache,
+        env: typing.Dict[str, typing.Any],
+        **kwargs,
     ) -> "DevOutput":
         output = cls(
             ctx,
@@ -157,7 +166,13 @@ class DevOutput(dev_commands.DevOutput):
 
     @classmethod
     async def from_eval(
-        cls, ctx: commands.Context, *, source: str, source_cache: dev_commands.SourceCache, env: typing.Dict[str, typing.Any], **kwargs
+        cls,
+        ctx: commands.Context,
+        *,
+        source: str,
+        source_cache: dev_commands.SourceCache,
+        env: typing.Dict[str, typing.Any],
+        **kwargs,
     ) -> "DevOutput":
         output = cls(
             ctx,
@@ -172,7 +187,13 @@ class DevOutput(dev_commands.DevOutput):
 
     @classmethod
     async def from_repl(
-        cls, ctx: commands.Context, *, source: str, source_cache: dev_commands.SourceCache, env: typing.Dict[str, typing.Any], **kwargs
+        cls,
+        ctx: commands.Context,
+        *,
+        source: str,
+        source_cache: dev_commands.SourceCache,
+        env: typing.Dict[str, typing.Any],
+        **kwargs,
     ) -> "DevOutput":
         output = cls(
             ctx,
@@ -196,7 +217,7 @@ class DevOutput(dev_commands.DevOutput):
                 "color_system": None,
                 "tab_size": 2,
                 "soft_wrap": False,
-            }
+            },
         )
         with redirect(**_console_custom_kwargs) as console:
             with console.capture() as captured:
@@ -234,7 +255,7 @@ class DevOutput(dev_commands.DevOutput):
                 "color_system": None,
                 "tab_size": 2,
                 "soft_wrap": False,
-            }
+            },
         )
         with redirect(**_console_custom_kwargs) as console:
             with console.capture() as captured:
@@ -259,7 +280,7 @@ class DevOutput(dev_commands.DevOutput):
                 "color_system": None,
                 "tab_size": 2,
                 "soft_wrap": False,
-            }
+            },
         )
         with redirect(**_console_custom_kwargs) as console:
             with console.capture() as captured:
@@ -282,7 +303,7 @@ class DevOutput(dev_commands.DevOutput):
                 "color_system": None,
                 "tab_size": 2,
                 "soft_wrap": False,
-            }
+            },
         )
         with redirect(**_console_custom_kwargs) as console:
             with console.capture() as captured:
@@ -332,7 +353,9 @@ class Dev(Cog, dev_commands.Dev):
         self.dev_space: DevSpace = DevSpace()
 
         self._last_result: typing.Optional[typing.Any] = None
-        self._last_locals: typing.Dict[typing.Union[discord.Member, discord.User], typing.Dict[str, typing.Any]] = {}
+        self._last_locals: typing.Dict[
+            typing.Union[discord.Member, discord.User], typing.Dict[str, typing.Any]
+        ] = {}
         self.dev_outputs: typing.Dict[discord.Message, DevOutput] = {}
         self.sessions: typing.Dict[int, bool] = {}
         self._repl_tasks: typing.List[asyncio.Task] = []
@@ -343,7 +366,9 @@ class Dev(Cog, dev_commands.Dev):
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
-        self.dev_global: typing.Dict[str, typing.Union[typing.Literal["repr", "repr_or_str", "str"], bool]] = {
+        self.dev_global: typing.Dict[
+            str, typing.Union[typing.Literal["repr", "repr_or_str", "str"], bool]
+        ] = {
             "auto_imports": True,
             "output_mode": "repr",
             "rich_tracebacks": False,
@@ -408,7 +433,10 @@ class Dev(Cog, dev_commands.Dev):
     async def cog_load(self) -> None:
         await super().cog_load()
         await self.settings.add_commands()
-        if await self.config.downloader_already_agreed() and (downloader_cog := self.bot.get_cog("Downloader")) is not None:
+        if (
+            await self.config.downloader_already_agreed()
+            and (downloader_cog := self.bot.get_cog("Downloader")) is not None
+        ):
             downloader_cog.already_agreed = True
 
     async def cog_unload(self) -> None:
@@ -465,7 +493,11 @@ class Dev(Cog, dev_commands.Dev):
         if env is None:
             env = self.get_environment(ctx)
         env["auto_imports"] = await self.config.auto_imports()
-        if isinstance(ctx.author, (discord.Member, discord.User)) and ctx.author in self._last_locals and await self.config.use_last_locals():
+        if (
+            isinstance(ctx.author, (discord.Member, discord.User))
+            and ctx.author in self._last_locals
+            and await self.config.use_last_locals()
+        ):
             _locals = self._last_locals[ctx.author]
         else:
             _locals = {}
@@ -504,12 +536,25 @@ class Dev(Cog, dev_commands.Dev):
             try:
                 _console_custom_kwargs.update(_console_custom)
             except Exception:
-                self.log.exception("Error updating console kwargs: falling back to default values.")
+                self.log.exception(
+                    "Error updating console kwargs: falling back to default values."
+                )
         env["_console_custom"] = _console_custom_kwargs
-        output: DevOutput = await types[type](ctx, source=source, source_cache=self.source_cache, env=env, rich_tracebacks=await self.config.rich_tracebacks(), _locals=_locals)
+        output: DevOutput = await types[type](
+            ctx,
+            source=source,
+            source_cache=self.source_cache,
+            env=env,
+            rich_tracebacks=await self.config.rich_tracebacks(),
+            _locals=_locals,
+        )
         self._last_result = output.result
         self.dev_outputs[ctx.message] = output
-        if type == "eval" and isinstance(ctx.author, (discord.Member, discord.User)) and output._locals:
+        if (
+            type == "eval"
+            and isinstance(ctx.author, (discord.Member, discord.User))
+            and output._locals
+        ):
             if ctx.author not in self._last_locals:
                 self._last_locals[ctx.author] = {}
             self._last_locals[ctx.author].update(**output._locals)
@@ -625,7 +670,9 @@ class Dev(Cog, dev_commands.Dev):
         )
 
         while True:
-            task = asyncio.create_task(ctx.bot.wait_for("message", check=MessagePredicate.regex(r"^`", ctx)))
+            task = asyncio.create_task(
+                ctx.bot.wait_for("message", check=MessagePredicate.regex(r"^`", ctx))
+            )
             self._repl_tasks.append(task)
             try:
                 response = await task
@@ -677,7 +724,13 @@ class Dev(Cog, dev_commands.Dev):
 
     @commands.is_owner()
     @commands.hybrid_command()
-    async def bypasscooldowns(self, ctx: commands.Context, toggle: typing.Optional[bool] = None, *, time: TimeConverter = None) -> None:
+    async def bypasscooldowns(
+        self,
+        ctx: commands.Context,
+        toggle: typing.Optional[bool] = None,
+        *,
+        time: TimeConverter = None,
+    ) -> None:
         """Give bot owners the ability to bypass cooldowns.
 
         Does not persist through restarts.
@@ -688,9 +741,25 @@ class Dev(Cog, dev_commands.Dev):
             self._bypass_cooldowns_task.cancel()
         ctx.bot._bypass_cooldowns = toggle
         if toggle:
-            await ctx.send(_("Bot owners will now bypass all commands with cooldowns{optional_duration}.").format(optional_duration="" if time is None else f" for {CogsUtils.get_interval_string(time)}"))
+            await ctx.send(
+                _(
+                    "Bot owners will now bypass all commands with cooldowns{optional_duration}."
+                ).format(
+                    optional_duration=""
+                    if time is None
+                    else f" for {CogsUtils.get_interval_string(time)}"
+                )
+            )
         else:
-            await ctx.send(_("Bot owners will no longer bypass all commands with cooldowns{optional_duration}.").format(optional_duration="" if time is None else f" for {CogsUtils.get_interval_string(time)}"))
+            await ctx.send(
+                _(
+                    "Bot owners will no longer bypass all commands with cooldowns{optional_duration}."
+                ).format(
+                    optional_duration=""
+                    if time is None
+                    else f" for {CogsUtils.get_interval_string(time)}"
+                )
+            )
         if time is not None:
             task = asyncio.create_task(asyncio.sleep(time.total_seconds()))
             self._bypass_cooldowns_task: asyncio.Task = task

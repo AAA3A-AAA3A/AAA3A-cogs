@@ -8,10 +8,16 @@ import io
 import re
 
 import aiohttp
-
 from redbot.core.utils.chat_formatting import box
 
-from .converters import Flake8FlagsConverter, PyLintFlagsConverter, MyPyFlagsConverter, BanditFlagsConverter, PyRightFlagsConverter, RuffFlagsConverter
+from .converters import (
+    BanditFlagsConverter,
+    Flake8FlagsConverter,
+    MyPyFlagsConverter,
+    PyLintFlagsConverter,
+    PyRightFlagsConverter,
+    RuffFlagsConverter,
+)  # NOQA
 from .linter import Linter
 
 # Credits:
@@ -60,7 +66,15 @@ class LintCodes(Cog):
             buffer = io.BytesIO()
             await ctx.message.attachments[0].save(buffer)
             code = buffer.read().decode("utf-8")
-            if ctx.message.attachments[0].filename.split(".")[-1] not in ["txt", "py", "pyc", "pyo", "pyd", "pyw", "rpy"]:
+            if ctx.message.attachments[0].filename.split(".")[-1] not in [
+                "txt",
+                "py",
+                "pyc",
+                "pyo",
+                "pyd",
+                "pyw",
+                "rpy",
+            ]:
                 raise commands.UserFeedbackCheckFailure(_("Incorrect Python file extension."))
         elif code is not None:
             if code.strip().startswith("url="):
@@ -89,12 +103,10 @@ class LintCodes(Cog):
             return code
 
         begin = code.find("```")
-        language_identifier = code[
-            begin + 3: code[begin + 3:].find("\n") + begin + 3
-        ].lower()
+        language_identifier = code[begin + 3 : code[begin + 3 :].find("\n") + begin + 3].lower()
         no_code = False
         try:
-            end = code[begin + 3 + len(language_identifier):].rfind("```")
+            end = code[begin + 3 + len(language_identifier) :].rfind("```")
         except IndexError:
             no_code = True
         if begin == -1 or end == -1:
@@ -110,14 +122,12 @@ class LintCodes(Cog):
                 ).format(ctx=ctx)
             )
         before = code[:begin]
-        after = code[end + begin + 6 + len(language_identifier):]
+        after = code[end + begin + 6 + len(language_identifier) :]
         lines = ((before[:-1] if before else "") + (after[1:] if after else "")).split("\n")
         if len(lines) == 1 and lines[0] == "":
             lines = []
         return code[
-            (begin + 4 + len(language_identifier)): (
-                end + begin + 2 + len(language_identifier)
-            )
+            (begin + 4 + len(language_identifier)) : (end + begin + 2 + len(language_identifier))
         ]
 
     @commands.is_owner()

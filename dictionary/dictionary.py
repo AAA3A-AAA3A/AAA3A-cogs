@@ -7,7 +7,6 @@ import typing  # isort:skip
 from urllib.parse import quote_plus
 
 import aiohttp
-
 from redbot.core.utils.chat_formatting import humanize_list
 
 from .types import Word
@@ -96,7 +95,9 @@ class Dictionary(Cog):
         await DictionaryView(cog=self, word=word).start(ctx)
 
     @commands.Cog.listener()
-    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+    async def on_assistant_cog_add(
+        self, assistant_cog: typing.Optional[commands.Cog] = None
+    ) -> None:  # Vert's Assistant integration/third party.
         if assistant_cog is None:
             return self.get_word_in_dictionary_for_assistant
         schema = {
@@ -107,12 +108,10 @@ class Dictionary(Cog):
                 "properties": {
                     "query": {
                         "type": "string",
-                        "description": "The word to search in the English dictionary."
+                        "description": "The word to search in the English dictionary.",
                     },
                 },
-                "required": [
-                    "query"
-                ]
+                "required": ["query"],
             },
         }
         await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)

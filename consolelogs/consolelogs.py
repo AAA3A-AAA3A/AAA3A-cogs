@@ -9,23 +9,23 @@ import datetime
 import logging
 import re
 import traceback
-
 from collections import Counter
-from colorama import Fore
 from dataclasses import dataclass
 
+from colorama import Fore
 from redbot import __version__ as red_version
 from redbot.core import data_manager
 from redbot.core.utils.chat_formatting import box, humanize_list, pagify
+
 try:
     from redbot.core._events import INTRO
 except ModuleNotFoundError:  # Lemon's fork.
     INTRO = ""
 
 from rich import box as rich_box
-from rich.table import Table
 from rich.columns import Columns
 from rich.panel import Panel
+from rich.table import Table
 
 from .dashboard_integration import DashboardIntegration
 
@@ -37,7 +37,9 @@ from .dashboard_integration import DashboardIntegration
 _ = Translator("ConsoleLogs", __file__)
 
 LATEST_LOG_RE = re.compile(r"latest(?:-part(?P<part>\d+))?\.log")
-CONSOLE_LOG_RE = re.compile(r"^\[(?P<time_str>.*?)\] \[(?P<level>.*?)\] (?P<logger_name>.*?): (?P<message>.*)")
+CONSOLE_LOG_RE = re.compile(
+    r"^\[(?P<time_str>.*?)\] \[(?P<level>.*?)\] (?P<logger_name>.*?): (?P<message>.*)"
+)
 
 IGNORED_ERRORS = (
     commands.UserInputError,
@@ -117,7 +119,9 @@ class ConsoleLogs(Cog, DashboardIntegration):
         self.RED_INTRO: str = INTRO
         guilds = len(self.bot.guilds)
         users = len(set(list(self.bot.get_all_members())))
-        prefixes = getattr(self.bot._cli_flags, "prefix", None) or (await self.bot._config.prefix())
+        prefixes = getattr(self.bot._cli_flags, "prefix", None) or (
+            await self.bot._config.prefix()
+        )
         lang = await self.bot._config.locale()
         dpy_version = discord.__version__
         table_general_info = Table(show_edge=False, show_header=False, box=rich_box.MINIMAL)
@@ -138,9 +142,13 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 align="center",
             )
         )
-        self.RED_INTRO += f"\nLoaded {len(self.bot.cogs)} cogs with {len(self.bot.commands)} commands"
+        self.RED_INTRO += (
+            f"\nLoaded {len(self.bot.cogs)} cogs with {len(self.bot.commands)} commands"
+        )
 
-        self._last_console_log_sent_timestamp: int = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
+        self._last_console_log_sent_timestamp: int = int(
+            datetime.datetime.now(tz=datetime.timezone.utc).timestamp()
+        )
         self.loops.append(
             Loop(
                 cog=self,
@@ -169,9 +177,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         # Parse logs.
         console_logs = []
         for console_log_line in console_logs_lines:
-            if (
-                match := re.match(CONSOLE_LOG_RE, console_log_line)
-            ) is None and console_logs:
+            if (match := re.match(CONSOLE_LOG_RE, console_log_line)) is None and console_logs:
                 console_logs[-1].message += f"\n{CogsUtils.replace_var_paths(console_log_line)}"
                 continue
             kwargs = match.groupdict()
@@ -186,7 +192,9 @@ class ConsoleLogs(Cog, DashboardIntegration):
             console_logs.append(ConsoleLog(**kwargs))
 
         # Add Red INTRO.
-        if (red_ready_console_log := discord.utils.get(console_logs, logger_name="red", message="Connected to Discord. Getting ready...")):
+        if red_ready_console_log := discord.utils.get(
+            console_logs, logger_name="red", message="Connected to Discord. Getting ready..."
+        ):
             console_logs.insert(
                 console_logs.index(red_ready_console_log) + 1,
                 ConsoleLog(
@@ -196,8 +204,8 @@ class ConsoleLogs(Cog, DashboardIntegration):
                     level="INFO",
                     logger_name="red",
                     message=self.RED_INTRO,
-                    display_without_informations=True
-                )
+                    display_without_informations=True,
+                ),
             )
 
         return console_logs
@@ -210,18 +218,37 @@ class ConsoleLogs(Cog, DashboardIntegration):
         """Nothing to get."""
         return {}
 
-    async def send_console_logs(self, ctx: commands.Context, level: typing.Optional[typing.Literal["critical", "error", "warning", "info", "debug", "trace", "node"]] = None, logger_name: typing.Optional[str] = None, view: typing.Optional[int] = -1, lines_break: int = 2) -> None:
+    async def send_console_logs(
+        self,
+        ctx: commands.Context,
+        level: typing.Optional[
+            typing.Literal["critical", "error", "warning", "info", "debug", "trace", "node"]
+        ] = None,
+        logger_name: typing.Optional[str] = None,
+        view: typing.Optional[int] = -1,
+        lines_break: int = 2,
+    ) -> None:
         console_logs = self.console_logs
         console_logs_to_display = [
-            console_log for console_log in console_logs
+            console_log
+            for console_log in console_logs
             if (level is None or console_log.level == level)
-            and (logger_name is None or ".".join(console_log.logger_name.split(".")[:len(logger_name.split("."))]) == logger_name)
+            and (
+                logger_name is None
+                or ".".join(console_log.logger_name.split(".")[: len(logger_name.split("."))])
+                == logger_name
+            )
         ]
         if not console_logs_to_display:
             raise commands.UserFeedbackCheckFailure(_("No logs to display."))
         console_logs_to_display_str = [
-                console_log.__str__(with_ansi=not (ctx.author.is_on_mobile() if isinstance(ctx.author, discord.Member) else False), with_extra_break_line=view is not None)
-                for console_log in console_logs_to_display
+            console_log.__str__(
+                with_ansi=not (
+                    ctx.author.is_on_mobile() if isinstance(ctx.author, discord.Member) else False
+                ),
+                with_extra_break_line=view is not None,
+            )
+            for console_log in console_logs_to_display
         ]
         levels = ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE", "NODE"]
         total_stats = [
@@ -230,9 +257,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
             *[
                 f"{stat[1]} {stat[0]}"
                 for stat in sorted(
-                    Counter(
-                        [console_log.level for console_log in console_logs]
-                    ).items(),
+                    Counter([console_log.level for console_log in console_logs]).items(),
                     key=lambda x: levels.index(x[0]) if x[0] in levels else 10,
                 )
             ],
@@ -250,10 +275,20 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 )
             ],
         ]
-        prefix = box(f"Total stats: {humanize_list(total_stats)}." + (f"\nCurrent stats: {humanize_list(current_stats)}." if total_stats != current_stats else ""), lang="py")
+        prefix = box(
+            f"Total stats: {humanize_list(total_stats)}."
+            + (
+                f"\nCurrent stats: {humanize_list(current_stats)}."
+                if total_stats != current_stats
+                else ""
+            ),
+            lang="py",
+        )
         if view is not None:
             try:
-                view = console_logs_to_display_str.index(console_logs_to_display_str[view])  # Handle negative index.
+                view = console_logs_to_display_str.index(
+                    console_logs_to_display_str[view]
+                )  # Handle negative index.
             except IndexError:
                 view = len(console_logs_to_display_str)
             pages = []
@@ -262,32 +297,137 @@ class ConsoleLogs(Cog, DashboardIntegration):
                     page_index = len(pages)
                 pages.extend(list(pagify(console_log_to_display_str, shorten_by=10 + len(prefix))))
         else:
-            pages = list(pagify(("\n" * lines_break).join(console_logs_to_display_str), shorten_by=10 + len(prefix)))
-            page_index = [i for i, page in enumerate(pages) if any(line.startswith(("[", f"{Fore.BLACK}[")) for line in page.split("\n"))][-1]
-        menu = Menu(pages=pages, prefix=prefix, lang="py" if (ctx.author.is_on_mobile() if isinstance(ctx.author, discord.Member) else False) else "ansi")
+            pages = list(
+                pagify(
+                    ("\n" * lines_break).join(console_logs_to_display_str),
+                    shorten_by=10 + len(prefix),
+                )
+            )
+            page_index = [
+                i
+                for i, page in enumerate(pages)
+                if any(line.startswith(("[", f"{Fore.BLACK}[")) for line in page.split("\n"))
+            ][-1]
+        menu = Menu(
+            pages=pages,
+            prefix=prefix,
+            lang="py"
+            if (ctx.author.is_on_mobile() if isinstance(ctx.author, discord.Member) else False)
+            else "ansi",
+        )
         menu._current_page = page_index
         await menu.start(ctx)
 
     @commands.is_owner()
     @commands.hybrid_group(invoke_without_command=True)
-    async def consolelogs(self, ctx: commands.Context, index: typing.Optional[int] = -1, level: typing.Optional[typing.Literal["critical", "error", "warning", "info", "debug", "trace", "node", "criticals", "errors", "warnings", "infos", "debugs", "traces", "nodes"]] = None, logger_name: typing.Optional[str] = None) -> None:
+    async def consolelogs(
+        self,
+        ctx: commands.Context,
+        index: typing.Optional[int] = -1,
+        level: typing.Optional[
+            typing.Literal[
+                "critical",
+                "error",
+                "warning",
+                "info",
+                "debug",
+                "trace",
+                "node",
+                "criticals",
+                "errors",
+                "warnings",
+                "infos",
+                "debugs",
+                "traces",
+                "nodes",
+            ]
+        ] = None,
+        logger_name: typing.Optional[str] = None,
+    ) -> None:
         """View a console log, for a provided level/logger name."""
-        await self.view(ctx, index=index, level=level.rstrip("s").upper() if level is not None else None, logger_name=logger_name)
+        await self.view(
+            ctx,
+            index=index,
+            level=level.rstrip("s").upper() if level is not None else None,
+            logger_name=logger_name,
+        )
 
     @consolelogs.command()
-    async def view(self, ctx: commands.Context, index: typing.Optional[int] = -1, level: typing.Optional[typing.Literal["critical", "error", "warning", "info", "debug", "trace", "node", "criticals", "errors", "warnings", "infos", "debugs", "traces", "nodes"]] = None, logger_name: typing.Optional[str] = None) -> None:
+    async def view(
+        self,
+        ctx: commands.Context,
+        index: typing.Optional[int] = -1,
+        level: typing.Optional[
+            typing.Literal[
+                "critical",
+                "error",
+                "warning",
+                "info",
+                "debug",
+                "trace",
+                "node",
+                "criticals",
+                "errors",
+                "warnings",
+                "infos",
+                "debugs",
+                "traces",
+                "nodes",
+            ]
+        ] = None,
+        logger_name: typing.Optional[str] = None,
+    ) -> None:
         """View the console logs one by one, for all levels/loggers or provided level/logger name."""
-        await self.send_console_logs(ctx, level=level.rstrip("s").upper() if level is not None else None, logger_name=logger_name, view=index)
+        await self.send_console_logs(
+            ctx,
+            level=level.rstrip("s").upper() if level is not None else None,
+            logger_name=logger_name,
+            view=index,
+        )
 
     @consolelogs.command(aliases=["error"])
-    async def errors(self, ctx: commands.Context, index: typing.Optional[int] = -1, logger_name: typing.Optional[str] = None) -> None:
+    async def errors(
+        self,
+        ctx: commands.Context,
+        index: typing.Optional[int] = -1,
+        logger_name: typing.Optional[str] = None,
+    ) -> None:
         """View the `ERROR` console logs one by one, for all loggers or a provided logger name."""
         await self.send_console_logs(ctx, level="ERROR", logger_name=logger_name, view=index)
 
     @consolelogs.command()
-    async def scroll(self, ctx: commands.Context, lines_break: typing.Optional[commands.Range[int, 1, 5]] = 2, level: typing.Optional[typing.Literal["critical", "error", "warning", "info", "debug", "trace", "node", "criticals", "errors", "warnings", "infos", "debugs", "traces", "nodes"]] = None, logger_name: typing.Optional[str] = None) -> None:
+    async def scroll(
+        self,
+        ctx: commands.Context,
+        lines_break: typing.Optional[commands.Range[int, 1, 5]] = 2,
+        level: typing.Optional[
+            typing.Literal[
+                "critical",
+                "error",
+                "warning",
+                "info",
+                "debug",
+                "trace",
+                "node",
+                "criticals",
+                "errors",
+                "warnings",
+                "infos",
+                "debugs",
+                "traces",
+                "nodes",
+            ]
+        ] = None,
+        logger_name: typing.Optional[str] = None,
+    ) -> None:
         """Scroll the console logs, for all levels/loggers or provided level/logger name."""
-        await self.send_console_logs(ctx, level=level.rstrip("s").upper() if level is not None else None, logger_name=logger_name, view=None, lines_break=lines_break)
+        await self.send_console_logs(
+            ctx,
+            level=level.rstrip("s").upper() if level is not None else None,
+            logger_name=logger_name,
+            view=None,
+            lines_break=lines_break,
+        )
 
     @consolelogs.command(aliases=["listloggers"])
     async def stats(self, ctx: commands.Context) -> None:
@@ -304,16 +444,23 @@ class ConsoleLogs(Cog, DashboardIntegration):
             stats += f"\n• {len(logs)} logs"
             levels = ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE", "NODE"]
             for stat in sorted(
-                Counter(
-                    [console_log.level for console_log in logs]
-                ).items(),
+                Counter([console_log.level for console_log in logs]).items(),
                 key=lambda x: levels.index(x[0]) if x[0] in levels else 10,
             ):
                 stats += f"\n• {stat[1]} {stat[0]}"
         await Menu(pages=list(pagify(stats, page_length=500)), lang="py").start(ctx)
 
     @consolelogs.command(aliases=["+"])
-    async def addchannel(self, ctx: commands.Context, channel: discord.TextChannel, global_errors: typing.Optional[bool] = True, prefixed_commands_errors: typing.Optional[bool] = True, slash_commands_errors: typing.Optional[bool] = True, dpy_ignored_exceptions: typing.Optional[bool] = False, guild_invite: typing.Optional[bool] = False) -> None:
+    async def addchannel(
+        self,
+        ctx: commands.Context,
+        channel: discord.TextChannel,
+        global_errors: typing.Optional[bool] = True,
+        prefixed_commands_errors: typing.Optional[bool] = True,
+        slash_commands_errors: typing.Optional[bool] = True,
+        dpy_ignored_exceptions: typing.Optional[bool] = False,
+        guild_invite: typing.Optional[bool] = False,
+    ) -> None:
         """Enable errors logging in a channel.
 
         **Parameters:**
@@ -325,8 +472,16 @@ class ConsoleLogs(Cog, DashboardIntegration):
         - `guild_invite`: Add a button "Guild Invite" in commands errors logs, only for community servers.
         """
         channel_permissions = channel.permissions_for(ctx.me)
-        if not all([channel_permissions.view_channel, channel_permissions.send_messages, channel_permissions.embed_links]):
-            raise commands.UserFeedbackCheckFailure(_("I don't have the permissions to send embeds in this channel."))
+        if not all(
+            [
+                channel_permissions.view_channel,
+                channel_permissions.send_messages,
+                channel_permissions.embed_links,
+            ]
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _("I don't have the permissions to send embeds in this channel.")
+            )
         await self.config.channel(channel).enabled.set(True)
         await self.config.channel(channel).global_errors.set(global_errors)
         await self.config.channel(channel).prefixed_commands_errors.set(prefixed_commands_errors)
@@ -339,7 +494,9 @@ class ConsoleLogs(Cog, DashboardIntegration):
     async def removechannel(self, ctx: commands.Context, channel: discord.TextChannel) -> None:
         """Disable errors logging in a channel."""
         if not await self.config.channel(channel).enabled():
-            raise commands.UserFeedbackCheckFailure(_("Errors logging isn't enabled in this channel."))
+            raise commands.UserFeedbackCheckFailure(
+                _("Errors logging isn't enabled in this channel.")
+            )
         await self.config.channel(channel).clear()
         await ctx.send(_("Errors logging disabled in {channel.mention}.").format(channel=channel))
 
@@ -350,7 +507,9 @@ class ConsoleLogs(Cog, DashboardIntegration):
         await Menu(pages=embeds).start(ctx)
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError, unhandled_by_cog: bool = False) -> None:
+    async def on_command_error(
+        self, ctx: commands.Context, error: commands.CommandError, unhandled_by_cog: bool = False
+    ) -> None:
         if await self.bot.cog_disabled_in_guild(cog=self, guild=ctx.guild):
             return
         if isinstance(error, IGNORED_ERRORS):
@@ -358,7 +517,9 @@ class ConsoleLogs(Cog, DashboardIntegration):
         destinations = {
             channel: settings
             for channel_id, settings in (await self.config.all_channels()).items()
-            if settings["enabled"] and (channel := ctx.bot.get_channel(channel_id)) is not None and channel.permissions_for(channel.guild.me).send_messages
+            if settings["enabled"]
+            and (channel := ctx.bot.get_channel(channel_id)) is not None
+            and channel.permissions_for(channel.guild.me).send_messages
         }
         if not destinations:
             return
@@ -399,9 +560,16 @@ class ConsoleLogs(Cog, DashboardIntegration):
             timestamp=ctx.message.created_at,
             description=f">>> {com_str}",
         )
-        embed.add_field(name="Invoker:", value=f"{ctx.author.mention}\n{ctx.author} ({ctx.author.id})")
+        embed.add_field(
+            name="Invoker:", value=f"{ctx.author.mention}\n{ctx.author} ({ctx.author.id})"
+        )
         embed.add_field(name="Message:", value=f"[Jump to message.]({ctx.message.jump_url})")
-        embed.add_field(name="Channel:", value=f"{ctx.channel.mention}\n{ctx.channel} ({ctx.channel.id})" if ctx.guild is not None else str(ctx.channel))
+        embed.add_field(
+            name="Channel:",
+            value=f"{ctx.channel.mention}\n{ctx.channel} ({ctx.channel.id})"
+            if ctx.guild is not None
+            else str(ctx.channel),
+        )
         if ctx.guild is not None:
             embed.add_field(name="Guild:", value=f"{ctx.guild.name} ({ctx.guild.id})")
         if ctx.guild is not None and "COMMUNITY" in ctx.guild.features:
@@ -426,7 +594,11 @@ class ConsoleLogs(Cog, DashboardIntegration):
                     map(lambda x: x.permissions_for(ctx.guild.me), ctx.guild.text_channels),
                 )
                 channel = next(
-                    (channel for channel, perms in channels_and_perms if perms.create_instant_invite),
+                    (
+                        channel
+                        for channel, perms in channels_and_perms
+                        if perms.create_instant_invite
+                    ),
                     None,
                 )
                 if channel is not None:
@@ -452,9 +624,19 @@ class ConsoleLogs(Cog, DashboardIntegration):
             if not settings["slash_commands_errors"] and ctx.interaction is not None:
                 continue
             view = discord.ui.View()
-            view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="Jump to Message", url=ctx.message.jump_url))
+            view.add_item(
+                discord.ui.Button(
+                    style=discord.ButtonStyle.url,
+                    label="Jump to Message",
+                    url=ctx.message.jump_url,
+                )
+            )
             if settings["guild_invite"] and guild_invite is not None:
-                view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, label="Guild Invite", url=guild_invite.url))
+                view.add_item(
+                    discord.ui.Button(
+                        style=discord.ButtonStyle.url, label="Guild Invite", url=guild_invite.url
+                    )
+                )
             await channel.send(embed=embed, view=view)
             for page in pages:
                 await channel.send(page)
@@ -463,14 +645,20 @@ class ConsoleLogs(Cog, DashboardIntegration):
         destinations = {
             channel: settings
             for channel_id, settings in (await self.config.all_channels()).items()
-            if settings["enabled"] and settings["dpy_ignored_exceptions"] and (channel := self.bot.get_channel(channel_id)) is not None and channel.permissions_for(channel.guild.me).send_messages
+            if settings["enabled"]
+            and settings["dpy_ignored_exceptions"]
+            and (channel := self.bot.get_channel(channel_id)) is not None
+            and channel.permissions_for(channel.guild.me).send_messages
         }
         if not destinations:
             return
         console_logs = self.console_logs
         console_logs_to_send: typing.List[typing.Tuple[discord.Embed, typing.List[str]]] = []
         for console_log in console_logs:
-            if self._last_console_log_sent_timestamp is None or self._last_console_log_sent_timestamp >= console_log.time_timestamp:
+            if (
+                self._last_console_log_sent_timestamp is None
+                or self._last_console_log_sent_timestamp >= console_log.time_timestamp
+            ):
                 self._last_console_log_sent_timestamp = console_log.time_timestamp
                 continue
             self._last_console_log_sent_timestamp = console_log.time_timestamp
@@ -485,7 +673,15 @@ class ConsoleLogs(Cog, DashboardIntegration):
             embed.timestamp = console_log.time
             embed.add_field(name="Logger name:", value=f"`{console_log.logger_name}`")
             embed.add_field(name="Error level:", value=f"`{console_log.level}`")
-            pages = [box(page, lang="py") for page in list(pagify(console_log.__str__(with_ansi=False, with_extra_break_line=True), shorten_by=10))]
+            pages = [
+                box(page, lang="py")
+                for page in list(
+                    pagify(
+                        console_log.__str__(with_ansi=False, with_extra_break_line=True),
+                        shorten_by=10,
+                    )
+                )
+            ]
             console_logs_to_send.append((embed, pages))
         for channel in destinations:
             for (embed, pages) in console_logs_to_send:

@@ -230,7 +230,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
         await self.edit_config_schema()
         await self.settings.add_commands()
         try:
-            await modlog.register_casetype("ticket_created", default_setting=True, image="🎟️", case_str="New Ticket")
+            await modlog.register_casetype(
+                "ticket_created", default_setting=True, image="🎟️", case_str="New Ticket"
+            )
         except RuntimeError:  # The case is already registered.
             pass
         asyncio.create_task(self.load_buttons())
@@ -375,18 +377,12 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     options = [
                         {
                             "label": reason_option["label"],
-                            "value": reason_option.get(
-                                "value", reason_option["label"]
-                            ).strip(),
+                            "value": reason_option.get("value", reason_option["label"]).strip(),
                             "description": reason_option.get("description", None),
-                            "emoji": reason_option[
-                                "emoji"
-                            ],  # reason_option.get("emoji")
+                            "emoji": reason_option["emoji"],  # reason_option.get("emoji")
                             "default": False,
                         }
-                        for reason_option in all_guilds[guild]["dropdowns"][
-                            message
-                        ]
+                        for reason_option in all_guilds[guild]["dropdowns"][message]
                     ]
                     view = self.get_dropdown(
                         placeholder=_("Choose the reason for open a ticket."),
@@ -563,7 +559,11 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     value=f"{ticket.closed_at}",
                 )
         reason_pages = list(pagify(reason, page_length=1020))
-        embed.add_field(inline=False, name=_("Reason:"), value=f"{reason_pages[0]}\n..." if len(reason_pages) > 1 else reason)
+        embed.add_field(
+            inline=False,
+            name=_("Reason:"),
+            value=f"{reason_pages[0]}\n..." if len(reason_pages) > 1 else reason,
+        )
         return embed
 
     async def get_embed_action(
@@ -655,14 +655,20 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 raise commands.CheckFailure(_("You're not in a ticket."))
             config = await cog.get_config(ticket.guild, ticket.profile)
             if status is not None and ticket.status != status:
-                raise commands.CheckFailure(_("This ticket isn't {status}ed.").format(status=status))
+                raise commands.CheckFailure(
+                    _("This ticket isn't {status}ed.").format(status=status)
+                )
             if claim is not None:
                 if ticket.claim is not None:
                     check = True
                 elif ticket.claim is None:
                     check = False
                 if check != claim:
-                    raise commands.CheckFailure(_("This ticket is {status}.").format(status="claimed" if check else "unclaimed"))
+                    raise commands.CheckFailure(
+                        _("This ticket is {status}.").format(
+                            status="claimed" if check else "unclaimed"
+                        )
+                    )
             if (
                 locked is not None
                 and not isinstance(ticket.channel, discord.TextChannel)
@@ -768,7 +774,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 _("Sorry. You have already reached the limit of {limit} open tickets.").format(
                     limit=limit
                 ),
-                "delete_after"  # An extra arg checked in `commands.Cog.cog_command_error`.
+                "delete_after",  # An extra arg checked in `commands.Cog.cog_command_error`.
             )
         if forum_channel is None:
             if (
@@ -1353,9 +1359,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     )
                 else:
                     await interaction.followup.send(
-                        _(
-                            "You have chosen to re-open this ticket."
-                        ),
+                        _("You have chosen to re-open this ticket."),
                         ephemeral=True,
                     )
             except discord.HTTPException:
@@ -1442,7 +1446,11 @@ class TicketTool(settings, DashboardIntegration, Cog):
         config = await self.get_config(interaction.guild, profile)
         if config["embed_button"]["rename_channel_dropdown"]:
             try:
-                ticket: Ticket = await self.get_ticket(config["forum_channel"].get_thread(ctx.ticket.channel) if config["forum_channel"] is not None else ctx.guild.get_channel(ctx.ticket.channel))
+                ticket: Ticket = await self.get_ticket(
+                    config["forum_channel"].get_thread(ctx.ticket.channel)
+                    if config["forum_channel"] is not None
+                    else ctx.guild.get_channel(ctx.ticket.channel)
+                )
                 if ticket is not None:
                     await ticket.rename(
                         new_name=f"{option.emoji}-{option.value}_{interaction.user.id}".replace(
@@ -1468,7 +1476,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
         member = guild.get_member(payload.user_id)
         if member == guild.me or member.bot:
             return
-        if await self.bot.cog_disabled_in_guild(cog=self, guild=guild) or not await self.bot.allowed_by_whitelist_blacklist(who=member):
+        if await self.bot.cog_disabled_in_guild(
+            cog=self, guild=guild
+        ) or not await self.bot.allowed_by_whitelist_blacklist(who=member):
             return
         profile = "main"
         profiles = await self.config.guild(guild).profiles()
@@ -1565,23 +1575,21 @@ class TicketTool(settings, DashboardIntegration, Cog):
         return view
 
     @commands.Cog.listener()
-    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+    async def on_assistant_cog_add(
+        self, assistant_cog: typing.Optional[commands.Cog] = None
+    ) -> None:  # Vert's Assistant integration/third party.
         if assistant_cog is None:
             return self.get_open_tickets_list_in_server_for_assistant
         schema = {
             "name": "get_open_tickets_list_in_server_for_assistant",
             "description": "Get open tickets for the user in this server, and their reason.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                },
-                "required": [
-                ]
-            },
+            "parameters": {"type": "object", "properties": {}, "required": []},
         }
         await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
 
-    async def get_open_tickets_list_in_server_for_assistant(self, user: discord.Member, *args, **kwargs):
+    async def get_open_tickets_list_in_server_for_assistant(
+        self, user: discord.Member, *args, **kwargs
+    ):
         if not isinstance(user, discord.Member):
             return "The command isn't executed in a server."
         tickets = await self.config.guild(user.guild).tickets.all()
@@ -1595,13 +1603,12 @@ class TicketTool(settings, DashboardIntegration, Cog):
             if channel is None:
                 continue
             ticket: Ticket = await self.get_ticket(channel)
-            if (
-                (ticket.owner is not None and ticket.owner == user)
-                and ticket.status == "open"
-            ):
+            if (ticket.owner is not None and ticket.owner == user) and ticket.status == "open":
                 tickets_to_show.append(ticket)
         if not tickets_to_show:
-            raise commands.UserFeedbackCheckFailure(_("No open tickets by this user in this server."))
+            raise commands.UserFeedbackCheckFailure(
+                _("No open tickets by this user in this server.")
+            )
         BREAK_LINE = "\n"
         open_tickets = "\n" + "\n".join(
             [

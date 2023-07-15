@@ -18,9 +18,14 @@ TimedeltaConverter = get_timedelta_converter(
     minimum=datetime.timedelta(seconds=0),
 )
 
+
 def _(untranslated: str) -> str:  # `redgettext` will found these strings.
     return untranslated
-ERROR_MESSAGE = _("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}")
+
+
+ERROR_MESSAGE = _(
+    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+)
 
 _ = Translator("DiscordEdit", __file__)
 
@@ -42,11 +47,19 @@ class VerificationLevelConverter(commands.Converter):
         try:
             verification_level = int(argument)
         except ValueError:
-            raise commands.BadArgument(_("The verification level must be `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` or `4`."))
+            raise commands.BadArgument(
+                _(
+                    "The verification level must be `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` or `4`."
+                )
+            )
         if verification_level in {0, 1, 2, 3, 4}:
             return discord.VerificationLevel(verification_level)
         else:
-            raise commands.BadArgument(_("The verification level must be `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` or `4`."))
+            raise commands.BadArgument(
+                _(
+                    "The verification level must be `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` or `4`."
+                )
+            )
 
 
 class DefaultNotificationsConverter(commands.Converter):
@@ -90,7 +103,10 @@ class EditGuild(Cog):
     @commands.is_owner()
     @editguild.command(name="create", aliases=["new", "+"])
     async def editguild_create(
-        self, ctx: commands.Context, name: commands.Range[str, 2, 100], template_code: typing.Optional[str] = None
+        self,
+        ctx: commands.Context,
+        name: commands.Range[str, 2, 100],
+        template_code: typing.Optional[str] = None,
     ) -> None:
         """Create a guild with the bot as owner."""
         try:
@@ -129,7 +145,9 @@ class EditGuild(Cog):
         )
 
     @editguild.command(name="name")
-    async def editguild_name(self, ctx: commands.Context, *, name: commands.Range[str, 2, 100]) -> None:
+    async def editguild_name(
+        self, ctx: commands.Context, *, name: commands.Range[str, 2, 100]
+    ) -> None:
         """Edit guild name."""
         guild = ctx.guild
         try:
@@ -226,9 +244,7 @@ class EditGuild(Cog):
                 content = f"{ctx.author.mention} " + _(
                     "Do you really want to change guild owner of the guild {guild.name} ({guild.id})?"
                 ).format(guild=guild)
-            if not await CogsUtils.ConfirmationAsk(
-                ctx, content=content, embed=embed
-            ):
+            if not await CogsUtils.ConfirmationAsk(ctx, content=content, embed=embed):
                 await CogsUtils.delete_message(ctx.message)
                 return
         try:
@@ -257,7 +273,9 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="defaultnotifications", aliases=["notificationslevel", "default_notifications"])
+    @editguild.command(
+        name="defaultnotifications", aliases=["notificationslevel", "default_notifications"]
+    )
     async def editguild_default_notifications(
         self, ctx: commands.Context, default_notifications: DefaultNotificationsConverter
     ) -> None:
@@ -466,9 +484,7 @@ class EditGuild(Cog):
             )
 
     @editguild.command(name="widgetenabled", aliases=["widget_enabled"], with_app_command=False)
-    async def editguild_widget_enabled(
-        self, ctx: commands.Context, widget_enabled: bool
-    ) -> None:
+    async def editguild_widget_enabled(self, ctx: commands.Context, widget_enabled: bool) -> None:
         """Edit guild invites widget enabled state."""
         guild = ctx.guild
         try:
@@ -497,7 +513,9 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="raidalertsdisabled", aliases=["raid_alerts_disabled"], with_app_command=False)
+    @editguild.command(
+        name="raidalertsdisabled", aliases=["raid_alerts_disabled"], with_app_command=False
+    )
     async def editguild_raid_alerts_disabled(
         self, ctx: commands.Context, raid_alerts_disabled: bool
     ) -> None:
@@ -513,7 +531,9 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="safetyalertschannel", aliases=["safety_alerts_channel"], with_app_command=False)
+    @editguild.command(
+        name="safetyalertschannel", aliases=["safety_alerts_channel"], with_app_command=False
+    )
     async def editguild_safety_alerts_channel(
         self, ctx: commands.Context, safety_alerts_channel: discord.TextChannel = None
     ) -> None:
@@ -552,9 +572,7 @@ class EditGuild(Cog):
                 content = f"{ctx.author.mention} " + _(
                     "Do you really want to delete the guild {guild.name} ({guild.id})?"
                 ).format(guild=guild)
-            if not await CogsUtils.ConfirmationAsk(
-                ctx, content=content, embed=embed
-            ):
+            if not await CogsUtils.ConfirmationAsk(ctx, content=content, embed=embed):
                 await CogsUtils.delete_message(ctx.message)
                 return
         try:
@@ -596,9 +614,17 @@ class EditGuild(Cog):
         }
 
         def get_embed() -> discord.Embed:
-            embed: discord.Embed = discord.Embed(title=f"Guild {guild.name} ({guild.id})", color=embed_color)
+            embed: discord.Embed = discord.Embed(
+                title=f"Guild {guild.name} ({guild.id})", color=embed_color
+            )
             embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
-            embed.description = "\n".join([f"• `{parameter}`: {repr(getattr(guild, parameters[parameter].get('attribute_name', parameter)))}" for parameter in parameters if hasattr(guild, parameter)])
+            embed.description = "\n".join(
+                [
+                    f"• `{parameter}`: {repr(getattr(guild, parameters[parameter].get('attribute_name', parameter)))}"
+                    for parameter in parameters
+                    if hasattr(guild, parameter)
+                ]
+            )
             return embed
 
         await DiscordEditView(

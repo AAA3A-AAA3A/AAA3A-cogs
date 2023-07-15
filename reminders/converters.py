@@ -12,28 +12,27 @@ import dateparser
 import dateutil
 import dateutil.rrule
 import pytz
-
 from apscheduler.triggers.cron import CronTrigger
 from pyparsing import (
     CaselessLiteral,
-    Keyword,
-    WordEnd,
     Combine,
+    FollowedBy,
     Group,
+    Keyword,
     Literal,
     Optional,
     ParseException,
     ParserElement,
+    Regex,
     SkipTo,
     StringEnd,
     Suppress,
     Word,
+    WordEnd,
     ZeroOrMore,
     nums,
     oneOf,
     tokenMap,
-    FollowedBy,
-    Regex,
 )  # NOQA
 from recurrent.event_parser import RecurringEvent
 
@@ -43,6 +42,7 @@ _ = Translator("Reminders", __file__)
 CT = typing.TypeVar(
     "CT", bound=typing.Callable[..., typing.Any]
 )  # defined CT as a type variable that is bound to a callable that can take any argument and return any value.
+
 
 async def run_blocking_func(
     func: typing.Callable[..., typing.Any], *args: typing.Any, **kwargs: typing.Any
@@ -57,7 +57,9 @@ def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
         @functools.wraps(func)
         def wrapper(*args: typing.Any, **kwargs: typing.Any):
             return run_blocking_func(func, *args, **kwargs)
+
         return wrapper
+
     return decorator
 
 
@@ -147,7 +149,15 @@ class TimeConverter(commands.Converter):
 
         @executor()
         def parse_cron_trigger(arg: str, text: typing.Optional[str] = None) -> datetime.datetime:
-            if ctx.interaction is None and text is not None and " " not in arg and not (text.startswith(tuple(discord.ext.commands.view._all_quotes)) and text.endswith(tuple(discord.ext.commands.view._all_quotes))):
+            if (
+                ctx.interaction is None
+                and text is not None
+                and " " not in arg
+                and not (
+                    text.startswith(tuple(discord.ext.commands.view._all_quotes))
+                    and text.endswith(tuple(discord.ext.commands.view._all_quotes))
+                )
+            ):
                 to_parse = f"{arg} {' '.join(text.split(' ')[:4])}"
                 text = " ".join(text.split(" ")[4:])
             else:
@@ -155,15 +165,33 @@ class TimeConverter(commands.Converter):
             try:
                 cron_trigger = CronTrigger.from_crontab(to_parse, timezone=tz)
             except ValueError as e:
-                raise ValueError(f"• Cron trigger parsing: {' '.join([f'{arg}.' for arg in e.args])}.")
+                raise ValueError(
+                    f"• Cron trigger parsing: {' '.join([f'{arg}.' for arg in e.args])}."
+                )
             expires_at = cron_trigger.get_next_fire_time(previous_fire_time=None, now=local_now)
             expires_at = expires_at.astimezone(tz=datetime.timezone.utc)
             try:
-                return expires_at, cog.Repeat.from_json([{"type": "cron", "value": to_parse, "start_trigger": int(utc_now.timestamp()), "first_trigger": None, "last_trigger": None}]), (text.strip("".join(discord.ext.commands.view._all_quotes)) if text is not None else None)
-            except OSError as e:
-                raise ValueError(
-                    f"• Cron trigger parsing: {e}."
+                return (
+                    expires_at,
+                    cog.Repeat.from_json(
+                        [
+                            {
+                                "type": "cron",
+                                "value": to_parse,
+                                "start_trigger": int(utc_now.timestamp()),
+                                "first_trigger": None,
+                                "last_trigger": None,
+                            }
+                        ]
+                    ),
+                    (
+                        text.strip("".join(discord.ext.commands.view._all_quotes))
+                        if text is not None
+                        else None
+                    ),
                 )
+            except OSError as e:
+                raise ValueError(f"• Cron trigger parsing: {e}.")
 
         @executor()
         def parse_timestamp(arg: str) -> datetime.datetime:
@@ -171,7 +199,9 @@ class TimeConverter(commands.Converter):
                 timestamp = float(arg)
                 expires_at = datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc)
             except ValueError as e:
-                raise ValueError(f"• Timestamp parsing: {' '.join([f'{e_arg}.' for e_arg in e.args])}.")
+                raise ValueError(
+                    f"• Timestamp parsing: {' '.join([f'{e_arg}.' for e_arg in e.args])}."
+                )
             else:
                 if expires_at < utc_now:
                     raise ValueError("• Timestamp parsing: The timestamp isn't in the future.")
@@ -181,7 +211,15 @@ class TimeConverter(commands.Converter):
         def parse_relative_date(
             arg: str, text: typing.Optional[str] = None
         ) -> typing.Tuple[datetime.datetime, typing.Optional[str], str]:
-            if ctx.interaction is None and text is not None and " " not in arg and not (text.startswith(tuple(discord.ext.commands.view._all_quotes)) and text.endswith(tuple(discord.ext.commands.view._all_quotes))):
+            if (
+                ctx.interaction is None
+                and text is not None
+                and " " not in arg
+                and not (
+                    text.startswith(tuple(discord.ext.commands.view._all_quotes))
+                    and text.endswith(tuple(discord.ext.commands.view._all_quotes))
+                )
+            ):
                 return_text = True
                 to_parse = f"{arg} {text}"
             else:
@@ -209,11 +247,8 @@ class TimeConverter(commands.Converter):
                     )
                     if expires_at.replace(
                         hour=0, minute=0, second=0, microsecond=0
-                    ) == local_now.replace(
-                        hour=0, minute=0, second=0, microsecond=0
-                    ) and (
-                        expires_at.hour < local_now.hour
-                        or expires_at.minute < local_now.minute
+                    ) == local_now.replace(hour=0, minute=0, second=0, microsecond=0) and (
+                        expires_at.hour < local_now.hour or expires_at.minute < local_now.minute
                     ):
                         expires_at = expires_at.replace(day=expires_at.day + 1)
                 except (dateutil.parser.ParserError, OverflowError):
@@ -229,31 +264,48 @@ class TimeConverter(commands.Converter):
                 try:
                     expires_at = local_now + expires_delta
                 except OverflowError as e:
-                    raise ValueError(
-                        f"• Relative date parsing: {e}."
-                    )
+                    raise ValueError(f"• Relative date parsing: {e}.")
             reminder_text = parse_result["text"] or None if "text" in parse_result else None
             expires_at = expires_at.astimezone(tz=datetime.timezone.utc)
             if repeat_dict is not None:
                 try:
-                    repeat = cog.Repeat.from_json([{"type": "sample", "value": repeat_dict, "start_trigger": int(utc_now.timestamp()), "first_trigger": None, "last_trigger": None}])
-                except OSError as e:
-                    raise ValueError(
-                        f"• Relative date parsing: {e}."
+                    repeat = cog.Repeat.from_json(
+                        [
+                            {
+                                "type": "sample",
+                                "value": repeat_dict,
+                                "start_trigger": int(utc_now.timestamp()),
+                                "first_trigger": None,
+                                "last_trigger": None,
+                            }
+                        ]
                     )
+                except OSError as e:
+                    raise ValueError(f"• Relative date parsing: {e}.")
             return (
                 expires_at,
                 repeat,
-                reminder_text.strip() if return_text and reminder_text else (text.strip("".join(discord.ext.commands.view._all_quotes)) if text is not None else None),
+                reminder_text.strip()
+                if return_text and reminder_text
+                else (
+                    text.strip("".join(discord.ext.commands.view._all_quotes))
+                    if text is not None
+                    else None
+                ),
             )
 
         @executor()
         def parse_recurrent(arg: str) -> typing.Tuple[datetime.datetime, typing.Any]:
-            r = RecurringEvent(now_date=local_now.replace(hour=9, minute=0, second=0, microsecond=0), preferred_time_range=(0, 12))
+            r = RecurringEvent(
+                now_date=local_now.replace(hour=9, minute=0, second=0, microsecond=0),
+                preferred_time_range=(0, 12),
+            )
             rrule_string = r.parse(arg)
             if rrule_string is None:
                 raise ValueError("• Recurrent parsing: Impossible to parse this RRULE.")
-            elif isinstance(rrule_string, datetime.datetime):  # `parse_fuzzy_date` is better for this.
+            elif isinstance(
+                rrule_string, datetime.datetime
+            ):  # `parse_fuzzy_date` is better for this.
                 # return rrule_string.astimezone(tz=datetime.timezone.utc), None
                 raise ValueError("• Recurrent parsing: Impossible to parse this RRULE.")
             rrule = dateutil.rrule.rrulestr(rrule_string)
@@ -264,15 +316,31 @@ class TimeConverter(commands.Converter):
             # if expires_at <= utc_now.replace(minute=utc_now.minute + 1):
             #     expires_at += dateutil.relativedelta.relativedelta(minutes=2)
             try:
-                return expires_at, cog.Repeat.from_json([{"type": "rrule", "value": rrule_string, "start_trigger": int(utc_now.timestamp()), "first_trigger": None, "last_trigger": None}])
-            except OSError as e:
-                raise ValueError(
-                    f"• Recurrent parsing: {e}."
+                return expires_at, cog.Repeat.from_json(
+                    [
+                        {
+                            "type": "rrule",
+                            "value": rrule_string,
+                            "start_trigger": int(utc_now.timestamp()),
+                            "first_trigger": None,
+                            "last_trigger": None,
+                        }
+                    ]
                 )
+            except OSError as e:
+                raise ValueError(f"• Recurrent parsing: {e}.")
 
         @executor()
         def parse_fuzzy_date(arg: str, text: typing.Optional[str] = None) -> datetime.datetime:
-            if ctx.interaction is None and text is not None and " " not in arg and not (text.startswith(tuple(discord.ext.commands.view._all_quotes)) and text.endswith(tuple(discord.ext.commands.view._all_quotes))):
+            if (
+                ctx.interaction is None
+                and text is not None
+                and " " not in arg
+                and not (
+                    text.startswith(tuple(discord.ext.commands.view._all_quotes))
+                    and text.endswith(tuple(discord.ext.commands.view._all_quotes))
+                )
+            ):
                 return_text = True
                 to_parse = f"{arg} {text}"
             else:
@@ -293,7 +361,7 @@ class TimeConverter(commands.Converter):
                 ) + dateutil.relativedelta.relativedelta(
                     hours=17
                 )  # 17:00
-                reminder_text = to_parse[: match.start()] + to_parse[match.end():]
+                reminder_text = to_parse[: match.start()] + to_parse[match.end() :]
             elif match := eow_re.search(to_parse):
                 if local_now.weekday() == 4 and local_now.hour >= 17:
                     days_ahead = 7
@@ -303,21 +371,21 @@ class TimeConverter(commands.Converter):
                 parsed_date = next_friday.replace(
                     hour=17, minute=0, second=0, microsecond=0
                 )  # 17:00 on last day of week/next friday
-                reminder_text = to_parse[: match.start()] + to_parse[match.end():]
+                reminder_text = to_parse[: match.start()] + to_parse[match.end() :]
             elif match := eom_re.search(to_parse):
                 parsed_date = local_now.replace(
                     day=1, hour=0, minute=0, second=0, microsecond=0
                 ) + dateutil.relativedelta.relativedelta(
                     months=1, hours=-12
                 )  # 12:00 on last day of month
-                reminder_text = to_parse[: match.start()] + to_parse[match.end():]
+                reminder_text = to_parse[: match.start()] + to_parse[match.end() :]
             elif match := eoy_re.search(to_parse):
                 parsed_date = local_now.replace(
                     month=1, day=1, hour=0, minute=0, second=0, microsecond=0
                 ) + dateutil.relativedelta.relativedelta(
                     years=1, hours=-15
                 )  # 9:00 on last day of year
-                reminder_text = to_parse[: match.start()] + to_parse[match.end():]
+                reminder_text = to_parse[: match.start()] + to_parse[match.end() :]
             else:
                 try:
                     parsed_date, text_tuple = dateutil.parser.parse(
@@ -330,26 +398,23 @@ class TimeConverter(commands.Converter):
                         default=local_now.replace(hour=9, minute=0, second=0, microsecond=0),
                     )
                 except OverflowError as e:
-                    raise ValueError(
-                        f"• Fuzzy parsing: {e}"
-                    )
+                    raise ValueError(f"• Fuzzy parsing: {e}")
                 except dateutil.parser.ParserError as e:
                     dateutil_error = e
                     try:
                         parsed_date = dateparser.parse(arg, settings={"TIMEZONE": timezone})
                     except OverflowError as e:
-                        raise ValueError(
-                            f"• Fuzzy parsing: {e}"
-                        )
+                        raise ValueError(f"• Fuzzy parsing: {e}")
                     reminder_text = text
                 else:
                     if parsed_date.replace(
                         hour=0, minute=0, second=0, microsecond=0
-                    ) == local_now.replace(
-                        hour=0, minute=0, second=0, microsecond=0
-                    ) and (
+                    ) == local_now.replace(hour=0, minute=0, second=0, microsecond=0) and (
                         parsed_date.hour < local_now.hour
-                        or (parsed_date.hour == local_now.hour and parsed_date.minute < local_now.minute)
+                        or (
+                            parsed_date.hour == local_now.hour
+                            and parsed_date.minute < local_now.minute
+                        )
                     ):
                         parsed_date = parsed_date.replace(day=parsed_date.day + 1)
                     reminder_text = (
@@ -372,7 +437,11 @@ class TimeConverter(commands.Converter):
             #     parsed_date = parsed_date.replace(hour=9)
             # parsed_date = parsed_date.replace(tzinfo=tz)
             parsed_date = parsed_date.astimezone(tz=datetime.timezone.utc)
-            return parsed_date, reminder_text.strip() if return_text and reminder_text else (text.strip("".join(discord.ext.commands.view._all_quotes)) if text is not None else None)
+            return parsed_date, reminder_text.strip() if return_text and reminder_text else (
+                text.strip("".join(discord.ext.commands.view._all_quotes))
+                if text is not None
+                else None
+            )
 
         expires_at = None
         repeat = None
@@ -391,7 +460,9 @@ class TimeConverter(commands.Converter):
                 except ValueError as e:
                     info.append(e.args[0])
                     try:
-                        expires_at, repeat, text = await parse_relative_date(argument, text=content)
+                        expires_at, repeat, text = await parse_relative_date(
+                            argument, text=content
+                        )
                     except ValueError as e:
                         info.append(e.args[0])
                         try:
@@ -405,7 +476,9 @@ class TimeConverter(commands.Converter):
 
         if expires_at is not None and isinstance(expires_at, datetime.datetime):
             expires_at = expires_at.replace(second=0, microsecond=0)
-            if expires_at < utc_now:  # Negative intervals are not allowed. / .replace(second=0, microsecond=0)
+            if (
+                expires_at < utc_now
+            ):  # Negative intervals are not allowed. / .replace(second=0, microsecond=0)
                 info = [  # info.append(
                     f"• Global check: The given date must be in the future. Interpreted date: <t:{int(expires_at.timestamp())}:F>."
                 ]
@@ -511,9 +584,9 @@ class DurationParser:
             )("weeks")
             + unit_weeks
         )
-        unit_days = (
-            CaselessLiteral("days") | CaselessLiteral("day") | CaselessLiteral("d")
-        ) + (FollowedBy(Regex(r"\d+[a-zA-Z]+")) | WordEnd())
+        unit_days = (CaselessLiteral("days") | CaselessLiteral("day") | CaselessLiteral("d")) + (
+            FollowedBy(Regex(r"\d+[a-zA-Z]+")) | WordEnd()
+        )
         days = (
             Combine(Optional(oneOf("+ -")) + Optional(Word(nums), default="1")).setParseAction(
                 lambda token_list: [int(token_list[0])]

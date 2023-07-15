@@ -14,6 +14,7 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 from geopy import Nominatim
+
 try:
     from mpl_toolkits.basemap import Basemap
 except ImportError:
@@ -32,6 +33,7 @@ CT = typing.TypeVar(
     "CT", bound=typing.Callable[..., typing.Any]
 )  # defined CT as a type variable that is bound to a callable that can take any argument and return any value.
 
+
 async def run_blocking_func(
     func: typing.Callable[..., typing.Any], *args: typing.Any, **kwargs: typing.Any
 ) -> typing.Any:
@@ -45,7 +47,9 @@ def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
         @functools.wraps(func)
         def wrapper(*args: typing.Any, **kwargs: typing.Any):
             return run_blocking_func(func, *args, **kwargs)
+
         return wrapper
+
     return decorator
 
 
@@ -186,7 +190,9 @@ class GetLoc(Cog):
         if with_map:
             embed.set_image(url="attachment://map.png")
             _map = await self.get_map(
-                title=", ".join(data['Display Name'].split(", ")[:2]),  # (Latitude {localisation.latitude}) ; Longitude {localisation.longitude})",
+                title=", ".join(
+                    data["Display Name"].split(", ")[:2]
+                ),  # (Latitude {localisation.latitude}) ; Longitude {localisation.longitude})",
                 latitude=localisation.latitude,
                 longitude=localisation.longitude,
             )
@@ -206,7 +212,9 @@ class GetLoc(Cog):
         )
 
     @commands.Cog.listener()
-    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+    async def on_assistant_cog_add(
+        self, assistant_cog: typing.Optional[commands.Cog] = None
+    ) -> None:  # Vert's Assistant integration/third party.
         if assistant_cog is None:
             return self.get_informations_about_place_for_assistant
         schema = {
@@ -217,12 +225,10 @@ class GetLoc(Cog):
                 "properties": {
                     "query": {
                         "type": "string",
-                        "description": "The place to search in the world."
+                        "description": "The place to search in the world.",
                     },
                 },
-                "required": [
-                    "query"
-                ]
+                "required": ["query"],
             },
         }
         await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)

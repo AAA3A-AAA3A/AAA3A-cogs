@@ -34,13 +34,13 @@ del AAA3A_utils
 #     )
 
 from redbot.core.bot import Red  # isort:skip
-from redbot.core.utils import get_end_user_data_statement
-from redbot.core.utils.chat_formatting import humanize_list
-
 import asyncio
 import builtins
-import rich
 import typing
+
+import rich
+from redbot.core.utils import get_end_user_data_statement
+from redbot.core.utils.chat_formatting import humanize_list
 
 from .dev import Dev
 from .env import ctxconsole
@@ -60,6 +60,7 @@ async def setup_after_ready(bot: Red) -> None:
             builtins._ = None
             rich.pretty.pprint(obj, console=_console)
             builtins._ = obj
+
     def _get_console() -> rich.console.Console:
         return ctxconsole.get()
 

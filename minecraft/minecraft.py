@@ -151,9 +151,14 @@ class Minecraft(Cog):
                     servers = await self.config.channel(channel).servers()
                     if isinstance(servers, typing.List):
                         servers = {server: None for server in servers}
-                    if await self.config.channel(channel).edit_last_message() and servers[server_url] is not None:
+                    if (
+                        await self.config.channel(channel).edit_last_message()
+                        and servers[server_url] is not None
+                    ):
                         try:
-                            message = await channel.get_partial_message(servers[server_url]).edit(embed=embed, attachments=[icon])
+                            message = await channel.get_partial_message(servers[server_url]).edit(
+                                embed=embed, attachments=[icon]
+                            )
                         except discord.HTTPException:
                             message = await channel.send(embed=embed, file=icon)
                     else:
@@ -168,7 +173,15 @@ class Minecraft(Cog):
             title=f"{server.address.host}:{server.address.port}",
             description=box(server_description),
         )
-        embed.color = discord.Color.red() if "This server is offline." in server_description else (discord.Color.orange() if "This server is currently stopping." in server_description else discord.Color.green())
+        embed.color = (
+            discord.Color.red()
+            if "This server is offline." in server_description
+            else (
+                discord.Color.orange()
+                if "This server is currently stopping." in server_description
+                else discord.Color.green()
+            )
+        )
         icon_file = None
         icon = (
             discord.File(
@@ -395,7 +408,9 @@ class Minecraft(Cog):
         await Menu(pages=embeds).start(ctx)
 
     @commands.Cog.listener()
-    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+    async def on_assistant_cog_add(
+        self, assistant_cog: typing.Optional[commands.Cog] = None
+    ) -> None:  # Vert's Assistant integration/third party.
         if assistant_cog is None:
             return self.get_minecraft_java_server_for_assistant
         schema = {
@@ -406,12 +421,10 @@ class Minecraft(Cog):
                 "properties": {
                     "server_url": {
                         "type": "string",
-                        "description": "The URL of the Minecraft Java server."
+                        "description": "The URL of the Minecraft Java server.",
                     },
                 },
-                "required": [
-                    "server_url"
-                ]
+                "required": ["server_url"],
             },
         }
         await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
@@ -426,7 +439,13 @@ class Minecraft(Cog):
         data = {
             "Host & Port": f"{server.address.host}:{server.address.port}",
             "Description": box(server_description),
-            "Status": "Offline." if "This server is offline." in server_description else ("Currently stopping." if "This server is currently stopping." in server_description else "Online."),
+            "Status": "Offline."
+            if "This server is offline." in server_description
+            else (
+                "Currently stopping."
+                if "This server is currently stopping." in server_description
+                else "Online."
+            ),
             "Latency": f"{status.latency:.2f} ms",
             "Players": f"{status.players.online}/{status.players.max}",
             "Version": status.version.name,

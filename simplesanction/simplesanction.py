@@ -72,7 +72,9 @@ class SimpleSanction(Cog):
         }
         self.config.register_guild(**self.sanction_guild)
 
-        self.actions: typing.Dict[str, Action] = {key: Action(cog=self, key=key, **value) for key, value in ACTIONS_DICT.items()}
+        self.actions: typing.Dict[str, Action] = {
+            key: Action(cog=self, key=key, **value) for key, value in ACTIONS_DICT.items()
+        }
 
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], typing.Any, str]]
@@ -81,7 +83,7 @@ class SimpleSanction(Cog):
                 "path": ["use_warn_system"],
                 "converter": bool,
                 "description": "Use WarnSystem by Laggron for the sanctions.",
-                "aliases": ["warnsystemuse"]
+                "aliases": ["warnsystemuse"],
             },
             "reason_required": {
                 "path": ["reason_required"],
@@ -641,6 +643,27 @@ class SimpleSanction(Cog):
                 raise commands.UserFeedbackCheckFailure(_("Timed out, please try again."))
 
         if action is not None:
-            await action.process(ctx, interaction=None, member=member, duration=duration, reason=reason, finish_message_enabled=finish_message, reason_required=await self.config.guild(ctx.guild).reason_required(), confirmation=confirmation, show_author=show_author, fake_action=fake_action)
+            await action.process(
+                ctx,
+                interaction=None,
+                member=member,
+                duration=duration,
+                reason=reason,
+                finish_message_enabled=finish_message,
+                reason_required=await self.config.guild(ctx.guild).reason_required(),
+                confirmation=confirmation,
+                show_author=show_author,
+                fake_action=fake_action,
+            )
         else:
-            await SimpleSanctionView(cog=self, member=member, duration=duration, reason=reason, finish_message_enabled=finish_message, reason_required=await self.config.guild(ctx.guild).reason_required(), confirmation=confirmation, show_author=show_author, fake_action=fake_action).start(ctx)
+            await SimpleSanctionView(
+                cog=self,
+                member=member,
+                duration=duration,
+                reason=reason,
+                finish_message_enabled=finish_message,
+                reason_required=await self.config.guild(ctx.guild).reason_required(),
+                confirmation=confirmation,
+                show_author=show_author,
+                fake_action=fake_action,
+            ).start(ctx)

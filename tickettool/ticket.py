@@ -206,7 +206,21 @@ class Ticket:
         for key in ["bot", "cog"]:
             del json[key]
         if clean:
-            for key in ["claim", "opened_by", "closed_by", "deleted_by", "renamed_by", "locked_by", "unlocked_by", "opened_at", "closed_at", "deleted_at", "renamed_at", "locked_at", "unlocked_at"]:
+            for key in [
+                "claim",
+                "opened_by",
+                "closed_by",
+                "deleted_by",
+                "renamed_by",
+                "locked_by",
+                "unlocked_by",
+                "opened_at",
+                "closed_at",
+                "deleted_at",
+                "renamed_at",
+                "locked_at",
+                "unlocked_at",
+            ]:
                 if json[key] is None:
                     del json[key]
             if json["members"] == []:
@@ -248,7 +262,11 @@ class Ticket:
             }
             name = config["dynamic_channel_name"].format(**to_replace).replace(" ", "-")
         except (KeyError, AttributeError):
-            raise commands.UserFeedbackCheckFailure(_("The dynamic channel name does not contain correct variable names and must be re-configured with `[p]settickettool dynamicchannelname`."))
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "The dynamic channel name does not contain correct variable names and must be re-configured with `[p]settickettool dynamicchannelname`."
+                )
+            )
 
         view = self.cog.get_buttons(
             buttons=[
@@ -298,7 +316,12 @@ class Ticket:
                     "🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
                     "☢️ Ticket reason: {short_reason}\n"
                     # "👥 Ticket claimed by: Nobody."
-                ).format(ticket=self, short_reason=f"{self.reason[:700]}...".replace("\n", " ") if len(self.reason) > 700 else self.reason.replace("\n", " "))
+                ).format(
+                    ticket=self,
+                    short_reason=f"{self.reason[:700]}...".replace("\n", " ")
+                    if len(self.reason) > 700
+                    else self.reason.replace("\n", " "),
+                )
                 self.channel: discord.TextChannel = await self.guild.create_text_channel(
                     name,
                     overwrites=overwrites,
@@ -361,7 +384,11 @@ class Ticket:
                     except discord.HTTPException:  # The bot haven't the permission `manage_messages` in the parent text channel.
                         adding_error = True
                 if adding_error:
-                    await self.channel.send(_("⚠ At least one user (the ticket owner or a team member) could not be added to the ticket thread. Maybe the user the user doesn't have access to the parent forum/text channel. If the server uses private threads in a text channel, the bot does not have the `manage_messages` permission in this channel."))
+                    await self.channel.send(
+                        _(
+                            "⚠ At least one user (the ticket owner or a team member) could not be added to the ticket thread. Maybe the user the user doesn't have access to the parent forum/text channel. If the server uses private threads in a text channel, the bot does not have the `manage_messages` permission in this channel."
+                        )
+                    )
             if config["create_modlog"]:
                 await self.cog.create_modlog(self, "ticket_created", _reason)
             if config["custom_message"] is not None:
@@ -809,7 +836,7 @@ class Ticket:
                     send_messages=False,
                     view_channel=True,
                 )
-            await self.channel.edit(overwrites=overwrites, reason=_reason)  # topic=topic, 
+            await self.channel.edit(overwrites=overwrites, reason=_reason)  # topic=topic,
         if self.first_message is not None:
             view = self.cog.get_buttons(
                 buttons=[
@@ -1062,7 +1089,11 @@ class Ticket:
                 if member not in self.members:
                     self.members.append(member)
             if adding_error:
-                await self.channel.send(_("⚠ At least one user (the ticket owner or a team member) could not be added to the ticket thread. Maybe the user the user doesn't have access to the parent forum/text channel. If the server uses private threads in a text channel, the bot does not have the `manage_messages` permission in this channel."))
+                await self.channel.send(
+                    _(
+                        "⚠ At least one user (the ticket owner or a team member) could not be added to the ticket thread. Maybe the user the user doesn't have access to the parent forum/text channel. If the server uses private threads in a text channel, the bot does not have the `manage_messages` permission in this channel."
+                    )
+                )
         await self.save()
         return self
 

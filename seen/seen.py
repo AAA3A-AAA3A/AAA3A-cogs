@@ -480,24 +480,18 @@ class Seen(Cog):
         # Users
         for user in users_data:
             if for_count:
-                if any(
-                    custom_id is not None
-                    for custom_id in users_data[user].values()
-                ):
+                if any(custom_id is not None for custom_id in users_data[user].values()):
                     users_count += 1
                 continue
             existing_keys.extend(
-                custom_id
-                for custom_id in users_data[user].values()
-                if custom_id is not None
+                custom_id for custom_id in users_data[user].values() if custom_id is not None
             )
         # Members
         for guild in members_data:
             for member in members_data[guild]:
                 if for_count:
                     if any(
-                        custom_id is not None
-                        for custom_id in members_data[guild][member].values()
+                        custom_id is not None for custom_id in members_data[guild][member].values()
                     ):
                         members_count += 1
                     continue
@@ -509,38 +503,25 @@ class Seen(Cog):
         # Roles
         for role in roles_data:
             if for_count:
-                if any(
-                    custom_id is not None
-                    for custom_id in roles_data[role].values()
-                ):
+                if any(custom_id is not None for custom_id in roles_data[role].values()):
                     roles_count += 1
                 continue
             existing_keys.extend(
-                custom_id
-                for custom_id in roles_data[role].values()
-                if custom_id is not None
+                custom_id for custom_id in roles_data[role].values() if custom_id is not None
             )
         # Channels
         for channel in channels_data:
             if for_count:
-                if any(
-                    custom_id is not None
-                    for custom_id in channels_data[channel].values()
-                ):
+                if any(custom_id is not None for custom_id in channels_data[channel].values()):
                     channels_count += 1
                 continue
             existing_keys.extend(
-                custom_id
-                for custom_id in channels_data[channel].values()
-                if custom_id is not None
+                custom_id for custom_id in channels_data[channel].values() if custom_id is not None
             )
         # Categories
         for category in categories_data:
             if for_count:
-                if any(
-                    custom_id is not None
-                    for custom_id in categories_data[category].values()
-                ):
+                if any(custom_id is not None for custom_id in categories_data[category].values()):
                     categories_count += 1
                 continue
             existing_keys.extend(
@@ -551,16 +532,11 @@ class Seen(Cog):
         # Guilds
         for guild in guilds_data:
             if for_count:
-                if any(
-                    custom_id is not None
-                    for custom_id in guilds_data[guild].values()
-                ):
+                if any(custom_id is not None for custom_id in guilds_data[guild].values()):
                     guilds_count += 1
                 continue
             existing_keys.extend(
-                custom_id
-                for custom_id in guilds_data[guild].values()
-                if custom_id is not None
+                custom_id for custom_id in guilds_data[guild].values() if custom_id is not None
             )
         if not for_count:
             self.cache["existing_keys"] = list(set(existing_keys))
@@ -613,20 +589,30 @@ class Seen(Cog):
             elif isinstance(_object, discord.Member):
                 all_data_config = await self.config.member(_object).all()
                 all_data_cache = (
-                    self.cache["members"].get((_object if isinstance(_object, discord.Guild) else _object.guild).id, {}).get(_object.id, {})
+                    self.cache["members"]
+                    .get((_object if isinstance(_object, discord.Guild) else _object.guild).id, {})
+                    .get(_object.id, {})
                 )
             elif isinstance(_object, discord.Role):
                 all_data_config = await self.config.role(_object).all()
-                all_data_cache = self.cache["roles"].get((_object if isinstance(_object, discord.Guild) else _object.guild).id, {}).get(_object.id, {})
+                all_data_cache = (
+                    self.cache["roles"]
+                    .get((_object if isinstance(_object, discord.Guild) else _object.guild).id, {})
+                    .get(_object.id, {})
+                )
             elif isinstance(_object, discord.TextChannel):
                 all_data_config = await self.config.channel(_object).all()
                 all_data_cache = (
-                    self.cache["channels"].get((_object if isinstance(_object, discord.Guild) else _object.guild).id, {}).get(_object.id, {})
+                    self.cache["channels"]
+                    .get((_object if isinstance(_object, discord.Guild) else _object.guild).id, {})
+                    .get(_object.id, {})
                 )
             elif isinstance(_object, discord.CategoryChannel):
                 all_data_config = await self.config.channel(_object).all()
                 all_data_cache = (
-                    self.cache["categories"].get((_object if isinstance(_object, discord.Guild) else _object.guild).id, {}).get(_object.id, {})
+                    self.cache["categories"]
+                    .get((_object if isinstance(_object, discord.Guild) else _object.guild).id, {})
+                    .get(_object.id, {})
                 )
             elif isinstance(_object, discord.Guild):
                 all_data_config = await self.config.guild(_object).all()
@@ -737,38 +723,56 @@ class Seen(Cog):
                 "<@" + action["member"] + ">"
             )
         elif isinstance(_object, discord.Member):
-            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(action["member"]) or (  # getattr((_object if isinstance(_object, discord.Guild) else _object.guild).get_member(action["member"]), "display_name", None)
+            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(
+                action["member"]
+            ) or (  # getattr((_object if isinstance(_object, discord.Guild) else _object.guild).get_member(action["member"]), "display_name", None)
                 "<@" + action["member"] + ">"
             )
         elif isinstance(_object, discord.Role):
-            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(action["member"]) or (
-                "<@" + action["member"] + ">"
-            )
+            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(
+                action["member"]
+            ) or ("<@" + action["member"] + ">")
         elif isinstance(_object, discord.TextChannel):
-            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(action["member"]) or (
-                "<@" + action["member"] + ">"
-            )
+            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(
+                action["member"]
+            ) or ("<@" + action["member"] + ">")
         elif isinstance(_object, discord.CategoryChannel):
-            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(action["member"]) or (
-                "<@" + action["member"] + ">"
-            )
+            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(
+                action["member"]
+            ) or ("<@" + action["member"] + ">")
         elif isinstance(_object, discord.Guild):
-            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(action["member"]) or (
-                "<@" + action["member"] + ">"
-            )
+            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(
+                action["member"]
+            ) or ("<@" + action["member"] + ">")
         else:
-            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(action["member"]) or (
-                "<@" + action["member"] + ">"
-            )
+            member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(
+                action["member"]
+            ) or ("<@" + action["member"] + ">")
         reaction = action["reaction"] if "reaction" in action else None
         if _type == "message":
-            action = _("[This message]({message_link}) has been sent by {member_mention}.").format(message_link=message_link, member_mention=getattr(member, "mention", member))
+            action = _("[This message]({message_link}) has been sent by {member_mention}.").format(
+                message_link=message_link, member_mention=getattr(member, "mention", member)
+            )
         elif _type == "message_edit":
-            action = _("[This message]({message_link}) has been edited by {member_mention}.").format(message_link=message_link, member_mention=getattr(member, "mention", member))
+            action = _(
+                "[This message]({message_link}) has been edited by {member_mention}."
+            ).format(message_link=message_link, member_mention=getattr(member, "mention", member))
         elif _type == "reaction_add":
-            action = _("The reaction {reaction} has been added to [this message]({message_link}) by {member_mention}.").format(reaction=reaction, message_link=message_link, member_mention=getattr(member, "mention", member))
+            action = _(
+                "The reaction {reaction} has been added to [this message]({message_link}) by {member_mention}."
+            ).format(
+                reaction=reaction,
+                message_link=message_link,
+                member_mention=getattr(member, "mention", member),
+            )
         elif _type == "reaction_remove":
-            action = _("The reaction {reaction} has been removed to the [this message]({message_link}) by {member_mention}.").format(reaction=reaction, message_link=message_link, member_mention=getattr(member, "mention", member))
+            action = _(
+                "The reaction {reaction} has been removed to the [this message]({message_link}) by {member_mention}."
+            ).format(
+                reaction=reaction,
+                message_link=message_link,
+                member_mention=getattr(member, "mention", member),
+            )
         return time, seen, action
 
     async def send_seen(
@@ -859,37 +863,49 @@ class Seen(Cog):
                 name=_object.display_name,
                 icon_url=_object.display_avatar,
             )
-            embed.description = _("**The user {_object.mention} was seen {seen}.**").format(_object=_object, seen=seen)
+            embed.description = _("**The user {_object.mention} was seen {seen}.**").format(
+                _object=_object, seen=seen
+            )
         elif isinstance(_object, discord.Member):
             embed.set_author(
                 name=_object.display_name,
                 icon_url=_object.display_avatar,
             )
-            embed.description = _("**The member {_object.mention} was seen {seen}.**").format(_object=_object, seen=seen)
+            embed.description = _("**The member {_object.mention} was seen {seen}.**").format(
+                _object=_object, seen=seen
+            )
         elif isinstance(_object, discord.Role):
             embed.set_author(
                 name=_object.name,
                 icon_url=_object.display_icon,
             )
-            embed.description = _("**The role {_object.mention} was seen {seen}.**").format(_object=_object, seen=seen)
+            embed.description = _("**The role {_object.mention} was seen {seen}.**").format(
+                _object=_object, seen=seen
+            )
         elif isinstance(_object, discord.TextChannel):
             embed.set_author(
                 name=_object.name,
                 icon_url=None,
             )
-            embed.description = _("**The text channel {_object.mention} was seen {seen}.**").format(_object=_object, seen=seen)
+            embed.description = _(
+                "**The text channel {_object.mention} was seen {seen}.**"
+            ).format(_object=_object, seen=seen)
         elif isinstance(_object, discord.CategoryChannel):
             embed.set_author(
                 name=_object.name,
                 icon_url=None,
             )
-            embed.description = _("**The category {_object.name} was seen {seen}.**").format(_object=_object, seen=seen)
+            embed.description = _("**The category {_object.name} was seen {seen}.**").format(
+                _object=_object, seen=seen
+            )
         elif isinstance(_object, discord.Guild):
             embed.set_author(
                 name=_object.name,
                 icon_url=_object.icon,
             )
-            embed.description = _("**The guild {_object.name} was seen {seen}.**").format(_object=_object, seen=seen)
+            embed.description = _("**The guild {_object.name} was seen {seen}.**").format(
+                _object=_object, seen=seen
+            )
         if show_details:
             embed.description += f"\n{action}"
             embed.timestamp = datetime.datetime.fromtimestamp(time)
@@ -994,7 +1010,9 @@ class Seen(Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
-        if await self.bot.cog_disabled_in_guild(cog=self, guild=message.guild) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
+        if await self.bot.cog_disabled_in_guild(
+            cog=self, guild=message.guild
+        ) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
             return
         if message.webhook_id is not None:
             return
@@ -1033,7 +1051,9 @@ class Seen(Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before: discord.Message, after: discord.Message) -> None:
-        if await self.bot.cog_disabled_in_guild(cog=self, guild=after.guild) or not await self.bot.allowed_by_whitelist_blacklist(who=after.author):
+        if await self.bot.cog_disabled_in_guild(
+            cog=self, guild=after.guild
+        ) or not await self.bot.allowed_by_whitelist_blacklist(who=after.author):
             return
         if after.webhook_id is not None:
             return
@@ -1060,7 +1080,9 @@ class Seen(Cog):
     async def on_reaction_add(
         self, reaction: discord.Reaction, user: typing.Union[discord.Member, discord.User]
     ) -> None:
-        if await self.bot.cog_disabled_in_guild(cog=self, guild=reaction.message.guild) or not await self.bot.allowed_by_whitelist_blacklist(who=user):
+        if await self.bot.cog_disabled_in_guild(
+            cog=self, guild=reaction.message.guild
+        ) or not await self.bot.allowed_by_whitelist_blacklist(who=user):
             return
         if reaction.message.guild is None:
             return
@@ -1093,7 +1115,9 @@ class Seen(Cog):
     async def on_reaction_remove(
         self, reaction: discord.Reaction, user: typing.Union[discord.Member, discord.User]
     ) -> None:
-        if await self.bot.cog_disabled_in_guild(cog=self, guild=reaction.message.guild) or not await self.bot.allowed_by_whitelist_blacklist(who=user):
+        if await self.bot.cog_disabled_in_guild(
+            cog=self, guild=reaction.message.guild
+        ) or not await self.bot.allowed_by_whitelist_blacklist(who=user):
             return
         if reaction.message.guild is None:
             return
@@ -1391,7 +1415,11 @@ class Seen(Cog):
             ignored_users.append(user.id)
             await self.config.ignored_users.set(ignored_users)
             await self.red_delete_data_for_user(requester="user", user_id=user.id)
-            await ctx.send(_("You will no longer be seen by this cog and the data I held on you has been deleted."))
+            await ctx.send(
+                _(
+                    "You will no longer be seen by this cog and the data I held on you has been deleted."
+                )
+            )
         else:
             ignored_users.remove(user.id)
             await self.config.ignored_users.set(ignored_users)
@@ -1488,14 +1516,26 @@ class Seen(Cog):
                         # Users
                         if int(member_id) not in new_users_data:
                             new_users_data[int(member_id)] = {}
-                        if "message" not in new_users_data[int(member_id)] or data["seen"] > new_global_data["message"][new_users_data[int(member_id)]["message"]]["seen"]:
+                        if (
+                            "message" not in new_users_data[int(member_id)]
+                            or data["seen"]
+                            > new_global_data["message"][
+                                new_users_data[int(member_id)]["message"]
+                            ]["seen"]
+                        ):
                             new_users_data[int(member_id)]["message"] = custom_id
                         # Members
                         if int(guild_id) not in new_members_data:
                             new_members_data[int(guild_id)] = {}
                         if int(member_id) not in new_members_data[int(guild_id)]:
                             new_members_data[int(guild_id)][int(member_id)] = {}
-                        if "message" not in new_members_data[int(guild_id)][int(member_id)] or data["seen"] > new_global_data["message"][new_members_data[int(guild_id)][int(member_id)]["message"]]["seen"]:
+                        if (
+                            "message" not in new_members_data[int(guild_id)][int(member_id)]
+                            or data["seen"]
+                            > new_global_data["message"][
+                                new_members_data[int(guild_id)][int(member_id)]["message"]
+                            ]["seen"]
+                        ):
                             new_members_data[int(guild_id)][int(member_id)]["message"] = custom_id
         await self.config.set(new_global_data)
         await ctx.send(_("Data successfully migrated from Seen by Aikaterna."))

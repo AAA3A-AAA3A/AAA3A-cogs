@@ -48,6 +48,7 @@ CT = typing.TypeVar(
     "CT", bound=typing.Callable[..., typing.Any]
 )  # defined CT as a type variable that is bound to a callable that can take any argument and return any value.
 
+
 async def run_blocking_func(
     func: typing.Callable[..., typing.Any], *args: typing.Any, **kwargs: typing.Any
 ) -> typing.Any:
@@ -61,7 +62,9 @@ def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
         @functools.wraps(func)
         def wrapper(*args: typing.Any, **kwargs: typing.Any):
             return run_blocking_func(func, *args, **kwargs)
+
         return wrapper
+
     return decorator
 
 
@@ -344,7 +347,9 @@ class GetDocs(Cog, DashboardIntegration):
                 source = await self.config.default_source()
                 if source not in self.documentations:
                     if "discord.py" not in self.documentations:
-                        raise commands.UserFeedbackCheckFailure(_("Please provide a valid documentations source."))
+                        raise commands.UserFeedbackCheckFailure(
+                            _("Please provide a valid documentations source.")
+                        )
                     source = "discord.py"
             source: Source = self.documentations[source]
             if query is None:
@@ -404,7 +409,9 @@ class GetDocs(Cog, DashboardIntegration):
             source = await self.config.default_source()
             if source not in self.documentations:
                 if "discord.py" not in self.documentations:
-                    raise commands.UserFeedbackCheckFailure(_("Please provide a valid documentations source."))
+                    raise commands.UserFeedbackCheckFailure(
+                        _("Please provide a valid documentations source.")
+                    )
                 source = "discord.py"
         source: Source = self.documentations[source]
         if query in ["", "events"]:
@@ -447,13 +454,21 @@ class GetDocs(Cog, DashboardIntegration):
     async def getdocs_source_autocomplete(
         self, interaction: discord.Interaction, current: str
     ) -> typing.List[app_commands.Choice[str]]:
-        return [app_commands.Choice(name=source, value=source) for source in self.documentations if source.lower().startswith(current.lower())][:25]
+        return [
+            app_commands.Choice(name=source, value=source)
+            for source in self.documentations
+            if source.lower().startswith(current.lower())
+        ][:25]
 
     @rtfm.autocomplete("source")
     async def rtfm_source_autocomplete(
         self, interaction: discord.Interaction, current: str
     ) -> typing.List[app_commands.Choice[str]]:
-        return [app_commands.Choice(name=source, value=source) for source in self.documentations if source.lower().startswith(current.lower())][:25]
+        return [
+            app_commands.Choice(name=source, value=source)
+            for source in self.documentations
+            if source.lower().startswith(current.lower())
+        ][:25]
 
     async def query_autocomplete(
         self,
@@ -555,16 +570,22 @@ class GetDocs(Cog, DashboardIntegration):
 
     @configuration.command(name="enablesources", aliases=["enablesource"])
     @app_commands.describe(sources="The source(s) to enable.")
-    async def _sources_enable(self, ctx: commands.Context, sources: commands.Greedy[StrConverter]) -> None:
+    async def _sources_enable(
+        self, ctx: commands.Context, sources: commands.Greedy[StrConverter]
+    ) -> None:
         """
         Enable Documentations source(s).
         """
         enabled_sources: typing.List[str] = await self.config.enabled_sources()
         for source in sources:
             if source in enabled_sources and source in self.documentations:
-                raise commands.UserFeedbackCheckFailure(_("The source `{source}` is already enabled.").format(source=source))
+                raise commands.UserFeedbackCheckFailure(
+                    _("The source `{source}` is already enabled.").format(source=source)
+                )
             elif source not in BASE_URLS:
-                raise commands.UserFeedbackCheckFailure(_("The source `{source}` doesn't exist.").format(source=source))
+                raise commands.UserFeedbackCheckFailure(
+                    _("The source `{source}` doesn't exist.").format(source=source)
+                )
             enabled_sources.append(source)
             self.documentations[source] = Source(
                 self,
@@ -578,16 +599,22 @@ class GetDocs(Cog, DashboardIntegration):
 
     @configuration.command(name="disablesources", aliases=["disablesource"])
     @app_commands.describe(sources="The source(s) to disable.")
-    async def _sources_disable(self, ctx: commands.Context, sources: commands.Greedy[SourceConverter]) -> None:
+    async def _sources_disable(
+        self, ctx: commands.Context, sources: commands.Greedy[SourceConverter]
+    ) -> None:
         """
         Disable Documentations source(s).
         """
         enabled_sources: typing.List[str] = await self.config.enabled_sources()
         for source in sources:
             if source not in enabled_sources:
-                raise commands.UserFeedbackCheckFailure(_("The source `{source}` is already disabled.").format(source=source))
+                raise commands.UserFeedbackCheckFailure(
+                    _("The source `{source}` is already disabled.").format(source=source)
+                )
             elif source not in self.documentations:
-                raise commands.UserFeedbackCheckFailure(_("The source `{source}` doesn't exist.").format(source=source))
+                raise commands.UserFeedbackCheckFailure(
+                    _("The source `{source}` doesn't exist.").format(source=source)
+                )
             enabled_sources.remove(source)
         await self.config.enabled_sources.set(enabled_sources)
 
@@ -632,7 +659,9 @@ class GetDocs(Cog, DashboardIntegration):
         await Menu(pages=embeds).start(ctx)
 
     @commands.Cog.listener()
-    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+    async def on_assistant_cog_add(
+        self, assistant_cog: typing.Optional[commands.Cog] = None
+    ) -> None:  # Vert's Assistant integration/third party.
         if assistant_cog is None:
             return self.get_documentation_for_assistant
         schema = {
@@ -643,17 +672,14 @@ class GetDocs(Cog, DashboardIntegration):
                 "properties": {
                     "source": {
                         "type": "string",
-                        "description": "The name of the documentation source."
+                        "description": "The name of the documentation source.",
                     },
                     "query": {
                         "type": "string",
-                        "description": "The name of the object/method to search."
+                        "description": "The name of the object/method to search.",
                     },
                 },
-                "required": [
-                    "source",
-                    "query"
-                ]
+                "required": ["source", "query"],
             },
         }
         await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
@@ -671,13 +697,17 @@ class GetDocs(Cog, DashboardIntegration):
         data = {
             "Name": documentation.name,
             "Signature": documentation.signature,
-            "Description": documentation.description.replace("\n", ' '),
-            "Parameters": f"{humanize_list([inline(parameter.split(' ')[0].strip('**')) for parameter in documentation.parameters])}." if documentation.parameters else "No parameter(s)"
+            "Description": documentation.description.replace("\n", " "),
+            "Parameters": f"{humanize_list([inline(parameter.split(' ')[0].strip('**')) for parameter in documentation.parameters])}."
+            if documentation.parameters
+            else "No parameter(s)",
         }
         for _type in ["attributes", "properties", "methods"]:
             if getattr(documentation.attributes, _type):
                 # result += f"{_type.capitalize()}:\n{BREAK_LINE.join([f'• {inline(attribute.name)}' for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()]) or 'No attribute(s)'}.\n"
-                data[_type.capitalize()] = f"{humanize_list([inline(attribute.name) for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()])}."
+                data[
+                    _type.capitalize()
+                ] = f"{humanize_list([inline(attribute.name) for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()])}."
         return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
 
 
@@ -786,7 +816,9 @@ class Source:
         start = time.monotonic()
         self.cog._docs_stats[self.name] = {"manuals": 0, "documentations": 0}
 
-        if not (await self.cog.config.caching()) and not hasattr(self, f"_build_{self.name}_docs_cache"):
+        if not (await self.cog.config.caching()) and not hasattr(
+            self, f"_build_{self.name}_docs_cache"
+        ):
             return self._docs_cache
         if hasattr(self, f"_build_{self.name}_docs_cache"):
             try:
@@ -794,7 +826,9 @@ class Source:
                     await executor()(getattr(self, f"_build_{self.name}_docs_cache"))()
                 )
             except TypeError:
-                _, manuals, documentations = await getattr(self, f"_build_{self.name}_docs_cache")()
+                _, manuals, documentations = await getattr(
+                    self, f"_build_{self.name}_docs_cache"
+                )()
             self._docs_cache.extend(documentations)
             self.cog._docs_stats[self.name]["manuals"] += len(manuals)
             self.cog._docs_stats["GLOBAL"]["manuals"] += len(manuals)
@@ -1182,10 +1216,14 @@ class Source:
         content = await self._get_html(self.url)
         soup = BeautifulSoup(content, "lxml")
         manuals.extend(
-            (potential_manual.text.strip(), self.url.split("/wiki")[0] + potential_manual.attrs["href"])
+            (
+                potential_manual.text.strip(),
+                self.url.split("/wiki")[0] + potential_manual.attrs["href"],
+            )
             for potential_manual in soup.find_all("a")
             if potential_manual.attrs.get("href") is not None
-            and potential_manual.attrs["href"].startswith("/wiki/API_") and potential_manual.text.strip() not in ["API changes", "loadstring"]
+            and potential_manual.attrs["href"].startswith("/wiki/API_")
+            and potential_manual.text.strip() not in ["API changes", "loadstring"]
         )
         # Iter manuals.
         for manual in manuals:
@@ -1208,16 +1246,29 @@ class Source:
                     fields_values = soup.find_all(("dl", "ul"))
                     for field_value in fields_values.copy():
                         if field_value.name == "ul":
-                            text = self._get_text(field_value, parsed_url=self.url.split("/wiki")[0])
-                            if len(text.split("\n\n")) > 1 or "WoW API" in text or "Hyperlinks" in text or "mainline" in text or "Wowprogramming" in text or "Townlong Yak" in text:
+                            text = self._get_text(
+                                field_value, parsed_url=self.url.split("/wiki")[0]
+                            )
+                            if (
+                                len(text.split("\n\n")) > 1
+                                or "WoW API" in text
+                                or "Hyperlinks" in text
+                                or "mainline" in text
+                                or "Wowprogramming" in text
+                                or "Townlong Yak" in text
+                            ):
                                 fields_values.remove(field_value)
                     used_fields_values = set()
                     for field_label in fields_labels:
                         if field_label.text.strip().lower() in ["patch changes"]:
                             continue
-                        _field_value = self._get_text(fields_values.pop(0), parsed_url=self.url.split("/wiki")[0])
+                        _field_value = self._get_text(
+                            fields_values.pop(0), parsed_url=self.url.split("/wiki")[0]
+                        )
                         while _field_value.replace(" ", "") in used_fields_values:
-                            _field_value = self._get_text(fields_values.pop(0), parsed_url=self.url.split("/wiki")[0])
+                            _field_value = self._get_text(
+                                fields_values.pop(0), parsed_url=self.url.split("/wiki")[0]
+                            )
                         used_fields_values.add(_field_value.replace(" ", ""))
                         lines = _field_value.split("\n")
                         field_value = (
@@ -1393,7 +1444,9 @@ class Source:
             if isinstance(child, NavigableString):
                 continue
             if child.name == "div":
-                if child.attrs.get("class") is not None and child.attrs.get("class")[0].startswith("highlight"):
+                if child.attrs.get("class") is not None and child.attrs.get("class")[0].startswith(
+                    "highlight"
+                ):
                     example = child.find("pre").text.strip()
                     if example not in examples:
                         examples.append(example)
@@ -1821,10 +1874,7 @@ class Source:
         #     elif f"discord.ext.commands.{name}" in self._raw_rtfm_cache_without_std:
         #         name = f"discord.ext.commands.{name}"
         documentation = discord.utils.get(self._docs_cache, name=name)
-        if (
-            self.name not in ["discordapi", "git", "warcraftapi"]
-            and documentation is None
-        ):
+        if self.name not in ["discordapi", "git", "warcraftapi"] and documentation is None:
             item = discord.utils.get(self._rtfm_cache.objects, name=name)
             location = item.uri
             if location.endswith("$"):

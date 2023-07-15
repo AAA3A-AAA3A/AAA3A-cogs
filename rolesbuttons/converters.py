@@ -30,9 +30,7 @@ class RoleHierarchyConverter(commands.RoleConverter):
 
     async def convert(self, ctx: commands.Context, argument: str) -> discord.Role:
         if not ctx.me.guild_permissions.manage_roles:
-            raise commands.BadArgument(
-                "I require manage roles permission to use this command."
-            )
+            raise commands.BadArgument("I require manage roles permission to use this command.")
         try:
             role = await commands.RoleConverter().convert(ctx, argument=argument)
         except commands.BadArgument:

@@ -68,7 +68,9 @@ class Recipe:
             url=self.author["url"],
             icon_url="https://forum.mtasa.com/uploads/monthly_2016_10/Anonyme.png.4060431ce866962fa496657f752d5613.png",
         )
-        embed.description = f"{self.description[:1250]}\n..." if len(self.description) > 1250 else self.description
+        embed.description = (
+            f"{self.description[:1250]}\n..." if len(self.description) > 1250 else self.description
+        )
         embed.add_field(name="Yield:", value=self._yield, inline=True)
         if self.rating:
             embed.add_field(

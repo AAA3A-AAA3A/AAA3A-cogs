@@ -38,8 +38,11 @@ BOOTABLES_TOOLS_UPDATE_ROLE = None
 TEST_GUILD = 886147551890399253
 TEST_CHANNEL = 905737223348047914
 
+
 def _(untranslated: str) -> str:  # `redgettext` will found these strings.
     return untranslated
+
+
 CUSTOM_COMMANDS = {
     "customtools": {
         "title": _(
@@ -704,7 +707,9 @@ class Medicat(Cog):
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message) -> None:
-        if await self.bot.cog_disabled_in_guild(cog=self, guild=message.guild) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
+        if await self.bot.cog_disabled_in_guild(
+            cog=self, guild=message.guild
+        ) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
             return
         if message.webhook_id is not None or message.author.bot:
             return

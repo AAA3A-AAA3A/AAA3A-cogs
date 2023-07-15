@@ -102,7 +102,9 @@ class ReactToCommand(Cog):
             return
         if payload.member.bot:
             return
-        if await self.bot.cog_disabled_in_guild(cog=self, guild=guild) or not await self.bot.allowed_by_whitelist_blacklist(who=payload.member):
+        if await self.bot.cog_disabled_in_guild(
+            cog=self, guild=guild
+        ) or not await self.bot.allowed_by_whitelist_blacklist(who=payload.member):
             return
         config = await self.config.guild(guild).react_commands.all()
         if f"{payload.channel_id}-{payload.message_id}" not in config:
@@ -157,7 +159,9 @@ class ReactToCommand(Cog):
             self.cache.remove(ctx)
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError, unhandled_by_cog: bool = False) -> None:
+    async def on_command_error(
+        self, ctx: commands.Context, error: commands.CommandError, unhandled_by_cog: bool = False
+    ) -> None:
         if ctx not in self.cache:
             return
         self.cache.remove(ctx)
@@ -260,9 +264,7 @@ class ReactToCommand(Cog):
             await message.add_reaction(emoji)
         except discord.HTTPException:
             raise commands.UserFeedbackCheckFailure(
-                _(
-                    "An error has occurred. It is possible that the emoji you provided is invalid."
-                )
+                _("An error has occurred. It is possible that the emoji you provided is invalid.")
             )
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:

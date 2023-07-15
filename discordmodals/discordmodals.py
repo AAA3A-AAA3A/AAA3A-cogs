@@ -5,10 +5,10 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import re
 from copy import deepcopy
 from functools import partial
 
-import re
 import yaml
 
 try:
@@ -35,7 +35,9 @@ class Emoji(commands.EmojiConverter):
 
 
 class RoleOrMemberConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.Union[discord.Role, discord.Member]:
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Union[discord.Role, discord.Member]:
         try:
             return await commands.RoleConverter().convert(ctx, argument=argument)
         except commands.BadArgument as e:
@@ -88,7 +90,9 @@ class YAMLConverter(commands.Converter):
                     ).format(arg=arg)
                 )
         if "emoji" in argument_dict["button"]:
-            argument_dict["button"]["emoji"] = await Emoji().convert(ctx, argument=argument_dict["button"]["emoji"])
+            argument_dict["button"]["emoji"] = await Emoji().convert(
+                ctx, argument=argument_dict["button"]["emoji"]
+            )
         if "style" in argument_dict["button"]:
             argument_dict["button"]["style"] = str(argument_dict["button"]["style"])
             try:
@@ -186,9 +190,7 @@ class YAMLConverter(commands.Converter):
         # channel
         if "channel" in argument_dict:
             argument_dict["channel"] = str(argument_dict["channel"])
-            channel = await commands.TextChannelConverter().convert(
-                ctx, argument_dict["channel"]
-            )
+            channel = await commands.TextChannelConverter().convert(ctx, argument_dict["channel"])
             if (
                 channel is not None
                 and hasattr(channel, "id")
@@ -213,7 +215,10 @@ class YAMLConverter(commands.Converter):
         if "pings" not in argument_dict:
             argument_dict["pings"] = None
         else:
-            argument_dict["pings"] = [(await RoleOrMemberConverter().convert(ctx, argument=ping.strip())).mention for ping in re.split(r",|;|\||-", str(argument_dict["pings"]))]
+            argument_dict["pings"] = [
+                (await RoleOrMemberConverter().convert(ctx, argument=ping.strip())).mention
+                for ping in re.split(r",|;|\||-", str(argument_dict["pings"]))
+            ]
         return argument_dict
 
 
@@ -279,7 +284,9 @@ class DiscordModals(Cog):
                             "emoji": None,
                             "custom_id": f"DiscordModals_{CogsUtils.generate_key(length=10)}",
                         }
-                        button_data.update(**guilds_data[guild]["modals"][modal]["button"]["buttons"][0])
+                        button_data.update(
+                            **guilds_data[guild]["modals"][modal]["button"]["buttons"][0]
+                        )
                         guilds_data[guild]["modals"][modal]["button"] = button_data
                         for key in ["members", "check", "function", "function_args"]:
                             if key in guilds_data[guild]["modals"][modal]["modal"]:
@@ -304,10 +311,10 @@ class DiscordModals(Cog):
                 try:
                     button = all_guilds[guild]["modals"][message]["button"]
                     if "custom_id" not in button:
-                        button[
-                            "custom_id"
-                        ] = f"DiscordModals_{CogsUtils.generate_key(length=10)}"
-                    button["style"] = discord.ButtonStyle(button["style"])  # if "style" in button else discord.ButtonStyle.secondary  # `style` can don't exist in modals after the data migration
+                        button["custom_id"] = f"DiscordModals_{CogsUtils.generate_key(length=10)}"
+                    button["style"] = discord.ButtonStyle(
+                        button["style"]
+                    )  # if "style" in button else discord.ButtonStyle.secondary  # `style` can don't exist in modals after the data migration
                     button = discord.ui.Button(**button)
                     button.callback = self.send_modal
                     view = discord.ui.View(timeout=None)
@@ -337,7 +344,9 @@ class DiscordModals(Cog):
             for _input in modal_config["inputs"]:
                 _input["style"] = discord.TextStyle(_input["style"])
                 text_input = discord.ui.TextInput(**_input)
-                text_input.max_length = 1024 if text_input.max_length is None else min(text_input.max_length, 1024)
+                text_input.max_length = (
+                    1024 if text_input.max_length is None else min(text_input.max_length, 1024)
+                )
                 inputs.append(text_input)
                 modal.add_item(text_input)
             modal.on_submit = partial(self.send_embed_with_responses, inputs=inputs)
@@ -372,7 +381,13 @@ class DiscordModals(Cog):
                 )
                 return
             channel_permissions = channel.permissions_for(interaction.guild.me)
-            if not all([channel_permissions.view_channel, channel_permissions.send_messages, channel_permissions.embed_links]):
+            if not all(
+                [
+                    channel_permissions.view_channel,
+                    channel_permissions.send_messages,
+                    channel_permissions.embed_links,
+                ]
+            ):
                 await interaction.followup.send(
                     _(
                         "I don't have sufficient permissions in the destination channel (view channel, send messages, send embeds). Please notify an administrator of this server."
@@ -383,7 +398,9 @@ class DiscordModals(Cog):
             embed: discord.Embed = discord.Embed()
             embed.title = config["title"]
             if not config.get("anonymous"):
-                embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar)
+                embed.set_author(
+                    name=interaction.user.display_name, icon_url=interaction.user.display_avatar
+                )
                 embed.color = interaction.user.color
             else:
                 embed.set_author(
@@ -400,7 +417,11 @@ class DiscordModals(Cog):
                 except Exception:
                     pass
             embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)
-            await channel.send(None if config.get("pings") is None else humanize_list(config.get("pings"))[:2000], embed=embed, allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=True))
+            await channel.send(
+                None if config.get("pings") is None else humanize_list(config.get("pings"))[:2000],
+                embed=embed,
+                allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=True),
+            )
         except Exception as e:
             self.log.error(
                 f"The Modal of the {interaction.message.guild.id}-{interaction.message.channel.id}-{interaction.message.id} message did not work properly.",

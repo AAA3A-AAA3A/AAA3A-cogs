@@ -12,7 +12,6 @@ from inspect import cleandoc
 
 import dateutil
 import pytz
-
 from redbot.core.utils.chat_formatting import humanize_list
 
 from .converters import (
@@ -22,7 +21,7 @@ from .converters import (
     TimeConverter,
     TimezoneConverter,
 )  # NOQA
-from .types import Content, Data, RepeatRule, Repeat, Reminder
+from .types import Content, Data, Reminder, Repeat, RepeatRule
 from .views import ReminderView
 
 # Credits:
@@ -306,7 +305,9 @@ class Reminders(Cog):
                     ctx, argument=time, content=message_or_text
                 )
                 try:
-                    message_or_text: discord.Message = await commands.MessageConverter().convert(ctx, argument=message_or_text)
+                    message_or_text: discord.Message = await commands.MessageConverter().convert(
+                        ctx, argument=message_or_text
+                    )
                 except commands.BadArgument:
                     pass
             else:
@@ -386,7 +387,9 @@ class Reminders(Cog):
         message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
-            reference=ctx.message.to_reference(fail_if_not_exists=False),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
+            reference=ctx.message.to_reference(
+                fail_if_not_exists=False
+            ),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
         if view is not None:
@@ -431,7 +434,9 @@ class Reminders(Cog):
                     ctx, argument=time, content=message_or_text
                 )
                 try:
-                    message_or_text: discord.Message = await commands.MessageConverter().convert(ctx, argument=message_or_text)
+                    message_or_text: discord.Message = await commands.MessageConverter().convert(
+                        ctx, argument=message_or_text
+                    )
                 except commands.BadArgument:
                     pass
             else:
@@ -492,12 +497,19 @@ class Reminders(Cog):
         else:
             targets = list(targets)
             if not destination.permissions_for(ctx.author).mention_everyone and (
-                len(targets) > 3
-                or any(isinstance(target, discord.Role) for target in targets)
+                len(targets) > 3 or any(isinstance(target, discord.Role) for target in targets)
             ):
-                raise commands.UserFeedbackCheckFailure(_("Since you don't have the `mention everyone` permission, you can't create a reminder that will mention more than 3 people or mention role(s)."))
+                raise commands.UserFeedbackCheckFailure(
+                    _(
+                        "Since you don't have the `mention everyone` permission, you can't create a reminder that will mention more than 3 people or mention role(s)."
+                    )
+                )
             if len(targets) > 10:
-                raise commands.UserFeedbackCheckFailure(_("Due to the message character limit, you can only mention a maximum of 10 users or roles."))
+                raise commands.UserFeedbackCheckFailure(
+                    _(
+                        "Due to the message character limit, you can only mention a maximum of 10 users or roles."
+                    )
+                )
         message_or_text = message_or_text or (
             ctx.message.reference.cached_message if ctx.message.reference is not None else None
         )
@@ -551,7 +563,9 @@ class Reminders(Cog):
         message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
-            reference=ctx.message.to_reference(fail_if_not_exists=False),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
+            reference=ctx.message.to_reference(
+                fail_if_not_exists=False
+            ),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(
                 everyone=False, users=False, roles=False, replied_user=False
             ),
@@ -602,7 +616,9 @@ class Reminders(Cog):
                 _("You're not allowed to create FIFO/commands reminders.")
             )
         try:
-            utc_now, expires_at, repeat, command = await TimeConverter().convert(ctx, argument=time, content=command)
+            utc_now, expires_at, repeat, command = await TimeConverter().convert(
+                ctx, argument=time, content=command
+            )
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if repeat is not None:
@@ -649,7 +665,11 @@ class Reminders(Cog):
                 _("You can't execute this command, in this context.")
             )
         elif context.command.qualified_name in ["shutdown", "restart", "load", "unload", "reload"]:
-            raise commands.UserFeedbackCheckFailure(_("The command `{command.qualified_name}` can't be scheduled, because it's a suspicious command.").format(command=context.command))
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "The command `{command.qualified_name}` can't be scheduled, because it's a suspicious command."
+                ).format(command=context.command)
+            )
         content = {"type": "command", "command": command, "command_invoker": ctx.author.id}
         reminder = await self.create_reminder(
             ctx,
@@ -666,7 +686,9 @@ class Reminders(Cog):
         message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
-            reference=ctx.message.to_reference(fail_if_not_exists=False),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
+            reference=ctx.message.to_reference(
+                fail_if_not_exists=False
+            ),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
         if view is not None:
@@ -706,7 +728,9 @@ class Reminders(Cog):
                 ).format(minimum_user_reminders=minimum_user_reminders)
             )
         try:
-            utc_now, expires_at, repeat, text = await TimeConverter().convert(ctx, argument=time, content=text)
+            utc_now, expires_at, repeat, text = await TimeConverter().convert(
+                ctx, argument=time, content=text
+            )
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if repeat is not None:
@@ -737,7 +761,10 @@ class Reminders(Cog):
             raise commands.UserFeedbackCheckFailure(_("I can't send messages in this channel."))
         destination_user_permissions = destination.permissions_for(ctx.author)
         destination_bot_permissions = destination.permissions_for(ctx.me)
-        if not destination_user_permissions.send_messages or not destination_bot_permissions.send_messages:
+        if (
+            not destination_user_permissions.send_messages
+            or not destination_bot_permissions.send_messages
+        ):
             raise commands.UserFeedbackCheckFailure(
                 _("You can't or I can't send messages in this channel.")
             )
@@ -763,7 +790,9 @@ class Reminders(Cog):
         message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
-            reference=ctx.message.to_reference(fail_if_not_exists=False),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
+            reference=ctx.message.to_reference(
+                fail_if_not_exists=False
+            ),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
         if view is not None:
@@ -809,7 +838,9 @@ class Reminders(Cog):
             • Check https://crontab.guru/.
             """
         )
-        embed: discord.Embed = discord.Embed(title="Time parsing tips", color=await ctx.embed_color())
+        embed: discord.Embed = discord.Embed(
+            title="Time parsing tips", color=await ctx.embed_color()
+        )
         embed.description = cleandoc(tips)
         await ctx.send(embed=embed)
 
@@ -840,7 +871,11 @@ class Reminders(Cog):
         if ctx.author.id not in self.cache or not (reminders := self.cache[ctx.author.id]):
             raise commands.BadArgument(_("You haven't any reminders."))
         if content_type is not None:
-            reminders = {reminder_id: reminder for reminder_id, reminder in reminders.items() if reminder.content["type"] == content_type}
+            reminders = {
+                reminder_id: reminder
+                for reminder_id, reminder in reminders.items()
+                if reminder.content["type"] == content_type
+            }
         if sort == "expire":
             reminders = list(sorted(reminders.values(), key=lambda r: r.next_expires_at))
         elif sort == "created":
@@ -851,14 +886,25 @@ class Reminders(Cog):
         _reminders = reminders.copy()
         while _reminders != []:
             li = _reminders[: 15 if card else 5]
-            _reminders = _reminders[15 if card else 5:]
+            _reminders = _reminders[15 if card else 5 :]
             lists.append(li)
         embeds = []
         for li in lists:
             embed: discord.Embed = discord.Embed(
-                title=_("Your Reminders") + (_(" (Content type `{content_type}`)").format(content_type=content_type) if content_type is not None else ""),
-                description=_("You have {len_reminders} reminders{of_this_content_type}. Use `{clean_prefix}reminder edit #ID` to edit a reminder.").format(
-                    len_reminders=len(reminders), of_this_content_type=_(" of this content type") if content_type is not None else "", clean_prefix=ctx.clean_prefix
+                title=_("Your Reminders")
+                + (
+                    _(" (Content type `{content_type}`)").format(content_type=content_type)
+                    if content_type is not None
+                    else ""
+                ),
+                description=_(
+                    "You have {len_reminders} reminders{of_this_content_type}. Use `{clean_prefix}reminder edit #ID` to edit a reminder."
+                ).format(
+                    len_reminders=len(reminders),
+                    of_this_content_type=_(" of this content type")
+                    if content_type is not None
+                    else "",
+                    clean_prefix=ctx.clean_prefix,
                 ),
                 color=await ctx.embed_color(),
             )
@@ -871,7 +917,9 @@ class Reminders(Cog):
         await Menu(pages=embeds).start(ctx)
 
     @reminder.command(aliases=["delete", "-"])
-    async def remove(self, ctx: commands.Context, reminders: commands.Greedy[ExistingReminderConverter]) -> None:
+    async def remove(
+        self, ctx: commands.Context, reminders: commands.Greedy[ExistingReminderConverter]
+    ) -> None:
         """Remove existing Reminder(s) from their IDs.
 
         - Use `last` to remove your last created reminder.
@@ -1134,9 +1182,7 @@ class Reminders(Cog):
             )
         new_global_data = await self.config.all()
         new_global_data["total_sent"] += old_global_data.get("total_sent", 0)
-        new_global_data["me_too"] = old_global_data.get(
-            "me_too", await self.config.me_too()
-        )
+        new_global_data["me_too"] = old_global_data.get("me_too", await self.config.me_too())
         new_global_data["maximum_user_reminders"] = old_global_data.get(
             "max_user_reminders", await self.config.maximum_user_reminders()
         )
@@ -1174,7 +1220,15 @@ class Reminders(Cog):
                             reminder_data["expires"], tz=datetime.timezone.utc
                         ),
                         repeat=Repeat.from_json(
-                            [{"type": "sample", "value": reminder_data["repeat"], "start_trigger": None, "first_trigger": None, "last_trigger": None}]
+                            [
+                                {
+                                    "type": "sample",
+                                    "value": reminder_data["repeat"],
+                                    "start_trigger": None,
+                                    "first_trigger": None,
+                                    "last_trigger": None,
+                                }
+                            ]
                         )
                         if reminder_data.get("repeat")
                         else None,
@@ -1201,16 +1255,46 @@ class Reminders(Cog):
                     triggers = []
                     for trigger in reminder_data["data"]["triggers"]:
                         if trigger["type"] == "interval":
-                            triggers.append({"type": "sample", "value": trigger["time_data"], "start_trigger": None, "first_trigger": None, "last_trigger": None})
+                            triggers.append(
+                                {
+                                    "type": "sample",
+                                    "value": trigger["time_data"],
+                                    "start_trigger": None,
+                                    "first_trigger": None,
+                                    "last_trigger": None,
+                                }
+                            )
                         elif trigger["type"] == "date":
-                            triggers.append({"type": "date", "value": int(dateutil.parser.isoparse(trigger["time_data"]).replace(tzinfo=datetime.timezone.utc).timestamp()), "start_trigger": None, "first_trigger": None, "last_trigger": None})
+                            triggers.append(
+                                {
+                                    "type": "date",
+                                    "value": int(
+                                        dateutil.parser.isoparse(trigger["time_data"])
+                                        .replace(tzinfo=datetime.timezone.utc)
+                                        .timestamp()
+                                    ),
+                                    "start_trigger": None,
+                                    "first_trigger": None,
+                                    "last_trigger": None,
+                                }
+                            )
                         elif trigger["type"] == "cron":
-                            triggers.append({"type": "cron", "value": trigger["time_data"], "start_trigger": None, "first_trigger": None, "last_trigger": None})
+                            triggers.append(
+                                {
+                                    "type": "cron",
+                                    "value": trigger["time_data"],
+                                    "start_trigger": None,
+                                    "first_trigger": None,
+                                    "last_trigger": None,
+                                }
+                            )
                             if trigger["tzinfo"] and timezone is None:
                                 timezone = trigger["tzinfo"]
                                 await self.config.user_from_id(user_id).timezone.set(timezone)
                     repeat = Repeat.from_json(triggers)
-                    expires_at = await repeat.next_trigger(last_expires_at=utc_now, utc_now=utc_now, timezone=timezone or "UTC")
+                    expires_at = await repeat.next_trigger(
+                        last_expires_at=utc_now, utc_now=utc_now, timezone=timezone or "UTC"
+                    )
                     if expires_at < utc_now:
                         continue
                     reminder = Reminder(
@@ -1220,41 +1304,56 @@ class Reminders(Cog):
                         jump_url=f"https://discord.com/channels/{reminder_data['guild_id']}/{reminder_data['channel_id']}/0",
                         snooze=False,
                         me_too=False,
-                        content={"type": "command", "command": reminder_data["data"]["command_str"], "command_invoker": user_id},
+                        content={
+                            "type": "command",
+                            "command": reminder_data["data"]["command_str"],
+                            "command_invoker": user_id,
+                        },
                         destination=reminder_data["channel_id"],
                         targets=None,
                         created_at=utc_now,
                         expires_at=expires_at,
                         last_expires_at=None,
                         next_expires_at=expires_at,
-                        repeat=repeat
+                        repeat=repeat,
                     )
                     await reminder.save()
         await ctx.send(_("Data successfully migrated from FIFO by Fox."))
 
     @commands.Cog.listener()
-    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+    async def on_assistant_cog_add(
+        self, assistant_cog: typing.Optional[commands.Cog] = None
+    ) -> None:  # Vert's Assistant integration/third party.
         if assistant_cog is None:
             return self.get_existing_user_reminders_for_assistant
         schema = {
             "name": "get_existing_user_reminders_for_assistant",
             "description": "Get the 5 next existing reminders for the user and their content.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                },
-                "required": [
-                ]
-            },
+            "parameters": {"type": "object", "properties": {}, "required": []},
         }
         await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
 
-    async def get_existing_user_reminders_for_assistant(self, user: typing.Union[discord.Member, discord.User], *args, **kwargs):
+    async def get_existing_user_reminders_for_assistant(
+        self, user: typing.Union[discord.Member, discord.User], *args, **kwargs
+    ):
         if not (reminders := self.cache.get(user.id, {})):
             return "This user haven't any reminders."
-        reminders = sorted([reminder for reminder in reminders.values() if reminder.content["type"] in ["text", "message"]], key=lambda reminder: reminder.next_expires_at)[:5]
+        reminders = sorted(
+            [
+                reminder
+                for reminder in reminders.values()
+                if reminder.content["type"] in ["text", "message"]
+            ],
+            key=lambda reminder: reminder.next_expires_at,
+        )[:5]
         data = {
-            "Next 5 existing user's Reminders": "\n\n" + "\n\n".join([f"Reminder #{reminder.id}:\n{reminder.get_info().replace('**', '')}" for reminder in reminders]),
+            "Next 5 existing user's Reminders": "\n\n"
+            + "\n\n".join(
+                [
+                    f"Reminder #{reminder.id}:\n{reminder.get_info().replace('**', '')}"
+                    for reminder in reminders
+                ]
+            ),
             # "Next 5 existing user's Reminders": "\n" + "\n".join([f"• Reminder #{reminder.id}: {reminder.to_json(clean=True)}" for reminder in reminders]),
         }
         return [f"{key}: {value}\n" for key, value in data.items() if value is not None]

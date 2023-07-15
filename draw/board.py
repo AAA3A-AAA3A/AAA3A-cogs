@@ -41,7 +41,11 @@ class Board:
         *,
         height: typing.Optional[int] = 9,
         width: typing.Optional[int] = 9,
-        background: typing.Optional[typing.Literal["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "transparent"]] = MAIN_COLORS[-1],  # Literal[*MAIN_COLORS]
+        background: typing.Optional[
+            typing.Literal["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "transparent"]
+        ] = MAIN_COLORS[
+            -1
+        ],  # Literal[*MAIN_COLORS]
     ) -> None:
         self.cog: commands.Cog = cog
 
@@ -137,7 +141,9 @@ class Board:
                     if cursor == "transparent":
                         x += size + sp
                         continue
-                    image: Image.Image = await self.cog.get_pixel(MAIN_COLORS_DICT.get(cursor, cursor))
+                    image: Image.Image = await self.cog.get_pixel(
+                        MAIN_COLORS_DICT.get(cursor, cursor)
+                    )
                 elif _x == 0 and _y > 1:
                     emoji = row_labels[_y - 2]
                     image: Image.Image = await self.cog.get_pixel(emoji)
@@ -176,7 +182,9 @@ class Board:
                                 )
                         x += size + sp
                         continue
-                    image: Image.Image = await self.cog.get_pixel(MAIN_COLORS_DICT.get(pixel, pixel))
+                    image: Image.Image = await self.cog.get_pixel(
+                        MAIN_COLORS_DICT.get(pixel, pixel)
+                    )
                 image = image.resize((size, size))
                 mask = Image.new("L", image.size, 0)
                 d = ImageDraw.Draw(mask)
@@ -237,7 +245,9 @@ class Board:
         *,
         height: typing.Optional[int] = None,
         width: typing.Optional[int] = None,
-        background: typing.Optional[typing.Literal["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "transparent"]] = None,  # typing.Literal[*MAIN_COLORS]
+        background: typing.Optional[
+            typing.Literal["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "transparent"]
+        ] = None,  # typing.Literal[*MAIN_COLORS]
     ) -> None:
         height = height or self.height
         width = width or self.width

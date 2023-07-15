@@ -4,7 +4,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from .utils import EmojiLabelDescriptionValueConverter, Emoji
+from .utils import Emoji, EmojiLabelDescriptionValueConverter
 
 _ = Translator("TicketTool", __file__)
 

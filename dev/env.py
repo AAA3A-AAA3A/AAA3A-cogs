@@ -16,20 +16,13 @@ import sys
 import textwrap
 import time
 import traceback
+from contextvars import ContextVar
 from functools import partial
 from io import StringIO
 
 import aiohttp
 import redbot
 import rich
-from redbot.core import Config
-from redbot.core import utils as redutils
-from redbot.core.utils import chat_formatting as cf
-from redbot.core.utils.chat_formatting import box
-from redbot.core import dev_commands
-from rich.console import Console
-from rich.table import Table
-
 from AAA3A_utils.cog import Cog
 from AAA3A_utils.cogsutils import CogsUtils
 from AAA3A_utils.context import Context, is_dev
@@ -49,8 +42,13 @@ from AAA3A_utils.views import (
     Select,
     UserSelect,
 )  # NOQA
+from redbot.core import Config, dev_commands
+from redbot.core import utils as redutils
+from redbot.core.utils import chat_formatting as cf
+from redbot.core.utils.chat_formatting import box
+from rich.console import Console
+from rich.table import Table
 
-from contextvars import ContextVar
 ctxconsole = ContextVar[rich.console.Console]("ctxconsole")
 
 
@@ -196,7 +194,9 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "devenv": env,
                 "devspace": dev_space,
                 "dev_space": dev_space,
-                "source": lambda _object: env["print"](textwrap.dedent(inspect.getsource(_object))),
+                "source": lambda _object: env["print"](
+                    textwrap.dedent(inspect.getsource(_object))
+                ),
                 "gs": lambda _object: env["print"](textwrap.dedent(inspect.getsource(_object))),
             }
         )

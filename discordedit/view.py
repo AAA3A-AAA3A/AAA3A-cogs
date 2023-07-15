@@ -10,9 +10,14 @@ import inspect
 
 from redbot.core.utils.chat_formatting import box
 
+
 def _(untranslated: str) -> str:  # `redgettext` will found these strings.
     return untranslated
-ERROR_MESSAGE = _("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}")
+
+
+ERROR_MESSAGE = _(
+    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+)
 
 _ = Translator("DiscordEdit", __file__)
 
@@ -21,7 +26,9 @@ class DiscordEditView(discord.ui.View):
     def __init__(
         self,
         cog: commands.Cog,
-        _object: typing.Union[discord.Guild, discord.Role, discord.TextChannel, discord.Thread, discord.VoiceChannel],
+        _object: typing.Union[
+            discord.Guild, discord.Role, discord.TextChannel, discord.Thread, discord.VoiceChannel
+        ],
         parameters: typing.Dict[str, typing.Dict[str, typing.Any]],
         get_embed_function: typing.Any,
         audit_log_reason: str,
@@ -31,7 +38,9 @@ class DiscordEditView(discord.ui.View):
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = None
 
-        self._object: typing.Union[discord.Guild, discord.Role, discord.TextChannel, discord.Thread, discord.VoiceChannel] = _object
+        self._object: typing.Union[
+            discord.Guild, discord.Role, discord.TextChannel, discord.Thread, discord.VoiceChannel
+        ] = _object
         self.parameters: typing.Dict[str, typing.Dict[str, typing.Any]] = parameters
         self.get_embed_function: typing.Any = get_embed_function
         self.audit_log_reason: str = audit_log_reason
@@ -53,7 +62,12 @@ class DiscordEditView(discord.ui.View):
             parameters_to_split = parameters_to_split[5:]
             self._splitted_parameters.append(li)
         for button_index in range(len(self._splitted_parameters)):
-            button = discord.ui.Button(label=f"Edit {self._object_qualified_name} {button_index + 1}"if len(self._splitted_parameters) > 1 else f"Edit {self._object_qualified_name}", style=discord.ButtonStyle.secondary)
+            button = discord.ui.Button(
+                label=f"Edit {self._object_qualified_name} {button_index + 1}"
+                if len(self._splitted_parameters) > 1
+                else f"Edit {self._object_qualified_name}",
+                style=discord.ButtonStyle.secondary,
+            )
             button.callback = functools.partial(self.edit_object_button, button_index=button_index)
             self.add_item(button)
 
@@ -63,7 +77,9 @@ class DiscordEditView(discord.ui.View):
         ):
             self.add_item(self.delete_button)
         self.add_item(self.close_page)
-        self._message: discord.Message = await self.ctx.send(embed=self.get_embed_function(), view=self)
+        self._message: discord.Message = await self.ctx.send(
+            embed=self.get_embed_function(), view=self
+        )
 
         await self._ready.wait()
         return self._message
@@ -90,7 +106,9 @@ class DiscordEditView(discord.ui.View):
         self._ready.set()
 
     @discord.ui.button(label="Delete Object", style=discord.ButtonStyle.danger)
-    async def delete_button(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    async def delete_button(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         await interaction.response.defer()
         ctx = await CogsUtils.invoke_command(
             bot=interaction.client,
@@ -98,9 +116,7 @@ class DiscordEditView(discord.ui.View):
             channel=interaction.channel,
             command=f"edit{self._object_qualified_name.replace(' ', '').lower()} delete",
         )
-        if not await discord.utils.async_all(
-            check(ctx) for check in ctx.command.checks
-        ):
+        if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
             await interaction.followup.send(
                 _("You are not allowed to execute this command."), ephemeral=True
             )
@@ -121,7 +137,9 @@ class DiscordEditView(discord.ui.View):
             pass
         self._ready.set()
 
-    async def edit_object_button(self, interaction: discord.Interaction, button_index: int) -> None:
+    async def edit_object_button(
+        self, interaction: discord.Interaction, button_index: int
+    ) -> None:
         modal: discord.ui.Modal = discord.ui.Modal(title=f"Edit {self._object_qualified_name}")
         modal.on_submit = lambda interaction: interaction.response.defer()
         text_inputs: typing.Dict[str, discord.ui.TextInput] = {}
@@ -130,7 +148,16 @@ class DiscordEditView(discord.ui.View):
                 label=parameter.replace("_", " ").title(),
                 style=discord.TextStyle.short,
                 placeholder=repr(self.parameters[parameter]["converter"]),
-                default=str(attribute) if (attribute := getattr(self._object, self.parameters[parameter].get("attribute_name", parameter), None)) is not None else None,
+                default=str(attribute)
+                if (
+                    attribute := getattr(
+                        self._object,
+                        self.parameters[parameter].get("attribute_name", parameter),
+                        None,
+                    )
+                )
+                is not None
+                else None,
                 required=False,
             )
             text_inputs[parameter] = text_input
@@ -172,9 +199,7 @@ class DiscordEditView(discord.ui.View):
                 reason=self.audit_log_reason,
             )
         except discord.HTTPException as e:
-            await interaction.followup.send(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
-            )
+            await interaction.followup.send(_(ERROR_MESSAGE).format(error=box(e, lang="py")))
         else:
             try:
                 await interaction.message.edit(embed=self.get_embed_function())

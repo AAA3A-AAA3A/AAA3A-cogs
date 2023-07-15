@@ -113,13 +113,24 @@ class MemberPrefix(Cog):
         file = io.BytesIO(str(data).encode(encoding="utf-8"))
         return {f"{self.qualified_name}.json": file}
 
-    async def prefix_manager(self, bot: Red, message: typing.Union[discord.Message, NotMessage]) -> typing.List[str]:
-        if not isinstance(message, discord.Message) or message.guild is None or await bot.cog_disabled_in_guild(cog=self, guild=message.guild) or not await bot.allowed_by_whitelist_blacklist(who=message.author):
+    async def prefix_manager(
+        self, bot: Red, message: typing.Union[discord.Message, NotMessage]
+    ) -> typing.List[str]:
+        if (
+            not isinstance(message, discord.Message)
+            or message.guild is None
+            or await bot.cog_disabled_in_guild(cog=self, guild=message.guild)
+            or not await bot.allowed_by_whitelist_blacklist(who=message.author)
+        ):
             return await self.original_prefix_manager(bot, message)
-        custom_prefixes = await self.config.member_from_ids(message.guild.id, message.author.id).custom_prefixes()
+        custom_prefixes = await self.config.member_from_ids(
+            message.guild.id, message.author.id
+        ).custom_prefixes()
         if custom_prefixes == []:
             return await self.original_prefix_manager(bot, message)
-        if await self.config.use_normal_prefixes():  # Always `True` because the setting has been removed.
+        if (
+            await self.config.use_normal_prefixes()
+        ):  # Always `True` because the setting has been removed.
             prefixes = await bot._prefix_cache.get_prefixes(message.guild)
         prefixes.extend(custom_prefixes)
         prefixes = sorted(prefixes, reverse=True)
@@ -161,9 +172,17 @@ class MemberPrefix(Cog):
             )
         await self.config.member(ctx.author).custom_prefixes.set(prefixes)
         if len(prefixes) == 1:
-            await ctx.send(_("Prefix for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."))
+            await ctx.send(
+                _(
+                    "Prefix for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."
+                )
+            )
         else:
-            await ctx.send(_("Prefixes for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."))
+            await ctx.send(
+                _(
+                    "Prefixes for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."
+                )
+            )
 
     @commands.is_owner()
     @commands.guild_only()
@@ -172,7 +191,9 @@ class MemberPrefix(Cog):
         """Configure MemberPrefix."""
 
     @configuration.command()
-    async def resetmemberprefix(self, ctx: commands.Context, guild: discord.Guild, user: discord.User) -> None:
+    async def resetmemberprefix(
+        self, ctx: commands.Context, guild: discord.Guild, user: discord.User
+    ) -> None:
         """Clear prefixes for a specified member in a specified server."""
         await self.config.member_from_ids(guild.id, user.id).clear()
         await ctx.send(_("Prefixes cleared for this member in this guild."))

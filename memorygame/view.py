@@ -50,9 +50,7 @@ class MemoryGameView(discord.ui.View):
         for row, _list in enumerate(self._solution_display):
             for emoji in _list:
                 if emoji != "\u200c":
-                    custom_id = CogsUtils.generate_key(
-                        length=5, existing_keys=self._custom_ids
-                    )
+                    custom_id = CogsUtils.generate_key(length=5, existing_keys=self._custom_ids)
                     self._custom_ids[custom_id] = emoji
                 else:
                     custom_id = emoji
@@ -235,7 +233,9 @@ class MemoryGameView(discord.ui.View):
             "You won in {game_time} seconds, with {tries} tries and {wrong_matches} wrong matches!"
         ).format(game_time=game_time, tries=self._tries, wrong_matches=self._wrong_matches)
         if final_prize is not None:
-            embed.description += _(" You win {final_prize} credits on the bank economy system!").format(final_prize=final_prize)
+            embed.description += _(
+                " You win {final_prize} credits on the bank economy system!"
+            ).format(final_prize=final_prize)
         self._message: discord.Message = await self._message.edit(embed=embed, view=self)
         await self.on_timeout()
         self.stop()

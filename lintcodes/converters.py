@@ -26,6 +26,7 @@ class Flake8FlagsConverter(
     def to_str(self) -> str:
         def validate_flake8_code(code: str) -> typing.List[str]:
             return re.compile(r"([A-Z]\d{2,4})").findall(code)
+
         cmd_str = ""
 
         if self.count:
@@ -74,6 +75,7 @@ class PyLintFlagsConverter(
     def validate_flag(self) -> str:
         def validate_pylint_code(code: str) -> typing.List[str]:
             return re.compile(r"([A-Z]\d{4})").findall(code)
+
         cmd_str = ""
 
         if self.confidence:
@@ -350,6 +352,7 @@ class BanditFlagsConverter(
     def to_str(self) -> str:
         def validate_bandit_code(code: str) -> typing.List[str]:
             return re.compile(r"([A-Z]\d{2,3})").findall(code)
+
         cmd_str = ""
 
         if self.read:
@@ -404,6 +407,7 @@ class RuffFlagsConverter(
     def to_str(self) -> str:
         def validate_Ruff_code(code: str) -> typing.List[str]:
             return re.compile(r"([A-Z]\d{2,4})").findall(code)
+
         cmd_str = " "
 
         if self.ignore:

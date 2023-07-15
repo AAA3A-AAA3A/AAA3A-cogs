@@ -24,9 +24,14 @@ TimedeltaConverter = get_timedelta_converter(
     minimum=datetime.timedelta(seconds=0),
 )
 
+
 def _(untranslated: str) -> str:  # `redgettext` will found these strings.
     return untranslated
-ERROR_MESSAGE = _("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}")
+
+
+ERROR_MESSAGE = _(
+    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+)
 
 _ = Translator("DiscordEdit", __file__)
 
@@ -69,7 +74,9 @@ class EditThread(Cog):
     def __init__(self, bot: Red) -> None:  # Never executed except manually.
         super().__init__(bot=bot)
 
-    async def check_thread(self, ctx: commands.Context, thread: typing.Optional[discord.Thread]) -> bool:
+    async def check_thread(
+        self, ctx: commands.Context, thread: typing.Optional[discord.Thread]
+    ) -> bool:
         # if (
         #     not thread.permissions_for(ctx.author).manage_channels
         #     and ctx.author.id != ctx.guild.owner.id
@@ -108,7 +115,7 @@ class EditThread(Cog):
         name: commands.Range[str, 1, 100],
     ) -> None:
         """Create a thread.
-        
+
         You'll join it automatically.
         """
         if channel is None:
@@ -150,7 +157,10 @@ class EditThread(Cog):
 
     @editthread.command(name="name")
     async def editthread_name(
-        self, ctx: commands.Context, thread: typing.Optional[discord.Thread], name: commands.Range[str, 1, 100]
+        self,
+        ctx: commands.Context,
+        thread: typing.Optional[discord.Thread],
+        name: commands.Range[str, 1, 100],
     ) -> None:
         """Edit thread name."""
         if thread is None:
@@ -241,7 +251,10 @@ class EditThread(Cog):
 
     @editthread.command(name="invitable")
     async def editthread_invitable(
-        self, ctx: commands.Context, thread: typing.Optional[discord.Thread], invitable: bool = None
+        self,
+        ctx: commands.Context,
+        thread: typing.Optional[discord.Thread],
+        invitable: bool = None,
     ) -> None:
         """Edit thread invitable."""
         if thread is None:
@@ -290,7 +303,10 @@ class EditThread(Cog):
 
     @editthread.command(name="slowmodedelay", aliases=["slowmode_delay"])
     async def editthread_slowmode_delay(
-        self, ctx: commands.Context, thread: typing.Optional[discord.Thread], slowmode_delay: TimedeltaConverter
+        self,
+        ctx: commands.Context,
+        thread: typing.Optional[discord.Thread],
+        slowmode_delay: TimedeltaConverter,
     ) -> None:
         """Edit thread slowmode delay."""
         if thread is None:
@@ -343,7 +359,10 @@ class EditThread(Cog):
 
     @editthread.command(name="adduser", aliases=["addmember", "add_user", "add_member"])
     async def editthread_add_user(
-        self, ctx: commands.Context, thread: typing.Optional[discord.Thread], member: discord.Member
+        self,
+        ctx: commands.Context,
+        thread: typing.Optional[discord.Thread],
+        member: discord.Member,
     ) -> None:
         """Add member to thread."""
         if thread is None:
@@ -362,9 +381,14 @@ class EditThread(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editthread.command(name="removeuser", aliases=["removemember", "remove_user", "remove_member"])
+    @editthread.command(
+        name="removeuser", aliases=["removemember", "remove_user", "remove_member"]
+    )
     async def editthread_remove_user(
-        self, ctx: commands.Context, thread: typing.Optional[discord.Thread], member: discord.Member
+        self,
+        ctx: commands.Context,
+        thread: typing.Optional[discord.Thread],
+        member: discord.Member,
     ) -> None:
         """Remove member from thread."""
         if thread is None:
@@ -410,9 +434,7 @@ class EditThread(Cog):
                 content = f"{ctx.author.mention} " + _(
                     "Do you really want to delete the thread {thread.mention} ({thread.id})?"
                 ).format(thread=thread)
-            if not await CogsUtils.ConfirmationAsk(
-                ctx, content=content, embed=embed
-            ):
+            if not await CogsUtils.ConfirmationAsk(ctx, content=content, embed=embed):
                 await CogsUtils.delete_message(ctx.message)
                 return
         try:
@@ -423,11 +445,7 @@ class EditThread(Cog):
             )
 
     @editthread.command(name="view", aliases=["-"])
-    async def editthread_view(
-        self,
-        ctx: commands.Context,
-        thread: discord.Thread = None
-    ) -> None:
+    async def editthread_view(self, ctx: commands.Context, thread: discord.Thread = None) -> None:
         """View and edit thread."""
         if thread is None:
             if isinstance(ctx.channel, discord.Thread):
@@ -449,9 +467,17 @@ class EditThread(Cog):
         }
 
         def get_embed() -> discord.Embed:
-            embed: discord.Embed = discord.Embed(title=f"Thread #{thread.name} ({thread.id})", color=embed_color)
+            embed: discord.Embed = discord.Embed(
+                title=f"Thread #{thread.name} ({thread.id})", color=embed_color
+            )
             embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
-            embed.description = "\n".join([f"• `{parameter}`: {repr(getattr(thread, parameters[parameter].get('attribute_name', parameter)))}" for parameter in parameters if hasattr(thread, parameter)])
+            embed.description = "\n".join(
+                [
+                    f"• `{parameter}`: {repr(getattr(thread, parameters[parameter].get('attribute_name', parameter)))}"
+                    for parameter in parameters
+                    if hasattr(thread, parameter)
+                ]
+            )
             return embed
 
         await DiscordEditView(

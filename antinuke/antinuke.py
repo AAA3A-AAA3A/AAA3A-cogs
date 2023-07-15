@@ -261,9 +261,7 @@ class AntiNuke(Cog, DashboardIntegration):
             old_roles = config["old_roles"]
             old_roles = [ctx.guild.get_role(r) for r in old_roles]
             if old_roles := [
-                r
-                for r in old_roles
-                if r.position < ctx.me.top_role.position and not r.managed
+                r for r in old_roles if r.position < ctx.me.top_role.position and not r.managed
             ]:
                 # await user.edit(roles=old_roles, reason=f"All former roles of {user} ({user.id}) have been restored at the request of the server owner.")
                 await user.add_roles(

@@ -12,7 +12,6 @@ import textwrap
 
 import aiohttp
 from fuzzywuzzy import fuzz
-
 from redbot.core.utils.chat_formatting import box, humanize_list, pagify
 
 from .data import LANGUAGES_FILES_EXTENSIONS, LANGUAGES_IDENTIFIERS, LANGUAGES_IMAGES
@@ -292,11 +291,11 @@ class RunCode(Cog):
         if ctx.interaction is None:
             begin = code.find("```")
             language_identifier = code[
-                begin + 3: code[begin + 3:].find("\n") + begin + 3
+                begin + 3 : code[begin + 3 :].find("\n") + begin + 3
             ].lower()
             no_code = False
             try:
-                end = code[begin + 3 + len(language_identifier):].rfind("```")
+                end = code[begin + 3 + len(language_identifier) :].rfind("```")
             except IndexError:
                 no_code = True
             if begin == -1 or end == -1:
@@ -322,7 +321,7 @@ class RunCode(Cog):
             if len(lines) == 1 and lines[0] == "":
                 lines = []
             _code = code[
-                (begin + 4 + len(language_identifier)): (
+                (begin + 4 + len(language_identifier)) : (
                     end + begin + 2 + len(language_identifier)
                 )
             ]
@@ -333,7 +332,9 @@ class RunCode(Cog):
             "python": "async def func():\ncode",
             "c": "#include <stdio.h>\nint main() {code}",
             "cpp": "#include <iostream>\nint main() {code}",
-            "cs": "using System;class Main {static void Main(string[] args) {code}}" if ctx.command == self.runtio else "using System;class Program {static void Main(string[] args) {code}}",
+            "cs": "using System;class Main {static void Main(string[] args) {code}}"
+            if ctx.command == self.runtio
+            else "using System;class Program {static void Main(string[] args) {code}}",
             "java": "public class prog {public static void main(String[] args) {code}}",  # Main.java
             "rust": "fn main() {code}",
             "d": "import std.stdio; void main(){code}",

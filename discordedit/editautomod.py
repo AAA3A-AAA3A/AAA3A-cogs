@@ -10,11 +10,17 @@ import json
 
 from redbot.core.utils.chat_formatting import box, humanize_list, pagify
 
+
 def _(untranslated: str) -> str:  # `redgettext` will found these strings.
     return untranslated
-ERROR_MESSAGE = _("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}")
+
+
+ERROR_MESSAGE = _(
+    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+)
 
 _ = Translator("DiscordEdit", __file__)
+
 
 class AutoModRuleConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> discord.AutoModRule:
@@ -327,9 +333,7 @@ class EditAutoMod(Cog):
                 content = f"{ctx.author.mention} " + _(
                     "Do you really want to delete the AutoMod rule {rule.name} ({rule.id}) in {guild.name} ({guild.id})?"
                 ).format(rule=rule, guild=ctx.guild)
-            if not await CogsUtils.ConfirmationAsk(
-                ctx, content=content, embed=embed
-            ):
+            if not await CogsUtils.ConfirmationAsk(ctx, content=content, embed=embed):
                 await CogsUtils.delete_message(ctx.message)
                 return
         try:

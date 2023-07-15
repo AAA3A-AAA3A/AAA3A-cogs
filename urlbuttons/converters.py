@@ -4,6 +4,7 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import re
+
 import validators
 
 try:
@@ -15,9 +16,7 @@ _ = Translator("UrlButtons", __file__)
 
 
 class UrlConverter(commands.Converter):
-    async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> str:
+    async def convert(self, ctx: commands.Context, argument: str) -> str:
         if argument.startswith("<") and argument.endswith(">"):
             argument = argument[1:-1]
         try:

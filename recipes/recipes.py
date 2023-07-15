@@ -12,7 +12,6 @@ from urllib.parse import quote_plus, unquote_plus
 
 import aiohttp
 from bs4 import BeautifulSoup
-
 from redbot.core.utils.chat_formatting import box, humanize_list
 
 from .types import Recipe, SearchResults
@@ -114,7 +113,10 @@ class Recipes(Cog):
             if "aggregateRating" in json_content
             else None,
             images_urls=json_content["image"],
-            ingredients=[unquote(ingredient).lstrip("<em>").rstrip("</em>") for ingredient in json_content["recipeIngredient"]],
+            ingredients=[
+                unquote(ingredient).lstrip("<em>").rstrip("</em>")
+                for ingredient in json_content["recipeIngredient"]
+            ],
             instructions=(
                 {
                     unquote(section["name"].title()): [
@@ -174,7 +176,9 @@ class Recipes(Cog):
         await menu.start(ctx)
 
     @commands.Cog.listener()
-    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+    async def on_assistant_cog_add(
+        self, assistant_cog: typing.Optional[commands.Cog] = None
+    ) -> None:  # Vert's Assistant integration/third party.
         if assistant_cog is None:
             return get_recipe_for_assistant
         schema = {
@@ -185,12 +189,10 @@ class Recipes(Cog):
                 "properties": {
                     "query": {
                         "type": "string",
-                        "description": "The name of the recipe to search."
+                        "description": "The name of the recipe to search.",
                     },
                 },
-                "required": [
-                    "query"
-                ]
+                "required": ["query"],
             },
         }
         await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
@@ -213,7 +215,8 @@ class Recipes(Cog):
             "Preparation time": recipe.preparation_time,
             "Cook time": recipe.cook_time,
             "Ingredients": humanize_list(recipe.ingredients),
-            "Instructions": "\n" + "\n\n".join(
+            "Instructions": "\n"
+            + "\n\n".join(
                 [
                     f"\n\n• {section}\n"
                     "\n".join(

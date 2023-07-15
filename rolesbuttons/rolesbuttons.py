@@ -257,7 +257,9 @@ class RolesButtons(Cog):
                 )
             )
         if emoji is None and text_button is None:
-            raise commands.UserFeedbackCheckFailure(_("You have to specify at least an emoji or a label."))
+            raise commands.UserFeedbackCheckFailure(
+                _("You have to specify at least an emoji or a label.")
+            )
         if emoji is not None and ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
                 await ctx.message.add_reaction(emoji)
@@ -391,7 +393,9 @@ class RolesButtons(Cog):
         await ctx.send(_("Mode set for the roles-buttons of this message."))
 
     @rolesbuttons.command(aliases=["-"])
-    async def remove(self, ctx: commands.Context, message: discord.Message, config_identifier: str) -> None:
+    async def remove(
+        self, ctx: commands.Context, message: discord.Message, config_identifier: str
+    ) -> None:
         """Remove a role-button for a message.
 
         Use `[p]rolesbuttons list <message>` to find the config identifier.
@@ -477,11 +481,17 @@ class RolesButtons(Cog):
             )
             embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
             for role_button in li:
-                value = _("Message Jump Link: {message_jump_link}\n").format(message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{role_button['message'].replace('-', '/')}")
-                value += "\n".join([f"• `{config_identifier}` - Emoji {ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'] is not None and data['emoji'].isdigit() else data['emoji']} - Label `{data['text_button']}` - Role {role.mention if (role := ctx.guild.get_role(data['role'])) else 'Role not found.'} ({data['role']})" for config_identifier, data in role_button.items() if config_identifier != "message"])
-                embed.add_field(
-                    name="\u200B", value=value, inline=False
+                value = _("Message Jump Link: {message_jump_link}\n").format(
+                    message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{role_button['message'].replace('-', '/')}"
                 )
+                value += "\n".join(
+                    [
+                        f"• `{config_identifier}` - Emoji {ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'] is not None and data['emoji'].isdigit() else data['emoji']} - Label `{data['text_button']}` - Role {role.mention if (role := ctx.guild.get_role(data['role'])) else 'Role not found.'} ({data['role']})"
+                        for config_identifier, data in role_button.items()
+                        if config_identifier != "message"
+                    ]
+                )
+                embed.add_field(name="\u200B", value=value, inline=False)
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
 

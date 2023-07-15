@@ -7,22 +7,20 @@ import asyncio
 import datetime
 import json
 import os
-import pkg_resources
 import re
 import tempfile
 import time
 
-import flake8
-import pylint
+import autopep8
 import bandit
 import black
+import flake8
 import isort
-import yapf
-import autopep8
+import pkg_resources
+import pylint
 import pyright
-
+import yapf
 from colorama import Fore
-
 from redbot.core.utils.chat_formatting import box
 
 _ = Translator("LintCodes", __file__)
@@ -37,8 +35,34 @@ def cleanup_ansi(text: str) -> str:
 
 
 class Linter:
-    def __init__(self, linter: typing.Literal["flake8", "pylint", "mypy", "bandit", "black", "isort", "yapf", "autopep8", "pyright", "ruff"], flags: typing.Optional[typing.Union[commands.FlagConverter, str]] = None):
-        self.linter: typing.Literal["flake8", "pylint", "mypy", "bandit", "black", "isort", "yapf", "autopep8", "pyright", "ruff"] = linter
+    def __init__(
+        self,
+        linter: typing.Literal[
+            "flake8",
+            "pylint",
+            "mypy",
+            "bandit",
+            "black",
+            "isort",
+            "yapf",
+            "autopep8",
+            "pyright",
+            "ruff",
+        ],
+        flags: typing.Optional[typing.Union[commands.FlagConverter, str]] = None,
+    ):
+        self.linter: typing.Literal[
+            "flake8",
+            "pylint",
+            "mypy",
+            "bandit",
+            "black",
+            "isort",
+            "yapf",
+            "autopep8",
+            "pyright",
+            "ruff",
+        ] = linter
         self.flags: typing.Optional[typing.Union[commands.FlagConverter, str]] = flags
 
     async def execute_shell_command(self, shell_command: str, file: str) -> typing.Dict[str, str]:
@@ -73,7 +97,9 @@ class Linter:
 
         return payload
 
-    async def lint(self, ctx: typing.Optional[commands.Context], code: str) -> typing.Dict[str, str]:
+    async def lint(
+        self, ctx: typing.Optional[commands.Context], code: str
+    ) -> typing.Dict[str, str]:
         if self.flags is None:
             shortcut_linters = {
                 "flake8": self.lint_with_flake8,
@@ -89,11 +115,17 @@ class Linter:
             }
             return await shortcut_linters[self.linter](ctx, code=code)
 
-        with tempfile.NamedTemporaryFile(suffix=".py", prefix=f"linter-{self.linter}-", delete=False) as temp_file:
+        with tempfile.NamedTemporaryFile(
+            suffix=".py", prefix=f"linter-{self.linter}-", delete=False
+        ) as temp_file:
             temp_file.write(code.encode(encoding="utf-8"))
             temp_file_name = temp_file.name
 
-        shell_command = f"{self.linter}{self.flags.to_str()}" if isinstance(self.flags, commands.FlagConverter) else f"{self.linter} {self.flags}"
+        shell_command = (
+            f"{self.linter}{self.flags.to_str()}"
+            if isinstance(self.flags, commands.FlagConverter)
+            else f"{self.linter} {self.flags}"
+        )
         data = await self.execute_shell_command(shell_command, temp_file_name)
         try:
             os.remove(temp_file_name)
@@ -107,16 +139,12 @@ class Linter:
         OUTPUT_LANG = "py" if ctx.author.is_on_mobile() else "ansi"
         result_str = ""
         if "stdout" in data:
-            _result_str = "\n".join(
-                f"{Fore.WHITE}{line}" for line in data["stdout"].splitlines()
-            )
+            _result_str = "\n".join(f"{Fore.WHITE}{line}" for line in data["stdout"].splitlines())
             if OUTPUT_LANG != "ansi":
                 _result_str = cleanup_ansi(_result_str)
             result_str += box(_result_str, lang=OUTPUT_LANG)
         if "stderr" in data:
-            _result_str = "\n".join(
-                f"{Fore.WHITE}{line}" for line in data["stderr"].splitlines()
-            )
+            _result_str = "\n".join(f"{Fore.WHITE}{line}" for line in data["stderr"].splitlines())
             if OUTPUT_LANG != "ansi":
                 _result_str = cleanup_ansi(_result_str)
             result_str += f"\n{box(_result_str, lang=OUTPUT_LANG)}"
@@ -130,13 +158,19 @@ class Linter:
 
         return data["main"], data
 
-    async def lint_with_flake8(self, ctx: typing.Optional[commands.Context], code: str) -> typing.Dict[str, str]:
-        with tempfile.NamedTemporaryFile(suffix=".py", prefix=f"linter-{self.linter}-", delete=False) as temp_file:
+    async def lint_with_flake8(
+        self, ctx: typing.Optional[commands.Context], code: str
+    ) -> typing.Dict[str, str]:
+        with tempfile.NamedTemporaryFile(
+            suffix=".py", prefix=f"linter-{self.linter}-", delete=False
+        ) as temp_file:
             temp_file.write(code.encode(encoding="utf-8"))
             temp_file_name = temp_file.name
 
         start = time.time()
-        data = await self.execute_shell_command("flake8 --color always --max-line-length 99", temp_file.name)
+        data = await self.execute_shell_command(
+            "flake8 --color always --max-line-length 99", temp_file.name
+        )
         end = time.time()
         try:
             os.remove(temp_file_name)
@@ -166,9 +200,7 @@ class Linter:
                 _result_str = cleanup_ansi(_result_str)
             result_str += box(_result_str, lang=OUTPUT_LANG)
         if "stderr" in data:
-            _result_str = "\n".join(
-                f"{Fore.RED}{line}" for line in data["stderr"].splitlines()
-            )
+            _result_str = "\n".join(f"{Fore.RED}{line}" for line in data["stderr"].splitlines())
             if OUTPUT_LANG != "ansi":
                 _result_str = cleanup_ansi(_result_str)
             result_str += f"\n{box(_result_str, lang=OUTPUT_LANG)}"
@@ -182,8 +214,12 @@ class Linter:
 
         return data
 
-    async def lint_with_pylint(self, ctx: typing.Optional[commands.Context], code: str) -> typing.Dict[str, str]:
-        with tempfile.NamedTemporaryFile(suffix=".py", prefix=f"linter-{self.linter}-", delete=False) as temp_file:
+    async def lint_with_pylint(
+        self, ctx: typing.Optional[commands.Context], code: str
+    ) -> typing.Dict[str, str]:
+        with tempfile.NamedTemporaryFile(
+            suffix=".py", prefix=f"linter-{self.linter}-", delete=False
+        ) as temp_file:
             temp_file.write(code.encode(encoding="utf-8"))
             temp_file_name = temp_file.name
 
@@ -225,8 +261,12 @@ class Linter:
 
         return data
 
-    async def lint_with_mypy(self, ctx: typing.Optional[commands.Context], code: str) -> typing.Dict[str, str]:
-        with tempfile.NamedTemporaryFile(suffix=".py", prefix=f"linter-{self.linter}-", delete=False) as temp_file:
+    async def lint_with_mypy(
+        self, ctx: typing.Optional[commands.Context], code: str
+    ) -> typing.Dict[str, str]:
+        with tempfile.NamedTemporaryFile(
+            suffix=".py", prefix=f"linter-{self.linter}-", delete=False
+        ) as temp_file:
             temp_file.write(code.encode(encoding="utf-8"))
             temp_file_name = temp_file.name
 
@@ -250,9 +290,7 @@ class Linter:
             _result_str += f"{Fore.WHITE}MyPy Version - {Fore.WHITE}{mypy_version}\n"
             _result_str += f"{Fore.GREEN}[Executed in {int(end - start)} seconds]\n"
 
-            _result_str += "\n".join(
-                f"{Fore.WHITE}{line}" for line in data["stdout"].splitlines()
-            )
+            _result_str += "\n".join(f"{Fore.WHITE}{line}" for line in data["stdout"].splitlines())
             if OUTPUT_LANG != "ansi":
                 _result_str = cleanup_ansi(_result_str)
             result_str += box(_result_str, lang=OUTPUT_LANG)
@@ -266,8 +304,12 @@ class Linter:
 
         return data
 
-    async def lint_with_bandit(self, ctx: typing.Optional[commands.Context], code: str) -> typing.Dict[str, str]:
-        with tempfile.NamedTemporaryFile(suffix=".py", prefix=f"linter-{self.linter}-", delete=False) as temp_file:
+    async def lint_with_bandit(
+        self, ctx: typing.Optional[commands.Context], code: str
+    ) -> typing.Dict[str, str]:
+        with tempfile.NamedTemporaryFile(
+            suffix=".py", prefix=f"linter-{self.linter}-", delete=False
+        ) as temp_file:
             temp_file.write(code.encode(encoding="utf-8"))
             temp_file_name = temp_file.name
 
@@ -298,9 +340,7 @@ class Linter:
             confidence_high = json_data["metrics"]["_totals"]["CONFIDENCE.HIGH"]
             confidence_low = json_data["metrics"]["_totals"]["CONFIDENCE.LOW"]
             confidence_medium = json_data["metrics"]["_totals"]["CONFIDENCE.MEDIUM"]
-            confidence_undefined = json_data["metrics"]["_totals"][
-                "CONFIDENCE.UNDEFINED"
-            ]
+            confidence_undefined = json_data["metrics"]["_totals"]["CONFIDENCE.UNDEFINED"]
             _result_str += f"{Fore.WHITE}Confidence: {Fore.RED}{confidence_high} High {Fore.WHITE}- {Fore.YELLOW}{confidence_medium} Medium {Fore.WHITE}- {Fore.GREEN}{confidence_low} Low {Fore.WHITE}- {Fore.CYAN}{confidence_undefined} Undefined"
 
             severity_high = json_data["metrics"]["_totals"]["SEVERITY.HIGH"]
@@ -355,13 +395,19 @@ class Linter:
 
         return data
 
-    async def lint_with_black(self, ctx: typing.Optional[commands.Context], code: str) -> typing.Dict[str, str]:
-        with tempfile.NamedTemporaryFile(suffix=".py", prefix=f"linter-{self.linter}-", delete=False) as temp_file:
+    async def lint_with_black(
+        self, ctx: typing.Optional[commands.Context], code: str
+    ) -> typing.Dict[str, str]:
+        with tempfile.NamedTemporaryFile(
+            suffix=".py", prefix=f"linter-{self.linter}-", delete=False
+        ) as temp_file:
             temp_file.write(code.encode(encoding="utf-8"))
             temp_file_name = temp_file.name
 
         start = time.time()
-        data = await self.execute_shell_command("black --diff --color --verbose --line-length 99", temp_file_name)
+        data = await self.execute_shell_command(
+            "black --diff --color --verbose --line-length 99", temp_file_name
+        )
         end = time.time()
         try:
             os.remove(temp_file_name)
@@ -387,13 +433,19 @@ class Linter:
 
         return data
 
-    async def lint_with_isort(self, ctx: typing.Optional[commands.Context], code: str) -> typing.Dict[str, str]:
-        with tempfile.NamedTemporaryFile(suffix=".py", prefix=f"linter-{self.linter}-", delete=False) as temp_file:
+    async def lint_with_isort(
+        self, ctx: typing.Optional[commands.Context], code: str
+    ) -> typing.Dict[str, str]:
+        with tempfile.NamedTemporaryFile(
+            suffix=".py", prefix=f"linter-{self.linter}-", delete=False
+        ) as temp_file:
             temp_file.write(code.encode(encoding="utf-8"))
             temp_file_name = temp_file.name
 
         start = time.time()
-        data = await self.execute_shell_command("isort --diff --verbose --only-modified --line-length 99 --stdout", temp_file_name)
+        data = await self.execute_shell_command(
+            "isort --diff --verbose --only-modified --line-length 99 --stdout", temp_file_name
+        )
         end = time.time()
         try:
             os.remove(temp_file_name)
@@ -419,8 +471,12 @@ class Linter:
 
         return data
 
-    async def lint_with_yapf(self, ctx: typing.Optional[commands.Context], code: str) -> typing.Dict[str, str]:
-        with tempfile.NamedTemporaryFile(suffix=".py", prefix=f"linter-{self.linter}-", delete=False) as temp_file:
+    async def lint_with_yapf(
+        self, ctx: typing.Optional[commands.Context], code: str
+    ) -> typing.Dict[str, str]:
+        with tempfile.NamedTemporaryFile(
+            suffix=".py", prefix=f"linter-{self.linter}-", delete=False
+        ) as temp_file:
             temp_file.write(code.encode(encoding="utf-8"))
             temp_file_name = temp_file.name
 
@@ -451,13 +507,19 @@ class Linter:
 
         return data
 
-    async def lint_with_autopep8(self, ctx: typing.Optional[commands.Context], code: str) -> typing.Dict[str, str]:
-        with tempfile.NamedTemporaryFile(suffix=".py", prefix=f"linter-{self.linter}-", delete=False) as temp_file:
+    async def lint_with_autopep8(
+        self, ctx: typing.Optional[commands.Context], code: str
+    ) -> typing.Dict[str, str]:
+        with tempfile.NamedTemporaryFile(
+            suffix=".py", prefix=f"linter-{self.linter}-", delete=False
+        ) as temp_file:
             temp_file.write(code.encode(encoding="utf-8"))
             temp_file_name = temp_file.name
 
         start = time.time()
-        data = await self.execute_shell_command("autopep8 --diff --verbose --max-line-length 99", temp_file_name)
+        data = await self.execute_shell_command(
+            "autopep8 --diff --verbose --max-line-length 99", temp_file_name
+        )
         end = time.time()
         try:
             os.remove(temp_file_name)
@@ -483,8 +545,12 @@ class Linter:
 
         return data
 
-    async def lint_with_pyright(self, ctx: typing.Optional[commands.Context], code: str) -> typing.Dict[str, str]:
-        with tempfile.NamedTemporaryFile(suffix=".py", prefix=f"linter-{self.linter}-", delete=False) as temp_file:
+    async def lint_with_pyright(
+        self, ctx: typing.Optional[commands.Context], code: str
+    ) -> typing.Dict[str, str]:
+        with tempfile.NamedTemporaryFile(
+            suffix=".py", prefix=f"linter-{self.linter}-", delete=False
+        ) as temp_file:
             temp_file.write(code.encode(encoding="utf-8"))
             temp_file_name = temp_file.name
 
@@ -529,9 +595,7 @@ class Linter:
                 _result_str = cleanup_ansi(_result_str)
             result_str += box(_result_str, lang=OUTPUT_LANG)
         if "stderr" in data:
-            _result_str = "\n".join(
-                f"{Fore.RED}{line}" for line in data["stderr"].splitlines()
-            )
+            _result_str = "\n".join(f"{Fore.RED}{line}" for line in data["stderr"].splitlines())
             if OUTPUT_LANG != "ansi":
                 _result_str = cleanup_ansi(_result_str)
             result_str += f"\n{box(_result_str, lang=OUTPUT_LANG)}"
@@ -545,8 +609,12 @@ class Linter:
 
         return data
 
-    async def lint_with_ruff(self, ctx: typing.Optional[commands.Context], code: str) -> typing.Dict[str, str]:
-        with tempfile.NamedTemporaryFile(suffix=".py", prefix=f"linter-{self.linter}-", delete=False) as temp_file:
+    async def lint_with_ruff(
+        self, ctx: typing.Optional[commands.Context], code: str
+    ) -> typing.Dict[str, str]:
+        with tempfile.NamedTemporaryFile(
+            suffix=".py", prefix=f"linter-{self.linter}-", delete=False
+        ) as temp_file:
             temp_file.write(code.encode(encoding="utf-8"))
             temp_file_name = temp_file.name
 

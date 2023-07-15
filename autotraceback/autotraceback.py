@@ -48,7 +48,9 @@ class AutoTraceback(Cog, DashboardIntegration):
 
     @commands.is_owner()
     @commands.hybrid_command()
-    async def traceback(self, ctx: commands.Context, public: typing.Optional[bool] = True, index: int = 0) -> None:
+    async def traceback(
+        self, ctx: commands.Context, public: typing.Optional[bool] = True, index: int = 0
+    ) -> None:
         """Sends to the owner the last command exception that has occurred.
 
         If public (yes is specified), it will be sent to the chat instead.
@@ -95,7 +97,9 @@ class AutoTraceback(Cog, DashboardIntegration):
                 )
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError, unhandled_by_cog: bool = False) -> None:
+    async def on_command_error(
+        self, ctx: commands.Context, error: commands.CommandError, unhandled_by_cog: bool = False
+    ) -> None:
         if await self.bot.cog_disabled_in_guild(cog=self, guild=ctx.guild):
             return
         if isinstance(error, IGNORED_ERRORS):
@@ -119,23 +123,21 @@ class AutoTraceback(Cog, DashboardIntegration):
             pass
 
     @commands.Cog.listener()
-    async def on_assistant_cog_add(self, assistant_cog: typing.Optional[commands.Cog] = None) -> None:  # Vert's Assistant integration/third party.
+    async def on_assistant_cog_add(
+        self, assistant_cog: typing.Optional[commands.Cog] = None
+    ) -> None:  # Vert's Assistant integration/third party.
         if assistant_cog is None:
             return self.get_last_command_error_traceback_for_assistant
         schema = {
             "name": "get_last_command_error_traceback_for_assistant",
             "description": "Get the traceback of the last command error occured on the bot.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                },
-                "required": [
-                ]
-            },
+            "parameters": {"type": "object", "properties": {}, "required": []},
         }
         await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
 
-    async def get_last_command_error_traceback_for_assistant(self, user: typing.Union[discord.Member, discord.User], *args, **kwargs):
+    async def get_last_command_error_traceback_for_assistant(
+        self, user: typing.Union[discord.Member, discord.User], *args, **kwargs
+    ):
         if user.id not in self.bot.owner_ids:
             return "Only bot owners can view errors tracebacks."
         if not self.bot._last_exception:

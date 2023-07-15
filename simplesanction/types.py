@@ -5,7 +5,6 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import asyncio
-
 from dataclasses import dataclass
 
 from redbot.core.commands.converter import parse_timedelta
@@ -38,8 +37,24 @@ class Action:
             if not v.startswith("_") and v not in ["to_json", "process"]
         }
 
-    async def process(self, ctx: commands.Context, interaction: typing.Optional[discord.Interaction], member: discord.Member, duration: typing.Optional[str] = None, reason: typing.Optional[str] = "The reason was not given.", finish_message_enabled: typing.Optional[bool] = True, reason_required: typing.Optional[bool] = True, confirmation: typing.Optional[bool] = False, show_author: typing.Optional[bool] = True, fake_action: typing.Optional[bool] = False) -> bool:
-        if (await self.cog.config.guild(ctx.guild).use_warn_system()) and self.warn_system_command is not None and ctx.bot.get_cog("WarnSystem") is not None:
+    async def process(
+        self,
+        ctx: commands.Context,
+        interaction: typing.Optional[discord.Interaction],
+        member: discord.Member,
+        duration: typing.Optional[str] = None,
+        reason: typing.Optional[str] = "The reason was not given.",
+        finish_message_enabled: typing.Optional[bool] = True,
+        reason_required: typing.Optional[bool] = True,
+        confirmation: typing.Optional[bool] = False,
+        show_author: typing.Optional[bool] = True,
+        fake_action: typing.Optional[bool] = False,
+    ) -> bool:
+        if (
+            (await self.cog.config.guild(ctx.guild).use_warn_system())
+            and self.warn_system_command is not None
+            and ctx.bot.get_cog("WarnSystem") is not None
+        ):
             use_warn_system = True
         else:
             use_warn_system = False
@@ -49,18 +64,34 @@ class Action:
                 await ctx.send(
                     _(
                         "The cog `{cog_required}` is not loaded. Please load it, with the command `{prefix}load {cog_required_lowered}`."
-                    ).format(prefix=ctx.prefix, cog_required=self.cog_required, cog_required_lowered=self.cog_required.lower())
+                    ).format(
+                        prefix=ctx.prefix,
+                        cog_required=self.cog_required,
+                        cog_required_lowered=self.cog_required.lower(),
+                    )
                 )
                 return False
 
         if interaction is not None:
             extra_params_inputs = {}
             if duration is None and self.duration_ask_message is not None:
-                extra_params_inputs["duration"] = discord.ui.TextInput(label="Duration", style=discord.TextStyle.short, required=True, placeholder=_("The sanction duration."))
+                extra_params_inputs["duration"] = discord.ui.TextInput(
+                    label="Duration",
+                    style=discord.TextStyle.short,
+                    required=True,
+                    placeholder=_("The sanction duration."),
+                )
             if reason is None and self.reason_ask_message is not None:
-                extra_params_inputs["reason"] = discord.ui.TextInput(label="Reason", style=discord.TextStyle.paragraph, required=False, placeholder=_("The reason was not given."))
+                extra_params_inputs["reason"] = discord.ui.TextInput(
+                    label="Reason",
+                    style=discord.TextStyle.paragraph,
+                    required=False,
+                    placeholder=_("The reason was not given."),
+                )
             if extra_params_inputs:
-                modal = discord.ui.Modal(title=f"{self.emoji} {self.label}", custom_id="SimpleSanction")
+                modal = discord.ui.Modal(
+                    title=f"{self.emoji} {self.label}", custom_id="SimpleSanction"
+                )
                 modal.on_submit = lambda modal_interaction: modal_interaction.response.defer()
                 [modal.add_item(text_input) for text_input in extra_params_inputs.values()]
                 await interaction.response.send_modal(modal)
@@ -74,7 +105,14 @@ class Action:
                 await interaction.response.defer()
         else:
             if duration is None and self.duration_ask_message is not None:
-                duration_message = await ctx.send(_(self.duration_ask_message).format(member=member, duration=str(parse_timedelta(duration)) if duration is not None else None, reason=reason, channel=ctx.channel))
+                duration_message = await ctx.send(
+                    _(self.duration_ask_message).format(
+                        member=member,
+                        duration=str(parse_timedelta(duration)) if duration is not None else None,
+                        reason=reason,
+                        channel=ctx.channel,
+                    )
+                )
                 try:
                     pred = MessagePredicate.same_context(ctx)
                     msg = await ctx.bot.wait_for("message", timeout=60, check=pred)
@@ -88,7 +126,16 @@ class Action:
                     return
             if reason is None:
                 if self.reason_ask_message is not None and reason_required:
-                    reason_message = await ctx.send(_(self.reason_ask_message).format(member=member, duration=str(parse_timedelta(duration)) if duration is not None else None, reason=reason, channel=ctx.channel))
+                    reason_message = await ctx.send(
+                        _(self.reason_ask_message).format(
+                            member=member,
+                            duration=str(parse_timedelta(duration))
+                            if duration is not None
+                            else None,
+                            reason=reason,
+                            channel=ctx.channel,
+                        )
+                    )
                     try:
                         pred = MessagePredicate.same_context(ctx)
                         msg = await ctx.bot.wait_for("message", timeout=60, check=pred)
@@ -103,7 +150,20 @@ class Action:
                 else:
                     reason = _("The reason was not given.")
 
-        if not confirmation and self.confirmation_ask_message is not None and not await CogsUtils.ConfirmationAsk(ctx, content=_(self.confirmation_ask_message).format(member=member, duration=str(parse_timedelta(duration)) if duration is not None else None, reason=reason, channel=ctx.channel)) and not ctx.assume_yes:
+        if (
+            not confirmation
+            and self.confirmation_ask_message is not None
+            and not await CogsUtils.ConfirmationAsk(
+                ctx,
+                content=_(self.confirmation_ask_message).format(
+                    member=member,
+                    duration=str(parse_timedelta(duration)) if duration is not None else None,
+                    reason=reason,
+                    channel=ctx.channel,
+                ),
+            )
+            and not ctx.assume_yes
+        ):
             await CogsUtils.delete_message(ctx.message)
             return
 
@@ -128,8 +188,15 @@ class Action:
             embed.add_field(
                 name="\u200B",
                 value=(
-                    _(self.finish_message).format(member=member, duration=str(parse_timedelta(duration)) if duration is not None else None, reason=reason, channel=ctx.channel)
-                    + _("\n*The command may have failed. If so, an error will be displayed below.*")
+                    _(self.finish_message).format(
+                        member=member,
+                        duration=str(parse_timedelta(duration)) if duration is not None else None,
+                        reason=reason,
+                        channel=ctx.channel,
+                    )
+                    + _(
+                        "\n*The command may have failed. If so, an error will be displayed below.*"
+                    )
                 ),
                 inline=False,
             )
@@ -153,7 +220,12 @@ class Action:
 
         if not fake_action:
             command = self.warn_system_command if use_warn_system else self.command
-            command = command.format(member=member, duration=str(parse_timedelta(duration)) if duration is not None else None, reason=reason, channel=ctx.channel)
+            command = command.format(
+                member=member,
+                duration=str(parse_timedelta(duration)) if duration is not None else None,
+                reason=reason,
+                channel=ctx.channel,
+            )
             context = await CogsUtils.invoke_command(
                 bot=ctx.bot,
                 author=ctx.author,

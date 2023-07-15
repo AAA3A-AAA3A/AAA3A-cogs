@@ -119,15 +119,21 @@ class CommandsButtons(Cog):
             return
         config = await self.config.guild(interaction.guild).commands_buttons.all()
         if f"{interaction.channel.id}-{interaction.message.id}" not in config:
-            await interaction.response.send_message(_("This message is not in Config."), ephemeral=True)
+            await interaction.response.send_message(
+                _("This message is not in Config."), ephemeral=True
+            )
             return
         if config_identifier not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
-            await interaction.response.send_message(_("This button is not in Config."), ephemeral=True)
+            await interaction.response.send_message(
+                _("This button is not in Config."), ephemeral=True
+            )
             return
         command = config[f"{interaction.channel.id}-{interaction.message.id}"][config_identifier][
             "command"
         ]
-        if (command_object := interaction.client.get_command(command)) is not None and command_object.params:
+        if (
+            command_object := interaction.client.get_command(command)
+        ) is not None and command_object.params:
             params = command_object.params
             if len(params) > 5:
                 params = {name: param for name, param in params.items() if not param.required}
@@ -135,13 +141,27 @@ class CommandsButtons(Cog):
             modal.on_submit = lambda interaction: interaction.response.defer()
             text_inputs: typing.List[discord.ui.TextInput] = []
             for name, param in params.items():
-                text_input = discord.ui.TextInput(label=name.replace("_", " ").title(), style=discord.TextStyle.short, placeholder=repr(param)[repr(param).index(":", 12) + 1:-2][:100], default=str(param.default) if param.default != inspect._empty and False else None, required=param.required)
+                text_input = discord.ui.TextInput(
+                    label=name.replace("_", " ").title(),
+                    style=discord.TextStyle.short,
+                    placeholder=repr(param)[repr(param).index(":", 12) + 1 : -2][:100],
+                    default=str(param.default)
+                    if param.default != inspect._empty and False
+                    else None,
+                    required=param.required,
+                )
                 text_inputs.append(text_input)
                 modal.add_item(text_input)
             await interaction.response.send_modal(modal)
             if await modal.wait():
                 return  # Timeout.
-            command += " " + " ".join([(f'"{text_input.value}"' if " " in text_input.value else text_input.value) for text_input in text_inputs if text_input.value and str(text_input.value) != text_input.default])
+            command += " " + " ".join(
+                [
+                    (f'"{text_input.value}"' if " " in text_input.value else text_input.value)
+                    for text_input in text_inputs
+                    if text_input.value and str(text_input.value) != text_input.default
+                ]
+            )
         else:
             await interaction.response.defer(ephemeral=True)
         context = await CogsUtils.invoke_command(
@@ -168,7 +188,9 @@ class CommandsButtons(Cog):
             self.cache.remove(ctx)
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError, unhandled_by_cog: bool = False) -> None:
+    async def on_command_error(
+        self, ctx: commands.Context, error: commands.CommandError, unhandled_by_cog: bool = False
+    ) -> None:
         if ctx not in self.cache:
             return
         self.cache.remove(ctx)
@@ -248,7 +270,9 @@ class CommandsButtons(Cog):
                     _("You have not specified a correct command.")
                 )
         if emoji is None and text_button is None:
-            raise commands.UserFeedbackCheckFailure(_("You have to specify at least an emoji or a label."))
+            raise commands.UserFeedbackCheckFailure(
+                _("You have to specify at least an emoji or a label.")
+            )
         if emoji is not None and ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
                 await ctx.message.add_reaction(emoji)
@@ -358,7 +382,9 @@ class CommandsButtons(Cog):
         await self.list.callback(self, ctx, message=message)
 
     @commandsbuttons.command(aliases=["-"])
-    async def remove(self, ctx: commands.Context, message: discord.Message, config_identifier: str) -> None:
+    async def remove(
+        self, ctx: commands.Context, message: discord.Message, config_identifier: str
+    ) -> None:
         """Remove a command-button for a message.
 
         Use `[p]commandsbuttons list <message>` to find the config identifier.
@@ -433,18 +459,24 @@ class CommandsButtons(Cog):
         for li in lists:
             embed: discord.Embed = discord.Embed(
                 title=_("Commands Buttons"),
-                description=_("There is {len_commands_buttons} commands buttons in this server.").format(
-                    len_commands_buttons=len(commands_buttons)
-                ),
+                description=_(
+                    "There is {len_commands_buttons} commands buttons in this server."
+                ).format(len_commands_buttons=len(commands_buttons)),
                 color=await ctx.embed_color(),
             )
             embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
             for command_button in li:
-                value = _("Message Jump Link: {message_jump_link}\n").format(message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{command_button['message'].replace('-', '/')}")
-                value += "\n".join([f"• `{config_identifier}` - Emoji {ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'] is not None and data['emoji'].isdigit() else data['emoji']} - Label `{data['text_button']}` - Command `[p]{data['command']}`" for config_identifier, data in command_button.items() if config_identifier != "message"])
-                embed.add_field(
-                    name="\u200B", value=value, inline=False
+                value = _("Message Jump Link: {message_jump_link}\n").format(
+                    message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{command_button['message'].replace('-', '/')}"
                 )
+                value += "\n".join(
+                    [
+                        f"• `{config_identifier}` - Emoji {ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'] is not None and data['emoji'].isdigit() else data['emoji']} - Label `{data['text_button']}` - Command `[p]{data['command']}`"
+                        for config_identifier, data in command_button.items()
+                        if config_identifier != "message"
+                    ]
+                )
+                embed.add_field(name="\u200B", value=value, inline=False)
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
 

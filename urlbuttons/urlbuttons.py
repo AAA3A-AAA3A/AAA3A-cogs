@@ -5,7 +5,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from .converters import UrlConverter, Emoji, EmojiUrlConverter
+from .converters import Emoji, EmojiUrlConverter, UrlConverter
 
 # Credits:
 # General repo credits.# Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
@@ -126,7 +126,9 @@ class UrlButtons(Cog):
         if not url.startswith("http"):
             raise commands.UserFeedbackCheckFailure(_("Url must start with `https` or `http`."))
         if emoji is None and text_button is None:
-            raise commands.UserFeedbackCheckFailure(_("You have to specify at least an emoji or a label."))
+            raise commands.UserFeedbackCheckFailure(
+                _("You have to specify at least an emoji or a label.")
+            )
         if emoji is not None and ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
                 await ctx.message.add_reaction(emoji)
@@ -213,7 +215,9 @@ class UrlButtons(Cog):
         await self.list.callback(self, ctx, message=message)
 
     @urlbuttons.command(aliases=["-"])
-    async def remove(self, ctx: commands.Context, message: discord.Message, config_identifier: str) -> None:
+    async def remove(
+        self, ctx: commands.Context, message: discord.Message, config_identifier: str
+    ) -> None:
         """Remove a url-button for a message.
 
         Use `[p]urlbuttons list <message>` to find the config identifier.
@@ -294,11 +298,17 @@ class UrlButtons(Cog):
             )
             embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
             for url_button in li:
-                value = _("Message Jump Link: {message_jump_link}\n").format(message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{url_button['message'].replace('-', '/')}")
-                value += "\n".join([f"• `{config_identifier}` - Emoji {ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'] is not None and data['emoji'].isdigit() else data['emoji']} - Label `{data['text_button']}` - URL `{data['url']}`" for config_identifier, data in url_button.items() if config_identifier != "message"])
-                embed.add_field(
-                    name="\u200B", value=value, inline=False
+                value = _("Message Jump Link: {message_jump_link}\n").format(
+                    message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{url_button['message'].replace('-', '/')}"
                 )
+                value += "\n".join(
+                    [
+                        f"• `{config_identifier}` - Emoji {ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'] is not None and data['emoji'].isdigit() else data['emoji']} - Label `{data['text_button']}` - URL `{data['url']}`"
+                        for config_identifier, data in url_button.items()
+                        if config_identifier != "message"
+                    ]
+                )
+                embed.add_field(name="\u200B", value=value, inline=False)
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
 
@@ -308,7 +318,9 @@ class UrlButtons(Cog):
         await self.config.guild(ctx.guild).url_buttons.clear()
         await ctx.send(_("All url-buttons purged."))
 
-    def get_buttons(self, config: typing.Dict, message: typing.Union[discord.Message, str]) -> discord.ui.View:
+    def get_buttons(
+        self, config: typing.Dict, message: typing.Union[discord.Message, str]
+    ) -> discord.ui.View:
         message = (
             f"{message.channel.id}-{message.id}"
             if isinstance(message, discord.Message)

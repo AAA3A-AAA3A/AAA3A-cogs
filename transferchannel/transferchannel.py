@@ -15,15 +15,22 @@ from redbot.core.utils.tunnel import Tunnel
 # Thanks to Say from LaggronsDumb for the attachments in the single messages and webhooks! (https://github.com/laggron42/Laggrons-Dumb-Cogs/tree/v3/say)
 # Thanks to CruxCraft on GitHub for the idea of allowing channels from other servers! (https://github.com/AAA3A-AAA3A/AAA3A-cogs/issues/1)
 
+
 def _(untranslated: str) -> str:  # `redgettext` will found these strings.
     return untranslated
-RESULT_MESSAGE = _("There are {count_messages} transfered messages from {source.mention} to {destination.mention}.")
+
+
+RESULT_MESSAGE = _(
+    "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
+)
 
 _ = Translator("TransferChannel", __file__)
 
 
 class MessageOrObjectConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.Union[discord.Message, discord.Object]:
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Union[discord.Message, discord.Object]:
         try:
             await commands.MessageConverter().convert(ctx, argument=argument)
         except commands.BadArgument as e:
@@ -88,7 +95,13 @@ class TransferChannel(Cog):
         way: str,
     ) -> None:
         source_permissions = source.permissions_for(source.guild.me)
-        if not all([source_permissions.view_channel, source_permissions.read_messages, source_permissions.read_message_history]):
+        if not all(
+            [
+                source_permissions.view_channel,
+                source_permissions.read_messages,
+                source_permissions.read_message_history,
+            ]
+        ):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."

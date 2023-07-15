@@ -16,14 +16,12 @@ import aiohttp
 import dateutil
 import dateutil.rrule
 import pytz
-
 from apscheduler.triggers.cron import CronTrigger
 from cron_descriptor import CasingTypeEnum, ExpressionDescriptor
 from recurrent.event_parser import RecurringEvent
-
 from redbot.core.utils.chat_formatting import humanize_list
 
-from .views import SnoozeView, ReminderView, RepeatView
+from .views import ReminderView, RepeatView, SnoozeView
 
 _ = Translator("Reminders", __file__)
 
@@ -43,6 +41,7 @@ CT = typing.TypeVar(
     "CT", bound=typing.Callable[..., typing.Any]
 )  # defined CT as a type variable that is bound to a callable that can take any argument and return any value.
 
+
 async def run_blocking_func(
     func: typing.Callable[..., typing.Any], *args: typing.Any, **kwargs: typing.Any
 ) -> typing.Any:
@@ -56,7 +55,9 @@ def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
         @functools.wraps(func)
         def wrapper(*args: typing.Any, **kwargs: typing.Any):
             return run_blocking_func(func, *args, **kwargs)
+
         return wrapper
+
     return decorator
 
 
@@ -73,9 +74,15 @@ class RepeatRule:
         return {
             "type": self.type,
             "value": int(self.value.timestamp()) if self.type == "date" else self.value,
-            "start_trigger": int(self.start_trigger.timestamp()) if self.start_trigger is not None else None,
-            "first_trigger": int(self.first_trigger.timestamp()) if self.first_trigger is not None else None,
-            "last_trigger": int(self.last_trigger.timestamp()) if self.last_trigger is not None else None,
+            "start_trigger": int(self.start_trigger.timestamp())
+            if self.start_trigger is not None
+            else None,
+            "first_trigger": int(self.first_trigger.timestamp())
+            if self.first_trigger is not None
+            else None,
+            "last_trigger": int(self.last_trigger.timestamp())
+            if self.last_trigger is not None
+            else None,
         }
 
     @classmethod
@@ -83,8 +90,46 @@ class RepeatRule:
         cls, data: typing.Dict[str, typing.Union[str, typing.Dict[str, int]]]
     ) -> typing_extensions.Self:
         if data["type"] == "date":
-            return cls(type=data["type"], value=datetime.datetime.fromtimestamp(int(data["value"]), tz=datetime.timezone.utc), start_trigger=datetime.datetime.fromtimestamp(data["start_trigger"], tz=datetime.timezone.utc) if data.get("start_trigger") is not None else None, first_trigger=datetime.datetime.fromtimestamp(data["first_trigger"], tz=datetime.timezone.utc) if data.get("first_trigger") is not None else None, last_trigger=datetime.datetime.fromtimestamp(data["last_trigger"], tz=datetime.timezone.utc) if data.get("last_trigger") is not None else None)
-        return cls(type=data["type"], value=data["value"], start_trigger=datetime.datetime.fromtimestamp(data["start_trigger"], tz=datetime.timezone.utc) if data.get("start_trigger") is not None else None, first_trigger=datetime.datetime.fromtimestamp(data["first_trigger"], tz=datetime.timezone.utc) if data.get("first_trigger") is not None else None, last_trigger=datetime.datetime.fromtimestamp(data["last_trigger"], tz=datetime.timezone.utc) if data.get("last_trigger") is not None else None)
+            return cls(
+                type=data["type"],
+                value=datetime.datetime.fromtimestamp(
+                    int(data["value"]), tz=datetime.timezone.utc
+                ),
+                start_trigger=datetime.datetime.fromtimestamp(
+                    data["start_trigger"], tz=datetime.timezone.utc
+                )
+                if data.get("start_trigger") is not None
+                else None,
+                first_trigger=datetime.datetime.fromtimestamp(
+                    data["first_trigger"], tz=datetime.timezone.utc
+                )
+                if data.get("first_trigger") is not None
+                else None,
+                last_trigger=datetime.datetime.fromtimestamp(
+                    data["last_trigger"], tz=datetime.timezone.utc
+                )
+                if data.get("last_trigger") is not None
+                else None,
+            )
+        return cls(
+            type=data["type"],
+            value=data["value"],
+            start_trigger=datetime.datetime.fromtimestamp(
+                data["start_trigger"], tz=datetime.timezone.utc
+            )
+            if data.get("start_trigger") is not None
+            else None,
+            first_trigger=datetime.datetime.fromtimestamp(
+                data["first_trigger"], tz=datetime.timezone.utc
+            )
+            if data.get("first_trigger") is not None
+            else None,
+            last_trigger=datetime.datetime.fromtimestamp(
+                data["last_trigger"], tz=datetime.timezone.utc
+            )
+            if data.get("last_trigger") is not None
+            else None,
+        )
 
     @executor()
     def next_trigger(
@@ -110,23 +155,31 @@ class RepeatRule:
             if next_expires_at is None:
                 return None
             while next_expires_at == last_expires_at or next_expires_at < utc_now:
-                next_expires_at = cron_trigger.get_next_fire_time(previous_fire_time=last_expires_at, now=utc_now.astimezone(tz=tz))
+                next_expires_at = cron_trigger.get_next_fire_time(
+                    previous_fire_time=last_expires_at, now=utc_now.astimezone(tz=tz)
+                )
                 if next_expires_at is None:
                     return None
                 next_expires_at = next_expires_at.astimezone(tz=datetime.timezone.utc)
         elif self.type == "rrule":
             tz = pytz.timezone(timezone)
-            rrule = dateutil.rrule.rrulestr(self.value, dtstart=self.start_trigger.replace(tzinfo=None))
+            rrule = dateutil.rrule.rrulestr(
+                self.value, dtstart=self.start_trigger.replace(tzinfo=None)
+            )
             # next_expires_at = last_expires_at
             # while next_expires_at == last_expires_at or next_expires_at < utc_now:
             #     next_expires_at = rrule.after(next_expires_at.replace(tzinfo=None), inc=False)
             #     if next_expires_at is None:
             #         return None
             #     next_expires_at = next_expires_at.astimezone(tz=datetime.timezone.utc)  # `astimezone` is not required
-            next_expires_at = rrule.after(utc_now.astimezone(tz=tz).replace(tzinfo=None), inc=False)
+            next_expires_at = rrule.after(
+                utc_now.astimezone(tz=tz).replace(tzinfo=None), inc=False
+            )
             if next_expires_at is None:
                 return None
-            next_expires_at = next_expires_at.astimezone(tz=datetime.timezone.utc)  # `astimezone` is not required
+            next_expires_at = next_expires_at.astimezone(
+                tz=datetime.timezone.utc
+            )  # `astimezone` is not required
         elif self.type == "date":
             return self.value
         else:
@@ -154,19 +207,22 @@ class RepeatRule:
                 verbose=True,
                 casing_type=CasingTypeEnum.Sentence,
                 locale_code="en_US",
-                use_24hour_time_format=True
+                use_24hour_time_format=True,
             )
             return f"[{self.type.upper()}] {descriptor.get_full_description()}."
         elif self.type == "rrule":
             r = RecurringEvent(preferred_time_range=(0, 12))
             value = self.value
             if (count_match := re.search(r"COUNT=(\d+)", value)) is not None:
-                value = value.replace(f"COUNT={count_match[1]}", f"COUNT={int(count_match[1]) - 1}")
+                value = value.replace(
+                    f"COUNT={count_match[1]}", f"COUNT={int(count_match[1]) - 1}"
+                )
             return f"[{self.type.upper()}] {r.format(value).title()}."
         elif self.type == "date":
             return f"[{self.type.upper()}] <t:{int(self.value.timestamp())}:F> (<t:{int(self.value.timestamp())}:R>)."
         else:
             return None
+
 
 @dataclass(frozen=False)
 class Repeat:
@@ -189,12 +245,21 @@ class Repeat:
     ) -> typing.Optional[datetime.datetime]:
         if utc_now is None:
             utc_now = datetime.datetime.now(datetime.timezone.utc)
-        next_triggers = [await rule.next_trigger(last_expires_at=last_expires_at, utc_now=utc_now, timezone=timezone) for rule in self.rules]
-        next_triggers = [next_trigger for next_trigger in next_triggers if next_trigger is not None]
+        next_triggers = [
+            await rule.next_trigger(
+                last_expires_at=last_expires_at, utc_now=utc_now, timezone=timezone
+            )
+            for rule in self.rules
+        ]
+        next_triggers = [
+            next_trigger for next_trigger in next_triggers if next_trigger is not None
+        ]
         return min(next_triggers, default=None)
 
     def get_info(self) -> str:
-        return "\n".join([f"**•** **{i}.** - {rule.get_info()}" for i, rule in enumerate(self.rules, start=1)])
+        return "\n".join(
+            [f"**•** **{i}.** - {rule.get_info()}" for i, rule in enumerate(self.rules, start=1)]
+        )
 
 
 @dataclass(frozen=False)
@@ -218,7 +283,18 @@ class Reminder:
     repeat: typing.Optional[Repeat]
 
     def __hash__(self) -> str:
-        return hash((self.user_id, self.id, self.jump_url, self.snooze, self.me_too, self.created_at, self.expires_at, self.next_expires_at))
+        return hash(
+            (
+                self.user_id,
+                self.id,
+                self.jump_url,
+                self.snooze,
+                self.me_too,
+                self.created_at,
+                self.expires_at,
+                self.next_expires_at,
+            )
+        )
 
     def __eq__(self, other: "Reminder") -> bool:
         return (self.next_expires_at or datetime.datetime.now(tz=datetime.timezone.utc)) == (
@@ -285,7 +361,9 @@ class Reminder:
             me_too=data.get("me_too", False),
             content=data["content"],
             destination=data.get("destination"),
-            targets=data.get("targets", [data.get("target")] if data.get("target") is not None else None),
+            targets=data.get(
+                "targets", [data.get("target")] if data.get("target") is not None else None
+            ),
             created_at=datetime.datetime.fromtimestamp(
                 int(data["created_at"]), tz=datetime.timezone.utc
             ),
@@ -305,17 +383,19 @@ class Reminder:
             else None,
         )
 
-    def __str__(
-        self, utc_now: datetime.datetime = None
-    ) -> str:
+    def __str__(self, utc_now: datetime.datetime = None) -> str:
         if utc_now is None:
             utc_now = datetime.datetime.now(datetime.timezone.utc)
         and_every = ""
         if self.repeat is not None:
             if len(self.repeat.rules) == 1:
-                and_every = _(", and then **{interval}**").format(interval=self.repeat.rules[0].get_info().lower().split("]")[-1].rstrip(".")[1:])
+                and_every = _(", and then **{interval}**").format(
+                    interval=self.repeat.rules[0].get_info().lower().split("]")[-1].rstrip(".")[1:]
+                )
             else:
-                and_every = _(", with **{nb_repeat_rules} repeat rules**").format(nb_repeat_rules=len(self.repeat.rules))
+                and_every = _(", with **{nb_repeat_rules} repeat rules**").format(
+                    nb_repeat_rules=len(self.repeat.rules)
+                )
         interval_string = CogsUtils.get_interval_string(
             int(self.expires_at.timestamp() - utc_now.timestamp())
         )
@@ -324,24 +404,44 @@ class Reminder:
         return (
             _(
                 "{state}Okay, I will execute this command{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
-            ) if self.content["type"] == "command" else (
+            )
+            if self.content["type"] == "command"
+            else (
                 _(
                     "{state}Okay, I will say {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
-                ) if self.content["type"] == "say" else _(
+                )
+                if self.content["type"] == "say"
+                else _(
                     "{state}Okay, I will remind {targets_mentions} of {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
                 )
             )
         ).format(
             state=f"{'[Snooze] ' if self.snooze else ''}{'[Me Too] ' if self.me_too else ''}",
-            targets_mentions=humanize_list([target["mention"] for target in self.targets]) if self.targets is not None else _("you"),
+            targets_mentions=humanize_list([target["mention"] for target in self.targets])
+            if self.targets is not None
+            else _("you"),
             this=(
                 _("this message")
                 if self.content["type"] == "message"
-                else _("this")  # (_("this command") if self.content["type"] == "command" else _("this"))
+                else _(
+                    "this"
+                )  # (_("this command") if self.content["type"] == "command" else _("this"))
             )
             if self.content["type"] != "command" and self.content["text"] is not None
             else ("this command" if self.content["type"] == "command" else "that"),
-            destination_mention=(_(" in {destination_mention}").format(destination_mention=(f"{destination.recipient}'s DMs" if isinstance(destination, discord.DMChannel) else destination.mention)) if (destination := self.cog.bot.get_channel(self.destination)) is not None else _(" in {destination} (Not found.)").format(destination=self.destination)) if self.destination is not None else "",
+            destination_mention=(
+                _(" in {destination_mention}").format(
+                    destination_mention=(
+                        f"{destination.recipient}'s DMs"
+                        if isinstance(destination, discord.DMChannel)
+                        else destination.mention
+                    )
+                )
+                if (destination := self.cog.bot.get_channel(self.destination)) is not None
+                else _(" in {destination} (Not found.)").format(destination=self.destination)
+            )
+            if self.destination is not None
+            else "",
             interval_string=interval_string,
             timestamp=f"<t:{int(self.expires_at.timestamp())}:F>",
             and_every=and_every,
@@ -365,7 +465,9 @@ class Reminder:
                 self.next_expires_at, use_timestamp=True
             ),
             created_at_timestamp=f"<t:{int(self.created_at.timestamp())}:F>",
-            created_in_timestamp=CogsUtils.get_interval_string(self.created_at, use_timestamp=True),
+            created_in_timestamp=CogsUtils.get_interval_string(
+                self.created_at, use_timestamp=True
+            ),
             repeat=_("No existing repeat rule(s).")
             if self.repeat is None
             else (
@@ -392,10 +494,18 @@ class Reminder:
                     else f"Command `[p]{self.content['command']}` executed with your privilege rights."
                 )
             ),
-            targets=humanize_list([f"{target['mention']} ({target['id']})" for target in self.targets]) if self.targets is not None else _("No target(s)."),
+            targets=humanize_list(
+                [f"{target['mention']} ({target['id']})" for target in self.targets]
+            )
+            if self.targets is not None
+            else _("No target(s)."),
             destination=_("In DMs")
             if self.destination is None
-            else (f"{destination.recipient}'s DMs ({destination.id})" if isinstance(destination, discord.DMChannel) else f"{destination.mention} ({destination.id})")
+            else (
+                f"{destination.recipient}'s DMs ({destination.id})"
+                if isinstance(destination, discord.DMChannel)
+                else f"{destination.mention} ({destination.id})"
+            )
             if (destination := self.cog.bot.get_channel(self.destination)) is not None
             else f"{self.destination} (Not found.)",
             jump_url=self.jump_url,
@@ -411,7 +521,11 @@ class Reminder:
 
     async def delete(self) -> None:
         for view in self.cog.views.values():
-            if isinstance(view, (ReminderView, RepeatView)) and view.reminder == self and not view.is_finished():
+            if (
+                isinstance(view, (ReminderView, RepeatView))
+                and view.reminder == self
+                and not view.is_finished()
+            ):
                 await view.on_timeout()
                 view.stop()
         self.next_expires_at = None
@@ -440,13 +554,22 @@ class Reminder:
         )
         if (
             self.destination is not None
-            and (self.targets is None or len(self.targets) != 1 or self.targets[0]["id"] != self.user_id)
+            and (
+                self.targets is None
+                or len(self.targets) != 1
+                or self.targets[0]["id"] != self.user_id
+            )
             and (user := self.cog.bot.get_user(self.user_id))
         ):
             embed.set_author(name=user.display_name, icon_url=user.display_avatar)
         embed.add_field(
             name="\u200B",
-            value=(f"[Jump to the original message.]({self.jump_url}) • " if self.jump_url is not None else "") + f"Created the <t:{int(self.created_at.timestamp())}:F>.",
+            value=(
+                f"[Jump to the original message.]({self.jump_url}) • "
+                if self.jump_url is not None
+                else ""
+            )
+            + f"Created the <t:{int(self.created_at.timestamp())}:F>.",
             inline=False,
         )
         interval_string = CogsUtils.get_interval_string(
@@ -609,13 +732,20 @@ class Reminder:
                         view = SnoozeView(cog=self.cog, reminder=self)
                     else:
                         view = discord.ui.View()
-                        view.add_item(discord.ui.Button(style=discord.ButtonStyle.url, url=self.jump_url))
+                        view.add_item(
+                            discord.ui.Button(style=discord.ButtonStyle.url, url=self.jump_url)
+                        )
                     message = await destination.send(
                         embeds=embeds,
                         files=files,
-                        content=humanize_list([target["mention"] for target in self.targets]) if self.targets is not None else None,
+                        content=humanize_list([target["mention"] for target in self.targets])
+                        if self.targets is not None
+                        else None,
                         allowed_mentions=discord.AllowedMentions(
-                            everyone=destination.permissions_for(member).mention_everyone, users=True, roles=destination.permissions_for(member).mention_everyone, replied_user=False
+                            everyone=destination.permissions_for(member).mention_everyone,
+                            users=True,
+                            roles=destination.permissions_for(member).mention_everyone,
+                            replied_user=False,
                         ),
                         view=view,
                         reference=reference,
@@ -629,7 +759,10 @@ class Reminder:
                         embeds=embeds,
                         files=files,
                         allowed_mentions=discord.AllowedMentions(
-                            everyone=destination.permissions_for(member).mention_everyone, users=True, roles=destination.permissions_for(member).mention_everyone, replied_user=False
+                            everyone=destination.permissions_for(member).mention_everyone,
+                            users=True,
+                            roles=destination.permissions_for(member).mention_everyone,
+                            replied_user=False,
                         ),
                     )
             except discord.HTTPException:

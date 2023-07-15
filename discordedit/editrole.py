@@ -5,9 +5,9 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import aiohttp
 import datetime
 
+import aiohttp
 from redbot.core.utils.chat_formatting import box, pagify
 
 try:
@@ -17,9 +17,14 @@ except ImportError:
 
 from .view import DiscordEditView
 
+
 def _(untranslated: str) -> str:  # `redgettext` will found these strings.
     return untranslated
-ERROR_MESSAGE = _("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}")
+
+
+ERROR_MESSAGE = _(
+    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+)
 
 _ = Translator("DiscordEdit", __file__)
 
@@ -159,7 +164,9 @@ class EditRole(Cog):
         await Menu(pages=embeds).start(ctx)
 
     @editrole.command(name="name")
-    async def editrole_name(self, ctx: commands.Context, role: discord.Role, *, name: commands.Range[str, 1, 100]) -> None:
+    async def editrole_name(
+        self, ctx: commands.Context, role: discord.Role, *, name: commands.Range[str, 1, 100]
+    ) -> None:
         """Edit role name."""
         await self.check_role(ctx, role)
         try:
@@ -208,14 +215,21 @@ class EditRole(Cog):
 
     @editrole.command(name="displayicon", aliases=["icon", "display_icon"])
     async def editrole_display_icon(
-        self, ctx: commands.Context, role: discord.Role, display_icon: typing.Optional[EmojiOrUrlConverter] = None
+        self,
+        ctx: commands.Context,
+        role: discord.Role,
+        display_icon: typing.Optional[EmojiOrUrlConverter] = None,
     ) -> None:
         """Edit role display icon.
 
         `display_icon` can a Unicode emoji, a custom emoji or an url. You can also upload an attachment.
         """
         if "ROLE_ICONS" not in ctx.guild.features:
-            raise commands.UserFeedbackCheckFailure(_("This server doesn't have `ROLE_ICONS` feature. This server needs more boosts to perform this action."))
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "This server doesn't have `ROLE_ICONS` feature. This server needs more boosts to perform this action."
+                )
+            )
         await self.check_role(ctx, role)
         if len(ctx.message.attachments) > 0:
             display_icon = await ctx.message.attachments[0].read()  # Read an optional attachment.
@@ -237,7 +251,9 @@ class EditRole(Cog):
                     except aiohttp.InvalidURL:
                         return await ctx.send("That URL is invalid.")
                     except aiohttp.ClientError:
-                        return await ctx.send("Something went wrong while trying to get the image.")
+                        return await ctx.send(
+                            "Something went wrong while trying to get the image."
+                        )
         else:
             await ctx.send_help()  # Send the command help if no attachment, no Unicode/custom emoji and no URL.
             return
@@ -290,7 +306,11 @@ class EditRole(Cog):
 
     @editrole.command(name="permissions")
     async def editrole_permissions(
-        self, ctx: commands.Context, role: discord.Role, true_or_false: bool, permissions: commands.Greedy[PermissionConverter]
+        self,
+        ctx: commands.Context,
+        role: discord.Role,
+        true_or_false: bool,
+        permissions: commands.Greedy[PermissionConverter],
     ) -> None:
         """Edit role permissions.
 
@@ -334,7 +354,11 @@ class EditRole(Cog):
         role_permissions = role.permissions
         for permission in permissions:
             if not getattr(ctx.author.guild_permissions, permission):
-                raise commands.UserFeedbackCheckFailure(_("You don't have the permission {permission_name} in this guild.").format(permission_name=permission))
+                raise commands.UserFeedbackCheckFailure(
+                    _("You don't have the permission {permission_name} in this guild.").format(
+                        permission_name=permission
+                    )
+                )
             setattr(role_permissions, permission, true_or_false)
         try:
             await role.edit(
@@ -369,9 +393,7 @@ class EditRole(Cog):
                 content = f"{ctx.author.mention} " + _(
                     "Do you really want to delete the role {role.mention} ({role.id})?"
                 ).format(role=role)
-            if not await CogsUtils.ConfirmationAsk(
-                ctx, content=content, embed=embed
-            ):
+            if not await CogsUtils.ConfirmationAsk(ctx, content=content, embed=embed):
                 await CogsUtils.delete_message(ctx.message)
                 return
         try:
@@ -402,9 +424,16 @@ class EditRole(Cog):
         }
 
         def get_embed() -> discord.Embed:
-            embed: discord.Embed = discord.Embed(title=f"Role {role.name} ({role.id})", color=embed_color)
+            embed: discord.Embed = discord.Embed(
+                title=f"Role {role.name} ({role.id})", color=embed_color
+            )
             embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
-            embed.description = "\n".join([f"• `{parameter}`: {repr(getattr(role, parameters[parameter].get('attribute_name', parameter)))}" for parameter in parameters])
+            embed.description = "\n".join(
+                [
+                    f"• `{parameter}`: {repr(getattr(role, parameters[parameter].get('attribute_name', parameter)))}"
+                    for parameter in parameters
+                ]
+            )
             return embed
 
         await DiscordEditView(

@@ -46,9 +46,7 @@ class SplitOrStealGameView(discord.ui.View):
         if len(initial_players) < 2:
             await self.on_timeout()
             self.stop()
-            raise commands.UserFeedbackCheckFailure(
-                _("At least two players are needed to play.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("At least two players are needed to play."))
         player_A = random.choice(initial_players)
         initial_players.remove(player_A)
         player_B = random.choice(initial_players)
@@ -72,10 +70,12 @@ class SplitOrStealGameView(discord.ui.View):
         self.add_item(self.split_button)
         self.add_item(self.steal_button)
         self._message: discord.Message = await self._message.edit(embed=embed, view=self)
+
         async def check_conditions():
             while self.players[player_A] is None or self.players[player_B] is None:
                 await asyncio.sleep(1)
             return True
+
         try:
             await asyncio.wait_for(check_conditions(), timeout=60)
         except asyncio.TimeoutError:
@@ -84,19 +84,27 @@ class SplitOrStealGameView(discord.ui.View):
             raise commands.UserFeedbackCheckFailure(_("At least one player has stopped playing."))
         if self.players[player_A] == "split" and self.players[player_B] == "split":
             await self._message.reply(
-                _("{player_A.display_name} and {player_B.display_name}, you both chose `split` and therefore both win.").format(player_A=player_A, player_B=player_B)
+                _(
+                    "{player_A.display_name} and {player_B.display_name}, you both chose `split` and therefore both win."
+                ).format(player_A=player_A, player_B=player_B)
             )
         elif self.players[player_A] == "steal" and self.players[player_B] == "steal":
             await self._message.reply(
-                _("{player_A.display_name} and {player_B.display_name}, you both chose `steal` and therefore both loose.").format(player_A=player_A, player_B=player_B)
+                _(
+                    "{player_A.display_name} and {player_B.display_name}, you both chose `steal` and therefore both loose."
+                ).format(player_A=player_A, player_B=player_B)
             )
         elif self.players[player_A] == "steal" and self.players[player_B] == "split":
             await self._message.reply(
-                _("{player_A.display_name} chose `steal` and {player_B.display_name} chose `split`, and therefore {player_A.display_name} win.").format(player_A=player_A, player_B=player_B)
+                _(
+                    "{player_A.display_name} chose `steal` and {player_B.display_name} chose `split`, and therefore {player_A.display_name} win."
+                ).format(player_A=player_A, player_B=player_B)
             )
         elif self.players[player_A] == "split" and self.players[player_B] == "steal":
             await self._message.reply(
-                _("{player_B.display_name} chose `steal` and {player_A.display_name} chose `split`, and therefore {player_B.display_name} win.").format(player_A=player_A, player_B=player_B)
+                _(
+                    "{player_B.display_name} chose `steal` and {player_A.display_name} chose `split`, and therefore {player_B.display_name} win."
+                ).format(player_A=player_A, player_B=player_B)
             )
         return self._message
 
@@ -125,7 +133,9 @@ class SplitOrStealGameView(discord.ui.View):
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         if interaction.user in self.initial_players:
-            await interaction.response.send_message(_("You have already joined this game."), ephemeral=True)
+            await interaction.response.send_message(
+                _("You have already joined this game."), ephemeral=True
+            )
             return
         self.initial_players.append(interaction.user)
         await interaction.response.send_message(_("You have joined this game."), ephemeral=True)
@@ -135,7 +145,12 @@ class SplitOrStealGameView(discord.ui.View):
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         if self.players[interaction.user] is not None:
-            await interaction.response.send_message(_("You have already chose `{original_response}`.").format(original_response=self.players[interaction.user]), ephemeral=True)
+            await interaction.response.send_message(
+                _("You have already chose `{original_response}`.").format(
+                    original_response=self.players[interaction.user]
+                ),
+                ephemeral=True,
+            )
             return
         self.players[interaction.user] = "split"
         await interaction.response.send_message(_("You have chose `split`."), ephemeral=True)
@@ -145,7 +160,12 @@ class SplitOrStealGameView(discord.ui.View):
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         if self.players[interaction.user] is not None:
-            await interaction.response.send_message(_("You have already chose `{original_response}`.").format(original_response=self.players[interaction.user]), ephemeral=True)
+            await interaction.response.send_message(
+                _("You have already chose `{original_response}`.").format(
+                    original_response=self.players[interaction.user]
+                ),
+                ephemeral=True,
+            )
             return
         self.players[interaction.user] = "steal"
         await interaction.response.send_message(_("You have chose `steal`."), ephemeral=True)

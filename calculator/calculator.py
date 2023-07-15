@@ -100,7 +100,10 @@ class Calculator(Cog):
         }
         try:
             result = evaluate(expression, builtins=builtins, constants=constants)
-        except (EvaluatorError, TypeError):  # TypeError: 'Token' object is not subscriptable, for `A(5)`.
+        except (
+            EvaluatorError,
+            TypeError,
+        ):  # TypeError: 'Token' object is not subscriptable, for `A(5)`.
             result = None
         # if "sqrt" in expression and "^" not in expression:
         #     ...

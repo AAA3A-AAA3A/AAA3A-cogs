@@ -19,9 +19,14 @@ TimedeltaConverter = get_timedelta_converter(
     minimum=datetime.timedelta(seconds=0),
 )
 
+
 def _(untranslated: str) -> str:  # `redgettext` will found these strings.
     return untranslated
-ERROR_MESSAGE = _("I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}")
+
+
+ERROR_MESSAGE = _(
+    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+)
 
 _ = Translator("DiscordEdit", __file__)
 
@@ -146,7 +151,11 @@ class EditVoiceChannel(Cog):
 
     @editvoicechannel.command(name="clone")
     async def editvoicechannel_clone(
-        self, ctx: commands.Context, channel: discord.VoiceChannel, *, name: commands.Range[str, 1, 100]
+        self,
+        ctx: commands.Context,
+        channel: discord.VoiceChannel,
+        *,
+        name: commands.Range[str, 1, 100],
     ) -> None:
         """Clone a voice channel."""
         await self.check_voice_channel(ctx, channel)
@@ -195,7 +204,10 @@ class EditVoiceChannel(Cog):
 
     @editvoicechannel.command(name="name")
     async def editvoicechannel_name(
-        self, ctx: commands.Context, channel: discord.VoiceChannel, name: commands.Range[str, 1, 100]
+        self,
+        ctx: commands.Context,
+        channel: discord.VoiceChannel,
+        name: commands.Range[str, 1, 100],
     ) -> None:
         """Edit voice channel name."""
         await self.check_voice_channel(ctx, channel)
@@ -254,7 +266,10 @@ class EditVoiceChannel(Cog):
 
     @editvoicechannel.command(name="userlimit", aliases=["user_limit"])
     async def editvoicechannel_user_limit(
-        self, ctx: commands.Context, channel: discord.VoiceChannel, user_limit: commands.Range[int, 0, 99]
+        self,
+        ctx: commands.Context,
+        channel: discord.VoiceChannel,
+        user_limit: commands.Range[int, 0, 99],
     ) -> None:
         """Edit voice channel user limit.
 
@@ -453,7 +468,11 @@ class EditVoiceChannel(Cog):
         channel_permissions = channel.permissions_for(ctx.author)
         for permission in permissions:
             if not getattr(channel_permissions, permission):
-                raise commands.UserFeedbackCheckFailure(_("You don't have the permission {permission_name} in this channel.").format(permission_name=permission))
+                raise commands.UserFeedbackCheckFailure(
+                    _("You don't have the permission {permission_name} in this channel.").format(
+                        permission_name=permission
+                    )
+                )
         bot_channel_permissions = channel.permissions_for(ctx.me)
         overwrites = channel.overwrites.copy()
         for target in targets:
@@ -469,11 +488,25 @@ class EditVoiceChannel(Cog):
         fake_channel_object = copy(channel)
         fake_channel_object.overwrites = overwrites
         new_channel_permissions = fake_channel_object.permissions_for(ctx.author)
-        if [permission for permission in dict(new_channel_permissions) if getattr(channel_permissions, permission) is True and getattr(new_channel_permissions, permission) is False]:
-            raise commands.UserFeedbackCheckFailure(_("You cannot remove permissions from you in this channel."))
+        if [
+            permission
+            for permission in dict(new_channel_permissions)
+            if getattr(channel_permissions, permission) is True
+            and getattr(new_channel_permissions, permission) is False
+        ]:
+            raise commands.UserFeedbackCheckFailure(
+                _("You cannot remove permissions from you in this channel.")
+            )
         new_bot_channel_permissions = fake_channel_object.permissions_for(ctx.me)
-        if [permission for permission in dict(new_bot_channel_permissions) if getattr(bot_channel_permissions, permission) is True and getattr(new_bot_channel_permissions, permission) is False]:
-            raise commands.UserFeedbackCheckFailure(_("You cannot remove permissions from the bot in this channel."))
+        if [
+            permission
+            for permission in dict(new_bot_channel_permissions)
+            if getattr(bot_channel_permissions, permission) is True
+            and getattr(new_bot_channel_permissions, permission) is False
+        ]:
+            raise commands.UserFeedbackCheckFailure(
+                _("You cannot remove permissions from the bot in this channel.")
+            )
         try:
             await channel.edit(
                 overwrites=overwrites,
@@ -507,9 +540,7 @@ class EditVoiceChannel(Cog):
                 content = f"{ctx.author.mention} " + _(
                     "Do you really want to delete the voice channel {channel.mention} ({channel.id})?"
                 ).format(channel=channel)
-            if not await CogsUtils.ConfirmationAsk(
-                ctx, content=content, embed=embed
-            ):
+            if not await CogsUtils.ConfirmationAsk(ctx, content=content, embed=embed):
                 await CogsUtils.delete_message(ctx.message)
                 return
         try:
@@ -523,9 +554,7 @@ class EditVoiceChannel(Cog):
 
     @editvoicechannel.command(name="view", aliases=["-"])
     async def editvoicechannel_view(
-        self,
-        ctx: commands.Context,
-        channel: discord.VoiceChannel
+        self, ctx: commands.Context, channel: discord.VoiceChannel
     ) -> None:
         """View and edit voice channel."""
         await self.check_voice_channel(ctx, channel)
@@ -544,9 +573,16 @@ class EditVoiceChannel(Cog):
         }
 
         def get_embed() -> discord.Embed:
-            embed: discord.Embed = discord.Embed(title=f"Voice Channel #!{channel.name} ({channel.id})", color=embed_color)
+            embed: discord.Embed = discord.Embed(
+                title=f"Voice Channel #!{channel.name} ({channel.id})", color=embed_color
+            )
             embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
-            embed.description = "\n".join([f"• `{parameter}`: {repr(getattr(channel, parameters[parameter].get('attribute_name', parameter)))}" for parameter in parameters])
+            embed.description = "\n".join(
+                [
+                    f"• `{parameter}`: {repr(getattr(channel, parameters[parameter].get('attribute_name', parameter)))}"
+                    for parameter in parameters
+                ]
+            )
             return embed
 
         await DiscordEditView(

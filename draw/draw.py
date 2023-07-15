@@ -160,7 +160,11 @@ class Draw(Cog):
         from_message: typing.Optional[commands.MessageConverter] = None,
         height: typing.Optional[commands.Range[int, MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH]] = 9,
         width: typing.Optional[commands.Range[int, MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH]] = 9,
-        background: typing.Literal["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "transparent"] = MAIN_COLORS[-1],  # typing.Literal[*MAIN_COLORS]
+        background: typing.Literal[
+            "🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "transparent"
+        ] = MAIN_COLORS[
+            -1
+        ],  # typing.Literal[*MAIN_COLORS]
     ) -> None:
         """Make a pixel art on Discord."""
         if from_message is None:

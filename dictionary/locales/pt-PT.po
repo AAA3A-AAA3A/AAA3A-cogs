@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:31\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:20\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
@@ -17,12 +17,12 @@ msgstr ""
 "X-Crowdin-File-ID: 229\n"
 "Language: pt_PT\n"
 
-#: dictionary\dictionary.py:22
+#: dictionary\dictionary.py:23
 #, docstring
 msgid "A cog to search an english term/word in the dictionary! Synonyms, antonyms, phonetics (with audio)..."
 msgstr "Uma engrenagem para procurar um termo/palavra inglesa no dicionário! Sinónimos, antónimos, fonética (com áudio)..."
 
-#: dictionary\dictionary.py:85
+#: dictionary\dictionary.py:94
 msgid "Word not found in English dictionary."
 msgstr "Palavra não encontrada no dicionário de inglês."
 

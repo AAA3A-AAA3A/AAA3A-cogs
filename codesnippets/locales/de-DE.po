@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:31\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:18\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -17,30 +17,30 @@ msgstr ""
 "X-Crowdin-File-ID: 227\n"
 "Language: de_DE\n"
 
-#: codesnippets\codesnippets.py:65
+#: codesnippets\codesnippets.py:68
 #, docstring
 msgid "A cog to send code content from a GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL!"
 msgstr "Ein Zahnrad zum Senden von Codeinhalten von einer GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL!"
 
-#: codesnippets\codesnippets.py:421
+#: codesnippets\codesnippets.py:497
 msgid "No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found."
 msgstr "Keine GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL gefunden."
 
-#: codesnippets\codesnippets.py:456
+#: codesnippets\codesnippets.py:537
 #, docstring
 msgid "Add a channel where the cog have to send automatically code snippets from URLs."
 msgstr "Fügen Sie einen Kanal hinzu, über den die Kogge automatisch Codeschnipsel von URLs senden muss."
 
-#: codesnippets\codesnippets.py:460
+#: codesnippets\codesnippets.py:541
 msgid "The cog is already enabled in this channel"
 msgstr "Das Zahnrad ist in diesem Kanal bereits aktiviert"
 
-#: codesnippets\codesnippets.py:471
+#: codesnippets\codesnippets.py:552
 #, docstring
 msgid "Remove a channel where the cog have to send automatically code snippets from URLs."
 msgstr "Entfernen Sie einen Kanal, über den die Kogge automatisch Codeschnipsel von URLs senden muss."
 
-#: codesnippets\codesnippets.py:475
+#: codesnippets\codesnippets.py:556
 msgid "The cog is already disabled in this channel"
 msgstr "Das Zahnrad ist in diesem Kanal bereits deaktiviert"
 

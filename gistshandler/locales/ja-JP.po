@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:31\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:19\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Gistが見つかりません。"
 msgid "A cog to create new Gists and edit/delete existing ones!"
 msgstr "新しいGistを作成したり、既存のGistを編集・削除するためのコグです！"
 
-#: gistshandler\gistshandler.py:71
+#: gistshandler\gistshandler.py:85
 msgid "You need to set up a GitHub token with `{ctx.prefix}set api github token,[TOKEN]` first!"
 msgstr "最初に `{ctx.prefix}set api github token,[TOKEN]` で GitHub トークンを設定する必要があります！"
 
@@ -34,7 +34,7 @@ msgstr "最初に `{ctx.prefix}set api github token,[TOKEN]` で GitHub トー�
 msgid "{public.value} is not a recognised boolean option."
 msgstr "{public.value} は、ブーリアンオプションとして認識されません。"
 
-#: gistshandler\view.py:101 gistshandler\view.py:199 gistshandler\view.py:381
+#: gistshandler\view.py:101 gistshandler\view.py:199 gistshandler\view.py:384
 msgid "GitHub token is invalid or expired."
 msgstr "GitHub トークンが無効または期限切れです。"
 
@@ -50,11 +50,11 @@ msgstr "この要旨の編集は禁止されています。"
 msgid "Gist `{gist.id}` updated."
 msgstr "Gist `{gist.id}` を更新しました。"
 
-#: gistshandler\view.py:385
+#: gistshandler\view.py:388
 msgid "You're not allowed to delete this gist."
 msgstr "このジストを削除することは許されない。"
 
-#: gistshandler\view.py:391
+#: gistshandler\view.py:394
 msgid "Gist `{gist.id}` deleted."
 msgstr "Gist `{gist.id}` を削除しました。"
 

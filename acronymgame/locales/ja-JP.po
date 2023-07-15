@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:31\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:19\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -74,15 +74,15 @@ msgstr "このゲームのリーダーボードを紹介します："
 msgid "Winner{s}: {winners}!"
 msgstr "優勝{s}: {winners}！"
 
-#: acronymgame\view.py:238
+#: acronymgame\view.py:240
 msgid "You have already voted in this game."
 msgstr "このゲームでは、すでに投票済みです。"
 
-#: acronymgame\view.py:244
+#: acronymgame\view.py:246
 msgid "You can't vote for yourself."
 msgstr "自分には投票できない。"
 
-#: acronymgame\view.py:250
+#: acronymgame\view.py:252
 msgid "Vote given for answer {num}."
 msgstr "解答に与えられた投票 {num}."
 

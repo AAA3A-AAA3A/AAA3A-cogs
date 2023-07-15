@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:31\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:18\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Gistul nu a fost găsit."
 msgid "A cog to create new Gists and edit/delete existing ones!"
 msgstr "O rotiță pentru a crea noi Gists și pentru a le edita/șterge pe cele existente!"
 
-#: gistshandler\gistshandler.py:71
+#: gistshandler\gistshandler.py:85
 msgid "You need to set up a GitHub token with `{ctx.prefix}set api github token,[TOKEN]` first!"
 msgstr "Trebuie să configurați un token GitHub cu `{ctx.prefix}set api github token,[TOKEN]` mai întâi!"
 
@@ -34,7 +34,7 @@ msgstr "Trebuie să configurați un token GitHub cu `{ctx.prefix}set api github 
 msgid "{public.value} is not a recognised boolean option."
 msgstr "{public.value} nu este o opțiune booleană recunoscută."
 
-#: gistshandler\view.py:101 gistshandler\view.py:199 gistshandler\view.py:381
+#: gistshandler\view.py:101 gistshandler\view.py:199 gistshandler\view.py:384
 msgid "GitHub token is invalid or expired."
 msgstr "Tokenul GitHub nu este valid sau a expirat."
 
@@ -50,11 +50,11 @@ msgstr "Nu ai voie să editezi acest gist."
 msgid "Gist `{gist.id}` updated."
 msgstr "Gist `{gist.id}` actualizat."
 
-#: gistshandler\view.py:385
+#: gistshandler\view.py:388
 msgid "You're not allowed to delete this gist."
 msgstr "Nu aveți voie să ștergeți acest gist."
 
-#: gistshandler\view.py:391
+#: gistshandler\view.py:394
 msgid "Gist `{gist.id}` deleted."
 msgstr "Gist `{gist.id}` șters."
 

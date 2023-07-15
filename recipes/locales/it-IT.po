@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:32\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:19\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -22,17 +22,17 @@ msgstr ""
 msgid "A cog to search and show a cooking recipe!"
 msgstr "Un ingranaggio per cercare e mostrare una ricetta di cucina!"
 
-#: recipes\recipes.py:137 recipes\recipes.py:154
+#: recipes\recipes.py:148 recipes\recipes.py:166
 msgid "No recipe found."
 msgstr "Nessuna ricetta trovata."
 
-#: recipes\recipes.py:143
+#: recipes\recipes.py:154
 msgid "Error in parsing the response.\n"
 "{error}"
 msgstr "Errore nell'analisi della risposta.\n"
 "{error}"
 
-#: recipes\recipes.py:159
+#: recipes\recipes.py:171
 msgid "View results on Food52"
 msgstr "Visualizza i risultati su Food52"
 

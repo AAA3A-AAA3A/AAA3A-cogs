@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:31\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:19\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -74,15 +74,15 @@ msgstr "Hier is het klassement voor dit spel:"
 msgid "Winner{s}: {winners}!"
 msgstr "Winnaar{s}: {winners}!"
 
-#: acronymgame\view.py:238
+#: acronymgame\view.py:240
 msgid "You have already voted in this game."
 msgstr "Je hebt al gestemd in dit spel."
 
-#: acronymgame\view.py:244
+#: acronymgame\view.py:246
 msgid "You can't vote for yourself."
 msgstr "Je kunt niet op jezelf stemmen."
 
-#: acronymgame\view.py:250
+#: acronymgame\view.py:252
 msgid "Vote given for answer {num}."
 msgstr "Stem gegeven voor antwoord {num}."
 

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -76,14 +76,14 @@ msgstr ""
 msgid "Winner{s}: {winners}!"
 msgstr ""
 
-#: acronymgame\view.py:238
+#: acronymgame\view.py:240
 msgid "You have already voted in this game."
 msgstr ""
 
-#: acronymgame\view.py:244
+#: acronymgame\view.py:246
 msgid "You can't vote for yourself."
 msgstr ""
 
-#: acronymgame\view.py:250
+#: acronymgame\view.py:252
 msgid "Vote given for answer {num}."
 msgstr ""

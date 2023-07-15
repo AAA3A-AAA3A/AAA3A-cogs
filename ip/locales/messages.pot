@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,20 +16,20 @@ msgstr ""
 msgid "A cog to get the ip address  of the bot's host machine!"
 msgstr ""
 
-#: ip\ip.py:67
+#: ip\ip.py:77
 #, docstring
 msgid "Get the ip address of the bot's host machine."
 msgstr ""
 
-#: ip\ip.py:72
+#: ip\ip.py:82
 msgid "The ip address of your bot is `{ip}`."
 msgstr ""
 
-#: ip\ip.py:76
+#: ip\ip.py:86
 #, docstring
 msgid "Get the ip address website of the bot's host machine."
 msgstr ""
 
-#: ip\ip.py:83
+#: ip\ip.py:93
 msgid "The Administrator Panel website is http://{ip}:{port}/."
 msgstr ""

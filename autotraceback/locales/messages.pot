@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,6 @@ msgid ""
 "error!"
 msgstr ""
 
-#: autotraceback\autotraceback.py:60
+#: autotraceback\autotraceback.py:69
 msgid "No exception has occurred yet."
 msgstr ""

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,16 +11,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: draw\draw.py:38
+#: draw\draw.py:40
 #, docstring
 msgid "A cog to make pixel arts on Discord!"
 msgstr ""
 
-#: draw\draw.py:157
+#: draw\draw.py:174
 msgid "This message isn't in the cache."
 msgstr ""
 
-#: draw\start_view.py:94 draw\start_view.py:103
+#: draw\start_view.py:93 draw\start_view.py:102
 msgid ""
 "Create a new Draw Board with `height = {height}`, `width = {width}` and "
 "`background = {background}`."
@@ -41,13 +41,13 @@ msgid ""
 " E.g. `😎 I like turtles 🐢`."
 msgstr ""
 
-#: draw\view.py:816
+#: draw\view.py:817
 msgid ""
 "Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`,"
 " `A`, `10`, etc."
 msgstr ""
 
-#: draw\view.py:948
+#: draw\view.py:949
 msgid ""
 "Please type the cells with the main colors names. One color for each line, separated from the cell by a \":\". Example: `A1:red\n"
 "B7-C9:green`."

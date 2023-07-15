@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -13,10 +13,14 @@ msgstr ""
 
 #: editfile\editfile.py:28
 #, docstring
-msgid "A cog to get a file and replace it from its path from Discord!"
+msgid ""
+"A cog to get a file and replace it from its path from Discord!\n"
+"\n"
+"    ⚠️ This cog can be very dangerous, since it allows direct read/write/delete of files on the bot’s machine, considering the fact that reading the wrong file can expose sensitive information like tokens and deleting the wrong file can corrupt the bot or the system entirely.\n"
+"    "
 msgstr ""
 
-#: editfile\editfile.py:50
+#: editfile\editfile.py:59
 #, docstring
 msgid ""
 "Get a file on the bot's host machine from its path.\n"
@@ -24,39 +28,39 @@ msgid ""
 "        "
 msgstr ""
 
-#: editfile\editfile.py:55 editfile\editfile.py:131
+#: editfile\editfile.py:64 editfile\editfile.py:140
 msgid "Couldn't parse this input."
 msgstr ""
 
-#: editfile\editfile.py:67
+#: editfile\editfile.py:76
 msgid ""
 "Cowardly refusing to read a file with no size stat. (it may be empty, "
 "endless or inaccessible)."
 msgstr ""
 
-#: editfile\editfile.py:73
+#: editfile\editfile.py:82
 msgid "Cowardly refusing to read a file >128MB."
 msgstr ""
 
-#: editfile\editfile.py:91 editfile\editfile.py:256 editfile\editfile.py:266
-#: editfile\editfile.py:279 editfile\editfile.py:290
+#: editfile\editfile.py:100 editfile\editfile.py:261 editfile\editfile.py:271
+#: editfile\editfile.py:284 editfile\editfile.py:295
 msgid "This file cannot be found on the host machine."
 msgstr ""
 
-#: editfile\editfile.py:95 editfile\editfile.py:158 editfile\editfile.py:260
-#: editfile\editfile.py:270 editfile\editfile.py:283 editfile\editfile.py:294
+#: editfile\editfile.py:104 editfile\editfile.py:167 editfile\editfile.py:265
+#: editfile\editfile.py:275 editfile\editfile.py:288 editfile\editfile.py:299
 msgid "The path you specified refers to a directory, not a file."
 msgstr ""
 
-#: editfile\editfile.py:115 editfile\editfile.py:149
+#: editfile\editfile.py:124 editfile\editfile.py:158
 msgid "There are only {len_lines} lines in this file."
 msgstr ""
 
-#: editfile\editfile.py:120
+#: editfile\editfile.py:129
 msgid "Here are the contents of the file `{path}`."
 msgstr ""
 
-#: editfile\editfile.py:125
+#: editfile\editfile.py:134
 #, docstring
 msgid ""
 "Replace a file on the bot's host machine from its path.\n"
@@ -64,62 +68,62 @@ msgid ""
 "        "
 msgstr ""
 
-#: editfile\editfile.py:154
+#: editfile\editfile.py:163
 msgid "This original file cannot be found on the host machine."
 msgstr ""
 
-#: editfile\editfile.py:162
+#: editfile\editfile.py:171
 msgid ""
 "You must send the command with an attachment that will be used to replace "
 "the original file."
 msgstr ""
 
-#: editfile\editfile.py:187
+#: editfile\editfile.py:196
 msgid ""
 "This is the original/old file available at path `{path}`. Normally, this "
 "file has been replaced correctly."
 msgstr ""
 
-#: editfile\editfile.py:195
+#: editfile\editfile.py:204
 #, docstring
 msgid "Get a cog directory on the bot's host machine from its name."
 msgstr ""
 
-#: editfile\editfile.py:198
+#: editfile\editfile.py:207
 msgid "Could not find a cog with this name."
 msgstr ""
 
-#: editfile\editfile.py:205
-msgid "This cog had its data directory removed."
+#: editfile\editfile.py:213
+msgid "This cog has not yet stored any persistent data in its data folder."
 msgstr ""
 
-#: editfile\editfile.py:207
-msgid "This cog does not store any data."
-msgstr ""
-
-#: editfile\editfile.py:228
+#: editfile\editfile.py:233
 #, docstring
 msgid "List all files/directories of a directory from its path."
 msgstr ""
 
-#: editfile\editfile.py:232
+#: editfile\editfile.py:237
 msgid "This directory cannot be found on the host machine."
 msgstr ""
 
-#: editfile\editfile.py:236
+#: editfile\editfile.py:241
 msgid "The path you specified refers to a file, not a directory."
 msgstr ""
 
-#: editfile\editfile.py:252
+#: editfile\editfile.py:257
 #, docstring
 msgid "Rename a file."
 msgstr ""
 
-#: editfile\editfile.py:272 editfile\editfile.py:296
-msgid "The `{path}` file has been deleted."
+#: editfile\editfile.py:277
+msgid "The `{path}` file has been renamed."
 msgstr ""
 
-#: editfile\editfile.py:276
+#: editfile\editfile.py:281
 #, docstring
 msgid "Delete a file."
+msgstr ""
+
+#: editfile\editfile.py:301
+msgid "The `{path}` file has been deleted."
 msgstr ""

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,51 +16,68 @@ msgstr ""
 msgid "A cog to allow a user to execute a command by clicking on a reaction!"
 msgstr ""
 
-#: reacttocommand\reacttocommand.py:215
+#: reacttocommand\reacttocommand.py:237
 #, docstring
 msgid ""
 "Add a reaction-command for a message.\n"
+"\n"
 "        There should be no prefix in the command.\n"
 "        The command will be invoked with the permissions of the user who clicked on the reaction.\n"
 "        This user must be able to see writing in the channel.\n"
 "        "
 msgstr ""
 
-#: reacttocommand\reacttocommand.py:228
+#: reacttocommand\reacttocommand.py:251
 msgid ""
 "I don't have sufficient permissions on the channel where the message you specified is located.\n"
 "I need the permissions to add reactions and to see the messages in that channel."
 msgstr ""
 
-#: reacttocommand\reacttocommand.py:238
+#: reacttocommand\reacttocommand.py:261
 msgid "You have not specified a correct command."
 msgstr ""
 
-#: reacttocommand\reacttocommand.py:245
+#: reacttocommand\reacttocommand.py:267
 msgid ""
 "An error has occurred. It is possible that the emoji you provided is "
 "invalid."
 msgstr ""
 
-#: reacttocommand\reacttocommand.py:257
-#, docstring
-msgid "Remove a reaction-command for a message."
-msgstr ""
-
-#: reacttocommand\reacttocommand.py:261 reacttocommand\reacttocommand.py:282
-msgid "No reaction-command is configured for this message."
-msgstr ""
-
-#: reacttocommand\reacttocommand.py:265
-msgid "I wasn't watching for this reaction on this message."
+#: reacttocommand\reacttocommand.py:274
+msgid "Reaction-command added to this message."
 msgstr ""
 
 #: reacttocommand\reacttocommand.py:278
 #, docstring
+msgid "Remove a reaction-command for a message."
+msgstr ""
+
+#: reacttocommand\reacttocommand.py:282 reacttocommand\reacttocommand.py:304
+msgid "No reaction-command is configured for this message."
+msgstr ""
+
+#: reacttocommand\reacttocommand.py:286
+msgid "I wasn't watching for this reaction on this message."
+msgstr ""
+
+#: reacttocommand\reacttocommand.py:296
+msgid "Reaction-command removed from this message."
+msgstr ""
+
+#: reacttocommand\reacttocommand.py:300
+#, docstring
 msgid "Clear all reactions-commands for a message."
 msgstr ""
 
-#: reacttocommand\reacttocommand.py:294
+#: reacttocommand\reacttocommand.py:313
+msgid "Reactions-commands cleared for this message."
+msgstr ""
+
+#: reacttocommand\reacttocommand.py:317
 #, docstring
 msgid "Clear all reactions-commands for a guild."
+msgstr ""
+
+#: reacttocommand\reacttocommand.py:319
+msgid "All reactions-commands purged."
 msgstr ""

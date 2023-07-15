@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:29\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:17\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -22,21 +22,21 @@ msgstr ""
 msgid "A cog to get the ip address  of the bot's host machine!"
 msgstr "Un rouage pour obtenir l'adresse IP de la machine hôte du bot !"
 
-#: ip\ip.py:67
+#: ip\ip.py:77
 #, docstring
 msgid "Get the ip address of the bot's host machine."
 msgstr "Obtenir l'adresse IP de la machine hôte du bot."
 
-#: ip\ip.py:72
+#: ip\ip.py:82
 msgid "The ip address of your bot is `{ip}`."
 msgstr "L'adresse IP de votre bot est `{ip}`."
 
-#: ip\ip.py:76
+#: ip\ip.py:86
 #, docstring
 msgid "Get the ip address website of the bot's host machine."
 msgstr "Obtenir l'adresse IP du site web de la machine hôte du bot."
 
-#: ip\ip.py:83
+#: ip\ip.py:93
 msgid "The Administrator Panel website is http://{ip}:{port}/."
 msgstr "Le site web du Panel des administrateurs est le suivant : http://{ip}:{port}/."
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:31\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:20\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -17,16 +17,16 @@ msgstr ""
 "X-Crowdin-File-ID: 231\n"
 "Language: nl_NL\n"
 
-#: draw\draw.py:38
+#: draw\draw.py:40
 #, docstring
 msgid "A cog to make pixel arts on Discord!"
 msgstr "Een radertje om pixelkunst te maken op Discord!"
 
-#: draw\draw.py:157
+#: draw\draw.py:174
 msgid "This message isn't in the cache."
 msgstr "Dit bericht staat niet in de cache."
 
-#: draw\start_view.py:94 draw\start_view.py:103
+#: draw\start_view.py:93 draw\start_view.py:102
 msgid "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`."
 msgstr "Maak een nieuw Tekenbord met `hoogte = {height}`, `breedte = {width}` en `achtergrond = {background}`."
 
@@ -46,11 +46,11 @@ msgstr "Voer alle kleuren in die je wilt toevoegen. Dit kunnen alle of een van d
 msgid "Please send a message containing the emojis you want to add to your palette. E.g. `😎 I like turtles 🐢`."
 msgstr "Stuur een bericht met de emoji's die je aan je palet wilt toevoegen. Bijvoorbeeld `😎 Ik hou van schildpadden 🐢`."
 
-#: draw\view.py:816
+#: draw\view.py:817
 msgid "Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`, `A`, `10`, etc."
 msgstr "Typ de cel waar je de cursor naartoe wilt verplaatsen. Bijvoorbeeld `A1`, `a1`, `A10`, `A`, `10`, etc."
 
-#: draw\view.py:948
+#: draw\view.py:949
 msgid "Please type the cells with the main colors names. One color for each line, separated from the cell by a \":\". Example: `A1:red\n"
 "B7-C9:green`."
 msgstr "Typ de cellen met de namen van de hoofdkleuren. Eén kleur voor elke regel, gescheiden van de cel door een \":\". Voorbeeld: `A1:rood\n"

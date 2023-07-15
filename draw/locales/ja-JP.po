@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:31\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:19\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -17,16 +17,16 @@ msgstr ""
 "X-Crowdin-File-ID: 231\n"
 "Language: ja_JP\n"
 
-#: draw\draw.py:38
+#: draw\draw.py:40
 #, docstring
 msgid "A cog to make pixel arts on Discord!"
 msgstr "Discordでピクセルアートを作るための歯車です！"
 
-#: draw\draw.py:157
+#: draw\draw.py:174
 msgid "This message isn't in the cache."
 msgstr "このメッセージはキャッシュにない。"
 
-#: draw\start_view.py:94 draw\start_view.py:103
+#: draw\start_view.py:93 draw\start_view.py:102
 msgid "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`."
 msgstr "高さ = {height}`、幅 = {width}`、背景 = {background}`の新しいドローボードを作成します。"
 
@@ -46,11 +46,11 @@ msgstr "追加したい色をすべて入力してください。以下のいず
 msgid "Please send a message containing the emojis you want to add to your palette. E.g. `😎 I like turtles 🐢`."
 msgstr "パレットに追加したい絵文字を含むメッセージを送信してください。例：`👠亀が好きです🐢」。"
 
-#: draw\view.py:816
+#: draw\view.py:817
 msgid "Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`, `A`, `10`, etc."
 msgstr "カーソルを移動させたいセルを入力してください。例：`A1`, `a1`, `A10`, `A`, `10`, etc."
 
-#: draw\view.py:948
+#: draw\view.py:949
 msgid "Please type the cells with the main colors names. One color for each line, separated from the cell by a \":\". Example: `A1:red\n"
 "B7-C9:green`."
 msgstr "主要な色の名前を持つセルを入力してください。1行に1色、セルとは「:」で区切ってください。例：`A1:red\n"

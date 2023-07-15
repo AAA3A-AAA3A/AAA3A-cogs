@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:26\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:18\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -17,16 +17,16 @@ msgstr ""
 "X-Crowdin-File-ID: 148\n"
 "Language: es_ES\n"
 
-#: getloc\getloc.py:26
+#: getloc\getloc.py:58
 #, docstring
 msgid "A cog to display information about a location based on its address or geographical coordinates!"
 msgstr "Un engranaje para mostrar información sobre un lugar a partir de su dirección o coordenadas geográficas!"
 
-#: getloc\getloc.py:121
+#: getloc\getloc.py:162
 msgid "An error has occurred. Please try again."
 msgstr "Se ha producido un error. Por favor, inténtelo de nuevo."
 
-#: getloc\getloc.py:124
+#: getloc\getloc.py:165
 msgid "The address or contact details you have provided do not lead to any results. Are you sure of your input?"
 msgstr "La dirección o los datos de contacto que ha facilitado no conducen a ningún resultado. ¿Está seguro de lo que ha introducido?"
 

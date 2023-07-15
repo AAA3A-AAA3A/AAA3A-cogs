@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:29\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:18\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -17,54 +17,54 @@ msgstr ""
 "X-Crowdin-File-ID: 82\n"
 "Language: de_DE\n"
 
-#: ctxvar\ctxvar.py:31
+#: ctxvar\ctxvar.py:53
+msgid "No Discord object found."
+msgstr "Kein Discord-Objekt gefunden."
+
+#: ctxvar\ctxvar.py:69 ctxvar\ctxvar.py:193 ctxvar\ctxvar.py:244
+#: ctxvar\ctxvar.py:325
+msgid "I couldn't find any cog, command, or object named `{thing}`."
+msgstr "Ich konnte kein Zahnrad, keinen Befehl und kein Objekt mit dem Namen \"{thing}\" finden."
+
+#: ctxvar\ctxvar.py:82
 #, docstring
 msgid "A cog to list and display the contents of all sub-functions of `ctx`!"
 msgstr "Ein Zahnrad zum Auflisten und Anzeigen des Inhalts aller Unterfunktionen von `ctx`!"
 
-#: ctxvar\ctxvar.py:52
+#: ctxvar\ctxvar.py:110
 #, docstring
 msgid "Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."
 msgstr "Anzeige einer Liste aller Attribute und ihrer Werte der Klasseninstanz 'ctx' oder ihrer Unterattribute."
 
-#: ctxvar\ctxvar.py:56 ctxvar\ctxvar.py:118 ctxvar\ctxvar.py:169
-#: ctxvar\ctxvar.py:250
+#: ctxvar\ctxvar.py:114 ctxvar\ctxvar.py:176 ctxvar\ctxvar.py:227
+#: ctxvar\ctxvar.py:308
 msgid "The cog Dev must be loaded, to make sure you know what you are doing."
 msgstr "Das Zahnrad Dev muss geladen werden, damit Sie wissen, was Sie tun."
 
-#: ctxvar\ctxvar.py:67
+#: ctxvar\ctxvar.py:125
 msgid "The argument you specified is not a subclass of the instance."
 msgstr "Das von Ihnen angegebene Argument ist keine Unterklasse der Instanz."
 
-#: ctxvar\ctxvar.py:74
+#: ctxvar\ctxvar.py:132
 msgid "Here are all the variables and their associated values that can be used in this instance class."
 msgstr "Hier sind alle Variablen und ihre zugehörigen Werte, die in dieser Instanzklasse verwendet werden können."
 
-#: ctxvar\ctxvar.py:114
+#: ctxvar\ctxvar.py:172
 #, docstring
 msgid "Display a list of all attributes of the provided object (debug not async)."
 msgstr "Zeigt eine Liste aller Attribute des angegebenen Objekts an (debug not async)."
 
-#: ctxvar\ctxvar.py:135 ctxvar\ctxvar.py:186 ctxvar\ctxvar.py:267
-#: ctxvar\ctxvar.py:326
-msgid "I couldn't find any cog, command, or object named `{thing}`."
-msgstr "Ich konnte kein Zahnrad, keinen Befehl und kein Objekt mit dem Namen \"{thing}\" finden."
-
-#: ctxvar\ctxvar.py:165
+#: ctxvar\ctxvar.py:223
 #, docstring
 msgid "Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."
 msgstr "Führt `rich.help(obj=object, ...)` auf dem angegebenen Objekt aus (debug not async)."
 
-#: ctxvar\ctxvar.py:246
+#: ctxvar\ctxvar.py:304
 #, docstring
 msgid "Execute `ast.dump(ast.parse(<code content>))` on the provided object (debug not async)."
 msgstr "Ausführen von `ast.dump(ast.parse(<code content>))` für das angegebene Objekt (Debug nicht async)."
 
-#: ctxvar\ctxvar.py:310
-msgid "No Discord object found."
-msgstr "Kein Discord-Objekt gefunden."
-
-#: ctxvar\ctxvar.py:338
+#: ctxvar\ctxvar.py:345
 #, docstring
 msgid "List attributes of the provided object like dpy objects (debug not async)."
 msgstr "Auflistung der Attribute des angegebenen Objekts wie bei dpy-Objekten (debug not async)."

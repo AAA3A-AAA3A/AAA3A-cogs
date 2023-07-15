@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 18:21\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:18\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "A cog to display the error traceback of a command automatically after the error!"
 msgstr "Un cog pour afficher le traceback de l'erreur d'une commande automatiquement après l'erreur !"
 
-#: autotraceback\autotraceback.py:60
+#: autotraceback\autotraceback.py:69
 msgid "No exception has occurred yet."
 msgstr "Aucune exception ne s'est encore produite."
 

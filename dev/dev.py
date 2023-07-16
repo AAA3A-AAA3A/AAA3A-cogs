@@ -347,6 +347,7 @@ class Dev(Cog, dev_commands.Dev):
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
+        self.__authors__: typing.List[str] = ["Cog-Creators", "Zephyrkul (Zephyrkul#1089)", "AAA3A"]
 
         self.env_extensions: typing.Dict[str, typing.Any] = {}
         self.source_cache: dev_commands.SourceCache = dev_commands.SourceCache()

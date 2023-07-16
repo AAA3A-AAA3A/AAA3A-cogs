@@ -152,8 +152,10 @@ class WandboxResponse:
             and not self.program_error
             and self.status == "0"
         ):
-            output = f"{self.url}\n{self.program_output}"
-            await Menu(pages=output, lang="py").start(ctx)
+            output = f"{self.program_output.strip()}\n\nExit code: {self.status}"  # "\nURL: {self.url}"
+            menu = Menu(pages=output, lang="py")
+            menu.extra_items.append(discord.ui.Button(label="View on Wandbox", style=discord.ButtonStyle.url, url=self.url))
+            await menu.start(ctx)
             return
         embed: discord.Embed = discord.Embed(
             title="RunCode Response (with Wandbox API)", url=self.url
@@ -195,7 +197,7 @@ class WandboxResponse:
             "program_error",
         ]:
             if value := getattr(self, field):
-                description += f"\n\n**{field.replace('_', ' ').title()}**:\n{value}"
+                description += f"\n\n**{field.replace('_', ' ').title()}**:\n{box(value, lang='py')}"
         pages = list(
             pagify(
                 description,

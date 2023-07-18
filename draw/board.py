@@ -196,8 +196,7 @@ class Board:
                     radius=3 if self.cursor_display else 0,
                     fill=255,
                 )
-                image.putalpha(mask)
-                img.paste(image, (x, y, x + size, y + size))
+                img.paste(image, (x, y, x + size, y + size), mask=mask)
                 if self.cursor_display and (_y - 2, _x - 2) in self.cursor_coords:
                     draw.rounded_rectangle(
                         (x, y, x + size, y + size),

@@ -474,7 +474,8 @@ class EditVoiceChannel(Cog):
                     )
                 )
         bot_channel_permissions = channel.permissions_for(ctx.me)
-        overwrites = channel.overwrites.copy()
+        fake_channel_object = copy(channel)
+        overwrites = fake_channel_object.overwrites
         for target in targets:
             if target in overwrites:
                 overwrites[target].update(
@@ -485,8 +486,6 @@ class EditVoiceChannel(Cog):
                     **{permission: true_or_false for permission in permissions}
                 )
                 overwrites[target] = perm
-        fake_channel_object = copy(channel)
-        fake_channel_object.overwrites = overwrites
         new_channel_permissions = fake_channel_object.permissions_for(ctx.author)
         if [
             permission

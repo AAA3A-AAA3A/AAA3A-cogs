@@ -85,7 +85,7 @@ class Seen(Cog):
         self.loops.append(
             Loop(
                 cog=self,
-                name="Save Seen Config",
+                name="Save Seen Data",
                 function=self.save_to_config,
                 minutes=1,
             )

@@ -464,7 +464,7 @@ class Medicat(Cog):
             for x in ventoy_tag_body:
                 if (
                     x
-                    == "See [https://www.ventoy.net/en/doc_news.html](https://www.ventoy.net/en/doc_news.html) for more details.\r"
+                    in ["See [https://www.ventoy.net/en/doc_news.html](https://www.ventoy.net/en/doc_news.html) for more details.\r", "**Wana boot and install OS through network (PXE)? Welcome to my new project iVentoy.**\r"]
                 ):
                     break
                 if x != "\r":

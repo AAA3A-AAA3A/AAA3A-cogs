@@ -101,8 +101,8 @@ class DevOutput(dev_commands.DevOutput):
                 if self.formatted_exc:
                     console.print(self.formatted_exc.strip())
                 elif (
-                    self.always_include_result
-                    and not self.prints
+                    # self.always_include_result
+                    not self.prints
                     and not formatted_imports
                     and not printed
                     or self.result is not None

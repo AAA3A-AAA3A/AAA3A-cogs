@@ -111,7 +111,7 @@ class YAMLConverter(commands.Converter):
         # modal
         if not isinstance(argument_dict["modal"], typing.List):
             raise commands.BadArgument(
-                _("The argument `/button/modal` must be a list of TextInputs.")
+                _("The argument `/button/modal` must be a list of text inputs.")
             )
         required_arguments = ["label"]
         optional_arguments = [
@@ -122,6 +122,8 @@ class YAMLConverter(commands.Converter):
             "min_length",
             "max_length",
         ]
+        if len(argument_dict["modal"]) > 5:
+            raise commands.BadArgument(_("You can only have 5 text inputs by modal."))
         for count, input in enumerate(argument_dict["modal"], start=1):
             count += 1
             for arg in required_arguments:

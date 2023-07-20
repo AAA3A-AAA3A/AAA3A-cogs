@@ -183,6 +183,8 @@ class Seen(Cog):
                         custom_ids.append((_type, guilds_data[guild][_type]))
                         guilds_data[guild][_type] = None
         # Global
+        if user_id in global_data["ignored_users"]:
+            global_data["ignored_users"].remove(user_id)
         for _type, custom_id in custom_ids:
             try:
                 del global_data[_type][custom_id]
@@ -192,6 +194,7 @@ class Seen(Cog):
 
     async def red_get_data_for_user(self, *, user_id: int) -> typing.Dict[str, io.BytesIO]:
         """Get all data about the user."""
+        await self.save_to_config()  # To clean up the cache too.
         data = {
             Config.GLOBAL: {},
             Config.USER: {},
@@ -798,7 +801,7 @@ class Seen(Cog):
             if _object.id in ignored_users:
                 embed = discord.Embed()
                 embed.color = discord.Color.red()
-                embed.title = f"This {_object.__class__.__name__.lower()} is in the ignored users list (`{ctx.prefix}seen ignoreme`)."
+                embed.title = _("This {object_type} is in the ignored users list (`{prefix}seen ignoreme`).").format(object_type={_object.__class__.__name__.lower()}, prefix=ctx.prefix)
                 await ctx.send(embed=embed)
                 return
         data = await self.get_data_for(
@@ -1417,7 +1420,7 @@ class Seen(Cog):
             await self.red_delete_data_for_user(requester="user", user_id=user.id)
             await ctx.send(
                 _(
-                    "You will no longer be seen by this cog and the data I held on you has been deleted."
+                    "You will no longer be seen by this cog and the data I held on you have been deleted."
                 )
             )
         else:

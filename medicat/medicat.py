@@ -19,7 +19,7 @@ from redbot.core.utils.chat_formatting import bold, box
 # Credits:
 # General repo credits.
 # Thanks to Jayro for Medicat!
-# Thanks to Matt because this cog is for him bot.
+# Thanks to Matt because this cog is for him bot!
 
 MEDICAT_ICON_URL = None
 
@@ -677,7 +677,7 @@ class Medicat(Cog):
 
                 CC.__qualname__ = f"{self.qualified_name}.CC_{name}"
                 setattr(CC, "__doc__", text["title"])  # Description, but translated with i18n.
-                command: commands.Command = self.medicat.command(name=name, i18n=_)(CC)
+                command: commands.Command = commands.bot_has_permissions(embed_links=True)(self.medicat.command(name=name, i18n=_)(CC))
                 command.name = name
                 # command.brief = text["title"]
                 # command.description = text["title"]
@@ -732,6 +732,7 @@ class Medicat(Cog):
         )
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
+    @commands.bot_has_permissions(embed_links=True)
     @medicat.command(aliases=["lastventoyversion"])
     async def getlastventoyversion(self, ctx: commands.Context) -> None:
         """Get the latest version of Ventoy."""
@@ -741,6 +742,7 @@ class Medicat(Cog):
             raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again."))
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
+    @commands.bot_has_permissions(embed_links=True)
     @medicat.command(aliases=["ventoyversion"])
     async def getventoyversion(self, ctx: commands.Context, version: str) -> None:
         """Get a version of Ventoy."""
@@ -752,6 +754,7 @@ class Medicat(Cog):
             raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again."))
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
+    @commands.bot_has_permissions(embed_links=True)
     @medicat.command(aliases=["lastbootablestoolsversions"])
     async def getlastbootablestoolsversions(self, ctx: commands.Context) -> None:
         """Get the latest versions of each Medicat USB bootable tool."""
@@ -885,6 +888,7 @@ class Medicat(Cog):
         await Menu(pages=message, lang="py").start(ctx)
 
     @is_owner_or_AAA3A()
+    @commands.bot_has_permissions(embed_links=True)
     @medicat.command(hidden=True)
     async def getdebugloopsstatus(self, ctx: commands.Context) -> None:
         """Get an embed to check loops status."""

@@ -89,7 +89,7 @@ CUSTOM_COMMANDS = {
         ),
     },
     "missingfiles": {
-        "title": _("See what files are missing using the quick SFV program"),
+        "title": _("See what files are missing using the quick SFV program."),
         "description": _(
             "In order to see what files are missing using the quick SFV program, please scroll all the way to the top once it has finished scanning."
         ),
@@ -118,6 +118,13 @@ CUSTOM_COMMANDS = {
         "description": _(
             "**Medicat USB** is a bootable menu that runs on Ventoy and contains all the necessary tools for computer troubleshooting. It contains for example Malwarebytes bootable for virus scans, Mini Windows 10 for a winPE utility and Jayro's Lockpick for all things password related.\n<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>\n**Medicat VHD** is a full-featured windows, using the real performance of the computer. It is therefore much more powerful than Mini Windows 10. Moreover, all data is saved and you can find it again at each reboot. (Not intended to be used as an operating system).\n<https://gbatemp.net/threads/official-medicat-vhd-a-usb-bootable-windows-10-virtual-harddisk-for-pc-repair.581637/>\n**Jayro's Lockpick** is a winPE with a menu containing all the necessary tools to remove/bypass/retrieve a Windows password or even for a server.\n<https://gbatemp.net/threads/release-jayros-lockpick-a-bootable-password-removal-suite-winpe.579278/>\n**Malwarebytes bootable** is a very powerful antivirus. Since it is launched from a winPE, a potential virus cannot prevent it from running properly.\n<https://gbatemp.net/threads/unofficial-malwarebytes-bootable.481046/>\n**Medicat Second Opinion** is a set of 11 bootable antiviruses to clean viruses in a computer. But most of them only work on legacy BIOS and not UEFI.\n<https://gbatemp.net/threads/medicat-second-opinion-a-collection-of-bootable-antivirus-boot-disks-on-a-single-usb-device.577842/>"
         ),
+    },
+    "secureboot": {
+        "title": _("What to do about security violation when trying to boot into Medicat?"),
+        "description": _(
+            "When you encounter this screen, it means that secure boot is enabled on your computer. You could get past this screen using one of these two methods:\n1. Disable secure boot option into your BIOS.\n2. Enroll the security key from the 3 options menu showed at that screen, selecting `Enroll key` from disk and choosing the `ENROLL_THIS_KEY_IN_MOKMANAGER.cer` file onto the `VTOYEFI` partition."
+        ),
+        "image_url": "https://www.ventoy.net/static/img/secure_key.gif",
     },
     "virus": {
         "title": _("Why does my antivirus software detect Medicat as a virus?"),

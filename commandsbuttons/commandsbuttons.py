@@ -476,7 +476,7 @@ class CommandsButtons(Cog):
                         if config_identifier != "message"
                     ]
                 )
-                embed.add_field(name="\u200B", value=value, inline=False)
+                embed.add_field(name="\u200B", value=f"{value[:1020]}\n..." if len(value) > 1024 else value, inline=False)
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
 

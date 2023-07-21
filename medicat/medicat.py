@@ -124,7 +124,7 @@ CUSTOM_COMMANDS = {
         "description": _(
             "When you encounter this screen, it means that secure boot is enabled on your computer. You could get past this screen using one of these two methods:\n1. Disable secure boot option into your BIOS.\n2. Enroll the security key from the 3 options menu showed at that screen, selecting `Enroll key` from disk and choosing the `ENROLL_THIS_KEY_IN_MOKMANAGER.cer` file onto the `VTOYEFI` partition."
         ),
-        "image_url": "https://www.ventoy.net/static/img/secure_key.gif",
+        "image_url": "https://media.discordapp.net/attachments/829469886681972819/1132059130744553573/secure_key_crop.gif",  # "https://www.ventoy.net/static/img/secure_key.gif"
     },
     "virus": {
         "title": _("Why does my antivirus software detect Medicat as a virus?"),

@@ -1263,13 +1263,14 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 title="Create a Ticket", timeout=180, custom_id="create_ticket_modal"
             )
             modal.on_submit = lambda interaction: interaction.response.defer(ephemeral=True)
-            profile_input = discord.ui.TextInput(
-                label="Profile",
-                style=discord.TextStyle.short,
-                default=profile,
-                max_length=10,
-                required=True,
-            )
+            # profile_input = discord.ui.TextInput(
+            #     label="Profile",
+            #     style=discord.TextStyle.short,
+            #     default=profile,
+            #     max_length=10,
+            #     required=True,
+            # )
+            # modal.add_item(profile_input)
             reason_input = discord.ui.TextInput(
                 label="Why are you creating this ticket?",
                 style=discord.TextStyle.long,
@@ -1277,7 +1278,6 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 required=False,
                 placeholder="No reason provided.",
             )
-            modal.add_item(profile_input)
             modal.add_item(reason_input)
             await interaction.response.send_modal(modal)
             timeout = await modal.wait()
@@ -1285,7 +1285,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 return
             if not interaction.response.is_done():
                 await interaction.response.defer(ephemeral=True)
-            profile = profile_input.value
+            # profile = profile_input.value
             reason = reason_input.value or ""
             profiles = await self.config.guild(interaction.guild).profiles()
             if profile not in profiles:

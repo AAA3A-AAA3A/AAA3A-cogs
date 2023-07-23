@@ -85,8 +85,8 @@ class Dictionary(Cog):
         self.cache[query] = word
         return word
 
-    @commands.hybrid_command()
     @commands.bot_has_permissions(embed_links=True)
+    @commands.hybrid_command(aliases=["define"])
     async def dictionary(self, ctx: commands.Context, query: str) -> None:
         """Search a word in the english dictionnary."""
         word = await self.get_word(query)

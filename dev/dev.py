@@ -9,7 +9,6 @@ import ast
 import asyncio
 import collections
 import contextlib
-import datetime
 import io
 import itertools
 import sys

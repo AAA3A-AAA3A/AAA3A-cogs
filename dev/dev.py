@@ -101,8 +101,8 @@ class DevOutput(dev_commands.DevOutput):
                 if self.formatted_exc:
                     console.print(self.formatted_exc.strip())
                 elif (
-                    # self.always_include_result
-                    not self.prints
+                    self.always_include_result
+                    and not self.prints
                     and not formatted_imports
                     and not printed
                     or self.result is not None
@@ -229,6 +229,7 @@ class DevOutput(dev_commands.DevOutput):
                     raise
                 except BaseException as exc:
                     self.set_exception(exc)
+            self.always_include_result: bool = False
             self.prints: str = captured.get().strip()
 
     async def run_eval(self) -> None:

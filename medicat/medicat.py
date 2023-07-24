@@ -744,7 +744,7 @@ class Medicat(Cog):
     async def getlastventoyversion(self, ctx: commands.Context) -> None:
         """Get the latest version of Ventoy."""
         try:
-            await self.ventoy_updates(channel=ctx.channel, ping_role=False, force=True)
+            await self.ventoy_updates(channel=ctx, ping_role=False, force=True)
         except Exception:
             raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again."))
 
@@ -755,7 +755,7 @@ class Medicat(Cog):
         """Get a version of Ventoy."""
         try:
             await self.ventoy_updates(
-                channel=ctx.channel, ping_role=False, force=True, version=version
+                channel=ctx, ping_role=False, force=True, version=version
             )
         except Exception:
             raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again."))

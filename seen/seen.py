@@ -8,7 +8,6 @@ import typing  # isort:skip
 import asyncio
 import datetime
 import io
-import time as _time
 from copy import deepcopy
 
 from redbot.core.utils.chat_formatting import box, pagify
@@ -36,7 +35,7 @@ class Seen(Cog):
         self.global_config: typing.Dict[
             str,
             typing.Union[
-                typing.Dict[str, typing.Union[typing.Dict[str, str], bool]], typing.List[int]
+                typing.Dict[str, typing.Union[typing.Dict[str, typing.Dict[str, typing.Union[int, str]]], typing.Dict[str, str], typing.Dict[str, bool]]], typing.List[int]
             ],
         ] = {
             "message": {},
@@ -67,7 +66,7 @@ class Seen(Cog):
         self.cache: typing.Dict[
             str,
             typing.Union[
-                typing.Dict[str, typing.Union[typing.Dict[str, str], str]], typing.List[str]
+                typing.Dict[str, typing.Union[typing.Dict[str, typing.Dict[str, typing.Union[int, str]]], typing.Dict[typing.Union[discord.Guild, discord.User], typing.Dict[str, str]], typing.Dict[discord.Guild, typing.Dict[typing.Union[discord.Member, discord.Role, discord.abc.GuildChannel, discord.Thread, discord.CategoryChannel], typing.Dict[str, str]]]]], typing.List[str]
             ],
         ] = {
             "global": {},
@@ -303,7 +302,7 @@ class Seen(Cog):
 
     def upsert_cache(
         self,
-        time: _time,
+        time: typing.Optional[datetime.datetime],
         _type: typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"],
         member: discord.Member,
         guild: discord.Guild,
@@ -311,6 +310,8 @@ class Seen(Cog):
         message: discord.Message,
         reaction: typing.Optional[str] = None,
     ) -> None:
+        if time is None:
+            time = datetime.datetime.now(datetime.timezone.utc)
         if not isinstance(channel, discord.TextChannel):
             return
         custom_id = CogsUtils.generate_key(
@@ -325,10 +326,10 @@ class Seen(Cog):
             },
         )
         data = {
-            "seen": int(time),
+            "seen": time,
             "action": {
-                "message": [message.guild.id, message.channel.id, message.id],
-                "member": member.id,
+                "message": [message.guild, message.channel, message],
+                "member": member,
                 "reaction": reaction,
             },
         }
@@ -340,39 +341,39 @@ class Seen(Cog):
         self.cache["global"][_type][custom_id] = data
         self.cache["existing_keys"].append(custom_id)
         # Users
-        if member._user.id not in self.cache["users"]:
-            self.cache["users"][member._user.id] = {}
-        self.cache["users"][member._user.id][_type] = custom_id
+        if member._user not in self.cache["users"]:
+            self.cache["users"][member._user] = {}
+        self.cache["users"][member._user][_type] = custom_id
         # Members
-        if guild.id not in self.cache["members"]:
-            self.cache["members"][guild.id] = {}
-        if member.id not in self.cache["members"][guild.id]:
-            self.cache["members"][guild.id][member.id] = {}
-        self.cache["members"][guild.id][member.id][_type] = custom_id
+        if guild not in self.cache["members"]:
+            self.cache["members"][guild] = {}
+        if member not in self.cache["members"][guild]:
+            self.cache["members"][guild][member] = {}
+        self.cache["members"][guild][member][_type] = custom_id
         # Roles
-        if guild.id not in self.cache["roles"]:
-            self.cache["roles"][guild.id] = {}
+        if guild not in self.cache["roles"]:
+            self.cache["roles"][guild] = {}
         for role in member.roles:
-            if role.id not in self.cache["roles"][guild.id]:
-                self.cache["roles"][guild.id][role.id] = {}
-            self.cache["roles"][guild.id][role.id][_type] = custom_id
+            if role not in self.cache["roles"][guild]:
+                self.cache["roles"][guild][role] = {}
+            self.cache["roles"][guild][role][_type] = custom_id
         # Channels
-        if guild.id not in self.cache["channels"]:
-            self.cache["channels"][guild.id] = {}
-        if channel.id not in self.cache["channels"][guild.id]:
-            self.cache["channels"][guild.id][channel.id] = {}
-        self.cache["channels"][guild.id][channel.id][_type] = custom_id
+        if guild not in self.cache["channels"]:
+            self.cache["channels"][guild] = {}
+        if channel not in self.cache["channels"][guild]:
+            self.cache["channels"][guild][channel] = {}
+        self.cache["channels"][guild][channel][_type] = custom_id
         # Categories
         if channel.category is not None:
-            if guild.id not in self.cache["categories"]:
-                self.cache["categories"][guild.id] = {}
-            if channel.category.id not in self.cache["categories"][guild.id]:
-                self.cache["categories"][guild.id][channel.category.id] = {}
-            self.cache["categories"][guild.id][channel.category.id][_type] = custom_id
+            if guild not in self.cache["categories"]:
+                self.cache["categories"][guild] = {}
+            if channel.category not in self.cache["categories"][guild]:
+                self.cache["categories"][guild][channel.category] = {}
+            self.cache["categories"][guild][channel.category][_type] = custom_id
         # Guilds
-        if guild.id not in self.cache["guilds"]:
-            self.cache["guilds"][guild.id] = {}
-        self.cache["guilds"][guild.id][_type] = custom_id
+        if guild not in self.cache["guilds"]:
+            self.cache["guilds"][guild] = {}
+        self.cache["guilds"][guild][_type] = custom_id
 
     async def save_to_config(self) -> None:
         cache = self.cache.copy()
@@ -407,60 +408,69 @@ class Seen(Cog):
         # Global
         async with self.config.all() as global_data:
             for _type in cache["global"]:
-                for custom_id, data in cache["global"][_type].items():
+                for custom_id, _data in cache["global"][_type].items():
+                    data = {
+                        "seen": int(_data["seen"].timestamp()),
+                        "action": {
+                            "message": [_data["action"]["message"][0].id, _data["action"]["message"][1].id, _data["action"]["message"][2].id],
+                            "member": _data["action"]["member"].id,
+                        },
+                    }
+                    if "reaction" in _data["action"]:
+                        data["action"]["reaction"] = _data["action"]["reaction"]
                     global_data[_type][custom_id] = data
         # Users
         async with user_group.all() as users_data:
             for user in cache["users"]:
-                if str(user) not in users_data:
-                    users_data[str(user)] = {}
+                if str(user.id) not in users_data:
+                    users_data[str(user.id)] = {}
                 for _type, custom_id in cache["users"][user].items():
-                    users_data[str(user)][_type] = custom_id
+                    users_data[str(user.id)][_type] = custom_id
         # Members
         async with member_group.all() as members_data:
             for guild in cache["members"]:
                 for member in cache["members"][guild]:
-                    if str(guild) not in members_data:
-                        members_data[str(guild)] = {}
-                    if str(member) not in members_data[str(guild)]:
-                        members_data[str(guild)][str(member)] = {}
+                    if str(guild.id) not in members_data:
+                        members_data[str(guild.id)] = {}
+                    if str(member.id) not in members_data[str(guild.id)]:
+                        members_data[str(guild.id)][str(member.id)] = {}
                     for _type in cache["members"][guild][member]:
                         custom_id = cache["members"][guild][member][_type]
-                        members_data[str(guild)][str(member)][str(_type)] = custom_id
+                        members_data[str(guild.id)][str(member.id)][str(_type)] = custom_id
         # Roles
         async with role_group.all() as roles_data:
             for guild in cache["roles"]:
                 for role in cache["roles"][guild]:
-                    if str(role) not in roles_data:
-                        roles_data[str(role)] = {}
+                    if str(role.id) not in roles_data:
+                        roles_data[str(role.id)] = {}
                     for _type in cache["roles"][guild][role]:
                         custom_id = cache["roles"][guild][role][_type]
-                        roles_data[str(role)][_type] = custom_id
+                        roles_data[str(role.id)][_type] = custom_id
         # Channels
         async with channel_group.all() as channels_data:
             for guild in cache["channels"]:
                 for channel in cache["channels"][guild]:
-                    if str(channel) not in channels_data:
-                        channels_data[str(channel)] = {}
+                    if str(channel.id) not in channels_data:
+                        channels_data[str(channel.id)] = {}
                     for _type in cache["channels"][guild][channel]:
                         custom_id = cache["channels"][guild][channel][_type]
-                        channels_data[str(channel)][_type] = custom_id
+                        channels_data[str(channel.id)][_type] = custom_id
         # Categories
         async with category_group.all() as categories_data:
             for guild in cache["categories"]:
                 for category in cache["categories"][guild]:
-                    if str(category) not in categories_data:
-                        categories_data[str(category)] = {}
+                    if str(category.id) not in categories_data:
+                        categories_data[str(category.id)] = {}
                     for _type in cache["categories"][guild][category]:
                         custom_id = cache["categories"][guild][category][_type]
-                        categories_data[str(category)][_type] = custom_id
+                        categories_data[str(category.id)][_type] = custom_id
         # Guilds
         async with guild_group.all() as guilds_data:
             for guild in cache["guilds"]:
-                if str(guild) not in guilds_data:
-                    guilds_data[str(guild)] = {}
+                if str(guild.id) not in guilds_data:
+                    guilds_data[str(guild.id)] = {}
                 for _type, custom_id in cache["guilds"][guild].items():
-                    guilds_data[str(guild)][_type] = custom_id
+                    guilds_data[str(guild.id)][_type] = custom_id
         # Run Cleanup
         await self.cleanup()
 
@@ -567,6 +577,136 @@ class Seen(Cog):
                 categories_count,
                 guilds_count,
             )
+
+    @commands.Cog.listener()
+    async def on_message(self, message: discord.Message) -> None:
+        if await self.bot.cog_disabled_in_guild(
+            cog=self, guild=message.guild
+        ) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
+            return
+        if message.webhook_id is not None:
+            return
+        if message.guild is None:
+            return
+        if not isinstance(message.author, discord.Member):
+            return
+        if not message.author.bot:
+            ctx: commands.Context = await self.bot.get_context(message)
+            if ctx.valid and (ctx.command.cog_name is not None and ctx.command.cog_name == "Seen"):
+                return
+        if (
+            message.author.id == message.guild.me.id
+            and len(message.embeds) == 1
+            and (
+                "Seen".lower()
+                in message.embeds[0].to_dict().get("author", {}).get("name", "").lower()
+                or "Seen".lower() in message.embeds[0].to_dict().get("title", "").lower()
+            )
+        ):
+            return
+        ignored_users = await self.config.ignored_users()
+        if message.author.id in ignored_users:
+            return
+        if not await self.config.listeners.message():
+            return
+        self.upsert_cache(
+            time=datetime.datetime.now(datetime.timezone.utc),
+            _type="message",
+            member=message.author,
+            guild=message.guild,
+            channel=message.channel,
+            message=message,
+            reaction=None,
+        )
+
+    @commands.Cog.listener()
+    async def on_message_edit(self, before: discord.Message, after: discord.Message) -> None:
+        if await self.bot.cog_disabled_in_guild(
+            cog=self, guild=after.guild
+        ) or not await self.bot.allowed_by_whitelist_blacklist(who=after.author):
+            return
+        if after.webhook_id is not None:
+            return
+        if after.guild is None:
+            return
+        if not isinstance(after.author, discord.Member):
+            return
+        ignored_users = await self.config.ignored_users()
+        if after.author.id in ignored_users:
+            return
+        if not await self.config.listeners.message_edit():
+            return
+        self.upsert_cache(
+            time=datetime.datetime.now(datetime.timezone.utc),
+            _type="message_edit",
+            member=after.author,
+            guild=after.guild,
+            channel=after.channel,
+            message=after,
+            reaction=None,
+        )
+
+    @commands.Cog.listener()
+    async def on_reaction_add(
+        self, reaction: discord.Reaction, user: typing.Union[discord.Member, discord.User]
+    ) -> None:
+        if await self.bot.cog_disabled_in_guild(
+            cog=self, guild=reaction.message.guild
+        ) or not await self.bot.allowed_by_whitelist_blacklist(who=user):
+            return
+        if reaction.message.guild is None:
+            return
+        if not isinstance(user, discord.Member):
+            return
+        if (
+            user.id == reaction.message.guild.me.id
+            and reaction.emoji == "✅"
+            and not reaction.message.author.bot
+        ):
+            ctx: commands.Context = await self.bot.get_context(reaction.message)
+            if ctx.valid and (ctx.command.cog_name is not None and ctx.command.cog_name == "Seen"):
+                return
+        ignored_users = await self.config.ignored_users()
+        if user.id in ignored_users:
+            return
+        if not await self.config.listeners.reaction_add():
+            return
+        self.upsert_cache(
+            time=datetime.datetime.now(datetime.timezone.utc),
+            _type="reaction_add",
+            member=user,
+            guild=user.guild,
+            channel=reaction.message.channel,
+            message=reaction.message,
+            reaction=str(reaction.emoji),
+        )
+
+    @commands.Cog.listener()
+    async def on_reaction_remove(
+        self, reaction: discord.Reaction, user: typing.Union[discord.Member, discord.User]
+    ) -> None:
+        if await self.bot.cog_disabled_in_guild(
+            cog=self, guild=reaction.message.guild
+        ) or not await self.bot.allowed_by_whitelist_blacklist(who=user):
+            return
+        if reaction.message.guild is None:
+            return
+        if not isinstance(user, discord.Member):
+            return
+        ignored_users = await self.config.ignored_users()
+        if user.id in ignored_users:
+            return
+        if not await self.config.listeners.reaction_remove():
+            return
+        self.upsert_cache(
+            time=datetime.datetime.now(datetime.timezone.utc),
+            _type="reaction_remove",
+            member=user,
+            guild=user.guild,
+            channel=reaction.message.channel,
+            message=reaction.message,
+            reaction=str(reaction.emoji),
+        )
 
     async def get_data_for(
         self,
@@ -694,7 +834,7 @@ class Seen(Cog):
             _type = data["_type"]
             del data["_type"]
         time = data["seen"]
-        now = int(_time.time())
+        now = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
         time_elapsed = int(now - time)
         m, s = divmod(time_elapsed, 60)
         h, m = divmod(m, 60)
@@ -1010,136 +1150,6 @@ class Seen(Cog):
             e.description = text
             embeds.append(e)
         await Menu(pages=embeds).start(ctx)
-
-    @commands.Cog.listener()
-    async def on_message(self, message: discord.Message) -> None:
-        if await self.bot.cog_disabled_in_guild(
-            cog=self, guild=message.guild
-        ) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
-            return
-        if message.webhook_id is not None:
-            return
-        if message.guild is None:
-            return
-        if not isinstance(message.author, discord.Member):
-            return
-        if not message.author.bot:
-            ctx: commands.Context = await self.bot.get_context(message)
-            if ctx.valid and (ctx.command.cog_name is not None and ctx.command.cog_name == "Seen"):
-                return
-        if (
-            message.author.id == message.guild.me.id
-            and len(message.embeds) == 1
-            and (
-                "Seen".lower()
-                in message.embeds[0].to_dict().get("author", {}).get("name", "").lower()
-                or "Seen".lower() in message.embeds[0].to_dict().get("title", "").lower()
-            )
-        ):
-            return
-        ignored_users = await self.config.ignored_users()
-        if message.author.id in ignored_users:
-            return
-        if not await self.config.listeners.message():
-            return
-        self.upsert_cache(
-            time=_time.time(),
-            _type="message",
-            member=message.author,
-            guild=message.guild,
-            channel=message.channel,
-            message=message,
-            reaction=None,
-        )
-
-    @commands.Cog.listener()
-    async def on_message_edit(self, before: discord.Message, after: discord.Message) -> None:
-        if await self.bot.cog_disabled_in_guild(
-            cog=self, guild=after.guild
-        ) or not await self.bot.allowed_by_whitelist_blacklist(who=after.author):
-            return
-        if after.webhook_id is not None:
-            return
-        if after.guild is None:
-            return
-        if not isinstance(after.author, discord.Member):
-            return
-        ignored_users = await self.config.ignored_users()
-        if after.author.id in ignored_users:
-            return
-        if not await self.config.listeners.message_edit():
-            return
-        self.upsert_cache(
-            time=_time.time(),
-            _type="message_edit",
-            member=after.author,
-            guild=after.guild,
-            channel=after.channel,
-            message=after,
-            reaction=None,
-        )
-
-    @commands.Cog.listener()
-    async def on_reaction_add(
-        self, reaction: discord.Reaction, user: typing.Union[discord.Member, discord.User]
-    ) -> None:
-        if await self.bot.cog_disabled_in_guild(
-            cog=self, guild=reaction.message.guild
-        ) or not await self.bot.allowed_by_whitelist_blacklist(who=user):
-            return
-        if reaction.message.guild is None:
-            return
-        if not isinstance(user, discord.Member):
-            return
-        if (
-            user.id == reaction.message.guild.me.id
-            and reaction.emoji == "✅"
-            and not reaction.message.author.bot
-        ):
-            ctx: commands.Context = await self.bot.get_context(reaction.message)
-            if ctx.valid and (ctx.command.cog_name is not None and ctx.command.cog_name == "Seen"):
-                return
-        ignored_users = await self.config.ignored_users()
-        if user.id in ignored_users:
-            return
-        if not await self.config.listeners.reaction_add():
-            return
-        self.upsert_cache(
-            time=_time.time(),
-            _type="reaction_add",
-            member=user,
-            guild=user.guild,
-            channel=reaction.message.channel,
-            message=reaction.message,
-            reaction=str(reaction.emoji),
-        )
-
-    @commands.Cog.listener()
-    async def on_reaction_remove(
-        self, reaction: discord.Reaction, user: typing.Union[discord.Member, discord.User]
-    ) -> None:
-        if await self.bot.cog_disabled_in_guild(
-            cog=self, guild=reaction.message.guild
-        ) or not await self.bot.allowed_by_whitelist_blacklist(who=user):
-            return
-        if reaction.message.guild is None:
-            return
-        if not isinstance(user, discord.Member):
-            return
-        ignored_users = await self.config.ignored_users()
-        if user.id in ignored_users:
-            return
-        if not await self.config.listeners.reaction_remove():
-            return
-        self.upsert_cache(
-            time=_time.time(),
-            _type="reaction_remove",
-            member=user,
-            guild=user.guild,
-            channel=reaction.message.channel,
-            message=reaction.message,
-            reaction=str(reaction.emoji),
-        )
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)

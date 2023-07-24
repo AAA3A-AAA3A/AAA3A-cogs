@@ -404,7 +404,7 @@ class RolesButtons(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message for the role-button to work.")
             )
-        config = await self.config.guild(ctx.guild).roles_buttons.all()
+        config = await self.config.guild(ctx.guild).roles_buttons()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
                 _("No role-button is configured for this message.")
@@ -486,7 +486,7 @@ class RolesButtons(Cog):
                 )
                 value += "\n".join(
                     [
-                        f"• `{config_identifier}` - Emoji {ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'] is not None and data['emoji'].isdigit() else data['emoji']} - Label `{data['text_button']}` - Role {role.mention if (role := ctx.guild.get_role(data['role'])) else 'Role not found.'} ({data['role']})"
+                        f"• `{config_identifier}` - Emoji {(ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'].isdigit() else data['emoji']) if data['emoji'] is not None else '`None`'} - Label `{data['text_button']}` - Role {role.mention if (role := ctx.guild.get_role(data['role'])) else 'Role not found.'} ({data['role']})"
                         for config_identifier, data in role_button.items()
                         if config_identifier != "message"
                     ]

@@ -303,7 +303,7 @@ class UrlButtons(Cog):
                 )
                 value += "\n".join(
                     [
-                        f"• `{config_identifier}` - Emoji {ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'] is not None and data['emoji'].isdigit() else data['emoji']} - Label `{data['text_button']}` - URL `{data['url']}`"
+                        f"• `{config_identifier}` - Emoji {(ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'].isdigit() else data['emoji']) if data['emoji'] is not None else '`None`'} - Label `{data['text_button']}` - URL `{data['url']}`"
                         for config_identifier, data in url_button.items()
                         if config_identifier != "message"
                     ]

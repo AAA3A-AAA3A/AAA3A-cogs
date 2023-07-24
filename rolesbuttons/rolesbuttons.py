@@ -385,7 +385,7 @@ class RolesButtons(Cog):
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
-                _("No role-button is configured for this message.")
+                _("No role-button is configured for this message. e")
             )
         await self.config.guild(ctx.guild).modes.set_raw(
             f"{message.channel.id}-{message.id}", value=mode
@@ -425,7 +425,10 @@ class RolesButtons(Cog):
             message = await message.edit(view=view)
             self.views[message] = view
         await self.config.guild(ctx.guild).roles_buttons.set(config)
-        await self.list.callback(self, ctx, message=message)
+        if f"{message.channel.id}-{message.id}" in config:
+            await self.list.callback(self, ctx, message=message)
+        else:
+            await ctx.send(_("Roles-buttons cleared for this message."))
 
     @rolesbuttons.command()
     async def clear(self, ctx: commands.Context, message: discord.Message) -> None:

@@ -313,7 +313,10 @@ class DropdownsTexts(Cog):
             message = await message.edit(view=view)
             self.views[message] = view
         await self.config.guild(ctx.guild).dropdowns_texts.set(config)
-        await self.list.callback(self, ctx, message=message)
+        if f"{message.channel.id}-{message.id}" in config:
+            await self.list.callback(self, ctx, message=message)
+        else:
+            await ctx.send(_("Dropdowns-buttons cleared for this message."))
 
     @dropdownstexts.command()
     async def clear(self, ctx: commands.Context, message: discord.Message) -> None:

@@ -411,7 +411,10 @@ class CommandsButtons(Cog):
             message = await message.edit(view=view)
             self.views[message] = view
         await self.config.guild(ctx.guild).commands_buttons.set(config)
-        await self.list.callback(self, ctx, message=message)
+        if f"{message.channel.id}-{message.id}" in config:
+            await self.list.callback(self, ctx, message=message)
+        else:
+            await ctx.send(_("Commands-buttons cleared for this message."))
 
     @commandsbuttons.command()
     async def clear(self, ctx: commands.Context, message: discord.Message) -> None:

@@ -243,7 +243,10 @@ class UrlButtons(Cog):
             view = self.get_buttons(config, message)
             await message.edit(view=view)
         await self.config.guild(ctx.guild).url_buttons.set(config)
-        await self.list.callback(self, ctx, message=message)
+        if f"{message.channel.id}-{message.id}" in config:
+            await self.list.callback(self, ctx, message=message)
+        else:
+            await ctx.send(_("Url-buttons cleared for this message."))
 
     @urlbuttons.command()
     async def clear(self, ctx: commands.Context, message: discord.Message) -> None:

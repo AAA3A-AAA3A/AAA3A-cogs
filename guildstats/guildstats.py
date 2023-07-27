@@ -1096,7 +1096,7 @@ class GuildStats(Cog):
             try:
                 data = await (await executor()(self.get_data)(_object if _type is None else (_object, _type), members_type=members_type))
             except TypeError:
-                data = await (await self.get_data(_object if _type is None else (_object, _type), members_type=members_type))
+                data = await self.get_data(_object if _type is None else (_object, _type), members_type=members_type)
 
         fig = go.Figure()
         fig.update_layout(
@@ -1267,7 +1267,7 @@ class GuildStats(Cog):
         try:
             data = await (await executor()(self.get_data)(_object if _type is None else (_object, _type), members_type=members_type))
         except TypeError:
-            data = await (await self.get_data(_object if _type is None else (_object, _type), members_type=members_type))
+            data = await self.get_data(_object if _type is None else (_object, _type), members_type=members_type)
         if isinstance(_object, (discord.Member, discord.Role)):
             # Server Lookback. box = 606 / empty = 30 | 2 cases / box = 117 / empty = 30
             draw.rounded_rectangle((30, 204, 636, 585), radius=15, fill=(47, 49, 54))

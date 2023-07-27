@@ -486,7 +486,6 @@ class GuildStats(Cog):
     async def on_guild_channel_delete(self, old_channel: discord.abc.GuildChannel) -> None:
         await self.config.channel(old_channel).clear()
 
-    @executor()
     async def get_data(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"] = "humans", utc_now: datetime.datetime = None) -> typing.Dict[str, typing.Any]:
         if isinstance(_object, typing.Tuple):
             _object, _type = _object
@@ -1094,7 +1093,10 @@ class GuildStats(Cog):
         else:
             draw.rounded_rectangle((0, 0, size[0], size[1]), radius=15, fill=(32, 34, 37))
         if data is None:
-            data = await (await self.get_data(_object if _type is None else (_object, _type), members_type=members_type))
+            try:
+                data = await (await executor()(self.get_data)(_object if _type is None else (_object, _type), members_type=members_type))
+            except TypeError:
+                data = await (await self.get_data(_object if _type is None else (_object, _type), members_type=members_type))
 
         fig = go.Figure()
         fig.update_layout(
@@ -1262,7 +1264,10 @@ class GuildStats(Cog):
         align_text_center = functools.partial(self.align_text_center, draw)
 
         # Data.
-        data = await (await self.get_data(_object if _type is None else (_object, _type), members_type=members_type))
+        try:
+            data = await (await executor()(self.get_data)(_object if _type is None else (_object, _type), members_type=members_type))
+        except TypeError:
+            data = await (await self.get_data(_object if _type is None else (_object, _type), members_type=members_type))
         if isinstance(_object, (discord.Member, discord.Role)):
             # Server Lookback. box = 606 / empty = 30 | 2 cases / box = 117 / empty = 30
             draw.rounded_rectangle((30, 204, 636, 585), radius=15, fill=(47, 49, 54))

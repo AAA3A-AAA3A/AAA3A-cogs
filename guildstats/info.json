@@ -2,8 +2,8 @@
     "author": ["AAA3A"],
     "name": "GuildStats",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
-    "short": "A cog to generate images with messages and voice stats, for members, roles guilds, text channels, voice channels and activities!",
-    "description": "A cog to generate images with messages and voice stats, for members, roles guilds, text channels, voice channels and activities!",
+    "short": "A cog to generate images with messages and voice stats, for members, roles, guilds, text channels, voice channels and activities!",
+    "description": "A cog to generate images with messages and voice stats, for members, roles, guilds, text channels, voice channels and activities!",
     "tags": [
         "stats",
         "messages",

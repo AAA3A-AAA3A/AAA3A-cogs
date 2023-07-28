@@ -2031,6 +2031,8 @@ class GuildStats(Cog):
         """Display stats for a specified channel."""
         if channel is None:
             channel = ctx.channel
+        if isinstance(channel, discord.Thread):
+            raise commands.UserFeedbackCheckFailure(_("Threads aren't supported by this cog."))
         await GuildStatsView(cog=self, _object=channel, members_type=members_type, show_graphic_in_main=show_graphic, graphic_mode=False).start(ctx)
 
     @guildstats.command()

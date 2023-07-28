@@ -150,7 +150,7 @@ class GuildStats(Cog):
         cache = self.cache.copy()
         for guild in cache:
             for channel in cache[guild]["channels"].copy():
-                for member in cache[guild]["channels"][channel]["voice"].copy():
+                for member in cache[guild]["channels"][channel]["voice_cache"].copy():
                     if member not in channel.members:
                         continue
                     class FakeVoiceState:
@@ -280,17 +280,17 @@ class GuildStats(Cog):
         new_cache = {}
         for guild in cache:
             for channel, data in cache[guild]["channels"].items():
-                if not data["voice"]:
+                if not data["voice_cache"]:
                     continue
                 if guild not in new_cache:
                     new_cache[guild] = {"channels": {}, "members": {}}
-                new_cache[guild]["channels"][channel] = {"total_messages": 0, "total_humans_messages": 0, "total_bots_messages": 0, "total_messages_members": {}, "messages": {}, "total_voice": 0, "total_humans_voice": 0, "total_bots_voice": 0, "total_voice_members": {}, "voice": data["voice"]}
+                new_cache[guild]["channels"][channel] = {"total_messages": 0, "total_humans_messages": 0, "total_bots_messages": 0, "total_messages_members": {}, "messages": {}, "total_voice": 0, "total_humans_voice": 0, "total_bots_voice": 0, "total_voice_members": {}, "voice_cache": data["voice_cache"]}
             for member, data in cache[guild]["members"].items():
-                if not data["activities"]:
+                if not data["activities_cache"]:
                     continue
                 if guild not in new_cache:
                     new_cache[guild] = {"channels": {}, "members": {}}
-                new_cache[guild]["members"][member] = {"total_activities": 0, "total_activities_times": {}, "activities": data["activities"]}
+                new_cache[guild]["members"][member] = {"total_activities": 0, "total_activities_times": {}, "activities_cache": data["activities_cache"]}
             self.cache = new_cache
 
         channel_group = self.config._get_base_group(self.config.CHANNEL)
@@ -390,7 +390,7 @@ class GuildStats(Cog):
         if message.guild not in self.cache:
             self.cache[message.guild] = {"channels": {}, "members": {}}
         if message.channel not in self.cache[message.guild]:
-            self.cache[message.guild]["channels"][message.channel] = {"total_messages": 0, "total_humans_messages": 0, "total_bots_messages": 0, "total_messages_members": {}, "messages": {}, "total_voice": 0, "total_humans_voice": 0, "total_bots_voice": 0, "total_voice_members": {}, "voice": {}}
+            self.cache[message.guild]["channels"][message.channel] = {"total_messages": 0, "total_humans_messages": 0, "total_bots_messages": 0, "total_messages_members": {}, "messages": {}, "total_voice": 0, "total_humans_voice": 0, "total_bots_voice": 0, "total_voice_members": {}, "voice_cache": {}}
         self.cache[message.guild]["channels"][message.channel]["total_messages"] += 1
         if not message.author.bot:
             self.cache[message.guild]["channels"][message.channel]["total_humans_messages"] += 1
@@ -422,13 +422,13 @@ class GuildStats(Cog):
             if after.channel.guild not in self.cache:
                 self.cache[after.channel.guild] = {"channels": {}, "members": {}}
             if after.channel not in self.cache[member.guild]["channels"]:
-                self.cache[after.channel.guild]["channels"][after.channel] = {"total_messages": 0, "total_humans_messages": 0, "total_bots_messages": 0, "total_messages_members": {}, "messages": {}, "total_voice": 0, "total_humans_voice": 0, "total_bots_voice": 0, "total_voice_members": {}, "voice": {}}
-            self.cache[after.channel.guild]["channels"][after.channel]["voice"][member] = datetime.datetime.now(datetime.timezone.utc)
+                self.cache[after.channel.guild]["channels"][after.channel] = {"total_messages": 0, "total_humans_messages": 0, "total_bots_messages": 0, "total_messages_members": {}, "messages": {}, "total_voice": 0, "total_humans_voice": 0, "total_bots_voice": 0, "total_voice_members": {}, "voice_cache": {}}
+            self.cache[after.channel.guild]["channels"][after.channel]["voice_cache"][member] = datetime.datetime.now(datetime.timezone.utc)
         if before.channel is not None:
             if isinstance(after.channel, discord.StageChannel):
                 return
             try:
-                start_time = self.cache[before.channel.guild]["channels"][before.channel]["voice"].pop(member)
+                start_time = self.cache[before.channel.guild]["channels"][before.channel]["voice_cache"].pop(member)
             except KeyError:
                 return
             end_time = datetime.datetime.now(datetime.timezone.utc)
@@ -443,9 +443,9 @@ class GuildStats(Cog):
             if member not in self.cache[before.channel.guild]["channels"][before.channel]["total_voice_members"]:
                 self.cache[before.channel.guild]["channels"][before.channel]["total_voice_members"][member] = 0
             self.cache[before.channel.guild]["channels"][before.channel]["total_voice_members"][member] += real_total_time
-            voice_member_data = await self.config.channel(before.channel).voice.get_raw(str(member.id), default=[])
-            voice_member_data.append([int(start_time.timestamp()), int(end_time.timestamp())])
-            await self.config.channel(before.channel).voice.set_raw(str(member.id), value=voice_member_data)
+            if member not in self.cache[before.channel.guild]["channels"][before.channel]["voice"]:
+                self.cache[before.channel.guild]["channels"][before.channel]["voice"][member] = []
+            self.cache[before.channel.guild]["channels"][before.channel]["voice"][member].append([int(start_time.timestamp()), int(end_time.timestamp())])
 
     @commands.Cog.listener()
     async def on_presence_update(self, before: typing.Optional[discord.Member], after: typing.Optional[discord.Member]) -> None:
@@ -466,11 +466,11 @@ class GuildStats(Cog):
             if after.guild not in self.cache:
                 self.cache[after.guild] = {"channels": {}, "members": {}}
             if after not in self.cache[after.guild]["members"]:
-                self.cache[after.guild]["members"][after] = {"total_activities": 0, "total_activities_times": {}, "activities": {}}
-            self.cache[after.guild]["members"][after]["activities"][after.activity.name] = datetime.datetime.now(datetime.timezone.utc)
+                self.cache[after.guild]["members"][after] = {"total_activities": 0, "total_activities_times": {}, "activities_cache": {}}
+            self.cache[after.guild]["members"][after]["activities_cache"][after.activity.name] = datetime.datetime.now(datetime.timezone.utc)
         if before is not None and before.activity is not None and before.activity.type != discord.ActivityType.custom and before.activity.name is not None:
             try:
-                start_time = self.cache[before.guild]["members"][before]["activities"].pop(before.activity.name)
+                start_time = self.cache[before.guild]["members"][before]["activities_cache"].pop(before.activity.name)
             except KeyError:
                 return
             end_time = datetime.datetime.now(datetime.timezone.utc)
@@ -519,7 +519,7 @@ class GuildStats(Cog):
                     all_channels_data[channel.id]["total_voice_members"][str(member.id)] = 0
                 all_channels_data[channel.id]["total_voice_members"][str(member.id)] += count_voice
             # already_seen = []
-            for member, start_time in data["voice"].items():
+            for member, start_time in data["voice_cache"].items():
                 # already_seen.append(member)
                 if member not in channel.members:
                     continue
@@ -542,7 +542,7 @@ class GuildStats(Cog):
         for member, data in self.cache.get(_object if isinstance(_object, discord.Guild) else _object.guild, {"members": {}})["members"].items():
             if member.id not in all_members_data:
                 all_members_data[member.id] = {"total_activities": 0, "total_activities_times": {}}
-            for activity_name, start_time in data["activities"].items():
+            for activity_name, start_time in data["activities_cache"].items():
                 if member.activity is None or member.activity.name != activity_name:
                     continue
                 end_time = datetime.datetime.now(datetime.timezone.utc)

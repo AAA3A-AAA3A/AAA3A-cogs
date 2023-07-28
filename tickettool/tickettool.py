@@ -1328,12 +1328,6 @@ class TicketTool(settings, DashboardIntegration, Cog):
             if timeout:
                 return
             reason = reason_input.value or ""
-            ctx = await CogsUtils.invoke_command(
-                bot=interaction.client,
-                author=interaction.user,
-                channel=interaction.channel,
-                command=("ticket close" + (f" {reason}" if reason != "" else "")),
-            )
             try:
                 await interaction.followup.send(
                     _(
@@ -1343,6 +1337,12 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 )
             except discord.HTTPException:
                 pass
+            ctx = await CogsUtils.invoke_command(
+                bot=interaction.client,
+                author=interaction.user,
+                channel=interaction.channel,
+                command=("ticket close" + (f" {reason}" if reason != "" else "")),
+            )
         elif interaction.data["custom_id"] == "open_ticket_button":
             ctx = await CogsUtils.invoke_command(
                 bot=interaction.client,

@@ -617,7 +617,7 @@ class Ticket:
                 name=new_name, category=config["category_close"], reason=_reason
             )
         else:
-            await self.channel.edit(name=new_name, archived=True, reason=_reason)
+            await self.channel.edit(name=new_name, archived=True, locked=True, reason=_reason)
         if config["ticket_role"] is not None and self.owner:
             try:
                 await self.owner.remove_roles(config["ticket_role"], reason=_reason)

@@ -133,7 +133,7 @@ class CommandsButtons(Cog):
         ]
         if (
             command_object := interaction.client.get_command(command)
-        ) is not None and command_object.params:
+        ) is not None and command == command_object.qualified_name and command_object.params:
             params = command_object.params
             if len(params) > 5:
                 params = {name: param for name, param in params.items() if not param.required}
@@ -261,14 +261,24 @@ class CommandsButtons(Cog):
                     "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
                 )
             )
-        if ctx.prefix != "/":
-            msg = ctx.message
-            msg.content = f"{ctx.prefix}{command}"
-            new_ctx = await ctx.bot.get_context(msg)
-            if not new_ctx.valid:
-                raise commands.UserFeedbackCheckFailure(
-                    _("You have not specified a correct command.")
-                )
+        # if ctx.prefix != "/":
+        new_ctx = await CogsUtils.invoke_command(
+            bot=ctx.bot,
+            author=ctx.author,
+            channel=ctx.channel,
+            command=command,
+            prefix=ctx.prefix,
+            message=ctx.message,
+            invoke=False,
+        )
+        if not new_ctx.valid:
+            raise commands.UserFeedbackCheckFailure(
+                _("You have not specified a correct command.")
+            )
+        if not await new_ctx.command.can_run(new_ctx):
+            raise commands.UserFeedbackCheckFailure(
+                _("You can't execute yourself this command.")
+            )
         if emoji is None and text_button is None:
             raise commands.UserFeedbackCheckFailure(
                 _("You have to specify at least an emoji or a label.")

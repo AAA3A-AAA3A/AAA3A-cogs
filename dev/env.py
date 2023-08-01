@@ -356,8 +356,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 if isinstance(msg, discord.Message):
                     return msg
 
-        def _console_custom(ctx: commands.Context):
-            return {"width": 80, "color_system": None}
+        # def _console_custom(ctx: commands.Context):
+        #     return {"width": 80, "color_system": None}
 
         def get(a, b: typing.Optional[str] = "", startswith: typing.Optional[str] = ""):
             return [
@@ -516,7 +516,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 # `reference`
                 "reference": reference,
                 # No color (Dev cog from fluffy-cogs in mobile).
-                "_console_custom": _console_custom,
+                # "_console_custom": _console_custom,
                 # Dpy get
                 "get_cog": lambda ctx: ctx.bot.get_cog,
                 "get_command": lambda ctx: ctx.bot.get_command,

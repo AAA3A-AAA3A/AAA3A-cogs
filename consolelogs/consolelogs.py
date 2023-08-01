@@ -62,6 +62,7 @@ class ConsoleLog:
     level: typing.Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE", "NODE"]
     logger_name: str
     message: str
+    exc_info: typing.Optional[str] = None
     display_without_informations: bool = False
 
     @property
@@ -73,7 +74,7 @@ class ConsoleLog:
             return self.message
         BREAK_LINE = "\n"
         if not with_ansi:
-            return f"[{self.time_str}] {self.level} [{self.logger_name}] {self.message.split(BREAK_LINE)[0]}\n{BREAK_LINE if with_extra_break_line else ''}{BREAK_LINE.join(self.message.split(BREAK_LINE)[1:])}"
+            return f"[{self.time_str}] {self.level} [{self.logger_name}] {self.message}{BREAK_LINE if self.exc_info is not None else ''}{BREAK_LINE if with_extra_break_line and self.exc_info is not None else ''}{self.exc_info if self.exc_info is not None else ''}"
         levels_colors = {
             "CRITICAL": Fore.RED,
             "ERROR": Fore.RED,
@@ -84,7 +85,7 @@ class ConsoleLog:
             "NODE": Fore.MAGENTA,
         }
         level_color = levels_colors.get(self.level, Fore.MAGENTA)
-        return f"{Fore.BLACK}[{self.time_str}] {level_color}{self.level} {Fore.WHITE}[{Fore.MAGENTA}{self.logger_name}{Fore.WHITE}] {Fore.WHITE}{self.message.split(BREAK_LINE)[0]}\n{BREAK_LINE if with_extra_break_line else ''}{Fore.RESET}{BREAK_LINE.join(self.message.split(BREAK_LINE)[1:])}"
+        return f"{Fore.BLACK}[{self.time_str}] {level_color}{self.level} {Fore.WHITE}[{Fore.MAGENTA}{self.logger_name}{Fore.WHITE}] {Fore.WHITE}{self.message.split(BREAK_LINE)[0]}{Fore.RESET}{BREAK_LINE if self.exc_info is not None else ''}{BREAK_LINE if with_extra_break_line and self.exc_info is not None else ''}{self.exc_info if self.exc_info is not None else ''}"
 
 
 @cog_i18n(_)
@@ -106,6 +107,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
             "prefixed_commands_errors": True,
             "slash_commands_errors": True,
             "dpy_ignored_exceptions": False,
+            "full_console": False,
             "guild_invite": False,
         }
         self.config.register_channel(**self.consolelogs_channel)
@@ -178,17 +180,20 @@ class ConsoleLogs(Cog, DashboardIntegration):
         console_logs = []
         for console_log_line in console_logs_lines:
             if (match := re.match(CONSOLE_LOG_RE, console_log_line)) is None and console_logs:
-                console_logs[-1].message += f"\n{CogsUtils.replace_var_paths(console_log_line)}"
+                if console_logs[-1].exc_info is None:
+                    console_logs[-1].exc_info = ""
+                console_logs[-1].exc_info += f"\n{CogsUtils.replace_var_paths(console_log_line)}"
+                console_logs[-1].exc_info = console_logs[-1].exc_info.strip()
                 continue
             kwargs = match.groupdict()
             time = datetime.datetime.strptime(kwargs["time_str"], "%Y-%m-%d %H:%M:%S")
             kwargs["time"] = time
             kwargs["time_timestamp"] = int(time.timestamp())
-            message = kwargs["message"].split("\n")
-            kwargs["message"] = (
-                f"{message[0]}{'.' if not message[0].endswith(('.', '!', '?')) and message[0][0] == message[0][0].upper() else ''}\n"
-                + "\n".join(kwargs["message"].split("\n")[1:])
-            ).strip()
+            kwargs["message"] = kwargs["message"].strip()
+            if not kwargs["message"]:
+                continue
+            kwargs["message"] += "." if not kwargs["message"].endswith(('.', '!', '?')) and kwargs["message"][0] == kwargs["message"][0].upper() else ""
+            kwargs["exc_info"] = None  # Maybe next lines...
             console_logs.append(ConsoleLog(**kwargs))
 
         # Add Red INTRO.
@@ -204,6 +209,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
                     level="INFO",
                     logger_name="red",
                     message=self.RED_INTRO,
+                    exc_info=None,
                     display_without_informations=True,
                 ),
             )
@@ -385,16 +391,6 @@ class ConsoleLogs(Cog, DashboardIntegration):
             view=index,
         )
 
-    @consolelogs.command(aliases=["error"])
-    async def errors(
-        self,
-        ctx: commands.Context,
-        index: typing.Optional[int] = -1,
-        logger_name: typing.Optional[str] = None,
-    ) -> None:
-        """View the `ERROR` console logs one by one, for all loggers or a provided logger name."""
-        await self.send_console_logs(ctx, level="ERROR", logger_name=logger_name, view=index)
-
     @consolelogs.command()
     async def scroll(
         self,
@@ -459,7 +455,8 @@ class ConsoleLogs(Cog, DashboardIntegration):
         prefixed_commands_errors: typing.Optional[bool] = True,
         slash_commands_errors: typing.Optional[bool] = True,
         dpy_ignored_exceptions: typing.Optional[bool] = False,
-        guild_invite: typing.Optional[bool] = False,
+        full_console: typing.Optional[bool] = False,
+        guild_invite: typing.Optional[bool] = True,
     ) -> None:
         """Enable errors logging in a channel.
 
@@ -469,6 +466,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         - `prefixed_commands_errors`: Log prefixed commands errors.
         - `slash_commands_errors`: Log slash commands errors.
         - `dpy_ignored_exceptions`: Log dpy ignored exceptions (events listeners and Views errors).
+        - `full_console`: Log all the console logs.
         - `guild_invite`: Add a button "Guild Invite" in commands errors logs, only for community servers.
         """
         channel_permissions = channel.permissions_for(ctx.me)
@@ -487,6 +485,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         await self.config.channel(channel).prefixed_commands_errors.set(prefixed_commands_errors)
         await self.config.channel(channel).slash_commands_errors.set(slash_commands_errors)
         await self.config.channel(channel).dpy_ignored_exceptions.set(dpy_ignored_exceptions)
+        await self.config.channel(channel).full_console.set(full_console)
         await self.config.channel(channel).guild_invite.set(guild_invite)
         await ctx.send(_("Errors logging enabled in {channel.mention}.").format(channel=channel))
 
@@ -646,45 +645,82 @@ class ConsoleLogs(Cog, DashboardIntegration):
             channel: settings
             for channel_id, settings in (await self.config.all_channels()).items()
             if settings["enabled"]
-            and settings["dpy_ignored_exceptions"]
+            and (settings["dpy_ignored_exceptions"] or settings["full_console"])
             and (channel := self.bot.get_channel(channel_id)) is not None
             and channel.permissions_for(channel.guild.me).send_messages
         }
         if not destinations:
             return
         console_logs = self.console_logs
-        console_logs_to_send: typing.List[typing.Tuple[discord.Embed, typing.List[str]]] = []
+        console_logs_to_send: typing.List[typing.Tuple[typing.Optional[discord.Embed], typing.List[str]]] = []
+        pages_to_send: typing.List[str] = []
         for console_log in console_logs:
-            if (
-                self._last_console_log_sent_timestamp is None
-                or self._last_console_log_sent_timestamp >= console_log.time_timestamp
-            ):
-                self._last_console_log_sent_timestamp = console_log.time_timestamp
+            if self._last_console_log_sent_timestamp >= console_log.time_timestamp:
                 continue
             self._last_console_log_sent_timestamp = console_log.time_timestamp
+            pages_to_send.append(console_log.__str__(with_ansi=False, with_extra_break_line=False))
             if (
-                console_log.level not in ["CRITICAL", "ERROR"]
-                or console_log.logger_name.split(".")[0] != "discord"
-                or not console_log.message.split("\n")[0].startswith("Ignoring exception ")
+                console_log.level in ["CRITICAL", "ERROR"]
+                and console_log.logger_name.split(".")[0] == "discord"
+                and console_log.message.split("\n")[0].startswith("Ignoring exception ")
             ):
-                continue
-            embed: discord.Embed = discord.Embed(color=discord.Color.dark_embed())
-            embed.title = console_log.message.split("\n")[0]
-            embed.timestamp = console_log.time
-            embed.add_field(name="Logger name:", value=f"`{console_log.logger_name}`")
-            embed.add_field(name="Error level:", value=f"`{console_log.level}`")
-            pages = [
-                box(page, lang="py")
-                for page in list(
-                    pagify(
-                        console_log.__str__(with_ansi=False, with_extra_break_line=True),
-                        shorten_by=10,
+                if pages_to_send:
+                    console_logs_to_send.append(
+                        (
+                            None,
+                            [
+                                box(page, lang="py")
+                                for page in list(
+                                    pagify(
+                                        "\n\n".join(pages_to_send),
+                                        shorten_by=10,
+                                    )
+                                )
+                            ]
+                        )
                     )
+                    pages_to_send = []
+                    
+                embed: discord.Embed = discord.Embed(color=discord.Color.dark_embed())
+                embed.title = console_log.message.split("\n")[0]
+                embed.timestamp = console_log.time
+                embed.add_field(name="Logger name:", value=f"`{console_log.logger_name}`")
+                embed.add_field(name="Error level:", value=f"`{console_log.level}`")
+                pages = [
+                    box(page, lang="py")
+                    for page in list(
+                        pagify(
+                            console_log.__str__(with_ansi=False, with_extra_break_line=True),
+                            shorten_by=10,
+                        )
+                    )
+                ]
+                console_logs_to_send.append((embed, pages))
+
+        if pages_to_send:
+            console_logs_to_send.append(
+                (
+                    None,
+                    [
+                        box(page, lang="py")
+                        for page in list(
+                            pagify(
+                                "\n\n".join(pages_to_send),
+                                shorten_by=10,
+                            )
+                        )
+                    ]
                 )
-            ]
-            console_logs_to_send.append((embed, pages))
-        for channel in destinations:
+            )
+            pages_to_send = []
+
+        for channel, settings in destinations.items():
             for (embed, pages) in console_logs_to_send:
-                await channel.send(embed=embed)
+                if embed is not None and not settings["dpy_ignored_exceptions"]:
+                    continue
+                elif embed is None and not settings["full_console"]:
+                    continue
+                if embed is not None:
+                    await channel.send(embed=embed)
                 for page in pages:
                     await channel.send(page)

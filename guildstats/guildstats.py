@@ -431,6 +431,9 @@ class GuildStats(Cog):
                 start_time = self.cache[before.channel.guild]["channels"][before.channel]["voice_cache"].pop(member)
             except KeyError:
                 return
+            ignored_users = await self.config.ignored_users()
+            if member.id in ignored_users:
+                return
             end_time = datetime.datetime.now(datetime.timezone.utc)
             real_total_time = int((end_time - start_time).total_seconds())
             if round(real_total_time / 3600, 2) == 0:
@@ -628,13 +631,13 @@ class GuildStats(Cog):
             }
 
         elif isinstance(_object, discord.Role):
-            roles_messages_counter: Counter = Counter([str(role.id) for channel_id in all_channels_data for member_id, count_messages in all_channels_data[channel_id]["total_messages_members"].items() for __ in range(count_messages) for role in member.roles if (member := _object.guild.get_member(int(member_id))) is not None and is_valid(int(member_id))])  # and (role != _object.guild.default_role or role == _object)
+            roles_messages_counter: Counter = Counter([str(role.id) for channel_id in all_channels_data for member_id, count_messages in all_channels_data[channel_id]["total_messages_members"].items() for __ in range(count_messages) for role in getattr(member, "roles", []) if (member := _object.guild.get_member(int(member_id))) is not None and is_valid(int(member_id))])  # and (role != _object.guild.default_role or role == _object)
             roles_messages_sorted: typing.List[int] = sorted(
                 roles_messages_counter,
                 key=lambda x: (roles_messages_counter[x], 1 if int(x) == _object.id else 0),
                 reverse=True,
             )
-            roles_voice_counter: Counter = Counter([str(role.id) for channel_id in all_channels_data for member_id, count_voice in all_channels_data[channel_id]["total_voice_members"].items() for __ in range(count_voice) for role in member.roles if (member := _object.guild.get_member(int(member_id))) is not None and is_valid(int(member_id))])  # and (role != _object.guild.default_role or role == _object)
+            roles_voice_counter: Counter = Counter([str(role.id) for channel_id in all_channels_data for member_id, count_voice in all_channels_data[channel_id]["total_voice_members"].items() for __ in range(count_voice) for role in getattr(member, "roles", []) if (member := _object.guild.get_member(int(member_id))) is not None and is_valid(int(member_id))])  # and (role != _object.guild.default_role or role == _object)
             roles_voice_sorted: typing.List[int] = sorted(
                 roles_voice_counter,
                 key=lambda x: (roles_voice_counter[x], 1 if int(x) == _object.id else 0),
@@ -1220,6 +1223,7 @@ class GuildStats(Cog):
                         hole=0.3,
                         textfont_size=20,
                         marker={"line": {"color": "rgb(0,0,0)", "width": 2}},
+                        direction="clockwise",
                     )
                 )
                 fig.update_traces(textposition="inside", textfont={"color": "rgb(255,255,255)"}, textinfo="percent+label")
@@ -1690,7 +1694,7 @@ class GuildStats(Cog):
                 # Top Activities (Applications). box = 925 / empty = 30 | 30 cases / box = 76 / empty = 16
                 draw.rounded_rectangle((30, 204, 955, 996), radius=15, fill=(47, 49, 54))
                 align_text_center((50, 214, 50, 284), text="Top Activities (Applications)", fill=(255, 255, 255), font=self.bold_font[40])
-                image = Image.open(self.icons["#"])
+                image = Image.open(self.icons["game"])
                 image = image.resize((70, 70))
                 img.paste(image, (865, 214, 935, 284), mask=image.split()[3])
                 top_activities = list(data["top_activities"])
@@ -2058,8 +2062,8 @@ class GuildStats(Cog):
         ignored_users = await self.config.ignored_users()
         if user.id not in ignored_users:
             ignored_users.append(user.id)
-            await self.config.ignored_users.set(ignored_users)
             await self.red_delete_data_for_user(requester="user", user_id=user.id)
+            await self.config.ignored_users.set(ignored_users)
             await ctx.send(
                 _(
                     "You will no longer be seen by this cog and the data I held on you have been deleted."

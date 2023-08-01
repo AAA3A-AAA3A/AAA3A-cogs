@@ -249,8 +249,8 @@ class TempRoles(Cog):
         await ctx.send(
             (_("Self ") if ctx.command.name == "selfassign" else "")
             + _(
-                "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires in {time_string}."
-            ).format(role=role, member=member, time_string=time_string),
+                "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires **in {time_string}** ({timestamp})."
+            ).format(role=role, member=member, time_string=time_string, timestamp=f"<t:{int(end_time.timestamp())}:F>"),
             allowed_mentions=discord.AllowedMentions(roles=False, users=False),
         )
 
@@ -316,27 +316,27 @@ class TempRoles(Cog):
                 description = _("This member has these Temp Roles: {temp_roles}.").format(
                     temp_roles=humanize_list(
                         [
-                            f"{temp_role.mention} ({temp_role_id})"
-                            for temp_role_id in temp_roles
+                            f"{temp_role.mention} ({temp_role_id}) - <t:{int(end_time.timestamp())}:R> (<t:{int(end_time.timestamp())}:F>)"
+                            for temp_role_id, end_time in temp_roles.items()
                             if (temp_role := ctx.guild.get_role(int(temp_role_id))) is not None
                         ]
                     )
                 )
         elif role is not None:
             members_data = await self.config.all_members(guild=ctx.guild)
-            temp_roles_members = []
+            temp_roles_members = {}
             for member_id, data in members_data.items():
                 if str(role.id) not in data["temp_roles"]:
                     continue
                 if (member := ctx.guild.get_member(member_id)) is None:
                     continue
-                temp_roles_members.append(member)
+                temp_roles_members[member] = data["temp_roles"][str(role.id)]
             if not temp_roles_members:
                 description = _("No members have this Temp Role.")
             else:
                 description = _("These members have this Temp Role: {temp_roles_members}.").format(
                     temp_roles_members=humanize_list(
-                        [f"{member.mention} ({member.id})" for member in temp_roles_members]
+                        [f"{member.mention} ({member.id}) - <t:{int(end_time.timestamp())}:R> (<t:{int(end_time.timestamp())}:F>)" for member, end_time in temp_roles_members.items()]
                     )
                 )
         else:
@@ -345,13 +345,13 @@ class TempRoles(Cog):
             for member_id, data in members_data.items():
                 if (member := ctx.guild.get_member(member_id)) is None:
                     continue
-                if member_temp_roles := [
-                    temp_role
-                    for temp_role_id in data["temp_roles"]
+                if member_temp_roles := {
+                    temp_role: end_time
+                    for temp_role_id, end_time in data["temp_roles"].items()
                     if (temp_role := ctx.guild.get_role(int(temp_role_id))) is not None
-                ]:
+                }:
                     description.append(
-                        f"• {member.mention} ({member.id}): {humanize_list([f'{temp_role.mention} ({temp_role.id})' for temp_role in member_temp_roles])}."
+                        f"• {member.mention} ({member.id}): {humanize_list([f'{temp_role.mention} ({temp_role.id}) - <t:{int(end_time.timestamp())}:R> (<t:{int(end_time.timestamp())}:F>)' for temp_role, end_time in member_temp_roles.items()])}."
                     )
             if description:
                 description = "\n".join(description)

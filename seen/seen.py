@@ -1426,8 +1426,8 @@ class Seen(Cog):
         ignored_users = await self.config.ignored_users()
         if user.id not in ignored_users:
             ignored_users.append(user.id)
-            await self.config.ignored_users.set(ignored_users)
             await self.red_delete_data_for_user(requester="user", user_id=user.id)
+            await self.config.ignored_users.set(ignored_users)
             await ctx.send(
                 _(
                     "You will no longer be seen by this cog and the data I held on you have been deleted."

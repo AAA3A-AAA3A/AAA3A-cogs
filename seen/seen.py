@@ -1441,6 +1441,7 @@ class Seen(Cog):
     @commands.is_owner()
     @seen.command()
     async def ignoreuser(self, ctx: commands.Context, user: discord.User):
+        """Ignore or unignore a specific user"""
         ignored_users: list = await self.config.ignored_users()
         if user.id not in ignored_users:
             ignored_users.append(user.id)

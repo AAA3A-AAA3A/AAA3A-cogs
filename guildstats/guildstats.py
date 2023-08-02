@@ -84,7 +84,11 @@ class GuildStats(Cog):
         self.guildstats_global: typing.Dict[str, typing.Union[int, bool, typing.List[int]]] = {
             "first_loading_time": None,
             "toggle_activities_stats": True,
+            "default_state": True,
             "ignored_users": [],
+        }
+        self.guildstats_guild: typing.Dict[str, bool] = {
+            "enabled": None,
         }
         self.guildstats_channel: typing.Dict[str, typing.Union[int, typing.Dict[int, int], typing.Dict[int, typing.List[int]], typing.Dict[int, typing.List[typing.List[int]]]]] = {
             "total_messages": 0,
@@ -103,6 +107,7 @@ class GuildStats(Cog):
             "total_activities_times": {},
         }
         self.config.register_global(**self.guildstats_global)
+        self.config.register_guild(**self.guildstats_guild)
         self.config.register_channel(**self.guildstats_channel)
         self.config.register_member(**self.guildstats_member)
 
@@ -372,10 +377,6 @@ class GuildStats(Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
-        if await self.bot.cog_disabled_in_guild(
-            cog=self, guild=message.guild
-        ) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
-            return
         if message.webhook_id is not None:
             return
         if message.guild is None:
@@ -383,6 +384,14 @@ class GuildStats(Cog):
         if not isinstance(message.author, discord.Member):
             return
         if isinstance(message.channel, discord.Thread):
+            return
+        if (
+            await self.bot.cog_disabled_in_guild(
+                cog=self, guild=message.guild
+            )
+            or not await self.bot.allowed_by_whitelist_blacklist(who=message.author)
+            or not (enabled_state if (enabled_state := await self.config.guild(message.guild).enabled()) is not None else await self.config.default_state())
+        ):
             return
         ignored_users = await self.config.ignored_users()
         if message.author.id in ignored_users:
@@ -405,11 +414,15 @@ class GuildStats(Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState) -> None:
-        if await self.bot.cog_disabled_in_guild(
-            cog=self, guild=member.guild
-        ) or not await self.bot.allowed_by_whitelist_blacklist(who=member):
-            return
         if not isinstance(member, discord.Member):
+            return
+        if (
+            await self.bot.cog_disabled_in_guild(
+                cog=self, guild=member.guild
+            )
+            or not await self.bot.allowed_by_whitelist_blacklist(who=member)
+            or not (enabled_state if (enabled_state := await self.config.guild(member.guild).enabled()) is not None else await self.config.default_state())
+        ):
             return
         if after.channel == before.channel:
             return
@@ -454,11 +467,15 @@ class GuildStats(Cog):
     async def on_presence_update(self, before: typing.Optional[discord.Member], after: typing.Optional[discord.Member]) -> None:
         if not await self.config.toggle_activities_stats():
             return
-        if await self.bot.cog_disabled_in_guild(
-            cog=self, guild=after.guild
-        ) or not await self.bot.allowed_by_whitelist_blacklist(who=after):
-            return
         if not isinstance(after, discord.Member):
+            return
+        if (
+            await self.bot.cog_disabled_in_guild(
+                cog=self, guild=(after or before).guild
+            )
+            or not await self.bot.allowed_by_whitelist_blacklist(who=(after or before))
+            or not (enabled_state if (enabled_state := await self.config.guild((after or before).guild).enabled()) is not None else await self.config.default_state())
+        ):
             return
         if after is not None and before is not None and after.activity == before.activity:
             return
@@ -1239,13 +1256,14 @@ class GuildStats(Cog):
             img.paste(image, (0, 0, size[0], size[1]), mask=image.split()[3])
 
         if size is None:
-            image = Image.open(self.icons["history"])
-            image = image.resize((50, 50))
-            img.paste(image, (30, 972, 80, 1022), mask=image.split()[3])
-            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
-            tracking_data_start_time = max(datetime.datetime.fromtimestamp(await self.config.first_loading_time(), tz=datetime.timezone.utc), (_object if isinstance(_object, discord.Guild) else _object.guild).me.joined_at)
-            tracking_data_start_time = tracking_data_start_time.replace(second=utc_now.second, minute=utc_now.minute if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 7 * 4) else tracking_data_start_time.minute, hour=utc_now.hour if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 365) else tracking_data_start_time.hour)
-            align_text_center((90, 972, 90, 1022), text=f"Tracking data in this server for {CogsUtils.get_interval_string(tracking_data_start_time, utc_now=utc_now)}.", fill=(255, 255, 255), font=self.bold_font[30])
+            if await self.config.default_state():
+                image = Image.open(self.icons["history"])
+                image = image.resize((50, 50))
+                img.paste(image, (30, 972, 80, 1022), mask=image.split()[3])
+                utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+                tracking_data_start_time = max(datetime.datetime.fromtimestamp(await self.config.first_loading_time(), tz=datetime.timezone.utc), (_object if isinstance(_object, discord.Guild) else _object.guild).me.joined_at)
+                tracking_data_start_time = tracking_data_start_time.replace(second=utc_now.second, minute=utc_now.minute if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 7 * 4) else tracking_data_start_time.minute, hour=utc_now.hour if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 365) else tracking_data_start_time.hour)
+                align_text_center((90, 972, 90, 1022), text=f"Tracking data in this server for {CogsUtils.get_interval_string(tracking_data_start_time, utc_now=utc_now)}.", fill=(255, 255, 255), font=self.bold_font[30])
             if members_type != "both":
                 members_type_text = f"Only {members_type} are taken into account."
                 image = Image.open(self.icons["person"])
@@ -1952,10 +1970,11 @@ class GuildStats(Cog):
         tracking_data_start_time = max(datetime.datetime.fromtimestamp(await self.config.first_loading_time(), tz=datetime.timezone.utc), (_object if isinstance(_object, discord.Guild) else _object.guild).me.joined_at)
         tracking_data_start_time = tracking_data_start_time.replace(second=utc_now.second, minute=utc_now.minute if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 7 * 4) else tracking_data_start_time.minute, hour=utc_now.hour if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 365) else tracking_data_start_time.hour)
         if show_graphic:
-            image = Image.open(self.icons["history"])
-            image = image.resize((50, 50))
-            img.paste(image, (30, 1427 + 200, 80, 1477 + 200), mask=image.split()[3])
-            align_text_center((90, 1427 + 200, 90, 1477 + 200), text=f"Tracking data in this server for {CogsUtils.get_interval_string(tracking_data_start_time, utc_now=utc_now)}.", fill=(255, 255, 255), font=self.bold_font[30])
+            if await self.config.default_state():
+                image = Image.open(self.icons["history"])
+                image = image.resize((50, 50))
+                img.paste(image, (30, 1427 + 200, 80, 1477 + 200), mask=image.split()[3])
+                align_text_center((90, 1427 + 200, 90, 1477 + 200), text=f"Tracking data in this server for {CogsUtils.get_interval_string(tracking_data_start_time, utc_now=utc_now)}.", fill=(255, 255, 255), font=self.bold_font[30])
             if members_type != "both":
                 members_type_text = f"Only {members_type} are taken into account."
                 image = Image.open(self.icons["person"])
@@ -1963,10 +1982,11 @@ class GuildStats(Cog):
                 img.paste(image, (1942 - 30 - self.bold_font[30].getbbox(members_type_text)[2] - 10 - 50, 1427 + 200, 1942 - 30 - self.bold_font[30].getbbox(members_type_text)[2] - 10, 1477 + 200), mask=image.split()[3])
                 align_text_center((1942 - 30 - self.bold_font[30].getbbox(members_type_text)[2], 1427 + 200, 1942 - 30 - self.bold_font[30].getbbox(members_type_text)[2], 1477 + 200), text=members_type_text, fill=(255, 255, 255), font=self.bold_font[30])
         else:
-            image = Image.open(self.icons["history"])
-            image = image.resize((50, 50))
-            img.paste(image, (30, 1016, 80, 1066), mask=image.split()[3])
-            align_text_center((90, 1016, 90, 1066), text=f"Tracking data in this server for {CogsUtils.get_interval_string(tracking_data_start_time, utc_now=utc_now)}.", fill=(255, 255, 255), font=self.bold_font[30])
+            if await self.config.default_state():
+                image = Image.open(self.icons["history"])
+                image = image.resize((50, 50))
+                img.paste(image, (30, 1016, 80, 1066), mask=image.split()[3])
+                align_text_center((90, 1016, 90, 1066), text=f"Tracking data in this server for {CogsUtils.get_interval_string(tracking_data_start_time, utc_now=utc_now)}.", fill=(255, 255, 255), font=self.bold_font[30])
             if members_type != "both":
                 members_type_text = f"Only {members_type} are taken into account."
                 image = Image.open(self.icons["person"])
@@ -1988,6 +2008,8 @@ class GuildStats(Cog):
         """Generate images with messages and voice stats, for members, roles guilds, text channels, voice channels and activities."""
         # if _object is None:
         #     _object = ctx.guild
+        if not (enabled_state if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None else await self.config.default_state()):
+            raise commands.UserFeedbackCheckFailure(_("This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.").format(prefix=ctx.prefix))
         ignored_users = await self.config.ignored_users()
         if isinstance(_object, discord.Member) and _object.id in ignored_users:
             raise commands.UserFeedbackCheckFailure(_("This user is in the ignored users list (`{prefix}guildstats ignoreme`).").format(prefix=ctx.prefix))
@@ -2000,6 +2022,8 @@ class GuildStats(Cog):
         """Display stats for a specified member."""
         if member is None:
             member = ctx.author
+        if not (enabled_state if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None else await self.config.default_state()):
+            raise commands.UserFeedbackCheckFailure(_("This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.").format(prefix=ctx.prefix))
         ignored_users = await self.config.ignored_users()
         if member.id in ignored_users:
             raise commands.UserFeedbackCheckFailure(_("This user is in the ignored users list (`{prefix}guildstats ignoreme`).").format(prefix=ctx.prefix))
@@ -2010,21 +2034,29 @@ class GuildStats(Cog):
         """Display stats for a specified role."""
         if role is None:
             role = ctx.author.top_role
+        if not (enabled_state if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None else await self.config.default_state()):
+            raise commands.UserFeedbackCheckFailure(_("This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.").format(prefix=ctx.prefix))
         await GuildStatsView(cog=self, _object=role, members_type="both", show_graphic_in_main=show_graphic, graphic_mode=False).start(ctx)
 
     @guildstats.command(aliases=["server"])
     async def guild(self, ctx: commands.Context, members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans", show_graphic: typing.Optional[bool] = False) -> None:
         """Display stats for this guild."""
+        if not (enabled_state if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None else await self.config.default_state()):
+            raise commands.UserFeedbackCheckFailure(_("This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.").format(prefix=ctx.prefix))
         await GuildStatsView(cog=self, _object=ctx.guild, members_type=members_type, show_graphic_in_main=show_graphic, graphic_mode=False).start(ctx)
 
     @guildstats.command()
     async def messages(self, ctx: commands.Context, members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans", show_graphic: typing.Optional[bool] = False) -> None:
         """Display stats for the messages in this guild."""
+        if not (enabled_state if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None else await self.config.default_state()):
+            raise commands.UserFeedbackCheckFailure(_("This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.").format(prefix=ctx.prefix))
         await GuildStatsView(cog=self, _object=(ctx.guild, "messages"), members_type=members_type, show_graphic_in_main=show_graphic, graphic_mode=False).start(ctx)
 
     @guildstats.command()
     async def voice(self, ctx: commands.Context, members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans", show_graphic: typing.Optional[bool] = False) -> None:
         """Display stats for the voice in this guild."""
+        if not (enabled_state if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None else await self.config.default_state()):
+            raise commands.UserFeedbackCheckFailure(_("This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.").format(prefix=ctx.prefix))
         await GuildStatsView(cog=self, _object=(ctx.guild, "voice"), members_type=members_type, show_graphic_in_main=show_graphic, graphic_mode=False).start(ctx)
 
     @guildstats.command()
@@ -2032,6 +2064,8 @@ class GuildStats(Cog):
         """Display stats for activities in this guild."""
         if not await self.config.toggle_activities_stats():
             raise commands.UserFeedbackCheckFailure(_("Activities stats are disabled on this bot."))
+        if not (enabled_state if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None else await self.config.default_state()):
+            raise commands.UserFeedbackCheckFailure(_("This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.").format(prefix=ctx.prefix))
         await GuildStatsView(cog=self, _object=(ctx.guild, "activities"), members_type=members_type, show_graphic_in_main=False, graphic_mode=False).start(ctx)
 
     @guildstats.command()
@@ -2041,6 +2075,8 @@ class GuildStats(Cog):
             channel = ctx.channel
         if isinstance(channel, discord.Thread):
             raise commands.UserFeedbackCheckFailure(_("Threads aren't supported by this cog."))
+        if not (enabled_state if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None else await self.config.default_state()):
+            raise commands.UserFeedbackCheckFailure(_("This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.").format(prefix=ctx.prefix))
         await GuildStatsView(cog=self, _object=channel, members_type=members_type, show_graphic_in_main=show_graphic, graphic_mode=False).start(ctx)
 
     @guildstats.command()
@@ -2048,6 +2084,8 @@ class GuildStats(Cog):
         """Display top stats for voice/messages members/channels."""
         if members_type is None:
             members_type = "humans"
+        if not (enabled_state if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None else await self.config.default_state()):
+            raise commands.UserFeedbackCheckFailure(_("This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.").format(prefix=ctx.prefix))
         await GuildStatsView(cog=self, _object=(ctx.guild, ("top", _type_1, _type_2)), members_type=members_type, show_graphic_in_main=False, graphic_mode=False).start(ctx)
 
     @guildstats.command(aliases=["graph"])
@@ -2057,6 +2095,11 @@ class GuildStats(Cog):
             _object = ctx.guild
         if _object == "activities" and not await self.config.toggle_activities_stats():
             raise commands.UserFeedbackCheckFailure(_("Activities stats are disabled on this bot."))
+        if not (enabled_state if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None else await self.config.default_state()):
+            raise commands.UserFeedbackCheckFailure(_("This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.").format(prefix=ctx.prefix))
+        ignored_users = await self.config.ignored_users()
+        if isinstance(_object, discord.Member) and _object.id in ignored_users:
+            raise commands.UserFeedbackCheckFailure(_("This user is in the ignored users list (`{prefix}guildstats ignoreme`).").format(prefix=ctx.prefix))
         await GuildStatsView(cog=self, _object=_object if _object not in ["voice", "messages", "activities"] else (ctx.guild, _object), members_type=members_type, show_graphic_in_main=False, graphic_mode=True).start(ctx)
 
     @guildstats.command()
@@ -2106,6 +2149,32 @@ class GuildStats(Cog):
     async def toggleactivitiesstats(self, ctx: commands.Context, state: bool) -> None:
         """Enable or disable activities stats."""
         await self.config.toggle_activities_stats.set(state)
+
+    @commands.is_owner()
+    @guildstats.command()
+    async def setdefaultstate(self, ctx: commands.Context, state: bool) -> None:
+        """Enable or disable by default the cog in the bot guilds."""
+        await self.config.default_state.set(state)
+
+    @commands.admin_or_permissions(administrator=True)
+    @guildstats.command()
+    async def enable(self, ctx: commands.Context) -> None:
+        """Enable the cog in this guild/server."""
+        current_state = await self.config.guild(ctx.guild).enabled()
+        if current_state is not None and current_state:
+            raise commands.UserFeedbackCheckFailure(_("GuildStats already enabled in this guild/server."))
+        await self.config.guild(ctx.guild).enabled.set(True)
+        await ctx.send(_("GuildStats enabled in this guild/server."))
+
+    @commands.admin_or_permissions(administrator=True)
+    @guildstats.command()
+    async def disable(self, ctx: commands.Context) -> None:
+        """Disable the cog in this guild/server."""
+        current_state = await self.config.guild(ctx.guild).enabled()
+        if current_state is not None and not current_state:
+            raise commands.UserFeedbackCheckFailure(_("GuildStats already disabled in this guild/server."))
+        await self.config.guild(ctx.guild).enabled.set(False)
+        await ctx.send(_("GuildStats disabled in this guild/server."))
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)

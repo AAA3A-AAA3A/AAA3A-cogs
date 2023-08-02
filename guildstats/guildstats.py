@@ -2080,6 +2080,29 @@ class GuildStats(Cog):
 
     @commands.is_owner()
     @guildstats.command()
+    async def ignoreuser(self, ctx: commands.Context, *, user: discord.User):
+        """Ignore or unignore a specific user."""
+        ignored_users: list = await self.config.ignored_users()
+        if user.id not in ignored_users:
+            ignored_users.append(user.id)
+            await self.red_delete_data_for_user(requester="user", user_id=user.id)
+            await self.config.ignored_users.set(ignored_users)
+            await ctx.send(
+                _(
+                    "{user.mention} ({user.id}) will no longer be seen by this cog, and their data has been deleted."
+                ).format(user=user),
+                allowed_mentions=discord.AllowedMentions(users=False),
+            )
+        else:
+            ignored_users.remove(user.id)
+            await self.config.ignored_users.set(ignored_users)
+            await ctx.send(
+                _("{user.mention} ({user.id}) will be seen again by this cog.").format(user=user),
+                allowed_mentions=discord.AllowedMentions(users=False),
+            )
+
+    @commands.is_owner()
+    @guildstats.command()
     async def toggleactivitiesstats(self, ctx: commands.Context, state: bool) -> None:
         """Enable or disable activities stats."""
         await self.config.toggle_activities_stats.set(state)

@@ -1439,6 +1439,27 @@ class Seen(Cog):
             await ctx.send(_("You'll be seen again by this cog."))
 
     @commands.is_owner()
+    @seen.command()
+    async def ignoreuser(self, ctx: commands.Context, user: discord.User):
+        ignored_users: list = await self.config.ignored_users()
+        if user.id not in ignored_users:
+            ignored_users.append(user.id)
+            await self.red_delete_data_for_user(requester="user", user_id=user.id)
+            await self.config.ignored_users.set(ignored_users)
+            await ctx.send(
+                _("{user} will no longer be seen by this cog, and their data has been deleted.").format(
+                    user=user.mention),
+                allowed_mentions=discord.AllowedMentions.none()
+            )
+        else:
+            ignored_users.remove(user.id)
+            await self.config.ignored_users.set(ignored_users)
+            await ctx.send(
+                _("{user} will be seen again by this cog.").format(user=user.mention),
+                allowed_mentions=discord.AllowedMentions.none()
+            )
+
+    @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
     @seen.command(hidden=True)
     async def getdebugloopsstatus(self, ctx: commands.Context) -> None:

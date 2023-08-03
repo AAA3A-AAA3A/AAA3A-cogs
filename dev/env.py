@@ -493,10 +493,10 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "typing": lambda ctx: typing,
                 # Inspect
                 "inspect": lambda ctx: inspect,
-                "source": lambda _object: env["print"](
+                "source": lambda ctx: lambda _object: rich.print(
                     textwrap.dedent(inspect.getsource(_object))
                 ),
-                "gs": lambda _object: env["print"](textwrap.dedent(inspect.getsource(_object))),
+                "gs": lambda ctx: lambda _object: rich.print(textwrap.dedent(inspect.getsource(_object))),
                 # "gs": lambda ctx: inspect.getsource,
                 # logging
                 "logging": lambda ctx: logging,

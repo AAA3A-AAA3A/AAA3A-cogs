@@ -5,12 +5,12 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import aiohttp
 import ast
 import asyncio
 import collections
 import contextlib
 import io
-import itertools
 import sys
 import textwrap
 
@@ -351,6 +351,7 @@ class Dev(Cog, dev_commands.Dev):
 
         self.env_extensions: typing.Dict[str, typing.Any] = {}
         self.source_cache: dev_commands.SourceCache = dev_commands.SourceCache()
+        self._session: aiohttp.ClientSession = None
         self.dev_space: DevSpace = DevSpace()
 
         self._last_result: typing.Optional[typing.Any] = None
@@ -439,8 +440,11 @@ class Dev(Cog, dev_commands.Dev):
             and (downloader_cog := self.bot.get_cog("Downloader")) is not None
         ):
             downloader_cog.already_agreed = True
+        self._session: aiohttp.ClientSession = aiohttp.ClientSession()
 
     async def cog_unload(self) -> None:
+        if self._session is not None:
+            await self._session.close()
         core_dev: dev_commands.Dev = dev_commands.Dev()
         core_dev.env_extensions: typing.Dict[str, typing.Any] = self.env_extensions
         core_dev.source_cache: dev_commands.SourceCache = self.source_cache

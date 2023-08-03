@@ -183,23 +183,11 @@ class DevEnv(typing.Dict[str, typing.Any]):
             }
         )
         Dev = ctx.bot.get_cog("Dev")
+        env.update(cls.get_env(ctx.bot, ctx))  # My nice env!
         base_env = dev_commands.Dev.get_environment(Dev, ctx)  # In Dev in Core.
         # del base_env["_"]
         env.update(base_env)
-        if is_dev(bot=ctx.bot):  # My own Dev environment.
-            env.update(cls.get_env(ctx.bot, ctx))
-        dev_space = getattr(ctx.bot.get_cog("Dev"), "dev_space", AttributeError())
-        env.update(
-            {
-                "devenv": env,
-                "devspace": dev_space,
-                "dev_space": dev_space,
-                "source": lambda _object: env["print"](
-                    textwrap.dedent(inspect.getsource(_object))
-                ),
-                "gs": lambda _object: env["print"](textwrap.dedent(inspect.getsource(_object))),
-            }
-        )
+        env.update({"devenv": env})
         return env
 
     def get_formatted_env(
@@ -345,11 +333,6 @@ class DevEnv(typing.Dict[str, typing.Any]):
             code = inspect.getsource(object)
             await Menu(pages=code, lang="py").start(ctx)
 
-        async def get_url(url: str, **kwargs):
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url=url, **kwargs) as r:
-                    return r
-
         def reference(ctx: commands.Context):
             if hasattr(ctx.message, "reference") and ctx.message.reference is not None:
                 msg = ctx.message.reference.resolved
@@ -365,6 +348,19 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 for x in dir(a)
                 if b.lower() in x.lower() and x.lower().startswith(startswith.lower())
             ]
+
+        async def run_converter(
+            converter: typing.Any, value: str, label: typing.Optional[str] = "test"
+        ):
+            param = discord.ext.commands.parameters.Parameter(
+                name=label, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=converter
+            )
+            try:
+                return await discord.ext.commands.converter.run_converters(
+                    ctx, converter=param.converter, argument=value, param=param
+                )
+            except commands.CommandError as e:
+                return e
 
         def get_internal(ctx: commands.Context):
             def _get_internal(
@@ -428,55 +424,54 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 logger.setLevel(level)
             return len(_loggers)
 
-        async def run_converter(
-            converter: typing.Any, value: str, label: typing.Optional[str] = "test"
-        ):
-            param = discord.ext.commands.parameters.Parameter(
-                name=label, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=converter
-            )
-            try:
-                return await discord.ext.commands.converter.run_converters(
-                    ctx, converter=param.converter, argument=value, param=param
-                )
-            except commands.CommandError as e:
-                return e
+        dev_space = getattr(ctx.bot.get_cog("Dev"), "dev_space", AttributeError())
 
-        env = {
-            # CogsUtils
-            "CogsUtils": lambda ctx: CogsUtils,
-            "Loop": lambda ctx: Loop,
-            "Reactions": lambda ctx: Reactions,
-            "Menu": lambda ctx: Menu,
-            "SharedCog": lambda ctx: SharedCog,
-            "Cog": lambda ctx: Cog,
-            "Context": lambda ctx: Context,
-            "Settings": lambda ctx: Settings,
-            "SentryHelper": lambda ctx: SentryHelper,
-            "log": lambda ctx: log,
-            "_rtfs": lambda ctx: partial(_rtfs, ctx),
-            "DevEnv": lambda ctx: cls,
-            "DevSpace": lambda ctx: DevSpace,
-            "Cogs": lambda ctx: CogsCommands.Cogs(
-                bot=ctx.bot, Cog=CogsCommands.Cog, Command=CogsCommands.Command
-            ),
-            "Commands": lambda ctx: CogsCommands.Commands(
-                bot=ctx.bot, Cog=CogsCommands.Cog, Command=CogsCommands.Command
-            ),
-        }
-        # Dpy2 things
-        env.update(
-            {
-                "ConfirmationAskView": lambda ctx: ConfirmationAskView,
-                "Buttons": lambda ctx: Buttons,
-                "Dropdown": lambda ctx: Dropdown,
-                "Select": lambda ctx: Select,
-                "ChannelSelect": lambda ctx: ChannelSelect,
-                "MentionableSelect": lambda ctx: MentionableSelect,
-                "RoleSelect": lambda ctx: RoleSelect,
-                "UserSelect": lambda ctx: UserSelect,
-                "Modal": lambda ctx: Modal,
+        def get_url(ctx: commands.Context):
+            async def _get_url(url: str, **kwargs):
+                async with ctx.bot.get_cog("Dev")._session.get(url=url, **kwargs) as r:
+                    return r
+
+            return _get_url
+
+        if is_dev(bot=bot):
+            env = {
+                # CogsUtils
+                "CogsUtils": lambda ctx: CogsUtils,
+                "Loop": lambda ctx: Loop,
+                "Reactions": lambda ctx: Reactions,
+                "Menu": lambda ctx: Menu,
+                "SharedCog": lambda ctx: SharedCog,
+                "Cog": lambda ctx: Cog,
+                "Context": lambda ctx: Context,
+                "Settings": lambda ctx: Settings,
+                "SentryHelper": lambda ctx: SentryHelper,
+                "log": lambda ctx: log,
+                "_rtfs": lambda ctx: partial(_rtfs, ctx),
+                "DevEnv": lambda ctx: cls,
+                "DevSpace": lambda ctx: DevSpace,
+                "Cogs": lambda ctx: CogsCommands.Cogs(
+                    bot=ctx.bot, Cog=CogsCommands.Cog, Command=CogsCommands.Command
+                ),
+                "Commands": lambda ctx: CogsCommands.Commands(
+                    bot=ctx.bot, Cog=CogsCommands.Cog, Command=CogsCommands.Command
+                ),
             }
-        )
+            # Dpy2 things
+            env.update(
+                {
+                    "ConfirmationAskView": lambda ctx: ConfirmationAskView,
+                    "Buttons": lambda ctx: Buttons,
+                    "Dropdown": lambda ctx: Dropdown,
+                    "Select": lambda ctx: Select,
+                    "ChannelSelect": lambda ctx: ChannelSelect,
+                    "MentionableSelect": lambda ctx: MentionableSelect,
+                    "RoleSelect": lambda ctx: RoleSelect,
+                    "UserSelect": lambda ctx: UserSelect,
+                    "Modal": lambda ctx: Modal,
+                }
+            )
+        else:
+            env = {}
         env.update(
             {
                 # Dpy & Red
@@ -491,10 +486,17 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "websocket": lambda ctx: ctx.bot._get_websocket(0),
                 "get_internal": get_internal,
                 "set_loggers_level": lambda ctx: set_loggers_level,
+                # Dev Space
+                "dev_space": lambda ctx: dev_space,
+                "devspace": lambda ctx: dev_space,
                 # Typing
                 "typing": lambda ctx: typing,
                 # Inspect
                 "inspect": lambda ctx: inspect,
+                "source": lambda _object: env["print"](
+                    textwrap.dedent(inspect.getsource(_object))
+                ),
+                "gs": lambda _object: env["print"](textwrap.dedent(inspect.getsource(_object))),
                 # "gs": lambda ctx: inspect.getsource,
                 # logging
                 "logging": lambda ctx: logging,
@@ -505,10 +507,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "os": lambda ctx: os,
                 "sys": lambda ctx: sys,
                 # Aiohttp
-                "session": lambda ctx: ctx.bot.get_cog("AAA3A_utils")._session
-                if ctx.bot.get_cog("AAA3A_utils") is not None
-                else None,
-                "get_url": lambda ctx: get_url,
+                "session": lambda ctx: ctx.bot.get_cog("Dev")._session,
+                "get_url": get_url,
                 # TextWrap
                 "textwrap": lambda ctx: textwrap,
                 # Search attr

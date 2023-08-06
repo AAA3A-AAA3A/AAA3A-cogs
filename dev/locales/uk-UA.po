@@ -1,0 +1,70 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:12\n"
+"Last-Translator: \n"
+"Language-Team: Ukrainian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: uk\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/dev/locales/messages.pot\n"
+"X-Crowdin-File-ID: 263\n"
+"Language: uk_UA\n"
+
+#: dev\dev.py:346
+#, docstring
+msgid "Various development focused utilities!"
+msgstr "Різноманітні утиліти, орієнтовані на розвиток!"
+
+#: dev\dev.py:653
+msgid "Already running a REPL session in this channel. Exit it with `quit`."
+msgstr "У цьому каналі вже запущено сеанс REPL. Вийдіть з нього за допомогою `quit`."
+
+#: dev\dev.py:657
+msgid "Already running a REPL session in this channel. Resume the REPL with `{prefix}replresume`."
+msgstr "На цьому каналі вже запущено сеанс REPL. Відновіть REPL за допомогою `{prefix}replresume`."
+
+#: dev\dev.py:667
+msgid "Enter code to execute or evaluate. `exit()` or `quit` to exit. `{prefix}replpause` to pause."
+msgstr "Введіть код для виконання або обчислення. `exit()` або `quit` для виходу. `{prefix}replpause` щоб поставити на паузу."
+
+#: dev\dev.py:707
+msgid "Exiting."
+msgstr "Виходьте."
+
+#: dev\dev.py:715
+msgid "There is no currently running REPL session in this channel."
+msgstr "На цьому каналі немає поточної сесії REPL."
+
+#: dev\dev.py:721
+msgid "The REPL session in this channel has been resumed."
+msgstr "Сесію REPL на цьому каналі відновлено."
+
+#: dev\dev.py:723
+msgid "The REPL session in this channel is now paused."
+msgstr "Сеанс REPL у цьому каналі призупинено."
+
+#: dev\dev.py:745
+msgid "Bot owners will now bypass all commands with cooldowns{optional_duration}."
+msgstr "Власники ботів тепер будуть обходити всі команди з перезавантаженням{optional_duration}."
+
+#: dev\dev.py:755
+msgid "Bot owners will no longer bypass all commands with cooldowns{optional_duration}."
+msgstr "Власники ботів більше не будуть обходити всі команди з перезавантаженням{optional_duration}."
+
+#: dev\dev.py:784
+#, docstring
+msgid "Display all Dev environment values."
+msgstr "Відобразити всі значення середовища Dev."
+
+#: dev\dev.py:791
+#, docstring
+msgid "Reset its own locals in evals."
+msgstr "Скинути власні локалі в оцінках."
+

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 18:22\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:10\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -22,71 +22,65 @@ msgstr ""
 msgid "A cog to send the result of a command to another channel!"
 msgstr "コマンドの結果を別のチャンネルに送るためのコグ！"
 
-#: cmdchannel\cmdchannel.py:75
+#: cmdchannel\cmdchannel.py:86
 #, docstring
 msgid "Act as if the command had been typed in the channel of your choice.\n"
-"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
-"        If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).\n\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
 "        Use `[p]cmdchannel`!\n"
 "        "
-msgstr "選択したチャンネルでコマンドが入力されたように動作します。\n"
-"        コマンドの場合はプレフィックスを入力してはならない。コマンドが無効な場合は、メッセージのみとなります。\n"
-"        チャンネルを指定しない場合、使用したいコマンドが既存のチャンネル名（例えばhelpやtest）でない限り、現在のチャンネルが使用されます。\n\n"
-"[p]cmdchannel`を使用してください！\n"
+msgstr "選択したチャンネルでコマンドが入力されたかのように動作する。\n"
+"        コマンドの場合、接頭辞は入力してはならない。コマンドが無効な場合はメッセージのみとなる。\n\n"
+"[p]cmdchannel`を使用する！\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:84 cmdchannel\cmdchannel.py:153
+#: cmdchannel\cmdchannel.py:94 cmdchannel\cmdchannel.py:163
 msgid "To send commands to another server, you must be there."
 msgstr "他のサーバーにコマンドを送るには、その場にいる必要があります。"
 
-#: cmdchannel\cmdchannel.py:107
+#: cmdchannel\cmdchannel.py:118
 #, docstring
 msgid "Act as if the command had been typed by imitating the specified user.\n"
-"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
-"        If you do not specify a user, the author will be used.\n\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
 "        Use `[p]cmduser`!\n"
 "        "
-msgstr "指定されたユーザーの真似をして、コマンドが入力されたように動作する。\n"
-"        コマンドの場合、接頭辞は入力してはいけない。コマンドが無効な場合は、メッセージのみとなります。\n"
-"        ユーザーを指定しない場合は、authorが使われます。\n\n"
-"[p]cmduser`を使用してください．\n"
+msgstr "指定されたユーザーを真似て、コマンドが入力されたかのように動作する。\n"
+"        コマンドの場合、接頭辞は入力してはならない。コマンドが無効な場合はメッセージのみとなる。\n\n"
+"[p]cmduser`を使用する！\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:117 cmdchannel\cmdchannel.py:158
+#: cmdchannel\cmdchannel.py:127 cmdchannel\cmdchannel.py:168
 msgid "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
 msgstr "他のユーザーとしてコマンドを実行できるようにするには、cog Devをロードして、自分が何をしているかを確認する必要があります。"
 
-#: cmdchannel\cmdchannel.py:140
+#: cmdchannel\cmdchannel.py:151
 #, docstring
 msgid "Act as if the command had been typed in the channel of your choice by imitating the specified user.\n"
-"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
-"        If you do not specify a user, the author will be used.\n\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
 "        Use `[p]cmduserchannel`!\n"
 "        "
-msgstr "指定されたユーザーの真似をして、希望のチャンネルでコマンドが入力されたように動作します。\n"
-"        コマンドの場合、接頭辞は入力してはいけない。コマンドが無効な場合は、メッセージのみとなります。\n"
-"        ユーザを指定しない場合は、作者が使われます。\n\n"
+msgstr "指定されたユーザーを真似ることで、指定したチャンネルでコマンドが入力されたかのように振る舞う。\n"
+"        コマンドの場合、接頭辞は入力してはならない。コマンドが無効な場合はメッセージのみとなる。\n\n"
 "[p]cmduserchannel`を使用してください！\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:174
+#: cmdchannel\cmdchannel.py:185
 #, docstring
 msgid "Test variables."
 msgstr "テスト変数。"
 
-#: cmdchannel\cmdchannel.py:176
+#: cmdchannel\cmdchannel.py:187
 msgid "Testvar"
 msgstr "テストバー"
 
-#: cmdchannel\cmdchannel.py:177
+#: cmdchannel\cmdchannel.py:188
 msgid "Variables:"
 msgstr "変数です："
 
-#: cmdchannel\cmdchannel.py:178
+#: cmdchannel\cmdchannel.py:189
 msgid "Author:"
 msgstr "著者"
 
-#: cmdchannel\cmdchannel.py:179
+#: cmdchannel\cmdchannel.py:190
 msgid "Channel:"
 msgstr "チャンネルです："
 

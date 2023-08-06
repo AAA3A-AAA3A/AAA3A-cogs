@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:26\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:10\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -17,23 +17,23 @@ msgstr ""
 "X-Crowdin-File-ID: 96\n"
 "Language: fi_FI\n"
 
-#: rolesbuttons\converters.py:43
+#: rolesbuttons\converters.py:41
 msgid "The {role.mention} role is a bot integration role and cannot be assigned or removed."
 msgstr "{role.mention} -rooli on botin integrointirooli, eikä sitä voi määrittää tai poistaa."
 
-#: rolesbuttons\converters.py:49
+#: rolesbuttons\converters.py:47
 msgid "The {role.mention} role is an integration role and cannot be assigned or removed."
 msgstr "{role.mention} -rooli on integrointirooli, eikä sitä voi määrittää tai poistaa."
 
-#: rolesbuttons\converters.py:55
+#: rolesbuttons\converters.py:53
 msgid "The {role.mention} role is a premium subscriber role and can only be assigned or removed by Nitro boosting the server."
 msgstr "{role.mention} -rooli on premium-tilaajarooli, ja se voidaan määrittää tai poistaa vain Nitro boosting-palvelimen avulla."
 
-#: rolesbuttons\converters.py:61
+#: rolesbuttons\converters.py:59
 msgid "The {role.mention} role is higher than my highest role in the discord hierarchy."
 msgstr "{role.mention} -rooli on korkeampi kuin korkein roolini discord-hierarkiassa."
 
-#: rolesbuttons\converters.py:67
+#: rolesbuttons\converters.py:65
 msgid "The {role.mention} role is higher than your highest role in the discord hierarchy."
 msgstr "{role.mention} -rooli on korkeampi kuin korkein roolisi discord-hierarkiassa."
 
@@ -41,91 +41,101 @@ msgstr "{role.mention} -rooli on korkeampi kuin korkein roolisi discord-hierarki
 msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
 msgstr "Emoji Rooli on oltava emoji, jota seuraa rooli erotettuna joko `;`, `,`, `|` tai `-`."
 
-#: rolesbuttons\rolesbuttons.py:23
+#: rolesbuttons\rolesbuttons.py:24
 #, docstring
 msgid "A cog to have roles-buttons!"
 msgstr "Hammaspyörä on roolit-nappulat!"
 
-#: rolesbuttons\rolesbuttons.py:69
+#: rolesbuttons\rolesbuttons.py:117
 msgid "This message is not in Config."
 msgstr "Tämä viesti ei ole Configissa."
 
-#: rolesbuttons\rolesbuttons.py:72
+#: rolesbuttons\rolesbuttons.py:120
 msgid "This button is not in Config."
 msgstr "Tämä painike ei ole Configissa."
 
-#: rolesbuttons\rolesbuttons.py:80
+#: rolesbuttons\rolesbuttons.py:128
 msgid "The role ({role_id}) I have to give you no longer exists. Please notify an administrator of this server."
 msgstr "Roolia ({role_id}), joka minun on annettava sinulle, ei enää ole olemassa. Ilmoita asiasta tämän palvelimen ylläpitäjälle."
 
-#: rolesbuttons\rolesbuttons.py:99
+#: rolesbuttons\rolesbuttons.py:147
 msgid "Role-button of {interaction.message.id} in {interaction.channel.id}."
 msgstr "Rooli-painike {interaction.message.id} osoitteessa {interaction.channel.id}."
 
-#: rolesbuttons\rolesbuttons.py:105
-msgid "I could not add the {role.mention} role to you. Please notify an administrator of this server."
-msgstr "En voinut lisätä sinulle {role.mention} -roolia. Ilmoita asiasta tämän palvelimen ylläpitäjälle."
+#: rolesbuttons\rolesbuttons.py:153
+msgid "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
+msgstr "En voinut lisätä sinulle {role.mention} ({role.id}) roolia. Ilmoita asiasta tämän palvelimen ylläpitäjälle."
 
-#: rolesbuttons\rolesbuttons.py:113
-msgid "You now have the {role.mention} role."
-msgstr "Sinulla on nyt {role.mention} -rooli."
+#: rolesbuttons\rolesbuttons.py:161
+msgid "You now have the {role.mention} ({role.id}) role."
+msgstr "Sinulla on nyt rooli {role.mention} ({role.id})."
 
-#: rolesbuttons\rolesbuttons.py:124
+#: rolesbuttons\rolesbuttons.py:172
 msgid "I could not remove the role {role.mention} ({role.id}) role from you. Please notify an administrator of this server."
 msgstr "En pystynyt poistamaan sinulta roolia {role.mention} ({role.id}). Ilmoita asiasta tämän palvelimen ylläpitäjälle."
 
-#: rolesbuttons\rolesbuttons.py:132
+#: rolesbuttons\rolesbuttons.py:180
 msgid "You no longer have the role {role.mention} ({role.id})."
 msgstr "Sinulla ei ole enää roolia {role.mention} ({role.id})."
 
-#: rolesbuttons\rolesbuttons.py:182
+#: rolesbuttons\rolesbuttons.py:230
 #, docstring
 msgid "Add a role-button for a message.\n\n"
-"        `primary`: 1\n"
-"        `secondary`: 2\n"
-"        `success`: 3\n"
-"        `danger`: 4\n"
+"        (Use the number for the color.)\n"
+"        • `primary`: 1\n"
+"        • `secondary`: 2\n"
+"        • `success`: 3\n"
+"        • `danger`: 4\n"
 "        # Aliases\n"
-"        `blurple`: 1\n"
-"        `grey`: 2\n"
-"        `gray`: 2\n"
-"        `green`: 3\n"
-"        `red`: 4\n"
+"        • `blurple`: 1\n"
+"        • `grey`: 2\n"
+"        • `gray`: 2\n"
+"        • `green`: 3\n"
+"        • `red`: 4\n"
 "        "
 msgstr "Lisää viestin rooli-painike.\n\n"
-"        `primary`: 1\n"
-"        `secondary`: 2\n"
-"        `success`: 3\n"
-"        `vaara`: 4\n"
+"        (Käytä värin numeroa.)\n"
+"        - `primary`: 1\n"
+"        - `sekundaarinen`: 2\n"
+"        - `menestys`: 3\n"
+"        - `vaara`: 4\n"
 "        # Aliasit\n"
-"        `blurple`: 1\n"
-"        `grey`: 2\n"
-"        `gray`: 2\n"
-"        `green`: 3\n"
-"        `red`: 4\n"
+"        - `blurple`: 1\n"
+"        - `harmaa`: 2\n"
+"        - `harmaa`: 2\n"
+"        - `vihreä`: 3\n"
+"        - `punainen`: 4\n"
 "        "
 
-#: rolesbuttons\rolesbuttons.py:197 rolesbuttons\rolesbuttons.py:250
-#: rolesbuttons\rolesbuttons.py:316 rolesbuttons\rolesbuttons.py:332
-#: rolesbuttons\rolesbuttons.py:361
+#: rolesbuttons\rolesbuttons.py:246 rolesbuttons\rolesbuttons.py:309
+#: rolesbuttons\rolesbuttons.py:383 rolesbuttons\rolesbuttons.py:405
+#: rolesbuttons\rolesbuttons.py:435
 msgid "I have to be the author of the message for the role-button to work."
 msgstr "Minun on oltava viestin kirjoittaja, jotta rooli-painike toimisi."
 
-#: rolesbuttons\rolesbuttons.py:207 rolesbuttons\rolesbuttons.py:264
+#: rolesbuttons\rolesbuttons.py:255 rolesbuttons\rolesbuttons.py:322
 msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
 "I need the permissions to see the messages in that channel."
 msgstr "Minulla ei ole riittäviä oikeuksia kanavaan, jossa määrittämäsi viesti sijaitsee.\n"
 "Tarvitsen oikeudet nähdäkseni kyseisen kanavan viestit."
 
-#: rolesbuttons\rolesbuttons.py:216
+#: rolesbuttons\rolesbuttons.py:261
+msgid "You have to specify at least an emoji or a label."
+msgstr "Sinun on määritettävä ainakin hymiö tai nimilappu."
+
+#: rolesbuttons\rolesbuttons.py:268
 msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "Valitsemasi emoji vaikuttaa virheelliseltä. Tarkista, että se on emoji. Jos sinulla on Nitro, olet saattanut käyttää muokatun emojin toisesta palvelimesta."
 
-#: rolesbuttons\rolesbuttons.py:225 rolesbuttons\rolesbuttons.py:283
+#: rolesbuttons\rolesbuttons.py:275 rolesbuttons\rolesbuttons.py:341
+msgid "This message already has components."
+msgstr "Tässä viestissä on jo komponentteja."
+
+#: rolesbuttons\rolesbuttons.py:279 rolesbuttons\rolesbuttons.py:345
 msgid "I can't do more than 25 roles-buttons for one message."
 msgstr "En voi tehdä enempää kuin 25 roolipainiketta yhtä viestiä varten."
 
-#: rolesbuttons\rolesbuttons.py:244
+#: rolesbuttons\rolesbuttons.py:303
 #, docstring
 msgid "Add roles-buttons for a message.\n\n"
 "        ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```\n"
@@ -134,17 +144,17 @@ msgstr "Lisää roolit-painikkeet viestiin.\n\n"
 "        ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```\n"
 "        "
 
-#: rolesbuttons\rolesbuttons.py:254
+#: rolesbuttons\rolesbuttons.py:313
 msgid "You have not specified any valid role-button."
 msgstr "Et ole määritellyt kelvollista roolipainiketta."
 
-#: rolesbuttons\rolesbuttons.py:274
+#: rolesbuttons\rolesbuttons.py:334
 msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "Valitsemasi emoji vaikuttaa virheelliseltä. Tarkista, että se on emoji. Jos sinulla on Nitro, olet saattanut käyttää muokatun emojin toisesta palvelimesta."
 
-#: rolesbuttons\rolesbuttons.py:303
+#: rolesbuttons\rolesbuttons.py:370
 #, docstring
-msgid "Choose a mode for a roles-buttons message.\n\n"
+msgid "Choose a mode for the roles-buttons of a message.\n\n"
 "        Type `add_or_remove`:\n"
 "        - Users get the role if they do not already have it, or lose it.\n"
 "        Type `add_only`:\n"
@@ -154,7 +164,7 @@ msgid "Choose a mode for a roles-buttons message.\n\n"
 "        Type `replace`:\n"
 "        - Same as add_or_remove, but the roles from this message will be mutually exclusive, and getting one will remove the previous.\n"
 "        "
-msgstr "Valitse tila roolit-painikkeilla lähetettävälle viestille.\n\n"
+msgstr "Valitse tila viestin roolipainikkeille.\n\n"
 "        Tyyppi `add_or_remove`:\n"
 "        - Käyttäjät saavat roolin, jos heillä ei vielä ole sitä, tai menettävät sen.\n"
 "        Tyyppi `add_only`:\n"
@@ -165,27 +175,59 @@ msgstr "Valitse tila roolit-painikkeilla lähetettävälle viestille.\n\n"
 "        - Sama kuin add_or_remove, mutta tämän viestin roolit sulkevat toisensa pois, ja yhden saaminen poistaa edellisen.\n"
 "        "
 
-#: rolesbuttons\rolesbuttons.py:321 rolesbuttons\rolesbuttons.py:337
-#: rolesbuttons\rolesbuttons.py:366
+#: rolesbuttons\rolesbuttons.py:388 rolesbuttons\rolesbuttons.py:410
+#: rolesbuttons\rolesbuttons.py:440 rolesbuttons\rolesbuttons.py:461
 msgid "No role-button is configured for this message."
 msgstr "Tälle viestille ei ole määritetty rooli-painiketta."
 
-#: rolesbuttons\rolesbuttons.py:329
-#, docstring
-msgid "Remove a role-button for a message."
-msgstr "Poista viestin rooli-painike."
+#: rolesbuttons\rolesbuttons.py:393
+msgid "Mode set for the roles-buttons of this message."
+msgstr "Tämän viestin roolipainikkeille asetettu tila."
 
-#: rolesbuttons\rolesbuttons.py:341
+#: rolesbuttons\rolesbuttons.py:399
+#, docstring
+msgid "Remove a role-button for a message.\n\n"
+"        Use `[p]rolesbuttons list <message>` to find the config identifier.\n"
+"        "
+msgstr "Poista viestin rooli-painike.\n\n"
+"        Käytä `[p]rolesbuttons list <message>` löytääksesi konfiguraatiotunnisteen.\n"
+"        "
+
+#: rolesbuttons\rolesbuttons.py:414
 msgid "I wasn't watching for this button on this message."
 msgstr "En katsonut tätä painiketta tässä viestissä."
 
-#: rolesbuttons\rolesbuttons.py:358
+#: rolesbuttons\rolesbuttons.py:432
 #, docstring
 msgid "Clear all roles-buttons for a message."
 msgstr "Tyhjennä kaikki viestin roolit-painikkeet."
 
-#: rolesbuttons\rolesbuttons.py:378
+#: rolesbuttons\rolesbuttons.py:449
+msgid "Roles-buttons cleared for this message."
+msgstr "Roolit-painikkeet tyhjennetty tätä viestiä varten."
+
+#: rolesbuttons\rolesbuttons.py:467
+msgid "No roles-buttons in this server."
+msgstr "Tällä palvelimella ei ole roolipainikkeita."
+
+#: rolesbuttons\rolesbuttons.py:476
+msgid "Roles Buttons"
+msgstr "Roolit-painikkeet"
+
+#: rolesbuttons\rolesbuttons.py:477
+msgid "There is {len_roles_buttons} roles buttons in this server."
+msgstr "Tällä palvelimella on {len_roles_buttons} roolipainikkeet."
+
+#: rolesbuttons\rolesbuttons.py:484
+msgid "Message Jump Link: {message_jump_link}\n"
+msgstr "Viestin hyppylinkki: {message_jump_link}\n"
+
+#: rolesbuttons\rolesbuttons.py:500
 #, docstring
 msgid "Clear all roles-buttons for a guild."
 msgstr "Tyhjennä killan kaikki roolit-nappulat."
+
+#: rolesbuttons\rolesbuttons.py:502
+msgid "All roles-buttons purged."
+msgstr "Kaikki roolit-painikkeet puhdistettu."
 

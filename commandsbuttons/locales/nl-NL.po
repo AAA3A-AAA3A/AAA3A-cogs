@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:27\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:11\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -17,129 +17,173 @@ msgstr ""
 "X-Crowdin-File-ID: 181\n"
 "Language: nl_NL\n"
 
-#: commandsbuttons\commandsbuttons.py:26
+#: commandsbuttons\commandsbuttons.py:27
 #, docstring
 msgid "A cog to allow a user to execute a command by clicking on a button!"
 msgstr "Een tandwiel waarmee een gebruiker een opdracht kan uitvoeren door op een knop te klikken!"
 
-#: commandsbuttons\commandsbuttons.py:76
+#: commandsbuttons\commandsbuttons.py:123
 msgid "This message is not in Config."
 msgstr "Dit bericht staat niet in Config."
 
-#: commandsbuttons\commandsbuttons.py:79
+#: commandsbuttons\commandsbuttons.py:128
 msgid "This button is not in Config."
 msgstr "Deze knop staat niet in Config."
 
-#: commandsbuttons\commandsbuttons.py:92
-msgid "The command don't exist."
-msgstr "De opdracht bestaat niet."
+#: commandsbuttons\commandsbuttons.py:176
+msgid "This command doesn't exist."
+msgstr "Dit commando bestaat niet."
 
-#: commandsbuttons\commandsbuttons.py:96
+#: commandsbuttons\commandsbuttons.py:180
 msgid "You are not allowed to execute this command."
 msgstr "Je mag dit commando niet uitvoeren."
 
-#: commandsbuttons\commandsbuttons.py:148
+#: commandsbuttons\commandsbuttons.py:235
 #, docstring
 msgid "Add a command-button for a message.\n\n"
-"        `primary`: 1\n"
-"        `secondary`: 2\n"
-"        `success`: 3\n"
-"        `danger`: 4\n"
+"        (Use the number for the color.)\n"
+"        • `primary`: 1\n"
+"        • `secondary`: 2\n"
+"        • `success`: 3\n"
+"        • `danger`: 4\n"
 "        # Aliases\n"
-"        `blurple`: 1\n"
-"        `grey`: 2\n"
-"        `gray`: 2\n"
-"        `green`: 3\n"
-"        `red`: 4\n"
+"        • `blurple`: 1\n"
+"        • `grey`: 2\n"
+"        • `gray`: 2\n"
+"        • `green`: 3\n"
+"        • `red`: 4\n"
 "        "
-msgstr "Een opdrachtknop voor een bericht toevoegen.\n\n"
-"        primair 1\n"
-"        `secundair`: 2\n"
-"        `succes`: 3\n"
-"        `gevaar`: 4\n"
-"        # Aliassen\n"
-"        `blurple`: 1\n"
-"        `grijs`: 2\n"
-"        `grijs`: 2\n"
-"        `groen`: 3\n"
-"        `rood`: 4\n"
+msgstr "Voeg een command-button toe voor een bericht.\n\n"
+"        (Gebruik het nummer van de kleur.)\n"
+"        • `primair`: 1\n"
+"        • `secondair`: 2\n"
+"        • `succes`: 3\n"
+"        • `gevaar`: 4\n"
+"        # Aliases\n"
+"        • `blauw/paars`: 1\n"
+"        • `lichtgrijs`: 2\n"
+"        • `donkergrijs`: 2\n"
+"        • `groen`: 3\n"
+"        • `rood`: 4\n"
 "        "
 
-#: commandsbuttons\commandsbuttons.py:163
-#: commandsbuttons\commandsbuttons.py:224
-#: commandsbuttons\commandsbuttons.py:275
+#: commandsbuttons\commandsbuttons.py:251
+#: commandsbuttons\commandsbuttons.py:322
+#: commandsbuttons\commandsbuttons.py:394
 msgid "I have to be the author of the message for the command-button to work."
 msgstr "Ik moet de auteur van het bericht zijn om de opdrachtknop te laten werken."
 
-#: commandsbuttons\commandsbuttons.py:173
-#: commandsbuttons\commandsbuttons.py:238
+#: commandsbuttons\commandsbuttons.py:260
+#: commandsbuttons\commandsbuttons.py:335
 msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
 "I need the permissions to see the messages in that channel."
 msgstr "Ik heb niet voldoende rechten in de chatroom waar het bericht dat je hebt gespecificeerd zich bevindt.\n"
 "Ik heb de rechten nodig om de berichten in die chatroom te zien."
 
-#: commandsbuttons\commandsbuttons.py:183
+#: commandsbuttons\commandsbuttons.py:270
 msgid "You have not specified a correct command."
 msgstr "U hebt geen correct commando opgegeven."
 
-#: commandsbuttons\commandsbuttons.py:190
+#: commandsbuttons\commandsbuttons.py:274
+msgid "You have to specify at least an emoji or a label."
+msgstr "Je moet minimaal een emoji of label toevoegen."
+
+#: commandsbuttons\commandsbuttons.py:281
 msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "De emoji die je hebt geselecteerd lijkt ongeldig. Controleer of het een emoji is. Als je Nitro hebt, heb je misschien een aangepaste emoji van een andere server gebruikt."
 
-#: commandsbuttons\commandsbuttons.py:199
+#: commandsbuttons\commandsbuttons.py:288
+#: commandsbuttons\commandsbuttons.py:362
+msgid "This message already has components."
+msgstr "Dit bericht heeft al onderdelen."
+
+#: commandsbuttons\commandsbuttons.py:292
 msgid "I can't do more than 25 commands-buttons for one message."
 msgstr "Ik kan niet meer dan 25 commando's-knoppen gebruiken voor één bericht."
 
-#: commandsbuttons\commandsbuttons.py:218
+#: commandsbuttons\commandsbuttons.py:316
 #, docstring
 msgid "Add commands-buttons for a message.\n\n"
 "        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
 "        "
 msgstr "Commando's-knoppen toevoegen voor een bericht.\n\n"
-"        ```[p]commando's-knoppen bulk <message> \":reaction1:|:reaction2: :reaction3:|ping\"```\n"
+"        ```[p]commandsbuttons bulk <message> \":reaction1:|:reaction2: :reaction3:|ping\"```\n"
 "        "
 
-#: commandsbuttons\commandsbuttons.py:228
+#: commandsbuttons\commandsbuttons.py:326
 msgid "You have not specified any valid command-button."
 msgstr "Je hebt geen geldige opdrachtknop opgegeven."
 
-#: commandsbuttons\commandsbuttons.py:248
+#: commandsbuttons\commandsbuttons.py:348
+msgid "At least one of these commands is invalid."
+msgstr "Minimaal één van deze commando's is incorrect."
+
+#: commandsbuttons\commandsbuttons.py:355
 msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "Een emoji die je hebt geselecteerd lijkt ongeldig. Controleer of het een emoji is. Als je Nitro hebt, kan het zijn dat je een aangepaste emoji van een andere server hebt gebruikt."
 
-#: commandsbuttons\commandsbuttons.py:257
+#: commandsbuttons\commandsbuttons.py:366
 msgid "I can't do more than 25 roles-buttons for one message."
 msgstr "Ik kan niet meer dan 25 rollen-knoppen gebruiken voor één bericht."
 
-#: commandsbuttons\commandsbuttons.py:272
+#: commandsbuttons\commandsbuttons.py:388
 #, docstring
-msgid "Remove a command-button for a message."
-msgstr "Een opdrachtknop voor een bericht verwijderen."
+msgid "Remove a command-button for a message.\n\n"
+"        Use `[p]commandsbuttons list <message>` to find the config identifier.\n"
+"        "
+msgstr "Verwijder een command-button voor een bericht\n\n"
+"        Gebruik `[p]commandsbuttons list <message>` om de config ID te vinden.\n"
+"        "
 
-#: commandsbuttons\commandsbuttons.py:280
-#: commandsbuttons\commandsbuttons.py:306
+#: commandsbuttons\commandsbuttons.py:399
+#: commandsbuttons\commandsbuttons.py:426
+#: commandsbuttons\commandsbuttons.py:446
 msgid "No command-button is configured for this message."
 msgstr "Er is geen opdrachtknop geconfigureerd voor dit bericht."
 
-#: commandsbuttons\commandsbuttons.py:284
+#: commandsbuttons\commandsbuttons.py:403
 msgid "I wasn't watching for this button on this message."
 msgstr "Ik lette niet op deze knop bij dit bericht."
 
-#: commandsbuttons\commandsbuttons.py:298
+#: commandsbuttons\commandsbuttons.py:418
 #, docstring
 msgid "Clear all commands-buttons for a message."
 msgstr "Alle opdrachtknoppen voor een bericht wissen."
 
-#: commandsbuttons\commandsbuttons.py:301
+#: commandsbuttons\commandsbuttons.py:421
 msgid "I have to be the author of the message for the role-button to work."
 msgstr "Ik moet de auteur van het bericht zijn om de rolknop te laten werken."
 
-#: commandsbuttons\commandsbuttons.py:317
+#: commandsbuttons\commandsbuttons.py:434
+msgid "Commands-buttons cleared for this message."
+msgstr "Commands-buttons verwijderd voor dit bericht."
+
+#: commandsbuttons\commandsbuttons.py:452
+msgid "No commands-buttons in this server."
+msgstr "Geen commands-buttons in deze server."
+
+#: commandsbuttons\commandsbuttons.py:461
+msgid "Commands Buttons"
+msgstr "Commands Buttons"
+
+#: commandsbuttons\commandsbuttons.py:462
+msgid "There is {len_commands_buttons} commands buttons in this server."
+msgstr "Er zijn {len_commands_buttons} commands buttons in deze server."
+
+#: commandsbuttons\commandsbuttons.py:469
+msgid "Message Jump Link: {message_jump_link}\n"
+msgstr "Ga naar bericht: {message_jump_link}\n"
+
+#: commandsbuttons\commandsbuttons.py:485
 #, docstring
 msgid "Clear all commands-buttons for a guild."
 msgstr "Alle opdrachten-knoppen voor een gilde wissen."
 
-#: commandsbuttons\converters.py:35
+#: commandsbuttons\commandsbuttons.py:487
+msgid "All commands-buttons purged."
+msgstr "Alle commands-buttons zijn verwijderd."
+
+#: commandsbuttons\converters.py:37
 msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
 msgstr "Emoji Rol moet een emoji zijn gevolgd door een rol gescheiden door `;`, `,`, `|`, of `-`."
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 18:22\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:09\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -22,30 +22,43 @@ msgstr ""
 msgid "A cog to allow a member to choose custom prefixes, just for them!"
 msgstr "Un bouton pour permettre à un membre de choisir des préfixes personnalisés, juste pour lui !"
 
-#: memberprefix\memberprefix.py:165
+#: memberprefix\memberprefix.py:161
 msgid "You now use this server or global prefixes."
 msgstr "Vous pouvez maintenant utiliser ce serveur ou des préfixes globaux."
 
-#: memberprefix\memberprefix.py:169
+#: memberprefix\memberprefix.py:165
 msgid "A prefix is above the maximal length (25 characters).\n"
 "This is possible for global or per-server prefixes, but not for per-member prefixes."
 msgstr "Un préfixe dépasse la longueur maximale (25 caractères).\n"
 "Cela est possible pour les préfixes globaux ou par serveur, mais pas pour les préfixes par membre."
 
-#: memberprefix\memberprefix.py:175
+#: memberprefix\memberprefix.py:171
 msgid "Prefixes cannot start with `/`, as it conflicts with Discord's slash commands."
 msgstr "Les préfixes ne peuvent pas commencer par `/`, car cela entre en conflit avec les commandes slash de Discord."
 
-#: memberprefix\memberprefix.py:179
-msgid "Prefix for you only set."
-msgstr "Préfixe pour vous seul set."
+#: memberprefix\memberprefix.py:176
+msgid "Prefix for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."
+msgstr "Préfixe pour vous seul défini. Vous pouvez utiliser les préfixes actuels ou mentionner le bot pour invoquer une commande, ou réinitialiser vos préfixes avec la même commande si vous les avez oubliés."
 
-#: memberprefix\memberprefix.py:181
-msgid "Prefixes for you only set."
-msgstr "Préfixes pour vous seul set."
+#: memberprefix\memberprefix.py:182
+msgid "Prefixes for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."
+msgstr "Préfixes uniquement pour vous. Vous pouvez utiliser les préfixes actuels ou mentionner le bot pour invoquer une commande, ou réinitialiser vos préfixes avec la même commande si vous les avez oubliés."
 
-#: memberprefix\memberprefix.py:250
+#: memberprefix\memberprefix.py:197
 #, docstring
-msgid "Clear all members prefixes for this guild."
-msgstr "Effacer tous les préfixes des membres de cette guilde."
+msgid "Clear prefixes for a specified member in a specified server."
+msgstr "Effacer les préfixes pour un membre spécifié dans un serveur spécifié."
+
+#: memberprefix\memberprefix.py:199
+msgid "Prefixes cleared for this member in this guild."
+msgstr "Préfixes autorisés pour ce membre dans cette guilde."
+
+#: memberprefix\memberprefix.py:203
+#, docstring
+msgid "Clear all members prefixes for a specified server."
+msgstr "Efface tous les préfixes des membres pour un serveur spécifié."
+
+#: memberprefix\memberprefix.py:205
+msgid "All members prefixes purged in this guild."
+msgstr "Tous les préfixes des membres sont purgés dans cette guilde."
 

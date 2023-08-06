@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 18:22\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:09\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -17,32 +17,42 @@ msgstr ""
 "X-Crowdin-File-ID: 138\n"
 "Language: fr_FR\n"
 
-#: discordsearch\discordsearch.py:30
+#: discordsearch\discordsearch.py:34
 #, docstring
 msgid "A cog to edit roles!"
 msgstr "Un cog pour modifier les rôles !"
 
-#: discordsearch\discordsearch.py:96
+#: discordsearch\discordsearch.py:107
 msgid "You must provide at least one parameter."
 msgstr "Vous devez fournir au moins un paramètre."
 
-#: discordsearch\discordsearch.py:185
+#: discordsearch\discordsearch.py:168
+msgid "Your regex process took too long. Removing from memory."
+msgstr "Votre processus de regex a pris trop de temps. Suppression de la mémoire."
+
+#: discordsearch\discordsearch.py:174
+msgid "There is an error in your regex.\n"
+"{e}"
+msgstr "Il y a une erreur dans votre regex.\n"
+"{e}"
+
+#: discordsearch\discordsearch.py:212
 msgid "Look at the original message."
 msgstr "Regardez le message original."
 
-#: discordsearch\discordsearch.py:201
+#: discordsearch\discordsearch.py:228
 msgid "Search in #{channel.name} ({channel.id})"
 msgstr "Recherche dans #{channel.name} ({channel.id})"
 
-#: discordsearch\discordsearch.py:202
+#: discordsearch\discordsearch.py:229
 msgid "Sorry, I could not find any results."
 msgstr "Désolé, je n'ai trouvé aucun résultat."
 
-#: discordsearch\discordsearch.py:215
+#: discordsearch\discordsearch.py:242
 msgid "Search in #{channel.name} ({channel.id}) in {total}s"
 msgstr "Recherche dans #{channel.name} ({channel.id}) dans {total}s"
 
-#: discordsearch\discordsearch.py:227
+#: discordsearch\discordsearch.py:254
 msgid "Unrecognized date/time."
 msgstr "Date/heure non reconnue."
 

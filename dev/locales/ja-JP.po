@@ -1,0 +1,70 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:12\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/dev/locales/messages.pot\n"
+"X-Crowdin-File-ID: 263\n"
+"Language: ja_JP\n"
+
+#: dev\dev.py:346
+#, docstring
+msgid "Various development focused utilities!"
+msgstr "開発に特化した各種ユーティリティ！"
+
+#: dev\dev.py:653
+msgid "Already running a REPL session in this channel. Exit it with `quit`."
+msgstr "このチャンネルですでに REPL セッションを実行している。quit`で終了してください。"
+
+#: dev\dev.py:657
+msgid "Already running a REPL session in this channel. Resume the REPL with `{prefix}replresume`."
+msgstr "このチャンネルですでにREPLセッションを実行している。{prefix}replresume`でREPLを再開する。"
+
+#: dev\dev.py:667
+msgid "Enter code to execute or evaluate. `exit()` or `quit` to exit. `{prefix}replpause` to pause."
+msgstr "実行または評価するコードを入力する。exit()`または `quit` で終了する。{prefix}replpause` で一時停止する。"
+
+#: dev\dev.py:707
+msgid "Exiting."
+msgstr "退場する。"
+
+#: dev\dev.py:715
+msgid "There is no currently running REPL session in this channel."
+msgstr "このチャネルでは、現在実行中のREPLセッションはない。"
+
+#: dev\dev.py:721
+msgid "The REPL session in this channel has been resumed."
+msgstr "このチャネルのREPLセッションが再開された。"
+
+#: dev\dev.py:723
+msgid "The REPL session in this channel is now paused."
+msgstr "このチャネルのREPLセッションは一時停止している。"
+
+#: dev\dev.py:745
+msgid "Bot owners will now bypass all commands with cooldowns{optional_duration}."
+msgstr "ボット所有者は、クールダウンのあるすべてのコマンドをバイパスするようになりました{optional_duration}。"
+
+#: dev\dev.py:755
+msgid "Bot owners will no longer bypass all commands with cooldowns{optional_duration}."
+msgstr "ボット所有者は、クールダウンを持つすべてのコマンドをバイパスしなくなった{optional_duration}。"
+
+#: dev\dev.py:784
+#, docstring
+msgid "Display all Dev environment values."
+msgstr "すべてのDev環境の値を表示する。"
+
+#: dev\dev.py:791
+#, docstring
+msgid "Reset its own locals in evals."
+msgstr "エバリュエーションでローカルをリセットする。"
+

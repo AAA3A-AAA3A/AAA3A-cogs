@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:27\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:11\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -17,46 +17,54 @@ msgstr ""
 "X-Crowdin-File-ID: 183\n"
 "Language: uk_UA\n"
 
-#: getdocs\getdocs.py:212 getdocs\getdocs.py:531
-msgid "This source doesn't exist."
-msgstr "Цього джерела не існує."
+#: getdocs\getdocs.py:220 getdocs\getdocs.py:351 getdocs\getdocs.py:413
+msgid "Please provide a valid documentations source."
+msgstr "Будь ласка, надайте дійсне джерело документації."
 
-#: getdocs\getdocs.py:218
+#: getdocs\getdocs.py:231
 #, docstring
 msgid "A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."
 msgstr "Гвинтик для отримання та відображення деяких документів у Discord! Використовуйте `[p]listsources` для отримання списку всіх доступних джерел."
 
-#: getdocs\getdocs.py:342
+#: getdocs\getdocs.py:368
 msgid "Documentations cache is not yet built."
 msgstr "Кеш документації ще не створено."
 
-#: getdocs\getdocs.py:393
+#: getdocs\getdocs.py:424
 msgid "No results found."
 msgstr "Результатів не знайдено."
 
-#: getdocs\getdocs.py:523
+#: getdocs\getdocs.py:576
 #, docstring
 msgid "\n"
-"        Enable a Documentations source.\n"
+"        Enable Documentations source(s).\n"
 "        "
 msgstr "\n"
-"        Увімкніть джерело документації.\n"
+"        Увімкнути джерело(и) документації.\n"
 "        "
 
-#: getdocs\getdocs.py:529
-msgid "This source is already enabled."
-msgstr "Це джерело вже увімкнено."
+#: getdocs\getdocs.py:583
+msgid "The source `{source}` is already enabled."
+msgstr "Джерело `{source}` вже увімкнено."
 
-#: getdocs\getdocs.py:545
+#: getdocs\getdocs.py:587 getdocs\getdocs.py:616
+msgid "The source `{source}` doesn't exist."
+msgstr "Джерело `{source}` не існує."
+
+#: getdocs\getdocs.py:605
 #, docstring
 msgid "\n"
-"        Disable a Documentations source.\n"
+"        Disable Documentations source(s).\n"
 "        "
 msgstr "\n"
-"        Вимкнути джерело документації.\n"
+"        Вимкнути джерело(и) документації.\n"
 "        "
 
-#: getdocs\getdocs.py:554
+#: getdocs\getdocs.py:612
+msgid "The source `{source}` is already disabled."
+msgstr "Джерело `{source}` вже відключено."
+
+#: getdocs\getdocs.py:623
 #, docstring
 msgid "\n"
 "        Show stats about all documentations sources.\n"
@@ -65,7 +73,12 @@ msgstr "\n"
 "        Показувати статистику про всі джерела документації.\n"
 "        "
 
-#: getdocs\getdocs.py:1460
+#: getdocs\getdocs.py:657
+#, docstring
+msgid "Get an embed to check loops status."
+msgstr "Отримайте вбудовування для перевірки стану циклів."
+
+#: getdocs\getdocs.py:1731
 msgid "RTFM caching isn't finished."
 msgstr "Кешування RTFM не завершено."
 

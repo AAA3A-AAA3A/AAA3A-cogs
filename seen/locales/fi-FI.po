@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:26\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:10\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -22,105 +22,166 @@ msgstr ""
 msgid "A cog to check when a member/role/channel/category/user/guild was last active!"
 msgstr "Tarkista, milloin jäsen/rooli/kanava/luokka/käyttäjä/kilta oli viimeksi aktiivinen!"
 
-#: seen\seen.py:798 seen\seen.py:805
-msgid "@{_object.display_name} was seen {seen}."
-msgstr "@{_object.display_name} nähtiin {seen}."
+#: seen\seen.py:753
+msgid "[This message]({message_link}) has been sent by {member_mention}."
+msgstr "[Tämän viestin]({message_link}) on lähettänyt {member_mention}."
 
-#: seen\seen.py:812
-msgid "The role @&{_object.name} was seen {seen}."
-msgstr "Rooli @&{_object.name} nähtiin {seen}."
+#: seen\seen.py:757
+msgid "[This message]({message_link}) has been edited by {member_mention}."
+msgstr "[Tätä viestiä]({message_link}) on muokannut {member_mention}."
 
-#: seen\seen.py:819
-msgid "The text channel #{_object.name} was seen {seen}."
-msgstr "Tekstikanava #{_object.name} nähtiin {seen}."
+#: seen\seen.py:761
+msgid "The reaction {reaction} has been added to [this message]({message_link}) by {member_mention}."
+msgstr "Reaktio {reaction} on lisätty [tähän viestiin]({message_link}) osoitteeseen {member_mention}."
 
-#: seen\seen.py:826
-msgid "The category {_object.name} was seen {seen}."
-msgstr "Luokka {_object.name} nähtiin {seen}."
+#: seen\seen.py:769
+msgid "The reaction {reaction} has been removed to the [this message]({message_link}) by {member_mention}."
+msgstr "Reaktio {reaction} on poistettu [tämä viesti]({message_link}) osoitteesta {member_mention}."
 
-#: seen\seen.py:833
-msgid "The guild {_object.name} was seen {seen}."
-msgstr "Kilta {_object.name} nähtiin {seen}."
+#: seen\seen.py:866
+msgid "**The user {_object.mention} was seen {seen}.**"
+msgstr "**Käyttäjä {_object.mention} nähtiin {seen}.**"
 
-#: seen\seen.py:1087
+#: seen\seen.py:874
+msgid "**The member {_object.mention} was seen {seen}.**"
+msgstr "** Jäsen {_object.mention} nähtiin {seen}.**"
+
+#: seen\seen.py:882
+msgid "**The role {_object.mention} was seen {seen}.**"
+msgstr "**Rooli {_object.mention} nähtiin {seen}.**"
+
+#: seen\seen.py:890
+msgid "**The text channel {_object.mention} was seen {seen}.**"
+msgstr "**Tekstikanava {_object.mention} nähtiin {seen}.**"
+
+#: seen\seen.py:898
+msgid "**The category {_object.name} was seen {seen}.**"
+msgstr "**Kategoria {_object.name} nähtiin {seen}.**"
+
+#: seen\seen.py:906
+msgid "**The guild {_object.name} was seen {seen}.**"
+msgstr "**Kilta {_object.name} nähtiin {seen}.**"
+
+#: seen\seen.py:1174
 #, docstring
 msgid "Check when a member was last active!"
 msgstr "Tarkista, milloin jäsen oli viimeksi aktiivinen!"
 
-#: seen\seen.py:1107
+#: seen\seen.py:1194
 #, docstring
 msgid "Check when a role was last active!"
 msgstr "Tarkista, milloin rooli oli viimeksi aktiivinen!"
 
-#: seen\seen.py:1126
+#: seen\seen.py:1213
 #, docstring
 msgid "Check when a channel was last active!"
 msgstr "Tarkista, milloin kanava oli viimeksi aktiivinen!"
 
-#: seen\seen.py:1133
+#: seen\seen.py:1220
 msgid "You do not have permission to view this channel."
 msgstr "Sinulla ei ole lupaa katsoa tätä kanavaa."
 
-#: seen\seen.py:1149
+#: seen\seen.py:1236
 #, docstring
 msgid "Check when a category was last active!"
 msgstr "Tarkista, milloin luokka oli viimeksi aktiivinen!"
 
-#: seen\seen.py:1162
+#: seen\seen.py:1249
 msgid "You do not have permission to view any of the channels in this category."
 msgstr "Sinulla ei ole lupaa katsoa mitään tämän kategorian kanavia."
 
-#: seen\seen.py:1179
+#: seen\seen.py:1266
 #, docstring
 msgid "Check when a old member was last active!"
 msgstr "Tarkista, milloin vanha jäsen oli viimeksi aktiivinen!"
 
-#: seen\seen.py:1207
+#: seen\seen.py:1294
 #, docstring
 msgid "Check when a guild was last active!"
 msgstr "Tarkista, milloin kilta oli viimeksi aktiivinen!"
 
-#: seen\seen.py:1227
+#: seen\seen.py:1314
 #, docstring
 msgid "Check when a user was last active!"
 msgstr "Tarkista, milloin käyttäjä oli viimeksi aktiivinen!"
 
-#: seen\seen.py:1246
+#: seen\seen.py:1333
 #, docstring
 msgid "Check when a old user was last active!"
 msgstr "Tarkista, milloin vanha käyttäjä oli viimeksi aktiivinen!"
 
-#: seen\seen.py:1268
+#: seen\seen.py:1355
 #, docstring
 msgid "View a Seen Board for members/roles/channels/categories/guilds/users!"
 msgstr "Katso Seen Board jäsenille/rooleille/kanaville/luokille/killoille/käyttäjille!"
 
-#: seen\seen.py:1271
+#: seen\seen.py:1358
 msgid "You're not allowed to view the Seen board for guilds and users."
 msgstr "Sinulla ei ole lupaa nähdä kiltojen ja käyttäjien Seen-taulua."
 
-#: seen\seen.py:1278
+#: seen\seen.py:1365
 #, docstring
 msgid "Get Config data stats."
 msgstr "Hae konfigurointitiedot."
 
-#: seen\seen.py:1312
+#: seen\seen.py:1399
 #, docstring
 msgid "Enable or disable a listener."
 msgstr "Ota kuuntelija käyttöön tai poista se käytöstä."
 
-#: seen\seen.py:1320
+#: seen\seen.py:1405
+msgid "Listener enabled for this/these type(s)."
+msgstr "Kuuntelija käytössä tälle/näille tyypille/tyypeille."
+
+#: seen\seen.py:1407
+msgid "Listener disabled for this/these type(s)."
+msgstr "Kuuntelija poistettu käytöstä tämän/näiden tyypin/-tyyppien osalta."
+
+#: seen\seen.py:1411
 #, docstring
 msgid "Asking Seen to ignore your actions."
 msgstr "Pyydät Seeniä olemaan välittämättä teoistasi."
 
-#: seen\seen.py:1334
+#: seen\seen.py:1419
+msgid "You will no longer be seen by this cog and the data I held on you has been deleted."
+msgstr "Tämä hammasratas ei enää näe sinua, ja sinua koskevat tietoni on poistettu."
+
+#: seen\seen.py:1426
+msgid "You'll be seen again by this cog."
+msgstr "Tämä hammasratas näkee sinut taas."
+
+#: seen\seen.py:1432
 #, docstring
 msgid "Get an embed for check loop status."
 msgstr "Hae upotus silmukan tilan tarkistamista varten."
 
-#: seen\seen.py:1345
+#: seen\seen.py:1443
 #, docstring
 msgid "Purge Config for a specified _type or all."
 msgstr "Puhdista määritetyn _tyypin tai kaikkien konfigurointi."
+
+#: seen\seen.py:1450
+msgid "All Seen data purged."
+msgstr "Kaikki Seenin tiedot poistettu."
+
+#: seen\seen.py:1462
+msgid "Seen data purged for this type."
+msgstr "Nähdään, että tämän tyypin tiedot on puhdistettu."
+
+#: seen\seen.py:1467
+#, docstring
+msgid "Migrate Seen from Seen by Aikaterna."
+msgstr "Siirry Seen from Seen by Aikaterna."
+
+#: seen\seen.py:1474
+msgid "Seen by Aikaterna has no data in this bot."
+msgstr "Seen by Aikaterna ei ole tietoja tässä botissa."
+
+#: seen\seen.py:1478
+msgid "Seen by Aikaterna use an old/new data schema version and isn't compatible with this cog actually."
+msgstr "Aikaterna käyttää vanhaa/uusinta tietoskeemaversiota, eikä se ole yhteensopiva tämän hammasrattaan kanssa."
+
+#: seen\seen.py:1541
+msgid "Data successfully migrated from Seen by Aikaterna."
+msgstr "Tiedot siirretty onnistuneesti Seen by Aikaterna -palvelusta."
 

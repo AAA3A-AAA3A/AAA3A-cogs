@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:27\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:11\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -22,30 +22,43 @@ msgstr ""
 msgid "A cog to allow a member to choose custom prefixes, just for them!"
 msgstr "Een tandwiel waarmee een lid aangepaste voorvoegsels kan kiezen, speciaal voor hem of haar!"
 
-#: memberprefix\memberprefix.py:165
+#: memberprefix\memberprefix.py:161
 msgid "You now use this server or global prefixes."
 msgstr "Je gebruikt nu deze server of globale voorvoegsels."
 
-#: memberprefix\memberprefix.py:169
+#: memberprefix\memberprefix.py:165
 msgid "A prefix is above the maximal length (25 characters).\n"
 "This is possible for global or per-server prefixes, but not for per-member prefixes."
 msgstr "Een prefix is langer dan de maximale lengte (25 tekens).\n"
 "Dit is mogelijk voor globale of per-server prefixen, maar niet voor prefixen per lid."
 
-#: memberprefix\memberprefix.py:175
+#: memberprefix\memberprefix.py:171
 msgid "Prefixes cannot start with `/`, as it conflicts with Discord's slash commands."
 msgstr "Voorvoegsels kunnen niet beginnen met `/`, omdat dit conflicteert met de slash-commando's van Discord."
 
-#: memberprefix\memberprefix.py:179
-msgid "Prefix for you only set."
-msgstr "Voorvoegsel alleen voor jou ingesteld."
+#: memberprefix\memberprefix.py:176
+msgid "Prefix for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."
+msgstr "Voorvoegsel alleen voor jou ingesteld. Je kunt de huidige voorvoegsels gebruiken of de bot noemen om een commando op te roepen, of je voorvoegsels resetten met hetzelfde commando als je ze vergeten bent."
 
-#: memberprefix\memberprefix.py:181
-msgid "Prefixes for you only set."
-msgstr "Voorvoegsels alleen voor jou ingesteld."
+#: memberprefix\memberprefix.py:182
+msgid "Prefixes for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."
+msgstr "Voorvoegsels voor u alleen ingesteld. Je kunt de huidige voorvoegsels gebruiken of de bot noemen om een commando op te roepen, of je voorvoegsels resetten met hetzelfde commando als je ze vergeten bent."
 
-#: memberprefix\memberprefix.py:250
+#: memberprefix\memberprefix.py:197
 #, docstring
-msgid "Clear all members prefixes for this guild."
-msgstr "Wis alle voorvoegsels van leden voor dit gilde."
+msgid "Clear prefixes for a specified member in a specified server."
+msgstr "Wis voorvoegsels voor een opgegeven lid in een opgegeven server."
+
+#: memberprefix\memberprefix.py:199
+msgid "Prefixes cleared for this member in this guild."
+msgstr "Voorvoegsels gewist voor dit lid in dit gilde."
+
+#: memberprefix\memberprefix.py:203
+#, docstring
+msgid "Clear all members prefixes for a specified server."
+msgstr "Wis alle ledenprefixen voor een opgegeven server."
+
+#: memberprefix\memberprefix.py:205
+msgid "All members prefixes purged in this guild."
+msgstr "Alle voorvoegsels van leden in dit gilde worden verwijderd."
 

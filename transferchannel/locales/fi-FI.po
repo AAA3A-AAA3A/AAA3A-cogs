@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:26\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:10\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -17,49 +17,45 @@ msgstr ""
 "X-Crowdin-File-ID: 104\n"
 "Language: fi_FI\n"
 
-#: transferchannel\transferchannel.py:20
-#: transferchannel\transferchannel.py:241
+#: transferchannel\transferchannel.py:23
+#: transferchannel\transferchannel.py:269
 msgid "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
 msgstr "Siirrettyjä viestejä on {count_messages} osoitteesta {source.mention} osoitteeseen {destination.mention}."
 
-#: transferchannel\transferchannel.py:27
+#: transferchannel\transferchannel.py:45
 #, docstring
 msgid "A cog to transfer all messages channel in a other channel!"
 msgstr "Hammaspyörä siirtää kaikki viestit kanava toiseen kanavaan!"
 
-#: transferchannel\transferchannel.py:79
+#: transferchannel\transferchannel.py:106
 msgid "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
 msgstr "Anteeksi, mutta en pysty lukemaan viestien sisältöä osoitteessa {source.mention} ({source.id})."
 
-#: transferchannel\transferchannel.py:87
-msgid "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n"
-"`embed_links`."
-msgstr "Minun on saatava kaikki seuraavat oikeudet {destination.mention} ({destination.id}) osoitteeseen {destination.guild.name} ({destination.guild.id}).\n"
-"`embed_links`."
+#: transferchannel\transferchannel.py:113
+msgid "I need to have all the permissions to send messages with embeds in {destination.guild.name} ({destination.guild.id})."
+msgstr "Minun on saatava kaikki oikeudet lähettää viestejä, joissa on upotuksia osoitteessa {destination.guild.name} ({destination.guild.id})."
 
-#: transferchannel\transferchannel.py:94
-msgid "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n"
-"`manage_channels`"
-msgstr "Minun on saatava kaikki seuraavat oikeudet {destination.mention} ({destination.id}) osoitteeseen {destination.guild.name} ({destination.guild.id}).\n"
-"`manage_channels`"
+#: transferchannel\transferchannel.py:119
+msgid "I need to have all the permission to create webhooks in {destination.guild.name} ({destination.guild.id})."
+msgstr "Minun on saatava kaikki oikeudet luoda verkkokoukkuja osoitteessa {destination.guild.name} ({destination.guild.id})."
 
-#: transferchannel\transferchannel.py:124
+#: transferchannel\transferchannel.py:149
 msgid "Sorry. I could not find any message."
 msgstr "Olen pahoillani. En löytänyt mitään viestiä."
 
-#: transferchannel\transferchannel.py:154
+#: transferchannel\transferchannel.py:182
 msgid "**Author:** {message.author.mention} ({message.author.id})"
 msgstr "**Tekijä:** {message.author.mention} ({message.author.id})"
 
-#: transferchannel\transferchannel.py:157
+#: transferchannel\transferchannel.py:185
 msgid "**Channel:** <#{message.channel.id}>"
 msgstr "**Kanava:** <#{message.channel.id}>"
 
-#: transferchannel\transferchannel.py:158
+#: transferchannel\transferchannel.py:186
 msgid "**Time (UTC):** {iso_format}"
 msgstr "**Aika (UTC):** {iso_format}"
 
-#: transferchannel\transferchannel.py:198
+#: transferchannel\transferchannel.py:226
 #, docstring
 msgid "Transfer all messages channel in a other channel. This might take a long time.\n\n"
 "        Remember that transfering other users' messages in does not respect the TOS.\n"
@@ -68,7 +64,7 @@ msgstr "Siirrä kaikki viestikanavan viestit toiseen kanavaan. Tämä saattaa ke
 "        Muista, että muiden käyttäjien viestien siirtäminen ei noudata TOS:ia.\n"
 "        "
 
-#: transferchannel\transferchannel.py:224
+#: transferchannel\transferchannel.py:252
 #, docstring
 msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
 "        Specify the number of messages since the end of the channel.\n"
@@ -79,51 +75,51 @@ msgstr "Siirrä osa kanavan viestikanavan viesteistä toiseen kanavaan. Tämä s
 "        Muista, että muiden käyttäjien viestien siirtäminen ei noudata TOS:ää.\n"
 "        "
 
-#: transferchannel\transferchannel.py:255
+#: transferchannel\transferchannel.py:283
 #, docstring
 msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
-"        Specify the before message (id or link).\n"
+"        Specify the before message (id or link) or a valid Discord snowflake.\n"
 "        Remember that transfering other users' messages in does not respect the TOS.\n"
 "        "
-msgstr "Siirtää osan kanavan viestikanavan viesteistä toiseen kanavaan. Tämä saattaa kestää kauan.\n\n"
-"        Määritä viestiä edeltävä viesti (id tai linkki).\n"
-"        Muista, että muiden käyttäjien viestien siirtäminen ei noudata TOS:ia.\n"
-"        "
-
-#: transferchannel\transferchannel.py:282
-#, docstring
-msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
-"        Specify the after message (id or link).\n"
-"        Remember that transfering other users' messages in does not respect the TOS.\n"
-"        "
-msgstr "Siirtää osan kanavan viestikanavan viesteistä toiseen kanavaan. Tämä saattaa kestää kauan.\n\n"
-"        Määritä viestin jälkeinen viesti (id tai linkki).\n"
-"        Muista, että muiden käyttäjien viestien siirtäminen ei noudata TOS:ia.\n"
+msgstr "Siirrä osa kanavan viestikanavan viesteistä toiseen kanavaan. Tämä saattaa kestää kauan.\n\n"
+"        Määritä ennen viesti (id tai linkki) tai voimassa oleva Discord-lumihiutale.\n"
+"        Muista, että toisten käyttäjien viestien siirtäminen sisään ei noudata TOS:ia.\n"
 "        "
 
 #: transferchannel\transferchannel.py:310
 #, docstring
 msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
-"        Specify the between messages (id or link).\n"
+"        Specify the after message (id or link) or a valid Discord snowflake.\n"
 "        Remember that transfering other users' messages in does not respect the TOS.\n"
 "        "
-msgstr "Siirtää osan kanavan viestikanavan viesteistä toiseen kanavaan. Tämä saattaa kestää kauan.\n\n"
-"        Määritä viestien välinen yhteys (id tai linkki).\n"
-"        Muista, että muiden käyttäjien viestien siirtäminen ei noudata TOS:ia.\n"
+msgstr "Siirrä osa kanavan viestikanavan viesteistä toiseen kanavaan. Tämä saattaa kestää kauan.\n\n"
+"        Määritä viestin jälkeen (id tai linkki) tai kelvollinen Discord-lumihiutale.\n"
+"        Muista, että muiden käyttäjien viestien siirtäminen sisään ei noudata TOS:ia.\n"
 "        "
 
 #: transferchannel\transferchannel.py:338
 #, docstring
 msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
-"        Specify the member (id, name or mention).\n"
+"        Specify the between messages (id or link) or a valid snowflake.\n"
 "        Remember that transfering other users' messages in does not respect the TOS.\n"
 "        "
 msgstr "Siirtää osan kanavan viestikanavan viesteistä toiseen kanavaan. Tämä saattaa kestää kauan.\n\n"
-"        Määritä jäsen (id, nimi tai maininta).\n"
+"        Määritä viestien välinen (id tai linkki) tai kelvollinen lumihiutale.\n"
+"        Muista, että toisten käyttäjien viestien siirtäminen sisään ei noudata TOS:ia.\n"
+"        "
+
+#: transferchannel\transferchannel.py:366
+#, docstring
+msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
+"        Specify the user/member (id, name or mention).\n"
+"        Remember that transfering other users' messages in does not respect the TOS.\n"
+"        "
+msgstr "Siirtää osan kanavan viestikanavan viesteistä toiseen kanavaan. Tämä saattaa kestää kauan.\n\n"
+"        Määritä käyttäjä/jäsen (id, nimi tai maininta).\n"
 "        Muista, että muiden käyttäjien viestien siirtäminen ei noudata TOS:ia.\n"
 "        "
 
-#: transferchannel\transferchannel.py:371
+#: transferchannel\transferchannel.py:399
 #, docstring
 msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
 "        Specify the bool option.\n"

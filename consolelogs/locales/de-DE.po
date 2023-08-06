@@ -1,0 +1,90 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:11\n"
+"Last-Translator: \n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: de\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/consolelogs/locales/messages.pot\n"
+"X-Crowdin-File-ID: 261\n"
+"Language: de_DE\n"
+
+#: consolelogs\consolelogs.py:92
+#, docstring
+msgid "A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!"
+msgstr "Ein Zahnrad zur Anzeige der Konsolenprotokolle, mit Schaltflächen und Filteroptionen, und zum Senden von Fehlerbefehlen in konfigurierten Kanälen!"
+
+#: consolelogs\consolelogs.py:243
+msgid "No logs to display."
+msgstr "Es werden keine Protokolle angezeigt."
+
+#: consolelogs\consolelogs.py:380
+#, docstring
+msgid "View the console logs one by one, for all levels/loggers or provided level/logger name."
+msgstr "Zeigen Sie die Konsolenprotokolle einzeln an, für alle Ebenen/Protokollierer oder den angegebenen Namen der Ebene/Protokollierer."
+
+#: consolelogs\consolelogs.py:395
+#, docstring
+msgid "View the `ERROR` console logs one by one, for all loggers or a provided logger name."
+msgstr "Zeigt die `ERROR` Konsolenprotokolle einzeln an, für alle Logger oder einen angegebenen Loggernamen."
+
+#: consolelogs\consolelogs.py:423 consolelogs\consolelogs.py:434
+#, docstring
+msgid "Scroll the console logs, for all levels/loggers or provided level/logger name."
+msgstr "Blättern Sie in den Konsolenprotokollen für alle Ebenen/Logger oder für die angegebene Ebene/Loggernamen."
+
+#: consolelogs\consolelogs.py:464
+#, docstring
+msgid "Enable errors logging in a channel.\n\n"
+"        **Parameters:**\n"
+"        - `channel`: The channel where the commands errors will be sent.\n"
+"        - `global_errors`: Log errors for the entire bot, not just the channel server.\n"
+"        - `prefixed_commands_errors`: Log prefixed commands errors.\n"
+"        - `slash_commands_errors`: Log slash commands errors.\n"
+"        - `dpy_ignored_exceptions`: Log dpy ignored exceptions (events listeners and Views errors).\n"
+"        - `guild_invite`: Add a button \"Guild Invite\" in commands errors logs, only for community servers.\n"
+"        "
+msgstr "Aktivieren der Fehlerprotokollierung in einem Kanal.\n\n"
+"        **Parameter:**\n"
+"        - `Kanal`: Der Kanal, an den die Befehlsfehler gesendet werden sollen.\n"
+"        - global_errors\": Loggt Fehler für den gesamten Bot, nicht nur für den Channel-Server.\n"
+"        - prefixed_commands_errors`: Loggt Fehler bei vorangestellten Befehlen.\n"
+"        - Schrägstrich_befehle_Fehler\": Protokolliert Schrägstrich-Befehlsfehler.\n"
+"        - dpy_ignored_exceptions`: Protokolliert dpy ignorierte Ausnahmen (Ereignis-Listener und Views-Fehler).\n"
+"        - Gilde_einladen`: Hinzufügen einer Schaltfläche \"Guild Invite\" in den Befehlsfehlerprotokollen, nur für Community-Server.\n"
+"        "
+
+#: consolelogs\consolelogs.py:483
+msgid "I don't have the permissions to send embeds in this channel."
+msgstr "Ich habe nicht die Berechtigung, Einbettungen in diesem Kanal zu senden."
+
+#: consolelogs\consolelogs.py:491
+msgid "Errors logging enabled in {channel.mention}."
+msgstr "Die Fehlerprotokollierung ist in {channel.mention}aktiviert."
+
+#: consolelogs\consolelogs.py:495
+#, docstring
+msgid "Disable errors logging in a channel."
+msgstr "Deaktivieren Sie die Fehlerprotokollierung in einem Kanal."
+
+#: consolelogs\consolelogs.py:498
+msgid "Errors logging isn't enabled in this channel."
+msgstr "Die Fehlerprotokollierung ist in diesem Kanal nicht aktiviert."
+
+#: consolelogs\consolelogs.py:501
+msgid "Errors logging disabled in {channel.mention}."
+msgstr "Die Fehlerprotokollierung ist in {channel.mention}deaktiviert."
+
+#: consolelogs\consolelogs.py:505
+#, docstring
+msgid "Get an embed to check loops status."
+msgstr "Holen Sie sich eine Einbettung, um den Schleifenstatus zu überprüfen."
+

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:30\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:10\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -17,38 +17,56 @@ msgstr ""
 "X-Crowdin-File-ID: 152\n"
 "Language: el_GR\n"
 
-#: urlbuttons\converters.py:35
+#: urlbuttons\converters.py:25
+msgid "It's not a valid public URL."
+msgstr "Δεν είναι έγκυρη δημόσια διεύθυνση URL."
+
+#: urlbuttons\converters.py:50
 msgid "Emoji Url must be an emoji followed by a url separated by either `;`, `,`, `|`, or `-`."
 msgstr "Το Emoji Url πρέπει να είναι ένα emoji ακολουθούμενο από ένα url χωρισμένο είτε με `;`, `,`, `|`, ή `-`."
-
-#: urlbuttons\converters.py:44 urlbuttons\urlbuttons.py:80
-msgid "Url must start with `https` or `http`."
-msgstr "Το Url πρέπει να αρχίζει με `https` ή `http`."
 
 #: urlbuttons\urlbuttons.py:19
 #, docstring
 msgid "A cog to have url-buttons!"
 msgstr "Ένα γρανάζι για να έχετε κουμπιά url!"
 
-#: urlbuttons\urlbuttons.py:65
+#: urlbuttons\urlbuttons.py:110
 #, docstring
 msgid "Add a url-button for a message."
 msgstr "Προσθέστε ένα κουμπί url για ένα μήνυμα."
 
-#: urlbuttons\urlbuttons.py:68 urlbuttons\urlbuttons.py:110
-#: urlbuttons\urlbuttons.py:174
+#: urlbuttons\urlbuttons.py:113 urlbuttons\urlbuttons.py:176
+#: urlbuttons\urlbuttons.py:253
 msgid "I have to be the author of the message for the url-button to work."
 msgstr "Πρέπει να είμαι ο συντάκτης του μηνύματος για να λειτουργήσει το κουμπί url."
 
-#: urlbuttons\urlbuttons.py:75
+#: urlbuttons\urlbuttons.py:122
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "Δεν έχω επαρκή δικαιώματα στο κανάλι στο οποίο βρίσκεται το μήνυμα που προσδιορίσατε.\n"
+"Χρειάζομαι τα δικαιώματα για να δω τα μηνύματα σε αυτό το κανάλι."
+
+#: urlbuttons\urlbuttons.py:127
+msgid "Url must start with `https` or `http`."
+msgstr "Το Url πρέπει να αρχίζει με `https` ή `http`."
+
+#: urlbuttons\urlbuttons.py:130
+msgid "You have to specify at least an emoji or a label."
+msgstr "Πρέπει να προσδιορίσετε τουλάχιστον ένα emoji ή μια ετικέτα."
+
+#: urlbuttons\urlbuttons.py:137
 msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "Το emoji που επιλέξατε φαίνεται άκυρο. Ελέγξτε ότι πρόκειται για emoji. Αν έχετε Nitro, μπορεί να έχετε χρησιμοποιήσει ένα προσαρμοσμένο emoji από άλλο διακομιστή."
 
-#: urlbuttons\urlbuttons.py:86 urlbuttons\urlbuttons.py:131
+#: urlbuttons\urlbuttons.py:144 urlbuttons\urlbuttons.py:197
+msgid "This message already has components."
+msgstr "Αυτό το μήνυμα έχει ήδη στοιχεία."
+
+#: urlbuttons\urlbuttons.py:148 urlbuttons\urlbuttons.py:201
 msgid "I can't do more than 25 url-buttons for one message."
 msgstr "Δεν μπορώ να κάνω περισσότερα από 25 κουμπιά url για ένα μήνυμα."
 
-#: urlbuttons\urlbuttons.py:104
+#: urlbuttons\urlbuttons.py:170
 #, docstring
 msgid "Add a url-button for a message.\n\n"
 "        ```[p]urlbuttons bulk <message> :red_circle:|<https://github.com/Cog-Creators/Red-DiscordBot> :smiley:|<https://github.com/Cog-Creators/Red-SmileyBot> :green_circle:|<https://github.com/Cog-Creators/Green-DiscordBot>```\n"
@@ -57,42 +75,70 @@ msgstr "Προσθέστε ένα κουμπί url για ένα μήνυμα.\n
 "        ```[p]urlbuttons bulk <message> :red_circle:|<https://github.com/Cog-Creators/Red-DiscordBot> :smiley:|<https://github.com/Cog-Creators/Red-SmileyBot> :green_circle:|<https://github.com/Cog-Creators/Green-DiscordBot>```\n"
 "        "
 
-#: urlbuttons\urlbuttons.py:114
+#: urlbuttons\urlbuttons.py:180
 msgid "You have not specified any valid url-button."
 msgstr "Δεν έχετε καθορίσει κανένα έγκυρο κουμπί url."
 
-#: urlbuttons\urlbuttons.py:122
+#: urlbuttons\urlbuttons.py:190
 msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "Ένα emoji που επιλέξατε φαίνεται άκυρο. Ελέγξτε ότι πρόκειται για emoji. Αν έχετε Nitro, μπορεί να έχετε χρησιμοποιήσει ένα προσαρμοσμένο emoji από άλλο διακομιστή."
 
-#: urlbuttons\urlbuttons.py:145
+#: urlbuttons\urlbuttons.py:221
 #, docstring
-msgid "Remove a url-button for a message."
-msgstr "Αφαίρεση ενός κουμπιού url για ένα μήνυμα."
+msgid "Remove a url-button for a message.\n\n"
+"        Use `[p]urlbuttons list <message>` to find the config identifier.\n"
+"        "
+msgstr "Αφαίρεση ενός κουμπιού url για ένα μήνυμα.\n\n"
+"        Χρησιμοποιήστε `[p]urlbuttons list <message>` για να βρείτε το αναγνωριστικό παραμέτρων.\n"
+"        "
 
-#: urlbuttons\urlbuttons.py:148
+#: urlbuttons\urlbuttons.py:227
 msgid "I have to be the author of the message for the role-button to work."
 msgstr "Πρέπει να είμαι ο συντάκτης του μηνύματος για να λειτουργήσει το κουμπί ρόλου."
 
-#: urlbuttons\urlbuttons.py:153
+#: urlbuttons\urlbuttons.py:232 urlbuttons\urlbuttons.py:278
 msgid "No url-button is configured for this message."
 msgstr "Δεν έχει ρυθμιστεί κουμπί url για αυτό το μήνυμα."
 
-#: urlbuttons\urlbuttons.py:157
+#: urlbuttons\urlbuttons.py:236
 msgid "I wasn't watching for this button on this message."
 msgstr "Δεν πρόσεχα αυτό το κουμπί σε αυτό το μήνυμα."
 
-#: urlbuttons\urlbuttons.py:171
+#: urlbuttons\urlbuttons.py:250
 #, docstring
 msgid "Clear all url-buttons for a message."
 msgstr "Καθαρισμός όλων των κουμπιών url για ένα μήνυμα."
 
-#: urlbuttons\urlbuttons.py:179
+#: urlbuttons\urlbuttons.py:258
 msgid "No role-button is configured for this message."
 msgstr "Δεν έχει ρυθμιστεί κουμπί ρόλου για αυτό το μήνυμα."
 
-#: urlbuttons\urlbuttons.py:190
+#: urlbuttons\urlbuttons.py:266
+msgid "Url-buttons cleared for this message."
+msgstr "Τα κουμπιά Url καθαρίστηκαν για αυτό το μήνυμα."
+
+#: urlbuttons\urlbuttons.py:284
+msgid "No url-buttons in this server."
+msgstr "Δεν υπάρχουν κουμπιά url σε αυτόν τον διακομιστή."
+
+#: urlbuttons\urlbuttons.py:293
+msgid "URL Buttons"
+msgstr "Κουμπιά URL"
+
+#: urlbuttons\urlbuttons.py:294
+msgid "There is {len_url_buttons} URL buttons in this server."
+msgstr "Υπάρχει {len_url_buttons} κουμπιά URL σε αυτόν τον διακομιστή."
+
+#: urlbuttons\urlbuttons.py:301
+msgid "Message Jump Link: {message_jump_link}\n"
+msgstr "Σύνδεσμος άλματος μηνύματος: {message_jump_link}\n"
+
+#: urlbuttons\urlbuttons.py:317
 #, docstring
 msgid "Clear all url-buttons for a guild."
 msgstr "Καθαρίστε όλα τα κουμπιά url για μια συντεχνία."
+
+#: urlbuttons\urlbuttons.py:319
+msgid "All url-buttons purged."
+msgstr "Όλα τα κουμπιά url καθαρίζονται."
 

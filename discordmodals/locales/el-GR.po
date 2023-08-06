@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:28\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:09\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -17,72 +17,72 @@ msgstr ""
 "X-Crowdin-File-ID: 84\n"
 "Language: el_GR\n"
 
-#: discordmodals\discordmodals.py:27
+#: discordmodals\discordmodals.py:58
 msgid "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)"
 msgstr "Σφάλμα ανάλυσης YAML. Παρακαλούμε βεβαιωθείτε ότι η μορφή είναι έγκυρη (μπορεί να βοηθήσει ένας επικυρωτής YAML)"
 
-#: discordmodals\discordmodals.py:37
+#: discordmodals\discordmodals.py:68
 msgid "The argument `/{arg}` is required in the root in the YAML."
 msgstr "Το όρισμα `/{arg}` απαιτείται στη ρίζα του YAML."
 
-#: discordmodals\discordmodals.py:42
-msgid "The agument `/{arg}` is invalid in in the YAML. Check the spelling."
-msgstr "Το στοιχείο `/{arg}` είναι άκυρο στο YAML. Ελέγξτε την ορθογραφία."
+#: discordmodals\discordmodals.py:73
+msgid "The argument `/{arg}` is invalid in in the YAML. Check the spelling."
+msgstr "Το όρισμα `/{arg}` είναι άκυρο στο YAML. Ελέγξτε την ορθογραφία."
 
-#: discordmodals\discordmodals.py:52
+#: discordmodals\discordmodals.py:83
 msgid "The argument `/button/{arg}` is required in the YAML."
 msgstr "Το όρισμα `/button/{arg}` απαιτείται στο YAML."
 
-#: discordmodals\discordmodals.py:57
-msgid "The agument `/button/{arg}` is invalid in the YAML. Check the spelling."
-msgstr "Το στοιχείο `/button/{arg}` είναι άκυρο στο YAML. Ελέγξτε την ορθογραφία."
+#: discordmodals\discordmodals.py:88
+msgid "The argument `/button/{arg}` is invalid in the YAML. Check the spelling."
+msgstr "Το όρισμα `/button/{arg}` είναι άκυρο στο YAML. Ελέγξτε την ορθογραφία."
 
-#: discordmodals\discordmodals.py:67 discordmodals\discordmodals.py:71
-msgid "The agument `/button/style` must be a number between 1 and 4."
+#: discordmodals\discordmodals.py:102 discordmodals\discordmodals.py:106
+msgid "The argument `/button/style` must be a number between 1 and 4."
 msgstr "Το όρισμα `/button/style` πρέπει να είναι ένας αριθμός μεταξύ 1 και 4."
 
-#: discordmodals\discordmodals.py:79
+#: discordmodals\discordmodals.py:114
 msgid "The argument `/button/modal` must be a list of TextInputs."
 msgstr "Το όρισμα `/button/modal` πρέπει να είναι μια λίστα από TextInputs."
 
-#: discordmodals\discordmodals.py:95
+#: discordmodals\discordmodals.py:130
 msgid "The argument `/modal/{count}/{arg}` is required in the YAML."
 msgstr "Το όρισμα `/modal/{count}/{arg}` απαιτείται στο YAML."
 
-#: discordmodals\discordmodals.py:102
-msgid "The agument `/modal/{count}/{arg}` is invalid in the YAML. Check the spelling."
-msgstr "Το στοιχείο `/modal/{count}/{arg}` είναι άκυρο στο YAML. Ελέγξτε την ορθογραφία."
+#: discordmodals\discordmodals.py:137
+msgid "The argument `/modal/{count}/{arg}` is invalid in the YAML. Check the spelling."
+msgstr "Το όρισμα `/modal/{count}/{arg}` είναι άκυρο στο YAML. Ελέγξτε την ορθογραφία."
 
-#: discordmodals\discordmodals.py:112 discordmodals\discordmodals.py:118
-msgid "The agument `/modal/{count}/style` must be a number between 1 and 2."
+#: discordmodals\discordmodals.py:147 discordmodals\discordmodals.py:153
+msgid "The argument `/modal/{count}/style` must be a number between 1 and 2."
 msgstr "Το όρισμα `/modal/{count}/style` πρέπει να είναι ένας αριθμός μεταξύ 1 και 2."
 
-#: discordmodals\discordmodals.py:141
-msgid "The agument `/modal/{count}/required` must be a boolean (True or False)."
-msgstr "Το όρισμα `/modal/{count}/required` πρέπει να είναι boolean (True ή False)."
+#: discordmodals\discordmodals.py:176
+msgid "The argument `/modal/{count}/required` must be a boolean (True or False)."
+msgstr "Το όρισμα `/modal/{count}/required` πρέπει να είναι ένα boolean (True ή False)."
 
-#: discordmodals\discordmodals.py:187
+#: discordmodals\discordmodals.py:227
 #, docstring
 msgid "A cog to use Discord Modals, forms with graphic interface!"
 msgstr "Ένα γρανάζι για να χρησιμοποιήσετε Discord Modals, μορφές με γραφικό περιβάλλον!"
 
-#: discordmodals\discordmodals.py:305 discordmodals\discordmodals.py:366
+#: discordmodals\discordmodals.py:361 discordmodals\discordmodals.py:431
 msgid "Sorry. An error has occurred."
 msgstr "Συγγνώμη. Προέκυψε σφάλμα."
 
-#: discordmodals\discordmodals.py:321
+#: discordmodals\discordmodals.py:377
 msgid "The channel in which I was to send the results of this Modal no longer exists. Please notify an administrator of this server."
 msgstr "Το κανάλι στο οποίο θα έστελνα τα αποτελέσματα αυτού του Modal δεν υπάρχει πλέον. Παρακαλώ ενημερώστε έναν διαχειριστή αυτού του διακομιστή."
 
-#: discordmodals\discordmodals.py:333
+#: discordmodals\discordmodals.py:392
 msgid "I don't have sufficient permissions in the destination channel (view channel, send messages, send embeds). Please notify an administrator of this server."
 msgstr "Δεν έχω επαρκή δικαιώματα στο κανάλι προορισμού (προβολή καναλιού, αποστολή μηνυμάτων, αποστολή ενσωματώσεων). Παρακαλούμε ενημερώστε έναν διαχειριστή αυτού του διακομιστή."
 
-#: discordmodals\discordmodals.py:370
+#: discordmodals\discordmodals.py:435
 msgid "Thank you for sending this Modal!"
 msgstr "Σας ευχαριστώ για την αποστολή αυτού του Modal!"
 
-#: discordmodals\discordmodals.py:395
+#: discordmodals\discordmodals.py:460
 #, docstring
 msgid "Add a Modal for a message.\n\n"
 "        Use YAML syntax to set up everything.\n\n"
@@ -107,8 +107,9 @@ msgid "Add a Modal for a message.\n\n"
 "        messages:\n"
 "          error: Error!\n"
 "          submit: Form submitted.\n"
+"        pings: user1, user2, role1, role2\n"
 "        ```\n"
-"        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous` and `messages` are not required.\n"
+"        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous`, `messages` and `pings` are not required.\n"
 "        "
 msgstr "Προσθέστε ένα Modal για ένα μήνυμα.\n\n"
 "        Χρησιμοποιήστε τη σύνταξη YAML για να ρυθμίσετε τα πάντα.\n\n"
@@ -132,38 +133,51 @@ msgstr "Προσθέστε ένα Modal για ένα μήνυμα.\n\n"
 "        anonymous: False\n"
 "        messages:\n"
 "          error:\n"
-"          submit: Η φόρμα υποβλήθηκε.\n"
+"          submit: Form submitted.\n"
+"        pings: user1, user2, role1, role2\n"
 "        ```\n"
-"        Τα `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous` και `messages` δεν απαιτούνται.\n"
+"        Τα `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous`, `messages` και `pings` δεν απαιτούνται.\n"
 "        "
 
-#: discordmodals\discordmodals.py:425
+#: discordmodals\discordmodals.py:491
 msgid "I have to be the author of the message for the button to work."
 msgstr "Πρέπει να είμαι ο συντάκτης του μηνύματος για να λειτουργήσει το κουμπί."
 
-#: discordmodals\discordmodals.py:429
+#: discordmodals\discordmodals.py:495
 msgid "This message already has a Modal."
 msgstr "Αυτό το μήνυμα έχει ήδη ένα Modal."
 
-#: discordmodals\discordmodals.py:442
+#: discordmodals\discordmodals.py:497
+msgid "This message already has components."
+msgstr "Αυτό το μήνυμα έχει ήδη στοιχεία."
+
+#: discordmodals\discordmodals.py:510
 msgid "Sorry. An error occurred when I tried to put the button on the message."
 msgstr "Συγγνώμη. Προέκυψε σφάλμα όταν προσπάθησα να βάλω το κουμπί στο μήνυμα."
 
-#: discordmodals\discordmodals.py:482
+#: discordmodals\discordmodals.py:548
+msgid "Modal created."
+msgstr "Modal δημιουργήθηκε."
+
+#: discordmodals\discordmodals.py:552
 #, docstring
 msgid "Remove a Modal for a message."
 msgstr "Κατάργηση ενός Modal για ένα μήνυμα."
 
-#: discordmodals\discordmodals.py:485
+#: discordmodals\discordmodals.py:555
 msgid "I have to be the author of the message for the Modal to work."
 msgstr "Πρέπει να είμαι ο συντάκτης του μηνύματος για να λειτουργήσει το Modal."
 
-#: discordmodals\discordmodals.py:489
+#: discordmodals\discordmodals.py:559
 msgid "No Modal is configured for this message."
 msgstr "Δεν έχει ρυθμιστεί κανένα Modal για αυτό το μήνυμα."
 
-#: discordmodals\discordmodals.py:499
+#: discordmodals\discordmodals.py:569
 #, docstring
 msgid "Clear all Modals for a guild."
 msgstr "Καθαρίστε όλα τα Modals για μια συντεχνία."
+
+#: discordmodals\discordmodals.py:571
+msgid "All Modals purged."
+msgstr "Όλα τα Modals εκκαθαρίστηκαν."
 

@@ -501,7 +501,7 @@ class Reminders(Cog):
             ):
                 raise commands.UserFeedbackCheckFailure(
                     _(
-                        "Since you don't have the `mention everyone` permission, you can't create a reminder that will mention more than 3 people or mention role(s)."
+                        "Since you don't have the `mention_everyone` permission, you can't create a reminder that will mention more than 3 people or mention role(s)."
                     )
                 )
             if len(targets) > 10:

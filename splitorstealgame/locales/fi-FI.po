@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:32\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:10\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -26,11 +26,11 @@ msgstr "Hammasratas pelata ottelun SplitOrSteal peli!"
 msgid "Join the game by clicking on the button below. 2 players will be selected randomly."
 msgstr "Liity peliin klikkaamalla alla olevaa painiketta. 2 pelaajaa valitaan satunnaisesti."
 
-#: splitorstealgame\view.py:50
+#: splitorstealgame\view.py:49
 msgid "At least two players are needed to play."
 msgstr "Pelaamiseen tarvitaan vähintään kaksi pelaajaa."
 
-#: splitorstealgame\view.py:60
+#: splitorstealgame\view.py:58
 msgid "The two players are {player_A.mention} and {player_B.mention}.\n"
 "You have to click the button that you choose (`split` or `steal`).\n"
 "• If you both choose `split` both of them win.\n"
@@ -50,35 +50,35 @@ msgstr "Ainakin yksi pelaaja on lopettanut pelaamisen."
 msgid "{player_A.display_name} and {player_B.display_name}, you both chose `split` and therefore both win."
 msgstr "{player_A.display_name} ja {player_B.display_name}, valitsitte molemmat \"split\" ja voititte siis molemmat."
 
-#: splitorstealgame\view.py:91
+#: splitorstealgame\view.py:93
 msgid "{player_A.display_name} and {player_B.display_name}, you both chose `steal` and therefore both loose."
 msgstr "{player_A.display_name} ja {player_B.display_name}, molemmat valitsitte \"varastamisen\" ja siksi molemmat häviävät."
 
-#: splitorstealgame\view.py:95
-msgid "{player_A.display_name} chose `split` and {player_B.display_name} chose `steal`, and therefore {player_A.display_name} win."
-msgstr "{player_A.display_name} valitsi vaihtoehdon \"split\" ja {player_B.display_name} valitsi vaihtoehdon \"steal\", joten {player_A.display_name} voittaa."
-
 #: splitorstealgame\view.py:99
-msgid "{player_B.display_name} chose `split` and {player_A.display_name} chose `steal`, and therefore {player_B.display_name} win."
-msgstr "{player_B.display_name} valitsi vaihtoehdon \"split\" ja {player_A.display_name} valitsi vaihtoehdon \"steal\", joten {player_B.display_name} voittaa."
+msgid "{player_A.display_name} chose `steal` and {player_B.display_name} chose `split`, and therefore {player_A.display_name} win."
+msgstr "{player_A.display_name} valitsi vaihtoehdon \"steal\" ja {player_B.display_name} valitsi vaihtoehdon \"split\", joten {player_A.display_name} voittaa."
 
-#: splitorstealgame\view.py:128
+#: splitorstealgame\view.py:105
+msgid "{player_B.display_name} chose `steal` and {player_A.display_name} chose `split`, and therefore {player_B.display_name} win."
+msgstr "{player_B.display_name} valitsi vaihtoehdon \"steal\" ja {player_A.display_name} valitsi vaihtoehdon \"split\", joten {player_B.display_name} voittaa."
+
+#: splitorstealgame\view.py:137
 msgid "You have already joined this game."
 msgstr "Olet jo liittynyt tähän peliin."
 
-#: splitorstealgame\view.py:131
+#: splitorstealgame\view.py:141
 msgid "You have joined this game."
 msgstr "Olet liittynyt tähän peliin."
 
-#: splitorstealgame\view.py:138 splitorstealgame\view.py:148
+#: splitorstealgame\view.py:149 splitorstealgame\view.py:164
 msgid "You have already chose `{original_response}`."
 msgstr "Olet jo valinnut `{original_response}`."
 
-#: splitorstealgame\view.py:141
+#: splitorstealgame\view.py:156
 msgid "You have chose `split`."
 msgstr "Olet valinnut `split`."
 
-#: splitorstealgame\view.py:151
+#: splitorstealgame\view.py:171
 msgid "You have chose `steal`."
 msgstr "Olet valinnut \"varastaa\"."
 

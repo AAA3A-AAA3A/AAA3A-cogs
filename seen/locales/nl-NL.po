@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:27\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:11\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -22,105 +22,166 @@ msgstr ""
 msgid "A cog to check when a member/role/channel/category/user/guild was last active!"
 msgstr "Een tandwiel om te controleren wanneer een lid/rol/kanaal/categorie/gebruiker/gilde voor het laatst actief was!"
 
-#: seen\seen.py:798 seen\seen.py:805
-msgid "@{_object.display_name} was seen {seen}."
-msgstr "@{_object.display_name} werd gezien {seen}."
+#: seen\seen.py:753
+msgid "[This message]({message_link}) has been sent by {member_mention}."
+msgstr "[Dit bericht]({message_link}) is verzonden door {member_mention}."
 
-#: seen\seen.py:812
-msgid "The role @&{_object.name} was seen {seen}."
-msgstr "De rol @&{_object.name} werd gezien op {seen}."
+#: seen\seen.py:757
+msgid "[This message]({message_link}) has been edited by {member_mention}."
+msgstr "[Dit bericht]({message_link}) is bewerkt door {member_mention}."
 
-#: seen\seen.py:819
-msgid "The text channel #{_object.name} was seen {seen}."
-msgstr "Het tekstkanaal #{_object.name} werd gezien op {seen}."
+#: seen\seen.py:761
+msgid "The reaction {reaction} has been added to [this message]({message_link}) by {member_mention}."
+msgstr "De reactie {reaction} is toegevoegd aan [dit bericht]({message_link}) door {member_mention}."
 
-#: seen\seen.py:826
-msgid "The category {_object.name} was seen {seen}."
-msgstr "De categorie {_object.name} werd gezien op {seen}."
+#: seen\seen.py:769
+msgid "The reaction {reaction} has been removed to the [this message]({message_link}) by {member_mention}."
+msgstr "De reactie {reaction} is verwijderd uit het [dit bericht]({message_link}) door {member_mention}."
 
-#: seen\seen.py:833
-msgid "The guild {_object.name} was seen {seen}."
-msgstr "Het gilde {_object.name} werd gezien op {seen}."
+#: seen\seen.py:866
+msgid "**The user {_object.mention} was seen {seen}.**"
+msgstr "**De gebruiker {_object.mention} is gezien {seen}.**"
 
-#: seen\seen.py:1087
+#: seen\seen.py:874
+msgid "**The member {_object.mention} was seen {seen}.**"
+msgstr "**Het lid {_object.mention} is gezien {seen}.**"
+
+#: seen\seen.py:882
+msgid "**The role {_object.mention} was seen {seen}.**"
+msgstr "**De rol {_object.mention} werd gezien {seen}.**"
+
+#: seen\seen.py:890
+msgid "**The text channel {_object.mention} was seen {seen}.**"
+msgstr "**Het tekstkanaal {_object.mention} werd gezien {seen}.**"
+
+#: seen\seen.py:898
+msgid "**The category {_object.name} was seen {seen}.**"
+msgstr "**De categorie {_object.name} werd gezien {seen}.**"
+
+#: seen\seen.py:906
+msgid "**The guild {_object.name} was seen {seen}.**"
+msgstr "**Het gilde {_object.name} werd gezien {seen}.**"
+
+#: seen\seen.py:1174
 #, docstring
 msgid "Check when a member was last active!"
 msgstr "Controleer wanneer een lid voor het laatst actief was!"
 
-#: seen\seen.py:1107
+#: seen\seen.py:1194
 #, docstring
 msgid "Check when a role was last active!"
 msgstr "Controleer wanneer een rol voor het laatst actief was!"
 
-#: seen\seen.py:1126
+#: seen\seen.py:1213
 #, docstring
 msgid "Check when a channel was last active!"
 msgstr "Controleer wanneer een kanaal voor het laatst actief was!"
 
-#: seen\seen.py:1133
+#: seen\seen.py:1220
 msgid "You do not have permission to view this channel."
 msgstr "Je hebt geen toestemming om dit kanaal te bekijken."
 
-#: seen\seen.py:1149
+#: seen\seen.py:1236
 #, docstring
 msgid "Check when a category was last active!"
 msgstr "Controleer wanneer een categorie voor het laatst actief was!"
 
-#: seen\seen.py:1162
+#: seen\seen.py:1249
 msgid "You do not have permission to view any of the channels in this category."
 msgstr "Je hebt geen toestemming om kanalen in deze categorie te bekijken."
 
-#: seen\seen.py:1179
+#: seen\seen.py:1266
 #, docstring
 msgid "Check when a old member was last active!"
 msgstr "Controleer wanneer een oud lid voor het laatst actief was!"
 
-#: seen\seen.py:1207
+#: seen\seen.py:1294
 #, docstring
 msgid "Check when a guild was last active!"
 msgstr "Controleer wanneer een gilde voor het laatst actief was!"
 
-#: seen\seen.py:1227
+#: seen\seen.py:1314
 #, docstring
 msgid "Check when a user was last active!"
 msgstr "Controleer wanneer een gebruiker voor het laatst actief was!"
 
-#: seen\seen.py:1246
+#: seen\seen.py:1333
 #, docstring
 msgid "Check when a old user was last active!"
 msgstr "Controleer wanneer een oude gebruiker voor het laatst actief was!"
 
-#: seen\seen.py:1268
+#: seen\seen.py:1355
 #, docstring
 msgid "View a Seen Board for members/roles/channels/categories/guilds/users!"
 msgstr "Bekijk een Gezien-bord voor leden/rollen/kanalen/categorieën/gildes/gebruikers!"
 
-#: seen\seen.py:1271
+#: seen\seen.py:1358
 msgid "You're not allowed to view the Seen board for guilds and users."
 msgstr "Je mag het Seen-bord voor gildes en gebruikers niet bekijken."
 
-#: seen\seen.py:1278
+#: seen\seen.py:1365
 #, docstring
 msgid "Get Config data stats."
 msgstr "Configuratiegegevensstatistieken ophalen."
 
-#: seen\seen.py:1312
+#: seen\seen.py:1399
 #, docstring
 msgid "Enable or disable a listener."
 msgstr "Schakel een luisteraar in of uit."
 
-#: seen\seen.py:1320
+#: seen\seen.py:1405
+msgid "Listener enabled for this/these type(s)."
+msgstr "Listener ingeschakeld voor dit/deze type(n)."
+
+#: seen\seen.py:1407
+msgid "Listener disabled for this/these type(s)."
+msgstr "Listener uitgeschakeld voor dit/deze type(n)."
+
+#: seen\seen.py:1411
 #, docstring
 msgid "Asking Seen to ignore your actions."
 msgstr "Aan Seen vragen om je acties te negeren."
 
-#: seen\seen.py:1334
+#: seen\seen.py:1419
+msgid "You will no longer be seen by this cog and the data I held on you has been deleted."
+msgstr "Je wordt niet langer door dit tandwiel gezien en de gegevens die ik over je had, zijn verwijderd."
+
+#: seen\seen.py:1426
+msgid "You'll be seen again by this cog."
+msgstr "Je wordt weer gezien door dit radertje."
+
+#: seen\seen.py:1432
 #, docstring
 msgid "Get an embed for check loop status."
 msgstr "Een insluiting krijgen om de lusstatus te controleren."
 
-#: seen\seen.py:1345
+#: seen\seen.py:1443
 #, docstring
 msgid "Purge Config for a specified _type or all."
 msgstr "Configuratie wissen voor een opgegeven _type of alle."
+
+#: seen\seen.py:1450
+msgid "All Seen data purged."
+msgstr "Alle geziene gegevens gewist."
+
+#: seen\seen.py:1462
+msgid "Seen data purged for this type."
+msgstr "Geziene gegevens die voor dit type zijn gewist."
+
+#: seen\seen.py:1467
+#, docstring
+msgid "Migrate Seen from Seen by Aikaterna."
+msgstr "Migrate Gezien van Gezien door Aikaterna."
+
+#: seen\seen.py:1474
+msgid "Seen by Aikaterna has no data in this bot."
+msgstr "Gezien door Aikaterna heeft geen gegevens in deze bot."
+
+#: seen\seen.py:1478
+msgid "Seen by Aikaterna use an old/new data schema version and isn't compatible with this cog actually."
+msgstr "Gezien door Aikaterna gebruikt een oude/nieuwe versie van het gegevensschema en is eigenlijk niet compatibel met dit tandwiel."
+
+#: seen\seen.py:1541
+msgid "Data successfully migrated from Seen by Aikaterna."
+msgstr "Gegevens succesvol gemigreerd van Seen door Aikaterna."
 

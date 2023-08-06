@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:27\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:11\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "The cog is not fully charged."
 msgstr "Гвинтик не повністю заряджений."
 
-#: runcode\runcode.py:47 runcode\runcode.py:307
+#: runcode\runcode.py:47 runcode\runcode.py:314
 msgid "Incorrect language identifier for your code.\n"
 "To list all the supported languages identifiers, please use `{ctx.prefix}setruncode listidentifiers`."
 msgstr "Неправильний ідентифікатор мови для вашого коду.\n"
@@ -33,43 +33,43 @@ msgstr "Ніяких прапорів у суперечці."
 
 #: runcode\runcode.py:112
 #, docstring
-msgid "A cog to compile and run codes in some languages! Use `[p]setrundocs listlanguages` to get a list of all the available languages."
-msgstr "Гвинтик для компіляції та запуску коду деякими мовами! Використовуйте `[p]setrundocs listlanguages`, щоб отримати список усіх доступних мов."
+msgid "A cog to compile and run codes in some languages! Use `[p]setruncode listlanguages` to get a list of all the available languages."
+msgstr "Гвинтик для компіляції та запуску коду на деяких мовах! Використовуйте `[p]setruncode listlanguages` для отримання списку всіх доступних мов."
 
-#: runcode\runcode.py:248
+#: runcode\runcode.py:255
 msgid "File must be smaller than 20 kio."
 msgstr "Розмір файлу не повинен перевищувати 20 кілобайт."
 
-#: runcode\runcode.py:282
+#: runcode\runcode.py:289
 msgid "Please provide the code!"
 msgstr "Будь ласка, вкажіть код!"
 
-#: runcode\runcode.py:298
+#: runcode\runcode.py:305
 msgid "Incorrect syntax, please use Markdown's syntax for your code."
 msgstr "Неправильний синтаксис, будь ласка, використовуйте синтаксис Markdown для вашого коду."
 
-#: runcode\runcode.py:386
+#: runcode\runcode.py:395
 msgid "The language of your code could not be found. Specify it with the `language` parameter."
 msgstr "Не вдалося знайти мову вашого коду. Вкажіть її за допомогою параметра `language`."
 
-#: runcode\runcode.py:415
+#: runcode\runcode.py:424
 msgid "`{engine}` is not a correct engine for {code_language}\n"
 "To list all the available engine for it, please use `{ctx.prefix}setruncode listengines {code_language}`."
 msgstr "`{engine}` не є коректним рушієм для {code_language}. Щоб перерахувати всі доступні рушії для нього, будь ласка, використовуйте `{ctx.prefix}setruncode listengines {code_language}`."
 
-#: runcode\runcode.py:428
+#: runcode\runcode.py:437
 msgid "There is no options available for compilation using `{engine}`.\n"
 "Ignoring this option."
 msgstr "Для компіляції з використанням `{engine}` не передбачено жодних опцій.\n"
 "Ігнорування цієї опції."
 
-#: runcode\runcode.py:441
+#: runcode\runcode.py:450
 msgid "There is no options available for runtime execution `{engine}`.\n"
 "Ignoring this option."
 msgstr "Для виконання під час виконання `{engine}` немає доступних опцій.\n"
 "Ігнорування цієї опції."
 
-#: runcode\runcode.py:577
+#: runcode\runcode.py:586
 #, docstring
 msgid "\n"
 "        Shows a list of all the available languages, or Wandbox or Tio API.\n"
@@ -78,7 +78,7 @@ msgstr "\n"
 "        Показує список усіх доступних мов, або Wandbox чи Tio API.\n"
 "        "
 
-#: runcode\runcode.py:598
+#: runcode\runcode.py:607
 #, docstring
 msgid "\n"
 "        Shows a list of all the available engines for a specified language, only for Wandbox API.\n\n"
@@ -91,7 +91,7 @@ msgstr "\n"
 "        - `language`: Назва мови.\n"
 "        "
 
-#: runcode\runcode.py:626
+#: runcode\runcode.py:635
 #, docstring
 msgid "\n"
 "        Lists all the languages identifiers recognized by the bot, only for Wandbox API.\n"
@@ -100,7 +100,7 @@ msgstr "\n"
 "        Перераховує всі ідентифікатори мов, які розпізнає бот, тільки для Wandbox API.\n"
 "        "
 
-#: runcode\runcode.py:643
+#: runcode\runcode.py:652
 #, docstring
 msgid "\n"
 "        Lists all the languages extensions.\n"

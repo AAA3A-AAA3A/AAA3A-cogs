@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:27\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:11\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -22,71 +22,65 @@ msgstr ""
 msgid "A cog to send the result of a command to another channel!"
 msgstr "Гвинтик для відправки результату команди в інший канал!"
 
-#: cmdchannel\cmdchannel.py:75
+#: cmdchannel\cmdchannel.py:86
 #, docstring
 msgid "Act as if the command had been typed in the channel of your choice.\n"
-"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
-"        If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).\n\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
 "        Use `[p]cmdchannel`!\n"
 "        "
 msgstr "Дійте так, ніби команда була введена у вибраному вами каналі.\n"
-"        Префікс не потрібно вводити, якщо це команда. Якщо команда є невірною, буде лише повідомлення.\n"
-"        Якщо ви не вкажете канал, буде використано поточний, якщо тільки команда, яку ви хочете використати, не є назвою існуючого каналу (наприклад, довідка або тест).\n\n"
+"        Префікс не потрібно вводити, якщо це команда. Якщо команда є невірною, буде видано лише повідомлення.\n\n"
 "        Використовуйте `[p]cmdchannel`!\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:84 cmdchannel\cmdchannel.py:153
+#: cmdchannel\cmdchannel.py:94 cmdchannel\cmdchannel.py:163
 msgid "To send commands to another server, you must be there."
 msgstr "Щоб надсилати команди на інший сервер, ви повинні бути там."
 
-#: cmdchannel\cmdchannel.py:107
+#: cmdchannel\cmdchannel.py:118
 #, docstring
 msgid "Act as if the command had been typed by imitating the specified user.\n"
-"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
-"        If you do not specify a user, the author will be used.\n\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
 "        Use `[p]cmduser`!\n"
 "        "
 msgstr "Дійте так, ніби команда була введена, імітуючи вказаного користувача.\n"
-"        Префікс не потрібно вводити, якщо це команда. Якщо команда є невірною, буде виведено лише повідомлення.\n"
-"        Якщо ви не вкажете користувача, буде використано автора.\n\n"
+"        Префікс не потрібно вводити, якщо це команда. Буде виведено лише повідомлення, якщо команда є невірною.\n\n"
 "        Використовуйте `[p]cmduser`!\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:117 cmdchannel\cmdchannel.py:158
+#: cmdchannel\cmdchannel.py:127 cmdchannel\cmdchannel.py:168
 msgid "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
 msgstr "Щоб мати змогу запустити команду від імені іншого користувача, необхідно завантажити cog Dev, щоб бути впевненим, що ви знаєте, що робите."
 
-#: cmdchannel\cmdchannel.py:140
+#: cmdchannel\cmdchannel.py:151
 #, docstring
 msgid "Act as if the command had been typed in the channel of your choice by imitating the specified user.\n"
-"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
-"        If you do not specify a user, the author will be used.\n\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
 "        Use `[p]cmduserchannel`!\n"
 "        "
 msgstr "Дійте так, ніби команда була набрана у вибраному вами каналі, імітуючи вказаного користувача.\n"
-"        Префікс не потрібно вводити, якщо це команда. Це буде лише повідомлення, якщо команда є недійсною.\n"
-"        Якщо ви не вкажете користувача, буде використано автора.\n\n"
+"        Префікс не потрібно вводити, якщо це команда. Якщо команда є невірною, буде видано лише повідомлення.\n\n"
 "        Використовуйте `[p]cmduserchannel`!\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:174
+#: cmdchannel\cmdchannel.py:185
 #, docstring
 msgid "Test variables."
 msgstr "Перевірте змінні."
 
-#: cmdchannel\cmdchannel.py:176
+#: cmdchannel\cmdchannel.py:187
 msgid "Testvar"
 msgstr "Testvar"
 
-#: cmdchannel\cmdchannel.py:177
+#: cmdchannel\cmdchannel.py:188
 msgid "Variables:"
 msgstr "Змінні:"
 
-#: cmdchannel\cmdchannel.py:178
+#: cmdchannel\cmdchannel.py:189
 msgid "Author:"
 msgstr "Автор:"
 
-#: cmdchannel\cmdchannel.py:179
+#: cmdchannel\cmdchannel.py:190
 msgid "Channel:"
 msgstr "Канал:"
 

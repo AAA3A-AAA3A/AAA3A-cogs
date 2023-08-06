@@ -1,0 +1,70 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:12\n"
+"Last-Translator: \n"
+"Language-Team: Greek\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: el\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/dev/locales/messages.pot\n"
+"X-Crowdin-File-ID: 263\n"
+"Language: el_GR\n"
+
+#: dev\dev.py:346
+#, docstring
+msgid "Various development focused utilities!"
+msgstr "Διάφορα βοηθητικά προγράμματα με επίκεντρο την ανάπτυξη!"
+
+#: dev\dev.py:653
+msgid "Already running a REPL session in this channel. Exit it with `quit`."
+msgstr "Τρέχει ήδη μια συνεδρία REPL σε αυτό το κανάλι. Βγείτε από αυτήν με `quit`."
+
+#: dev\dev.py:657
+msgid "Already running a REPL session in this channel. Resume the REPL with `{prefix}replresume`."
+msgstr "Τρέχει ήδη μια συνεδρία REPL σε αυτό το κανάλι. Συνεχίστε την REPL με `{prefix}replresume`."
+
+#: dev\dev.py:667
+msgid "Enter code to execute or evaluate. `exit()` or `quit` to exit. `{prefix}replpause` to pause."
+msgstr "Εισάγετε τον κώδικα για εκτέλεση ή αξιολόγηση. `exit()` ή `quit` για έξοδο. \"{prefix}replpause\" για παύση."
+
+#: dev\dev.py:707
+msgid "Exiting."
+msgstr "Έξοδος."
+
+#: dev\dev.py:715
+msgid "There is no currently running REPL session in this channel."
+msgstr "Δεν υπάρχει τρέχουσα σύνοδος REPL σε αυτό το κανάλι."
+
+#: dev\dev.py:721
+msgid "The REPL session in this channel has been resumed."
+msgstr "Η σύνοδος REPL σε αυτό το κανάλι συνεχίστηκε."
+
+#: dev\dev.py:723
+msgid "The REPL session in this channel is now paused."
+msgstr "Η σύνοδος REPL σε αυτό το κανάλι έχει πλέον διακοπεί."
+
+#: dev\dev.py:745
+msgid "Bot owners will now bypass all commands with cooldowns{optional_duration}."
+msgstr "Οι ιδιοκτήτες bot θα παρακάμπτουν πλέον όλες τις εντολές με cooldowns{optional_duration}."
+
+#: dev\dev.py:755
+msgid "Bot owners will no longer bypass all commands with cooldowns{optional_duration}."
+msgstr "Οι ιδιοκτήτες bot δεν θα παρακάμπτουν πλέον όλες τις εντολές με cooldowns{optional_duration}."
+
+#: dev\dev.py:784
+#, docstring
+msgid "Display all Dev environment values."
+msgstr "Εμφάνιση όλων των τιμών περιβάλλοντος Dev."
+
+#: dev\dev.py:791
+#, docstring
+msgid "Reset its own locals in evals."
+msgstr "Επαναφέρει τις δικές του τοπικές τιμές στις αξιολογήσεις."
+

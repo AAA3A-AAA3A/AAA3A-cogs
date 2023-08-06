@@ -1,0 +1,90 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:11\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/consolelogs/locales/messages.pot\n"
+"X-Crowdin-File-ID: 261\n"
+"Language: ja_JP\n"
+
+#: consolelogs\consolelogs.py:92
+#, docstring
+msgid "A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!"
+msgstr "コンソールのログを表示し、ボタンとフィルターオプションがあり、設定されたチャンネルでコマンドエラーを送信するための歯車！"
+
+#: consolelogs\consolelogs.py:243
+msgid "No logs to display."
+msgstr "表示するログがない。"
+
+#: consolelogs\consolelogs.py:380
+#, docstring
+msgid "View the console logs one by one, for all levels/loggers or provided level/logger name."
+msgstr "すべてのレベル/ロガー、または指定されたレベル/ロガー名のコンソール・ログを1つずつ表示します。"
+
+#: consolelogs\consolelogs.py:395
+#, docstring
+msgid "View the `ERROR` console logs one by one, for all loggers or a provided logger name."
+msgstr "すべてのロガー、または指定したロガー名の `ERROR` コンソールログを一つずつ表示する。"
+
+#: consolelogs\consolelogs.py:423 consolelogs\consolelogs.py:434
+#, docstring
+msgid "Scroll the console logs, for all levels/loggers or provided level/logger name."
+msgstr "すべてのレベル/ロガー、または指定されたレベル/ロガー名のコンソール・ログをスクロールする。"
+
+#: consolelogs\consolelogs.py:464
+#, docstring
+msgid "Enable errors logging in a channel.\n\n"
+"        **Parameters:**\n"
+"        - `channel`: The channel where the commands errors will be sent.\n"
+"        - `global_errors`: Log errors for the entire bot, not just the channel server.\n"
+"        - `prefixed_commands_errors`: Log prefixed commands errors.\n"
+"        - `slash_commands_errors`: Log slash commands errors.\n"
+"        - `dpy_ignored_exceptions`: Log dpy ignored exceptions (events listeners and Views errors).\n"
+"        - `guild_invite`: Add a button \"Guild Invite\" in commands errors logs, only for community servers.\n"
+"        "
+msgstr "チャンネルのエラーログを有効にする。\n\n"
+"        **Parameters:**\n"
+"        - `channel`：コマンドのエラーを送信するチャンネル。\n"
+"        - global_errors`：チャンネルサーバーだけでなく、ボット全体のエラーを記録する。\n"
+"        - prefixed_commands_errors`：接頭辞付きコマンドのエラーをログに記録する。\n"
+"        - `slash_commands_errors`: スラッシュコマンドのエラーをログに記録する：スラッシュコマンドのエラーをログに記録する。\n"
+"        - dpy_ignored_exceptions`: dpy が無視した例外を記録する：dpy が無視した例外 (イベントリスナーと Views のエラー) を記録する。\n"
+"        - ギルド招待`：コミュニティサーバのみ、コマンドエラーログに \"Guild Invite\" ボタンを追加する。\n"
+"        "
+
+#: consolelogs\consolelogs.py:483
+msgid "I don't have the permissions to send embeds in this channel."
+msgstr "このチャンネルでエンベッドを送信する権限がありません。"
+
+#: consolelogs\consolelogs.py:491
+msgid "Errors logging enabled in {channel.mention}."
+msgstr "{channel.mention}でエラーログを有効にする。"
+
+#: consolelogs\consolelogs.py:495
+#, docstring
+msgid "Disable errors logging in a channel."
+msgstr "チャンネルのエラーログを無効にする。"
+
+#: consolelogs\consolelogs.py:498
+msgid "Errors logging isn't enabled in this channel."
+msgstr "このチャンネルではエラーログは有効になっていない。"
+
+#: consolelogs\consolelogs.py:501
+msgid "Errors logging disabled in {channel.mention}."
+msgstr "{channel.mention}でエラーロギングを無効にする。"
+
+#: consolelogs\consolelogs.py:505
+#, docstring
+msgid "Get an embed to check loops status."
+msgstr "ループの状態を確認するためのエンベデッドを取得します。"
+

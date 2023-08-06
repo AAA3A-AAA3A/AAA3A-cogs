@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 18:22\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:10\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -22,30 +22,43 @@ msgstr ""
 msgid "A cog to allow a member to choose custom prefixes, just for them!"
 msgstr "メンバーが自分だけのカスタム接頭辞を選べるようにするための歯車です！"
 
-#: memberprefix\memberprefix.py:165
+#: memberprefix\memberprefix.py:161
 msgid "You now use this server or global prefixes."
 msgstr "現在、このサーバーまたはグローバルプレフィックスを使用しています。"
 
-#: memberprefix\memberprefix.py:169
+#: memberprefix\memberprefix.py:165
 msgid "A prefix is above the maximal length (25 characters).\n"
 "This is possible for global or per-server prefixes, but not for per-member prefixes."
 msgstr "プレフィックスが最大長（25文字）以上である。\n"
 "グローバルプレフィックスやサーバー単位のプレフィックスでは可能ですが、メンバー単位のプレフィックスでは不可です。"
 
-#: memberprefix\memberprefix.py:175
+#: memberprefix\memberprefix.py:171
 msgid "Prefixes cannot start with `/`, as it conflicts with Discord's slash commands."
 msgstr "Discordのスラッシュコマンドと競合するため、プリフィックスは `/` で始めることができません。"
 
-#: memberprefix\memberprefix.py:179
-msgid "Prefix for you only set."
-msgstr "Prefix for you only set."
+#: memberprefix\memberprefix.py:176
+msgid "Prefix for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."
+msgstr "自分専用のプレフィックスを設定。現在の接頭辞を使うか、ボットを指定してコマンドを起動するか、接頭辞を忘れた場合は同じコマンドでリセットすることができます。"
 
-#: memberprefix\memberprefix.py:181
-msgid "Prefixes for you only set."
-msgstr "Prefixes for you only set."
+#: memberprefix\memberprefix.py:182
+msgid "Prefixes for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."
+msgstr "接頭辞を設定する。現在の接頭辞を使うか、ボットに言及してコマンドを起動するか、接頭辞を忘れた場合は同じコマンドでリセットすることができます。"
 
-#: memberprefix\memberprefix.py:250
+#: memberprefix\memberprefix.py:197
 #, docstring
-msgid "Clear all members prefixes for this guild."
-msgstr "このギルドのメンバープレフィックスをすべてクリアする。"
+msgid "Clear prefixes for a specified member in a specified server."
+msgstr "指定したサーバーの指定したメンバーのプレフィックスをクリアする。"
+
+#: memberprefix\memberprefix.py:199
+msgid "Prefixes cleared for this member in this guild."
+msgstr "このメンバーがこのギルドでクリアした接頭辞。"
+
+#: memberprefix\memberprefix.py:203
+#, docstring
+msgid "Clear all members prefixes for a specified server."
+msgstr "指定したサーバの全メンバーの接頭辞を消去する。"
+
+#: memberprefix\memberprefix.py:205
+msgid "All members prefixes purged in this guild."
+msgstr "このギルドでは全メンバーの接頭辞がパージされる。"
 

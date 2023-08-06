@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:26\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:10\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -19,34 +19,40 @@ msgstr ""
 
 #: clearchannel\clearchannel.py:20
 #, docstring
-msgid "A cog to transfer all messages channel in a other channel!"
-msgstr "Een tandwiel om alle berichten over te brengen naar een ander kanaal!"
+msgid "A cog to delete ALL messages of a channel!\n\n"
+"    ⚠ The channel will be cloned, and then **deleted**.\n"
+"    "
+msgstr "Een cog om ALLE berichten van een kanaal te verwijderen!\n\n"
+"    ⚠ Er wordt een kopie gemaakt van het kanaal, en daarna **verwijderd**.\n"
+"    "
 
-#: clearchannel\clearchannel.py:93
+#: clearchannel\clearchannel.py:105
 msgid "⚠️ - ClearChannel"
 msgstr "⚠️ - ClearChannel"
 
-#: clearchannel\clearchannel.py:94
-msgid "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?"
-msgstr "Wil je echt ALLE berichten van kanaal {old_channel.mention} ({old_channel.id}) verwijderen?"
+#: clearchannel\clearchannel.py:106
+msgid "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?\n"
+"⚠ The channel will be cloned, and then **deleted**."
+msgstr "Wil je echt ALLE berichten van het kanaal {old_channel.mention} ({old_channel.id}) verwijderen?\n"
+"⚠ Er wordt een kopie gemaakt van het kanaal, en daarna **verwijderd**."
 
-#: clearchannel\clearchannel.py:104
+#: clearchannel\clearchannel.py:116
 msgid "Clear Channel requested by {ctx.author} ({ctx.author.id})."
 msgstr "Clear Channel op verzoek van {ctx.author} ({ctx.author.id})."
 
-#: clearchannel\clearchannel.py:110
+#: clearchannel\clearchannel.py:122
 msgid "🗑️-Deleted-{old_channel.name}"
 msgstr "🗑️-Verwijderd-{old_channel.name}"
 
-#: clearchannel\clearchannel.py:124
+#: clearchannel\clearchannel.py:136
 msgid "ClearChannel"
 msgstr "ClearChannel"
 
-#: clearchannel\clearchannel.py:125
+#: clearchannel\clearchannel.py:137
 msgid "ALL the messages in this channel have been deleted..."
 msgstr "ALLE berichten in dit kanaal zijn verwijderd..."
 
-#: clearchannel\clearchannel.py:143
+#: clearchannel\clearchannel.py:155
 msgid "All messages in channel #{old_channel.name} ({old_channel.id}) have been deleted! You can find the new channel, with the same permissions: #{new_channel.name} ({new_channel.id})."
 msgstr "Alle berichten in kanaal #{old_channel.name} ({old_channel.id}) zijn verwijderd! Je kunt het nieuwe kanaal vinden, met dezelfde rechten: #{new_channel.name} ({new_channel.id})."
 

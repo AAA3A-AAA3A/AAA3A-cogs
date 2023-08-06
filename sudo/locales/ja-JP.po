@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 18:22\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:11\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -19,10 +19,14 @@ msgstr ""
 
 #: sudo\sudo.py:41
 #, docstring
-msgid "A cog to allow bot owners to be normal users in terms of permissions!"
-msgstr "ボットオーナーが権限的に通常のユーザーになれるようにするためのコト！"
+msgid "A cog to allow bot owners to be normal users in terms of permissions!\n\n"
+"    ⚠️ This cog makes bot owners unable to be perceived as bot owners in commands while the cog is loaded unless the `[p]su` command is used.\n"
+"    "
+msgstr "ボットのオーナーがパーミッションの面で通常のユーザーになれるようにするためのコグ！\n\n"
+"    ⚠️ このコグは、`[p]su`コマンドを使わない限り、コグがロードされている間、コマンドでボットのオーナーがボットのオーナーとして認識されないようにします。\n"
+"    "
 
-#: sudo\sudo.py:100
+#: sudo\sudo.py:115
 #, docstring
 msgid "Sudo as the owner of the bot.\n\n"
 "        Use `[p]su`!\n"
@@ -31,7 +35,7 @@ msgstr "須藤をbotのオーナーにする。\n\n"
 "[p]su`を使用します！\n"
 "        "
 
-#: sudo\sudo.py:109
+#: sudo\sudo.py:124
 #, docstring
 msgid "Unsudo as normal user.\n\n"
 "        Use `[p]unsu`!\n"
@@ -40,7 +44,7 @@ msgstr "通常ユーザーでunsudoする。\n\n"
 "[p]unsu`を使用します！\n"
 "        "
 
-#: sudo\sudo.py:120
+#: sudo\sudo.py:135
 #, docstring
 msgid "Rise as the bot owner for the specified command only.\n\n"
 "        Use `[p]sudo`!\n"
@@ -49,7 +53,7 @@ msgstr "指定したコマンドのみボットオーナーとして立ち上が
 "[p]sudo`を使用します！\n"
 "        "
 
-#: sudo\sudo.py:148
+#: sudo\sudo.py:164
 #, docstring
 msgid "Sudo as the owner of the bot for the specified timeout.\n"
 "        The time should be between 10 seconds and 1 day.\n\n"

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:30\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:11\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -17,38 +17,56 @@ msgstr ""
 "X-Crowdin-File-ID: 152\n"
 "Language: ja_JP\n"
 
-#: urlbuttons\converters.py:35
+#: urlbuttons\converters.py:25
+msgid "It's not a valid public URL."
+msgstr "有効な公開URLではない。"
+
+#: urlbuttons\converters.py:50
 msgid "Emoji Url must be an emoji followed by a url separated by either `;`, `,`, `|`, or `-`."
 msgstr "絵文字Urlは、絵文字の後に`;`、`,`、`|`、`-`のいずれかで区切られたurlを指定する必要があります。"
-
-#: urlbuttons\converters.py:44 urlbuttons\urlbuttons.py:80
-msgid "Url must start with `https` or `http`."
-msgstr "Urlは`https`または`http`で始まる必要があります。"
 
 #: urlbuttons\urlbuttons.py:19
 #, docstring
 msgid "A cog to have url-buttons!"
 msgstr "url-buttonsを持つためのコグです！"
 
-#: urlbuttons\urlbuttons.py:65
+#: urlbuttons\urlbuttons.py:110
 #, docstring
 msgid "Add a url-button for a message."
 msgstr "メッセージのurl-buttonを追加する。"
 
-#: urlbuttons\urlbuttons.py:68 urlbuttons\urlbuttons.py:110
-#: urlbuttons\urlbuttons.py:174
+#: urlbuttons\urlbuttons.py:113 urlbuttons\urlbuttons.py:176
+#: urlbuttons\urlbuttons.py:253
 msgid "I have to be the author of the message for the url-button to work."
 msgstr "url-buttonが機能するためには、私がメッセージの著者である必要があります。"
 
-#: urlbuttons\urlbuttons.py:75
+#: urlbuttons\urlbuttons.py:122
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "指定されたメッセージがあるチャンネルのパーミッションが十分ではありません。\n"
+"そのチャンネルのメッセージを見るためのパーミッションが必要です。"
+
+#: urlbuttons\urlbuttons.py:127
+msgid "Url must start with `https` or `http`."
+msgstr "Urlは`https`または`http`で始まる必要があります。"
+
+#: urlbuttons\urlbuttons.py:130
+msgid "You have to specify at least an emoji or a label."
+msgstr "少なくとも絵文字かラベルを指定しなければならない。"
+
+#: urlbuttons\urlbuttons.py:137
 msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "選択した絵文字が無効のようです。絵文字であることを確認してください。Nitroをご利用の場合、他のサーバーのカスタム絵文字を使用した可能性があります。"
 
-#: urlbuttons\urlbuttons.py:86 urlbuttons\urlbuttons.py:131
+#: urlbuttons\urlbuttons.py:144 urlbuttons\urlbuttons.py:197
+msgid "This message already has components."
+msgstr "このメッセージはすでに構成要素を持っている。"
+
+#: urlbuttons\urlbuttons.py:148 urlbuttons\urlbuttons.py:201
 msgid "I can't do more than 25 url-buttons for one message."
 msgstr "1つのメッセージに対して25個以上のurl-buttonはできない。"
 
-#: urlbuttons\urlbuttons.py:104
+#: urlbuttons\urlbuttons.py:170
 #, docstring
 msgid "Add a url-button for a message.\n\n"
 "        ```[p]urlbuttons bulk <message> :red_circle:|<https://github.com/Cog-Creators/Red-DiscordBot> :smiley:|<https://github.com/Cog-Creators/Red-SmileyBot> :green_circle:|<https://github.com/Cog-Creators/Green-DiscordBot>```\n"
@@ -57,42 +75,70 @@ msgstr "メッセージにurl-buttonを追加する。\n\n"
 "        ```[p]urlbuttons bulk <message> :red_circle:|<https://github.com/Cog-Creators/Red-DiscordBot> :smiley:|<https://github.com/Cog-Creators/Red-SmileyBot> :green_circle:|<https://github.com/Cog-Creators/Green-DiscordBot>```\n"
 "        "
 
-#: urlbuttons\urlbuttons.py:114
+#: urlbuttons\urlbuttons.py:180
 msgid "You have not specified any valid url-button."
 msgstr "有効なurl-buttonが指定されていません。"
 
-#: urlbuttons\urlbuttons.py:122
+#: urlbuttons\urlbuttons.py:190
 msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "選択した絵文字が無効のようです。絵文字であることを確認してください。Nitroをご利用の場合、他のサーバーのカスタム絵文字を使用した可能性があります。"
 
-#: urlbuttons\urlbuttons.py:145
+#: urlbuttons\urlbuttons.py:221
 #, docstring
-msgid "Remove a url-button for a message."
-msgstr "メッセージのurl-buttonを削除する。"
+msgid "Remove a url-button for a message.\n\n"
+"        Use `[p]urlbuttons list <message>` to find the config identifier.\n"
+"        "
+msgstr "メッセージのurlボタンを削除する。\n\n"
+"        設定識別子を見つけるには `[p]urlbuttons list <message>` を使ってください。\n"
+"        "
 
-#: urlbuttons\urlbuttons.py:148
+#: urlbuttons\urlbuttons.py:227
 msgid "I have to be the author of the message for the role-button to work."
 msgstr "role-buttonが機能するためには、私がメッセージの作成者である必要があります。"
 
-#: urlbuttons\urlbuttons.py:153
+#: urlbuttons\urlbuttons.py:232 urlbuttons\urlbuttons.py:278
 msgid "No url-button is configured for this message."
 msgstr "このメッセージには、url-buttonは設定されていません。"
 
-#: urlbuttons\urlbuttons.py:157
+#: urlbuttons\urlbuttons.py:236
 msgid "I wasn't watching for this button on this message."
 msgstr "このメッセージでこのボタンを見ていたわけではありません。"
 
-#: urlbuttons\urlbuttons.py:171
+#: urlbuttons\urlbuttons.py:250
 #, docstring
 msgid "Clear all url-buttons for a message."
 msgstr "メッセージのURLボタンをすべて消去する。"
 
-#: urlbuttons\urlbuttons.py:179
+#: urlbuttons\urlbuttons.py:258
 msgid "No role-button is configured for this message."
 msgstr "このメッセージには、ロールボタンは設定されていません。"
 
-#: urlbuttons\urlbuttons.py:190
+#: urlbuttons\urlbuttons.py:266
+msgid "Url-buttons cleared for this message."
+msgstr "このメッセージのためにクリアされたURLボタン。"
+
+#: urlbuttons\urlbuttons.py:284
+msgid "No url-buttons in this server."
+msgstr "このサーバーにはURLボタンはありません。"
+
+#: urlbuttons\urlbuttons.py:293
+msgid "URL Buttons"
+msgstr "URLボタン"
+
+#: urlbuttons\urlbuttons.py:294
+msgid "There is {len_url_buttons} URL buttons in this server."
+msgstr "このサーバーには {len_url_buttons} URLボタンがある。"
+
+#: urlbuttons\urlbuttons.py:301
+msgid "Message Jump Link: {message_jump_link}\n"
+msgstr "メッセージジャンプリンク {message_jump_link}\n"
+
+#: urlbuttons\urlbuttons.py:317
 #, docstring
 msgid "Clear all url-buttons for a guild."
 msgstr "ギルドのurl-butonをすべて消去する。"
+
+#: urlbuttons\urlbuttons.py:319
+msgid "All url-buttons purged."
+msgstr "すべてのURLボタンが削除されました。"
 

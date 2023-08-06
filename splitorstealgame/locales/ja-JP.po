@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:32\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:11\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -26,11 +26,11 @@ msgstr "SplitOrStealゲームの対戦を行うためのコグです！"
 msgid "Join the game by clicking on the button below. 2 players will be selected randomly."
 msgstr "下のボタンをクリックして、ゲームに参加してください。2名のプレイヤーがランダムに選ばれます。"
 
-#: splitorstealgame\view.py:50
+#: splitorstealgame\view.py:49
 msgid "At least two players are needed to play."
 msgstr "プレイするには最低2人必要です。"
 
-#: splitorstealgame\view.py:60
+#: splitorstealgame\view.py:58
 msgid "The two players are {player_A.mention} and {player_B.mention}.\n"
 "You have to click the button that you choose (`split` or `steal`).\n"
 "• If you both choose `split` both of them win.\n"
@@ -50,35 +50,35 @@ msgstr "少なくとも1人のプレイヤーがプレイを中断している�
 msgid "{player_A.display_name} and {player_B.display_name}, you both chose `split` and therefore both win."
 msgstr "{player_A.display_name} と {player_B.display_name}、二人とも「スプリット」を選んだので、二人とも勝ちです。"
 
-#: splitorstealgame\view.py:91
+#: splitorstealgame\view.py:93
 msgid "{player_A.display_name} and {player_B.display_name}, you both chose `steal` and therefore both loose."
 msgstr "{player_A.display_name} と {player_B.display_name}、二人とも「盗む」を選んだので、二人ともルーズです。"
 
-#: splitorstealgame\view.py:95
-msgid "{player_A.display_name} chose `split` and {player_B.display_name} chose `steal`, and therefore {player_A.display_name} win."
-msgstr "{player_A.display_name} は`split`を選び、 {player_B.display_name} は`steal`を選んだので、 {player_A.display_name} の勝ちです。"
-
 #: splitorstealgame\view.py:99
-msgid "{player_B.display_name} chose `split` and {player_A.display_name} chose `steal`, and therefore {player_B.display_name} win."
-msgstr "{player_B.display_name} は`split`を選び、 {player_A.display_name} は`steal`を選んだので、 {player_B.display_name} の勝ちです。"
+msgid "{player_A.display_name} chose `steal` and {player_B.display_name} chose `split`, and therefore {player_A.display_name} win."
+msgstr "{player_A.display_name} は「スティール」を選び、 {player_B.display_name} は「スプリット」を選んだため、 {player_A.display_name} の勝利となった。"
 
-#: splitorstealgame\view.py:128
+#: splitorstealgame\view.py:105
+msgid "{player_B.display_name} chose `steal` and {player_A.display_name} chose `split`, and therefore {player_B.display_name} win."
+msgstr "{player_B.display_name} は「スティール」を選び、 {player_A.display_name} は「スプリット」を選んだため、 {player_B.display_name} の勝利となった。"
+
+#: splitorstealgame\view.py:137
 msgid "You have already joined this game."
 msgstr "あなたはすでにこのゲームに参加しています。"
 
-#: splitorstealgame\view.py:131
+#: splitorstealgame\view.py:141
 msgid "You have joined this game."
 msgstr "このゲームに参加されたのですね。"
 
-#: splitorstealgame\view.py:138 splitorstealgame\view.py:148
+#: splitorstealgame\view.py:149 splitorstealgame\view.py:164
 msgid "You have already chose `{original_response}`."
 msgstr "すでに`{original_response}`を選択されています。"
 
-#: splitorstealgame\view.py:141
+#: splitorstealgame\view.py:156
 msgid "You have chose `split`."
 msgstr "あなたは`split`を選択しました。"
 
-#: splitorstealgame\view.py:151
+#: splitorstealgame\view.py:171
 msgid "You have chose `steal`."
 msgstr "steal`を選択されました。"
 

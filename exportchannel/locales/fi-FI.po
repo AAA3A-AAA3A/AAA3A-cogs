@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:26\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:10\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Crowdin-File-ID: 146\n"
 "Language: fi_FI\n"
 
-#: exportchannel\exportchannel.py:18
+#: exportchannel\exportchannel.py:21
 msgid "Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\n"
 "Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "There are {count_messages} exported messages.\n"
@@ -27,24 +27,24 @@ msgstr "Tässä on kanavalla {channel.mention} ({channel.id}) olevien viestien t
 "Tässä on {count_messages} viedyt viestit.\n"
 "Muista, että muiden käyttäjien viestien vieminen Discordista ei noudata TOS:ia."
 
-#: exportchannel\exportchannel.py:21
+#: exportchannel\exportchannel.py:24
 msgid "[Click here to view the transcript.]({url})"
 msgstr "[Klikkaa tästä nähdäksesi transkripti.]({url})"
 
-#: exportchannel\exportchannel.py:28
+#: exportchannel\exportchannel.py:44
 #, docstring
 msgid "A cog to export all or part of a channel's messages to an html file!"
 msgstr "Ohjain, jolla voit viedä kaikki kanavan viestit tai osan niistä html-tiedostoon!"
 
-#: exportchannel\exportchannel.py:42
+#: exportchannel\exportchannel.py:67
 msgid "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
 msgstr "Anteeksi, mutta en pysty lukemaan viestien sisältöä osoitteessa {channel.mention} ({channel.id})."
 
-#: exportchannel\exportchannel.py:72
+#: exportchannel\exportchannel.py:97
 msgid "Sorry. I could not find any message."
 msgstr "Olen pahoillani. En löytänyt mitään viestiä."
 
-#: exportchannel\exportchannel.py:131
+#: exportchannel\exportchannel.py:157
 #, docstring
 msgid "Export all of a channel's messages to an html file.\n\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
@@ -55,7 +55,7 @@ msgstr "Vie kaikki kanavan viestit html-tiedostoon.\n\n"
 "        Muista, että muiden käyttäjien viestien vieminen Discordista ei noudata TOS:ia.\n"
 "        "
 
-#: exportchannel\exportchannel.py:159
+#: exportchannel\exportchannel.py:185
 #, docstring
 msgid "Export part of a channel's messages to an html file.\n\n"
 "        Specify the number of messages since the end of the channel.\n"
@@ -68,59 +68,59 @@ msgstr "Vie osa kanavan viesteistä html-tiedostoon.\n\n"
 "        Muista, että muiden käyttäjien viestien vieminen Discordista ei noudata TOS:ia.\n"
 "        "
 
-#: exportchannel\exportchannel.py:195
+#: exportchannel\exportchannel.py:221
 #, docstring
 msgid "Export part of a channel's messages to an html file.\n\n"
-"        Specify the before message (id or link).\n"
+"        Specify the before message (id or link) or a valid snowflake.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
 msgstr "Vie osa kanavan viesteistä html-tiedostoon.\n\n"
-"        Määritä viestiä edeltävä viesti (id tai linkki).\n"
+"        Määritä ennen viesti (id tai linkki) tai kelvollinen lumihiutale.\n"
 "        Huomaa: kaikki liitetiedostot ja käyttäjän avatarit tallennetaan Discord-linkin kanssa tähän tiedostoon.\n"
 "        Muista, että muiden käyttäjien viestien vieminen Discordista ei noudata TOS:ia.\n"
 "        "
 
-#: exportchannel\exportchannel.py:229
+#: exportchannel\exportchannel.py:253
 #, docstring
 msgid "Export part of a channel's messages to an html file.\n\n"
-"        Specify the after message (id or link).\n"
+"        Specify the after message (id or link) or a valid snowflake.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
 msgstr "Vie osa kanavan viesteistä html-tiedostoon.\n\n"
-"        Määritä viestin jälkeinen viesti (id tai linkki).\n"
+"        Määritä viestin jälkeinen viesti (id tai linkki) tai kelvollinen lumihiutale.\n"
 "        Huomaa: kaikki liitetiedostot ja käyttäjän avatarit tallennetaan Discord-linkin kanssa tähän tiedostoon.\n"
 "        Muista, että muiden käyttäjien viestien vieminen Discordista ei noudata TOS:ia.\n"
 "        "
 
-#: exportchannel\exportchannel.py:264
+#: exportchannel\exportchannel.py:286
 #, docstring
 msgid "Export part of a channel's messages to an html file.\n\n"
-"        Specify the before and after messages (id or link).\n"
+"        Specify the before and after messages (id or link) or a valid snowflake.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
 msgstr "Vie osa kanavan viesteistä html-tiedostoon.\n\n"
-"        Määritä viestejä edeltävät ja seuraavat viestit (id tai linkki).\n"
+"        Määritä ennen ja jälkeen viestit (id tai linkki) tai kelvollinen lumihiutale.\n"
 "        Huomaa: kaikki liitetiedostot ja käyttäjän avatarit tallennetaan Discord-linkin kanssa tähän tiedostoon.\n"
 "        Muista, että muiden käyttäjien viestien vieminen Discordista ei noudata TOS:ia.\n"
 "        "
 
-#: exportchannel\exportchannel.py:299
+#: exportchannel\exportchannel.py:321
 #, docstring
 msgid "Export part of a channel's messages to an html file.\n\n"
-"        Specify the member (id, name or mention).\n"
+"        Specify the user/member (id, name or mention).\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
 msgstr "Vie osa kanavan viesteistä html-tiedostoon.\n\n"
-"        Määritä jäsen (id, nimi tai maininta).\n"
-"        Huomaa: kaikki liitetiedostot ja käyttäjän avatarit tallennetaan tässä tiedostossa olevan Discord-linkin kanssa.\n"
+"        Määritä käyttäjä/jäsen (id, nimi tai maininta).\n"
+"        Huomaa: kaikki liitetiedostot ja käyttäjän avatarit tallennetaan Discord-linkin kanssa tähän tiedostoon.\n"
 "        Muista, että muiden käyttäjien viestien vieminen Discordista ei noudata TOS:ia.\n"
 "        "
 
-#: exportchannel\exportchannel.py:337
+#: exportchannel\exportchannel.py:359
 #, docstring
 msgid "Export part of a channel's messages to an html file.\n\n"
 "        Specify the bool option.\n"

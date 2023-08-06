@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:28\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:10\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -17,72 +17,72 @@ msgstr ""
 "X-Crowdin-File-ID: 84\n"
 "Language: ja_JP\n"
 
-#: discordmodals\discordmodals.py:27
+#: discordmodals\discordmodals.py:58
 msgid "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)"
 msgstr "YAMLのパースでエラーが発生しました。フォーマットが有効であることを確認してください（YAMLバリデーターが役立つかもしれません）。"
 
-#: discordmodals\discordmodals.py:37
+#: discordmodals\discordmodals.py:68
 msgid "The argument `/{arg}` is required in the root in the YAML."
 msgstr "引数 `/{arg}` は、YAML内のルートで必要です。"
 
-#: discordmodals\discordmodals.py:42
-msgid "The agument `/{arg}` is invalid in in the YAML. Check the spelling."
-msgstr "YAML 内のアギュメント `/{arg}` は無効です。スペルを確認してください。"
+#: discordmodals\discordmodals.py:73
+msgid "The argument `/{arg}` is invalid in in the YAML. Check the spelling."
+msgstr "YAML の引数 `/{arg}` が無効です。スペルを確認してください。"
 
-#: discordmodals\discordmodals.py:52
+#: discordmodals\discordmodals.py:83
 msgid "The argument `/button/{arg}` is required in the YAML."
 msgstr "YAML では、引数 `/button/{arg}` が必要です。"
 
-#: discordmodals\discordmodals.py:57
-msgid "The agument `/button/{arg}` is invalid in the YAML. Check the spelling."
-msgstr "YAML のアギュメント `/button/{arg}` は無効です。スペルを確認してください。"
+#: discordmodals\discordmodals.py:88
+msgid "The argument `/button/{arg}` is invalid in the YAML. Check the spelling."
+msgstr "YAML の引数 `/button/{arg}` が無効です。スペルを確認してください。"
 
-#: discordmodals\discordmodals.py:67 discordmodals\discordmodals.py:71
-msgid "The agument `/button/style` must be a number between 1 and 4."
-msgstr "引数 `/button/style` には、1 から 4 までの数字を指定する必要があります。"
+#: discordmodals\discordmodals.py:102 discordmodals\discordmodals.py:106
+msgid "The argument `/button/style` must be a number between 1 and 4."
+msgstr "引数 `/button/style` には1から4までの数値を指定する。"
 
-#: discordmodals\discordmodals.py:79
+#: discordmodals\discordmodals.py:114
 msgid "The argument `/button/modal` must be a list of TextInputs."
 msgstr "引数 `/button/modal` はTextInputsのリストでなければならない。"
 
-#: discordmodals\discordmodals.py:95
+#: discordmodals\discordmodals.py:130
 msgid "The argument `/modal/{count}/{arg}` is required in the YAML."
 msgstr "YAMLでは、引数 `/modal/{count}/{arg}` が必要です。"
 
-#: discordmodals\discordmodals.py:102
-msgid "The agument `/modal/{count}/{arg}` is invalid in the YAML. Check the spelling."
-msgstr "YAML のアギュメント `/modal/{count}/{arg}` は無効です。スペルを確認してください。"
+#: discordmodals\discordmodals.py:137
+msgid "The argument `/modal/{count}/{arg}` is invalid in the YAML. Check the spelling."
+msgstr "YAML の引数 `/modal/{count}/{arg}` が無効です。スペルを確認してください。"
 
-#: discordmodals\discordmodals.py:112 discordmodals\discordmodals.py:118
-msgid "The agument `/modal/{count}/style` must be a number between 1 and 2."
-msgstr "アグメンテーション `/modal/{count}/style` は 1 から 2 の間の数字でなければなりません。"
+#: discordmodals\discordmodals.py:147 discordmodals\discordmodals.py:153
+msgid "The argument `/modal/{count}/style` must be a number between 1 and 2."
+msgstr "引数 `/modal/{count}/style` には1と2の間の数値を指定する。"
 
-#: discordmodals\discordmodals.py:141
-msgid "The agument `/modal/{count}/required` must be a boolean (True or False)."
-msgstr "アグメンテーション `/modal/{count}/required` はブーリアン（True または False）でなければならない。"
+#: discordmodals\discordmodals.py:176
+msgid "The argument `/modal/{count}/required` must be a boolean (True or False)."
+msgstr "引数 `/modal/{count}/required` には真偽値を指定する。"
 
-#: discordmodals\discordmodals.py:187
+#: discordmodals\discordmodals.py:227
 #, docstring
 msgid "A cog to use Discord Modals, forms with graphic interface!"
 msgstr "Discord Modalsを利用するための歯車で、グラフィックインターフェイスを持つフォームです！"
 
-#: discordmodals\discordmodals.py:305 discordmodals\discordmodals.py:366
+#: discordmodals\discordmodals.py:361 discordmodals\discordmodals.py:431
 msgid "Sorry. An error has occurred."
 msgstr "申し訳ありません。エラーが発生しました。"
 
-#: discordmodals\discordmodals.py:321
+#: discordmodals\discordmodals.py:377
 msgid "The channel in which I was to send the results of this Modal no longer exists. Please notify an administrator of this server."
 msgstr "このModalの結果を送信する予定だったチャンネルが存在しなくなりました。このサーバーの管理者にお知らせください。"
 
-#: discordmodals\discordmodals.py:333
+#: discordmodals\discordmodals.py:392
 msgid "I don't have sufficient permissions in the destination channel (view channel, send messages, send embeds). Please notify an administrator of this server."
 msgstr "送信先チャンネルに十分な権限がありません（チャンネルの表示、メッセージの送信、エンベッドの送信）。このサーバーの管理者にお知らせください。"
 
-#: discordmodals\discordmodals.py:370
+#: discordmodals\discordmodals.py:435
 msgid "Thank you for sending this Modal!"
 msgstr "このモーダルを送信していただき、ありがとうございます！"
 
-#: discordmodals\discordmodals.py:395
+#: discordmodals\discordmodals.py:460
 #, docstring
 msgid "Add a Modal for a message.\n\n"
 "        Use YAML syntax to set up everything.\n\n"
@@ -107,63 +107,77 @@ msgid "Add a Modal for a message.\n\n"
 "        messages:\n"
 "          error: Error!\n"
 "          submit: Form submitted.\n"
+"        pings: user1, user2, role1, role2\n"
 "        ```\n"
-"        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous` and `messages` are not required.\n"
+"        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous`, `messages` and `pings` are not required.\n"
 "        "
 msgstr "メッセージ用のモーダルを追加する。\n\n"
-"        YAML構文を使って、すべてを設定します。\n\n"
-"        **Example:**\n"
+"        YAML構文を使ってすべてを設定します。\n\n"
+"        **例:**\n"
 "        ```\n"
 "        [p]discordmodals add <message>\n"
 "        title：バグを報告する\n"
 "        ボタン:\n"
 "          ラベル：報告\n"
 "          絵文字: ⚠️\n"
-"          style：4 # blurple = 1, grey = 2, green = 3, red = 4\n"
-"        modal:\n"
+"          style：4 # blurple = 1, gray = 2, green = 3, red = 4\n"
+"        モーダル:\n"
 "          - label：\n"
 "            style: 2 # short = 1, paragraph = 2\n"
-"            required：True\n"
-"            デフォルトです：なし\n"
+"            必須：true\n"
+"            デフォルト：なし\n"
 "            プレースホルダ：なし\n"
 "            min_length：なし\n"
-"            max_length：None\n"
+"            max_length：なし\n"
 "        channel: general # id, mention, name\n"
 "        anonymous：False\n"
 "        messages:\n"
 "          error：エラー！\n"
-"          submit：フォームが送信されました。\n"
+"          submit：\n"
+"        pings: user1, user2, role1, role2\n"
 "        ```\n"
-"        `emoji`、`style`、`required`、`default`、`placeholder`、`min_length`、`max_length`、`channel`、`anonymous`と`messages`は必須ではありません。\n"
+"        `emoji`、`style`、`required`、`default`、`placeholder`、`min_length`、`max_length`、`channel`、`anonymous`、`messages`、`pings` は必須ではありません。\n"
 "        "
 
-#: discordmodals\discordmodals.py:425
+#: discordmodals\discordmodals.py:491
 msgid "I have to be the author of the message for the button to work."
 msgstr "ボタンが機能するためには、私がメッセージの作成者である必要があります。"
 
-#: discordmodals\discordmodals.py:429
+#: discordmodals\discordmodals.py:495
 msgid "This message already has a Modal."
 msgstr "このメッセージはすでにモーダルを持っています。"
 
-#: discordmodals\discordmodals.py:442
+#: discordmodals\discordmodals.py:497
+msgid "This message already has components."
+msgstr "このメッセージはすでに構成要素を持っている。"
+
+#: discordmodals\discordmodals.py:510
 msgid "Sorry. An error occurred when I tried to put the button on the message."
 msgstr "申し訳ありません。メッセージにボタンをつけようとしたらエラーになりました。"
 
-#: discordmodals\discordmodals.py:482
+#: discordmodals\discordmodals.py:548
+msgid "Modal created."
+msgstr "モーダルが作成された。"
+
+#: discordmodals\discordmodals.py:552
 #, docstring
 msgid "Remove a Modal for a message."
 msgstr "メッセージのモーダルを削除する。"
 
-#: discordmodals\discordmodals.py:485
+#: discordmodals\discordmodals.py:555
 msgid "I have to be the author of the message for the Modal to work."
 msgstr "モーダルが動作するためには、私がメッセージの作成者である必要があります。"
 
-#: discordmodals\discordmodals.py:489
+#: discordmodals\discordmodals.py:559
 msgid "No Modal is configured for this message."
 msgstr "このメッセージには Modal は設定されていません。"
 
-#: discordmodals\discordmodals.py:499
+#: discordmodals\discordmodals.py:569
 #, docstring
 msgid "Clear all Modals for a guild."
 msgstr "ギルドの全モダルをクリアする。"
+
+#: discordmodals\discordmodals.py:571
+msgid "All Modals purged."
+msgstr "全モダルがパージされた。"
 

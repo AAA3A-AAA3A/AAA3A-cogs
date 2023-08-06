@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:30\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:09\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -22,11 +22,11 @@ msgstr ""
 msgid "A cog to play to Memory game, with buttons, leaderboard and Red bank!"
 msgstr "Un jeu de mémoire à jouer, avec des boutons, un classement et une banque rouge !"
 
-#: memorygame\memorygame.py:171
+#: memorygame\memorygame.py:174
 msgid "No one has played this game yet."
 msgstr "Personne n'a encore joué à ce jeu."
 
-#: memorygame\memorygame.py:214
+#: memorygame\memorygame.py:217
 #, docstring
 msgid "Reset leaderboard in the guild."
 msgstr "Remise à zéro du classement dans la guilde."
@@ -35,7 +35,11 @@ msgstr "Remise à zéro du classement dans la guilde."
 msgid "You won in {game_time} seconds, with {tries} tries and {wrong_matches} wrong matches!"
 msgstr "Vous avez gagné en {game_time} secondes, avec {tries} essais et {wrong_matches} fausses correspondances !"
 
-#: memorygame\view.py:252
+#: memorygame\view.py:236
+msgid " You win {final_prize} credits on the bank economy system!"
+msgstr " Vous gagnez {final_prize} crédits sur le système d'économie bancaire !"
+
+#: memorygame\view.py:256
 msgid "You lose, because you tried too many times ({tries} tries and {wrong_matches} wrong matches)."
 msgstr "Vous perdez parce que vous avez essayé trop de fois ({tries} essais et {wrong_matches} mauvaises correspondances)."
 

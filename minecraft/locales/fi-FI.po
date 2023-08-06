@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:32\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:10\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -34,68 +34,106 @@ msgstr "{argument} löytyy, mutta sen UUID-tunnus on väärä."
 msgid "A cog to display informations about Minecraft Java users and servers, and notify for each change of a server!"
 msgstr "Tietojen näyttämiseen Minecraft Java -käyttäjistä ja palvelimista, ja ilmoittaa jokaisesta palvelimen muutoksesta!"
 
-#: minecraft\minecraft.py:161
+#: minecraft\minecraft.py:196
 msgid "Latency"
 msgstr "Viive"
 
-#: minecraft\minecraft.py:163
+#: minecraft\minecraft.py:198
 msgid "Players"
 msgstr "Pelaajat"
 
-#: minecraft\minecraft.py:181
+#: minecraft\minecraft.py:216
 msgid "Version"
 msgstr "Versio"
 
-#: minecraft\minecraft.py:182
-msgid "Protocol: {}"
-msgstr "Pöytäkirja: {}"
-
-#: minecraft\minecraft.py:222
+#: minecraft\minecraft.py:256
 #, docstring
 msgid "Get Minecraft Java player skin by name."
 msgstr "Hae Minecraftin Java-pelaajan iho nimen perusteella."
 
-#: minecraft\minecraft.py:245
+#: minecraft\minecraft.py:279
 msgid "Unable to get data from Crafatar: {}"
 msgstr "Tietoja ei saada Crafatarista: {}"
 
-#: minecraft\minecraft.py:257
+#: minecraft\minecraft.py:291
 msgid "Provided by Crafatar."
 msgstr "Toimittanut Crafatar."
 
-#: minecraft\minecraft.py:262
+#: minecraft\minecraft.py:297
 #, docstring
 msgid "Get informations about a Minecraft Java server."
 msgstr "Hanki tietoa Minecraft Java -palvelimesta."
 
-#: minecraft\minecraft.py:270
-msgid "No data could be found on this Minecraft server. Maybe it doesn't exist or the data is temporarily unavailable."
-msgstr "Tältä Minecraft-palvelimelta ei löytynyt tietoja. Ehkä sitä ei ole olemassa tai tiedot eivät ole tilapäisesti saatavilla."
+#: minecraft\minecraft.py:303 minecraft\minecraft.py:338
+msgid "No data found for this Minecraft server. Maybe it doesn't exist or its data are temporarily unavailable."
+msgstr "Tästä Minecraft-palvelimesta ei löytynyt tietoja. Ehkä sitä ei ole olemassa tai sen tiedot eivät ole tilapäisesti saatavilla."
 
-#: minecraft\minecraft.py:282
+#: minecraft\minecraft.py:315
 #, docstring
 msgid "Add a Minecraft Java server in Config to get automatically new status."
 msgstr "Lisää Minecraft Java -palvelin Configiin saadaksesi automaattisesti uuden tilan."
 
-#: minecraft\minecraft.py:287
+#: minecraft\minecraft.py:326
+msgid "I don't have sufficient permissions in this channel to send messages with embeds."
+msgstr "Minulla ei ole riittäviä oikeuksia tällä kanavalla lähettää viestejä, joissa on upotuksia."
+
+#: minecraft\minecraft.py:332
 msgid "This server has already been added."
 msgstr "Tämä palvelin on jo lisätty."
 
-#: minecraft\minecraft.py:296 minecraft\minecraft.py:310
+#: minecraft\minecraft.py:346
+msgid "Server added to this channel."
+msgstr "Palvelin lisätty tälle kanavalle."
+
+#: minecraft\minecraft.py:353
 #, docstring
 msgid "Remove a Minecraft Java server in Config."
 msgstr "Poista Minecraftin Java-palvelin Configissa."
 
-#: minecraft\minecraft.py:301
+#: minecraft\minecraft.py:358
 msgid "This server isn't in the Config."
 msgstr "Tämä palvelin ei ole Configissa."
 
-#: minecraft\minecraft.py:321
+#: minecraft\minecraft.py:363
+msgid "Server removed from this channel."
+msgstr "Palvelin poistettu tältä kanavalta."
+
+#: minecraft\minecraft.py:370
+#, docstring
+msgid "Include players joining or leaving the server in notifications."
+msgstr "Sisällytä palvelimelle liittyvät tai palvelimelta lähtevät pelaajat ilmoituksiin."
+
+#: minecraft\minecraft.py:377
+msgid "I will not check players for the notifications."
+msgstr "En tarkista pelaajien ilmoituksia."
+
+#: minecraft\minecraft.py:379
+msgid "I will check players for the notifications."
+msgstr "Tarkistan pelaajien ilmoitukset."
+
+#: minecraft\minecraft.py:386
+#, docstring
+msgid "Edit the last message sent for changes."
+msgstr "Muokkaa viimeksi lähetettyä viestiä muutoksia varten."
+
+#: minecraft\minecraft.py:391
+msgid "I will not edit my last message for the notifications."
+msgstr "En muokkaa viimeistä viestiäni ilmoitusten vuoksi."
+
+#: minecraft\minecraft.py:393
+msgid "I will edit my last message for the notifications."
+msgstr "Muokkaan viimeistä viestiäni ilmoitusten osalta."
+
+#: minecraft\minecraft.py:398
 #, docstring
 msgid "Force check Minecraft Java servers in Config."
 msgstr "Pakota tarkistamaan Minecraft Java -palvelimet Configissa."
 
-#: minecraft\minecraft.py:328
+#: minecraft\minecraft.py:400
+msgid "Servers checked."
+msgstr "Palvelimet tarkistettu."
+
+#: minecraft\minecraft.py:406
 #, docstring
 msgid "Get an embed for check loop status."
 msgstr "Hae upotus silmukan tilan tarkistamista varten."

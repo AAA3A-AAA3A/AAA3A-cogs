@@ -1,0 +1,90 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:11\n"
+"Last-Translator: \n"
+"Language-Team: Greek\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: el\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/consolelogs/locales/messages.pot\n"
+"X-Crowdin-File-ID: 261\n"
+"Language: el_GR\n"
+
+#: consolelogs\consolelogs.py:92
+#, docstring
+msgid "A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!"
+msgstr "Ένα γρανάζι για την εμφάνιση των αρχείων καταγραφής της κονσόλας, με κουμπιά και επιλογές φίλτρου, και για την αποστολή εντολών σφαλμάτων σε διαμορφωμένα κανάλια!"
+
+#: consolelogs\consolelogs.py:243
+msgid "No logs to display."
+msgstr "Δεν υπάρχουν αρχεία καταγραφής για εμφάνιση."
+
+#: consolelogs\consolelogs.py:380
+#, docstring
+msgid "View the console logs one by one, for all levels/loggers or provided level/logger name."
+msgstr "Προβολή των αρχείων καταγραφής της κονσόλας ένα προς ένα, για όλα τα επίπεδα/καταχωρητές ή για το όνομα του επιπέδου/καταχωρητή που παρέχεται."
+
+#: consolelogs\consolelogs.py:395
+#, docstring
+msgid "View the `ERROR` console logs one by one, for all loggers or a provided logger name."
+msgstr "Προβολή των αρχείων καταγραφής της κονσόλας `ERROR` ένα προς ένα, για όλους τους καταγραφείς ή για ένα όνομα καταγραφέα που παρέχεται."
+
+#: consolelogs\consolelogs.py:423 consolelogs\consolelogs.py:434
+#, docstring
+msgid "Scroll the console logs, for all levels/loggers or provided level/logger name."
+msgstr "Κύλιση των αρχείων καταγραφής της κονσόλας, για όλα τα επίπεδα/καταγραφείς ή για το όνομα επιπέδου/καταγραφέα που παρέχεται."
+
+#: consolelogs\consolelogs.py:464
+#, docstring
+msgid "Enable errors logging in a channel.\n\n"
+"        **Parameters:**\n"
+"        - `channel`: The channel where the commands errors will be sent.\n"
+"        - `global_errors`: Log errors for the entire bot, not just the channel server.\n"
+"        - `prefixed_commands_errors`: Log prefixed commands errors.\n"
+"        - `slash_commands_errors`: Log slash commands errors.\n"
+"        - `dpy_ignored_exceptions`: Log dpy ignored exceptions (events listeners and Views errors).\n"
+"        - `guild_invite`: Add a button \"Guild Invite\" in commands errors logs, only for community servers.\n"
+"        "
+msgstr "Ενεργοποίηση της καταγραφής σφαλμάτων σε ένα κανάλι.\n\n"
+"        **Παράμετροι:**\n"
+"        - `κανάλι`: Το κανάλι στο οποίο θα αποστέλλονται τα σφάλματα των εντολών.\n"
+"        - `global_errors`: Καταγραφή σφαλμάτων για ολόκληρο το bot, όχι μόνο για τον διακομιστή του καναλιού.\n"
+"        - `prefixed_commands_errors`: Καταγραφή σφαλμάτων εντολών με πρόθεμα.\n"
+"        - `slash_commands_errors`: Καταγραφή σφαλμάτων εντολών slash.\n"
+"        - `dpy_ignored_exceptions`: Καταγραφή εξαιρέσεων που αγνοούνται από το dpy (σφάλματα ακροατών συμβάντων και Views).\n"
+"        - `guild_invite`: Προσθήκη ενός κουμπιού \"Guild Invite\" στα αρχεία καταγραφής σφαλμάτων εντολών, μόνο για διακομιστές κοινότητας.\n"
+"        "
+
+#: consolelogs\consolelogs.py:483
+msgid "I don't have the permissions to send embeds in this channel."
+msgstr "Δεν έχω τα δικαιώματα για να στέλνω ενσωματώσεις σε αυτό το κανάλι."
+
+#: consolelogs\consolelogs.py:491
+msgid "Errors logging enabled in {channel.mention}."
+msgstr "Η καταγραφή σφαλμάτων είναι ενεργοποιημένη στο {channel.mention}."
+
+#: consolelogs\consolelogs.py:495
+#, docstring
+msgid "Disable errors logging in a channel."
+msgstr "Απενεργοποίηση της καταγραφής σφαλμάτων σε ένα κανάλι."
+
+#: consolelogs\consolelogs.py:498
+msgid "Errors logging isn't enabled in this channel."
+msgstr "Η καταγραφή σφαλμάτων δεν είναι ενεργοποιημένη σε αυτό το κανάλι."
+
+#: consolelogs\consolelogs.py:501
+msgid "Errors logging disabled in {channel.mention}."
+msgstr "Η καταγραφή σφαλμάτων είναι απενεργοποιημένη στο {channel.mention}."
+
+#: consolelogs\consolelogs.py:505
+#, docstring
+msgid "Get an embed to check loops status."
+msgstr "Πάρτε μια ενσωμάτωση για να ελέγξετε την κατάσταση των βρόχων."
+

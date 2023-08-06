@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 18:22\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:10\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -19,10 +19,14 @@ msgstr ""
 
 #: editfile\editfile.py:28
 #, docstring
-msgid "A cog to get a file and replace it from its path from Discord!"
-msgstr "Discordからファイルを取得し、そのパスから置き換えるための歯車！"
+msgid "A cog to get a file and replace it from its path from Discord!\n\n"
+"    ⚠️ This cog can be very dangerous, since it allows direct read/write/delete of files on the bot’s machine, considering the fact that reading the wrong file can expose sensitive information like tokens and deleting the wrong file can corrupt the bot or the system entirely.\n"
+"    "
+msgstr "Discord からファイルを取得し、そのパスから置き換えるための歯車です！\n\n"
+"    ⚠️ この歯車はボットのマシン上のファイルを直接読み書き・削除することができるため、非常に危険です。間違ったファイルを読むとトークンのような機密情報が漏洩する可能性があり、間違ったファイルを削除するとボットやシステムが完全に破壊される可能性があります。\n"
+"    "
 
-#: editfile\editfile.py:50
+#: editfile\editfile.py:59
 #, docstring
 msgid "Get a file on the bot's host machine from its path.\n"
 "        `#L10` or `#L10-L30` is supported.\n"
@@ -31,37 +35,37 @@ msgstr "ボットのホストマシン上のファイルをパスから取得す
 "        L10`または`#L10-L30`がサポートされている。\n"
 "        "
 
-#: editfile\editfile.py:55 editfile\editfile.py:131
+#: editfile\editfile.py:64 editfile\editfile.py:140
 msgid "Couldn't parse this input."
 msgstr "この入力をパースできませんでした。"
 
-#: editfile\editfile.py:67
+#: editfile\editfile.py:76
 msgid "Cowardly refusing to read a file with no size stat. (it may be empty, endless or inaccessible)."
 msgstr "サイズ統計のないファイルの読み込みを拒否する卑怯者。(空だったり、エンドレスだったり、アクセス不能だったりします)。"
 
-#: editfile\editfile.py:73
+#: editfile\editfile.py:82
 msgid "Cowardly refusing to read a file >128MB."
 msgstr "128MBを超えるファイルの読み込みを拒否する卑怯者。"
 
-#: editfile\editfile.py:91 editfile\editfile.py:256 editfile\editfile.py:266
-#: editfile\editfile.py:279 editfile\editfile.py:290
+#: editfile\editfile.py:100 editfile\editfile.py:261 editfile\editfile.py:271
+#: editfile\editfile.py:284 editfile\editfile.py:295
 msgid "This file cannot be found on the host machine."
 msgstr "このファイルはホストマシンで見つけることができません。"
 
-#: editfile\editfile.py:95 editfile\editfile.py:158 editfile\editfile.py:260
-#: editfile\editfile.py:270 editfile\editfile.py:283 editfile\editfile.py:294
+#: editfile\editfile.py:104 editfile\editfile.py:167 editfile\editfile.py:265
+#: editfile\editfile.py:275 editfile\editfile.py:288 editfile\editfile.py:299
 msgid "The path you specified refers to a directory, not a file."
 msgstr "指定したパスは、ファイルではなく、ディレクトリを指しています。"
 
-#: editfile\editfile.py:115 editfile\editfile.py:149
+#: editfile\editfile.py:124 editfile\editfile.py:158
 msgid "There are only {len_lines} lines in this file."
 msgstr "このファイルには、 {len_lines} 行しかありません。"
 
-#: editfile\editfile.py:120
+#: editfile\editfile.py:129
 msgid "Here are the contents of the file `{path}`."
 msgstr "以下は、ファイル `{path}` の内容です。"
 
-#: editfile\editfile.py:125
+#: editfile\editfile.py:134
 #, docstring
 msgid "Replace a file on the bot's host machine from its path.\n"
 "        `#L10` or `#L10-L30` is supported.\n"
@@ -70,59 +74,59 @@ msgstr "ボットのホストマシンにあるファイルをそのパスから
 "        L10`または`#L10-L30`がサポートされている。\n"
 "        "
 
-#: editfile\editfile.py:154
+#: editfile\editfile.py:163
 msgid "This original file cannot be found on the host machine."
 msgstr "このオリジナルファイルは、ホストマシン上で見つけることができません。"
 
-#: editfile\editfile.py:162
+#: editfile\editfile.py:171
 msgid "You must send the command with an attachment that will be used to replace the original file."
 msgstr "元のファイルを置き換えるために使用される添付ファイルと共にコマンドを送信する必要があります。"
 
-#: editfile\editfile.py:187
+#: editfile\editfile.py:196
 msgid "This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly."
 msgstr "これは、パス `{path}` で利用できるオリジナル/古いファイルです。通常、このファイルは正しく置き換えられています。"
 
-#: editfile\editfile.py:195
+#: editfile\editfile.py:204
 #, docstring
 msgid "Get a cog directory on the bot's host machine from its name."
 msgstr "ボットのホストマシン上のcogディレクトリを名前から取得する。"
 
-#: editfile\editfile.py:198
+#: editfile\editfile.py:207
 msgid "Could not find a cog with this name."
 msgstr "この名前を持つコグは見つかりませんでした。"
 
-#: editfile\editfile.py:205
-msgid "This cog had its data directory removed."
-msgstr "この歯車は、データディレクトリが削除されていました。"
+#: editfile\editfile.py:213
+msgid "This cog has not yet stored any persistent data in its data folder."
+msgstr "この歯車はまだデータフォルダに永続的なデータを保存していない。"
 
-#: editfile\editfile.py:207
-msgid "This cog does not store any data."
-msgstr "このコグは、データを保存しません。"
-
-#: editfile\editfile.py:228
+#: editfile\editfile.py:233
 #, docstring
 msgid "List all files/directories of a directory from its path."
 msgstr "ディレクトリのパスから、そのディレクトリのすべてのファイル/ディレクトリをリストアップする。"
 
-#: editfile\editfile.py:232
+#: editfile\editfile.py:237
 msgid "This directory cannot be found on the host machine."
 msgstr "このディレクトリはホストマシンで見つけることができません。"
 
-#: editfile\editfile.py:236
+#: editfile\editfile.py:241
 msgid "The path you specified refers to a file, not a directory."
 msgstr "指定されたパスは、ディレクトリではなく、ファイルを指しています。"
 
-#: editfile\editfile.py:252
+#: editfile\editfile.py:257
 #, docstring
 msgid "Rename a file."
 msgstr "ファイル名を変更する。"
 
-#: editfile\editfile.py:272 editfile\editfile.py:296
-msgid "The `{path}` file has been deleted."
-msgstr "{path}`のファイルは削除されました。"
+#: editfile\editfile.py:277
+msgid "The `{path}` file has been renamed."
+msgstr "{path}` ファイルの名前が変更されました。"
 
-#: editfile\editfile.py:276
+#: editfile\editfile.py:281
 #, docstring
 msgid "Delete a file."
 msgstr "ファイルを削除する。"
+
+#: editfile\editfile.py:301
+msgid "The `{path}` file has been deleted."
+msgstr "{path}`のファイルは削除されました。"
 

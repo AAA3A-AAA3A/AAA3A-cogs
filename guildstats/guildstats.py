@@ -953,7 +953,8 @@ class GuildStats(Cog):
         while abs(number) >= 1000 and index < len(suffixes) - 1:
             number /= 1000.0
             index += 1
-        return f"{int(number) if number == int(number) else (f'{number:.1f}' if f'{number:.1f}' != '0.0' else (f'{number:.2f}' if f'{number:.2f}' != '0.0' else '0'))}{suffixes[index]}"
+        # return f"{int(number) if number == int(number) else (f'{number:.1f}' if f'{number:.1f}' != '0.0' else (f'{number:.2f}' if f'{number:.2f}' != '0.0' else '0'))}{suffixes[index]}"
+        return f"{int(number) if number == int(number) else ((int(float(f'{number:.1f}')) if float(f'{number:.1f}') == int(float(f'{number:.1f}')) else f'{number:.1f}') if f'{number:.1f}' != '0.0' else ((int(float(f'{number:.2f}')) if float(f'{number:.2f}') == int(float(f'{number:.2f}')) else f'{number:.2f}') if f'{number:.2f}' != '0.0' else '0'))}{suffixes[index]}"
 
     async def generate_prefix_image(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], size: typing.Tuple[int, int] = (1942, 1026), to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
         if isinstance(_object, typing.Tuple):

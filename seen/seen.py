@@ -1423,7 +1423,7 @@ class Seen(Cog):
     async def ignoreme(self, ctx: commands.Context) -> None:
         """Asking Seen to ignore your actions."""
         user = ctx.author
-        ignored_users = await self.config.ignored_users()
+        ignored_users: typing.List[int] = await self.config.ignored_users()
         if user.id not in ignored_users:
             ignored_users.append(user.id)
             await self.red_delete_data_for_user(requester="user", user_id=user.id)
@@ -1442,7 +1442,7 @@ class Seen(Cog):
     @seen.command()
     async def ignoreuser(self, ctx: commands.Context, *, user: discord.User):
         """Ignore or unignore a specific user."""
-        ignored_users: list = await self.config.ignored_users()
+        ignored_users: typing.List[int] = await self.config.ignored_users()
         if user.id not in ignored_users:
             ignored_users.append(user.id)
             await self.red_delete_data_for_user(requester="user", user_id=user.id)

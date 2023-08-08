@@ -243,6 +243,11 @@ class DevOutput(dev_commands.DevOutput):
                 line = return_found.lineno - 2
             _raw_source = self.raw_source.split("\n")
             _raw_source.insert(line, textwrap.indent("dev_output._locals.update(**locals())", ""))
+            # `yield` like in Jishaku.
+            for line, line_text in enumerate(_raw_source.copy()):
+                _line_text = textwrap.dedent(line_text)
+                if _line_text.startswith("yield "):
+                    _raw_source[line] = textwrap.indent(f"print(repr({_line_text[6:]}))", (len(line_text) - len(_line_text)) * " ")
             self.raw_source = "\n".join(_raw_source)
         except SyntaxError:
             pass

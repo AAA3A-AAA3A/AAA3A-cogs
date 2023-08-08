@@ -62,23 +62,31 @@ class GuildStatsView(discord.ui.View):
     async def change_mode(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        await interaction.response.defer()
+        await interaction.response.defer(thinking=True)
         self.graphic_mode: bool = not self.graphic_mode
         if self.graphic_mode:
             file: discord.File = await self.cog.generate_graphic(self._object, members_type=self.members_type, to_file=True)
         else:
             file: discord.File = await self.cog.generate_image(self._object, members_type=self.members_type, show_graphic=self.show_graphic_in_main, to_file=True)
+        try:
+            await interaction.delete_original_response()
+        except discord.HTTPException:
+            pass
         await self._message.edit(attachments=[file])
 
     @discord.ui.button(emoji="🔄", custom_id="reload_page", style=discord.ButtonStyle.secondary)
     async def reload_page(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        await interaction.response.defer()
+        await interaction.response.defer(thinking=True)
         if self.graphic_mode:
             file: discord.File = await self.cog.generate_graphic(self._object, members_type=self.members_type, to_file=True)
         else:
             file: discord.File = await self.cog.generate_image(self._object, members_type=self.members_type, show_graphic=self.show_graphic_in_main, to_file=True)
+        try:
+            await interaction.delete_original_response()
+        except discord.HTTPException:
+            pass
         await self._message.edit(attachments=[file])
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page")

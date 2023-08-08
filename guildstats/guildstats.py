@@ -26,30 +26,6 @@ from .view import GuildStatsView
 _ = Translator("GuildStats", __file__)
 
 
-CT = typing.TypeVar(
-    "CT", bound=typing.Callable[..., typing.Any]
-)  # defined CT as a type variable that is bound to a callable that can take any argument and return any value.
-
-
-async def run_blocking_func(
-    func: typing.Callable[..., typing.Any], *args: typing.Any, **kwargs: typing.Any
-) -> typing.Any:
-    partial = functools.partial(func, *args, **kwargs)
-    loop = asyncio.get_running_loop()
-    return await loop.run_in_executor(None, partial)
-
-
-def executor(executor: typing.Any = None) -> typing.Callable[[CT], CT]:
-    def decorator(func: CT) -> CT:
-        @functools.wraps(func)
-        def wrapper(*args: typing.Any, **kwargs: typing.Any):
-            return run_blocking_func(func, *args, **kwargs)
-
-        return wrapper
-
-    return decorator
-
-
 class ObjectConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> typing.Union[discord.Member, discord.Role, typing.Literal["messages", "voice", "activities"], discord.TextChannel, discord.VoiceChannel]:
         if ctx.command.name == "graphic" and argument.lower() in {"messages", "voice", "activities"}:
@@ -87,8 +63,10 @@ class GuildStats(Cog):
             "default_state": True,
             "ignored_users": [],
         }
-        self.guildstats_guild: typing.Dict[str, bool] = {
+        self.guildstats_guild: typing.Dict[str, typing.Union[bool, typing.List[int], typing.List[str]]] = {
             "enabled": None,
+            "ignored_channels": [],
+            "ignored_activities": [],
         }
         self.guildstats_channel: typing.Dict[str, typing.Union[int, typing.Dict[int, int], typing.Dict[int, typing.List[int]], typing.Dict[int, typing.List[typing.List[int]]]]] = {
             "total_messages": 0,
@@ -148,7 +126,7 @@ class GuildStats(Cog):
                             self.channel: typing.Optional[discord.VoiceChannel] = channel
                     await self.on_voice_state_update(member=member, before=FakeVoiceState(channel=None), after=FakeVoiceState(channel=channel))
             for member in guild.members:
-                if member.activity is not None:
+                if member.activities:
                     await self.on_presence_update(before=None, after=member)
 
     async def cog_unload(self) -> None:
@@ -163,7 +141,10 @@ class GuildStats(Cog):
                             self.channel: typing.Optional[discord.VoiceChannel] = channel
                     await self.on_voice_state_update(member=member, before=FakeVoiceState(channel=channel), after=FakeVoiceState(channel=None))
             for member in cache[guild]["members"].copy():
-                if member.activity is None:  # or member.activity.name != list(data["activities"])[-1]
+                # if not member.activities:  # or member.activity.name != list(data["activities"])[-1]
+                #     continue
+                self.cache[member.guild]["members"][member]["activities_cache"] = {activity_name: start_time for activity_name, start_time in self.cache[member.guild]["members"][member]["activities_cache"].items() if discord.utils.get(member.activities, name=activity_name) is not None}
+                if not self.cache[member.guild]["members"][member]["activities_cache"]:
                     continue
                 await self.on_presence_update(before=member, after=None)
         asyncio.create_task(self.save_to_config())
@@ -477,30 +458,41 @@ class GuildStats(Cog):
             or not (enabled_state if (enabled_state := await self.config.guild((after or before).guild).enabled()) is not None else await self.config.default_state())
         ):
             return
-        if after is not None and before is not None and after.activity == before.activity:
+        if after is not None and before is not None and after.activities == before.activities:
             return
-        if after is not None and after.activity is not None and after.activity.type != discord.ActivityType.custom and after.activity.name is not None:
+        if after is not None:
             ignored_users = await self.config.ignored_users()
             if after.id in ignored_users:
                 return
-            if after.guild not in self.cache:
-                self.cache[after.guild] = {"channels": {}, "members": {}}
-            if after not in self.cache[after.guild]["members"]:
-                self.cache[after.guild]["members"][after] = {"total_activities": 0, "total_activities_times": {}, "activities_cache": {}}
-            self.cache[after.guild]["members"][after]["activities_cache"][after.activity.name] = datetime.datetime.now(datetime.timezone.utc)
-        if before is not None and before.activity is not None and before.activity.type != discord.ActivityType.custom and before.activity.name is not None:
-            try:
-                start_time = self.cache[before.guild]["members"][before]["activities_cache"].pop(before.activity.name)
-            except KeyError:
+            for activity in after.activities:
+                if activity.type == discord.ActivityType.custom or activity.name is None:
+                    continue
+                if after.guild not in self.cache:
+                    self.cache[after.guild] = {"channels": {}, "members": {}}
+                if after not in self.cache[after.guild]["members"]:
+                    self.cache[after.guild]["members"][after] = {"total_activities": 0, "total_activities_times": {}, "activities_cache": {}}
+                self.cache[after.guild]["members"][after]["activities_cache"][activity.name] = datetime.datetime.now(datetime.timezone.utc)
+        if before is not None:
+            ignored_users = await self.config.ignored_users()
+            if before.id in ignored_users:
                 return
-            end_time = datetime.datetime.now(datetime.timezone.utc)
-            real_total_time = int((end_time - start_time).total_seconds())
-            if real_total_time < 10 * 60:
-                return
-            self.cache[before.guild]["members"][before]["total_activities"] += real_total_time
-            if before.activity.name not in self.cache[before.guild]["members"][before]["total_activities_times"]:
-                self.cache[before.guild]["members"][before]["total_activities_times"][before.activity.name] = 0
-            self.cache[before.guild]["members"][before]["total_activities_times"][before.activity.name] += real_total_time
+            for activity in before.activities:
+                if activity.type == discord.ActivityType.custom or activity.name is None:
+                    continue
+                if after is not None and discord.utils.get(after.activities, name=activity.name) is not None:
+                    continue
+                try:
+                    start_time = self.cache[before.guild]["members"][before]["activities_cache"].pop(activity.name)
+                except KeyError:
+                    return
+                end_time = datetime.datetime.now(datetime.timezone.utc)
+                real_total_time = int((end_time - start_time).total_seconds())
+                if real_total_time < 10 * 60:
+                    return
+                self.cache[before.guild]["members"][before]["total_activities"] += real_total_time
+                if activity.name not in self.cache[before.guild]["members"][before]["total_activities_times"]:
+                    self.cache[before.guild]["members"][before]["total_activities_times"][activity.name] = 0
+                self.cache[before.guild]["members"][before]["total_activities_times"][activity.name] += real_total_time
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, old_channel: discord.abc.GuildChannel) -> None:
@@ -563,7 +555,7 @@ class GuildStats(Cog):
             if member.id not in all_members_data:
                 all_members_data[member.id] = {"total_activities": 0, "total_activities_times": {}}
             for activity_name, start_time in data["activities_cache"].items():
-                if member.activity is None or member.activity.name != activity_name:
+                if discord.utils.get(member.activities, name=activity_name) is None:
                     continue
                 end_time = datetime.datetime.now(datetime.timezone.utc)
                 real_total_time = int((end_time - start_time).total_seconds())
@@ -573,6 +565,12 @@ class GuildStats(Cog):
                 if activity_name not in all_members_data[member.id]["total_activities_times"]:
                     all_members_data[member.id]["total_activities_times"][activity_name] = 0
                 all_members_data[member.id]["total_activities_times"][activity_name] += real_total_time
+        ignored_channels = await self.config.guild(_object if isinstance(_object, discord.Guild) else _object.guild).ignored_channels()
+        if not isinstance(_object, (discord.TextChannel, discord.VoiceChannel)):
+            for channel_id in ignored_channels:
+                if channel_id in all_channels_data:
+                    del all_channels_data[channel_id]
+        ignored_activities = await self.config.guild(_object if isinstance(_object, discord.Guild) else _object.guild).ignored_activities()
 
         # Handle `members_type`.
         def is_valid(member_id: int):
@@ -603,7 +601,7 @@ class GuildStats(Cog):
             )
             top_messages_channels = Counter({channel_id: all_channels_data[channel_id]["total_messages_members"].get(str(_object.id), 0) for channel_id in all_channels_data if _object.guild.get_channel(int(channel_id)) is not None})
             top_voice_channels = Counter({channel_id: all_channels_data[channel_id]["total_voice_members"].get(str(_object.id), 0) for channel_id in all_channels_data if _object.guild.get_channel(int(channel_id)) is not None})
-            top_activities = Counter({activity_name: total_time for activity_name, total_time in all_members_data.get(_object.id, {"total_activities_times": {}})["total_activities_times"].items()})
+            top_activities = Counter({activity_name: total_time for activity_name, total_time in all_members_data.get(_object.id, {"total_activities_times": {}})["total_activities_times"].items() if activity_name not in ignored_activities})
             return {
                 "server_lookback": {  # type: messages/hours
                     "text": sum(all_channels_data[channel_id]["total_messages_members"].get(str(_object.id), 0) for channel_id in all_channels_data),
@@ -817,7 +815,7 @@ class GuildStats(Cog):
                     },
                 }
             elif _type == "activities":
-                activities_counter: Counter = Counter([activity_name for member_id in all_members_data for activity_name, count_time in all_members_data[member_id]["total_activities_times"].items() for __ in range(count_time) if is_valid(int(member_id))])
+                activities_counter: Counter = Counter([activity_name for member_id in all_members_data for activity_name, count_time in all_members_data[member_id]["total_activities_times"].items() for __ in range(count_time) if activity_name not in ignored_activities and is_valid(int(member_id))])
                 return {
                     "top_activities": {  # activity_name: hours
                         activity_name: (roundest_value if (roundest_value := round(count_time / 3600, ndigits=2)) != 0 else 0)
@@ -956,7 +954,7 @@ class GuildStats(Cog):
         # return f"{int(number) if number == int(number) else (f'{number:.1f}' if f'{number:.1f}' != '0.0' else (f'{number:.2f}' if f'{number:.2f}' != '0.0' else '0'))}{suffixes[index]}"
         return f"{int(number) if number == int(number) else ((int(float(f'{number:.1f}')) if float(f'{number:.1f}') == int(float(f'{number:.1f}')) else f'{number:.1f}') if f'{number:.1f}' != '0.0' else ((int(float(f'{number:.2f}')) if float(f'{number:.2f}') == int(float(f'{number:.2f}')) else f'{number:.2f}') if f'{number:.2f}' != '0.0' else '0'))}{suffixes[index]}"
 
-    async def generate_prefix_image(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], size: typing.Tuple[int, int] = (1942, 1026), to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
+    def _generate_prefix_image(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], size: typing.Tuple[int, int], to_file: bool, _object_display: typing.Optional[bytes], guild_icon: typing.Optional[bytes]) -> typing.Union[Image.Image, discord.File]:
         if isinstance(_object, typing.Tuple):
             _object, _type = _object
         else:
@@ -968,7 +966,7 @@ class GuildStats(Cog):
 
         # Member/Channel name & Member avatar.
         if isinstance(_object, discord.Member):
-            image = Image.open(io.BytesIO(await _object.display_avatar.read()))
+            image = Image.open(io.BytesIO(_object_display))
             image = image.resize((140, 140))
             mask = Image.new("L", image.size, 0)
             d = ImageDraw.Draw(mask)
@@ -1001,7 +999,7 @@ class GuildStats(Cog):
                 draw.text((190, 30), text=_object.name, fill=(255, 255, 255), font=self.bold_font[50])
         elif isinstance(_object, discord.Role):
             if _object.display_icon is not None:
-                image = Image.open(io.BytesIO(await _object.display_icon.read()))
+                image = Image.open(io.BytesIO(_object_display))
                 image = image.resize((140, 140))
                 mask = Image.new("L", image.size, 0)
                 d = ImageDraw.Draw(mask)
@@ -1049,8 +1047,8 @@ class GuildStats(Cog):
             img.paste(image, (30, 30, 170, 170), mask=image.split()[3])
 
         # Guild name & Guild icon.
-        if (_object if isinstance(_object, discord.Guild) else _object.guild).icon is not None:
-            image = Image.open(io.BytesIO(await (_object if isinstance(_object, discord.Guild) else _object.guild).icon.read()))
+        if guild_icon is not None:
+            image = Image.open(io.BytesIO(guild_icon))
             image = image.resize((55, 55))
             mask = Image.new("L", image.size, 0)
             d = ImageDraw.Draw(mask)
@@ -1096,12 +1094,19 @@ class GuildStats(Cog):
         buffer.seek(0)
         return discord.File(buffer, filename="image.png")
 
-    async def generate_graphic(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"] = "humans", size: typing.Optional[typing.Tuple[int, int]] = None, data: typing.Optional[dict] = None, to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
+    async def generate_prefix_image(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], size: typing.Tuple[int, int] = (1942, 1026), to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
         if isinstance(_object, typing.Tuple):
-            _object, _type = _object
-        else:
-            _type = None
-        img: Image.Image = await self.generate_prefix_image(_object if _type is None else (_object, _type), size=(1942, 982 + 70) if size is None else size, to_file=False)
+            _object = _object[0]
+        return await asyncio.to_thread(
+            self._generate_prefix_image,
+            _object=_object, size=size, to_file=to_file,
+            _object_display=(await _object.display_avatar.read()) if isinstance(_object, discord.Member) else ((await _object.display_icon.read()) if isinstance(_object, discord.Role) else None),
+            guild_icon=(await (_object if isinstance(_object, discord.Guild) else _object.guild).icon.read()) if (_object if isinstance(_object, discord.Guild) else _object.guild).icon is not None else None,
+        )
+
+    def _generate_graphic(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"], size: typing.Optional[typing.Tuple[int, int]], data: dict, to_file: bool, img: Image.Image, default_state: bool, first_loading_time: datetime.datetime) -> typing.Union[Image.Image, discord.File]:
+        if isinstance(_object, typing.Tuple):
+            _object = _object[0]
         draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
         align_text_center = functools.partial(self.align_text_center, draw)
         if size is None:
@@ -1113,11 +1118,6 @@ class GuildStats(Cog):
             draw.rounded_rectangle((50, 301, 1890, 922), radius=15, fill=(32, 34, 37))
         else:
             draw.rounded_rectangle((0, 0, size[0], size[1]), radius=15, fill=(32, 34, 37))
-        if data is None:
-            try:
-                data = await (await executor()(self.get_data)(_object if _type is None else (_object, _type), members_type=members_type))
-            except TypeError:
-                data = await self.get_data(_object if _type is None else (_object, _type), members_type=members_type)
 
         fig = go.Figure()
         fig.update_layout(
@@ -1257,12 +1257,12 @@ class GuildStats(Cog):
             img.paste(image, (0, 0, size[0], size[1]), mask=image.split()[3])
 
         if size is None:
-            if await self.config.default_state():
+            if default_state:
                 image = Image.open(self.icons["history"])
                 image = image.resize((50, 50))
                 img.paste(image, (30, 972, 80, 1022), mask=image.split()[3])
                 utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
-                tracking_data_start_time = max(datetime.datetime.fromtimestamp(await self.config.first_loading_time(), tz=datetime.timezone.utc), (_object if isinstance(_object, discord.Guild) else _object.guild).me.joined_at)
+                tracking_data_start_time = max(first_loading_time, (_object if isinstance(_object, discord.Guild) else _object.guild).me.joined_at)
                 tracking_data_start_time = tracking_data_start_time.replace(second=utc_now.second, minute=utc_now.minute if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 7 * 4) else tracking_data_start_time.minute, hour=utc_now.hour if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 365) else tracking_data_start_time.hour)
                 align_text_center((90, 972, 90, 1022), text=f"Tracking data in this server for {CogsUtils.get_interval_string(tracking_data_start_time, utc_now=utc_now)}.", fill=(255, 255, 255), font=self.bold_font[30])
             if members_type != "both":
@@ -1279,20 +1279,29 @@ class GuildStats(Cog):
         buffer.seek(0)
         return discord.File(buffer, filename="image.png")
 
-    async def generate_image(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"] = "humans", show_graphic: bool = False, to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
+    async def generate_graphic(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"] = "humans", size: typing.Optional[typing.Tuple[int, int]] = None, data: typing.Optional[dict] = None, to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
         if isinstance(_object, typing.Tuple):
             _object, _type = _object
         else:
             _type = None
-        img: Image.Image = await self.generate_prefix_image(_object if _type is None else (_object, _type), size=(1942, 1437 + 200 + 70 if show_graphic else 1026 + 70), to_file=False)  # (1940, 1481) / 1942 + 636
+        img: Image.Image = await self.generate_prefix_image(_object if _type is None else (_object, _type), size=(1942, 982 + 70) if size is None else size, to_file=False)
+        if data is None:
+            data = await self.get_data(_object if _type is None else (_object, _type), members_type=members_type)
+        return await asyncio.to_thread(
+            self._generate_graphic,
+            _object=_object if _type is None else (_object, _type), members_type=members_type, size=size, data=data, to_file=to_file,
+            img=img, default_state=await self.config.default_state(), first_loading_time=datetime.datetime.fromtimestamp(await self.config.first_loading_time(), tz=datetime.timezone.utc),
+        )
+
+    def _generate_image(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"], show_graphic: bool, graphic: typing.Optional[Image.Image], data: dict, to_file: bool, img: Image.Image, default_state: bool, first_loading_time: datetime.datetime) -> typing.Union[Image.Image, discord.File]:
+        if isinstance(_object, typing.Tuple):
+            _object, _type = _object
+        else:
+            _type = None
         draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
         align_text_center = functools.partial(self.align_text_center, draw)
 
         # Data.
-        try:
-            data = await (await executor()(self.get_data)(_object if _type is None else (_object, _type), members_type=members_type))
-        except TypeError:
-            data = await self.get_data(_object if _type is None else (_object, _type), members_type=members_type)
         if isinstance(_object, (discord.Member, discord.Role)):
             # Server Lookback. box = 606 / empty = 30 | 2 cases / box = 117 / empty = 30
             draw.rounded_rectangle((30, 204, 636, 585), radius=15, fill=(47, 49, 54))
@@ -1416,7 +1425,7 @@ class GuildStats(Cog):
                 image = image.resize((70, 70))
                 img.paste(image, (1830, 1036, 1900, 1106), mask=image.split()[3])
                 draw.rounded_rectangle((50, 1123, 1890, 1387 + 200), radius=15, fill=(32, 34, 37))
-                image: Image.Image = await self.generate_graphic(_object, size=(1840, 464), data=data, to_file=False)
+                image: Image.Image = graphic
                 image = image.resize((1840, 464))
                 img.paste(image, (50, 1123, 1890, 1387 + 200))
 
@@ -1737,7 +1746,7 @@ class GuildStats(Cog):
                 image = image.resize((70, 70))
                 img.paste(image, (1820, 214, 1890, 284), mask=image.split()[3])
                 draw.rounded_rectangle((1005, 301, 1890, 976), radius=15, fill=(32, 34, 37))
-                image: Image.Image = await self.generate_graphic(_object, size=(885, 675), data=data, to_file=False)
+                image: Image.Image = graphic
                 image = image.resize((885, 675))
                 img.paste(image, (1005, 301, 1890, 976))
 
@@ -1765,7 +1774,7 @@ class GuildStats(Cog):
                 image = image.resize((70, 70))
                 img.paste(image, (1820, 214, 1890, 284), mask=image.split()[3])
                 draw.rounded_rectangle((1005, 301, 1890, 976), radius=15, fill=(32, 34, 37))
-                image: Image.Image = await self.generate_graphic(_object, size=(885, 675), data=data, to_file=False)
+                image: Image.Image = graphic
                 image = image.resize((885, 675))
                 img.paste(image, (1005, 301, 1890, 976))
 
@@ -1777,7 +1786,7 @@ class GuildStats(Cog):
                 image = image.resize((70, 70))
                 img.paste(image, (1830, 1036, 1900, 1106), mask=image.split()[3])
                 draw.rounded_rectangle((50, 1123, 1890, 1387 + 200), radius=15, fill=(32, 34, 37))
-                image: Image.Image = await self.generate_graphic(_object, size=(1840, 464), data=data, to_file=False)
+                image: Image.Image = graphic
                 image = image.resize((1840, 464))
                 img.paste(image, (50, 1123, 1890, 1387 + 200))
 
@@ -1870,7 +1879,7 @@ class GuildStats(Cog):
                 image = image.resize((70, 70))
                 img.paste(image, (1830, 1036, 1900, 1106), mask=image.split()[3])
                 draw.rounded_rectangle((50, 1123, 1890, 1387 + 200), radius=15, fill=(32, 34, 37))
-                image: Image.Image = await self.generate_graphic(_object, size=(1840, 464), data=data, to_file=False)
+                image: Image.Image = graphic
                 image = image.resize((1840, 464))
                 img.paste(image, (50, 1123, 1890, 1387 + 200))
 
@@ -1963,15 +1972,15 @@ class GuildStats(Cog):
                 image = image.resize((70, 70))
                 img.paste(image, (1830, 1036, 1900, 1106), mask=image.split()[3])
                 draw.rounded_rectangle((50, 1123, 1890, 1387 + 200), radius=15, fill=(32, 34, 37))
-                image: Image.Image = await self.generate_graphic(_object, size=(1840, 464), data=data, to_file=False)
+                image: Image.Image = graphic
                 image = image.resize((1840, 464))
                 img.paste(image, (50, 1123, 1890, 1387 + 200))
 
         utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
-        tracking_data_start_time = max(datetime.datetime.fromtimestamp(await self.config.first_loading_time(), tz=datetime.timezone.utc), (_object if isinstance(_object, discord.Guild) else _object.guild).me.joined_at)
-        tracking_data_start_time = tracking_data_start_time.replace(second=utc_now.second, minute=utc_now.minute if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 7 * 4) else tracking_data_start_time.minute, hour=utc_now.hour if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 365) else tracking_data_start_time.hour)
+        tracking_data_start_time = max(first_loading_time, (_object if isinstance(_object, discord.Guild) else _object.guild).me.joined_at)
+        tracking_data_start_time = tracking_data_start_time.replace(second=utc_now.second, minute=utc_now.minute if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 7) else tracking_data_start_time.minute, hour=utc_now.hour if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 365) else tracking_data_start_time.hour)
         if show_graphic:
-            if await self.config.default_state():
+            if default_state:
                 image = Image.open(self.icons["history"])
                 image = image.resize((50, 50))
                 img.paste(image, (30, 1427 + 200, 80, 1477 + 200), mask=image.split()[3])
@@ -1983,7 +1992,7 @@ class GuildStats(Cog):
                 img.paste(image, (1942 - 30 - self.bold_font[30].getbbox(members_type_text)[2] - 10 - 50, 1427 + 200, 1942 - 30 - self.bold_font[30].getbbox(members_type_text)[2] - 10, 1477 + 200), mask=image.split()[3])
                 align_text_center((1942 - 30 - self.bold_font[30].getbbox(members_type_text)[2], 1427 + 200, 1942 - 30 - self.bold_font[30].getbbox(members_type_text)[2], 1477 + 200), text=members_type_text, fill=(255, 255, 255), font=self.bold_font[30])
         else:
-            if await self.config.default_state():
+            if default_state:
                 image = Image.open(self.icons["history"])
                 image = image.resize((50, 50))
                 img.paste(image, (30, 1016, 80, 1066), mask=image.split()[3])
@@ -2001,6 +2010,26 @@ class GuildStats(Cog):
         img.save(buffer, format="png", optimize=True)
         buffer.seek(0)
         return discord.File(buffer, filename="image.png")
+
+    async def generate_image(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"] = "humans", show_graphic: bool = False, data: typing.Optional[dict] = None, to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
+        if isinstance(_object, typing.Tuple):
+            _object, _type = _object
+        else:
+            _type = None
+        img: Image.Image = await self.generate_prefix_image(_object if _type is None else (_object, _type), size=(1942, 1437 + 200 + 70 if show_graphic else 1026 + 70), to_file=False)  # (1940, 1481) / 1942 + 636
+        if data is None:
+            data = await self.get_data(_object if _type is None else (_object, _type), members_type=members_type)
+        if show_graphic:
+            graphic = await self.generate_graphic(_object, size=(1840, 464), data=data, to_file=False)
+        elif _type == "activities" or (isinstance(_type, typing.Tuple) and _type[0] == "top"):
+            graphic = await self.generate_graphic(_object, size=(885, 675), data=data, to_file=False)
+        else:
+            graphic = None
+        return await asyncio.to_thread(
+            self._generate_image,
+            _object=_object if _type is None else (_object, _type), members_type=members_type, data=data, to_file=to_file,
+            img=img, show_graphic=show_graphic, graphic=graphic, default_state=await self.config.default_state(), first_loading_time=datetime.datetime.fromtimestamp(await self.config.first_loading_time(), tz=datetime.timezone.utc),
+        )
 
     @commands.guild_only()
     @commands.bot_has_permissions(attach_files=True)
@@ -2107,7 +2136,7 @@ class GuildStats(Cog):
     async def ignoreme(self, ctx: commands.Context) -> None:
         """Asking GuildStats to ignore your actions."""
         user = ctx.author
-        ignored_users = await self.config.ignored_users()
+        ignored_users: typing.List[int] = await self.config.ignored_users()
         if user.id not in ignored_users:
             ignored_users.append(user.id)
             await self.red_delete_data_for_user(requester="user", user_id=user.id)
@@ -2126,7 +2155,7 @@ class GuildStats(Cog):
     @guildstats.command()
     async def ignoreuser(self, ctx: commands.Context, *, user: discord.User):
         """Ignore or unignore a specific user."""
-        ignored_users: list = await self.config.ignored_users()
+        ignored_users: typing.List[int] = await self.config.ignored_users()
         if user.id not in ignored_users:
             ignored_users.append(user.id)
             await self.red_delete_data_for_user(requester="user", user_id=user.id)
@@ -2143,6 +2172,50 @@ class GuildStats(Cog):
             await ctx.send(
                 _("{user.mention} ({user.id}) will be seen again by this cog.").format(user=user),
                 allowed_mentions=discord.AllowedMentions(users=False),
+            )
+
+    @commands.admin_or_permissions(administrator=True)
+    @guildstats.command()
+    async def ignorechannel(self, ctx: commands.Context, *, channel: typing.Union[discord.TextChannel, discord.VoiceChannel]):
+        """Ignore or unignore a specific channel."""
+        ignored_channels: typing.List[int] = await self.config.guild(ctx.guild).ignored_channels()
+        if channel.id not in ignored_channels:
+            ignored_channels.append(channel.id)
+            await self.config.guild(ctx.guild).ignored_channels.set(ignored_channels)
+            await ctx.send(
+                _(
+                    "{channel.mention} ({channel.id}) will now be ignored in stats (except for the specific channel ones)."
+                ).format(channel=channel),
+            )
+        else:
+            ignored_channels.remove(channel.id)
+            await self.config.guild(ctx.guild).ignored_channels.set(ignored_channels)
+            await ctx.send(
+                _(
+                    "{channel.mention} ({channel.id}) will no longer be ignored in stats."
+                ).format(channel=channel),
+            )
+
+    @commands.admin_or_permissions(administrator=True)
+    @guildstats.command()
+    async def ignoreactivity(self, ctx: commands.Context, *, activity_name: str):
+        """Ignore or unignore a specific activity."""
+        ignored_activities: typing.List[str] = await self.config.guild(ctx.guild).ignored_activities()
+        if activity_name not in ignored_activities:
+            ignored_activities.append(activity_name)
+            await self.config.guild(ctx.guild).ignored_activities.set(ignored_activities)
+            await ctx.send(
+                _(
+                    "The activity `{activity_name}` will now be ignored in stats."
+                ).format(activity_name=activity_name),
+            )
+        else:
+            ignored_activities.remove(activity_name)
+            await self.config.guild(ctx.guild).ignored_activities.set(ignored_activities)
+            await ctx.send(
+                _(
+                    "The activity `{activity_name}` will no longer be ignored in stats."
+                ).format(activity_name=activity_name),
             )
 
     @commands.is_owner()

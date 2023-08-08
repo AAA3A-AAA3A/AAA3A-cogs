@@ -342,7 +342,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
         # def _console_custom(ctx: commands.Context):
         #     return {"width": 80, "color_system": None}
 
-        def get(a, b: typing.Optional[str] = "", startswith: typing.Optional[str] = ""):
+        def search_attribute(a, b: typing.Optional[str] = "", startswith: typing.Optional[str] = ""):
             return [
                 x
                 for x in dir(a)
@@ -486,6 +486,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "websocket": lambda ctx: ctx.bot._get_websocket(0),
                 "get_internal": get_internal,
                 "set_loggers_level": lambda ctx: set_loggers_level,
+                "find": lambda ctx: discord.utils.find,
+                "get": lambda ctx: discord.utils.get,
                 # Dev Space
                 "dev_space": lambda ctx: dev_space,
                 "devspace": lambda ctx: dev_space,
@@ -512,7 +514,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 # TextWrap
                 "textwrap": lambda ctx: textwrap,
                 # Search attr
-                "get": lambda ctx: get,
+                "sattr": lambda ctx: search_attribute,
                 # `reference`
                 "reference": reference,
                 # No color (Dev cog from fluffy-cogs in mobile).

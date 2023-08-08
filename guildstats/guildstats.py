@@ -448,8 +448,6 @@ class GuildStats(Cog):
     async def on_presence_update(self, before: typing.Optional[discord.Member], after: typing.Optional[discord.Member]) -> None:
         if not await self.config.toggle_activities_stats():
             return
-        if not isinstance(after, discord.Member):
-            return
         if (
             await self.bot.cog_disabled_in_guild(
                 cog=self, guild=(after or before).guild

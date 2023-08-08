@@ -1261,7 +1261,7 @@ class GuildStats(Cog):
                 img.paste(image, (30, 972, 80, 1022), mask=image.split()[3])
                 utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
                 tracking_data_start_time = max(first_loading_time, (_object if isinstance(_object, discord.Guild) else _object.guild).me.joined_at)
-                tracking_data_start_time = tracking_data_start_time.replace(second=utc_now.second, minute=utc_now.minute if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 7 * 4) else tracking_data_start_time.minute, hour=utc_now.hour if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 365) else tracking_data_start_time.hour)
+                tracking_data_start_time = tracking_data_start_time.replace(second=utc_now.second, minute=utc_now.minute if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 7) else tracking_data_start_time.minute, hour=utc_now.hour if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 365) else tracking_data_start_time.hour)
                 align_text_center((90, 972, 90, 1022), text=f"Tracking data in this server for {CogsUtils.get_interval_string(tracking_data_start_time, utc_now=utc_now)}.", fill=(255, 255, 255), font=self.bold_font[30])
             if members_type != "both":
                 members_type_text = f"Only {members_type} are taken into account."

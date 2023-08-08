@@ -381,7 +381,7 @@ class Dev(Cog, dev_commands.Dev):
             "rich_tracebacks": False,
             "ansi_formatting": False,
             "send_interactive": False,
-            "use_last_locals": False,
+            "use_last_locals": True,
             "downloader_already_agreed": False,
         }
         self.config.register_global(**self.dev_global)

@@ -1250,8 +1250,7 @@ class Seen(Cog):
         if category is None:
             category = ctx.channel.category
         if category is None:
-            await ctx.send_help()
-            return
+            raise commands.UserInputError()
         if show_details is None:
             show_details = True
         if all(

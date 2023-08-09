@@ -94,8 +94,7 @@ class CmdChannel(Cog):
                 _("To send commands to another server, you must be there.")
             )
         if not command and not ctx.message.embeds and not ctx.message.attachments:
-            await ctx.send_help()
-            return
+            raise commands.UserInputError()
         await CogsUtils.invoke_command(
             bot=ctx.bot,
             author=ctx.author,

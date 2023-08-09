@@ -2318,7 +2318,7 @@ class GuildStats(Cog):
             if ctx.channel.category is not None:
                 category = ctx.channel.category
             else:
-                return await ctx.send_help()
+                raise commands.UserInputError()
         if not (enabled_state if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None else await self.config.default_state()):
             raise commands.UserFeedbackCheckFailure(_("This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.").format(prefix=ctx.prefix))
         await GuildStatsView(cog=self, _object=category, members_type=members_type, show_graphic_in_main=show_graphic, graphic_mode=False).start(ctx)

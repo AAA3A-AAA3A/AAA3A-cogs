@@ -228,8 +228,7 @@ class TransferChannel(Cog):
         Remember that transfering other users' messages in does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
-            await ctx.send_help()
-            return
+            raise commands.UserInputError()
         await self.check_channels(ctx, source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way
@@ -255,8 +254,7 @@ class TransferChannel(Cog):
         Remember that transfering other users' messages in does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
-            await ctx.send_help()
-            return
+            raise commands.UserInputError()
         await self.check_channels(ctx, source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx,
@@ -286,8 +284,7 @@ class TransferChannel(Cog):
         Remember that transfering other users' messages in does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
-            await ctx.send_help()
-            return
+            raise commands.UserInputError()
         await self.check_channels(ctx, source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, before=before
@@ -313,8 +310,7 @@ class TransferChannel(Cog):
         Remember that transfering other users' messages in does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
-            await ctx.send_help()
-            return
+            raise commands.UserInputError()
         await self.check_channels(ctx, source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, after=after
@@ -341,8 +337,7 @@ class TransferChannel(Cog):
         Remember that transfering other users' messages in does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
-            await ctx.send_help()
-            return
+            raise commands.UserInputError()
         await self.check_channels(ctx, source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, before=before, after=after
@@ -369,8 +364,7 @@ class TransferChannel(Cog):
         Remember that transfering other users' messages in does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
-            await ctx.send_help()
-            return
+            raise commands.UserInputError()
         await self.check_channels(ctx, source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx,
@@ -402,8 +396,7 @@ class TransferChannel(Cog):
         Remember that transfering other users' messages in does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
-            await ctx.send_help()
-            return
+            raise commands.UserInputError()
         await self.check_channels(ctx, source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, bot=bot, limit=limit

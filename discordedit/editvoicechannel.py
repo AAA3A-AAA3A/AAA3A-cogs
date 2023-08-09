@@ -234,8 +234,7 @@ class EditVoiceChannel(Cog):
         """
         await self.check_voice_channel(ctx, channel)
         if bitrate < 8000 or bitrate > ctx.guild.bitrate_limit:
-            await ctx.send_help()
-            return
+            raise commands.UserInputError()
         try:
             await channel.edit(
                 bitrate=bitrate,
@@ -357,8 +356,7 @@ class EditVoiceChannel(Cog):
         await self.check_voice_channel(ctx, channel)
         slowmode_delay = int(slowmode_delay.total_seconds())
         if slowmode_delay < 0 or slowmode_delay > 21600:
-            await ctx.send_help()
-            return
+            raise commands.UserInputError()
         try:
             await channel.edit(
                 slowmode_delay=slowmode_delay,

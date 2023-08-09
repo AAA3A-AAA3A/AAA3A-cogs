@@ -360,8 +360,7 @@ class EditTextChannel(Cog):
         await self.check_text_channel(ctx, channel)
         slowmode_delay = int(slowmode_delay.total_seconds())
         if slowmode_delay < 0 or slowmode_delay > 21600:
-            await ctx.send_help()
-            return
+            raise commands.UserInputError()
         try:
             await channel.edit(
                 slowmode_delay=slowmode_delay,

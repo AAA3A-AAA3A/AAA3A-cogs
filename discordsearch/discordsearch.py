@@ -72,8 +72,7 @@ class DiscordSearch(Cog):
         `--limit 100` (It's the limit of the number of messages taken into account in the search, not the number of results.)
         """
         if not args:
-            await ctx.send_help()
-            return
+            raise commands.UserInputError()
         try:
             args = await SearchArgs().convert(ctx, args)
         except commands.BadArgument as e:

@@ -255,8 +255,7 @@ class EditRole(Cog):
                             "Something went wrong while trying to get the image."
                         )
         else:
-            await ctx.send_help()  # Send the command help if no attachment, no Unicode/custom emoji and no URL.
-            return
+            raise commands.UserInputError()  # Send the command help if no attachment, no Unicode/custom emoji and no URL.
         try:
             await role.edit(
                 display_icon=display_icon,

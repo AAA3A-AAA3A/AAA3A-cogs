@@ -170,8 +170,7 @@ class EditThread(Cog):
             if isinstance(ctx.channel, discord.Thread):
                 thread = ctx.channel
             else:
-                await ctx.send_help()
-                return
+                raise commands.UserInputError()
         await self.check_thread(ctx, thread)
         try:
             await thread.edit(
@@ -192,8 +191,7 @@ class EditThread(Cog):
             if isinstance(ctx.channel, discord.Thread):
                 thread = ctx.channel
             else:
-                await ctx.send_help()
-                return
+                raise commands.UserInputError()
         await self.check_thread(ctx, thread)
         archived = not thread.archived
         try:
@@ -215,8 +213,7 @@ class EditThread(Cog):
             if isinstance(ctx.channel, discord.Thread):
                 thread = ctx.channel
             else:
-                await ctx.send_help()
-                return
+                raise commands.UserInputError()
         await self.check_thread(ctx, thread)
         if locked is None:
             locked = not thread.locked
@@ -239,8 +236,7 @@ class EditThread(Cog):
             if isinstance(ctx.channel, discord.Thread):
                 thread = ctx.channel
             else:
-                await ctx.send_help()
-                return
+                raise commands.UserInputError()
         await self.check_thread(ctx, thread)
         try:
             await thread.edit(
@@ -264,8 +260,7 @@ class EditThread(Cog):
             if isinstance(ctx.channel, discord.Thread):
                 thread = ctx.channel
             else:
-                await ctx.send_help()
-                return
+                raise commands.UserInputError()
         await self.check_thread(ctx, thread)
         if invitable is None:
             invitable = not thread.invitable
@@ -291,8 +286,7 @@ class EditThread(Cog):
             if isinstance(ctx.channel, discord.Thread):
                 thread = ctx.channel
             else:
-                await ctx.send_help()
-                return
+                raise commands.UserInputError()
         await self.check_thread(ctx, thread)
         try:
             await thread.edit(
@@ -316,8 +310,7 @@ class EditThread(Cog):
             if isinstance(ctx.channel, discord.Thread):
                 thread = ctx.channel
             else:
-                await ctx.send_help()
-                return
+                raise commands.UserInputError()
         await self.check_thread(ctx, thread)
         try:
             await thread.edit(
@@ -347,8 +340,7 @@ class EditThread(Cog):
             if isinstance(ctx.channel, discord.Thread):
                 thread = ctx.channel
             else:
-                await ctx.send_help()
-                return
+                raise commands.UserInputError()
         await self.check_thread(ctx, thread)
         try:
             await thread.edit(
@@ -372,8 +364,7 @@ class EditThread(Cog):
             if isinstance(ctx.channel, discord.Thread):
                 thread = ctx.channel
             else:
-                await ctx.send_help()
-                return
+                raise commands.UserInputError()
         if discord.utils.get(await thread.fetch_members(), id=member.id) is not None:
             raise commands.UserFeedbackCheckFailure("This member is already in this thread.")
         await self.check_thread(ctx, thread)
@@ -398,8 +389,7 @@ class EditThread(Cog):
             if isinstance(ctx.channel, discord.Thread):
                 thread = ctx.channel
             else:
-                await ctx.send_help()
-                return
+                raise commands.UserInputError()
         await self.check_thread(ctx, thread)
         try:
             await thread.remove_user(member)
@@ -420,8 +410,7 @@ class EditThread(Cog):
             if isinstance(ctx.channel, discord.Thread):
                 thread = ctx.channel
             else:
-                await ctx.send_help()
-                return
+                raise commands.UserInputError()
         await self.check_thread(ctx, thread)
         if not confirmation and not ctx.assume_yes:
             if ctx.bot_permissions.embed_links:
@@ -454,8 +443,7 @@ class EditThread(Cog):
             if isinstance(ctx.channel, discord.Thread):
                 thread = ctx.channel
             else:
-                await ctx.send_help()
-                return
+                raise commands.UserInputError()
         await self.check_thread(ctx, thread)
         embed_color = await ctx.embed_color()
 

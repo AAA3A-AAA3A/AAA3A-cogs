@@ -928,7 +928,7 @@ class Reminders(Cog):
         - Use `next` to remove your next triggered reminder.
         """
         if not reminders:
-            return await ctx.send_help()
+            raise commands.UserInputError()
         reminders = list(set(reminders))
         for reminder in reminders:
             await reminder.delete()

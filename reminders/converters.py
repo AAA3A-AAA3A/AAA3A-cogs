@@ -665,6 +665,8 @@ class DurationParser:
         text_on_every = reminder_text + on_time + every_time
         at_every_text = at_time + every_time + reminder_text
         text_at_every = reminder_text + at_time + every_time
+        every_at_text = every_time + at_time + reminder_text
+        text_every_at = reminder_text + every_time + at_time
 
         template = (
             in_every_text
@@ -679,6 +681,8 @@ class DurationParser:
             | text_on_every
             | at_every_text
             | text_at_every
+            | every_at_text
+            | text_every_at
             | every_text
             | text_every
         )

@@ -383,6 +383,7 @@ class Dev(Cog, dev_commands.Dev):
             "send_interactive": False,
             "use_last_locals": True,
             "downloader_already_agreed": False,
+            "use_extended_environment": True,
         }
         self.config.register_global(**self.dev_global)
 
@@ -423,6 +424,11 @@ class Dev(Cog, dev_commands.Dev):
                 "path": ["downloader_already_agreed"],
                 "converter": bool,
                 "description": "If enabled, Downloader will no longer prompt you to type `I agree` when adding a repo, even after a bot restart.",
+            },
+            "use_extended_environment": {
+                "path": ["use_extended_environment"],
+                "converter": bool,
+                "description": "Use my own Dev env with useful values.",
             },
         }
         self.settings: Settings = Settings(
@@ -469,8 +475,8 @@ class Dev(Cog, dev_commands.Dev):
         """Nothing to get."""
         return {}
 
-    def get_environment(self, ctx: commands.Context) -> DevEnv:
-        return DevEnv.get_environment(ctx)
+    def get_environment(self, ctx: commands.Context, use_extended_environment: bool = True) -> DevEnv:
+        return DevEnv.get_environment(ctx, use_extended_environment=use_extended_environment)
 
     async def my_exec(
         self,
@@ -501,7 +507,7 @@ class Dev(Cog, dev_commands.Dev):
         wait: bool = True,
     ) -> DevOutput:
         if env is None:
-            env = self.get_environment(ctx)
+            env = self.get_environment(ctx, use_extended_environment=await self.config.use_extended_environment())
         env["auto_imports"] = await self.config.auto_imports()
         if (
             isinstance(ctx.author, (discord.Member, discord.User))
@@ -661,7 +667,7 @@ class Dev(Cog, dev_commands.Dev):
                 )
             return
 
-        env = self.get_environment(ctx)
+        env = self.get_environment(ctx, use_extended_environment=await self.config.use_extended_environment())
         env["_"] = None
         self.sessions[ctx.channel.id] = True
         await ctx.send(
@@ -783,7 +789,7 @@ class Dev(Cog, dev_commands.Dev):
     @configuration.command(aliases=["getenv", "getformattedenvironment", "getformattedenv"])
     async def getenvironment(self, ctx: commands.Context, show_values: bool = True) -> None:
         """Display all Dev environment values."""
-        env = self.get_environment(ctx)
+        env = self.get_environment(ctx, use_extended_environment=await self.config.use_extended_environment())
         formatted_env = env.get_formatted_env(show_values=show_values)
         await Menu(pages=formatted_env, lang="py").start(ctx)
 

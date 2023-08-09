@@ -3,6 +3,7 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import aiohttp
 import asyncio
 import builtins
 import datetime
@@ -20,7 +21,6 @@ from contextvars import ContextVar
 from functools import partial
 from io import StringIO
 
-import aiohttp
 import redbot
 import rich
 from AAA3A_utils.cog import Cog
@@ -162,13 +162,14 @@ class DevEnv(typing.Dict[str, typing.Any]):
     def __init__(self, *args, **kwargs) -> None:
         # self.__dict__ = {}
         super().__init__(*args, **kwargs)
-        self.imported: typing.List[str] = []
+        self.imported: typing.List[typing.Union[str, typing.Tuple[str, str]]] = []
 
     @classmethod
-    def get_environment(cls, ctx: commands.Context) -> typing.Dict[str, typing.Any]:
+    def get_environment(cls, ctx: commands.Context, use_extended_environment: bool = True) -> typing.Dict[str, typing.Any]:
         env = cls(  # In Dev cog by Zeph.
             **{
                 "me": ctx.me,
+                "category": ctx.channel.category,
                 # Redirect builtin console functions to rich.
                 "print": rich.print,
                 "help": functools.partial(rich.inspect, help=True),
@@ -183,7 +184,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
             }
         )
         Dev = ctx.bot.get_cog("Dev")
-        env.update(cls.get_env(ctx.bot, ctx))  # My nice env!
+        if use_extended_environment:
+            env.update(cls.get_env(ctx.bot, ctx))  # My nice env!
         base_env = dev_commands.Dev.get_environment(Dev, ctx)  # In Dev in Core.
         # del base_env["_"]
         env.update(base_env)
@@ -221,8 +223,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
     def get_formatted_imports(self) -> str:
         if not (imported := self.imported):
             return ""
-        imported.sort()
-        message = "".join(f">>> import {import_}\n" for import_ in imported)
+        imported.sort(key=lambda x: x if isinstance(x, str) else f"z{x[0]}")
+        message = "".join((f">>> import {_import}\n" if isinstance(_import, str) else f">>> from {_import[0]} import {_import[1]}\n") for _import in imported)
         imported.clear()
         return message
 
@@ -300,16 +302,20 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 except (KeyError, AttributeError):
                     pass
         if (attr := getattr(discord, key, None)) is not None:
-            self.imported.append(f"discord.{key}")
+            self.imported.append(("discord", key))
             self[key] = attr
             return attr
         if (attr := getattr(typing, key, None)) is not None:
-            self.imported.append(f"typing.{key}")
+            self.imported.append(("typing", key))
+            self[key] = attr
+            return attr
+        if (attr := getattr(cf, key, None)) is not None:
+            self.imported.append(("redbot.core.utils.chat_formatting", key))
             self[key] = attr
             return attr
         try:
             if is_dev(bot=self["bot"]) and (attr := getattr(CogsUtils, key, None)) is not None:
-                self.imported.append(f"AAA3A_utils.CogsUtils.{key}")
+                self.imported.append(("AAA3A_utils.CogsUtils", key))
                 self[key] = attr
                 return attr
         except (KeyError, AttributeError):
@@ -488,6 +494,10 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "set_loggers_level": lambda ctx: set_loggers_level,
                 "find": lambda ctx: discord.utils.find,
                 "get": lambda ctx: discord.utils.get,
+                "MISSING": lambda ctx: discord.utils.MISSING,
+                "escape_markdown": lambda ctx: discord.utils.escape_markdown,
+                "as_chunks": lambda ctx: discord.utils.as_chunks,
+                "format_dt": lambda ctx: discord.utils.format_dt,
                 # Dev Space
                 "dev_space": lambda ctx: dev_space,
                 "devspace": lambda ctx: dev_space,
@@ -505,16 +515,21 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 # Date & Time
                 "datetime": lambda ctx: datetime,
                 "time": lambda ctx: time,
+                "utc_now": lambda ctx: datetime.datetime.now(tz=datetime.timezone.utc),
+                "local_now": lambda ctx: datetime.datetime.now(),
+                "get_utc_now": lambda ctx: functools.partial(datetime.datetime.now, tz=datetime.timezone.utc),
+                "get_local_now": lambda ctx: datetime.datetime.now,
                 # Os & Sys
                 "os": lambda ctx: os,
                 "sys": lambda ctx: sys,
                 # Aiohttp
+                "aiohttp": lambda ctx: aiohttp,
                 "session": lambda ctx: ctx.bot.get_cog("Dev")._session,
                 "get_url": get_url,
                 # TextWrap
                 "textwrap": lambda ctx: textwrap,
-                # Search attr
-                "sattr": lambda ctx: search_attribute,
+                # Search attributes
+                "search_attrs": lambda ctx: search_attribute,
                 # `reference`
                 "reference": reference,
                 # No color (Dev cog from fluffy-cogs in mobile).

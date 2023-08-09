@@ -849,7 +849,7 @@ class Reminders(Cog):
         """Set your timezone for the time converter.
         
         Timezone should be specified in the format: `Continent/City`.
-        Example timezones: `Europe/Paris`, `America/New_York`...
+        Example : `Europe/Paris`, `America/New_York`...
         You can find a list of valid timezones at: https://timezonedb.com/time-zones.
         """
         await self.config.user(ctx.author).timezone.set(timezone)

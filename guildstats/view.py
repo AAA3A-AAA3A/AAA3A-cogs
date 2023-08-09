@@ -9,7 +9,7 @@ class GuildStatsView(discord.ui.View):
     def __init__(
         self,
         cog: commands.Cog,
-        _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel],
+        _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]], typing.Tuple[typing.Literal["activity"], str]]], discord.CategoryChannel, discord.TextChannel, discord.VoiceChannel],
         members_type: typing.Literal["humans", "bots", "both"] = "humans",
         show_graphic_in_main: bool = False,
         graphic_mode: bool = False
@@ -18,7 +18,7 @@ class GuildStatsView(discord.ui.View):
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = None
 
-        self._object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel] = _object
+        self._object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]], typing.Tuple[typing.Literal["activity"], str]]], discord.CategoryChannel, discord.TextChannel, discord.VoiceChannel] = _object
         self.members_type: typing.Literal["humans", "bots", "both"] = members_type
         self.show_graphic_in_main: bool = show_graphic_in_main
         self.graphic_mode: bool = graphic_mode

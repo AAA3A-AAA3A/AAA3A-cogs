@@ -2,14 +2,15 @@
     "author": ["AAA3A"],
     "name": "GuildStats",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
-    "short": "A cog to generate images with messages and voice stats, for members, roles, guilds, text channels, voice channels and activities!",
-    "description": "A cog to generate images with messages and voice stats, for members, roles, guilds, text channels, voice channels and activities!",
+    "short": "A cog to generate images with messages and voice stats, for members, roles, guilds, categories, text channels, voice channels and activities!",
+    "description": "A cog to generate images with messages and voice stats, for members, roles, guilds, categories, text channels, voice channels and activities!",
     "tags": [
         "stats",
         "messages",
         "voice",
-        "guild",
         "member",
+        "guild",
+        "categories",
         "channel"
     ],
     "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "pillow", "plotly", "pandas", "kaleido==0.1.0"],

@@ -27,7 +27,7 @@ _ = Translator("GuildStats", __file__)
 
 
 class ObjectConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.Union[discord.Member, discord.Role, typing.Literal["messages", "voice", "activities"], discord.TextChannel, discord.VoiceChannel]:
+    async def convert(self, ctx: commands.Context, argument: str) -> typing.Union[discord.Member, discord.Role, typing.Literal["messages", "voice", "activities"], discord.CategoryChannel, discord.TextChannel, discord.VoiceChannel]:
         if ctx.command.name == "graphic" and argument.lower() in {"messages", "voice", "activities"}:
             return argument.lower()
         try:
@@ -37,17 +37,20 @@ class ObjectConverter(commands.Converter):
                 return await commands.RoleConverter().convert(ctx, argument=argument)
             except commands.BadArgument:
                 try:
-                    return await commands.TextChannelConverter().convert(ctx, argument=argument)
+                    return await commands.CategoryChannelConverter().convert(ctx, argument=argument)
                 except commands.BadArgument:
                     try:
-                        return await commands.VoiceChannelConverter().convert(ctx, argument=argument)
+                        return await commands.TextChannelConverter().convert(ctx, argument=argument)
                     except commands.BadArgument:
-                        raise commands.BadArgument(_("No member/text channel/voice channel found."))
+                        try:
+                            return await commands.VoiceChannelConverter().convert(ctx, argument=argument)
+                        except commands.BadArgument:
+                            raise commands.BadArgument(_("No member/category/text channel/voice channel found."))
 
 
 @cog_i18n(_)
 class GuildStats(Cog):
-    """A cog to generate images with messages and voice stats, for members, roles, guilds, text channels, voice channels and activities!"""
+    """A cog to generate images with messages and voice stats, for members, roles, guilds, categories, text channels, voice channels and activities!"""
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -65,6 +68,7 @@ class GuildStats(Cog):
         }
         self.guildstats_guild: typing.Dict[str, typing.Union[bool, typing.List[int], typing.List[str]]] = {
             "enabled": None,
+            "ignored_categories": [],
             "ignored_channels": [],
             "ignored_activities": [],
         }
@@ -156,7 +160,7 @@ class GuildStats(Cog):
         requester: typing.Literal["discord_deleted_user", "owner", "user", "user_strict"],
         user_id: int,
     ) -> None:
-        """Delete all Seen data for user, members, roles, channels, categories, guilds; if the user ID matches."""
+        """Delete all GuildStats data for user, members, roles, channels, categories, guilds; if the user ID matches."""
         if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
             return
         await self.save_to_config()  # To clean up the cache too.
@@ -496,7 +500,7 @@ class GuildStats(Cog):
     async def on_guild_channel_delete(self, old_channel: discord.abc.GuildChannel) -> None:
         await self.config.channel(old_channel).clear()
 
-    async def get_data(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"] = "humans", utc_now: datetime.datetime = None) -> typing.Dict[str, typing.Any]:
+    async def get_data(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]], typing.Tuple[typing.Literal["activity"], str]]], discord.CategoryChannel, discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"] = "humans", utc_now: datetime.datetime = None) -> typing.Dict[str, typing.Any]:
         if isinstance(_object, typing.Tuple):
             _object, _type = _object
         else:
@@ -563,8 +567,15 @@ class GuildStats(Cog):
                 if activity_name not in all_members_data[member.id]["total_activities_times"]:
                     all_members_data[member.id]["total_activities_times"][activity_name] = 0
                 all_members_data[member.id]["total_activities_times"][activity_name] += real_total_time
-        ignored_channels = await self.config.guild(_object if isinstance(_object, discord.Guild) else _object.guild).ignored_channels()
+        if not isinstance(_object, discord.CategoryChannel):
+            ignored_categories = await self.config.guild(_object if isinstance(_object, discord.Guild) else _object.guild).ignored_categories()
+            for category_id in ignored_categories:
+                if (category := (_object if isinstance(_object, discord.Guild) else _object.guild).get_channel(category_id)) is not None:
+                    for channel in category.channels:
+                        if channel.id in all_channels_data:
+                            del all_channels_data[channel.id]
         if not isinstance(_object, (discord.TextChannel, discord.VoiceChannel)):
+            ignored_channels = await self.config.guild(_object if isinstance(_object, discord.Guild) else _object.guild).ignored_channels()
             for channel_id in ignored_channels:
                 if channel_id in all_channels_data:
                     del all_channels_data[channel_id]
@@ -826,33 +837,98 @@ class GuildStats(Cog):
                         },
                     },
                 }
-            elif isinstance(_type, typing.Tuple) and _type[0] == "top":
-                members_messages_counter: Counter = Counter([member_id for channel_id in all_channels_data for member_id, count_messages in all_channels_data[channel_id]["total_messages_members"].items() for __ in range(count_messages) if _object.get_member(int(member_id)) is not None and is_valid(int(member_id))])
-                members_voice_counter: Counter = Counter([member_id for channel_id in all_channels_data for member_id, count_voice in all_channels_data[channel_id]["total_voice_members"].items() for __ in range(count_voice) if _object.get_member(int(member_id)) is not None and is_valid(int(member_id))])
-                top_messages_channels = Counter({channel_id: all_channels_data[channel_id][f"total_{members_type_key}messages"] for channel_id in all_channels_data if _object.get_channel(int(channel_id)) is not None})
-                top_voice_channels = Counter({channel_id: all_channels_data[channel_id][f"total_{members_type_key}voice"] for channel_id in all_channels_data if _object.get_channel(int(channel_id)) is not None})
-                if _type[1] == "messages":
-                    if _type[2] == "members":
-                        counter_to_use = members_messages_counter
+            elif isinstance(_type, typing.Tuple):
+                if _type[0] == "top":
+                    members_messages_counter: Counter = Counter([member_id for channel_id in all_channels_data for member_id, count_messages in all_channels_data[channel_id]["total_messages_members"].items() for __ in range(count_messages) if _object.get_member(int(member_id)) is not None and is_valid(int(member_id))])
+                    members_voice_counter: Counter = Counter([member_id for channel_id in all_channels_data for member_id, count_voice in all_channels_data[channel_id]["total_voice_members"].items() for __ in range(count_voice) if _object.get_member(int(member_id)) is not None and is_valid(int(member_id))])
+                    top_messages_channels = Counter({channel_id: all_channels_data[channel_id][f"total_{members_type_key}messages"] for channel_id in all_channels_data if _object.get_channel(int(channel_id)) is not None})
+                    top_voice_channels = Counter({channel_id: all_channels_data[channel_id][f"total_{members_type_key}voice"] for channel_id in all_channels_data if _object.get_channel(int(channel_id)) is not None})
+                    if _type[1] == "messages":
+                        if _type[2] == "members":
+                            counter_to_use = members_messages_counter
+                        else:
+                            counter_to_use = top_messages_channels
                     else:
-                        counter_to_use = top_messages_channels
-                else:
-                    if _type[2] == "members":
-                        counter_to_use = members_voice_counter
-                    else:
-                        counter_to_use = top_voice_channels
-                return {
-                    f"top_{_type[1]}_{_type[2]}": {  # member/channel: messages/hours
-                        int(member_or_channel_id): (count_messages_or_voice if _type[1] == "messages" else (roundest_value if (roundest_value := round(count_messages_or_voice / 3600, ndigits=2)) != 0 else 0))
-                        for (member_or_channel_id, count_messages_or_voice) in counter_to_use.most_common(10) if count_messages_or_voice > 0
-                    },
-                    "graphic": {
+                        if _type[2] == "members":
+                            counter_to_use = members_voice_counter
+                        else:
+                            counter_to_use = top_voice_channels
+                    return {
                         f"top_{_type[1]}_{_type[2]}": {  # member/channel: messages/hours
                             int(member_or_channel_id): (count_messages_or_voice if _type[1] == "messages" else (roundest_value if (roundest_value := round(count_messages_or_voice / 3600, ndigits=2)) != 0 else 0))
                             for (member_or_channel_id, count_messages_or_voice) in counter_to_use.most_common(10) if count_messages_or_voice > 0
                         },
+                        "graphic": {
+                            f"top_{_type[1]}_{_type[2]}": {  # member/channel: messages/hours
+                                int(member_or_channel_id): (count_messages_or_voice if _type[1] == "messages" else (roundest_value if (roundest_value := round(count_messages_or_voice / 3600, ndigits=2)) != 0 else 0))
+                                for (member_or_channel_id, count_messages_or_voice) in counter_to_use.most_common(10) if count_messages_or_voice > 0
+                            },
+                        },
+                    }
+                elif _type[0] == "activity":
+                    activity_members_counter: Counter = Counter([member_id for member_id in all_members_data for __ in range(all_members_data[member_id]["total_activities_times"].get(_type[1], 0)) if is_valid(int(member_id))])
+                    return {
+                        "top_members": {  # activity_name: hours
+                            member_id: (roundest_value if (roundest_value := round(count_time / 3600, ndigits=2)) != 0 else 0)
+                            for (member_id, count_time) in activity_members_counter.most_common(10) if count_time > 0
+                        },
+                        "graphic": {
+                            "top_members": {  # activity_name: hours
+                                member_id: (roundest_value if (roundest_value := round(count_time / 3600, ndigits=2)) != 0 else 0)
+                                for (member_id, count_time) in activity_members_counter.most_common(10) if count_time > 0
+                            },
+                        },
+                    }
+
+        elif isinstance(_object, discord.CategoryChannel):
+            members_messages_counter: Counter = Counter([member_id for channel_id in [channel.id for channel in _object.channels] for member_id, count_messages in all_channels_data[channel_id]["total_messages_members"].items() for __ in range(count_messages) if _object.guild.get_member(int(member_id)) is not None and is_valid(int(member_id))])
+            members_voice_counter: Counter = Counter([member_id for channel_id in [channel.id for channel in _object.channels] for member_id, count_voice in all_channels_data[channel_id]["total_voice_members"].items() for __ in range(count_voice) if _object.guild.get_member(int(member_id)) is not None and is_valid(int(member_id))])
+            top_messages_channels = Counter({channel_id: all_channels_data[channel_id][f"total_{members_type_key}messages"] for channel_id in [channel.id for channel in _object.channels] if _object.guild.get_channel(int(channel_id)) is not None})
+            top_voice_channels = Counter({channel_id: all_channels_data[channel_id][f"total_{members_type_key}voice"] for channel_id in [channel.id for channel in _object.channels] if _object.guild.get_channel(int(channel_id)) is not None})
+            return {
+                "server_lookback": {  # type: messages/hours
+                    "text": sum(all_channels_data[channel_id][f"total_{members_type_key}messages"] for channel_id in [channel.id for channel in _object.channels]),
+                    "voice": roundest_value if (roundest_value := round(sum(all_channels_data[channel_id][f"total_{members_type_key}voice"] for channel_id in [channel.id for channel in _object.channels]) / 3600, ndigits=2)) != 0 else 0,
+                },
+                "messages": {  # days: messages
+                    delta: len([time for channel_id in all_channels_data for member_id in all_channels_data[channel_id]["messages"] for time in all_channels_data[channel_id]["messages"][member_id] if time >= (utc_now - datetime.timedelta(days=delta)).timestamp() and is_valid(int(member_id))])
+                    for delta in [1, 7, 30]
+                },
+                "voice_activity": {  # days: hours
+                    delta: roundest_value if (roundest_value := round(sum(int(times[1] - times[0]) - int(to_remove if (to_remove := (utc_now - datetime.timedelta(days=delta)).timestamp() - times[0]) > 0 else 0) for channel_id in [channel.id for channel in _object.channels] for member_id in all_channels_data[channel_id]["voice"] for times in all_channels_data[channel_id]["voice"][member_id] if times[1] >= (utc_now - datetime.timedelta(days=delta)).timestamp() and is_valid(int(member_id))) / 3600, ndigits=2)) != 0 else 0
+                    for delta in [1, 7, 30]
+                },
+                "top_members": {  # type: (member, messages/hours)
+                    "text": {
+                        "member": int(members_messages_counter.most_common(1)[0][0]) if members_messages_counter and members_messages_counter.most_common(1)[0][1] > 0 else None,
+                        "value": members_messages_counter.most_common(1)[0][1] if members_messages_counter and members_messages_counter.most_common(1)[0][1] > 0 else None,
                     },
-                }
+                    "voice": {
+                        "member": int(members_voice_counter.most_common(1)[0][0]) if members_voice_counter and members_voice_counter.most_common(1)[0][1] > 0 else None,
+                        "value": (roundest_value if (roundest_value := round(members_voice_counter.most_common(1)[0][1] / 3600, ndigits=2)) != 0 else 0) if members_voice_counter and members_voice_counter.most_common(1)[0][1] > 0 else None,
+                    },
+                },
+                "top_channels": {  # type: (channel, messages/hours)
+                    "text": {
+                        "channel": int(top_messages_channels.most_common(1)[0][0]) if top_messages_channels and top_messages_channels.most_common(1)[0][1] > 0 else None,
+                        "value": top_messages_channels.most_common(1)[0][1] if top_messages_channels and top_messages_channels.most_common(1)[0][1] > 0 else None,
+                    },
+                    "voice": {
+                        "channel": int(top_voice_channels.most_common(1)[0][0]) if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0 else None,
+                        "value": (roundest_value if (roundest_value := round(top_voice_channels.most_common(1)[0][1] / 3600, ndigits=2)) != 0 else 0) if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0 else None,
+                    },
+                },
+                "graphic": {
+                    "messages": {  # day: messages
+                        day: len([time for channel_id in [channel.id for channel in _object.channels] for member_id in all_channels_data[channel_id]["messages"] for time in all_channels_data[channel_id]["messages"][member_id] if (utc_now - datetime.timedelta(days=-day - 1)).timestamp() >= time >= (utc_now - datetime.timedelta(days=-day)).timestamp() and is_valid(int(member_id))])
+                        for day in range(-30, 0)
+                    },
+                    "voice": {  # day: hours
+                        day: roundest_value if (roundest_value := round(sum(int(times[1] - times[0]) - int(to_remove if (to_remove := (utc_now - datetime.timedelta(days=-day)).timestamp() - times[0]) - int(to_remove if (to_remove := (utc_now - datetime.timedelta(days=-day - 1)).timestamp() - (utc_now.timestamp() - times[1])) > 0 else 0) > 0 else 0) for channel_id in [channel.id for channel in _object.channels] for member_id in all_channels_data[channel_id]["voice"] for times in all_channels_data[channel_id]["voice"][member_id] if ((utc_now - datetime.timedelta(days=-day - 1)).timestamp() >= times[0] >= (utc_now - datetime.timedelta(days=-day)).timestamp()) or ((utc_now - datetime.timedelta(days=-day)).timestamp()) <= times[1] <= (utc_now - datetime.timedelta(days=-day - 1)).timestamp() and is_valid(int(member_id))) / 3600, ndigits=2)) != 0 else 0
+                        for day in range(-30, 0)
+                    },
+                },
+            }
 
         elif isinstance(_object, discord.TextChannel):
             members_messages_counter: Counter = Counter([member_id for member_id, count_messages in all_channels_data[_object.id]["total_messages_members"].items() for __ in range(count_messages) if _object.guild.get_member(int(member_id)) is not None and is_valid(int(member_id))] if _object.id in all_channels_data else [])
@@ -952,7 +1028,7 @@ class GuildStats(Cog):
         # return f"{int(number) if number == int(number) else (f'{number:.1f}' if f'{number:.1f}' != '0.0' else (f'{number:.2f}' if f'{number:.2f}' != '0.0' else '0'))}{suffixes[index]}"
         return f"{int(number) if number == int(number) else ((int(float(f'{number:.1f}')) if float(f'{number:.1f}') == int(float(f'{number:.1f}')) else f'{number:.1f}') if f'{number:.1f}' != '0.0' else ((int(float(f'{number:.2f}')) if float(f'{number:.2f}') == int(float(f'{number:.2f}')) else f'{number:.2f}') if f'{number:.2f}' != '0.0' else '0'))}{suffixes[index]}"
 
-    def _generate_prefix_image(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], size: typing.Tuple[int, int], to_file: bool, _object_display: typing.Optional[bytes], guild_icon: typing.Optional[bytes]) -> typing.Union[Image.Image, discord.File]:
+    def _generate_prefix_image(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]], typing.Tuple[typing.Literal["activity"], str]]], discord.CategoryChannel, discord.TextChannel, discord.VoiceChannel], size: typing.Tuple[int, int], to_file: bool, _object_display: typing.Optional[bytes], guild_icon: typing.Optional[bytes]) -> typing.Union[Image.Image, discord.File]:
         if isinstance(_object, typing.Tuple):
             _object, _type = _object
         else:
@@ -1028,9 +1104,18 @@ class GuildStats(Cog):
             elif _type == "activities":
                 draw.text((190, 30), text="Activities Stats", fill=(255, 255, 255), font=self.bold_font[50])
                 image = Image.open(self.icons["game"])
-            elif isinstance(_type, typing.Tuple) and _type[0] == "top":
-                draw.text((190, 30), text="Top Stats", fill=(255, 255, 255), font=self.bold_font[50])
-                image = Image.open(self.icons["#" if _type[1] == "messages" else "sound"])
+            elif isinstance(_type, typing.Tuple):
+                if _type[0] == "top":
+                    draw.text((190, 30), text="Top Stats", fill=(255, 255, 255), font=self.bold_font[50])
+                    image = Image.open(self.icons["#" if _type[1] == "messages" else "sound"])
+                elif _type[0] == "activity":
+                    draw.text((190, 30), text=f"Activity - {_type[1]}", fill=(255, 255, 255), font=self.bold_font[50])
+                    image = Image.open(self.icons["game"])
+            image = image.resize((140, 140))
+            img.paste(image, (30, 30, 170, 170), mask=image.split()[3])
+        elif isinstance(_object, discord.CategoryChannel):
+            draw.text((190, 30), f"Category - {_object.name}", fill=(255, 255, 255), font=self.bold_font[50])
+            image = Image.open(self.icons["#"])
             image = image.resize((140, 140))
             img.paste(image, (30, 30, 170, 170), mask=image.split()[3])
         elif isinstance(_object, discord.TextChannel):
@@ -1078,7 +1163,7 @@ class GuildStats(Cog):
             align_text_center((1200 + 365, 75, 1545 + 365, 175), text=_object.joined_at.strftime("%B %d, %Y"), fill=(255, 255, 255), font=self.font[36])
             draw.rounded_rectangle((1220 + 365, 30, 1476 + 365, 90), radius=15, fill=(79, 84, 92))
             align_text_center((1220 + 365, 30, 1476 + 365, 90), text="Joined On", fill=(255, 255, 255), font=self.bold_font[30])
-        elif isinstance(_object, (discord.Guild, discord.TextChannel, discord.VoiceChannel)):
+        elif isinstance(_object, (discord.Guild, discord.CategoryChannel, discord.TextChannel, discord.VoiceChannel)):
             # `created_on`
             draw.rounded_rectangle((1200 + 365, 75, 1545 + 365, 175), radius=15, fill=(47, 49, 54))
             align_text_center((1200 + 365, 75, 1545 + 365, 175), text=_object.created_at.strftime("%B %d, %Y"), fill=(255, 255, 255), font=self.font[36])
@@ -1092,17 +1177,19 @@ class GuildStats(Cog):
         buffer.seek(0)
         return discord.File(buffer, filename="image.png")
 
-    async def generate_prefix_image(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], size: typing.Tuple[int, int] = (1942, 1026), to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
+    async def generate_prefix_image(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]], typing.Tuple[typing.Literal["activity"], str]]], discord.CategoryChannel, discord.TextChannel, discord.VoiceChannel], size: typing.Tuple[int, int] = (1942, 1026), to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
         if isinstance(_object, typing.Tuple):
-            _object = _object[0]
+            _object, _type = _object
+        else:
+            _type = None
         return await asyncio.to_thread(
             self._generate_prefix_image,
-            _object=_object, size=size, to_file=to_file,
-            _object_display=(await _object.display_avatar.read()) if isinstance(_object, discord.Member) else ((await _object.display_icon.read()) if isinstance(_object, discord.Role) else None),
+            _object=_object if _type is None else (_object, _type), size=size, to_file=to_file,
+            _object_display=(await _object.display_avatar.read()) if isinstance(_object, discord.Member) else ((await _object.display_icon.read()) if isinstance(_object, discord.Role) and _object.display_icon is not None else None),
             guild_icon=(await (_object if isinstance(_object, discord.Guild) else _object.guild).icon.read()) if (_object if isinstance(_object, discord.Guild) else _object.guild).icon is not None else None,
         )
 
-    def _generate_graphic(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"], size: typing.Optional[typing.Tuple[int, int]], data: dict, to_file: bool, img: Image.Image, default_state: bool, first_loading_time: datetime.datetime) -> typing.Union[Image.Image, discord.File]:
+    def _generate_graphic(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]], typing.Tuple[typing.Literal["activity"], str]]], discord.CategoryChannel, discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"], size: typing.Optional[typing.Tuple[int, int]], data: dict, to_file: bool, img: Image.Image, default_state: bool, first_loading_time: datetime.datetime) -> typing.Union[Image.Image, discord.File]:
         if isinstance(_object, typing.Tuple):
             _object = _object[0]
         draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
@@ -1230,7 +1317,7 @@ class GuildStats(Cog):
                     fillcolor="rgba(0,255,0,0.2)",
                 )
             )
-        for key in ["activities", "top_messages_members", "top_messages_channels", "top_voice_members", "top_voice_channels"]:
+        for key in ["activities", "top_messages_members", "top_messages_channels", "top_voice_members", "top_voice_channels", "top_members"]:
             if data["graphic"].get(key) is not None:
                 fig.add_trace(
                     go.Pie(
@@ -1277,7 +1364,7 @@ class GuildStats(Cog):
         buffer.seek(0)
         return discord.File(buffer, filename="image.png")
 
-    async def generate_graphic(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"] = "humans", size: typing.Optional[typing.Tuple[int, int]] = None, data: typing.Optional[dict] = None, to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
+    async def generate_graphic(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]], typing.Tuple[typing.Literal["activity"], str]]], discord.CategoryChannel, discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"] = "humans", size: typing.Optional[typing.Tuple[int, int]] = None, data: typing.Optional[dict] = None, to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
         if isinstance(_object, typing.Tuple):
             _object, _type = _object
         else:
@@ -1291,7 +1378,7 @@ class GuildStats(Cog):
             img=img, default_state=await self.config.default_state(), first_loading_time=datetime.datetime.fromtimestamp(await self.config.first_loading_time(), tz=datetime.timezone.utc),
         )
 
-    def _generate_image(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"], show_graphic: bool, graphic: typing.Optional[Image.Image], data: dict, to_file: bool, img: Image.Image, default_state: bool, first_loading_time: datetime.datetime) -> typing.Union[Image.Image, discord.File]:
+    def _generate_image(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]], typing.Tuple[typing.Literal["activity"], str]]], discord.CategoryChannel, discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"], show_graphic: bool, graphic: typing.Optional[Image.Image], data: dict, to_file: bool, img: Image.Image, default_state: bool, first_loading_time: datetime.datetime) -> typing.Union[Image.Image, discord.File]:
         if isinstance(_object, typing.Tuple):
             _object, _type = _object
         else:
@@ -1748,33 +1835,61 @@ class GuildStats(Cog):
                 image = image.resize((885, 675))
                 img.paste(image, (1005, 301, 1890, 976))
 
-            elif isinstance(_type, typing.Tuple) and _type[0] == "top":
-                # Top Messages/Voice Members/Channels. box = 925 / empty = 30 | 30 cases / box = 76 / empty = 16
-                draw.rounded_rectangle((30, 204, 955, 996), radius=15, fill=(47, 49, 54))
-                align_text_center((50, 214, 50, 284), text=f"Top {'Messages' if _type[1] == 'messages' else 'Voice'} {'Members' if _type[2] == 'members' else 'Channels'}", fill=(255, 255, 255), font=self.bold_font[40])
-                image = Image.open(self.icons["person" if _type[2] == "members" else "#"])
-                image = image.resize((70, 70))
-                img.paste(image, (865, 214, 935, 284), mask=image.split()[3])
-                top = list(data[f"top_{_type[1]}_{_type[2]}"])
-                current_y = 301
-                for i in range(10):
-                    draw.rounded_rectangle((50, current_y, 935, current_y + 58), radius=15, fill=(32, 34, 37))
-                    draw.rounded_rectangle((50, current_y, 580, current_y + 58), radius=15, fill=(24, 26, 27))
-                    if len(top) >= i + 1:
-                        align_text_center((50, current_y, 580, current_y + 58), text=(member.display_name if (member := _object.get_member(top[i])).display_name and (sum(1 if char.isascii() else 0 for char in member.display_name) / len(member.display_name) > 0.8) else (member.global_name if (sum(1 if char.isascii() else 0 for char in member.global_name) / len(member.global_name) > 0.8) else member.name)) if _type[2] == "members" else _object.get_channel(top[i]).name, fill=(255, 255, 255), font=self.bold_font[36])
-                        align_text_center((580, current_y, 935, current_y + 58), text=f"{self.number_to_text_with_suffix(data[f'top_{_type[1]}_{_type[2]}'][top[i]])} {'message' if _type[1] == 'messages' else 'hour'}{'' if 0 < data[f'top_{_type[1]}_{_type[2]}'][top[i]] <= 1 else 's'}", fill=(255, 255, 255), font=self.font[36])
-                    current_y += 58 + 10
+            elif isinstance(_type, typing.Tuple):
+                if _type[0] == "top":
+                    # Top Messages/Voice Members/Channels. box = 925 / empty = 30 | 30 cases / box = 76 / empty = 16
+                    draw.rounded_rectangle((30, 204, 955, 996), radius=15, fill=(47, 49, 54))
+                    align_text_center((50, 214, 50, 284), text=f"Top {'Messages' if _type[1] == 'messages' else 'Voice'} {'Members' if _type[2] == 'members' else 'Channels'}", fill=(255, 255, 255), font=self.bold_font[40])
+                    image = Image.open(self.icons["person" if _type[2] == "members" else "#"])
+                    image = image.resize((70, 70))
+                    img.paste(image, (865, 214, 935, 284), mask=image.split()[3])
+                    top = list(data[f"top_{_type[1]}_{_type[2]}"])
+                    current_y = 301
+                    for i in range(10):
+                        draw.rounded_rectangle((50, current_y, 935, current_y + 58), radius=15, fill=(32, 34, 37))
+                        draw.rounded_rectangle((50, current_y, 580, current_y + 58), radius=15, fill=(24, 26, 27))
+                        if len(top) >= i + 1:
+                            align_text_center((50, current_y, 580, current_y + 58), text=(member.display_name if (member := _object.get_member(top[i])).display_name and (sum(1 if char.isascii() else 0 for char in member.display_name) / len(member.display_name) > 0.8) else (member.global_name if (sum(1 if char.isascii() else 0 for char in member.global_name) / len(member.global_name) > 0.8) else member.name)) if _type[2] == "members" else _object.get_channel(top[i]).name, fill=(255, 255, 255), font=self.bold_font[36])
+                            align_text_center((580, current_y, 935, current_y + 58), text=f"{self.number_to_text_with_suffix(data[f'top_{_type[1]}_{_type[2]}'][top[i]])} {'message' if _type[1] == 'messages' else 'hour'}{'' if 0 < data[f'top_{_type[1]}_{_type[2]}'][top[i]] <= 1 else 's'}", fill=(255, 255, 255), font=self.font[36])
+                        current_y += 58 + 10
 
-                # Graphic. box = 925 / empty = 30 | 1 case / box = 76 / empty = 16
-                draw.rounded_rectangle((985, 204, 1910, 996), radius=15, fill=(47, 49, 54))
-                align_text_center((1005, 214, 1005, 284), text="Graphic", fill=(255, 255, 255), font=self.bold_font[40])
-                image = Image.open(self.icons["query_stats"])
-                image = image.resize((70, 70))
-                img.paste(image, (1820, 214, 1890, 284), mask=image.split()[3])
-                draw.rounded_rectangle((1005, 301, 1890, 976), radius=15, fill=(32, 34, 37))
-                image: Image.Image = graphic
-                image = image.resize((885, 675))
-                img.paste(image, (1005, 301, 1890, 976))
+                    # Graphic. box = 925 / empty = 30 | 1 case / box = 76 / empty = 16
+                    draw.rounded_rectangle((985, 204, 1910, 996), radius=15, fill=(47, 49, 54))
+                    align_text_center((1005, 214, 1005, 284), text="Graphic", fill=(255, 255, 255), font=self.bold_font[40])
+                    image = Image.open(self.icons["query_stats"])
+                    image = image.resize((70, 70))
+                    img.paste(image, (1820, 214, 1890, 284), mask=image.split()[3])
+                    draw.rounded_rectangle((1005, 301, 1890, 976), radius=15, fill=(32, 34, 37))
+                    image: Image.Image = graphic
+                    image = image.resize((885, 675))
+                    img.paste(image, (1005, 301, 1890, 976))
+                elif _type[0] == "activity":
+                    # Top Members. box = 925 / empty = 30 | 30 cases / box = 76 / empty = 16
+                    draw.rounded_rectangle((30, 204, 955, 996), radius=15, fill=(47, 49, 54))
+                    align_text_center((50, 214, 50, 284), text="Top Members", fill=(255, 255, 255), font=self.bold_font[40])
+                    image = Image.open(self.icons["person"])
+                    image = image.resize((70, 70))
+                    img.paste(image, (865, 214, 935, 284), mask=image.split()[3])
+                    top = list(data["top_members"])
+                    current_y = 301
+                    for i in range(10):
+                        draw.rounded_rectangle((50, current_y, 935, current_y + 58), radius=15, fill=(32, 34, 37))
+                        draw.rounded_rectangle((50, current_y, 580, current_y + 58), radius=15, fill=(24, 26, 27))
+                        if len(top) >= i + 1:
+                            align_text_center((50, current_y, 580, current_y + 58), text=(member.display_name if (member := _object.get_member(top[i])).display_name and (sum(1 if char.isascii() else 0 for char in member.display_name) / len(member.display_name) > 0.8) else (member.global_name if (sum(1 if char.isascii() else 0 for char in member.global_name) / len(member.global_name) > 0.8) else member.name)), fill=(255, 255, 255), font=self.bold_font[36])
+                            align_text_center((580, current_y, 935, current_y + 58), text=f"{self.number_to_text_with_suffix(data['top_members'][top[i]])} hour{'' if 0 < data['top_members'][top[i]] <= 1 else 's'}", fill=(255, 255, 255), font=self.font[36])
+                        current_y += 58 + 10
+
+                    # Graphic. box = 925 / empty = 30 | 1 case / box = 76 / empty = 16
+                    draw.rounded_rectangle((985, 204, 1910, 996), radius=15, fill=(47, 49, 54))
+                    align_text_center((1005, 214, 1005, 284), text="Graphic", fill=(255, 255, 255), font=self.bold_font[40])
+                    image = Image.open(self.icons["query_stats"])
+                    image = image.resize((70, 70))
+                    img.paste(image, (1820, 214, 1890, 284), mask=image.split()[3])
+                    draw.rounded_rectangle((1005, 301, 1890, 976), radius=15, fill=(32, 34, 37))
+                    image: Image.Image = graphic
+                    image = image.resize((885, 675))
+                    img.paste(image, (1005, 301, 1890, 976))
 
             if show_graphic:
                 # Graphic. box = 940 / empty = 0 | + 411 (381 + 30) / 1 case / box = 264 / empty = 0
@@ -1787,6 +1902,106 @@ class GuildStats(Cog):
                 image: Image.Image = graphic
                 image = image.resize((1840, 464))
                 img.paste(image, (50, 1123, 1890, 1387 + 200))
+
+        elif isinstance(_object, discord.CategoryChannel):
+            # Server Lookback. box = 606 / empty = 30 | 2 cases / box = 117 / empty = 30
+            draw.rounded_rectangle((30, 204, 636, 585), radius=15, fill=(47, 49, 54))
+            align_text_center((50, 214, 50, 284), text="Server Lookback", fill=(255, 255, 255), font=self.bold_font[40])
+            image = Image.open(self.icons["history"])
+            image = image.resize((70, 70))
+            img.paste(image, (546, 214, 616, 284), mask=image.split()[3])
+            draw.rounded_rectangle((50, 301, 616, 418), radius=15, fill=(32, 34, 37))
+            draw.rounded_rectangle((50, 301, 325, 418), radius=15, fill=(24, 26, 27))
+            align_text_center((50, 301, 325, 418), text="Text", fill=(255, 255, 255), font=self.bold_font[36])
+            align_text_center((325, 301, 616, 418), text=f"{self.number_to_text_with_suffix(data['server_lookback']['text'])} message{'' if 0 < data['server_lookback']['text'] <= 1 else 's'}", fill=(255, 255, 255), font=self.font[36])
+            draw.rounded_rectangle((50, 448, 616, 565), radius=15, fill=(32, 34, 37))
+            draw.rounded_rectangle((50, 448, 325, 565), radius=15, fill=(24, 26, 27))
+            align_text_center((50, 448, 325, 565), text="Voice", fill=(255, 255, 255), font=self.bold_font[36])
+            align_text_center((325, 448, 616, 565), text=f"{self.number_to_text_with_suffix(data['server_lookback']['voice'])} hour{'' if 0 < data['server_lookback']['voice'] <= 1 else 's'}", fill=(255, 255, 255), font=self.font[36])
+
+            # Messages. box = 606 / empty = 30 | 3 cases / box = 76 / empty = 16
+            draw.rounded_rectangle((668, 204, 1274, 585), radius=15, fill=(47, 49, 54))
+            align_text_center((688, 214, 688, 284), text="Messages", fill=(255, 255, 255), font=self.bold_font[40])
+            image = Image.open(self.icons["#"])
+            image = image.resize((70, 70))
+            img.paste(image, (1184, 214, 1254, 284), mask=image.split()[3])
+            draw.rounded_rectangle((688, 301, 1254, 377), radius=15, fill=(32, 34, 37))
+            draw.rounded_rectangle((688, 301, 910, 377), radius=15, fill=(24, 26, 27))
+            align_text_center((688, 301, 910, 377), text="1d", fill=(255, 255, 255), font=self.bold_font[36])
+            align_text_center((910, 301, 1254, 377), text=f"{self.number_to_text_with_suffix(data['messages'][1])} message{'' if 0 < data['messages'][1] <= 1 else 's'}", fill=(255, 255, 255), font=self.font[36])
+            draw.rounded_rectangle((688, 395, 1254, 471), radius=15, fill=(32, 34, 37))
+            draw.rounded_rectangle((688, 395, 910, 471), radius=15, fill=(24, 26, 27))
+            align_text_center((688, 395, 910, 471), text="7d", fill=(255, 255, 255), font=self.bold_font[36])
+            align_text_center((910, 395, 1254, 471), text=f"{self.number_to_text_with_suffix(data['messages'][7])} message{'' if 0 < data['messages'][7] <= 1 else 's'}", fill=(255, 255, 255), font=self.font[36])
+            draw.rounded_rectangle((688, 489, 1254, 565), radius=15, fill=(32, 34, 37))
+            draw.rounded_rectangle((688, 489, 910, 565), radius=15, fill=(24, 26, 27))
+            align_text_center((688, 489, 910, 565), text="30d", fill=(255, 255, 255), font=self.bold_font[36])
+            align_text_center((910, 489, 1254, 565), text=f"{self.number_to_text_with_suffix(data['messages'][30])} message{'' if 0 < data['messages'][30] <= 1 else 's'}", fill=(255, 255, 255), font=self.font[36])
+
+            # Voice Activity. box = 606 / empty = 30 | 3 cases / box = 76 / empty = 16
+            draw.rounded_rectangle((1306, 204, 1912, 585), radius=15, fill=(47, 49, 54))
+            align_text_center((1326, 214, 1326, 284), text="Voice Activity", fill=(255, 255, 255), font=self.bold_font[40])
+            image = Image.open(self.icons["sound"])
+            image = image.resize((70, 70))
+            img.paste(image, (1822, 214, 1892, 284), mask=image.split()[3])
+            draw.rounded_rectangle((1326, 301, 1892, 377), radius=15, fill=(32, 34, 37))
+            draw.rounded_rectangle((1326, 301, 1548, 377), radius=15, fill=(24, 26, 27))
+            align_text_center((1326, 301, 1548, 377), text="1d", fill=(255, 255, 255), font=self.bold_font[36])
+            align_text_center((1548, 301, 1892, 377), text=f"{self.number_to_text_with_suffix(data['voice_activity'][1])} hour{'' if 0 < data['voice_activity'][1] <= 1 else 's'}", fill=(255, 255, 255), font=self.font[36])
+            draw.rounded_rectangle((1326, 395, 1892, 471), radius=15, fill=(32, 34, 37))
+            draw.rounded_rectangle((1326, 395, 1548, 471), radius=15, fill=(24, 26, 27))
+            align_text_center((1326, 395, 1548, 471), text="7d", fill=(255, 255, 255), font=self.bold_font[36])
+            align_text_center((1548, 395, 1892, 471), text=f"{self.number_to_text_with_suffix(data['voice_activity'][7])} hour{'' if 0 < data['voice_activity'][7] <= 1 else 's'}", fill=(255, 255, 255), font=self.font[36])
+            draw.rounded_rectangle((1326, 489, 1892, 565), radius=15, fill=(32, 34, 37))
+            draw.rounded_rectangle((1326, 489, 1548, 565), radius=15, fill=(24, 26, 27))
+            align_text_center((1326, 489, 1548, 565), text="30d", fill=(255, 255, 255), font=self.bold_font[36])
+            align_text_center((1548, 489, 1892, 565), text=f"{self.number_to_text_with_suffix(data['voice_activity'][30])} hour{'' if 0 < data['voice_activity'][30] <= 1 else 's'}", fill=(255, 255, 255), font=self.font[36])
+
+            # Top Members. box = 925 / empty = 30 | 3 cases / box = 117 / empty = 30
+            draw.rounded_rectangle((30, 615, 955, 996), radius=15, fill=(47, 49, 54))
+            align_text_center((50, 625, 50, 695), text="Top Members", fill=(255, 255, 255), font=self.bold_font[40])
+            image = Image.open(self.icons["person"])
+            image = image.resize((70, 70))
+            img.paste(image, (865, 625, 935, 695), mask=image.split()[3])
+            image = Image.open(self.icons["#"])
+            image = image.resize((70, 70))
+            img.paste(image, (50, 735, 120, 805), mask=image.split()[3])
+            draw.rounded_rectangle((150, 712, 935, 829), radius=15, fill=(32, 34, 37))
+            draw.rounded_rectangle((150, 712, 600, 829), radius=15, fill=(24, 26, 27))
+            if data["top_members"]["text"]["member"] is not None and data["top_members"]["text"]["value"] is not None:
+                align_text_center((150, 712, 600, 829), text=member.display_name if (member := _object.guild.get_member(data["top_members"]["text"]["member"])).display_name and (sum(1 if char.isascii() else 0 for char in member.display_name) / len(member.display_name) > 0.8) else (member.global_name if (sum(1 if char.isascii() else 0 for char in member.global_name) / len(member.global_name) > 0.8) else member.name), fill=(255, 255, 255), font=self.bold_font[36])
+                align_text_center((600, 712, 935, 829), text=f"{self.number_to_text_with_suffix(data['top_members']['text']['value'])} message{'' if 0 < data['top_members']['text']['value'] <= 1 else 's'}", fill=(255, 255, 255), font=self.font[36])
+            image = Image.open(self.icons["sound"])
+            image = image.resize((70, 70))
+            img.paste(image, (50, 882, 120, 952), mask=image.split()[3])
+            draw.rounded_rectangle((150, 859, 935, 976), radius=15, fill=(32, 34, 37))
+            draw.rounded_rectangle((150, 859, 600, 976), radius=15, fill=(24, 26, 27))
+            if data["top_members"]["voice"]["member"] is not None and data["top_members"]["voice"]["value"] is not None:
+                align_text_center((150, 859, 600, 976), text=member.display_name if (member := _object.guild.get_member(data["top_members"]["voice"]["member"])).display_name and (sum(1 if char.isascii() else 0 for char in member.display_name) / len(member.display_name) > 0.8) else (member.global_name if (sum(1 if char.isascii() else 0 for char in member.global_name) / len(member.global_name) > 0.8) else member.name), fill=(255, 255, 255), font=self.bold_font[36])
+                align_text_center((600, 859, 935, 976), text=f"{self.number_to_text_with_suffix(data['top_members']['voice']['value'])} hour{'' if 0 < data['top_members']['voice']['value'] <= 1 else 's'}", fill=(255, 255, 255), font=self.font[36])
+
+            # Top Channels. box = 925 / empty = 30 | 3 cases / box = 76 / empty = 16
+            draw.rounded_rectangle((985, 615, 1910, 996), radius=15, fill=(47, 49, 54))
+            align_text_center((1005, 625, 1005, 695), text="Top Channels", fill=(255, 255, 255), font=self.bold_font[40])
+            image = Image.open(self.icons["#"])
+            image = image.resize((70, 70))
+            img.paste(image, (1820, 625, 1890, 695), mask=image.split()[3])
+            image = Image.open(self.icons["#"])
+            image = image.resize((70, 70))
+            img.paste(image, (1005, 735, 1075, 805), mask=image.split()[3])
+            draw.rounded_rectangle((1105, 712, 1890, 829), radius=15, fill=(32, 34, 37))
+            draw.rounded_rectangle((1105, 712, 1555, 829), radius=15, fill=(24, 26, 27))
+            if data["top_channels"]["text"]["channel"] is not None and data["top_channels"]["text"]["value"] is not None:
+                align_text_center((1105, 712, 1555, 829), text=_object.guild.get_channel(data["top_channels"]["text"]["channel"]).name, fill=(255, 255, 255), font=self.bold_font[36])
+                align_text_center((1555, 712, 1890, 829), text=f"{self.number_to_text_with_suffix(data['top_channels']['text']['value'])} message{'' if 0 < data['top_channels']['text']['value'] <= 1 else 's'}", fill=(255, 255, 255), font=self.font[36])
+            image = Image.open(self.icons["sound"])
+            image = image.resize((70, 70))
+            img.paste(image, (1005, 882, 1075, 952), mask=image.split()[3])
+            draw.rounded_rectangle((1105, 859, 1890, 976), radius=15, fill=(32, 34, 37))
+            draw.rounded_rectangle((1105, 859, 1555, 976), radius=15, fill=(24, 26, 27))
+            if data["top_channels"]["voice"]["channel"] is not None and data["top_channels"]["voice"]["value"] is not None:
+                align_text_center((1105, 859, 1555, 976), text=_object.guild.get_channel(data["top_channels"]["voice"]["channel"]).name, fill=(255, 255, 255), font=self.bold_font[36])
+                align_text_center((1555, 859, 1890, 976), text=f"{self.number_to_text_with_suffix(data['top_channels']['voice']['value'])} hour{'' if 0 < data['top_channels']['voice']['value'] <= 1 else 's'}", fill=(255, 255, 255), font=self.font[36])
 
         elif isinstance(_object, discord.TextChannel):
             # Server Lookback. box = 606 / empty = 30 | 1 case / box = 264 / empty = 0
@@ -2009,7 +2224,7 @@ class GuildStats(Cog):
         buffer.seek(0)
         return discord.File(buffer, filename="image.png")
 
-    async def generate_image(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]]]], discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"] = "humans", show_graphic: bool = False, data: typing.Optional[dict] = None, to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
+    async def generate_image(self, _object: typing.Union[discord.Member, discord.Role, discord.Guild, typing.Tuple[discord.Guild, typing.Union[typing.Literal["messages", "voice", "activities"], typing.Tuple[typing.Literal["top"], typing.Literal["messages", "voice"], typing.Literal["members", "channels"]], typing.Tuple[typing.Literal["activity"], str]]], discord.CategoryChannel, discord.TextChannel, discord.VoiceChannel], members_type: typing.Literal["humans", "bots", "both"] = "humans", show_graphic: bool = False, data: typing.Optional[dict] = None, to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
         if isinstance(_object, typing.Tuple):
             _object, _type = _object
         else:
@@ -2019,7 +2234,7 @@ class GuildStats(Cog):
             data = await self.get_data(_object if _type is None else (_object, _type), members_type=members_type)
         if show_graphic:
             graphic = await self.generate_graphic(_object, size=(1840, 464), data=data, to_file=False)
-        elif _type == "activities" or (isinstance(_type, typing.Tuple) and _type[0] == "top"):
+        elif _type == "activities" or (isinstance(_type, typing.Tuple) and _type[0] in ["top", "activity"]):
             graphic = await self.generate_graphic(_object, size=(885, 675), data=data, to_file=False)
         else:
             graphic = None
@@ -2033,7 +2248,7 @@ class GuildStats(Cog):
     @commands.bot_has_permissions(attach_files=True)
     @commands.hybrid_group(invoke_without_command=True)
     async def guildstats(self, ctx: commands.Context, members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans", show_graphic: typing.Optional[bool] = False, *, _object: ObjectConverter) -> None:
-        """Generate images with messages and voice stats, for members, roles guilds, text channels, voice channels and activities."""
+        """Generate images with messages and voice stats, for members, roles, guilds, categories, text channels, voice channels and activities."""
         # if _object is None:
         #     _object = ctx.guild
         if not (enabled_state if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None else await self.config.default_state()):
@@ -2097,14 +2312,26 @@ class GuildStats(Cog):
         await GuildStatsView(cog=self, _object=(ctx.guild, "activities"), members_type=members_type, show_graphic_in_main=False, graphic_mode=False).start(ctx)
 
     @guildstats.command()
+    async def category(self, ctx: commands.Context, members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans", show_graphic: typing.Optional[bool] = False, *, category: discord.CategoryChannel = None) -> None:
+        """Display stats for a specified category."""
+        if category is None:
+            if ctx.channel.category is not None:
+                category = ctx.channel.category
+            else:
+                return await ctx.send_help()
+        if not (enabled_state if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None else await self.config.default_state()):
+            raise commands.UserFeedbackCheckFailure(_("This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.").format(prefix=ctx.prefix))
+        await GuildStatsView(cog=self, _object=category, members_type=members_type, show_graphic_in_main=show_graphic, graphic_mode=False).start(ctx)
+
+    @guildstats.command()
     async def channel(self, ctx: commands.Context, members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans", show_graphic: typing.Optional[bool] = False, *, channel: typing.Union[discord.TextChannel, discord.VoiceChannel] = None) -> None:
         """Display stats for a specified channel."""
         if channel is None:
             channel = ctx.channel
-        if isinstance(channel, discord.Thread):
-            raise commands.UserFeedbackCheckFailure(_("Threads aren't supported by this cog."))
         if not (enabled_state if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None else await self.config.default_state()):
             raise commands.UserFeedbackCheckFailure(_("This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.").format(prefix=ctx.prefix))
+        if isinstance(channel, discord.Thread):
+            raise commands.UserFeedbackCheckFailure(_("Threads aren't supported by this cog."))
         await GuildStatsView(cog=self, _object=channel, members_type=members_type, show_graphic_in_main=show_graphic, graphic_mode=False).start(ctx)
 
     @guildstats.command()
@@ -2115,6 +2342,15 @@ class GuildStats(Cog):
         if not (enabled_state if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None else await self.config.default_state()):
             raise commands.UserFeedbackCheckFailure(_("This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.").format(prefix=ctx.prefix))
         await GuildStatsView(cog=self, _object=(ctx.guild, ("top", _type_1, _type_2)), members_type=members_type, show_graphic_in_main=False, graphic_mode=False).start(ctx)
+
+    @guildstats.command()
+    async def activity(self, ctx: commands.Context, members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans", *, activity_name: str) -> None:
+        """Display stats for a specific activity in this guild."""
+        if not await self.config.toggle_activities_stats():
+            raise commands.UserFeedbackCheckFailure(_("Activities stats are disabled on this bot."))
+        if not (enabled_state if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None else await self.config.default_state()):
+            raise commands.UserFeedbackCheckFailure(_("This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.").format(prefix=ctx.prefix))
+        await GuildStatsView(cog=self, _object=(ctx.guild, ("activity", activity_name)), members_type=members_type, show_graphic_in_main=False, graphic_mode=False).start(ctx)
 
     @guildstats.command(aliases=["graph"])
     async def graphic(self, ctx: commands.Context, members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans", *, _object: ObjectConverter = None) -> None:
@@ -2174,6 +2410,28 @@ class GuildStats(Cog):
 
     @commands.admin_or_permissions(administrator=True)
     @guildstats.command()
+    async def ignorecategory(self, ctx: commands.Context, *, category: discord.CategoryChannel):
+        """Ignore or unignore a specific category."""
+        ignored_categories: typing.List[int] = await self.config.guild(ctx.guild).ignored_categories()
+        if category.id not in ignored_categories:
+            ignored_categories.append(category.id)
+            await self.config.guild(ctx.guild).ignored_categories.set(ignored_categories)
+            await ctx.send(
+                _(
+                    "`{category.name}` ({category.id}) will now be ignored in stats (except for the specific category one)."
+                ).format(category=category),
+            )
+        else:
+            ignored_categories.remove(category.id)
+            await self.config.guild(ctx.guild).ignored_categories.set(ignored_categories)
+            await ctx.send(
+                _(
+                    "`{category.name}` ({category.id}) will no longer be ignored in stats."
+                ).format(category=category),
+            )
+
+    @commands.admin_or_permissions(administrator=True)
+    @guildstats.command()
     async def ignorechannel(self, ctx: commands.Context, *, channel: typing.Union[discord.TextChannel, discord.VoiceChannel]):
         """Ignore or unignore a specific channel."""
         ignored_channels: typing.List[int] = await self.config.guild(ctx.guild).ignored_channels()
@@ -2182,7 +2440,7 @@ class GuildStats(Cog):
             await self.config.guild(ctx.guild).ignored_channels.set(ignored_channels)
             await ctx.send(
                 _(
-                    "{channel.mention} ({channel.id}) will now be ignored in stats (except for the specific channel ones)."
+                    "{channel.mention} ({channel.id}) will now be ignored in stats (except for the specific channel one)."
                 ).format(channel=channel),
             )
         else:
@@ -2204,7 +2462,7 @@ class GuildStats(Cog):
             await self.config.guild(ctx.guild).ignored_activities.set(ignored_activities)
             await ctx.send(
                 _(
-                    "The activity `{activity_name}` will now be ignored in stats."
+                    "The activity `{activity_name}` will now be ignored in stats (except for the specific activity one)."
                 ).format(activity_name=activity_name),
             )
         else:

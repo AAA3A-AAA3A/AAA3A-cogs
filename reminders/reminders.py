@@ -849,7 +849,7 @@ class Reminders(Cog):
         """Set your timezone for the time converter.
 
     Timezone should be specified in the format: `Continent/City`.
-    You can find a list of valid timezones at: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+    You can find a list of valid timezones at: https://timezonedb.com/time-zones
 
     Example timezones: `Europe/Paris`, `America/New_York`...
     """

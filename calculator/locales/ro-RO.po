@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-07-15 19:18\n"
+"POT-Creation-Date: 2023-08-10 18:35+0200\n"
+"PO-Revision-Date: 2023-08-10 16:48\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -22,11 +22,12 @@ msgstr ""
 msgid "A cog to do calculations from Discord with buttons!"
 msgstr "O rotiță pentru a face calcule din Discord cu butoane!"
 
-#: calculator\calculator.py:120 calculator\view.py:207 calculator\view.py:214
+#: calculator\calculator.py:122 calculator\calculator.py:209
+#: calculator\view.py:207 calculator\view.py:214
 msgid "Error!"
 msgstr "Eroare!"
 
-#: calculator\calculator.py:133
+#: calculator\calculator.py:135
 msgid "{ctx.me.display_name}'s Calculator"
 msgstr "{ctx.me.display_name}Calculatorul lui"
 

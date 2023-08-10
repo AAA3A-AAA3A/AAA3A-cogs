@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog  # isort:skip
+from AAA3A_utils import Cog, CogsUtils  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -65,6 +65,8 @@ class Calculator(Cog):
         self.history: typing.Dict[
             typing.Union[discord.Member, discord.User], typing.Tuple[str]
         ] = {}
+
+        self.cache: typing.List[discord.Message] = []
 
     async def red_delete_data_for_user(self, *args, **kwargs) -> None:
         """Nothing to delete."""
@@ -193,3 +195,45 @@ class Calculator(Cog):
             await ctx.send(embed=await self.get_embed(ctx, calculation, result))
             return
         await CalculatorView(cog=self).start(ctx)
+
+    @commands.Cog.listener()
+    async def on_message_without_command(self, message: discord.Message) -> None:
+        if await self.bot.cog_disabled_in_guild(
+            cog=self, guild=message.guild
+        ) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
+            return
+        if message.webhook_id is not None or message.author.bot:
+            return
+        if not await self._calculate.can_run(await self.bot.get_context(message)):
+            return
+        if await self.calculate(message.content) == _("Error!"):
+            return
+        if message.guild is not None:
+            channel_permissions = message.channel.permissions_for(message.guild.me)
+            if not channel_permissions.add_reactions or not channel_permissions.send_messages:
+                return
+        try:
+            await message.add_reaction("🔢")
+        except discord.HTTPException:
+            pass
+        else:
+            self.cache.append(message)
+
+    @commands.Cog.listener()
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
+        if str(payload.emoji).strip("\N{VARIATION SELECTOR-16}") != "🔢":
+            return
+        if (message := discord.utils.get(self.cache, channel__id=payload.channel_id, id=payload.message_id)) is None:
+            return
+        if payload.user_id != message.author.id:
+            return
+        self.cache.remove(message)
+        if sorted([user.id async for user in discord.utils.get((await message.channel.fetch_message(message.id)).reactions, emoji="🔢").users() if user.bot]).index(self.bot.user.id) != 0:
+            return
+        await CogsUtils.invoke_command(
+            bot=self.bot,
+            author=message.author,
+            channel=message.channel,
+            command=f"calculate {message.content}",
+            message=message,
+        )

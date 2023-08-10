@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"POT-Creation-Date: 2023-08-10 13:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 msgid "It's not a valid public URL."
 msgstr ""
 
-#: urlbuttons\converters.py:50
+#: urlbuttons\converters.py:91
 msgid ""
 "Emoji Url must be an emoji followed by a url separated by either `;`, `,`, "
 "`|`, or `-`."
@@ -32,7 +32,7 @@ msgid "Add a url-button for a message."
 msgstr ""
 
 #: urlbuttons\urlbuttons.py:113 urlbuttons\urlbuttons.py:176
-#: urlbuttons\urlbuttons.py:253
+#: urlbuttons\urlbuttons.py:256
 msgid "I have to be the author of the message for the url-button to work."
 msgstr ""
 
@@ -96,7 +96,7 @@ msgstr ""
 msgid "I have to be the author of the message for the role-button to work."
 msgstr ""
 
-#: urlbuttons\urlbuttons.py:232 urlbuttons\urlbuttons.py:278
+#: urlbuttons\urlbuttons.py:232 urlbuttons\urlbuttons.py:281
 msgid "No url-button is configured for this message."
 msgstr ""
 
@@ -104,40 +104,40 @@ msgstr ""
 msgid "I wasn't watching for this button on this message."
 msgstr ""
 
-#: urlbuttons\urlbuttons.py:250
+#: urlbuttons\urlbuttons.py:249 urlbuttons\urlbuttons.py:269
+msgid "Url-buttons cleared for this message."
+msgstr ""
+
+#: urlbuttons\urlbuttons.py:253
 #, docstring
 msgid "Clear all url-buttons for a message."
 msgstr ""
 
-#: urlbuttons\urlbuttons.py:258
+#: urlbuttons\urlbuttons.py:261
 msgid "No role-button is configured for this message."
 msgstr ""
 
-#: urlbuttons\urlbuttons.py:266
-msgid "Url-buttons cleared for this message."
-msgstr ""
-
-#: urlbuttons\urlbuttons.py:284
+#: urlbuttons\urlbuttons.py:287
 msgid "No url-buttons in this server."
 msgstr ""
 
-#: urlbuttons\urlbuttons.py:293
+#: urlbuttons\urlbuttons.py:296
 msgid "URL Buttons"
 msgstr ""
 
-#: urlbuttons\urlbuttons.py:294
+#: urlbuttons\urlbuttons.py:297
 msgid "There is {len_url_buttons} URL buttons in this server."
 msgstr ""
 
-#: urlbuttons\urlbuttons.py:301
+#: urlbuttons\urlbuttons.py:304
 msgid "Message Jump Link: {message_jump_link}\n"
 msgstr ""
 
-#: urlbuttons\urlbuttons.py:317
+#: urlbuttons\urlbuttons.py:324
 #, docstring
 msgid "Clear all url-buttons for a guild."
 msgstr ""
 
-#: urlbuttons\urlbuttons.py:319
+#: urlbuttons\urlbuttons.py:326
 msgid "All url-buttons purged."
 msgstr ""

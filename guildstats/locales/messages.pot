@@ -1,0 +1,239 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2023-08-10 13:42+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: guildstats\guildstats.py:67
+msgid "No member/category/text channel/voice channel found."
+msgstr ""
+
+#: guildstats\guildstats.py:73
+#, docstring
+msgid ""
+"A cog to generate images with messages and voice stats, for members, roles, "
+"guilds, categories, text channels, voice channels and activities!"
+msgstr ""
+
+#: guildstats\guildstats.py:5792 guildstats\guildstats.py:5832
+#: guildstats\guildstats.py:5868 guildstats\guildstats.py:5894
+#: guildstats\guildstats.py:5920 guildstats\guildstats.py:5946
+#: guildstats\guildstats.py:5975 guildstats\guildstats.py:6008
+#: guildstats\guildstats.py:6038 guildstats\guildstats.py:6069
+#: guildstats\guildstats.py:6100 guildstats\guildstats.py:6133
+msgid ""
+"This cog is disabled in this guild. Administrators can enable it with the "
+"command `{prefix}guildstats enable`."
+msgstr ""
+
+#: guildstats\guildstats.py:5799 guildstats\guildstats.py:5839
+#: guildstats\guildstats.py:6140
+msgid ""
+"This user is in the ignored users list (`{prefix}guildstats ignoreme`)."
+msgstr ""
+
+#: guildstats\guildstats.py:5823
+#, docstring
+msgid "Display stats for a specified member."
+msgstr ""
+
+#: guildstats\guildstats.py:5859
+#, docstring
+msgid "Display stats for a specified role."
+msgstr ""
+
+#: guildstats\guildstats.py:5887
+#, docstring
+msgid "Display stats for this guild."
+msgstr ""
+
+#: guildstats\guildstats.py:5913
+#, docstring
+msgid "Display stats for the messages in this guild."
+msgstr ""
+
+#: guildstats\guildstats.py:5939
+#, docstring
+msgid "Display stats for the voice in this guild."
+msgstr ""
+
+#: guildstats\guildstats.py:5964
+#, docstring
+msgid "Display stats for activities in this guild."
+msgstr ""
+
+#: guildstats\guildstats.py:5967 guildstats\guildstats.py:6092
+#: guildstats\guildstats.py:6125
+msgid "Activities stats are disabled on this bot."
+msgstr ""
+
+#: guildstats\guildstats.py:5996
+#, docstring
+msgid "Display stats for a specified category."
+msgstr ""
+
+#: guildstats\guildstats.py:6029
+#, docstring
+msgid "Display stats for a specified channel."
+msgstr ""
+
+#: guildstats\guildstats.py:6043
+msgid "Threads aren't supported by this cog."
+msgstr ""
+
+#: guildstats\guildstats.py:6060
+#, docstring
+msgid "Display top stats for voice/messages members/channels."
+msgstr ""
+
+#: guildstats\guildstats.py:6089
+#, docstring
+msgid "Display stats for a specific activity in this guild."
+msgstr ""
+
+#: guildstats\guildstats.py:6120
+#, docstring
+msgid ""
+"Display graphic for members, roles guilds, text channels, voice channels and"
+" activities."
+msgstr ""
+
+#: guildstats\guildstats.py:6156
+#, docstring
+msgid "Asking GuildStats to ignore your actions."
+msgstr ""
+
+#: guildstats\guildstats.py:6164
+msgid ""
+"You will no longer be seen by this cog and the data I held on you have been "
+"deleted."
+msgstr ""
+
+#: guildstats\guildstats.py:6171
+msgid "You'll be seen again by this cog."
+msgstr ""
+
+#: guildstats\guildstats.py:6176
+#, docstring
+msgid "Ignore or unignore a specific user."
+msgstr ""
+
+#: guildstats\guildstats.py:6183
+msgid ""
+"{user.mention} ({user.id}) will no longer be seen by this cog, and their "
+"data has been deleted."
+msgstr ""
+
+#: guildstats\guildstats.py:6192
+msgid "{user.mention} ({user.id}) will be seen again by this cog."
+msgstr ""
+
+#: guildstats\guildstats.py:6199
+#, docstring
+msgid "Ignore or unignore a specific category."
+msgstr ""
+
+#: guildstats\guildstats.py:6207
+msgid ""
+"`{category.name}` ({category.id}) will now be ignored in stats (except for "
+"the specific category one)."
+msgstr ""
+
+#: guildstats\guildstats.py:6215
+msgid "`{category.name}` ({category.id}) will no longer be ignored in stats."
+msgstr ""
+
+#: guildstats\guildstats.py:6228
+#, docstring
+msgid "Ignore or unignore a specific channel."
+msgstr ""
+
+#: guildstats\guildstats.py:6234
+msgid ""
+"{channel.mention} ({channel.id}) will now be ignored in stats (except for "
+"the specific channel one)."
+msgstr ""
+
+#: guildstats\guildstats.py:6242
+msgid "{channel.mention} ({channel.id}) will no longer be ignored in stats."
+msgstr ""
+
+#: guildstats\guildstats.py:6250
+#, docstring
+msgid "Ignore or unignore a specific activity."
+msgstr ""
+
+#: guildstats\guildstats.py:6258
+msgid ""
+"The activity `{activity_name}` will now be ignored in stats (except for the "
+"specific activity one)."
+msgstr ""
+
+#: guildstats\guildstats.py:6266
+msgid "The activity `{activity_name}` will no longer be ignored in stats."
+msgstr ""
+
+#: guildstats\guildstats.py:6274
+#, docstring
+msgid "Enable or disable activities stats."
+msgstr ""
+
+#: guildstats\guildstats.py:6280
+#, docstring
+msgid "Enable or disable by default the cog in the bot guilds."
+msgstr ""
+
+#: guildstats\guildstats.py:6286
+#, docstring
+msgid "Enable the cog in this guild/server."
+msgstr ""
+
+#: guildstats\guildstats.py:6290
+msgid "GuildStats already enabled in this guild/server."
+msgstr ""
+
+#: guildstats\guildstats.py:6293
+msgid "GuildStats enabled in this guild/server."
+msgstr ""
+
+#: guildstats\guildstats.py:6298
+#, docstring
+msgid "Disable the cog in this guild/server."
+msgstr ""
+
+#: guildstats\guildstats.py:6302
+msgid "GuildStats already disabled in this guild/server."
+msgstr ""
+
+#: guildstats\guildstats.py:6305
+msgid "GuildStats disabled in this guild/server."
+msgstr ""
+
+#: guildstats\guildstats.py:6311
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr ""
+
+#: guildstats\guildstats.py:6322
+#, docstring
+msgid "Purge Config for the current guild."
+msgstr ""
+
+#: guildstats\guildstats.py:6327
+msgid "All GuildStats data purged for this guild."
+msgstr ""
+
+#: guildstats\guildstats.py:6330
+msgid "All GuildStats activities data purged for this guild."
+msgstr ""
+
+#: guildstats\guildstats.py:6349
+msgid "All GuildStats {_type} data purged for this guild."
+msgstr ""

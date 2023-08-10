@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"POT-Creation-Date: 2023-08-10 13:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Generated-By: redgettext 3.4.2\n"
 
 #: transferchannel\transferchannel.py:23
-#: transferchannel\transferchannel.py:269
+#: transferchannel\transferchannel.py:267
 msgid ""
 "There are {count_messages} transfered messages from {source.mention} to "
 "{destination.mention}."
@@ -66,7 +66,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:252
+#: transferchannel\transferchannel.py:251
 #, docstring
 msgid ""
 "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"
@@ -76,7 +76,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:283
+#: transferchannel\transferchannel.py:281
 #, docstring
 msgid ""
 "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"
@@ -86,7 +86,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:310
+#: transferchannel\transferchannel.py:307
 #, docstring
 msgid ""
 "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"
@@ -96,7 +96,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:338
+#: transferchannel\transferchannel.py:334
 #, docstring
 msgid ""
 "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"
@@ -106,7 +106,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:366
+#: transferchannel\transferchannel.py:361
 #, docstring
 msgid ""
 "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"
@@ -116,7 +116,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:399
+#: transferchannel\transferchannel.py:393
 #, docstring
 msgid ""
 "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n"

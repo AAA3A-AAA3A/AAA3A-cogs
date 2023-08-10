@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"POT-Creation-Date: 2023-08-10 13:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,11 +26,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:94 cmdchannel\cmdchannel.py:163
+#: cmdchannel\cmdchannel.py:94 cmdchannel\cmdchannel.py:162
 msgid "To send commands to another server, you must be there."
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:118
+#: cmdchannel\cmdchannel.py:117
 #, docstring
 msgid ""
 "Act as if the command had been typed by imitating the specified user.\n"
@@ -40,13 +40,13 @@ msgid ""
 "        "
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:127 cmdchannel\cmdchannel.py:168
+#: cmdchannel\cmdchannel.py:126 cmdchannel\cmdchannel.py:167
 msgid ""
 "To be able to run a command as another user, the cog Dev must be loaded, to "
 "make sure you know what you are doing."
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:151
+#: cmdchannel\cmdchannel.py:150
 #, docstring
 msgid ""
 "Act as if the command had been typed in the channel of your choice by imitating the specified user.\n"
@@ -56,23 +56,23 @@ msgid ""
 "        "
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:185
+#: cmdchannel\cmdchannel.py:184
 #, docstring
 msgid "Test variables."
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:187
+#: cmdchannel\cmdchannel.py:186
 msgid "Testvar"
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:188
+#: cmdchannel\cmdchannel.py:187
 msgid "Variables:"
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:189
+#: cmdchannel\cmdchannel.py:188
 msgid "Author:"
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:190
+#: cmdchannel\cmdchannel.py:189
 msgid "Channel:"
 msgstr ""

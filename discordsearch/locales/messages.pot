@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"POT-Creation-Date: 2023-08-10 13:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,36 +16,36 @@ msgstr ""
 msgid "A cog to edit roles!"
 msgstr ""
 
-#: discordsearch\discordsearch.py:107
+#: discordsearch\discordsearch.py:106
 msgid "You must provide at least one parameter."
 msgstr ""
 
-#: discordsearch\discordsearch.py:168
+#: discordsearch\discordsearch.py:167
 msgid "Your regex process took too long. Removing from memory."
 msgstr ""
 
-#: discordsearch\discordsearch.py:174
+#: discordsearch\discordsearch.py:173
 msgid ""
 "There is an error in your regex.\n"
 "{e}"
 msgstr ""
 
-#: discordsearch\discordsearch.py:212
+#: discordsearch\discordsearch.py:211
 msgid "Look at the original message."
 msgstr ""
 
-#: discordsearch\discordsearch.py:228
+#: discordsearch\discordsearch.py:227
 msgid "Search in #{channel.name} ({channel.id})"
 msgstr ""
 
-#: discordsearch\discordsearch.py:229
+#: discordsearch\discordsearch.py:228
 msgid "Sorry, I could not find any results."
 msgstr ""
 
-#: discordsearch\discordsearch.py:242
+#: discordsearch\discordsearch.py:241
 msgid "Search in #{channel.name} ({channel.id}) in {total}s"
 msgstr ""
 
-#: discordsearch\discordsearch.py:254
+#: discordsearch\discordsearch.py:253
 msgid "Unrecognized date/time."
 msgstr ""

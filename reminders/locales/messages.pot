@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"POT-Creation-Date: 2023-08-10 13:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,8 +15,8 @@ msgstr ""
 msgid "Invalid timezone provided."
 msgstr ""
 
-#: reminders\converters.py:538 reminders\reminders.py:872
-#: reminders\reminders.py:1076
+#: reminders\converters.py:538 reminders\reminders.py:874
+#: reminders\reminders.py:1078
 msgid "You haven't any reminders."
 msgstr ""
 
@@ -48,18 +48,18 @@ msgstr ""
 
 #: reminders\reminders.py:320 reminders\reminders.py:449
 #: reminders\reminders.py:627 reminders\reminders.py:739
-#: reminders\reminders.py:1045
+#: reminders\reminders.py:1047
 msgid "You are not allowed to create repeating reminders."
 msgstr ""
 
 #: reminders\reminders.py:334 reminders\reminders.py:463
 #: reminders\reminders.py:641 reminders\reminders.py:753
-#: reminders\reminders.py:1060
+#: reminders\reminders.py:1062
 msgid "The repeat timedelta must be greater than {minimum_repeat} minutes."
 msgstr ""
 
 #: reminders\reminders.py:365 reminders\reminders.py:539
-#: reminders\reminders.py:972
+#: reminders\reminders.py:974
 msgid "Your reminder text is too long."
 msgstr ""
 
@@ -184,15 +184,17 @@ msgstr ""
 msgid ""
 "Set your timezone for the time converter.\n"
 "\n"
-"        `Europe/Paris`, `America/New_York`...\n"
+"        Timezone should be specified in the format: `Continent/City`.\n"
+"        Example: `Europe/Paris`, `America/New_York`...\n"
+"        You can find a list of valid timezones at: https://timezonedb.com/time-zones.\n"
 "        "
 msgstr ""
 
-#: reminders\reminders.py:854
+#: reminders\reminders.py:856
 msgid "Your timezone has been set to `{timezone}`."
 msgstr ""
 
-#: reminders\reminders.py:864
+#: reminders\reminders.py:866
 #, docstring
 msgid ""
 "List your existing reminders.\n"
@@ -204,25 +206,25 @@ msgid ""
 "        "
 msgstr ""
 
-#: reminders\reminders.py:894
+#: reminders\reminders.py:896
 msgid "Your Reminders"
 msgstr ""
 
-#: reminders\reminders.py:896
+#: reminders\reminders.py:898
 msgid " (Content type `{content_type}`)"
 msgstr ""
 
-#: reminders\reminders.py:900
+#: reminders\reminders.py:902
 msgid ""
 "You have {len_reminders} reminders{of_this_content_type}. Use "
 "`{clean_prefix}reminder edit #ID` to edit a reminder."
 msgstr ""
 
-#: reminders\reminders.py:904
+#: reminders\reminders.py:906
 msgid " of this content type"
 msgstr ""
 
-#: reminders\reminders.py:923
+#: reminders\reminders.py:925
 #, docstring
 msgid ""
 "Remove existing Reminder(s) from their IDs.\n"
@@ -232,15 +234,15 @@ msgid ""
 "        "
 msgstr ""
 
-#: reminders\reminders.py:935
+#: reminders\reminders.py:937
 msgid "Your reminder {reminder_id} has been successfully removed."
 msgstr ""
 
-#: reminders\reminders.py:941
+#: reminders\reminders.py:943
 msgid "Your reminders {reminders_ids} have been successfully removed."
 msgstr ""
 
-#: reminders\reminders.py:948
+#: reminders\reminders.py:950
 #, docstring
 msgid ""
 "Edit an existing Reminder from its ID.\n"
@@ -250,7 +252,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: reminders\reminders.py:966
+#: reminders\reminders.py:968
 #, docstring
 msgid ""
 "Edit the text of an existing Reminder from its ID.\n"
@@ -260,13 +262,13 @@ msgid ""
 "        "
 msgstr ""
 
-#: reminders\reminders.py:982 reminders\reminders.py:1006
-#: reminders\reminders.py:1067 reminders\views.py:153 reminders\views.py:377
+#: reminders\reminders.py:984 reminders\reminders.py:1008
+#: reminders\reminders.py:1069 reminders\views.py:153 reminders\views.py:377
 #: reminders\views.py:438
 msgid "Your reminder **#{reminder_id}** has been successfully edited."
 msgstr ""
 
-#: reminders\reminders.py:991
+#: reminders\reminders.py:993
 #, docstring
 msgid ""
 "Edit the expires time of an existing Reminder from its ID.\n"
@@ -277,7 +279,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: reminders\reminders.py:1015
+#: reminders\reminders.py:1017
 #, docstring
 msgid ""
 "Edit the repeat of an existing Reminder from its ID.\n"
@@ -298,70 +300,70 @@ msgid ""
 "        "
 msgstr ""
 
-#: reminders\reminders.py:1074
+#: reminders\reminders.py:1076
 #, docstring
 msgid "Clear all your existing reminders."
 msgstr ""
 
-#: reminders\reminders.py:1079 reminders\reminders.py:1143
+#: reminders\reminders.py:1081 reminders\reminders.py:1145
 msgid "⚠️ - Reminders"
 msgstr ""
 
-#: reminders\reminders.py:1080
+#: reminders\reminders.py:1082
 msgid "Do you really want to remove ALL your reminders?"
 msgstr ""
 
-#: reminders\reminders.py:1092
+#: reminders\reminders.py:1094
 msgid "All your reminders have been successfully removed."
 msgstr ""
 
-#: reminders\reminders.py:1138
+#: reminders\reminders.py:1140
 #, docstring
 msgid "Clear all existing reminders for a user."
 msgstr ""
 
-#: reminders\reminders.py:1140
+#: reminders\reminders.py:1142
 msgid "This user haven't any reminders."
 msgstr ""
 
-#: reminders\reminders.py:1144
+#: reminders\reminders.py:1146
 msgid "Do you really want to remove ALL {user.display_name}'s reminders?"
 msgstr ""
 
-#: reminders\reminders.py:1158
+#: reminders\reminders.py:1160
 msgid "All user's reminders have been successfully removed."
 msgstr ""
 
-#: reminders\reminders.py:1162
+#: reminders\reminders.py:1164
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr ""
 
-#: reminders\reminders.py:1168
+#: reminders\reminders.py:1170
 #, docstring
 msgid "Migrate Reminders from RemindMe by PhasecoreX."
 msgstr ""
 
-#: reminders\reminders.py:1175
+#: reminders\reminders.py:1177
 msgid "RemindMe by PhasecoreX has no data in this bot."
 msgstr ""
 
-#: reminders\reminders.py:1179
+#: reminders\reminders.py:1181
 msgid ""
 "RemindMe by PhasecoreX use an old/new data schema version and isn't "
 "compatible with this cog actually."
 msgstr ""
 
-#: reminders\reminders.py:1237
+#: reminders\reminders.py:1239
 msgid "Data successfully migrated from RemindMe by PhasecoreX."
 msgstr ""
 
-#: reminders\reminders.py:1241
+#: reminders\reminders.py:1243
 #, docstring
 msgid "Migrate Reminders from FIFO by Fox."
 msgstr ""
 
-#: reminders\reminders.py:1321
+#: reminders\reminders.py:1323
 msgid "Data successfully migrated from FIFO by Fox."
 msgstr ""
 

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"POT-Creation-Date: 2023-08-10 13:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,37 +11,37 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: rolesbuttons\converters.py:41
+#: rolesbuttons\converters.py:82
 msgid ""
 "The {role.mention} role is a bot integration role and cannot be assigned or "
 "removed."
 msgstr ""
 
-#: rolesbuttons\converters.py:47
+#: rolesbuttons\converters.py:88
 msgid ""
 "The {role.mention} role is an integration role and cannot be assigned or "
 "removed."
 msgstr ""
 
-#: rolesbuttons\converters.py:53
+#: rolesbuttons\converters.py:94
 msgid ""
 "The {role.mention} role is a premium subscriber role and can only be "
 "assigned or removed by Nitro boosting the server."
 msgstr ""
 
-#: rolesbuttons\converters.py:59
+#: rolesbuttons\converters.py:100
 msgid ""
 "The {role.mention} role is higher than my highest role in the discord "
 "hierarchy."
 msgstr ""
 
-#: rolesbuttons\converters.py:65
+#: rolesbuttons\converters.py:106
 msgid ""
 "The {role.mention} role is higher than your highest role in the discord "
 "hierarchy."
 msgstr ""
 
-#: rolesbuttons\converters.py:83
+#: rolesbuttons\converters.py:124
 msgid ""
 "Emoji Role must be an emoji followed by a role separated by either `;`, `,`,"
 " `|`, or `-`."
@@ -111,7 +111,7 @@ msgstr ""
 
 #: rolesbuttons\rolesbuttons.py:246 rolesbuttons\rolesbuttons.py:309
 #: rolesbuttons\rolesbuttons.py:383 rolesbuttons\rolesbuttons.py:405
-#: rolesbuttons\rolesbuttons.py:435
+#: rolesbuttons\rolesbuttons.py:438
 msgid "I have to be the author of the message for the role-button to work."
 msgstr ""
 
@@ -174,9 +174,8 @@ msgid ""
 "        "
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:388 rolesbuttons\rolesbuttons.py:410
-#: rolesbuttons\rolesbuttons.py:440 rolesbuttons\rolesbuttons.py:461
-msgid "No role-button is configured for this message."
+#: rolesbuttons\rolesbuttons.py:388
+msgid "No role-button is configured for this message. e"
 msgstr ""
 
 #: rolesbuttons\rolesbuttons.py:393
@@ -192,40 +191,45 @@ msgid ""
 "        "
 msgstr ""
 
+#: rolesbuttons\rolesbuttons.py:410 rolesbuttons\rolesbuttons.py:443
+#: rolesbuttons\rolesbuttons.py:464
+msgid "No role-button is configured for this message."
+msgstr ""
+
 #: rolesbuttons\rolesbuttons.py:414
 msgid "I wasn't watching for this button on this message."
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:432
+#: rolesbuttons\rolesbuttons.py:431 rolesbuttons\rolesbuttons.py:452
+msgid "Roles-buttons cleared for this message."
+msgstr ""
+
+#: rolesbuttons\rolesbuttons.py:435
 #, docstring
 msgid "Clear all roles-buttons for a message."
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:449
-msgid "Roles-buttons cleared for this message."
-msgstr ""
-
-#: rolesbuttons\rolesbuttons.py:467
+#: rolesbuttons\rolesbuttons.py:470
 msgid "No roles-buttons in this server."
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:476
+#: rolesbuttons\rolesbuttons.py:479
 msgid "Roles Buttons"
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:477
+#: rolesbuttons\rolesbuttons.py:480
 msgid "There is {len_roles_buttons} roles buttons in this server."
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:484
+#: rolesbuttons\rolesbuttons.py:487
 msgid "Message Jump Link: {message_jump_link}\n"
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:500
+#: rolesbuttons\rolesbuttons.py:507
 #, docstring
 msgid "Clear all roles-buttons for a guild."
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:502
+#: rolesbuttons\rolesbuttons.py:509
 msgid "All roles-buttons purged."
 msgstr ""

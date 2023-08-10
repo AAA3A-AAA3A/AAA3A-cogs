@@ -725,7 +725,7 @@ class GuildStats(Cog):
     async def on_guild_channel_delete(self, old_channel: discord.abc.GuildChannel) -> None:
         await self.config.channel(old_channel).clear()
 
-    async def get_data(
+    def _get_data(
         self,
         _object: typing.Union[
             discord.Member,
@@ -747,8 +747,13 @@ class GuildStats(Cog):
             discord.TextChannel,
             discord.VoiceChannel,
         ],
-        members_type: typing.Literal["humans", "bots", "both"] = "humans",
-        utc_now: datetime.datetime = None,
+        members_type: typing.Literal["humans", "bots", "both"],
+        utc_now: datetime.datetime,
+        all_channels_data: typing.Dict[int, dict],
+        all_members_data: typing.Dict[int, dict],
+        ignored_categories: typing.List[int],
+        ignored_channels: typing.List[int],
+        ignored_activities: typing.List[str],
     ) -> typing.Dict[str, typing.Any]:
         if isinstance(_object, typing.Tuple):
             _object, _type = _object
@@ -759,7 +764,7 @@ class GuildStats(Cog):
         # Get cache data.
         all_channels_data = {
             channel_id: data
-            for channel_id, data in (await self.config.all_channels()).items()
+            for channel_id, data in all_channels_data.items()
             if (_object if isinstance(_object, discord.Guild) else _object.guild).get_channel(
                 channel_id
             )
@@ -837,11 +842,7 @@ class GuildStats(Cog):
                 )
         all_members_data = {
             member_id: data
-            for member_id, data in (
-                await self.config.all_members(
-                    guild=(_object if isinstance(_object, discord.Guild) else _object.guild)
-                )
-            ).items()
+            for member_id, data in all_members_data.items()
             if (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(
                 member_id
             )
@@ -866,9 +867,6 @@ class GuildStats(Cog):
                     activity_name
                 ] += real_total_time
         if not isinstance(_object, discord.CategoryChannel):
-            ignored_categories = await self.config.guild(
-                _object if isinstance(_object, discord.Guild) else _object.guild
-            ).ignored_categories()
             for category_id in ignored_categories:
                 if (
                     category := (
@@ -879,15 +877,9 @@ class GuildStats(Cog):
                         if channel.id in all_channels_data:
                             del all_channels_data[channel.id]
         if not isinstance(_object, (discord.TextChannel, discord.VoiceChannel)):
-            ignored_channels = await self.config.guild(
-                _object if isinstance(_object, discord.Guild) else _object.guild
-            ).ignored_channels()
             for channel_id in ignored_channels:
                 if channel_id in all_channels_data:
                     del all_channels_data[channel_id]
-        ignored_activities = await self.config.guild(
-            _object if isinstance(_object, discord.Guild) else _object.guild
-        ).ignored_activities()
 
         # Handle `members_type`.
         def is_valid(member_id: int):
@@ -1187,7 +1179,7 @@ class GuildStats(Cog):
                     ].items()
                     for __ in range(count_voice)
                     for role in getattr(member, "roles", [])
-                    if (member := _object.guild.get_member(int(member_id))) is not None
+                    if _object.guild.get_member(int(member_id)) is not None
                     and is_valid(int(member_id))
                 ]
             )  # and (role != _object.guild.default_role or role == _object)
@@ -2633,6 +2625,55 @@ class GuildStats(Cog):
                     },
                 },
             }
+
+    async def get_data(
+        self,
+        _object: typing.Union[
+            discord.Member,
+            discord.Role,
+            discord.Guild,
+            typing.Tuple[
+                discord.Guild,
+                typing.Union[
+                    typing.Literal["messages", "voice", "activities"],
+                    typing.Tuple[
+                        typing.Literal["top"],
+                        typing.Literal["messages", "voice"],
+                        typing.Literal["members", "channels"],
+                    ],
+                    typing.Tuple[typing.Literal["activity"], str],
+                ],
+            ],
+            discord.CategoryChannel,
+            discord.TextChannel,
+            discord.VoiceChannel,
+        ],
+        members_type: typing.Literal["humans", "bots", "both"] = "humans",
+        utc_now: datetime.datetime = None,
+    ) -> typing.Dict[str, typing.Any]:
+        if isinstance(_object, typing.Tuple):
+            _object, _type = _object
+        else:
+            _type = None
+        return await asyncio.to_thread(
+            self._get_data,
+            _object=_object if _type is None else (_object, _type),
+            members_type=members_type,
+            utc_now=utc_now,
+            all_channels_data=await self.config.all_channels(),
+            all_members_data=await self.config.all_members(
+                guild=(_object if isinstance(_object, discord.Guild) else _object.guild)
+            ),
+            ignored_categories=await self.config.guild(
+                _object if isinstance(_object, discord.Guild) else _object.guild
+            ).ignored_categories(),
+            ignored_channels=await self.config.guild(
+                _object if isinstance(_object, discord.Guild) else _object.guild
+            ).ignored_channels(),
+            ignored_activities=await self.config.guild(
+                _object if isinstance(_object, discord.Guild) else _object.guild
+            ).ignored_activities(),
+        )
 
     def align_text_center(
         self,

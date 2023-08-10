@@ -5,6 +5,7 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import aiohttp
 import datetime
 
 from redbot.core.commands.converter import get_timedelta_converter
@@ -28,6 +29,13 @@ ERROR_MESSAGE = _(
 )
 
 _ = Translator("DiscordEdit", __file__)
+
+
+class UrlConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str):
+        if argument.startswith("<") and argument.endswith(">"):
+            argument = argument[1:-1]
+        return argument
 
 
 class LocaleConverter(commands.Converter):
@@ -176,6 +184,172 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
+    @editguild.command(name="icon")
+    async def editguild_icon(
+        self,
+        ctx: commands.Context,
+        icon: UrlConverter = None,
+    ) -> None:
+        """Edit guild icon.
+
+        You can use an URL or upload an attachment.
+        """
+        guild = ctx.guild
+        if len(ctx.message.attachments) > 0:
+            icon = await ctx.message.attachments[0].read()  # Read an optional attachment.
+        elif icon is not None:
+            url = icon
+            async with aiohttp.ClientSession() as session:
+                try:
+                    async with session.get(url) as r:
+                        icon = await r.read()  # Get URL data.
+                except aiohttp.InvalidURL:
+                    return await ctx.send("That URL is invalid.")
+                except aiohttp.ClientError:
+                    return await ctx.send(
+                        "Something went wrong while trying to get the image."
+                    )
+        # else:
+        #     raise commands.UserInputError()  # Send the command help if no attachment and no URL.
+        try:
+            await guild.edit(
+                icon=icon,
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the guild {guild.name} ({guild.id}).",
+            )
+        except discord.HTTPException as e:
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
+
+    @editguild.command(name="banner")
+    async def editguild_banner(
+        self,
+        ctx: commands.Context,
+        banner: UrlConverter = None,
+    ) -> None:
+        """Edit guild banner.
+
+        You can use an URL or upload an attachment.
+        """
+        guild = ctx.guild
+        if "BANNER" not in ctx.guild.features:
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "This server doesn't have the `BANNER` feature. This server needs more boosts to perform this action."
+                )
+            )
+        if len(ctx.message.attachments) > 0:
+            banner = await ctx.message.attachments[0].read()  # Read an optional attachment.
+        elif banner is not None:
+            url = banner
+            async with aiohttp.ClientSession() as session:
+                try:
+                    async with session.get(url) as r:
+                        banner = await r.read()  # Get URL data.
+                except aiohttp.InvalidURL:
+                    return await ctx.send("That URL is invalid.")
+                except aiohttp.ClientError:
+                    return await ctx.send(
+                        "Something went wrong while trying to get the image."
+                    )
+        # else:
+        #     raise commands.UserInputError()  # Send the command help if no attachment and no URL.
+        try:
+            await guild.edit(
+                banner=banner,
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the guild {guild.name} ({guild.id}).",
+            )
+        except discord.HTTPException as e:
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
+
+    @editguild.command(name="splash", aliases=["invite_splash"])
+    async def editguild_splash(
+        self,
+        ctx: commands.Context,
+        splash: UrlConverter = None,
+    ) -> None:
+        """Edit guild splash.
+
+        You can use an URL or upload an attachment.
+        """
+        guild = ctx.guild
+        if "INVITE_SPLASH" not in ctx.guild.features:
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "This server doesn't have the `INVITE_SPLASH` feature. This server needs more boosts to perform this action."
+                )
+            )
+        if len(ctx.message.attachments) > 0:
+            splash = await ctx.message.attachments[0].read()  # Read an optional attachment.
+        elif splash is not None:
+            url = splash
+            async with aiohttp.ClientSession() as session:
+                try:
+                    async with session.get(url) as r:
+                        splash = await r.read()  # Get URL data.
+                except aiohttp.InvalidURL:
+                    return await ctx.send("That URL is invalid.")
+                except aiohttp.ClientError:
+                    return await ctx.send(
+                        "Something went wrong while trying to get the image."
+                    )
+        # else:
+        #     raise commands.UserInputError()  # Send the command help if no attachment and no URL.
+        try:
+            await guild.edit(
+                splash=splash,
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the guild {guild.name} ({guild.id}).",
+            )
+        except discord.HTTPException as e:
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
+
+    @editguild.command(name="discoverysplash", aliases=["discovery_splash"])
+    async def editguild_discovery_splash(
+        self,
+        ctx: commands.Context,
+        discovery_splash: UrlConverter = None,
+    ) -> None:
+        """Edit guild discovery splash.
+
+        You can use an URL or upload an attachment.
+        """
+        guild = ctx.guild
+        if "DISCOVERABLE" not in ctx.guild.features:
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "This server doesn't have the `DISCOVERABLE` feature. This server needs more boosts to perform this action."
+                )
+            )
+        if len(ctx.message.attachments) > 0:
+            discovery_splash = await ctx.message.attachments[0].read()  # Read an optional attachment.
+        elif discovery_splash is not None:
+            url = discovery_splash
+            async with aiohttp.ClientSession() as session:
+                try:
+                    async with session.get(url) as r:
+                        discovery_splash = await r.read()  # Get URL data.
+                except aiohttp.InvalidURL:
+                    return await ctx.send("That URL is invalid.")
+                except aiohttp.ClientError:
+                    return await ctx.send(
+                        "Something went wrong while trying to get the image."
+                    )
+        # else:
+        #     raise commands.UserInputError()  # Send the command help if no attachment and no URL.
+        try:
+            await guild.edit(
+                discovery_splash=discovery_splash,
+                reason=f"{ctx.author} ({ctx.author.id}) has edited the guild {guild.name} ({guild.id}).",
+            )
+        except discord.HTTPException as e:
+            raise commands.UserFeedbackCheckFailure(
+                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+            )
+
     @editguild.command(name="community")
     async def editguild_community(self, ctx: commands.Context, community: bool) -> None:
         """Edit guild community state."""
@@ -208,7 +382,7 @@ class EditGuild(Cog):
 
     @editguild.command(name="afktimeout", aliases=["afk_timeout"])
     async def editguild_afk_timeout(self, ctx: commands.Context, afk_timeout: int) -> None:
-        """Edit guild afktimeout."""
+        """Edit guild afk timeout."""
         guild = ctx.guild
         try:
             await guild.edit(

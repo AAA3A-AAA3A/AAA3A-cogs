@@ -193,7 +193,7 @@ class EditVoiceChannel(Cog):
                 max_uses=max_uses,
                 temporary=temporary,
                 unique=unique,
-                reason=f"{ctx.author} ({ctx.author.id}) has create an invite for the voice channel #{channel.name} ({channel.id}).",
+                reason=f"{ctx.author} ({ctx.author.id}) has created an invite for the voice channel #{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(

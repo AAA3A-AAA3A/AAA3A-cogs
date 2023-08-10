@@ -218,16 +218,16 @@ class EditRole(Cog):
         self,
         ctx: commands.Context,
         role: discord.Role,
-        display_icon: typing.Optional[EmojiOrUrlConverter] = None,
+        display_icon: EmojiOrUrlConverter = None,
     ) -> None:
         """Edit role display icon.
 
-        `display_icon` can a Unicode emoji, a custom emoji or an url. You can also upload an attachment.
+        `display_icon` can be an Unicode emoji, a custom emoji or an url. You can also upload an attachment.
         """
         if "ROLE_ICONS" not in ctx.guild.features:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This server doesn't have `ROLE_ICONS` feature. This server needs more boosts to perform this action."
+                    "This server doesn't have the `ROLE_ICONS` feature. This server needs more boosts to perform this action."
                 )
             )
         await self.check_role(ctx, role)
@@ -254,8 +254,8 @@ class EditRole(Cog):
                         return await ctx.send(
                             "Something went wrong while trying to get the image."
                         )
-        else:
-            raise commands.UserInputError()  # Send the command help if no attachment, no Unicode/custom emoji and no URL.
+        # else:
+        #     raise commands.UserInputError()  # Send the command help if no attachment, no Unicode/custom emoji and no URL.
         try:
             await role.edit(
                 display_icon=display_icon,

@@ -179,7 +179,9 @@ class ConsoleLogs(Cog, DashboardIntegration):
         # Parse logs.
         console_logs = []
         for console_log_line in console_logs_lines:
-            if (match := re.match(CONSOLE_LOG_RE, console_log_line)) is None and console_logs:
+            if (match := re.match(CONSOLE_LOG_RE, console_log_line)) is None:
+                if not console_logs:
+                    continue
                 if console_logs[-1].exc_info is None:
                     console_logs[-1].exc_info = ""
                 console_logs[-1].exc_info += f"\n{CogsUtils.replace_var_paths(console_log_line)}"
@@ -273,9 +275,10 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 )
             ],
         ]
+        loggers = {console_log.logger_name for console_log in console_logs_to_display}
         current_stats = [
-            f"{len(console_logs_to_display)} logs",
-            f"{len({console_log.logger_name for console_log in console_logs_to_display})} loggers",
+            f"{len(console_logs_to_display)} log{'' if len(console_logs_to_display) == 1 else 's'}",
+            f"{len(loggers)} logger{'' if len(loggers) == 1 else 's'}",
             *[
                 f"{stat[1]} {stat[0]}"
                 for stat in sorted(

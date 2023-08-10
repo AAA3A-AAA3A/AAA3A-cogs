@@ -217,7 +217,8 @@ class DevOutput(dev_commands.DevOutput):
                 "tab_size": 2,
                 "soft_wrap": False,
             },
-        )
+        ).copy()
+        _console_custom_kwargs["color_system"] = None
         with redirect(**_console_custom_kwargs) as console:
             with console.capture() as captured:
                 try:
@@ -263,7 +264,8 @@ class DevOutput(dev_commands.DevOutput):
                 "tab_size": 2,
                 "soft_wrap": False,
             },
-        )
+        ).copy()
+        _console_custom_kwargs["color_system"] = None
         with redirect(**_console_custom_kwargs) as console:
             with console.capture() as captured:
                 try:
@@ -288,7 +290,8 @@ class DevOutput(dev_commands.DevOutput):
                 "tab_size": 2,
                 "soft_wrap": False,
             },
-        )
+        ).copy()
+        _console_custom_kwargs["color_system"] = None
         with redirect(**_console_custom_kwargs) as console:
             with console.capture() as captured:
                 try:
@@ -311,7 +314,8 @@ class DevOutput(dev_commands.DevOutput):
                 "tab_size": 2,
                 "soft_wrap": False,
             },
-        )
+        ).copy()
+        _console_custom_kwargs["color_system"] = None
         with redirect(**_console_custom_kwargs) as console:
             with console.capture() as captured:
                 tb = exc.__traceback__

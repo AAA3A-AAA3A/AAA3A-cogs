@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:12\n"
+"POT-Creation-Date: 2023-08-10 13:42+0200\n"
+"PO-Revision-Date: 2023-08-10 11:48\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -17,53 +17,53 @@ msgstr ""
 "X-Crowdin-File-ID: 263\n"
 "Language: de_DE\n"
 
-#: dev\dev.py:346
+#: dev\dev.py:353
 #, docstring
 msgid "Various development focused utilities!"
 msgstr "Verschiedene entwicklungsorientierte Dienstprogramme!"
 
-#: dev\dev.py:653
+#: dev\dev.py:670
 msgid "Already running a REPL session in this channel. Exit it with `quit`."
 msgstr "Es läuft bereits eine REPL-Sitzung in diesem Kanal. Beenden Sie sie mit `quit`."
 
-#: dev\dev.py:657
+#: dev\dev.py:674
 msgid "Already running a REPL session in this channel. Resume the REPL with `{prefix}replresume`."
 msgstr "Es läuft bereits eine REPL-Sitzung in diesem Kanal. Setzen Sie die REPL mit \"{prefix}replresume\" fort."
 
-#: dev\dev.py:667
+#: dev\dev.py:686
 msgid "Enter code to execute or evaluate. `exit()` or `quit` to exit. `{prefix}replpause` to pause."
 msgstr "Geben Sie den Code ein, der ausgeführt oder ausgewertet werden soll. `exit()` oder `quit` zum Beenden.{prefix}replpause` zum Anhalten."
 
-#: dev\dev.py:707
+#: dev\dev.py:726
 msgid "Exiting."
 msgstr "Ausstieg."
 
-#: dev\dev.py:715
+#: dev\dev.py:734
 msgid "There is no currently running REPL session in this channel."
 msgstr "In diesem Kanal läuft derzeit keine REPL-Sitzung."
 
-#: dev\dev.py:721
+#: dev\dev.py:740
 msgid "The REPL session in this channel has been resumed."
 msgstr "Die REPL-Sitzung in diesem Kanal wurde wiederaufgenommen."
 
-#: dev\dev.py:723
+#: dev\dev.py:742
 msgid "The REPL session in this channel is now paused."
 msgstr "Die REPL-Sitzung in diesem Kanal wird jetzt angehalten."
 
-#: dev\dev.py:745
+#: dev\dev.py:764
 msgid "Bot owners will now bypass all commands with cooldowns{optional_duration}."
 msgstr "Bot-Besitzer werden nun alle Befehle mit Abklingzeit umgehen{optional_duration}."
 
-#: dev\dev.py:755
+#: dev\dev.py:774
 msgid "Bot owners will no longer bypass all commands with cooldowns{optional_duration}."
 msgstr "Bot-Besitzer werden nicht mehr alle Befehle mit Abklingzeit umgehen{optional_duration}."
 
-#: dev\dev.py:784
+#: dev\dev.py:803
 #, docstring
 msgid "Display all Dev environment values."
 msgstr "Alle Dev-Umgebungswerte anzeigen."
 
-#: dev\dev.py:791
+#: dev\dev.py:812
 #, docstring
 msgid "Reset its own locals in evals."
 msgstr "Setzt seine eigenen Lokale in Evals zurück."

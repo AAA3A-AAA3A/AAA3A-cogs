@@ -95,6 +95,12 @@ Mention me in the #support_othercogs in the `cog support server <https://discord
 Please ping me or contact me in DM.
 Additionally, feel free to open an issue or pull request to this repo.
 
+----------
+Support Me
+----------
+
+https://www.buymeacoffee.com/aaa3a
+
 -------
 Credits
 -------

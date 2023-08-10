@@ -339,7 +339,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
             code = inspect.getsource(object)
             await Menu(pages=code, lang="py").start(ctx)
 
-        def reference(ctx: commands.Context):
+        def reference(ctx: commands.Context) -> typing.Optional[discord.Message]:
             if hasattr(ctx.message, "reference") and ctx.message.reference is not None:
                 msg = ctx.message.reference.resolved
                 if isinstance(msg, discord.Message):
@@ -348,7 +348,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
         # def _console_custom(ctx: commands.Context):
         #     return {"width": 80, "color_system": None}
 
-        def search_attribute(a, b: typing.Optional[str] = "", startswith: typing.Optional[str] = ""):
+        def search_attribute(a, b: typing.Optional[str] = "", startswith: typing.Optional[str] = "") -> typing.List[str]:
             return [
                 x
                 for x in dir(a)
@@ -357,7 +357,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
 
         async def run_converter(
             converter: typing.Any, value: str, label: typing.Optional[str] = "test"
-        ):
+        ) -> typing.Any:
             param = discord.ext.commands.parameters.Parameter(
                 name=label, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=converter
             )
@@ -407,7 +407,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
             exclusions: typing.Optional[typing.List] = None,
             b: typing.Optional[str] = "",
             startswith: typing.Optional[str] = "",
-        ):
+        ) -> int:
             __loggers = logging.Logger.manager.loggerDict
             if loggers is not None:
                 _loggers = [
@@ -430,7 +430,28 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 logger.setLevel(level)
             return len(_loggers)
 
-        dev_space = getattr(ctx.bot.get_cog("Dev"), "dev_space", AttributeError())
+        def params(x: typing.Any) -> None:
+            rich.print({param.name: param for param in inspect.signature(x).parameters.values()})
+
+        def find_all(predicate, iterable) -> typing.List[typing.Any]:
+            if hasattr(iterable, "__aiter__"):
+                async def _a_find_all():
+                    return [element async for element in iterable if predicate(element)]
+                return _a_find_all()
+            else:
+                return [element for element in iterable if predicate(element)]
+
+        def get_all(iterable, **attrs) -> typing.List[typing.Any]:
+            attrget = discord.utils.attrgetter
+            converted = [(attrget(attr.replace('__', '.')), value) for attr, value in attrs.items()]
+            if hasattr(iterable, "__aiter__"):
+                async def _a_get_all():
+                    return [element async for element in iterable if all(pred(element) == value for pred, value in converted)]
+                return _a_get_all()
+            else:
+                return [element for element in iterable if all(pred(element) == value for pred, value in converted)]
+
+        dev_space: DevSpace = getattr(ctx.bot.get_cog("Dev"), "dev_space", AttributeError())
 
         def get_url(ctx: commands.Context):
             async def _get_url(url: str, **kwargs):
@@ -498,6 +519,10 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "escape_markdown": lambda ctx: discord.utils.escape_markdown,
                 "as_chunks": lambda ctx: discord.utils.as_chunks,
                 "format_dt": lambda ctx: discord.utils.format_dt,
+                # Ty Lemon.
+                "params": lambda ctx: params,
+                "find_all": lambda ctx: find_all,
+                "get_all": lambda ctx: get_all,
                 # Dev Space
                 "dev_space": lambda ctx: dev_space,
                 "devspace": lambda ctx: dev_space,

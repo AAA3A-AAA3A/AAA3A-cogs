@@ -216,7 +216,7 @@ class Calculator(Cog):
             await message.add_reaction("🔢")
         except discord.HTTPException:
             pass
-        else:
+        finally:
             self.cache.append(message)
 
     @commands.Cog.listener()

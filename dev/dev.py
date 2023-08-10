@@ -5,7 +5,6 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import aiohttp
 import ast
 import asyncio
 import collections
@@ -14,6 +13,7 @@ import io
 import sys
 import textwrap
 
+import aiohttp
 import rich
 from pygments.styles import get_style_by_name
 from redbot.core import dev_commands
@@ -247,7 +247,9 @@ class DevOutput(dev_commands.DevOutput):
             for line, line_text in enumerate(_raw_source.copy()):
                 _line_text = textwrap.dedent(line_text)
                 if _line_text.startswith("yield "):
-                    _raw_source[line] = textwrap.indent(f"print(repr({_line_text[6:]}))", (len(line_text) - len(_line_text)) * " ")
+                    _raw_source[line] = textwrap.indent(
+                        f"print(repr({_line_text[6:]}))", (len(line_text) - len(_line_text)) * " "
+                    )
             self.raw_source = "\n".join(_raw_source)
         except SyntaxError:
             pass
@@ -352,7 +354,11 @@ class Dev(Cog, dev_commands.Dev):
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
-        self.__authors__: typing.List[str] = ["Cog-Creators", "Zephyrkul (Zephyrkul#1089)", "AAA3A"]
+        self.__authors__: typing.List[str] = [
+            "Cog-Creators",
+            "Zephyrkul (Zephyrkul#1089)",
+            "AAA3A",
+        ]
 
         self.env_extensions: typing.Dict[str, typing.Any] = {}
         self.source_cache: dev_commands.SourceCache = dev_commands.SourceCache()
@@ -475,7 +481,9 @@ class Dev(Cog, dev_commands.Dev):
         """Nothing to get."""
         return {}
 
-    def get_environment(self, ctx: commands.Context, use_extended_environment: bool = True) -> DevEnv:
+    def get_environment(
+        self, ctx: commands.Context, use_extended_environment: bool = True
+    ) -> DevEnv:
         return DevEnv.get_environment(ctx, use_extended_environment=use_extended_environment)
 
     async def my_exec(
@@ -507,7 +515,9 @@ class Dev(Cog, dev_commands.Dev):
         wait: bool = True,
     ) -> DevOutput:
         if env is None:
-            env = self.get_environment(ctx, use_extended_environment=await self.config.use_extended_environment())
+            env = self.get_environment(
+                ctx, use_extended_environment=await self.config.use_extended_environment()
+            )
         env["auto_imports"] = await self.config.auto_imports()
         if (
             isinstance(ctx.author, (discord.Member, discord.User))
@@ -667,7 +677,9 @@ class Dev(Cog, dev_commands.Dev):
                 )
             return
 
-        env = self.get_environment(ctx, use_extended_environment=await self.config.use_extended_environment())
+        env = self.get_environment(
+            ctx, use_extended_environment=await self.config.use_extended_environment()
+        )
         env["_"] = None
         self.sessions[ctx.channel.id] = True
         await ctx.send(
@@ -789,7 +801,9 @@ class Dev(Cog, dev_commands.Dev):
     @configuration.command(aliases=["getenv", "getformattedenvironment", "getformattedenv"])
     async def getenvironment(self, ctx: commands.Context, show_values: bool = True) -> None:
         """Display all Dev environment values."""
-        env = self.get_environment(ctx, use_extended_environment=await self.config.use_extended_environment())
+        env = self.get_environment(
+            ctx, use_extended_environment=await self.config.use_extended_environment()
+        )
         formatted_env = env.get_formatted_env(show_values=show_values)
         await Menu(pages=formatted_env, lang="py").start(ctx)
 

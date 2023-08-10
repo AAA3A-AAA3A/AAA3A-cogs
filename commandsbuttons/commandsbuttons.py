@@ -132,8 +132,10 @@ class CommandsButtons(Cog):
             "command"
         ]
         if (
-            command_object := interaction.client.get_command(command)
-        ) is not None and command == command_object.qualified_name and command_object.params:
+            (command_object := interaction.client.get_command(command)) is not None
+            and command == command_object.qualified_name
+            and command_object.params
+        ):
             params = command_object.params
             if len(params) > 5:
                 params = {name: param for name, param in params.items() if not param.required}
@@ -272,13 +274,9 @@ class CommandsButtons(Cog):
             invoke=False,
         )
         if not new_ctx.valid:
-            raise commands.UserFeedbackCheckFailure(
-                _("You have not specified a correct command.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("You have not specified a correct command."))
         if not await new_ctx.command.can_run(new_ctx):
-            raise commands.UserFeedbackCheckFailure(
-                _("You can't execute yourself this command.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("You can't execute yourself this command."))
         if emoji is None and text_button is None:
             raise commands.UserFeedbackCheckFailure(
                 _("You have to specify at least an emoji or a label.")
@@ -489,7 +487,11 @@ class CommandsButtons(Cog):
                         if config_identifier != "message"
                     ]
                 )
-                embed.add_field(name="\u200B", value=f"{value[:1020]}\n..." if len(value) > 1024 else value, inline=False)
+                embed.add_field(
+                    name="\u200B",
+                    value=f"{value[:1020]}\n..." if len(value) > 1024 else value,
+                    inline=False,
+                )
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
 

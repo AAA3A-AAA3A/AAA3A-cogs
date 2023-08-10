@@ -35,7 +35,15 @@ class Seen(Cog):
         self.global_config: typing.Dict[
             str,
             typing.Union[
-                typing.Dict[str, typing.Union[typing.Dict[str, typing.Dict[str, typing.Union[int, str]]], typing.Dict[str, str], typing.Dict[str, bool]]], typing.List[int]
+                typing.Dict[
+                    str,
+                    typing.Union[
+                        typing.Dict[str, typing.Dict[str, typing.Union[int, str]]],
+                        typing.Dict[str, str],
+                        typing.Dict[str, bool],
+                    ],
+                ],
+                typing.List[int],
             ],
         ] = {
             "message": {},
@@ -66,7 +74,29 @@ class Seen(Cog):
         self.cache: typing.Dict[
             str,
             typing.Union[
-                typing.Dict[str, typing.Union[typing.Dict[str, typing.Dict[str, typing.Union[int, str]]], typing.Dict[typing.Union[discord.Guild, discord.User], typing.Dict[str, str]], typing.Dict[discord.Guild, typing.Dict[typing.Union[discord.Member, discord.Role, discord.abc.GuildChannel, discord.Thread, discord.CategoryChannel], typing.Dict[str, str]]]]], typing.List[str]
+                typing.Dict[
+                    str,
+                    typing.Union[
+                        typing.Dict[str, typing.Dict[str, typing.Union[int, str]]],
+                        typing.Dict[
+                            typing.Union[discord.Guild, discord.User], typing.Dict[str, str]
+                        ],
+                        typing.Dict[
+                            discord.Guild,
+                            typing.Dict[
+                                typing.Union[
+                                    discord.Member,
+                                    discord.Role,
+                                    discord.abc.GuildChannel,
+                                    discord.Thread,
+                                    discord.CategoryChannel,
+                                ],
+                                typing.Dict[str, str],
+                            ],
+                        ],
+                    ],
+                ],
+                typing.List[str],
             ],
         ] = {
             "global": {},
@@ -412,7 +442,11 @@ class Seen(Cog):
                     data = {
                         "seen": int(_data["seen"].timestamp()),
                         "action": {
-                            "message": [_data["action"]["message"][0].id, _data["action"]["message"][1].id, _data["action"]["message"][2].id],
+                            "message": [
+                                _data["action"]["message"][0].id,
+                                _data["action"]["message"][1].id,
+                                _data["action"]["message"][2].id,
+                            ],
                             "member": _data["action"]["member"].id,
                         },
                     }
@@ -941,7 +975,9 @@ class Seen(Cog):
             if _object.id in ignored_users:
                 embed = discord.Embed()
                 embed.color = discord.Color.red()
-                embed.title = _("This {object_type} is in the ignored users list (`{prefix}seen ignoreme`).").format(object_type={_object.__class__.__name__.lower()}, prefix=ctx.prefix)
+                embed.title = _(
+                    "This {object_type} is in the ignored users list (`{prefix}seen ignoreme`)."
+                ).format(object_type={_object.__class__.__name__.lower()}, prefix=ctx.prefix)
                 await ctx.send(embed=embed)
                 return
         data = await self.get_data_for(

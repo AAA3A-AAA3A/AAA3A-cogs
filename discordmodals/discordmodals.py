@@ -28,11 +28,49 @@ class Emoji(commands.EmojiConverter):
     async def convert(
         self, ctx: commands.Context, argument: str
     ) -> typing.Union[discord.PartialEmoji, str]:
-        # sourcery skip: collection-into-set
         argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument
-        if argument in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "#", "*", "🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳", "🇴", "🇵", "🇶", "🇷", "🇸", "🇹", "🇺", "🇻", "🇼", "🇽", "🇾", "🇿"):
+        if argument in (
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "#",
+            "*",
+            "🇦",
+            "🇧",
+            "🇨",
+            "🇩",
+            "🇪",
+            "🇫",
+            "🇬",
+            "🇭",
+            "🇮",
+            "🇯",
+            "🇰",
+            "🇱",
+            "🇲",
+            "🇳",
+            "🇴",
+            "🇵",
+            "🇶",
+            "🇷",
+            "🇸",
+            "🇹",
+            "🇺",
+            "🇻",
+            "🇼",
+            "🇽",
+            "🇾",
+            "🇿",
+        ):
             return argument
         return await super().convert(ctx, argument=argument)
 

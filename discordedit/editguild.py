@@ -5,9 +5,9 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import aiohttp
 import datetime
 
+import aiohttp
 from redbot.core.commands.converter import get_timedelta_converter
 from redbot.core.utils.chat_formatting import box
 
@@ -206,9 +206,7 @@ class EditGuild(Cog):
                 except aiohttp.InvalidURL:
                     return await ctx.send("That URL is invalid.")
                 except aiohttp.ClientError:
-                    return await ctx.send(
-                        "Something went wrong while trying to get the image."
-                    )
+                    return await ctx.send("Something went wrong while trying to get the image.")
         # else:
         #     raise commands.UserInputError()  # Send the command help if no attachment and no URL.
         try:
@@ -249,9 +247,7 @@ class EditGuild(Cog):
                 except aiohttp.InvalidURL:
                     return await ctx.send("That URL is invalid.")
                 except aiohttp.ClientError:
-                    return await ctx.send(
-                        "Something went wrong while trying to get the image."
-                    )
+                    return await ctx.send("Something went wrong while trying to get the image.")
         # else:
         #     raise commands.UserInputError()  # Send the command help if no attachment and no URL.
         try:
@@ -292,9 +288,7 @@ class EditGuild(Cog):
                 except aiohttp.InvalidURL:
                     return await ctx.send("That URL is invalid.")
                 except aiohttp.ClientError:
-                    return await ctx.send(
-                        "Something went wrong while trying to get the image."
-                    )
+                    return await ctx.send("Something went wrong while trying to get the image.")
         # else:
         #     raise commands.UserInputError()  # Send the command help if no attachment and no URL.
         try:
@@ -325,7 +319,9 @@ class EditGuild(Cog):
                 )
             )
         if len(ctx.message.attachments) > 0:
-            discovery_splash = await ctx.message.attachments[0].read()  # Read an optional attachment.
+            discovery_splash = await ctx.message.attachments[
+                0
+            ].read()  # Read an optional attachment.
         elif discovery_splash is not None:
             url = discovery_splash
             async with aiohttp.ClientSession() as session:
@@ -335,9 +331,7 @@ class EditGuild(Cog):
                 except aiohttp.InvalidURL:
                     return await ctx.send("That URL is invalid.")
                 except aiohttp.ClientError:
-                    return await ctx.send(
-                        "Something went wrong while trying to get the image."
-                    )
+                    return await ctx.send("Something went wrong while trying to get the image.")
         # else:
         #     raise commands.UserInputError()  # Send the command help if no attachment and no URL.
         try:

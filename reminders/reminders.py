@@ -847,7 +847,7 @@ class Reminders(Cog):
     @reminder.command()
     async def timezone(self, ctx: commands.Context, timezone: TimezoneConverter) -> None:
         """Set your timezone for the time converter.
-        
+
         Timezone should be specified in the format: `Continent/City`.
         Example: `Europe/Paris`, `America/New_York`...
         You can find a list of valid timezones at: https://timezonedb.com/time-zones.

@@ -192,7 +192,12 @@ class ConsoleLogs(Cog, DashboardIntegration):
             kwargs["message"] = kwargs["message"].strip()
             if not kwargs["message"]:
                 continue
-            kwargs["message"] += "." if not kwargs["message"].endswith(('.', '!', '?')) and kwargs["message"][0] == kwargs["message"][0].upper() else ""
+            kwargs["message"] += (
+                "."
+                if not kwargs["message"].endswith((".", "!", "?"))
+                and kwargs["message"][0] == kwargs["message"][0].upper()
+                else ""
+            )
             kwargs["exc_info"] = None  # Maybe next lines...
             console_logs.append(ConsoleLog(**kwargs))
 
@@ -652,7 +657,9 @@ class ConsoleLogs(Cog, DashboardIntegration):
         if not destinations:
             return
         console_logs = self.console_logs
-        console_logs_to_send: typing.List[typing.Tuple[typing.Optional[discord.Embed], typing.List[str]]] = []
+        console_logs_to_send: typing.List[
+            typing.Tuple[typing.Optional[discord.Embed], typing.List[str]]
+        ] = []
         pages_to_send: typing.List[str] = []
         for console_log in console_logs:
             if self._last_console_log_sent_timestamp >= console_log.time_timestamp:
@@ -676,11 +683,11 @@ class ConsoleLogs(Cog, DashboardIntegration):
                                         shorten_by=10,
                                     )
                                 )
-                            ]
+                            ],
                         )
                     )
                     pages_to_send = []
-                    
+
                 embed: discord.Embed = discord.Embed(color=discord.Color.dark_embed())
                 embed.title = console_log.message.split("\n")[0]
                 embed.timestamp = console_log.time
@@ -709,13 +716,13 @@ class ConsoleLogs(Cog, DashboardIntegration):
                                 shorten_by=10,
                             )
                         )
-                    ]
+                    ],
                 )
             )
             pages_to_send = []
 
         for channel, settings in destinations.items():
-            for (embed, pages) in console_logs_to_send:
+            for embed, pages in console_logs_to_send:
                 if embed is not None and not settings["dpy_ignored_exceptions"]:
                     continue
                 elif embed is None and not settings["full_console"]:

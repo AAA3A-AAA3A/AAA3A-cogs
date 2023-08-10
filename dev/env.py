@@ -3,7 +3,6 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import aiohttp
 import asyncio
 import builtins
 import datetime
@@ -21,6 +20,7 @@ from contextvars import ContextVar
 from functools import partial
 from io import StringIO
 
+import aiohttp
 import redbot
 import rich
 from AAA3A_utils.cog import Cog
@@ -165,7 +165,9 @@ class DevEnv(typing.Dict[str, typing.Any]):
         self.imported: typing.List[typing.Union[str, typing.Tuple[str, str]]] = []
 
     @classmethod
-    def get_environment(cls, ctx: commands.Context, use_extended_environment: bool = True) -> typing.Dict[str, typing.Any]:
+    def get_environment(
+        cls, ctx: commands.Context, use_extended_environment: bool = True
+    ) -> typing.Dict[str, typing.Any]:
         env = cls(  # In Dev cog by Zeph.
             **{
                 "me": ctx.me,
@@ -224,7 +226,14 @@ class DevEnv(typing.Dict[str, typing.Any]):
         if not (imported := self.imported):
             return ""
         imported.sort(key=lambda x: x if isinstance(x, str) else f"z{x[0]}")
-        message = "".join((f">>> import {_import}\n" if isinstance(_import, str) else f">>> from {_import[0]} import {_import[1]}\n") for _import in imported)
+        message = "".join(
+            (
+                f">>> import {_import}\n"
+                if isinstance(_import, str)
+                else f">>> from {_import[0]} import {_import[1]}\n"
+            )
+            for _import in imported
+        )
         imported.clear()
         return message
 
@@ -348,7 +357,9 @@ class DevEnv(typing.Dict[str, typing.Any]):
         # def _console_custom(ctx: commands.Context):
         #     return {"width": 80, "color_system": None}
 
-        def search_attribute(a, b: typing.Optional[str] = "", startswith: typing.Optional[str] = "") -> typing.List[str]:
+        def search_attribute(
+            a, b: typing.Optional[str] = "", startswith: typing.Optional[str] = ""
+        ) -> typing.List[str]:
             return [
                 x
                 for x in dir(a)
@@ -435,21 +446,35 @@ class DevEnv(typing.Dict[str, typing.Any]):
 
         def find_all(predicate, iterable) -> typing.List[typing.Any]:
             if hasattr(iterable, "__aiter__"):
+
                 async def _a_find_all():
                     return [element async for element in iterable if predicate(element)]
+
                 return _a_find_all()
             else:
                 return [element for element in iterable if predicate(element)]
 
         def get_all(iterable, **attrs) -> typing.List[typing.Any]:
             attrget = discord.utils.attrgetter
-            converted = [(attrget(attr.replace('__', '.')), value) for attr, value in attrs.items()]
+            converted = [
+                (attrget(attr.replace("__", ".")), value) for attr, value in attrs.items()
+            ]
             if hasattr(iterable, "__aiter__"):
+
                 async def _a_get_all():
-                    return [element async for element in iterable if all(pred(element) == value for pred, value in converted)]
+                    return [
+                        element
+                        async for element in iterable
+                        if all(pred(element) == value for pred, value in converted)
+                    ]
+
                 return _a_get_all()
             else:
-                return [element for element in iterable if all(pred(element) == value for pred, value in converted)]
+                return [
+                    element
+                    for element in iterable
+                    if all(pred(element) == value for pred, value in converted)
+                ]
 
         dev_space: DevSpace = getattr(ctx.bot.get_cog("Dev"), "dev_space", AttributeError())
 
@@ -533,7 +558,9 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "source": lambda ctx: lambda _object: rich.print(
                     textwrap.dedent(inspect.getsource(_object))
                 ),
-                "gs": lambda ctx: lambda _object: rich.print(textwrap.dedent(inspect.getsource(_object))),
+                "gs": lambda ctx: lambda _object: rich.print(
+                    textwrap.dedent(inspect.getsource(_object))
+                ),
                 # "gs": lambda ctx: inspect.getsource,
                 # logging
                 "logging": lambda ctx: logging,
@@ -542,7 +569,9 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "time": lambda ctx: time,
                 "utc_now": lambda ctx: datetime.datetime.now(tz=datetime.timezone.utc),
                 "local_now": lambda ctx: datetime.datetime.now(),
-                "get_utc_now": lambda ctx: functools.partial(datetime.datetime.now, tz=datetime.timezone.utc),
+                "get_utc_now": lambda ctx: functools.partial(
+                    datetime.datetime.now, tz=datetime.timezone.utc
+                ),
                 "get_local_now": lambda ctx: datetime.datetime.now,
                 # Os & Sys
                 "os": lambda ctx: os,

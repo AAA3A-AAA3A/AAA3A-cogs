@@ -202,7 +202,10 @@ class TempRoles(Cog):
             # )
             if not ctx.assume_yes:
                 if not await CogsUtils.ConfirmationAsk(
-                    ctx, content=_("This role is already a TempRole of this member. Do you want to edit the duration?\nCurrently, the Temp Role expires {timestamp}.").format(timestamp=f"<t:{int(member_temp_roles[str(role.id)])}:R>")
+                    ctx,
+                    content=_(
+                        "This role is already a TempRole of this member. Do you want to edit the duration?\nCurrently, the Temp Role expires {timestamp}."
+                    ).format(timestamp=f"<t:{int(member_temp_roles[str(role.id)])}:R>"),
                 ):
                     return await CogsUtils.delete_message(ctx.message)
                 return await self.edit.callback(self, ctx, member=member, role=role, time=time)
@@ -256,7 +259,12 @@ class TempRoles(Cog):
             (_("Self ") if ctx.command.name == "selfassign" else "")
             + _(
                 "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires **in {time_string}** ({timestamp})."
-            ).format(role=role, member=member, time_string=time_string, timestamp=f"<t:{int(end_time.timestamp())}:F>"),
+            ).format(
+                role=role,
+                member=member,
+                time_string=time_string,
+                timestamp=f"<t:{int(end_time.timestamp())}:F>",
+            ),
             allowed_mentions=discord.AllowedMentions(roles=False, users=False),
         )
 
@@ -307,7 +315,12 @@ class TempRoles(Cog):
         await ctx.send(
             _(
                 "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}). Expires **in {time_string}** ({timestamp})."
-            ).format(role=role, member=member, time_string=time_string, timestamp=f"<t:{int(end_time.timestamp())}:F>"),
+            ).format(
+                role=role,
+                member=member,
+                time_string=time_string,
+                timestamp=f"<t:{int(end_time.timestamp())}:F>",
+            ),
             allowed_mentions=discord.AllowedMentions(roles=False, users=False),
         )
 
@@ -393,7 +406,10 @@ class TempRoles(Cog):
             else:
                 description = _("These members have this Temp Role: {temp_roles_members}.").format(
                     temp_roles_members=humanize_list(
-                        [f"{member.mention} ({member.id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)" for member, end_time in temp_roles_members.items()]
+                        [
+                            f"{member.mention} ({member.id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)"
+                            for member, end_time in temp_roles_members.items()
+                        ]
                     )
                 )
         else:

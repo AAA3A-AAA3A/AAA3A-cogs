@@ -381,7 +381,9 @@ class Ticket:
                 for member in members:
                     try:
                         await self.channel.add_user(member)
-                    except discord.HTTPException:  # The bot haven't the permission `manage_messages` in the parent text channel.
+                    except (
+                        discord.HTTPException
+                    ):  # The bot haven't the permission `manage_messages` in the parent text channel.
                         adding_error = True
                 if adding_error:
                     await self.channel.send(
@@ -1084,7 +1086,9 @@ class Ticket:
                         )
                     try:
                         await self.channel.add_user(member)
-                    except discord.HTTPException:  # The bot haven't the permission `manage_messages` in the parent text channel.
+                    except (
+                        discord.HTTPException
+                    ):  # The bot haven't the permission `manage_messages` in the parent text channel.
                         adding_error = True
                 if member not in self.members:
                     self.members.append(member)

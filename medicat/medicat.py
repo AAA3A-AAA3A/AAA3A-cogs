@@ -469,10 +469,10 @@ class Medicat(Cog):
             ventoy_tag_body = ventoy_tag_body.split("\n")
             result = []
             for x in ventoy_tag_body:
-                if (
-                    x
-                    in ["See [https://www.ventoy.net/en/doc_news.html](https://www.ventoy.net/en/doc_news.html) for more details.\r", "**Wana boot and install OS through network (PXE)? Welcome to my new project iVentoy.**\r"]
-                ):
+                if x in [
+                    "See [https://www.ventoy.net/en/doc_news.html](https://www.ventoy.net/en/doc_news.html) for more details.\r",
+                    "**Wana boot and install OS through network (PXE)? Welcome to my new project iVentoy.**\r",
+                ]:
                     break
                 if x != "\r":
                     result.append(x)
@@ -684,7 +684,9 @@ class Medicat(Cog):
 
                 CC.__qualname__ = f"{self.qualified_name}.CC_{name}"
                 setattr(CC, "__doc__", text["title"])  # Description, but translated with i18n.
-                command: commands.Command = commands.bot_has_permissions(embed_links=True)(self.medicat.command(name=name, i18n=_)(CC))
+                command: commands.Command = commands.bot_has_permissions(embed_links=True)(
+                    self.medicat.command(name=name, i18n=_)(CC)
+                )
                 command.name = name
                 # command.brief = text["title"]
                 # command.description = text["title"]
@@ -754,9 +756,7 @@ class Medicat(Cog):
     async def getventoyversion(self, ctx: commands.Context, version: str) -> None:
         """Get a version of Ventoy."""
         try:
-            await self.ventoy_updates(
-                channel=ctx, ping_role=False, force=True, version=version
-            )
+            await self.ventoy_updates(channel=ctx, ping_role=False, force=True, version=version)
         except Exception:
             raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again."))
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:09\n"
+"POT-Creation-Date: 2023-08-10 13:42+0200\n"
+"PO-Revision-Date: 2023-08-10 11:46\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "It's not a valid public URL."
 msgstr "Es handelt sich nicht um eine gültige öffentliche URL."
 
-#: urlbuttons\converters.py:50
+#: urlbuttons\converters.py:91
 msgid "Emoji Url must be an emoji followed by a url separated by either `;`, `,`, `|`, or `-`."
 msgstr "Emoji Url muss ein Emoji gefolgt von einer Url sein, die entweder durch `;`, `,`, `|` oder `-` getrennt ist."
 
@@ -36,7 +36,7 @@ msgid "Add a url-button for a message."
 msgstr "Fügen Sie eine Url-Schaltfläche für eine Nachricht hinzu."
 
 #: urlbuttons\urlbuttons.py:113 urlbuttons\urlbuttons.py:176
-#: urlbuttons\urlbuttons.py:253
+#: urlbuttons\urlbuttons.py:256
 msgid "I have to be the author of the message for the url-button to work."
 msgstr "Damit die URL-Schaltfläche funktioniert, muss ich der Verfasser der Nachricht sein."
 
@@ -96,7 +96,7 @@ msgstr "Entfernen eines url-buttons für eine Nachricht.\n\n"
 msgid "I have to be the author of the message for the role-button to work."
 msgstr "Ich muss der Verfasser der Nachricht sein, damit die Rollen-Buttons funktionieren."
 
-#: urlbuttons\urlbuttons.py:232 urlbuttons\urlbuttons.py:278
+#: urlbuttons\urlbuttons.py:232 urlbuttons\urlbuttons.py:281
 msgid "No url-button is configured for this message."
 msgstr "Für diese Nachricht ist keine Url-Schaltfläche konfiguriert."
 
@@ -104,41 +104,41 @@ msgstr "Für diese Nachricht ist keine Url-Schaltfläche konfiguriert."
 msgid "I wasn't watching for this button on this message."
 msgstr "Ich habe nicht auf diese Schaltfläche in dieser Nachricht geachtet."
 
-#: urlbuttons\urlbuttons.py:250
+#: urlbuttons\urlbuttons.py:249 urlbuttons\urlbuttons.py:269
+msgid "Url-buttons cleared for this message."
+msgstr "Die Url-Schaltflächen sind für diese Nachricht gelöscht."
+
+#: urlbuttons\urlbuttons.py:253
 #, docstring
 msgid "Clear all url-buttons for a message."
 msgstr "Alle Url-Schaltflächen für eine Nachricht löschen."
 
-#: urlbuttons\urlbuttons.py:258
+#: urlbuttons\urlbuttons.py:261
 msgid "No role-button is configured for this message."
 msgstr "Für diese Nachricht ist kein Rollen-Button konfiguriert."
 
-#: urlbuttons\urlbuttons.py:266
-msgid "Url-buttons cleared for this message."
-msgstr "Die Url-Schaltflächen sind für diese Nachricht gelöscht."
-
-#: urlbuttons\urlbuttons.py:284
+#: urlbuttons\urlbuttons.py:287
 msgid "No url-buttons in this server."
 msgstr "Keine Url-Schaltflächen auf diesem Server."
 
-#: urlbuttons\urlbuttons.py:293
+#: urlbuttons\urlbuttons.py:296
 msgid "URL Buttons"
 msgstr "URL-Schaltflächen"
 
-#: urlbuttons\urlbuttons.py:294
+#: urlbuttons\urlbuttons.py:297
 msgid "There is {len_url_buttons} URL buttons in this server."
 msgstr "Auf diesem Server gibt es die URL-Schaltflächen {len_url_buttons}."
 
-#: urlbuttons\urlbuttons.py:301
+#: urlbuttons\urlbuttons.py:304
 msgid "Message Jump Link: {message_jump_link}\n"
 msgstr "Nachricht Sprunglink: {message_jump_link}\n"
 
-#: urlbuttons\urlbuttons.py:317
+#: urlbuttons\urlbuttons.py:324
 #, docstring
 msgid "Clear all url-buttons for a guild."
 msgstr "Alle Url-Buttons für eine Gilde löschen."
 
-#: urlbuttons\urlbuttons.py:319
+#: urlbuttons\urlbuttons.py:326
 msgid "All url-buttons purged."
 msgstr "Alle Url-Schaltflächen wurden gelöscht."
 

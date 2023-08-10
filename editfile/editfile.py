@@ -111,7 +111,7 @@ class EditFile(Cog):
                 if line_span is None
                 else f"#L{str(line_span[0])}-L{str(line_span[1])}" + f" / {len_lines}"
             )
-            header = box(f"File {path}, line {line}.")
+            header = box(f"File {path}, {'line' if len_lines == 1 else 'lines'} {line}.")
             pages = [
                 {"content": (header + box(p, lang="py")), "file": file}
                 for p in pagify(

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-10 13:42+0200\n"
+"POT-Creation-Date: 2023-08-10 18:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,6 +20,186 @@ msgstr ""
 msgid ""
 "A cog to generate images with messages and voice stats, for members, roles, "
 "guilds, categories, text channels, voice channels and activities!"
+msgstr ""
+
+#: guildstats\guildstats.py:2779
+msgid "Role {_object.name}"
+msgstr ""
+
+#: guildstats\guildstats.py:2784
+msgid "Guild Stats"
+msgstr ""
+
+#: guildstats\guildstats.py:2798
+msgid "Messages Stats"
+msgstr ""
+
+#: guildstats\guildstats.py:2803
+msgid "Voice Stats"
+msgstr ""
+
+#: guildstats\guildstats.py:2809
+msgid "Activities Stats"
+msgstr ""
+
+#: guildstats\guildstats.py:2817
+msgid "Top Stats"
+msgstr ""
+
+#: guildstats\guildstats.py:2823
+msgid "Activity - {activity_name}"
+msgstr ""
+
+#: guildstats\guildstats.py:2833
+msgid "Category - {_object.name}"
+msgstr ""
+
+#: guildstats\guildstats.py:2907 guildstats\guildstats.py:2941
+msgid "Created On"
+msgstr ""
+
+#: guildstats\guildstats.py:2922
+msgid "Joined On"
+msgstr ""
+
+#: guildstats\guildstats.py:3039 guildstats\guildstats.py:3723
+#: guildstats\guildstats.py:4641 guildstats\guildstats.py:4719
+#: guildstats\guildstats.py:4793 guildstats\guildstats.py:4810
+#: guildstats\guildstats.py:5338 guildstats\guildstats.py:5599
+msgid "Graphic"
+msgstr ""
+
+#: guildstats\guildstats.py:3104 guildstats\guildstats.py:4090
+#: guildstats\guildstats.py:4382 guildstats\guildstats.py:5164
+#: guildstats\guildstats.py:5425
+msgid "Contributors"
+msgstr ""
+
+#: guildstats\guildstats.py:3331 guildstats\guildstats.py:5632
+#: guildstats\guildstats.py:5668
+msgid "Tracking data in this server for {interval_string}."
+msgstr ""
+
+#: guildstats\guildstats.py:3336 guildstats\guildstats.py:5637
+#: guildstats\guildstats.py:5673
+msgid "Only {members_type} are taken into account."
+msgstr ""
+
+#: guildstats\guildstats.py:3466 guildstats\guildstats.py:3741
+#: guildstats\guildstats.py:4020 guildstats\guildstats.py:4312
+#: guildstats\guildstats.py:4827 guildstats\guildstats.py:5094
+#: guildstats\guildstats.py:5355
+msgid "Server Lookback"
+msgstr ""
+
+#: guildstats\guildstats.py:3476 guildstats\guildstats.py:3751
+#: guildstats\guildstats.py:4837
+msgid "Text"
+msgstr ""
+
+#: guildstats\guildstats.py:3487 guildstats\guildstats.py:3628
+#: guildstats\guildstats.py:3763 guildstats\guildstats.py:4659
+#: guildstats\guildstats.py:4848
+msgid "Voice"
+msgstr ""
+
+#: guildstats\guildstats.py:3500 guildstats\guildstats.py:3778
+#: guildstats\guildstats.py:4045 guildstats\guildstats.py:4659
+#: guildstats\guildstats.py:4861 guildstats\guildstats.py:5119
+msgid "Messages"
+msgstr ""
+
+#: guildstats\guildstats.py:3510 guildstats\guildstats.py:3555
+#: guildstats\guildstats.py:3788 guildstats\guildstats.py:3834
+#: guildstats\guildstats.py:4055 guildstats\guildstats.py:4101
+#: guildstats\guildstats.py:4347 guildstats\guildstats.py:4393
+#: guildstats\guildstats.py:4871 guildstats\guildstats.py:4916
+#: guildstats\guildstats.py:5129 guildstats\guildstats.py:5174
+#: guildstats\guildstats.py:5390 guildstats\guildstats.py:5435
+msgid "1d"
+msgstr ""
+
+#: guildstats\guildstats.py:3521 guildstats\guildstats.py:3566
+#: guildstats\guildstats.py:3799 guildstats\guildstats.py:3848
+#: guildstats\guildstats.py:4066 guildstats\guildstats.py:4115
+#: guildstats\guildstats.py:4358 guildstats\guildstats.py:4407
+#: guildstats\guildstats.py:4882 guildstats\guildstats.py:4927
+#: guildstats\guildstats.py:5140 guildstats\guildstats.py:5185
+#: guildstats\guildstats.py:5401 guildstats\guildstats.py:5446
+msgid "7d"
+msgstr ""
+
+#: guildstats\guildstats.py:3532 guildstats\guildstats.py:3577
+#: guildstats\guildstats.py:3810 guildstats\guildstats.py:3862
+#: guildstats\guildstats.py:4077 guildstats\guildstats.py:4129
+#: guildstats\guildstats.py:4369 guildstats\guildstats.py:4421
+#: guildstats\guildstats.py:4893 guildstats\guildstats.py:4938
+#: guildstats\guildstats.py:5151 guildstats\guildstats.py:5196
+#: guildstats\guildstats.py:5412 guildstats\guildstats.py:5457
+msgid "30d"
+msgstr ""
+
+#: guildstats\guildstats.py:3545 guildstats\guildstats.py:3823
+#: guildstats\guildstats.py:4337 guildstats\guildstats.py:4906
+#: guildstats\guildstats.py:5380
+msgid "Voice Activity"
+msgstr ""
+
+#: guildstats\guildstats.py:3605
+msgid "Server Ranks"
+msgstr ""
+
+#: guildstats\guildstats.py:3621 guildstats\guildstats.py:3634
+msgid "No data."
+msgstr ""
+
+#: guildstats\guildstats.py:3643
+msgid "Top Channels & Activity"
+msgstr ""
+
+#: guildstats\guildstats.py:3877 guildstats\guildstats.py:4735
+#: guildstats\guildstats.py:4951
+msgid "Top Members"
+msgstr ""
+
+#: guildstats\guildstats.py:3965 guildstats\guildstats.py:5039
+msgid "Top Channels"
+msgstr ""
+
+#: guildstats\guildstats.py:4144 guildstats\guildstats.py:5228
+msgid "Top Messages Members"
+msgstr ""
+
+#: guildstats\guildstats.py:4253
+msgid "Top Messages Channels"
+msgstr ""
+
+#: guildstats\guildstats.py:4436 guildstats\guildstats.py:5489
+msgid "Top Voice Members"
+msgstr ""
+
+#: guildstats\guildstats.py:4545
+msgid "Top Voice Channels"
+msgstr ""
+
+#: guildstats\guildstats.py:4604
+msgid "Top Activities (Applications)"
+msgstr ""
+
+#: guildstats\guildstats.py:4659
+msgid "Tope"
+msgstr ""
+
+#: guildstats\guildstats.py:4659
+msgid "Members"
+msgstr ""
+
+#: guildstats\guildstats.py:4659
+msgid "Channels"
+msgstr ""
+
+#: guildstats\guildstats.py:5209 guildstats\guildstats.py:5470
+msgid "Server Rank"
 msgstr ""
 
 #: guildstats\guildstats.py:5792 guildstats\guildstats.py:5832

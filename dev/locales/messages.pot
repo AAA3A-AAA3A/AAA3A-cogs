@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-10 13:42+0200\n"
+"POT-Creation-Date: 2023-08-10 18:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,60 +11,60 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: dev\dev.py:353
+#: dev\dev.py:357
 #, docstring
 msgid "Various development focused utilities!"
 msgstr ""
 
-#: dev\dev.py:670
+#: dev\dev.py:674
 msgid "Already running a REPL session in this channel. Exit it with `quit`."
 msgstr ""
 
-#: dev\dev.py:674
+#: dev\dev.py:678
 msgid ""
 "Already running a REPL session in this channel. Resume the REPL with "
 "`{prefix}replresume`."
 msgstr ""
 
-#: dev\dev.py:686
+#: dev\dev.py:690
 msgid ""
 "Enter code to execute or evaluate. `exit()` or `quit` to exit. "
 "`{prefix}replpause` to pause."
 msgstr ""
 
-#: dev\dev.py:726
+#: dev\dev.py:730
 msgid "Exiting."
 msgstr ""
 
-#: dev\dev.py:734
+#: dev\dev.py:738
 msgid "There is no currently running REPL session in this channel."
 msgstr ""
 
-#: dev\dev.py:740
+#: dev\dev.py:744
 msgid "The REPL session in this channel has been resumed."
 msgstr ""
 
-#: dev\dev.py:742
+#: dev\dev.py:746
 msgid "The REPL session in this channel is now paused."
 msgstr ""
 
-#: dev\dev.py:764
+#: dev\dev.py:768
 msgid ""
 "Bot owners will now bypass all commands with cooldowns{optional_duration}."
 msgstr ""
 
-#: dev\dev.py:774
+#: dev\dev.py:778
 msgid ""
 "Bot owners will no longer bypass all commands with "
 "cooldowns{optional_duration}."
 msgstr ""
 
-#: dev\dev.py:803
+#: dev\dev.py:807
 #, docstring
 msgid "Display all Dev environment values."
 msgstr ""
 
-#: dev\dev.py:812
+#: dev\dev.py:816
 #, docstring
 msgid "Reset its own locals in evals."
 msgstr ""

@@ -10,6 +10,7 @@ import asyncio
 import collections
 import contextlib
 import io
+import random
 import sys
 import textwrap
 
@@ -140,7 +141,7 @@ class DevOutput(dev_commands.DevOutput):
             if self.formatted_exc:
                 await self.ctx.react_quietly(reaction="❌")
             else:
-                await self.ctx.react_quietly(reaction=commands.context.TICK)
+                await self.ctx.react_quietly(reaction=commands.context.TICK if not hasattr(commands.context, "TICKS") else random.choice(commands.context.TICKS))
 
     @classmethod
     async def from_debug(
@@ -723,7 +724,7 @@ class Dev(Cog, dev_commands.Dev):
                 if output.formatted_exc:
                     await response.add_reaction("❌")
                 elif not str(output):
-                    await response.add_reaction(commands.context.TICK)
+                    await response.add_reaction(commands.context.TICK if not hasattr(commands.context, "TICKS") else random.choice(commands.context.TICKS))
             except discord.HTTPException:
                 pass
 

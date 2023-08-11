@@ -4845,7 +4845,7 @@ class GuildStats(Cog):
 
             if show_graphic:
                 # Graphic. box = 940 / empty = 0 | + 411 (381 + 30) / 1 case / box = 264 / empty = 0
-                draw.rounded_rectangle((30, 1026, 1910, 1407), radius=15, fill=(47, 49, 54))
+                draw.rounded_rectangle((30, 1026, 1910, 1407 + 200), radius=15, fill=(47, 49, 54))
                 align_text_center(
                     (50, 1036, 50, 1106),
                     text=_("Graphic"),

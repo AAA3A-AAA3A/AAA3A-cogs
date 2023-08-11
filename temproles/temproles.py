@@ -204,7 +204,7 @@ class TempRoles(Cog):
                 if not await CogsUtils.ConfirmationAsk(
                     ctx,
                     content=_(
-                        "This role is already a TempRole of this member. Do you want to edit the duration?\nCurrently, the Temp Role expires {timestamp}."
+                        "This role is already a TempRole of this member. Do you want to edit the duration?\nCurrently, this Temp Role expires {timestamp}."
                     ).format(timestamp=f"<t:{int(member_temp_roles[str(role.id)])}:R>"),
                 ):
                     return await CogsUtils.delete_message(ctx.message)

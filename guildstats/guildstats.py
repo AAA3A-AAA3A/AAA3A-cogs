@@ -524,7 +524,7 @@ class GuildStats(Cog):
             return
         if message.guild not in self.cache:
             self.cache[message.guild] = {"channels": {}, "members": {}}
-        if message.channel not in self.cache[message.guild]:
+        if message.channel not in self.cache[message.guild]["channels"]:
             self.cache[message.guild]["channels"][message.channel] = {
                 "total_messages": 0,
                 "total_humans_messages": 0,

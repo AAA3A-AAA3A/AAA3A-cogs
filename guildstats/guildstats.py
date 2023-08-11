@@ -2780,7 +2780,7 @@ class GuildStats(Cog):
                         fill=(163, 163, 163),
                         font=self.font[40],
                     )
-            elif (
+            elif _object.global_name is not None and (
                 sum(1 if char.isascii() else 0 for char in _object.global_name)
                 / len(_object.global_name)
                 > 0.8
@@ -3299,7 +3299,7 @@ class GuildStats(Cog):
                                         )
                                         else (
                                             member.global_name
-                                            if (
+                                            if member.global_name is not None and (
                                                 sum(
                                                     1 if char.isascii() else 0
                                                     for char in member.global_name
@@ -3944,7 +3944,7 @@ class GuildStats(Cog):
                         )
                         else (
                             member.global_name
-                            if (
+                            if member.global_name is not None and (
                                 sum(1 if char.isascii() else 0 for char in member.global_name)
                                 / len(member.global_name)
                                 > 0.8
@@ -3982,7 +3982,7 @@ class GuildStats(Cog):
                         )
                         else (
                             member.global_name
-                            if (
+                            if member.global_name is not None and (
                                 sum(1 if char.isascii() else 0 for char in member.global_name)
                                 / len(member.global_name)
                                 > 0.8
@@ -4199,7 +4199,7 @@ class GuildStats(Cog):
                         if (
                             member := _object.get_member(data["top_messages_members"][0][0])
                         ).display_name
-                        and (
+                        and member.global_name is not None and (
                             sum(1 if char.isascii() else 0 for char in member.display_name)
                             / len(member.display_name)
                             > 0.8
@@ -4238,7 +4238,7 @@ class GuildStats(Cog):
                         )
                         else (
                             member.global_name
-                            if (
+                            if member.global_name is not None and (
                                 sum(1 if char.isascii() else 0 for char in member.global_name)
                                 / len(member.global_name)
                                 > 0.8
@@ -4270,7 +4270,7 @@ class GuildStats(Cog):
                         )
                         else (
                             member.global_name
-                            if (
+                            if member.global_name is not None and (
                                 sum(1 if char.isascii() else 0 for char in member.global_name)
                                 / len(member.global_name)
                                 > 0.8
@@ -4498,7 +4498,7 @@ class GuildStats(Cog):
                         )
                         else (
                             member.global_name
-                            if (
+                            if member.global_name is not None and (
                                 sum(1 if char.isascii() else 0 for char in member.global_name)
                                 / len(member.global_name)
                                 > 0.8
@@ -4530,7 +4530,7 @@ class GuildStats(Cog):
                         )
                         else (
                             member.global_name
-                            if (
+                            if member.global_name is not None and (
                                 sum(1 if char.isascii() else 0 for char in member.global_name)
                                 / len(member.global_name)
                                 > 0.8
@@ -4562,7 +4562,7 @@ class GuildStats(Cog):
                         )
                         else (
                             member.global_name
-                            if (
+                            if member.global_name is not None and (
                                 sum(1 if char.isascii() else 0 for char in member.global_name)
                                 / len(member.global_name)
                                 > 0.8
@@ -4729,7 +4729,7 @@ class GuildStats(Cog):
                                     )
                                     else (
                                         member.global_name
-                                        if (
+                                        if member.global_name is not None and (
                                             sum(
                                                 1 if char.isascii() else 0
                                                 for char in member.global_name
@@ -4805,7 +4805,7 @@ class GuildStats(Cog):
                                     )
                                     else (
                                         member.global_name
-                                        if (
+                                        if member.global_name is not None and (
                                             sum(
                                                 1 if char.isascii() else 0
                                                 for char in member.global_name
@@ -5018,7 +5018,7 @@ class GuildStats(Cog):
                     )
                     else (
                         member.global_name
-                        if (
+                        if member.global_name is not None and (
                             sum(1 if char.isascii() else 0 for char in member.global_name)
                             / len(member.global_name)
                             > 0.8
@@ -5056,7 +5056,7 @@ class GuildStats(Cog):
                     )
                     else (
                         member.global_name
-                        if (
+                        if member.global_name is not None and (
                             sum(1 if char.isascii() else 0 for char in member.global_name)
                             / len(member.global_name)
                             > 0.8
@@ -5290,7 +5290,7 @@ class GuildStats(Cog):
                     )
                     else (
                         member.global_name
-                        if (
+                        if member.global_name is not None and (
                             sum(1 if char.isascii() else 0 for char in member.global_name)
                             / len(member.global_name)
                             > 0.8
@@ -5322,7 +5322,7 @@ class GuildStats(Cog):
                     )
                     else (
                         member.global_name
-                        if (
+                        if member.global_name is not None and (
                             sum(1 if char.isascii() else 0 for char in member.global_name)
                             / len(member.global_name)
                             > 0.8
@@ -5354,7 +5354,7 @@ class GuildStats(Cog):
                     )
                     else (
                         member.global_name
-                        if (
+                        if member.global_name is not None and (
                             sum(1 if char.isascii() else 0 for char in member.global_name)
                             / len(member.global_name)
                             > 0.8
@@ -5551,7 +5551,7 @@ class GuildStats(Cog):
                     )
                     else (
                         member.global_name
-                        if (
+                        if member.global_name is not None and (
                             sum(1 if char.isascii() else 0 for char in member.global_name)
                             / len(member.global_name)
                             > 0.8
@@ -5583,7 +5583,7 @@ class GuildStats(Cog):
                     )
                     else (
                         member.global_name
-                        if (
+                        if member.global_name is not None and (
                             sum(1 if char.isascii() else 0 for char in member.global_name)
                             / len(member.global_name)
                             > 0.8
@@ -5615,7 +5615,7 @@ class GuildStats(Cog):
                     )
                     else (
                         member.global_name
-                        if (
+                        if member.global_name is not None and (
                             sum(1 if char.isascii() else 0 for char in member.global_name)
                             / len(member.global_name)
                             > 0.8

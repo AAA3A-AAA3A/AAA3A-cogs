@@ -139,4 +139,4 @@ This repository and its cogs are protected under the MIT License.
 
 For further information, please click `here <https://github.com/AAA3A-AAA3A/AAA3A-cogs/blob/main/LICENSE>`_
 
-Copyright (c) 2022 AAA3A
+Copyright (c) 2021-present AAA3A

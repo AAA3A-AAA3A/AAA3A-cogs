@@ -99,7 +99,7 @@ Additionally, feel free to open an issue or pull request to this repo.
 Support Me
 ----------
 
-https://www.buymeacoffee.com/aaa3a
+I'm creating these cogs on my free time. If you like my work, please consider donating on my [Patreon](https://www.buymeacoffee.com/aaa3a)!
 
 -------
 Credits

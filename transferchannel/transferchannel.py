@@ -42,7 +42,7 @@ class MessageOrObjectConverter(commands.Converter):
 
 @cog_i18n(_)
 class TransferChannel(Cog):
-    """A cog to transfer all messages channel in a other channel!"""
+    """A cog to transfer messages from a channel to another channel, with many options!"""
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -203,7 +203,7 @@ class TransferChannel(Cog):
     @commands.guildowner_or_permissions(administrator=True)
     @commands.hybrid_group(name="transferchannel", aliases=["channeltransfer"])
     async def transferchannel(self, ctx: commands.Context) -> None:
-        """Transfer all messages channel in a other channel. This might take a long time.
+        """Transfer messages from a channel to another channel, with many options. This might take a long time.
         You can specify the id of a channel from another server.
 
         `source` is partial name or ID of the source channel

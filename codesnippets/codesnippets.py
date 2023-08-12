@@ -5,13 +5,11 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import asyncio
+import aiohttp
 import re
 import textwrap
 from collections import deque
 from urllib.parse import quote_plus
-
-import aiohttp
 
 from .dashboard_integration import DashboardIntegration
 

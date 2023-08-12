@@ -11,6 +11,7 @@ import collections
 import contextlib
 import io
 import random
+import re
 import sys
 import textwrap
 
@@ -597,7 +598,7 @@ class Dev(Cog, dev_commands.Dev):
     @commands.is_owner()
     @commands.hybrid_command()
     # @discord.utils.copy_doc(dev_commands.Dev.debug.callback)
-    async def debug(self, ctx: commands.Context, *, code: str) -> None:
+    async def debug(self, ctx: commands.Context, *, code: str = None) -> None:
         """Evaluate a statement of python code.
 
         The bot will always respond with the return value of the code.
@@ -608,6 +609,8 @@ class Dev(Cog, dev_commands.Dev):
         keywords, e.g. yield, will result in a syntax error. For multiple
         lines or asynchronous code, see [p]repl or [p]eval.
 
+        You can upload a file with the code to be executed, or reply to a message containing the same command, for any bot.
+
         Environment Variables:
             `ctx`      - the command invocation context
             `bot`      - the bot object
@@ -623,6 +626,14 @@ class Dev(Cog, dev_commands.Dev):
             `cf`       - the redbot.core.utils.chat_formatting module
         (See `[p]setdev getenvironment` for more.)
         """
+        if code is None:
+            if ctx.message.attachments:
+                code = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+            elif hasattr(ctx.message, "reference") and ctx.message.reference is not None and isinstance(ctx.message.reference.resolved, discord.Message):
+                if (match := re.compile(r"debug (?P<code>(.|\n)*)").search(ctx.message.reference.resolved.content)) is None or not (code := match.groupdict()["code"]).strip():
+                    raise commands.UserFeedbackCheckFailure(_("This message isn't reachable."))
+            else:
+                raise commands.UserInputError()
         source = cleanup_code(code)
         await self.my_exec(
             getattr(ctx, "original_context", ctx),
@@ -633,7 +644,7 @@ class Dev(Cog, dev_commands.Dev):
     @commands.is_owner()
     @commands.hybrid_command(name="eval")
     # @discord.utils.copy_doc(dev_commands.Dev._eval.callback)
-    async def _eval(self, ctx: commands.Context, *, body: str) -> None:
+    async def _eval(self, ctx: commands.Context, *, body: str = None) -> None:
         """Execute asynchronous code.
 
         This command wraps code into the body of an async function and then
@@ -642,6 +653,8 @@ class Dev(Cog, dev_commands.Dev):
 
         The code can be within a codeblock, inline code or neither, as long
         as they are not mixed and they are formatted correctly.
+
+        You can upload a file with the code to be executed, or reply to a message containing the same command, for any bot.
 
         Environment Variables:
             `ctx`      - the command invocation context
@@ -658,6 +671,14 @@ class Dev(Cog, dev_commands.Dev):
             `cf`       - the redbot.core.utils.chat_formatting module
         (See `[p]setdev getenvironment` for more.)
         """
+        if body is None:
+            if ctx.message.attachments:
+                body = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+            elif hasattr(ctx.message, "reference") and ctx.message.reference is not None and isinstance(ctx.message.reference.resolved, discord.Message):
+                if (match := re.compile(r"eval (?P<body>(.|\n)*)").search(ctx.message.reference.resolved.content)) is None or not (body := match.groupdict()["body"]).strip():
+                    raise commands.UserFeedbackCheckFailure(_("This message isn't reachable."))
+            else:
+                raise commands.UserInputError()
         source = cleanup_code(body)
         await self.my_exec(
             getattr(ctx, "original_context", ctx),
@@ -667,8 +688,34 @@ class Dev(Cog, dev_commands.Dev):
 
     @commands.is_owner()
     @commands.hybrid_command()
-    @discord.utils.copy_doc(dev_commands.Dev.repl.callback)
+    # @discord.utils.copy_doc(dev_commands.Dev.repl.callback)
     async def repl(self, ctx: commands.Context) -> None:
+        """Open an interactive REPL.
+
+        The REPL will only recognise code as messages which start with a
+        backtick. This includes codeblocks, and as such multiple lines can be
+        evaluated.
+
+        Use `exit()` or `quit` to exit the REPL session, prefixed with
+        a backtick so they may be interpreted.
+
+        You can upload a file with the code to be executed, or reply to a message containing the same command, for any bot.
+
+        Environment Variables:
+            `ctx`      - the command invocation context
+            `bot`      - the bot object
+            `channel`  - the current channel object
+            `author`   - the command author's member object
+            `guild`    - the current guild object
+            `message`  - the command's message object
+            `_`        - the result of the last dev command
+            `aiohttp`  - the aiohttp library
+            `asyncio`  - the asyncio library
+            `discord`  - the discord.py library
+            `commands` - the redbot.core.commands module
+            `cf`       - the redbot.core.utils.chat_formatting module
+        (See `[p]setdev getenvironment` for more.)
+        """
         if ctx.channel.id in self.sessions:
             if self.sessions[ctx.channel.id]:
                 await ctx.send(

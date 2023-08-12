@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -173,6 +173,7 @@ class TransferChannel(Cog):
                     avatar_url=message.author.display_avatar,
                     content=message.content,
                     files=files,
+                    wait=True,
                 )
             elif way == "messages":
                 iso_format = message.created_at.isoformat()
@@ -232,11 +233,11 @@ class TransferChannel(Cog):
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way
         )
-        await ctx.send(
-            _(RESULT_MESSAGE).format(
+        await Menu(
+            pages=_(RESULT_MESSAGE).format(
                 count_messages=count_messages, source=source, destination=destination
             )
-        )
+        ).start(ctx)
 
     @transferchannel.command()
     async def messages(
@@ -288,11 +289,11 @@ class TransferChannel(Cog):
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, before=before
         )
-        await ctx.send(
-            _(RESULT_MESSAGE).format(
+        await Menu(
+            pages=_(RESULT_MESSAGE).format(
                 count_messages=count_messages, source=source, destination=destination
             )
-        )
+        ).start(ctx)
 
     @transferchannel.command()
     async def after(
@@ -314,11 +315,11 @@ class TransferChannel(Cog):
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, after=after
         )
-        await ctx.send(
-            _(RESULT_MESSAGE).format(
+        await Menu(
+            pages=_(RESULT_MESSAGE).format(
                 count_messages=count_messages, source=source, destination=destination
             )
-        )
+        ).start(ctx)
 
     @transferchannel.command()
     async def between(
@@ -341,11 +342,11 @@ class TransferChannel(Cog):
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, before=before, after=after
         )
-        await ctx.send(
-            _(RESULT_MESSAGE).format(
+        await Menu(
+            pages=_(RESULT_MESSAGE).format(
                 count_messages=count_messages, source=source, destination=destination
             )
-        )
+        ).start(ctx)
 
     @transferchannel.command()
     async def user(
@@ -373,11 +374,11 @@ class TransferChannel(Cog):
             user_id=user.id if isinstance(user, discord.Member) else user,
             limit=limit,
         )
-        await ctx.send(
-            _(RESULT_MESSAGE).format(
+        await Menu(
+            pages=_(RESULT_MESSAGE).format(
                 count_messages=count_messages, source=source, destination=destination
             )
-        )
+        ).start(ctx)
 
     @transferchannel.command()
     async def bot(
@@ -400,8 +401,8 @@ class TransferChannel(Cog):
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, bot=bot, limit=limit
         )
-        await ctx.send(
-            _(RESULT_MESSAGE).format(
+        await Menu(
+            pages=_(RESULT_MESSAGE).format(
                 count_messages=count_messages, source=source, destination=destination
             )
-        )
+        ).start(ctx)

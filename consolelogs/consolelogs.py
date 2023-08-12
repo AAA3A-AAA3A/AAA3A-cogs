@@ -101,14 +101,15 @@ class ConsoleLogs(Cog, DashboardIntegration):
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
-        self.consolelogs_channel: typing.Dict[str, bool] = {
+        self.consolelogs_channel: typing.Dict[str, typing.Union[bool, typing.List[str]]] = {
             "enabled": False,
-            "global_errors": False,
+            "global_errors": True,
             "prefixed_commands_errors": True,
             "slash_commands_errors": True,
             "dpy_ignored_exceptions": False,
             "full_console": False,
-            "guild_invite": False,
+            "guild_invite": True,
+            "ignored_cogs": [],
         }
         self.config.register_channel(**self.consolelogs_channel)
 
@@ -465,6 +466,8 @@ class ConsoleLogs(Cog, DashboardIntegration):
         dpy_ignored_exceptions: typing.Optional[bool] = False,
         full_console: typing.Optional[bool] = False,
         guild_invite: typing.Optional[bool] = True,
+        *,
+        ignored_cogs: commands.Greedy[commands.CogConverter],
     ) -> None:
         """Enable errors logging in a channel.
 
@@ -476,6 +479,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         - `dpy_ignored_exceptions`: Log dpy ignored exceptions (events listeners and Views errors).
         - `full_console`: Log all the console logs.
         - `guild_invite`: Add a button "Guild Invite" in commands errors logs, only for community servers.
+        - `ignored_cogs`: Ignore some cogs for `prefixed_commands_errors` and `slash_commands_errors`. You have to use the cog qualified_name like `ConsoleLogs` for this cog.
         """
         channel_permissions = channel.permissions_for(ctx.me)
         if not all(
@@ -488,13 +492,18 @@ class ConsoleLogs(Cog, DashboardIntegration):
             raise commands.UserFeedbackCheckFailure(
                 _("I don't have the permissions to send embeds in this channel.")
             )
-        await self.config.channel(channel).enabled.set(True)
-        await self.config.channel(channel).global_errors.set(global_errors)
-        await self.config.channel(channel).prefixed_commands_errors.set(prefixed_commands_errors)
-        await self.config.channel(channel).slash_commands_errors.set(slash_commands_errors)
-        await self.config.channel(channel).dpy_ignored_exceptions.set(dpy_ignored_exceptions)
-        await self.config.channel(channel).full_console.set(full_console)
-        await self.config.channel(channel).guild_invite.set(guild_invite)
+        await self.config.channel(channel).set(
+            {
+                "enabled": enabled,
+                "global_errors": global_errors,
+                "prefixed_commands_errors": prefixed_commands_errors,
+                "slash_commands_errors": slash_commands_errors,
+                "dpy_ignored_exceptions": dpy_ignored_exceptions,
+                "full_console": full_console,
+                "guild_invite": guild_invite,
+                "ignored_cogs": list(ignored_cogs),
+            }
+        )
         await ctx.send(_("Errors logging enabled in {channel.mention}.").format(channel=channel))
 
     @consolelogs.command(aliases=["-"])
@@ -629,6 +638,8 @@ class ConsoleLogs(Cog, DashboardIntegration):
             if not settings["prefixed_commands_errors"] and ctx.interaction is None:
                 continue
             if not settings["slash_commands_errors"] and ctx.interaction is not None:
+                continue
+            if ctx.cog is not None and ctx.cog.qualified_name in settings["ignored_cogs"]:
                 continue
             view = discord.ui.View()
             view.add_item(

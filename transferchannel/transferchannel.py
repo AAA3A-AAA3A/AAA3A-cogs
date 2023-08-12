@@ -153,7 +153,7 @@ class TransferChannel(Cog):
         ctx: commands.Context,
         source: discord.TextChannel,
         destination: discord.TextChannel,
-        way: typing.Literal["embeds", "webhooks", "messages"],
+        way: typing.Literal["webhooks", "embeds", "messages"],
         **kwargs,
     ) -> typing.Tuple[int, typing.List[discord.Message]]:
         if "messages" in kwargs:
@@ -167,18 +167,25 @@ class TransferChannel(Cog):
                 files = await Tunnel.files_from_attatch(message)
             else:
                 files = []
-            if way == "embeds":
-                embed = self.embed_from_msg(message)
-                await destination.send(embed=embed)
-            elif way == "webhooks":
+            if way == "webhooks":
                 hook = await CogsUtils.get_hook(bot=ctx.bot, channel=destination)
                 await hook.send(
                     username=message.author.display_name,
                     avatar_url=message.author.display_avatar,
                     content=message.content,
+                    embeds=message.embeds,
                     files=files,
                     wait=True,
                 )
+            elif way == "embeds":
+                embed = self.embed_from_msg(message)
+                try:
+                    await destination.send(embeds=[embed] + message.embeds)
+                except discord.HTTPException:
+                    try:
+                        await destination.send(embeds=[embed] + message.embeds[:-1])
+                    except discord.HTTPException:
+                        await destination.send(embed=embed)
             elif way == "messages":
                 iso_format = message.created_at.isoformat()
                 msg = "\n".join(
@@ -193,6 +200,7 @@ class TransferChannel(Cog):
                 if len(f"{msg}\n\n{message.content}") <= 2000:
                     await destination.send(
                         f"{msg}\n\n{message.content}",
+                        embeds=message.embeds,
                         files=files,
                         allowed_mentions=discord.AllowedMentions.none(),
                     )
@@ -200,6 +208,7 @@ class TransferChannel(Cog):
                     await destination.send(msg, allowed_mentions=discord.AllowedMentions.none())
                     await destination.send(
                         message.content,
+                        embeds=message.embeds,
                         files=files,
                         allowed_mentions=discord.AllowedMentions.none(),
                     )
@@ -225,7 +234,7 @@ class TransferChannel(Cog):
         ctx: commands.Context,
         source: discord.TextChannel,
         destination: discord.TextChannel,
-        way: typing.Literal["embeds", "webhooks", "messages"] = "webhooks",
+        way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
     ) -> None:
         """Transfer all messages from a channel to another channel. This might take a long time.
 
@@ -249,7 +258,7 @@ class TransferChannel(Cog):
         ctx: commands.Context,
         message: discord.Message,
         destination: discord.TextChannel,
-        way: typing.Literal["embeds", "webhooks", "messages"] = "webhooks",
+        way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
     ) -> None:
         """Transfer a specific message to another channel. This might take a long time.
 
@@ -279,7 +288,7 @@ class TransferChannel(Cog):
         source: discord.TextChannel,
         destination: discord.TextChannel,
         limit: int,
-        way: typing.Literal["embeds", "webhooks", "messages"] = "webhooks",
+        way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
@@ -309,7 +318,7 @@ class TransferChannel(Cog):
         source: discord.TextChannel,
         destination: discord.TextChannel,
         before: MessageOrObjectConverter,
-        way: typing.Literal["embeds", "webhooks", "messages"] = "webhooks",
+        way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
@@ -335,7 +344,7 @@ class TransferChannel(Cog):
         source: discord.TextChannel,
         destination: discord.TextChannel,
         after: MessageOrObjectConverter,
-        way: typing.Literal["embeds", "webhooks", "messages"] = "webhooks",
+        way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
@@ -362,7 +371,7 @@ class TransferChannel(Cog):
         destination: discord.TextChannel,
         before: MessageOrObjectConverter,
         after: MessageOrObjectConverter,
-        way: typing.Literal["embeds", "webhooks", "messages"] = "webhooks",
+        way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
@@ -389,7 +398,7 @@ class TransferChannel(Cog):
         destination: discord.TextChannel,
         user: discord.User,
         limit: typing.Optional[int] = None,
-        way: typing.Literal["embeds", "webhooks", "messages"] = "webhooks",
+        way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
@@ -421,7 +430,7 @@ class TransferChannel(Cog):
         destination: discord.TextChannel,
         bot: typing.Optional[bool] = True,
         limit: typing.Optional[int] = None,
-        way: typing.Literal["embeds", "webhooks", "messages"] = "webhooks",
+        way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 

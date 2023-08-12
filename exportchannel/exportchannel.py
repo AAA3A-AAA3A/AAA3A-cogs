@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -41,7 +41,7 @@ class MessageOrObjectConverter(commands.Converter):
 
 @cog_i18n(_)
 class ExportChannel(Cog):
-    """A cog to export all or part of a channel's messages to an html file!"""
+    """A cog to export all or a part of the messages of a channel in an html file!"""
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -100,7 +100,11 @@ class ExportChannel(Cog):
     async def export_messages(
         self, ctx: commands.Context, channel: discord.TextChannel, **kwargs
     ) -> typing.Union[int, typing.List[discord.Message], discord.File]:
-        count_messages, messages = await self.get_messages(ctx, channel=channel, **kwargs)
+        if "messages" in kwargs:
+            messages = kwargs["messages"]
+            count_messages = len(messages)
+        else:
+            count_messages, messages = await self.get_messages(ctx, channel=channel, **kwargs)
 
         class Transcript(chat_exporter.construct.transcript.TranscriptDAO):
             @classmethod
@@ -150,7 +154,7 @@ class ExportChannel(Cog):
     @commands.bot_has_permissions(attach_files=True, embed_links=True)
     @commands.hybrid_group(name="exportchannel", aliases=["exportmessages"])
     async def exportchannel(self, ctx: commands.Context) -> None:
-        """Commands to export all or part of a channel's messages to an html file."""
+        """Export all or a part of the messages of a channel in an html file."""
 
     @exportchannel.command()
     async def all(self, ctx: commands.Context, channel: discord.TextChannel = None) -> None:
@@ -179,10 +183,41 @@ class ExportChannel(Cog):
         await message.edit(embed=embed, view=view)
 
     @exportchannel.command()
+    async def message(
+        self, ctx: commands.Context, message: discord.Message
+    ) -> None:
+        """Export a specific file in an html file.
+
+        Specify the message to export, with its ID or its link.
+        Please note: all attachments and user avatars are saved with the Discord link in this file.
+        Remember that exporting other users' messages from Discord does not respect the TOS.
+        """
+        await self.check_channel(ctx, message.channel)
+        count_messages, __, file = await self.export_messages(
+            ctx,
+            channel=message.channel,
+            messages=[message],
+        )
+        message = await ctx.send(
+            _(RESULT_MESSAGE).format(channel=message.channel, count_messages=count_messages), file=file
+        )
+        url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
+        embed = discord.Embed(
+            title="Transcript Link",
+            description=_(LINK_MESSAGE).format(url=url),
+            color=await ctx.embed_color(),
+        )
+        view = discord.ui.View()
+        view.add_item(
+            discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+        )
+        await message.edit(embed=embed, view=view)
+
+    @exportchannel.command()
     async def messages(
         self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], limit: int
     ) -> None:
-        """Export part of a channel's messages to an html file.
+        """Export a part of the messages of a channel in an html file.
 
         Specify the number of messages since the end of the channel.
         Please note: all attachments and user avatars are saved with the Discord link in this file.
@@ -218,7 +253,7 @@ class ExportChannel(Cog):
         channel: typing.Optional[discord.TextChannel],
         before: MessageOrObjectConverter,
     ) -> None:
-        """Export part of a channel's messages to an html file.
+        """Export a part of the messages of a channel in an html file.
 
         Specify the before message (id or link) or a valid snowflake.
         Please note: all attachments and user avatars are saved with the Discord link in this file.
@@ -250,7 +285,7 @@ class ExportChannel(Cog):
         channel: typing.Optional[discord.TextChannel],
         after: MessageOrObjectConverter,
     ) -> None:
-        """Export part of a channel's messages to an html file.
+        """Export a part of the messages of a channel in an html file.
 
         Specify the after message (id or link) or a valid snowflake.
         Please note: all attachments and user avatars are saved with the Discord link in this file.
@@ -283,7 +318,7 @@ class ExportChannel(Cog):
         before: MessageOrObjectConverter,
         after: MessageOrObjectConverter,
     ) -> None:
-        """Export part of a channel's messages to an html file.
+        """Export a part of the messages of a channel in an html file.
 
         Specify the before and after messages (id or link) or a valid snowflake.
         Please note: all attachments and user avatars are saved with the Discord link in this file.
@@ -318,7 +353,7 @@ class ExportChannel(Cog):
         user: discord.User,
         limit: typing.Optional[int] = None,
     ) -> None:
-        """Export part of a channel's messages to an html file.
+        """Export a part of the messages of a channel in an html file.
 
         Specify the user/member (id, name or mention).
         Please note: all attachments and user avatars are saved with the Discord link in this file.
@@ -356,7 +391,7 @@ class ExportChannel(Cog):
         bot: typing.Optional[bool] = True,
         limit: typing.Optional[int] = None,
     ) -> None:
-        """Export part of a channel's messages to an html file.
+        """Export a part of the messages of a channel in an html file.
 
         Specify the bool option.
         Please note: all attachments and user avatars are saved with the Discord link in this file.

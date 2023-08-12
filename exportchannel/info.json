@@ -2,8 +2,8 @@
     "author": ["AAA3A"],
     "name": "ExportChannel",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\nRemember that exporting other users' messages from Discord does not respect the TOS.",
-    "short": "A cog to export all or part of a channel's messages to an html file!",
-    "description": "Have you ever wanted to export all or part of a channel's messages to an html file? Then this cog is for you!\nRemember that exporting other users' messages from Discord does not respect the TOS.",
+    "short": "A cog to export all or a part of the messages of a channel in an html file!",
+    "description": "Have you ever wanted to export all or a part of the messages of a channel in an html file? Then this cog is for you!\nRemember that exporting other users' messages from Discord does not respect the TOS.",
     "tags": [
         "export",
         "messages",

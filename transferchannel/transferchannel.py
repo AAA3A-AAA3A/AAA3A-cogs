@@ -156,7 +156,11 @@ class TransferChannel(Cog):
         way: typing.Literal["embeds", "webhooks", "messages"],
         **kwargs,
     ) -> typing.Tuple[int, typing.List[discord.Message]]:
-        count_messages, messages = await self.get_messages(ctx, channel=source, **kwargs)
+        if "messages" in kwargs:
+            messages = kwargs["messages"]
+            count_messages = len(messages)
+        else:
+            count_messages, messages = await self.get_messages(ctx, channel=source, **kwargs)
         messages.reverse()
         for message in messages:
             if destination.permissions_for(destination.guild.me).attach_files:
@@ -213,7 +217,7 @@ class TransferChannel(Cog):
         - `embed` Do you want to transfer the message as an embed?
         - `webhook` Do you want to send the messages with webhooks (name and avatar of the original author)?
         - `message`Do you want to transfer the message as a simple message?
-        Remember that transfering other users' messages in does not respect the TOS."""
+        Remember that transfering other users' messages does not respect the TOS."""
 
     @transferchannel.command()
     async def all(
@@ -221,11 +225,11 @@ class TransferChannel(Cog):
         ctx: commands.Context,
         source: discord.TextChannel,
         destination: discord.TextChannel,
-        way: typing.Literal["embeds", "webhooks", "messages"],
+        way: typing.Literal["embeds", "webhooks", "messages"] = "webhooks",
     ) -> None:
-        """Transfer all messages channel in a other channel. This might take a long time.
+        """Transfer all messages from a channel to another channel. This might take a long time.
 
-        Remember that transfering other users' messages in does not respect the TOS.
+        Remember that transfering other users' messages does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
@@ -240,18 +244,47 @@ class TransferChannel(Cog):
         ).start(ctx)
 
     @transferchannel.command()
+    async def message(
+        self,
+        ctx: commands.Context,
+        message: discord.Message,
+        destination: discord.TextChannel,
+        way: typing.Literal["embeds", "webhooks", "messages"] = "webhooks",
+    ) -> None:
+        """Transfer a specific message to another channel. This might take a long time.
+
+        Specify the message to transfer, with its ID or its link.
+        Remember that transfering other users' messages does not respect the TOS.
+        """
+        if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
+            raise commands.UserInputError()
+        await self.check_channels(source=message.channel, destination=destination, way=way)
+        count_messages, __ = await self.transfer_messages(
+            ctx,
+            source=message.channel,
+            destination=destination,
+            way=way,
+            messages=[message],
+        )
+        await ctx.send(
+            _(
+                "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
+            ).format(count_messages=count_messages, source=message.channel, destination=destination)
+        )
+
+    @transferchannel.command()
     async def messages(
         self,
         ctx: commands.Context,
         source: discord.TextChannel,
         destination: discord.TextChannel,
-        way: typing.Literal["embeds", "webhooks", "messages"],
         limit: int,
+        way: typing.Literal["embeds", "webhooks", "messages"] = "webhooks",
     ) -> None:
-        """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+        """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
         Specify the number of messages since the end of the channel.
-        Remember that transfering other users' messages in does not respect the TOS.
+        Remember that transfering other users' messages does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
@@ -275,13 +308,13 @@ class TransferChannel(Cog):
         ctx: commands.Context,
         source: discord.TextChannel,
         destination: discord.TextChannel,
-        way: typing.Literal["embeds", "webhooks", "messages"],
         before: MessageOrObjectConverter,
+        way: typing.Literal["embeds", "webhooks", "messages"] = "webhooks",
     ) -> None:
-        """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+        """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
         Specify the before message (id or link) or a valid Discord snowflake.
-        Remember that transfering other users' messages in does not respect the TOS.
+        Remember that transfering other users' messages does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
@@ -301,13 +334,13 @@ class TransferChannel(Cog):
         ctx: commands.Context,
         source: discord.TextChannel,
         destination: discord.TextChannel,
-        way: typing.Literal["embeds", "webhooks", "messages"],
         after: MessageOrObjectConverter,
+        way: typing.Literal["embeds", "webhooks", "messages"] = "webhooks",
     ) -> None:
-        """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+        """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
         Specify the after message (id or link) or a valid Discord snowflake.
-        Remember that transfering other users' messages in does not respect the TOS.
+        Remember that transfering other users' messages does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
@@ -327,14 +360,14 @@ class TransferChannel(Cog):
         ctx: commands.Context,
         source: discord.TextChannel,
         destination: discord.TextChannel,
-        way: typing.Literal["embeds", "webhooks", "messages"],
         before: MessageOrObjectConverter,
         after: MessageOrObjectConverter,
+        way: typing.Literal["embeds", "webhooks", "messages"] = "webhooks",
     ) -> None:
-        """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+        """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
         Specify the between messages (id or link) or a valid snowflake.
-        Remember that transfering other users' messages in does not respect the TOS.
+        Remember that transfering other users' messages does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
@@ -354,14 +387,14 @@ class TransferChannel(Cog):
         ctx: commands.Context,
         source: discord.TextChannel,
         destination: discord.TextChannel,
-        way: typing.Literal["embeds", "webhooks", "messages"],
         user: discord.User,
         limit: typing.Optional[int] = None,
+        way: typing.Literal["embeds", "webhooks", "messages"] = "webhooks",
     ) -> None:
-        """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+        """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
         Specify the user/member (id, name or mention).
-        Remember that transfering other users' messages in does not respect the TOS.
+        Remember that transfering other users' messages does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
@@ -386,14 +419,14 @@ class TransferChannel(Cog):
         ctx: commands.Context,
         source: discord.TextChannel,
         destination: discord.TextChannel,
-        way: typing.Literal["embeds", "webhooks", "messages"],
         bot: typing.Optional[bool] = True,
         limit: typing.Optional[int] = None,
+        way: typing.Literal["embeds", "webhooks", "messages"] = "webhooks",
     ) -> None:
-        """Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+        """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
         Specify the bool option.
-        Remember that transfering other users' messages in does not respect the TOS.
+        Remember that transfering other users' messages does not respect the TOS.
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()

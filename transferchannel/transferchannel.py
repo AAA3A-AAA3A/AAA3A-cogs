@@ -89,7 +89,6 @@ class TransferChannel(Cog):
 
     async def check_channels(
         self,
-        ctx: commands.Context,
         source: discord.TextChannel,
         destination: discord.TextChannel,
         way: str,
@@ -229,7 +228,7 @@ class TransferChannel(Cog):
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
-        await self.check_channels(ctx, source=source, destination=destination, way=way)
+        await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way
         )
@@ -255,7 +254,7 @@ class TransferChannel(Cog):
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
-        await self.check_channels(ctx, source=source, destination=destination, way=way)
+        await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx,
             source=source,
@@ -285,7 +284,7 @@ class TransferChannel(Cog):
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
-        await self.check_channels(ctx, source=source, destination=destination, way=way)
+        await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, before=before
         )
@@ -311,7 +310,7 @@ class TransferChannel(Cog):
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
-        await self.check_channels(ctx, source=source, destination=destination, way=way)
+        await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, after=after
         )
@@ -338,7 +337,7 @@ class TransferChannel(Cog):
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
-        await self.check_channels(ctx, source=source, destination=destination, way=way)
+        await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, before=before, after=after
         )
@@ -365,7 +364,7 @@ class TransferChannel(Cog):
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
-        await self.check_channels(ctx, source=source, destination=destination, way=way)
+        await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx,
             source=source,
@@ -397,7 +396,7 @@ class TransferChannel(Cog):
         """
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
-        await self.check_channels(ctx, source=source, destination=destination, way=way)
+        await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
             ctx, source=source, destination=destination, way=way, bot=bot, limit=limit
         )

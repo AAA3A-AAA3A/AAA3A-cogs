@@ -204,9 +204,12 @@ class Calculator(Cog):
             return
         if message.webhook_id is not None or message.author.bot:
             return
+        message.content.isdigit
+        if not message.content or message.content.isdecimal():
+            return
         if not await self._calculate.can_run(await self.bot.get_context(message)):
             return
-        if await self.calculate(message.content) == _("Error!"):
+        if (result := await self.calculate(message.content)) == _("Error!") or result == message.content:
             return
         if message.guild is not None:
             channel_permissions = message.channel.permissions_for(message.guild.me)

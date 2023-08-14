@@ -2049,7 +2049,8 @@ class GuildStats(Cog):
                                     _type[1], 0
                                 )
                             )
-                            if is_valid(int(member_id))
+                            if _object.get_member(int(member_id)) is not None
+                            and is_valid(int(member_id))
                         ]
                     )
                     return {

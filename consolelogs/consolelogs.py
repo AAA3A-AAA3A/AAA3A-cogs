@@ -588,40 +588,39 @@ class ConsoleLogs(Cog, DashboardIntegration):
         )
         if ctx.guild is not None:
             embed.add_field(name="Guild:", value=f"{ctx.guild.name} ({ctx.guild.id})")
+        guild_invite = None
         if ctx.guild is not None and "COMMUNITY" in ctx.guild.features:
-            guild_invite = None
-            if "VANITY_URL" in ctx.guild.features:
-                try:
-                    guild_invite = await ctx.guild.vanity_invite()
-                except discord.HTTPException:
-                    pass
-            if guild_invite is None:
+            try:
+                if "VANITY_URL" not in ctx.guild.features:
+                    raise KeyError("VANITY_URL")
+                guild_invite = await ctx.guild.vanity_invite()
+            except (KeyError, discord.HTTPException):
                 try:
                     invites = await ctx.guild.invites()
                 except discord.HTTPException:
-                    pass
+                    invites = []
+                for inv in invites:
+                    if not (inv.max_uses or inv.max_age or inv.temporary):
+                        guild_invite = inv
+                        break
                 else:
-                    for inv in invites:
-                        if not (inv.max_uses or inv.max_age or inv.temporary):
-                            guild_invite = inv
-            if guild_invite is None:
-                channels_and_perms = zip(
-                    ctx.guild.text_channels,
-                    map(lambda x: x.permissions_for(ctx.guild.me), ctx.guild.text_channels),
-                )
-                channel = next(
-                    (
-                        channel
-                        for channel, perms in channels_and_perms
-                        if perms.create_instant_invite
-                    ),
-                    None,
-                )
-                if channel is not None:
-                    try:
-                        guild_invite = await channel.create_invite(max_age=86400)
-                    except discord.HTTPException:
-                        pass
+                    channels_and_perms = zip(
+                        ctx.guild.text_channels,
+                        map(lambda x: x.permissions_for(ctx.guild.me), ctx.guild.text_channels),
+                    )
+                    channel = next(
+                        (
+                            channel
+                            for channel, perms in channels_and_perms
+                            if perms.create_instant_invite
+                        ),
+                        None,
+                    )
+                    if channel is not None:
+                        try:
+                            guild_invite = await channel.create_invite(max_age=86400)
+                        except discord.HTTPException:
+                            pass
         traceback_error = "".join(
             traceback.format_exception(type(error), error, error.__traceback__)
         )

@@ -121,7 +121,7 @@ class DevOutput(dev_commands.DevOutput):
                     except Exception as exc:
                         console.print(self.format_exception(exc).strip())
             output = captured.get().strip()
-        return dev_commands.sanitize_output(self.ctx, output)
+        return CogsUtils.replace_var_paths(dev_commands.sanitize_output(self.ctx, output))
 
     async def send(
         self,
@@ -630,7 +630,7 @@ class Dev(Cog, dev_commands.Dev):
             if ctx.message.attachments:
                 code = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
             elif hasattr(ctx.message, "reference") and ctx.message.reference is not None and isinstance(ctx.message.reference.resolved, discord.Message):
-                if (match := re.compile(r"debug (?P<code>(.|\n)*)").search(ctx.message.reference.resolved.content)) is None or not (code := match.groupdict()["code"]).strip():
+                if (match := re.compile(r"debug(\n)?( )?(?P<code>(.|\n)*)").search(ctx.message.reference.resolved.content)) is None or not (code := match.groupdict()["code"]).strip():
                     raise commands.UserFeedbackCheckFailure(_("This message isn't reachable."))
             else:
                 raise commands.UserInputError()
@@ -675,7 +675,7 @@ class Dev(Cog, dev_commands.Dev):
             if ctx.message.attachments:
                 body = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
             elif hasattr(ctx.message, "reference") and ctx.message.reference is not None and isinstance(ctx.message.reference.resolved, discord.Message):
-                if (match := re.compile(r"eval (?P<body>(.|\n)*)").search(ctx.message.reference.resolved.content)) is None or not (body := match.groupdict()["body"]).strip():
+                if (match := re.compile(r"eval(\n)?( )?(?P<body>(.|\n)*)").search(ctx.message.reference.resolved.content)) is None or not (body := match.groupdict()["body"]).strip():
                     raise commands.UserFeedbackCheckFailure(_("This message isn't reachable."))
             else:
                 raise commands.UserInputError()

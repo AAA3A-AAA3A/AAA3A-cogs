@@ -28,7 +28,8 @@ class JoinGameModal(discord.ui.Modal):
             required=True,
             min_length=(len(self._parent.acronym) * 2)
             + (len(self._parent.acronym) - 1),  # n words with at least 2 characters + spaces
-            max_length=50,
+            max_length=(len(self._parent.acronym) * 13)
+            + (len(self._parent.acronym) - 1),  # n words with 13 characters + spaces
         )
         self.add_item(self.answer)
 

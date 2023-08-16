@@ -811,6 +811,7 @@ class Medicat(Cog):
                 username="Bootables Tools Updates",
                 avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg",
                 view=view,
+                wait=True,
             )
         except (AttributeError, discord.errors.Forbidden):
             await ctx.send(embed=embed, view=view)

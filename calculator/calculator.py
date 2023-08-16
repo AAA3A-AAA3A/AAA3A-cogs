@@ -204,8 +204,7 @@ class Calculator(Cog):
             return
         if message.webhook_id is not None or message.author.bot:
             return
-        message.content.isdigit
-        if not message.content or message.content.isdecimal():
+        if not message.content or message.content.replace(" ", "").isdecimal():
             return
         if not await self._calculate.can_run(await self.bot.get_context(message)):
             return

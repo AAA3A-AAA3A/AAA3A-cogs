@@ -1152,6 +1152,7 @@ class Seen(Cog):
             }
         data = {}
         for x in all_data:
+            await asyncio.sleep(0)
             result = await self.get_data_for(
                 _type=_type, _object=x, all_data_config=all_data[x], all_data_cache={}
             )

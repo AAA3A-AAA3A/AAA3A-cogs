@@ -472,7 +472,7 @@ class CodeSnippets(Cog, DashboardIntegration):
     ):
         for url, snippet in snippets.items():
             source, ret, language, code = snippet
-            menu = Menu(pages=code, prefix=ret, lang=language)
+            menu = Menu(pages=code.replace("```", "\u02CB\u02CB\u02CB"), prefix=ret, lang=language)
             menu.extra_items.append(
                 discord.ui.Button(
                     style=discord.ButtonStyle.url, label=f"View on {source}", url=url

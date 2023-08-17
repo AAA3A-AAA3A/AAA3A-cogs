@@ -56,6 +56,7 @@ IGNORED_ERRORS = (
 
 @dataclass(frozen=False)
 class ConsoleLog:
+    id: int
     time: datetime.datetime
     time_timestamp: int
     time_str: str
@@ -74,7 +75,7 @@ class ConsoleLog:
             return self.message
         BREAK_LINE = "\n"
         if not with_ansi:
-            return f"[{self.time_str}] {self.level} [{self.logger_name}] {self.message}{BREAK_LINE if self.exc_info is not None else ''}{BREAK_LINE if with_extra_break_line and self.exc_info is not None else ''}{self.exc_info if self.exc_info is not None else ''}"
+            return f"#{self.id} [{self.time_str}] {self.level} [{self.logger_name}] {self.message}{BREAK_LINE if self.exc_info is not None else ''}{BREAK_LINE if with_extra_break_line and self.exc_info is not None else ''}{self.exc_info if self.exc_info is not None else ''}"
         levels_colors = {
             "CRITICAL": Fore.RED,
             "ERROR": Fore.RED,
@@ -85,7 +86,7 @@ class ConsoleLog:
             "NODE": Fore.MAGENTA,
         }
         level_color = levels_colors.get(self.level, Fore.MAGENTA)
-        return f"{Fore.BLACK}[{self.time_str}] {level_color}{self.level} {Fore.WHITE}[{Fore.MAGENTA}{self.logger_name}{Fore.WHITE}] {Fore.WHITE}{self.message.split(BREAK_LINE)[0]}{Fore.RESET}{BREAK_LINE if self.exc_info is not None else ''}{BREAK_LINE if with_extra_break_line and self.exc_info is not None else ''}{self.exc_info if self.exc_info is not None else ''}"
+        return f"{Fore.CYAN}#{self.id} {Fore.BLACK}[{self.time_str}] {level_color}{self.level} {Fore.WHITE}[{Fore.MAGENTA}{self.logger_name}{Fore.WHITE}] {Fore.WHITE}{self.message.split(BREAK_LINE)[0]}{Fore.RESET}{BREAK_LINE if self.exc_info is not None else ''}{BREAK_LINE if with_extra_break_line and self.exc_info is not None else ''}{self.exc_info if self.exc_info is not None else ''}"
 
 
 @cog_i18n(_)
@@ -202,7 +203,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 else ""
             )
             kwargs["exc_info"] = None  # Maybe next lines...
-            console_logs.append(ConsoleLog(**kwargs))
+            console_logs.append(ConsoleLog(id=0, **kwargs))
 
         # Add Red INTRO.
         if red_ready_console_log := discord.utils.get(
@@ -211,6 +212,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
             console_logs.insert(
                 console_logs.index(red_ready_console_log) + 1,
                 ConsoleLog(
+                    id=0,
                     time=red_ready_console_log.time,
                     time_timestamp=red_ready_console_log.time_timestamp,
                     time_str=red_ready_console_log.time_str,
@@ -221,6 +223,10 @@ class ConsoleLogs(Cog, DashboardIntegration):
                     display_without_informations=True,
                 ),
             )
+
+        # Update ID.
+        for id, console_log in enumerate(console_logs, start=1):
+            console_log.id = id
 
         return console_logs
 
@@ -238,6 +244,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         level: typing.Optional[
             typing.Literal["critical", "error", "warning", "info", "debug", "trace", "node"]
         ] = None,
+        ids: typing.Optional[typing.List[int]] = None,
         logger_name: typing.Optional[str] = None,
         view: typing.Optional[int] = -1,
         lines_break: int = 2,
@@ -251,6 +258,10 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 logger_name is None
                 or ".".join(console_log.logger_name.split(".")[: len(logger_name.split("."))])
                 == logger_name
+            )
+            and (
+                ids is None
+                or console_log.id in ids
             )
         ]
         if not console_logs_to_display:
@@ -321,7 +332,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
             page_index = [
                 i
                 for i, page in enumerate(pages)
-                if any(line.startswith(("[", f"{Fore.BLACK}[")) for line in page.split("\n"))
+                if any(line.startswith(("#", f"{Fore.CYAN}#", "[", f"{Fore.BLACK}[")) for line in page.split("\n"))
             ][-1]
         menu = Menu(
             pages=pages,
@@ -357,13 +368,22 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 "nodes",
             ]
         ] = None,
+        ids: commands.Greedy[int] = None,
         logger_name: typing.Optional[str] = None,
     ) -> None:
         """View a console log, for a provided level/logger name."""
+        if ids is not None and len(ids) == 1:
+            return await self.view(
+                ctx,
+                level=level.rstrip("s").upper() if level is not None else None,
+                ids=ids,
+                logger_name=logger_name,
+            )
         await self.scroll(
             ctx,
             lines_break=lines_break,
             level=level.rstrip("s").upper() if level is not None else None,
+            ids=ids,
             logger_name=logger_name,
         )
 
@@ -390,12 +410,14 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 "nodes",
             ]
         ] = None,
+        ids: commands.Greedy[int] = None,
         logger_name: typing.Optional[str] = None,
     ) -> None:
         """Scroll the console logs, for all levels/loggers or provided level/logger name."""
         await self.send_console_logs(
             ctx,
             level=level.rstrip("s").upper() if level is not None else None,
+            ids=ids,
             logger_name=logger_name,
             view=None,
             lines_break=lines_break,
@@ -424,12 +446,14 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 "nodes",
             ]
         ] = None,
+        ids: commands.Greedy[int] = None,
         logger_name: typing.Optional[str] = None,
     ) -> None:
         """View the console logs one by one, for all levels/loggers or provided level/logger name."""
         await self.send_console_logs(
             ctx,
             level=level.rstrip("s").upper() if level is not None else None,
+            ids=ids,
             logger_name=logger_name,
             view=index,
         )
@@ -467,7 +491,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         full_console: typing.Optional[bool] = False,
         guild_invite: typing.Optional[bool] = True,
         *,
-        ignored_cogs: commands.Greedy[commands.CogConverter] = [],
+        ignored_cogs: commands.Greedy[commands.CogConverter] = None,
     ) -> None:
         """Enable errors logging in a channel.
 
@@ -501,7 +525,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 "dpy_ignored_exceptions": dpy_ignored_exceptions,
                 "full_console": full_console,
                 "guild_invite": guild_invite,
-                "ignored_cogs": [cog.qualified_name for cog in ignored_cogs],
+                "ignored_cogs": [cog.qualified_name for cog in ignored_cogs] if ignored_cogs is not None else [],
             }
         )
         await ctx.send(_("Errors logging enabled in {channel.mention}.").format(channel=channel))

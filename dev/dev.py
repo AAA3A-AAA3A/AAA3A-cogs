@@ -121,7 +121,7 @@ class DevOutput(dev_commands.DevOutput):
                     except Exception as exc:
                         console.print(self.format_exception(exc).strip())
             output = captured.get().strip()
-        return CogsUtils.replace_var_paths(dev_commands.sanitize_output(self.ctx, output))
+        return CogsUtils.replace_var_paths(dev_commands.sanitize_output(self.ctx, output)).replace("```", "\u02CB\u02CB\u02CB")
 
     async def send(
         self,
@@ -142,7 +142,7 @@ class DevOutput(dev_commands.DevOutput):
             if self.formatted_exc:
                 await self.ctx.react_quietly(reaction="❌")
             else:
-                await self.ctx.react_quietly(reaction=commands.context.TICK if not hasattr(commands.context, "TICKS") else random.choice(commands.context.TICKS))
+                await self.ctx.react_quietly(reaction=commands.context.TICK if not hasattr(commands.context, "MORE_TICKS") else random.choice(list(commands.context.MORE_TICKS)))
 
     @classmethod
     async def from_debug(
@@ -520,6 +520,7 @@ class Dev(Cog, dev_commands.Dev):
         env: typing.Optional[typing.Dict[str, typing.Any]] = None,
         wait: bool = True,
     ) -> DevOutput:
+        source = textwrap.dedent(source)
         if env is None:
             env = self.get_environment(
                 ctx, use_extended_environment=await self.config.use_extended_environment()
@@ -629,8 +630,12 @@ class Dev(Cog, dev_commands.Dev):
         if code is None:
             if ctx.message.attachments:
                 code = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
-            elif hasattr(ctx.message, "reference") and ctx.message.reference is not None and isinstance(ctx.message.reference.resolved, discord.Message):
-                if (match := re.compile(r"debug(\n)?( )?(?P<code>(.|\n)*)").search(ctx.message.reference.resolved.content)) is None or not (code := match.groupdict()["code"]).strip():
+            elif hasattr(ctx.message, "reference") and ctx.message.reference is not None and isinstance((reference := ctx.message.reference.resolved), discord.Message):
+                if (match := re.compile(r"debug(\n)?( )?(?P<code>(.|\n)*)").search(reference.content)) is not None and match.groupdict()["code"].strip():
+                    code = match.groupdict()["code"]
+                elif re.compile(r"```py\n(.|\n)*\n```").match(reference.content) and reference.content.count("```") == 2:
+                    code = reference.content
+                else:
                     raise commands.UserFeedbackCheckFailure(_("This message isn't reachable."))
             else:
                 raise commands.UserInputError()
@@ -674,9 +679,11 @@ class Dev(Cog, dev_commands.Dev):
         if body is None:
             if ctx.message.attachments:
                 body = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
-            elif hasattr(ctx.message, "reference") and ctx.message.reference is not None and isinstance(ctx.message.reference.resolved, discord.Message):
-                if (match := re.compile(r"eval(\n)?( )?(?P<body>(.|\n)*)").search(ctx.message.reference.resolved.content)) is None or not (body := match.groupdict()["body"]).strip():
-                    raise commands.UserFeedbackCheckFailure(_("This message isn't reachable."))
+            elif hasattr(ctx.message, "reference") and ctx.message.reference is not None and isinstance((reference := ctx.message.reference.resolved), discord.Message):
+                if (match := re.compile(r"eval(\n)?( )?(?P<body>(.|\n)*)").search(reference.content)) is not None and match.groupdict()["code"].strip():
+                    body = match.groupdict()["body"]
+                elif re.compile(r"```py\n(.|\n)*\n```").match(reference.content) and reference.content.count("```") == 2:
+                    body = reference.content
             else:
                 raise commands.UserInputError()
         source = cleanup_code(body)
@@ -771,7 +778,7 @@ class Dev(Cog, dev_commands.Dev):
                 if output.formatted_exc:
                     await response.add_reaction("❌")
                 elif not str(output):
-                    await response.add_reaction(commands.context.TICK if not hasattr(commands.context, "TICKS") else random.choice(commands.context.TICKS))
+                    await response.add_reaction(commands.context.TICK if not hasattr(commands.context, "MORE_TICKS") else random.choice(list(commands.context.MORE_TICKS)))
             except discord.HTTPException:
                 pass
 

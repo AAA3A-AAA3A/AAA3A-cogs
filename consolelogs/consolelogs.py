@@ -467,7 +467,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         full_console: typing.Optional[bool] = False,
         guild_invite: typing.Optional[bool] = True,
         *,
-        ignored_cogs: commands.Greedy[commands.CogConverter],
+        ignored_cogs: commands.Greedy[commands.CogConverter] = [],
     ) -> None:
         """Enable errors logging in a channel.
 
@@ -494,14 +494,14 @@ class ConsoleLogs(Cog, DashboardIntegration):
             )
         await self.config.channel(channel).set(
             {
-                "enabled": enabled,
+                "enabled": True,
                 "global_errors": global_errors,
                 "prefixed_commands_errors": prefixed_commands_errors,
                 "slash_commands_errors": slash_commands_errors,
                 "dpy_ignored_exceptions": dpy_ignored_exceptions,
                 "full_console": full_console,
                 "guild_invite": guild_invite,
-                "ignored_cogs": list(ignored_cogs),
+                "ignored_cogs": [cog.qualified_name for cog in ignored_cogs],
             }
         )
         await ctx.send(_("Errors logging enabled in {channel.mention}.").format(channel=channel))

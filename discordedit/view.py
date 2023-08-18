@@ -52,7 +52,6 @@ class DiscordEditView(discord.ui.View):
 
     async def start(self, ctx: commands.Context) -> None:
         self.ctx: commands.Context = ctx
-        self.delete_button.label = f"Edit {self._object_qualified_name}"
         self.remove_item(self.delete_button)
         self.remove_item(self.close_page)
 
@@ -75,6 +74,7 @@ class DiscordEditView(discord.ui.View):
             self._object.owner != self._object.me
             and self.ctx.author.id not in self.ctx.bot.owner_ids
         ):
+            self.delete_button.label = f"Delete {self._object_qualified_name}"
             self.add_item(self.delete_button)
         self.add_item(self.close_page)
         self._message: discord.Message = await self.ctx.send(
@@ -114,7 +114,8 @@ class DiscordEditView(discord.ui.View):
             bot=interaction.client,
             author=interaction.user,
             channel=interaction.channel,
-            command=f"edit{self._object_qualified_name.replace(' ', '').lower()} delete",
+            command=f"edit{self._object_qualified_name.replace(' ', '').lower()} delete{'' if isinstance(self._object, discord.Guild) else f' {self._object.id}'}",
+            message=self.ctx.message,
         )
         if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
             await interaction.followup.send(

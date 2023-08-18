@@ -680,7 +680,7 @@ class Dev(Cog, dev_commands.Dev):
             if ctx.message.attachments:
                 body = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
             elif hasattr(ctx.message, "reference") and ctx.message.reference is not None and isinstance((reference := ctx.message.reference.resolved), discord.Message):
-                if (match := re.compile(r"eval(\n)?( )?(?P<body>(.|\n)*)").search(reference.content)) is not None and match.groupdict()["code"].strip():
+                if (match := re.compile(r"eval(\n)?( )?(?P<body>(.|\n)*)").search(reference.content)) is not None and match.groupdict()["body"].strip():
                     body = match.groupdict()["body"]
                 elif re.compile(r"```py\n(.|\n)*\n```").match(reference.content) and reference.content.count("```") == 2:
                     body = reference.content

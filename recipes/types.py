@@ -26,7 +26,7 @@ class SearchResults:
         embeds = []
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
         embed: discord.Embed = discord.Embed(
-            title=f'Results for "{self.query}" query', url=self.url, color=embed_color
+            title=f'Results for the query "{self.query}"', url=self.url, color=embed_color
         )
         embed.set_footer(text="Fetched from Food52.")
         for page in pages:

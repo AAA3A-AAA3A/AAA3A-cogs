@@ -1330,7 +1330,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 profile = "main"
             profiles = await self.config.guild(interaction.guild).profiles()
             if profile not in profiles:
-                await interaction.followup.send(
+                await interaction.response.send_message(
                     _("The profile for which this button was configured no longer exists."),
                     ephemeral=True,
                 )
@@ -1492,20 +1492,19 @@ class TicketTool(settings, DashboardIntegration, Cog):
     async def on_dropdown_interaction(
         self, interaction: discord.Interaction, select_menu: discord.ui.Select
     ) -> None:
-        if not interaction.response.is_done():
-            await interaction.response.defer()
         options = select_menu.values
         if len(options) == 0:
             return
         permissions = interaction.channel.permissions_for(interaction.user)
         if not permissions.read_messages and not permissions.send_messages:
+            await interaction.response.defer()
             return
         permissions = interaction.channel.permissions_for(interaction.guild.me)
         if not permissions.read_messages and not permissions.read_message_history:
             return
         dropdowns = await self.config.guild(interaction.guild).dropdowns()
         if f"{interaction.message.channel.id}-{interaction.message.id}" not in dropdowns:
-            await interaction.followup.send(
+            await interaction.response.send_message(
                 _("This message is not in TicketTool config."), ephemeral=True
             )
             return
@@ -1514,18 +1513,41 @@ class TicketTool(settings, DashboardIntegration, Cog):
         )
         profiles = await self.config.guild(interaction.guild).profiles()
         if profile not in profiles:
-            await interaction.followup.send(
+            await interaction.response.send_message(
                 _("The profile for which this dropdown was configured no longer exists."),
                 ephemeral=True,
             )
             return
         option = [option for option in select_menu.options if option.value == options[0]][0]
         reason = f"{option.emoji} - {option.label}"
+        config = await self.get_config(guild=interaction.guild, profile=profile)
+        if config["custom_modal"] is not None:
+            modal = discord.ui.Modal(
+                title="Create Ticket",
+                custom_id="create_ticket_custom_modal"
+            )
+            modal.on_submit = lambda interaction: interaction.response.defer(ephemeral=True)
+            inputs = []
+            for _input in config["custom_modal"]:
+                _input["style"] = discord.TextStyle(_input["style"])
+                text_input = discord.ui.TextInput(**_input)
+                text_input.max_length = (
+                    1024 if text_input.max_length is None else min(text_input.max_length, 1024)
+                )
+                inputs.append(text_input)
+                modal.add_item(text_input)
+            await interaction.response.send_modal(modal)
+            if await modal.wait():
+                return  # timeout
+            kwargs = {"_tickettool_modal_answers": {_input.label: _input.value.strip() or "Not provided." for _input in inputs}}
+        else:
+            kwargs = {}
         ctx = await CogsUtils.invoke_command(
             bot=interaction.client,
             author=interaction.user,
             channel=interaction.channel,
             command=f"ticket create {profile} {reason}",
+            **kwargs,
         )
         if not await discord.utils.async_all(
             check(ctx) for check in ctx.command.checks

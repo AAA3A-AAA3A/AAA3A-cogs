@@ -89,7 +89,7 @@ class RoleOrMemberConverter(commands.Converter):
                 raise e
 
 
-class YAMLConverter(commands.Converter):
+class ModalConverter(commands.Converter):
     async def convert(
         self, ctx: commands.Context, argument: str
     ) -> typing.Dict[str, typing.Union[str, bool, typing.Dict, typing.List]]:
@@ -500,7 +500,7 @@ class DiscordModals(Cog):
 
     @discordmodals.command(aliases=["+"])
     async def add(
-        self, ctx: commands.Context, message: discord.Message, *, argument: YAMLConverter
+        self, ctx: commands.Context, message: discord.Message, *, argument: ModalConverter
     ) -> None:
         """Add a Modal for a message.
 

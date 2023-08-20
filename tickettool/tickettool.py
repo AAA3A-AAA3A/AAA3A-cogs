@@ -1391,9 +1391,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 command=f"ticket create {profile}" + (f" {reason}" if reason != "" else ""),
                 **kwargs,
             )
-            if not await ctx.command.can_run(
-                ctx, change_permission_state=True
-            ):  # await discord.utils.async_all(check(ctx) for check in ctx.command.checks)
+            if not await discord.utils.async_all(
+                check(ctx) for check in ctx.command.checks
+            ):
                 await interaction.followup.send(
                     _("You are not allowed to execute this command."), ephemeral=True
                 )
@@ -1442,9 +1442,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 command="ticket open",
             )
             try:
-                if not await ctx.command.can_run(
-                    ctx, change_permission_state=True
-                ):  # await discord.utils.async_all(check(ctx) for check in ctx.command.checks)
+                if not await discord.utils.async_all(
+                    check(ctx) for check in ctx.command.checks
+                ):
                     await interaction.followup.send(
                         _("You are not allowed to execute this command."), ephemeral=True
                     )
@@ -1462,9 +1462,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 channel=interaction.channel,
                 command="ticket claim",
             )
-            if not await ctx.command.can_run(
-                ctx, change_permission_state=True
-            ):  # await discord.utils.async_all(check(ctx) for check in ctx.command.checks)
+            if not await discord.utils.async_all(
+                check(ctx) for check in ctx.command.checks
+            ):
                 await interaction.followup.send(
                     _("You are not allowed to execute this command."), ephemeral=True
                 )
@@ -1482,9 +1482,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 channel=interaction.channel,
                 command="ticket delete",
             )
-            if not await ctx.command.can_run(
-                ctx, change_permission_state=True
-            ):  # await discord.utils.async_all(check(ctx) for check in ctx.command.checks)
+            if not await discord.utils.async_all(
+                check(ctx) for check in ctx.command.checks
+            ):
                 await interaction.followup.send(
                     _("You are not allowed to execute this command."), ephemeral=True
                 )

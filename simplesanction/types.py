@@ -236,7 +236,9 @@ class Action:
             )
             if not context.valid:
                 raise commands.UserFeedbackCheckFailure(_("This command doesn't exist."))
-            elif await context.command.can_run(context):
+            elif not await discord.utils.async_all(
+                check(context) for check in context.command.checks
+            ):
                 raise commands.UserFeedbackCheckFailure(
                     _("You can't execute this command, in this context.")
                 )

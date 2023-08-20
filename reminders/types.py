@@ -674,8 +674,8 @@ class Reminder:
                 raise RuntimeError(
                     f"Command not found for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has not been deleted."
                 )
-            elif not await context.command.can_run(
-                context
+            elif not await discord.utils.async_all(
+                check(context) for check in context.command.checks
             ):  # to prevent an user with important permissions a time to execute dangerous command with a reminder
                 if not testing:
                     await self.delete()

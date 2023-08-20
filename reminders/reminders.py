@@ -56,7 +56,9 @@ async def remind_message_context_menu(interaction: discord.Interaction, message:
         channel=interaction.channel,
         command=f'remindme "{time_input.value}" {message.jump_url}',
     )
-    if not await context.command.can_run(context):
+    if not await discord.utils.async_all(
+        check(context) for check in context.command.checks
+    ):
         await interaction.followup.send(
             _("You're not allowed to execute the `[p]remindme` command in this channel."),
             ephemeral=True,
@@ -478,7 +480,9 @@ class Reminders(Cog):
                 invoke=False,
             )
             if (
-                not await context.command.can_run(context)
+                not await discord.utils.async_all(
+                    check(context) for check in context.command.checks
+                )
                 or not destination_user_permissions.send_messages
                 or not destination_bot_permissions.send_messages
             ):
@@ -657,7 +661,9 @@ class Reminders(Cog):
         if not context.valid:
             raise commands.UserFeedbackCheckFailure(_("This command doesn't exist."))
         elif (
-            not await context.command.can_run(context)
+            not await discord.utils.async_all(
+                check(context) for check in context.command.checks
+            )
             or not destination_user_permissions.send_messages
             or not destination_bot_permissions.send_messages
         ):

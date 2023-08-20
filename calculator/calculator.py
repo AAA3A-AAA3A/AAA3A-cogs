@@ -206,7 +206,9 @@ class Calculator(Cog):
             return
         if not message.content or message.content.replace(" ", "").isdecimal():
             return
-        if not await self._calculate.can_run(await self.bot.get_context(message)):
+        if not await discord.utils.async_all(
+            check(await self.bot.get_context(message)) for check in self._calculate.checks
+        ):
             return
         if (result := await self.calculate(message.content)) == _("Error!") or result == message.content:
             return

@@ -2085,7 +2085,7 @@ class GuildStats(Cog):
             members_messages_counter: Counter = Counter(
                 [
                     member_id
-                    for channel_id in [channel.id for channel in _object.channels]
+                    for channel_id in [channel.id for channel in _object.channels if channel.id in all_channels_data]
                     for member_id, count_messages in all_channels_data[channel_id][
                         "total_messages_members"
                     ].items()
@@ -2097,7 +2097,7 @@ class GuildStats(Cog):
             members_voice_counter: Counter = Counter(
                 [
                     member_id
-                    for channel_id in [channel.id for channel in _object.channels]
+                    for channel_id in [channel.id for channel in _object.channels if channel.id in all_channels_data]
                     for member_id, count_voice in all_channels_data[channel_id][
                         "total_voice_members"
                     ].items()
@@ -2109,14 +2109,14 @@ class GuildStats(Cog):
             top_messages_channels = Counter(
                 {
                     channel_id: all_channels_data[channel_id][f"total_{members_type_key}messages"]
-                    for channel_id in [channel.id for channel in _object.channels]
+                    for channel_id in [channel.id for channel in _object.channels if channel.id in all_channels_data]
                     if _object.guild.get_channel(int(channel_id)) is not None
                 }
             )
             top_voice_channels = Counter(
                 {
                     channel_id: all_channels_data[channel_id][f"total_{members_type_key}voice"]
-                    for channel_id in [channel.id for channel in _object.channels]
+                    for channel_id in [channel.id for channel in _object.channels if channel.id in all_channels_data]
                     if _object.guild.get_channel(int(channel_id)) is not None
                 }
             )
@@ -2124,14 +2124,14 @@ class GuildStats(Cog):
                 "server_lookback": {  # type: messages/hours
                     "text": sum(
                         all_channels_data[channel_id][f"total_{members_type_key}messages"]
-                        for channel_id in [channel.id for channel in _object.channels]
+                        for channel_id in [channel.id for channel in _object.channels if channel.id in all_channels_data]
                     ),
                     "voice": roundest_value
                     if (
                         roundest_value := round(
                             sum(
                                 all_channels_data[channel_id][f"total_{members_type_key}voice"]
-                                for channel_id in [channel.id for channel in _object.channels]
+                                for channel_id in [channel.id for channel in _object.channels if channel.id in all_channels_data]
                             )
                             / 3600,
                             ndigits=2,
@@ -2144,7 +2144,7 @@ class GuildStats(Cog):
                     delta: len(
                         [
                             time
-                            for channel_id in all_channels_data
+                            for channel_id in [channel.id for channel in _object.channels if channel.id in all_channels_data]
                             for member_id in all_channels_data[channel_id]["messages"]
                             for time in all_channels_data[channel_id]["messages"][member_id]
                             if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
@@ -2170,7 +2170,7 @@ class GuildStats(Cog):
                                     > 0
                                     else 0
                                 )
-                                for channel_id in [channel.id for channel in _object.channels]
+                                for channel_id in [channel.id for channel in _object.channels if channel.id in all_channels_data]
                                 for member_id in all_channels_data[channel_id]["voice"]
                                 for times in all_channels_data[channel_id]["voice"][member_id]
                                 if times[1]
@@ -2246,7 +2246,7 @@ class GuildStats(Cog):
                         day: len(
                             [
                                 time
-                                for channel_id in [channel.id for channel in _object.channels]
+                                for channel_id in [channel.id for channel in _object.channels if channel.id in all_channels_data]
                                 for member_id in all_channels_data[channel_id]["messages"]
                                 for time in all_channels_data[channel_id]["messages"][member_id]
                                 if (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
@@ -2285,7 +2285,7 @@ class GuildStats(Cog):
                                         > 0
                                         else 0
                                     )
-                                    for channel_id in [channel.id for channel in _object.channels]
+                                    for channel_id in [channel.id for channel in _object.channels if channel.id in all_channels_data]
                                     for member_id in all_channels_data[channel_id]["voice"]
                                     for times in all_channels_data[channel_id]["voice"][member_id]
                                     if (

@@ -103,7 +103,7 @@ class ModalConverter(commands.Converter):
             )
         # general
         required_arguments = ["title", "button", "modal"]
-        optional_arguments = ["channel", "anonymous", "messages", "pings"]
+        optional_arguments = ["channel", "anonymous", "messages", "pings", "whitelist_roles", "blacklist_roles"]
         for arg in required_arguments:
             if arg not in argument_dict:
                 raise commands.BadArgument(
@@ -263,6 +263,20 @@ class ModalConverter(commands.Converter):
                 (await RoleOrMemberConverter().convert(ctx, argument=ping.strip())).mention
                 for ping in re.split(r",|;|\||-", str(argument_dict["pings"]))
             ]
+        if "whitelist_roles" not in argument_dict:
+            argument_dict["whitelist_roles"] = None
+        else:
+            argument_dict["whitelist_roles"] = [
+                (await commands.RoleConverter().convert(ctx, argument=ping.strip())).id
+                for ping in re.split(r",|;|\||-", str(argument_dict["whitelist_roles"]))
+            ]
+        if "blacklist_roles" not in argument_dict:
+            argument_dict["blacklist_roles"] = None
+        else:
+            argument_dict["blacklist_roles"] = [
+                (await commands.RoleConverter().convert(ctx, argument=ping.strip())).id
+                for ping in re.split(r",|;|\||-", str(argument_dict["blacklist_roles"]))
+            ]
         return argument_dict
 
 
@@ -373,8 +387,34 @@ class DiscordModals(Cog):
                     )
 
     async def send_modal(self, interaction: discord.Interaction) -> None:
+        if await self.bot.cog_disabled_in_guild(cog=self, guild=interaction.guild):
+            await interaction.response.send_message(
+                "You are not allowed to use this interaction.", ephemeral=True
+            )
+            return
         config = await self.config.guild(interaction.message.guild).modals()
         if f"{interaction.message.channel.id}-{interaction.message.id}" not in config:
+            await interaction.response.send_message(
+                _("This message is not in Config."), ephemeral=True
+            )
+            return
+        whitelist_roles = config[f"{interaction.message.channel.id}-{interaction.message.id}"].get("whitelist_roles")
+        blacklist_roles = config[f"{interaction.message.channel.id}-{interaction.message.id}"].get("blacklist_roles")
+        if (
+            whitelist_roles
+            and all(
+                role.id not in whitelist_roles for role in interaction.user.roles
+            )
+            or (
+                blacklist_roles
+                and any(
+                    role.id in blacklist_roles for role in interaction.user.roles
+                )
+            )
+        ):
+            await interaction.response.send_message(
+                "You are not allowed to use this interaction.", ephemeral=True
+            )
             return
         try:
             modal_config = config[f"{interaction.message.channel.id}-{interaction.message.id}"][
@@ -528,8 +568,10 @@ class DiscordModals(Cog):
           error: Error!
           submit: Form submitted.
         pings: user1, user2, role1, role2
+        whitelist_roles: role1, role2
+        blacklist_roles: role3, role4
         ```
-        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous`, `messages` and `pings` are not required.
+        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous`, `messages`, `pings`, `whitelist_roles` and `blacklist_roles` are not required.
         """
         if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:11\n"
+"POT-Creation-Date: 2023-08-22 14:22+0200\n"
+"PO-Revision-Date: 2023-08-22 12:28\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -401,7 +401,7 @@ msgstr "インフィニティ"
 msgid "This command doesn't exist."
 msgstr "このコマンドは存在しません。"
 
-#: simplesanction\types.py:241
+#: simplesanction\types.py:243
 msgid "You can't execute this command, in this context."
 msgstr "このコマンドを、この文脈で実行することはできない。"
 

@@ -67,7 +67,7 @@ CUSTOM_COMMANDS = {
     "kofi": {
         "title": _("How to make a donation?"),
         "description": _(
-            "@Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\n@MON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\n@AAA3A (Medicat Developer): Nothing"
+            "@Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\n@MON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\n@AAA3A (Medicat Developer): <https://www.buymeacoffee.com/aaa3a>"
         ),
     },
     "medicatversion": {

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-07-15 19:19\n"
+"POT-Creation-Date: 2023-08-22 14:22+0200\n"
+"PO-Revision-Date: 2023-08-22 12:29\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -17,30 +17,30 @@ msgstr ""
 "X-Crowdin-File-ID: 227\n"
 "Language: fi_FI\n"
 
-#: codesnippets\codesnippets.py:68
+#: codesnippets\codesnippets.py:67
 #, docstring
 msgid "A cog to send code content from a GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL!"
 msgstr "Hammasratas koodin sisällön lähettämiseen GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL-osoitteesta!"
 
-#: codesnippets\codesnippets.py:497
+#: codesnippets\codesnippets.py:496
 msgid "No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found."
 msgstr "GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL-osoitetta ei löytynyt."
 
-#: codesnippets\codesnippets.py:537
+#: codesnippets\codesnippets.py:536
 #, docstring
 msgid "Add a channel where the cog have to send automatically code snippets from URLs."
 msgstr "Lisää kanava, jossa hammasrattaan on lähetettävä automaattisesti koodinpätkiä URL-osoitteista."
 
-#: codesnippets\codesnippets.py:541
+#: codesnippets\codesnippets.py:540
 msgid "The cog is already enabled in this channel"
 msgstr "Hammasratas on jo käytössä tällä kanavalla"
 
-#: codesnippets\codesnippets.py:552
+#: codesnippets\codesnippets.py:551
 #, docstring
 msgid "Remove a channel where the cog have to send automatically code snippets from URLs."
 msgstr "Poistetaan kanava, jonka avulla hammasrattaan on lähetettävä automaattisesti koodinpätkiä URL-osoitteista."
 
-#: codesnippets\codesnippets.py:556
+#: codesnippets\codesnippets.py:555
 msgid "The cog is already disabled in this channel"
 msgstr "Hammaspyörä on jo poistettu käytöstä tällä kanavalla"
 

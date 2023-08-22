@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-10 18:35+0200\n"
+"POT-Creation-Date: 2023-08-22 14:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,74 +16,74 @@ msgstr ""
 msgid "A cog to play a random match of Acrononym game, with Modals!"
 msgstr ""
 
-#: acronymgame\view.py:38
+#: acronymgame\view.py:39
 msgid "You have already joined this game, with `{answer}` answer."
 msgstr ""
 
-#: acronymgame\view.py:46
+#: acronymgame\view.py:47
 msgid "Sorry, maximum 20 players."
 msgstr ""
 
-#: acronymgame\view.py:51
+#: acronymgame\view.py:52
 msgid "Sorry, the vote has already started."
 msgstr ""
 
-#: acronymgame\view.py:57
+#: acronymgame\view.py:58
 msgid "Sorry, the number of words in your answer must be {len_words}."
 msgstr ""
 
-#: acronymgame\view.py:66
+#: acronymgame\view.py:67
 msgid ""
 "Sorry, the initial of each word in your answer must be each letter of the "
 "acronym ({acronym})."
 msgstr ""
 
-#: acronymgame\view.py:78
+#: acronymgame\view.py:79
 msgid ""
 "Join the game by clicking on the button below and entering your acronym. "
 "Maximum 20 players.\n"
 msgstr ""
 
-#: acronymgame\view.py:83
+#: acronymgame\view.py:84
 msgid "Game joined with `{answer}` answer."
 msgstr ""
 
-#: acronymgame\view.py:130
+#: acronymgame\view.py:131
 msgid ""
 "Join the game by clicking on the button below and entering your acronym. "
 "Maximum 20 players."
 msgstr ""
 
-#: acronymgame\view.py:145
+#: acronymgame\view.py:146
 msgid "At least three players are needed to play."
 msgstr ""
 
-#: acronymgame\view.py:154
+#: acronymgame\view.py:155
 msgid ""
 "Use the dropdown below to vote for the best answer for the random acronym. "
 "All guild members can vote.\n"
 msgstr ""
 
-#: acronymgame\view.py:167
+#: acronymgame\view.py:168
 msgid "No vote given."
 msgstr ""
 
-#: acronymgame\view.py:197
+#: acronymgame\view.py:198
 msgid "Here is the leaderboard for this game:"
 msgstr ""
 
-#: acronymgame\view.py:203
+#: acronymgame\view.py:204
 msgid "Winner{s}: {winners}!"
 msgstr ""
 
-#: acronymgame\view.py:240
+#: acronymgame\view.py:241
 msgid "You have already voted in this game."
 msgstr ""
 
-#: acronymgame\view.py:246
+#: acronymgame\view.py:247
 msgid "You can't vote for yourself."
 msgstr ""
 
-#: acronymgame\view.py:252
+#: acronymgame\view.py:253
 msgid "Vote given for answer {num}."
 msgstr ""

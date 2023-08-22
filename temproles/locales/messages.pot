@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-10 18:35+0200\n"
+"POT-Creation-Date: 2023-08-22 14:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,7 +36,7 @@ msgstr ""
 #: temproles\temproles.py:206
 msgid ""
 "This role is already a TempRole of this member. Do you want to edit the duration?\n"
-"Currently, the Temp Role expires {timestamp}."
+"Currently, this Temp Role expires {timestamp}."
 msgstr ""
 
 #: temproles\temproles.py:214

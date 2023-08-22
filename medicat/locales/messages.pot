@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-10 18:35+0200\n"
+"POT-Creation-Date: 2023-08-22 14:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -302,17 +302,17 @@ msgstr ""
 msgid "View FCportables Official Website"
 msgstr ""
 
-#: medicat\medicat.py:821
+#: medicat\medicat.py:822
 #, docstring
 msgid "Get the debug for a FCportables's tool."
 msgstr ""
 
-#: medicat\medicat.py:901
+#: medicat\medicat.py:902
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr ""
 
-#: medicat\medicat.py:908
+#: medicat\medicat.py:909
 #, docstring
 msgid "Update Medicat cog directly."
 msgstr ""

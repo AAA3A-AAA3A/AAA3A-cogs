@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-10 18:35+0200\n"
+"POT-Creation-Date: 2023-08-22 14:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,87 +11,91 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: discordmodals\discordmodals.py:99
+#: discordmodals\discordmodals.py:100
 msgid ""
 "Error parsing YAML. Please make sure the format is valid (a YAML validator "
 "may help)"
 msgstr ""
 
-#: discordmodals\discordmodals.py:109
+#: discordmodals\discordmodals.py:117
 msgid "The argument `/{arg}` is required in the root in the YAML."
 msgstr ""
 
-#: discordmodals\discordmodals.py:114
+#: discordmodals\discordmodals.py:122
 msgid "The argument `/{arg}` is invalid in in the YAML. Check the spelling."
 msgstr ""
 
-#: discordmodals\discordmodals.py:124
+#: discordmodals\discordmodals.py:132
 msgid "The argument `/button/{arg}` is required in the YAML."
 msgstr ""
 
-#: discordmodals\discordmodals.py:129
+#: discordmodals\discordmodals.py:137
 msgid ""
 "The argument `/button/{arg}` is invalid in the YAML. Check the spelling."
 msgstr ""
 
-#: discordmodals\discordmodals.py:143 discordmodals\discordmodals.py:147
+#: discordmodals\discordmodals.py:151 discordmodals\discordmodals.py:155
 msgid "The argument `/button/style` must be a number between 1 and 4."
 msgstr ""
 
-#: discordmodals\discordmodals.py:155
+#: discordmodals\discordmodals.py:163
 msgid "The argument `/button/modal` must be a list of text inputs."
 msgstr ""
 
-#: discordmodals\discordmodals.py:167
+#: discordmodals\discordmodals.py:175
 msgid "You can only have 5 text inputs by modal."
 msgstr ""
 
-#: discordmodals\discordmodals.py:173
+#: discordmodals\discordmodals.py:181
 msgid "The argument `/modal/{count}/{arg}` is required in the YAML."
 msgstr ""
 
-#: discordmodals\discordmodals.py:180
+#: discordmodals\discordmodals.py:188
 msgid ""
 "The argument `/modal/{count}/{arg}` is invalid in the YAML. Check the "
 "spelling."
 msgstr ""
 
-#: discordmodals\discordmodals.py:190 discordmodals\discordmodals.py:196
+#: discordmodals\discordmodals.py:198 discordmodals\discordmodals.py:204
 msgid "The argument `/modal/{count}/style` must be a number between 1 and 2."
 msgstr ""
 
-#: discordmodals\discordmodals.py:219
+#: discordmodals\discordmodals.py:227
 msgid ""
 "The argument `/modal/{count}/required` must be a boolean (True or False)."
 msgstr ""
 
-#: discordmodals\discordmodals.py:270
+#: discordmodals\discordmodals.py:292
 #, docstring
 msgid "A cog to use Discord Modals, forms with graphic interface!"
 msgstr ""
 
-#: discordmodals\discordmodals.py:404 discordmodals\discordmodals.py:474
+#: discordmodals\discordmodals.py:405
+msgid "This message is not in Config."
+msgstr ""
+
+#: discordmodals\discordmodals.py:453 discordmodals\discordmodals.py:523
 msgid "Sorry. An error has occurred."
 msgstr ""
 
-#: discordmodals\discordmodals.py:420
+#: discordmodals\discordmodals.py:469
 msgid ""
 "The channel in which I was to send the results of this Modal no longer "
 "exists. Please notify an administrator of this server."
 msgstr ""
 
-#: discordmodals\discordmodals.py:435
+#: discordmodals\discordmodals.py:484
 msgid ""
 "I don't have sufficient permissions in the destination channel (view "
 "channel, send messages, send embeds). Please notify an administrator of this"
 " server."
 msgstr ""
 
-#: discordmodals\discordmodals.py:478
+#: discordmodals\discordmodals.py:527
 msgid "Thank you for sending this Modal!"
 msgstr ""
 
-#: discordmodals\discordmodals.py:503
+#: discordmodals\discordmodals.py:552
 #, docstring
 msgid ""
 "Add a Modal for a message.\n"
@@ -120,50 +124,52 @@ msgid ""
 "          error: Error!\n"
 "          submit: Form submitted.\n"
 "        pings: user1, user2, role1, role2\n"
+"        whitelist_roles: role1, role2\n"
+"        blacklist_roles: role3, role4\n"
 "        ```\n"
-"        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous`, `messages` and `pings` are not required.\n"
+"        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous`, `messages`, `pings`, `whitelist_roles` and `blacklist_roles` are not required.\n"
 "        "
 msgstr ""
 
-#: discordmodals\discordmodals.py:534
+#: discordmodals\discordmodals.py:585
 msgid "I have to be the author of the message for the button to work."
 msgstr ""
 
-#: discordmodals\discordmodals.py:538
+#: discordmodals\discordmodals.py:589
 msgid "This message already has a Modal."
 msgstr ""
 
-#: discordmodals\discordmodals.py:540
+#: discordmodals\discordmodals.py:591
 msgid "This message already has components."
 msgstr ""
 
-#: discordmodals\discordmodals.py:553
+#: discordmodals\discordmodals.py:604
 msgid ""
 "Sorry. An error occurred when I tried to put the button on the message."
 msgstr ""
 
-#: discordmodals\discordmodals.py:591
+#: discordmodals\discordmodals.py:642
 msgid "Modal created."
 msgstr ""
 
-#: discordmodals\discordmodals.py:595
+#: discordmodals\discordmodals.py:646
 #, docstring
 msgid "Remove a Modal for a message."
 msgstr ""
 
-#: discordmodals\discordmodals.py:598
+#: discordmodals\discordmodals.py:649
 msgid "I have to be the author of the message for the Modal to work."
 msgstr ""
 
-#: discordmodals\discordmodals.py:602
+#: discordmodals\discordmodals.py:653
 msgid "No Modal is configured for this message."
 msgstr ""
 
-#: discordmodals\discordmodals.py:612
+#: discordmodals\discordmodals.py:663
 #, docstring
 msgid "Clear all Modals for a guild."
 msgstr ""
 
-#: discordmodals\discordmodals.py:614
+#: discordmodals\discordmodals.py:665
 msgid "All Modals purged."
 msgstr ""

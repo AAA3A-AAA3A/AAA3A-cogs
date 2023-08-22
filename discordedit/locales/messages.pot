@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-10 18:35+0200\n"
+"POT-Creation-Date: 2023-08-22 14:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -382,55 +382,55 @@ msgstr ""
 msgid "Edit guild public updates channel."
 msgstr ""
 
-#: discordedit\editguild.py:610
+#: discordedit\editguild.py:614
 #, docstring
 msgid "Edit guild premium progress bar enabled."
 msgstr ""
 
-#: discordedit\editguild.py:626
+#: discordedit\editguild.py:630
 #, docstring
 msgid "Edit guild discoverable state."
 msgstr ""
 
-#: discordedit\editguild.py:642
+#: discordedit\editguild.py:646
 #, docstring
 msgid "Edit guild invites disabled state."
 msgstr ""
 
-#: discordedit\editguild.py:656
+#: discordedit\editguild.py:660
 #, docstring
 msgid "Edit guild invites widget enabled state."
 msgstr ""
 
-#: discordedit\editguild.py:672
+#: discordedit\editguild.py:676
 #, docstring
 msgid "Edit guild invites widget channel."
 msgstr ""
 
-#: discordedit\editguild.py:690
+#: discordedit\editguild.py:694
 #, docstring
 msgid "Edit guild invites raid alerts disabled state."
 msgstr ""
 
-#: discordedit\editguild.py:708
+#: discordedit\editguild.py:712
 #, docstring
 msgid "Edit guild invites safety alerts channel."
 msgstr ""
 
-#: discordedit\editguild.py:727
+#: discordedit\editguild.py:731
 #, docstring
 msgid "Delete guild (if the bot is owner)."
 msgstr ""
 
-#: discordedit\editguild.py:732
+#: discordedit\editguild.py:736
 msgid "⚠️ - Delete Guild"
 msgstr ""
 
-#: discordedit\editguild.py:733 discordedit\editguild.py:740
+#: discordedit\editguild.py:737 discordedit\editguild.py:744
 msgid "Do you really want to delete the guild {guild.name} ({guild.id})?"
 msgstr ""
 
-#: discordedit\editguild.py:758
+#: discordedit\editguild.py:762
 #, docstring
 msgid "View and edit guild."
 msgstr ""
@@ -1072,6 +1072,6 @@ msgstr ""
 msgid "View and edit voice channel."
 msgstr ""
 
-#: discordedit\view.py:121
+#: discordedit\view.py:122
 msgid "You are not allowed to execute this command."
 msgstr ""

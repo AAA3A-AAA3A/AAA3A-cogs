@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-10 18:35+0200\n"
+"POT-Creation-Date: 2023-08-22 14:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,145 +67,145 @@ msgstr ""
 msgid "**The guild {_object.name} was seen {seen}.**"
 msgstr ""
 
-#: seen\seen.py:1223
+#: seen\seen.py:1224
 #, docstring
 msgid "Check when a member was last active!"
 msgstr ""
 
-#: seen\seen.py:1243
+#: seen\seen.py:1244
 #, docstring
 msgid "Check when a role was last active!"
 msgstr ""
 
-#: seen\seen.py:1262
+#: seen\seen.py:1263
 #, docstring
 msgid "Check when a channel was last active!"
 msgstr ""
 
-#: seen\seen.py:1269
+#: seen\seen.py:1270
 msgid "You do not have permission to view this channel."
 msgstr ""
 
-#: seen\seen.py:1285
+#: seen\seen.py:1286
 #, docstring
 msgid "Check when a category was last active!"
 msgstr ""
 
-#: seen\seen.py:1297
+#: seen\seen.py:1298
 msgid ""
 "You do not have permission to view any of the channels in this category."
 msgstr ""
 
-#: seen\seen.py:1314
+#: seen\seen.py:1315
 #, docstring
 msgid "Check when a old member was last active!"
 msgstr ""
 
-#: seen\seen.py:1342
+#: seen\seen.py:1343
 #, docstring
 msgid "Check when a guild was last active!"
 msgstr ""
 
-#: seen\seen.py:1362
+#: seen\seen.py:1363
 #, docstring
 msgid "Check when a user was last active!"
 msgstr ""
 
-#: seen\seen.py:1381
+#: seen\seen.py:1382
 #, docstring
 msgid "Check when a old user was last active!"
 msgstr ""
 
-#: seen\seen.py:1403
+#: seen\seen.py:1404
 #, docstring
 msgid "View a Seen Board for members/roles/channels/categories/guilds/users!"
 msgstr ""
 
-#: seen\seen.py:1406
+#: seen\seen.py:1407
 msgid "You're not allowed to view the Seen board for guilds and users."
 msgstr ""
 
-#: seen\seen.py:1413
+#: seen\seen.py:1414
 #, docstring
 msgid "Get Config data stats."
 msgstr ""
 
-#: seen\seen.py:1447
+#: seen\seen.py:1448
 #, docstring
 msgid "Enable or disable a listener."
 msgstr ""
 
-#: seen\seen.py:1453
+#: seen\seen.py:1454
 msgid "Listener enabled for this/these type(s)."
 msgstr ""
 
-#: seen\seen.py:1455
+#: seen\seen.py:1456
 msgid "Listener disabled for this/these type(s)."
 msgstr ""
 
-#: seen\seen.py:1459
+#: seen\seen.py:1460
 #, docstring
 msgid "Asking Seen to ignore your actions."
 msgstr ""
 
-#: seen\seen.py:1467
+#: seen\seen.py:1468
 msgid ""
 "You will no longer be seen by this cog and the data I held on you have been "
 "deleted."
 msgstr ""
 
-#: seen\seen.py:1474
+#: seen\seen.py:1475
 msgid "You'll be seen again by this cog."
 msgstr ""
 
-#: seen\seen.py:1479
+#: seen\seen.py:1480
 #, docstring
 msgid "Ignore or unignore a specific user."
 msgstr ""
 
-#: seen\seen.py:1486
+#: seen\seen.py:1487
 msgid ""
 "{user.mention} ({user.id}) will no longer be seen by this cog, and their "
 "data has been deleted."
 msgstr ""
 
-#: seen\seen.py:1495
+#: seen\seen.py:1496
 msgid "{user.mention} ({user.id}) will be seen again by this cog."
 msgstr ""
 
-#: seen\seen.py:1503
+#: seen\seen.py:1504
 #, docstring
 msgid "Get an embed for check loop status."
 msgstr ""
 
-#: seen\seen.py:1514
+#: seen\seen.py:1515
 #, docstring
 msgid "Purge Config for a specified _type or all."
 msgstr ""
 
-#: seen\seen.py:1521
+#: seen\seen.py:1522
 msgid "All Seen data purged."
 msgstr ""
 
-#: seen\seen.py:1533
+#: seen\seen.py:1534
 msgid "Seen data purged for this type."
 msgstr ""
 
-#: seen\seen.py:1538
+#: seen\seen.py:1539
 #, docstring
 msgid "Migrate Seen from Seen by Aikaterna."
 msgstr ""
 
-#: seen\seen.py:1545
+#: seen\seen.py:1546
 msgid "Seen by Aikaterna has no data in this bot."
 msgstr ""
 
-#: seen\seen.py:1549
+#: seen\seen.py:1550
 msgid ""
 "Seen by Aikaterna use an old/new data schema version and isn't compatible "
 "with this cog actually."
 msgstr ""
 
-#: seen\seen.py:1612
+#: seen\seen.py:1613
 msgid "Data successfully migrated from Seen by Aikaterna."
 msgstr ""

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-10 18:35+0200\n"
+"POT-Creation-Date: 2023-08-22 14:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,11 +28,11 @@ msgstr ""
 msgid "This command doesn't exist."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:182
+#: commandsbuttons\commandsbuttons.py:183
 msgid "You are not allowed to execute this command."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:237
+#: commandsbuttons\commandsbuttons.py:239
 #, docstring
 msgid ""
 "Add a command-button for a message.\n"
@@ -51,47 +51,47 @@ msgid ""
 "        "
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:253
-#: commandsbuttons\commandsbuttons.py:330
-#: commandsbuttons\commandsbuttons.py:402
+#: commandsbuttons\commandsbuttons.py:255
+#: commandsbuttons\commandsbuttons.py:332
+#: commandsbuttons\commandsbuttons.py:404
 msgid "I have to be the author of the message for the command-button to work."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:262
-#: commandsbuttons\commandsbuttons.py:343
+#: commandsbuttons\commandsbuttons.py:264
+#: commandsbuttons\commandsbuttons.py:345
 msgid ""
 "I don't have sufficient permissions on the channel where the message you specified is located.\n"
 "I need the permissions to see the messages in that channel."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:277
+#: commandsbuttons\commandsbuttons.py:279
 msgid "You have not specified a correct command."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:279
+#: commandsbuttons\commandsbuttons.py:281
 msgid "You can't execute yourself this command."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:282
+#: commandsbuttons\commandsbuttons.py:284
 msgid "You have to specify at least an emoji or a label."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:289
+#: commandsbuttons\commandsbuttons.py:291
 msgid ""
 "The emoji you selected seems invalid. Check that it is an emoji. If you have"
 " Nitro, you may have used a custom emoji from another server."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:296
-#: commandsbuttons\commandsbuttons.py:370
+#: commandsbuttons\commandsbuttons.py:298
+#: commandsbuttons\commandsbuttons.py:372
 msgid "This message already has components."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:300
+#: commandsbuttons\commandsbuttons.py:302
 msgid "I can't do more than 25 commands-buttons for one message."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:324
+#: commandsbuttons\commandsbuttons.py:326
 #, docstring
 msgid ""
 "Add commands-buttons for a message.\n"
@@ -100,25 +100,25 @@ msgid ""
 "        "
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:334
+#: commandsbuttons\commandsbuttons.py:336
 msgid "You have not specified any valid command-button."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:356
+#: commandsbuttons\commandsbuttons.py:358
 msgid "At least one of these commands is invalid."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:363
+#: commandsbuttons\commandsbuttons.py:365
 msgid ""
 "An emoji you selected seems invalid. Check that it is an emoji. If you have "
 "Nitro, you may have used a custom emoji from another server."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:374
+#: commandsbuttons\commandsbuttons.py:376
 msgid "I can't do more than 25 roles-buttons for one message."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:396
+#: commandsbuttons\commandsbuttons.py:398
 #, docstring
 msgid ""
 "Remove a command-button for a message.\n"
@@ -127,52 +127,52 @@ msgid ""
 "        "
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:407
-#: commandsbuttons\commandsbuttons.py:437
-#: commandsbuttons\commandsbuttons.py:457
+#: commandsbuttons\commandsbuttons.py:409
+#: commandsbuttons\commandsbuttons.py:439
+#: commandsbuttons\commandsbuttons.py:459
 msgid "No command-button is configured for this message."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:411
+#: commandsbuttons\commandsbuttons.py:413
 msgid "I wasn't watching for this button on this message."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:425
-#: commandsbuttons\commandsbuttons.py:445
+#: commandsbuttons\commandsbuttons.py:427
+#: commandsbuttons\commandsbuttons.py:447
 msgid "Commands-buttons cleared for this message."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:429
+#: commandsbuttons\commandsbuttons.py:431
 #, docstring
 msgid "Clear all commands-buttons for a message."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:432
+#: commandsbuttons\commandsbuttons.py:434
 msgid "I have to be the author of the message for the role-button to work."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:463
+#: commandsbuttons\commandsbuttons.py:465
 msgid "No commands-buttons in this server."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:472
+#: commandsbuttons\commandsbuttons.py:474
 msgid "Commands Buttons"
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:473
+#: commandsbuttons\commandsbuttons.py:475
 msgid "There is {len_commands_buttons} commands buttons in this server."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:480
+#: commandsbuttons\commandsbuttons.py:482
 msgid "Message Jump Link: {message_jump_link}\n"
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:500
+#: commandsbuttons\commandsbuttons.py:502
 #, docstring
 msgid "Clear all commands-buttons for a guild."
 msgstr ""
 
-#: commandsbuttons\commandsbuttons.py:502
+#: commandsbuttons\commandsbuttons.py:504
 msgid "All commands-buttons purged."
 msgstr ""
 

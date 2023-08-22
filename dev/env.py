@@ -191,12 +191,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
         base_env = dev_commands.Dev.get_environment(Dev, ctx)  # In Dev in Core.
         # del base_env["_"]
         env.update(base_env)
-        env.update(
-            {
-                "dev_env": env,
-                "devenv": env
-            }
-        )
+        env.update({"dev_env": env, "devenv": env})
         return env
 
     def get_formatted_env(
@@ -354,7 +349,11 @@ class DevEnv(typing.Dict[str, typing.Any]):
             await Menu(pages=code, lang="py").start(ctx)
 
         def reference(ctx: commands.Context) -> typing.Optional[discord.Message]:
-            if hasattr(ctx.message, "reference") and ctx.message.reference is not None and isinstance(ctx.message.reference.resolved, discord.Message):
+            if (
+                hasattr(ctx.message, "reference")
+                and ctx.message.reference is not None
+                and isinstance(ctx.message.reference.resolved, discord.Message)
+            ):
                 return ctx.message.reference.resolved
 
         # def _console_custom(ctx: commands.Context):

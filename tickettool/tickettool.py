@@ -806,8 +806,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         if config["custom_modal"] is not None:
             if getattr(ctx, "_tickettool_modal_answers", None) is None:
                 modal = discord.ui.Modal(
-                    title="Create Ticket",
-                    custom_id="create_ticket_custom_modal"
+                    title="Create Ticket", custom_id="create_ticket_custom_modal"
                 )
                 modal.on_submit = lambda interaction: interaction.response.defer(ephemeral=True)
                 inputs = []
@@ -820,11 +819,14 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     inputs.append(text_input)
                     modal.add_item(text_input)
                 view: discord.ui.View = discord.ui.View()
-                button: discord.ui.Button = discord.ui.Button(label="Create Ticket", emoji="🎟️", style=discord.ButtonStyle.secondary)
+                button: discord.ui.Button = discord.ui.Button(
+                    label="Create Ticket", emoji="🎟️", style=discord.ButtonStyle.secondary
+                )
 
                 async def send_modal(interaction: discord.Interaction) -> None:
                     await interaction.response.send_modal(modal)
                     view.stop()
+
                 button.callback = send_modal
                 view.add_item(button)
                 message = await ctx.send(
@@ -840,7 +842,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     return  # timeout
                 if await modal.wait():
                     return  # timeout
-                modal_answers: typing.Dict[str, str] = {_input.label: _input.value.strip() or "Not provided." for _input in inputs}
+                modal_answers: typing.Dict[str, str] = {
+                    _input.label: _input.value.strip() or "Not provided." for _input in inputs
+                }
             else:
                 modal_answers: typing.Dict[str, str] = ctx._tickettool_modal_answers
         ticket: Ticket = Ticket.instance(ctx, profile=profile, reason=reason)
@@ -848,9 +852,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         if config["custom_modal"] is not None:
             embed: discord.Embed = discord.Embed()
             embed.title = "Custom Modal"
-            embed.set_author(
-                name=ctx.author.display_name, icon_url=ctx.author.display_avatar
-            )
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             embed.color = await ctx.embed_color()
             for label, value in modal_answers.items():
                 try:
@@ -1337,10 +1339,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 return
             config = await self.get_config(guild=interaction.guild, profile=profile)
             if config["custom_modal"] is None:
-                modal = discord.ui.Modal(
-                    title="Create Ticket",
-                    custom_id="create_ticket_modal"
-                )
+                modal = discord.ui.Modal(title="Create Ticket", custom_id="create_ticket_modal")
                 modal.on_submit = lambda interaction: interaction.response.defer(ephemeral=True)
                 # profile_input = discord.ui.TextInput(
                 #     label="Profile",
@@ -1367,8 +1366,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             else:
                 reason = ""
                 modal = discord.ui.Modal(
-                    title="Create Ticket",
-                    custom_id="create_ticket_custom_modal"
+                    title="Create Ticket", custom_id="create_ticket_custom_modal"
                 )
                 modal.on_submit = lambda interaction: interaction.response.defer(ephemeral=True)
                 inputs = []
@@ -1383,7 +1381,11 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 await interaction.response.send_modal(modal)
                 if await modal.wait():
                     return  # timeout
-                kwargs = {"_tickettool_modal_answers": {_input.label: _input.value.strip() or "Not provided." for _input in inputs}}
+                kwargs = {
+                    "_tickettool_modal_answers": {
+                        _input.label: _input.value.strip() or "Not provided." for _input in inputs
+                    }
+                }
             ctx = await CogsUtils.invoke_command(
                 bot=interaction.client,
                 author=interaction.user,
@@ -1391,9 +1393,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 command=f"ticket create {profile}" + (f" {reason}" if reason != "" else ""),
                 **kwargs,
             )
-            if not await discord.utils.async_all(
-                check(ctx) for check in ctx.command.checks
-            ):
+            if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
                 await interaction.followup.send(
                     _("You are not allowed to execute this command."), ephemeral=True
                 )
@@ -1442,9 +1442,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 command="ticket open",
             )
             try:
-                if not await discord.utils.async_all(
-                    check(ctx) for check in ctx.command.checks
-                ):
+                if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
                     await interaction.followup.send(
                         _("You are not allowed to execute this command."), ephemeral=True
                     )
@@ -1462,9 +1460,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 channel=interaction.channel,
                 command="ticket claim",
             )
-            if not await discord.utils.async_all(
-                check(ctx) for check in ctx.command.checks
-            ):
+            if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
                 await interaction.followup.send(
                     _("You are not allowed to execute this command."), ephemeral=True
                 )
@@ -1482,9 +1478,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 channel=interaction.channel,
                 command="ticket delete",
             )
-            if not await discord.utils.async_all(
-                check(ctx) for check in ctx.command.checks
-            ):
+            if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
                 await interaction.followup.send(
                     _("You are not allowed to execute this command."), ephemeral=True
                 )
@@ -1522,10 +1516,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         reason = f"{option.emoji} - {option.label}"
         config = await self.get_config(guild=interaction.guild, profile=profile)
         if config["custom_modal"] is not None:
-            modal = discord.ui.Modal(
-                title="Create Ticket",
-                custom_id="create_ticket_custom_modal"
-            )
+            modal = discord.ui.Modal(title="Create Ticket", custom_id="create_ticket_custom_modal")
             modal.on_submit = lambda interaction: interaction.response.defer(ephemeral=True)
             inputs = []
             for _input in config["custom_modal"]:
@@ -1539,7 +1530,11 @@ class TicketTool(settings, DashboardIntegration, Cog):
             await interaction.response.send_modal(modal)
             if await modal.wait():
                 return  # timeout
-            kwargs = {"_tickettool_modal_answers": {_input.label: _input.value.strip() or "Not provided." for _input in inputs}}
+            kwargs = {
+                "_tickettool_modal_answers": {
+                    _input.label: _input.value.strip() or "Not provided." for _input in inputs
+                }
+            }
         else:
             kwargs = {}
         ctx = await CogsUtils.invoke_command(

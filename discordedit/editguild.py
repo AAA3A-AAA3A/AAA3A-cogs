@@ -603,7 +603,11 @@ class EditGuild(Cog):
                 _(ERROR_MESSAGE).format(error=box(e, lang="py"))
             )
 
-    @editguild.command(name="premiumprogressbarenabled", aliases=["premium_progress_bar_enabled"], with_app_command=False)
+    @editguild.command(
+        name="premiumprogressbarenabled",
+        aliases=["premium_progress_bar_enabled"],
+        with_app_command=False,
+    )
     async def editguild_premium_progress_bar_enabled(
         self, ctx: commands.Context, premium_progress_bar_enabled: bool = None
     ) -> None:

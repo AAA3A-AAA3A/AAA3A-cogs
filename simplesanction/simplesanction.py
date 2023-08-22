@@ -42,9 +42,7 @@ async def sanction_member_context_menu(interaction: discord.Interaction, member:
         command=f"sanction 00 {member.id}",
         # interaction=interaction,
     )
-    if not await discord.utils.async_all(
-        check(context) for check in context.command.checks
-    ):
+    if not await discord.utils.async_all(check(context) for check in context.command.checks):
         await interaction.followup.send(
             _("You're not allowed to execute the `[p]sanction` command in this channel."),
             ephemeral=True,

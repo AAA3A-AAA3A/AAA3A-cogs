@@ -183,9 +183,7 @@ class ExportChannel(Cog):
         await message.edit(embed=embed, view=view)
 
     @exportchannel.command()
-    async def message(
-        self, ctx: commands.Context, message: discord.Message
-    ) -> None:
+    async def message(self, ctx: commands.Context, message: discord.Message) -> None:
         """Export a specific file in an html file.
 
         Specify the message to export, with its ID or its link.
@@ -199,7 +197,8 @@ class ExportChannel(Cog):
             messages=[message],
         )
         message = await ctx.send(
-            _(RESULT_MESSAGE).format(channel=message.channel, count_messages=count_messages), file=file
+            _(RESULT_MESSAGE).format(channel=message.channel, count_messages=count_messages),
+            file=file,
         )
         url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
         embed = discord.Embed(

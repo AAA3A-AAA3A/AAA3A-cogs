@@ -210,7 +210,9 @@ class Calculator(Cog):
             check(await self.bot.get_context(message)) for check in self._calculate.checks
         ):
             return
-        if (result := await self.calculate(message.content)) == _("Error!") or result == message.content:
+        if (result := await self.calculate(message.content)) == _(
+            "Error!"
+        ) or result == message.content:
             return
         if message.guild is not None:
             channel_permissions = message.channel.permissions_for(message.guild.me)
@@ -227,12 +229,27 @@ class Calculator(Cog):
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
         if str(payload.emoji).strip("\N{VARIATION SELECTOR-16}") != "🔢":
             return
-        if (message := discord.utils.get(self.cache, channel__id=payload.channel_id, id=payload.message_id)) is None:
+        if (
+            message := discord.utils.get(
+                self.cache, channel__id=payload.channel_id, id=payload.message_id
+            )
+        ) is None:
             return
         if payload.user_id != message.author.id:
             return
         self.cache.remove(message)
-        if sorted([user.id async for user in discord.utils.get((await message.channel.fetch_message(message.id)).reactions, emoji="🔢").users() if user.bot]).index(self.bot.user.id) != 0:
+        if (
+            sorted(
+                [
+                    user.id
+                    async for user in discord.utils.get(
+                        (await message.channel.fetch_message(message.id)).reactions, emoji="🔢"
+                    ).users()
+                    if user.bot
+                ]
+            ).index(self.bot.user.id)
+            != 0
+        ):
             return
         await CogsUtils.invoke_command(
             bot=self.bot,

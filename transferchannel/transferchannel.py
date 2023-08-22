@@ -175,18 +175,35 @@ class TransferChannel(Cog):
                     content=message.content,
                     embeds=message.embeds,
                     files=files,
-                    allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False),
+                    allowed_mentions=discord.AllowedMentions(
+                        everyone=False, users=False, roles=False
+                    ),
                     wait=True,
                 )
             elif way == "embeds":
                 embed = self.embed_from_msg(message)
                 try:
-                    await destination.send(embeds=[embed] + message.embeds, allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
+                    await destination.send(
+                        embeds=[embed] + message.embeds,
+                        allowed_mentions=discord.AllowedMentions(
+                            everyone=False, users=False, roles=False
+                        ),
+                    )
                 except discord.HTTPException:
                     try:
-                        await destination.send(embeds=[embed] + message.embeds[:-1], allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
+                        await destination.send(
+                            embeds=[embed] + message.embeds[:-1],
+                            allowed_mentions=discord.AllowedMentions(
+                                everyone=False, users=False, roles=False
+                            ),
+                        )
                     except discord.HTTPException:
-                        await destination.send(embed=embed, allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
+                        await destination.send(
+                            embed=embed,
+                            allowed_mentions=discord.AllowedMentions(
+                                everyone=False, users=False, roles=False
+                            ),
+                        )
             elif way == "messages":
                 iso_format = message.created_at.isoformat()
                 msg = "\n".join(
@@ -203,7 +220,9 @@ class TransferChannel(Cog):
                         f"{msg}\n\n{message.content}",
                         embeds=message.embeds,
                         files=files,
-                        allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False),
+                        allowed_mentions=discord.AllowedMentions(
+                            everyone=False, users=False, roles=False
+                        ),
                     )
                 else:
                     await destination.send(msg, allowed_mentions=discord.AllowedMentions.none())
@@ -211,7 +230,9 @@ class TransferChannel(Cog):
                         message.content,
                         embeds=message.embeds,
                         files=files,
-                        allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False),
+                        allowed_mentions=discord.AllowedMentions(
+                            everyone=False, users=False, roles=False
+                        ),
                     )
         return count_messages, messages
 
@@ -279,7 +300,9 @@ class TransferChannel(Cog):
         await ctx.send(
             _(
                 "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
-            ).format(count_messages=count_messages, source=message.channel, destination=destination)
+            ).format(
+                count_messages=count_messages, source=message.channel, destination=destination
+            )
         )
 
     @transferchannel.command()

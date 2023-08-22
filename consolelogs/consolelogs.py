@@ -259,10 +259,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 or ".".join(console_log.logger_name.split(".")[: len(logger_name.split("."))])
                 == logger_name
             )
-            and (
-                ids is None
-                or console_log.id in ids
-            )
+            and (ids is None or console_log.id in ids)
         ]
         if not console_logs_to_display:
             raise commands.UserFeedbackCheckFailure(_("No logs to display."))
@@ -332,7 +329,10 @@ class ConsoleLogs(Cog, DashboardIntegration):
             page_index = [
                 i
                 for i, page in enumerate(pages)
-                if any(line.startswith(("#", f"{Fore.CYAN}#", "[", f"{Fore.BLACK}[")) for line in page.split("\n"))
+                if any(
+                    line.startswith(("#", f"{Fore.CYAN}#", "[", f"{Fore.BLACK}["))
+                    for line in page.split("\n")
+                )
             ][-1]
         menu = Menu(
             pages=pages,
@@ -525,7 +525,9 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 "dpy_ignored_exceptions": dpy_ignored_exceptions,
                 "full_console": full_console,
                 "guild_invite": guild_invite,
-                "ignored_cogs": [cog.qualified_name for cog in ignored_cogs] if ignored_cogs is not None else [],
+                "ignored_cogs": [cog.qualified_name for cog in ignored_cogs]
+                if ignored_cogs is not None
+                else [],
             }
         )
         await ctx.send(_("Errors logging enabled in {channel.mention}.").format(channel=channel))

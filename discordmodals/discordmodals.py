@@ -5,11 +5,11 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import asyncio
 import re
 from copy import deepcopy
 from functools import partial
 
-import asyncio
 import yaml
 
 try:
@@ -103,7 +103,14 @@ class ModalConverter(commands.Converter):
             )
         # general
         required_arguments = ["title", "button", "modal"]
-        optional_arguments = ["channel", "anonymous", "messages", "pings", "whitelist_roles", "blacklist_roles"]
+        optional_arguments = [
+            "channel",
+            "anonymous",
+            "messages",
+            "pings",
+            "whitelist_roles",
+            "blacklist_roles",
+        ]
         for arg in required_arguments:
             if arg not in argument_dict:
                 raise commands.BadArgument(
@@ -398,18 +405,18 @@ class DiscordModals(Cog):
                 _("This message is not in Config."), ephemeral=True
             )
             return
-        whitelist_roles = config[f"{interaction.message.channel.id}-{interaction.message.id}"].get("whitelist_roles")
-        blacklist_roles = config[f"{interaction.message.channel.id}-{interaction.message.id}"].get("blacklist_roles")
+        whitelist_roles = config[f"{interaction.message.channel.id}-{interaction.message.id}"].get(
+            "whitelist_roles"
+        )
+        blacklist_roles = config[f"{interaction.message.channel.id}-{interaction.message.id}"].get(
+            "blacklist_roles"
+        )
         if (
             whitelist_roles
-            and all(
-                role.id not in whitelist_roles for role in interaction.user.roles
-            )
+            and all(role.id not in whitelist_roles for role in interaction.user.roles)
             or (
                 blacklist_roles
-                and any(
-                    role.id in blacklist_roles for role in interaction.user.roles
-                )
+                and any(role.id in blacklist_roles for role in interaction.user.roles)
             )
         ):
             await interaction.response.send_message(

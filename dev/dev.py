@@ -44,7 +44,7 @@ class SolarizedCustom(get_style_by_name("solarized-dark")):
 
 
 def cleanup_code(code: str) -> str:
-    code = dev_commands.cleanup_code(code)
+    code = dev_commands.cleanup_code(code.strip())
     with io.StringIO(code) as codeio:
         for line in codeio:
             line = line.strip()
@@ -702,7 +702,7 @@ class Dev(Cog, dev_commands.Dev):
                 and isinstance((reference := ctx.message.reference.resolved), discord.Message)
             ):
                 if (
-                    match := re.compile(r"eval(\n)?( )?(?P<body>(.|\n)*)").search(
+                    match := re.compile(r"(eval|ev|e)(\n)?( )?(?P<body>(.|\n)*)").search(
                         reference.content
                     )
                 ) is not None and match.groupdict()["body"].strip():
@@ -712,6 +712,8 @@ class Dev(Cog, dev_commands.Dev):
                     and reference.content.count("```") == 2
                 ):
                     body = reference.content
+                else:
+                    raise commands.UserInputError()
             else:
                 raise commands.UserInputError()
         source = cleanup_code(body)

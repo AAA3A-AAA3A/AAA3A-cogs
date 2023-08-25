@@ -178,7 +178,7 @@ class CommandsButtons(Cog):
             await interaction.followup.send(_("This command doesn't exist."), ephemeral=True)
             return
 
-        if not await discord.utils.async_all(check(context) for check in context.command.checks):
+        if not await discord.utils.async_all([check(context) for check in context.command.checks]):
             await interaction.followup.send(
                 _("You are not allowed to execute this command."), ephemeral=True
             )
@@ -277,7 +277,7 @@ class CommandsButtons(Cog):
         )
         if not new_ctx.valid:
             raise commands.UserFeedbackCheckFailure(_("You have not specified a correct command."))
-        if not await discord.utils.async_all(check(new_ctx) for check in new_ctx.command.checks):
+        if not await discord.utils.async_all([check(new_ctx) for check in new_ctx.command.checks]):
             raise commands.UserFeedbackCheckFailure(_("You can't execute yourself this command."))
         if emoji is None and text_button is None:
             raise commands.UserFeedbackCheckFailure(

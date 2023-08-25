@@ -117,7 +117,7 @@ class DiscordEditView(discord.ui.View):
             command=f"edit{self._object_qualified_name.replace(' ', '').lower()} delete{'' if isinstance(self._object, discord.Guild) else f' {self._object.id}'}",
             message=self.ctx.message,
         )
-        if not await discord.utils.async_all(check(ctx) for check in ctx.command.checks):
+        if not await discord.utils.async_all([check(ctx) for check in ctx.command.checks]):
             await interaction.followup.send(
                 _("You are not allowed to execute this command."), ephemeral=True
             )

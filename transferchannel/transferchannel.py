@@ -132,7 +132,7 @@ class TransferChannel(Cog):
     ) -> typing.Tuple[int, typing.List[discord.Message]]:
         messages = []
         async for message in channel.history(
-            limit=limit, before=before, after=after, oldest_first=False
+            limit=(limit if channel != ctx.message.channel and ctx.interaction is None else limit + 1) if limit is not None else None, before=before, after=after, oldest_first=False
         ):
             if user_id is not None and message.author.id != user_id:
                 continue
@@ -141,10 +141,14 @@ class TransferChannel(Cog):
             messages.append(message)
             if number is not None and number <= len(messages):
                 break
-        messages = [message for message in messages if message.id != ctx.message.id]
+        if channel == ctx.message.channel:
+            messages = [message for message in messages if message.id != ctx.message.id]
+            # If the message has been deleted for some reason, keep the limit requested.
+            if limit is not None:
+                messages = messages[-limit:]
         count_messages = len(messages)
         if count_messages == 0:
-            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message."))
+            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any messages."))
         return count_messages, messages
 
     async def transfer_messages(
@@ -167,7 +171,7 @@ class TransferChannel(Cog):
             else:
                 files = []
             if way == "webhooks":
-                hook = await CogsUtils.get_hook(bot=ctx.bot, channel=destination)
+                hook = await CogsUtils.get_hook(bot=ctx.bot, channel=destination.parent if isinstance(destination, discord.Thread) else destination)
                 await hook.send(
                     username=message.author.display_name,
                     avatar_url=message.author.display_avatar,
@@ -177,6 +181,7 @@ class TransferChannel(Cog):
                     allowed_mentions=discord.AllowedMentions(
                         everyone=False, users=False, roles=False
                     ),
+                    thread=destination if isinstance(destination, discord.Thread) else discord.utils.MISSING,
                     wait=True,
                 )
             elif way == "embeds":
@@ -326,7 +331,7 @@ class TransferChannel(Cog):
             source=source,
             destination=destination,
             way=way,
-            limit=limit if source != ctx.channel else limit + 1,
+            limit=limit,
         )
         await ctx.send(
             _(

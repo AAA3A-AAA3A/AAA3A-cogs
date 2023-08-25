@@ -82,7 +82,7 @@ class ExportChannel(Cog):
     ) -> typing.Tuple[int, typing.List[discord.Message]]:
         messages = []
         async for message in channel.history(
-            limit=limit, before=before, after=after, oldest_first=False
+            limit=(limit if channel != ctx.message.channel and ctx.interaction is None else limit + 1) if limit is not None else None, before=before, after=after, oldest_first=False
         ):
             if user_id is not None and message.author.id != user_id:
                 continue
@@ -91,10 +91,14 @@ class ExportChannel(Cog):
             messages.append(message)
             if number is not None and number <= len(messages):
                 break
-        messages = [message for message in messages if message.id != ctx.message.id]
+        if channel == ctx.message.channel:
+            messages = [message for message in messages if message.id != ctx.message.id]
+            # If the message has been deleted for some reason, keep the limit requested.
+            if limit is not None:
+                messages = messages[-limit:]
         count_messages = len(messages)
         if count_messages == 0:
-            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any message."))
+            raise commands.UserFeedbackCheckFailure(_("Sorry. I could not find any messages."))
         return count_messages, messages
 
     async def export_messages(
@@ -228,7 +232,7 @@ class ExportChannel(Cog):
         count_messages, __, file = await self.export_messages(
             ctx,
             channel=channel,
-            limit=limit if channel != ctx.channel else limit + 1,
+            limit=limit,
         )
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file

@@ -58,7 +58,6 @@ class TransferChannel(Cog):
     def embed_from_msg(self, message: discord.Message) -> discord.Embed:
         content = message.content
         channel = message.channel
-        assert isinstance(channel, discord.TextChannel), "mypy"  # nosec
         guild = channel.guild
         author = message.author
         avatar = author.display_avatar
@@ -89,8 +88,8 @@ class TransferChannel(Cog):
 
     async def check_channels(
         self,
-        source: discord.TextChannel,
-        destination: discord.TextChannel,
+        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         way: str,
     ) -> None:
         source_permissions = source.permissions_for(source.guild.me)
@@ -123,7 +122,7 @@ class TransferChannel(Cog):
     async def get_messages(
         self,
         ctx: commands.Context,
-        channel: discord.TextChannel,
+        channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         number: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
         before: typing.Optional[typing.Union[discord.Message, discord.Object]] = None,
@@ -151,8 +150,8 @@ class TransferChannel(Cog):
     async def transfer_messages(
         self,
         ctx: commands.Context,
-        source: discord.TextChannel,
-        destination: discord.TextChannel,
+        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         way: typing.Literal["webhooks", "embeds", "messages"],
         **kwargs,
     ) -> typing.Tuple[int, typing.List[discord.Message]]:
@@ -254,8 +253,8 @@ class TransferChannel(Cog):
     async def all(
         self,
         ctx: commands.Context,
-        source: discord.TextChannel,
-        destination: discord.TextChannel,
+        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
     ) -> None:
         """Transfer all messages from a channel to another channel. This might take a long time.
@@ -279,7 +278,7 @@ class TransferChannel(Cog):
         self,
         ctx: commands.Context,
         message: discord.Message,
-        destination: discord.TextChannel,
+        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
     ) -> None:
         """Transfer a specific message to another channel. This might take a long time.
@@ -309,8 +308,8 @@ class TransferChannel(Cog):
     async def messages(
         self,
         ctx: commands.Context,
-        source: discord.TextChannel,
-        destination: discord.TextChannel,
+        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         limit: int,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
     ) -> None:
@@ -339,8 +338,8 @@ class TransferChannel(Cog):
     async def before(
         self,
         ctx: commands.Context,
-        source: discord.TextChannel,
-        destination: discord.TextChannel,
+        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         before: MessageOrObjectConverter,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
     ) -> None:
@@ -365,8 +364,8 @@ class TransferChannel(Cog):
     async def after(
         self,
         ctx: commands.Context,
-        source: discord.TextChannel,
-        destination: discord.TextChannel,
+        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         after: MessageOrObjectConverter,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
     ) -> None:
@@ -391,8 +390,8 @@ class TransferChannel(Cog):
     async def between(
         self,
         ctx: commands.Context,
-        source: discord.TextChannel,
-        destination: discord.TextChannel,
+        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         before: MessageOrObjectConverter,
         after: MessageOrObjectConverter,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
@@ -418,8 +417,8 @@ class TransferChannel(Cog):
     async def user(
         self,
         ctx: commands.Context,
-        source: discord.TextChannel,
-        destination: discord.TextChannel,
+        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         user: discord.User,
         limit: typing.Optional[int] = None,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
@@ -450,8 +449,8 @@ class TransferChannel(Cog):
     async def bot(
         self,
         ctx: commands.Context,
-        source: discord.TextChannel,
-        destination: discord.TextChannel,
+        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         bot: typing.Optional[bool] = True,
         limit: typing.Optional[int] = None,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",

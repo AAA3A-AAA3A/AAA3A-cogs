@@ -72,7 +72,7 @@ class ExportChannel(Cog):
     async def get_messages(
         self,
         ctx: commands.Context,
-        channel: discord.TextChannel,
+        channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         number: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
         before: typing.Optional[typing.Union[discord.Message, discord.Object]] = None,
@@ -98,7 +98,7 @@ class ExportChannel(Cog):
         return count_messages, messages
 
     async def export_messages(
-        self, ctx: commands.Context, channel: discord.TextChannel, **kwargs
+        self, ctx: commands.Context, channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread], **kwargs
     ) -> typing.Union[int, typing.List[discord.Message], discord.File]:
         if "messages" in kwargs:
             messages = kwargs["messages"]
@@ -110,7 +110,7 @@ class ExportChannel(Cog):
             @classmethod
             async def export(
                 cls,
-                channel: discord.TextChannel,
+                channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
                 messages: typing.List[discord.Message],
                 tz_info="UTC",
                 guild: typing.Optional[discord.Guild] = None,
@@ -157,7 +157,7 @@ class ExportChannel(Cog):
         """Export all or a part of the messages of a channel in an html file."""
 
     @exportchannel.command()
-    async def all(self, ctx: commands.Context, channel: discord.TextChannel = None) -> None:
+    async def all(self, ctx: commands.Context, channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread] = None) -> None:
         """Export all of a channel's messages to an html file.
 
         Please note: all attachments and user avatars are saved with the Discord link in this file.
@@ -214,7 +214,7 @@ class ExportChannel(Cog):
 
     @exportchannel.command()
     async def messages(
-        self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], limit: int
+        self, ctx: commands.Context, channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]], limit: int
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -249,7 +249,7 @@ class ExportChannel(Cog):
     async def before(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[discord.TextChannel],
+        channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]],
         before: MessageOrObjectConverter,
     ) -> None:
         """Export a part of the messages of a channel in an html file.
@@ -281,7 +281,7 @@ class ExportChannel(Cog):
     async def after(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[discord.TextChannel],
+        channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]],
         after: MessageOrObjectConverter,
     ) -> None:
         """Export a part of the messages of a channel in an html file.
@@ -313,7 +313,7 @@ class ExportChannel(Cog):
     async def between(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[discord.TextChannel],
+        channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]],
         before: MessageOrObjectConverter,
         after: MessageOrObjectConverter,
     ) -> None:
@@ -348,7 +348,7 @@ class ExportChannel(Cog):
     async def user(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[discord.TextChannel],
+        channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]],
         user: discord.User,
         limit: typing.Optional[int] = None,
     ) -> None:
@@ -386,7 +386,7 @@ class ExportChannel(Cog):
     async def bot(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[discord.TextChannel],
+        channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]],
         bot: typing.Optional[bool] = True,
         limit: typing.Optional[int] = None,
     ) -> None:

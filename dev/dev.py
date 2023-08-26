@@ -642,7 +642,7 @@ class Dev(Cog, dev_commands.Dev):
                 and isinstance((reference := ctx.message.reference.resolved), discord.Message)
             ):
                 if (
-                    match := re.compile(r"(debug|jsk py|jishaku py)(\n)?( )?(?P<code>(.|\n)*)").search(
+                    match := re.compile(r"(debug|(jsk|jishaku) (py|python|eval|ev))(\n)?( )?(?P<code>(.|\n)*)").search(
                         reference.content
                     )
                 ) is not None and match.groupdict()["code"].strip():
@@ -702,7 +702,7 @@ class Dev(Cog, dev_commands.Dev):
                 and isinstance((reference := ctx.message.reference.resolved), discord.Message)
             ):
                 if (
-                    match := re.compile(r"(eval|ev|e|jsk py|jishaku py)(\n)?( )?(?P<body>(.|\n)*)").search(
+                    match := re.compile(r"(eval|ev|e|(jsk|jishaku) (py|python|eval|ev)|(runcode|executecode) (py|python))(\n)?( )?(?P<body>(.|\n)*)").search(
                         reference.content
                     )
                 ) is not None and match.groupdict()["body"].strip():

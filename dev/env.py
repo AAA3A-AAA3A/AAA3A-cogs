@@ -171,7 +171,6 @@ class DevEnv(typing.Dict[str, typing.Any]):
         env = cls(  # In Dev cog by Zeph.
             **{
                 "me": ctx.me,
-                "category": ctx.channel.category,
                 # Redirect builtin console functions to rich.
                 "print": rich.print,
                 "help": functools.partial(rich.inspect, help=True),
@@ -185,6 +184,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "__spec__": None,
             }
         )
+        if getattr(ctx.channel, "category", None) is not None:
+            env["category"] = ctx.channel.category
         Dev = ctx.bot.get_cog("Dev")
         if use_extended_environment:
             env.update(cls.get_env(ctx.bot, ctx))  # My nice env!

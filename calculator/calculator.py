@@ -5,13 +5,13 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from .view import CalculatorView  # isort:skip
-
 import datetime
 
 from expr import EvaluatorError, evaluate
 from expr.builtin import pi, tau
 from redbot.core.utils.chat_formatting import box
+
+from .view import CalculatorView  # isort:skip
 
 # from TagScriptEngine import Interpreter, block
 
@@ -90,18 +90,34 @@ class Calculator(Cog):
         expression = expression.replace("**", "^")
         expression = expression.replace("x", "*")
         expression = expression.replace("√", "sqrt")
+        expression = expression.replace("e", "E")
         for x in self.x:
             if self.x[x] in expression:
                 expression = expression.replace(self.x[x], f"^{x}")
         builtins = {
             "abs": abs,
+            # "min": min,
+            # "max": max,
         }
         constants = {
             "π": pi,
             "τ": tau,
+            "k": 1_000,
         }
+        suffixes = ["k", "m", "b", "t", "q", "Q", "s", "S", "o", "n", "d", "U", "D", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Vi"]  # ["k", "M", "B", "T", "P", "E", "Z", "Y"]
+        number = 1000
+        for suffix in suffixes:
+            constants[suffix] = number
+            number *= 1000
         try:
-            result = evaluate(expression, builtins=builtins, constants=constants)
+            result = evaluate(
+                expression,
+                builtins=builtins,
+                constants=constants,
+                max_safe_number=9e1000,  # 9e9
+                max_exponent=2_097_152,  # 128 * 128 * 128
+                max_factorial=262_144,  # 64 * 64 * 64
+            )
         except (
             EvaluatorError,
             TypeError,
@@ -235,7 +251,7 @@ class Calculator(Cog):
             )
         ) is None:
             return
-        if payload.user_id != message.author.id:
+        if payload.user_id != message.author.id and payload.user_id not in self.bot.owner_ids:
             return
         self.cache.remove(message)
         if (

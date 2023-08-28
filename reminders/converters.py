@@ -184,11 +184,7 @@ class TimeConverter(commands.Converter):
                             }
                         ]
                     ),
-                    (
-                        text.strip("".join(discord.ext.commands.view._all_quotes))
-                        if text is not None
-                        else None
-                    ),
+                    text,
                 )
             except OSError as e:
                 raise ValueError(f"• Cron trigger parsing: {e}.")
@@ -287,11 +283,7 @@ class TimeConverter(commands.Converter):
                 repeat,
                 reminder_text.strip()
                 if return_text and reminder_text
-                else (
-                    text.strip("".join(discord.ext.commands.view._all_quotes))
-                    if text is not None
-                    else None
-                ),
+                else text,
             )
 
         @executor()
@@ -437,11 +429,7 @@ class TimeConverter(commands.Converter):
             #     parsed_date = parsed_date.replace(hour=9)
             # parsed_date = parsed_date.replace(tzinfo=tz)
             parsed_date = parsed_date.astimezone(tz=datetime.timezone.utc)
-            return parsed_date, reminder_text.strip() if return_text and reminder_text else (
-                text.strip("".join(discord.ext.commands.view._all_quotes))
-                if text is not None
-                else None
-            )
+            return parsed_date, reminder_text.strip() if return_text and reminder_text else text
 
         expires_at = None
         repeat = None
@@ -517,7 +505,7 @@ class TimeConverter(commands.Converter):
         if content is None:
             return utc_now, expires_at, repeat
         else:
-            return utc_now, expires_at, repeat, text.strip() if text is not None else None
+            return utc_now, expires_at, repeat, text.strip().strip("".join(discord.ext.commands.view._all_quotes)) if text is not None else None
 
 
 class ContentConverter(commands.Converter):  # no longer used

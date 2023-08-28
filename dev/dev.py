@@ -257,7 +257,7 @@ class DevOutput(dev_commands.DevOutput):
                 _line_text = textwrap.dedent(line_text)
                 if _line_text.startswith("yield "):
                     _raw_source[line] = textwrap.indent(
-                        f"print(repr({_line_text[6:]}))", (len(line_text) - len(_line_text)) * " "
+                        f"print(repr(({_line_text[6:]})))", (len(line_text) - len(_line_text)) * " "
                     )
             self.raw_source = "\n".join(_raw_source)
         except SyntaxError:

@@ -2738,13 +2738,15 @@ class GuildStats(Cog):
         return text_size
 
     def number_to_text_with_suffix(self, number: float) -> str:
-        suffixes = ["", "k", "M", "B", "T", "P", "E", "Z", "Y"]
-        index = 0
-        while abs(number) >= 1000 and index < len(suffixes) - 1:
+        suffixes = ["k", "m", "b", "t", "q", "Q", "s", "S", "o", "n", "d", "U", "D", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Vi"]  # ["k", "M", "B", "T", "P", "E", "Z", "Y"]
+        index = None
+        while abs(number) >= 1000 and (index or -1) < len(suffixes) - 1:
             number /= 1000.0
+            if index is None:
+                index = 0
             index += 1
         # return f"{int(number) if number == int(number) else (f'{number:.1f}' if f'{number:.1f}' != '0.0' else (f'{number:.2f}' if f'{number:.2f}' != '0.0' else '0'))}{suffixes[index]}"
-        return f"{int(number) if number == int(number) else ((int(float(f'{number:.1f}')) if float(f'{number:.1f}') == int(float(f'{number:.1f}')) else f'{number:.1f}') if f'{number:.1f}' != '0.0' else ((int(float(f'{number:.2f}')) if float(f'{number:.2f}') == int(float(f'{number:.2f}')) else f'{number:.2f}') if f'{number:.2f}' != '0.0' else '0'))}{suffixes[index]}"
+        return f"{int(number) if number == int(number) else ((int(float(f'{number:.1f}')) if float(f'{number:.1f}') == int(float(f'{number:.1f}')) else f'{number:.1f}') if f'{number:.1f}' != '0.0' else ((int(float(f'{number:.2f}')) if float(f'{number:.2f}') == int(float(f'{number:.2f}')) else f'{number:.2f}') if f'{number:.2f}' != '0.0' else '0'))}{suffixes[index] if index is not None else ''}"
 
     def remove_unprintable_characters(self, text: str) -> str:
         return (

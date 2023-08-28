@@ -204,7 +204,7 @@ class Calculator(Cog):
             return
         if message.webhook_id is not None or message.author.bot:
             return
-        if not message.content or message.content.replace(" ", "").isdecimal():
+        if not message.content or message.content.replace(" ", "").lstrip("+-").isdecimal():
             return
         if not await discord.utils.async_all(
             [check(await self.bot.get_context(message)) for check in self._calculate.checks]

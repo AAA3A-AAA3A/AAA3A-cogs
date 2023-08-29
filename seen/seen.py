@@ -1098,57 +1098,63 @@ class Seen(Cog):
             typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         reverse: typing.Optional[bool] = False,
+        include_role: typing.Optional[discord.Role] = None,
+        exclude_role: typing.Optional[discord.Role] = None,
     ) -> None:
         await self.save_to_config()
         if _object == "users":
             # prefix = "@"
             users = await self.config.all_users()
             all_data = {
-                ctx.bot.get_user(user): data
-                for user, data in users.items()
-                if ctx.bot.get_user(user) is not None
+                user: data
+                for user_id, data in users.items()
+                if (user := ctx.bot.get_user(user_id)) is not None
             }
         elif _object == "members":
             # prefix = "@"
             members = await self.config.all_members(ctx.guild)
             all_data = {
-                ctx.guild.get_member(member): data
-                for member, data in members.items()
-                if ctx.guild.get_member(member) is not None
+                member: data
+                for member_id, data in members.items()
+                if (
+                    (member := ctx.guild.get_member(member_id)) is not None
+                    and (include_role is None or include_role in member.roles)
+                    and (exclude_role is None or exclude_role not in member.roles)
+                )
             }
         elif _object == "roles":
             # prefix = "@&"
             roles = await self.config.all_roles()
             all_data = {
-                ctx.guild.get_role(role): data
-                for role, data in roles.items()
-                if ctx.guild.get_role(role) is not None
+                role: data
+                for role_id, data in roles.items()
+                if (role := ctx.guild.get_role(role_id)) is not None
             }
         elif _object == "channels":
             # prefix = "#"
             channels = await self.config.all_channels()
             all_data = {
-                ctx.guild.get_channel(channel): data
-                for channel, data in channels.items()
-                if ctx.guild.get_channel(channel) is not None
-                and ctx.guild.get_channel(channel).type == discord.ChannelType.text
+                channel: data
+                for channel_id, data in channels.items()
+                if (channel := ctx.guild.get_channel(channel_id)) is not None
+                and channel.type == discord.ChannelType.text
             }
         elif _object == "categories":
             # prefix = ""
             categories = await self.config.all_channels()
             all_data = {
-                ctx.guild.get_channel(category): data
-                for category, data in categories.items()
-                if ctx.guild.get_channel(category) is not None
-                and ctx.guild.get_channel(category).type == discord.ChannelType.category
+                category: data
+                for category_id, data in categories.items()
+                if (category := ctx.guild.get_channel(category_id)) is not None
+                and category.type == discord.ChannelType.category
             }
         elif _object == "guilds":
             # prefix = ""
             guilds = await self.config.all_guilds()
             all_data = {
-                ctx.bot.get_guild(guild): data
-                for guild, data in guilds.items()
-                if ctx.bot.get_guild(guild) is not None
+                guild: data
+                for guild_id, data in guilds.items()
+                if (guild := ctx.bot.get_guild(guild_id)) is not None
             }
         data = {}
         for x in all_data:
@@ -1174,10 +1180,10 @@ class Seen(Cog):
         embeds = []
         description = []
         all_count = len(data)
-        for count, (x, y) in enumerate(
+        for count, (x, last_seen) in enumerate(
             sorted(data.items(), key=lambda x: x[1][0], reverse=not reverse), start=1
         ):
-            seen = y[1]
+            seen = last_seen[1]
             description.append(
                 f"• **{all_count + 1 - count if reverse else count}** - **{getattr(x, 'mention', getattr(x, 'name', x))}**: {seen}."  # {prefix}{getattr(x, 'display_name', getattr(x, 'name', x))}
             )
@@ -1400,13 +1406,22 @@ class Seen(Cog):
             typing.Literal["members", "roles", "channels", "categories", "guilds", "users"]
         ] = "members",
         reverse: typing.Optional[bool] = False,
+        include_role: typing.Optional[discord.Role] = None,
+        exclude_role: typing.Optional[discord.Role] = None,
     ) -> None:
         """View a Seen Board for members/roles/channels/categories/guilds/users!"""
         if _object in ["guilds", "users"] and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserFeedbackCheckFailure(
                 _("You're not allowed to view the Seen board for guilds and users.")
             )
-        await self.send_board(ctx, _object=_object, _type=_type, reverse=reverse)
+        await self.send_board(
+            ctx,
+            _object=_object,
+            _type=_type,
+            reverse=reverse,
+            include_role=include_role,
+            exclude_role=exclude_role,
+        )
 
     @commands.is_owner()
     @seen.command()

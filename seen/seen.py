@@ -624,16 +624,17 @@ class Seen(Cog):
             return
         if not isinstance(message.author, discord.Member):
             return
+        # Just don't take in account Seen messages.
         if not message.author.bot:
             ctx: commands.Context = await self.bot.get_context(message)
-            if ctx.valid and (ctx.command.cog_name is not None and ctx.command.cog_name == "Seen"):
+            if ctx.valid and (ctx.cog is not None and ctx.cog.qualified_name == "Seen"):
                 return
         if (
             message.author.id == message.guild.me.id
             and len(message.embeds) == 1
             and (
                 "Seen".lower()
-                in message.embeds[0].to_dict().get("author", {}).get("name", "").lower()
+                in message.embeds[0].to_dict().get("description", "").lower()
                 or "Seen".lower() in message.embeds[0].to_dict().get("title", "").lower()
             )
         ):
@@ -664,6 +665,21 @@ class Seen(Cog):
         if after.guild is None:
             return
         if not isinstance(after.author, discord.Member):
+            return
+        # Just don't take in account Seen messages.
+        if not after.author.bot:
+            ctx: commands.Context = await self.bot.get_context(after)
+            if ctx.valid and (ctx.cog is not None and ctx.cog.qualified_name == "Seen"):
+                return
+        if (
+            after.author.id == after.guild.me.id
+            and len(after.embeds) == 1
+            and (
+                "Seen".lower()
+                in after.embeds[0].to_dict().get("description", "").lower()
+                or "Seen".lower() in after.embeds[0].to_dict().get("title", "").lower()
+            )
+        ):
             return
         ignored_users = await self.config.ignored_users()
         if after.author.id in ignored_users:

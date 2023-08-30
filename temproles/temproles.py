@@ -165,7 +165,7 @@ class TempRoles(Cog):
                                             embed=discord.Embed(
                                                 title=_("Temp Roles"),
                                                 description=_(
-                                                    "Temp Role {temp_role.mention} ({role.id}) has been automatically unassigned from {member.mention} ({member.id})."
+                                                    "Temp Role {temp_role.mention} ({temp_role.id}) has been automatically unassigned from {member.mention} ({member.id})."
                                                 ).format(temp_role=temp_role, member=member),
                                                 color=await self.bot.get_embed_color(logs_channel),
                                             )

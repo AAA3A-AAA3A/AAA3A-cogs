@@ -112,7 +112,7 @@ class DevOutput(dev_commands.DevOutput):
                         result = str(self.result)
                     elif isinstance(self.result, collections.abc.Iterable) and not (
                         output_mode == "repr" and isinstance(self.result, str)
-                    ):
+                    ) or hasattr(self.result, "__dataclass_fields__"):
                         result = self.result
                     else:
                         result = repr(self.result)
@@ -145,6 +145,7 @@ class DevOutput(dev_commands.DevOutput):
                 await self.ctx.react_quietly(reaction="❌")
             else:
                 await self.ctx.react_quietly(
+                    # sourcery skip: swap-if-expression
                     reaction=commands.context.TICK
                     if not hasattr(commands.context, "MORE_TICKS")
                     else random.choice(list(commands.context.MORE_TICKS))

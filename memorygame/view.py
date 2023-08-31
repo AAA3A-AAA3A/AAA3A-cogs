@@ -204,21 +204,19 @@ class MemoryGameView(discord.ui.View):
             reduction_per_second = config["reduction_per_second"]
             reduction_per_wrong_match = config["reduction_per_wrong_match"]
             member_config = await self.cog.config.member(self.ctx.author).all()
-            member_config["score"] += (
-                max_prize
-                - (game_time * reduction_per_second)
-                - (self._wrong_matches * reduction_per_wrong_match)
+            final_prize = int(
+                (
+                    max_prize
+                    - (game_time * reduction_per_second)
+                    - (self._wrong_matches * reduction_per_wrong_match)
+                ) * (int(self.difficulty[0]) / 5)
             )
+            member_config["score"] += final_prize
             member_config["wins"] += 1
             member_config["games"] += 1
             await self.cog.config.member(self.ctx.author).set(member_config)
             if self.cog.config.guild(self.ctx.guild).red_economy():
                 # https://canary.discord.com/channels/133049272517001216/133251234164375552/1089212578279997521
-                final_prize = (
-                    max_prize
-                    - (game_time * reduction_per_second)
-                    - (self._wrong_matches * reduction_per_wrong_match)
-                ) * (int(self.difficulty[0]) / 5)
                 try:
                     await bank.deposit_credits(self.ctx.author, final_prize)
                 except BalanceTooHigh as e:

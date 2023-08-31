@@ -129,7 +129,7 @@ class Minecraft(Cog):
                         exc_info=e,
                     )
                     continue
-                if check_players:
+                if check_players and "sample" in status.raw["players"]:
                     players = {player["id"]: player for player in status.raw["players"]["sample"]}
                     players = [players[_id] for _id in set(list(players.keys()))]
                 else:

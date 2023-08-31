@@ -1204,7 +1204,7 @@ class Seen(Cog):
         ):
             seen = last_seen[1]
             description.append(
-                f"• **{all_count + 1 - count if reverse else count}** - **{getattr(x, 'mention', getattr(x, 'name', x))} ({x.id})**: {seen}."  # {prefix}{getattr(x, 'display_name', getattr(x, 'name', x))}
+                f"• **{all_count + 1 - count if reverse else count}** - **{getattr(x, 'mention', getattr(x, 'name', x))}** (`{x.id}`): {seen.capitalize()}."  # {prefix}{getattr(x, 'display_name', getattr(x, 'name', x))}
             )
         description = "\n".join(description)
         for text in pagify(description, page_length=2000):

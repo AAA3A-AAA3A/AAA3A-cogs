@@ -1114,6 +1114,7 @@ class Seen(Cog):
             typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         reverse: typing.Optional[bool] = False,
+        bots: typing.Optional[bool] = None,
         include_role: typing.Optional[discord.Role] = None,
         exclude_role: typing.Optional[discord.Role] = None,
     ) -> None:
@@ -1125,6 +1126,7 @@ class Seen(Cog):
                 user: data
                 for user_id, data in users.items()
                 if (user := ctx.bot.get_user(user_id)) is not None
+                and (bots is None or user.bot == bots)
             }
         elif _object == "members":
             # prefix = "@"
@@ -1134,6 +1136,7 @@ class Seen(Cog):
                 for member_id, data in members.items()
                 if (
                     (member := ctx.guild.get_member(member_id)) is not None
+                    and (bots is None or member.bot == bots)
                     and (include_role is None or include_role in member.roles)
                     and (exclude_role is None or exclude_role not in member.roles)
                 )
@@ -1422,10 +1425,14 @@ class Seen(Cog):
             typing.Literal["members", "roles", "channels", "categories", "guilds", "users"]
         ] = "members",
         reverse: typing.Optional[bool] = False,
+        bots: typing.Optional[bool] = None,
         include_role: typing.Optional[discord.Role] = None,
         exclude_role: typing.Optional[discord.Role] = None,
     ) -> None:
-        """View a Seen Board for members/roles/channels/categories/guilds/users!"""
+        """View a Seen Board for members/roles/channels/categories/guilds/users!
+
+        `bots` is a parameter for `members` and `users`. `include_role` and `exclude_role` are parameters for only `members`.
+        """
         if _object in ["guilds", "users"] and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserFeedbackCheckFailure(
                 _("You're not allowed to view the Seen board for guilds and users.")
@@ -1435,6 +1442,7 @@ class Seen(Cog):
             _object=_object,
             _type=_type,
             reverse=reverse,
+            bots=bots,
             include_role=include_role,
             exclude_role=exclude_role,
         )

@@ -18,7 +18,7 @@ import time
 import traceback
 from contextvars import ContextVar
 from functools import partial
-from io import StringIO
+from io import BytesIO, StringIO
 
 import aiohttp
 import redbot
@@ -583,6 +583,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "aiohttp": lambda ctx: aiohttp,
                 "session": lambda ctx: ctx.bot.get_cog("Dev")._session,
                 "get_url": get_url,
+                "BytesIO": lambda ctx: BytesIO,
                 # TextWrap
                 "textwrap": lambda ctx: textwrap,
                 # Search attributes

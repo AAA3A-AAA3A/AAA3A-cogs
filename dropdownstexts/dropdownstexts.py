@@ -280,7 +280,7 @@ class DropdownsTexts(Cog):
         await self.config.guild(ctx.guild).dropdowns_texts.set(config)
         await self.list.callback(self, ctx, message=message)
 
-    @dropdownstexts.command()
+    @dropdownstexts.command(aliases=["-"])
     async def remove(
         self,
         ctx: commands.Context,

@@ -5,6 +5,7 @@ import typing  # isort:skip
 
 import asyncio
 import builtins
+import collections
 import datetime
 import functools
 import importlib
@@ -444,10 +445,10 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 logger.setLevel(level)
             return len(_loggers)
 
-        def params(x: typing.Any) -> None:
-            rich.print({param.name: param for param in inspect.signature(x).parameters.values()})
+        def params(_object: typing.Any) -> None:
+            return {param.name: param for param in inspect.signature(_object).parameters.values()}
 
-        def find_all(predicate, iterable) -> typing.List[typing.Any]:
+        def find_all(predicate, iterable: collections.abc.Iterable) -> typing.List[typing.Any]:
             if hasattr(iterable, "__aiter__"):
 
                 async def _a_find_all():
@@ -457,7 +458,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
             else:
                 return [element for element in iterable if predicate(element)]
 
-        def get_all(iterable, **attrs) -> typing.List[typing.Any]:
+        def get_all(iterable: collections.abc.Iterable, **attrs) -> typing.List[typing.Any]:
             attrget = discord.utils.attrgetter
             converted = [
                 (attrget(attr.replace("__", ".")), value) for attr, value in attrs.items()
@@ -559,10 +560,10 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 # Inspect
                 "inspect": lambda ctx: inspect,
                 "source": lambda ctx: lambda _object: rich.print(
-                    textwrap.dedent(inspect.getsource(_object))
+                    textwrap.dedent(inspect.getsource(_object)).strip()
                 ),
                 "gs": lambda ctx: lambda _object: rich.print(
-                    textwrap.dedent(inspect.getsource(_object))
+                    textwrap.dedent(inspect.getsource(_object)).strip()
                 ),
                 # "gs": lambda ctx: inspect.getsource,
                 # logging

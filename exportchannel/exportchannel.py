@@ -31,10 +31,10 @@ class MessageOrObjectConverter(commands.Converter):
         self, ctx: commands.Context, argument: str
     ) -> typing.Union[discord.Message, discord.Object]:
         try:
-            await commands.MessageConverter().convert(ctx, argument=argument)
+            return await commands.MessageConverter().convert(ctx, argument=argument)
         except commands.BadArgument as e:
             try:
-                await commands.ObjectConverter().convert(ctx, argument=argument)
+                return await commands.ObjectConverter().convert(ctx, argument=argument)
             except commands.BadArgument:
                 raise e
 

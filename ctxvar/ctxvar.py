@@ -9,13 +9,17 @@ import ast
 import datetime
 import inspect
 import io
+import json
+import rich
 import time
 import traceback
 import types
 from copy import copy
 from textwrap import dedent
 
-import rich
+from discord_markdown_ast_parser import parse_to_dict
+
+
 from redbot.core.dev_commands import cleanup_code, sanitize_output
 from redbot.core.utils.chat_formatting import bold, box
 
@@ -75,6 +79,16 @@ class WhatIsConverter(commands.Converter):
                 box("".join(traceback.format_exception_only(type(e), e)), lang="py")
             )
         return _object
+
+
+class MessageOrStrConverter(commands.Converter):
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Union[discord.Message, str]:
+        try:
+            return await commands.MessageConverter().convert(ctx, argument=argument)
+        except commands.BadArgument:
+            return argument
 
 
 @cog_i18n(_)
@@ -417,3 +431,16 @@ class CtxVar(Cog):
         result.update(**result2)
         _result = sanitize_output(ctx, "".join(f"\n[{k}] : {r}" for k, r in result.items()))
         await Menu(pages=_result.strip(), lang="ini").start(ctx)
+
+    @ctxvar.command(name="parsemarkdown", aliases=["parsemessage"])
+    async def _parse_markdown(
+        self,
+        ctx: commands.Context,
+        *,
+        message_or_content: MessageOrStrConverter,
+    ) -> None:
+        """Parse the Markdown syntax for a specified message's content or a string."""
+        if isinstance(message_or_content, discord.Message) and not message_or_content.content:
+            raise commands.UserInputError()
+        result = json.dumps(parse_to_dict(message_or_content.content if isinstance(message_or_content, discord.Message) else message_or_content), indent=4)
+        await Menu(pages=result.strip(), lang="py").start(ctx)

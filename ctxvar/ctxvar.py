@@ -442,5 +442,8 @@ class CtxVar(Cog):
         """Parse the Markdown syntax for a specified message's content or a string."""
         if isinstance(message_or_content, discord.Message) and not message_or_content.content:
             raise commands.UserInputError()
-        result = json.dumps(parse_to_dict(message_or_content.content if isinstance(message_or_content, discord.Message) else message_or_content), indent=4)
+        try:
+            result = json.dumps(parse_to_dict(message_or_content.content if isinstance(message_or_content, discord.Message) else message_or_content), indent=4)
+        except (ValueError, TypeError):
+            raise commands.UserFeedbackCheckFailure(_("Error in the module used for this command."))
         await Menu(pages=result.strip(), lang="py").start(ctx)

@@ -132,10 +132,43 @@ class DevOutput(dev_commands.DevOutput):
         output_mode: typing.Literal["repr", "repr_or_str", "str"] = "repr",
         ansi_formatting: bool = False,
         send_interactive: bool = False,
+        send_dpy_objects: bool = True,
         wait: bool = True,
     ) -> None:
+        if send_dpy_objects and self.result is not None:
+            kwargs = {}
+            channel_permissions = self.ctx.channel.permissions_for(self.ctx.me)
+            if isinstance(self.result, discord.Embed) and channel_permissions.embed_links:
+                kwargs["embed"] = self.result
+            elif isinstance(self.result, discord.File) and channel_permissions.attach_files:
+                kwargs["file"] = self.result
+            elif isinstance(self.result, discord.abc.Iterable):
+                kwargs = {"embeds": [], "files": []}
+                for x in self.result:
+                    if isinstance(x, discord.Embed) and channel_permissions.embed_links:
+                        if "embeds" not in kwargs:
+                            kwargs["embeds"] = []
+                        if len(kwargs["embeds"]) < 10 and (sum(len(embed) for embed in kwargs["embeds"]) + len(x)) <= 6000:
+                            kwargs["embeds"].append(x)
+                    elif isinstance(x, discord.File) and channel_permissions.attach_files:
+                        if "files" not in kwargs:
+                            kwargs["files"] = []
+                        if (sum(len(file) for file in kwargs["files"]) + len(x)) <= 6000:
+                            kwargs["files"].append(x)
+                for key in ("embeds", "files"):
+                    if not kwargs[key]:
+                        del kwargs[key]
+            if kwargs:
+                try:
+                    await Menu(pages=[kwargs]).start(self.ctx, wait=False)
+                except discord.HTTPException:
+                    pass
         if send_interactive:
-            await super().send(tick=tick)
+            task = self.ctx.send_interactive(dev_commands.get_pages(self.__str__(output_mode=output_mode)), box_lang="py")
+            if wait:
+                await task
+            else:
+                await asyncio.create_task(task)
         elif pages := self.__str__(output_mode=output_mode):
             await Menu(pages=pages, lang="ansi" if ansi_formatting else "py").start(
                 self.ctx, wait=wait
@@ -400,6 +433,7 @@ class Dev(Cog, dev_commands.Dev):
             "rich_tracebacks": False,
             "ansi_formatting": False,
             "send_interactive": False,
+            "send_dpy_objects": True,
             "use_last_locals": True,
             "downloader_already_agreed": False,
             "use_extended_environment": True,
@@ -433,6 +467,11 @@ class Dev(Cog, dev_commands.Dev):
                 "path": ["send_interactive"],
                 "converter": bool,
                 "description": "Send results with `commands.Context.send_interactive`, not a Menu.",
+            },
+            "send_dpy_objects": {
+                "path": ["send_dpy_objects"],
+                "converter": bool,
+                "description": "If the result is an embed/file/attachment object or an iterable of these, send.",
             },
             "use_last_locals": {
                 "path": ["use_last_locals"],
@@ -595,6 +634,7 @@ class Dev(Cog, dev_commands.Dev):
             output_mode=await self.config.output_mode(),
             ansi_formatting=await self.config.ansi_formatting(),
             send_interactive=send_interactive,
+            send_dpy_objects=await self.config.send_dpy_objects(),
             wait=wait,
         )
         if wait and not send_coroutine:

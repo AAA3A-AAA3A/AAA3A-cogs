@@ -105,7 +105,7 @@ class Reminders(Cog):
         ] = {
             "maximum_user_reminders": {
                 "converter": commands.Range[int, 1, 125],
-                "description": "Change the reminders limit for a user.",
+                "description": "Change the reminders limit for each user (except bot owners).",
                 "aliases": ["maxuserreminders"],
             },
             "me_too": {
@@ -114,7 +114,7 @@ class Reminders(Cog):
             },
             "repeat_allowed": {
                 "converter": bool,
-                "description": "Enable or disabled repeat option for users.",
+                "description": "Enable or disabled repeat option for users (except bot owners).",
             },
             "minimum_repeat": {
                 "converter": commands.Range[int, 10, None],

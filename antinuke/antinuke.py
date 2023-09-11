@@ -46,17 +46,14 @@ class AntiNuke(Cog, DashboardIntegration):
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
         ] = {
             "enabled": {
-                "path": ["enabled"],
                 "converter": bool,
                 "description": "Enable of disable AntiNuke system.",
             },
             "logschannel": {
-                "path": ["logschannel"],
                 "converter": discord.TextChannel,
                 "description": "Set a channel where events will be sent.",
             },
             "user_dm": {
-                "path": ["user_dm"],
                 "converter": bool,
                 "description": "If enabled, the detected user will receive a DM.",
                 "aliases": ["dmuser"],

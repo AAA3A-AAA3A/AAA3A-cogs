@@ -295,8 +295,10 @@ class CalculatorView(discord.ui.View):
             return
         else:
             self._expression = await self.cog.input_formatter(
-                self._expression, str(interaction.data["custom_id"])
+                self._expression, interaction.data["custom_id"]
             )
+        if self._expression is not None:
+            self._expression = self._expression.replace(",", ".")
         await interaction.response.edit_message(
             embed=await self.cog.get_embed(self.ctx, self._expression, self._result)
         )

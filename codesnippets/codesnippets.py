@@ -97,7 +97,6 @@ class CodeSnippets(Cog, DashboardIntegration):
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
         ] = {
             "channels": {
-                "path": ["channels"],
                 "converter": typing.List[
                     typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
                 ],

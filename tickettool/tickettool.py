@@ -107,75 +107,61 @@ class TicketTool(settings, DashboardIntegration, Cog):
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], typing.Any, str]]
         ] = {
-            "enable": {"path": ["enable"], "converter": bool, "description": "Enable the system."},
+            "enable": {"converter": bool, "description": "Enable the system."},
             "logschannel": {
-                "path": ["logschannel"],
                 "converter": discord.TextChannel,
                 "description": "Set the channel where the logs will be saved.",
             },
             "forum_channel": {
-                "path": ["forum_channel"],
                 "converter": typing.Union[discord.ForumChannel, discord.TextChannel],
                 "description": "Set the forum channel where the opened tickets will be, or a text channel to use private threads. If it's set, `category_open` and `category_close` will be ignored (except for existing tickets).",
             },
             "category_open": {
-                "path": ["category_open"],
                 "converter": discord.CategoryChannel,
                 "description": "Set the category where the opened tickets will be.",
             },
             "category_close": {
-                "path": ["category_close"],
                 "converter": discord.CategoryChannel,
                 "description": "Set the category where the closed tickets will be.",
             },
             "admin_role": {
-                "path": ["admin_role"],
                 "converter": discord.Role,
                 "description": "Users with this role will have full permissions for tickets, but will not be able to set up the cog.",
             },
             "support_role": {
-                "path": ["support_role"],
                 "converter": discord.Role,
                 "description": "Users with this role will be able to participate and claim the ticket.",
             },
             "view_role": {
-                "path": ["view_role"],
                 "converter": discord.Role,
                 "description": "Users with this role will only be able to read messages from the ticket, but not send them.",
             },
             "ping_role": {
-                "path": ["ping_role"],
                 "converter": discord.Role,
                 "description": "This role will be pinged automatically when the ticket is created, but does not give any additional permissions.",
             },
             "ticket_role": {
-                "path": ["ticket_role"],
                 "converter": discord.Role,
                 "description": "This role will be added automatically to open tickets owners.",
             },
             "dynamic_channel_name": {
-                "path": ["dynamic_channel_name"],
                 "converter": str,
                 "description": "Set the template that will be used to name the channel when creating a ticket.\n\n`{ticket_id}` - Ticket number\n`{owner_display_name}` - user's nick or name\n`{owner_name}` - user's name\n`{owner_id}` - user's id\n`{guild_name}` - guild's name\n`{guild_id}` - guild's id\n`{bot_display_name}` - bot's nick or name\n`{bot_name}` - bot's name\n`{bot_id}` - bot's id\n`{shortdate}` - mm-dd\n`{longdate}` - mm-dd-yyyy\n`{time}` - hh-mm AM/PM according to bot host system time\n`{emoji}` - The open/closed emoji.",
             },
             "nb_max": {
-                "path": ["nb_max"],
                 "converter": commands.Range[int, 1, None],
                 "description": "Sets the maximum number of open tickets a user can have on the system at any one time (for a profile only).",
             },
             "custom_message": {
-                "path": ["custom_message"],
                 "converter": str,
                 "description": "This message will be sent in the ticket channel when the ticket is opened.\n\n`{ticket_id}` - Ticket number\n`{owner_display_name}` - user's nick or name\n`{owner_name}` - user's name\n`{owner_id}` - user's id\n`{guild_name}` - guild's name\n`{guild_id}` - guild's id\n`{bot_display_name}` - bot's nick or name\n`{bot_name}` - bot's name\n`{bot_id}` - bot's id\n`{shortdate}` - mm-dd\n`{longdate}` - mm-dd-yyyy\n`{time}` - hh-mm AM/PM according to bot host system time\n`{emoji}` - The open/closed emoji.",
                 "style": discord.ButtonStyle(2),
             },
             "user_can_close": {
-                "path": ["user_can_close"],
                 "converter": bool,
                 "description": "Can the author of the ticket, if he/she does not have a role set up for the system, close the ticket himself?",
             },
             "close_confirmation": {
-                "path": ["close_confirmation"],
                 "converter": bool,
                 "description": "Should the bot ask for confirmation before closing the ticket (deletion will necessarily have a confirmation)?",
             },
@@ -183,15 +169,14 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 "path": ["custom_modal"],
                 "converter": CustomModalConverter,
                 "description": "Ask a maximum of 5 questions to the user who opens a ticket, with a Discord Modal.\n\n**Example:**\n```\n[p]settickettool customodal <profile>\n- label: What is the problem?\n  style: 2 #  short = 1, paragraph = 2\n  required: True\n  default: None\n  placeholder: None\n  min_length: None\n  max_length: None\n```",
+                "path": ["customodal"],
             },
             "close_on_leave": {
-                "path": ["close_on_leave"],
                 "converter": bool,
                 "description": "If a user leaves the server, will all their open tickets be closed?\n\nIf the user then returns to the server, even if their ticket is still open, the bot will not automatically add them to the ticket.",
                 "no_slash": True,
             },
             "delete_on_close": {
-                "path": ["delete_on_close"],
                 "converter": bool,
                 "description": "Does closing the ticket directly delete it (with confirmation)?",
                 "no_slash": True,
@@ -203,13 +188,11 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 "no_slash": True,
             },
             "audit_logs": {
-                "path": ["audit_logs"],
                 "converter": bool,
                 "description": "On all requests to the Discord api regarding the ticket (channel modification), does the bot send the name and id of the user who requested the action as the reason?",
                 "no_slash": True,
             },
             "create_on_react": {
-                "path": ["create_on_react"],
                 "converter": bool,
                 "description": "Create a ticket when the reaction 🎟️ is set on any message on the server.",
                 "no_slash": True,

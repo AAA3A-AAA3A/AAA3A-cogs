@@ -202,6 +202,7 @@ class Calculator(Cog):
     async def _calculate(self, ctx: commands.Context, *, calculation: str = None) -> None:
         """Calculate a simple expression."""
         if calculation is not None:
+            calculation = calculation.replace(",", ".")
             result = f"{await self.calculate(calculation)}"
             if ctx.author not in self.history:
                 self.history[ctx.author] = []

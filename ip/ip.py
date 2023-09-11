@@ -37,7 +37,6 @@ class Ip(Cog):
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
         ] = {
             "port": {
-                "path": ["port"],
                 "converter": commands.Range[str, 4, 4],
                 "description": "Set the port.",
             },

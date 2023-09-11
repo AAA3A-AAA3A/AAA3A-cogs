@@ -262,12 +262,10 @@ class GetDocs(Cog, DashboardIntegration):
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
         ] = {
             "default_source": {
-                "path": ["default_source"],
                 "converter": SourceConverter,
                 "description": "Set the documentations source.",
             },
             "caching": {
-                "path": ["caching"],
                 "converter": bool,
                 "description": "Enable or disable Documentations caching when loading the cog.\n\nIf the option is disabled, a web request will be executed when the command `[p]getdocs` is run only for the searched item.",
             },

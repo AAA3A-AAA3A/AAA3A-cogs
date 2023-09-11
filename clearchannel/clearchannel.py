@@ -41,23 +41,19 @@ class ClearChannel(Cog, DashboardIntegration):
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
         ] = {
-            "delete_channel": {
-                "path": ["channel_delete"],
+            "channel_delete": {
                 "converter": bool,
                 "description": "If this option is disabled, the bot will not delete the original channel: it will duplicate it as normal, but move it to the end of the server's channel list.",
             },
             "first_message": {
-                "path": ["first_message"],
                 "converter": bool,
                 "description": "If this option is enabled, the bot will send a message to the emptied channel to inform that it has been emptied.",
             },
             "dm_author": {
-                "path": ["author_dm"],
                 "converter": bool,
                 "description": "If this option is enabled, the bot will try to send a dm to the author of the order to confirm that everything went well.",
             },
             "custom_message": {
-                "path": ["custom_message"],
                 "converter": CustomMessageConverter,
                 "description": "Specify a custom message to be sent from the link of another message or a json (https://discohook.org/ for example).\n\nUse `{name}` or `{icon_url}` for the user.",
             },

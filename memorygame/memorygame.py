@@ -53,27 +53,22 @@ class MemoryGame(Cog, DashboardIntegration):
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
         ] = {
             "max_wrong_matches": {
-                "path": ["max_wrong_matches"],
                 "converter": commands.Range[int, 0, 50],
                 "description": "Set the maximum tries for each game. Use `0` for no limit.",
             },
             "red_economy": {
-                "path": ["red_economy"],
                 "converter": bool,
                 "description": "If this option is enabled, the cog will give credits to the user each time the game is won.",
             },
             "max_prize": {
-                "path": ["max_prize"],
                 "converter": commands.Range[int, 1000, 50000],
                 "description": "Set the max prize for Red bank system and cog leaderboard. Default is 5000.",
             },
             "reduction_per_second": {
-                "path": ["max_prize"],
                 "converter": commands.Range[int, 0, 30],
                 "description": "Set the reduction per second of prize for Red bank system and cog leaderboard. Default is 5.",
             },
             "reduction_per_wrong_match": {
-                "path": ["max_prize"],
                 "converter": commands.Range[int, 0, 30],
                 "description": "Set the reduction per wrong match of prize for Red bank system and cog leaderboard. Default is 15.",
             },

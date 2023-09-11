@@ -42,7 +42,6 @@ class MemberPrefix(Cog):
         #     str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
         # ] = {
         #     "use_normal_prefixes": {
-        #         "path": ["use_normal_prefixes"],
         #         "converter": bool,
         #         "description": "Use server/global prefixes in addition to those customized for each member.",
         #     },

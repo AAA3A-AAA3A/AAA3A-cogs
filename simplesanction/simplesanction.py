@@ -80,33 +80,27 @@ class SimpleSanction(Cog):
             str, typing.Dict[str, typing.Union[typing.List[str], typing.Any, str]]
         ] = {
             "use_warn_system": {
-                "path": ["use_warn_system"],
                 "converter": bool,
                 "description": "Use WarnSystem by Laggron for the sanctions.",
                 "aliases": ["warnsystemuse"],
             },
             "reason_required": {
-                "path": ["reason_required"],
                 "converter": bool,
                 "description": "Require a reason for each sanction (except userinfo).",
             },
             "show_author": {
-                "path": ["show_author"],
                 "converter": bool,
                 "description": "Show the command author in embeds.",
             },
             "action_confirmation": {
-                "path": ["action_confirmation"],
                 "converter": bool,
                 "description": "Require a confirmation for each sanction (except userinfo).",
             },
             "finish_message": {
-                "path": ["finish_message"],
                 "converter": bool,
                 "description": "Send an embed after a sanction command execution.",
             },
             "thumbnail": {
-                "path": ["thumbnail"],
                 "converter": str,
                 "description": "Set the embed thumbnail.",
             },

@@ -104,38 +104,31 @@ class Reminders(Cog):
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
         ] = {
             "maximum_user_reminders": {
-                "path": ["maximum_user_reminders"],
                 "converter": commands.Range[int, 1, 125],
                 "description": "Change the reminders limit for a user.",
                 "aliases": ["maxuserreminders"],
             },
             "me_too": {
-                "path": ["me_too"],
                 "converter": bool,
                 "description": "Show a `Me too` button in reminders.",
             },
             "repeat_allowed": {
-                "path": ["repeat_allowed"],
                 "converter": bool,
                 "description": "Enable or disabled repeat option for users.",
             },
             "minimum_repeat": {
-                "path": ["minimum_repeat"],
                 "converter": commands.Range[int, 10, None],
                 "description": "Change the minimum minutes number for a repeat time.",
             },
             "fifo_allowed": {
-                "path": ["fifo_allowed"],
                 "converter": bool,
                 "description": "Allow or deny commands reminders for users (except bot owners).",
             },
             "creation_view": {
-                "path": ["creation_view"],
                 "converter": bool,
                 "description": "Send Creation view/buttons when reminders creation.",
             },
             "snooze_view": {
-                "path": ["snooze_view"],
                 "converter": bool,
                 "description": "Send Snooze view/buttons when reminders sending.",
             },

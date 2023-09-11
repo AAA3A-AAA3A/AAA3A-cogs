@@ -444,47 +444,38 @@ class Dev(Cog, dev_commands.Dev):
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
         ] = {
             "auto_imports": {
-                "path": ["auto_imports"],
                 "converter": bool,
                 "description": "Enable or disable auto imports.",
             },
             "output_mode": {
-                "path": ["output_mode"],
                 "converter": typing.Literal["repr", "repr_or_str", "str"],
                 "description": "Set the output mode. `repr` is to display the repr of the result. `repr_or_str` is to display in the same way, but a string as a string. `str` is to display the string of the result.",
             },
             "rich_tracebacks": {
-                "path": ["rich_tracebacks"],
                 "converter": bool,
                 "description": "Use `rich` to display tracebacks.",
             },
             "ansi_formatting": {
-                "path": ["ansi_formatting"],
                 "converter": bool,
                 "description": "Use the `ansi` formatting for results.",
             },
             "send_interactive": {
-                "path": ["send_interactive"],
                 "converter": bool,
                 "description": "Send results with `commands.Context.send_interactive`, not a Menu.",
             },
             "send_dpy_objects": {
-                "path": ["send_dpy_objects"],
                 "converter": bool,
                 "description": "If the result is an embed/file/attachment object or an iterable of these, send.",
             },
             "use_last_locals": {
-                "path": ["use_last_locals"],
                 "converter": bool,
                 "description": "Use the last locals for each evals. Locals are only registered for `[p]eval`, but can be used in other commands.",
             },
             "downloader_already_agreed": {
-                "path": ["downloader_already_agreed"],
                 "converter": bool,
                 "description": "If enabled, Downloader will no longer prompt you to type `I agree` when adding a repo, even after a bot restart.",
             },
             "use_extended_environment": {
-                "path": ["use_extended_environment"],
                 "converter": bool,
                 "description": "Use my own Dev env with useful values.",
             },

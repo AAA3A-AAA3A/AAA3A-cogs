@@ -19,7 +19,7 @@ from redbot.core.utils.chat_formatting import bold, box
 # Credits:
 # General repo credits.
 # Thanks to Jayro for Medicat!
-# Thanks to Matt because this cog is for him bot!
+# Thanks to Matt because this cog is for his bot!
 
 MEDICAT_ICON_URL = None
 
@@ -49,23 +49,23 @@ CUSTOM_COMMANDS = {
             "Can I add my own bootable tools (iso, wim, vhd) or PortableApps softwares to Medicat USB?"
         ),
         "description": _(
-            "Please feel free to modify MediCat to YOUR individual needs! 😄\nTo add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\nThen you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template.\nAbsolutely, I encourage it!"
+            "Please feel free to modify MediCat to YOUR individual needs! 😄\nTo add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear in the Ventoy menu.\nThen you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template.\nAbsolutely, I encourage it!"
         ),
     },
     "free": {
         "title": _("Is Medicat free?"),
         "description": _(
-            "Absolutely. I will never charge money for MediCat, or accept donations. However, feel free to share your ideas, questions, and concerns in this thread. That's how you can give back. 🙂"
+            "Absolutely. I will never charge money for MediCat. We accept donations but it is in no way required. However, feel free to share your ideas, questions, and concerns in this discord. That's how you can give back. 🙂"
         ),
     },
-    "howinstall": {
+    "install": {
         "title": _("How do I install Medicat USB?"),
         "description": _(
             "1) Install the latest version of Ventoy on your USB stick (<https://github.com/ventoy/Ventoy/releases> & <https://ventoy.net/en/doc_start.html>).\n2) Download the last version of Medicat USB with Torrent, Mega or Google Drive (<https://medicatusb.com/>).\n3) Extract the downloaded zips to the root of the USB stick.\nFull tutorial: <https://medicatusb.com/docs/installation/installing-medicat/>\nYou can also use the automatic installer of MON5TERMATT (<https://medicatusb.com/installer/>).\nWarning: do not forget to disable your antivirus software (see the `virus` command for more information)."
         ),
     },
-    "kofi": {
-        "title": _("How to make a donation?"),
+    "donate": {
+        "title": _("How can I make a donation?"),
         "description": _(
             "@Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\n@MON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\n@AAA3A (Medicat Developer): <https://www.buymeacoffee.com/aaa3a>"
         ),
@@ -73,7 +73,7 @@ CUSTOM_COMMANDS = {
     "medicatversion": {
         "title": _("What is the latest version of Medicat USB?"),
         "description": _(
-            "The latest version of Medicat USB is 21.12!\n||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||"
+            "The latest version of Medicat USB is 21.12!\n||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||\nThere is not currently an ETA for an updated release due to time restrictions"
         ),
     },
     "menus": {
@@ -91,14 +91,14 @@ CUSTOM_COMMANDS = {
     "missingfiles": {
         "title": _("See what files are missing using the quick SFV program."),
         "description": _(
-            "In order to see what files are missing using the quick SFV program, please scroll all the way to the top once it has finished scanning."
+            "In order to see what files are missing using the quick SFV program, Please wait for it to scan the entire USB and then look for the files with the ❌"
         ),
         "image_url": "https://media.discordapp.net/attachments/893780404031590421/1107907798278352956/Screenshot_22.png",
     },
     "noiso": {
-        "title": _("How do I download the Medicat USB iso file?"),
+        "title": _("How do I download the Medicat USB iso/img file?"),
         "description": _(
-            "Medicat USB is not available as an iso file.\nPreviously, Medicat USB was available as an iso file. Now it uses Ventoy to run. It is currently impossible to put Ventoy and therefore Medicat USB in an iso file, or at least not without difficulties."
+            "Medicat USB is not available as an iso file.\nPreviously, Medicat USB was available as an iso file. Now it uses Ventoy to run. It is currently impossible to put Ventoy and therefore Medicat USB in an iso file."
         ),
     },
     "portableapps": {
@@ -141,7 +141,7 @@ CUSTOM_COMMANDS = {
     "whenupdate": {
         "title": _("How often will Medicat be updated?"),
         "description": _(
-            "MediCat USB is now a rolling release, so will be regularly updated with major releases, and minor updates as needed (Typically monthly or bi-monthly). The links here will always be the latest version. The PortableApps are easily updatable by the user, once they have been 'burned' to USB."
+            "Medicat is currently on hiatus.\nDue to personal reasons neither Jayro or Matt have the time to develop Medicat full time.\nWe do encourage you to update the tools as you see fit on your end." # MediCat USB is now a rolling release, so will be regularly updated with major releases, and minor updates as needed (Typically monthly or bi-monthly). The links here will always be the latest version. The PortableApps are easily updatable by the user, once they have been 'burned' to USB
         ),
     },
     "wimvhd": {
@@ -156,7 +156,7 @@ CUSTOM_COMMANDS = {
             "What is the context?\nIf you have any problems or would like to ask for help, please give information about what you are not able to do. Don't just say you don't understand how to make x software work, say where you are, what is wrong with it and what is the potential error. \nThank you for your understanding."
         ),
     },
-    "test": {"title": _("Test!"), "description": _("Test.")},
+    "test": {"title": _("Test!"), "description": _("did that work for you?")},
 }
 
 BOOTABLES_TOOLS = {

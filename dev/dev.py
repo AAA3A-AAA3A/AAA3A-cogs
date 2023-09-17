@@ -17,6 +17,7 @@ import textwrap
 
 import aiohttp
 import rich
+import subprocess
 from pygments.styles import get_style_by_name
 from redbot.core import dev_commands
 from redbot.core.utils.predicates import MessagePredicate
@@ -76,6 +77,7 @@ class DevOutput(dev_commands.DevOutput):
         self._locals: typing.Dict[str, typing.Any] = kwargs.pop("_locals", {})
         self.prints: str = ""
         self.rich_tracebacks: bool = kwargs.pop("rich_tracebacks", False)
+        self.exc: typing.Optional[Exception] = None
         super().__init__(*args, **kwargs)
 
     def __str__(self, output_mode: typing.Literal["repr", "repr_or_str", "str"] = "repr") -> str:
@@ -163,6 +165,8 @@ class DevOutput(dev_commands.DevOutput):
                     await Menu(pages=[kwargs]).start(self.ctx, wait=False)
                 except discord.HTTPException:
                     pass
+        if tick and self.exc is not None:
+            await self.ctx.react_quietly(reaction="❗" if isinstance(self.exc, SyntaxError) else ("⏰" if isinstance(self.exc, (TimeoutError, asyncio.TimeoutError, aiohttp.ClientTimeout, aiohttp.ServerTimeoutError, subprocess.TimeoutExpired)) else "❌"))
         if send_interactive:
             task = self.ctx.send_interactive(dev_commands.get_pages(self.__str__(output_mode=output_mode)), box_lang="py")
             if wait:
@@ -173,16 +177,13 @@ class DevOutput(dev_commands.DevOutput):
             await Menu(pages=pages, lang="ansi" if ansi_formatting else "py").start(
                 self.ctx, wait=wait
             )
-        if tick:
-            if self.formatted_exc:
-                await self.ctx.react_quietly(reaction="❌")
-            else:
-                await self.ctx.react_quietly(
-                    # sourcery skip: swap-if-expression
-                    reaction=commands.context.TICK
-                    if not hasattr(commands.context, "MORE_TICKS")
-                    else random.choice(list(commands.context.MORE_TICKS))
-                )
+        if tick and self.exc is None:
+            await self.ctx.react_quietly(
+                # sourcery skip: swap-if-expression
+                reaction=commands.context.TICK
+                if not hasattr(commands.context, "MORE_TICKS")
+                else random.choice(list(commands.context.MORE_TICKS))
+            )
 
     @classmethod
     async def from_debug(
@@ -248,6 +249,14 @@ class DevOutput(dev_commands.DevOutput):
         return output
 
     async def run_debug(self) -> None:
+        async def add_triangle_reaction_after_1_seconds():
+            await asyncio.sleep(2)
+            try:
+                await self.ctx.message.add_reaction("▶")
+            except discord.HTTPException:
+                pass
+        task = asyncio.create_task(add_triangle_reaction_after_1_seconds())
+
         self.env.update({"dev_output": self})
         self.env.update(**self._locals)
         _console_custom_kwargs: typing.Dict[str, typing.Any] = self.env.get(
@@ -274,7 +283,17 @@ class DevOutput(dev_commands.DevOutput):
             self.always_include_result: bool = False
             self.prints: str = captured.get().strip()
 
+        task.cancel()
+
     async def run_eval(self) -> None:
+        async def add_triangle_reaction_after_1_seconds():
+            await asyncio.sleep(2)
+            try:
+                await self.ctx.message.add_reaction("▶")
+            except discord.HTTPException:
+                pass
+        task = asyncio.create_task(add_triangle_reaction_after_1_seconds())
+
         self.env.update({"dev_output": self})
         try:
             parse = ast.parse("async def func():\n%s" % textwrap.indent(self.raw_source, "  "))
@@ -320,7 +339,17 @@ class DevOutput(dev_commands.DevOutput):
                     self.set_exception(exc)
             self.prints: str = captured.get().strip()
 
+        task.cancel()
+
     async def run_repl(self) -> None:
+        async def add_triangle_reaction_after_1_seconds():
+            await asyncio.sleep(2)
+            try:
+                await self.ctx.message.add_reaction("▶")
+            except discord.HTTPException:
+                pass
+        task = asyncio.create_task(add_triangle_reaction_after_1_seconds())
+
         self.env.update({"dev_output": self})
         self.env.update(**self._locals)
         _console_custom_kwargs: typing.Dict[str, typing.Any] = self.env.get(
@@ -343,6 +372,12 @@ class DevOutput(dev_commands.DevOutput):
                 except BaseException as exc:
                     self.set_exception(exc)
             self.prints: str = captured.get().strip()
+
+        task.cancel()
+
+    def set_exception(self, exc: Exception, *, skip_frames: int = 1) -> None:
+        self.exc: Exception = exc
+        self.formatted_exc: str = self.format_exception(exc, skip_frames=skip_frames)
 
     def format_exception(self, exc: Exception, *, skip_frames: int = 1) -> str:
         if not self.rich_tracebacks:

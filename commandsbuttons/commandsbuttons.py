@@ -449,6 +449,7 @@ class CommandsButtons(Cog):
     @commands.bot_has_permissions(embed_links=True)
     @commandsbuttons.command()
     async def list(self, ctx: commands.Context, message: discord.Message = None) -> None:
+        """List all commands-buttons of this server or display the settings for a specific one."""
         commands_buttons = await self.config.guild(ctx.guild).commands_buttons()
         for command_button in commands_buttons:
             commands_buttons[command_button]["message"] = command_button

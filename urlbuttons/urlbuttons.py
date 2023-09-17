@@ -271,6 +271,7 @@ class UrlButtons(Cog):
     @commands.bot_has_permissions(embed_links=True)
     @urlbuttons.command()
     async def list(self, ctx: commands.Context, message: discord.Message = None) -> None:
+        """List all url-buttons of this server or display the settings for a specific one."""
         url_buttons = await self.config.guild(ctx.guild).url_buttons()
         for url_button in url_buttons:
             url_buttons[url_button]["message"] = url_button

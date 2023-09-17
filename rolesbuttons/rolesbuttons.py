@@ -454,6 +454,7 @@ class RolesButtons(Cog):
     @commands.bot_has_permissions(embed_links=True)
     @rolesbuttons.command()
     async def list(self, ctx: commands.Context, message: discord.Message = None) -> None:
+        """List all roles-buttons of this server or display the settings for a specific one."""
         roles_buttons = await self.config.guild(ctx.guild).roles_buttons()
         for role_button in roles_buttons:
             roles_buttons[role_button]["message"] = role_button

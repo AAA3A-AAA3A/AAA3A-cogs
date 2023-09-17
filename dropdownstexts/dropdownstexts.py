@@ -341,6 +341,7 @@ class DropdownsTexts(Cog):
     @commands.bot_has_permissions(embed_links=True)
     @dropdownstexts.command()
     async def list(self, ctx: commands.Context, message: discord.Message = None) -> None:
+        """List all dropdowns-texts of this server or display the settings for a specific one."""
         dropdowns_texts = await self.config.guild(ctx.guild).dropdowns_texts()
         for dropdown_text in dropdowns_texts:
             dropdowns_texts[dropdown_text]["message"] = dropdown_text

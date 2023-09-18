@@ -167,13 +167,16 @@ class TransferChannel(Cog):
         else:
             count_messages, messages = await self.get_messages(ctx, channel=source, **kwargs)
         messages.reverse()
+        if way == "webhooks":
+            hook = await CogsUtils.get_hook(bot=ctx.bot, channel=destination.parent if isinstance(destination, discord.Thread) else destination)
         for message in messages:
             if destination.permissions_for(destination.guild.me).attach_files:
                 files = await Tunnel.files_from_attatch(message)
             else:
                 files = []
             if way == "webhooks":
-                hook = await CogsUtils.get_hook(bot=ctx.bot, channel=destination.parent if isinstance(destination, discord.Thread) else destination)
+                if not any([message.content, message.embeds, message.attachments]):
+                    continue
                 await hook.send(
                     username=message.author.display_name,
                     avatar_url=message.author.display_avatar,
@@ -191,6 +194,8 @@ class TransferChannel(Cog):
                 try:
                     await destination.send(
                         embeds=[embed] + message.embeds,
+                        files=files,
+                        stickers=message.stickers,
                         allowed_mentions=discord.AllowedMentions(
                             everyone=False, users=False, roles=False
                         ),
@@ -199,6 +204,8 @@ class TransferChannel(Cog):
                     try:
                         await destination.send(
                             embeds=[embed] + message.embeds[:-1],
+                            files=files,
+                            stickers=message.stickers,
                             allowed_mentions=discord.AllowedMentions(
                                 everyone=False, users=False, roles=False
                             ),
@@ -206,6 +213,8 @@ class TransferChannel(Cog):
                     except discord.HTTPException:
                         await destination.send(
                             embed=embed,
+                            files=files,
+                            stickers=message.stickers,
                             allowed_mentions=discord.AllowedMentions(
                                 everyone=False, users=False, roles=False
                             ),
@@ -226,6 +235,7 @@ class TransferChannel(Cog):
                         f"{msg}\n\n{message.content}",
                         embeds=message.embeds,
                         files=files,
+                        stickers=message.stickers,
                         allowed_mentions=discord.AllowedMentions(
                             everyone=False, users=False, roles=False
                         ),
@@ -236,6 +246,7 @@ class TransferChannel(Cog):
                         message.content,
                         embeds=message.embeds,
                         files=files,
+                        stickers=message.stickers,
                         allowed_mentions=discord.AllowedMentions(
                             everyone=False, users=False, roles=False
                         ),

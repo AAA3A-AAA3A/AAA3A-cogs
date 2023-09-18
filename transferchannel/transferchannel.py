@@ -134,6 +134,8 @@ class TransferChannel(Cog):
         async for message in channel.history(
             limit=(limit if channel != ctx.message.channel and ctx.interaction is None else limit + 1) if limit is not None else None, before=before, after=after, oldest_first=False
         ):
+            if message.type != discord.MessageType.default:
+                continue
             if user_id is not None and message.author.id != user_id:
                 continue
             if bot is not None and message.author.bot != bot:

@@ -171,7 +171,6 @@ class CommandsButtons(Cog):
             author=interaction.user,
             channel=interaction.channel,
             command=command,
-            message=interaction.message,
             __is_mocked__=True,
         )
         if not isinstance(context, commands.Context) or not context.valid:

@@ -189,7 +189,6 @@ class ReactToCommand(Cog):
             author=payload.member,
             channel=channel,
             command=command,
-            message=message,
             __is_mocked__=True,
         )
         self.cache.append(context)

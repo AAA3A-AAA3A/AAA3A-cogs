@@ -430,7 +430,7 @@ class DiscordModals(Cog):
             modal = discord.ui.Modal(
                 title=modal_config["title"],
                 timeout=modal_config["timeout"],
-                custom_id=modal_config["custom_id"],
+                # custom_id=modal_config["custom_id"],
             )
             inputs = []
             for _input in modal_config["inputs"]:

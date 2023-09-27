@@ -631,7 +631,7 @@ class Medicat(Cog):
         await self.config.last_bootables_tools_versions.set(tools_versions_str)
 
     def in_medicat_guild():
-        async def pred(ctx) -> bool:
+        async def pred(ctx: commands.Context) -> bool:
             if ctx.author.id in ctx.bot.owner_ids:
                 return True
             if ctx.guild is None:
@@ -641,7 +641,7 @@ class Medicat(Cog):
         return commands.check(pred)
 
     def is_owner_or_AAA3A():
-        async def pred(ctx) -> bool:
+        async def pred(ctx: commands.Context) -> bool:
             return ctx.author.id in ctx.bot.owner_ids or (
                 ctx.author.id == 829612600059887649 and ctx.guild.id == MEDICAT_GUILD
             )

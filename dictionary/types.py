@@ -28,7 +28,7 @@ class Word:
         }
 
     def to_embed(
-        self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
+        self, embed_color: discord.Color = discord.Color.green()
     ) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
             title=f'Dictionary - "{self.word}"', url=self.source_url, color=embed_color

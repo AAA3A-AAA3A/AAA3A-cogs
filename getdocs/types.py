@@ -25,7 +25,7 @@ class RTFSResults:
         return self.results
 
     def to_embeds(
-        self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
+        self, embed_color: discord.Color = discord.Color.green()
     ) -> typing.List[discord.Embed]:
         description = "\n".join(
             f"**•** [**`{name}`**]({url})" for name, _, url, __ in self.results
@@ -58,7 +58,7 @@ class SearchResults:
         return self.results
 
     def to_embeds(
-        self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
+        self, embed_color: discord.Color = discord.Color.green()
     ) -> typing.List[discord.Embed]:
         description = "\n".join(
             f"**•** [**`{name}`**]({url})" for name, _, url, __ in self.results
@@ -90,7 +90,7 @@ class Parameters(typing.Dict):
         )
 
     def to_embeds(
-        self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
+        self, embed_color: discord.Color = discord.Color.green()
     ) -> typing.List[discord.Embed]:
         description = self.to_text()
         embeds = []
@@ -118,7 +118,7 @@ class Examples(typing.List):
     def to_embeds(
         self,
         ctx: typing.Optional[commands.Context] = None,
-        embed_color: typing.Optional[discord.Color] = discord.Color.green(),
+        embed_color: discord.Color = discord.Color.green(),
     ) -> typing.List[discord.Embed]:
         embeds = []
         for i, example in enumerate(self, start=1):
@@ -178,7 +178,7 @@ class Attributes:
         return any(bool(getattr(self, key)) for key in self.__dataclass_fields__.keys())
 
     def to_embeds(
-        self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
+        self, embed_color: discord.Color = discord.Color.green()
     ) -> typing.List[discord.Embed]:
         def format_attribute(
             name: str,
@@ -254,7 +254,7 @@ class Documentation:
         }
 
     def to_embed(
-        self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
+        self, embed_color: discord.Color = discord.Color.green()
     ) -> discord.Embed:
         description = (
             f"{box(self.signature, lang='py' if self.source.name != 'git' else 'ini')}\n"

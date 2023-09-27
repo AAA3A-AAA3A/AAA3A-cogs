@@ -92,7 +92,7 @@ class Sudo(Cog):
         )
 
     def decorator(all_owner_ids: typing.Optional[bool], bot_owner_ids: typing.Optional[bool]):
-        async def pred(ctx):
+        async def pred(ctx: commands.Context) -> bool:
             if all_owner_ids and (
                 ctx.author.id in ctx.bot.get_cog("Sudo").all_owner_ids
                 and ctx.author.id not in ctx.bot.owner_ids

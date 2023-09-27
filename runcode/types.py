@@ -61,7 +61,7 @@ class WandboxRequest:
     def to_embed(
         self,
         with_code: typing.Optional[bool] = False,
-        embed_color: typing.Optional[discord.Color] = discord.Color.green(),
+        embed_color: discord.Color = discord.Color.green(),
     ) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
             title="RunCode Request (with Wandbox API)", color=embed_color
@@ -252,7 +252,7 @@ class TioRequest:
     def to_embed(
         self,
         with_code: typing.Optional[bool] = False,
-        embed_color: typing.Optional[discord.Color] = discord.Color.green(),
+        embed_color: discord.Color = discord.Color.green(),
     ) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
             title="RunCode Request (with Tio API)", color=embed_color

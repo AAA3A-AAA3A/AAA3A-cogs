@@ -538,7 +538,7 @@ class Reminder:
     def to_embed(
         self,
         utc_now: datetime.datetime = None,
-        embed_color: typing.Optional[discord.Color] = discord.Color.green(),
+        embed_color: discord.Color = discord.Color.green(),
     ) -> discord.Embed:
         if utc_now is None:
             utc_now = datetime.datetime.now(datetime.timezone.utc)

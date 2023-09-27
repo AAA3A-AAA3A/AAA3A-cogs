@@ -18,7 +18,7 @@ class SearchResults:
         return self.results
 
     def to_embeds(
-        self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
+        self, embed_color: discord.Color = discord.Color.green()
     ) -> typing.List[discord.Embed]:
         description = "\n".join(
             f"**•** [**`{name}`**]({url})" for name, url in self.results.items()
@@ -60,7 +60,7 @@ class Recipe:
         }
 
     def to_embeds(
-        self, embed_color: typing.Optional[discord.Color] = discord.Color.green()
+        self, embed_color: discord.Color = discord.Color.green()
     ) -> typing.List[discord.Embed]:
         embed: discord.Embed = discord.Embed(title=self.name, url=self.url, color=embed_color)
         embed.set_author(

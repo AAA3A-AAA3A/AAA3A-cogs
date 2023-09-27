@@ -193,6 +193,12 @@ class CustomModalConverter(commands.Converter):
                             "The argument `/{count}/{arg}` is invalid in the YAML. Check the spelling."
                         ).format(count=count, arg=arg)
                     )
+            if len(input["label"]) > 45:
+                raise commands.BadArgument(
+                    _(
+                        "The argument `/modal/{count}/label` must be less than 45 characters long."
+                    ).format(count=count, arg=arg)
+                )
             if "style" in input:
                 input["style"] = str(input["style"])
                 try:
@@ -236,10 +242,34 @@ class CustomModalConverter(commands.Converter):
                 input["required"] = True
             if "default" not in input or input["default"] == "None":
                 input["default"] = ""
+            if len(input["default"]) > 4000:
+                raise commands.BadArgument(
+                    _(
+                        "The argument `/modal/{count}/default` must be less than 4000 characters long."
+                    ).format(count=count, arg=arg)
+                )
             if "placeholder" not in input or input["placeholder"] == "None":
                 input["placeholder"] = ""
+            if len(input["placeholder"]) > 100:
+                raise commands.BadArgument(
+                    _(
+                        "The argument `/modal/{count}/placeholder` must be less than 100 characters long."
+                    ).format(count=count, arg=arg)
+                )
             if "min_length" not in input or input["min_length"] == "None":
                 input["min_length"] = None
+            elif not 0 <= input["min_length"] <= 4000:
+                raise commands.BadArgument(
+                    _(
+                        "The argument `/modal/{count}/min_length` must be between 0 and 4000."
+                    ).format(count=count, arg=arg)
+                )
             if "max_length" not in input or input["max_length"] == "None":
                 input["max_length"] = None
+            elif not 1 <= input["max_length"] <= 4000:
+                raise commands.BadArgument(
+                    _(
+                        "The argument `/modal/{count}/max_length` must be between 0 and 4000."
+                    ).format(count=count, arg=arg)
+                )
         return argument_dict

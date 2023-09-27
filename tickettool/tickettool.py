@@ -166,10 +166,8 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 "description": "Should the bot ask for confirmation before closing the ticket (deletion will necessarily have a confirmation)?",
             },
             "custom_modal": {
-                "path": ["custom_modal"],
                 "converter": CustomModalConverter,
                 "description": "Ask a maximum of 5 questions to the user who opens a ticket, with a Discord Modal.\n\n**Example:**\n```\n[p]settickettool customodal <profile>\n- label: What is the problem?\n  style: 2 #  short = 1, paragraph = 2\n  required: True\n  default: None\n  placeholder: None\n  min_length: None\n  max_length: None\n```",
-                "path": ["customodal"],
             },
             "close_on_leave": {
                 "converter": bool,
@@ -636,7 +634,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         members: typing.Optional[bool] = False,
         locked: typing.Optional[bool] = None,
     ) -> None:
-        async def pred(ctx) -> bool:
+        async def pred(ctx: commands.Context) -> bool:
             if not ticket_check:
                 return True
 

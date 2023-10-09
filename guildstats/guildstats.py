@@ -5560,11 +5560,17 @@ class GuildStats(Cog):
         tracking_data_start_time = tracking_data_start_time.replace(
             second=utc_now.second,
             minute=utc_now.minute
-            if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 7)
+            if (utc_now - tracking_data_start_time)
+            > datetime.timedelta(seconds=3600 * 24 * 7)
             else tracking_data_start_time.minute,
             hour=utc_now.hour
-            if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 365)
+            if (utc_now - tracking_data_start_time)
+            > datetime.timedelta(seconds=3600 * 24 * 30)
             else tracking_data_start_time.hour,
+            day=utc_now.day
+            if (utc_now - tracking_data_start_time)
+            > datetime.timedelta(seconds=3600 * 24 * 365)
+            else tracking_data_start_time.day,
         )
         if show_graphic:
             if default_state:

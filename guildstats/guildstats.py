@@ -3474,8 +3474,12 @@ class GuildStats(Cog):
                     else tracking_data_start_time.minute,
                     hour=utc_now.hour
                     if (utc_now - tracking_data_start_time)
-                    > datetime.timedelta(seconds=3600 * 24 * 365)
+                    > datetime.timedelta(seconds=3600 * 24 * 30)
                     else tracking_data_start_time.hour,
+                    day=utc_now.day
+                    if (utc_now - tracking_data_start_time)
+                    > datetime.timedelta(seconds=3600 * 24 * 365)
+                    else tracking_data_start_time.day,
                 )
                 align_text_center(
                     (90, 972, 90, 1022),

@@ -28,7 +28,7 @@ _ = Translator("DiscordModals", __file__)
 class Emoji(commands.EmojiConverter):
     async def convert(
         self, ctx: commands.Context, argument: str
-    ) -> typing.Union[discord.PartialEmoji, str]:
+    ) -> typing.Union[str, discord.Emoji]:
         # argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument

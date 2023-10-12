@@ -30,10 +30,10 @@ class Emoji(commands.EmojiConverter):
     async def convert(
         self, ctx: commands.Context, argument: str
     ) -> typing.Union[discord.PartialEmoji, str]:
-        argument = argument.strip("\N{VARIATION SELECTOR-16}")
+        # argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument
-        if argument in (
+        if argument in {
             "0",
             "1",
             "2",
@@ -72,7 +72,7 @@ class Emoji(commands.EmojiConverter):
             "🇽",
             "🇾",
             "🇿",
-        ):
+        }:
             return argument
         return await super().convert(ctx, argument=argument)
 

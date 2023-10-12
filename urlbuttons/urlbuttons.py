@@ -5,6 +5,8 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+from redbot.core.utils.chat_formatting import pagify
+
 from .converters import Emoji, EmojiUrlConverter, UrlConverter
 
 # Credits:
@@ -295,7 +297,7 @@ class UrlButtons(Cog):
         for li in lists:
             embed: discord.Embed = discord.Embed(
                 title=_("URL Buttons"),
-                description=_("There is {len_url_buttons} URL buttons in this server.").format(
+                description=_("There is {len_url_buttons} url buttons in this server.").format(
                     len_url_buttons=len(url_buttons)
                 ),
                 color=await ctx.embed_color(),
@@ -312,11 +314,12 @@ class UrlButtons(Cog):
                         if config_identifier != "message"
                     ]
                 )
-                embed.add_field(
-                    name="\u200B",
-                    value=f"{value[:1020]}\n..." if len(value) > 1024 else value,
-                    inline=False,
-                )
+                for page in pagify(value, page_length=1024):
+                    embed.add_field(
+                        name="\u200B",
+                        value=page,
+                        inline=False,
+                    )
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
 

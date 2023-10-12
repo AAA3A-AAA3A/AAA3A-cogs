@@ -9,7 +9,7 @@ import asyncio
 import inspect
 from functools import partial
 
-from redbot.core.utils.chat_formatting import inline
+from redbot.core.utils.chat_formatting import inline, pagify
 
 from .converters import Emoji, EmojiCommandConverter
 
@@ -489,11 +489,12 @@ class CommandsButtons(Cog):
                         if config_identifier != "message"
                     ]
                 )
-                embed.add_field(
-                    name="\u200B",
-                    value=f"{value[:1020]}\n..." if len(value) > 1024 else value,
-                    inline=False,
-                )
+                for page in pagify(value, page_length=1024):
+                    embed.add_field(
+                        name="\u200B",
+                        value=page,
+                        inline=False,
+                    )
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
 

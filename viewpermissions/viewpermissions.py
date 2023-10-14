@@ -68,7 +68,7 @@ class ViewPermissions(Cog):
             # Guild-wide Administrator -> True for everything.
             # Bypass all channel-specific overrides.
             if base.administrator:
-                base = discord.activityPermissions.all()
+                base = discord.Permissions.all()
                 for permission_name in dict(discord.Permissions.all()):
                     sources[permission_name] = "Guild administrator."
             elif channel is not None:

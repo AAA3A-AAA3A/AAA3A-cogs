@@ -1,15 +1,16 @@
 {
     "author": ["AAA3A"],
-    "name": "Recipes",
+    "name": "ViewPermissions",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
-    "short": "A cog to search and show a cooking recipe!",
-    "description": "A cog to search and show a cooking recipe!",
+    "short": "A cog to display permissions for roles and members, at guild level or in a specified channel!",
+    "description": "A cog to display permissions for roles and members, at guild level or in a specified channel!",
     "tags": [
-        "recipe",
-        "cook",
-        "food"
+        "permissions",
+        "discord",
+        "advanced",
+        "dev"
     ],
-    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "beautifulsoup4", "lxml"],
+    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git"],
     "min_bot_version": "3.5.0",
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

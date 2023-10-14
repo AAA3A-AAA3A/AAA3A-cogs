@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
+from AAA3A_utils import Cog, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -189,7 +189,7 @@ class DiscordSearch(Cog):
         not_found = len(messages) == 0
         args_str = "\n".join(args_str)
         if not not_found:
-            for count, message in enumerate(messages, start=1):
+            for i, message in enumerate(messages, start=1):
                 embed: discord.Embed = discord.Embed()
                 embed.title = f"Search in #{channel.name} ({channel.id})"
                 embed.description = args_str
@@ -218,7 +218,7 @@ class DiscordSearch(Cog):
                     url="https://us.123rf.com/450wm/sommersby/sommersby1610/sommersby161000062/66918773-recherche-ic%C3%B4ne-plate-recherche-ic%C3%B4ne-conception-recherche-ic%C3%B4ne-web-vecteur-loupe.jpg"
                 )
                 embed.set_footer(
-                    text=f"Page {count}/{len(messages)}",
+                    text=f"Page {i}/{len(messages)}",
                     icon_url="https://us.123rf.com/450wm/sommersby/sommersby1610/sommersby161000062/66918773-recherche-ic%C3%B4ne-plate-recherche-ic%C3%B4ne-conception-recherche-ic%C3%B4ne-web-vecteur-loupe.jpg",
                 )
                 embeds.append(embed)

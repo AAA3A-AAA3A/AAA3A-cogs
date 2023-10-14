@@ -225,7 +225,7 @@ class ViewPermissions(Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["viewperms", "permsview"])
-    async def viewpermissions(self, ctx: commands.Context, advanced: typing.Optional[bool] = False, channel: typing.Optional[discord.abc.GuildChannel] = None, *, mentionables_and_permissions: commands.Greedy[typing.Union[PermissionConverter, discord.Role, discord.Member]]) -> None:  # commands.CurrentChannel
+    async def viewpermissions(self, ctx: commands.Context, advanced: typing.Optional[bool] = False, channel: typing.Optional[discord.abc.GuildChannel] = None, permissions: commands.Greedy[PermissionConverter] = None, mentionables: commands.Greedy[typing.Union[discord.Role, discord.Member]] = None) -> None:  # commands.CurrentChannel
         """Display permissions for roles and members, at guild level or in a specified channel.
 
         - You can specify several roles and members, and their permissions will be added together.
@@ -234,13 +234,14 @@ class ViewPermissions(Cog):
         - If you provide permission(s) and no channel, all guild channels will be displayed, with a tick if all the specified permissions are true in the channel.
         - If you provide permission(s) and no mentionables, the everyone role is used.
         """
-        if isinstance(mentionables_and_permissions, (discord.Role, discord.Member, str)):
-            mentionables_and_permissions = [mentionables_and_permissions]
-        roles = [mentionable for mentionable in mentionables_and_permissions if isinstance(mentionable, discord.Role)]
-        members = [mentionable for mentionable in mentionables_and_permissions if isinstance(mentionable, discord.Member)]
+        if permissions is None:
+            permissions = []
+        if mentionables is None:
+            mentionables = []
+        roles = [mentionable for mentionable in mentionables if isinstance(mentionable, discord.Role)]
+        members = [mentionable for mentionable in mentionables if isinstance(mentionable, discord.Member)]
         for member in members:
             roles.extend(member.roles)
-        permissions = [permission for permission in mentionables_and_permissions if isinstance(permission, str) and permission in discord.Permissions.VALID_FLAGS]
         await PermissionsView(
             cog=self,
             guild=ctx.guild,

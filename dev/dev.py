@@ -993,6 +993,8 @@ class Dev(Cog, dev_commands.Dev):
             else:
                 raise commands.UserInputError()
         command = cleanup_code(command)
+
+        # Thanks Jack for a part of this code!
         source = textwrap.dedent("""
             import asyncio
             import asyncio.subprocess as asp
@@ -1036,6 +1038,7 @@ class Dev(Cog, dev_commands.Dev):
         """).strip().replace("[COMMAND]", command)
         if silent:
             source = "\n".join(source.split("\n")[:-3])
+
         await self.my_exec(
             getattr(ctx, "original_context", ctx),
             type="eval",

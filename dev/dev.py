@@ -19,7 +19,9 @@ import aiohttp
 import rich
 import subprocess
 from pygments.styles import get_style_by_name
+
 from redbot.core import dev_commands
+from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.predicates import MessagePredicate
 
 from .env import DevEnv, DevSpace, Exit, ctxconsole
@@ -167,16 +169,24 @@ class DevOutput(dev_commands.DevOutput):
                     pass
         if tick and self.exc is not None:
             await self.ctx.react_quietly(reaction="❗" if isinstance(self.exc, SyntaxError) else ("⏰" if isinstance(self.exc, (TimeoutError, asyncio.TimeoutError, aiohttp.ClientTimeout, aiohttp.ServerTimeoutError, subprocess.TimeoutExpired)) else "❌"))
+        box_lang = "ini" if self.ctx.command.name == "eshell" else ("ansi" if ansi_formatting else "py")
         if send_interactive:
-            task = self.ctx.send_interactive(dev_commands.get_pages(self.__str__(output_mode=output_mode)), box_lang="py")
+            task = self.ctx.send_interactive(
+                [
+                    box(page, lang=box_lang)
+                    for page in dev_commands.get_pages((f"{self.env['prefix_dev_output']}\n\n" if "prefix_dev_output" in self.env else None) + self.__str__(output_mode=output_mode))
+                ],
+            )
             if wait:
                 await task
             else:
                 await asyncio.create_task(task)
         elif pages := self.__str__(output_mode=output_mode):
-            await Menu(pages=pages, lang="ansi" if ansi_formatting else "py").start(
-                self.ctx, wait=wait
-            )
+            await Menu(
+                pages=pages,
+                prefix=self.env.get("prefix_dev_output"),
+                lang=box_lang,
+            ).start(self.ctx, wait=wait,)
         if tick and self.exc is None:
             await self.ctx.react_quietly(
                 # sourcery skip: swap-if-expression
@@ -683,7 +693,8 @@ class Dev(Cog, dev_commands.Dev):
         keywords, e.g. yield, will result in a syntax error. For multiple
         lines or asynchronous code, see [p]repl or [p]eval.
 
-        You can upload a file with the code to be executed, or reply to a message containing the same command, for any bot.
+        The code can be within a codeblock, inline code or neither, as long as they are not mixed and they are formatted correctly.
+        You can upload a file with the code to be executed, or reply to a message containing the command, from any bot.
 
         Environment Variables:
             `ctx`      - the command invocation context
@@ -740,10 +751,8 @@ class Dev(Cog, dev_commands.Dev):
         calls and awaits it. The bot will respond with anything printed to
         stdout, as well as the return value of the function.
 
-        The code can be within a codeblock, inline code or neither, as long
-        as they are not mixed and they are formatted correctly.
-
-        You can upload a file with the code to be executed, or reply to a message containing the same command, for any bot.
+        The code can be within a codeblock, inline code or neither, as long as they are not mixed and they are formatted correctly.
+        You can upload a file with the code to be executed, or reply to a message containing the command, from any bot.
 
         Environment Variables:
             `ctx`      - the command invocation context
@@ -949,6 +958,89 @@ class Dev(Cog, dev_commands.Dev):
             finally:
                 self._bypass_cooldowns_task = None
             ctx.bot._bypass_cooldowns = not toggle
+
+    @commands.is_owner()
+    @commands.hybrid_command(name="eshell")
+    async def _eshell(self, ctx: commands.Context, silent: typing.Optional[bool] = False, *, command: str = None) -> None:
+        """Execute shell commands.
+
+        This command wraps the shell command into a Python code to invoke them.
+
+        The code can be within a codeblock, inline code or neither, as long as they are not mixed and they are formatted correctly.
+        You can upload a file with the code to be executed, or reply to a message containing the command, from any bot.
+        """
+        if command is None:
+            if ctx.message.attachments:
+                command = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+            elif (
+                hasattr(ctx.message, "reference")
+                and ctx.message.reference is not None
+                and isinstance((reference := ctx.message.reference.resolved), discord.Message)
+            ):
+                if (
+                    match := re.compile(r"(eshell|shell|qshell)(\n)?( )?(?P<command>(.|\n)*)").search(
+                        reference.content
+                    )
+                ) is not None and match.groupdict()["command"].strip():
+                    command = match.groupdict()["command"]
+                elif (
+                    re.compile(r"```py\n(.|\n)*\n```").match(reference.content)
+                    and reference.content.count("```") == 2
+                ):
+                    command = reference.content
+                else:
+                    raise commands.UserInputError()
+            else:
+                raise commands.UserInputError()
+        command = cleanup_code(command)
+        source = textwrap.dedent("""
+            import asyncio
+            import asyncio.subprocess as asp
+            import os
+            import sys
+            import typing
+            command = '''
+            [COMMAND]
+            '''.strip()
+            # devenv["prefix_dev_output"] = command
+
+            def get_env() -> typing.Dict[str, str]:
+                env = os.environ.copy()
+                if hasattr(sys, "real_prefix") or sys.base_prefix != sys.prefix:
+                    if sys.platform == "win32":
+                        binfolder = f"{sys.prefix}{os.path.sep}Scripts"
+                        env["PATH"] = f"{binfolder}{os.pathsep}{env['PATH']}"
+                    else:
+                        binfolder = f"{sys.prefix}{os.path.sep}bin"
+                        env["PATH"] = f"{binfolder}{os.pathsep}{env['PATH']}"
+                return env
+
+            process = await asp.create_subprocess_shell(
+                command,
+                stdout=asp.PIPE,
+                stderr=asp.STDOUT,
+                env=get_env(),
+                executable=None,
+            )
+            try:
+                await process.wait()
+            except asyncio.CancelledError:
+                prefix = f"Command was terminated early and this is a partial output:\\n\\n"
+                # raise
+            else:
+                prefix = ""
+
+            finally:
+                lines = [line async for line in process.stdout]
+                print(prefix + b"".join(lines).decode("utf-8", "replace").strip().replace("\\r", ""))
+        """).strip().replace("[COMMAND]", command)
+        if silent:
+            source = "\n".join(source.split("\n")[:-3])
+        await self.my_exec(
+            getattr(ctx, "original_context", ctx),
+            type="eval",
+            source=source,
+        )
 
     @commands.is_owner()
     @commands.hybrid_group(name="setdev")

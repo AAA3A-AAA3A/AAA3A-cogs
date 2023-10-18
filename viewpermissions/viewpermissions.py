@@ -52,6 +52,7 @@ class ViewPermissions(Cog):
 
         sources = {}
 
+        # Thanks dpy for that (https://github.com/Rapptz/discord.py/blob/master/discord/abc.py#L666-L798)!
         if any(member == guild.owner for member in members):  # Guild owner get all permissions -- no questions asked. Otherwise...:
             base = discord.Permissions.all()
             for permission_name in dict(discord.Permissions.all()):

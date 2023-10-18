@@ -33,9 +33,7 @@ class WhatIsConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str):
         _types = [
             discord.Guild,
-            discord.TextChannel,
-            discord.VoiceChannel,
-            discord.ForumChannel,
+            discord.abc.GuildChannel,
             discord.Thread,
             discord.Member,
             discord.User,

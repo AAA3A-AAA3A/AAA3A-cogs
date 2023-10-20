@@ -55,8 +55,7 @@ class PositionConverter(commands.Converter):
                     "The indicated position must be between 1 and {max_guild_roles_position}."
                 ).format(max_guild_roles_position=max_guild_roles_position)
             )
-        _list = list(range(max_guild_roles_position - 1))
-        _list.reverse()
+        _list = list(range(max_guild_roles_position - 1))[::-1]
         position = _list[position - 1]
         return position + 1
 

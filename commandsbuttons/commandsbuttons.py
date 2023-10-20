@@ -463,13 +463,8 @@ class CommandsButtons(Cog):
             _commands_buttons = [commands_buttons[f"{message.channel.id}-{message.id}"]]
         if not _commands_buttons:
             raise commands.UserFeedbackCheckFailure(_("No commands-buttons in this server."))
-        lists = []
-        while _commands_buttons != []:
-            li = _commands_buttons[:5]
-            _commands_buttons = _commands_buttons[5:]
-            lists.append(li)
         embeds = []
-        for li in lists:
+        for li in discord.utils.as_chunks(_commands_buttons, max_size=5):
             embed: discord.Embed = discord.Embed(
                 title=_("Commands Buttons"),
                 description=_(

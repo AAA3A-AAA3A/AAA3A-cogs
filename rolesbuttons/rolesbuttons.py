@@ -471,13 +471,8 @@ class RolesButtons(Cog):
             _roles_buttons = [roles_buttons[f"{message.channel.id}-{message.id}"]]
         if not _roles_buttons:
             raise commands.UserFeedbackCheckFailure(_("No roles-buttons in this server."))
-        lists = []
-        while _roles_buttons != []:
-            li = _roles_buttons[:5]
-            _roles_buttons = _roles_buttons[5:]
-            lists.append(li)
         embeds = []
-        for li in lists:
+        for li in discord.utils.as_chunks(_roles_buttons, max_size=5):
             embed: discord.Embed = discord.Embed(
                 title=_("Roles Buttons"),
                 description=_("There is {len_roles_buttons} roles buttons in this server.").format(

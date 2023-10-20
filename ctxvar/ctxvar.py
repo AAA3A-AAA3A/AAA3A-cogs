@@ -148,14 +148,8 @@ class CtxVar(Cog):
         embed.set_thumbnail(
             url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/2048px-Python-logo-notext.svg.png"
         )
-        one_l = [x for x in dir(instance) if not (x.startswith("__") and x.endswith("__"))]
-        lists = []
-        while one_l != []:
-            li = one_l[:20]
-            one_l = one_l[20:]
-            lists.append(li)
         embeds = []
-        for li in lists:
+        for li in discord.utils.as_chunks([x for x in dir(instance) if not (x.startswith("__") and x.endswith("__"))], max_size=20):
             e = copy(embed)
             for x in li:
                 if len(f"{x}") <= 256:

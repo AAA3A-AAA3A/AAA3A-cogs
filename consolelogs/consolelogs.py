@@ -169,10 +169,9 @@ class ConsoleLogs(Cog, DashboardIntegration):
             path
             for path in (data_manager.core_data_path() / "logs").iterdir()
             if LATEST_LOG_RE.match(path.name) is not None
-        ]
+        ][::-1]
         if not console_logs_files:
             return []
-        console_logs_files.reverse()
         console_logs_lines = []
         for console_logs_file in console_logs_files:
             with console_logs_file.open(mode="rt") as f:

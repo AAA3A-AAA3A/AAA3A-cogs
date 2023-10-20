@@ -288,13 +288,8 @@ class UrlButtons(Cog):
             _url_buttons = [url_buttons[f"{message.channel.id}-{message.id}"]]
         if not _url_buttons:
             raise commands.UserFeedbackCheckFailure(_("No url-buttons in this server."))
-        lists = []
-        while _url_buttons != []:
-            li = _url_buttons[:5]
-            _url_buttons = _url_buttons[5:]
-            lists.append(li)
         embeds = []
-        for li in lists:
+        for li in discord.utils.as_chunks(_url_buttons, max_size=5):
             embed: discord.Embed = discord.Embed(
                 title=_("URL Buttons"),
                 description=_("There is {len_url_buttons} url buttons in this server.").format(

@@ -275,14 +275,12 @@ class CalculatorView(discord.ui.View):
         elif interaction.data["custom_id"] == "history_button":
             embed: discord.Embed = discord.Embed()
             embed.title = f"{self.ctx.author.display_name}'s history"
-            history = self.cog.history.get(self.ctx.author, [])[-25:]
-            history.reverse()
+            history = self.cog.history.get(self.ctx.author, [])[-25:][::-1]
             if len(history) == 0:
                 embed.description = _("Nothing in your history.")
             else:
                 for count, entry in enumerate(history, start=0):
-                    all_count = list(range(1, len(self.cog.history.get(self.ctx.author, [])) + 1))
-                    all_count.reverse()
+                    all_count = list(range(1, len(self.cog.history.get(self.ctx.author, [])) + 1))[::-1]
                     count = all_count[count]
                     _expression, _result = entry
                     embed.add_field(

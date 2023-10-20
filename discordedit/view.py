@@ -46,7 +46,7 @@ class DiscordEditView(discord.ui.View):
         self.audit_log_reason: str = audit_log_reason
         self._object_qualified_name: str = _object_qualified_name
 
-        self._splitted_parameters: typing.List[typing.List[str]] = []
+        self._chunked_parameters: typing.List[typing.List[str]] = []
         self._message: discord.Message = None
         self._ready: asyncio.Event = asyncio.Event()
 
@@ -55,15 +55,11 @@ class DiscordEditView(discord.ui.View):
         self.remove_item(self.delete_button)
         self.remove_item(self.close_page)
 
-        parameters_to_split = list(self.parameters)
-        while parameters_to_split != []:
-            li = parameters_to_split[:5]
-            parameters_to_split = parameters_to_split[5:]
-            self._splitted_parameters.append(li)
-        for button_index in range(len(self._splitted_parameters)):
+        self._chunked_parameters = discord.utils.as_chunks(list(self.parameters), max_size=5)
+        for button_index in range(len(self._chunked_parameters)):
             button = discord.ui.Button(
                 label=f"Edit {self._object_qualified_name} {button_index + 1}"
-                if len(self._splitted_parameters) > 1
+                if len(self._chunked_parameters) > 1
                 else f"Edit {self._object_qualified_name}",
                 style=discord.ButtonStyle.secondary,
             )

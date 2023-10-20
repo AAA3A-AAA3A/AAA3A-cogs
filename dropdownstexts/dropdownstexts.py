@@ -358,13 +358,8 @@ class DropdownsTexts(Cog):
             _dropdowns_texts = [dropdowns_texts[f"{message.channel.id}-{message.id}"]]
         if not _dropdowns_texts:
             raise commands.UserFeedbackCheckFailure(_("No dropdowns-texts in this server."))
-        lists = []
-        while _dropdowns_texts != []:
-            li = _dropdowns_texts[:5]
-            _dropdowns_texts = _dropdowns_texts[5:]
-            lists.append(li)
         embeds = []
-        for li in lists:
+        for li in discord.utils.as_chunks(_dropdowns_texts, max_size=5):
             embed: discord.Embed = discord.Embed(
                 title=_("Dropdowns Texts"),
                 description=_(

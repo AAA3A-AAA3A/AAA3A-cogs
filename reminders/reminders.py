@@ -879,14 +879,8 @@ class Reminders(Cog):
             reminders = list(sorted(reminders.values(), key=lambda r: r.created_at))
         elif sort == "id":
             reminders = list(sorted(reminders.values(), key=lambda r: r.id))
-        lists = []
-        _reminders = reminders.copy()
-        while _reminders != []:
-            li = _reminders[: 15 if card else 5]
-            _reminders = _reminders[15 if card else 5 :]
-            lists.append(li)
         embeds = []
-        for li in lists:
+        for li in discord.utils.as_chunks(reminders, max_size=5):
             embed: discord.Embed = discord.Embed(
                 title=_("Your Reminders")
                 + (

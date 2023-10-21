@@ -39,7 +39,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             identifier=205192943327321000143939875896557571750,  # 937480369417
             force_registration=True,
         )
-        self.CONFIG_SCHEMA: int = 3
+        self.CONFIG_SCHEMA: int = 4
         self.tickettool_global: typing.Dict[str, typing.Optional[int]] = {
             "CONFIG_SCHEMA": None,
         }
@@ -64,10 +64,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 "forum_channel": None,
                 "category_open": None,
                 "category_close": None,
-                "admin_role": None,
-                "support_role": None,
-                "view_role": None,
-                "ping_role": None,
+                "admin_roles": [],
+                "support_roles": [],
+                "view_roles": [],
+                "ping_roles": [],
                 "ticket_role": None,
                 "nb_max": 5,
                 "create_modlog": False,
@@ -124,20 +124,20 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 "converter": discord.CategoryChannel,
                 "description": "Set the category where the closed tickets will be.",
             },
-            "admin_role": {
-                "converter": discord.Role,
+            "admin_roles": {
+                "converter": commands.Greedy[discord.Role],
                 "description": "Users with this role will have full permissions for tickets, but will not be able to set up the cog.",
             },
-            "support_role": {
-                "converter": discord.Role,
+            "support_roles": {
+                "converter": commands.Greedy[discord.Role],
                 "description": "Users with this role will be able to participate and claim the ticket.",
             },
-            "view_role": {
-                "converter": discord.Role,
+            "view_roles": {
+                "converter": commands.Greedy[discord.Role],
                 "description": "Users with this role will only be able to read messages from the ticket, but not send them.",
             },
-            "ping_role": {
-                "converter": discord.Role,
+            "ping_roles": {
+                "converter": commands.Greedy[discord.Role],
                 "description": "This role will be pinged automatically when the ticket is created, but does not give any additional permissions.",
             },
             "ticket_role": {
@@ -296,6 +296,27 @@ class TicketTool(settings, DashboardIntegration, Cog):
                             del guilds_data[guild]["dropdowns"][message_id]["panel"]
             CONFIG_SCHEMA = 3
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
+        if CONFIG_SCHEMA == 3:
+            guild_group = self.config._get_base_group(self.config.GUILD)
+            async with guild_group.all() as guilds_data:
+                _guilds_data = deepcopy(guilds_data)
+                for guild in _guilds_data:
+                    if "profiles" in guilds_data[guild]:
+                        for profile in guilds_data[guild]["profiles"]:
+                            if guilds_data[guild]["profiles"][profile].get("admin_role") is not None:
+                                guilds_data[guild]["profiles"][profile]["admin_roles"] = [guilds_data[guild]["profiles"][profile]["admin_role"]]
+                                del guilds_data[guild]["profiles"][profile]["admin_role"]
+                            if guilds_data[guild]["profiles"][profile].get("support_role") is not None:
+                                guilds_data[guild]["profiles"][profile]["support_roles"] = [guilds_data[guild]["profiles"][profile]["support_role"]]
+                                del guilds_data[guild]["profiles"][profile]["support_role"]
+                            if guilds_data[guild]["profiles"][profile].get("view_role") is not None:
+                                guilds_data[guild]["profiles"][profile]["view_roles"] = [guilds_data[guild]["profiles"][profile]["view_role"]]
+                                del guilds_data[guild]["profiles"][profile]["view_role"]
+                            if guilds_data[guild]["profiles"][profile].get("ping_role") is not None:
+                                guilds_data[guild]["profiles"][profile]["ping_roles"] = [guilds_data[guild]["profiles"][profile]["ping_role"]]
+                                del guilds_data[guild]["profiles"][profile]["ping_role"]
+            CONFIG_SCHEMA = 4
+            await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         if CONFIG_SCHEMA < self.CONFIG_SCHEMA:
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
@@ -398,16 +419,16 @@ class TicketTool(settings, DashboardIntegration, Cog):
             config["category_open"] = guild.get_channel(config["category_open"])
         if config["category_close"] is not None:
             config["category_close"] = guild.get_channel(config["category_close"])
-        if config["admin_role"] is not None:
-            config["admin_role"] = guild.get_role(config["admin_role"])
-        if config["support_role"] is not None:
-            config["support_role"] = guild.get_role(config["support_role"])
+        if config["admin_roles"]:
+            config["admin_roles"] = [role for role_id in config["admin_roles"] if (role := guild.get_role(role_id)) is not None]
+        if config["support_roles"]:
+            config["support_roles"] = [role for role_id in config["support_roles"] if (role := guild.get_role(role_id)) is not None]
+        if config["view_roles"]:
+            config["view_roles"] = [role for role_id in config["view_roles"] if (role := guild.get_role(role_id)) is not None]
+        if config["ping_roles"]:
+            config["ping_roles"] = [role for role_id in config["ping_roles"] if (role := guild.get_role(role_id)) is not None]
         if config["ticket_role"] is not None:
             config["ticket_role"] = guild.get_role(config["ticket_role"])
-        if config["view_role"] is not None:
-            config["view_role"] = guild.get_role(config["view_role"])
-        if config["ping_role"] is not None:
-            config["ping_role"] = guild.get_role(config["ping_role"])
         for key, value in self.config._defaults[self.config.GUILD][
             "default_profile_settings"
         ].items():
@@ -624,10 +645,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket_check: typing.Optional[bool] = False,
         status: typing.Optional[str] = None,
         ticket_owner: typing.Optional[bool] = False,
-        admin_role: typing.Optional[bool] = False,
-        support_role: typing.Optional[bool] = False,
+        admin_roles: typing.Optional[bool] = False,
+        support_roles: typing.Optional[bool] = False,
+        view_roles: typing.Optional[bool] = False,
         ticket_role: typing.Optional[bool] = False,
-        view_role: typing.Optional[bool] = False,
         guild_owner: typing.Optional[bool] = False,
         claim: typing.Optional[bool] = None,
         claim_staff: typing.Optional[bool] = False,
@@ -674,27 +695,27 @@ class TicketTool(settings, DashboardIntegration, Cog):
             ):
                 return True
             if (
-                admin_role
-                and config["admin_role"] is not None
-                and ctx.author in config["admin_role"].members
+                admin_roles
+                and config["admin_roles"]
+                and any(ctx.author.get_role(role) is not None for role in config["admin_roles"])
             ):
                 return True
             if (
-                (support_role or (ctx.command == cog.command_delete and config["delete_on_close"]))
-                and config["support_role"] is not None
-                and ctx.author in config["support_role"].members
+                (support_roles or (ctx.command == cog.command_delete and config["delete_on_close"]))
+                and config["support_roles"]
+                and any(ctx.author.get_role(role) is not None for role in config["support_roles"])
+            ):
+                return True
+            if (
+                view_roles
+                and config["view_roles"]
+                and any(ctx.author.get_role(role) is not None for role in config["view_roles"])
             ):
                 return True
             if (
                 ticket_role
                 and config["ticket_role"] is not None
                 and ctx.author in config["ticket_role"].members
-            ):
-                return True
-            if (
-                view_role
-                and config["view_role"] is not None
-                and ctx.author in config["view_role"].members
             ):
                 return True
             if guild_owner and ctx.author == ctx.guild.owner:
@@ -855,10 +876,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket_check=True,
         status=None,
         ticket_owner=True,
-        admin_role=True,
-        support_role=False,
+        admin_roles=True,
+        support_roles=False,
+        view_roles=False,
         ticket_role=False,
-        view_role=False,
         guild_owner=True,
         claim=None,
         claim_staff=True,
@@ -902,10 +923,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket_check=True,
         status="close",
         ticket_owner=True,
-        admin_role=True,
-        support_role=True,
+        admin_roles=True,
+        support_roles=True,
+        view_roles=False,
         ticket_role=False,
-        view_role=False,
         guild_owner=True,
         claim=None,
         claim_staff=True,
@@ -929,10 +950,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket_check=True,
         status="open",
         ticket_owner=True,
-        admin_role=True,
-        support_role=True,
+        admin_roles=True,
+        support_roles=True,
+        view_roles=False,
         ticket_role=False,
-        view_role=False,
         guild_owner=True,
         claim=None,
         claim_staff=True,
@@ -976,10 +997,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket_check=True,
         status=None,
         ticket_owner=False,
-        admin_role=True,
-        support_role=False,
+        admin_roles=True,
+        support_roles=False,
+        view_roles=False,
         ticket_role=False,
-        view_role=False,
         guild_owner=True,
         claim=None,
         claim_staff=True,
@@ -1019,10 +1040,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket_check=True,
         status=None,
         ticket_owner=False,
-        admin_role=True,
-        support_role=False,
+        admin_roles=True,
+        support_roles=False,
+        view_roles=False,
         ticket_role=False,
-        view_role=False,
         guild_owner=True,
         claim=None,
         claim_staff=True,
@@ -1046,10 +1067,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket_check=True,
         status=None,
         ticket_owner=True,
-        admin_role=True,
-        support_role=True,
+        admin_roles=True,
+        support_roles=True,
+        view_roles=False,
         ticket_role=False,
-        view_role=False,
         guild_owner=True,
         claim=None,
         claim_staff=True,
@@ -1072,10 +1093,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket_check=True,
         status=None,
         ticket_owner=False,
-        admin_role=True,
-        support_role=False,
+        admin_roles=True,
+        support_roles=False,
+        view_roles=False,
         ticket_role=False,
-        view_role=False,
         guild_owner=True,
         claim=None,
         claim_staff=True,
@@ -1091,7 +1112,8 @@ class TicketTool(settings, DashboardIntegration, Cog):
         reason: typing.Optional[str] = _("No reason provided."),
     ) -> None:
         """Delete an existing Ticket.
-        If a log channel is defined, an html file containing all the messages of this ticket will be generated.
+
+        If a logs channel is defined, an html file containing all the messages of this ticket will be generated.
         (Attachments are not supported, as they are saved with their Discord link)
         """
         ticket: Ticket = await self.get_ticket(ctx.channel)
@@ -1101,9 +1123,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
             embed.title = _(
                 "Do you really want to delete all the messages of the ticket {ticket.id}?"
             ).format(ticket=ticket)
-            embed.description = _(
-                "If a log channel is defined, an html file containing all the messages of this ticket will be generated. (Attachments are not supported, as they are saved with their Discord link)"
-            )
+            if config["logs_channel"] is not None:
+                embed.description = _(
+                    "If a logs channel is defined, an html file containing all the messages of this ticket will be generated. (Attachments are not supported, as they are saved with their Discord link.)"
+                )
             embed.color = config["color"]
             embed.set_author(
                 name=ctx.author.name,
@@ -1119,10 +1142,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket_check=True,
         status="open",
         ticket_owner=False,
-        admin_role=True,
-        support_role=True,
+        admin_roles=True,
+        support_roles=True,
+        view_roles=False,
         ticket_role=False,
-        view_role=False,
         guild_owner=True,
         claim=False,
         claim_staff=False,
@@ -1147,10 +1170,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket_check=True,
         status=None,
         ticket_owner=False,
-        admin_role=True,
-        support_role=True,
+        admin_roles=True,
+        support_roles=True,
+        view_roles=False,
         ticket_role=False,
-        view_role=False,
         guild_owner=True,
         claim=True,
         claim_staff=True,
@@ -1169,10 +1192,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket_check=True,
         status="open",
         ticket_owner=True,
-        admin_role=True,
-        support_role=False,
+        admin_roles=True,
+        support_roles=False,
+        view_roles=False,
         ticket_role=False,
-        view_role=False,
         guild_owner=True,
         claim=None,
         claim_staff=False,
@@ -1197,10 +1220,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket_check=True,
         status="open",
         ticket_owner=True,
-        admin_role=True,
-        support_role=False,
+        admin_roles=True,
+        support_roles=False,
+        view_roles=False,
         ticket_role=False,
-        view_role=False,
         guild_owner=True,
         claim=None,
         claim_staff=True,
@@ -1222,10 +1245,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket_check=True,
         status=None,
         ticket_owner=True,
-        admin_role=True,
-        support_role=False,
+        admin_roles=True,
+        support_roles=False,
+        view_roles=False,
         ticket_role=False,
-        view_role=False,
         guild_owner=True,
         claim=None,
         claim_staff=True,
@@ -1421,48 +1444,64 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 author=interaction.user,
                 channel=interaction.channel,
                 command="ticket open",
+                invoke=False,
             )
             try:
                 if not await discord.utils.async_all([check(ctx) for check in ctx.command.checks]):
                     await interaction.followup.send(
                         _("You are not allowed to execute this command."), ephemeral=True
                     )
-                else:
-                    await interaction.followup.send(
-                        _("You have chosen to re-open this ticket."),
-                        ephemeral=True,
-                    )
-            except discord.HTTPException:
-                pass
+            except commands.CheckFailure:
+                await interaction.followup.send(
+                    _("You are not allowed to execute this command."), ephemeral=True
+                )
+            await interaction.client.invoke(ctx)
+            await interaction.followup.send(
+                _("You have chosen to re-open this ticket."),
+                ephemeral=True,
+            )
         elif interaction.data["custom_id"] == "claim_ticket_button":
             ctx = await CogsUtils.invoke_command(
                 bot=interaction.client,
                 author=interaction.user,
                 channel=interaction.channel,
                 command="ticket claim",
+                invoke=False,
             )
-            if not await discord.utils.async_all([check(ctx) for check in ctx.command.checks]):
+            try:
+                if not await discord.utils.async_all([check(ctx) for check in ctx.command.checks]):
+                    await interaction.followup.send(
+                        _("You are not allowed to execute this command."), ephemeral=True
+                    )
+            except commands.CheckFailure:
                 await interaction.followup.send(
                     _("You are not allowed to execute this command."), ephemeral=True
                 )
-            else:
-                await interaction.followup.send(
-                    _(
-                        "You have chosen to claim this ticket. If this is not done, you do not have the necessary permissions to execute this command."
-                    ),
-                    ephemeral=True,
-                )
+            await interaction.client.invoke(ctx)
+            await interaction.followup.send(
+                _(
+                    "You have chosen to claim this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+                ),
+                ephemeral=True,
+            )
         elif interaction.data["custom_id"] == "delete_ticket_button":
             ctx = await CogsUtils.invoke_command(
                 bot=interaction.client,
                 author=interaction.user,
                 channel=interaction.channel,
                 command="ticket delete",
+                invoke=False,
             )
-            if not await discord.utils.async_all([check(ctx) for check in ctx.command.checks]):
+            try:
+                if not await discord.utils.async_all([check(ctx) for check in ctx.command.checks]):
+                    await interaction.followup.send(
+                        _("You are not allowed to execute this command."), ephemeral=True
+                    )
+            except commands.CheckFailure:
                 await interaction.followup.send(
                     _("You are not allowed to execute this command."), ephemeral=True
                 )
+            await interaction.client.invoke(ctx)
 
     async def on_dropdown_interaction(
         self, interaction: discord.Interaction, select_menu: discord.ui.Select

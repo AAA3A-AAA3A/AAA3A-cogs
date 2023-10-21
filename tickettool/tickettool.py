@@ -836,10 +836,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     view=view,
                 )
                 timeout = await view.wait()
-                try:
-                    await message.delete()
-                except discord.HTTPException:
-                    pass
+                await CogsUtils.delete_message(message)
                 if timeout:
                     return  # timeout
                 if await modal.wait():

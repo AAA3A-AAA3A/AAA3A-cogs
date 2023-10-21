@@ -1,3 +1,4 @@
+from AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
@@ -304,7 +305,7 @@ class ReminderView(discord.ui.View):
     async def cross_button(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        await self._message.delete()
+        await CogsUtils.delete_message(self._message)
         self.stop()
 
 
@@ -539,7 +540,7 @@ class RepeatView(discord.ui.View):
     async def cross_button(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        await self._message.delete()
+        await CogsUtils.delete_message(self._message)
         self.stop()
 
 
@@ -723,5 +724,5 @@ class SnoozeView(discord.ui.View):
     async def cross_button(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        await self._message.delete()
+        await CogsUtils.delete_message(self._message)
         self.stop()

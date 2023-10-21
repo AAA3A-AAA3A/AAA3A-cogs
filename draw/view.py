@@ -1,3 +1,4 @@
+from AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
@@ -342,10 +343,7 @@ class ColorsMenu(discord.ui.Select):
             except asyncio.TimeoutError:
                 await notification.edit("Timed out, aborted.")
                 return
-            try:
-                await msg.delete()
-            except discord.HTTPException:
-                pass
+            await CogsUtils.delete_message(msg)
 
             CHANNEL = "[a-fA-F0-9]{2}"
             HEX_REGEX = re.compile(
@@ -411,10 +409,7 @@ class ColorsMenu(discord.ui.Select):
             except asyncio.TimeoutError:
                 await notification.edit("Timed out, aborted.")
                 return
-            try:
-                await msg.delete()
-            except discord.HTTPException:
-                pass
+            await CogsUtils.delete_message(msg)
 
             content = msg.content.strip()
             sent_emojis = self.extract_emojis(content)
@@ -711,10 +706,7 @@ class DrawView(discord.ui.View):
         except discord.errors.NotFound:
             pass
         self.stop()
-        try:
-            await self._message.delete()
-        except discord.HTTPException:
-            pass
+        await CogsUtils.delete_message(self._message)
         self._ready.set()
 
     @discord.ui.button(emoji=UP_LEFT_EMOJI, style=discord.ButtonStyle.primary)
@@ -825,10 +817,7 @@ class DrawView(discord.ui.View):
         except asyncio.TimeoutError:
             await notification.edit("Timed out, aborted.")
             return
-        try:
-            await msg.delete()
-        except discord.HTTPException:
-            pass
+        await CogsUtils.delete_message(msg)
 
         cell: str = msg.content.upper()
         ABC = ALPHABETS[: self.board.cursor_row_max + 1]
@@ -957,10 +946,7 @@ class DrawView(discord.ui.View):
         except asyncio.TimeoutError:
             await notification.edit("Timed out, aborted.")
             return
-        try:
-            await msg.delete()
-        except discord.HTTPException:
-            pass
+        await CogsUtils.delete_message(msg)
 
         for i, line in enumerate(msg.content.split("\n"), start=1):
             if len(line.split(":")) != 2:

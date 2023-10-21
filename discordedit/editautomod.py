@@ -601,10 +601,7 @@ class EditAutoModRuleView(discord.ui.View):
         except discord.errors.NotFound:
             pass
         self.stop()
-        try:
-            await self._message.delete()
-        except discord.HTTPException:
-            pass
+        await CogsUtils.delete_message(self._message)
         self._ready.set()
 
     @discord.ui.button(label="Create new AutoMod Rule", style=discord.ButtonStyle.success)

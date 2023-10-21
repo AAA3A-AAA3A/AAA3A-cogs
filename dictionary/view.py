@@ -1,4 +1,4 @@
-from AAA3A_utils import Menu  # isort:skip
+from AAA3A_utils import Menu, CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
@@ -70,10 +70,7 @@ class DictionaryView(discord.ui.View):
         except discord.errors.NotFound:
             pass
         self.stop()
-        try:
-            await self._message.delete()
-        except discord.HTTPException:
-            pass
+        await CogsUtils.delete_message(self._message)
         self._ready.set()
 
     @discord.ui.button(

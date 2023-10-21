@@ -507,8 +507,6 @@ class CodeSnippets(Cog, DashboardIntegration):
             return
         if message.guild is None:
             return
-        if not await self.bot.allowed_by_whitelist_blacklist(message.author):
-            return
         if message.channel.id not in await self.config.guild(message.guild).channels():
             return
         context = await self.bot.get_context(message)

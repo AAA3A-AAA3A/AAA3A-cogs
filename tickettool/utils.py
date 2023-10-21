@@ -49,30 +49,33 @@ class utils:
                 send_messages=True,
                 attach_files=True,
             )
-        if config["admin_role"] is not None:
-            overwrites[config["admin_role"]] = discord.PermissionOverwrite(
-                view_channel=True,
-                read_messages=True,
-                read_message_history=True,
-                send_messages=True,
-                attach_files=True,
-                manage_messages=True,
-            )
-        if config["support_role"] is not None:
-            overwrites[config["support_role"]] = discord.PermissionOverwrite(
-                view_channel=True,
-                read_messages=True,
-                read_message_history=True,
-                send_messages=True,
-                attach_files=True,
-            )
-        if config["view_role"] is not None:
-            overwrites[config["view_role"]] = discord.PermissionOverwrite(
-                view_channel=True,
-                read_messages=True,
-                read_message_history=True,
-                add_reactions=False,
-            )
+        if config["admin_roles"]:
+            for role in config["admin_roles"]:
+                overwrites[role] = discord.PermissionOverwrite(
+                    view_channel=True,
+                    read_messages=True,
+                    read_message_history=True,
+                    send_messages=True,
+                    attach_files=True,
+                    manage_messages=True,
+                )
+        if config["support_roles"]:
+            for role in config["support_roles"]:
+                overwrites[role] = discord.PermissionOverwrite(
+                    view_channel=True,
+                    read_messages=True,
+                    read_message_history=True,
+                    send_messages=True,
+                    attach_files=True,
+                )
+        if config["view_roles"] is not None:
+            for role in config["view_roles"]:
+                overwrites[role] = discord.PermissionOverwrite(
+                    view_channel=True,
+                    read_messages=True,
+                    read_message_history=True,
+                    add_reactions=False,
+                )
         return overwrites
 
 

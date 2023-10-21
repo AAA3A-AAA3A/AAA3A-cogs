@@ -192,14 +192,12 @@ class LinkQuoter(Cog):
                 embed.set_footer(text=f"#{message.channel.name}")
 
         if message.attachments:
-            embed.fields = embed.fields[:19]
             attachment = message.attachments[0]
             image = attachment.proxy_url
             embed.add_field(name="Attachments:", value=f"[{attachment.filename}]({attachment.url})", inline=False)
 
         if image is None:
             if message.stickers:
-                embed.fields = embed.fields[:19]
                 for sticker in message.stickers:
                     if sticker.url:
                         image = str(sticker.url)
@@ -213,7 +211,6 @@ class LinkQuoter(Cog):
             and message.reference is not None
             and isinstance((reference := message.reference.resolved), discord.Message)
         ):
-            embed.fields = embed.fields[:19]
             jump_url = reference.jump_url
             embed.add_field(
                 name="Replying to:",
@@ -224,7 +221,6 @@ class LinkQuoter(Cog):
         if url_field:
             embed.url = message.jump_url
         # embed.add_field(
-        #     embed.fields = embed.fields[:19]
         #     name="Source:",
         #     value=f'[Jump to Message!]({message.jump_url} "Follow me to the original message!")',
         #     inline=False,
@@ -254,8 +250,8 @@ class LinkQuoter(Cog):
                 view._message = await hook.send(
                     embed=embed,
                     view=view,
-                    username="Bootables Tools Updates",
-                    avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg",
+                    username=message.author.display_name,
+                    avatar_url=message.author.display_avatar,
                     wait=True,
                 )
             except (AttributeError, discord.errors.Forbidden):

@@ -1120,7 +1120,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             embed.title = _(
                 "Do you really want to delete all the messages of the ticket {ticket.id}?"
             ).format(ticket=ticket)
-            if config["logs_channel"] is not None:
+            if config["logschannel"] is not None:
                 embed.description = _(
                     "If a logs channel is defined, an html file containing all the messages of this ticket will be generated. (Attachments are not supported, as they are saved with their Discord link.)"
                 )

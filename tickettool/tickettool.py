@@ -697,19 +697,19 @@ class TicketTool(settings, DashboardIntegration, Cog):
             if (
                 admin_roles
                 and config["admin_roles"]
-                and any(ctx.author.get_role(role) is not None for role in config["admin_roles"])
+                and any(role in ctx.author.roles for role in config["admin_roles"])
             ):
                 return True
             if (
                 (support_roles or (ctx.command == cog.command_delete and config["delete_on_close"]))
                 and config["support_roles"]
-                and any(ctx.author.get_role(role) is not None for role in config["support_roles"])
+                and any(role in ctx.author.roles for role in config["support_roles"])
             ):
                 return True
             if (
                 view_roles
                 and config["view_roles"]
-                and any(ctx.author.get_role(role) is not None for role in config["view_roles"])
+                and any(role in ctx.author.roles for role in config["view_roles"])
             ):
                 return True
             if (

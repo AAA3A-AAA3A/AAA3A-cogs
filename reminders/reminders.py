@@ -1154,7 +1154,7 @@ class Reminders(Cog):
         embeds = [loop.get_debug_embed() for loop in self.loops]
         await Menu(pages=embeds).start(ctx)
 
-    @configuration.command()
+    @configuration.command(aliases=["migratefrompcx"])
     async def migratefromremindme(self, ctx: commands.Context) -> None:
         """Migrate Reminders from RemindMe by PhasecoreX."""
         old_config: Config = Config.get_conf(
@@ -1227,7 +1227,7 @@ class Reminders(Cog):
                     await reminder.save()
         await ctx.send(_("Data successfully migrated from RemindMe by PhasecoreX."))
 
-    @configuration.command()
+    @configuration.command(aliases=["migratefromfox"])
     async def migratefromfifo(self, ctx: commands.Context) -> None:
         """Migrate Reminders from FIFO by Fox."""
         old_config: Config = Config.get_conf(

@@ -272,8 +272,8 @@ class LinkQuoter(Cog):
         pass
 
     @commands.is_owner()
-    @setlinkquoter.command(aliases=["migratefromphen"])
-    async def migratefromlinkquoter(self, ctx: commands.Context) -> None:
+    @setlinkquoter.command(aliases=["migratefromlinkquoter"])
+    async def migratefromphen(self, ctx: commands.Context) -> None:
         """Migrate config from LinkQuoter by Phen."""
         old_config: Config = Config.get_conf(
             "LinkQuoter", identifier=6234567898747434823, force_registration=True, cog_name="LinkQuoter"

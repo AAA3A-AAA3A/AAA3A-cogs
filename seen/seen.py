@@ -1573,7 +1573,7 @@ class Seen(Cog):
             await ctx.send(_("Seen data purged for this type."))
 
     @commands.is_owner()
-    @seen.command()
+    @seen.command(aliases=["migratefromaika"])
     async def migratefromseen(self, ctx: commands.Context) -> None:
         """Migrate Seen from Seen by Aikaterna."""
         old_config: Config = Config.get_conf(

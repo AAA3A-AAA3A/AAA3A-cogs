@@ -506,8 +506,8 @@ class EmbedUtils(Cog):
             return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
 
     @commands.is_owner()
-    @embed.command(aliases=["migratefromphen"])
-    async def migratefromembedutils(self, ctx: commands.Context) -> None:
+    @embed.command(aliases=["migratefromembedutils"])
+    async def migratefromphen(self, ctx: commands.Context) -> None:
         """Migrate stored embeds from EmbedUtils by Phen."""
         old_config: Config = Config.get_conf(
             "EmbedUtils", identifier=43248937299564234735284, force_registration=True, cog_name="EmbedUtils"

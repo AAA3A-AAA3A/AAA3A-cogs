@@ -518,16 +518,16 @@ class EmbedUtils(Cog):
             if "stored_embeds" not in new_global_data:
                 new_global_data["stored_embeds"] = {}
             _stored_embeds = new_global_data["stored_embeds"]
-            new_global_data["stored_embeds"] = old_global_data["embeds"]
+            new_global_data["stored_embeds"] = {name: {"author": data["author"], "embed": data["embed"], "locked": data.get("locked", False), "uses": data["uses"]} for name, data in old_global_data["embeds"].items()}
             new_global_data["stored_embeds"].update(**_stored_embeds)
         new_guild_group = self.config._get_base_group(self.config.GUILD)
-        old_guilds_data = await old_config.all_members()
+        old_guilds_data = await old_config.all_guilds()
         async with new_guild_group.all() as new_guilds_data:
             for guild_id in old_guilds_data:
                 if "embeds" in old_guilds_data[guild_id]:
                     if "stored_embeds" not in new_guilds_data[str(guild_id)]:
                         new_guilds_data[str(guild_id)]["stored_embeds"] = {}
                     _stored_embeds = new_guilds_data[str(guild_id)]["stored_embeds"]
-                    new_guilds_data[str(guild_id)]["stored_embeds"] = old_guilds_data[guild_id]["embeds"]
+                    new_guilds_data[str(guild_id)]["stored_embeds"] = {name: {"author": data["author"], "embed": data["embed"], "locked": data.get("locked", False), "uses": data["uses"]} for name, data in old_guilds_data[guild_id]["embeds"].items()}
                     new_guilds_data[str(guild_id)]["stored_embeds"].update(**_stored_embeds)
         await ctx.send(_("Data successfully migrated from EmbedUtils by Phen."))

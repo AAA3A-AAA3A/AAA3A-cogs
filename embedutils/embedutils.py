@@ -319,9 +319,8 @@ class EmbedUtils(Cog):
             if not message.embeds:
                 raise commands.UserInputError()
             data = {"embeds": [embed.to_dict() for embed in message.embeds]}
-        embed = data["embed"]
         try:
-            await message.edit(embed=embed)
+            await message.edit(**data)
         except discord.HTTPException as error:
             return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
 

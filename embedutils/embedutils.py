@@ -10,7 +10,7 @@ import json
 
 from redbot.core.utils.chat_formatting import text_to_file, pagify
 
-from .converters import StringToEmbed, ListStringToEmbed, PastebinConverter, PastebinListConverter, MessageableConverter, MessageableOrMessageConverter, StrConverter
+from .converters import StringToEmbed, ListStringToEmbed, PastebinConverter, PastebinListConverter, MessageableConverter, MyMessageConverter, MessageableOrMessageConverter, StrConverter
 
 # Credits:
 # General repo credits.
@@ -281,6 +281,49 @@ class EmbedUtils(Cog):
         if include_content:
             data["content"] = message.content
         await ctx.send(file=text_to_file(text=json.dumps(data, indent=4), filename="embed.json"))
+
+    @commands.mod_or_permissions(manage_messages=True)
+    @embed.command(name="edit")
+    async def embed_edit(
+        self,
+        ctx: commands.Context,
+        message: MyMessageConverter,
+        conversion_type: typing.Literal["json", "fromjson", "fromdata", "yaml", "fromyaml", "fromfile", "jsonfile", "fromjsonfile", "fromdatafile", "yamlfile", "fromyamlfile", "gist", "pastebin", "hastebin", "message", "frommessage", "frommsg"],
+        *,
+        data: str,
+    ):
+        """Edit a message sent by [botname].
+
+        It would be better to use the `message` parameter of all the other commands.
+        """
+        if conversion_type in ("json", "fromjson", "fromdata"):
+            data = await JSON_LIST_CONVERTER.convert(ctx, argument=data)
+        elif conversion_type in ("yaml", "fromyaml"):
+            data = await YAML_LIST_CONVERTER.convert(ctx, argument=data)
+        elif conversion_type == ("fromfile", "jsonfile", "fromjsonfile", "fromdatafile"):
+            if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("json", "txt"):
+                argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+            else:
+                raise commands.UserInputError()
+            data = await JSON_LIST_CONVERTER.convert(ctx, argument=argument)
+        elif conversion_type in ("yamlfile", "fromyamlfile"):
+            if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("yaml", "txt"):
+                argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+            else:
+                raise commands.UserInputError()
+            data = await YAML_LIST_CONVERTER.convert(ctx, argument=argument)
+        elif conversion_type in ("gist", "pastebin", "hastebin"):
+            data = await PASTEBIN_LIST_CONVERTER.convert(ctx, argument=data)
+        elif conversion_type in ("message", "frommessage", "frommsg"):
+            message = await commands.MessageConverter().convert(ctx, argument=data)
+            if not message.embeds:
+                raise commands.UserInputError()
+            data = {"embeds": [embed.to_dict() for embed in message.embeds]}
+        embed = data["embed"]
+        try:
+            await message.edit(embed=embed)
+        except discord.HTTPException as error:
+            return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
 
     @commands.mod_or_permissions(manage_guild=True)
     @embed.command(name="store", aliases=["storeembed"], usage="[global_level=False] [locked=False] <name> <json|yaml|jsonfile|yamlfile|pastebin|message> <data>")

@@ -262,6 +262,7 @@ class LinkQuoter(Cog):
                 message, invoke_guild=ctx.guild
             )
             view._message = await ctx.send(embed=embed, view=view)
+        self.views[view._message] = view
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_guild=True)

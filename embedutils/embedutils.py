@@ -567,6 +567,8 @@ class EmbedUtils(Cog):
         async with new_guild_group.all() as new_guilds_data:
             for guild_id in old_guilds_data:
                 if "embeds" in old_guilds_data[guild_id]:
+                    if str(guild_id) not in new_guilds_data:
+                        new_guilds_data[str(guild_id)] = {}
                     if "stored_embeds" not in new_guilds_data[str(guild_id)]:
                         new_guilds_data[str(guild_id)]["stored_embeds"] = {}
                     _stored_embeds = new_guilds_data[str(guild_id)]["stored_embeds"]

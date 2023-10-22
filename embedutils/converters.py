@@ -205,6 +205,8 @@ class MyMessageConverter(commands.MessageConverter):
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message. You can use the command without providing a message to send one.")
             )
+        if not await discord.utils.async_all([check(ctx) for check in ctx.bot.get_cog("EmbedUtils").embed_edit.checks]):
+            raise commands.BadArgument(_("You are not allowed to edit embeds of an existing message (bot owner can set the permissions with the cog Permissions on the command `[p]embed edit`)."))
         return message
 
 
@@ -214,13 +216,9 @@ class MessageableOrMessageConverter(commands.Converter):
             return await MessageableConverter().convert(ctx, argument=argument)
         except commands.BadArgument as e:
             try:
-                message = await MyMessageConverter().convert(ctx, argument=argument)
+                return await MyMessageConverter().convert(ctx, argument=argument)
             except commands.BadArgument:
                 raise e
-            else:
-                if not await discord.utils.async_all([check(ctx) for check in ctx.bot.get_cog("EmbedUtils").embed_edit.checks]):
-                    raise commands.BadArgument(_("You are not allowed to edit embeds of an existing message (bot owner can set the permissions with the cog Permissions on the command `[p]embed edit`)."))
-                return message
 
 
 GITHUB_RE = re.compile(

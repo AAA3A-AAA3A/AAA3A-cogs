@@ -205,7 +205,9 @@ class MyMessageConverter(commands.MessageConverter):
             raise commands.UserFeedbackCheckFailure(
                 _("I have to be the author of the message. You can use the command without providing a message to send one.")
             )
-        if not await discord.utils.async_all([check(ctx) for check in ctx.bot.get_cog("EmbedUtils").embed_edit.checks]):
+        ctx.message.channel = message.channel
+        fake_context = await ctx.bot.get_context(ctx.message)
+        if not await discord.utils.async_all([check(fake_context) for check in ctx.bot.get_cog("EmbedUtils").embed_edit.checks]):
             raise commands.BadArgument(_("You are not allowed to edit embeds of an existing message (bot owner can set the permissions with the cog Permissions on the command `[p]embed edit`)."))
         return message
 

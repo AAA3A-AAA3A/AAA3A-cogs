@@ -134,15 +134,15 @@ class RepeatRule:
     @executor()
     def next_trigger(
         self,
-        last_expires_at: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
-        utc_now: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
+        last_expires_at: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc),
+        utc_now: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc),
         timezone: str = "UTC",
     ) -> typing.Optional[datetime.datetime]:
         self.last_trigger = self.last_trigger or last_expires_at
         if self.last_trigger > last_expires_at and self.last_trigger >= utc_now:
             return self.last_trigger
         if utc_now is None:
-            utc_now = datetime.datetime.now(datetime.timezone.utc)
+            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
         if self.type == "sample":
             repeat_delta = dateutil.relativedelta.relativedelta(**self.value)
             next_expires_at = last_expires_at + repeat_delta
@@ -239,12 +239,12 @@ class Repeat:
 
     async def next_trigger(
         self,
-        last_expires_at: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
+        last_expires_at: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc),
         utc_now: datetime.datetime = None,
         timezone: str = "UTC",
     ) -> typing.Optional[datetime.datetime]:
         if utc_now is None:
-            utc_now = datetime.datetime.now(datetime.timezone.utc)
+            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
         next_triggers = [
             await rule.next_trigger(
                 last_expires_at=last_expires_at, utc_now=utc_now, timezone=timezone
@@ -385,7 +385,7 @@ class Reminder:
 
     def __str__(self, utc_now: datetime.datetime = None) -> str:
         if utc_now is None:
-            utc_now = datetime.datetime.now(datetime.timezone.utc)
+            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
         and_every = ""
         if self.repeat is not None:
             if len(self.repeat.rules) == 1:
@@ -541,7 +541,7 @@ class Reminder:
         embed_color: discord.Color = discord.Color.green(),
     ) -> discord.Embed:
         if utc_now is None:
-            utc_now = datetime.datetime.now(datetime.timezone.utc)
+            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
         delayed = int(
             utc_now.timestamp() - (self.last_expires_at or self.next_expires_at).timestamp()
         )
@@ -619,7 +619,7 @@ class Reminder:
         testing: bool = False,
     ) -> None:
         if utc_now is None:
-            utc_now = datetime.datetime.now(datetime.timezone.utc)
+            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
         if not testing:
             self.last_expires_at = self.next_expires_at
             timezone = (await self.cog.config.user_from_id(self.user_id).timezone()) or "UTC"

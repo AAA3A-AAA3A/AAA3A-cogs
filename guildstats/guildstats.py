@@ -472,7 +472,7 @@ class GuildStats(Cog):
 
     async def cleanup(self, utc_now: datetime.datetime = None) -> None:
         if utc_now is None:
-            utc_now = datetime.datetime.now(datetime.timezone.utc)
+            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
         channel_group = self.config._get_base_group(self.config.CHANNEL)
         async with channel_group.all() as channels_data:
             for channel in channels_data:
@@ -561,7 +561,7 @@ class GuildStats(Cog):
         ):
             self.cache[message.guild]["channels"][message.channel]["messages"][message.author] = []
         self.cache[message.guild]["channels"][message.channel]["messages"][message.author].append(
-            datetime.datetime.now(datetime.timezone.utc)
+            datetime.datetime.now(tz=datetime.timezone.utc)
         )
 
     @commands.Cog.listener()
@@ -606,7 +606,7 @@ class GuildStats(Cog):
                 }
             self.cache[after.channel.guild]["channels"][after.channel]["voice_cache"][
                 member
-            ] = datetime.datetime.now(datetime.timezone.utc)
+            ] = datetime.datetime.now(tz=datetime.timezone.utc)
         if before.channel is not None:
             if isinstance(after.channel, discord.StageChannel):
                 return
@@ -619,7 +619,7 @@ class GuildStats(Cog):
             ignored_users = await self.config.ignored_users()
             if member.id in ignored_users:
                 return
-            end_time = datetime.datetime.now(datetime.timezone.utc)
+            end_time = datetime.datetime.now(tz=datetime.timezone.utc)
             real_total_time = int((end_time - start_time).total_seconds())
             if round(real_total_time / 3600, 2) == 0:
                 return
@@ -688,7 +688,7 @@ class GuildStats(Cog):
                     }
                 self.cache[after.guild]["members"][after]["activities_cache"][
                     activity.name
-                ] = datetime.datetime.now(datetime.timezone.utc)
+                ] = datetime.datetime.now(tz=datetime.timezone.utc)
         if before is not None:
             ignored_users = await self.config.ignored_users()
             if before.id in ignored_users:
@@ -707,7 +707,7 @@ class GuildStats(Cog):
                     ].pop(activity.name)
                 except KeyError:
                     return
-                end_time = datetime.datetime.now(datetime.timezone.utc)
+                end_time = datetime.datetime.now(tz=datetime.timezone.utc)
                 real_total_time = int((end_time - start_time).total_seconds())
                 if real_total_time < 10 * 60:
                     return
@@ -762,7 +762,7 @@ class GuildStats(Cog):
         else:
             _type = None
         if utc_now is None:
-            utc_now = datetime.datetime.now(datetime.timezone.utc)
+            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
         # Get cache data.
         all_channels_data = {
             channel_id: data
@@ -817,7 +817,7 @@ class GuildStats(Cog):
                 # already_seen.append(member)
                 if member not in channel.members:
                     continue
-                end_time = datetime.datetime.now(datetime.timezone.utc)
+                end_time = datetime.datetime.now(tz=datetime.timezone.utc)
                 real_total_time = int((end_time - start_time).total_seconds())
                 if round(real_total_time / 3600, 2) == 0:
                     continue
@@ -858,7 +858,7 @@ class GuildStats(Cog):
             for activity_name, start_time in data["activities_cache"].items():
                 if discord.utils.get(member.activities, name=activity_name) is None:
                     continue
-                end_time = datetime.datetime.now(datetime.timezone.utc)
+                end_time = datetime.datetime.now(tz=datetime.timezone.utc)
                 real_total_time = int((end_time - start_time).total_seconds())
                 if real_total_time < 10 * 60:
                     continue

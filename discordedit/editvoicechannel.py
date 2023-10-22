@@ -573,7 +573,7 @@ class EditVoiceChannel(Cog):
             embed: discord.Embed = discord.Embed(
                 title=f"Voice Channel #!{channel.name} ({channel.id})", color=embed_color
             )
-            embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
+            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
             embed.description = "\n".join(
                 [
                     f"• `{parameter}`: {repr(getattr(channel, parameters[parameter].get('attribute_name', parameter)))}"

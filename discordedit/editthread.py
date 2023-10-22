@@ -499,7 +499,7 @@ class EditThread(Cog):
             embed: discord.Embed = discord.Embed(
                 title=f"Thread #{thread.name} ({thread.id})", color=embed_color
             )
-            embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
+            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
             embed.description = "\n".join(
                 [
                     f"• `{parameter}`: {repr(getattr(thread, parameters[parameter].get('attribute_name', parameter)))}"

@@ -153,7 +153,7 @@ class ViewPermissions(Cog):
             __, permissions_dict = await self.get_permissions(guild=guild, roles=roles, members=members, channel=channel, permissions=permissions)
             embed: discord.Embed = discord.Embed(title=(_("Advanced ") if advanced else "") + _("View Permissions"), color=embed_color)
             embed.set_author(name=guild.name, icon_url=guild.icon)
-            embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
+            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
             description = ""
             if roles:
                 description += _("\n**Role(s):** {roles}").format(roles=humanize_list([f"{role.mention} ({role.id})" for role in roles]))
@@ -189,7 +189,7 @@ class ViewPermissions(Cog):
         else:
             embed: discord.Embed = discord.Embed(title=_("View Permissions"), color=embed_color)
             embed.set_author(name=guild.name, icon_url=guild.icon)
-            embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
+            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
             description = ""
             if roles:
                 description += _("\n**Role(s):** {roles}").format(roles=humanize_list([f"{role.mention} ({role.id})" for role in roles]))

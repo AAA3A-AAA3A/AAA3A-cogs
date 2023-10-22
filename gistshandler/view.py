@@ -386,7 +386,7 @@ class GistsHandlerView(discord.ui.View):
             )
             return
         self._deleted: bool = True
-        self._deleted_at: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)
+        self._deleted_at: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)
         await interaction.response.send_message(
             _("Gist `{gist.id}` deleted.").format(gist=self.gist), ephemeral=True
         )

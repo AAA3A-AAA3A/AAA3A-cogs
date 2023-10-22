@@ -170,9 +170,9 @@ class LinkQuoter(Cog):
 
         if embed is None:
             embed = discord.Embed(
-                color=message.author.color,
-                description=message.content.strip(),
+                description=f">>> {message.content}" if message.content.strip() else None,
                 timestamp=message.created_at,
+                color=message.author.color,
             )
 
         if author_field:
@@ -192,16 +192,15 @@ class LinkQuoter(Cog):
                 embed.set_footer(text=f"#{message.channel.name}")
 
         if message.attachments:
-            attachment = message.attachments[0]
-            image = attachment.proxy_url
-            embed.add_field(name="Attachments:", value=f"[{attachment.filename}]({attachment.url})", inline=False)
+            image = message.attachments[0].proxy_url
+            embed.add_field(name=_("Attachments:"), value="\n".join(f"[{attachment.filename}]({attachment.url})" for attachment in message.attachments), inline=False)
 
         if image is None:
             if message.stickers:
                 for sticker in message.stickers:
                     if sticker.url:
                         image = str(sticker.url)
-                        embed.add_field(name="Stickers:", value=f"[{sticker.name}]({image})", inline=False)
+                        embed.add_field(name=_("Stickers:"), value=f"[{sticker.name}]({image})", inline=False)
                         break
         else:
             embed.set_image(url=image)
@@ -213,8 +212,8 @@ class LinkQuoter(Cog):
         ):
             jump_url = reference.jump_url
             embed.add_field(
-                name="Replying to:",
-                value=f"[{reference.content[:1000] if reference.content else 'Click to view attachments.'}]({jump_url})",
+                name=_("Replying to:"),
+                value=f"[{reference.content.strip()[:1000] if reference.content.strip() else _('Click to view attachments.')}]({jump_url})",
                 inline=False,
             )
 

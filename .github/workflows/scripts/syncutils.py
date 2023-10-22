@@ -32,7 +32,7 @@ utils_repo = Repo.clone_from(
 utils_location = utils_repo_clone_location / "AAA3A_utils"
 
 readme = README_MD_TEXT.format(
-    time=datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S %Z"),
+    time=datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S %Z"),
     commit=utils_repo.head.commit,
 )
 

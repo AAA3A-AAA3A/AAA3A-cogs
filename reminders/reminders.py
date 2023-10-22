@@ -213,7 +213,7 @@ class Reminders(Cog):
 
     async def reminders_loop(self, utc_now: datetime.datetime = None) -> bool:
         if utc_now is None:
-            utc_now = datetime.datetime.now(datetime.timezone.utc)
+            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
         executed = False
         cache = {user_id: reminders.copy() for user_id, reminders in self.cache.copy().items()}
         for reminders in cache.values():
@@ -236,7 +236,7 @@ class Reminders(Cog):
         content: Content,
         expires_at: datetime.datetime,
         repeat: typing.Optional[Repeat] = None,
-        created_at: datetime.datetime = datetime.datetime.now(datetime.timezone.utc),
+        created_at: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc),
         **kwargs,
     ) -> Reminder:
         reminder_id = 1
@@ -934,7 +934,7 @@ class Reminders(Cog):
                 )
             )
 
-    @reminder.command()
+    @reminder.command(aliases=["info"])
     async def edit(self, ctx: commands.Context, reminder: ExistingReminderConverter) -> None:
         """Edit an existing Reminder from its ID.
 
@@ -1178,7 +1178,7 @@ class Reminders(Cog):
             "max_user_reminders", await self.config.maximum_user_reminders()
         )
         await self.config.set(new_global_data)
-        utc_now_timestamp = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+        utc_now_timestamp = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
         old_config.init_custom("REMINDER", 2)
         old_reminders_data = await old_config.custom("REMINDER").all()
         for user_id in old_reminders_data:
@@ -1233,7 +1233,7 @@ class Reminders(Cog):
         old_config: Config = Config.get_conf(
             "FIFO", identifier=70737079, force_registration=True, cog_name="FIFO"
         )
-        utc_now = datetime.datetime.now(datetime.timezone.utc)
+        utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
         old_guilds_data = await old_config.all_guilds()
         for guild_id in old_guilds_data:
             reminder_id = 1

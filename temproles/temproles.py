@@ -120,7 +120,7 @@ class TempRoles(Cog):
 
     async def temp_roles_loop(self, utc_now: datetime.datetime = None) -> bool:
         if utc_now is None:
-            utc_now = datetime.datetime.now(datetime.timezone.utc)
+            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
         executed = False
         member_group = self.config._get_base_group(self.config.MEMBER)
         async with member_group.all() as members_data:
@@ -226,7 +226,7 @@ class TempRoles(Cog):
                 _("You can't assign this role to this member, due to the Discord role hierarchy.")
             )
         try:
-            end_time: datetime.datetime = datetime.datetime.now(datetime.timezone.utc) + time
+            end_time: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc) + time
         except OverflowError:
             raise commands.UserFeedbackCheckFailure(
                 _("The time set is way too high, consider setting something reasonable.")
@@ -285,7 +285,7 @@ class TempRoles(Cog):
                 _("This role isn't a TempRole of this member.")
             )
         try:
-            end_time: datetime.datetime = datetime.datetime.now(datetime.timezone.utc) + time
+            end_time: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc) + time
         except OverflowError:
             raise commands.UserFeedbackCheckFailure(
                 _("The time set is way too high, consider setting something reasonable.")

@@ -174,7 +174,9 @@ class Snipe(Cog):
         config = await self.config.guild(message.guild).all()
         if config["ignored"] or getattr(message.channel, "parent", message.channel).id in config["ignored_channels"]:
             return
-        if message.embeds and message.embeds[0].title.startswith(("Deleted Message", "Edited Message")):
+        if message.embeds and message.embeds[0].title is not None and message.embeds[0].title.startswith(("Deleted Message", "Edited Message")):
+            return
+        elif not message.embeds and message.components and ("Deleted Messages" in message.content or "Edited Messages" in message.content):
             return
         self.deleted_messages[message.channel].append(SnipedMessage(message=message))
 
@@ -191,7 +193,9 @@ class Snipe(Cog):
         config = await self.config.guild(after.guild).all()
         if config["ignored"] or getattr(after.channel, "parent", after.channel).id in config["ignored_channels"]:
             return
-        if after.embeds and after.embeds[0].title.startswith(("Deleted Message", "Edited Message")):
+        if after.embeds and after.embeds[0].title is not None and after.embeds[0].title.startswith(("Deleted Message", "Edited Message")):
+            return
+        elif not after.embeds and after.components and ("Deleted Messages" in after.content or "Edited Messages" in after.content):
             return
         self.edited_messages[after.channel].append(SnipedMessage(message=before, after=after))
 
@@ -379,7 +383,7 @@ class Snipe(Cog):
         )
         if not content:
             raise commands.UserFeedbackCheckFailure(_("No deleted message recorded for this member in this channel."))
-        await Menu(pages=content, page_start=-1, lang="py").start(ctx)
+        await Menu(pages=content, prefix="-------------------- Deleted Messages --------------------", page_start=-1, lang="py").start(ctx)
 
     @commands.guild_only()
     @commands.mod_or_permissions(manage_messages=True)
@@ -565,7 +569,7 @@ class Snipe(Cog):
         )
         if not content:
             raise commands.UserFeedbackCheckFailure(_("No edited message recorded for this member in this channel."))
-        await Menu(pages=content, page_start=-1, lang="py").start(ctx)
+        await Menu(pages=content, prefix="-------------------- Edited Messages --------------------", page_start=-1, lang="py").start(ctx)
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_guild=True)

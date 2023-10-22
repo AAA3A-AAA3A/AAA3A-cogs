@@ -64,7 +64,7 @@ class EmbedUtils(Cog):
         await super().cog_unload()
 
     @commands.guild_only()
-    @commands.mod_or_permissions(embed_links=True)
+    @commands.mod_or_permissions(manage_messages=True)
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_group(invoke_without_command=True)
     async def embed(

@@ -19,6 +19,16 @@ class ProfileConverter(commands.Converter):
         return argument.lower()
 
 
+class MyMessageConverter(commands.MessageConverter):
+    async def convert(self, ctx: commands.Context, argument: str) -> discord.Message:
+        message = await super().convert(ctx, argument=argument)
+        if message.author != ctx.me:
+            raise commands.UserFeedbackCheckFailure(
+                _("I have to be the author of the message. You can use EmbedUtils by AAA3A to send one.")
+            )
+        return message
+
+
 @cog_i18n(_)
 class settings(Cog):
     @commands.guild_only()
@@ -34,7 +44,7 @@ class settings(Cog):
         ctx: commands.Context,
         profile: ProfileConverter,
         channel: typing.Optional[discord.TextChannel],
-        message: typing.Optional[commands.MessageConverter],
+        message: typing.Optional[MyMessageConverter],
         reason_options: commands.Greedy[EmojiLabelDescriptionValueConverter],
         emoji: typing.Optional[Emoji] = "🎟️",
         label: str = None,
@@ -61,11 +71,6 @@ class settings(Cog):
             )
         if reason_options == []:
             reason_options = None
-        if message is not None and message.author != ctx.me:
-            await ctx.send(
-                _("I have to be the author of the message for the interaction to work.")
-            )
-            return
         config = await self.get_config(ctx.guild, profile)
         actual_color = config["color"]
         actual_thumbnail = config["thumbnail"]

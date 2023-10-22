@@ -21,6 +21,16 @@ from .converters import Emoji, EmojiRoleConverter
 _ = Translator("RolesButtons", __file__)
 
 
+class MyMessageConverter(commands.MessageConverter):
+    async def convert(self, ctx: commands.Context, argument: str) -> discord.Message:
+        message = await super().convert(ctx, argument=argument)
+        if message.author != ctx.me:
+            raise commands.UserFeedbackCheckFailure(
+                _("I have to be the author of the message. You can use EmbedUtils by AAA3A to send one.")
+            )
+        return message
+
+
 @cog_i18n(_)
 class RolesButtons(Cog):
     """A cog to have roles-buttons!"""
@@ -222,7 +232,7 @@ class RolesButtons(Cog):
     async def add(
         self,
         ctx: commands.Context,
-        message: discord.Message,
+        message: MyMessageConverter,
         role: discord.Role,  # commands.Greedy[discord.Role]
         emoji: typing.Optional[Emoji],
         style_button: typing.Optional[typing.Literal["1", "2", "3", "4"]] = "2",
@@ -243,10 +253,6 @@ class RolesButtons(Cog):
         • `green`: 3
         • `red`: 4
         """
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.")
-            )
         channel_permissions = message.channel.permissions_for(ctx.me)
         if (
             not channel_permissions.view_channel
@@ -299,17 +305,13 @@ class RolesButtons(Cog):
     async def bulk(
         self,
         ctx: commands.Context,
-        message: discord.Message,
+        message: MyMessageConverter,
         roles_buttons: commands.Greedy[EmojiRoleConverter],
     ) -> None:
         """Add roles-buttons for a message.
 
         ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```
         """
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.")
-            )
         if len(roles_buttons) == 0:
             raise commands.UserFeedbackCheckFailure(
                 _("You have not specified any valid role-button.")
@@ -366,7 +368,7 @@ class RolesButtons(Cog):
     async def mode(
         self,
         ctx: commands.Context,
-        message: discord.Message,
+        message: MyMessageConverter,
         mode: typing.Literal["add_or_remove", "add_only", "remove_only", "replace"],
     ) -> None:
         """Choose a mode for the roles-buttons of a message.
@@ -380,10 +382,6 @@ class RolesButtons(Cog):
         Type `replace`:
         - Same as add_or_remove, but the roles from this message will be mutually exclusive, and getting one will remove the previous.
         """
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.")
-            )
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
@@ -396,16 +394,12 @@ class RolesButtons(Cog):
 
     @rolesbuttons.command(aliases=["-"])
     async def remove(
-        self, ctx: commands.Context, message: discord.Message, config_identifier: str
+        self, ctx: commands.Context, message: MyMessageConverter, config_identifier: str
     ) -> None:
         """Remove a role-button for a message.
 
         Use `[p]rolesbuttons list <message>` to find the config identifier.
         """
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.")
-            )
         config = await self.config.guild(ctx.guild).roles_buttons()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
@@ -433,12 +427,8 @@ class RolesButtons(Cog):
             await ctx.send(_("Roles-buttons cleared for this message."))
 
     @rolesbuttons.command()
-    async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
+    async def clear(self, ctx: commands.Context, message: MyMessageConverter) -> None:
         """Clear all roles-buttons for a message."""
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.")
-            )
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
@@ -455,7 +445,7 @@ class RolesButtons(Cog):
 
     @commands.bot_has_permissions(embed_links=True)
     @rolesbuttons.command()
-    async def list(self, ctx: commands.Context, message: discord.Message = None) -> None:
+    async def list(self, ctx: commands.Context, message: MyMessageConverter = None) -> None:
         """List all roles-buttons of this server or display the settings for a specific one."""
         roles_buttons = await self.config.guild(ctx.guild).roles_buttons()
         for role_button in roles_buttons:
@@ -471,16 +461,17 @@ class RolesButtons(Cog):
             _roles_buttons = [roles_buttons[f"{message.channel.id}-{message.id}"]]
         if not _roles_buttons:
             raise commands.UserFeedbackCheckFailure(_("No roles-buttons in this server."))
+        embed: discord.Embed = discord.Embed(
+            title=_("Roles Buttons"),
+            description=_("There is {len_roles_buttons} roles buttons in this server.").format(
+                len_roles_buttons=len(roles_buttons)
+            ),
+            color=await ctx.embed_color(),
+        )
+        embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
         embeds = []
         for li in discord.utils.as_chunks(_roles_buttons, max_size=5):
-            embed: discord.Embed = discord.Embed(
-                title=_("Roles Buttons"),
-                description=_("There is {len_roles_buttons} roles buttons in this server.").format(
-                    len_roles_buttons=len(roles_buttons)
-                ),
-                color=await ctx.embed_color(),
-            )
-            embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
+            e = embed.copy()
             for role_button in li:
                 value = _("Message Jump Link: {message_jump_link}\n").format(
                     message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{role_button['message'].replace('-', '/')}"
@@ -493,12 +484,12 @@ class RolesButtons(Cog):
                     ]
                 )
                 for page in pagify(value, page_length=1024):
-                    embed.add_field(
+                    e.add_field(
                         name="\u200B",
                         value=page,
                         inline=False,
                     )
-            embeds.append(embed)
+            embeds.append(e)
         await Menu(pages=embeds).start(ctx)
 
     @rolesbuttons.command(hidden=True)

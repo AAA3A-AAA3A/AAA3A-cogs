@@ -22,6 +22,16 @@ from .converters import Emoji, EmojiCommandConverter
 _ = Translator("CommandsButtons", __file__)
 
 
+class MyMessageConverter(commands.MessageConverter):
+    async def convert(self, ctx: commands.Context, argument: str) -> discord.Message:
+        message = await super().convert(ctx, argument=argument)
+        if message.author != ctx.me:
+            raise commands.UserFeedbackCheckFailure(
+                _("I have to be the author of the message. You can use EmbedUtils by AAA3A to send one.")
+            )
+        return message
+
+
 @cog_i18n(_)
 class CommandsButtons(Cog):
     """A cog to allow a user to execute a command by clicking on a button!"""
@@ -228,7 +238,7 @@ class CommandsButtons(Cog):
     async def add(
         self,
         ctx: commands.Context,
-        message: discord.Message,
+        message: MyMessageConverter,
         command: str,
         emoji: typing.Optional[Emoji],
         style_button: typing.Optional[typing.Literal["1", "2", "3", "4"]] = "2",
@@ -249,10 +259,6 @@ class CommandsButtons(Cog):
         • `green`: 3
         • `red`: 4
         """
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the command-button to work.")
-            )
         channel_permissions = message.channel.permissions_for(ctx.me)
         if (
             not channel_permissions.view_channel
@@ -319,17 +325,13 @@ class CommandsButtons(Cog):
     async def bulk(
         self,
         ctx: commands.Context,
-        message: discord.Message,
+        message: MyMessageConverter,
         commands_buttons: commands.Greedy[EmojiCommandConverter],
     ) -> None:
         """Add commands-buttons for a message.
 
         ```[p]commandsbuttons bulk <message> ":reaction1:|ping" ":reaction2:|ping" :reaction3:|ping"```
         """
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the command-button to work.")
-            )
         if len(commands_buttons) == 0:
             raise commands.UserFeedbackCheckFailure(
                 _("You have not specified any valid command-button.")
@@ -392,16 +394,12 @@ class CommandsButtons(Cog):
 
     @commandsbuttons.command(aliases=["-"])
     async def remove(
-        self, ctx: commands.Context, message: discord.Message, config_identifier: str
+        self, ctx: commands.Context, message: MyMessageConverter, config_identifier: str
     ) -> None:
         """Remove a command-button for a message.
 
         Use `[p]commandsbuttons list <message>` to find the config identifier.
         """
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the command-button to work.")
-            )
         config = await self.config.guild(ctx.guild).commands_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
@@ -426,12 +424,8 @@ class CommandsButtons(Cog):
             await ctx.send(_("Commands-buttons cleared for this message."))
 
     @commandsbuttons.command()
-    async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
+    async def clear(self, ctx: commands.Context, message: MyMessageConverter) -> None:
         """Clear all commands-buttons for a message."""
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.")
-            )
         config = await self.config.guild(ctx.guild).commands_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
@@ -447,7 +441,7 @@ class CommandsButtons(Cog):
 
     @commands.bot_has_permissions(embed_links=True)
     @commandsbuttons.command()
-    async def list(self, ctx: commands.Context, message: discord.Message = None) -> None:
+    async def list(self, ctx: commands.Context, message: MyMessageConverter = None) -> None:
         """List all commands-buttons of this server or display the settings for a specific one."""
         commands_buttons = await self.config.guild(ctx.guild).commands_buttons()
         for command_button in commands_buttons:
@@ -463,16 +457,17 @@ class CommandsButtons(Cog):
             _commands_buttons = [commands_buttons[f"{message.channel.id}-{message.id}"]]
         if not _commands_buttons:
             raise commands.UserFeedbackCheckFailure(_("No commands-buttons in this server."))
+        embed: discord.Embed = discord.Embed(
+            title=_("Commands Buttons"),
+            description=_(
+                "There is {len_commands_buttons} commands buttons in this server."
+            ).format(len_commands_buttons=len(commands_buttons)),
+            color=await ctx.embed_color(),
+        )
+        embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
         embeds = []
         for li in discord.utils.as_chunks(_commands_buttons, max_size=5):
-            embed: discord.Embed = discord.Embed(
-                title=_("Commands Buttons"),
-                description=_(
-                    "There is {len_commands_buttons} commands buttons in this server."
-                ).format(len_commands_buttons=len(commands_buttons)),
-                color=await ctx.embed_color(),
-            )
-            embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
+            e = embed.copy()
             for command_button in li:
                 value = _("Message Jump Link: {message_jump_link}\n").format(
                     message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{command_button['message'].replace('-', '/')}"
@@ -485,12 +480,12 @@ class CommandsButtons(Cog):
                     ]
                 )
                 for page in pagify(value, page_length=1024):
-                    embed.add_field(
+                    e.add_field(
                         name="\u200B",
                         value=page,
                         inline=False,
                     )
-            embeds.append(embed)
+            embeds.append(e)
         await Menu(pages=embeds).start(ctx)
 
     @commandsbuttons.command(hidden=True)

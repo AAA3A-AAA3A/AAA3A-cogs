@@ -20,6 +20,16 @@ from .converters import Emoji, EmojiLabelTextConverter
 _ = Translator("DropdownsTexts", __file__)
 
 
+class MyMessageConverter(commands.MessageConverter):
+    async def convert(self, ctx: commands.Context, argument: str) -> discord.Message:
+        message = await super().convert(ctx, argument=argument)
+        if message.author != ctx.me:
+            raise commands.UserFeedbackCheckFailure(
+                _("I have to be the author of the message. You can use EmbedUtils by AAA3A to send one.")
+            )
+        return message
+
+
 @cog_i18n(_)
 class DropdownsTexts(Cog):
     """A cog to have dropdowns-texts!"""
@@ -165,17 +175,13 @@ class DropdownsTexts(Cog):
     async def add(
         self,
         ctx: commands.Context,
-        message: discord.Message,
+        message: MyMessageConverter,
         emoji: typing.Optional[Emoji],
         label: commands.Range[str, 1, 100],
         *,
         text: commands.Range[str, 1, 1000],
     ) -> None:
         """Add a dropdown-text for a message."""
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.")
-            )
         channel_permissions = message.channel.permissions_for(ctx.me)
         if (
             not channel_permissions.view_channel
@@ -223,14 +229,10 @@ class DropdownsTexts(Cog):
     async def bulk(
         self,
         ctx: commands.Context,
-        message: discord.Message,
+        message: MyMessageConverter,
         dropdown_texts: commands.Greedy[EmojiLabelTextConverter],
     ) -> None:
         """Add dropdown-texts for a message."""
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.")
-            )
         if len(dropdown_texts) == 0:
             raise commands.UserFeedbackCheckFailure(
                 _("You have not specified any valid dropdown-text.")
@@ -286,17 +288,13 @@ class DropdownsTexts(Cog):
     async def remove(
         self,
         ctx: commands.Context,
-        message: discord.Message,
+        message: MyMessageConverter,
         config_identifier: str,
     ) -> None:
         """Remove a dropdown-text for a message.
 
         Use `[p]dropdownstexts list <message>` to find the config identifier.
         """
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.")
-            )
         config = await self.config.guild(ctx.guild).dropdowns_texts.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
@@ -321,12 +319,8 @@ class DropdownsTexts(Cog):
             await ctx.send(_("Dropdowns-buttons cleared for this message."))
 
     @dropdownstexts.command()
-    async def clear(self, ctx: commands.Context, message: discord.Message) -> None:
+    async def clear(self, ctx: commands.Context, message: MyMessageConverter) -> None:
         """Clear a dropdown-texts for a message."""
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the role-button to work.")
-            )
         config = await self.config.guild(ctx.guild).dropdowns_texts.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
@@ -342,7 +336,7 @@ class DropdownsTexts(Cog):
 
     @commands.bot_has_permissions(embed_links=True)
     @dropdownstexts.command()
-    async def list(self, ctx: commands.Context, message: discord.Message = None) -> None:
+    async def list(self, ctx: commands.Context, message: MyMessageConverter = None) -> None:
         """List all dropdowns-texts of this server or display the settings for a specific one."""
         dropdowns_texts = await self.config.guild(ctx.guild).dropdowns_texts()
         for dropdown_text in dropdowns_texts:
@@ -358,16 +352,17 @@ class DropdownsTexts(Cog):
             _dropdowns_texts = [dropdowns_texts[f"{message.channel.id}-{message.id}"]]
         if not _dropdowns_texts:
             raise commands.UserFeedbackCheckFailure(_("No dropdowns-texts in this server."))
+        embed: discord.Embed = discord.Embed(
+            title=_("Dropdowns Texts"),
+            description=_(
+                "There is {len_dropdowns_texts} dropdowns texts in this server."
+            ).format(len_dropdowns_texts=len(dropdowns_texts)),
+            color=await ctx.embed_color(),
+        )
+        embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
         embeds = []
         for li in discord.utils.as_chunks(_dropdowns_texts, max_size=5):
-            embed: discord.Embed = discord.Embed(
-                title=_("Dropdowns Texts"),
-                description=_(
-                    "There is {len_dropdowns_texts} dropdowns texts in this server."
-                ).format(len_dropdowns_texts=len(dropdowns_texts)),
-                color=await ctx.embed_color(),
-            )
-            embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
+            e = embed.copy()
             break_line = "\n"
             for dropdown_text in li:
                 value = _("Message Jump Link: {message_jump_link}\n").format(
@@ -381,12 +376,12 @@ class DropdownsTexts(Cog):
                     ]
                 )
                 for page in pagify(value, page_length=1024):
-                    embed.add_field(
+                    e.add_field(
                         name="\u200B",
                         value=page,
                         inline=False,
                     )
-            embeds.append(embed)
+            embeds.append(e)
         await Menu(pages=embeds).start(ctx)
 
     @dropdownstexts.command(hidden=True)

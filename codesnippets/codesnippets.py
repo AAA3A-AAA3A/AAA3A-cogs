@@ -145,7 +145,7 @@ class CodeSnippets(Cog, DashboardIntegration):
                 return await response.text()
             return await response.json() if response_format == "json" else None
 
-    def _find_ref(self, path: str, refs: tuple) -> tuple:
+    def _find_ref(self, path: str, refs: typing.List[dict]) -> typing.Tuple[str, str]:
         ref, file_path = path.split("/", 1)
         for possible_ref in refs:
             if path.startswith(possible_ref["name"] + "/"):
@@ -342,7 +342,7 @@ class CodeSnippets(Cog, DashboardIntegration):
         end_line: typing.Optional[str] = None,
     ) -> str:
         """Fetches a snippet from a Hastebin paste."""
-        api_tokens = await self.bot.get_shared_api_tokens(service_name="github")
+        api_tokens = await self.bot.get_shared_api_tokens(service_name="hastebin")
         if (token := api_tokens.get("token")) is None:
             raise RuntimeError("No Hastebin token.")
         file_contents = await self._fetch_response(
@@ -434,35 +434,35 @@ class CodeSnippets(Cog, DashboardIntegration):
         all_snippets = {}
         i = 0
         for pattern, handler in self.pattern_handlers.items():
-            for match in pattern.finditer(content):
+            for _match in pattern.finditer(content):
                 i += 1
                 if limit is not None and i > limit:
                     return all_snippets
                 if is_listener:
                     if (
                         channel in self.antispam_cache
-                        and tuple(match.groupdict().items()) in self.antispam_cache[channel]
+                        and tuple(_match.groupdict().items()) in self.antispam_cache[channel]
                     ):
                         continue
                     if channel not in self.antispam_cache:
                         self.antispam_cache[channel] = deque(maxlen=5)
-                    self.antispam_cache[channel].append(tuple(match.groupdict().items()))
+                    self.antispam_cache[channel].append(tuple(_match.groupdict().items()))
                 try:
-                    snippet = await handler(**match.groupdict())
+                    snippet = await handler(**_match.groupdict())
                     if (snippet[1], snippet[2], snippet[3]) == ("", "", ""):
                         continue
                     snippet = (
                         snippet[0],
-                        f"{snippet[1]}\n> {match.group()}",
+                        f"{snippet[1]}\n> {_match.group()}",
                         snippet[2],
                         snippet[3],
                     )
-                    all_snippets[match.group()] = snippet
+                    all_snippets[_match.group()] = snippet
                 except (RuntimeError, aiohttp.ClientResponseError) as e:
                     if e.status == 404:
                         continue
                     self.log.error(
-                        f"Failed to fetch code snippet from {match[0]!r}: {e.status} for GET {e.request_info.real_url.human_repr()}.",
+                        f"Failed to fetch code snippet from {_match[0]!r}: {e.status} for GET {e.request_info.real_url.human_repr()}.",
                         exc_info=e,
                     )
         return all_snippets

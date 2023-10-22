@@ -556,7 +556,7 @@ class SnoozeView(discord.ui.View):
             self.add_item(
                 discord.ui.Button(
                     style=discord.ButtonStyle.url,
-                    label="Jump to original message",
+                    label=_("Jump to original message"),
                     url=self.reminder.jump_url,
                     row=1,
                 )

@@ -733,7 +733,7 @@ class Reminder:
                     else:
                         view = discord.ui.View()
                         view.add_item(
-                            discord.ui.Button(style=discord.ButtonStyle.url, url=self.jump_url)
+                            discord.ui.Button(label=_("Jump to original message"), style=discord.ButtonStyle.url, url=self.jump_url)
                         )
                     message = await destination.send(
                         embeds=embeds,

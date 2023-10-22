@@ -465,6 +465,7 @@ class EmbedUtils(Cog):
         except discord.HTTPException as error:
             return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
 
+    @commands.mod_or_permissions(manage_webhooks=True)
     @commands.bot_has_permissions(manage_webhooks=True)
     @embed.command(name="postwebhook", aliases=["webhook"])
     async def embed_post_webhook(

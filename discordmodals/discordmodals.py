@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -6,6 +6,7 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import asyncio
+import json
 import re
 from copy import deepcopy
 from functools import partial
@@ -17,12 +18,22 @@ try:
 except ImportError:
     from emoji import EMOJI_DATA  # emoji>=2.0.0
 
-from redbot.core.utils.chat_formatting import humanize_list
+from redbot.core.utils.chat_formatting import humanize_list, box
 
 # Credits:
 # General repo credits.
 
 _ = Translator("DiscordModals", __file__)
+
+
+class MyMessageConverter(commands.MessageConverter):
+    async def convert(self, ctx: commands.Context, argument: str) -> discord.Message:
+        message = await super().convert(ctx, argument=argument)
+        if message.author != ctx.me:
+            raise commands.UserFeedbackCheckFailure(
+                _("I have to be the author of the message. You can use EmbedUtils by AAA3A to send one.")
+            )
+        return message
 
 
 class Emoji(commands.EmojiConverter):
@@ -577,7 +588,7 @@ class DiscordModals(Cog):
 
     @discordmodals.command(aliases=["+"])
     async def add(
-        self, ctx: commands.Context, message: discord.Message, *, argument: ModalConverter
+        self, ctx: commands.Context, message: MyMessageConverter, *, argument: ModalConverter
     ) -> None:
         """Add a Modal for a message.
 
@@ -610,10 +621,6 @@ class DiscordModals(Cog):
         ```
         The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous`, `messages`, `pings`, `whitelist_roles` and `blacklist_roles` are not required.
         """
-        if message.author != ctx.me:
-            raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the button to work.")
-            )
         config = await self.config.guild(ctx.guild).modals.all()
         if f"{message.channel.id}-{message.id}" in config:
             raise commands.UserFeedbackCheckFailure(_("This message already has a Modal."))
@@ -671,13 +678,44 @@ class DiscordModals(Cog):
         await self.config.guild(ctx.guild).modals.set(config)
         await ctx.send(_("Modal created."))
 
-    @discordmodals.command(aliases=["-"])
-    async def remove(self, ctx: commands.Context, message: discord.Message) -> None:
-        """Remove a Modal for a message."""
-        if message.author != ctx.me:
+    @commands.bot_has_permissions(embed_links=True)
+    @discordmodals.command()
+    async def list(self, ctx: commands.Context, message: MyMessageConverter = None) -> None:
+        """List all Modals of this server or display the settings for a specific one."""
+        modals = await self.config.guild(ctx.guild).modals()
+        for modal in modals:
+            modals[modal]["message"] = modal
+        if message is None:
+            _modals = list(modals.values()).copy()
+        elif f"{message.channel.id}-{message.id}" not in modals:
             raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message for the Modal to work.")
+                _("No modal is configured for this message.")
             )
+        else:
+            _modals = modals.copy()
+            _modals = [modals[f"{message.channel.id}-{message.id}"]]
+        if not _modals:
+            raise commands.UserFeedbackCheckFailure(_("No modals in this server."))
+        embed: discord.Embed = discord.Embed(
+            title=_("Modals"),
+            color=await ctx.embed_color(),
+        )
+        embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
+        embed.set_footer(text=_("There is {len_modals} modals in this server.").format(len_modals=len(modals)))
+        embeds = []
+        for modal in _modals:
+            e = embed.copy()
+            e.description = _("Message Jump Link: {message_jump_link}\n").format(
+                message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{modal['message'].replace('-', '/')}"
+            )
+            del modal["message"]
+            e.description += f"\n{box(json.dumps(modal, indent=4), lang='py')}"
+            embeds.append(e)
+        await Menu(pages=embeds).start(ctx)
+
+    @discordmodals.command(aliases=["-"])
+    async def remove(self, ctx: commands.Context, message: MyMessageConverter) -> None:
+        """Remove a Modal for a message."""
         config = await self.config.guild(ctx.guild).modals.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(_("No Modal is configured for this message."))

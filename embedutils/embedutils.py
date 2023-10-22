@@ -66,7 +66,7 @@ class EmbedUtils(Cog):
     @commands.guild_only()
     @commands.mod_or_permissions(manage_messages=True)
     @commands.bot_has_permissions(embed_links=True)
-    @commands.hybrid_group(invoke_without_command=True)
+    @commands.hybrid_group(invoke_without_command=True, aliases=["embedutils"])
     async def embed(
         self,
         ctx: commands.Context,
@@ -283,14 +283,14 @@ class EmbedUtils(Cog):
         await ctx.send(file=text_to_file(text=json.dumps(data, indent=4), filename="embed.json"))
 
     @commands.mod_or_permissions(manage_guild=True)
-    @embed.command(name="store", aliases=["storeembed"])
+    @embed.command(name="store", aliases=["storeembed"], usage="[global_level=False] [locked=False] <name> <json|yaml|jsonfile|yamlfile|pastebin|message> <data>")
     async def embed_store(
         self,
         ctx: commands.Context,
         global_level: typing.Optional[bool],
-        name: str,
         locked: typing.Optional[bool],
-        conversion_type: typing.Literal["json", "yaml", "jsonfile", "yamlfile", "gist", "pastebin", "hastebin", "message"],
+        name: str,
+        conversion_type: typing.Literal["json", "fromjson", "fromdata", "yaml", "fromyaml", "fromfile", "jsonfile", "fromjsonfile", "fromdatafile", "yamlfile", "fromyamlfile", "gist", "pastebin", "hastebin", "message", "frommessage", "frommsg"],
         *,
         data: str,
     ):
@@ -306,17 +306,17 @@ class EmbedUtils(Cog):
         if locked is None:
             locked = False
 
-        if conversion_type == "json":
+        if conversion_type in ("json", "fromjson", "fromdata"):
             data = await JSON_CONVERTER.convert(ctx, argument=data)
-        elif conversion_type == "yaml":
+        elif conversion_type in ("yaml", "fromyaml"):
             data = await YAML_CONVERTER.convert(ctx, argument=data)
-        elif conversion_type == "jsonfile":
+        elif conversion_type == ("fromfile", "jsonfile", "fromjsonfile", "fromdatafile"):
             if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("json", "txt"):
                 argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
             else:
                 raise commands.UserInputError()
             data = await JSON_CONVERTER.convert(ctx, argument=argument)
-        elif conversion_type == "yamlfile":
+        elif conversion_type in ("yamlfile", "fromyamlfile"):
             if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("yaml", "txt"):
                 argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
             else:
@@ -324,7 +324,7 @@ class EmbedUtils(Cog):
             data = await YAML_CONVERTER.convert(ctx, argument=argument)
         elif conversion_type in ("gist", "pastebin", "hastebin"):
             data = await PASTEBIN_CONVERTER.convert(ctx, argument=data)
-        elif conversion_type == "message":
+        elif conversion_type in ("message", "frommessage", "frommsg"):
             message = await commands.MessageConverter().convert(ctx, argument=data)
             if not message.embeds:
                 raise commands.UserInputError()
@@ -349,7 +349,7 @@ class EmbedUtils(Cog):
             stored_embeds[name] = {"author": ctx.author.id, "embed": embed.to_dict(), "locked": locked, "uses": 0}
 
     @commands.mod_or_permissions(manage_guild=True)
-    @embed.command(name="unstore", aliases=["unstoreembed"])
+    @embed.command(name="unstore", aliases=["unstoreembed"], usage="[global_level=False] <name>")
     async def embed_unstore(
         self,
         ctx: commands.Context,
@@ -367,7 +367,7 @@ class EmbedUtils(Cog):
             del stored_embeds[name]
 
     @commands.mod_or_permissions(manage_guild=True)
-    @embed.command(name="list", aliases=["liststored", "liststoredembeds"])
+    @embed.command(name="list", aliases=["liststored", "liststoredembeds"], usage="[global_level=False]")
     async def embed_list(self, ctx: commands.Context, global_level: typing.Optional[bool]):
         """Get info about a stored embed."""
         if global_level is None:
@@ -393,7 +393,7 @@ class EmbedUtils(Cog):
         await Menu(pages=embeds).start(ctx)
 
     @commands.mod_or_permissions(manage_guild=True)
-    @embed.command(name="info", aliases=["infostored", "infostoredembed"])
+    @embed.command(name="info", aliases=["infostored", "infostoredembed"], usage="[global_level=False] <name>")
     async def embed_info(self, ctx: commands.Context, global_level: typing.Optional[bool], name: str):
         """Get info about a stored embed."""
         if global_level is None:
@@ -419,7 +419,7 @@ class EmbedUtils(Cog):
         await ctx.send(embed=embed, allowed_mentions=discord.AllowedMentions(users=False))
 
     @commands.mod_or_permissions(manage_guild=True)
-    @embed.command(name="downloadstored", aliases=["downloadstoredembed"])
+    @embed.command(name="downloadstored", aliases=["downloadstoredembed"], usage="[global_level=False] <name>")
     async def embed_download_stored(self, ctx: commands.Context, global_level: typing.Optional[bool], name: str):
         """Download a JSON file for a stored embed."""
         if global_level is None:
@@ -432,7 +432,7 @@ class EmbedUtils(Cog):
         stored_embed = stored_embeds[name]
         await ctx.send(file=text_to_file(text=json.dumps({"embed": stored_embed["embed"]}, indent=4), filename="embed.json"))
 
-    @embed.command(name="poststored", aliases=["poststoredembed", "post"])
+    @embed.command(name="poststored", aliases=["poststoredembed", "post"], usage="[channel_or_message=<CurrentChannel>] [global_level=False] <names>")
     async def embed_post_stored(
         self,
         ctx: commands.Context,
@@ -467,7 +467,7 @@ class EmbedUtils(Cog):
 
     @commands.mod_or_permissions(manage_webhooks=True)
     @commands.bot_has_permissions(manage_webhooks=True)
-    @embed.command(name="postwebhook", aliases=["webhook"])
+    @embed.command(name="postwebhook", aliases=["webhook"], usage="[channel_or_message=<CurrentChannel>] <username> <avatar_url> [global_level=False] <names>")
     async def embed_post_webhook(
         self,
         ctx: commands.Context,

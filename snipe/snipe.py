@@ -10,6 +10,8 @@ from collections import defaultdict, deque
 from copy import deepcopy
 from sys import getsizeof
 
+from redbot.core.utils.chat_formatting import pagify
+
 # Credits:
 # General repo credits.
 # Thanks to Epic for the original code (https://github.com/npc203/npc-cogs/tree/dpy2/snipe)!
@@ -180,6 +182,7 @@ class Snipe(Cog):
         )
 
     async def cog_load(self) -> None:
+        await super().cog_load()
         await self.settings.add_commands()
 
     @commands.Cog.listener()
@@ -195,9 +198,9 @@ class Snipe(Cog):
         config = await self.config.guild(message.guild).all()
         if config["ignored"] or getattr(message.channel, "parent", message.channel).id in config["ignored_channels"]:
             return
-        if message.embeds and message.embeds[0].title is not None and message.embeds[0].title.startswith(("Deleted Message", "Edited Message")):
+        if message.embeds and message.embeds[0].title is not None and message.embeds[0].title.startswith((_("Deleted Message"), _("Edited Message"))):
             return
-        elif not message.embeds and message.components and ("Deleted Messages" in message.content or "Edited Messages" in message.content):
+        elif not message.embeds and message.components and (_("Deleted Messages") in message.content or _("Edited Messages") in message.content):
             return
         self.deleted_messages[message.channel].append(SnipedMessage(message=message))
 
@@ -214,14 +217,15 @@ class Snipe(Cog):
         config = await self.config.guild(after.guild).all()
         if config["ignored"] or getattr(after.channel, "parent", after.channel).id in config["ignored_channels"]:
             return
-        if after.embeds and after.embeds[0].title is not None and after.embeds[0].title.startswith(("Deleted Message", "Edited Message")):
+        if after.embeds and after.embeds[0].title is not None and after.embeds[0].title.startswith((_("Deleted Message"), _("Edited Message"))):
             return
-        elif not after.embeds and after.components and ("Deleted Messages" in after.content or "Edited Messages" in after.content):
+        elif not after.embeds and after.components and (_("Deleted Messages") in after.content or _("Edited Messages") in after.content):
             return
         self.edited_messages[after.channel].append(SnipedMessage(message=before, after=after))
 
     @commands.guild_only()
     @commands.mod_or_permissions(manage_messages=True)
+    @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_group(invoke_without_command=True)
     async def snipe(self, ctx: commands.Context, channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]], index: int = 0) -> None:
         """Bulk snipe deleted messages."""
@@ -388,26 +392,39 @@ class Snipe(Cog):
             raise commands.UserFeedbackCheckFailure(_("This channel is in the ignored list."))
         if not self.deleted_messages[channel]:
             raise commands.UserFeedbackCheckFailure(_("No deleted message recorded in this channel."))
-        content = "\n".join(
+        content = "\n\n".join(
             [
-                f"[{deleted_message.created_at.strftime('%A %d-%m-%Y %H:%M:%S')}] {deleted_message.author.display_name} ({deleted_message.author.id}): {deleted_message.content}"
-                for deleted_message in
-                sorted(
-                    [
-                        deleted_message
-                        for deleted_message in self.deleted_messages[channel]
-                        if member is None or deleted_message.author == member
-                    ],
-                    key=lambda message: message.created_at,
+                f"**{i}.** Deleted <t:{int(deleted_message.deleted_at.timestamp())}:R> - {deleted_message.author.mention} ({deleted_message.author.id}): {deleted_message.content}"
+                for i, deleted_message in
+                enumerate(
+                    sorted(
+                        [
+                            deleted_message
+                            for deleted_message in self.deleted_messages[channel]
+                            if deleted_message.content and member is None or deleted_message.author == member
+                        ],
+                        key=lambda message: message.deleted_at,
+                        reverse=True,
+                    ),
+                    start=1,
                 )
             ]
         )
         if not content:
             raise commands.UserFeedbackCheckFailure(_("No deleted message recorded for this member in this channel."))
-        await Menu(pages=content, prefix="-------------------- Deleted Messages --------------------", page_start=-1, lang="py").start(ctx)
+        embed: discord.Embed = discord.Embed(title=_("Deleted Messages"), color=await ctx.embed_color())
+        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+        embed.set_footer(text=f"#{channel.name}", icon_url=channel.guild.icon)
+        embeds = []
+        for page in pagify(content, delims=("\n\n",)):
+            e = embed.copy()
+            e.description = page
+            embeds.append(e)
+        await Menu(pages=embeds, page_start=-1).start(ctx)
 
     @commands.guild_only()
     @commands.mod_or_permissions(manage_messages=True)
+    @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_group(invoke_without_command=True)
     async def esnipe(self, ctx: commands.Context, channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]], index: int = 0) -> None:
         """Bulk snipe edited messages."""
@@ -574,23 +591,35 @@ class Snipe(Cog):
             raise commands.UserFeedbackCheckFailure(_("This channel is in the ignored list."))
         if not self.edited_messages[channel]:
             raise commands.UserFeedbackCheckFailure(_("No edited message recorded in this channel."))
-        content = "\n".join(
+        content = "\n\n".join(
             [
-                f"[{edited_message.created_at.strftime('%A %d-%m-%Y %H:%M:%S')}] {edited_message.author.display_name} ({edited_message.author.id}): {edited_message.content}"
-                for edited_message in
-                sorted(
-                    [
-                        edited_message
-                        for edited_message in self.edited_messages[channel]
-                        if member is None or edited_message.author == member
-                    ],
-                    key=lambda message: message.created_at,
+                f"**{i}.** Edited <t:{int(edited_message.deleted_at.timestamp())}:R> - {edited_message.author.mention} ({edited_message.author.id}): {edited_message.content}"
+                for i, edited_message in
+                enumerate(
+                    sorted(
+                        [
+                            edited_message
+                            for edited_message in self.edited_messages[channel]
+                            if edited_message.content and member is None or edited_message.author == member
+                        ],
+                        key=lambda message: message.deleted_at,
+                        reverse=True,
+                    ),
+                    start=1,
                 )
             ]
         )
         if not content:
             raise commands.UserFeedbackCheckFailure(_("No edited message recorded for this member in this channel."))
-        await Menu(pages=content, prefix="-------------------- Edited Messages --------------------", page_start=-1, lang="py").start(ctx)
+        embed: discord.Embed = discord.Embed(title=_("Edited Messages"), color=await ctx.embed_color())
+        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+        embed.set_footer(text=f"#{channel.name}", icon_url=channel.guild.icon)
+        embeds = []
+        for page in pagify(content, delims=("\n\n",)):
+            e = embed.copy()
+            e.description = page
+            embeds.append(e)
+        await Menu(pages=embeds, page_start=-1).start(ctx)
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_guild=True)

@@ -8,12 +8,33 @@ import typing  # isort:skip
 import datetime
 from collections import defaultdict, deque
 from copy import deepcopy
+from sys import getsizeof
 
 # Credits:
 # General repo credits.
 # Thanks to Epic for the original code (https://github.com/npc203/npc-cogs/tree/dpy2/snipe)!
 
 _ = Translator("Snipe", __file__)
+
+
+# https://stackoverflow.com/questions/1094841/get-human-readable-version-of-file-size
+def sizeof_fmt(num, suffix="B"):
+    for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
+        if abs(num) < 1024.0:
+            return f"{num:3.1f}{unit}{suffix}"
+        num /= 1024.0
+    return f"{num:.1f}Yi{suffix}"
+
+
+# Thanks Phen!
+def recursive_getsizeof(obj: object) -> int:
+    total = 0
+    if isinstance(obj, typing.Mapping):
+        for v in obj.values():
+            total += recursive_getsizeof(v)
+    else:
+        total += getsizeof(obj)
+    return total
 
 
 class SnipedMessage:
@@ -577,3 +598,23 @@ class Snipe(Cog):
     async def setsnipe(self, ctx: commands.Context) -> None:
         """Commands to configure Snipe."""
         pass
+
+    @commands.is_owner()
+    @setsnipe.command()
+    async def stats(self, ctx: commands.Context) -> None:
+        """Show stats about Snipe cache."""
+        deleted_messages_cache_size = recursive_getsizeof(self.deleted_messages)
+        edited_messages_cache_size = recursive_getsizeof(self.edited_messages)
+        embed: discord.Embed = discord.Embed(title=_("Snipe Stats"), color=await ctx.embed_color())
+        embed.add_field(name=_("Deleted Messages Cache Size:"), value=f"`{sizeof_fmt(deleted_messages_cache_size)}`")
+        embed.add_field(name=_("Edited Messages Cache Size:"), value=f"`{sizeof_fmt(edited_messages_cache_size)}`", inline=True)
+        embed.add_field(name=_("Total Cache Size:"), value=f"`{sizeof_fmt(deleted_messages_cache_size + edited_messages_cache_size)}`", inline=True)
+        embed.add_field(
+            name=_("Cache Entries:"),
+            value=_("**Deleted Messages:** `{len_deleted_messages}`\n**Edited Messages:** `{len_edited_messages}`").format(
+                len_deleted_messages=sum(len(deleted_messages) for deleted_messages in self.deleted_messages.values()),
+                len_edited_messages=sum(len(edited_messages) for edited_messages in self.edited_messages.values()),
+            ),
+            inline=False
+        )
+        await ctx.send(embed=embed)

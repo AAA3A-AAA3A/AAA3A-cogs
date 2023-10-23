@@ -404,7 +404,6 @@ class Snipe(Cog):
                             if deleted_message.content and member is None or deleted_message.author == member
                         ],
                         key=lambda message: message.deleted_at,
-                        reverse=True,
                     ),
                     start=1,
                 )
@@ -603,7 +602,6 @@ class Snipe(Cog):
                             if edited_message.content and member is None or edited_message.author == member
                         ],
                         key=lambda message: message.deleted_at,
-                        reverse=True,
                     ),
                     start=1,
                 )

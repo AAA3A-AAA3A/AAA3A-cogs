@@ -220,7 +220,7 @@ class Snipe(Cog):
         if not self.deleted_messages[channel]:
             raise commands.UserFeedbackCheckFailure(_("No deleted message recorded in this channel."))
         try:
-            embed = self.deleted_messages[channel][-index].to_embed(embed_color=await ctx.embed_color())
+            embed = self.deleted_messages[channel][-(index + 1)].to_embed(embed_color=await ctx.embed_color())
         except IndexError:
             raise commands.UserFeedbackCheckFailure(_("No deleted message at this index in this channel."))
         await Menu(pages=[embed]).start(ctx)
@@ -406,7 +406,7 @@ class Snipe(Cog):
         if not self.edited_messages[channel]:
             raise commands.UserFeedbackCheckFailure(_("No edited message recorded in this channel."))
         try:
-            embed = self.edited_messages[channel][-index].to_embed(embed_color=await ctx.embed_color())
+            embed = self.edited_messages[channel][-(index + 1)].to_embed(embed_color=await ctx.embed_color())
         except IndexError:
             raise commands.UserFeedbackCheckFailure(_("No edited message at this index in this channel."))
         await Menu(pages=[embed]).start(ctx)
@@ -495,7 +495,7 @@ class Snipe(Cog):
         if not embeds:
             raise commands.UserFeedbackCheckFailure(_("No deleted message with mentions recorded in this channel."))
         await Menu(pages=embeds, page_start=len(embeds) - 1).start(ctx)
-        
+
     @esnipe.command(name="rolesmentions")
     async def esnipe_rolesmentions(self, ctx: commands.Context, channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]]) -> None:
         """Bulk snipe edited messages with roles mentions."""

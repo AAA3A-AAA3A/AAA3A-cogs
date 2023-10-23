@@ -232,6 +232,7 @@ class LinkQuoter(Cog):
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["linquoter", "lq"])
     async def linkquote(self, ctx: commands.Context, *, message: LinkToMessageConverter = None) -> None:
+        """Quote a message from a link."""
         if message is None:
             if not (
                 hasattr(ctx.message, "reference")

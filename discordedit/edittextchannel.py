@@ -161,7 +161,10 @@ class EditTextChannel(Cog):
     ) -> None:
         """Clone a text channel."""
         if channel is None:
-            channel = ctx.channel
+            if isinstance(ctx.channel, discord.TextChannel):
+                channel = ctx.channel
+            else:
+                raise commands.UserInputError()
         await self.check_text_channel(ctx, channel)
         try:
             await channel.clone(
@@ -191,7 +194,10 @@ class EditTextChannel(Cog):
         `unique`: Indicates if a unique invite URL should be created. Defaults to True. If this is set to False then it will return a previously created invite.
         """
         if channel is None:
-            channel = ctx.channel
+            if isinstance(ctx.channel, discord.TextChannel):
+                channel = ctx.channel
+            else:
+                raise commands.UserInputError()
         await self.check_text_channel(ctx, channel)
         try:
             invite = await channel.create_invite(
@@ -217,7 +223,10 @@ class EditTextChannel(Cog):
     ) -> None:
         """Edit text channel name."""
         if channel is None:
-            channel = ctx.channel
+            if isinstance(ctx.channel, discord.TextChannel):
+                channel = ctx.channel
+            else:
+                raise commands.UserInputError()
         await self.check_text_channel(ctx, channel)
         try:
             await channel.edit(
@@ -239,7 +248,10 @@ class EditTextChannel(Cog):
     ) -> None:
         """Edit text channel topic."""
         if channel is None:
-            channel = ctx.channel
+            if isinstance(ctx.channel, discord.TextChannel):
+                channel = ctx.channel
+            else:
+                raise commands.UserInputError()
         await self.check_text_channel(ctx, channel)
         try:
             await channel.edit(
@@ -265,7 +277,10 @@ class EditTextChannel(Cog):
         Channels cannot be moved to a position that takes them out of their current category.
         """
         if channel is None:
-            channel = ctx.channel
+            if isinstance(ctx.channel, discord.TextChannel):
+                channel = ctx.channel
+            else:
+                raise commands.UserInputError()
         await self.check_text_channel(ctx, channel)
         try:
             await channel.edit(
@@ -286,7 +301,10 @@ class EditTextChannel(Cog):
     ) -> None:
         """Edit text channel nsfw."""
         if channel is None:
-            channel = ctx.channel
+            if isinstance(ctx.channel, discord.TextChannel):
+                channel = ctx.channel
+            else:
+                raise commands.UserInputError()
         await self.check_text_channel(ctx, channel)
         if nsfw is None:
             nsfw = not channel.nsfw
@@ -309,7 +327,10 @@ class EditTextChannel(Cog):
     ) -> None:
         """Edit text channel syncpermissions with category."""
         if channel is None:
-            channel = ctx.channel
+            if isinstance(ctx.channel, discord.TextChannel):
+                channel = ctx.channel
+            else:
+                raise commands.UserInputError()
         await self.check_text_channel(ctx, channel)
         if sync_permissions is None:
             sync_permissions = not channel.permissions_synced
@@ -332,7 +353,10 @@ class EditTextChannel(Cog):
     ) -> None:
         """Edit text channel category."""
         if channel is None:
-            channel = ctx.channel
+            if isinstance(ctx.channel, discord.TextChannel):
+                channel = ctx.channel
+            else:
+                raise commands.UserInputError()
         await self.check_text_channel(ctx, channel)
         try:
             await channel.edit(
@@ -356,7 +380,10 @@ class EditTextChannel(Cog):
         Specifies the slowmode rate limit for user in this channel. A value of 0s disables slowmode. The maximum value possible is 21600s.
         """
         if channel is None:
-            channel = ctx.channel
+            if isinstance(ctx.channel, discord.TextChannel):
+                channel = ctx.channel
+            else:
+                raise commands.UserInputError()
         await self.check_text_channel(ctx, channel)
         slowmode_delay = int(slowmode_delay.total_seconds())
         if slowmode_delay < 0 or slowmode_delay > 21600:
@@ -385,7 +412,10 @@ class EditTextChannel(Cog):
         Currently, only conversion between ChannelType.text and ChannelType.news is supported. This is only available to guilds that contain NEWS in Guild.features.
         """
         if channel is None:
-            channel = ctx.channel
+            if isinstance(ctx.channel, discord.TextChannel):
+                channel = ctx.channel
+            else:
+                raise commands.UserInputError()
         await self.check_text_channel(ctx, channel)
         try:
             await channel.edit(
@@ -411,7 +441,10 @@ class EditTextChannel(Cog):
         The new default auto archive duration in minutes for threads created in this channel. Must be one of `60`, `1440`, `4320`, or `10080`.
         """
         if channel is None:
-            channel = ctx.channel
+            if isinstance(ctx.channel, discord.TextChannel):
+                channel = ctx.channel
+            else:
+                raise commands.UserInputError()
         await self.check_text_channel(ctx, channel)
         try:
             await channel.edit(
@@ -437,7 +470,10 @@ class EditTextChannel(Cog):
         The new default thread slowmode delay in seconds for threads created in this channel. Must be between 0 and 21600 (6 hours) seconds.
         """
         if channel is None:
-            channel = ctx.channel
+            if isinstance(ctx.channel, discord.TextChannel):
+                channel = ctx.channel
+            else:
+                raise commands.UserInputError()
         await self.check_text_channel(ctx, channel)
         try:
             await channel.edit(
@@ -498,7 +534,10 @@ class EditTextChannel(Cog):
         • `send_messages_in_threads`
         """
         if channel is None:
-            channel = ctx.channel
+            if isinstance(ctx.channel, discord.TextChannel):
+                channel = ctx.channel
+            else:
+                raise commands.UserInputError()
         await self.check_text_channel(ctx, channel)
         targets = list(roles_or_users)
         for r in roles_or_users:
@@ -584,7 +623,10 @@ class EditTextChannel(Cog):
     ) -> None:
         """Delete a text channel."""
         if channel is None:
-            channel = ctx.channel
+            if isinstance(ctx.channel, discord.TextChannel):
+                channel = ctx.channel
+            else:
+                raise commands.UserInputError()
         await self.check_text_channel(ctx, channel)
         if not confirmation and not ctx.assume_yes:
             if ctx.bot_permissions.embed_links:
@@ -618,7 +660,10 @@ class EditTextChannel(Cog):
     ) -> None:
         """View and edit text channel."""
         if channel is None:
-            channel = ctx.channel
+            if isinstance(ctx.channel, discord.TextChannel):
+                channel = ctx.channel
+            else:
+                raise commands.UserInputError()
         await self.check_text_channel(ctx, channel)
         embed_color = await ctx.embed_color()
 

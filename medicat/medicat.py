@@ -518,7 +518,7 @@ class Medicat(Cog):
                     allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
                     wait=True,
                 )
-            except (AttributeError, discord.errors.Forbidden):
+            except discord.HTTPException:
                 message: discord.Message = await channel.send(
                     content=role.mention if role is not None else None,
                     embed=embed,
@@ -616,7 +616,7 @@ class Medicat(Cog):
                     allowed_mentions=discord.AllowedMentions(everyone=True, roles=True),
                     wait=True,
                 )
-            except (AttributeError, discord.errors.Forbidden):
+            except discord.HTTPException:
                 message: discord.Message = await channel.send(
                     content=role.mention if role is not None else None,
                     embed=embed,
@@ -813,7 +813,7 @@ class Medicat(Cog):
                 view=view,
                 wait=True,
             )
-        except (AttributeError, discord.errors.Forbidden):
+        except discord.HTTPException:
             await ctx.send(embed=embed, view=view)
 
     @is_owner_or_AAA3A()

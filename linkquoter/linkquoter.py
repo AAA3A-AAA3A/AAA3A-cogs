@@ -253,7 +253,7 @@ class LinkQuoter(Cog):
                     avatar_url=message.author.display_avatar,
                     wait=True,
                 )
-            except (AttributeError, discord.errors.Forbidden):
+            except discord.HTTPException:
                 pass
             else:
                 return

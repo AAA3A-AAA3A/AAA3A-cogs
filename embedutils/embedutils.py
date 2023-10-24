@@ -40,7 +40,7 @@ class EmbedUtils(Cog):
 
         self.config: Config = Config.get_conf(
             self,
-            identifier=205192943327321000143939875896557571750,  # 969369062738
+            identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
         self.embedutils_global: typing.Dict[str, typing.Dict[str, typing.Any]] = {

@@ -1,7 +1,7 @@
 {
     "author": ["Cog-Creators", "Zephyrkul (Zephyrkul#1089)", "AAA3A"],
     "name": "Dev",
-    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\n⚠ Note that this cog requires the `--dev` flag, or it will refuse to load. If you don't know what this means, uninstall the cog.",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you like my work, please consider donating on my [Buy Me a Coffee page](<https://www.buymeacoffee.com/aaa3a>)!\n⚠ Note that this cog requires the `--dev` flag, or it will refuse to load. If you don't know what this means, uninstall the cog.",
     "short": "Various development focused utilities!",
     "description": "Various development focused utilities.",
     "tags": [

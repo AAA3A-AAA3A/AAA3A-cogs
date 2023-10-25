@@ -1,7 +1,7 @@
 {
     "author": ["AAA3A"],
     "name": "DropdownsTexts",
-    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.\nIt does not use user data.",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you like my work, please consider donating on my [Buy Me a Coffee page](<https://www.buymeacoffee.com/aaa3a>)!\nIt does not use user data.",
     "short": "A cog to have dropdowns-texts!",
     "description": "Have you ever wanted to have dropdowns-text? Then this cog is for you!",
     "tags": [

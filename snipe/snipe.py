@@ -137,7 +137,7 @@ class SnipedMessage:
 class Snipe(Cog):
     """Bulk sniping deleted and edited messages, for moderation purpose!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
         self.__authors__: typing.List[str] = ["epic guy", "AAA3A"]
 

@@ -85,7 +85,7 @@ class RawRequestConverter(commands.Converter):
 class DevUtils(Cog):
     """Various development utilities!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
         self.__authors__: typing.List[str] = ["PhenoM4n4n", "AAA3A"]
 

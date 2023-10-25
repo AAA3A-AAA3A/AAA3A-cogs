@@ -34,7 +34,7 @@ PASTEBIN_LIST_CONVERTER = PastebinListConverter(conversion_type="json")
 class EmbedUtils(Cog):
     """Create, send, and store embeds!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
         self.__authors__: typing.List[str] = ["PhenoM4n4n", "AAA3A"]
 

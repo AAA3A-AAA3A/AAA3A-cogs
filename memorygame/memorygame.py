@@ -85,7 +85,7 @@ class MemoryGame(Cog, DashboardIntegration):
             commands_group=self.configuration,
         )
 
-    async def cog_load(self):
+    async def cog_load(self) -> None:
         await super().cog_load()
         await self.settings.add_commands()
 

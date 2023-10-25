@@ -40,7 +40,7 @@ class LinkQuoterView(discord.ui.View):
 class LinkQuoter(Cog):
     """Quote any Discord message from its link!"""
 
-    def __init__(self, bot: Red):
+    def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
         self.__authors__: typing.List[str] = ["PhenoM4n4n", "AAA3A"]
 
@@ -106,6 +106,7 @@ class LinkQuoter(Cog):
         )
 
     async def cog_load(self) -> None:
+        await super().cog_load()
         await self.settings.add_commands()
 
     @commands.Cog.listener()

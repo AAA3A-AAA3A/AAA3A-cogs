@@ -580,13 +580,14 @@ class Dev(Cog, dev_commands.Dev):
         type: typing.Literal["debug", "eval", "repl"],
         source: str,
         env: typing.Optional[typing.Dict[str, typing.Any]] = None,
+        send_result: bool = False,
         wait: bool = True,
     ) -> bool:
         tasks: typing.List[asyncio.Task] = [
             asyncio.create_task(
                 ctx.bot.wait_for("message", check=MessagePredicate.cancelled(ctx))
             ),
-            asyncio.create_task(self._my_exec(ctx, type=type, source=source, env=env, wait=wait)),
+            asyncio.create_task(self._my_exec(ctx, type=type, source=source, env=env, send_result=send_result, wait=wait)),
         ]
         done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
         for task in pending:
@@ -600,6 +601,7 @@ class Dev(Cog, dev_commands.Dev):
         type: typing.Literal["debug", "eval", "repl"],
         source: str,
         env: typing.Optional[typing.Dict[str, typing.Any]] = None,
+        send_result: bool = False,
         wait: bool = True,
     ) -> DevOutput:
         source = textwrap.dedent(source)
@@ -664,19 +666,20 @@ class Dev(Cog, dev_commands.Dev):
             if ctx.author not in self._last_locals:
                 self._last_locals[ctx.author] = {}
             self._last_locals[ctx.author].update(**output._locals)
-        send_interactive = await self.config.send_interactive()
-        send_coroutine = output.send(
-            tick=type != "repl",
-            output_mode=await self.config.output_mode(),
-            ansi_formatting=await self.config.ansi_formatting(),
-            send_interactive=send_interactive,
-            send_dpy_objects=await self.config.send_dpy_objects(),
-            wait=wait,
-        )
-        if wait and not send_coroutine:
-            await send_coroutine
-        else:
-            asyncio.create_task(send_coroutine)
+        if send_result:
+            send_interactive = await self.config.send_interactive()
+            send_coroutine = output.send(
+                tick=type != "repl",
+                output_mode=await self.config.output_mode(),
+                ansi_formatting=await self.config.ansi_formatting(),
+                send_interactive=send_interactive,
+                send_dpy_objects=await self.config.send_dpy_objects(),
+                wait=wait,
+            )
+            if wait and not send_coroutine:
+                await send_coroutine
+            else:
+                asyncio.create_task(send_coroutine)
         return output
 
     @commands.is_owner()
@@ -739,6 +742,7 @@ class Dev(Cog, dev_commands.Dev):
             getattr(ctx, "original_context", ctx),
             type="debug",
             source=source,
+            send_result=True,
         )
 
     @commands.is_owner()
@@ -797,6 +801,7 @@ class Dev(Cog, dev_commands.Dev):
             getattr(ctx, "original_context", ctx),
             type="eval",
             source=source,
+            send_result=True,
         )
 
     @commands.is_owner()
@@ -877,6 +882,8 @@ class Dev(Cog, dev_commands.Dev):
                     source=source,
                     env=env,
                     wait=False,
+                    
+                    send_result=True,
                 )
             except Exit:
                 break

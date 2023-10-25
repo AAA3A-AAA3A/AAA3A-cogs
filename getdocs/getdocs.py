@@ -859,7 +859,7 @@ class Source:
                     self.cog._docs_stats["GLOBAL"]["manuals"] += 1
                     self.cog._docs_stats[self.name]["documentations"] += len(documentations)
                     self.cog._docs_stats["GLOBAL"]["documentations"] += len(documentations)
-                    self.cog.log.trace(
+                    self.cog.log.verbose(
                         f"`{self.name}`: `{name}` documentation added to documentation cache."
                     )
                 except Exception as e:
@@ -1116,7 +1116,7 @@ class Source:
                             )
                             documentations.append(documentation)
                             self._docs_cache.append(documentation)
-                        self.cog.log.trace(
+                        self.cog.log.verbose(
                             f"`{self.name}`: `{name}` documentation added to documentation cache."
                         )
                     except Exception as e:
@@ -1191,7 +1191,7 @@ class Source:
                 )
                 documentations.append(documentation)
                 self._docs_cache.append(documentation)
-                self.cog.log.trace(
+                self.cog.log.verbose(
                     f"`{self.name}`: `{manual[0]}` documentation added to documentation cache."
                 )
             except Exception as e:
@@ -1310,7 +1310,7 @@ class Source:
                 )
                 documentations.append(documentation)
                 self._docs_cache.append(documentation)
-                self.cog.log.trace(
+                self.cog.log.verbose(
                     f"`{self.name}`: `{manual[0]}` documentation added to documentation cache."
                 )
             except Exception as e:

@@ -1,7 +1,7 @@
 {
     "author": ["AAA3A"],
     "name": "ClearChannel",
-    "install_msg": "Thank you for installing this cog!\nDo `[p]help` to get the list of commands and their description.",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you like my work, please consider donating on my [Buy Me a Coffee page](<https://www.buymeacoffee.com/aaa3a>)!",
     "short": "A cog to delete ALL messages of a channel!",
     "description": "Have you ever wanted to delete all messages of a channel? Then this cog is for you!",
     "tags": [

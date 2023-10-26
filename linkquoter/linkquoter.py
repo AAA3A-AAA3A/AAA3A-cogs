@@ -142,7 +142,7 @@ class LinkQuoter(Cog):
             bot=self.bot,
             author=message.author,
             channel=message.channel,
-            command=f"linkquote {msg.id}",
+            command=f"linkquote {msg.jump_url}",
             message=message,
         )
         if config["delete_message"]:

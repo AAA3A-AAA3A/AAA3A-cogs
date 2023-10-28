@@ -374,7 +374,7 @@ class Ticket:
                 if config["admin_roles"]:
                     for role in config["admin_roles"]:
                         members.extend(role.members)
-                if config["support_role"]:
+                if config["support_roles"]:
                     for role in config["support_roles"]:
                         members.extend(role.members)
                 if config["view_role"]:

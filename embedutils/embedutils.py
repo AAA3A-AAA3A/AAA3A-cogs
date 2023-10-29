@@ -283,7 +283,7 @@ class EmbedUtils(Cog):
         await ctx.send(file=text_to_file(text=json.dumps(data, indent=4), filename="embed.json"))
 
     @commands.mod_or_permissions(manage_messages=True)
-    @embed.command(name="edit")
+    @embed.command(name="edit", usage="<message> <json|yaml|jsonfile|yamlfile|pastebin|message> [data]")
     async def embed_edit(
         self,
         ctx: commands.Context,
@@ -333,7 +333,7 @@ class EmbedUtils(Cog):
             return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
 
     @commands.mod_or_permissions(manage_guild=True)
-    @embed.command(name="store", aliases=["storeembed"], usage="[global_level=False] [locked=False] <name> <json|yaml|jsonfile|yamlfile|pastebin|message> <data>")
+    @embed.command(name="store", aliases=["storeembed"], usage="[global_level=False] [locked=False] <name> <json|yaml|jsonfile|yamlfile|pastebin|message> [data]")
     async def embed_store(
         self,
         ctx: commands.Context,

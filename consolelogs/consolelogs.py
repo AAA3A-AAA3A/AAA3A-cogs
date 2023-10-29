@@ -482,7 +482,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
     async def addchannel(
         self,
         ctx: commands.Context,
-        channel: discord.TextChannel,
+        channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         global_errors: typing.Optional[bool] = True,
         prefixed_commands_errors: typing.Optional[bool] = True,
         slash_commands_errors: typing.Optional[bool] = True,
@@ -532,7 +532,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
         await ctx.send(_("Errors logging enabled in {channel.mention}.").format(channel=channel))
 
     @consolelogs.command(aliases=["-"])
-    async def removechannel(self, ctx: commands.Context, channel: discord.TextChannel) -> None:
+    async def removechannel(self, ctx: commands.Context, channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]) -> None:
         """Disable errors logging in a channel."""
         if not await self.config.channel(channel).enabled():
             raise commands.UserFeedbackCheckFailure(

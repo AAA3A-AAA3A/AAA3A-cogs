@@ -47,7 +47,7 @@ class SolarizedCustom(get_style_by_name("solarized-dark")):
 
 
 def cleanup_code(code: str) -> str:
-    code = dev_commands.cleanup_code(code.strip())
+    code = dev_commands.cleanup_code(textwrap.dedent(code)).strip()
     with io.StringIO(code) as codeio:
         for line in codeio:
             line = line.strip()
@@ -604,7 +604,7 @@ class Dev(Cog, dev_commands.Dev):
         send_result: bool = False,
         wait: bool = True,
     ) -> DevOutput:
-        source = textwrap.dedent(source)
+        source = cleanup_code(source)
         if env is None:
             env = self.get_environment(
                 ctx, use_extended_environment=await self.config.use_extended_environment()
@@ -1002,7 +1002,7 @@ class Dev(Cog, dev_commands.Dev):
         command = cleanup_code(command)
 
         # Thanks Jack for a part of this code!
-        source = textwrap.dedent("""
+        source = cleanup_code("""
             import asyncio
             import asyncio.subprocess as asp
             import os

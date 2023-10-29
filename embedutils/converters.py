@@ -7,6 +7,7 @@ import typing  # isort:skip
 import io
 import json
 import re
+import textwrap
 import yaml
 
 from redbot.core import dev_commands
@@ -15,7 +16,7 @@ from redbot.core.utils.chat_formatting import box
 _ = Translator("EmbedUtils", __file__)
 
 def cleanup_code(code: str) -> str:
-    code = dev_commands.cleanup_code(code.strip())
+    code = dev_commands.cleanup_code(textwrap.dedent(code)).strip()
     with io.StringIO(code) as codeio:
         for line in codeio:
             line = line.strip()

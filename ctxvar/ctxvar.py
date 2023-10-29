@@ -11,22 +11,34 @@ import inspect
 import io
 import json
 import rich
+import textwrap
 import time
 import traceback
 import types
 from copy import copy
-from textwrap import dedent
 
 from discord_markdown_ast_parser import parse_to_dict
 
 
-from redbot.core.dev_commands import cleanup_code, sanitize_output
+from redbot.core import dev_commands
 from redbot.core.utils.chat_formatting import bold, box
 
 # Credits:
 # General repo credits.
 
 _ = Translator("CtxVar", __file__)
+
+
+def cleanup_code(code: str) -> str:
+    code = dev_commands.cleanup_code(textwrap.dedent(code)).strip()
+    with io.StringIO(code) as codeio:
+        for line in codeio:
+            line = line.strip()
+            if line and not line.startswith("#"):
+                break
+        else:
+            return "pass"
+    return code
 
 
 class WhatIsConverter(commands.Converter):
@@ -159,7 +171,7 @@ class CtxVar(Cog):
                             name=f"{x}",
                             value=box(
                                 CogsUtils.replace_var_paths(
-                                    sanitize_output(ctx, str(getattr(instance, x))[:100])
+                                    dev_commands.sanitize_output(ctx, str(getattr(instance, x))[:100])
                                 ),
                                 "py",
                             ),
@@ -217,7 +229,7 @@ class CtxVar(Cog):
             del result[-1]
             result = "".join(result)
         result += "\n]"
-        result = CogsUtils.replace_var_paths(sanitize_output(ctx, result))
+        result = CogsUtils.replace_var_paths(dev_commands.sanitize_output(ctx, result))
 
         await Menu(pages=result.strip(), lang="py").start(ctx)
 
@@ -294,7 +306,7 @@ class CtxVar(Cog):
                     console=console,
                 )
             result = console.file.getvalue()
-        result = CogsUtils.replace_var_paths(sanitize_output(ctx, result))
+        result = CogsUtils.replace_var_paths(dev_commands.sanitize_output(ctx, result))
 
         await Menu(pages=result.strip(), lang="py").start(ctx)
 
@@ -338,7 +350,7 @@ class CtxVar(Cog):
             )
 
         result = ast.dump(
-            ast.parse(dedent("\n".join(inspect.getsourcelines(_object)[0]))),
+            ast.parse(textwrapdedent("\n".join(inspect.getsourcelines(_object)[0]))),
             annotate_fields=True,
             include_attributes=include_attributes,
             indent=4,
@@ -421,7 +433,7 @@ class CtxVar(Cog):
                 value if isinstance(value, str) else repr(value)
             )
         result.update(**result2)
-        _result = sanitize_output(ctx, "".join(f"\n[{k}] : {r}" for k, r in result.items()))
+        _result = dev_commands.sanitize_output(ctx, "".join(f"\n[{k}] : {r}" for k, r in result.items()))
         await Menu(pages=_result.strip(), lang="ini").start(ctx)
 
     @ctxvar.command(name="parsemarkdown", aliases=["parsemessage"])

@@ -290,15 +290,19 @@ class EmbedUtils(Cog):
         message: MyMessageConverter,
         conversion_type: typing.Literal["json", "fromjson", "fromdata", "yaml", "fromyaml", "fromfile", "jsonfile", "fromjsonfile", "fromdatafile", "yamlfile", "fromyamlfile", "gist", "pastebin", "hastebin", "message", "frommessage", "frommsg"],
         *,
-        data: str,
+        data: str = None,
     ):
         """Edit a message sent by [botname].
 
         It would be better to use the `message` parameter of all the other commands.
         """
         if conversion_type in ("json", "fromjson", "fromdata"):
+            if data is None:
+                raise commands.UserInputError()
             data = await JSON_LIST_CONVERTER.convert(ctx, argument=data)
         elif conversion_type in ("yaml", "fromyaml"):
+            if data is None:
+                raise commands.UserInputError()
             data = await YAML_LIST_CONVERTER.convert(ctx, argument=data)
         elif conversion_type == ("fromfile", "jsonfile", "fromjsonfile", "fromdatafile"):
             if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("json", "txt"):
@@ -313,8 +317,12 @@ class EmbedUtils(Cog):
                 raise commands.UserInputError()
             data = await YAML_LIST_CONVERTER.convert(ctx, argument=argument)
         elif conversion_type in ("gist", "pastebin", "hastebin"):
+            if data is None:
+                raise commands.UserInputError()
             data = await PASTEBIN_LIST_CONVERTER.convert(ctx, argument=data)
         elif conversion_type in ("message", "frommessage", "frommsg"):
+            if data is None:
+                raise commands.UserInputError()
             message = await commands.MessageConverter().convert(ctx, argument=data)
             if not message.embeds:
                 raise commands.UserInputError()
@@ -334,7 +342,7 @@ class EmbedUtils(Cog):
         name: str,
         conversion_type: typing.Literal["json", "fromjson", "fromdata", "yaml", "fromyaml", "fromfile", "jsonfile", "fromjsonfile", "fromdatafile", "yamlfile", "fromyamlfile", "gist", "pastebin", "hastebin", "message", "frommessage", "frommsg"],
         *,
-        data: str,
+        data: str = None,
     ):
         """Store an embed.
 
@@ -349,8 +357,12 @@ class EmbedUtils(Cog):
             locked = False
 
         if conversion_type in ("json", "fromjson", "fromdata"):
+            if data is None:
+                raise commands.UserInputError()
             data = await JSON_CONVERTER.convert(ctx, argument=data)
         elif conversion_type in ("yaml", "fromyaml"):
+            if data is None:
+                raise commands.UserInputError()
             data = await YAML_CONVERTER.convert(ctx, argument=data)
         elif conversion_type == ("fromfile", "jsonfile", "fromjsonfile", "fromdatafile"):
             if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("json", "txt"):
@@ -365,8 +377,12 @@ class EmbedUtils(Cog):
                 raise commands.UserInputError()
             data = await YAML_CONVERTER.convert(ctx, argument=argument)
         elif conversion_type in ("gist", "pastebin", "hastebin"):
+            if data is None:
+                raise commands.UserInputError()
             data = await PASTEBIN_CONVERTER.convert(ctx, argument=data)
         elif conversion_type in ("message", "frommessage", "frommsg"):
+            if data is None:
+                raise commands.UserInputError()
             message = await commands.MessageConverter().convert(ctx, argument=data)
             if not message.embeds:
                 raise commands.UserInputError()

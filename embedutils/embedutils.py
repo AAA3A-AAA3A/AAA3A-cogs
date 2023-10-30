@@ -312,7 +312,7 @@ class EmbedUtils(Cog):
             if data is None:
                 raise commands.UserInputError()
             data = await YAML_LIST_CONVERTER.convert(ctx, argument=data)
-        elif conversion_type == ("fromfile", "jsonfile", "fromjsonfile", "fromdatafile"):
+        elif conversion_type in ("fromfile", "jsonfile", "fromjsonfile", "fromdatafile"):
             if not ctx.message.attachments or ctx.message.attachments[
                 0
             ].filename.split(".")[-1] not in ("json", "txt"):
@@ -380,7 +380,7 @@ class EmbedUtils(Cog):
             if data is None:
                 raise commands.UserInputError()
             data = await YAML_CONVERTER.convert(ctx, argument=data)
-        elif conversion_type == ("fromfile", "jsonfile", "fromjsonfile", "fromdatafile"):
+        elif conversion_type in ("fromfile", "jsonfile", "fromjsonfile", "fromdatafile"):
             if not ctx.message.attachments or ctx.message.attachments[
                 0
             ].filename.split(".")[-1] not in ("json", "txt"):

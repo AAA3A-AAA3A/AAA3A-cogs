@@ -223,6 +223,16 @@ class Calculator(Cog):
             return
         if not message.content or message.content.split("#")[0].replace(" ", "").lstrip("+-").isdecimal() or message.content.split("#")[0].strip() in ["k", "m", "b", "t", "q", "Q", "s", "S", "o", "n", "d", "U", "D", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Vi"]:
             return
+        fake_context = await CogsUtils.invoke_command(
+            bot=self.bot,
+            author=message.author,
+            channel=message.channel,
+            command=message.content,
+            prefix="",
+            invoke=False,
+        )
+        if fake_context.valid:  # Prevent CCs, aliases and tags from triggering.
+            return
         if not await discord.utils.async_all(
             [check(await self.bot.get_context(message)) for check in self._calculate.checks]
         ):

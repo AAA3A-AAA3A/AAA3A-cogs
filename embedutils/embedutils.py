@@ -158,7 +158,10 @@ class EmbedUtils(Cog):
         If you provide a message, it will be edited.
         """
         if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("json", "txt"):
-            argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+            try:
+                argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+            except UnicodeDecodeError:
+                raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
         else:
             raise commands.UserInputError()
         data = await JSON_LIST_CONVERTER.convert(ctx, argument=argument)
@@ -178,7 +181,10 @@ class EmbedUtils(Cog):
         If you provide a message, it will be edited.
         """
         if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("yaml", "txt"):
-            argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+            try:
+                argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+            except UnicodeDecodeError:
+                raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
         else:
             raise commands.UserInputError()
         data = await YAML_LIST_CONVERTER.convert(ctx, argument=argument)
@@ -306,13 +312,19 @@ class EmbedUtils(Cog):
             data = await YAML_LIST_CONVERTER.convert(ctx, argument=data)
         elif conversion_type == ("fromfile", "jsonfile", "fromjsonfile", "fromdatafile"):
             if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("json", "txt"):
-                argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+                try:
+                    argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+                except UnicodeDecodeError:
+                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
             else:
                 raise commands.UserInputError()
             data = await JSON_LIST_CONVERTER.convert(ctx, argument=argument)
         elif conversion_type in ("yamlfile", "fromyamlfile"):
             if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("yaml", "txt"):
-                argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+                try:
+                    argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+                except UnicodeDecodeError:
+                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
             else:
                 raise commands.UserInputError()
             data = await YAML_LIST_CONVERTER.convert(ctx, argument=argument)
@@ -366,13 +378,19 @@ class EmbedUtils(Cog):
             data = await YAML_CONVERTER.convert(ctx, argument=data)
         elif conversion_type == ("fromfile", "jsonfile", "fromjsonfile", "fromdatafile"):
             if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("json", "txt"):
-                argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+                try:
+                    argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+                except UnicodeDecodeError:
+                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
             else:
                 raise commands.UserInputError()
             data = await JSON_CONVERTER.convert(ctx, argument=argument)
         elif conversion_type in ("yamlfile", "fromyamlfile"):
             if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("yaml", "txt"):
-                argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+                try:
+                    argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+                except UnicodeDecodeError:
+                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
             else:
                 raise commands.UserInputError()
             data = await YAML_CONVERTER.convert(ctx, argument=argument)

@@ -716,7 +716,10 @@ class Dev(Cog, dev_commands.Dev):
         """
         if code is None:
             if ctx.message.attachments:
-                code = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+                try:
+                    code = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+                except UnicodeDecodeError:
+                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
             elif (
                 hasattr(ctx.message, "reference")
                 and ctx.message.reference is not None
@@ -775,7 +778,10 @@ class Dev(Cog, dev_commands.Dev):
         """
         if body is None:
             if ctx.message.attachments:
-                body = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+                try:
+                    body = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+                except UnicodeDecodeError:
+                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
             elif (
                 hasattr(ctx.message, "reference")
                 and ctx.message.reference is not None
@@ -978,7 +984,10 @@ class Dev(Cog, dev_commands.Dev):
         """
         if command is None:
             if ctx.message.attachments:
-                command = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+                try:
+                    command = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+                except UnicodeDecodeError:
+                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
             elif (
                 hasattr(ctx.message, "reference")
                 and ctx.message.reference is not None

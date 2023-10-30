@@ -589,13 +589,14 @@ class EmbedUtils(Cog):
             "EmbedUtils", identifier=43248937299564234735284, force_registration=True, cog_name="EmbedUtils"
         )
         old_global_data = await old_config.all_members()
-        new_global_data = self.config._get_base_group(self.config.GUILD)
-        if "embeds" in old_global_data:
-            if "stored_embeds" not in new_global_data:
-                new_global_data["stored_embeds"] = {}
-            _stored_embeds = new_global_data["stored_embeds"]
-            new_global_data["stored_embeds"] = {name: {"author": data["author"], "embed": data["embed"], "locked": data.get("locked", False), "uses": data["uses"]} for name, data in old_global_data["embeds"].items()}
-            new_global_data["stored_embeds"].update(**_stored_embeds)
+        new_global_group = self.config._get_base_group(self.config.GUILD)
+        async with new_global_group.all() as new_global_data:
+            if "embeds" in old_global_data:
+                if "stored_embeds" not in new_global_data:
+                    new_global_data["stored_embeds"] = {}
+                _stored_embeds = new_global_data["stored_embeds"]
+                new_global_data["stored_embeds"] = {name: {"author": data["author"], "embed": data["embed"], "locked": data.get("locked", False), "uses": data["uses"]} for name, data in old_global_data["embeds"].items()}
+                new_global_data["stored_embeds"].update(**_stored_embeds)
         new_guild_group = self.config._get_base_group(self.config.GUILD)
         old_guilds_data = await old_config.all_guilds()
         async with new_guild_group.all() as new_guilds_data:

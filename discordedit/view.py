@@ -55,7 +55,7 @@ class DiscordEditView(discord.ui.View):
         self.remove_item(self.delete_button)
         self.remove_item(self.close_page)
 
-        self._chunked_parameters = discord.utils.as_chunks(list(self.parameters), max_size=5)
+        self._chunked_parameters: typing.List[typing.List[str]] = list(discord.utils.as_chunks(list(self.parameters), max_size=5))
         for button_index in range(len(self._chunked_parameters)):
             button = discord.ui.Button(
                 label=f"Edit {self._object_qualified_name} {button_index + 1}"

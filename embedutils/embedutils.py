@@ -157,13 +157,14 @@ class EmbedUtils(Cog):
 
         If you provide a message, it will be edited.
         """
-        if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("json", "txt"):
-            try:
-                argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
-            except UnicodeDecodeError:
-                raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
-        else:
+        if not ctx.message.attachments or ctx.message.attachments[
+            0
+        ].filename.split(".")[-1] not in ("json", "txt"):
             raise commands.UserInputError()
+        try:
+            argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+        except UnicodeDecodeError:
+            raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
         data = await JSON_LIST_CONVERTER.convert(ctx, argument=argument)
         try:
             if not isinstance(channel_or_message, discord.Message):
@@ -180,13 +181,14 @@ class EmbedUtils(Cog):
 
         If you provide a message, it will be edited.
         """
-        if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("yaml", "txt"):
-            try:
-                argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
-            except UnicodeDecodeError:
-                raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
-        else:
+        if not ctx.message.attachments or ctx.message.attachments[
+            0
+        ].filename.split(".")[-1] not in ("yaml", "txt"):
             raise commands.UserInputError()
+        try:
+            argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+        except UnicodeDecodeError:
+            raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
         data = await YAML_LIST_CONVERTER.convert(ctx, argument=argument)
         try:
             if not isinstance(channel_or_message, discord.Message):
@@ -311,22 +313,24 @@ class EmbedUtils(Cog):
                 raise commands.UserInputError()
             data = await YAML_LIST_CONVERTER.convert(ctx, argument=data)
         elif conversion_type == ("fromfile", "jsonfile", "fromjsonfile", "fromdatafile"):
-            if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("json", "txt"):
-                try:
-                    argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
-                except UnicodeDecodeError:
-                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
-            else:
+            if not ctx.message.attachments or ctx.message.attachments[
+                0
+            ].filename.split(".")[-1] not in ("json", "txt"):
                 raise commands.UserInputError()
+            try:
+                argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+            except UnicodeDecodeError:
+                raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
             data = await JSON_LIST_CONVERTER.convert(ctx, argument=argument)
         elif conversion_type in ("yamlfile", "fromyamlfile"):
-            if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("yaml", "txt"):
-                try:
-                    argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
-                except UnicodeDecodeError:
-                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
-            else:
+            if not ctx.message.attachments or ctx.message.attachments[
+                0
+            ].filename.split(".")[-1] not in ("yaml", "txt"):
                 raise commands.UserInputError()
+            try:
+                argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+            except UnicodeDecodeError:
+                raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
             data = await YAML_LIST_CONVERTER.convert(ctx, argument=argument)
         elif conversion_type in ("gist", "pastebin", "hastebin"):
             if data is None:
@@ -377,22 +381,24 @@ class EmbedUtils(Cog):
                 raise commands.UserInputError()
             data = await YAML_CONVERTER.convert(ctx, argument=data)
         elif conversion_type == ("fromfile", "jsonfile", "fromjsonfile", "fromdatafile"):
-            if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("json", "txt"):
-                try:
-                    argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
-                except UnicodeDecodeError:
-                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
-            else:
+            if not ctx.message.attachments or ctx.message.attachments[
+                0
+            ].filename.split(".")[-1] not in ("json", "txt"):
                 raise commands.UserInputError()
+            try:
+                argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+            except UnicodeDecodeError:
+                raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
             data = await JSON_CONVERTER.convert(ctx, argument=argument)
         elif conversion_type in ("yamlfile", "fromyamlfile"):
-            if ctx.message.attachments and ctx.message.attachments[0].filename.split(".")[-1] in ("yaml", "txt"):
-                try:
-                    argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
-                except UnicodeDecodeError:
-                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
-            else:
+            if not ctx.message.attachments or ctx.message.attachments[
+                0
+            ].filename.split(".")[-1] not in ("yaml", "txt"):
                 raise commands.UserInputError()
+            try:
+                argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+            except UnicodeDecodeError:
+                raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
             data = await YAML_CONVERTER.convert(ctx, argument=argument)
         elif conversion_type in ("gist", "pastebin", "hastebin"):
             if data is None:
@@ -588,8 +594,8 @@ class EmbedUtils(Cog):
         old_config: Config = Config.get_conf(
             "EmbedUtils", identifier=43248937299564234735284, force_registration=True, cog_name="EmbedUtils"
         )
-        old_global_data = await old_config.all_members()
-        new_global_group = self.config._get_base_group(self.config.GUILD)
+        old_global_data = await old_config.all()
+        new_global_group = self.config._get_base_group(self.config.GLOBAL)
         async with new_global_group.all() as new_global_data:
             if "embeds" in old_global_data:
                 if "stored_embeds" not in new_global_data:

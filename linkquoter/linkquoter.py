@@ -247,12 +247,13 @@ class LinkQuoter(Cog):
                 message, invoke_guild=ctx.guild, author_field=False
             )
             try:
-                hook: discord.Webhook = await CogsUtils.get_hook(bot=self.bot, channel=ctx.channel)
+                hook: discord.Webhook = await CogsUtils.get_hook(bot=self.bot, channel=getattr(ctx.channel, "parent", ctx.channel))
                 view._message = await hook.send(
                     embed=embed,
                     view=view,
                     username=message.author.display_name,
                     avatar_url=message.author.display_avatar,
+                    thread=ctx.channel if isinstance(ctx.channel, discord.Thread) else None,
                     wait=True,
                 )
             except discord.HTTPException:

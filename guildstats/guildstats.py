@@ -13,9 +13,10 @@ from collections import Counter
 from copy import deepcopy
 from pathlib import Path
 
-import plotly.graph_objects as go
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageChops, ImageDraw, ImageFont
+import plotly.graph_objects as go
+
 from redbot.core.data_manager import bundled_data_path
 
 from .view import GuildStatsView
@@ -3429,14 +3430,12 @@ class GuildStats(Cog):
                         values=list(data["graphic"][key].values()),
                         hole=0.3,
                         textfont_size=20,
+                        textposition="inside",
+                        textfont={"color": "rgb(255,255,255)"},
+                        textinfo="percent+label",
                         marker={"line": {"color": "rgb(0,0,0)", "width": 2}},
                         direction="clockwise",
                     )
-                )
-                fig.update_traces(
-                    textposition="inside",
-                    textfont={"color": "rgb(255,255,255)"},
-                    textinfo="percent+label",
                 )
         # fig.update_traces(mode="lines")
         fig.update_xaxes(type="category", tickvals=list(range(-30, 1, 5)))  # x

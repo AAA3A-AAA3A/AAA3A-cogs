@@ -142,14 +142,14 @@ class Seen(Cog):
         category_group = self.config._get_base_group(self.config.CHANNEL)
         guild_group = self.config._get_base_group(self.config.GUILD)
         custom_ids = []
-        # Users
+        # Users.
         async with user_group.all() as users_data:
             if str(user_id) in users_data:
                 custom_ids.extend(
                     (_type, custom_id) for _type, custom_id in users_data[str(user_id)].items()
                 )
                 del users_data[str(user_id)]
-        # Members
+        # Members.
         async with member_group.all() as members_data:
             _members_data = deepcopy(members_data)
             for guild in _members_data:
@@ -159,7 +159,7 @@ class Seen(Cog):
                         for _type, custom_id in members_data[guild][str(user_id)].items()
                     )
                     del members_data[guild][str(user_id)]
-        # Roles
+        # Roles.
         async with role_group.all() as roles_data:
             _roles_data = deepcopy(roles_data)
             for role in _roles_data:
@@ -172,7 +172,7 @@ class Seen(Cog):
                     ):
                         custom_ids.append((_type, roles_data[role][_type]))
                         roles_data[role][_type] = None
-        # Channels
+        # Channels.
         async with channel_group.all() as channels_data:
             _channels_data = deepcopy(channels_data)
             for channel in _channels_data:
@@ -185,7 +185,7 @@ class Seen(Cog):
                     ):
                         custom_ids.append((_type, channels_data[channel][_type]))
                         channels_data[channel][_type] = None
-        # Categories
+        # Categories.
         async with category_group.all() as categories_data:
             _categories_data = deepcopy(categories_data)
             for category in _categories_data:
@@ -198,7 +198,7 @@ class Seen(Cog):
                     ):
                         custom_ids.append((_type, categories_data[category][_type]))
                         categories_data[category][_type] = None
-        # Guilds
+        # Guilds.
         async with guild_group.all() as guilds_data:
             _guilds_data = deepcopy(guilds_data)
             for guild in _guilds_data:
@@ -211,7 +211,7 @@ class Seen(Cog):
                     ):
                         custom_ids.append((_type, guilds_data[guild][_type]))
                         guilds_data[guild][_type] = None
-        # Global
+        # Global.
         if user_id in global_data["ignored_users"]:
             global_data["ignored_users"].remove(user_id)
         for _type, custom_id in custom_ids:
@@ -241,14 +241,14 @@ class Seen(Cog):
         category_group = self.config._get_base_group(self.config.CHANNEL)
         guild_group = self.config._get_base_group(self.config.GUILD)
         custom_ids = []
-        # Users
+        # Users.
         async with user_group.all() as users_data:
             if str(user_id) in users_data:
                 data[Config.USER] = {str(user_id): users_data[str(user_id)]}
                 custom_ids.extend(
                     (_type, custom_id) for _type, custom_id in users_data[str(user_id)].items()
                 )
-        # Members
+        # Members.
         async with member_group.all() as members_data:
             for guild in members_data:
                 if str(user_id) in members_data[guild]:
@@ -257,7 +257,7 @@ class Seen(Cog):
                         (_type, custom_id)
                         for _type, custom_id in members_data[guild][str(user_id)].items()
                     )
-        # Roles
+        # Roles.
         async with role_group.all() as roles_data:
             for role in roles_data:
                 for _type, custom_id in roles_data[role].items():
@@ -271,7 +271,7 @@ class Seen(Cog):
                             data[Config.ROLE][role] = {}
                         data[Config.ROLE][role][_type] = roles_data[role][_type]
                         custom_ids.append((_type, roles_data[role][_type]))
-        # Channels
+        # Channels.
         async with channel_group.all() as channels_data:
             for channel in channels_data:
                 for _type, custom_id in channels_data[channel].items():
@@ -285,7 +285,7 @@ class Seen(Cog):
                             data[Config.CHANNEL][channel] = {}
                         data[Config.CHANNEL][channel][_type] = channels_data[channel][_type]
                         custom_ids.append((_type, channels_data[channel][_type]))
-        # Categories
+        # Categories.
         async with category_group.all() as categories_data:
             for category in categories_data:
                 for _type, custom_id in categories_data[category].items():
@@ -299,7 +299,7 @@ class Seen(Cog):
                             data[Config.CHANNEL][category] = {}
                         data[Config.CHANNEL][category][_type] = categories_data[category][_type]
                         custom_ids.append((_type, categories_data[category][_type]))
-        # Guilds
+        # Guilds.
         async with guild_group.all() as guilds_data:
             for guild in guilds_data:
                 for _type, custom_id in guilds_data[guild].items():
@@ -313,7 +313,7 @@ class Seen(Cog):
                             data[Config.GUILD][guild] = {}
                         data[Config.GUILD][guild][_type] = guilds_data[guild][_type]
                         custom_ids.append((_type, guilds_data[guild][_type]))
-        # Global
+        # Global.
         if user_id in global_data["ignored_users"]:
             data[Config.GLOBAL]["ignored_users"] = [user_id]
         for _type, custom_id in custom_ids:
@@ -365,42 +365,42 @@ class Seen(Cog):
         }
         if data["action"]["reaction"] is None:
             del data["action"]["reaction"]
-        # Global (data)
+        # Global.
         if _type not in self.cache["global"]:
             self.cache["global"][_type] = {}
         self.cache["global"][_type][custom_id] = data
         self.cache["existing_keys"].append(custom_id)
-        # Users
+        # Users.
         if member._user not in self.cache["users"]:
             self.cache["users"][member._user] = {}
         self.cache["users"][member._user][_type] = custom_id
-        # Members
+        # Members.
         if guild not in self.cache["members"]:
             self.cache["members"][guild] = {}
         if member not in self.cache["members"][guild]:
             self.cache["members"][guild][member] = {}
         self.cache["members"][guild][member][_type] = custom_id
-        # Roles
+        # Roles.
         if guild not in self.cache["roles"]:
             self.cache["roles"][guild] = {}
         for role in member.roles:
             if role not in self.cache["roles"][guild]:
                 self.cache["roles"][guild][role] = {}
             self.cache["roles"][guild][role][_type] = custom_id
-        # Channels
+        # Channels.
         if guild not in self.cache["channels"]:
             self.cache["channels"][guild] = {}
         if channel not in self.cache["channels"][guild]:
             self.cache["channels"][guild][channel] = {}
         self.cache["channels"][guild][channel][_type] = custom_id
-        # Categories
+        # Categories.
         if channel.category is not None:
             if guild not in self.cache["categories"]:
                 self.cache["categories"][guild] = {}
             if channel.category not in self.cache["categories"][guild]:
                 self.cache["categories"][guild][channel.category] = {}
             self.cache["categories"][guild][channel.category][_type] = custom_id
-        # Guilds
+        # Guilds.
         if guild not in self.cache["guilds"]:
             self.cache["guilds"][guild] = {}
         self.cache["guilds"][guild][_type] = custom_id
@@ -435,7 +435,7 @@ class Seen(Cog):
         channel_group = self.config._get_base_group(self.config.CHANNEL)
         category_group = self.config._get_base_group(self.config.CHANNEL)
         guild_group = self.config._get_base_group(self.config.GUILD)
-        # Global
+        # Global.
         async with self.config.all() as global_data:
             for _type in cache["global"]:
                 for custom_id, _data in cache["global"][_type].items():
@@ -453,14 +453,14 @@ class Seen(Cog):
                     if "reaction" in _data["action"]:
                         data["action"]["reaction"] = _data["action"]["reaction"]
                     global_data[_type][custom_id] = data
-        # Users
+        # Users.
         async with user_group.all() as users_data:
             for user in cache["users"]:
                 if str(user.id) not in users_data:
                     users_data[str(user.id)] = {}
                 for _type, custom_id in cache["users"][user].items():
                     users_data[str(user.id)][_type] = custom_id
-        # Members
+        # Members.
         async with member_group.all() as members_data:
             for guild in cache["members"]:
                 for member in cache["members"][guild]:
@@ -471,7 +471,7 @@ class Seen(Cog):
                     for _type in cache["members"][guild][member]:
                         custom_id = cache["members"][guild][member][_type]
                         members_data[str(guild.id)][str(member.id)][str(_type)] = custom_id
-        # Roles
+        # Roles.
         async with role_group.all() as roles_data:
             for guild in cache["roles"]:
                 for role in cache["roles"][guild]:
@@ -480,7 +480,7 @@ class Seen(Cog):
                     for _type in cache["roles"][guild][role]:
                         custom_id = cache["roles"][guild][role][_type]
                         roles_data[str(role.id)][_type] = custom_id
-        # Channels
+        # Channels.
         async with channel_group.all() as channels_data:
             for guild in cache["channels"]:
                 for channel in cache["channels"][guild]:
@@ -489,7 +489,7 @@ class Seen(Cog):
                     for _type in cache["channels"][guild][channel]:
                         custom_id = cache["channels"][guild][channel][_type]
                         channels_data[str(channel.id)][_type] = custom_id
-        # Categories
+        # Categories.
         async with category_group.all() as categories_data:
             for guild in cache["categories"]:
                 for category in cache["categories"][guild]:
@@ -498,14 +498,14 @@ class Seen(Cog):
                     for _type in cache["categories"][guild][category]:
                         custom_id = cache["categories"][guild][category][_type]
                         categories_data[str(category.id)][_type] = custom_id
-        # Guilds
+        # Guilds.
         async with guild_group.all() as guilds_data:
             for guild in cache["guilds"]:
                 if str(guild.id) not in guilds_data:
                     guilds_data[str(guild.id)] = {}
                 for _type, custom_id in cache["guilds"][guild].items():
                     guilds_data[str(guild.id)][_type] = custom_id
-        # Run Cleanup
+        # Run Cleanup.
         await self.cleanup()
 
     async def cleanup(self, for_count: typing.Optional[bool] = False) -> None:
@@ -524,7 +524,7 @@ class Seen(Cog):
             channels_count = 0
             categories_count = 0
             guilds_count = 0
-        # Users
+        # Users.
         for user in users_data:
             if for_count:
                 if any(custom_id is not None for custom_id in users_data[user].values()):
@@ -533,7 +533,7 @@ class Seen(Cog):
             existing_keys.extend(
                 custom_id for custom_id in users_data[user].values() if custom_id is not None
             )
-        # Members
+        # Members.
         for guild in members_data:
             for member in members_data[guild]:
                 if for_count:
@@ -547,7 +547,7 @@ class Seen(Cog):
                     for custom_id in members_data[guild][member].values()
                     if custom_id is not None
                 )
-        # Roles
+        # Roles.
         for role in roles_data:
             if for_count:
                 if any(custom_id is not None for custom_id in roles_data[role].values()):
@@ -556,7 +556,7 @@ class Seen(Cog):
             existing_keys.extend(
                 custom_id for custom_id in roles_data[role].values() if custom_id is not None
             )
-        # Channels
+        # Channels.
         for channel in channels_data:
             if for_count:
                 if any(custom_id is not None for custom_id in channels_data[channel].values()):
@@ -565,7 +565,7 @@ class Seen(Cog):
             existing_keys.extend(
                 custom_id for custom_id in channels_data[channel].values() if custom_id is not None
             )
-        # Categories
+        # Categories.
         for category in categories_data:
             if for_count:
                 if any(custom_id is not None for custom_id in categories_data[category].values()):
@@ -576,7 +576,7 @@ class Seen(Cog):
                 for custom_id in categories_data[category].values()
                 if custom_id is not None
             )
-        # Guilds
+        # Guilds.
         for guild in guilds_data:
             if for_count:
                 if any(custom_id is not None for custom_id in guilds_data[guild].values()):
@@ -587,7 +587,7 @@ class Seen(Cog):
             )
         if not for_count:
             self.cache["existing_keys"] = list(set(existing_keys))
-        # Global
+        # Global.
         async with self.config.all() as global_data:
             _global_data = deepcopy(global_data)
             for _type in _global_data:

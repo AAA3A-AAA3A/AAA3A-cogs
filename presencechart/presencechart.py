@@ -247,8 +247,11 @@ class PresenceChart(Cog):
             time_delta = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(days=days_number)
             for i, data in enumerate(presence_data):
                 changed_at, status = data[0], data[1]
-                if days_number is not None and changed_at < time_delta:
-                    continue
+                if days_number is not None:
+                    time_delta = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(days=days_number)
+                    time_delta_timestamp = int(time_delta.timestamp())  # Convert datetime to timestamp
+                    if changed_at < time_delta_timestamp:
+                        continue
                 if i != 0:
                     if status not in presence_timers:
                         presence_timers[status] = 0

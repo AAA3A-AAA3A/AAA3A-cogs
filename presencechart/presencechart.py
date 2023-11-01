@@ -150,9 +150,8 @@ class PresenceChart(Cog):
                 labels=list(x_and_y.keys()),
                 values=list(x_and_y.values()),
                 hole=0.8 if not isinstance(member_or_guild, discord.Guild) or member_or_guild.icon is not None else 0,
-                textfont_size=50,
                 textposition="inside",
-                textfont={"color": "rgb(255,255,255)"},
+                textfont={"size": 60, "color": "rgb(255,255,255)"},
                 marker={"line": {"color": "rgb(0,0,0)", "width": 0}, "colors": colors},
                 direction="clockwise",
             )
@@ -250,18 +249,27 @@ class PresenceChart(Cog):
         if len(presence_data) <= 1:  # In this case, `member.raw_status` should be the same than in Config.
             presence_timers[member.raw_status if member.raw_status in self.presence_map else "online"] = 100
         else:
-            time_delta = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(days=days_number)
+            now_time = datetime.datetime.now(tz=datetime.timezone.utc)
+            if days_number is not None:
+                time_delta = now_time - datetime.timedelta(days=days_number)
+                time_delta_timestamp = int(time_delta.timestamp())
+            else:
+                time_delta_timestamp = 0
             for i, data in enumerate(presence_data):
                 changed_at, status = data[0], data[1]
-                if days_number is not None:
-                    time_delta = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(days=days_number)
-                    time_delta_timestamp = int(time_delta.timestamp())  # Convert datetime to timestamp
-                    if changed_at < time_delta_timestamp:
-                        continue
-                if i != 0:
-                    if status not in presence_timers:
-                        presence_timers[status] = 0
-                    presence_timers[status] += (changed_at - presence_data[i - 1][0])
+                try:
+                    end_time = presence_data[i + 1][0]
+                except IndexError:
+                    end_time = int(now_time.timestamp())
+                if changed_at >= time_delta_timestamp:
+                    duration = end_time - changed_at
+                elif end_time >= time_delta_timestamp:
+                    duration = end_time - time_delta_timestamp
+                else:
+                    continue
+                if status not in presence_timers:
+                    presence_timers[status] = 0
+                presence_timers[status] += duration
         file: discord.File = await self.generate_chart(member_or_guild=member, presence_timers=presence_timers, to_file=True)
         await Menu(pages=[{"file": file}]).start(ctx)
 

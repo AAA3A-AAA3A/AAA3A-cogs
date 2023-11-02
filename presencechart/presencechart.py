@@ -108,7 +108,7 @@ class PresenceChart(Cog):
         file = io.BytesIO(str(data).encode(encoding="utf-8"))
         return {f"{self.qualified_name}.json": file}
 
-    async def generate_chart(self, member_or_guild: typing.Union[discord.Member, discord.User, discord.Guild], presence_timers: typing.Dict[typing.Literal["online", "idle", "do_not_disturb", "offline"], int], to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
+    async def generate_chart(self, member_or_guild: typing.Union[discord.Member, discord.User, discord.Guild], presence_timers: typing.Dict[typing.Literal["online", "idle", "do_not_disturb", "offline"], int], frame_mode: bool = True, to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
         img: Image.Image = Image.new("RGBA", (1600, 1000), (0, 0, 0, 0))
         draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
         draw.rounded_rectangle((0, 0, img.width, img.height), radius=50, fill=(32, 34, 37))
@@ -149,13 +149,47 @@ class PresenceChart(Cog):
             go.Pie(
                 labels=list(x_and_y.keys()),
                 values=list(x_and_y.values()),
-                hole=0.8 if not isinstance(member_or_guild, discord.Guild) or member_or_guild.icon is not None else 0,
+                hole=(0.7 if frame_mode else 0.75) if not isinstance(member_or_guild, discord.Guild) or member_or_guild.icon is not None else 0,
                 textposition="inside",
                 textfont={"size": 60, "color": "rgb(255,255,255)"},
                 marker={"line": {"color": "rgb(0,0,0)", "width": 0}, "colors": colors},
                 direction="clockwise",
             )
         )
+
+        if not isinstance(member_or_guild, discord.Guild) or member_or_guild.icon:
+            avatar_or_icon_bytes: bytes = (await member_or_guild.icon.read()) if isinstance(member_or_guild, discord.Guild) else (await member_or_guild.display_avatar.read())
+            image = Image.open(io.BytesIO(avatar_or_icon_bytes))
+            image = image.resize((500 if frame_mode else 400, 500 if frame_mode else 400))
+            mask = Image.new("L", image.size, 0)
+            d = ImageDraw.Draw(mask)
+            if frame_mode:
+                d.ellipse(
+                    (0, 0, image.width, image.height),
+                    fill=255,
+                )
+            else:
+                d.rounded_rectangle(
+                    (0, 0, image.width, image.height),
+                    radius=40,
+                    fill=255,
+                )
+            _image: Image.Image = Image.new("RGBA", (image.width, image.height), (0, 0, 0, 0))
+            _image.paste(image, (0, 0, _image.width, _image.height), mask=mask)
+            try:
+                mask = image.split()[3]
+            except IndexError:
+                mask = None
+            img.paste(
+                _image,
+                (
+                    img.width // 2 - 204 - 182 - (50 if frame_mode else 0),
+                    img.height // 2 - 200 + 25 - (50 if frame_mode else 0),
+                    img.width // 2 + 196 - 182 + (50 if frame_mode else 0),
+                    img.height // 2 + 200 + 25 + (50 if frame_mode else 0),
+                ),
+                mask=mask,
+            )
 
         graphic_bytes: bytes = fig.to_image(
             format="png",
@@ -165,18 +199,7 @@ class PresenceChart(Cog):
         )
         image = Image.open(io.BytesIO(graphic_bytes))
         img.paste(image, (0, 30, img.width, img.height), mask=image.split()[3])
-        if not isinstance(member_or_guild, discord.Guild) or member_or_guild.icon:
-            avatar_or_icon_bytes: bytes = (await member_or_guild.icon.read()) if isinstance(member_or_guild, discord.Guild) else (await member_or_guild.display_avatar.read())
-            image = Image.open(io.BytesIO(avatar_or_icon_bytes))
-            image = image.resize((400, 400))
-            mask = Image.new("L", image.size, 0)
-            d = ImageDraw.Draw(mask)
-            d.rounded_rectangle(
-                (0, 0, image.width, image.height),
-                radius=40,
-                fill=255,
-            )
-            img.paste(image, (img.width // 2 - 200 - 182, img.height // 2 - 200 + 25, img.width // 2 + 200 - 182, img.height // 2 + 200 + 25), mask=mask)
+
         if not to_file:
             return img
         buffer = io.BytesIO()
@@ -230,12 +253,12 @@ class PresenceChart(Cog):
 
     @commands.bot_has_permissions(attach_files=True)
     @commands.hybrid_group(aliases=["statuschart", "statuseschart"], invoke_without_command=True)
-    async def presencechart(self, ctx: commands.Context, days_number: typing.Optional[commands.Range[int, 1, 100]] = 30, *, member: discord.Member = commands.Author) -> None:
+    async def presencechart(self, ctx: commands.Context, days_number: typing.Optional[commands.Range[int, 1, 100]] = 30, frame_mode: typing.Optional[bool] = True, *, member: discord.Member = commands.Author) -> None:
         """Make a chart with the different Discord statuses (presence) of a Discord member, in the previous x days (last 100 days maximum)."""
-        await self.member(ctx, days_number=days_number, member=member)
+        await self.member(ctx, days_number=days_number, frame_mode=frame_mode, member=member)
 
     @presencechart.command(aliases=["user"])
-    async def member(self, ctx: commands.Context, days_number: typing.Optional[commands.Range[int, 1, 100]] = 30, *, member: discord.Member = commands.Author) -> None:
+    async def member(self, ctx: commands.Context, days_number: typing.Optional[commands.Range[int, 1, 100]] = 30, frame_mode: typing.Optional[bool] = True, *, member: discord.Member = commands.Author) -> None:
         """Make a chart with the different Discord statuses (presence) of a Discord member, in the previous x days (last 100 days maximum)."""
         ignored_users = await self.config.ignored_users()
         if member.id in ignored_users:
@@ -270,11 +293,11 @@ class PresenceChart(Cog):
                 if status not in presence_timers:
                     presence_timers[status] = 0
                 presence_timers[status] += duration
-        file: discord.File = await self.generate_chart(member_or_guild=member, presence_timers=presence_timers, to_file=True)
+        file: discord.File = await self.generate_chart(member_or_guild=member, presence_timers=presence_timers, frame_mode=frame_mode, to_file=True)
         await Menu(pages=[{"file": file}]).start(ctx)
 
     @presencechart.command(aliases=["server"])
-    async def guild(self, ctx: commands.Context) -> None:
+    async def guild(self, ctx: commands.Context, frame_mode: bool = True) -> None:
         """Make a chart with the different Discord statuses (presence) of all members of the guild/server."""
         presence_timers: typing.Dict[typing.Literal["online", "dnd", "idle", "offline"], int] = {}
         for member in ctx.guild.members:
@@ -282,7 +305,7 @@ class PresenceChart(Cog):
             if status not in presence_timers:
                 presence_timers[status] = 0
             presence_timers[status] += 1
-        file: discord.File = await self.generate_chart(member_or_guild=ctx.guild, presence_timers=presence_timers, to_file=True)
+        file: discord.File = await self.generate_chart(member_or_guild=ctx.guild, presence_timers=presence_timers, frame_mode=frame_mode, to_file=True)
         await Menu(pages=[{"file": file}]).start(ctx)
 
     @presencechart.command()

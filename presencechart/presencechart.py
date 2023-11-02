@@ -108,14 +108,22 @@ class PresenceChart(Cog):
         file = io.BytesIO(str(data).encode(encoding="utf-8"))
         return {f"{self.qualified_name}.json": file}
 
-    async def generate_chart(self, member_or_guild: typing.Union[discord.Member, discord.User, discord.Guild], presence_timers: typing.Dict[typing.Literal["online", "idle", "do_not_disturb", "offline"], int], frame_mode: bool = True, to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
+    async def generate_chart(self, member_or_role: typing.Union[discord.Member, discord.User, discord.Guild], presence_timers: typing.Dict[typing.Literal["online", "idle", "do_not_disturb", "offline"], int], frame_mode: bool = True, to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
         img: Image.Image = Image.new("RGBA", (1600, 1000), (0, 0, 0, 0))
         draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
         draw.rounded_rectangle((0, 0, img.width, img.height), radius=50, fill=(32, 34, 37))
 
         fig = go.Figure()
         fig.update_layout(
-            title_text=f"{member_or_guild.name} Members' Presence" if isinstance(member_or_guild, discord.Guild) else f"{member_or_guild.display_name}'s Presence",
+            title_text=(
+                (
+                    _("{member_or_role.guild.name} Members' Presence").format(member_or_role=member_or_role)
+                    if member_or_role == member_or_role.guild.default_role else
+                    _("{member_or_role.guild.name} {member_or_role.name}' Presence").format(member_or_role=member_or_role)
+                ) if isinstance(member_or_role, discord.Role) else (
+                    _("{member_or_role.display_name}'s Presence").format(member_or_role=member_or_role)
+                )
+            ),
             title_x=0.5,
             title_xanchor="center",
             title_y=0.96,
@@ -149,7 +157,7 @@ class PresenceChart(Cog):
             go.Pie(
                 labels=list(x_and_y.keys()),
                 values=list(x_and_y.values()),
-                hole=(0.7 if frame_mode else 0.75) if not isinstance(member_or_guild, discord.Guild) or member_or_guild.icon is not None else 0,
+                hole=(0.7 if frame_mode else 0.75) if not isinstance(member_or_role, discord.Role) or member_or_role.guild.icon is not None else 0,
                 textposition="inside",
                 textfont={"size": 60, "color": "rgb(255,255,255)"},
                 marker={"line": {"color": "rgb(0,0,0)", "width": 0}, "colors": colors},
@@ -157,8 +165,8 @@ class PresenceChart(Cog):
             )
         )
 
-        if not isinstance(member_or_guild, discord.Guild) or member_or_guild.icon:
-            avatar_or_icon_bytes: bytes = (await member_or_guild.icon.read()) if isinstance(member_or_guild, discord.Guild) else (await member_or_guild.display_avatar.read())
+        if not isinstance(member_or_role, discord.Role) or member_or_role.guild.icon:
+            avatar_or_icon_bytes: bytes = (await member_or_role.guild.icon.read()) if isinstance(member_or_role, discord.Role) else (await member_or_role.display_avatar.read())
             image = Image.open(io.BytesIO(avatar_or_icon_bytes))
             image = image.resize((500 if frame_mode else 400, 500 if frame_mode else 400))
             mask = Image.new("L", image.size, 0)
@@ -293,19 +301,31 @@ class PresenceChart(Cog):
                 if status not in presence_timers:
                     presence_timers[status] = 0
                 presence_timers[status] += duration
-        file: discord.File = await self.generate_chart(member_or_guild=member, presence_timers=presence_timers, frame_mode=frame_mode, to_file=True)
+        file: discord.File = await self.generate_chart(member_or_role=member, presence_timers=presence_timers, frame_mode=frame_mode, to_file=True)
         await Menu(pages=[{"file": file}]).start(ctx)
 
     @presencechart.command(aliases=["server"])
     async def guild(self, ctx: commands.Context, frame_mode: bool = True) -> None:
         """Make a chart with the different Discord statuses (presence) of all members of the guild/server."""
         presence_timers: typing.Dict[typing.Literal["online", "dnd", "idle", "offline"], int] = {}
-        for member in ctx.guild.members:
+        for member in ctx.guild.default_role.members:
             status = member.raw_status if member.raw_status in self.presence_map else "online"
             if status not in presence_timers:
                 presence_timers[status] = 0
             presence_timers[status] += 1
-        file: discord.File = await self.generate_chart(member_or_guild=ctx.guild, presence_timers=presence_timers, frame_mode=frame_mode, to_file=True)
+        file: discord.File = await self.generate_chart(member_or_role=ctx.guild.default_role, presence_timers=presence_timers, frame_mode=frame_mode, to_file=True)
+        await Menu(pages=[{"file": file}]).start(ctx)
+
+    @presencechart.command()
+    async def role(self, ctx: commands.Context, frame_mode: typing.Optional[bool] = True, *, role: discord.Role) -> None:
+        """Make a chart with the different Discord statuses (presence) of all members of the specfied role."""
+        presence_timers: typing.Dict[typing.Literal["online", "dnd", "idle", "offline"], int] = {}
+        for member in role.members:
+            status = member.raw_status if member.raw_status in self.presence_map else "online"
+            if status not in presence_timers:
+                presence_timers[status] = 0
+            presence_timers[status] += 1
+        file: discord.File = await self.generate_chart(member_or_role=role, presence_timers=presence_timers, frame_mode=frame_mode, to_file=True)
         await Menu(pages=[{"file": file}]).start(ctx)
 
     @presencechart.command()

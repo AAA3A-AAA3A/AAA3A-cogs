@@ -232,21 +232,24 @@ class Reminders(Cog):
 
     async def create_reminder(
         self,
-        ctx: commands.Context,
+        user_id: int,
         content: Content,
+        jump_url: str,
+        created_at: typing.Optional[datetime.datetime],
         expires_at: datetime.datetime,
         repeat: typing.Optional[Repeat] = None,
-        created_at: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc),
         **kwargs,
     ) -> Reminder:
+        if created_at is None:
+            created_at = datetime.datetime.now(tz=datetime.timezone.utc)
         reminder_id = 1
-        while reminder_id in self.cache.get(ctx.author.id, {}):
+        while reminder_id in self.cache.get(user_id, {}):
             reminder_id += 1
         reminder_kwargs = dict(
             cog=self,
-            user_id=ctx.author.id,
+            user_id=user_id,
             id=reminder_id,
-            jump_url=ctx.message.jump_url,
+            jump_url=jump_url,
             snooze=False,
             me_too=False,
             content=content,
@@ -367,11 +370,12 @@ class Reminders(Cog):
         if not content["files"]:
             del content["files"]
         reminder = await self.create_reminder(
-            ctx,
+            user_id=ctx.author.id,
             content=content,
+            jump_url=ctx.message.jump_url,
+            created_at=utc_now,
             expires_at=expires_at,
             repeat=repeat,
-            created_at=utc_now,
         )
         if await self.config.creation_view():
             view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
@@ -542,14 +546,16 @@ class Reminders(Cog):
             }
         if not content["files"]:
             del content["files"]
+            
         reminder = await self.create_reminder(
-            ctx,
+            user_id=ctx.author.id,
             content=content,
+            jump_url=ctx.message.jump_url,
+            created_at=utc_now,
             expires_at=expires_at,
             repeat=repeat,
             destination=destination.id,
             targets=[{"id": target.id, "mention": target.mention} for target in targets],
-            created_at=utc_now,
         )
         if await self.config.creation_view():
             view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
@@ -667,12 +673,13 @@ class Reminders(Cog):
             )
         content = {"type": "command", "command": command, "command_invoker": ctx.author.id}
         reminder = await self.create_reminder(
-            ctx,
+            user_id=ctx.author.id,
             content=content,
+            jump_url=ctx.message.jump_url,
+            created_at=utc_now,
             expires_at=expires_at,
             repeat=repeat,
             destination=destination.id,
-            created_at=utc_now,
         )
         if await self.config.creation_view():
             view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
@@ -771,12 +778,13 @@ class Reminders(Cog):
             },
         }
         reminder = await self.create_reminder(
-            ctx,
+            user_id=ctx.author.id,
             content=content,
+            jump_url=ctx.message.jump_url,
+            created_at=utc_now,
             expires_at=expires_at,
             repeat=repeat,
             destination=destination.id,
-            created_at=utc_now,
         )
         if await self.config.creation_view():
             view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())

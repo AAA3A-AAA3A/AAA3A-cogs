@@ -288,11 +288,12 @@ class Reminder:
                 self.user_id,
                 self.id,
                 self.jump_url,
+                self.content,
                 self.snooze,
                 self.me_too,
                 self.created_at,
-                self.expires_at,
-                self.next_expires_at,
+                # self.expires_at,
+                # self.next_expires_at,
             )
         )
 
@@ -403,16 +404,22 @@ class Reminder:
             interval_string = f"in {interval_string}"
         return (
             _(
-                "{state}Okay, I will execute this command{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+                "{state}Okay, I will dispatch {this} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
             )
-            if self.content["type"] == "command"
-            else (
+            if self.content["type"] == "event" else
+            (
                 _(
-                    "{state}Okay, I will say {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+                    "{state}Okay, I will execute this command{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
                 )
-                if self.content["type"] == "say"
-                else _(
-                    "{state}Okay, I will remind {targets_mentions} of {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+                if self.content["type"] == "command"
+                else (
+                    _(
+                        "{state}Okay, I will say {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+                    )
+                    if self.content["type"] == "say"
+                    else _(
+                        "{state}Okay, I will remind {targets_mentions} of {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+                    )
                 )
             )
         ).format(
@@ -421,27 +428,39 @@ class Reminder:
             if self.targets is not None
             else _("you"),
             this=(
-                _("this message")
-                if self.content["type"] == "message"
-                else _(
-                    "this"
-                )  # (_("this command") if self.content["type"] == "command" else _("this"))
-            )
-            if self.content["type"] != "command" and self.content["text"] is not None
-            else ("this command" if self.content["type"] == "command" else "that"),
-            destination_mention=(
-                _(" in {destination_mention}").format(
-                    destination_mention=(
-                        f"{destination.recipient}'s DMs"
-                        if isinstance(destination, discord.DMChannel)
-                        else destination.mention
+                _("the event `{event_name}`").format(event_name=self.content["event_name"])
+                if self.content["type"] == "event" else
+                (
+                    _("this command")
+                    if self.content["type"] != "command" else
+                    (
+                        (
+                            _("this message")
+                            if self.content["type"] == "message"
+                            else _(
+                                "this"
+                            )  # (_("this command") if self.content["type"] == "command" else _("this"))
+                        )
+                        if self.content["text"] is not None else
+                        _("that")
                     )
                 )
-                if (destination := self.cog.bot.get_channel(self.destination)) is not None
-                else _(" in {destination} (Not found.)").format(destination=self.destination)
-            )
-            if self.destination is not None
-            else "",
+            ),
+            destination_mention=(
+                (
+                    _(" in {destination_mention}").format(
+                        destination_mention=(
+                            f"{destination.recipient}'s DMs"
+                            if isinstance(destination, discord.DMChannel)
+                            else destination.mention
+                        )
+                    )
+                    if (destination := self.cog.bot.get_channel(self.destination)) is not None
+                    else _(" in {destination} (Not found.)").format(destination=self.destination)
+                )
+                if self.destination is not None
+                else ""
+            ),
             interval_string=interval_string,
             timestamp=f"<t:{int(self.expires_at.timestamp())}:F>",
             and_every=and_every,
@@ -478,20 +497,24 @@ class Reminder:
             title=self.content.get("title") or _("Not provided."),
             content_type=self.content["type"],
             content=(
+                f"Dispatch the event `{self.content['event_name']}`."
+                if self.content["type"] == "event" else
                 (
                     (
-                        f"{self.content['text'][:200]}..."
-                        if len(self.content["text"]) > 200
-                        else self.content["text"]
+                        (
+                            f"{self.content['text'][:200]}..."
+                            if len(self.content["text"]) > 200
+                            else self.content["text"]
+                        )
+                        if self.content["text"] is not None
+                        else _("No content.")
                     )
-                    if self.content["text"] is not None
-                    else _("No content.")
-                )
-                if self.content["type"] in ["text", "say"]
-                else (
-                    f"Message {self.content['message_jump_url']}."
-                    if self.content["type"] == "message"
-                    else f"Command `[p]{self.content['command']}` executed with your privilege rights."
+                    if self.content["type"] in ["text", "say"]
+                    else (
+                        f"Message {self.content['message_jump_url']}."
+                        if self.content["type"] == "message"
+                        else f"Command `[p]{self.content['command']}` executed with your privilege rights."
+                    )
                 )
             ),
             targets=humanize_list(
@@ -630,7 +653,11 @@ class Reminder:
                 await self.save()
             else:
                 self.next_expires_at = None
-        if (user := self.cog.bot.get_user(self.user_id)) is None:
+        try:
+            user: discord.User = await self.cog.bot.fetch_user(self.user_id)
+            if not user.mutual_guilds:
+                raise ValueError(user)
+        except (discord.NotFound, ValueError):
             if not testing:
                 await self.delete()
             raise RuntimeError(
@@ -644,13 +671,21 @@ class Reminder:
             raise RuntimeError(
                 f"Destination {self.destination} not found for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
             )
-        if not self.content:
-            if not testing:
-                await self.delete()
+        if not self.content or "type" not in self.content:
+            await self.delete()
             raise RuntimeError(
                 f"No content in the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
             )
-        if self.content["type"] == "command":
+
+        if self.content["type"] == "event":
+            if "event_name" not in self.content:
+                await self.delete()
+                raise RuntimeError(
+                    f"No key `event_name` in the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
+                )
+            self.cog.bot.dispatch(self.content["event_name"], self, *self.content.get("args", []), **self.content.get("kwargs", []))
+
+        elif self.content["type"] == "command":
             if (invoker := self.cog.bot.get_user(self.content["command_invoker"])) is None:
                 if not testing:
                     await self.delete()
@@ -670,18 +705,19 @@ class Reminder:
             #             if (msg_handler := getattr(cog, handler_name, None)) is not None:
             #                 await msg_handler(context.message)
             #                 break
-            if not context.valid:  # don't delete the reminder (cog unloaded for example)
+            if not context.valid:  # Don't delete the reminder (cog unloaded for example).
                 raise RuntimeError(
                     f"Command not found for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has not been deleted."
                 )
             elif not await discord.utils.async_all(
                 [check(context) for check in context.command.checks]
-            ):  # to prevent an user with important permissions a time to execute dangerous command with a reminder
+            ):  # To prevent an user with important permissions a time to execute dangerous command with a reminder.
                 if not testing:
                     await self.delete()
                 raise RuntimeError(
                     f"The invoker can't execute the command for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
                 )
+
         else:
             if self.content["type"] in ["text", "message"]:
                 embeds = [self.to_embed(utc_now=utc_now, embed_color=self.cog.bot._color)]
@@ -776,4 +812,4 @@ class Reminder:
             await self.cog.config.total_sent.set(total_sent)
             if self.next_expires_at is None and not testing:
                 await self.delete()
-            return context if self.content["type"] == "command" else message
+            return (context if self.content["type"] == "command" else message) if self.content["type"] != "event" else None

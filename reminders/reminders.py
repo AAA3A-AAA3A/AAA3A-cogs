@@ -234,12 +234,14 @@ class Reminders(Cog):
         self,
         user_id: int,
         content: Content,
-        jump_url: str,
+        jump_url: typing.Optional[str],
         created_at: typing.Optional[datetime.datetime],
         expires_at: datetime.datetime,
         repeat: typing.Optional[Repeat] = None,
         **kwargs,
     ) -> Reminder:
+        if jump_url is None:
+            jump_url = "https://discord.com/channels/0/0/0"
         if created_at is None:
             created_at = datetime.datetime.now(tz=datetime.timezone.utc)
         reminder_id = 1

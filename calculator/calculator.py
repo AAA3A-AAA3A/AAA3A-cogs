@@ -221,7 +221,8 @@ class Calculator(Cog):
             return
         if message.webhook_id is not None or message.author.bot:
             return
-        if not message.content or message.content.split("#")[0].replace(" ", "").lstrip("+-").isdecimal() or message.content.split("#")[0].strip() in ["k", "m", "b", "t", "q", "Q", "s", "S", "o", "n", "d", "U", "D", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Vi"]:
+        content_to_check = message.content.split("#")[0].replace(" ", "").lstrip("+-").strip() 
+        if not content_to_check or content_to_check.isdecimal() or content_to_check in ["k", "m", "b", "t", "q", "Q", "s", "S", "o", "n", "d", "U", "D", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Vi"]:
             return
         fake_context = await CogsUtils.invoke_command(
             bot=self.bot,

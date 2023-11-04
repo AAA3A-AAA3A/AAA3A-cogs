@@ -463,10 +463,14 @@ class TimeConverter(commands.Converter):
                                 info.append(e.args[0])
 
         if expires_at is not None and isinstance(expires_at, datetime.datetime):
-            expires_at = expires_at.replace(second=0, microsecond=0)
+            expires_at = expires_at.replace(microsecond=0)
+            if not await cog.config.seconds_allowed() or 0 <= expires_at.second < 30:
+                expires_at.replace(second=0)
+            else:
+                expires_at.replace(second=30)
             if (
-                expires_at < utc_now
-            ):  # Negative intervals are not allowed. / .replace(second=0, microsecond=0)
+                expires_at < utc_now.replace(second=0, microsecond=0)
+            ):  # Negative intervals are not allowed.
                 info = [  # info.append(
                     f"• Global check: The given date must be in the future. Interpreted date: <t:{int(expires_at.timestamp())}:F>."
                 ]

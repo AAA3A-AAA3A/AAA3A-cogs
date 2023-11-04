@@ -90,6 +90,7 @@ class Reminders(Cog):
             "fifo_allowed": False,
             "creation_view": True,
             "snooze_view": True,
+            "seconds_allowed": True,
         }
         self.reminders_user: typing.Dict[str, typing.List[Data]] = {
             "timezone": None,
@@ -132,6 +133,10 @@ class Reminders(Cog):
                 "converter": bool,
                 "description": "Send Snooze view/buttons when reminders sending.",
             },
+            "seconds_allowed": {
+                "converter": bool,
+                "description": "Check reminders every 30 seconds instead of every 1 minute, to allow reminders with precise duration.",
+            },
         }
         self.settings: Settings = Settings(
             bot=self.bot,
@@ -160,12 +165,14 @@ class Reminders(Cog):
                 if user_id not in self.cache:
                     self.cache[user_id] = {}
                 self.cache[user_id][int(reminder_id)] = reminder
+        seconds_allowed = await self.config.seconds_allowed()
         self.loops.append(
             Loop(
                 cog=self,
                 name="Check Reminders",
                 function=self.reminders_loop,
-                minutes=1,
+                minutes=0 if seconds_allowed else 1,
+                seconds=30 if seconds_allowed else 0,
             )
         )
 
@@ -944,7 +951,7 @@ class Reminders(Cog):
                 )
             )
 
-    @reminder.command(aliases=["info"])
+    @reminder.command(aliases=["info", "show"])
     async def edit(self, ctx: commands.Context, reminder: ExistingReminderConverter) -> None:
         """Edit an existing Reminder from its ID.
 

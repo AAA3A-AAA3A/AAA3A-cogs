@@ -212,7 +212,7 @@ class Webhook(Cog):
                 files=files,
                 username=ctx.author.display_name,
                 avatar_url=ctx.author.display_avatar,
-                thread=channel if isinstance(channel, discord.Thread) else None,
+                thread=channel if isinstance(channel, discord.Thread) else discord.utils.MISSING,
             )
         except discord.HTTPException as error:
             await self.webhook_error(ctx, "Webhook Sending Error", error)
@@ -242,7 +242,7 @@ class Webhook(Cog):
                 files=files,
                 username=member.display_name,
                 avatar_url=member.display_avatar,
-                thread=channel if isinstance(channel, discord.Thread) else None,
+                thread=channel if isinstance(channel, discord.Thread) else discord.utils.MISSING,
             )
         except discord.HTTPException as error:
             await self.webhook_error(ctx, "Webhook Sending Error", error)
@@ -273,7 +273,7 @@ class Webhook(Cog):
                 files=files,
                 username=username,
                 avatar_url=avatar_url,
-                thread=channel if isinstance(channel, discord.Thread) else None,
+                thread=channel if isinstance(channel, discord.Thread) else discord.utils.MISSING,
             )
         except discord.HTTPException as error:
             await self.webhook_error(ctx, "Webhook Sending Error", error)
@@ -303,7 +303,7 @@ class Webhook(Cog):
                 files=files,
                 username="CIyde",
                 avatar_url="https://discordapp.com/assets/f78426a064bc9dd24847519259bc42af.png",
-                thread=channel if isinstance(channel, discord.Thread) else None,
+                thread=channel if isinstance(channel, discord.Thread) else discord.utils.MISSING,
             )
         except discord.HTTPException as error:
             await self.webhook_error(ctx, "Webhook Sending Error", error)

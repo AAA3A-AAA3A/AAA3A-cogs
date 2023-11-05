@@ -253,7 +253,7 @@ class LinkQuoter(Cog):
                     view=view,
                     username=message.author.display_name,
                     avatar_url=message.author.display_avatar,
-                    thread=ctx.channel if isinstance(ctx.channel, discord.Thread) else None,
+                    thread=ctx.channel if isinstance(ctx.channel, discord.Thread) else discord.utils.MISSING,
                     wait=True,
                 )
             except discord.HTTPException:

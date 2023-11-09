@@ -541,7 +541,7 @@ class Ticket:
                 await self.first_message.edit(view=view)
             except discord.HTTPException:
                 pass
-        if config["ticket_role"] is not None and self.owner:
+        if config["ticket_role"] is not None and self.owner is not None and isinstance(self.owner, discord.Member):
             try:
                 await self.owner.add_roles(config["ticket_role"], reason=_reason)
             except discord.HTTPException:
@@ -623,7 +623,7 @@ class Ticket:
             )
         else:
             await self.channel.edit(name=new_name, archived=True, locked=True, reason=_reason)
-        if config["ticket_role"] is not None and self.owner:
+        if config["ticket_role"] is not None and self.owner is not None and isinstance(self.owner, discord.Member):
             try:
                 await self.owner.remove_roles(config["ticket_role"], reason=_reason)
             except discord.HTTPException:

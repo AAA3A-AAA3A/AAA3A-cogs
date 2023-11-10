@@ -288,11 +288,11 @@ class Reminder:
                 self.user_id,
                 self.id,
                 self.jump_url,
-                self.content,
+                # self.content,
                 self.snooze,
                 self.me_too,
                 self.created_at,
-                # self.expires_at,
+                self.expires_at,
                 # self.next_expires_at,
             )
         )

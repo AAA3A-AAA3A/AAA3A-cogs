@@ -16,7 +16,9 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to transfer all messages channel in a other channel!
+A cog to delete ALL messages of a channel!
+
+⚠ The channel will be cloned, and then **deleted**.
 
 --------
 Commands
@@ -30,11 +32,11 @@ Here are all the commands included in this cog (9):
 * ``[p]setclearchannel``
  Configure ClearChannel for your server.
 
+* ``[p]setclearchannel channeldelete <channel_delete>``
+ If this option is disabled, the bot will not delete the original channel: it will duplicate it as normal, but move it to the end of the server's channel list.
+
 * ``[p]setclearchannel custommessage <custom_message>``
  Specify a custom message to be sent from the link of another message or a json (https://discohook.org/ for example).
-
-* ``[p]setclearchannel deletechannel <delete_channel>``
- If this option is disabled, the bot will not delete the original channel: it will duplicate it as normal, but move it to the end of the server's channel list.
 
 * ``[p]setclearchannel dmauthor <dm_author>``
  If this option is enabled, the bot will try to send a dm to the author of the order to confirm that everything went well.

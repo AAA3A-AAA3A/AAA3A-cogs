@@ -16,37 +16,40 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to export all or part of a channel's messages to an html file!
+A cog to export all or a part of the messages of a channel in an html file!
 
 --------
 Commands
 --------
 
-Here are all the commands included in this cog (8):
+Here are all the commands included in this cog (9):
 
 * ``[p]exportchannel``
- Commands for export all or part of a channel's messages to an html file.
+ Export all or a part of the messages of a channel in an html file.
 
 * ``[p]exportchannel after [channel] <after>``
- Export part of a channel's messages to an html file.
+ Export a part of the messages of a channel in an html file.
 
-* ``[p]exportchannel all [channel=None]``
+* ``[p]exportchannel all [channel]``
  Export all of a channel's messages to an html file.
 
 * ``[p]exportchannel before [channel] <before>``
- Export part of a channel's messages to an html file.
+ Export a part of the messages of a channel in an html file.
 
 * ``[p]exportchannel between [channel] <before> <after>``
- Export part of a channel's messages to an html file.
+ Export a part of the messages of a channel in an html file.
 
-* ``[p]exportchannel bot [channel] [bot=True] [limit=None]``
- Export part of a channel's messages to an html file.
+* ``[p]exportchannel bot [channel] [bot=True] [limit]``
+ Export a part of the messages of a channel in an html file.
+
+* ``[p]exportchannel message <message>``
+ Export a specific file in an html file.
 
 * ``[p]exportchannel messages [channel] <limit>``
- Export part of a channel's messages to an html file.
+ Export a part of the messages of a channel in an html file.
 
-* ``[p]exportchannel user [channel] <user> [limit=None]``
- Export part of a channel's messages to an html file.
+* ``[p]exportchannel user [channel] <user> [limit]``
+ Export a part of the messages of a channel in an html file.
 
 ------------
 Installation

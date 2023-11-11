@@ -22,13 +22,19 @@ A cog to allow a member to choose custom prefixes, just for them!
 Commands
 --------
 
-Here are all the commands included in this cog (2):
+Here are all the commands included in this cog (4):
 
 * ``[p]memberprefix [prefixes]...``
  Sets [botname]'s prefix(es) for you only.
 
-* ``[p]memberprefixpurge``
- Clear all members prefixes for this guild.
+* ``[p]setmemberprefix``
+ Configure MemberPrefix.
+
+* ``[p]setmemberprefix purge <guild>``
+ Clear all members prefixes for a specified server.
+
+* ``[p]setmemberprefix resetmemberprefix <guild> <user>``
+ Clear prefixes for a specified member in a specified server.
 
 ------------
 Installation

@@ -22,16 +22,16 @@ A cog to get and display some documentations in Discord! Use `[p]listsources` to
 Commands
 --------
 
-Here are all the commands included in this cog (12):
+Here are all the commands included in this cog (13):
 
-* ``[p]getdocs [source=None] [query=None]``
+* ``[p]getdocs [source] [query]``
  View rich documentation for a specific node/query.
 
 * ``[p]listsources [_sorted=False] ["available"|"all"|"disabled"=available]``
  Shows a list of all sources, those that are available or those that are disabled.
 
-* ``[p]rtfm [source=None] [limit=10] [with_std=True] [query]``
- Show all attributes matching your search.
+* ``[p]rtfm [source] [limit=10] [with_std=False] [query]``
+ Show all items matching your search.
 
 * ``[p]setgetdocs``
  Commands to configure GetDocs.
@@ -42,11 +42,14 @@ Here are all the commands included in this cog (12):
 * ``[p]setgetdocs defaultsource <default_source>``
  Set the documentations source.
 
-* ``[p]setgetdocs disablesource <source>``
- Disable a Documentations source.
+* ``[p]setgetdocs disablesources [sources]...``
+ Disable Documentations source(s).
 
-* ``[p]setgetdocs enablesource <source>``
- Enable a Documentations source.
+* ``[p]setgetdocs enablesources [sources]...``
+ Enable Documentations source(s).
+
+* ``[p]setgetdocs getdebugloopsstatus``
+ Get an embed to check loops status.
 
 * ``[p]setgetdocs modalconfig [confirmation=False]``
  Set all settings for the cog with a Discord Modal.

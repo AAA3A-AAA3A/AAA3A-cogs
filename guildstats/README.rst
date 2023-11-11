@@ -16,22 +16,34 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to generate images with messages and voice stats, for members, roles guilds, text channels, voice channels and activities!
+A cog to generate images with messages and voice stats, for members, roles, guilds, categories, text channels, voice channels and activities!
 
 --------
 Commands
 --------
 
-Here are all the commands included in this cog (14):
+Here are all the commands included in this cog (23):
 
 * ``[p]guildstats ["humans"|"bots"|"both"=humans] [show_graphic=False] <_object>``
- Generate images with messages and voice stats, for members, roles guilds, text channels, voice channels and activities.
+ Generate images with messages and voice stats, for members, roles, guilds, categories, text channels, voice channels and activities.
 
 * ``[p]guildstats activities ["humans"|"bots"|"both"=humans]``
  Display stats for activities in this guild.
 
+* ``[p]guildstats activity ["humans"|"bots"|"both"=humans] <activity_name>``
+ Display stats for a specific activity in this guild.
+
+* ``[p]guildstats category ["humans"|"bots"|"both"=humans] [show_graphic=False] [category]``
+ Display stats for a specified category.
+
 * ``[p]guildstats channel ["humans"|"bots"|"both"=humans] [show_graphic=False] [channel]``
  Display stats for a specified channel.
+
+* ``[p]guildstats disable``
+ Disable the cog in this guild/server.
+
+* ``[p]guildstats enable``
+ Enable the cog in this guild/server.
 
 * ``[p]guildstats getdebugloopsstatus``
  Get an embed for check loop status.
@@ -42,8 +54,20 @@ Here are all the commands included in this cog (14):
 * ``[p]guildstats guild ["humans"|"bots"|"both"=humans] [show_graphic=False]``
  Display stats for this guild.
 
+* ``[p]guildstats ignoreactivity <activity_name>``
+ Ignore or unignore a specific activity.
+
+* ``[p]guildstats ignorecategory <category>``
+ Ignore or unignore a specific category.
+
+* ``[p]guildstats ignorechannel <channel>``
+ Ignore or unignore a specific channel.
+
 * ``[p]guildstats ignoreme``
  Asking GuildStats to ignore your actions.
+
+* ``[p]guildstats ignoreuser <user>``
+ Ignore or unignore a specific user.
 
 * ``[p]guildstats member [show_graphic=False] [member]``
  Display stats for a specified member.
@@ -56,6 +80,9 @@ Here are all the commands included in this cog (14):
 
 * ``[p]guildstats role [show_graphic=False] [role]``
  Display stats for a specified role.
+
+* ``[p]guildstats setdefaultstate <state>``
+ Enable or disable by default the cog in the bot guilds.
 
 * ``[p]guildstats toggleactivitiesstats <state>``
  Enable or disable activities stats.

@@ -16,7 +16,7 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to display permissions for members and roles at guild level or in a specified channel!
+A cog to display permissions for roles and members, at guild level or in a specified channel!
 
 --------
 Commands
@@ -24,8 +24,8 @@ Commands
 
 Here are all the commands included in this cog (1):
 
-* ``[p]viewpermissions [advanced=False] [channel] [mentionables_and_permissions]...``
- Display permissions for members and roles at guild level or in a specified channel.
+* ``[p]viewpermissions [advanced=False] [channel] [permissions] [mentionables]``
+ Display permissions for roles and members, at guild level or in a specified channel.
 
 ------------
 Installation

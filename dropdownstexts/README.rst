@@ -22,12 +22,12 @@ A cog to have dropdowns-texts!
 Commands
 --------
 
-Here are all the commands included in this cog (6):
+Here are all the commands included in this cog (7):
 
 * ``[p]dropdownstexts``
  Group of commands to use DropdownsTexts.
 
-* ``[p]dropdownstexts add <message> <emoji> <label> <text>``
+* ``[p]dropdownstexts add <message> [emoji] <label> <text>``
  Add a dropdown-text for a message.
 
 * ``[p]dropdownstexts bulk <message> [dropdown_texts]...``
@@ -36,10 +36,13 @@ Here are all the commands included in this cog (6):
 * ``[p]dropdownstexts clear <message>``
  Clear a dropdown-texts for a message.
 
+* ``[p]dropdownstexts list [message]``
+ List all dropdowns-texts of this server or display the settings for a specific one.
+
 * ``[p]dropdownstexts purge``
  Clear all dropdowns-texts for a guild.
 
-* ``[p]dropdownstexts remove <message> <emoji>``
+* ``[p]dropdownstexts remove <message> <config_identifier>``
  Remove a dropdown-text for a message.
 
 ------------

@@ -22,7 +22,7 @@ Bulk sniping deleted and edited messages, for moderation purpose!
 Commands
 --------
 
-Here are all the commands included in this cog (24):
+Here are all the commands included in this cog (25):
 
 * ``[p]esnipe [channel] [index=0]``
  Bulk snipe edited messages.
@@ -68,6 +68,9 @@ Here are all the commands included in this cog (24):
 
 * ``[p]setsnipe showsettings [with_dev=False]``
  Show all settings for the cog with defaults and values.
+
+* ``[p]setsnipe stats``
+ Show stats about Snipe cache.
 
 * ``[p]snipe [channel] [index=0]``
  Bulk snipe deleted messages.

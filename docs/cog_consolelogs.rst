@@ -16,27 +16,33 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to display the console logs, with buttons and filter options!
+A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!
 
 --------
 Commands
 --------
 
-Here are all the commands included in this cog (5):
+Here are all the commands included in this cog (7):
 
-* ``[p]consolelogs [index=-1] ["critical"|"error"|"warning"|"info"|"debug"|"trace"|"node"=None] [logger_name=None]``
+* ``[p]consolelogs [lines_break=2] ["critical"|"error"|"warning"|"info"|"debug"|"trace"|"node"|"criticals"|"errors"|"warnings"|"infos"|"debugs"|"traces"|"nodes"] [ids] [logger_name]``
  View a console log, for a provided level/logger name.
 
-* ``[p]consolelogs errors [index=-1] [logger_name=None]``
- View the `ERROR` console logs one by one, for all loggers or a provided logger name.
+* ``[p]consolelogs addchannel <channel> [global_errors=True] [prefixed_commands_errors=True] [slash_commands_errors=True] [dpy_ignored_exceptions=False] [full_console=False] [guild_invite=True] [ignored_cogs]``
+ Enable errors logging in a channel.
 
-* ``[p]consolelogs scroll [lines_break=2] ["critical"|"error"|"warning"|"info"|"debug"|"trace"|"node"=None] [logger_name=None]``
+* ``[p]consolelogs getdebugloopsstatus``
+ Get an embed to check loops status.
+
+* ``[p]consolelogs removechannel <channel>``
+ Disable errors logging in a channel.
+
+* ``[p]consolelogs scroll [lines_break=2] ["critical"|"error"|"warning"|"info"|"debug"|"trace"|"node"|"criticals"|"errors"|"warnings"|"infos"|"debugs"|"traces"|"nodes"] [ids] [logger_name]``
  Scroll the console logs, for all levels/loggers or provided level/logger name.
 
 * ``[p]consolelogs stats``
- Scroll the console logs, for all levels/loggers or provided level/logger name.
+ Display the stats for the bot logs since the bot start.
 
-* ``[p]consolelogs view [index=-1] ["critical"|"error"|"warning"|"info"|"debug"|"trace"|"node"=None] [logger_name=None]``
+* ``[p]consolelogs view [index=-1] ["critical"|"error"|"warning"|"info"|"debug"|"trace"|"node"|"criticals"|"errors"|"warnings"|"infos"|"debugs"|"traces"|"nodes"] [ids] [logger_name]``
  View the console logs one by one, for all levels/loggers or provided level/logger name.
 
 ------------

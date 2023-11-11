@@ -36,7 +36,7 @@ Here are all the commands included in this cog (5):
 * ``[p]cmdchannel user <user> <command>``
  Act as if the command had been typed by imitating the specified user.
 
-* ``[p]cmdchannel userchannel <user> [channel=None] <command>``
+* ``[p]cmdchannel userchannel <user> [channel] <command>``
  Act as if the command had been typed in the channel of your choice by imitating the specified user.
 
 ------------

@@ -22,18 +22,18 @@ A cog to check when a member/role/channel/category/user/guild was last active!
 Commands
 --------
 
-Here are all the commands included in this cog (15):
+Here are all the commands included in this cog (17):
 
 * ``[p]seen ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] <_object>``
  Check when a member/role/channel/category was last active!
 
-* ``[p]seen board ["message"|"message_edit"|"reaction_add"|"reaction_remove"] ["members"|"roles"|"channels"|"categories"|"guilds"|"users"=members] [reverse=False]``
+* ``[p]seen board ["message"|"message_edit"|"reaction_add"|"reaction_remove"] ["members"|"roles"|"channels"|"categories"|"guilds"|"users"=members] [reverse=False] [bots] [include_role] [exclude_role]``
  View a Seen Board for members/roles/channels/categories/guilds/users!
 
-* ``[p]seen category ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [category=None]``
+* ``[p]seen category ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [category]``
  Check when a category was last active!
 
-* ``[p]seen channel ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [channel=None]``
+* ``[p]seen channel ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [channel]``
  Check when a channel was last active!
 
 * ``[p]seen configstats``
@@ -42,7 +42,7 @@ Here are all the commands included in this cog (15):
 * ``[p]seen getdebugloopsstatus``
  Get an embed for check loop status.
 
-* ``[p]seen guild ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [guild=None]``
+* ``[p]seen guild ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [guild]``
  Check when a guild was last active!
 
 * ``[p]seen hackmember ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] <user>``
@@ -54,19 +54,25 @@ Here are all the commands included in this cog (15):
 * ``[p]seen ignoreme``
  Asking Seen to ignore your actions.
 
+* ``[p]seen ignoreuser <user>``
+ Ignore or unignore a specific user.
+
 * ``[p]seen listener <state> ["message"|"message_edit"|"reaction_add"|"reaction_remove"]...``
  Enable or disable a listener.
 
-* ``[p]seen member ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [member=None]``
+* ``[p]seen member ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [member]``
  Check when a member was last active!
+
+* ``[p]seen migratefromseen``
+ Migrate Seen from Seen by Aikaterna.
 
 * ``[p]seen purge <"all"|"user"|"member"|"role"|"channel"|"guild">``
  Purge Config for a specified _type or all.
 
-* ``[p]seen role ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [role=None]``
+* ``[p]seen role ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [role]``
  Check when a role was last active!
 
-* ``[p]seen user ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [user=None]``
+* ``[p]seen user ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [user]``
  Check when a user was last active!
 
 ------------

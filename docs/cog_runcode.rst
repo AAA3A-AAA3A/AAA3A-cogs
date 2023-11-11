@@ -16,7 +16,7 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to compile and run codes in some languages! Use `[p]setrundocs listlanguages` to get a list of all the available languages.
+A cog to compile and run codes in some languages! Use `[p]setruncode listlanguages` to get a list of all the available languages.
 
 --------
 Commands
@@ -24,10 +24,10 @@ Commands
 
 Here are all the commands included in this cog (7):
 
-* ``[p]runcode [verbose=False] [language=None] [parameters=None] [code=None]``
+* ``[p]runcode [verbose=False] [language] [parameters] [code]``
  Run a code in a langage, with Wandbox API.
 
-* ``[p]runtio [verbose] <language> [parameters=None] [code=None]``
+* ``[p]runtio [verbose] <language> [parameters] [code]``
  Run a code in a langage, with Tio API.
 
 * ``[p]setruncode``

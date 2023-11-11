@@ -16,85 +16,79 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to sanction a user!
+A cog to sanction members, with buttons!
 
 --------
 Commands
 --------
 
-Here are all the commands included in this cog (24):
+Here are all the commands included in this cog (22):
 
-* ``[p]sanction [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
- Sanction a user quickly and easily.
+* ``[p]sanction [member] [confirmation] [show_author] [finish_message] [fake_action=False] [duration_for_mute_or_ban] [reason]``
+ Sanction a member quickly and easily.
 
-* ``[p]sanction 00 [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
- - Sanction a user quickly and easily.
+* ``[p]sanction 00 [member] [confirmation] [show_author] [finish_message] [fake_action=False] [duration_for_mute_or_ban] [reason]``
+ - Sanction a member quickly and easily.
 
-* ``[p]sanction 01 [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
- - :information_source: Show info on a user.
+* ``[p]sanction 01 [member] [confirmation] [show_author] [finish_message] [fake_action=False] [reason]``
+ - ℹ️ Show informations about a member.
 
-* ``[p]sanction 02 [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
- - ⚠️ Set a simple warning on a user.
+* ``[p]sanction 02 [member] [confirmation] [show_author] [finish_message] [fake_action=False] [duration_for_mute_or_ban] [reason]``
+ - ⚠️ Add a simple warning on a member.
 
-* ``[p]sanction 03 [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
- - :hammer: Ban the member from the server.
+* ``[p]sanction 03 [member] [confirmation] [show_author] [finish_message] [fake_action=False] [reason]``
+ - 🔨 Ban a member from this server.
 
-* ``[p]sanction 04 [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
- - :repeat_one: Softban the member from the server.
+* ``[p]sanction 04 [member] [confirmation] [show_author] [finish_message] [fake_action=False] [reason]``
+ - 🔂 SoftBan a member from this server.
 
-* ``[p]sanction 05 [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
- - :dash: Tempban the member from the server.
+* ``[p]sanction 05 [member] [confirmation] [show_author] [finish_message] [fake_action=False] [duration_for_mute_or_ban] [reason]``
+ - 💨 TempBan a member from this server.
 
-* ``[p]sanction 06 [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
- - :boot: Kick the member from the server.
+* ``[p]sanction 06 [member] [confirmation] [show_author] [finish_message] [fake_action=False] [reason]``
+ - 👢 Kick a member from this server.
 
-* ``[p]sanction 07 [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
- - :mute: Mute the user in all channels, including voice channels.
+* ``[p]sanction 07 [member] [confirmation] [show_author] [finish_message] [fake_action=False] [reason]``
+ - 🔇 Mute a member in all channels, including voice channels.
 
-* ``[p]sanction 08 [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
- - :punch: Mute the user in this channel.
+* ``[p]sanction 08 [member] [confirmation] [show_author] [finish_message] [fake_action=False] [reason]``
+ - 👊 Mute a member in this channel.
 
-* ``[p]sanction 09 [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
- - :hourglass_flowing_sand: TempMute the user in all channels, including voice channels.
+* ``[p]sanction 09 [member] [confirmation] [show_author] [finish_message] [fake_action=False] [duration_for_mute_or_ban] [reason]``
+ - ⏳ TempMute a member in all channels, including voice channels.
 
-* ``[p]sanction 10 [user] [confirmation] [show_author] [finish_message] [fake_action] [duration_for_mute_or_ban] [reason_or_`not`]``
- - :hourglass: TempMute the user in this channel.
+* ``[p]sanction 10 [member] [confirmation] [show_author] [finish_message] [fake_action=False] [duration_for_mute_or_ban] [reason]``
+ - ⌛ TempMute a member in this channel.
 
 * ``[p]setsimplesanction``
  Configure SimpleSanction for your server.
 
-* ``[p]setsimplesanction color <color_or_'none'>``
- Set a color for the embed.
+* ``[p]setsimplesanction actionconfirmation <action_confirmation>``
+ Require a confirmation for each sanction (except userinfo).
 
-* ``[p]setsimplesanction confirmation <true_or_false>``
- Enable or disable Action Confirmation
+* ``[p]setsimplesanction finishmessage <finish_message>``
+ Send an embed after a sanction command execution.
 
-* ``[p]setsimplesanction deleteembed <true_or_false>``
- Enable or disable Delete Embed
+* ``[p]setsimplesanction modalconfig [confirmation=False]``
+ Set all settings for the cog with a Discord Modal.
 
-* ``[p]setsimplesanction deletemessage <true_or_false>``
- Enable or disable Delete Message
+* ``[p]setsimplesanction reasonrequired <reason_required>``
+ Require a reason for each sanction (except userinfo).
 
-* ``[p]setsimplesanction finishmessage <true_or_false>``
- Enable or disable Finish Message
+* ``[p]setsimplesanction resetsetting <setting>``
+ Reset a setting.
 
-* ``[p]setsimplesanction reasonrequired <true_or_false>``
- Enable or disable Reason Requiered
+* ``[p]setsimplesanction showauthor <show_author>``
+ Show the command author in embeds.
 
-* ``[p]setsimplesanction showauthor <true_or_false>``
- Enable or disable Show Author
+* ``[p]setsimplesanction showsettings [with_dev=False]``
+ Show all settings for the cog with defaults and values.
 
-* ``[p]setsimplesanction thumbnail <link_or_'none'>``
- Set a thumbnail for the embed.
+* ``[p]setsimplesanction thumbnail <thumbnail>``
+ Set the embed thumbnail.
 
-* ``[p]setsimplesanction timeout <seconds_number_or_`none`>``
- Choose the timeout
-
-* ``[p]setsimplesanction warnsystemuse <true_or_false>``
- Enable or disable Warn System Use
-
-* ``[p]setsimplesanction way <"buttons"|"dropdown"|"reactions">``
- Enable or disable Buttons Use
+* ``[p]setsimplesanction usewarnsystem <use_warn_system>``
+ Use WarnSystem by Laggron for the sanctions.
 
 ------------
 Installation

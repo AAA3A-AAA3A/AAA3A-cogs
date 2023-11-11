@@ -18,11 +18,13 @@ About this cog
 
 A cog to get a file and replace it from its path from Discord!
 
+⚠️ This cog can be very dangerous, since it allows direct read/write/delete of files on the bot’s machine, considering the fact that reading the wrong file can expose sensitive information like tokens and deleting the wrong file can corrupt the bot or the system entirely.
+
 --------
 Commands
 --------
 
-Here are all the commands included in this cog (7):
+Here are all the commands included in this cog (8):
 
 * ``[p]editfile``
  Commands group to get a file and replace it from its path.
@@ -42,8 +44,11 @@ Here are all the commands included in this cog (7):
 * ``[p]editfile rename <new_name> <path>``
  Rename a file.
 
-* ``[p]editfile replace <path> [content=None]``
+* ``[p]editfile replace <path> [content]``
  Replace a file on the bot's host machine from its path.
+
+* ``[p]editfile treedir <path>``
+ Make a tree with all files/directories of a directory from its path.
 
 ------------
 Installation

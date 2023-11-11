@@ -22,7 +22,7 @@ A cog to list and display the contents of all sub-functions of `ctx`!
 Commands
 --------
 
-Here are all the commands included in this cog (6):
+Here are all the commands included in this cog (7):
 
 * ``[p]ctxvar``
  Commands for CtxVar.
@@ -30,14 +30,17 @@ Here are all the commands included in this cog (6):
 * ``[p]ctxvar astdump [include_attributes=False] <thing>``
  Execute `ast.dump(ast.parse(<code content>))` on the provided object (debug not async).
 
-* ``[p]ctxvar ctx [message=None] [args=None]``
+* ``[p]ctxvar ctx [message] [args]``
  Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes.
 
-* ``[p]ctxvar dir <thing> [search=None]``
+* ``[p]ctxvar dir <thing> [search]``
  Display a list of all attributes of the provided object (debug not async).
 
 * ``[p]ctxvar inspect [show_all] <thing>``
  Execute `rich.help(obj=object, ...)` on the provided object (debug not async).
+
+* ``[p]ctxvar parsemarkdown <message_or_content>``
+ Parse the Markdown syntax for a specified message's content or a string.
 
 * ``[p]ctxvar whatis <thing>``
  List attributes of the provided object like dpy objects (debug not async).

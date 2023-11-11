@@ -22,15 +22,18 @@ Various development focused utilities!
 Commands
 --------
 
-Here are all the commands included in this cog (19):
+Here are all the commands included in this cog (23):
 
-* ``[p]bypasscooldowns [toggle=None]``
+* ``[p]bypasscooldowns [toggle] [time]``
  Give bot owners the ability to bypass cooldowns.
 
-* ``[p]debug <code>``
+* ``[p]debug [code]``
  Evaluate a statement of python code.
 
-* ``[p]eval <body>``
+* ``[p]eshell [silent=False] [command]``
+ Execute shell commands.
+
+* ``[p]eval [body]``
  Execute asynchronous code.
 
 * ``[p]mock <user> <command>``
@@ -42,7 +45,7 @@ Here are all the commands included in this cog (19):
 * ``[p]repl``
  Open an interactive REPL.
 
-* ``[p]replpause [toggle=None]``
+* ``[p]replpause [toggle]``
  Pauses/resumes the REPL running in the current channel.
 
 * ``[p]setdev``
@@ -53,6 +56,9 @@ Here are all the commands included in this cog (19):
 
 * ``[p]setdev autoimports <auto_imports>``
  Enable or disable auto imports.
+
+* ``[p]setdev downloaderalreadyagreed <downloader_already_agreed>``
+ If enabled, Downloader will no longer prompt you to type `I agree` when adding a repo, even after a bot restart.
 
 * ``[p]setdev getenvironment [show_values=True]``
  Display all Dev environment values.
@@ -72,11 +78,17 @@ Here are all the commands included in this cog (19):
 * ``[p]setdev richtracebacks <rich_tracebacks>``
  Use `rich` to display tracebacks.
 
+* ``[p]setdev senddpyobjects <send_dpy_objects>``
+ If the result is an embed/file/attachment object or an iterable of these, send.
+
 * ``[p]setdev sendinteractive <send_interactive>``
  Send results with `commands.Context.send_interactive`, not a Menu.
 
 * ``[p]setdev showsettings [with_dev=False]``
  Show all settings for the cog with defaults and values.
+
+* ``[p]setdev useextendedenvironment <use_extended_environment>``
+ Use my own Dev env with useful values.
 
 * ``[p]setdev uselastlocals <use_last_locals>``
  Use the last locals for each evals. Locals are only registered for `[p]eval`, but can be used in other commands.

@@ -22,12 +22,12 @@ A cog to have url-buttons!
 Commands
 --------
 
-Here are all the commands included in this cog (6):
+Here are all the commands included in this cog (7):
 
 * ``[p]urlbuttons``
  Group of commands to use UrlButtons.
 
-* ``[p]urlbuttons add <message> <emoji> <url> [text_button=None]``
+* ``[p]urlbuttons add <message> <url> [emoji] [text_button]``
  Add a url-button for a message.
 
 * ``[p]urlbuttons bulk <message> [url_buttons]...``
@@ -36,10 +36,13 @@ Here are all the commands included in this cog (6):
 * ``[p]urlbuttons clear <message>``
  Clear all url-buttons for a message.
 
+* ``[p]urlbuttons list [message]``
+ List all url-buttons of this server or display the settings for a specific one.
+
 * ``[p]urlbuttons purge``
  Clear all url-buttons for a guild.
 
-* ``[p]urlbuttons remove <message> <emoji>``
+* ``[p]urlbuttons remove <message> <config_identifier>``
  Remove a url-button for a message.
 
 ------------

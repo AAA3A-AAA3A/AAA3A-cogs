@@ -22,13 +22,16 @@ This cog will only work on x server and therefore cannot be used by the general 
 Commands
 --------
 
-Here are all the commands included in this cog (22):
+Here are all the commands included in this cog (23):
 
 * ``[p]medicat``
  Commands of Medicat cog.
 
 * ``[p]medicat customtools``
  Can I add my own bootable tools (iso, wim, vhd) or PortableApps softwares to Medicat USB?
+
+* ``[p]medicat donate``
+ How can I make a donation?
 
 * ``[p]medicat free``
  Is Medicat free?
@@ -42,11 +45,8 @@ Here are all the commands included in this cog (22):
 * ``[p]medicat getventoyversion <version>``
  Get a version of Ventoy.
 
-* ``[p]medicat howinstall``
+* ``[p]medicat install``
  How do I install Medicat USB?
-
-* ``[p]medicat kofi``
- How to make a donation?
 
 * ``[p]medicat medicatversion``
  What is the latest version of Medicat USB?
@@ -58,13 +58,16 @@ Here are all the commands included in this cog (22):
  Can I install Mini Windows 10 as my main OS?
 
 * ``[p]medicat missingfiles``
- See what files are missing using the quick SFV program
+ See what files are missing using the quick SFV program.
 
 * ``[p]medicat noiso``
- How do I download the Medicat USB iso file?
+ How do I download the Medicat USB iso/img file?
 
 * ``[p]medicat portableapps``
  Can I run the PortableApps on my current PC without booting up MediCat?
+
+* ``[p]medicat secureboot``
+ What to do about security violation when trying to boot into Medicat?
 
 * ``[p]medicat test``
  Test!

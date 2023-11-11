@@ -22,13 +22,16 @@ A cog to use Discord Modals, forms with graphic interface!
 Commands
 --------
 
-Here are all the commands included in this cog (4):
+Here are all the commands included in this cog (5):
 
 * ``[p]discordmodals``
- Group of commands to use ReactToCommand.
+ Group of commands to use DiscordModals.
 
 * ``[p]discordmodals add <message> <argument>``
  Add a Modal for a message.
+
+* ``[p]discordmodals list [message]``
+ List all Modals of this server or display the settings for a specific one.
 
 * ``[p]discordmodals purge``
  Clear all Modals for a guild.

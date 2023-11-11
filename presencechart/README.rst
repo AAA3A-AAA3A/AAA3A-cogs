@@ -16,19 +16,28 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to make a chart with the different Discord statuses (presence) of a Discord user, in the previous x days (last 100 days maximum)!
+A cog to make a chart with the different Discord statuses (presence) of a Discord member, in the previous x days (last 100 days maximum)!
 
 --------
 Commands
 --------
 
-Here are all the commands included in this cog (2):
+Here are all the commands included in this cog (5):
 
-* ``[p]presencechart [days_number=30] [member=<you>]``
- Make a chart with the different Discord statuses (presence) of a Discord user, in the previous x days (last 100 days maximum).
+* ``[p]presencechart [days_number=30] [frame_mode=True] [member=<you>]``
+ Make a chart with the different Discord statuses (presence) of a Discord member, in the previous x days (last 100 days maximum).
 
-* ``[p]presencechartignoreme``
+* ``[p]presencechart guild [frame_mode=True]``
+ Make a chart with the different Discord statuses (presence) of all members of the guild/server.
+
+* ``[p]presencechart ignoreme``
  Asking PresenceChart to ignore your statuses (presence).
+
+* ``[p]presencechart member [days_number=30] [frame_mode=True] [member=<you>]``
+ Make a chart with the different Discord statuses (presence) of a Discord member, in the previous x days (last 100 days maximum).
+
+* ``[p]presencechart role [frame_mode=True] <role>``
+ Make a chart with the different Discord statuses (presence) of all members of the specfied role.
 
 ------------
 Installation

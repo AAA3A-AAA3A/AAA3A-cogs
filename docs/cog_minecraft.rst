@@ -22,7 +22,7 @@ A cog to display informations about Minecraft Java users and servers, and notify
 Commands
 --------
 
-Here are all the commands included in this cog (8):
+Here are all the commands included in this cog (9):
 
 * ``[p]minecraft``
  Get informations about Minecraft Java.
@@ -31,7 +31,10 @@ Here are all the commands included in this cog (8):
  Add a Minecraft Java server in Config to get automatically new status.
 
 * ``[p]minecraft checkplayers [channel] <state>``
- Remove a Minecraft Java server in Config.
+ Include players joining or leaving the server in notifications.
+
+* ``[p]minecraft editlastmessage [channel] <state>``
+ Edit the last message sent for changes.
 
 * ``[p]minecraft forcecheck``
  Force check Minecraft Java servers in Config.

@@ -22,12 +22,12 @@ A cog to manage a tickets system!
 Commands
 --------
 
-Here are all the commands included in this cog (46):
+Here are all the commands included in this cog (47):
 
 * ``[p]settickettool``
  Configure TicketTool for your server.
 
-* ``[p]settickettool adminrole <profile> <role>``
+* ``[p]settickettool adminroles <profile> <admin_roles>``
  Users with this role will have full permissions for tickets, but will not be able to set up the cog.
 
 * ``[p]settickettool auditlogs <profile> <audit_logs>``
@@ -51,6 +51,9 @@ Here are all the commands included in this cog (46):
 * ``[p]settickettool custommessage <profile> <custom_message>``
  This message will be sent in the ticket channel when the ticket is opened.
 
+* ``[p]settickettool custommodal <profile> <custom_modal>``
+ Ask a maximum of 5 questions to the user who opens a ticket, with a Discord Modal.
+
 * ``[p]settickettool deleteonclose <profile> <delete_on_close>``
  Does closing the ticket directly delete it (with confirmation)?
 
@@ -66,7 +69,7 @@ Here are all the commands included in this cog (46):
 * ``[p]settickettool logschannel <profile> <text channel>``
  Set the channel where the logs will be saved.
 
-* ``[p]settickettool message <profile> [channel] [message] [reason_options]...``
+* ``[p]settickettool message <profile> [channel] [message] [reason_options]... [emoji=🎟️] [label]``
  Send a message with a button to open a ticket or dropdown with possible reasons.
 
 * ``[p]settickettool modalconfig <profile> [confirmation=False]``
@@ -76,9 +79,9 @@ Here are all the commands included in this cog (46):
  Does the bot create an action in the bot modlog when a ticket is created?
 
 * ``[p]settickettool nbmax <profile> <nb_max>``
- Sets the maximum number of open tickets a user can have on the system at any one time (for the profile only).
+ Sets the maximum number of open tickets a user can have on the system at any one time (for a profile only).
 
-* ``[p]settickettool pingrole <profile> <role>``
+* ``[p]settickettool pingroles <profile> <ping_roles>``
  This role will be pinged automatically when the ticket is created, but does not give any additional permissions.
 
 * ``[p]settickettool profileadd <profile>``
@@ -91,7 +94,7 @@ Here are all the commands included in this cog (46):
  Remove an existing profile.
 
 * ``[p]settickettool profilerename <old_profile> <profile>``
- Clone an existing profile with his settings.
+ Rename an existing profile.
 
 * ``[p]settickettool profileslist``
  List the existing profiles.
@@ -105,7 +108,7 @@ Here are all the commands included in this cog (46):
 * ``[p]settickettool showsettings <profile> [with_dev=False]``
  Show all settings for the cog with defaults and values.
 
-* ``[p]settickettool supportrole <profile> <role>``
+* ``[p]settickettool supportroles <profile> <support_roles>``
  Users with this role will be able to participate and claim the ticket.
 
 * ``[p]settickettool ticketrole <profile> <role>``
@@ -114,53 +117,53 @@ Here are all the commands included in this cog (46):
 * ``[p]settickettool usercanclose <profile> <user_can_close>``
  Can the author of the ticket, if he/she does not have a role set up for the system, close the ticket himself?
 
-* ``[p]settickettool viewrole <profile> <role>``
+* ``[p]settickettool viewroles <profile> <view_roles>``
  Users with this role will only be able to read messages from the ticket, but not send them.
 
 * ``[p]ticket``
- Commands for using the ticket system.
+ Commands for using the Tickets system.
 
 * ``[p]ticket addmember [members]...``
- Add a member to an existing ticket.
+ Add a member to an existing Ticket.
 
-* ``[p]ticket claim [member=None] [reason=No reason provided.]``
- Claim an existing ticket.
+* ``[p]ticket claim [member] [reason=No reason provided.]``
+ Claim an existing Ticket.
 
-* ``[p]ticket close [confirmation=None] [reason=No reason provided.]``
- Close an existing ticket.
+* ``[p]ticket close [confirmation] [reason=No reason provided.]``
+ Close an existing Ticket.
 
-* ``[p]ticket create [profile=main] [reason=No reason provided.]``
- Create a ticket.
+* ``[p]ticket create [profile] [reason=No reason provided.]``
+ Create a Ticket.
 
 * ``[p]ticket delete [confirmation=False] [reason=No reason provided.]``
- Delete an existing ticket.
+ Delete an existing Ticket.
 
 * ``[p]ticket export``
- Export all the messages of an existing ticket in html format.
+ Export all the messages of an existing Ticket in html format.
 
-* ``[p]ticket list <profile> ["open"|"close"|"all"] [member]``
- 
+* ``[p]ticket list <profile> ["open"|"close"|"all"] [owner]``
+ List the existing Tickets for a profile. You can provide a status and/or a ticket owner.
 
-* ``[p]ticket lock [confirmation=None] [reason=No reason provided.]``
- Lock an existing ticket.
+* ``[p]ticket lock [confirmation] [reason=No reason provided.]``
+ Lock an existing Ticket.
 
 * ``[p]ticket open [reason=No reason provided.]``
- Open an existing ticket.
+ Open an existing Ticket.
 
 * ``[p]ticket owner <new_owner> [reason=No reason provided.]``
- Change the owner of an existing ticket.
+ Change the owner of an existing Ticket.
 
 * ``[p]ticket removemember [members]...``
- Remove a member to an existing ticket.
+ Remove a member to an existing Ticket.
 
 * ``[p]ticket rename <new_name> [reason=No reason provided.]``
- Rename an existing ticket.
+ Rename an existing Ticket.
 
 * ``[p]ticket unclaim [reason=No reason provided.]``
- Unclaim an existing ticket.
+ Unclaim an existing Ticket.
 
 * ``[p]ticket unlock [reason=No reason provided.]``
- Unlock an existing locked ticket.
+ Unlock an existing locked Ticket.
 
 ------------
 Installation

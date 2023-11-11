@@ -25,7 +25,7 @@ Commands
 Here are all the commands included in this cog (12):
 
 * ``[p]linkquote [message]``
- 
+ Quote a message from a link.
 
 * ``[p]setlinkquoter``
  Commands to configure LinkQuoter.
@@ -42,7 +42,7 @@ Here are all the commands included in this cog (12):
 * ``[p]setlinkquoter enabled <enabled>``
  Toggle automatic link-quoting.
 
-* ``[p]setlinkquoter migratefromlinkquoter``
+* ``[p]setlinkquoter migratefromphen``
  Migrate config from LinkQuoter by Phen.
 
 * ``[p]setlinkquoter modalconfig [confirmation=False]``

@@ -24,7 +24,7 @@ Commands
 
 Here are all the commands included in this cog (1):
 
-* ``[p]traceback [public=True]``
+* ``[p]traceback [public=True] [index=0]``
  Sends to the owner the last command exception that has occurred.
 
 ------------

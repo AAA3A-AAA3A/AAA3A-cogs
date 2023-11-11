@@ -22,16 +22,19 @@ A cog to edit Discord default objects, like guilds, roles, text channels, voice 
 Commands
 --------
 
-Here are all the commands included in this cog (74):
+Here are all the commands included in this cog (93):
 
 * ``[p]editguild``
  Commands for edit a guild.
 
-* ``[p]editguild afkchannel [afk_channel=None]``
+* ``[p]editguild afkchannel [afk_channel]``
  Edit guild afkchannel.
 
 * ``[p]editguild afktimeout <afk_timeout>``
- Edit guild afktimeout.
+ Edit guild afk timeout.
+
+* ``[p]editguild banner [banner]``
+ Edit guild banner.
 
 * ``[p]editguild clone <name>``
  Clone a guild.
@@ -39,23 +42,29 @@ Here are all the commands included in this cog (74):
 * ``[p]editguild community <community>``
  Edit guild community state.
 
-* ``[p]editguild create <name> [template_code=None]``
+* ``[p]editguild create <name> [template_code]``
  Create a guild with the bot as owner.
 
-* ``[p]editguild defaultnotifications <"0"|"1">``
+* ``[p]editguild defaultnotifications <default_notifications>``
  Edit guild notification level.
 
 * ``[p]editguild delete [confirmation=False]``
  Delete guild (if the bot is owner).
 
-* ``[p]editguild description [description=None]``
+* ``[p]editguild description [description]``
  Edit guild description.
 
 * ``[p]editguild discoverable <discoverable>``
  Edit guild discoverable state.
 
+* ``[p]editguild discoverysplash [discovery_splash]``
+ Edit guild discovery splash.
+
 * ``[p]editguild explicitcontentfilter <explicit_content_filter>``
  Edit guild explicit content filter.
+
+* ``[p]editguild icon [icon]``
+ Edit guild icon.
 
 * ``[p]editguild invitesdisabled <invites_disabled>``
  Edit guild invites disabled state.
@@ -69,16 +78,25 @@ Here are all the commands included in this cog (74):
 * ``[p]editguild preferredlocale <preferred_locale>``
  Edit guild preferred locale.
 
-* ``[p]editguild premiumprogressbarenabled <premium_progress_bar_enabled>``
+* ``[p]editguild premiumprogressbarenabled [premium_progress_bar_enabled]``
  Edit guild premium progress bar enabled.
 
-* ``[p]editguild publicupdateschannel [public_updates_channel=None]``
+* ``[p]editguild publicupdateschannel [public_updates_channel]``
  Edit guild public updates channel.
 
-* ``[p]editguild ruleschannel [rules_channel=None]``
+* ``[p]editguild raidalertsdisabled <raid_alerts_disabled>``
+ Edit guild invites raid alerts disabled state.
+
+* ``[p]editguild ruleschannel [rules_channel]``
  Edit guild rules channel.
 
-* ``[p]editguild systemchannel [system_channel=None]``
+* ``[p]editguild safetyalertschannel [safety_alerts_channel]``
+ Edit guild invites safety alerts channel.
+
+* ``[p]editguild splash [splash]``
+ Edit guild splash.
+
+* ``[p]editguild systemchannel [system_channel]``
  Edit guild system channel.
 
 * ``[p]editguild systemchannelflags <system_channel_flags>``
@@ -90,32 +108,50 @@ Here are all the commands included in this cog (74):
 * ``[p]editguild verificationlevel <verification_level>``
  Edit guild verification level.
 
+* ``[p]editguild view``
+ View and edit guild.
+
+* ``[p]editguild widgetchannel [widget_channel]``
+ Edit guild invites widget channel.
+
+* ``[p]editguild widgetenabled <widget_enabled>``
+ Edit guild invites widget enabled state.
+
 * ``[p]editrole``
  Commands for edit a role.
 
 * ``[p]editrole color <role> <color>``
  Edit role color.
 
-* ``[p]editrole create [color=None] <name>``
+* ``[p]editrole create [color] <name>``
  Create a role.
 
 * ``[p]editrole delete <role> [confirmation=False]``
  Delete a role.
 
+* ``[p]editrole displayicon <role> [display_icon]``
+ Edit role display icon.
+
+* ``[p]editrole hoist <role> [hoist]``
+ Edit role hoist.
+
 * ``[p]editrole list``
  List all roles in the current guild.
 
-* ``[p]editrole mentionable <role> <mentionable>``
+* ``[p]editrole mentionable <role> [mentionable]``
  Edit role mentionable.
 
 * ``[p]editrole name <role> <name>``
  Edit role name.
 
-* ``[p]editrole permissions <role> <permissions>``
+* ``[p]editrole permissions <role> <true_or_false> [permissions]...``
  Edit role permissions.
 
 * ``[p]editrole position <role> <position>``
  Edit role position.
+
+* ``[p]editrole view <role>``
+ View and edit role.
 
 * ``[p]edittextchannel``
  Commands for edit a text channel.
@@ -126,16 +162,19 @@ Here are all the commands included in this cog (74):
 * ``[p]edittextchannel clone [channel] <name>``
  Clone a text channel.
 
-* ``[p]edittextchannel create [category=None] <name>``
+* ``[p]edittextchannel create [category] <name>``
  Create a text channel.
 
-* ``[p]edittextchannel defaultautoarchiveduration [channel] <"60"|"1440"|"4320"|"10080">``
+* ``[p]edittextchannel defaultautoarchiveduration [channel] <60|1440|4320|10080>``
  Edit text channel default auto archive duration.
+
+* ``[p]edittextchannel defaultthreadslowmodedelay [channel] <default_thread_slowmode_delay>``
+ Edit text channel default thread slowmode delay.
 
 * ``[p]edittextchannel delete [channel] [confirmation=False]``
  Delete a text channel.
 
-* ``[p]edittextchannel invite [channel] [max_age=None] [max_uses=None] [temporary=False] [unique=True]``
+* ``[p]edittextchannel invite [channel] [max_age] [max_uses] [temporary=False] [unique=True]``
  Create an invite for a text channel.
 
 * ``[p]edittextchannel list``
@@ -144,11 +183,11 @@ Here are all the commands included in this cog (74):
 * ``[p]edittextchannel name [channel] <name>``
  Edit text channel name.
 
-* ``[p]edittextchannel nsfw [channel] <nsfw>``
+* ``[p]edittextchannel nsfw [channel] [nsfw]``
  Edit text channel nsfw.
 
-* ``[p]edittextchannel permissions [channel] [roles_or_users]... [true_or_false] [permissions]...``
- Edit text channel permissions/overwrites.
+* ``[p]edittextchannel overwrites [channel] [roles_or_users]... [true_or_false] [permissions]...``
+ Edit text channel overwrites/permissions.
 
 * ``[p]edittextchannel position [channel] <position>``
  Edit text channel position.
@@ -156,50 +195,62 @@ Here are all the commands included in this cog (74):
 * ``[p]edittextchannel slowmodedelay [channel] <slowmode_delay>``
  Edit text channel slowmode delay.
 
-* ``[p]edittextchannel syncpermissions [channel] <sync_permissions>``
+* ``[p]edittextchannel syncpermissions [channel] [sync_permissions]``
  Edit text channel syncpermissions with category.
 
 * ``[p]edittextchannel topic [channel] <topic>``
  Edit text channel topic.
 
-* ``[p]edittextchannel type [channel] <"0"|"5">``
+* ``[p]edittextchannel type [channel] <_type>``
  Edit text channel type.
+
+* ``[p]edittextchannel view [channel]``
+ View and edit text channel.
 
 * ``[p]editthread``
  Commands for edit a text channel.
 
-* ``[p]editthread appliedtags <thread> [applied_tags]...``
+* ``[p]editthread adduser [thread] <member>``
+ Add member to thread.
+
+* ``[p]editthread appliedtags [thread] [applied_tags]...``
  Edit thread applied tags.
 
-* ``[p]editthread archived <thread> <archived>``
+* ``[p]editthread archived [thread] [archived]``
  Edit thread archived.
 
-* ``[p]editthread autoarchiveduration <thread> <"60"|"1440"|"4320"|"10080">``
+* ``[p]editthread autoarchiveduration [thread] <60|1440|4320|10080>``
  Edit thread auto archive duration.
 
-* ``[p]editthread create [channel=None] [message=None] <name>``
+* ``[p]editthread create [channel] [message] <name>``
  Create a thread.
 
-* ``[p]editthread delete <thread> [confirmation=False]``
+* ``[p]editthread delete [thread] [confirmation=False]``
  Delete a thread.
 
-* ``[p]editthread invitable <thread> <invitable>``
+* ``[p]editthread invitable [thread] [invitable]``
  Edit thread invitable.
 
 * ``[p]editthread list``
  List all threads in the current guild.
 
-* ``[p]editthread locked <thread> <locked>``
+* ``[p]editthread locked [thread] [locked]``
  Edit thread locked.
 
-* ``[p]editthread name <thread> <name>``
+* ``[p]editthread name [thread] <name>``
  Edit thread name.
 
-* ``[p]editthread pinned <thread> <pinned>``
+* ``[p]editthread pinned [thread] <pinned>``
  Edit thread pinned.
 
-* ``[p]editthread slowmodedelay <thread> <slowmode_delay>``
+* ``[p]editthread removeuser [thread] <member>``
+ Remove member from thread.
+
+* ``[p]editthread slowmodedelay [thread] <slowmode_delay>``
  Edit thread slowmode delay.
+
+* ``[p]editthread view [thread]``
+ View and edit thread.
 
 * ``[p]editvoicechannel``
  Commands for edit a voice channel.
@@ -213,13 +264,13 @@ Here are all the commands included in this cog (74):
 * ``[p]editvoicechannel clone <channel> <name>``
  Clone a voice channel.
 
-* ``[p]editvoicechannel create [category=None] <name>``
+* ``[p]editvoicechannel create [category] <name>``
  Create a voice channel.
 
 * ``[p]editvoicechannel delete <channel> [confirmation=False]``
  Delete voice channel.
 
-* ``[p]editvoicechannel invite <channel> [max_age=None] [max_uses=None] [temporary=False] [unique=True]``
+* ``[p]editvoicechannel invite <channel> [max_age] [max_uses] [temporary=False] [unique=True]``
  Create an invite for a voice channel.
 
 * ``[p]editvoicechannel list``
@@ -228,23 +279,29 @@ Here are all the commands included in this cog (74):
 * ``[p]editvoicechannel name <channel> <name>``
  Edit voice channel name.
 
-* ``[p]editvoicechannel nsfw <channel> <nsfw>``
+* ``[p]editvoicechannel nsfw <channel> [nsfw]``
  Edit voice channel nsfw.
 
-* ``[p]editvoicechannel permissions <channel> [roles_or_users]... [true_or_false] [permissions]...``
- Edit voice channel permissions/overwrites.
+* ``[p]editvoicechannel overwrites <channel> [roles_or_users]... [true_or_false] [permissions]...``
+ Edit voice channel overwrites/permissions.
 
 * ``[p]editvoicechannel position <channel> <position>``
  Edit voice channel position.
 
-* ``[p]editvoicechannel syncpermissions <channel> <sync_permissions>``
+* ``[p]editvoicechannel slowmodedelay <channel> <slowmode_delay>``
+ Edit voice channel slowmode delay.
+
+* ``[p]editvoicechannel syncpermissions <channel> [sync_permissions]``
  Edit voice channel sync permissions.
 
 * ``[p]editvoicechannel userlimit <channel> <user_limit>``
  Edit voice channel user limit.
 
-* ``[p]editvoicechannel videoqualitymode <channel> <"1"|"2">``
+* ``[p]editvoicechannel videoqualitymode <channel> <video_quality_mode>``
  Edit voice channel video quality mode.
+
+* ``[p]editvoicechannel view <channel>``
+ View and edit voice channel.
 
 ------------
 Installation

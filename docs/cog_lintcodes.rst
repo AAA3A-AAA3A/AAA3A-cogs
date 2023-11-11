@@ -45,34 +45,34 @@ Here are all the commands included in this cog (17):
 * ``[p]lintcode aruff <flags>``
  Format code with Ruff, with flags.
 
-* ``[p]lintcode autopep8 [code=None]``
+* ``[p]lintcode autopep8 [code]``
  Format code with AutoPep8, without flags, just the code.
 
-* ``[p]lintcode bandit [code=None]``
+* ``[p]lintcode bandit [code]``
  Format code with Bandit, without flags, just the code.
 
-* ``[p]lintcode black [code=None]``
+* ``[p]lintcode black [code]``
  Format code with Black, without flags, just the code.
 
-* ``[p]lintcode flake8 [code=None]``
+* ``[p]lintcode flake8 [code]``
  Format code with Flake8, without flags, just the code.
 
-* ``[p]lintcode isort [code=None]``
+* ``[p]lintcode isort [code]``
  Format code with Isort, without flags, just the code.
 
-* ``[p]lintcode mypy [code=None]``
+* ``[p]lintcode mypy [code]``
  Format code with MyPy, without flags, just the code.
 
-* ``[p]lintcode pylint [code=None]``
+* ``[p]lintcode pylint [code]``
  Format code with PyLint, without flags, just the code.
 
-* ``[p]lintcode pyright [code=None]``
+* ``[p]lintcode pyright [code]``
  Format code with PyRight, without flags, just the code.
 
-* ``[p]lintcode ruff [code=None]``
+* ``[p]lintcode ruff [code]``
  Format code with Ruff, without flags, just the code.
 
-* ``[p]lintcode yapf [code=None]``
+* ``[p]lintcode yapf [code]``
  Format code with Yapf, without flags, just the code.
 
 ------------

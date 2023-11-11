@@ -16,37 +16,40 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-A cog to transfer all messages channel in a other channel!
+A cog to transfer messages from a channel to another channel, with many options!
 
 --------
 Commands
 --------
 
-Here are all the commands included in this cog (8):
+Here are all the commands included in this cog (9):
 
 * ``[p]transferchannel``
- Transfer all messages channel in a other channel. This might take a long time.
+ Transfer messages from a channel to another channel, with many options. This might take a long time.
 
-* ``[p]transferchannel after <source> <destination> <"embeds"|"webhooks"|"messages"> <after>``
- Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+* ``[p]transferchannel after <source> <destination> <after> ["webhooks"|"embeds"|"messages"=webhooks]``
+ Transfer a part of the messages from a channel to another channel. This might take a long time.
 
-* ``[p]transferchannel all <source> <destination> <"embeds"|"webhooks"|"messages">``
- Transfer all messages channel in a other channel. This might take a long time.
+* ``[p]transferchannel all <source> <destination> ["webhooks"|"embeds"|"messages"=webhooks]``
+ Transfer all messages from a channel to another channel. This might take a long time.
 
-* ``[p]transferchannel before <source> <destination> <"embeds"|"webhooks"|"messages"> <before>``
- Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+* ``[p]transferchannel before <source> <destination> <before> ["webhooks"|"embeds"|"messages"=webhooks]``
+ Transfer a part of the messages from a channel to another channel. This might take a long time.
 
-* ``[p]transferchannel between <source> <destination> <"embeds"|"webhooks"|"messages"> <before> <after>``
- Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+* ``[p]transferchannel between <source> <destination> <before> <after> ["webhooks"|"embeds"|"messages"=webhooks]``
+ Transfer a part of the messages from a channel to another channel. This might take a long time.
 
-* ``[p]transferchannel bot <source> <destination> <"embeds"|"webhooks"|"messages"> [bot=True] [limit=None]``
- Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+* ``[p]transferchannel bot <source> <destination> [bot=True] [limit] ["webhooks"|"embeds"|"messages"=webhooks]``
+ Transfer a part of the messages from a channel to another channel. This might take a long time.
 
-* ``[p]transferchannel messages <source> <destination> <"embeds"|"webhooks"|"messages"> <limit>``
- Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+* ``[p]transferchannel message <message> <destination> ["webhooks"|"embeds"|"messages"=webhooks]``
+ Transfer a specific message to another channel. This might take a long time.
 
-* ``[p]transferchannel user <source> <destination> <"embeds"|"webhooks"|"messages"> <user> [limit=None]``
- Transfer a part of a channel's messages channel in a other channel. This might take a long time.
+* ``[p]transferchannel messages <source> <destination> <limit> ["webhooks"|"embeds"|"messages"=webhooks]``
+ Transfer a part of the messages from a channel to another channel. This might take a long time.
+
+* ``[p]transferchannel user <source> <destination> <user> [limit] ["webhooks"|"embeds"|"messages"=webhooks]``
+ Transfer a part of the messages from a channel to another channel. This might take a long time.
 
 ------------
 Installation

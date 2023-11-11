@@ -24,7 +24,7 @@ Commands
 
 Here are all the commands included in this cog (1):
 
-* ``[p]draw [from_message=None] [height=9] [width=9] ["🟥"|"🟧"|"🟨"|"🟩"|"🟦"|"🟪"|"🟫"|"⬛"|"⬜"|"transparent"=transparent]``
+* ``[p]draw [from_message] [height=9] [width=9] ["🟥"|"🟧"|"🟨"|"🟩"|"🟦"|"🟪"|"🟫"|"⬛"|"⬜"|"transparent"=transparent]``
  Make a pixel art on Discord.
 
 ------------

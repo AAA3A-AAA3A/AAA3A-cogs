@@ -22,12 +22,12 @@ A cog to allow a user to execute a command by clicking on a button!
 Commands
 --------
 
-Here are all the commands included in this cog (6):
+Here are all the commands included in this cog (7):
 
 * ``[p]commandsbuttons``
  Group of commands to use CommandsButtons.
 
-* ``[p]commandsbuttons add <message> <emoji> <command> ["1"|"2"|"3"|"4"=2] [text_button=None]``
+* ``[p]commandsbuttons add <message> <command> [emoji] ["1"|"2"|"3"|"4"=2] [text_button]``
  Add a command-button for a message.
 
 * ``[p]commandsbuttons bulk <message> [commands_buttons]...``
@@ -36,10 +36,13 @@ Here are all the commands included in this cog (6):
 * ``[p]commandsbuttons clear <message>``
  Clear all commands-buttons for a message.
 
+* ``[p]commandsbuttons list [message]``
+ List all commands-buttons of this server or display the settings for a specific one.
+
 * ``[p]commandsbuttons purge``
  Clear all commands-buttons for a guild.
 
-* ``[p]commandsbuttons remove <message> <emoji>``
+* ``[p]commandsbuttons remove <message> <config_identifier>``
  Remove a command-button for a message.
 
 ------------

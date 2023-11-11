@@ -22,15 +22,18 @@ Commands to manage all the cogs in AAA3A-cogs repo!
 Commands
 --------
 
-Here are all the commands included in this cog (8):
+Here are all the commands included in this cog (10):
 
 * ``[p]aaa3a_utils``
  All commands to manage all the cogs from AAA3A-cogs repo.
 
+* ``[p]aaa3a_utils displaysentrymanualcommand <state>``
+ Enable or disable displaying the command `[p]AAA3A_utils senderrorwithsentry` in commands errors.
+
 * ``[p]aaa3a_utils flags <content>``
  Use any command with flags.
 
-* ``[p]aaa3a_utils getallfor ["all"|"ALL"=None] [page=None] [repo=None] [check_updates=False] [cog=None] [command=None]``
+* ``[p]aaa3a_utils getallfor ["all"|"ALL"] [page] [repo] [check_updates=False] [cog] [command]``
  Get all the necessary information to get support on a bot/repo/cog/command.
 
 * ``[p]aaa3a_utils getdebugloopsstatus <cog>``
@@ -38,6 +41,9 @@ Here are all the commands included in this cog (8):
 
 * ``[p]aaa3a_utils getlogs <cog> [level=all]``
  Get logs for a cog from AAA3A-cogs
+
+* ``[p]aaa3a_utils replacementvarpaths <state>``
+ Replace various var paths in texts sent by cog from AAA3A-cogs.
 
 * ``[p]aaa3a_utils resetconfig <cog> [confirmation=False]``
  Reset Config for a cog from AAA3A-cogs.

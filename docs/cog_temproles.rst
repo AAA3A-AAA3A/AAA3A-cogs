@@ -22,21 +22,24 @@ A cog to assign temporary roles to users, expiring after a set time!
 Commands
 --------
 
-Here are all the commands included in this cog (10):
+Here are all the commands included in this cog (11):
 
 * ``[p]temproles``
  Assign TempRoles roles to users, expiring after a set time.
 
-* ``[p]temproles addallowedselftemprole <role> [min_time=1 day, 0:00:00] [max_time=364 days, 0:00:00]``
+* ``[p]temproles addallowedselftemprole <role> [min_time=1 day, 0:00:00] [max_time=365 days, 0:00:00]``
  Add an allowed self Temp Role.
 
 * ``[p]temproles assign <member> <role> <time>``
  Assign/Add a TempRole to a member, for a specified duration.
 
-* ``[p]temproles list [member=None] [role=None]``
+* ``[p]temproles edit <member> <role> <time>``
+ Edit a TempRole for a member, for a specified duration.
+
+* ``[p]temproles list [member] [role]``
  List active Temp Roles on this server, for optional specified member and/or role.
 
-* ``[p]temproles logschannel [logs_channel=None]``
+* ``[p]temproles logschannel [logs_channel]``
  Set the logs channel for Temp Roles.
 
 * ``[p]temproles removeallowedselftemprole <role>``

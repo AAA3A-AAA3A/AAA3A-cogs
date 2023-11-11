@@ -16,19 +16,19 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog
 --------------
 
-Don't forget anything anymore! Reminders in DMs, channels, FIFO commands sheduler, say sheduler... With 'Me Too', snooze and buttons.
+Don't forget anything anymore! Reminders in DMs, channels, FIFO commands scheduler, say scheduler... With 'Me Too', snooze and buttons.
 
 --------
 Commands
 --------
 
-Here are all the commands included in this cog (26):
+Here are all the commands included in this cog (30):
 
-* ``[p]remind [destination] [target] <time> [message_or_text=None]``
+* ``[p]remind [destination] [targets]... <time> [message_or_text]``
  Create a reminder with optional reminder text or message, in a channel with an user/role ping.
 
 * ``[p]reminder``
- List, edit and delete existing reminders, or create FIFO/commands reminders.
+ List, edit and delete existing reminders, or create FIFO/commands or Say reminders.
 
 * ``[p]reminder clear [confirmation=False]``
  Clear all your existing reminders.
@@ -37,16 +37,16 @@ Here are all the commands included in this cog (26):
  Edit an existing Reminder from its ID.
 
 * ``[p]reminder expires <reminder> <time>``
- Edit the text of an existing Reminder from its ID.
+ Edit the expires time of an existing Reminder from its ID.
 
 * ``[p]reminder fifo [destination] <time> <command>``
  Create a FIFO/command reminder. The chosen command will be executed with you as invoker. Don't provide the prefix.
 
-* ``[p]reminder list [card=False] ["expire"|"created"|"id"=expire]``
+* ``[p]reminder list [card=False] ["text"|"command"|"say"] ["expire"|"created"|"id"=expire]``
  List your existing reminders.
 
-* ``[p]reminder remove <reminder>``
- Remove an existing Reminder from its ID.
+* ``[p]reminder remove [reminders]...``
+ Remove existing Reminder(s) from their IDs.
 
 * ``[p]reminder repeat <reminder> <repeat>``
  Edit the repeat of an existing Reminder from its ID.
@@ -63,7 +63,7 @@ Here are all the commands included in this cog (26):
 * ``[p]reminder timezone <timezone>``
  Set your timezone for the time converter.
 
-* ``[p]remindme <time> [message_or_text=None]``
+* ``[p]remindme <time> [message_or_text]``
  Create a reminder with optional reminder text or message.
 
 * ``[p]setreminders``
@@ -72,6 +72,9 @@ Here are all the commands included in this cog (26):
 * ``[p]setreminders clearuserreminders <user> [confirmation=False]``
  Clear all existing reminders for a user.
 
+* ``[p]setreminders creationview <creation_view>``
+ Send Creation view/buttons when reminders creation.
+
 * ``[p]setreminders fifoallowed <fifo_allowed>``
  Allow or deny commands reminders for users (except bot owners).
 
@@ -79,10 +82,13 @@ Here are all the commands included in this cog (26):
  Get an embed to check loops status.
 
 * ``[p]setreminders maximumuserreminders <maximum_user_reminders>``
- Change the reminders limit for a user.
+ Change the reminders limit for each user (except bot owners).
 
 * ``[p]setreminders metoo <me_too>``
  Show a `Me too` button in reminders.
+
+* ``[p]setreminders migratefromfifo``
+ Migrate Reminders from FIFO by Fox.
 
 * ``[p]setreminders migratefromremindme``
  Migrate Reminders from RemindMe by PhasecoreX.
@@ -94,13 +100,19 @@ Here are all the commands included in this cog (26):
  Set all settings for the cog with a Discord Modal.
 
 * ``[p]setreminders repeatallowed <repeat_allowed>``
- Enable or disabled repeat option for users.
+ Enable or disabled repeat option for users (except bot owners).
 
 * ``[p]setreminders resetsetting <setting>``
  Reset a setting.
 
+* ``[p]setreminders secondsallowed <seconds_allowed>``
+ Check reminders every 30 seconds instead of every 1 minute, to allow reminders with precise duration.
+
 * ``[p]setreminders showsettings [with_dev=False]``
  Show all settings for the cog with defaults and values.
+
+* ``[p]setreminders snoozeview <snooze_view>``
+ Send Snooze view/buttons when reminders sending.
 
 ------------
 Installation

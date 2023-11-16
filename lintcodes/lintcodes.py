@@ -143,7 +143,7 @@ class LintCodes(Cog):
 
     @commands.is_owner()
     @lintcode.command(name="aflake8", aliases=["af8", "aflake"])
-    async def flake8_advanced(self, ctx: commands.Context, *, flags: Flake8FlagsConverter):
+    async def flake8_advanced(self, ctx: commands.Context, *, flags: str):
         """Format code with Flake8, with flags.
 
         **Supported flags:**
@@ -163,6 +163,7 @@ class LintCodes(Cog):
         - `--max_doc_length <integer>`
         - `--max_complexity <integer>`
         """
+        flags: Flake8FlagsConverter = await Flake8FlagsConverter().convert(ctx, argument=flags)
         code = await self.get_code_from_context(ctx, code=box(flags.code, lang="py"))
         await Linter(linter="flake8", flags=flags).lint(ctx, code=code)
 
@@ -174,7 +175,7 @@ class LintCodes(Cog):
 
     @commands.is_owner()
     @lintcode.command(name="apylint", aliases=["apyl"])
-    async def pylint_advanced(self, ctx: commands.Context, *, flags: PyLintFlagsConverter):
+    async def pylint_advanced(self, ctx: commands.Context, *, flags: str):
         """Format code with PyLint, with flags.
 
         **Supported flags:**
@@ -185,6 +186,7 @@ class LintCodes(Cog):
         - `--disable <disable_list>`
         - `--enable <enable_list>`
         """
+        flags: PyLintFlagsConverter = await PyLintFlagsConverter().convert(ctx, argument=flags)
         code = await self.get_code_from_context(ctx, code=box(flags.code, lang="py"))
         await Linter(linter="pylint", flags=flags).lint(ctx, code=code)
 
@@ -196,7 +198,7 @@ class LintCodes(Cog):
 
     @commands.is_owner()
     @lintcode.command(name="amypy", aliases=["amp"])
-    async def mypy_advanced(self, ctx: commands.Context, *, flags: MyPyFlagsConverter):
+    async def mypy_advanced(self, ctx: commands.Context, *, flags: str):
         """Format code with MyPy, with flags.
 
         **Supported flags:**
@@ -273,6 +275,7 @@ class LintCodes(Cog):
           - `--hide_error_codes <yes>`
           - `--pretty <yes>`
         """
+        flags: MyPyFlagsConverter = await MyPyFlagsConverter().convert(ctx, argument=flags)
         code = await self.get_code_from_context(ctx, code=box(flags.code, lang="py"))
         await Linter(linter="mypy", flags=flags).lint(ctx, code=code)
 
@@ -284,7 +287,7 @@ class LintCodes(Cog):
 
     @commands.is_owner()
     @lintcode.command(name="abandit", aliases=["abd"])
-    async def bandit_advanced(self, ctx: commands.Context, *, flags: BanditFlagsConverter):
+    async def bandit_advanced(self, ctx: commands.Context, *, flags: str):
         """Format code with Bandit, with flags.
 
         **Supported flags:**
@@ -298,6 +301,7 @@ class LintCodes(Cog):
         - `--level <low/medium/high>`
         - `--confidence <low/medium/high>`
         """
+        flags: BanditFlagsConverter = await BanditFlagsConverter().convert(ctx, argument=flags)
         code = await self.get_code_from_context(ctx, code=box(flags.code, lang="py"))
         await Linter(linter="bandit", flags=flags).lint(ctx, code=code)
 
@@ -337,8 +341,9 @@ class LintCodes(Cog):
 
     @commands.is_owner()
     @lintcode.command(name="apyright", aliases=["apyr"])
-    async def pyright_advanced(self, ctx: commands.Context, *, flags: PyRightFlagsConverter):
+    async def pyright_advanced(self, ctx: commands.Context, *, flags: str):
         """Format code with PyRight, with flags."""
+        flags: PyRightFlagsConverter = await PyRightFlagsConverter().convert(ctx, argument=flags)
         code = await self.get_code_from_context(ctx, code=box(flags.code, lang="py"))
         await Linter(linter="pyright", flags=flags).lint(ctx, code=code)
 
@@ -350,7 +355,7 @@ class LintCodes(Cog):
 
     @commands.is_owner()
     @lintcode.command(name="aruff", aliases=["arf"])
-    async def ruff_advanced(self, ctx: commands.Context, *, flags: RuffFlagsConverter):
+    async def ruff_advanced(self, ctx: commands.Context, *, flags: str):
         """Format code with Ruff, with flags.
 
         **Supported flags:**
@@ -363,5 +368,6 @@ class LintCodes(Cog):
         - `--max_doc_length <integer>`
         - `--max_complexity <integer>`
         """
+        flags: RuffFlagsConverter = await RuffFlagsConverter().convert(ctx, argument=flags)
         code = await self.get_code_from_context(ctx, code=box(flags.code, lang="py"))
         await Linter(linter="ruff", flags=flags).lint(ctx, code=code)

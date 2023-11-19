@@ -674,6 +674,8 @@ class DiscordModals(Cog):
                 "submit": argument["messages"]["submit"],
             },
             "pings": argument["pings"],
+            "whitelist_roles": argument["whitelist_roles"],
+            "blacklist_roles": argument["blacklist_roles"],
         }
         await self.config.guild(ctx.guild).modals.set(config)
         await ctx.send(_("Modal created."))

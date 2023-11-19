@@ -5,6 +5,7 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+from redbot.core.utils.chat_formatting import pagify
 from redbot.core.utils.tunnel import Tunnel
 
 # Credits:
@@ -177,18 +178,19 @@ class TransferChannel(Cog):
             if way == "webhooks":
                 if not any([message.content, message.embeds, message.attachments]):
                     continue
-                await hook.send(
-                    username=message.author.display_name,
-                    avatar_url=message.author.display_avatar,
-                    content=message.content,
-                    embeds=message.embeds,
-                    files=files,
-                    allowed_mentions=discord.AllowedMentions(
-                        everyone=False, users=False, roles=False
-                    ),
-                    thread=destination if isinstance(destination, discord.Thread) else discord.utils.MISSING,
-                    wait=True,
-                )
+                for page in pagify(message.content):
+                    await hook.send(
+                        username=message.author.display_name,
+                        avatar_url=message.author.display_avatar,
+                        content=page,
+                        embeds=message.embeds,
+                        files=files,
+                        allowed_mentions=discord.AllowedMentions(
+                            everyone=False, users=False, roles=False
+                        ),
+                        thread=destination if isinstance(destination, discord.Thread) else discord.utils.MISSING,
+                        wait=True,
+                    )
             elif way == "embeds":
                 embed = self.embed_from_msg(message)
                 try:
@@ -242,15 +244,16 @@ class TransferChannel(Cog):
                     )
                 else:
                     await destination.send(msg, allowed_mentions=discord.AllowedMentions.none())
-                    await destination.send(
-                        message.content,
-                        embeds=message.embeds,
-                        files=files,
-                        stickers=message.stickers,
-                        allowed_mentions=discord.AllowedMentions(
-                            everyone=False, users=False, roles=False
-                        ),
-                    )
+                    for page in pagify(message.content):
+                        await destination.send(
+                            page,
+                            embeds=message.embeds,
+                            files=files,
+                            stickers=message.stickers,
+                            allowed_mentions=discord.AllowedMentions(
+                                everyone=False, users=False, roles=False
+                            ),
+                        )
         return count_messages, messages
 
     @commands.guildowner_or_permissions(administrator=True)

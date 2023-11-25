@@ -432,7 +432,7 @@ class Reminder:
                 if self.content["type"] == "event" else
                 (
                     _("this command")
-                    if self.content["type"] != "command" else
+                    if self.content["type"] == "command" else
                     (
                         (
                             _("this message")

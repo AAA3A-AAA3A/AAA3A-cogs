@@ -20,7 +20,7 @@ class LinkQuoterView(discord.ui.View):
     def __init__(self, quoted_message: discord.Message) -> None:
         super().__init__(timeout=60)
         self.quoted_message: discord.Message = quoted_message
-        self.add_item(discord.ui.Button(label="Jump to Message!", style=discord.ButtonStyle.link, url=self.quoted_message.jump_url))
+        self.add_item(discord.ui.Button(label="Jump to Message!", style=discord.ButtonStyle.url, url=self.quoted_message.jump_url))
         self._message: discord.Message = None
 
     async def on_timeout(self) -> None:

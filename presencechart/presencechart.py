@@ -54,7 +54,7 @@ class PresenceChart(Cog):
                 cog=self,
                 name="Save PresenceChart Data",
                 function=self.save_to_config,
-                minutes=1,
+                minutes=5,
             )
         )
 
@@ -218,11 +218,15 @@ class PresenceChart(Cog):
     async def save_to_config(self) -> None:
         all_presence_data = self.presence_data_cache.copy()
         self.presence_data_cache = {}
-        for user_id, (time, data) in all_presence_data.items():
-            presence_data = await self.config.user_from_id(user_id).presence_data()
-            presence_data.append([time, data[1]])
-            await self.config.user_from_id(user_id).presence_data.set(presence_data)
-        # Run Cleanup
+        user_group = self.config._get_base_group(self.config.USER)
+        async with user_group.all() as users_data:
+            for user_id, (time, data) in all_presence_data.items():
+                if str(user_id) not in users_data:
+                    users_data[str(user_id)] = {}
+                if "presence_data" not in users_data[str(user_id)]:
+                    users_data[str(user_id)]["presence_data"] = []
+                users_data[str(user_id)]["presence_data"].append([time, data[1]])
+        # Run Cleanup.
         await self.cleanup()
 
     async def cleanup(self) -> None:

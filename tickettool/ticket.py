@@ -583,7 +583,7 @@ class Ticket:
                     reason=reason,
                 )
                 await logschannel.send(
-                    _("Report on the close of the ticket {ticket.id}."),
+                    _("Report on the close of the ticket {ticket.id}.").format(ticket=ticket),
                     embed=embed,
                 )
         if self.first_message is not None:

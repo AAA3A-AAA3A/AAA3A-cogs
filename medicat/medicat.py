@@ -141,7 +141,7 @@ CUSTOM_COMMANDS = {
     "whenupdate": {
         "title": _("How often will Medicat be updated?"),
         "description": _(
-            "Medicat is currently on hiatus.\nDue to personal reasons neither Jayro or Matt have the time to develop Medicat full time.\nWe do encourage you to update the tools as you see fit on your end." # MediCat USB is now a rolling release, so will be regularly updated with major releases, and minor updates as needed (Typically monthly or bi-monthly). The links here will always be the latest version. The PortableApps are easily updatable by the user, once they have been 'burned' to USB
+            "Medicat is currently on hiatus.\nDue to personal reasons, neither Jayro, Matt or AAA3A have the time to develop Medicat full time.\nWe do encourage you to update the tools as you see fit on your end." # MediCat USB is now a rolling release, so will be regularly updated with major releases, and minor updates as needed (Typically monthly or bi-monthly). The links here will always be the latest version. The PortableApps are easily updatable by the user, once they have been 'burned' to USB
         ),
     },
     "wimvhd": {

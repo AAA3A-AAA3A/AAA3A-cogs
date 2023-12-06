@@ -671,6 +671,11 @@ class Reminder:
             raise RuntimeError(
                 f"Destination {self.destination} not found for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
             )
+        else:
+            if destination.guild is not None and destination.guild.get_member(user.id) is None:
+                raise RuntimeError(
+                    f"Member {self.user_id} not found in the guild {destination.guild.id} for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
+                )
         if not self.content or "type" not in self.content:
             await self.delete()
             raise RuntimeError(
@@ -686,7 +691,7 @@ class Reminder:
             self.cog.bot.dispatch(self.content["event_name"], self, *self.content.get("args", []), **self.content.get("kwargs", []))
 
         elif self.content["type"] == "command":
-            if (invoker := self.cog.bot.get_user(self.content["command_invoker"])) is None:
+            if (invoker := self.cog.bot.get_user(self.content["command_invoker"])) is None or (getattr(destination, "guild", None) is not None and (invoker := destination.guild.get_member(invoker.id)) is None):
                 if not testing:
                     await self.delete()
                 raise RuntimeError(

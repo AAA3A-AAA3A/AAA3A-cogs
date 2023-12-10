@@ -113,10 +113,10 @@ class TransferChannel(Cog):
                     "I need to have all the permissions to send messages with embeds in {destination.guild.name} ({destination.guild.id})."
                 ).format(destination=destination)
             )
-        if way == "webhook" and not destination_permissions.manage_webhooks:
+        if way == "webhooks" and not destination_permissions.manage_webhooks:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I need to have all the permission to create webhooks in {destination.guild.name} ({destination.guild.id})."
+                    "I need to have all the permission to create webhooks in {destination.guild.name} ({destination.guild.id}). You can use embeds or text messages by adding `embeds`/`messages` to your command."
                 ).format(destination=destination)
             )
 
@@ -135,7 +135,7 @@ class TransferChannel(Cog):
         async for message in channel.history(
             limit=(limit if channel != ctx.message.channel and ctx.interaction is None else limit + 1) if limit is not None else None, before=before, after=after, oldest_first=False
         ):
-            if message.type != discord.MessageType.default:
+            if message.type not in (discord.MessageType.default, discord.MessageType.reply):
                 continue
             if user_id is not None and message.author.id != user_id:
                 continue

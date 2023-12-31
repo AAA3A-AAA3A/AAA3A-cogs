@@ -317,12 +317,12 @@ class ConsoleLogs(Cog, DashboardIntegration):
             for i, console_log_to_display_str in enumerate(console_logs_to_display_str):
                 if i == view:
                     page_index = len(pages)
-                pages.extend(list(pagify(console_log_to_display_str, shorten_by=10 + len(prefix))))
+                pages.extend(list(pagify(console_log_to_display_str, shorten_by=12 + len(prefix))))
         else:
             pages = list(
                 pagify(
                     ("\n" * lines_break).join(console_logs_to_display_str),
-                    shorten_by=10 + len(prefix),
+                    shorten_by=12 + len(prefix),
                 )
             )
             page_index = [

@@ -111,7 +111,8 @@ class StringToEmbed(commands.Converter):
             embed = discord.Embed.from_dict(data)
             length = len(embed)
         except Exception as error:
-            return await self.embed_convert_error(ctx, _("Embed Parse Error"), error)
+            await self.embed_convert_error(ctx, _("Embed Parse Error"), error)
+            raise commands.BadArgument()
 
         if length > 6000:
             raise commands.BadArgument(

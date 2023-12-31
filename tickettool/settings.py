@@ -47,7 +47,7 @@ class settings(Cog):
         message: typing.Optional[MyMessageConverter],
         reason_options: commands.Greedy[EmojiLabelDescriptionValueConverter],
         emoji: typing.Optional[Emoji] = "🎟️",
-        label: str = None,
+        label: commands.Range[str, 1, 80] = None,
     ) -> None:
         """Send a message with a button to open a ticket or dropdown with possible reasons.
 

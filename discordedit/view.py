@@ -137,7 +137,7 @@ class DiscordEditView(discord.ui.View):
         modal: discord.ui.Modal = discord.ui.Modal(title=f"Edit {self._object_qualified_name}")
         modal.on_submit = lambda interaction: interaction.response.defer()
         text_inputs: typing.Dict[str, discord.ui.TextInput] = {}
-        for parameter in self._splitted_parameters[button_index]:
+        for parameter in self._chunked_parameters[button_index]:
             text_input = discord.ui.TextInput(
                 label=parameter.replace("_", " ").title(),
                 style=discord.TextStyle.short,

@@ -83,6 +83,7 @@ class StringToEmbed(commands.Converter):
             data = json.loads(argument)
         except json.decoder.JSONDecodeError as error:
             await self.embed_convert_error(ctx, _("JSON Parse Error"), error)
+            raise commands.BadArgument()
         self.check_data_type(ctx, data, **kwargs)
         return data
 
@@ -91,6 +92,7 @@ class StringToEmbed(commands.Converter):
             data = yaml.safe_load(argument)
         except Exception as error:
             await self.embed_convert_error(ctx, _("YAML Parse Error"), error)
+            raise commands.BadArgument()
         self.check_data_type(ctx, data, **kwargs)
         return data
 
@@ -126,7 +128,8 @@ class StringToEmbed(commands.Converter):
         try:
             await ctx.channel.send(**kwargs)  # ignore tips/monkeypatch cogs
         except discord.errors.HTTPException as error:
-            return await self.embed_convert_error(ctx, _("Embed Send Error"), error)
+            await self.embed_convert_error(ctx, _("Embed Send Error"), error)
+            raise commands.BadArgument()
 
     @staticmethod
     async def embed_convert_error(ctx: commands.Context, error_type: str, error: Exception) -> None:

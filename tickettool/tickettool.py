@@ -1396,13 +1396,23 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 **kwargs,
             )
             if not await discord.utils.async_all([check(ctx) for check in ctx.command.checks]):
-                await interaction.followup.send(
-                    _("You are not allowed to execute this command."), ephemeral=True
-                )
+                try:
+                    await interaction.response.send_message(
+                        _("You are not allowed to execute this command."), ephemeral=True
+                    )
+                except discord.InteractionResponded:
+                    await interaction.followup.send(
+                        _("You have chosen to create a ticket."), ephemeral=True
+                    )
             else:
-                await interaction.followup.send(
-                    _("You have chosen to create a ticket."), ephemeral=True
-                )
+                try:
+                    await interaction.response.send_message(
+                        _("You have chosen to create a ticket."), ephemeral=True
+                    )
+                except discord.InteractionResponded:
+                    await interaction.followup.send(
+                        _("You have chosen to create a ticket."), ephemeral=True
+                    )
         elif interaction.data["custom_id"] == "close_ticket_button":
             modal = discord.ui.Modal(
                 title="Close Ticket", timeout=180, custom_id="close_ticket_modal"
@@ -1565,9 +1575,14 @@ class TicketTool(settings, DashboardIntegration, Cog):
         if not await discord.utils.async_all(
             [check(ctx) for check in ctx.command.checks]
         ) or not hasattr(ctx, "ticket"):
-            await interaction.followup.send(
-                _("You are not allowed to execute this command."), ephemeral=True
-            )
+            try:
+                await interaction.response.send_message(
+                    _("You are not allowed to execute this command."), ephemeral=True
+                )
+            except discord.InteractionResponded:
+                await interaction.followup.send(
+                    _("You are not allowed to execute this command."), ephemeral=True
+                )
             return
         config = await self.get_config(interaction.guild, profile)
         if config["embed_button"]["rename_channel_dropdown"]:
@@ -1586,12 +1601,20 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     )
             except discord.HTTPException:
                 pass
-        await interaction.followup.send(
-            _("You have chosen to create a ticket with the reason `{reason}`.").format(
-                reason=reason
-            ),
-            ephemeral=True,
-        )
+        try:
+            await interaction.response.send_message(
+                _("You have chosen to create a ticket with the reason `{reason}`.").format(
+                    reason=reason
+                ),
+                ephemeral=True,
+            )
+        except discord.InteractionResponded:
+            await interaction.followup.send(
+                _("You have chosen to create a ticket with the reason `{reason}`.").format(
+                    reason=reason
+                ),
+                ephemeral=True,
+            )
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:

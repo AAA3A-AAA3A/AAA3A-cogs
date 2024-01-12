@@ -930,7 +930,10 @@ class Medicat(Cog):
         embed.title = "Last bootables tools download links"
         embed.url = "https://www.fcportables.com/"
         embed.description = "\n".join(
-            [f"{bold(name)} ➜ {' OR '.join(value) if value else f'FAILED - {BOOTABLES_TOOLS[name]}'}" for name, value in result.items()]
+            [
+                f"{bold(name)} ➜ {' OR '.join(value) if value else '⚠️ ' + BOOTABLES_TOOLS[name]['url']}"
+                for name, value in result.items()
+            ]
         )
         view = discord.ui.View()
         view.add_item(

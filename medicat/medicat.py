@@ -183,7 +183,7 @@ BOOTABLES_TOOLS = {
     "EaseUS Todo Backup": {
         "url": "https://www.fcportables.com/easeus-todo-backup-winpe/",
         "category": "USB\\Backup_and_Recovery\\",
-        "regex": r"EaseUS Todo Backup (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Build (\d*) WinPE \(x64\)",
+        "regex": r"EaseUS Todo Backup v.(\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Technician winPE",
     },
     "Macrium Reflect": {
         "url": "https://www.fcportables.com/macrium-reflect-rescue-winpe/",
@@ -208,7 +208,7 @@ BOOTABLES_TOOLS = {
     "EasyUEFI Technician": {
         "url": "https://www.fcportables.com/easyuefi-portable-winpe/",
         "category": "USB\\Boot_Repair\\",
-        "regex": r"Portable EasyUEFI Enterprise (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \+ WinPE",
+        "regex": r"Portable EasyUEFI Technicians (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \+ WinPE",
     },
     "SystemRescue": {
         "url": "https://www.fcportables.com/systemrescuecd/",
@@ -228,7 +228,7 @@ BOOTABLES_TOOLS = {
     "Memtest86 Pro": {
         "url": "https://www.fcportables.com/memtest86-pro/",
         "category": "USB\\Boot_Repair\\",
-        "regex": r"Memtest86 Pro v(\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) ISO-USB Multilingual \(Fixed\)",
+        "regex": r"Memtest86 Pro v(\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) ISO-USB Multilingual",
     },
     "Active@ Boot Disk": {
         "url": "https://www.fcportables.com/active-boot-disk/",
@@ -894,6 +894,63 @@ class Medicat(Cog):
             for y, z in result[x].items():
                 message += f"\n{y}: {z}"
         await Menu(pages=message, lang="py").start(ctx)
+
+    @is_owner_or_AAA3A()
+    @commands.bot_has_permissions(embed_links=True)
+    @medicat.command(aliases=["bootablestoolsdownloadlinks"])
+    async def getbootablestoolsdownloadlinks(self, ctx: commands.Context) -> None:
+        """Get the download link of each Medicat USB bootable tool."""
+        result = {}
+        for tool in BOOTABLES_TOOLS:
+            try:
+                async with self._session.get(BOOTABLES_TOOLS[tool]["url"], timeout=3) as r:
+                    content = await r.text()
+                # for x in r.split("\n"):
+                #     if '"headline":' in x and '<html lang="en-US">' not in x:
+                #         break
+                # x = x.replace('    "headline": "', "").replace('",', "")
+                soup = BeautifulSoup(content, "lxml")
+                result[tool] = [
+                    element["href"].strip()
+                    for element in soup.find_all(
+                        "a",
+                        href=lambda href: href is not None and href.strip().startswith("https://uploadrar.com/"),
+                    )
+                ]
+            except asyncio.TimeoutError:
+                result[tool] = None
+        embed: discord.Embed = discord.Embed()
+        embed.set_thumbnail(
+            url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg"
+        )
+        embed.set_footer(
+            text="From FCportables.",
+            icon_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg",
+        )
+        embed.title = "Last bootables tools download links"
+        embed.url = "https://www.fcportables.com/"
+        embed.description = "\n".join(
+            [f"{bold(name)} ➜ {' OR '.join(value)}" for name, value in result.items()]
+        )
+        view = discord.ui.View()
+        view.add_item(
+            discord.ui.Button(
+                style=discord.ButtonStyle.url,
+                label=_("View FCportables Official Website"),
+                url="https://www.fcportables.com/",
+            )
+        )
+        try:
+            hook: discord.Webhook = await CogsUtils.get_hook(bot=self.bot, channel=ctx.channel)
+            await hook.send(
+                embed=embed,
+                username="Bootables Tools Updates",
+                avatar_url="https://www.fcportables.com/wp-content/uploads/fcportables-logo.jpg",
+                view=view,
+                wait=True,
+            )
+        except discord.HTTPException:
+            await ctx.send(embed=embed, view=view)
 
     @is_owner_or_AAA3A()
     @commands.bot_has_permissions(embed_links=True)

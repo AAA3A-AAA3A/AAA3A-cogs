@@ -489,7 +489,7 @@ class Ticket:
             overwrites = self.channel.overwrites
             for member in members:
                 if member in overwrites:
-                    overwrites[member]["send_messages"] = True
+                    overwrites[member].send_messages = True
             await self.channel.edit(
                 name=new_name, category=config["category_open"], overwrites=overwrites, reason=_reason
             )
@@ -636,7 +636,7 @@ class Ticket:
             overwrites = self.channel.overwrites
             for member in members:
                 if member in overwrites:
-                    overwrites[member]["send_messages"] = False
+                    overwrites[member].send_messages = False
             await self.channel.edit(
                 name=new_name, category=config["category_close"], overwrites=overwrites, reason=_reason
             )

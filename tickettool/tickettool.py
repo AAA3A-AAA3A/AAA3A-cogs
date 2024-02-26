@@ -109,8 +109,8 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ] = {
             "enable": {"converter": bool, "description": "Enable the system."},
             "logschannel": {
-                "converter": discord.TextChannel,
-                "description": "Set the channel where the logs will be saved.",
+                "converter": typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+                "description": "Set the channel where the logs will be sent/saved.",
             },
             "forum_channel": {
                 "converter": typing.Union[discord.ForumChannel, discord.TextChannel],
@@ -412,7 +412,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             if key not in config:
                 config[key] = value
         if config["logschannel"] is not None:
-            config["logschannel"] = guild.get_channel(config["logschannel"])
+            config["logschannel"] = guild.get_channel_or_thread(config["logschannel"])
         if config["forum_channel"] is not None:
             config["forum_channel"] = guild.get_channel(config["forum_channel"])
         if config["category_open"] is not None:

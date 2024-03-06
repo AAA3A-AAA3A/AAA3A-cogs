@@ -57,7 +57,7 @@ class LinkQuoter(Cog):
             "cross_server": False,
             "delete_message": False,
             "delete_after": 0,
-            "delete_mesage_button": True,
+            "delete_message_button": True,
             "whitelist_channels": [],
             "blacklist_channels": [],
         }

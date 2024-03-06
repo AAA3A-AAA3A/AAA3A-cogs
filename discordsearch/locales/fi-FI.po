@@ -1,0 +1,58 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-08-10 13:42+0200\n"
+"PO-Revision-Date: 2023-08-10 11:46\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/discordsearch/locales/messages.pot\n"
+"X-Crowdin-File-ID: 138\n"
+"Language: fi_FI\n"
+
+#: discordsearch\discordsearch.py:34
+#, docstring
+msgid "A cog to edit roles!"
+msgstr "Roolinmuokkauksen hammasratas!"
+
+#: discordsearch\discordsearch.py:106
+msgid "You must provide at least one parameter."
+msgstr "Sinun on annettava vähintään yksi parametri."
+
+#: discordsearch\discordsearch.py:167
+msgid "Your regex process took too long. Removing from memory."
+msgstr "Regex-prosessi kesti liian kauan. Poistetaan muistista."
+
+#: discordsearch\discordsearch.py:173
+msgid "There is an error in your regex.\n"
+"{e}"
+msgstr "Regexissäsi on virhe.\n"
+"{e}"
+
+#: discordsearch\discordsearch.py:211
+msgid "Look at the original message."
+msgstr "Katso alkuperäistä viestiä."
+
+#: discordsearch\discordsearch.py:227
+msgid "Search in #{channel.name} ({channel.id})"
+msgstr "Haku osoitteessa #{channel.name} ({channel.id})"
+
+#: discordsearch\discordsearch.py:228
+msgid "Sorry, I could not find any results."
+msgstr "Anteeksi, en löytänyt tuloksia."
+
+#: discordsearch\discordsearch.py:241
+msgid "Search in #{channel.name} ({channel.id}) in {total}s"
+msgstr "Haku osoitteessa #{channel.name} ({channel.id}) osoitteessa {total}s"
+
+#: discordsearch\discordsearch.py:253
+msgid "Unrecognized date/time."
+msgstr "Tunnistamaton päivämäärä/aika."
+

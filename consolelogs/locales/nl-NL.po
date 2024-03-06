@@ -1,0 +1,90 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:11\n"
+"Last-Translator: \n"
+"Language-Team: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: nl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/consolelogs/locales/messages.pot\n"
+"X-Crowdin-File-ID: 261\n"
+"Language: nl_NL\n"
+
+#: consolelogs\consolelogs.py:92
+#, docstring
+msgid "A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!"
+msgstr "Een cog om console logs weer te geven, met knoppen en filter opties, en om commando's te versturen in ingestelde kanalen!"
+
+#: consolelogs\consolelogs.py:243
+msgid "No logs to display."
+msgstr "Geen logs om weer te geven."
+
+#: consolelogs\consolelogs.py:380
+#, docstring
+msgid "View the console logs one by one, for all levels/loggers or provided level/logger name."
+msgstr "Bekijk de console logs één voor één, voor alle levels/loggers of geef een naam van een level/logger."
+
+#: consolelogs\consolelogs.py:395
+#, docstring
+msgid "View the `ERROR` console logs one by one, for all loggers or a provided logger name."
+msgstr "Bekijk de `ERROR` console logs één voor één, voor alle loggers of geen een naam van een logger."
+
+#: consolelogs\consolelogs.py:423 consolelogs\consolelogs.py:434
+#, docstring
+msgid "Scroll the console logs, for all levels/loggers or provided level/logger name."
+msgstr "Scroll door de console logs, voor alle levels/loggers of geef een naam van een level/logger."
+
+#: consolelogs\consolelogs.py:464
+#, docstring
+msgid "Enable errors logging in a channel.\n\n"
+"        **Parameters:**\n"
+"        - `channel`: The channel where the commands errors will be sent.\n"
+"        - `global_errors`: Log errors for the entire bot, not just the channel server.\n"
+"        - `prefixed_commands_errors`: Log prefixed commands errors.\n"
+"        - `slash_commands_errors`: Log slash commands errors.\n"
+"        - `dpy_ignored_exceptions`: Log dpy ignored exceptions (events listeners and Views errors).\n"
+"        - `guild_invite`: Add a button \"Guild Invite\" in commands errors logs, only for community servers.\n"
+"        "
+msgstr "Schakel enable logging in voor een channel.\n\n"
+"        **Parameters:**\n"
+"        - `channel`: Het kanaal waar de commando foutmeldingen gestuurd worden.\n"
+"        - `global_errors`: Log foutmeldingen voor de hele bot, niet alleen the channel server.\n"
+"        - `prefixed_commands_errors`: Log prefixed commando's foutmeldingen.\n"
+"        - `slash_commands_errors`: Log slash commando's foutmeldingen.\n"
+"        - `dpy_ignored_exceptions`: Log dpy genegeerde uitzonderingen (events listeners en Views errors).\n"
+"        - `guild_invite`: Voeg een knop \"Guild Invite\" toe in commando's errors logs, alleen voor community servers.\n"
+"        "
+
+#: consolelogs\consolelogs.py:483
+msgid "I don't have the permissions to send embeds in this channel."
+msgstr "Ik heb geen permissies om embeds te sturen in dit channel."
+
+#: consolelogs\consolelogs.py:491
+msgid "Errors logging enabled in {channel.mention}."
+msgstr "Foutregistratie ingeschakeld in {channel.mention}."
+
+#: consolelogs\consolelogs.py:495
+#, docstring
+msgid "Disable errors logging in a channel."
+msgstr "Schakel foutregistratie uit in een kanaal."
+
+#: consolelogs\consolelogs.py:498
+msgid "Errors logging isn't enabled in this channel."
+msgstr "Foutregistratie is niet ingeschakeld in dit kanaal."
+
+#: consolelogs\consolelogs.py:501
+msgid "Errors logging disabled in {channel.mention}."
+msgstr "Foutregistratie uitgeschakeld in {channel.mention}."
+
+#: consolelogs\consolelogs.py:505
+#, docstring
+msgid "Get an embed to check loops status."
+msgstr "Krijg een embed om de lusstatus te controleren."
+

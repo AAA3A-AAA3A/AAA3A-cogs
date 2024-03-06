@@ -1,0 +1,84 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:11\n"
+"Last-Translator: \n"
+"Language-Team: Ukrainian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: uk\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/splitorstealgame/locales/messages.pot\n"
+"X-Crowdin-File-ID: 241\n"
+"Language: uk_UA\n"
+
+#: splitorstealgame\splitorstealgame.py:19
+#, docstring
+msgid "A cog to play a match of SplitOrSteal game!"
+msgstr "Гвинтик, щоб зіграти матч у грі SplitOrSteal!"
+
+#: splitorstealgame\view.py:33
+msgid "Join the game by clicking on the button below. 2 players will be selected randomly."
+msgstr "Приєднуйтесь до гри, натиснувши на кнопку нижче. 2 гравці будуть обрані випадковим чином."
+
+#: splitorstealgame\view.py:49
+msgid "At least two players are needed to play."
+msgstr "Для гри потрібно щонайменше два гравці."
+
+#: splitorstealgame\view.py:58
+msgid "The two players are {player_A.mention} and {player_B.mention}.\n"
+"You have to click the button that you choose (`split` or `steal`).\n"
+"• If you both choose `split` both of them win.\n"
+"• If you both choose `steal`, both of you loose.\n"
+"• if one of you chooses `split` and one of you chooses `steal`, the one who choose `steal` will win."
+msgstr "Два гравці: {player_A.mention} та {player_B.mention}.\n"
+"Ви повинні натиснути кнопку, яку ви вибрали (`split` або `steal`).\n"
+"- Якщо обидва гравці обирають \"розділити\", то обидва виграють.\n"
+"- Якщо ви обидва обираєте \"вкрасти\", ви обидва програєте.\n"
+"- якщо один з вас вибере \"розділити\", а інший - \"вкрасти\", виграє той, хто вибере \"вкрасти\"."
+
+#: splitorstealgame\view.py:84
+msgid "At least one player has stopped playing."
+msgstr "Принаймні один гравець припинив гру."
+
+#: splitorstealgame\view.py:87
+msgid "{player_A.display_name} and {player_B.display_name}, you both chose `split` and therefore both win."
+msgstr "{player_A.display_name} і {player_B.display_name}, ви обидва обрали \"розділити\", а отже, обидва виграли."
+
+#: splitorstealgame\view.py:93
+msgid "{player_A.display_name} and {player_B.display_name}, you both chose `steal` and therefore both loose."
+msgstr "{player_A.display_name} і {player_B.display_name}, ви обидва вибрали \"вкрасти\" і тому обидва програли."
+
+#: splitorstealgame\view.py:99
+msgid "{player_A.display_name} chose `steal` and {player_B.display_name} chose `split`, and therefore {player_A.display_name} win."
+msgstr "{player_A.display_name} вибрали \"вкрасти\", а {player_B.display_name} вибрали \"розколоти\", і тому {player_A.display_name} виграли."
+
+#: splitorstealgame\view.py:105
+msgid "{player_B.display_name} chose `steal` and {player_A.display_name} chose `split`, and therefore {player_B.display_name} win."
+msgstr "{player_B.display_name} вибрали \"вкрасти\", а {player_A.display_name} вибрали \"розколоти\", і тому {player_B.display_name} виграли."
+
+#: splitorstealgame\view.py:137
+msgid "You have already joined this game."
+msgstr "Ви вже долучилися до цієї гри."
+
+#: splitorstealgame\view.py:141
+msgid "You have joined this game."
+msgstr "Ви приєдналися до цієї гри."
+
+#: splitorstealgame\view.py:149 splitorstealgame\view.py:164
+msgid "You have already chose `{original_response}`."
+msgstr "Ви вже обрали `{original_response}`."
+
+#: splitorstealgame\view.py:156
+msgid "You have chose `split`."
+msgstr "Ви вибрали \"розкол\"."
+
+#: splitorstealgame\view.py:171
+msgid "You have chose `steal`."
+msgstr "Ви вибрали \"вкрасти\"."
+

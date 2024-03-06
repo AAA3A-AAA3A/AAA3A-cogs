@@ -1,0 +1,1140 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:10\n"
+"Last-Translator: \n"
+"Language-Team: Greek\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: el\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/discordedit/locales/messages.pot\n"
+"X-Crowdin-File-ID: 163\n"
+"Language: el_GR\n"
+
+#: discordedit\discordedit.py:23
+#, docstring
+msgid "A cog to edit Discord default objects, like guilds, roles, text channels, voice channels, threads and AutoMod!"
+msgstr "Ένα γρανάζι για την επεξεργασία προεπιλεγμένων αντικειμένων του Discord, όπως συντεχνίες, ρόλοι, κανάλια κειμένου, φωνητικά κανάλια, νήματα και AutoMod!"
+
+#: discordedit\editautomod.py:18 discordedit\editguild.py:26
+#: discordedit\editrole.py:25 discordedit\edittextchannel.py:27
+#: discordedit\editthread.py:32 discordedit\editvoicechannel.py:27
+#: discordedit\view.py:18
+msgid "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n"
+"{error}"
+msgstr "Προσπάθησα να κάνω κάτι για το οποίο το Discord μου αρνήθηκε τα δικαιώματα. Η εντολή σας απέτυχε να ολοκληρωθεί επιτυχώς.\n"
+"{error}"
+
+#: discordedit\editautomod.py:30
+msgid "Invalid rule ID."
+msgstr "Μη έγκυρο αναγνωριστικό κανόνα."
+
+#: discordedit\editautomod.py:34
+msgid "Rule not found."
+msgstr "Κανόνας δεν βρέθηκε."
+
+#: discordedit\editautomod.py:43 discordedit\editautomod.py:72
+msgid "Invalid JSON."
+msgstr "Μη έγκυρο JSON."
+
+#: discordedit\editautomod.py:50
+msgid "Invalid data. Must be a dict with `trigger_type` and `trigger_metadara` keys."
+msgstr "Μη έγκυρα δεδομένα. Πρέπει να είναι μια dict με κλειδιά `trigger_type` και `trigger_metadara`."
+
+#: discordedit\editautomod.py:55
+msgid "Invalid trigger type."
+msgstr "Μη έγκυρος τύπος σκανδάλου."
+
+#: discordedit\editautomod.py:61
+msgid "Invalid trigger metadata."
+msgstr "Μη έγκυρα μεταδεδομένα σκανδάλου."
+
+#: discordedit\editautomod.py:75 discordedit\editautomod.py:85
+msgid "Invalid data. Must be a list of dicts with `type` and `data` keys."
+msgstr "Μη έγκυρα δεδομένα. Πρέπει να είναι μια λίστα από dicts με κλειδιά `type` και `data`."
+
+#: discordedit\editautomod.py:90
+msgid "Invalid action type."
+msgstr "Μη έγκυρος τύπος ενέργειας."
+
+#: discordedit\editautomod.py:97
+msgid "Invalid action metadata."
+msgstr "Μη έγκυρα μεταδεδομένα δράσης."
+
+#: discordedit\editautomod.py:104
+#, docstring
+msgid "A cog to edit AutoMod rules!"
+msgstr "Ένα γρανάζι για την επεξεργασία των κανόνων του AutoMod!"
+
+#: discordedit\editautomod.py:126
+#, docstring
+msgid "Create an AutoMod rule.\n\n"
+"        event_type:\n"
+"        - message_send = 1\n\n"
+"        `trigger` and `actions` arguments must be JSON with specified keys. Warning, remove all spaces in the trigger dict.\n"
+"        trigger:\n"
+"        - `trigger_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types\n"
+"        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
+"        actions:\n"
+"        - `action_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-types\n"
+"        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
+"        "
+msgstr "Δημιουργήστε έναν κανόνα AutoMod.\n\n"
+"        event_type:\n\n\n"
+"        - Τα ορίσματα `trigger` και `actions` πρέπει να είναι JSON με καθορισμένα κλειδιά. Προσοχή, αφαιρέστε όλα τα κενά στο dict του trigger.\n"
+"        trigger:\n"
+"        - `trigger_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types\n"
+"        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
+"        actions:\n"
+"        - `action_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-types\n"
+"        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
+"        "
+
+#: discordedit\editautomod.py:152
+msgid "AutoMod rule {rule.name} ({rule.id}) created."
+msgstr "Δημιουργήθηκε ο κανόνας AutoMod {rule.name} ({rule.id})."
+
+#: discordedit\editautomod.py:160
+#, docstring
+msgid "List all AutoMod rules in the current guild."
+msgstr "Λίστα όλων των κανόνων AutoMod στην τρέχουσα συντεχνία."
+
+#: discordedit\editautomod.py:166
+msgid "List of AutoMod rules in {guild.name} ({guild.id})"
+msgstr "Κατάλογος κανόνων AutoMod στο {guild.name} ({guild.id})"
+
+#: discordedit\editautomod.py:181
+#, docstring
+msgid "Edit AutoMod rule name."
+msgstr "Επεξεργασία ονόματος κανόνα AutoMod."
+
+#: discordedit\editautomod.py:217
+#, docstring
+msgid "Edit AutoMod rule trigger.\n\n"
+"        trigger:\n"
+"        - `trigger_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types\n"
+"        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
+"        "
+msgstr "Επεξεργασία σκανδάλου κανόνα AutoMod.\n\n"
+"        σκανδάλη:\n"
+"        - `trigger_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types\n"
+"        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
+"        "
+
+#: discordedit\editautomod.py:241
+#, docstring
+msgid "Edit AutoMod rule actions.\n\n"
+"        actions:\n"
+"        - `action_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-types\n"
+"        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
+"        "
+msgstr "Επεξεργασία ενεργειών κανόνα AutoMod.\n\n"
+"        ενέργειες:\n"
+"        - https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-types\n"
+"        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
+"        "
+
+#: discordedit\editautomod.py:261
+#, docstring
+msgid "Edit AutoMod rule enabled."
+msgstr "Επεξεργασία κανόνα AutoMod ενεργοποιημένη."
+
+#: discordedit\editautomod.py:280
+#, docstring
+msgid "Edit AutoMod rule exempt roles."
+msgstr "Επεξεργασία των εξαιρούμενων ρόλων του κανόνα AutoMod."
+
+#: discordedit\editautomod.py:303
+#, docstring
+msgid "Edit AutoMod rule exempt channels."
+msgstr "Επεξεργασία κανόνα AutoMod που εξαιρεί τα κανάλια."
+
+#: discordedit\editautomod.py:321
+#, docstring
+msgid "Delete automod rule."
+msgstr "Διαγραφή κανόνα automod."
+
+#: discordedit\editautomod.py:325
+msgid "⚠️ - Delete AutoMod rule"
+msgstr "⚠️ - Διαγραφή κανόνα AutoMod"
+
+#: discordedit\editautomod.py:326 discordedit\editautomod.py:333
+msgid "Do you really want to delete the AutoMod rule {rule.name} ({rule.id}) in {guild.name} ({guild.id})?"
+msgstr "Θέλετε πραγματικά να διαγράψετε τον κανόνα AutoMod {rule.name} ({rule.id}) στο {guild.name} ({guild.id});"
+
+#: discordedit\editautomod.py:409 discordedit\editautomod.py:432
+msgid "Rule `{rule.name} ({rule.id})` edited."
+msgstr "Κανόνας `{rule.name} ({rule.id})` επεξεργασμένος."
+
+#: discordedit\editautomod.py:626
+msgid "Select channels/roles to exempt for the AutoMod rule `{rule.name} ({rule.id})`."
+msgstr "Επιλέξτε τα κανάλια/ρόλους που θα εξαιρεθούν από τον κανόνα AutoMod `{rule.name} ({rule.id})`."
+
+#: discordedit\editautomod.py:648
+msgid "Rule `{rule.name} ({rule.id})` enabled."
+msgstr "Ο κανόνας `{rule.name} ({rule.id})` ενεργοποιήθηκε."
+
+#: discordedit\editautomod.py:650
+msgid "Rule {rule.name} `{rule.id}` disabled."
+msgstr "Κανόνας {rule.name} `{rule.id}` απενεργοποιημένο."
+
+#: discordedit\editautomod.py:668
+msgid "Rule `{rule.name} ({rule.id})` deleted."
+msgstr "Κανόνας \"{rule.name} ({rule.id})`\" διαγράφεται."
+
+#: discordedit\editguild.py:39
+msgid "Converting to `Locale` failed for parameter `preferred_locale`."
+msgstr "Η μετατροπή σε `Locale` απέτυχε για την παράμετρο `preferred_locale`."
+
+#: discordedit\editguild.py:51 discordedit\editguild.py:59
+msgid "The verification level must be `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` or `4`."
+msgstr "Το επίπεδο επαλήθευσης πρέπει να είναι \"κανένα\", \"χαμηλό\", \"μεσαίο\", \"υψηλό\", \"υψηλότερο\", \"0\", \"1\", \"2\", \"3\" ή \"4\"."
+
+#: discordedit\editguild.py:70 discordedit\editguild.py:74
+#: discordedit\editguild.py:82
+msgid "The video quality mode must be `0` or `1`."
+msgstr "Η λειτουργία ποιότητας βίντεο πρέπει να είναι \"0\" ή \"1\"."
+
+#: discordedit\editguild.py:90
+#, docstring
+msgid "A cog to edit guilds!"
+msgstr "Ένα γρανάζι για την επεξεργασία συντεχνιών!"
+
+#: discordedit\editguild.py:111
+#, docstring
+msgid "Create a guild with the bot as owner."
+msgstr "Δημιουργήστε μια συντεχνία με το bot ως ιδιοκτήτη."
+
+#: discordedit\editguild.py:129
+#, docstring
+msgid "Clone a guild."
+msgstr "Κλωνοποιήστε μια συντεχνία."
+
+#: discordedit\editguild.py:151
+#, docstring
+msgid "Edit guild name."
+msgstr "Επεξεργαστείτε το όνομα της συντεχνίας."
+
+#: discordedit\editguild.py:167
+#, docstring
+msgid "Edit guild description."
+msgstr "Επεξεργαστείτε την περιγραφή της συντεχνίας."
+
+#: discordedit\editguild.py:181
+#, docstring
+msgid "Edit guild community state."
+msgstr "Επεξεργαστείτε την κατάσταση της κοινότητας της συντεχνίας."
+
+#: discordedit\editguild.py:197
+#, docstring
+msgid "Edit guild afkchannel."
+msgstr "Επεξεργασία του afkchannel της συντεχνίας."
+
+#: discordedit\editguild.py:211
+#, docstring
+msgid "Edit guild afktimeout."
+msgstr "Επεξεργασία συντεχνίας afktimeout."
+
+#: discordedit\editguild.py:231
+#, docstring
+msgid "Edit guild owner (if the bot is bot owner)."
+msgstr "Επεξεργαστείτε τον ιδιοκτήτη της συντεχνίας (αν το bot είναι ιδιοκτήτης bot)."
+
+#: discordedit\editguild.py:236
+msgid ":⚠️ - Change Guild Owner"
+msgstr ":⚠️ - Αλλαγή ιδιοκτήτη συντεχνίας"
+
+#: discordedit\editguild.py:237 discordedit\editguild.py:244
+msgid "Do you really want to change guild owner of the guild {guild.name} ({guild.id})?"
+msgstr "Θέλετε πραγματικά να αλλάξετε τον ιδιοκτήτη της συντεχνίας {guild.name} ({guild.id});"
+
+#: discordedit\editguild.py:264
+#, docstring
+msgid "Edit guild verification level."
+msgstr "Επεξεργαστείτε το επίπεδο επαλήθευσης της συντεχνίας."
+
+#: discordedit\editguild.py:282
+#, docstring
+msgid "Edit guild notification level."
+msgstr "Επεξεργασία επιπέδου ειδοποίησης συντεχνίας."
+
+#: discordedit\editguild.py:298
+#, docstring
+msgid "Edit guild explicit content filter."
+msgstr "Επεξεργαστείτε το φίλτρο ρητού περιεχομένου της συντεχνίας."
+
+#: discordedit\editguild.py:312
+#, docstring
+msgid "Edit guild vanity code."
+msgstr "Επεξεργαστείτε τον κωδικό ματαιοδοξίας της συντεχνίας."
+
+#: discordedit\editguild.py:328
+#, docstring
+msgid "Edit guild system channel."
+msgstr "Επεξεργασία καναλιού συστήματος συντεχνίας."
+
+#: discordedit\editguild.py:344
+#, docstring
+msgid "Edit guild system channel flags."
+msgstr "Επεξεργαστείτε τις σημαίες καναλιών του συστήματος συντεχνιών."
+
+#: discordedit\editguild.py:360
+#, docstring
+msgid "Edit guild preferred locale.\n\n"
+"        american_english = 'en-US'\n"
+"        british_english = 'en-GB'\n"
+"        bulgarian = 'bg'\n"
+"        chinese = 'zh-CN'\n"
+"        taiwan_chinese = 'zh-TW'\n"
+"        croatian = 'hr'\n"
+"        czech = 'cs'\n"
+"        danish = 'da'\n"
+"        dutch = 'nl'\n"
+"        finnish = 'fi'\n"
+"        french = 'fr'\n"
+"        german = 'de'\n"
+"        greek = 'el'\n"
+"        hindi = 'hi'\n"
+"        hungarian = 'hu'\n"
+"        italian = 'it'\n"
+"        japanese = 'ja'\n"
+"        korean = 'ko'\n"
+"        lithuanian = 'lt'\n"
+"        norwegian = 'no'\n"
+"        polish = 'pl'\n"
+"        brazil_portuguese = 'pt-BR'\n"
+"        romanian = 'ro'\n"
+"        russian = 'ru'\n"
+"        spain_spanish = 'es-ES'\n"
+"        swedish = 'sv-SE'\n"
+"        thai = 'th'\n"
+"        turkish = 'tr'\n"
+"        ukrainian = 'uk'\n"
+"        vietnamese = 'vi'\n"
+"        "
+msgstr "Επεξεργαστείτε την προτιμώμενη τοποθεσία της συντεχνίας.\n\n"
+"        american_english = 'en-US'\n"
+"        british_english = 'en-GB'\n"
+"        bulgarian = 'bg'\n"
+"        chinese = 'zh-CN'\n"
+"        taiwan_chinese = 'zh-TW'\n"
+"        κροατικά = 'hr'\n"
+"        τσεχικά = 'cs'\n"
+"        δανικά = 'da'\n"
+"        ολλανδικά = 'nl'\n"
+"        φινλανδικά = 'fi'\n"
+"        γαλλικά = 'fr'\n"
+"        γερμανικά = 'de'\n"
+"        ελληνικά = 'el'\n"
+"        hindi = 'hi'\n"
+"        hungarian = 'hu'\n"
+"        italian = 'it'\n"
+"        japanese = 'ja'\n"
+"        korean = 'ko'\n"
+"        lithuanian = 'lt'\n"
+"        norwegian = 'no'\n"
+"        polish = 'pl'\n"
+"        brazil_portuguese = 'pt-BR'\n"
+"        ρουμανικά = 'ro'\n"
+"        ρωσικά = 'ru'\n"
+"        spain_spanish = 'es-ES'\n"
+"        σουηδικά = 'sv-SE'\n"
+"        thai = 'th'\n"
+"        τουρκικά = 'tr'\n"
+"        ουκρανικά = 'uk'\n"
+"        βιετναμέζικα = 'vi'\n"
+"        "
+
+#: discordedit\editguild.py:408
+#, docstring
+msgid "Edit guild rules channel."
+msgstr "Επεξεργασία του καναλιού κανόνων της συντεχνίας."
+
+#: discordedit\editguild.py:426
+#, docstring
+msgid "Edit guild public updates channel."
+msgstr "Επεξεργαστείτε το κανάλι δημόσιων ενημερώσεων της συντεχνίας."
+
+#: discordedit\editguild.py:442
+#, docstring
+msgid "Edit guild premium progress bar enabled."
+msgstr "Ενεργοποιήθηκε η μπάρα προόδου για την επεξεργασία της πριμοδότησης της συντεχνίας."
+
+#: discordedit\editguild.py:458
+#, docstring
+msgid "Edit guild discoverable state."
+msgstr "Επεξεργασία της κατάστασης εντοπισμού της συντεχνίας."
+
+#: discordedit\editguild.py:474
+#, docstring
+msgid "Edit guild invites disabled state."
+msgstr "Επεξεργασία της κατάστασης απενεργοποιημένων προσκλήσεων συντεχνίας."
+
+#: discordedit\editguild.py:488
+#, docstring
+msgid "Edit guild invites widget enabled state."
+msgstr "Επεξεργασία της κατάστασης ενεργοποίησης του widget προσκλήσεων συντεχνίας."
+
+#: discordedit\editguild.py:504
+#, docstring
+msgid "Edit guild invites widget channel."
+msgstr "Επεξεργασία καναλιού widget προσκλήσεων συντεχνίας."
+
+#: discordedit\editguild.py:522
+#, docstring
+msgid "Edit guild invites raid alerts disabled state."
+msgstr "Επεξεργασία της κατάστασης απενεργοποιημένων ειδοποιήσεων επιδρομής για προσκλήσεις συντεχνίας."
+
+#: discordedit\editguild.py:540
+#, docstring
+msgid "Edit guild invites safety alerts channel."
+msgstr "Επεξεργασία του καναλιού ειδοποιήσεων ασφαλείας που προσκαλεί η συντεχνία."
+
+#: discordedit\editguild.py:559
+#, docstring
+msgid "Delete guild (if the bot is owner)."
+msgstr "Διαγραφή συντεχνίας (αν το bot είναι ιδιοκτήτης)."
+
+#: discordedit\editguild.py:564
+msgid "⚠️ - Delete Guild"
+msgstr "⚠️ - Διαγραφή συντεχνίας"
+
+#: discordedit\editguild.py:565 discordedit\editguild.py:572
+msgid "Do you really want to delete the guild {guild.name} ({guild.id})?"
+msgstr "Θέλετε πραγματικά να διαγράψετε τη συντεχνία {guild.name} ({guild.id});"
+
+#: discordedit\editguild.py:590
+#, docstring
+msgid "View and edit guild."
+msgstr "Προβολή και επεξεργασία συντεχνίας."
+
+#: discordedit\editrole.py:50
+msgid "The position must be an integer."
+msgstr "Η θέση πρέπει να είναι ακέραιος αριθμός."
+
+#: discordedit\editrole.py:54
+msgid "The indicated position must be between 1 and {max_guild_roles_position}."
+msgstr "Η υποδεικνυόμενη θέση πρέπει να είναι μεταξύ 1 και {max_guild_roles_position}."
+
+#: discordedit\editrole.py:70 discordedit\edittextchannel.py:57
+#: discordedit\editvoicechannel.py:57
+msgid "This permission is invalid."
+msgstr "Αυτό το δικαίωμα είναι άκυρο."
+
+#: discordedit\editrole.py:93
+#, docstring
+msgid "A cog to edit roles!"
+msgstr "Ένα γρανάζι για την επεξεργασία ρόλων!"
+
+#: discordedit\editrole.py:105
+msgid "I can not let you edit @{role.name} ({role.id}) because that role is higher than or equal to your highest role in the Discord hierarchy."
+msgstr "Δεν μπορώ να σας αφήσω να επεξεργαστείτε το @{role.name} ({role.id}) επειδή ο ρόλος αυτός είναι υψηλότερος ή ίσος με τον υψηλότερο ρόλο σας στην ιεραρχία του Discord."
+
+#: discordedit\editrole.py:111
+msgid "I can not edit @{role.name} ({role.id}) because that role is higher than or equal to my highest role in the Discord hierarchy."
+msgstr "Δεν μπορώ να επεξεργαστώ το @{role.name} ({role.id}) επειδή αυτός ο ρόλος είναι υψηλότερος ή ίσος με τον υψηλότερο ρόλο μου στην ιεραρχία του Discord."
+
+#: discordedit\editrole.py:133
+#, docstring
+msgid "Create a role."
+msgstr "Δημιουργήστε έναν ρόλο."
+
+#: discordedit\editrole.py:151
+#, docstring
+msgid "List all roles in the current guild."
+msgstr "Καταγράψτε όλους τους ρόλους στην τρέχουσα συντεχνία."
+
+#: discordedit\editrole.py:157
+msgid "List of roles in {guild.name} ({guild.id})"
+msgstr "Κατάλογος ρόλων στο {guild.name} ({guild.id})"
+
+#: discordedit\editrole.py:170
+#, docstring
+msgid "Edit role name."
+msgstr "Επεξεργασία ονόματος ρόλου."
+
+#: discordedit\editrole.py:186
+#, docstring
+msgid "Edit role color."
+msgstr "Επεξεργασία χρώματος ρόλου."
+
+#: discordedit\editrole.py:202
+#, docstring
+msgid "Edit role hoist."
+msgstr "Επεξεργασία ρόλου ανύψωσης."
+
+#: discordedit\editrole.py:223
+#, docstring
+msgid "Edit role display icon.\n\n"
+"        `display_icon` can a Unicode emoji, a custom emoji or an url. You can also upload an attachment.\n"
+"        "
+msgstr "Εικονίδιο εμφάνισης ρόλου επεξεργασίας.\n\n"
+"        Το `display_icon` μπορεί να είναι ένα Unicode emoji, ένα προσαρμοσμένο emoji ή ένα url. Μπορείτε επίσης να ανεβάσετε ένα συνημμένο αρχείο.\n"
+"        "
+
+#: discordedit\editrole.py:229
+msgid "This server doesn't have `ROLE_ICONS` feature. This server needs more boosts to perform this action."
+msgstr "Αυτός ο διακομιστής δεν έχει τη δυνατότητα `ROLE_ICONS`. Αυτός ο διακομιστής χρειάζεται περισσότερα boosts για να εκτελέσει αυτή την ενέργεια."
+
+#: discordedit\editrole.py:274
+#, docstring
+msgid "Edit role mentionable."
+msgstr "Επεξεργασία ρόλου που μπορεί να αναφερθεί."
+
+#: discordedit\editrole.py:292
+#, docstring
+msgid "Edit role position.\n\n"
+"        Warning: The role with a position 1 is the highest role in the Discord hierarchy.\n"
+"        "
+msgstr "Επεξεργασία θέσης ρόλου.\n\n"
+"        Προειδοποίηση: Ο ρόλος με θέση 1 είναι ο υψηλότερος ρόλος στην ιεραρχία του Discord.\n"
+"        "
+
+#: discordedit\editrole.py:315
+#, docstring
+msgid "Edit role permissions.\n\n"
+"        You must possess the permissions you wish to modify.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
+"        "
+msgstr "Επεξεργασία δικαιωμάτων ρόλων.\n\n"
+"        Πρέπει να διαθέτετε τα δικαιώματα που θέλετε να τροποποιήσετε.\n\n"
+"        - `create_instant_invite`\n"
+"        - `manage_channels`\n"
+"        - `add_reactions`\n"
+"        - `priority_speaker`\n"
+"        - `stream`\n"
+"        - `read_messages`\n"
+"        - `send_messages`\n"
+"        - `send_tts_messages`\n"
+"        - `manage_messages`\n"
+"        - `embed_links`\n"
+"        - `attach_files`\n"
+"        - `read_message_history`\n"
+"        - `mention_everyone`\n"
+"        - `external_emojis`\n"
+"        - `connect`\n"
+"        - `speak`\n"
+"        - `mute_members`\n"
+"        - `deafen_members`\n"
+"        - `move_members`\n"
+"        - `use_voice_activation`\n"
+"        - `manage_roles`\n"
+"        - `manage_webhooks`\n"
+"        - `use_application_commands`\n"
+"        - `request_to_speak`\n"
+"        - `manage_threads`\n"
+"        - `create_public_threads`\n"
+"        - `create_private_threads`\n"
+"        - `external_stickers`\n"
+"        - `send_messages_in_threads`\n"
+"        "
+
+#: discordedit\editrole.py:352 discordedit\edittextchannel.py:526
+#: discordedit\editvoicechannel.py:466
+msgid "You need to provide at least one permission."
+msgstr "Πρέπει να δώσετε τουλάχιστον μία άδεια."
+
+#: discordedit\editrole.py:358
+msgid "You don't have the permission {permission_name} in this guild."
+msgstr "Δεν έχετε την άδεια {permission_name} σε αυτή τη συντεχνία."
+
+#: discordedit\editrole.py:380
+#, docstring
+msgid "Delete a role."
+msgstr "Διαγραφή ενός ρόλου."
+
+#: discordedit\editrole.py:385
+msgid "⚠️ - Delete role"
+msgstr "⚠️ - Διαγραφή ρόλου"
+
+#: discordedit\editrole.py:386 discordedit\editrole.py:393
+msgid "Do you really want to delete the role {role.mention} ({role.id})?"
+msgstr "Θέλετε πραγματικά να διαγράψετε τον ρόλο {role.mention} ({role.id});"
+
+#: discordedit\editrole.py:414
+#, docstring
+msgid "View and edit role."
+msgstr "Προβολή και επεξεργασία ρόλου."
+
+#: discordedit\edittextchannel.py:68 discordedit\edittextchannel.py:72
+msgid "The channel type must be `text`, `news`, `0` or `5`."
+msgstr "Ο τύπος του καναλιού πρέπει να είναι `text`, `news`, `0` ή `5`."
+
+#: discordedit\edittextchannel.py:77
+#, docstring
+msgid "A cog to edit text channels!"
+msgstr "Ένα γρανάζι για την επεξεργασία καναλιών κειμένου!"
+
+#: discordedit\edittextchannel.py:97
+msgid "I can not edit the text channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
+msgstr "Δεν μπορώ να επεξεργαστώ το κανάλι κειμένου {channel.mention} ({channel.id}) επειδή δεν έχω το δικαίωμα `manage_channel`."
+
+#: discordedit\edittextchannel.py:119
+#, docstring
+msgid "Create a text channel."
+msgstr "Δημιουργήστε ένα κανάλι κειμένου."
+
+#: discordedit\edittextchannel.py:137
+#, docstring
+msgid "List all text channels in the current guild."
+msgstr "Λίστα με όλα τα κανάλια κειμένου στην τρέχουσα συντεχνία."
+
+#: discordedit\edittextchannel.py:143
+msgid "List of text channels in {guild.name} ({guild.id})"
+msgstr "Κατάλογος καναλιών κειμένου στο {guild.name} ({guild.id})"
+
+#: discordedit\edittextchannel.py:162
+#, docstring
+msgid "Clone a text channel."
+msgstr "Κλωνοποίηση ενός καναλιού κειμένου."
+
+#: discordedit\edittextchannel.py:186
+#, docstring
+msgid "Create an invite for a text channel.\n\n"
+"        `max_age`: How long the invite should last in days. If it's 0 then the invite doesn't expire.\n"
+"        `max_uses`: How many uses the invite could be used for. If it's 0 then there are unlimited uses.\n"
+"        `temporary`: Denotes that the invite grants temporary membership (i.e. they get kicked after they disconnect).\n"
+"        `unique`: Indicates if a unique invite URL should be created. Defaults to True. If this is set to False then it will return a previously created invite.\n"
+"        "
+msgstr "Δημιουργήστε μια πρόσκληση για ένα κανάλι κειμένου.\n\n"
+"        `max_age`: Πόσο θα διαρκέσει η πρόσκληση σε ημέρες. Αν είναι 0, τότε η πρόσκληση δεν λήγει.\n"
+"        `max_uses`: Για πόσες χρήσεις μπορεί να χρησιμοποιηθεί η πρόσκληση. Αν είναι 0 τότε υπάρχουν απεριόριστες χρήσεις.\n"
+"        `temporary`: Υποδηλώνει ότι η πρόσκληση χορηγεί προσωρινή ιδιότητα μέλους (δηλ. τους διώχνουν αφού αποσυνδεθούν).\n"
+"        `unique`: Δείχνει αν θα πρέπει να δημιουργηθεί μια μοναδική διεύθυνση URL πρόσκλησης. Η προεπιλογή είναι True. Εάν αυτό οριστεί σε False τότε θα επιστρέψει μια πρόσκληση που έχει δημιουργηθεί προηγουμένως.\n"
+"        "
+
+#: discordedit\edittextchannel.py:218
+#, docstring
+msgid "Edit text channel name."
+msgstr "Επεξεργασία ονόματος καναλιού κειμένου."
+
+#: discordedit\edittextchannel.py:240
+#, docstring
+msgid "Edit text channel topic."
+msgstr "Επεξεργασία θέματος καναλιού κειμένου."
+
+#: discordedit\edittextchannel.py:262
+#, docstring
+msgid "Edit text channel position.\n\n"
+"        Warning: Only text channels are taken into account. Channel 1 is the highest positioned text channel.\n"
+"        Channels cannot be moved to a position that takes them out of their current category.\n"
+"        "
+msgstr "Επεξεργασία θέσης καναλιού κειμένου.\n\n"
+"        Προειδοποίηση: Λαμβάνονται υπόψη μόνο τα κανάλια κειμένου. Το κανάλι 1 είναι το κανάλι κειμένου με την υψηλότερη θέση.\n"
+"        Τα κανάλια δεν μπορούν να μετακινηθούν σε θέση που τα βγάζει από την τρέχουσα κατηγορία τους.\n"
+"        "
+
+#: discordedit\edittextchannel.py:287
+#, docstring
+msgid "Edit text channel nsfw."
+msgstr "Επεξεργασία κειμένου καναλιού nsfw."
+
+#: discordedit\edittextchannel.py:310
+#, docstring
+msgid "Edit text channel syncpermissions with category."
+msgstr "Επεξεργασία άδειας συγχρονισμού καναλιού κειμένου με κατηγορία."
+
+#: discordedit\edittextchannel.py:333
+#, docstring
+msgid "Edit text channel category."
+msgstr "Επεξεργασία κατηγορίας καναλιού κειμένου."
+
+#: discordedit\edittextchannel.py:354
+#, docstring
+msgid "Edit text channel slowmode delay.\n\n"
+"        Specifies the slowmode rate limit for user in this channel. A value of 0s disables slowmode. The maximum value possible is 21600s.\n"
+"        "
+msgstr "Επεξεργασία καθυστέρησης αργής λειτουργίας καναλιού κειμένου.\n\n"
+"        Καθορίζει το όριο ρυθμού slowmode για τον χρήστη σε αυτό το κανάλι. Μια τιμή 0s απενεργοποιεί την αργή λειτουργία. Η μέγιστη δυνατή τιμή είναι 21600s.\n"
+"        "
+
+#: discordedit\edittextchannel.py:382
+#, docstring
+msgid "Edit text channel type.\n\n"
+"        `text`: 0\n"
+"        `news`: 5\n"
+"        Currently, only conversion between ChannelType.text and ChannelType.news is supported. This is only available to guilds that contain NEWS in Guild.features.\n"
+"        "
+msgstr "Επεξεργασία τύπου καναλιού κειμένου.\n\n"
+"        `text`: 0\n"
+"        `news`: 5\n"
+"        Επί του παρόντος, υποστηρίζεται μόνο η μετατροπή μεταξύ ChannelType.text και ChannelType.news. Αυτό είναι διαθέσιμο μόνο σε συντεχνίες που περιέχουν NEWS στο Guild.features.\n"
+"        "
+
+#: discordedit\edittextchannel.py:410
+#, docstring
+msgid "Edit text channel default auto archive duration.\n\n"
+"        The new default auto archive duration in minutes for threads created in this channel. Must be one of `60`, `1440`, `4320`, or `10080`.\n"
+"        "
+msgstr "Επεξεργαστείτε την προεπιλεγμένη διάρκεια αυτόματης αρχειοθέτησης του καναλιού κειμένου.\n\n"
+"        Η νέα προεπιλεγμένη διάρκεια αυτόματης αρχειοθέτησης σε λεπτά για νήματα που δημιουργούνται σε αυτό το κανάλι. Πρέπει να είναι ένα από τα `60`, `1440`, `4320` ή `10080`.\n"
+"        "
+
+#: discordedit\edittextchannel.py:436
+#, docstring
+msgid "Edit text channel default thread slowmode delay.\n\n"
+"        The new default thread slowmode delay in seconds for threads created in this channel. Must be between 0 and 21600 (6 hours) seconds.\n"
+"        "
+msgstr "Επεξεργαστείτε την προεπιλεγμένη καθυστέρηση αργής λειτουργίας νήματος του καναλιού κειμένου.\n\n"
+"        Η νέα προεπιλεγμένη καθυστέρηση αργής λειτουργίας νήματος σε δευτερόλεπτα για νήματα που δημιουργούνται σε αυτό το κανάλι. Πρέπει να είναι μεταξύ 0 και 21600 (6 ώρες) δευτερόλεπτα.\n"
+"        "
+
+#: discordedit\edittextchannel.py:466
+#, docstring
+msgid "Edit text channel overwrites/permissions.\n\n"
+"        You may not specify `True` or `False` to reset the permission(s).\n"
+"        You must possess the permissions you wish to modify.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
+"        "
+msgstr "Επεξεργασία κειμένου καναλιού αντικατάστασης/αδειών.\n\n"
+"        Δεν μπορείτε να καθορίσετε `True` ή `False` για να επαναφέρετε τα δικαιώματα.\n"
+"        Πρέπει να διαθέτετε τα δικαιώματα που θέλετε να τροποποιήσετε.\n\n"
+"        - `create_instant_invite`\n"
+"        - `manage_channels`\n"
+"        - `add_reactions`\n"
+"        - `priority_speaker`\n"
+"        - `stream`\n"
+"        - `read_messages`\n"
+"        - `send_messages`\n"
+"        - `send_tts_messages`\n"
+"        - `manage_messages`\n"
+"        - `embed_links`\n"
+"        - `attach_files`\n"
+"        - `read_message_history`\n"
+"        - `mention_everyone`\n"
+"        - `external_emojis`\n"
+"        - `connect`\n"
+"        - `speak`\n"
+"        - `mute_members`\n"
+"        - `deafen_members`\n"
+"        - `move_members`\n"
+"        - `use_voice_activation`\n"
+"        - `manage_roles`\n"
+"        - `manage_webhooks`\n"
+"        - `use_application_commands`\n"
+"        - `request_to_speak`\n"
+"        - `manage_threads`\n"
+"        - `create_public_threads`\n"
+"        - `create_private_threads`\n"
+"        - `external_stickers`\n"
+"        - `send_messages_in_threads`\n"
+"        "
+
+#: discordedit\edittextchannel.py:511 discordedit\editvoicechannel.py:451
+msgid "You need to provide a role or user you want to edit permissions for."
+msgstr "Πρέπει να δώσετε έναν ρόλο ή έναν χρήστη για τον οποίο θέλετε να επεξεργαστείτε τα δικαιώματα."
+
+#: discordedit\edittextchannel.py:532 discordedit\editvoicechannel.py:472
+msgid "You don't have the permission {permission_name} in this channel."
+msgstr "Δεν έχετε την άδεια {permission_name} σε αυτό το κανάλι."
+
+#: discordedit\edittextchannel.py:558 discordedit\editvoicechannel.py:498
+msgid "You cannot remove permissions from you in this channel."
+msgstr "Δεν μπορείτε να αφαιρέσετε δικαιώματα από εσάς σε αυτό το κανάλι."
+
+#: discordedit\edittextchannel.py:568 discordedit\editvoicechannel.py:508
+msgid "You cannot remove permissions from the bot in this channel."
+msgstr "Δεν μπορείτε να αφαιρέσετε δικαιώματα από το ρομπότ σε αυτό το κανάλι."
+
+#: discordedit\edittextchannel.py:587
+#, docstring
+msgid "Delete a text channel."
+msgstr "Διαγραφή ενός καναλιού κειμένου."
+
+#: discordedit\edittextchannel.py:594
+msgid "⚠️ - Delete text channel"
+msgstr "⚠️ - Διαγραφή καναλιού κειμένου"
+
+#: discordedit\edittextchannel.py:595 discordedit\edittextchannel.py:602
+msgid "Do you really want to delete the text channel {channel.mention} ({channel.id})?"
+msgstr "Θέλετε πραγματικά να διαγράψετε το κανάλι κειμένου {channel.mention} ({channel.id});"
+
+#: discordedit\edittextchannel.py:621
+#, docstring
+msgid "View and edit text channel."
+msgstr "Προβολή και επεξεργασία καναλιού κειμένου."
+
+#: discordedit\editthread.py:62
+msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
+msgstr "Emoji Ο ρόλος πρέπει να είναι ένα emoji ακολουθούμενο από έναν ρόλο χωρισμένο είτε με `;`, `,`, `|`, ή `-`."
+
+#: discordedit\editthread.py:72
+#, docstring
+msgid "A cog to edit threads!"
+msgstr "Ένα γρανάζι για την επεξεργασία νημάτων!"
+
+#: discordedit\editthread.py:93
+msgid "I can not edit the thread {thread.mention} ({thread.id}) because you don't have the `manage_channel` permission."
+msgstr "Δεν μπορώ να επεξεργαστώ το νήμα {thread.mention} ({thread.id}) επειδή δεν έχετε το δικαίωμα `manage_channel`."
+
+#: discordedit\editthread.py:117
+#, docstring
+msgid "Create a thread.\n\n"
+"        You'll join it automatically.\n"
+"        "
+msgstr "Δημιουργήστε ένα νήμα.\n\n"
+"        Θα ενταχθείτε αυτόματα.\n"
+"        "
+
+#: discordedit\editthread.py:141
+#, docstring
+msgid "List all threads in the current guild."
+msgstr "Λίστα με όλα τα νήματα στην τρέχουσα συντεχνία."
+
+#: discordedit\editthread.py:149
+msgid "List of threads in {guild.name} ({guild.id})"
+msgstr "Κατάλογος νημάτων στο {guild.name} ({guild.id})"
+
+#: discordedit\editthread.py:165
+#, docstring
+msgid "Edit thread name."
+msgstr "Επεξεργασία ονόματος νήματος."
+
+#: discordedit\editthread.py:187
+#, docstring
+msgid "Edit thread archived."
+msgstr "Επεξεργασία νήματος αρχειοθετήθηκε."
+
+#: discordedit\editthread.py:210
+#, docstring
+msgid "Edit thread locked."
+msgstr "Επεξεργασία νήματος κλειδωμένο."
+
+#: discordedit\editthread.py:234
+#, docstring
+msgid "Edit thread pinned."
+msgstr "Επεξεργασία νήματος καρφιτσωμένο."
+
+#: discordedit\editthread.py:259
+#, docstring
+msgid "Edit thread invitable."
+msgstr "Επεξεργασία νήματος προσβάσιμη."
+
+#: discordedit\editthread.py:286
+#, docstring
+msgid "Edit thread auto archive duration."
+msgstr "Επεξεργασία διάρκειας αυτόματης αρχειοθέτησης νήματος."
+
+#: discordedit\editthread.py:311
+#, docstring
+msgid "Edit thread slowmode delay."
+msgstr "Επεξεργασία νήματος slowmode καθυστέρηση."
+
+#: discordedit\editthread.py:336
+#, docstring
+msgid "Edit thread applied tags.\n\n"
+"        ```\n"
+"        [p]editthread appliedtags \"<name>|<emoji>|[moderated]\"\n"
+"        [p]editthread appliedtags \"Reporting|⚠️|True\" \"Bug|🐛\"\n"
+"        ```\n"
+"        "
+msgstr "Επεξεργασία νήματος που εφαρμόζεται ετικέτες.\n\n"
+"        ```\n"
+"        [p]editthread appliedtags \"<name>|<emoji>|[moderated]\"\n"
+"        [p]editthread appliedtags \"Reporting|⚠️|True\" \"Bug|🐛\"\n"
+"        ```\n"
+"        "
+
+#: discordedit\editthread.py:367
+#, docstring
+msgid "Add member to thread."
+msgstr "Προσθήκη μέλους στο νήμα."
+
+#: discordedit\editthread.py:393
+#, docstring
+msgid "Remove member from thread."
+msgstr "Αφαιρέστε το μέλος από το νήμα."
+
+#: discordedit\editthread.py:415
+#, docstring
+msgid "Delete a thread."
+msgstr "Διαγράψτε ένα νήμα."
+
+#: discordedit\editthread.py:426
+msgid "⚠️ - Delete thread"
+msgstr "⚠️ - Διαγραφή νήματος"
+
+#: discordedit\editthread.py:427 discordedit\editthread.py:434
+msgid "Do you really want to delete the thread {thread.mention} ({thread.id})?"
+msgstr "Θέλετε πραγματικά να διαγράψετε το νήμα {thread.mention} ({thread.id});"
+
+#: discordedit\editthread.py:449
+#, docstring
+msgid "View and edit thread."
+msgstr "Προβολή και επεξεργασία νήματος."
+
+#: discordedit\editvoicechannel.py:66 discordedit\editvoicechannel.py:70
+msgid "The video quality mode must be `1` or `2`."
+msgstr "Η λειτουργία ποιότητας βίντεο πρέπει να είναι \"1\" ή \"2\"."
+
+#: discordedit\editvoicechannel.py:75
+#, docstring
+msgid "A cog to edit voice channels!"
+msgstr "Ένα γρανάζι για την επεξεργασία των φωνητικών καναλιών!"
+
+#: discordedit\editvoicechannel.py:95
+msgid "I can not edit the voice channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
+msgstr "Δεν μπορώ να επεξεργαστώ το φωνητικό κανάλι {channel.mention} ({channel.id}) επειδή δεν έχω το δικαίωμα `manage_channel`."
+
+#: discordedit\editvoicechannel.py:117
+#, docstring
+msgid "Create a voice channel."
+msgstr "Δημιουργήστε ένα φωνητικό κανάλι."
+
+#: discordedit\editvoicechannel.py:135
+#, docstring
+msgid "List all voice channels in the current guild."
+msgstr "Λίστα με όλα τα φωνητικά κανάλια στην τρέχουσα συντεχνία."
+
+#: discordedit\editvoicechannel.py:141
+msgid "List of voice channels in {guild.name} ({guild.id})"
+msgstr "Κατάλογος φωνητικών καναλιών στο {guild.name} ({guild.id})"
+
+#: discordedit\editvoicechannel.py:160
+#, docstring
+msgid "Clone a voice channel."
+msgstr "Κλωνοποίηση ενός φωνητικού καναλιού."
+
+#: discordedit\editvoicechannel.py:182
+#, docstring
+msgid "Create an invite for a voice channel.\n\n"
+"        `max_age`: How long the invite should last in days. If it's 0 then the invite doesn't expire.\n"
+"        `max_uses`: How many uses the invite could be used for. If it's 0 then there are unlimited uses.\n"
+"        `temporary`: Denotes that the invite grants temporary membership (i.e. they get kicked after they disconnect).\n"
+"        `unique`: Indicates if a unique invite URL should be created. Defaults to True. If this is set to False then it will return a previously created invite.\n"
+"        "
+msgstr "Δημιουργήστε μια πρόσκληση για ένα φωνητικό κανάλι.\n\n"
+"        `max_age`: Πόσο καιρό θα πρέπει να διαρκεί η πρόσκληση σε ημέρες. Αν είναι 0, τότε η πρόσκληση δεν λήγει.\n"
+"        `max_uses`: Για πόσες χρήσεις μπορεί να χρησιμοποιηθεί η πρόσκληση. Αν είναι 0 τότε υπάρχουν απεριόριστες χρήσεις.\n"
+"        `temporary`: Υποδηλώνει ότι η πρόσκληση χορηγεί προσωρινή ιδιότητα μέλους (δηλ. τους διώχνουν αφού αποσυνδεθούν).\n"
+"        `unique`: Δείχνει αν θα πρέπει να δημιουργηθεί μια μοναδική διεύθυνση URL πρόσκλησης. Η προεπιλογή είναι True. Εάν αυτό οριστεί σε False τότε θα επιστρέψει μια πρόσκληση που έχει δημιουργηθεί προηγουμένως.\n"
+"        "
+
+#: discordedit\editvoicechannel.py:212
+#, docstring
+msgid "Edit voice channel name."
+msgstr "Επεξεργασία ονόματος φωνητικού καναλιού."
+
+#: discordedit\editvoicechannel.py:228
+#, docstring
+msgid "Edit voice channel bitrate.\n\n"
+"        It must be a number between 8000 and\n"
+"        Level 1: 128000\n"
+"        Level 2: 256000\n"
+"        Level 3: 384000\n"
+"        "
+msgstr "Επεξεργασία bitrate καναλιού φωνής.\n\n"
+"        Πρέπει να είναι ένας αριθμός μεταξύ 8000 και\n"
+"        Επίπεδο 1: 128000\n"
+"        Επίπεδο 2: 256000\n"
+"        Επίπεδο 3: 384000\n"
+"        "
+
+#: discordedit\editvoicechannel.py:253
+#, docstring
+msgid "Edit voice channel nsfw."
+msgstr "Επεξεργασία φωνητικού καναλιού nsfw."
+
+#: discordedit\editvoicechannel.py:274
+#, docstring
+msgid "Edit voice channel user limit.\n\n"
+"        It must be a number between 0 and 99.\n"
+"        "
+msgstr "Επεξεργασία ορίου χρήστη φωνητικού καναλιού.\n\n"
+"        Πρέπει να είναι ένας αριθμός μεταξύ 0 και 99.\n"
+"        "
+
+#: discordedit\editvoicechannel.py:293
+#, docstring
+msgid "Edit voice channel position.\n\n"
+"        Warning: Only voice channels are taken into account. Channel 1 is the highest positioned voice channel.\n"
+"        Channels cannot be moved to a position that takes them out of their current category.\n"
+"        "
+msgstr "Επεξεργασία θέσης καναλιού φωνής.\n\n"
+"        Προειδοποίηση: Λαμβάνονται υπόψη μόνο τα φωνητικά κανάλια. Το κανάλι 1 είναι το κανάλι φωνής με την υψηλότερη θέση.\n"
+"        Τα κανάλια δεν μπορούν να μετακινηθούν σε θέση που τα βγάζει από την τρέχουσα κατηγορία τους.\n"
+"        "
+
+#: discordedit\editvoicechannel.py:313
+#, docstring
+msgid "Edit voice channel sync permissions."
+msgstr "Επεξεργασία δικαιωμάτων συγχρονισμού φωνητικού καναλιού."
+
+#: discordedit\editvoicechannel.py:334
+#, docstring
+msgid "Edit voice channel category."
+msgstr "Επεξεργασία κατηγορίας φωνητικού καναλιού."
+
+#: discordedit\editvoicechannel.py:353
+#, docstring
+msgid "Edit voice channel slowmode delay.\n\n"
+"        Specifies the slowmode rate limit for user in this channel. A value of 0s disables slowmode. The maximum value possible is 21600s.\n"
+"        "
+msgstr "Επεξεργασία καθυστέρησης αργής λειτουργίας καναλιού φωνής.\n\n"
+"        Καθορίζει το όριο ρυθμού αργής λειτουργίας για τον χρήστη σε αυτό το κανάλι. Η τιμή 0s απενεργοποιεί την αργή λειτουργία. Η μέγιστη δυνατή τιμή είναι 21600s.\n"
+"        "
+
+#: discordedit\editvoicechannel.py:379
+#, docstring
+msgid "Edit voice channel video quality mode.\n\n"
+"        auto = 1\n"
+"        full = 2\n"
+"        "
+msgstr "Επεξεργασία της λειτουργίας ποιότητας βίντεο του καναλιού φωνής.\n\n"
+"        auto = 1\n"
+"        full = 2\n"
+"        "
+
+#: discordedit\editvoicechannel.py:408
+#, docstring
+msgid "Edit voice channel overwrites/permissions.\n\n"
+"        You may not specify `True` or `False` to reset the overwrite(s).\n"
+"        You must possess the permissions you wish to modify.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
+"        "
+msgstr "Επεξεργασία αντικαταστάσεων/αδειών φωνητικού καναλιού.\n\n"
+"        Δεν μπορείτε να καθορίσετε `True` ή `False` για να επαναφέρετε την αντικατάσταση(ες).\n"
+"        Πρέπει να διαθέτετε τα δικαιώματα που θέλετε να τροποποιήσετε.\n\n"
+"        - `create_instant_invite`\n"
+"        - `manage_channels`\n"
+"        - `add_reactions`\n"
+"        - `priority_speaker`\n"
+"        - `stream`\n"
+"        - `read_messages`\n"
+"        - `send_messages`\n"
+"        - `send_tts_messages`\n"
+"        - `manage_messages`\n"
+"        - `embed_links`\n"
+"        - `attach_files`\n"
+"        - `read_message_history`\n"
+"        - `mention_everyone`\n"
+"        - `external_emojis`\n"
+"        - `connect`\n"
+"        - `speak`\n"
+"        - `mute_members`\n"
+"        - `deafen_members`\n"
+"        - `move_members`\n"
+"        - `use_voice_activation`\n"
+"        - `manage_roles`\n"
+"        - `manage_webhooks`\n"
+"        - `use_application_commands`\n"
+"        - `request_to_speak`\n"
+"        - `manage_threads`\n"
+"        - `create_public_threads`\n"
+"        - `create_private_threads`\n"
+"        - `external_stickers`\n"
+"        - `send_messages_in_threads`\n"
+"        "
+
+#: discordedit\editvoicechannel.py:527
+#, docstring
+msgid "Delete voice channel."
+msgstr "Διαγραφή φωνητικού καναλιού."
+
+#: discordedit\editvoicechannel.py:532
+msgid "⚠️ - Delete voice channel"
+msgstr "⚠️ - Διαγραφή φωνητικού καναλιού"
+
+#: discordedit\editvoicechannel.py:533 discordedit\editvoicechannel.py:540
+msgid "Do you really want to delete the voice channel {channel.mention} ({channel.id})?"
+msgstr "Θέλετε πραγματικά να διαγράψετε το φωνητικό κανάλι {channel.mention} ({channel.id});"
+
+#: discordedit\editvoicechannel.py:559
+#, docstring
+msgid "View and edit voice channel."
+msgstr "Προβολή και επεξεργασία φωνητικού καναλιού."
+
+#: discordedit\view.py:121
+msgid "You are not allowed to execute this command."
+msgstr "Δεν επιτρέπεται η εκτέλεση αυτής της εντολής."
+

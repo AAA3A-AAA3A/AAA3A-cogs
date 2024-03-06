@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:19\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/getloc/locales/messages.pot\n"
+"X-Crowdin-File-ID: 148\n"
+"Language: ja_JP\n"
+
+#: getloc\getloc.py:58
+#, docstring
+msgid "A cog to display information about a location based on its address or geographical coordinates!"
+msgstr "住所や地理座標に基づいた位置情報を表示するためのコグです！"
+
+#: getloc\getloc.py:162
+msgid "An error has occurred. Please try again."
+msgstr "エラーが発生しました。もう一度お試しください。"
+
+#: getloc\getloc.py:165
+msgid "The address or contact details you have provided do not lead to any results. Are you sure of your input?"
+msgstr "入力された住所や連絡先が、結果につながらない。入力した内容に間違いはありませんか？"
+

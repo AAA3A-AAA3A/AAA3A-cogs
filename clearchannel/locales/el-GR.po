@@ -1,0 +1,58 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:09\n"
+"Last-Translator: \n"
+"Language-Team: Greek\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: el\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/clearchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 78\n"
+"Language: el_GR\n"
+
+#: clearchannel\clearchannel.py:20
+#, docstring
+msgid "A cog to delete ALL messages of a channel!\n\n"
+"    ⚠ The channel will be cloned, and then **deleted**.\n"
+"    "
+msgstr "Ένα γρανάζι για τη διαγραφή ΟΛΩΝ των μηνυμάτων ενός καναλιού!\n\n"
+"    ⚠ Το κανάλι θα κλωνοποιηθεί και στη συνέχεια θα **διαγραφεί**.\n"
+"    "
+
+#: clearchannel\clearchannel.py:105
+msgid "⚠️ - ClearChannel"
+msgstr "⚠️ - ClearChannel"
+
+#: clearchannel\clearchannel.py:106
+msgid "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?\n"
+"⚠ The channel will be cloned, and then **deleted**."
+msgstr "Θέλετε πραγματικά να διαγράψετε ΟΛΑ τα μηνύματα από το κανάλι {old_channel.mention} ({old_channel.id});\n"
+"⚠ Το κανάλι θα κλωνοποιηθεί και στη συνέχεια θα **διαγραφεί**."
+
+#: clearchannel\clearchannel.py:116
+msgid "Clear Channel requested by {ctx.author} ({ctx.author.id})."
+msgstr "Η Clear Channel ζήτησε από το {ctx.author} ({ctx.author.id})."
+
+#: clearchannel\clearchannel.py:122
+msgid "🗑️-Deleted-{old_channel.name}"
+msgstr "🗑️-Deleted-{old_channel.name}"
+
+#: clearchannel\clearchannel.py:136
+msgid "ClearChannel"
+msgstr "ClearChannel"
+
+#: clearchannel\clearchannel.py:137
+msgid "ALL the messages in this channel have been deleted..."
+msgstr "ΟΛΑ τα μηνύματα σε αυτό το κανάλι έχουν διαγραφεί..."
+
+#: clearchannel\clearchannel.py:155
+msgid "All messages in channel #{old_channel.name} ({old_channel.id}) have been deleted! You can find the new channel, with the same permissions: #{new_channel.name} ({new_channel.id})."
+msgstr "Όλα τα μηνύματα στο κανάλι #{old_channel.name} ({old_channel.id}) έχουν διαγραφεί! Μπορείτε να βρείτε το νέο κανάλι, με τα ίδια δικαιώματα: #{new_channel.name} ({new_channel.id})."
+

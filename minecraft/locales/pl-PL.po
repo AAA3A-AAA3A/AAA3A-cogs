@@ -1,0 +1,102 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:32\n"
+"Last-Translator: \n"
+"Language-Team: Polish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/minecraft/locales/messages.pot\n"
+"X-Crowdin-File-ID: 235\n"
+"Language: pl_PL\n"
+
+#: minecraft\minecraft.py:48
+msgid "Unable to get data from Minecraft API: {e.message}."
+msgstr "Nie można pobrać danych z interfejsu API Minecraft: {e.message}."
+
+#: minecraft\minecraft.py:52
+msgid "{argument} not found on Mojang servers."
+msgstr "{argument} nie znaleziono na serwerach Mojang."
+
+#: minecraft\minecraft.py:60
+msgid "{argument} is found, but has incorrect UUID."
+msgstr "{argument} został znaleziony, ale ma nieprawidłowy identyfikator UUID."
+
+#: minecraft\minecraft.py:66
+#, docstring
+msgid "A cog to display informations about Minecraft Java users and servers, and notify for each change of a server!"
+msgstr "Tryb do wyświetlania informacji o użytkownikach i serwerach Minecraft Java oraz powiadamiania o każdej zmianie serwera!"
+
+#: minecraft\minecraft.py:161
+msgid "Latency"
+msgstr "Opóźnienie"
+
+#: minecraft\minecraft.py:163
+msgid "Players"
+msgstr "Gracze"
+
+#: minecraft\minecraft.py:181
+msgid "Version"
+msgstr "Wersja"
+
+#: minecraft\minecraft.py:182
+msgid "Protocol: {}"
+msgstr "Protokół: {}"
+
+#: minecraft\minecraft.py:222
+#, docstring
+msgid "Get Minecraft Java player skin by name."
+msgstr "Pobierz skórkę gracza Minecraft Java według nazwy."
+
+#: minecraft\minecraft.py:245
+msgid "Unable to get data from Crafatar: {}"
+msgstr "Nie można pobrać danych z Crafatar: {}"
+
+#: minecraft\minecraft.py:257
+msgid "Provided by Crafatar."
+msgstr "Dostarczone przez Crafatar."
+
+#: minecraft\minecraft.py:262
+#, docstring
+msgid "Get informations about a Minecraft Java server."
+msgstr "Uzyskaj informacje o serwerze Minecraft Java."
+
+#: minecraft\minecraft.py:270
+msgid "No data could be found on this Minecraft server. Maybe it doesn't exist or the data is temporarily unavailable."
+msgstr "Nie znaleziono żadnych danych na tym serwerze Minecraft. Być może nie istnieje lub dane są tymczasowo niedostępne."
+
+#: minecraft\minecraft.py:282
+#, docstring
+msgid "Add a Minecraft Java server in Config to get automatically new status."
+msgstr "Dodaj serwer Minecraft Java w Config, aby automatycznie uzyskać nowy status."
+
+#: minecraft\minecraft.py:287
+msgid "This server has already been added."
+msgstr "Ten serwer został już dodany."
+
+#: minecraft\minecraft.py:296 minecraft\minecraft.py:310
+#, docstring
+msgid "Remove a Minecraft Java server in Config."
+msgstr "Usunięcie serwera Minecraft Java w Config."
+
+#: minecraft\minecraft.py:301
+msgid "This server isn't in the Config."
+msgstr "Ten serwer nie znajduje się w konfiguracji."
+
+#: minecraft\minecraft.py:321
+#, docstring
+msgid "Force check Minecraft Java servers in Config."
+msgstr "Wymuś sprawdzenie serwerów Minecraft Java w konfiguracji."
+
+#: minecraft\minecraft.py:328
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "Uzyskaj embed do sprawdzenia stanu pętli."
+

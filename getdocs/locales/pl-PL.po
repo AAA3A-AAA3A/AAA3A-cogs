@@ -1,0 +1,71 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:30\n"
+"Last-Translator: \n"
+"Language-Team: Polish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/getdocs/locales/messages.pot\n"
+"X-Crowdin-File-ID: 183\n"
+"Language: pl_PL\n"
+
+#: getdocs\getdocs.py:212 getdocs\getdocs.py:531
+msgid "This source doesn't exist."
+msgstr "To źródło nie istnieje."
+
+#: getdocs\getdocs.py:218
+#, docstring
+msgid "A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."
+msgstr "Tryb do pobierania i wyświetlania dokumentacji w Discordzie! Użyj `[p]listsources`, aby uzyskać listę wszystkich dostępnych źródeł."
+
+#: getdocs\getdocs.py:342
+msgid "Documentations cache is not yet built."
+msgstr "Pamięć podręczna dokumentacji nie została jeszcze utworzona."
+
+#: getdocs\getdocs.py:393
+msgid "No results found."
+msgstr "Nie znaleziono żadnych wyników."
+
+#: getdocs\getdocs.py:523
+#, docstring
+msgid "\n"
+"        Enable a Documentations source.\n"
+"        "
+msgstr "\n"
+"        Włącz źródło dokumentacji.\n"
+"        "
+
+#: getdocs\getdocs.py:529
+msgid "This source is already enabled."
+msgstr "To źródło jest już włączone."
+
+#: getdocs\getdocs.py:545
+#, docstring
+msgid "\n"
+"        Disable a Documentations source.\n"
+"        "
+msgstr "\n"
+"        Wyłączenie źródła dokumentacji.\n"
+"        "
+
+#: getdocs\getdocs.py:554
+#, docstring
+msgid "\n"
+"        Show stats about all documentations sources.\n"
+"        "
+msgstr "\n"
+"        Wyświetla statystyki dotyczące wszystkich źródeł dokumentacji.\n"
+"        "
+
+#: getdocs\getdocs.py:1460
+msgid "RTFM caching isn't finished."
+msgstr "RTFM buforowanie nie jest zakończone."
+

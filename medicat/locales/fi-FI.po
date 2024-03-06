@@ -1,0 +1,316 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:19\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/medicat/locales/messages.pot\n"
+"X-Crowdin-File-ID: 90\n"
+"Language: fi_FI\n"
+
+#: medicat\medicat.py:48
+msgid "Can I add my own bootable tools (iso, wim, vhd) or PortableApps softwares to Medicat USB?"
+msgstr "Voinko lisätä omia käynnistettäviä työkaluja (iso, wim, vhd) tai PortableApps-ohjelmistoja Medicat USB:hen?"
+
+#: medicat\medicat.py:51
+msgid "Please feel free to modify MediCat to YOUR individual needs! 😄\n"
+"To add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\n"
+"Then you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template.\n"
+"Absolutely, I encourage it!"
+msgstr "Voit vapaasti muokata MediCatia SINUN yksilöllisiin tarpeisiisi! 😄\n"
+"Jos haluat lisätä omia käynnistettäviä työkaluja Medicat USB:hen, laita tiedostot mihin tahansa USB-tikkusi alikansioon (paitsi niihin, joiden juuressa on `.ventoyignore`-tiedosto). Kuin taikaiskusta uudet työkalut ilmestyvät Ventoy-valikkoon.\n"
+"Sitten voit lisätä mukautetun nimen, kuvakkeen ja kuvauksen muokkaamalla `USB\\ventoy\\ventoy.json`-tiedostoa mallin mukaan.\n"
+"Ehdottomasti, kannustan siihen!"
+
+#: medicat\medicat.py:56
+msgid "Is Medicat free?"
+msgstr "Onko Medicat ilmainen?"
+
+#: medicat\medicat.py:57
+msgid "Absolutely. I will never charge money for MediCat, or accept donations. However, feel free to share your ideas, questions, and concerns in this thread. That's how you can give back. 🙂"
+msgstr "Ehdottomasti. En koskaan veloita MediCatista rahaa enkä ota vastaan lahjoituksia. Voit kuitenkin vapaasti jakaa ideasi, kysymyksesi ja huolenaiheesi tässä viestiketjussa. Näin voit antaa takaisin 🙂 ."
+
+#: medicat\medicat.py:62
+msgid "How do I install Medicat USB?"
+msgstr "Miten asennan Medicat USB:n?"
+
+#: medicat\medicat.py:63
+msgid "1) Install the latest version of Ventoy on your USB stick (<https://github.com/ventoy/Ventoy/releases> & <https://ventoy.net/en/doc_start.html>).\n"
+"2) Download the last version of Medicat USB with Torrent, Mega or Google Drive (<https://medicatusb.com/>).\n"
+"3) Extract the downloaded zips to the root of the USB stick.\n"
+"Full tutorial: <https://medicatusb.com/docs/installation/installing-medicat/>\n"
+"You can also use the automatic installer of MON5TERMATT (<https://medicatusb.com/installer/>).\n"
+"Warning: do not forget to disable your antivirus software (see the `virus` command for more information)."
+msgstr "1) Asenna Ventoyn uusin versio USB-tikulle (<https://github.com/ventoy/Ventoy/releases> & <https://ventoy.net/en/doc_start.html>).\n"
+"2) Lataa Medicat USB:n viimeisin versio Torrentilla, Megalla tai Google Drivella (<https://medicatusb.com/>).\n"
+"3) Pura ladatut zip-tiedostot USB-tikun juureen.\n"
+"Koko opetusohjelma: <https://medicatusb.com/docs/installation/installing-medicat/>\n"
+"Voit myös käyttää MON5TERMATTin automaattista asennusohjelmaa (<https://medicatusb.com/installer/>).\n"
+"Varoitus: älä unohda poistaa virustorjuntaohjelmistoa käytöstä (katso lisätietoja komennosta `virus`)."
+
+#: medicat\medicat.py:68
+msgid "How to make a donation?"
+msgstr "Miten tehdä lahjoitus?"
+
+#: medicat\medicat.py:69
+msgid "@Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\n"
+"@MON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\n"
+"@AAA3A (Medicat Developer): Nothing"
+msgstr "@Jayro (Medicatin luoja): <https://ko-fi.com/jayrojones>\n"
+"@MON5TERMATT (Medicatin kehittäjä): <https://ko-fi.com/mon5termatt>\n"
+"@AAA3A (Medicat-kehittäjä): @AAA3A (Medicat-kehittäjä): Ei mitään"
+
+#: medicat\medicat.py:74
+msgid "What is the latest version of Medicat USB?"
+msgstr "Mikä on Medicat USB:n uusin versio?"
+
+#: medicat\medicat.py:75
+msgid "The latest version of Medicat USB is 21.12!\n"
+"||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||"
+msgstr "Medicat USB:n uusin versio on 21.12!\n"
+"||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||"
+
+#: medicat\medicat.py:80
+msgid "How to download one of the menus?"
+msgstr "Miten ladata yksi valikoista?"
+
+#: medicat\medicat.py:81
+msgid "Here are the latest links to download the latest versions of the menus:\n"
+"- Jayro's Lockîck: \n"
+"<https://mega.nz/file/ZtpwEDhR#4bCjUDri2hhUlCgv8Y1EmZVyUnGyhqZjCo0fazXLzqY>\n"
+"- AAA3A's Backup: \n"
+"<https://mega.nz/file/s8hATRbZ#C28qA8HWKi_xikC6AUG46DiXKIG2Qjl__-4MOl6SI7w>\n"
+"- AAA3A's Partition: \n"
+"<https://mega.nz/file/w8oFkKYQ#5BbIf7K6pyxYDlE6L4efPqtHUWtCMmx_kta_QHejhpk>\n"
+"Here is also a link that should never change to access the same folder containing all the menus: \n"
+"<https://mega.nz/folder/FtRCgLQL#KTq897WQiXCJT8OQ3cT9Tg>"
+msgstr "Tässä ovat uusimmat linkit, joista voit ladata valikoiden uusimmat versiot:\n"
+"- Jayron Lockîck: \n"
+"<https://mega.nz/file/ZtpwEDhR#4bCjUDri2hhUlCgv8Y1EmZVyUnGyhqZjCo0fazXLzqY>\n"
+"- AAA3A:n varmuuskopio: \n"
+"<https://mega.nz/file/s8hATRbZ#C28qA8HWKi_xikC6AUG46DiXKIG2Qjl__-4MOl6SI7w>\n"
+"- AAA3A:n osio: \n"
+"<https://mega.nz/file/w8oFkKYQ#5BbIf7K6pyxYDlE6L4efPqtHUWtCMmx_kta_QHejhpk>\n"
+"Tässä on myös linkki, jonka ei pitäisi koskaan muuttua, jolla pääsee samaan kansioon, joka sisältää kaikki valikot: \n"
+"<https://mega.nz/folder/FtRCgLQL#KTq897WQiXCJT8OQ3cT9Tg>."
+
+#: medicat\medicat.py:86
+msgid "Can I install Mini Windows 10 as my main OS?"
+msgstr "Voinko asentaa Mini Windows 10:n pääkäyttöjärjestelmäksi?"
+
+#: medicat\medicat.py:87
+msgid "No, it doesn't work like that. It's a WinPE image (Windows Pre-install Environment) that runs in memory. It's primary use is to troubleshoot a troublesome PC."
+msgstr "Ei, se ei toimi niin. Se on WinPE-kuva (Windows Pre-install Environment), joka toimii muistissa. Sen ensisijainen käyttötarkoitus on ongelmallisen tietokoneen vianmääritys."
+
+#: medicat\medicat.py:92
+msgid "See what files are missing using the quick SFV program"
+msgstr "Katso, mitä tiedostoja puuttuu SFV-pikaohjelman avulla."
+
+#: medicat\medicat.py:93
+msgid "In order to see what files are missing using the quick SFV program, please scroll all the way to the top once it has finished scanning."
+msgstr "Jos haluat nähdä, mitä tiedostoja puuttuu nopean SFV-ohjelman avulla, selaa ohjelman skannauksen päätyttyä kokonaan ylöspäin."
+
+#: medicat\medicat.py:99
+msgid "How do I download the Medicat USB iso file?"
+msgstr "Kuinka voin ladata Medicat USB-ISO-tiedoston?"
+
+#: medicat\medicat.py:100
+msgid "Medicat USB is not available as an iso file.\n"
+"Previously, Medicat USB was available as an iso file. Now it uses Ventoy to run. It is currently impossible to put Ventoy and therefore Medicat USB in an iso file, or at least not without difficulties."
+msgstr "Medicat USB ei ole saatavana iso-tiedostona.\n"
+"Aikaisemmin Medicat USB oli saatavana iso-tiedostona. Nyt se käyttää Ventoyta suoritukseen. Tällä hetkellä Ventoyta ja siten myös Medicat USB:tä ei voi laittaa iso-tiedostoon, tai ainakaan ilman vaikeuksia."
+
+#: medicat\medicat.py:105
+msgid "Can I run the PortableApps on my current PC without booting up MediCat?"
+msgstr "Voinko käyttää PortableAppsia nykyisellä tietokoneellani käynnistämättä MediCatia?"
+
+#: medicat\medicat.py:106
+msgid "Yes, just mount the MediCat USB, and open Start.exe to launch the platform. These are the same exact apps that get loaded within Mini Windows 10. So if you update them, they will show up updated in Mini Windows 10 as well."
+msgstr "Kyllä, asenna MediCat-USB ja avaa Start.exe käynnistääksesi alustan. Nämä ovat täsmälleen samat sovellukset, jotka ladataan Mini Windows 10:ssä. Jos siis päivität ne, ne näkyvät päivitettyinä myös Mini Windows 10:ssä."
+
+#: medicat\medicat.py:111
+msgid "How can I update Medicat USB without having to install all the files again?"
+msgstr "Miten voin päivittää Medicat USB:n ilman, että minun täytyy asentaa kaikki tiedostot uudelleen?"
+
+#: medicat\medicat.py:112
+msgid "For the time being, you are in any case obliged to download all Medicat USB files again to update it. However, if you only want to keep your previous personal changes, you can save them somewhere and reproduce them on the new instance of the bootable USB stick.\n"
+"For Medicat USB 22.06, @AAA3A is currently coding an update only script for Medicat USB, in batch. It will be downloaded with only the necessary files and will however only work from one version to another, after being prepared in advance."
+msgstr "Toistaiseksi sinun on joka tapauksessa ladattava kaikki Medicat USB -tiedostot uudelleen päivittääksesi sen. Jos kuitenkin haluat säilyttää vain aiemmat henkilökohtaiset muutoksesi, voit tallentaa ne jonnekin ja toistaa ne käynnistettävän USB-tikun uudessa instanssissa.\n"
+"Medicat USB 22.06:ta varten @AAA3A koodaa parhaillaan vain päivitysskriptiä Medicat USB:tä varten, eräajona. Se ladataan vain tarvittavien tiedostojen kanssa, ja se toimii kuitenkin vain versiosta toiseen, kun se on valmisteltu etukäteen."
+
+#: medicat\medicat.py:117
+msgid "What is the difference between Medicat USB and Medicat VHD?"
+msgstr "Mitä eroa on Medicat USB:n ja Medicat VHD:n välillä?"
+
+#: medicat\medicat.py:118
+msgid "**Medicat USB** is a bootable menu that runs on Ventoy and contains all the necessary tools for computer troubleshooting. It contains for example Malwarebytes bootable for virus scans, Mini Windows 10 for a winPE utility and Jayro's Lockpick for all things password related.\n"
+"<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>\n"
+"**Medicat VHD** is a full-featured windows, using the real performance of the computer. It is therefore much more powerful than Mini Windows 10. Moreover, all data is saved and you can find it again at each reboot. (Not intended to be used as an operating system).\n"
+"<https://gbatemp.net/threads/official-medicat-vhd-a-usb-bootable-windows-10-virtual-harddisk-for-pc-repair.581637/>\n"
+"**Jayro's Lockpick** is a winPE with a menu containing all the necessary tools to remove/bypass/retrieve a Windows password or even for a server.\n"
+"<https://gbatemp.net/threads/release-jayros-lockpick-a-bootable-password-removal-suite-winpe.579278/>\n"
+"**Malwarebytes bootable** is a very powerful antivirus. Since it is launched from a winPE, a potential virus cannot prevent it from running properly.\n"
+"<https://gbatemp.net/threads/unofficial-malwarebytes-bootable.481046/>\n"
+"**Medicat Second Opinion** is a set of 11 bootable antiviruses to clean viruses in a computer. But most of them only work on legacy BIOS and not UEFI.\n"
+"<https://gbatemp.net/threads/medicat-second-opinion-a-collection-of-bootable-antivirus-boot-disks-on-a-single-usb-device.577842/>"
+msgstr "**Medicat USB** on käynnistettävä valikko, joka toimii Ventoylla ja sisältää kaikki tarvittavat työkalut tietokoneen vianmääritykseen. Se sisältää esimerkiksi käynnistettävän Malwarebytesin virustarkistuksia varten, Mini Windows 10:n winPE-apuohjelman ja Jayro's Lockpickin kaikkiin salasanoihin liittyviin asioihin.\n"
+"<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>\n"
+"**Medicat VHD** on täysimittainen windows, joka käyttää tietokoneen todellista suorituskykyä. Se on siis paljon tehokkaampi kuin Mini Windows 10. Lisäksi kaikki tiedot tallentuvat ja löydät ne uudelleen jokaisen uudelleenkäynnistyksen yhteydessä. (Ei ole tarkoitettu käytettäväksi käyttöjärjestelmänä).\n"
+"<https://gbatemp.net/threads/official-medicat-vhd-a-usb-bootable-windows-10-virtual-harddisk-for-pc-repair.581637/>\n"
+"**Jayro's Lockpick** on winPE, jossa on valikko, joka sisältää kaikki tarvittavat työkalut Windows-salasanan poistamiseen / ohittamiseen / hakemiseen tai jopa palvelimelle.\n"
+"<https://gbatemp.net/threads/release-jayros-lockpick-a-bootable-password-removal-suite-winpe.579278/>\n"
+"**Malwarebytes bootable** on erittäin tehokas virustorjuntaohjelma. Koska se käynnistetään winPE:stä, mahdollinen virus ei voi estää sitä toimimasta kunnolla.\n"
+"<https://gbatemp.net/threads/unofficial-malwarebytes-bootable.481046/>\n"
+"**Medicat Second Opinion** on 11 käynnistettävän virustorjuntaohjelman sarja, jolla voi puhdistaa tietokoneen viruksia. Useimmat niistä toimivat kuitenkin vain legacy BIOSissa eikä UEFI:ssä.\n"
+"<https://gbatemp.net/threads/medicat-second-opinion-a-collection-of-bootable-antivirus-boot-disks-on-a-single-usb-device.577842/>"
+
+#: medicat\medicat.py:123
+msgid "Why does my antivirus software detect Medicat as a virus?"
+msgstr "Miksi virustorjuntaohjelmani havaitsee Medicatin viruksena?"
+
+#: medicat\medicat.py:124
+msgid "Medicat USB does not contain any viruses! If an antivirus software detects one of its files as such, it is a false positive.\n"
+"As you know, Medicat USB contains tools that can reset a partition, find a password, and modify the system. Portable applications can be falsely flagged because of how they are cracked and packaged.\n"
+"For these reasons all antivirus software's 'real-time scanning' should be disabled when installing, and sometimes even when using, Medicat USB.\n"
+"All the scripts associated with the project (published by one of the 3 developers) and Ventoy do not have one either."
+msgstr "Medicat USB ei sisällä viruksia! Jos virustorjuntaohjelma havaitsee jonkin sen tiedostoista virukseksi, kyseessä on väärä positiivinen tulos.\n"
+"Kuten tiedät, Medicat USB sisältää työkaluja, jotka voivat nollata osion, etsiä salasanan ja muokata järjestelmää. Kannettavat sovellukset voidaan tunnistaa virheellisesti sen vuoksi, miten ne on murrettu ja pakattu.\n"
+"Näistä syistä kaikkien virustorjuntaohjelmien reaaliaikainen skannaus tulisi poistaa käytöstä, kun Medicat USB:tä asennetaan ja joskus jopa kun sitä käytetään.\n"
+"Kaikissa projektiin liittyvissä skripteissä (jotka yksi kolmesta kehittäjästä on julkaissut) ja Ventoyssa ei myöskään ole sellaista."
+
+#: medicat\medicat.py:129
+msgid "What is Medicat USB?"
+msgstr "Mikä on Medicat USB?"
+
+#: medicat\medicat.py:130
+msgid "Medicat USB contains tools to backup/restore data, to manage disks/partitions, to reset/bypass/find a Windows password, to use software with admin rights from a winPE, to do virus scans. In addition, it uses Ventoy, which allows you to add your own bootable tools with a simple copy and paste."
+msgstr "Medicat USB sisältää työkaluja tietojen varmuuskopiointiin/palauttamiseen, levyjen/osioiden hallintaan, Windows-salasanan nollaamiseen, ohittamiseen/löytämiseen, ohjelmistojen käyttämiseen järjestelmänvalvojan oikeuksin winPE:ltä ja virustarkistusten tekemiseen. Lisäksi se käyttää Ventoyta, jonka avulla voit lisätä omia käynnistystyökaluja kopioimalla ja liittämällä ne."
+
+#: medicat\medicat.py:135
+msgid "How often will Medicat be updated?"
+msgstr "Kuinka usein Medicatia päivitetään?"
+
+#: medicat\medicat.py:136
+msgid "MediCat USB is now a rolling release, so will be regularly updated with major releases, and minor updates as needed (Typically monthly or bi-monthly). The links here will always be the latest version. The PortableApps are easily updatable by the user, once they have been 'burned' to USB."
+msgstr "MediCat USB on nyt jatkuva julkaisu, joten sitä päivitetään säännöllisesti tärkeimmillä julkaisuilla ja pienemmillä päivityksillä tarpeen mukaan (yleensä kuukausittain tai puolivuosittain). Tässä olevat linkit ovat aina uusin versio. Käyttäjä voi helposti päivittää kannettavat sovellukset, kun ne on \"poltettu\" USB:lle."
+
+#: medicat\medicat.py:141
+msgid "Why doesn't Ventoy display Wim and VHD files?"
+msgstr "Miksi Ventoy ei näytä Wim- ja VHD-tiedostoja?"
+
+#: medicat\medicat.py:142
+msgid "You must download an additional plugin/file and place it in the `USB\\ventoy\\` folder (create it if necessary).\n\n"
+"**WimBoot Plugin (https://ventoy.net/en/plugin_wimboot.html):**\n"
+"- Download `ventoy_wimboot.img` file from <https://github.com/ventoy/wimiso/releases>.\n"
+"- Put the file under `ventoy` directory in the `ventoy partition` of the USB stick, that is `/ventoy/ventoy_wimboot.img` and that's all.\n\n"
+"**VhdBoot Plugin (<https://ventoy.net/en/plugin_vhdboot.html>):**\n"
+"- Download `ventoy_vhdboot.img` file from <https://github.com/ventoy/vhdiso/releases>.\n"
+"- Put the file under `ventoy` directory in the `ventoy` partition of the USB stick, that is `/ventoy/ventoy_vhdboot.img` and that's all."
+msgstr "Sinun on ladattava ylimääräinen lisäosa/tiedosto ja sijoitettava se `USB\\ventoy\\`-kansioon (luo se tarvittaessa).\n\n"
+"**WimBoot-liitännäinen (https://ventoy.net/en/plugin_wimboot.html):**\n"
+"- Lataa `ventoy_wimboot.img`-tiedosto osoitteesta <https://github.com/ventoy/wimiso/releases>.\n"
+"- Laita tiedosto `ventoy`-hakemistoon USB-tikun `ventoy-osioon`, eli `/ventoy/ventoy_wimboot.img`, ja siinä kaikki.\n\n"
+"**VhdBoot Plugin (<https://ventoy.net/en/plugin_vhdboot.html>):**\n"
+"- Lataa `ventoy_vhdboot.img`-tiedosto osoitteesta <https://github.com/ventoy/vhdiso/releases>.\n"
+"- Laita tiedosto `ventoy`-hakemistoon USB-tikun `ventoy`-osioon, eli `/ventoy/ventoy_vhdboot.img` ja siinä kaikki."
+
+#: medicat\medicat.py:147
+msgid "X & Y"
+msgstr "X & Y"
+
+#: medicat\medicat.py:148
+msgid "What is the context?\n"
+"If you have any problems or would like to ask for help, please give information about what you are not able to do. Don't just say you don't understand how to make x software work, say where you are, what is wrong with it and what is the potential error. \n"
+"Thank you for your understanding."
+msgstr "Mikä on asiayhteys?\n"
+"Jos sinulla on ongelmia tai haluat pyytää apua, kerro, mitä et pysty tekemään. Älä vain sano, ettet ymmärrä, miten saada x-ohjelmisto toimimaan, vaan kerro, missä olet, mikä siinä on vikana ja mikä on mahdollinen virhe. \n"
+"Kiitos ymmärryksestäsi."
+
+#: medicat\medicat.py:152
+msgid "Test!"
+msgstr "Testaa!"
+
+#: medicat\medicat.py:152
+msgid "Test."
+msgstr "Testi."
+
+#: medicat\medicat.py:273
+#, docstring
+msgid "This cog will only work on x server and therefore cannot be used by the general public!"
+msgstr "Tämä hammas toimii vain x-palvelimella, joten yleisö ei voi käyttää sitä!"
+
+#: medicat\medicat.py:446
+msgid "This Ventoy version doesn't exists."
+msgstr "Tätä Ventoy-versiota ei ole olemassa."
+
+#: medicat\medicat.py:482
+msgid "Ventoy v{ventoy_version_str} has been released!"
+msgstr "Ventoy v{ventoy_version_str} on julkaistu!"
+
+#: medicat\medicat.py:485
+msgid "New features:"
+msgstr "Uusia ominaisuuksia:"
+
+#: medicat\medicat.py:490
+msgid "Download this version:"
+msgstr "Lataa tämä versio:"
+
+#: medicat\medicat.py:498
+msgid "View on Ventoy Official Website"
+msgstr "Näytä Ventoyn virallisilla verkkosivuilla"
+
+#: medicat\medicat.py:582
+msgid "{tool} now has a new version!"
+msgstr "{tool} on nyt uusi versio!"
+
+#: medicat\medicat.py:596
+msgid "View on FCportables Official Website"
+msgstr "Näytä FCportablesin virallisilla verkkosivuilla"
+
+#: medicat\medicat.py:737
+#, docstring
+msgid "Get the latest version of Ventoy."
+msgstr "Hanki Ventoyn uusin versio."
+
+#: medicat\medicat.py:741 medicat\medicat.py:752
+msgid "An error has occurred. Please try again."
+msgstr "On tapahtunut virhe. Yritä uudelleen."
+
+#: medicat\medicat.py:746
+#, docstring
+msgid "Get a version of Ventoy."
+msgstr "Hanki versio Ventoysta."
+
+#: medicat\medicat.py:757
+#, docstring
+msgid "Get the latest versions of each Medicat USB bootable tool."
+msgstr "Hanki uusimmat versiot jokaisesta Medicat USB-käynnistettävän työkalun versiosta."
+
+#: medicat\medicat.py:793
+msgid "View FCportables Official Website"
+msgstr "Katso FCportablesin virallinen verkkosivusto"
+
+#: medicat\medicat.py:811
+#, docstring
+msgid "Get the debug for a FCportables's tool."
+msgstr "Hae FCportablesin työkalun vianmääritys."
+
+#: medicat\medicat.py:890
+#, docstring
+msgid "Get an embed to check loops status."
+msgstr "Hanki upotus silmukoiden tilan tarkistamiseksi."
+
+#: medicat\medicat.py:897
+#, docstring
+msgid "Update Medicat cog directly."
+msgstr "Päivitä Medicat-ratas suoraan."
+

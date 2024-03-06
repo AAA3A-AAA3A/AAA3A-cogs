@@ -1,0 +1,316 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-07-15 19:18\n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ro\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/medicat/locales/messages.pot\n"
+"X-Crowdin-File-ID: 90\n"
+"Language: ro_RO\n"
+
+#: medicat\medicat.py:48
+msgid "Can I add my own bootable tools (iso, wim, vhd) or PortableApps softwares to Medicat USB?"
+msgstr "Pot adăuga propriile mele instrumente bootabile (iso, wim, vhd) sau programe PortableApps la Medicat USB?"
+
+#: medicat\medicat.py:51
+msgid "Please feel free to modify MediCat to YOUR individual needs! 😄\n"
+"To add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\n"
+"Then you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template.\n"
+"Absolutely, I encourage it!"
+msgstr "Vă rugăm să nu ezitați să modificați MediCat la nevoile dvs. individuale! 😄\n"
+"Pentru a adăuga propriile unelte bootabile la Medicat USB, pur și simplu puneți fișierele în orice subfolder (cu excepția celor care au un fișier `.ventoyignore` la rădăcină) al stick-ului USB. Ca prin minune, noile instrumente vor apărea în meniul Ventoy.\n"
+"Apoi, puteți adăuga un nume, o pictogramă, o descriere personalizate, prin editarea fișierului `USB\\ventoy\\ventoy.json` după șablon.\n"
+"Absolut, vă încurajez!"
+
+#: medicat\medicat.py:56
+msgid "Is Medicat free?"
+msgstr "Este Medicat gratuit?"
+
+#: medicat\medicat.py:57
+msgid "Absolutely. I will never charge money for MediCat, or accept donations. However, feel free to share your ideas, questions, and concerns in this thread. That's how you can give back. 🙂"
+msgstr "Absolut. Nu voi cere niciodată bani pentru MediCat și nici nu voi accepta donații. Cu toate acestea, nu ezitați să vă împărtășiți ideile, întrebările și preocupările în acest topic. Așa puteți da înapoi. 🙂"
+
+#: medicat\medicat.py:62
+msgid "How do I install Medicat USB?"
+msgstr "Cum se instalează Medicat USB?"
+
+#: medicat\medicat.py:63
+msgid "1) Install the latest version of Ventoy on your USB stick (<https://github.com/ventoy/Ventoy/releases> & <https://ventoy.net/en/doc_start.html>).\n"
+"2) Download the last version of Medicat USB with Torrent, Mega or Google Drive (<https://medicatusb.com/>).\n"
+"3) Extract the downloaded zips to the root of the USB stick.\n"
+"Full tutorial: <https://medicatusb.com/docs/installation/installing-medicat/>\n"
+"You can also use the automatic installer of MON5TERMATT (<https://medicatusb.com/installer/>).\n"
+"Warning: do not forget to disable your antivirus software (see the `virus` command for more information)."
+msgstr "1) Instalați cea mai recentă versiune de Ventoy pe stick-ul USB (<https://github.com/ventoy/Ventoy/releases> & <https://ventoy.net/en/doc_start.html>).\n"
+"2) Descărcați ultima versiune a Medicat USB cu ajutorul Torrent, Mega sau Google Drive (<https://medicatusb.com/>).\n"
+"3) Extrageți fișierele zip descărcate în rădăcina stick-ului USB.\n"
+"Tutorial complet: <https://medicatusb.com/docs/installation/installing-medicat/>\n"
+"De asemenea, puteți utiliza programul de instalare automată a MON5TERMATT (<https://medicatusb.com/installer/>).\n"
+"Atenție: nu uitați să dezactivați software-ul antivirus (consultați comanda `virus` pentru mai multe informații)."
+
+#: medicat\medicat.py:68
+msgid "How to make a donation?"
+msgstr "Cum se face o donație?"
+
+#: medicat\medicat.py:69
+msgid "@Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\n"
+"@MON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\n"
+"@AAA3A (Medicat Developer): Nothing"
+msgstr "@Jayro (creatorul Medicat): <https://ko-fi.com/jayrojones>\n"
+"@MON5TERMATT (dezvoltator Medicat): <https://ko-fi.com/mon5termatt>\n"
+"@AAA3A (Dezvoltator Medicat): Nimic"
+
+#: medicat\medicat.py:74
+msgid "What is the latest version of Medicat USB?"
+msgstr "Care este cea mai recentă versiune a Medicat USB?"
+
+#: medicat\medicat.py:75
+msgid "The latest version of Medicat USB is 21.12!\n"
+"||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||"
+msgstr "Cea mai recentă versiune a Medicat USB este 21.12!\n"
+"||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||"
+
+#: medicat\medicat.py:80
+msgid "How to download one of the menus?"
+msgstr "Cum se poate descărca unul dintre meniuri?"
+
+#: medicat\medicat.py:81
+msgid "Here are the latest links to download the latest versions of the menus:\n"
+"- Jayro's Lockîck: \n"
+"<https://mega.nz/file/ZtpwEDhR#4bCjUDri2hhUlCgv8Y1EmZVyUnGyhqZjCo0fazXLzqY>\n"
+"- AAA3A's Backup: \n"
+"<https://mega.nz/file/s8hATRbZ#C28qA8HWKi_xikC6AUG46DiXKIG2Qjl__-4MOl6SI7w>\n"
+"- AAA3A's Partition: \n"
+"<https://mega.nz/file/w8oFkKYQ#5BbIf7K6pyxYDlE6L4efPqtHUWtCMmx_kta_QHejhpk>\n"
+"Here is also a link that should never change to access the same folder containing all the menus: \n"
+"<https://mega.nz/folder/FtRCgLQL#KTq897WQiXCJT8OQ3cT9Tg>"
+msgstr "Iată cele mai recente link-uri pentru a descărca cele mai recente versiuni ale meniurilor:\n"
+"- Jayro's Lockîck: \n"
+"<https://mega.nz/file/ZtpwEDhR#4bCjUDri2hhUlCgv8Y1EmZVyUnGyhqZjCo0fazXLzqY>\n"
+"- AAA3A's Backup: \n"
+"<https://mega.nz/file/s8hATRbZ#C28qA8HWKi_xikC6AUG46DiXKIG2Qjl__-4MOl6SI7w>\n"
+"- AAA3A's Partition: \n"
+"<https://mega.nz/file/w8oFkKYQ#5BbIf7K6pyxYDlE6L4efPqtHUWtCMmx_kta_QHejhpk>\n"
+"Iată și un link care nu ar trebui să se schimbe niciodată pentru a accesa același folder care conține toate meniurile: \n"
+"<https://mega.nz/folder/FtRCgLQL#KTq897WQiXCJT8OQ3cT9Tg>"
+
+#: medicat\medicat.py:86
+msgid "Can I install Mini Windows 10 as my main OS?"
+msgstr "Pot să instalez Mini Windows 10 ca sistem de operare principal?"
+
+#: medicat\medicat.py:87
+msgid "No, it doesn't work like that. It's a WinPE image (Windows Pre-install Environment) that runs in memory. It's primary use is to troubleshoot a troublesome PC."
+msgstr "Nu, nu funcționează așa. Este o imagine WinPE (Windows Pre-install Environment) care rulează în memorie. Este folosită în primul rând pentru a depana un PC cu probleme."
+
+#: medicat\medicat.py:92
+msgid "See what files are missing using the quick SFV program"
+msgstr "Vezi ce fișiere lipsesc folosind programul rapid SFV"
+
+#: medicat\medicat.py:93
+msgid "In order to see what files are missing using the quick SFV program, please scroll all the way to the top once it has finished scanning."
+msgstr "Pentru a vedea ce fișiere lipsesc cu ajutorul programului quick SFV, vă rugăm să parcurgeți până sus după ce acesta a terminat scanarea."
+
+#: medicat\medicat.py:99
+msgid "How do I download the Medicat USB iso file?"
+msgstr "Cum pot descărca fișierul Medicat USB iso?"
+
+#: medicat\medicat.py:100
+msgid "Medicat USB is not available as an iso file.\n"
+"Previously, Medicat USB was available as an iso file. Now it uses Ventoy to run. It is currently impossible to put Ventoy and therefore Medicat USB in an iso file, or at least not without difficulties."
+msgstr "Medicat USB nu este disponibil sub formă de fișier ISO.\n"
+"Anterior, Medicat USB a fost disponibil ca fișier iso. Acum utilizează Ventoy pentru a rula. În prezent, este imposibil să introduceți Ventoy și, prin urmare, Medicat USB într-un fișier iso, sau cel puțin nu fără dificultăți."
+
+#: medicat\medicat.py:105
+msgid "Can I run the PortableApps on my current PC without booting up MediCat?"
+msgstr "Pot rula aplicațiile portabile pe PC-ul meu actual fără a porni MediCat?"
+
+#: medicat\medicat.py:106
+msgid "Yes, just mount the MediCat USB, and open Start.exe to launch the platform. These are the same exact apps that get loaded within Mini Windows 10. So if you update them, they will show up updated in Mini Windows 10 as well."
+msgstr "Da, trebuie doar să montați MediCat USB și să deschideți Start.exe pentru a lansa platforma. Acestea sunt exact aceleași aplicații care se încarcă în Mini Windows 10. Deci, dacă le actualizați, acestea vor apărea actualizate și în Mini Windows 10."
+
+#: medicat\medicat.py:111
+msgid "How can I update Medicat USB without having to install all the files again?"
+msgstr "Cum pot actualiza Medicat USB fără a fi nevoie să instalez din nou toate fișierele?"
+
+#: medicat\medicat.py:112
+msgid "For the time being, you are in any case obliged to download all Medicat USB files again to update it. However, if you only want to keep your previous personal changes, you can save them somewhere and reproduce them on the new instance of the bootable USB stick.\n"
+"For Medicat USB 22.06, @AAA3A is currently coding an update only script for Medicat USB, in batch. It will be downloaded with only the necessary files and will however only work from one version to another, after being prepared in advance."
+msgstr "Deocamdată, sunteți în orice caz obligat să descărcați din nou toate fișierele Medicat USB pentru a le actualiza. Cu toate acestea, dacă doriți doar să păstrați modificările personale anterioare, le puteți salva undeva și le puteți reproduce pe noua instanță a stick-ului USB bootabil.\n"
+"Pentru Medicat USB 22.06, @AAA3A codifică în prezent un script de actualizare numai pentru Medicat USB, în lot. Acesta va fi descărcat doar cu fișierele necesare și va funcționa însă doar de la o versiune la alta, după ce a fost pregătit în prealabil."
+
+#: medicat\medicat.py:117
+msgid "What is the difference between Medicat USB and Medicat VHD?"
+msgstr "Care este diferența dintre Medicat USB și Medicat VHD?"
+
+#: medicat\medicat.py:118
+msgid "**Medicat USB** is a bootable menu that runs on Ventoy and contains all the necessary tools for computer troubleshooting. It contains for example Malwarebytes bootable for virus scans, Mini Windows 10 for a winPE utility and Jayro's Lockpick for all things password related.\n"
+"<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>\n"
+"**Medicat VHD** is a full-featured windows, using the real performance of the computer. It is therefore much more powerful than Mini Windows 10. Moreover, all data is saved and you can find it again at each reboot. (Not intended to be used as an operating system).\n"
+"<https://gbatemp.net/threads/official-medicat-vhd-a-usb-bootable-windows-10-virtual-harddisk-for-pc-repair.581637/>\n"
+"**Jayro's Lockpick** is a winPE with a menu containing all the necessary tools to remove/bypass/retrieve a Windows password or even for a server.\n"
+"<https://gbatemp.net/threads/release-jayros-lockpick-a-bootable-password-removal-suite-winpe.579278/>\n"
+"**Malwarebytes bootable** is a very powerful antivirus. Since it is launched from a winPE, a potential virus cannot prevent it from running properly.\n"
+"<https://gbatemp.net/threads/unofficial-malwarebytes-bootable.481046/>\n"
+"**Medicat Second Opinion** is a set of 11 bootable antiviruses to clean viruses in a computer. But most of them only work on legacy BIOS and not UEFI.\n"
+"<https://gbatemp.net/threads/medicat-second-opinion-a-collection-of-bootable-antivirus-boot-disks-on-a-single-usb-device.577842/>"
+msgstr "**Medicat USB** este un meniu bootabil care rulează pe Ventoy și care conține toate instrumentele necesare pentru depanarea calculatoarelor. Acesta conține, de exemplu, Malwarebytes bootabil pentru scanări de viruși, Mini Windows 10 pentru un utilitar winPE și Jayro's Lockpick pentru tot ce ține de parole.\n"
+"<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>\n"
+"**Medicat VHD** este un Windows complet, folosind performanța reală a computerului. Prin urmare, este mult mai puternic decât Mini Windows 10. În plus, toate datele sunt salvate și le puteți regăsi la fiecare repornire. (Nu este destinat a fi utilizat ca sistem de operare).\n"
+"<https://gbatemp.net/threads/official-medicat-vhd-a-usb-bootable-windows-10-virtual-harddisk-for-pc-repair.581637/>\n"
+"**Jayro's Lockpick** este un winPE cu un meniu care conține toate instrumentele necesare pentru a elimina/pătrunde/recupera o parolă de Windows sau chiar pentru un server.\n"
+"<https://gbatemp.net/threads/release-jayros-lockpick-a-bootable-password-removal-suite-winpe.579278/>\n"
+"**Malwarebytes bootable** este un antivirus foarte puternic. Deoarece este lansat dintr-un winPE, un potențial virus nu îl poate împiedica să funcționeze corect.\n"
+"<https://gbatemp.net/threads/unofficial-malwarebytes-bootable.481046/>\n"
+"**Medicat Second Opinion** este un set de 11 antiviruși bootabili pentru a curăța virușii dintr-un calculator. Dar majoritatea dintre ele funcționează doar pe BIOS-urile tradiționale și nu pe UEFI.\n"
+"<https://gbatemp.net/threads/medicat-second-opinion-a-collection-of-bootable-antivirus-boot-disks-on-a-single-usb-device.577842/>"
+
+#: medicat\medicat.py:123
+msgid "Why does my antivirus software detect Medicat as a virus?"
+msgstr "De ce software-ul meu antivirus detectează Medicat ca fiind un virus?"
+
+#: medicat\medicat.py:124
+msgid "Medicat USB does not contain any viruses! If an antivirus software detects one of its files as such, it is a false positive.\n"
+"As you know, Medicat USB contains tools that can reset a partition, find a password, and modify the system. Portable applications can be falsely flagged because of how they are cracked and packaged.\n"
+"For these reasons all antivirus software's 'real-time scanning' should be disabled when installing, and sometimes even when using, Medicat USB.\n"
+"All the scripts associated with the project (published by one of the 3 developers) and Ventoy do not have one either."
+msgstr "Medicat USB nu conține niciun virus! Dacă un software antivirus detectează unul dintre fișierele sale ca atare, acesta este un fals pozitiv.\n"
+"După cum știți, Medicat USB conține instrumente care pot reseta o partiție, găsi o parolă și modifica sistemul. Aplicațiile portabile pot fi semnalate în mod fals din cauza modului în care sunt sparte și împachetate.\n"
+"Din aceste motive, toate \"scanările în timp real\" ale programelor antivirus ar trebui să fie dezactivate atunci când instalați, și uneori chiar și atunci când utilizați, Medicat USB.\n"
+"Toate scripturile asociate cu proiectul (publicat de unul dintre cei 3 dezvoltatori) și Ventoy nu au nici ele una."
+
+#: medicat\medicat.py:129
+msgid "What is Medicat USB?"
+msgstr "Ce este Medicat USB?"
+
+#: medicat\medicat.py:130
+msgid "Medicat USB contains tools to backup/restore data, to manage disks/partitions, to reset/bypass/find a Windows password, to use software with admin rights from a winPE, to do virus scans. In addition, it uses Ventoy, which allows you to add your own bootable tools with a simple copy and paste."
+msgstr "Medicat USB conține instrumente pentru backup/restaurare de date, pentru a gestiona discuri/partiții, pentru a reseta/pătrunde/găsi o parolă Windows, pentru a utiliza software cu drepturi de administrator de pe un winPE, pentru a face scanări de viruși. În plus, utilizează Ventoy, care vă permite să adăugați propriile instrumente de pornire cu un simplu copy and paste."
+
+#: medicat\medicat.py:135
+msgid "How often will Medicat be updated?"
+msgstr "Cât de des va fi actualizat Medicat?"
+
+#: medicat\medicat.py:136
+msgid "MediCat USB is now a rolling release, so will be regularly updated with major releases, and minor updates as needed (Typically monthly or bi-monthly). The links here will always be the latest version. The PortableApps are easily updatable by the user, once they have been 'burned' to USB."
+msgstr "MediCat USB este acum o versiune continuă, deci va fi actualizată în mod regulat cu versiuni majore și actualizări minore, după cum este necesar (de obicei lunar sau bilunar). Linkurile de aici vor fi întotdeauna cele mai recente versiuni. Aplicațiile portabile sunt ușor de actualizat de către utilizator, odată ce au fost \"arse\" pe USB."
+
+#: medicat\medicat.py:141
+msgid "Why doesn't Ventoy display Wim and VHD files?"
+msgstr "De ce nu afișează Ventoy fișierele Wim și VHD?"
+
+#: medicat\medicat.py:142
+msgid "You must download an additional plugin/file and place it in the `USB\\ventoy\\` folder (create it if necessary).\n\n"
+"**WimBoot Plugin (https://ventoy.net/en/plugin_wimboot.html):**\n"
+"- Download `ventoy_wimboot.img` file from <https://github.com/ventoy/wimiso/releases>.\n"
+"- Put the file under `ventoy` directory in the `ventoy partition` of the USB stick, that is `/ventoy/ventoy_wimboot.img` and that's all.\n\n"
+"**VhdBoot Plugin (<https://ventoy.net/en/plugin_vhdboot.html>):**\n"
+"- Download `ventoy_vhdboot.img` file from <https://github.com/ventoy/vhdiso/releases>.\n"
+"- Put the file under `ventoy` directory in the `ventoy` partition of the USB stick, that is `/ventoy/ventoy_vhdboot.img` and that's all."
+msgstr "Trebuie să descărcați un plugin/fișier suplimentar și să îl plasați în folderul `USB\\ventoy\\` (creați-l dacă este necesar).\n\n"
+"**WimBoot Plugin (https://ventoy.net/en/plugin_wimboot.html):**\n"
+"- Descărcați fișierul `ventoy_wimboot.img` de pe <https://github.com/ventoy/wimiso/releases>.\n"
+"- Puneți fișierul în directorul `ventoy` din `ventoy partition` a stick-ului USB, adică `/ventoy/ventoy_wimboot.img` și asta e tot.\n\n"
+"**VhdBoot Plugin (<https://ventoy.net/en/plugin_vhdboot.html>):**\n"
+"- Descărcați fișierul `ventoy_vhdboot.img` de pe <https://github.com/ventoy/vhdiso/releases>.\n"
+"- Puneți fișierul în directorul `ventoy` din partiția `ventoy` a stick-ului USB, adică `/ventoy/ventoy_vhdboot.img` și asta e tot."
+
+#: medicat\medicat.py:147
+msgid "X & Y"
+msgstr "X & Y"
+
+#: medicat\medicat.py:148
+msgid "What is the context?\n"
+"If you have any problems or would like to ask for help, please give information about what you are not able to do. Don't just say you don't understand how to make x software work, say where you are, what is wrong with it and what is the potential error. \n"
+"Thank you for your understanding."
+msgstr "Care este contextul?\n"
+"Dacă aveți probleme sau dacă doriți să cereți ajutor, vă rugăm să furnizați informații despre ceea ce nu puteți face. Nu spuneți doar că nu înțelegeți cum să faceți să funcționeze x software, spuneți unde vă aflați, ce nu este în regulă și care este potențiala eroare. \n"
+"Vă mulțumim pentru înțelegere."
+
+#: medicat\medicat.py:152
+msgid "Test!"
+msgstr "Test!"
+
+#: medicat\medicat.py:152
+msgid "Test."
+msgstr "Test."
+
+#: medicat\medicat.py:273
+#, docstring
+msgid "This cog will only work on x server and therefore cannot be used by the general public!"
+msgstr "Această rotiță va funcționa doar pe serverul x și, prin urmare, nu poate fi folosită de publicul larg!"
+
+#: medicat\medicat.py:446
+msgid "This Ventoy version doesn't exists."
+msgstr "Această versiune Ventoy nu există."
+
+#: medicat\medicat.py:482
+msgid "Ventoy v{ventoy_version_str} has been released!"
+msgstr "Ventoy v{ventoy_version_str} a fost lansat!"
+
+#: medicat\medicat.py:485
+msgid "New features:"
+msgstr "Caracteristici noi:"
+
+#: medicat\medicat.py:490
+msgid "Download this version:"
+msgstr "Descărcați această versiune:"
+
+#: medicat\medicat.py:498
+msgid "View on Ventoy Official Website"
+msgstr "Vezi pe site-ul oficial Ventoy"
+
+#: medicat\medicat.py:582
+msgid "{tool} now has a new version!"
+msgstr "{tool} are acum o nouă versiune!"
+
+#: medicat\medicat.py:596
+msgid "View on FCportables Official Website"
+msgstr "Vezi pe site-ul oficial al FCportables"
+
+#: medicat\medicat.py:737
+#, docstring
+msgid "Get the latest version of Ventoy."
+msgstr "Obțineți cea mai recentă versiune de Ventoy."
+
+#: medicat\medicat.py:741 medicat\medicat.py:752
+msgid "An error has occurred. Please try again."
+msgstr "S-a produs o eroare. Vă rugăm să încercați din nou."
+
+#: medicat\medicat.py:746
+#, docstring
+msgid "Get a version of Ventoy."
+msgstr "Obțineți o versiune de Ventoy."
+
+#: medicat\medicat.py:757
+#, docstring
+msgid "Get the latest versions of each Medicat USB bootable tool."
+msgstr "Obțineți cele mai recente versiuni ale fiecărui instrument de pornire Medicat USB."
+
+#: medicat\medicat.py:793
+msgid "View FCportables Official Website"
+msgstr "Vezi site-ul oficial al FCportables"
+
+#: medicat\medicat.py:811
+#, docstring
+msgid "Get the debug for a FCportables's tool."
+msgstr "Obține depanarea pentru un instrument FCportables."
+
+#: medicat\medicat.py:890
+#, docstring
+msgid "Get an embed to check loops status."
+msgstr "Obțineți o inserție pentru a verifica starea buclelor."
+
+#: medicat\medicat.py:897
+#, docstring
+msgid "Update Medicat cog directly."
+msgstr "Actualizați direct cognatul Medicat."
+

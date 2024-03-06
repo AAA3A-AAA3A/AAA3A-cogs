@@ -1,0 +1,135 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-06-05 20:09+0200\n"
+"PO-Revision-Date: 2023-06-05 19:26\n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ro\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/exportchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 146\n"
+"Language: ro_RO\n"
+
+#: exportchannel\exportchannel.py:18
+msgid "Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\n"
+"Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"There are {count_messages} exported messages.\n"
+"Remember that exporting other users' messages from Discord does not respect the TOS."
+msgstr "Iată fișierul html al transcrierii mesajelor de pe canalul {channel.mention} ({channel.id}).\n"
+"Vă rugăm să rețineți: toate atașamentele și avatarele utilizatorilor sunt salvate cu linkul Discord din acest fișier.\n"
+"Există {count_messages} mesaje exportate.\n"
+"Nu uitați că exportul mesajelor altor utilizatori din Discord nu respectă TOS."
+
+#: exportchannel\exportchannel.py:21
+msgid "[Click here to view the transcript.]({url})"
+msgstr "[Faceți clic aici pentru a vedea transcrierea]({url})"
+
+#: exportchannel\exportchannel.py:28
+#, docstring
+msgid "A cog to export all or part of a channel's messages to an html file!"
+msgstr "O rotiță pentru a exporta toate sau o parte din mesajele unui canal către un fișier html!"
+
+#: exportchannel\exportchannel.py:42
+msgid "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
+msgstr "Îmi pare rău, dar nu pot citi conținutul mesajelor de pe {channel.mention} ({channel.id})."
+
+#: exportchannel\exportchannel.py:72
+msgid "Sorry. I could not find any message."
+msgstr "Îmi pare rău. Nu am putut găsi niciun mesaj."
+
+#: exportchannel\exportchannel.py:131
+#, docstring
+msgid "Export all of a channel's messages to an html file.\n\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Exportă toate mesajele unui canal într-un fișier html.\n\n"
+"        Vă rugăm să rețineți: toate atașamentele și avatarele utilizatorilor sunt salvate cu link-ul Discord din acest fișier.\n"
+"        Rețineți că exportul mesajelor altor utilizatori din Discord nu respectă TOS.\n"
+"        "
+
+#: exportchannel\exportchannel.py:159
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the number of messages since the end of the channel.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Exportă o parte din mesajele unui canal într-un fișier html.\n\n"
+"        Specificați numărul de mesaje de la sfârșitul canalului.\n"
+"        Rețineți: toate atașamentele și avatarele utilizatorilor sunt salvate cu link-ul Discord din acest fișier.\n"
+"        Rețineți că exportul mesajelor altor utilizatori din Discord nu respectă TOS.\n"
+"        "
+
+#: exportchannel\exportchannel.py:195
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the before message (id or link).\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Exportă o parte din mesajele unui canal într-un fișier html.\n\n"
+"        Specificați mesajul anterior (id sau link).\n"
+"        Rețineți: toate atașamentele și avatarele utilizatorilor sunt salvate cu link-ul Discord din acest fișier.\n"
+"        Rețineți că exportul mesajelor altor utilizatori din Discord nu respectă TOS.\n"
+"        "
+
+#: exportchannel\exportchannel.py:229
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the after message (id or link).\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Exportă o parte din mesajele unui canal într-un fișier html.\n\n"
+"        Specificați mesajul de după (id sau link).\n"
+"        Rețineți: toate atașamentele și avatarele utilizatorilor sunt salvate cu link-ul Discord din acest fișier.\n"
+"        Rețineți că exportul mesajelor altor utilizatori din Discord nu respectă TOS.\n"
+"        "
+
+#: exportchannel\exportchannel.py:264
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the before and after messages (id or link).\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Exportă o parte din mesajele unui canal într-un fișier html.\n\n"
+"        Specificați mesajele de dinainte și de după (id sau link).\n"
+"        Rețineți: toate atașamentele și avatarele utilizatorilor sunt salvate cu link-ul Discord din acest fișier.\n"
+"        Rețineți că exportul mesajelor altor utilizatori din Discord nu respectă TOS.\n"
+"        "
+
+#: exportchannel\exportchannel.py:299
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the member (id, name or mention).\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Exportă o parte din mesajele unui canal într-un fișier html.\n\n"
+"        Specificați membrul (id, nume sau mențiune).\n"
+"        Rețineți: toate atașamentele și avatarele utilizatorilor sunt salvate cu linkul Discord din acest fișier.\n"
+"        Rețineți că exportul mesajelor altor utilizatori din Discord nu respectă TOS.\n"
+"        "
+
+#: exportchannel\exportchannel.py:337
+#, docstring
+msgid "Export part of a channel's messages to an html file.\n\n"
+"        Specify the bool option.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Exportă o parte din mesajele unui canal într-un fișier html.\n\n"
+"        Specificați opțiunea bool.\n"
+"        Rețineți: toate atașamentele și avatarele utilizatorilor sunt salvate cu link-ul Discord din acest fișier.\n"
+"        Rețineți că exportul mesajelor altor utilizatori din Discord nu respectă TOS.\n"
+"        "
+

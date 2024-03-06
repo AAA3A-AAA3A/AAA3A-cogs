@@ -17,11 +17,13 @@ _ = Translator("LinkQuoter", __file__)
 
 
 class LinkQuoterView(discord.ui.View):
-    def __init__(self, quoted_message: discord.Message) -> None:
+    def __init__(self, quoted_message: discord.Message, delete_message_button: bool = True) -> None:
         super().__init__(timeout=60)
         self.quoted_message: discord.Message = quoted_message
         self.add_item(discord.ui.Button(label="Jump to Message!", style=discord.ButtonStyle.url, url=self.quoted_message.jump_url))
         self._message: discord.Message = None
+        if not delete_message_button:
+            self.remove_item(self.delete_message)
 
     async def on_timeout(self) -> None:
         self.remove_item(self.delete_message)
@@ -54,6 +56,8 @@ class LinkQuoter(Cog):
             "webhooks": True,
             "cross_server": False,
             "delete_message": False,
+            "delete_after": 0,
+            "delete_mesage_button": True,
             "whitelist_channels": [],
             "blacklist_channels": [],
         }
@@ -81,6 +85,16 @@ class LinkQuoter(Cog):
                 "converter": bool,
                 "description": "Toggle deleting of messages for automatic quoting.\n\nIf automatic quoting is enabled, then [botname] will also delete messages that contain links in them.",
                 "aliases": ["delete"],
+            },
+            "delete_after": {
+                "converter": int,
+                "description": "Set the time in seconds to delete the message after.",
+                "aliases": ["delete_time"],
+            },
+            "delete_message_button": {
+                "converter": bool,
+                "description": "Toggle the delete message button on the quote messages.",
+                "aliases": ["delete_button"],
             },
             "whitelist_channels": {
                 "converter": commands.Greedy[discord.abc.GuildChannel],
@@ -146,7 +160,7 @@ class LinkQuoter(Cog):
             message=message,
         )
         if config["delete_message"]:
-            await CogsUtils.delete_message(message)
+            await CogsUtils.delete_message(message, delay=config["delete_after"])
 
     async def message_to_embed(
         self,
@@ -241,7 +255,7 @@ class LinkQuoter(Cog):
                 and isinstance((message := ctx.message.reference.resolved), discord.Message)
             ):
                 raise commands.UserInputError()
-        view = LinkQuoterView(quoted_message=message)
+        view = LinkQuoterView(quoted_message=message, delete_message_button=await self.config.guild(ctx.guild).delete_message_button())
         if await self.config.guild(ctx.guild).webhooks() and ctx.bot_permissions.manage_webhooks:
             embed = await self.message_to_embed(
                 message, invoke_guild=ctx.guild, author_field=False

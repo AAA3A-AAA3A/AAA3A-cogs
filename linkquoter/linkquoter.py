@@ -73,7 +73,7 @@ class LinkQuoter(Cog):
             },
             "webhooks": {
                 "converter": bool,
-                "description": "Toggle showing the original Author of the quote instead of the bot when quoting",
+                "description": "Toggle sending message with the name and avatar of the Author of the quote (with webhooks)",
                 "aliases": ["webhook"],
             },
             "cross_server": {

@@ -73,7 +73,7 @@ class LinkQuoter(Cog):
             },
             "webhooks": {
                 "converter": bool,
-                "description": "Toggle deleting of messages for automatic quoting.\n\nIf automatic quoting is enabled, then [botname] will also delete messages that contain links in them.",
+                "description": "Toggle sending message with the name and avatar of the Author of the quote (with webhooks)",
                 "aliases": ["webhook"],
             },
             "cross_server": {

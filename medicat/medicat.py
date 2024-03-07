@@ -61,7 +61,25 @@ CUSTOM_COMMANDS = {
     "install": {
         "title": _("How do I install Medicat USB?"),
         "description": _(
-            "1) Install the latest version of Ventoy on your USB stick (<https://github.com/ventoy/Ventoy/releases> & <https://ventoy.net/en/doc_start.html>).\n2) Download the last version of Medicat USB with Torrent, Mega or Google Drive (<https://medicatusb.com/>).\n3) Extract the downloaded zips to the root of the USB stick.\nFull tutorial: <https://medicatusb.com/docs/installation/installing-medicat/>\nYou can also use the automatic installer of MON5TERMATT (<https://medicatusb.com/installer/>).\nWarning: do not forget to disable your antivirus software (see the `virus` command for more information)."
+            "1) Install the latest version of Ventoy on your USB stick (<https://github.com/ventoy/Ventoy/releases> & <https://ventoy.net/en/doc_start.html>).\n2) Download the last version of Medicat USB with Torrent, Mega or Google Drive (<https://medicatusb.com/>).\n3) Extract the downloaded zips to the root of the USB stick.\nFull tutorial: <https://medicatusb.com/docs/medicat/installation/manual-install/>\nYou can also use the automatic installer found on the main website under **Installer**.\nWarning: do not forget to disable your antivirus software (see the `virus` command for more information)."
+        ),
+    },
+    "manual": {
+        "title": _("How do I install Medicat USB manually?"),
+        "description": _(
+            "If the Installer is not working properly for you, Plase attempt a manual install instead.\nPlease Follow the guide here: <https://medicatusb.com/docs/medicat/installation/manual-install/>"
+        ),
+    },
+    "auto": {
+        "title": _("How do I install Medicat USB with the installer?"),
+        "description": _(
+            "Please download the latest Installer file via the Site under the section of **Installer**\nLaunch Either the .bat or .sh File from somewhere that is NOT your USB.\nThen follow the simple and easy prompts on your screen."
+        ),
+    },
+    "errors": {
+        "title": _("Common Install Errors."),
+        "description": _(
+            "Do NOT run the installer from your USB drive.\n\n\nThis list is unfinished. Please message the help channel if your issue is not listed <#829478971032469545> "
         ),
     },
     "donate": {
@@ -110,7 +128,8 @@ CUSTOM_COMMANDS = {
     "updateonly": {
         "title": _("How can I update Medicat USB without having to install all the files again?"),
         "description": _(
-            "For the time being, you are in any case obliged to download all Medicat USB files again to update it. However, if you only want to keep your previous personal changes, you can save them somewhere and reproduce them on the new instance of the bootable USB stick.\nFor Medicat USB 22.06, @AAA3A is currently coding an update only script for Medicat USB, in batch. It will be downloaded with only the necessary files and will however only work from one version to another, after being prepared in advance."
+            "For the time being, there is not option for udating through medicat. However, if you only want to keep your previous personal changes, you can save them somewhere and reproduce them on the new instance of the bootable USB stick."
+# Add in later?  \nFor Medicat USB 22.06, @AAA3A is currently coding an update only script for Medicat USB, in batch. It will be downloaded with only the necessary files and will however only work from one version to another, after being prepared in advance.
         ),
     },
     "usbvhd": {
@@ -150,12 +169,12 @@ CUSTOM_COMMANDS = {
             "You must download an additional plugin/file and place it in the `USB\\ventoy\\` folder (create it if necessary).\n\n**WimBoot Plugin (https://ventoy.net/en/plugin_wimboot.html):**\n- Download `ventoy_wimboot.img` file from <https://github.com/ventoy/wimiso/releases>.\n- Put the file under `ventoy` directory in the `ventoy partition` of the USB stick, that is `/ventoy/ventoy_wimboot.img` and that's all.\n\n**VhdBoot Plugin (<https://ventoy.net/en/plugin_vhdboot.html>):**\n- Download `ventoy_vhdboot.img` file from <https://github.com/ventoy/vhdiso/releases>.\n- Put the file under `ventoy` directory in the `ventoy` partition of the USB stick, that is `/ventoy/ventoy_vhdboot.img` and that's all."
         ),
     },
-    "xy": {
-        "title": _("X & Y"),
-        "description": _(
-            "What is the context?\nIf you have any problems or would like to ask for help, please give information about what you are not able to do. Don't just say you don't understand how to make x software work, say where you are, what is wrong with it and what is the potential error. \nThank you for your understanding."
-        ),
-    },
+#    "xy": {
+#        "title": _("X & Y"),
+#        "description": _(
+#            "What is the context?\nIf you have any problems or would like to ask for help, please give information about what you are not able to do. Don't just say you don't understand how to make x software work, say where you are, what is wrong with it and what is the potential error. \nThank you for your understanding."
+#        ),
+#    },
     "test": {"title": _("Test!"), "description": _("did that work for you?")},
 }
 

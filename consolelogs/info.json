@@ -8,7 +8,8 @@
         "error",
         "console",
         "logs",
-        "dev"
+        "dev",
+        "errorlogs"
     ],
     "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "colorama"],
     "min_bot_version": "3.5.0",

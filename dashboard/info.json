@@ -1,0 +1,16 @@
+{
+    "author": ["Neuro Assassin", "AAA3A"],
+    "name": "Dashboard",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you like my work, please consider donating on my [Buy Me a Coffee page](<https://www.buymeacoffee.com/aaa3a>)!\n⚠️ This package is a fork of Neuro Assassin's work, and isn't endorsed by the Org at all.",
+    "short": "Interact with your bot through a web Dashboard!",
+    "description": "Interact with your bot through a web Dashboard! Thank you very much to Neuro for the initial work!",
+    "tags": [
+        "dashboard",
+        "web",
+        "panel"
+    ],
+    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "fernet", "markdown2"],
+    "min_bot_version": "3.5.0",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users.",
+    "hidden": false
+}

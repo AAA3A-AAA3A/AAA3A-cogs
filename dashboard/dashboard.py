@@ -1,0 +1,340 @@
+from AAA3A_utils import Cog, Settings  # isort:skip
+from redbot.core import commands, Config  # isort:skip
+from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+from redbot.core.bot import Red  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
+
+import argparse
+import asyncio
+
+# import importlib
+# import sys
+from fernet import Fernet
+
+from .rpc import DashboardRPC
+
+# Credits:
+# General repo credits.
+# Thank you very much to Neuro Assassin for the original code (https://github.com/Cog-Creators/Toxic-Cogs/tree/master/dashboard)!
+
+_ = Translator("Dashboard", __file__)
+
+
+class StrConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> str:
+        return argument
+
+
+class ThirdPartyConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> str:
+        cog = ctx.bot.get_cog("Dashboard")
+        if argument not in cog.rpc.third_parties_extension.third_parties:
+            raise commands.BadArgument(_("This third party is not available."))
+        return argument
+
+
+@cog_i18n(_)
+class Dashboard(Cog):
+    """Interact with your bot through a web dashboard!
+
+    ⚠️ This package is a fork of Neuro Assassin's work, and isn't endorsed by the Org at all.
+    """
+
+    def __init__(self, bot: Red) -> None:
+        super().__init__(bot=bot)
+        self.__authors__: typing.List[str] = ["Neuro Assassin", "AAA3A"]
+
+        self.config: Config = Config.get_conf(
+            self,
+            identifier=205192943327321000143939875896557571750,
+            force_registration=True,
+        )
+        self.dashboard_global: typing.Dict[str, typing.Any] = {
+            "all_in_one": False,
+            "flask_flags": [],
+            "webserver": {
+                "core": {
+                    "secret_key": None,
+                    "jwt_secret_key": None,
+                    "secret": None,
+                    "blacklisted_ips": [],
+                },
+                "ui": {
+                    "meta": {
+                        "title": None,
+                        "icon": None,
+                        "description": None,
+                        "support_server": None,
+                        "default_color": "success",
+                        "default_background_theme": "white",
+                        "default_sidebar_theme": "white",
+                    },
+                    "sidebar": [
+                        {
+                            "pos": 1,
+                            "name": "builtin-home",
+                            "icon": "ni ni-atom text-success",
+                            "route": "base_blueprint.index",
+                            "session": None,
+                            "owner": False,
+                            "locked": True,
+                            "hidden": False,
+                        },
+                        {
+                            "pos": 2,
+                            "name": "builtin-commands",
+                            "icon": "ni ni-bullet-list-67 text-danger",
+                            "route": "base_blueprint.commands",
+                            "session": None,
+                            "owner": False,
+                            "locked": False,
+                            "hidden": False,
+                        },
+                        {
+                            "pos": 3,
+                            "name": "builtin-dashboard",
+                            "icon": "ni ni-settings text-primary",
+                            "route": "base_blueprint.dashboard",
+                            "session": True,
+                            "owner": False,
+                            "locked": False,
+                            "hidden": False,
+                        },
+                        {
+                            "pos": 4,
+                            "name": "builtin-third_parties",
+                            "icon": "ni ni-diamond text-success",
+                            "route": "third_parties_blueprint.third_parties",
+                            "session": True,
+                            "owner": False,
+                            "locked": False,
+                            "hidden": False,
+                        },
+                        {
+                            "pos": 5,
+                            "name": "builtin-admin",
+                            "icon": "ni ni-badge text-danger",
+                            "route": "base_blueprint.admin",
+                            "session": True,
+                            "owner": True,
+                            "locked": True,
+                            "hidden": False,
+                        },
+                        {
+                            "pos": 6,
+                            "name": "builtin-credits",
+                            "icon": "ni ni-book-bookmark text-info",
+                            "route": "base_blueprint.credits",
+                            "session": None,
+                            "owner": False,
+                            "locked": True,
+                            "hidden": False,
+                        },
+                        {
+                            "pos": 7,
+                            "name": "builtin-login",
+                            "icon": "ni ni-key-25 text-success",
+                            "route": "login_blueprint.login",
+                            "session": False,
+                            "owner": False,
+                            "locked": True,
+                            "hidden": False,
+                        },
+                        {
+                            "pos": 8,
+                            "name": "builtin-logout",
+                            "icon": "ni ni-user-run text-warning",
+                            "route": "login_blueprint.logout",
+                            "session": True,
+                            "owner": False,
+                            "locked": True,
+                            "hidden": False,
+                        },
+                    ],
+                },
+                "disabled_third_parties": [],
+            },
+        }
+        self.config.register_global(**self.dashboard_global)
+
+        _settings: typing.Dict[str, typing.Dict[str, typing.Any]] = {
+            "all_in_one": {
+                "converter": bool,
+                "description": "Run the Dashboard in the bot process, without having to open another window. You have to install Red-Dashboard in your bot venv with Pip and reload the cog.",
+            },
+            "flask_flags": {
+                "converter": commands.Greedy[StrConverter],
+                "description": "The flags used to setting the webserver if `all_in_one` is enabled. They are the cli flags of `reddash` without `--rpc-port`.",
+            },
+            "meta_title": {
+                "converter": str,
+                "description": "The website title to use.",
+                "path": ["webserver", "ui", "meta", "title"],
+            },
+            "meta_icon": {
+                "converter": str,
+                "description": "The website description to use.",
+                "path": ["webserver", "ui", "meta", "icon"],
+            },
+            "meta_description": {
+                "converter": str,
+                "description": "The website description to use.",
+                "path": ["webserver", "ui", "meta", "description"],
+            },
+            "support_server": {
+                "converter": str,
+                "description": "Set the support server url of your bot.",
+                "path": ["webserver", "ui", "meta", "support_server"],
+            },
+            "default_color": {
+                "converter": typing.Literal[
+                    "success", "danger", "primary", "info", "warning", "dark"
+                ],
+                "description": "Set the default color of the dashboard.",
+                "path": ["webserver", "ui", "meta", "default_color"],
+            },
+            "default_background_theme": {
+                "converter": typing.Literal["white", "dark"],
+                "description": "Set the default background theme of the dashboard.",
+                "path": ["webserver", "ui", "meta", "default_background_theme"],
+            },
+            "default_sidebar_theme": {
+                "converter": typing.Literal["white", "dark"],
+                "description": "Set the default sidebar theme of the dashboard.",
+                "path": ["webserver", "ui", "meta", "default_sidebar_theme"],
+            },
+            "disabled_third_parties": {
+                "converter": commands.Greedy[ThirdPartyConverter],
+                "description": "The third parties to disable.",
+                "path": ["webserver", "disabled_third_parties"],
+            },
+        }
+        self.settings: Settings = Settings(
+            bot=self.bot,
+            cog=self,
+            config=self.config,
+            group=self.config.GLOBAL,
+            settings=_settings,
+            global_path=[],
+            use_profiles_system=False,
+            can_edit=True,
+            commands_group=self.setdashboard,
+        )
+
+        self.app: typing.Optional[typing.Any] = None
+        self.rpc: DashboardRPC = DashboardRPC(bot=self.bot, cog=self)
+
+    async def cog_load(self) -> None:
+        await super().cog_load()
+        await self.settings.add_commands()
+        self.log.info("Loading cog...")
+        asyncio.create_task(self.create_app(flask_flags=await self.config.flask_flags()))
+
+    async def cog_unload(self) -> None:
+        self.log.info("Unloading cog...")
+        if self.app is not None and self.app.server_thread is not None:
+            await asyncio.to_thread(self.app.server_thread.shutdown)
+            await asyncio.to_thread(self.app.tasks_manager.stop_tasks)
+        await super().cog_unload()
+
+    async def create_app(self, flask_flags: str) -> None:
+        await self.bot.wait_until_red_ready()
+        if await self.config.webserver.core.secret_key() is None:
+            await self.config.webserver.core.secret_key.set(Fernet.generate_key().decode())
+        if await self.config.webserver.core.jwt_secret_key() is None:
+            await self.config.webserver.core.jwt_secret_key.set(Fernet.generate_key().decode())
+        if await self.config.all_in_one():
+            try:
+                # for module_name in ("flask", "reddash"):
+                #     modules = sorted(
+                #         [module for module in sys.modules if module.split(".")[0] == module_name], reverse=True
+                #     )
+                #     for module in modules:
+                #         try:
+                #             importlib.reload(sys.modules[module])
+                #         except ModuleNotFoundError:
+                #             pass
+                from reddash import FlaskApp
+
+                parser: argparse.ArgumentParser = argparse.ArgumentParser(exit_on_error=False)
+                parser.add_argument("--host", dest="host", type=str, default="0.0.0.0")
+                parser.add_argument("--port", dest="port", type=int, default=42356)
+                # parser.add_argument("--rpc-port", dest="rpcport", type=int, default=6133)
+                parser.add_argument(
+                    "--interval", dest="interval", type=int, default=5, help=argparse.SUPPRESS
+                )
+                parser.add_argument(
+                    "--development", dest="dev", action="store_true", help=argparse.SUPPRESS
+                )
+                # parser.add_argument("--debug", dest="debug", action="store_true")
+                # parser.add_argument("--instance", dest="instance", type=str, default=None)
+                args = vars(parser.parse_args(args=flask_flags))
+                self.app: FlaskApp = FlaskApp(cog=self, **args)
+                await self.app.create_app()
+            except Exception as e:
+                self.log.critical("Error when creating the Flask webserver app.", exc_info=e)
+
+    @commands.is_owner()
+    @commands.hybrid_group()
+    async def setdashboard(self, ctx: commands.Context) -> None:
+        """Configure Dashboard."""
+        pass
+
+    @setdashboard.command()
+    async def secret(self, ctx: commands.Context, *, secret: str = None):
+        """Set the client secret needed for Discord Oauth."""
+        if secret is not None:
+            await self.config.webserver.core.secret.set(secret)
+            return
+
+        class SecretModal(discord.ui.Modal):
+            def __init__(_self) -> None:
+                super().__init__(title="Discord OAuth Secret")
+                _self.secret: discord.ui.TextInput = discord.ui.TextInput(
+                    label=_("Discord Secret"),
+                    style=discord.TextStyle.short,
+                    custom_id="discord_secret",
+                )
+                _self.add_item(_self.secret)
+
+            async def on_submit(_self, interaction: discord.Interaction) -> None:
+                await self.config.webserver.core.secret.set(_self.secret.value)
+                await interaction.response.send_message(_("Discord OAuth secret set."))
+
+        class SecretView(discord.ui.View):
+            def __init__(_self) -> None:
+                super().__init__()
+                _self._message: discord.Message = None
+
+            async def on_timeout(_self) -> None:
+                for child in _self.children:
+                    child: discord.ui.Item
+                    if hasattr(child, "disabled") and not (
+                        isinstance(child, discord.ui.Button)
+                        and child.style == discord.ButtonStyle.url
+                    ):
+                        child.disabled = True
+                try:
+                    await _self._message.edit(view=self)
+                except discord.HTTPException:
+                    pass
+
+            async def interaction_check(_self, interaction: discord.Interaction) -> bool:
+                if interaction.user.id not in [ctx.author.id] + list(ctx.bot.owner_ids):
+                    await interaction.response.send_message(
+                        "You are not allowed to use this interaction.", ephemeral=True
+                    )
+                    return False
+                return True
+
+            @discord.ui.button(label=_("Set Discord OAuth Secret"))
+            async def set_secret_button(
+                _self, interaction: discord.Interaction, button: discord.ui.Button
+            ) -> None:
+                await interaction.response.send_modal(SecretModal())
+
+        view = SecretView()
+        view._message = await ctx.send(
+            _("Click on the button below to set a secret for Discord OAuth."), view=view
+        )

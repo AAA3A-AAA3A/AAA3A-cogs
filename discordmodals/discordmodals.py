@@ -100,6 +100,16 @@ class RoleOrMemberConverter(commands.Converter):
                 raise e
 
 
+def convert_to_bool(argument: typing.Any) -> bool:
+    lowered = str(argument).lower().strip()
+    if lowered in {"yes", "y", "true", "t", "1", "enable", "on"}:
+        return True
+    elif lowered in {"no", "n", "false", "f", "0", "disable", "off"}:
+        return False
+    else:
+        raise commands.BadBoolArgument(lowered)
+
+
 class ModalConverter(commands.Converter):
     async def convert(
         self, ctx: commands.Context, argument: str
@@ -117,10 +127,12 @@ class ModalConverter(commands.Converter):
         optional_arguments = [
             "channel",
             "anonymous",
+            "unique_answer",
             "messages",
             "pings",
             "whitelist_roles",
             "blacklist_roles",
+            "assign_roles",
         ]
         for arg in required_arguments:
             if arg not in argument_dict:
@@ -226,17 +238,6 @@ class ModalConverter(commands.Converter):
             else:
                 input["style"] = 2
             if "required" in input:
-
-                def convert_to_bool(argument: str) -> bool:
-                    lowered = argument.lower()
-                    if lowered in {"yes", "y", "true", "t", "1", "enable", "on"}:
-                        return True
-                    elif lowered in {"no", "n", "false", "f", "0", "disable", "off"}:
-                        return False
-                    else:
-                        raise commands.BadBoolArgument(lowered)
-
-                input["required"] = str(input["required"])
                 try:
                     input["required"] = convert_to_bool(input["required"])
                 except commands.BadBoolArgument:
@@ -296,6 +297,23 @@ class ModalConverter(commands.Converter):
         # anonymous
         if "anonymous" not in argument_dict:
             argument_dict["anonymous"] = False
+        else:
+            try:
+                argument_dict["anonymous"] = convert_to_bool(argument_dict["anonymous"])
+            except commands.BadBoolArgument:
+                raise commands.BadArgument(
+                    _("The argument `/anonymous` must be a boolean (True or False).")
+                )
+        # unique_answer
+        if "unique_answer" not in argument_dict:
+            argument_dict["unique_answer"] = False
+        else:
+            try:
+                argument_dict["unique_answer"] = convert_to_bool(argument_dict["unique_answer"])
+            except commands.BadBoolArgument:
+                raise commands.BadArgument(
+                    _("The argument `/unique_answer` must be a boolean (True or False).")
+                )
         # messages
         if "messages" in argument_dict:
             if "error" not in argument_dict["messages"]:
@@ -305,25 +323,33 @@ class ModalConverter(commands.Converter):
         else:
             argument_dict["messages"] = {"error": None, "submit": None}
         if "pings" not in argument_dict:
-            argument_dict["pings"] = None
+            argument_dict["pings"] = []
         else:
             argument_dict["pings"] = [
                 (await RoleOrMemberConverter().convert(ctx, argument=ping.strip())).mention
                 for ping in re.split(r",|;|\||-", str(argument_dict["pings"]))
             ]
         if "whitelist_roles" not in argument_dict:
-            argument_dict["whitelist_roles"] = None
+            argument_dict["whitelist_roles"] = []
         else:
             argument_dict["whitelist_roles"] = [
                 (await commands.RoleConverter().convert(ctx, argument=ping.strip())).id
                 for ping in re.split(r",|;|\||-", str(argument_dict["whitelist_roles"]))
             ]
         if "blacklist_roles" not in argument_dict:
-            argument_dict["blacklist_roles"] = None
+            argument_dict["blacklist_roles"] = []
         else:
             argument_dict["blacklist_roles"] = [
                 (await commands.RoleConverter().convert(ctx, argument=ping.strip())).id
                 for ping in re.split(r",|;|\||-", str(argument_dict["blacklist_roles"]))
+            ]
+        if "assign_roles" not in argument_dict:
+            argument_dict["assign_roles"] = []
+        else:
+            argument_dict["assign_roles"] = [
+                role.id
+                for ping in re.split(r",|;|\||-", str(argument_dict["assign_roles"]))
+                if (role := (await commands.RoleConverter().convert(ctx, argument=ping.strip()))) < ctx.author.top_role and role < ctx.me.top_role
             ]
         return argument_dict
 
@@ -340,7 +366,7 @@ class DiscordModals(Cog):
             identifier=205192943327321000143939875896557571750,  # 897374386384
             force_registration=True,
         )
-        self.CONFIG_SCHEMA: int = 2
+        self.CONFIG_SCHEMA: int = 3
         self.discordmodals_global: typing.Dict[str, typing.Optional[int]] = {
             "CONFIG_SCHEMA": None,
         }
@@ -398,6 +424,21 @@ class DiscordModals(Cog):
                             if key in guilds_data[guild]["modals"][modal]["modal"]:
                                 del guilds_data[guild]["modals"][modal]["modal"][key]
             CONFIG_SCHEMA = 2
+            await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
+        if CONFIG_SCHEMA == 2:
+            guild_group = self.config._get_base_group(self.config.GUILD)
+            async with guild_group.all() as guilds_data:
+                _guilds_data = deepcopy(guilds_data)
+                for guild in _guilds_data:
+                    for modal in guilds_data[guild]["modals"]:
+                        if "unique_answer" not in guilds_data[guild]["modals"][modal]:
+                            guilds_data[guild]["modals"][modal]["unique_answer"] = False
+                            guilds_data[guild]["modals"][modal]["existing_answers"] = []
+                        for key in ("whitelist_roles", "blacklist_roles", "assign_roles"):
+                            if guilds_data[guild]["modals"][modal].get(key) is None:
+                                guilds_data[guild]["modals"][modal][key] = []
+                                
+            CONFIG_SCHEMA = 3
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         if CONFIG_SCHEMA < self.CONFIG_SCHEMA:
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
@@ -462,6 +503,11 @@ class DiscordModals(Cog):
         ):
             await interaction.response.send_message(
                 "You are not allowed to use this interaction.", ephemeral=True
+            )
+            return
+        if config["unique_answer"] and interaction.user.id in config[f"{interaction.message.channel.id}-{interaction.message.id}"]["existing_answers"]:
+            await interaction.response.send_message(
+                "You have already answered this Modal.", ephemeral=True
             )
             return
         try:
@@ -551,10 +597,25 @@ class DiscordModals(Cog):
                     pass
             embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)
             await channel.send(
-                None if config.get("pings") is None else humanize_list(config.get("pings"))[:2000],
+                None if config["pings"] is None else humanize_list(config["pings"])[:2000],
                 embed=embed,
                 allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=True),
             )
+            for role_id in config["assign_roles"]:
+                role = interaction.guild.get_role(role_id)
+                if role is None:
+                    await interaction.followup.send(
+                        _("The role that was to be assigned no longer exists. Please notify an administrator."),
+                        ephemeral=True,
+                    )
+                    continue
+                try:
+                    await interaction.user.add_roles(role, reason="DiscordModals")
+                except discord.HTTPException:
+                    await interaction.followup.send(
+                        _("The role that was to be assigned could not be assigned. Please notify an administrator."),
+                        ephemeral=True,
+                    )
         except Exception as e:
             self.log.error(
                 f"The Modal of the {interaction.message.guild.id}-{interaction.message.channel.id}-{interaction.message.id} message did not work properly.",
@@ -564,6 +625,9 @@ class DiscordModals(Cog):
                 config["messages"]["error"] or _("Sorry. An error has occurred."), ephemeral=True
             )
         else:
+            if interaction.user.id not in config["existing_answers"]:
+                config["existing_answers"].append(interaction.user.id)
+                await self.config.guild(interaction.guild).modals.set_raw(f"{interaction.message.channel.id}-{interaction.message.id}", value=config)
             await interaction.followup.send(
                 config["messages"]["submit"] or _("Thank you for sending this Modal!"),
                 ephemeral=True,
@@ -612,14 +676,16 @@ class DiscordModals(Cog):
             max_length: None
         channel: general # id, mention, name
         anonymous: False
+        unique_answer: False
         messages:
           error: Error!
           submit: Form submitted.
         pings: user1, user2, role1, role2
         whitelist_roles: role1, role2
         blacklist_roles: role3, role4
+        assign_roles: role5, role6
         ```
-        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous`, `messages`, `pings`, `whitelist_roles` and `blacklist_roles` are not required.
+        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous`, `unique_answer`, `messages`, `pings`, `whitelist_roles`, `blacklist_roles` and `assign_roles` are not required.
         """
         config = await self.config.guild(ctx.guild).modals.all()
         if f"{message.channel.id}-{message.id}" in config:
@@ -669,6 +735,7 @@ class DiscordModals(Cog):
                 "inputs": argument["modal"],
             },
             "anonymous": argument["anonymous"],
+            "unique_answer": argument["unique_answer"],
             "messages": {
                 "error": argument["messages"]["error"],
                 "submit": argument["messages"]["submit"],
@@ -676,6 +743,8 @@ class DiscordModals(Cog):
             "pings": argument["pings"],
             "whitelist_roles": argument["whitelist_roles"],
             "blacklist_roles": argument["blacklist_roles"],
+            "assign_roles": argument["assign_roles"],
+            "existing_answers": [],
         }
         await self.config.guild(ctx.guild).modals.set(config)
         await ctx.send(_("Modal created."))

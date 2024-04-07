@@ -122,16 +122,7 @@ class Examples(typing.List):
     ) -> typing.List[discord.Embed]:
         embeds = []
         for i, example in enumerate(self, start=1):
-            if ctx is not None and (
-                "USER_ID" in example
-                or "MEMBER_ID" in example
-                or "GUILD_ID" in example
-                or "CHANNEL_ID" in example
-                or "ROLE_ID" in example
-                or "MESSAGE_ID" in example
-                or "BOT_ID" in example
-                or "APPLICATION_ID" in example
-            ):
+            if ctx is not None:
                 example = (
                     example.replace("USER_ID", str(ctx.author.id))
                     .replace("MEMBER_ID", str(ctx.author.id))

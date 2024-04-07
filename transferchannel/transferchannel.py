@@ -133,7 +133,14 @@ class TransferChannel(Cog):
     ) -> typing.Tuple[int, typing.List[discord.Message]]:
         messages = []
         async for message in channel.history(
-            limit=(limit if channel != ctx.message.channel and ctx.interaction is None else limit + 1) if limit is not None else None, before=before, after=after, oldest_first=False
+            limit=(
+                limit if channel != ctx.message.channel and ctx.interaction is None else limit + 1
+            )
+            if limit is not None
+            else None,
+            before=before,
+            after=after,
+            oldest_first=False,
         ):
             if message.type not in (discord.MessageType.default, discord.MessageType.reply):
                 continue
@@ -169,7 +176,12 @@ class TransferChannel(Cog):
             count_messages, messages = await self.get_messages(ctx, channel=source, **kwargs)
         messages.reverse()
         if way == "webhooks":
-            hook = await CogsUtils.get_hook(bot=ctx.bot, channel=destination.parent if isinstance(destination, discord.Thread) else destination)
+            hook = await CogsUtils.get_hook(
+                bot=ctx.bot,
+                channel=destination.parent
+                if isinstance(destination, discord.Thread)
+                else destination,
+            )
         for message in messages:
             if destination.permissions_for(destination.guild.me).attach_files:
                 files = await Tunnel.files_from_attatch(message)
@@ -188,7 +200,9 @@ class TransferChannel(Cog):
                         allowed_mentions=discord.AllowedMentions(
                             everyone=False, users=False, roles=False
                         ),
-                        thread=destination if isinstance(destination, discord.Thread) else discord.utils.MISSING,
+                        thread=destination
+                        if isinstance(destination, discord.Thread)
+                        else discord.utils.MISSING,
                         wait=True,
                     )
             elif way == "embeds":

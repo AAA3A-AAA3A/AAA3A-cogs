@@ -293,7 +293,9 @@ class Ticket:
                 },
             ],
         )
-        optionnal_ping = f" ||{' '.join(role.mention for role in ping_roles)}||"[:1500] if ping_roles else ""
+        optionnal_ping = (
+            f" ||{' '.join(role.mention for role in ping_roles)}||"[:1500] if ping_roles else ""
+        )
         embed = await self.cog.get_embed_important(
             self,
             False,
@@ -378,7 +380,7 @@ class Ticket:
                     for role in config["support_roles"]:
                         members.extend(role.members)
                 if config["view_roles"]:
-                     for role in config["view_roles"]:
+                    for role in config["view_roles"]:
                         members.extend(role.members)
                 adding_error = False
                 for member in members:
@@ -491,7 +493,10 @@ class Ticket:
                 if member in overwrites:
                     overwrites[member].send_messages = True
             await self.channel.edit(
-                name=new_name, category=config["category_open"], overwrites=overwrites, reason=_reason
+                name=new_name,
+                category=config["category_open"],
+                overwrites=overwrites,
+                reason=_reason,
             )
         else:
             await self.channel.edit(name=new_name, archived=False, reason=_reason)
@@ -546,7 +551,11 @@ class Ticket:
                 await self.first_message.edit(view=view)
             except discord.HTTPException:
                 pass
-        if config["ticket_role"] is not None and self.owner is not None and isinstance(self.owner, discord.Member):
+        if (
+            config["ticket_role"] is not None
+            and self.owner is not None
+            and isinstance(self.owner, discord.Member)
+        ):
             try:
                 await self.owner.add_roles(config["ticket_role"], reason=_reason)
             except discord.HTTPException:
@@ -632,17 +641,26 @@ class Ticket:
             if config["support_roles"]:
                 for role in config["support_roles"]:
                     allowed_members.extend(role.members)
-            members = filter(lambda member: member not in allowed_members, [self.owner] + self.members)
+            members = filter(
+                lambda member: member not in allowed_members, [self.owner] + self.members
+            )
             overwrites = self.channel.overwrites
             for member in members:
                 if member in overwrites:
                     overwrites[member].send_messages = False
             await self.channel.edit(
-                name=new_name, category=config["category_close"], overwrites=overwrites, reason=_reason
+                name=new_name,
+                category=config["category_close"],
+                overwrites=overwrites,
+                reason=_reason,
             )
         else:
             await self.channel.edit(name=new_name, archived=True, locked=True, reason=_reason)
-        if config["ticket_role"] is not None and self.owner is not None and isinstance(self.owner, discord.Member):
+        if (
+            config["ticket_role"] is not None
+            and self.owner is not None
+            and isinstance(self.owner, discord.Member)
+        ):
             try:
                 await self.owner.remove_roles(config["ticket_role"], reason=_reason)
             except discord.HTTPException:

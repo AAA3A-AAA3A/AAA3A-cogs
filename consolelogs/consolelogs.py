@@ -532,7 +532,11 @@ class ConsoleLogs(Cog, DashboardIntegration):
         await ctx.send(_("Errors logging enabled in {channel.mention}.").format(channel=channel))
 
     @consolelogs.command(aliases=["-"])
-    async def removechannel(self, ctx: commands.Context, channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]) -> None:
+    async def removechannel(
+        self,
+        ctx: commands.Context,
+        channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+    ) -> None:
         """Disable errors logging in a channel."""
         if not await self.config.channel(channel).enabled():
             raise commands.UserFeedbackCheckFailure(

@@ -18,7 +18,7 @@ try:
 except ImportError:
     from emoji import EMOJI_DATA  # emoji>=2.0.0
 
-from redbot.core.utils.chat_formatting import humanize_list, box
+from redbot.core.utils.chat_formatting import box, humanize_list
 
 # Credits:
 # General repo credits.
@@ -31,7 +31,9 @@ class MyMessageConverter(commands.MessageConverter):
         message = await super().convert(ctx, argument=argument)
         if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message. You can use EmbedUtils by AAA3A to send one.")
+                _(
+                    "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
+                )
             )
         return message
 
@@ -349,7 +351,9 @@ class ModalConverter(commands.Converter):
             argument_dict["assign_roles"] = [
                 role.id
                 for ping in re.split(r",|;|\||-", str(argument_dict["assign_roles"]))
-                if (role := (await commands.RoleConverter().convert(ctx, argument=ping.strip()))) < ctx.author.top_role and role < ctx.me.top_role
+                if (role := (await commands.RoleConverter().convert(ctx, argument=ping.strip())))
+                < ctx.author.top_role
+                and role < ctx.me.top_role
             ]
         return argument_dict
 
@@ -437,7 +441,7 @@ class DiscordModals(Cog):
                         for key in ("whitelist_roles", "blacklist_roles", "assign_roles"):
                             if guilds_data[guild]["modals"][modal].get(key) is None:
                                 guilds_data[guild]["modals"][modal][key] = []
-                                
+
             CONFIG_SCHEMA = 3
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         if CONFIG_SCHEMA < self.CONFIG_SCHEMA:
@@ -505,7 +509,13 @@ class DiscordModals(Cog):
                 "You are not allowed to use this interaction.", ephemeral=True
             )
             return
-        if config["unique_answer"] and interaction.user.id in config[f"{interaction.message.channel.id}-{interaction.message.id}"]["existing_answers"]:
+        if (
+            config["unique_answer"]
+            and interaction.user.id
+            in config[f"{interaction.message.channel.id}-{interaction.message.id}"][
+                "existing_answers"
+            ]
+        ):
             await interaction.response.send_message(
                 "You have already answered this Modal.", ephemeral=True
             )
@@ -578,7 +588,8 @@ class DiscordModals(Cog):
             embed.title = config["title"]
             if not config.get("anonymous"):
                 embed.set_author(
-                    name=f"{interaction.user.display_name} ({interaction.user.id})", icon_url=interaction.user.display_avatar
+                    name=f"{interaction.user.display_name} ({interaction.user.id})",
+                    icon_url=interaction.user.display_avatar,
                 )
                 embed.color = interaction.user.color
             else:
@@ -605,7 +616,9 @@ class DiscordModals(Cog):
                 role = interaction.guild.get_role(role_id)
                 if role is None:
                     await interaction.followup.send(
-                        _("The role that was to be assigned no longer exists. Please notify an administrator."),
+                        _(
+                            "The role that was to be assigned no longer exists. Please notify an administrator."
+                        ),
                         ephemeral=True,
                     )
                     continue
@@ -613,7 +626,9 @@ class DiscordModals(Cog):
                     await interaction.user.add_roles(role, reason="DiscordModals")
                 except discord.HTTPException:
                     await interaction.followup.send(
-                        _("The role that was to be assigned could not be assigned. Please notify an administrator."),
+                        _(
+                            "The role that was to be assigned could not be assigned. Please notify an administrator."
+                        ),
                         ephemeral=True,
                     )
         except Exception as e:
@@ -627,7 +642,9 @@ class DiscordModals(Cog):
         else:
             if interaction.user.id not in config["existing_answers"]:
                 config["existing_answers"].append(interaction.user.id)
-                await self.config.guild(interaction.guild).modals.set_raw(f"{interaction.message.channel.id}-{interaction.message.id}", value=config)
+                await self.config.guild(interaction.guild).modals.set_raw(
+                    f"{interaction.message.channel.id}-{interaction.message.id}", value=config
+                )
             await interaction.followup.send(
                 config["messages"]["submit"] or _("Thank you for sending this Modal!"),
                 ephemeral=True,
@@ -759,9 +776,7 @@ class DiscordModals(Cog):
         if message is None:
             _modals = list(modals.values()).copy()
         elif f"{message.channel.id}-{message.id}" not in modals:
-            raise commands.UserFeedbackCheckFailure(
-                _("No modal is configured for this message.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("No modal is configured for this message."))
         else:
             _modals = modals.copy()
             _modals = [modals[f"{message.channel.id}-{message.id}"]]
@@ -772,7 +787,9 @@ class DiscordModals(Cog):
             color=await ctx.embed_color(),
         )
         embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
-        embed.set_footer(text=_("There is {len_modals} modals in this server.").format(len_modals=len(modals)))
+        embed.set_footer(
+            text=_("There is {len_modals} modals in this server.").format(len_modals=len(modals))
+        )
         embeds = []
         for modal in _modals:
             e = embed.copy()

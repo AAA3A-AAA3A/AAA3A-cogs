@@ -555,7 +555,7 @@ class Reminders(Cog):
             }
         if not content["files"]:
             del content["files"]
-            
+
         reminder = await self.create_reminder(
             user_id=ctx.author.id,
             content=content,

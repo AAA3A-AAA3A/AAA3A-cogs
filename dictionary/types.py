@@ -27,9 +27,7 @@ class Word:
             if not v.startswith("_") and v != "to_json" and v != "to_embed"
         }
 
-    def to_embed(
-        self, embed_color: discord.Color = discord.Color.green()
-    ) -> discord.Embed:
+    def to_embed(self, embed_color: discord.Color = discord.Color.green()) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
             title=f'Dictionary - "{self.word}"', url=self.source_url, color=embed_color
         )

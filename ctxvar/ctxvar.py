@@ -10,16 +10,14 @@ import datetime
 import inspect
 import io
 import json
-import rich
 import textwrap
 import time
 import traceback
 import types
 from copy import copy
 
+import rich
 from discord_markdown_ast_parser import parse_to_dict
-
-
 from redbot.core import dev_commands
 from redbot.core.utils.chat_formatting import bold, box
 
@@ -161,7 +159,10 @@ class CtxVar(Cog):
             url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/2048px-Python-logo-notext.svg.png"
         )
         embeds = []
-        for li in discord.utils.as_chunks([x for x in dir(instance) if not (x.startswith("__") and x.endswith("__"))], max_size=20):
+        for li in discord.utils.as_chunks(
+            [x for x in dir(instance) if not (x.startswith("__") and x.endswith("__"))],
+            max_size=20,
+        ):
             e = copy(embed)
             for x in li:
                 if len(f"{x}") <= 256:
@@ -171,7 +172,9 @@ class CtxVar(Cog):
                             name=f"{x}",
                             value=box(
                                 CogsUtils.replace_var_paths(
-                                    dev_commands.sanitize_output(ctx, str(getattr(instance, x))[:100])
+                                    dev_commands.sanitize_output(
+                                        ctx, str(getattr(instance, x))[:100]
+                                    )
                                 ),
                                 "py",
                             ),
@@ -433,7 +436,9 @@ class CtxVar(Cog):
                 value if isinstance(value, str) else repr(value)
             )
         result.update(**result2)
-        _result = dev_commands.sanitize_output(ctx, "".join(f"\n[{k}] : {r}" for k, r in result.items()))
+        _result = dev_commands.sanitize_output(
+            ctx, "".join(f"\n[{k}] : {r}" for k, r in result.items())
+        )
         await Menu(pages=_result.strip(), lang="ini").start(ctx)
 
     @ctxvar.command(name="parsemarkdown", aliases=["parsemessage"])
@@ -447,7 +452,16 @@ class CtxVar(Cog):
         if isinstance(message_or_content, discord.Message) and not message_or_content.content:
             raise commands.UserInputError()
         try:
-            result = json.dumps(parse_to_dict(message_or_content.content if isinstance(message_or_content, discord.Message) else message_or_content), indent=4)
+            result = json.dumps(
+                parse_to_dict(
+                    message_or_content.content
+                    if isinstance(message_or_content, discord.Message)
+                    else message_or_content
+                ),
+                indent=4,
+            )
         except (ValueError, TypeError):
-            raise commands.UserFeedbackCheckFailure(_("Error in the module used for this command."))
+            raise commands.UserFeedbackCheckFailure(
+                _("Error in the module used for this command.")
+            )
         await Menu(pages=result.strip(), lang="py").start(ctx)

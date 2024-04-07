@@ -10,7 +10,16 @@ _ = Translator("ViewPermissions", __file__)
 
 
 class PermissionsView(discord.ui.View):
-    def __init__(self, cog: commands.Cog, guild: discord.Guild, roles: typing.List[discord.Role] = None, members: typing.List[discord.Member] = None, channel: typing.Optional[discord.abc.GuildChannel] = None, permissions: typing.List[str] = None, advanced: bool = False) -> None:
+    def __init__(
+        self,
+        cog: commands.Cog,
+        guild: discord.Guild,
+        roles: typing.List[discord.Role] = None,
+        members: typing.List[discord.Member] = None,
+        channel: typing.Optional[discord.abc.GuildChannel] = None,
+        permissions: typing.List[str] = None,
+        advanced: bool = False,
+    ) -> None:
         roles = [] if roles is None else roles.copy()
         if members is None:
             members = []
@@ -51,7 +60,9 @@ class PermissionsView(discord.ui.View):
         #     self.remove_item(self._server_permissions_button)
         #     self.remove_item(self._current_channel_permissions_button)
         self._current: int = 0
-        self._message: discord.Message = await self.ctx.send(embed=self._pages[self._current], view=self)
+        self._message: discord.Message = await self.ctx.send(
+            embed=self._pages[self._current], view=self
+        )
         self.cog.views[self._message] = self
         await self._ready.wait()
         return self._message
@@ -77,11 +88,22 @@ class PermissionsView(discord.ui.View):
             pass
         self._ready.set()
 
-    @discord.ui.select(cls=discord.ui.MentionableSelect, placeholder="Select mentionables.", min_values=0, max_values=None)
-    async def mentionables_select(self, interaction: discord.Interaction, select: discord.ui.MentionableSelect):
+    @discord.ui.select(
+        cls=discord.ui.MentionableSelect,
+        placeholder="Select mentionables.",
+        min_values=0,
+        max_values=None,
+    )
+    async def mentionables_select(
+        self, interaction: discord.Interaction, select: discord.ui.MentionableSelect
+    ):
         await interaction.response.defer()
-        self.roles: typing.List[discord.Role] = [mentionable for mentionable in select.values if isinstance(mentionable, discord.Role)]
-        self.members: typing.List[discord.Member] = [mentionable for mentionable in select.values if isinstance(mentionable, discord.Member)]
+        self.roles: typing.List[discord.Role] = [
+            mentionable for mentionable in select.values if isinstance(mentionable, discord.Role)
+        ]
+        self.members: typing.List[discord.Member] = [
+            mentionable for mentionable in select.values if isinstance(mentionable, discord.Member)
+        ]
         for member in self.members:
             self.roles.extend(member.roles)
         self.roles = sorted(set(self.roles))
@@ -97,8 +119,12 @@ class PermissionsView(discord.ui.View):
         self._current: int = 0
         self._message: discord.Message = await self._message.edit(embed=self._pages[self._current])
 
-    @discord.ui.select(cls=discord.ui.ChannelSelect, placeholder="Select channel.", min_values=0, max_values=1)
-    async def channel_select(self, interaction: discord.Interaction, select: discord.ui.ChannelSelect):
+    @discord.ui.select(
+        cls=discord.ui.ChannelSelect, placeholder="Select channel.", min_values=0, max_values=1
+    )
+    async def channel_select(
+        self, interaction: discord.Interaction, select: discord.ui.ChannelSelect
+    ):
         await interaction.response.defer()
         self.channel = await select.values[0].fetch() if select.values else None
         self._pages: typing.List[discord.Embed] = await self.cog.get_embeds(
@@ -158,8 +184,12 @@ class PermissionsView(discord.ui.View):
         self._current: int = 0
         self._message: discord.Message = await self._message.edit(embed=self._pages[self._current])
 
-    @discord.ui.button(label="Server Permissions", emoji="🌍", custom_id="server_permissions_button", row=3)
-    async def _server_permissions_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+    @discord.ui.button(
+        label="Server Permissions", emoji="🌍", custom_id="server_permissions_button", row=3
+    )
+    async def _server_permissions_button(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ):
         await interaction.response.defer()
         self.channel: typing.Optional[discord.abc.GuildChannel] = None
         self._pages: typing.List[discord.Embed] = await self.cog.get_embeds(
@@ -174,8 +204,15 @@ class PermissionsView(discord.ui.View):
         self._current: int = 0
         self._message: discord.Message = await self._message.edit(embed=self._pages[self._current])
 
-    @discord.ui.button(label="Current Channel Permissions", emoji="📪", custom_id="current_channel_permissions", row=3)
-    async def _current_channel_permissions_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+    @discord.ui.button(
+        label="Current Channel Permissions",
+        emoji="📪",
+        custom_id="current_channel_permissions",
+        row=3,
+    )
+    async def _current_channel_permissions_button(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ):
         await interaction.response.defer()
         self.channel: typing.Optional[discord.abc.GuildChannel] = self.ctx.channel
         self._pages: typing.List[discord.Embed] = await self.cog.get_embeds(

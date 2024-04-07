@@ -209,7 +209,8 @@ class MemoryGameView(discord.ui.View):
                     max_prize
                     - (game_time * reduction_per_second)
                     - (self._wrong_matches * reduction_per_wrong_match)
-                ) * (int(self.difficulty[0]) / 5)
+                )
+                * (int(self.difficulty[0]) / 5)
             )
             member_config["score"] += final_prize
             member_config["wins"] += 1

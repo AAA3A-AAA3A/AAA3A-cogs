@@ -633,8 +633,7 @@ class Seen(Cog):
             message.author.id == message.guild.me.id
             and len(message.embeds) == 1
             and (
-                "Seen".lower()
-                in message.embeds[0].to_dict().get("description", "").lower()
+                "Seen".lower() in message.embeds[0].to_dict().get("description", "").lower()
                 or "Seen".lower() in message.embeds[0].to_dict().get("title", "").lower()
             )
         ):
@@ -675,8 +674,7 @@ class Seen(Cog):
             after.author.id == after.guild.me.id
             and len(after.embeds) == 1
             and (
-                "Seen".lower()
-                in after.embeds[0].to_dict().get("description", "").lower()
+                "Seen".lower() in after.embeds[0].to_dict().get("description", "").lower()
                 or "Seen".lower() in after.embeds[0].to_dict().get("title", "").lower()
             )
         ):

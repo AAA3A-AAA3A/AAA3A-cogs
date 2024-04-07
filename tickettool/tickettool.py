@@ -109,7 +109,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ] = {
             "enable": {"converter": bool, "description": "Enable the system."},
             "logschannel": {
-                "converter": typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+                "converter": typing.Union[
+                    discord.TextChannel, discord.VoiceChannel, discord.Thread
+                ],
                 "description": "Set the channel where the logs will be sent/saved.",
             },
             "forum_channel": {
@@ -303,17 +305,37 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 for guild in _guilds_data:
                     if "profiles" in guilds_data[guild]:
                         for profile in guilds_data[guild]["profiles"]:
-                            if guilds_data[guild]["profiles"][profile].get("admin_role") is not None:
-                                guilds_data[guild]["profiles"][profile]["admin_roles"] = [guilds_data[guild]["profiles"][profile]["admin_role"]]
+                            if (
+                                guilds_data[guild]["profiles"][profile].get("admin_role")
+                                is not None
+                            ):
+                                guilds_data[guild]["profiles"][profile]["admin_roles"] = [
+                                    guilds_data[guild]["profiles"][profile]["admin_role"]
+                                ]
                                 del guilds_data[guild]["profiles"][profile]["admin_role"]
-                            if guilds_data[guild]["profiles"][profile].get("support_role") is not None:
-                                guilds_data[guild]["profiles"][profile]["support_roles"] = [guilds_data[guild]["profiles"][profile]["support_role"]]
+                            if (
+                                guilds_data[guild]["profiles"][profile].get("support_role")
+                                is not None
+                            ):
+                                guilds_data[guild]["profiles"][profile]["support_roles"] = [
+                                    guilds_data[guild]["profiles"][profile]["support_role"]
+                                ]
                                 del guilds_data[guild]["profiles"][profile]["support_role"]
-                            if guilds_data[guild]["profiles"][profile].get("view_role") is not None:
-                                guilds_data[guild]["profiles"][profile]["view_roles"] = [guilds_data[guild]["profiles"][profile]["view_role"]]
+                            if (
+                                guilds_data[guild]["profiles"][profile].get("view_role")
+                                is not None
+                            ):
+                                guilds_data[guild]["profiles"][profile]["view_roles"] = [
+                                    guilds_data[guild]["profiles"][profile]["view_role"]
+                                ]
                                 del guilds_data[guild]["profiles"][profile]["view_role"]
-                            if guilds_data[guild]["profiles"][profile].get("ping_role") is not None:
-                                guilds_data[guild]["profiles"][profile]["ping_roles"] = [guilds_data[guild]["profiles"][profile]["ping_role"]]
+                            if (
+                                guilds_data[guild]["profiles"][profile].get("ping_role")
+                                is not None
+                            ):
+                                guilds_data[guild]["profiles"][profile]["ping_roles"] = [
+                                    guilds_data[guild]["profiles"][profile]["ping_role"]
+                                ]
                                 del guilds_data[guild]["profiles"][profile]["ping_role"]
             CONFIG_SCHEMA = 4
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
@@ -420,13 +442,29 @@ class TicketTool(settings, DashboardIntegration, Cog):
         if config["category_close"] is not None:
             config["category_close"] = guild.get_channel(config["category_close"])
         if config["admin_roles"]:
-            config["admin_roles"] = [role for role_id in config["admin_roles"] if (role := guild.get_role(role_id)) is not None]
+            config["admin_roles"] = [
+                role
+                for role_id in config["admin_roles"]
+                if (role := guild.get_role(role_id)) is not None
+            ]
         if config["support_roles"]:
-            config["support_roles"] = [role for role_id in config["support_roles"] if (role := guild.get_role(role_id)) is not None]
+            config["support_roles"] = [
+                role
+                for role_id in config["support_roles"]
+                if (role := guild.get_role(role_id)) is not None
+            ]
         if config["view_roles"]:
-            config["view_roles"] = [role for role_id in config["view_roles"] if (role := guild.get_role(role_id)) is not None]
+            config["view_roles"] = [
+                role
+                for role_id in config["view_roles"]
+                if (role := guild.get_role(role_id)) is not None
+            ]
         if config["ping_roles"]:
-            config["ping_roles"] = [role for role_id in config["ping_roles"] if (role := guild.get_role(role_id)) is not None]
+            config["ping_roles"] = [
+                role
+                for role_id in config["ping_roles"]
+                if (role := guild.get_role(role_id)) is not None
+            ]
         if config["ticket_role"] is not None:
             config["ticket_role"] = guild.get_role(config["ticket_role"])
         for key, value in self.config._defaults[self.config.GUILD][
@@ -702,7 +740,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
             ):
                 return True
             if (
-                (support_roles or (ctx.command == cog.command_delete and config["delete_on_close"]))
+                (
+                    support_roles
+                    or (ctx.command == cog.command_delete and config["delete_on_close"])
+                )
                 and config["support_roles"]
                 and any(role in ctx.author.roles for role in config["support_roles"])
             ):

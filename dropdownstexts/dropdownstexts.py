@@ -25,7 +25,9 @@ class MyMessageConverter(commands.MessageConverter):
         message = await super().convert(ctx, argument=argument)
         if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
-                _("I have to be the author of the message. You can use EmbedUtils by AAA3A to send one.")
+                _(
+                    "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
+                )
             )
         return message
 
@@ -354,9 +356,9 @@ class DropdownsTexts(Cog):
             raise commands.UserFeedbackCheckFailure(_("No dropdowns-texts in this server."))
         embed: discord.Embed = discord.Embed(
             title=_("Dropdowns Texts"),
-            description=_(
-                "There is {len_dropdowns_texts} dropdowns texts in this server."
-            ).format(len_dropdowns_texts=len(dropdowns_texts)),
+            description=_("There is {len_dropdowns_texts} dropdowns texts in this server.").format(
+                len_dropdowns_texts=len(dropdowns_texts)
+            ),
             color=await ctx.embed_color(),
         )
         embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)

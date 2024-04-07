@@ -13,10 +13,9 @@ from collections import Counter
 from copy import deepcopy
 from pathlib import Path
 
+import plotly.graph_objects as go
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageChops, ImageDraw, ImageFont
-import plotly.graph_objects as go
-
 from redbot.core.data_manager import bundled_data_path
 
 from .view import GuildStatsView
@@ -2739,7 +2738,29 @@ class GuildStats(Cog):
         return text_size
 
     def number_to_text_with_suffix(self, number: float) -> str:
-        suffixes = ["k", "m", "b", "t", "q", "Q", "s", "S", "o", "n", "d", "U", "D", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Vi"]  # ["k", "M", "B", "T", "P", "E", "Z", "Y"]
+        suffixes = [
+            "k",
+            "m",
+            "b",
+            "t",
+            "q",
+            "Q",
+            "s",
+            "S",
+            "o",
+            "n",
+            "d",
+            "U",
+            "D",
+            "T",
+            "Qa",
+            "Qi",
+            "Sx",
+            "Sp",
+            "Oc",
+            "No",
+            "Vi",
+        ]  # ["k", "M", "B", "T", "P", "E", "Z", "Y"]
         index = None
         while abs(number) >= 1000 and (index or -1) < len(suffixes) - 1:
             number /= 1000.0
@@ -5559,16 +5580,13 @@ class GuildStats(Cog):
         tracking_data_start_time = tracking_data_start_time.replace(
             second=utc_now.second,
             minute=utc_now.minute
-            if (utc_now - tracking_data_start_time)
-            > datetime.timedelta(seconds=3600 * 24 * 7)
+            if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 7)
             else tracking_data_start_time.minute,
             hour=utc_now.hour
-            if (utc_now - tracking_data_start_time)
-            > datetime.timedelta(seconds=3600 * 24 * 30)
+            if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 30)
             else tracking_data_start_time.hour,
             day=utc_now.day
-            if (utc_now - tracking_data_start_time)
-            > datetime.timedelta(seconds=3600 * 24 * 365)
+            if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 365)
             else tracking_data_start_time.day,
         )
         if show_graphic:

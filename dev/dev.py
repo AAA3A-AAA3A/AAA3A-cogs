@@ -12,14 +12,13 @@ import contextlib
 import io
 import random
 import re
+import subprocess
 import sys
 import textwrap
 
 import aiohttp
 import rich
-import subprocess
 from pygments.styles import get_style_by_name
-
 from redbot.core import dev_commands
 from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.predicates import MessagePredicate
@@ -114,9 +113,11 @@ class DevOutput(dev_commands.DevOutput):
                 ):
                     if output_mode == "str":
                         result = str(self.result)
-                    elif isinstance(self.result, collections.abc.Iterable) and not (
-                        output_mode == "repr" and isinstance(self.result, str)
-                    ) or hasattr(self.result, "__dataclass_fields__"):
+                    elif (
+                        isinstance(self.result, collections.abc.Iterable)
+                        and not (output_mode == "repr" and isinstance(self.result, str))
+                        or hasattr(self.result, "__dataclass_fields__")
+                    ):
                         result = self.result
                     else:
                         result = repr(self.result)
@@ -152,7 +153,10 @@ class DevOutput(dev_commands.DevOutput):
                     if isinstance(x, discord.Embed) and channel_permissions.embed_links:
                         if "embeds" not in kwargs:
                             kwargs["embeds"] = []
-                        if len(kwargs["embeds"]) < 10 and (sum(len(embed) for embed in kwargs["embeds"]) + len(x)) <= 6000:
+                        if (
+                            len(kwargs["embeds"]) < 10
+                            and (sum(len(embed) for embed in kwargs["embeds"]) + len(x)) <= 6000
+                        ):
                             kwargs["embeds"].append(x)
                     elif isinstance(x, discord.File) and channel_permissions.attach_files:
                         if "files" not in kwargs:
@@ -168,13 +172,39 @@ class DevOutput(dev_commands.DevOutput):
                 except discord.HTTPException:
                     pass
         if tick and self.exc is not None:
-            await self.ctx.react_quietly(reaction="❗" if isinstance(self.exc, SyntaxError) else ("⏰" if isinstance(self.exc, (TimeoutError, asyncio.TimeoutError, aiohttp.ClientTimeout, aiohttp.ServerTimeoutError, subprocess.TimeoutExpired)) else "❌"))
-        box_lang = "ini" if self.ctx.command.name == "eshell" else ("ansi" if ansi_formatting else "py")
+            await self.ctx.react_quietly(
+                reaction="❗"
+                if isinstance(self.exc, SyntaxError)
+                else (
+                    "⏰"
+                    if isinstance(
+                        self.exc,
+                        (
+                            TimeoutError,
+                            asyncio.TimeoutError,
+                            aiohttp.ClientTimeout,
+                            aiohttp.ServerTimeoutError,
+                            subprocess.TimeoutExpired,
+                        ),
+                    )
+                    else "❌"
+                )
+            )
+        box_lang = (
+            "ini" if self.ctx.command.name == "eshell" else ("ansi" if ansi_formatting else "py")
+        )
         if send_interactive:
             task = self.ctx.send_interactive(
                 [
                     box(page, lang=box_lang)
-                    for page in dev_commands.get_pages((f"{self.env['prefix_dev_output']}\n\n" if "prefix_dev_output" in self.env else None) + self.__str__(output_mode=output_mode))
+                    for page in dev_commands.get_pages(
+                        (
+                            f"{self.env['prefix_dev_output']}\n\n"
+                            if "prefix_dev_output" in self.env
+                            else None
+                        )
+                        + self.__str__(output_mode=output_mode)
+                    )
                 ],
             )
             if wait:
@@ -186,7 +216,10 @@ class DevOutput(dev_commands.DevOutput):
                 pages=pages,
                 prefix=self.env.get("prefix_dev_output"),
                 lang=box_lang,
-            ).start(self.ctx, wait=wait,)
+            ).start(
+                self.ctx,
+                wait=wait,
+            )
         if tick and self.exc is None:
             await self.ctx.react_quietly(
                 # sourcery skip: swap-if-expression
@@ -265,6 +298,7 @@ class DevOutput(dev_commands.DevOutput):
                 await self.ctx.message.add_reaction("▶")
             except discord.HTTPException:
                 pass
+
         task = asyncio.create_task(add_triangle_reaction_after_1_seconds())
 
         self.env.update({"dev_output": self})
@@ -302,6 +336,7 @@ class DevOutput(dev_commands.DevOutput):
                 await self.ctx.message.add_reaction("▶")
             except discord.HTTPException:
                 pass
+
         task = asyncio.create_task(add_triangle_reaction_after_1_seconds())
 
         self.env.update({"dev_output": self})
@@ -320,7 +355,8 @@ class DevOutput(dev_commands.DevOutput):
                 _line_text = textwrap.dedent(line_text)
                 if _line_text.startswith("yield "):
                     _raw_source[line] = textwrap.indent(
-                        f"print(repr(({_line_text[6:]})))", (len(line_text) - len(_line_text)) * " "
+                        f"print(repr(({_line_text[6:]})))",
+                        (len(line_text) - len(_line_text)) * " ",
                     )
             self.raw_source = "\n".join(_raw_source)
         except SyntaxError:
@@ -358,6 +394,7 @@ class DevOutput(dev_commands.DevOutput):
                 await self.ctx.message.add_reaction("▶")
             except discord.HTTPException:
                 pass
+
         task = asyncio.create_task(add_triangle_reaction_after_1_seconds())
 
         self.env.update({"dev_output": self})
@@ -587,7 +624,11 @@ class Dev(Cog, dev_commands.Dev):
             asyncio.create_task(
                 ctx.bot.wait_for("message", check=MessagePredicate.cancelled(ctx))
             ),
-            asyncio.create_task(self._my_exec(ctx, type=type, source=source, env=env, send_result=send_result, wait=wait)),
+            asyncio.create_task(
+                self._my_exec(
+                    ctx, type=type, source=source, env=env, send_result=send_result, wait=wait
+                )
+            ),
         ]
         done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
         for task in pending:
@@ -719,16 +760,18 @@ class Dev(Cog, dev_commands.Dev):
                 try:
                     code = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
                 except UnicodeDecodeError:
-                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
+                    raise commands.UserFeedbackCheckFailure(
+                        _("Unreadable attachment with `utf-8`.")
+                    )
             elif (
                 hasattr(ctx.message, "reference")
                 and ctx.message.reference is not None
                 and isinstance((reference := ctx.message.reference.resolved), discord.Message)
             ):
                 if (
-                    match := re.compile(r"(debug|(jsk|jishaku) (py|python|eval|ev))(\n)?( )?(?P<code>(.|\n)*)").search(
-                        reference.content
-                    )
+                    match := re.compile(
+                        r"(debug|(jsk|jishaku) (py|python|eval|ev))(\n)?( )?(?P<code>(.|\n)*)"
+                    ).search(reference.content)
                 ) is not None and match.groupdict()["code"].strip():
                     code = match.groupdict()["code"]
                 elif (
@@ -781,16 +824,18 @@ class Dev(Cog, dev_commands.Dev):
                 try:
                     body = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
                 except UnicodeDecodeError:
-                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
+                    raise commands.UserFeedbackCheckFailure(
+                        _("Unreadable attachment with `utf-8`.")
+                    )
             elif (
                 hasattr(ctx.message, "reference")
                 and ctx.message.reference is not None
                 and isinstance((reference := ctx.message.reference.resolved), discord.Message)
             ):
                 if (
-                    match := re.compile(r"(eval|ev|e|(jsk|jishaku) (py|python|eval|ev)|(runcode|executecode) (py|python))(\n)?( )?(?P<body>(.|\n)*)").search(
-                        reference.content
-                    )
+                    match := re.compile(
+                        r"(eval|ev|e|(jsk|jishaku) (py|python|eval|ev)|(runcode|executecode) (py|python))(\n)?( )?(?P<body>(.|\n)*)"
+                    ).search(reference.content)
                 ) is not None and match.groupdict()["body"].strip():
                     body = match.groupdict()["body"]
                 elif (
@@ -888,7 +933,6 @@ class Dev(Cog, dev_commands.Dev):
                     source=source,
                     env=env,
                     wait=False,
-                    
                     send_result=True,
                 )
             except Exit:
@@ -974,7 +1018,9 @@ class Dev(Cog, dev_commands.Dev):
 
     @commands.is_owner()
     @commands.hybrid_command(name="eshell")
-    async def _eshell(self, ctx: commands.Context, silent: typing.Optional[bool] = False, *, command: str = None) -> None:
+    async def _eshell(
+        self, ctx: commands.Context, silent: typing.Optional[bool] = False, *, command: str = None
+    ) -> None:
         """Execute shell commands.
 
         This command wraps the shell command into a Python code to invoke them.
@@ -987,16 +1033,18 @@ class Dev(Cog, dev_commands.Dev):
                 try:
                     command = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
                 except UnicodeDecodeError:
-                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
+                    raise commands.UserFeedbackCheckFailure(
+                        _("Unreadable attachment with `utf-8`.")
+                    )
             elif (
                 hasattr(ctx.message, "reference")
                 and ctx.message.reference is not None
                 and isinstance((reference := ctx.message.reference.resolved), discord.Message)
             ):
                 if (
-                    match := re.compile(r"(eshell|shell|qshell)(\n)?( )?(?P<command>(.|\n)*)").search(
-                        reference.content
-                    )
+                    match := re.compile(
+                        r"(eshell|shell|qshell)(\n)?( )?(?P<command>(.|\n)*)"
+                    ).search(reference.content)
                 ) is not None and match.groupdict()["command"].strip():
                     command = match.groupdict()["command"]
                 elif (
@@ -1011,7 +1059,9 @@ class Dev(Cog, dev_commands.Dev):
         command = cleanup_code(command)
 
         # Thanks Jack for a part of this code!
-        source = cleanup_code("""
+        source = (
+            cleanup_code(
+                """
             import asyncio
             import asyncio.subprocess as asp
             import os
@@ -1051,7 +1101,11 @@ class Dev(Cog, dev_commands.Dev):
             finally:
                 lines = [line async for line in process.stdout]
                 print(prefix + b"".join(lines).decode("utf-8", "replace").strip().replace("\\r", ""))
-        """).strip().replace("[COMMAND]", command)
+        """
+            )
+            .strip()
+            .replace("[COMMAND]", command)
+        )
         if silent:
             source = "\n".join(source.split("\n")[:-3])
 

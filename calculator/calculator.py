@@ -104,7 +104,29 @@ class Calculator(Cog):
             "τ": tau,
             "k": 1_000,
         }
-        suffixes = ["k", "m", "b", "t", "q", "Q", "s", "S", "o", "n", "d", "U", "D", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Vi"]  # ["k", "M", "B", "T", "P", "E", "Z", "Y"]
+        suffixes = [
+            "k",
+            "m",
+            "b",
+            "t",
+            "q",
+            "Q",
+            "s",
+            "S",
+            "o",
+            "n",
+            "d",
+            "U",
+            "D",
+            "T",
+            "Qa",
+            "Qi",
+            "Sx",
+            "Sp",
+            "Oc",
+            "No",
+            "Vi",
+        ]  # ["k", "M", "B", "T", "P", "E", "Z", "Y"]
         number = 1000
         for suffix in suffixes:
             constants[suffix] = number
@@ -221,8 +243,35 @@ class Calculator(Cog):
             return
         if message.webhook_id is not None or message.author.bot:
             return
-        content_to_check = message.content.split("#")[0].replace(" ", "").lstrip("+-").strip() 
-        if not content_to_check or content_to_check.isdecimal() or content_to_check in ["k", "m", "b", "t", "q", "Q", "s", "S", "o", "n", "d", "U", "D", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Vi"]:
+        content_to_check = message.content.split("#")[0].replace(" ", "").lstrip("+-").strip()
+        if (
+            not content_to_check
+            or content_to_check.isdecimal()
+            or content_to_check
+            in [
+                "k",
+                "m",
+                "b",
+                "t",
+                "q",
+                "Q",
+                "s",
+                "S",
+                "o",
+                "n",
+                "d",
+                "U",
+                "D",
+                "T",
+                "Qa",
+                "Qi",
+                "Sx",
+                "Sp",
+                "Oc",
+                "No",
+                "Vi",
+            ]
+        ):
             return
         fake_context = await CogsUtils.invoke_command(
             bot=self.bot,

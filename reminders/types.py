@@ -406,8 +406,8 @@ class Reminder:
             _(
                 "{state}Okay, I will dispatch {this} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
             )
-            if self.content["type"] == "event" else
-            (
+            if self.content["type"] == "event"
+            else (
                 _(
                     "{state}Okay, I will execute this command{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
                 )
@@ -429,11 +429,11 @@ class Reminder:
             else _("you"),
             this=(
                 _("the event `{event_name}`").format(event_name=self.content["event_name"])
-                if self.content["type"] == "event" else
-                (
+                if self.content["type"] == "event"
+                else (
                     _("this command")
-                    if self.content["type"] == "command" else
-                    (
+                    if self.content["type"] == "command"
+                    else (
                         (
                             _("this message")
                             if self.content["type"] == "message"
@@ -441,8 +441,8 @@ class Reminder:
                                 "this"
                             )  # (_("this command") if self.content["type"] == "command" else _("this"))
                         )
-                        if self.content["text"] is not None else
-                        _("that")
+                        if self.content["text"] is not None
+                        else _("that")
                     )
                 )
             ),
@@ -498,8 +498,8 @@ class Reminder:
             content_type=self.content["type"],
             content=(
                 f"Dispatch the event `{self.content['event_name']}`."
-                if self.content["type"] == "event" else
-                (
+                if self.content["type"] == "event"
+                else (
                     (
                         (
                             f"{self.content['text'][:200]}..."
@@ -688,10 +688,18 @@ class Reminder:
                 raise RuntimeError(
                     f"No key `event_name` in the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
                 )
-            self.cog.bot.dispatch(self.content["event_name"], self, *self.content.get("args", []), **self.content.get("kwargs", []))
+            self.cog.bot.dispatch(
+                self.content["event_name"],
+                self,
+                *self.content.get("args", []),
+                **self.content.get("kwargs", []),
+            )
 
         elif self.content["type"] == "command":
-            if (invoker := self.cog.bot.get_user(self.content["command_invoker"])) is None or (getattr(destination, "guild", None) is not None and (invoker := destination.guild.get_member(invoker.id)) is None):
+            if (invoker := self.cog.bot.get_user(self.content["command_invoker"])) is None or (
+                getattr(destination, "guild", None) is not None
+                and (invoker := destination.guild.get_member(invoker.id)) is None
+            ):
                 if not testing:
                     await self.delete()
                 raise RuntimeError(
@@ -774,7 +782,11 @@ class Reminder:
                     else:
                         view = discord.ui.View()
                         view.add_item(
-                            discord.ui.Button(label=_("Jump to original message"), style=discord.ButtonStyle.url, url=self.jump_url)
+                            discord.ui.Button(
+                                label=_("Jump to original message"),
+                                style=discord.ButtonStyle.url,
+                                url=self.jump_url,
+                            )
                         )
                     message = await destination.send(
                         embeds=embeds,
@@ -817,4 +829,8 @@ class Reminder:
             await self.cog.config.total_sent.set(total_sent)
             if self.next_expires_at is None and not testing:
                 await self.delete()
-            return (context if self.content["type"] == "command" else message) if self.content["type"] != "event" else None
+            return (
+                (context if self.content["type"] == "command" else message)
+                if self.content["type"] != "event"
+                else None
+            )

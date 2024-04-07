@@ -1371,7 +1371,13 @@ class Source:
     @executor()
     def _get_documentation(self, element: Tag, page_url: str) -> Documentation:
         signature = element.text
-        signature = signature.strip().replace("¶", "").replace("", "").replace("\n", "").replace("```", "\u02CB\u02CB\u02CB")
+        signature = (
+            signature.strip()
+            .replace("¶", "")
+            .replace("", "")
+            .replace("\n", "")
+            .replace("```", "\u02CB\u02CB\u02CB")
+        )
         if signature.endswith("[source]"):
             signature = signature[:-8]
         elif signature.endswith("[source]#"):

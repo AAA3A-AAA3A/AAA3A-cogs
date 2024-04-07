@@ -281,9 +281,7 @@ class TimeConverter(commands.Converter):
             return (
                 expires_at,
                 repeat,
-                reminder_text.strip()
-                if return_text and reminder_text
-                else text,
+                reminder_text.strip() if return_text and reminder_text else text,
             )
 
         @executor()
@@ -468,8 +466,8 @@ class TimeConverter(commands.Converter):
                 expires_at.replace(second=0)
             else:
                 expires_at.replace(second=30)
-            if (
-                expires_at < utc_now.replace(second=0, microsecond=0)
+            if expires_at < utc_now.replace(
+                second=0, microsecond=0
             ):  # Negative intervals are not allowed.
                 info = [  # info.append(
                     f"• Global check: The given date must be in the future. Interpreted date: <t:{int(expires_at.timestamp())}:F>."
@@ -509,7 +507,14 @@ class TimeConverter(commands.Converter):
         if content is None:
             return utc_now, expires_at, repeat
         else:
-            return utc_now, expires_at, repeat, text.strip().strip("".join(discord.ext.commands.view._all_quotes)) if text is not None else None
+            return (
+                utc_now,
+                expires_at,
+                repeat,
+                text.strip().strip("".join(discord.ext.commands.view._all_quotes))
+                if text is not None
+                else None,
+            )
 
 
 class ContentConverter(commands.Converter):  # no longer used

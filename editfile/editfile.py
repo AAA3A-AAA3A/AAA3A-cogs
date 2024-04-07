@@ -265,18 +265,22 @@ class EditFile(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("The path you specified refers to a file, not a directory.")
             )
+
         def tree(base):
             lines = []
             files = sorted(base.iterdir(), key=lambda s: s.name.lower())
             for num, path in enumerate(files, start=1):
                 prefix = "└── " if num == len(files) else "├── "
-                if path.name.startswith('.') or {"venv", "__pycache__"} & {p.name for p in path.parents}:
+                if path.name.startswith(".") or {"venv", "__pycache__"} & {
+                    p.name for p in path.parents
+                }:
                     continue
                 lines.append(prefix + path.name)
                 if path.is_dir():
                     indent = "   " if num == len(files) else "|   "
                     lines.append(textwrap.indent(tree(path), prefix=indent))
             return "\n".join(lines)
+
         message = CogsUtils.replace_var_paths(tree(path))
         await Menu(pages=message, lang="ini").start(ctx)
 

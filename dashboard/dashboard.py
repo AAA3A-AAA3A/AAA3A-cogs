@@ -74,6 +74,7 @@ class Dashboard(Cog):
                     "meta": {
                         "title": None,
                         "icon": None,
+                        "website_description": None,
                         "description": None,
                         "support_server": None,
                         "default_color": "success",
@@ -191,6 +192,11 @@ class Dashboard(Cog):
                 "converter": str,
                 "description": "The website description to use.",
                 "path": ["webserver", "ui", "meta", "icon"],
+            },
+            "meta_website_description": {
+                "converter": str,
+                "description": "The website description to use.",
+                "path": ["webserver", "ui", "meta", "website_description"],
             },
             "meta_description": {
                 "converter": str,

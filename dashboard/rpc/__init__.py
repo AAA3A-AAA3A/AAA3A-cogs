@@ -105,11 +105,19 @@ class DashboardRPC:
             data["ui"]["meta"]["icon"] = self.bot.user.avatar.url
         if data["ui"]["meta"]["description"] is None:
             data["ui"]["meta"]["description"] = _(
-                "Interactive dashboard to control and interact with {name}."
+                "Hello, welcome to the **Red-DiscordBot Dashboard** for {name}! "
+                "{name} is based off the popular bot **Red-DiscordBot**, an open "
+                "source, multifunctional bot. It has *tons of features* including moderation, "
+                "audio, economy, fun and more! Here, you can control and interact with "
+                "{name}'s settings. **So what are you waiting for? Invite it now!**"
             ).format(name=self.bot.user.name)
         else:
             data["ui"]["meta"]["description"] = data["ui"]["meta"]["description"].replace(
                 "{name}", self.bot.user.name
+            )
+        if data["ui"]["meta"]["website_description"] is None:
+            data["ui"]["meta"]["website_description"] = _("Interactive Dashboard to control and interact with {name}.").format(
+                name=self.bot.user.name
             )
         # if data["ui"]["meta"]["support_server"] is None:
         #     data["ui"]["meta"]["support_server"] = "https://discord.gg/red"
@@ -127,14 +135,6 @@ class DashboardRPC:
     @rpc_check()
     async def get_bot_variables(self) -> typing.Dict[str, typing.Any]:
         bot_info = await self.bot._config.custom_info()
-        if bot_info is None:
-            bot_info = (
-                f"Hello, welcome to the Red Discord Bot dashboard for {self.bot.user.name}! "
-                f"{self.bot.user.name} is based off the popular bot Red-DiscordBot, an open "
-                "source, multifunctional bot. It has tons of features including moderation, "
-                "audio, economy, fun and more! Here, you can control and interact with "
-                f"{self.bot.user.name}'s settings. So what are you waiting for? Invite them now!"
-            )
         prefixes = [
             p for p in await self.bot.get_valid_prefixes() if not re.match(r"<@!?([0-9]+)>", p)
         ]
@@ -602,6 +602,7 @@ class DashboardRPC:
             "status": 0,
             "title": await config_group.title(),
             "icon": await config_group.icon(),
+            "website_description": await config_group.website_description(),
             "description": await config_group.description(),
             "support_server": await config_group.support_server(),
             "default_color": await config_group.default_color(),
@@ -617,6 +618,7 @@ class DashboardRPC:
         config_group = self.cog.config.webserver.ui.meta
         await config_group.title.set(settings["title"])
         await config_group.icon.set(settings["icon"])
+        await config_group.website_description.set(settings["website_description"])
         await config_group.description.set(settings["description"])
         await config_group.support_server.set(settings["support_server"])
         await config_group.default_color.set(settings["default_color"])

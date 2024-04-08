@@ -864,20 +864,22 @@ class Ticket:
             )
             overwrites = self.channel.overwrites
             overwrites[member] = discord.PermissionOverwrite(
-                attach_files=True,
-                read_message_history=True,
-                read_messages=True,
-                send_messages=True,
                 view_channel=True,
+                read_messages=True,
+                read_message_history=True,
+                send_messages=True,
+                attach_files=True,
+                use_application_commands=True,
             )
             if config["support_roles"]:
                 for role in config["support_roles"]:
                     overwrites[role] = discord.PermissionOverwrite(
-                        attach_files=False,
-                        read_message_history=True,
+                        view_channel=True,
                         read_messages=True,
                         send_messages=False,
-                        view_channel=True,
+                        read_message_history=True,
+                        attach_files=False,
+                        use_application_commands=False,
                     )
             await self.channel.edit(overwrites=overwrites, reason=_reason)  # topic=topic,
         if self.first_message is not None:
@@ -949,11 +951,12 @@ class Ticket:
                 overwrites = self.channel.overwrites
                 for role in config["support_roles"]:
                     overwrites[role] = discord.PermissionOverwrite(
-                        attach_files=True,
-                        read_message_history=True,
-                        read_messages=True,
-                        send_messages=True,
                         view_channel=True,
+                        read_messages=True,
+                        read_message_history=True,
+                        send_messages=True,
+                        attach_files=True,
+                        use_application_commands=True,
                     )
                 await self.channel.edit(overwrites=overwrites, reason=_reason)
             await self.channel.set_permissions(member, overwrite=None, reason=_reason)
@@ -1030,11 +1033,12 @@ class Ticket:
         self.remove_member(self.owner, author=None)
         overwrites = self.channel.overwrites
         overwrites[member] = discord.PermissionOverwrite(
-            attach_files=True,
-            read_message_history=True,
-            read_messages=True,
-            send_messages=True,
             view_channel=True,
+            read_messages=True,
+            read_message_history=True,
+            send_messages=True,
+            attach_files=True,
+            use_application_commands=True,
         )
         await self.channel.edit(overwrites=overwrites, reason=_reason)
         if config["ticket_role"] is not None:
@@ -1093,11 +1097,12 @@ class Ticket:
                 if member not in self.members:
                     self.members.append(member)
                 overwrites[member] = discord.PermissionOverwrite(
-                    attach_files=True,
-                    read_message_history=True,
-                    read_messages=True,
-                    send_messages=True,
                     view_channel=True,
+                    read_messages=True,
+                    read_message_history=True,
+                    send_messages=True,
+                    attach_files=True,
+                    use_application_commands=True,
                 )
             await self.channel.edit(overwrites=overwrites, reason=_reason)
         else:

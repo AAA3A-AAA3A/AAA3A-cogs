@@ -26,6 +26,7 @@ class utils:
                 read_message_history=True,
                 send_messages=True,
                 attach_files=True,
+                use_application_commands=True,
             ),
             ticket.guild.me: discord.PermissionOverwrite(
                 view_channel=True,
@@ -35,7 +36,6 @@ class utils:
                 attach_files=True,
                 manage_messages=True,
                 manage_channels=True,
-                # manage_permissions=True,
             ),
             ticket.guild.default_role: discord.PermissionOverwrite(
                 view_channel=False,
@@ -48,6 +48,7 @@ class utils:
                 read_message_history=True,
                 send_messages=True,
                 attach_files=True,
+                use_application_commands=True,
             )
         if config["admin_roles"]:
             for role in config["admin_roles"]:
@@ -58,6 +59,7 @@ class utils:
                     send_messages=True,
                     attach_files=True,
                     manage_messages=True,
+                    use_application_commands=True,
                 )
         if config["support_roles"]:
             for role in config["support_roles"]:
@@ -67,6 +69,7 @@ class utils:
                     read_message_history=True,
                     send_messages=True,
                     attach_files=True,
+                    use_application_commands=True,
                 )
         if config["view_roles"] is not None:
             for role in config["view_roles"]:
@@ -75,6 +78,7 @@ class utils:
                     read_messages=True,
                     read_message_history=True,
                     add_reactions=False,
+                    use_application_commands=False,
                 )
         return overwrites
 

@@ -58,6 +58,7 @@ class Dashboard(Cog):
                     "secret_key": None,
                     "jwt_secret_key": None,
                     "secret": None,
+                    "redirect_uri": None,
                     "blacklisted_ips": [],
                 },
                 "ui": {
@@ -166,6 +167,11 @@ class Dashboard(Cog):
             "flask_flags": {
                 "converter": commands.Greedy[StrConverter],
                 "description": "The flags used to setting the webserver if `all_in_one` is enabled. They are the cli flags of `reddash` without `--rpc-port`.",
+            },
+            "redirect_uri": {
+                "converter": str,
+                "description": "The redirect uri to use for the Discord Oauth.",
+                "path": ["webserver", "core", "redirect_uri"],
             },
             "meta_title": {
                 "converter": str,

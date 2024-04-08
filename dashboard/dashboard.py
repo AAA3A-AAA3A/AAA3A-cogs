@@ -267,7 +267,6 @@ class Dashboard(Cog):
                 parser.add_argument(
                     "--development", dest="dev", action="store_true", help=argparse.SUPPRESS
                 )
-                # parser.add_argument("--debug", dest="debug", action="store_true")
                 # parser.add_argument("--instance", dest="instance", type=str, default=None)
                 args = vars(parser.parse_args(args=flask_flags))
                 self.app: FlaskApp = FlaskApp(cog=self, **args)

@@ -130,7 +130,7 @@ class DashboardRPC:
         if bot_info is None:
             bot_info = (
                 f"Hello, welcome to the Red Discord Bot dashboard for {self.bot.user.name}! "
-                f"{self.bot.user.name} is based off the popular bot Red Discord Bot, an open "
+                f"{self.bot.user.name} is based off the popular bot Red-DiscordBot, an open "
                 "source, multifunctional bot. It has tons of features including moderation, "
                 "audio, economy, fun and more! Here, you can control and interact with "
                 f"{self.bot.user.name}'s settings. So what are you waiting for? Invite them now!"

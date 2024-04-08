@@ -491,12 +491,9 @@ class DiscordModals(Cog):
                 _("This message is not in Config."), ephemeral=True
             )
             return
-        whitelist_roles = config[f"{interaction.message.channel.id}-{interaction.message.id}"].get(
-            "whitelist_roles"
-        )
-        blacklist_roles = config[f"{interaction.message.channel.id}-{interaction.message.id}"].get(
-            "blacklist_roles"
-        )
+        config = config[f"{interaction.message.channel.id}-{interaction.message.id}"]
+        whitelist_roles = config["whitelist_roles"]
+        blacklist_roles = config["blacklist_roles"]
         if (
             whitelist_roles
             and all(role.id not in whitelist_roles for role in interaction.user.roles)
@@ -512,7 +509,7 @@ class DiscordModals(Cog):
         if (
             config["unique_answer"]
             and interaction.user.id
-            in config[f"{interaction.message.channel.id}-{interaction.message.id}"][
+            in config[
                 "existing_answers"
             ]
         ):
@@ -521,9 +518,7 @@ class DiscordModals(Cog):
             )
             return
         try:
-            modal_config = config[f"{interaction.message.channel.id}-{interaction.message.id}"][
-                "modal"
-            ]
+            modal_config = config["modal"]
             modal = discord.ui.Modal(
                 title=modal_config["title"],
                 timeout=modal_config["timeout"],
@@ -556,9 +551,9 @@ class DiscordModals(Cog):
         config = await self.config.guild(interaction.message.guild).modals()
         if f"{interaction.message.channel.id}-{interaction.message.id}" not in config:
             return
+        config = config[f"{interaction.message.channel.id}-{interaction.message.id}"]
         if not interaction.response.is_done():
             await interaction.response.defer(ephemeral=True)
-        config = config[f"{interaction.message.channel.id}-{interaction.message.id}"]
         try:
             channel = interaction.guild.get_channel(config["channel"])
             if channel is None:

@@ -16,7 +16,7 @@ from .rpc import DashboardRPC
 
 # Credits:
 # General repo credits.
-# Thank you very much to Neuro Assassin for the original code (https://github.com/Cog-Creators/Toxic-Cogs/tree/master/dashboard)!
+# Thank you very much to Neuro Assassin for the original code (https://github.com/NeuroAssassin/Toxic-Cogs/tree/master/dashboard)!
 
 _ = Translator("Dashboard", __file__)
 

@@ -315,7 +315,7 @@ class Dashboard(Cog):
                     ):
                         child.disabled = True
                 try:
-                    await _self._message.edit(view=self)
+                    await _self._message.edit(view=_self)
                 except discord.HTTPException:
                     pass
 

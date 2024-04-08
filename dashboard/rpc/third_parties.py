@@ -92,6 +92,7 @@ class DashboardRPC_ThirdParties:
         ] = {}
         self.third_parties_cogs: typing.Dict[str, commands.Cog] = {}
 
+        self.bot.register_rpc_handler(self.oauth_receive)
         self.bot.register_rpc_handler(self.get_third_parties)
         self.bot.register_rpc_handler(self.data_receive)
         self.bot.add_listener(self.on_cog_add)
@@ -99,6 +100,7 @@ class DashboardRPC_ThirdParties:
         self.bot.dispatch("dashboard_cog_add", self.cog)
 
     def unload(self) -> None:
+        self.bot.unregister_rpc_handler(self.oauth_receive)
         self.bot.unregister_rpc_handler(self.get_third_parties)
         self.bot.unregister_rpc_handler(self.data_receive)
         self.bot.remove_listener(self.on_cog_add)
@@ -157,6 +159,11 @@ class DashboardRPC_ThirdParties:
         except KeyError:
             pass
         return self.third_parties.pop(name, None)
+
+    @rpc_check()
+    async def oauth_receive(self, user_id: int, payload: typing.Dict[str, str]) -> typing.Dict[str, int]:
+        self.bot.dispatch("oauth_receive", user_id, payload)
+        return {"status": 0}
 
     @rpc_check()
     async def get_third_parties(

@@ -185,6 +185,7 @@ class DashboardRPC:
             "constants": {
                 "MIN_PREFIX_LENGTH": core_commands.MINIMUM_PREFIX_LENGTH,
                 "MAX_PREFIX_LENGTH": core_commands.MAX_PREFIX_LENGTH,
+                "MAX_DISCORD_PERMISSIONS_VALUE": discord.Permissions.all().value,
             },
         }
 

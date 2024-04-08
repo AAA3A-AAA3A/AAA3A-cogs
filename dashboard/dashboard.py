@@ -26,6 +26,15 @@ class StrConverter(commands.Converter):
         return argument
 
 
+class RedirectURIConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> str:
+        if not argument.startswith("http"):
+            raise commands.BadArgument(_("This is not a valid URL."))
+        if not argument.endswith("/callback"):
+            raise commands.BadArgument(_("This is not a valid Dashboard redirect URI: it must end with `/callback`."))
+        return argument
+
+
 class ThirdPartyConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> str:
         cog = ctx.bot.get_cog("Dashboard")
@@ -169,7 +178,7 @@ class Dashboard(Cog):
                 "description": "The flags used to setting the webserver if `all_in_one` is enabled. They are the cli flags of `reddash` without `--rpc-port`.",
             },
             "redirect_uri": {
-                "converter": str,
+                "converter": RedirectURIConverter,
                 "description": "The redirect uri to use for the Discord Oauth.",
                 "path": ["webserver", "core", "redirect_uri"],
             },

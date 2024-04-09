@@ -7,6 +7,8 @@ import typing  # isort:skip
 
 from copy import deepcopy
 
+from redbot.core.utils.chat_formatting import pagify
+
 from .converters import MESSAGE_LINK_REGEX, LinkToMessageConverter
 
 # Credits:
@@ -228,12 +230,16 @@ class LinkQuoter(Cog):
 
         if message.attachments:
             image = message.attachments[0].proxy_url
-            embed.add_field(
-                name=_("Attachments:"),
-                value="\n".join(
+            pages = pagify(
+                "\n".join(
                     f"[{attachment.filename}]({attachment.url})"
                     for attachment in message.attachments
                 ),
+                page_length=1024,
+            )
+            embed.add_field(
+                name=_("Attachments:"),
+                value=pages[0] if len(pages) == 1 else f"{pages[0]}\n...",
                 inline=False,
             )
 
@@ -255,9 +261,10 @@ class LinkQuoter(Cog):
             and isinstance((reference := message.reference.resolved), discord.Message)
         ):
             jump_url = reference.jump_url
+            reference_content = reference.content.strip()
             embed.add_field(
                 name=_("Replying to:"),
-                value=f"[{reference.content.strip()[:1000] if reference.content.strip() else _('Click to view attachments.')}]({jump_url})",
+                value=f"[{(f'{reference_content[:1000]}...' if len(reference_content) > 1000 else reference_content) if reference_content.strip() else _('Click to view attachments.')}]({jump_url})",
                 inline=False,
             )
 

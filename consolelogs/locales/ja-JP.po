@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:11\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:38\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -17,31 +17,31 @@ msgstr ""
 "X-Crowdin-File-ID: 261\n"
 "Language: ja_JP\n"
 
-#: consolelogs\consolelogs.py:92
+#: consolelogs\consolelogs.py:94
 #, docstring
 msgid "A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!"
 msgstr "コンソールのログを表示し、ボタンとフィルターオプションがあり、設定されたチャンネルでコマンドエラーを送信するための歯車！"
 
-#: consolelogs\consolelogs.py:243
+#: consolelogs\consolelogs.py:264
 msgid "No logs to display."
 msgstr "表示するログがない。"
 
-#: consolelogs\consolelogs.py:380
-#, docstring
-msgid "View the console logs one by one, for all levels/loggers or provided level/logger name."
-msgstr "すべてのレベル/ロガー、または指定されたレベル/ロガー名のコンソール・ログを1つずつ表示します。"
-
-#: consolelogs\consolelogs.py:395
-#, docstring
-msgid "View the `ERROR` console logs one by one, for all loggers or a provided logger name."
-msgstr "すべてのロガー、または指定したロガー名の `ERROR` コンソールログを一つずつ表示する。"
-
-#: consolelogs\consolelogs.py:423 consolelogs\consolelogs.py:434
+#: consolelogs\consolelogs.py:415
 #, docstring
 msgid "Scroll the console logs, for all levels/loggers or provided level/logger name."
 msgstr "すべてのレベル/ロガー、または指定されたレベル/ロガー名のコンソール・ログをスクロールする。"
 
-#: consolelogs\consolelogs.py:464
+#: consolelogs\consolelogs.py:451
+#, docstring
+msgid "View the console logs one by one, for all levels/loggers or provided level/logger name."
+msgstr "すべてのレベル/ロガー、または指定されたレベル/ロガー名のコンソール・ログを1つずつ表示します。"
+
+#: consolelogs\consolelogs.py:462
+#, docstring
+msgid "Display the stats for the bot logs since the bot start."
+msgstr "ボット開始からのボットログの統計情報を表示します。"
+
+#: consolelogs\consolelogs.py:495
 #, docstring
 msgid "Enable errors logging in a channel.\n\n"
 "        **Parameters:**\n"
@@ -50,7 +50,9 @@ msgid "Enable errors logging in a channel.\n\n"
 "        - `prefixed_commands_errors`: Log prefixed commands errors.\n"
 "        - `slash_commands_errors`: Log slash commands errors.\n"
 "        - `dpy_ignored_exceptions`: Log dpy ignored exceptions (events listeners and Views errors).\n"
+"        - `full_console`: Log all the console logs.\n"
 "        - `guild_invite`: Add a button \"Guild Invite\" in commands errors logs, only for community servers.\n"
+"        - `ignored_cogs`: Ignore some cogs for `prefixed_commands_errors` and `slash_commands_errors`. You have to use the cog qualified_name like `ConsoleLogs` for this cog.\n"
 "        "
 msgstr "チャンネルのエラーログを有効にする。\n\n"
 "        **Parameters:**\n"
@@ -59,31 +61,33 @@ msgstr "チャンネルのエラーログを有効にする。\n\n"
 "        - prefixed_commands_errors`：接頭辞付きコマンドのエラーをログに記録する。\n"
 "        - `slash_commands_errors`: スラッシュコマンドのエラーをログに記録する：スラッシュコマンドのエラーをログに記録する。\n"
 "        - dpy_ignored_exceptions`: dpy が無視した例外を記録する：dpy が無視した例外 (イベントリスナーと Views のエラー) を記録する。\n"
-"        - ギルド招待`：コミュニティサーバのみ、コマンドエラーログに \"Guild Invite\" ボタンを追加する。\n"
+"        - full_console`: 全てのコンソールログを記録する：全てのコンソールログを記録する。\n"
+"        - guild_invite`: ギルド招待ボタンを追加する：コミュニティサーバーでのみ、コマンドのエラーログに \"Guild Invite\" ボタンを追加する。\n"
+"        - ignore_cogs`：prefixed_commands_errors`と`slash_commands_errors`のコグを無視するようにした。このコグには `ConsoleLogs` のような修飾名を使う必要があります。\n"
 "        "
 
-#: consolelogs\consolelogs.py:483
+#: consolelogs\consolelogs.py:516
 msgid "I don't have the permissions to send embeds in this channel."
 msgstr "このチャンネルでエンベッドを送信する権限がありません。"
 
-#: consolelogs\consolelogs.py:491
+#: consolelogs\consolelogs.py:532
 msgid "Errors logging enabled in {channel.mention}."
 msgstr "{channel.mention}でエラーログを有効にする。"
 
-#: consolelogs\consolelogs.py:495
+#: consolelogs\consolelogs.py:540
 #, docstring
 msgid "Disable errors logging in a channel."
 msgstr "チャンネルのエラーログを無効にする。"
 
-#: consolelogs\consolelogs.py:498
+#: consolelogs\consolelogs.py:543
 msgid "Errors logging isn't enabled in this channel."
 msgstr "このチャンネルではエラーログは有効になっていない。"
 
-#: consolelogs\consolelogs.py:501
+#: consolelogs\consolelogs.py:546
 msgid "Errors logging disabled in {channel.mention}."
 msgstr "{channel.mention}でエラーロギングを無効にする。"
 
-#: consolelogs\consolelogs.py:505
+#: consolelogs\consolelogs.py:550
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "ループの状態を確認するためのエンベデッドを取得します。"

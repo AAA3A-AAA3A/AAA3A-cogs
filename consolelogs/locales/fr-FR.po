@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:11\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:26\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -17,31 +17,31 @@ msgstr ""
 "X-Crowdin-File-ID: 261\n"
 "Language: fr_FR\n"
 
-#: consolelogs\consolelogs.py:92
+#: consolelogs\consolelogs.py:94
 #, docstring
 msgid "A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!"
 msgstr "Un mécanisme pour afficher les journaux de la console, avec des boutons et des options de filtrage, et pour envoyer des commandes d'erreurs dans les canaux configurés !"
 
-#: consolelogs\consolelogs.py:243
+#: consolelogs\consolelogs.py:264
 msgid "No logs to display."
 msgstr "Aucun journal à afficher."
 
-#: consolelogs\consolelogs.py:380
-#, docstring
-msgid "View the console logs one by one, for all levels/loggers or provided level/logger name."
-msgstr "Visualiser les journaux de la console un par un, pour tous les niveaux/déclencheurs ou pour un niveau/déclencheur donné."
-
-#: consolelogs\consolelogs.py:395
-#, docstring
-msgid "View the `ERROR` console logs one by one, for all loggers or a provided logger name."
-msgstr "Affiche les journaux de la console `ERROR` un par un, pour tous les loggers ou pour un nom de logger fourni."
-
-#: consolelogs\consolelogs.py:423 consolelogs\consolelogs.py:434
+#: consolelogs\consolelogs.py:415
 #, docstring
 msgid "Scroll the console logs, for all levels/loggers or provided level/logger name."
 msgstr "Fait défiler les journaux de la console, pour tous les niveaux/enregistreurs ou pour un niveau/enregistreur donné."
 
-#: consolelogs\consolelogs.py:464
+#: consolelogs\consolelogs.py:451
+#, docstring
+msgid "View the console logs one by one, for all levels/loggers or provided level/logger name."
+msgstr "Visualiser les journaux de la console un par un, pour tous les niveaux/déclencheurs ou pour un niveau/déclencheur donné."
+
+#: consolelogs\consolelogs.py:462
+#, docstring
+msgid "Display the stats for the bot logs since the bot start."
+msgstr "Affiche les statistiques des logs du bot depuis son démarrage."
+
+#: consolelogs\consolelogs.py:495
 #, docstring
 msgid "Enable errors logging in a channel.\n\n"
 "        **Parameters:**\n"
@@ -50,7 +50,9 @@ msgid "Enable errors logging in a channel.\n\n"
 "        - `prefixed_commands_errors`: Log prefixed commands errors.\n"
 "        - `slash_commands_errors`: Log slash commands errors.\n"
 "        - `dpy_ignored_exceptions`: Log dpy ignored exceptions (events listeners and Views errors).\n"
+"        - `full_console`: Log all the console logs.\n"
 "        - `guild_invite`: Add a button \"Guild Invite\" in commands errors logs, only for community servers.\n"
+"        - `ignored_cogs`: Ignore some cogs for `prefixed_commands_errors` and `slash_commands_errors`. You have to use the cog qualified_name like `ConsoleLogs` for this cog.\n"
 "        "
 msgstr "Active la journalisation des erreurs dans un canal.\n\n"
 "        **Paramètres:**\n"
@@ -58,32 +60,34 @@ msgstr "Active la journalisation des erreurs dans un canal.\n\n"
 "        - `global_errors` : Enregistre les erreurs pour l'ensemble du bot, et pas seulement pour le serveur du canal.\n"
 "        - `prefixed_commands_errors` : Enregistre les erreurs de commandes préfixées.\n"
 "        - `slash_commands_errors` : Journalise les erreurs des commandes slash.\n"
-"        - `dpy_ignored_exceptions` : Enregistre les exceptions ignorées par dpy (erreurs des auditeurs d'événements et de Views).\n"
-"        - `guild_invite` : Ajoute un bouton \"Guild Invite\" dans les logs d'erreurs de commandes, uniquement pour les serveurs communautaires.\n"
+"        - `dpy_ignored_exceptions` : Enregistre les exceptions ignorées par dpy (erreurs des auditeurs d'événements et des vues).\n"
+"        - `full_console` : Enregistre tous les logs de la console.\n"
+"        - `guild_invite` : Ajoute un bouton \"Guild Invite\" dans les logs d'erreurs des commandes, seulement pour les serveurs communautaires.\n"
+"        - `ignored_cogs` : Ignore certains cogs pour `prefixed_commands_errors` et `slash_commands_errors`. Vous devez utiliser le nom qualifié du cog comme `ConsoleLogs` pour ce cog.\n"
 "        "
 
-#: consolelogs\consolelogs.py:483
+#: consolelogs\consolelogs.py:516
 msgid "I don't have the permissions to send embeds in this channel."
 msgstr "Je n'ai pas les autorisations nécessaires pour envoyer des liens dans ce canal."
 
-#: consolelogs\consolelogs.py:491
+#: consolelogs\consolelogs.py:532
 msgid "Errors logging enabled in {channel.mention}."
 msgstr "La journalisation des erreurs est activée sur {channel.mention}."
 
-#: consolelogs\consolelogs.py:495
+#: consolelogs\consolelogs.py:540
 #, docstring
 msgid "Disable errors logging in a channel."
 msgstr "Désactive l'enregistrement des erreurs dans un canal."
 
-#: consolelogs\consolelogs.py:498
+#: consolelogs\consolelogs.py:543
 msgid "Errors logging isn't enabled in this channel."
 msgstr "La journalisation des erreurs n'est pas activée dans ce canal."
 
-#: consolelogs\consolelogs.py:501
+#: consolelogs\consolelogs.py:546
 msgid "Errors logging disabled in {channel.mention}."
 msgstr "La journalisation des erreurs est désactivée sur le site {channel.mention}."
 
-#: consolelogs\consolelogs.py:505
+#: consolelogs\consolelogs.py:550
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "Obtenir un embed pour vérifier l'état des boucles."

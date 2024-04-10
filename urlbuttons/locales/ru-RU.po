@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:30\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:40\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -17,38 +17,55 @@ msgstr ""
 "X-Crowdin-File-ID: 152\n"
 "Language: ru_RU\n"
 
-#: urlbuttons\converters.py:35
+#: urlbuttons\converters.py:25
+msgid "It's not a valid public URL."
+msgstr "Это не действительный публичный URL-адрес."
+
+#: urlbuttons\converters.py:91
 msgid "Emoji Url must be an emoji followed by a url separated by either `;`, `,`, `|`, or `-`."
 msgstr "Emoji Url должен быть эмодзи, за которым следует url, разделенный либо `;`, `,`, `|`, либо `-`."
 
-#: urlbuttons\converters.py:44 urlbuttons\urlbuttons.py:80
-msgid "Url must start with `https` or `http`."
-msgstr "Url должен начинаться с `https` или `http`."
+#: urlbuttons\urlbuttons.py:24
+msgid "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
+msgstr "Я должен быть автором сообщения. Вы можете использовать EmbedUtils by AAA3A для отправки одного сообщения."
 
-#: urlbuttons\urlbuttons.py:19
+#: urlbuttons\urlbuttons.py:33
 #, docstring
 msgid "A cog to have url-buttons!"
 msgstr "Коготь, чтобы иметь url-кнопки!"
 
-#: urlbuttons\urlbuttons.py:65
+#: urlbuttons\urlbuttons.py:124
 #, docstring
 msgid "Add a url-button for a message."
 msgstr "Добавьте url-кнопку для сообщения."
 
-#: urlbuttons\urlbuttons.py:68 urlbuttons\urlbuttons.py:110
-#: urlbuttons\urlbuttons.py:174
-msgid "I have to be the author of the message for the url-button to work."
-msgstr "Чтобы кнопка url работала, я должен быть автором сообщения."
+#: urlbuttons\urlbuttons.py:132
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "У меня недостаточно прав на канале, где находится указанное вами сообщение.\n"
+"Мне нужны разрешения, чтобы видеть сообщения в этом канале."
 
-#: urlbuttons\urlbuttons.py:75
+#: urlbuttons\urlbuttons.py:137
+msgid "Url must start with `https` or `http`."
+msgstr "Url должен начинаться с `https` или `http`."
+
+#: urlbuttons\urlbuttons.py:140
+msgid "You have to specify at least an emoji or a label."
+msgstr "Вы должны указать хотя бы эмодзи или ярлык."
+
+#: urlbuttons\urlbuttons.py:147
 msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "Выбранный вами эмодзи кажется недействительным. Проверьте, является ли это эмодзи. Если у вас есть Nitro, возможно, вы использовали пользовательский emoji с другого сервера."
 
-#: urlbuttons\urlbuttons.py:86 urlbuttons\urlbuttons.py:131
+#: urlbuttons\urlbuttons.py:154 urlbuttons\urlbuttons.py:203
+msgid "This message already has components."
+msgstr "В этом сообщении уже есть компоненты."
+
+#: urlbuttons\urlbuttons.py:158 urlbuttons\urlbuttons.py:207
 msgid "I can't do more than 25 url-buttons for one message."
 msgstr "Я не могу сделать более 25 url-кнопок для одного сообщения."
 
-#: urlbuttons\urlbuttons.py:104
+#: urlbuttons\urlbuttons.py:180
 #, docstring
 msgid "Add a url-button for a message.\n\n"
 "        ```[p]urlbuttons bulk <message> :red_circle:|<https://github.com/Cog-Creators/Red-DiscordBot> :smiley:|<https://github.com/Cog-Creators/Red-SmileyBot> :green_circle:|<https://github.com/Cog-Creators/Green-DiscordBot>```\n"
@@ -57,42 +74,71 @@ msgstr "Добавить url-кнопку для сообщения.\n\n"
 "        ```[p]urlbutton bulk <message> :red_circle:|<https://github.com/Cog-Creators/Red-DiscordBot> :smiley:|<https://github.com/Cog-Creators/Red-SmileyBot> :green_circle:|<https://github.com/Cog-Creators/Green-DiscordBot>```\n"
 "        "
 
-#: urlbuttons\urlbuttons.py:114
+#: urlbuttons\urlbuttons.py:186
 msgid "You have not specified any valid url-button."
 msgstr "Вы не указали ни одной допустимой url-кнопки."
 
-#: urlbuttons\urlbuttons.py:122
+#: urlbuttons\urlbuttons.py:196
 msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "Выбранный вами эмодзи кажется недопустимым. Проверьте, является ли это эмодзи. Если у вас есть Nitro, возможно, вы использовали пользовательский emoji с другого сервера."
 
-#: urlbuttons\urlbuttons.py:145
+#: urlbuttons\urlbuttons.py:227
 #, docstring
-msgid "Remove a url-button for a message."
-msgstr "Удаление url-кнопки для сообщения."
+msgid "Remove a url-button for a message.\n\n"
+"        Use `[p]urlbuttons list <message>` to find the config identifier.\n"
+"        "
+msgstr "Удаление url-кнопки для сообщения.\n\n"
+"        Используйте `[p]urlbuttons list <message>` для поиска идентификатора конфигурации.\n"
+"        "
 
-#: urlbuttons\urlbuttons.py:148
-msgid "I have to be the author of the message for the role-button to work."
-msgstr "Я должен быть автором сообщения, чтобы кнопка роли работала."
-
-#: urlbuttons\urlbuttons.py:153
+#: urlbuttons\urlbuttons.py:234 urlbuttons\urlbuttons.py:280
 msgid "No url-button is configured for this message."
 msgstr "Для этого сообщения не настроена url-кнопка."
 
-#: urlbuttons\urlbuttons.py:157
+#: urlbuttons\urlbuttons.py:238
 msgid "I wasn't watching for this button on this message."
 msgstr "Я не следил за этой кнопкой в этом сообщении."
 
-#: urlbuttons\urlbuttons.py:171
+#: urlbuttons\urlbuttons.py:251 urlbuttons\urlbuttons.py:267
+msgid "Url-buttons cleared for this message."
+msgstr "Кнопки урлов очищены для этого сообщения."
+
+#: urlbuttons\urlbuttons.py:255
 #, docstring
 msgid "Clear all url-buttons for a message."
 msgstr "Очистить все кнопки url для сообщения."
 
-#: urlbuttons\urlbuttons.py:179
+#: urlbuttons\urlbuttons.py:259
 msgid "No role-button is configured for this message."
 msgstr "Для этого сообщения не настроена кнопка роли."
 
-#: urlbuttons\urlbuttons.py:190
+#: urlbuttons\urlbuttons.py:272
+#, docstring
+msgid "List all url-buttons of this server or display the settings for a specific one."
+msgstr "Перечислите все url-кнопки данного сервера или отобразите настройки для конкретной кнопки."
+
+#: urlbuttons\urlbuttons.py:286
+msgid "No url-buttons in this server."
+msgstr "На этом сервере нет url-кнопок."
+
+#: urlbuttons\urlbuttons.py:288
+msgid "URL Buttons"
+msgstr "Кнопки URL"
+
+#: urlbuttons\urlbuttons.py:289
+msgid "There is {len_url_buttons} url buttons in this server."
+msgstr "На этом сервере есть {len_url_buttons} кнопок url."
+
+#: urlbuttons\urlbuttons.py:299
+msgid "Message Jump Link: {message_jump_link}\n"
+msgstr "Сообщение Перейти Ссылка: {message_jump_link}\n"
+
+#: urlbuttons\urlbuttons.py:320
 #, docstring
 msgid "Clear all url-buttons for a guild."
 msgstr "Очистить все url-кнопки для гильдии."
+
+#: urlbuttons\urlbuttons.py:322
+msgid "All url-buttons purged."
+msgstr "Все url-кнопки очищены."
 

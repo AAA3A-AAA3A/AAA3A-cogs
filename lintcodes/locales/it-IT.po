@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:12\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:23\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -78,12 +78,12 @@ msgstr "Formattare il codice con Flake8, con i flag.\n\n"
 "        - `--max_complexity <integer>`\n"
 "        "
 
-#: lintcodes\lintcodes.py:171
+#: lintcodes\lintcodes.py:172
 #, docstring
 msgid "Format code with PyLint, without flags, just the code."
 msgstr "Formattare il codice con PyLint, senza flag, solo il codice."
 
-#: lintcodes\lintcodes.py:178
+#: lintcodes\lintcodes.py:179
 #, docstring
 msgid "Format code with PyLint, with flags.\n\n"
 "        **Supported flags:**\n"
@@ -100,12 +100,12 @@ msgstr "Formatta il codice con PyLint, con i flag.\n\n"
 "        - `--enable <enable_list>`\n"
 "        "
 
-#: lintcodes\lintcodes.py:193
+#: lintcodes\lintcodes.py:195
 #, docstring
 msgid "Format code with MyPy, without flags, just the code."
 msgstr "Formattare il codice con MyPy, senza flag, solo il codice."
 
-#: lintcodes\lintcodes.py:200
+#: lintcodes\lintcodes.py:202
 #, docstring
 msgid "Format code with MyPy, with flags.\n\n"
 "        **Supported flags:**\n"
@@ -244,12 +244,12 @@ msgstr "Formattare il codice con MyPy, con i flag.\n\n"
 "          - `-retty <yes>`\n"
 "        "
 
-#: lintcodes\lintcodes.py:281
+#: lintcodes\lintcodes.py:284
 #, docstring
 msgid "Format code with Bandit, without flags, just the code."
 msgstr "Formattare il codice con Bandit, senza flag, solo il codice."
 
-#: lintcodes\lintcodes.py:288
+#: lintcodes\lintcodes.py:291
 #, docstring
 msgid "Format code with Bandit, with flags.\n\n"
 "        **Supported flags:**\n"
@@ -270,27 +270,27 @@ msgstr "Formatta il codice con Bandit, con i flag.\n\n"
 "        - `--confidence <low/medium/high>`\n"
 "        "
 
-#: lintcodes\lintcodes.py:306
+#: lintcodes\lintcodes.py:310
 #, docstring
 msgid "Format code with Black, without flags, just the code."
 msgstr "Formattare il codice con Black, senza flag, solo il codice."
 
-#: lintcodes\lintcodes.py:312
+#: lintcodes\lintcodes.py:316
 #, docstring
 msgid "Format code with Isort, without flags, just the code."
 msgstr "Formattare il codice con Isort, senza flag, solo il codice."
 
-#: lintcodes\lintcodes.py:318
+#: lintcodes\lintcodes.py:322
 #, docstring
 msgid "Format code with Yapf, without flags, just the code."
 msgstr "Formattare il codice con Yapf, senza flag, solo il codice."
 
-#: lintcodes\lintcodes.py:324
+#: lintcodes\lintcodes.py:328
 #, docstring
 msgid "Format code with AutoPep8, without flags, just the code."
 msgstr "Formattare il codice con AutoPep8, senza flag, solo il codice."
 
-#: lintcodes\lintcodes.py:330
+#: lintcodes\lintcodes.py:334
 #, docstring
 msgid "Format code with PyRight, without flags, just the code.\n\n"
 "        **Supported flags:**\n"
@@ -301,17 +301,17 @@ msgstr "Formatta il codice con PyRight, senza flag, solo il codice.\n\n"
 "        - `-codice <code>`\n"
 "        "
 
-#: lintcodes\lintcodes.py:341
+#: lintcodes\lintcodes.py:345
 #, docstring
 msgid "Format code with PyRight, with flags."
 msgstr "Formattare il codice con PyRight, con i flag."
 
-#: lintcodes\lintcodes.py:347
+#: lintcodes\lintcodes.py:352
 #, docstring
 msgid "Format code with Ruff, without flags, just the code."
 msgstr "Formattare il codice con Ruff, senza flag, solo il codice."
 
-#: lintcodes\lintcodes.py:354
+#: lintcodes\lintcodes.py:359
 #, docstring
 msgid "Format code with Ruff, with flags.\n\n"
 "        **Supported flags:**\n"

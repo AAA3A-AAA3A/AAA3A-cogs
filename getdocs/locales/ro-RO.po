@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:27\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:37\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -17,46 +17,54 @@ msgstr ""
 "X-Crowdin-File-ID: 183\n"
 "Language: ro_RO\n"
 
-#: getdocs\getdocs.py:212 getdocs\getdocs.py:531
-msgid "This source doesn't exist."
-msgstr "Această sursă nu există."
+#: getdocs\getdocs.py:220 getdocs\getdocs.py:349 getdocs\getdocs.py:411
+msgid "Please provide a valid documentations source."
+msgstr "Vă rugăm să furnizați o sursă de documentare validă."
 
-#: getdocs\getdocs.py:218
+#: getdocs\getdocs.py:231
 #, docstring
 msgid "A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."
 msgstr "O rotiță pentru a obține și afișa unele documentații în Discord! Utilizați `[p]listsources` pentru a obține o listă cu toate sursele disponibile."
 
-#: getdocs\getdocs.py:342
+#: getdocs\getdocs.py:366
 msgid "Documentations cache is not yet built."
 msgstr "Memoria cache a documentațiilor nu este încă construită."
 
-#: getdocs\getdocs.py:393
+#: getdocs\getdocs.py:422
 msgid "No results found."
 msgstr "Nu s-au găsit rezultate."
 
-#: getdocs\getdocs.py:523
+#: getdocs\getdocs.py:574
 #, docstring
 msgid "\n"
-"        Enable a Documentations source.\n"
+"        Enable Documentations source(s).\n"
 "        "
 msgstr "\n"
-"        Activați o sursă de documentare.\n"
+"        Activează sursa (sursele) de documentare.\n"
 "        "
 
-#: getdocs\getdocs.py:529
-msgid "This source is already enabled."
-msgstr "Această sursă este deja activată."
+#: getdocs\getdocs.py:581
+msgid "The source `{source}` is already enabled."
+msgstr "Sursa `{source}` este deja activată."
 
-#: getdocs\getdocs.py:545
+#: getdocs\getdocs.py:585 getdocs\getdocs.py:614
+msgid "The source `{source}` doesn't exist."
+msgstr "Sursa `{source}` nu există."
+
+#: getdocs\getdocs.py:603
 #, docstring
 msgid "\n"
-"        Disable a Documentations source.\n"
+"        Disable Documentations source(s).\n"
 "        "
 msgstr "\n"
-"        Dezactivează o sursă de documentare.\n"
+"        Dezactivați sursa (sursele) de documentare.\n"
 "        "
 
-#: getdocs\getdocs.py:554
+#: getdocs\getdocs.py:610
+msgid "The source `{source}` is already disabled."
+msgstr "Sursa `{source}` este deja dezactivată."
+
+#: getdocs\getdocs.py:621
 #, docstring
 msgid "\n"
 "        Show stats about all documentations sources.\n"
@@ -65,7 +73,12 @@ msgstr "\n"
 "        Afișează statisticile despre toate sursele de documentare.\n"
 "        "
 
-#: getdocs\getdocs.py:1460
+#: getdocs\getdocs.py:655
+#, docstring
+msgid "Get an embed to check loops status."
+msgstr "Obțineți o inserție pentru a verifica starea buclelor."
+
+#: getdocs\getdocs.py:1735
 msgid "RTFM caching isn't finished."
 msgstr "RTFM caching nu este terminat."
 

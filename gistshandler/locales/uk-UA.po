@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-07-15 19:20\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:23\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgstr "Спочатку потрібно налаштувати токен GitH
 msgid "{public.value} is not a recognised boolean option."
 msgstr "{public.value} не є розпізнаним булевим параметром."
 
-#: gistshandler\view.py:101 gistshandler\view.py:199 gistshandler\view.py:384
+#: gistshandler\view.py:101 gistshandler\view.py:199 gistshandler\view.py:381
 msgid "GitHub token is invalid or expired."
 msgstr "Токен GitHub недійсний або термін дії закінчився."
 
@@ -50,11 +50,11 @@ msgstr "Ви не маєте права редагувати цей текст."
 msgid "Gist `{gist.id}` updated."
 msgstr "Суть `{gist.id}` оновлено."
 
-#: gistshandler\view.py:388
+#: gistshandler\view.py:385
 msgid "You're not allowed to delete this gist."
 msgstr "Ви не маєте права видаляти цю суть."
 
-#: gistshandler\view.py:394
+#: gistshandler\view.py:391
 msgid "Gist `{gist.id}` deleted."
 msgstr "Суть `{gist.id}` видалено."
 

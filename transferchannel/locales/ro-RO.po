@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:26\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:36\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -17,120 +17,128 @@ msgstr ""
 "X-Crowdin-File-ID: 104\n"
 "Language: ro_RO\n"
 
-#: transferchannel\transferchannel.py:20
-#: transferchannel\transferchannel.py:241
+#: transferchannel\transferchannel.py:24
+#: transferchannel\transferchannel.py:335
+#: transferchannel\transferchannel.py:367
 msgid "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
 msgstr "Există {count_messages} mesaje transferate de la {source.mention} la {destination.mention}."
 
-#: transferchannel\transferchannel.py:27
+#: transferchannel\transferchannel.py:46
 #, docstring
-msgid "A cog to transfer all messages channel in a other channel!"
-msgstr "O rotiță pentru a transfera toate mesajele canalului într-un alt canal!"
+msgid "A cog to transfer messages from a channel to another channel, with many options!"
+msgstr "O rotiță pentru a transfera mesaje de pe un canal pe un alt canal, cu multe opțiuni!"
 
-#: transferchannel\transferchannel.py:79
+#: transferchannel\transferchannel.py:105
 msgid "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
 msgstr "Îmi pare rău, dar nu pot citi conținutul mesajelor de pe {source.mention} ({source.id})."
 
-#: transferchannel\transferchannel.py:87
-msgid "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n"
-"`embed_links`."
-msgstr "Am nevoie de toate permisiunile următoare pentru {destination.mention} ({destination.id}) în {destination.guild.name} ({destination.guild.id}).\n"
-"`embed_links`."
+#: transferchannel\transferchannel.py:112
+msgid "I need to have all the permissions to send messages with embeds in {destination.guild.name} ({destination.guild.id})."
+msgstr "Am nevoie de toate permisiunile pentru a trimite mesaje cu embed-uri în {destination.guild.name} ({destination.guild.id})."
 
-#: transferchannel\transferchannel.py:94
-msgid "I need to have all the following permissions for {destination.mention} ({destination.id}) in {destination.guild.name} ({destination.guild.id}).\n"
-"`manage_channels`"
-msgstr "Am nevoie de toate permisiunile următoare pentru {destination.mention} ({destination.id}) în {destination.guild.name} ({destination.guild.id}).\n"
-"`manage_channels`"
+#: transferchannel\transferchannel.py:118
+msgid "I need to have all the permission to create webhooks in {destination.guild.name} ({destination.guild.id}). You can use embeds or text messages by adding `embeds`/`messages` to your command."
+msgstr "Trebuie să am toate permisiunile necesare pentru a crea webhooks în {destination.guild.name} ({destination.guild.id}). Puteți utiliza embed-uri sau mesaje text adăugând `embeds`/`messages` la comanda dvs."
 
-#: transferchannel\transferchannel.py:124
-msgid "Sorry. I could not find any message."
+#: transferchannel\transferchannel.py:161
+msgid "Sorry. I could not find any messages."
 msgstr "Îmi pare rău. Nu am putut găsi niciun mesaj."
 
-#: transferchannel\transferchannel.py:154
+#: transferchannel\transferchannel.py:242
 msgid "**Author:** {message.author.mention} ({message.author.id})"
 msgstr "**Autor:** {message.author.mention} ({message.author.id})"
 
-#: transferchannel\transferchannel.py:157
+#: transferchannel\transferchannel.py:245
 msgid "**Channel:** <#{message.channel.id}>"
 msgstr "**Canal:** <#{message.channel.id}>"
 
-#: transferchannel\transferchannel.py:158
+#: transferchannel\transferchannel.py:246
 msgid "**Time (UTC):** {iso_format}"
 msgstr "**Ora (UTC):** {iso_format}"
 
-#: transferchannel\transferchannel.py:198
+#: transferchannel\transferchannel.py:295
 #, docstring
-msgid "Transfer all messages channel in a other channel. This might take a long time.\n\n"
-"        Remember that transfering other users' messages in does not respect the TOS.\n"
+msgid "Transfer all messages from a channel to another channel. This might take a long time.\n\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
 "        "
-msgstr "Transferă toate mesajele canalului într-un alt canal. Acest lucru poate dura mult timp.\n\n"
+msgstr "Transferă toate mesajele de pe un canal pe un alt canal. Acest lucru poate dura mult timp.\n\n"
 "        Nu uitați că transferul mesajelor altor utilizatori nu respectă TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:224
+#: transferchannel\transferchannel.py:319
 #, docstring
-msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
-"        Specify the number of messages since the end of the channel.\n"
-"        Remember that transfering other users' messages in does not respect the TOS.\n"
+msgid "Transfer a specific message to another channel. This might take a long time.\n\n"
+"        Specify the message to transfer, with its ID or its link.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
 "        "
-msgstr "Transferă o parte din mesajele unui canal într-un alt canal. Acest lucru poate dura mult timp.\n\n"
+msgstr "Transferați un anumit mesaj către un alt canal. Acest lucru poate dura mult timp.\n\n"
+"        Specificați mesajul care urmează să fie transferat, cu ID-ul sau legătura acestuia.\n"
+"        Nu uitați că transferul mesajelor altor utilizatori nu respectă TOS.\n"
+"        "
+
+#: transferchannel\transferchannel.py:351
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the number of messages since the end of the channel.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Transferă o parte din mesajele de pe un canal pe un alt canal. Acest lucru poate dura mult timp.\n\n"
 "        Specificați numărul de mesaje de la sfârșitul canalului.\n"
 "        Nu uitați că transferul mesajelor altor utilizatori nu respectă TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:255
+#: transferchannel\transferchannel.py:381
 #, docstring
-msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
-"        Specify the before message (id or link).\n"
-"        Remember that transfering other users' messages in does not respect the TOS.\n"
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the before message (id or link) or a valid Discord snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
 "        "
-msgstr "Transferă o parte din mesajele unui canal într-un alt canal. Acest lucru poate dura mult timp.\n\n"
-"        Specificați mesajul anterior (id sau link).\n"
+msgstr "Transferă o parte din mesajele de pe un canal pe un alt canal. Acest lucru poate dura mult timp.\n\n"
+"        Specificați mesajul anterior (id sau link) sau un fulg de nea Discord valid.\n"
 "        Nu uitați că transferul mesajelor altor utilizatori nu respectă TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:282
+#: transferchannel\transferchannel.py:407
 #, docstring
-msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
-"        Specify the after message (id or link).\n"
-"        Remember that transfering other users' messages in does not respect the TOS.\n"
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the after message (id or link) or a valid Discord snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
 "        "
-msgstr "Transferă o parte din mesajele unui canal într-un alt canal. Acest lucru poate dura mult timp.\n\n"
-"        Specificați mesajul ulterior (id sau link).\n"
+msgstr "Transferă o parte din mesajele de pe un canal pe un alt canal. Acest lucru poate dura mult timp.\n\n"
+"        Specificați mesajul de după (id sau link) sau un fulg de nea Discord valid.\n"
 "        Nu uitați că transferul mesajelor altor utilizatori nu respectă TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:310
+#: transferchannel\transferchannel.py:434
 #, docstring
-msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
-"        Specify the between messages (id or link).\n"
-"        Remember that transfering other users' messages in does not respect the TOS.\n"
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the between messages (id or link) or a valid snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
 "        "
-msgstr "Transferă o parte din mesajele unui canal într-un alt canal. Acest lucru poate dura mult timp.\n\n"
-"        Specificați între mesaje (id sau link).\n"
+msgstr "Transferă o parte din mesajele de pe un canal pe un alt canal. Acest lucru poate dura mult timp.\n\n"
+"        Specificați între mesaje (id sau link) sau un fulg de nea valid.\n"
 "        Nu uitați că transferul mesajelor altor utilizatori nu respectă TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:338
+#: transferchannel\transferchannel.py:461
 #, docstring
-msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
-"        Specify the member (id, name or mention).\n"
-"        Remember that transfering other users' messages in does not respect the TOS.\n"
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the user/member (id, name or mention).\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
 "        "
-msgstr "Transferă o parte din mesajele unui canal într-un alt canal. Acest lucru poate dura mult timp.\n\n"
-"        Specificați membrul (id, nume sau mențiune).\n"
+msgstr "Transferă o parte din mesajele de pe un canal pe un alt canal. Acest lucru poate dura mult timp.\n\n"
+"        Specificați utilizatorul/membrul (id, nume sau mențiune).\n"
 "        Nu uitați că transferul mesajelor altor utilizatori nu respectă TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:371
+#: transferchannel\transferchannel.py:493
 #, docstring
-msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
 "        Specify the bool option.\n"
-"        Remember that transfering other users' messages in does not respect the TOS.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
 "        "
-msgstr "Transferă o parte din mesajele unui canal într-un alt canal. Acest lucru poate dura mult timp.\n\n"
+msgstr "Transferă o parte din mesajele de pe un canal pe un alt canal. Acest lucru poate dura mult timp.\n\n"
 "        Specificați opțiunea bool.\n"
-"        Rețineți că transferul mesajelor altor utilizatori nu respectă TOS.\n"
+"        Nu uitați că transferul mesajelor altor utilizatori nu respectă TOS.\n"
 "        "
 

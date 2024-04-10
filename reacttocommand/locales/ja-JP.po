@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-08-10 13:42+0200\n"
-"PO-Revision-Date: 2023-08-10 11:45\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:19\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "A cog to allow a user to execute a command by clicking on a reaction!"
 msgstr "リアクションをクリックすることでコマンドを実行できるようにするためのコグです！"
 
-#: reacttocommand\reacttocommand.py:278
+#: reacttocommand\reacttocommand.py:277
 #, docstring
 msgid "Add a reaction-command for a message.\n\n"
 "        There should be no prefix in the command.\n"
@@ -35,56 +35,56 @@ msgstr "メッセージに対するリアクションコマンドを追加しま
 "        このユーザはチャンネル内の書き込みを見ることができなければなりません。\n"
 "        "
 
-#: reacttocommand\reacttocommand.py:292
+#: reacttocommand\reacttocommand.py:291
 msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
 "I need the permissions to add reactions and to see the messages in that channel."
 msgstr "指定されたメッセージがあるチャンネルのパーミッションが十分ではありません。\n"
 "リアクションを追加し、そのチャンネルのメッセージを見るためのパーミッションが必要です。"
 
-#: reacttocommand\reacttocommand.py:302
+#: reacttocommand\reacttocommand.py:301
 msgid "You have not specified a correct command."
 msgstr "正しいコマンドを指定していません。"
 
-#: reacttocommand\reacttocommand.py:308
+#: reacttocommand\reacttocommand.py:307
 msgid "An error has occurred. It is possible that the emoji you provided is invalid."
 msgstr "エラーが発生しました。入力された絵文字が無効である可能性があります。"
 
-#: reacttocommand\reacttocommand.py:315
+#: reacttocommand\reacttocommand.py:314
 msgid "Reaction-command added to this message."
 msgstr "このメッセージにリアクション・コマンドが追加された。"
 
-#: reacttocommand\reacttocommand.py:319
+#: reacttocommand\reacttocommand.py:318
 #, docstring
 msgid "Remove a reaction-command for a message."
 msgstr "メッセージのリアクションコマンドを削除する。"
 
-#: reacttocommand\reacttocommand.py:323 reacttocommand\reacttocommand.py:345
+#: reacttocommand\reacttocommand.py:322 reacttocommand\reacttocommand.py:344
 msgid "No reaction-command is configured for this message."
 msgstr "このメッセージには、リアクションコマンドは設定されていません。"
 
-#: reacttocommand\reacttocommand.py:327
+#: reacttocommand\reacttocommand.py:326
 msgid "I wasn't watching for this reaction on this message."
 msgstr "このメッセージでこの反応を見ることはなかった。"
 
-#: reacttocommand\reacttocommand.py:337
+#: reacttocommand\reacttocommand.py:336
 msgid "Reaction-command removed from this message."
 msgstr "このメッセージからリアクションコマンドが削除された。"
 
-#: reacttocommand\reacttocommand.py:341
+#: reacttocommand\reacttocommand.py:340
 #, docstring
 msgid "Clear all reactions-commands for a message."
 msgstr "メッセージのリアクション・コマンドをすべてクリアする。"
 
-#: reacttocommand\reacttocommand.py:354
+#: reacttocommand\reacttocommand.py:353
 msgid "Reactions-commands cleared for this message."
 msgstr "リアクション-このメッセージに対してクリアされたコマンド。"
 
-#: reacttocommand\reacttocommand.py:358
+#: reacttocommand\reacttocommand.py:357
 #, docstring
 msgid "Clear all reactions-commands for a guild."
 msgstr "ギルドのリアクション・コマンドをすべてクリアする。"
 
-#: reacttocommand\reacttocommand.py:360
+#: reacttocommand\reacttocommand.py:359
 msgid "All reactions-commands purged."
 msgstr "すべての反応とコマンドは消去された。"
 

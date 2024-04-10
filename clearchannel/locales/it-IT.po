@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:10\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:21\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -26,33 +26,33 @@ msgstr "Un ingranaggio per cancellare TUTTI i messaggi di un canale!\n\n"
 "    Il canale verrà clonato e poi **cancellato**.\n"
 "    "
 
-#: clearchannel\clearchannel.py:105
+#: clearchannel\clearchannel.py:101
 msgid "⚠️ - ClearChannel"
 msgstr "⚠️ - ClearChannel"
 
-#: clearchannel\clearchannel.py:106
+#: clearchannel\clearchannel.py:102
 msgid "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?\n"
 "⚠ The channel will be cloned, and then **deleted**."
 msgstr "Volete davvero cancellare TUTTI i messaggi del canale {old_channel.mention} ({old_channel.id})?\n"
 "Il canale verrà clonato e poi **cancellato**."
 
-#: clearchannel\clearchannel.py:116
+#: clearchannel\clearchannel.py:112
 msgid "Clear Channel requested by {ctx.author} ({ctx.author.id})."
 msgstr "Clear Channel richiesto da {ctx.author} ({ctx.author.id})."
 
-#: clearchannel\clearchannel.py:122
+#: clearchannel\clearchannel.py:118
 msgid "🗑️-Deleted-{old_channel.name}"
 msgstr "🗑️-Cancellato-{old_channel.name}"
 
-#: clearchannel\clearchannel.py:136
+#: clearchannel\clearchannel.py:132
 msgid "ClearChannel"
 msgstr "ClearChannel"
 
-#: clearchannel\clearchannel.py:137
+#: clearchannel\clearchannel.py:133
 msgid "ALL the messages in this channel have been deleted..."
 msgstr "TUTTI i messaggi di questo canale sono stati cancellati..."
 
-#: clearchannel\clearchannel.py:155
+#: clearchannel\clearchannel.py:151
 msgid "All messages in channel #{old_channel.name} ({old_channel.id}) have been deleted! You can find the new channel, with the same permissions: #{new_channel.name} ({new_channel.id})."
 msgstr "Tutti i messaggi del canale #{old_channel.name} ({old_channel.id}) sono stati cancellati! È possibile trovare il nuovo canale, con gli stessi permessi: #{new_channel.name} ({new_channel.id})."
 

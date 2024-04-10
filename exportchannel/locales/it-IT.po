@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:10\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:38\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -33,18 +33,18 @@ msgstr "[Cliccare qui per visualizzare la trascrizione]({url})"
 
 #: exportchannel\exportchannel.py:44
 #, docstring
-msgid "A cog to export all or part of a channel's messages to an html file!"
-msgstr "Un comando per esportare tutti o parte dei messaggi di un canale in un file html!"
+msgid "A cog to export all or a part of the messages of a channel in an html file!"
+msgstr "Un comando per esportare tutti o una parte dei messaggi di un canale in un file html!"
 
 #: exportchannel\exportchannel.py:67
 msgid "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
 msgstr "Mi spiace, non riesco a leggere il contenuto dei messaggi in {channel.mention} ({channel.id})."
 
-#: exportchannel\exportchannel.py:97
-msgid "Sorry. I could not find any message."
+#: exportchannel\exportchannel.py:108
+msgid "Sorry. I could not find any messages."
 msgstr "Mi dispiace. Non ho trovato alcun messaggio."
 
-#: exportchannel\exportchannel.py:157
+#: exportchannel\exportchannel.py:179
 #, docstring
 msgid "Export all of a channel's messages to an html file.\n\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
@@ -55,79 +55,92 @@ msgstr "Esporta tutti i messaggi di un canale in un file html.\n\n"
 "        Ricordare che l'esportazione dei messaggi di altri utenti da Discord non rispetta le TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:185
+#: exportchannel\exportchannel.py:205
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a specific file in an html file.\n\n"
+"        Specify the message to export, with its ID or its link.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Esporta un file specifico in un file html.\n\n"
+"        Specificare il messaggio da esportare, con il suo ID o il suo link.\n"
+"        Nota bene: tutti gli allegati e gli avatar degli utenti vengono salvati con il link di Discord in questo file.\n"
+"        Ricordare che l'esportazione dei messaggi di altri utenti da Discord non rispetta le TOS.\n"
+"        "
+
+#: exportchannel\exportchannel.py:242
+#, docstring
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the number of messages since the end of the channel.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
-msgstr "Esporta parte dei messaggi di un canale in un file html.\n\n"
+msgstr "Esporta una parte dei messaggi di un canale in un file html.\n\n"
 "        Specificare il numero di messaggi dalla fine del canale.\n"
 "        Nota bene: tutti gli allegati e gli avatar degli utenti vengono salvati con il link a Discord in questo file.\n"
 "        Ricordare che l'esportazione dei messaggi di altri utenti da Discord non rispetta le TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:221
+#: exportchannel\exportchannel.py:280
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the before message (id or link) or a valid snowflake.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
-msgstr "Esporta parte dei messaggi di un canale in un file html.\n\n"
+msgstr "Esporta una parte dei messaggi di un canale in un file html.\n\n"
 "        Specificare il messaggio precedente (id o link) o un fiocco di neve valido.\n"
 "        Nota bene: tutti gli allegati e gli avatar degli utenti vengono salvati con il link di Discord in questo file.\n"
-"        Ricordare che l'esportazione dei messaggi di altri utenti da Discord non rispetta le TOS.\n"
+"        Ricordare che l'esportazione dei messaggi di altri utenti da Discord non rispetta i TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:253
+#: exportchannel\exportchannel.py:314
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the after message (id or link) or a valid snowflake.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
-msgstr "Esporta parte dei messaggi di un canale in un file html.\n\n"
+msgstr "Esporta una parte dei messaggi di un canale in un file html.\n\n"
 "        Specificare il messaggio successivo (id o link) o un fiocco di neve valido.\n"
 "        Nota bene: tutti gli allegati e gli avatar degli utenti vengono salvati con il link di Discord in questo file.\n"
-"        Ricordare che l'esportazione dei messaggi di altri utenti da Discord non rispetta le TOS.\n"
+"        Ricordare che l'esportazione dei messaggi di altri utenti da Discord non rispetta i TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:286
+#: exportchannel\exportchannel.py:349
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the before and after messages (id or link) or a valid snowflake.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
-msgstr "Esporta parte dei messaggi di un canale in un file html.\n\n"
+msgstr "Esporta una parte dei messaggi di un canale in un file html.\n\n"
 "        Specificare i messaggi precedenti e successivi (id o link) o un fiocco di neve valido.\n"
-"        Nota bene: tutti gli allegati e gli avatar degli utenti vengono salvati con il link di Discord in questo file.\n"
+"        Nota bene: tutti gli allegati e gli avatar degli utenti vengono salvati con il link a Discord in questo file.\n"
 "        Ricordare che l'esportazione dei messaggi di altri utenti da Discord non rispetta le TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:321
+#: exportchannel\exportchannel.py:386
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the user/member (id, name or mention).\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
-msgstr "Esporta parte dei messaggi di un canale in un file html.\n\n"
+msgstr "Esporta una parte dei messaggi di un canale in un file html.\n\n"
 "        Specificare l'utente/membro (id, nome o menzione).\n"
 "        Nota bene: tutti gli allegati e gli avatar degli utenti vengono salvati con il link a Discord in questo file.\n"
 "        Ricordare che l'esportazione dei messaggi di altri utenti da Discord non rispetta le TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:359
+#: exportchannel\exportchannel.py:426
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the bool option.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
-msgstr "Esporta parte dei messaggi di un canale in un file html.\n\n"
+msgstr "Esporta una parte dei messaggi di un canale in un file html.\n\n"
 "        Specificare l'opzione bool.\n"
 "        Nota bene: tutti gli allegati e gli avatar degli utenti vengono salvati con il link a Discord in questo file.\n"
 "        Ricordare che l'esportazione dei messaggi di altri utenti da Discord non rispetta le TOS.\n"

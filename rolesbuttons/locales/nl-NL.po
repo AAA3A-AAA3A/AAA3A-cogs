@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:11\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:39\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -17,68 +17,72 @@ msgstr ""
 "X-Crowdin-File-ID: 96\n"
 "Language: nl_NL\n"
 
-#: rolesbuttons\converters.py:41
+#: rolesbuttons\converters.py:82
 msgid "The {role.mention} role is a bot integration role and cannot be assigned or removed."
 msgstr "De rol {role.mention} is een botintegratierol en kan niet worden toegewezen of verwijderd."
 
-#: rolesbuttons\converters.py:47
+#: rolesbuttons\converters.py:88
 msgid "The {role.mention} role is an integration role and cannot be assigned or removed."
 msgstr "De rol {role.mention} is een integratierol en kan niet worden toegewezen of verwijderd."
 
-#: rolesbuttons\converters.py:53
+#: rolesbuttons\converters.py:94
 msgid "The {role.mention} role is a premium subscriber role and can only be assigned or removed by Nitro boosting the server."
 msgstr "De rol {role.mention} is een premium abonnementsrol en kan alleen worden toegewezen of verwijderd door Nitro de server te laten opvoeren."
 
-#: rolesbuttons\converters.py:59
+#: rolesbuttons\converters.py:100
 msgid "The {role.mention} role is higher than my highest role in the discord hierarchy."
 msgstr "De rol {role.mention} is hoger dan mijn hoogste rol in de discord hiërarchie."
 
-#: rolesbuttons\converters.py:65
+#: rolesbuttons\converters.py:106
 msgid "The {role.mention} role is higher than your highest role in the discord hierarchy."
 msgstr "De {role.mention} rol is hoger dan je hoogste rol in de discord hiërarchie."
 
-#: rolesbuttons\converters.py:83
+#: rolesbuttons\converters.py:124
 msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
 msgstr "Emoji Rol moet een emoji zijn gevolgd door een rol gescheiden door `;`, `,`, `|`, of `-`."
 
-#: rolesbuttons\rolesbuttons.py:24
+#: rolesbuttons\rolesbuttons.py:29
+msgid "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
+msgstr "Ik moet de auteur van het bericht zijn. Je kunt EmbedUtils van AAA3A gebruiken om er een te versturen."
+
+#: rolesbuttons\rolesbuttons.py:38
 #, docstring
 msgid "A cog to have roles-buttons!"
 msgstr "Een radertje met rollen-knoppen!"
 
-#: rolesbuttons\rolesbuttons.py:117
+#: rolesbuttons\rolesbuttons.py:131
 msgid "This message is not in Config."
 msgstr "Dit bericht staat niet in Config."
 
-#: rolesbuttons\rolesbuttons.py:120
+#: rolesbuttons\rolesbuttons.py:134
 msgid "This button is not in Config."
 msgstr "Deze knop staat niet in Config."
 
-#: rolesbuttons\rolesbuttons.py:128
+#: rolesbuttons\rolesbuttons.py:142
 msgid "The role ({role_id}) I have to give you no longer exists. Please notify an administrator of this server."
 msgstr "De rol ({role_id}) die ik je moet geven bestaat niet meer. Breng een beheerder van deze server op de hoogte."
 
-#: rolesbuttons\rolesbuttons.py:147
+#: rolesbuttons\rolesbuttons.py:161
 msgid "Role-button of {interaction.message.id} in {interaction.channel.id}."
 msgstr "Rolknop van {interaction.message.id} in {interaction.channel.id}."
 
-#: rolesbuttons\rolesbuttons.py:153
+#: rolesbuttons\rolesbuttons.py:167
 msgid "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
 msgstr "Ik kon de rol {role.mention} ({role.id}) niet aan u toevoegen. Breng een beheerder van deze server op de hoogte."
 
-#: rolesbuttons\rolesbuttons.py:161
+#: rolesbuttons\rolesbuttons.py:175
 msgid "You now have the {role.mention} ({role.id}) role."
 msgstr "Je hebt nu de rol {role.mention} ({role.id})."
 
-#: rolesbuttons\rolesbuttons.py:172
+#: rolesbuttons\rolesbuttons.py:186
 msgid "I could not remove the role {role.mention} ({role.id}) role from you. Please notify an administrator of this server."
 msgstr "Ik kon de rol {role.mention} ({role.id}) niet van je verwijderen. Breng een beheerder van deze server op de hoogte."
 
-#: rolesbuttons\rolesbuttons.py:180
+#: rolesbuttons\rolesbuttons.py:194
 msgid "You no longer have the role {role.mention} ({role.id})."
 msgstr "Je hebt niet langer de rol {role.mention} ({role.id})."
 
-#: rolesbuttons\rolesbuttons.py:230
+#: rolesbuttons\rolesbuttons.py:244
 #, docstring
 msgid "Add a role-button for a message.\n\n"
 "        (Use the number for the color.)\n"
@@ -107,35 +111,29 @@ msgstr "Een rolknop voor een bericht toevoegen.\n\n"
 "        - `rood`: 4\n"
 "        "
 
-#: rolesbuttons\rolesbuttons.py:246 rolesbuttons\rolesbuttons.py:309
-#: rolesbuttons\rolesbuttons.py:383 rolesbuttons\rolesbuttons.py:405
-#: rolesbuttons\rolesbuttons.py:435
-msgid "I have to be the author of the message for the role-button to work."
-msgstr "Ik moet de auteur van het bericht zijn om de rolknop te laten werken."
-
-#: rolesbuttons\rolesbuttons.py:255 rolesbuttons\rolesbuttons.py:322
+#: rolesbuttons\rolesbuttons.py:265 rolesbuttons\rolesbuttons.py:328
 msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
 "I need the permissions to see the messages in that channel."
 msgstr "Ik heb niet voldoende rechten in de chatroom waar het bericht dat je hebt gespecificeerd zich bevindt.\n"
 "Ik heb de rechten nodig om de berichten in die chatroom te zien."
 
-#: rolesbuttons\rolesbuttons.py:261
+#: rolesbuttons\rolesbuttons.py:271
 msgid "You have to specify at least an emoji or a label."
 msgstr "Je moet minimaal een emoji of label toevoegen."
 
-#: rolesbuttons\rolesbuttons.py:268
+#: rolesbuttons\rolesbuttons.py:278
 msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "De emoji die je hebt geselecteerd lijkt ongeldig. Controleer of het een emoji is. Als je Nitro hebt, heb je misschien een aangepaste emoji van een andere server gebruikt."
 
-#: rolesbuttons\rolesbuttons.py:275 rolesbuttons\rolesbuttons.py:341
+#: rolesbuttons\rolesbuttons.py:285 rolesbuttons\rolesbuttons.py:347
 msgid "This message already has components."
 msgstr "Dit bericht heeft al onderdelen."
 
-#: rolesbuttons\rolesbuttons.py:279 rolesbuttons\rolesbuttons.py:345
+#: rolesbuttons\rolesbuttons.py:289 rolesbuttons\rolesbuttons.py:351
 msgid "I can't do more than 25 roles-buttons for one message."
 msgstr "Ik kan niet meer dan 25 rollen-knoppen gebruiken voor één bericht."
 
-#: rolesbuttons\rolesbuttons.py:303
+#: rolesbuttons\rolesbuttons.py:313
 #, docstring
 msgid "Add roles-buttons for a message.\n\n"
 "        ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```\n"
@@ -144,15 +142,15 @@ msgstr "Rollenknoppen toevoegen voor een bericht.\n\n"
 "        ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```\n"
 "        "
 
-#: rolesbuttons\rolesbuttons.py:313
+#: rolesbuttons\rolesbuttons.py:319
 msgid "You have not specified any valid role-button."
 msgstr "Je hebt geen geldige rolknop opgegeven."
 
-#: rolesbuttons\rolesbuttons.py:334
+#: rolesbuttons\rolesbuttons.py:340
 msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "Een emoji die je hebt geselecteerd lijkt ongeldig. Controleer of het een emoji is. Als je Nitro hebt, kan het zijn dat je een aangepaste emoji van een andere server hebt gebruikt."
 
-#: rolesbuttons\rolesbuttons.py:370
+#: rolesbuttons\rolesbuttons.py:376
 #, docstring
 msgid "Choose a mode for the roles-buttons of a message.\n\n"
 "        Type `add_or_remove`:\n"
@@ -175,16 +173,15 @@ msgstr "Kies een modus voor de rollen-knoppen van een bericht.\n\n"
 "        - Hetzelfde als add_or_remove, maar de rollen in dit bericht sluiten elkaar uit en als je er een krijgt, wordt de vorige verwijderd.\n"
 "        "
 
-#: rolesbuttons\rolesbuttons.py:388 rolesbuttons\rolesbuttons.py:410
-#: rolesbuttons\rolesbuttons.py:440 rolesbuttons\rolesbuttons.py:461
-msgid "No role-button is configured for this message."
-msgstr "Er is geen rolknop geconfigureerd voor dit bericht."
+#: rolesbuttons\rolesbuttons.py:390
+msgid "No role-button is configured for this message. e"
+msgstr "Er is geen rolknop geconfigureerd voor dit bericht. e"
 
-#: rolesbuttons\rolesbuttons.py:393
+#: rolesbuttons\rolesbuttons.py:395
 msgid "Mode set for the roles-buttons of this message."
 msgstr "Modus ingesteld voor de rollen-knoppen van dit bericht."
 
-#: rolesbuttons\rolesbuttons.py:399
+#: rolesbuttons\rolesbuttons.py:401
 #, docstring
 msgid "Remove a role-button for a message.\n\n"
 "        Use `[p]rolesbuttons list <message>` to find the config identifier.\n"
@@ -193,41 +190,51 @@ msgstr "Verwijder een rolknop voor een bericht.\n\n"
 "        Gebruik `[p]rolesbuttons list <message>` om de configuratie-identifier te vinden.\n"
 "        "
 
-#: rolesbuttons\rolesbuttons.py:414
+#: rolesbuttons\rolesbuttons.py:408 rolesbuttons\rolesbuttons.py:437
+#: rolesbuttons\rolesbuttons.py:459
+msgid "No role-button is configured for this message."
+msgstr "Er is geen rolknop geconfigureerd voor dit bericht."
+
+#: rolesbuttons\rolesbuttons.py:412
 msgid "I wasn't watching for this button on this message."
 msgstr "Ik lette niet op deze knop bij dit bericht."
 
-#: rolesbuttons\rolesbuttons.py:432
+#: rolesbuttons\rolesbuttons.py:429 rolesbuttons\rolesbuttons.py:446
+msgid "Roles-buttons cleared for this message."
+msgstr "Rollen-knoppen gewist voor dit bericht."
+
+#: rolesbuttons\rolesbuttons.py:433
 #, docstring
 msgid "Clear all roles-buttons for a message."
 msgstr "Alle rolknoppen voor een bericht wissen."
 
-#: rolesbuttons\rolesbuttons.py:449
-msgid "Roles-buttons cleared for this message."
-msgstr "Rollen-knoppen gewist voor dit bericht."
+#: rolesbuttons\rolesbuttons.py:451
+#, docstring
+msgid "List all roles-buttons of this server or display the settings for a specific one."
+msgstr "Alle rolknoppen van deze server weergeven of de instellingen voor een specifieke rol weergeven."
 
-#: rolesbuttons\rolesbuttons.py:467
+#: rolesbuttons\rolesbuttons.py:465
 msgid "No roles-buttons in this server."
 msgstr "Geen rollen-knoppen in deze server."
 
-#: rolesbuttons\rolesbuttons.py:476
+#: rolesbuttons\rolesbuttons.py:467
 msgid "Roles Buttons"
 msgstr "Rollen Knoppen"
 
-#: rolesbuttons\rolesbuttons.py:477
+#: rolesbuttons\rolesbuttons.py:468
 msgid "There is {len_roles_buttons} roles buttons in this server."
 msgstr "Er is {len_roles_buttons} rollenknoppen in deze server."
 
-#: rolesbuttons\rolesbuttons.py:484
+#: rolesbuttons\rolesbuttons.py:478
 msgid "Message Jump Link: {message_jump_link}\n"
 msgstr "Ga naar bericht: {message_jump_link}\n"
 
-#: rolesbuttons\rolesbuttons.py:500
+#: rolesbuttons\rolesbuttons.py:499
 #, docstring
 msgid "Clear all roles-buttons for a guild."
 msgstr "Wis alle rollen-knoppen voor een gilde."
 
-#: rolesbuttons\rolesbuttons.py:502
+#: rolesbuttons\rolesbuttons.py:501
 msgid "All roles-buttons purged."
 msgstr "Alle rollen-knoppen gewist."
 

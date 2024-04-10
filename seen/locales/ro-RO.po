@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:26\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:37\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -17,110 +17,192 @@ msgstr ""
 "X-Crowdin-File-ID: 150\n"
 "Language: ro_RO\n"
 
-#: seen\seen.py:25
+#: seen\seen.py:24
 #, docstring
 msgid "A cog to check when a member/role/channel/category/user/guild was last active!"
 msgstr "O rotiță pentru a verifica când un membru/rol/canal/categorie/utilizator/guildă a fost activ ultima dată!"
 
-#: seen\seen.py:798 seen\seen.py:805
-msgid "@{_object.display_name} was seen {seen}."
-msgstr "@{_object.display_name} a fost văzut {seen}."
+#: seen\seen.py:944
+msgid "[This message]({message_link}) has been sent by {member_mention}."
+msgstr "[Acest mesaj]({message_link}) a fost trimis de {member_mention}."
 
-#: seen\seen.py:812
-msgid "The role @&{_object.name} was seen {seen}."
-msgstr "Rolul @&{_object.name} a fost văzut {seen}."
+#: seen\seen.py:948
+msgid "[This message]({message_link}) has been edited by {member_mention}."
+msgstr "[Acest mesaj]({message_link}) a fost modificat de {member_mention}."
 
-#: seen\seen.py:819
-msgid "The text channel #{_object.name} was seen {seen}."
-msgstr "Canalul de text #{_object.name} a fost văzut {seen}."
+#: seen\seen.py:952
+msgid "The reaction {reaction} has been added to [this message]({message_link}) by {member_mention}."
+msgstr "Reacția {reaction} a fost adăugată la [acest mesaj]({message_link}) de către {member_mention}."
 
-#: seen\seen.py:826
-msgid "The category {_object.name} was seen {seen}."
-msgstr "Categoria {_object.name} a fost văzută {seen}."
+#: seen\seen.py:960
+msgid "The reaction {reaction} has been removed to the [this message]({message_link}) by {member_mention}."
+msgstr "Reacția {reaction} a fost eliminată din [acest mesaj]({message_link}) de către {member_mention}."
 
-#: seen\seen.py:833
-msgid "The guild {_object.name} was seen {seen}."
-msgstr "Breasla {_object.name} a fost văzută {seen}."
+#: seen\seen.py:992
+msgid "This {object_type} is in the ignored users list (`{prefix}seen ignoreme`)."
+msgstr "Acest {object_type} se află în lista utilizatorilor ignorați (`{prefix}seen ignoreme`)."
 
-#: seen\seen.py:1087
+#: seen\seen.py:1059
+msgid "**The user {_object.mention} was seen {seen}.**"
+msgstr "**Utilizatorul {_object.mention} a fost văzut {seen}.**"
+
+#: seen\seen.py:1067
+msgid "**The member {_object.mention} was seen {seen}.**"
+msgstr "** Membrul {_object.mention} a fost văzut pe {seen}.**"
+
+#: seen\seen.py:1075
+msgid "**The role {_object.mention} was seen {seen}.**"
+msgstr "**Rolul {_object.mention} a fost văzut {seen}.**"
+
+#: seen\seen.py:1083
+msgid "**The text channel {_object.mention} was seen {seen}.**"
+msgstr "**Canalul de text {_object.mention} a fost văzut {seen}.**"
+
+#: seen\seen.py:1091
+msgid "**The category {_object.name} was seen {seen}.**"
+msgstr "**Categoria {_object.name} a fost văzută {seen}.**"
+
+#: seen\seen.py:1099
+msgid "**The guild {_object.name} was seen {seen}.**"
+msgstr "**Bildul {_object.name} a fost văzut {seen}.**"
+
+#: seen\seen.py:1247
 #, docstring
 msgid "Check when a member was last active!"
 msgstr "Verificați când un membru a fost activ ultima dată!"
 
-#: seen\seen.py:1107
+#: seen\seen.py:1267
 #, docstring
 msgid "Check when a role was last active!"
 msgstr "Verificați când a fost activat ultima dată un rol!"
 
-#: seen\seen.py:1126
+#: seen\seen.py:1286
 #, docstring
 msgid "Check when a channel was last active!"
 msgstr "Verificați când a fost activat ultima dată un canal!"
 
-#: seen\seen.py:1133
+#: seen\seen.py:1293
 msgid "You do not have permission to view this channel."
 msgstr "Nu aveți permisiunea de a vizualiza acest canal."
 
-#: seen\seen.py:1149
+#: seen\seen.py:1309
 #, docstring
 msgid "Check when a category was last active!"
 msgstr "Verificați când a fost activă ultima dată o categorie!"
 
-#: seen\seen.py:1162
+#: seen\seen.py:1321
 msgid "You do not have permission to view any of the channels in this category."
 msgstr "Nu aveți permisiunea de a vizualiza niciunul dintre canalele din această categorie."
 
-#: seen\seen.py:1179
+#: seen\seen.py:1338
 #, docstring
 msgid "Check when a old member was last active!"
 msgstr "Verificați când a fost activ ultima dată un membru vechi!"
 
-#: seen\seen.py:1207
+#: seen\seen.py:1366
 #, docstring
 msgid "Check when a guild was last active!"
 msgstr "Verificați când a fost activă ultima dată o breaslă!"
 
-#: seen\seen.py:1227
+#: seen\seen.py:1386
 #, docstring
 msgid "Check when a user was last active!"
 msgstr "Verificați când a fost activat ultima dată un utilizator!"
 
-#: seen\seen.py:1246
+#: seen\seen.py:1405
 #, docstring
 msgid "Check when a old user was last active!"
 msgstr "Verificați când a fost activat ultima dată un utilizator vechi!"
 
-#: seen\seen.py:1268
+#: seen\seen.py:1430
 #, docstring
-msgid "View a Seen Board for members/roles/channels/categories/guilds/users!"
-msgstr "Vizualizați un tablou văzut pentru membri/roluri/canale/categorii/categorii/guilde/utilizatori!"
+msgid "View a Seen Board for members/roles/channels/categories/guilds/users!\n\n"
+"        `bots` is a parameter for `members` and `users`. `include_role` and `exclude_role` are parameters for only `members`.\n"
+"        "
+msgstr "Vizualizați un tablou văzut pentru membri/roluri/canale/categorii/categorii/guilde/utilizatori!\n\n"
+"        `bots` este un parametru pentru `members` și `users`. `include_role` și `exclude_role` sunt parametri doar pentru `members`.\n"
+"        "
 
-#: seen\seen.py:1271
+#: seen\seen.py:1436
 msgid "You're not allowed to view the Seen board for guilds and users."
 msgstr "Nu ai voie să vizualizezi Tabloul de bord pentru bresle și utilizatori."
 
-#: seen\seen.py:1278
+#: seen\seen.py:1451
 #, docstring
 msgid "Get Config data stats."
 msgstr "Obțineți statisticile privind datele de configurare."
 
-#: seen\seen.py:1312
+#: seen\seen.py:1485
 #, docstring
 msgid "Enable or disable a listener."
 msgstr "Activați sau dezactivați un ascultător."
 
-#: seen\seen.py:1320
+#: seen\seen.py:1491
+msgid "Listener enabled for this/these type(s)."
+msgstr "Ascultător activat pentru acest/acele tip(e)."
+
+#: seen\seen.py:1493
+msgid "Listener disabled for this/these type(s)."
+msgstr "Ascultător dezactivat pentru acest/acele tip(e)."
+
+#: seen\seen.py:1497
 #, docstring
 msgid "Asking Seen to ignore your actions."
 msgstr "Să-i ceri lui Seen să-ți ignore acțiunile."
 
-#: seen\seen.py:1334
+#: seen\seen.py:1505
+msgid "You will no longer be seen by this cog and the data I held on you have been deleted."
+msgstr "Nu veți mai fi văzut de acest robot, iar datele pe care le dețineam despre dumneavoastră au fost șterse."
+
+#: seen\seen.py:1512
+msgid "You'll be seen again by this cog."
+msgstr "Vei fi văzut din nou de această rotiță."
+
+#: seen\seen.py:1517
+#, docstring
+msgid "Ignore or unignore a specific user."
+msgstr "Ignorați sau anulați ignorarea unui anumit utilizator."
+
+#: seen\seen.py:1524
+msgid "{user.mention} ({user.id}) will no longer be seen by this cog, and their data has been deleted."
+msgstr "{user.mention} ({user.id}) nu vor mai fi văzute de acest mecanism, iar datele lor au fost șterse."
+
+#: seen\seen.py:1533
+msgid "{user.mention} ({user.id}) will be seen again by this cog."
+msgstr "{user.mention} ({user.id}) va fi văzută din nou de acest angrenaj."
+
+#: seen\seen.py:1541
 #, docstring
 msgid "Get an embed for check loop status."
 msgstr "Obține o inserție pentru verificarea stării buclei."
 
-#: seen\seen.py:1345
+#: seen\seen.py:1552
 #, docstring
 msgid "Purge Config for a specified _type or all."
 msgstr "Purge Config pentru un _tip specificat sau pentru toate."
+
+#: seen\seen.py:1559
+msgid "All Seen data purged."
+msgstr "Toate datele din Seen au fost șterse."
+
+#: seen\seen.py:1571
+msgid "Seen data purged for this type."
+msgstr "Datele văzute eliminate pentru acest tip."
+
+#: seen\seen.py:1576
+#, docstring
+msgid "Migrate Seen from Seen by Aikaterna."
+msgstr "Migrați văzut de la văzut de Aikaterna."
+
+#: seen\seen.py:1583
+msgid "Seen by Aikaterna has no data in this bot."
+msgstr "Văzut de Aikaterna nu are date în acest robot."
+
+#: seen\seen.py:1587
+msgid "Seen by Aikaterna use an old/new data schema version and isn't compatible with this cog actually."
+msgstr "Văzut de Aikaterna utilizează o versiune veche/nouă a schemei de date și nu este compatibilă cu acest mecanism."
+
+#: seen\seen.py:1650
+msgid "Data successfully migrated from Seen by Aikaterna."
+msgstr "Datele au fost migrate cu succes din Seen by Aikaterna."
 

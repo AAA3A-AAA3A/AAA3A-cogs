@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:26\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2024-04-10 12:36\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -19,10 +19,14 @@ msgstr ""
 
 #: sudo\sudo.py:41
 #, docstring
-msgid "A cog to allow bot owners to be normal users in terms of permissions!"
-msgstr "O rotiță pentru a permite proprietarilor de roboți să fie utilizatori normali în ceea ce privește permisiunile!"
+msgid "A cog to allow bot owners to be normal users in terms of permissions!\n\n"
+"    ⚠️ This cog makes bot owners unable to be perceived as bot owners in commands while the cog is loaded unless the `[p]su` command is used.\n"
+"    "
+msgstr "O rotiță pentru a permite proprietarilor de roboți să fie utilizatori normali în ceea ce privește permisiunile!\n\n"
+"    ⚠️ Acest cog face ca proprietarii de roboți să nu poată fi percepuți ca proprietari de roboți în comenzi în timp ce cog-ul este încărcat, cu excepția cazului în care se folosește comanda `[p]su`.\n"
+"    "
 
-#: sudo\sudo.py:100
+#: sudo\sudo.py:115
 #, docstring
 msgid "Sudo as the owner of the bot.\n\n"
 "        Use `[p]su`!\n"
@@ -31,7 +35,7 @@ msgstr "Sudo ca proprietar al robotului.\n\n"
 "        Utilizați `[p]su`!\n"
 "        "
 
-#: sudo\sudo.py:109
+#: sudo\sudo.py:124
 #, docstring
 msgid "Unsudo as normal user.\n\n"
 "        Use `[p]unsu`!\n"
@@ -40,7 +44,7 @@ msgstr "Dezactivarea ca utilizator normal.\n\n"
 "        Utilizați `[p]unsu`!\n"
 "        "
 
-#: sudo\sudo.py:120
+#: sudo\sudo.py:135
 #, docstring
 msgid "Rise as the bot owner for the specified command only.\n\n"
 "        Use `[p]sudo`!\n"
@@ -49,7 +53,7 @@ msgstr "Ridică-te ca proprietar de robot numai pentru comanda specificată.\n\n
 "        Utilizați `[p]sudo`!\n"
 "        "
 
-#: sudo\sudo.py:148
+#: sudo\sudo.py:164
 #, docstring
 msgid "Sudo as the owner of the bot for the specified timeout.\n"
 "        The time should be between 10 seconds and 1 day.\n\n"

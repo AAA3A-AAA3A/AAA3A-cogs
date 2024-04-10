@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:11\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:38\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "A cog to edit Discord default objects, like guilds, roles, text channels, voice channels, threads and AutoMod!"
 msgstr "ギルド、ロール、テキストチャンネル、ボイスチャンネル、スレッド、AutoModなどのDiscordのデフォルトオブジェクトを編集するためのコグです！"
 
-#: discordedit\editautomod.py:18 discordedit\editguild.py:26
+#: discordedit\editautomod.py:18 discordedit\editguild.py:27
 #: discordedit\editrole.py:25 discordedit\edittextchannel.py:27
 #: discordedit\editthread.py:32 discordedit\editvoicechannel.py:27
 #: discordedit\view.py:18
@@ -173,119 +173,167 @@ msgstr "{guild.name} ({guild.id}) のAutoModルール {rule.name} ({rule.id}) �
 msgid "Rule `{rule.name} ({rule.id})` edited."
 msgstr "ルール `{rule.name} ({rule.id})` を編集。"
 
-#: discordedit\editautomod.py:626
+#: discordedit\editautomod.py:623
 msgid "Select channels/roles to exempt for the AutoMod rule `{rule.name} ({rule.id})`."
 msgstr "AutoModルール`{rule.name} ({rule.id})`の適用除外となるチャンネル/ロールを選択します。"
 
-#: discordedit\editautomod.py:648
+#: discordedit\editautomod.py:645
 msgid "Rule `{rule.name} ({rule.id})` enabled."
 msgstr "ルール `{rule.name} ({rule.id})` が有効になりました。"
 
-#: discordedit\editautomod.py:650
+#: discordedit\editautomod.py:647
 msgid "Rule {rule.name} `{rule.id}` disabled."
 msgstr "ルール {rule.name} `{rule.id}`を無効にする。"
 
-#: discordedit\editautomod.py:668
+#: discordedit\editautomod.py:665
 msgid "Rule `{rule.name} ({rule.id})` deleted."
 msgstr "ルール `{rule.name} ({rule.id})` を削除しました。"
 
-#: discordedit\editguild.py:39
+#: discordedit\editguild.py:47
 msgid "Converting to `Locale` failed for parameter `preferred_locale`."
 msgstr "パラメータ `preferred_locale` に対して `Locale` への変換に失敗しました。"
 
-#: discordedit\editguild.py:51 discordedit\editguild.py:59
+#: discordedit\editguild.py:59 discordedit\editguild.py:67
 msgid "The verification level must be `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` or `4`."
 msgstr "検証レベルは`none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` または `4`でなければならない。"
 
-#: discordedit\editguild.py:70 discordedit\editguild.py:74
-#: discordedit\editguild.py:82
+#: discordedit\editguild.py:78 discordedit\editguild.py:82
+#: discordedit\editguild.py:90
 msgid "The video quality mode must be `0` or `1`."
 msgstr "ビデオ画質モードは`0`または`1`でなければならない。"
 
-#: discordedit\editguild.py:90
+#: discordedit\editguild.py:98
 #, docstring
 msgid "A cog to edit guilds!"
 msgstr "ギルドを編集するためのコグです！"
 
-#: discordedit\editguild.py:111
+#: discordedit\editguild.py:119
 #, docstring
 msgid "Create a guild with the bot as owner."
 msgstr "ボットをオーナーとするギルドを作成します。"
 
-#: discordedit\editguild.py:129
+#: discordedit\editguild.py:137
 #, docstring
 msgid "Clone a guild."
 msgstr "ギルドをクローン化する。"
 
-#: discordedit\editguild.py:151
+#: discordedit\editguild.py:159
 #, docstring
 msgid "Edit guild name."
 msgstr "ギルド名を編集する。"
 
-#: discordedit\editguild.py:167
+#: discordedit\editguild.py:175
 #, docstring
 msgid "Edit guild description."
 msgstr "ギルドの説明文を編集する。"
 
-#: discordedit\editguild.py:181
+#: discordedit\editguild.py:193
+#, docstring
+msgid "Edit guild icon.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "ギルドアイコンを編集します。\n\n"
+"        URLまたは添付ファイルをアップロードしてください。\n"
+"        "
+
+#: discordedit\editguild.py:228
+#, docstring
+msgid "Edit guild banner.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "ギルドのバナーを編集します。\n\n"
+"        URLを使用するか、添付ファイルをアップロードすることができます。\n"
+"        "
+
+#: discordedit\editguild.py:235
+msgid "This server doesn't have the `BANNER` feature. This server needs more boosts to perform this action."
+msgstr "このサーバーには `BANNER` 機能がありません。このサーバーはこのアクションを実行するためにより多くのブーストが必要です。"
+
+#: discordedit\editguild.py:269
+#, docstring
+msgid "Edit guild splash.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "ギルドスプラッシュを編集します。\n\n"
+"        URLを使用するか、添付ファイルをアップロードしてください。\n"
+"        "
+
+#: discordedit\editguild.py:276
+msgid "This server doesn't have the `INVITE_SPLASH` feature. This server needs more boosts to perform this action."
+msgstr "このサーバには `INVITE_SPLASH` 機能がありません。このサーバはこのアクションを実行するためにより多くのブーストが必要です。"
+
+#: discordedit\editguild.py:310
+#, docstring
+msgid "Edit guild discovery splash.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "ギルド発見スプラッシュを編集します。\n\n"
+"        URLを使用するか、添付ファイルをアップロードしてください。\n"
+"        "
+
+#: discordedit\editguild.py:317
+msgid "This server doesn't have the `DISCOVERABLE` feature. This server needs more boosts to perform this action."
+msgstr "このサーバーには `DISCOVERABLE` 機能がありません。このサーバはこのアクションを実行するためにさらなるブーストが必要です。"
+
+#: discordedit\editguild.py:349
 #, docstring
 msgid "Edit guild community state."
 msgstr "ギルドコミュニティの状態を編集する。"
 
-#: discordedit\editguild.py:197
+#: discordedit\editguild.py:365
 #, docstring
 msgid "Edit guild afkchannel."
 msgstr "ギルドのアフクチャンネルを編集する。"
 
-#: discordedit\editguild.py:211
+#: discordedit\editguild.py:379
 #, docstring
-msgid "Edit guild afktimeout."
-msgstr "ギルドafktimeoutを編集する。"
+msgid "Edit guild afk timeout."
+msgstr "ギルドのAFKタイムアウトを編集する。"
 
-#: discordedit\editguild.py:231
+#: discordedit\editguild.py:399
 #, docstring
 msgid "Edit guild owner (if the bot is bot owner)."
 msgstr "ギルドオーナーを編集する（ボットがボットオーナーである場合）。"
 
-#: discordedit\editguild.py:236
+#: discordedit\editguild.py:404
 msgid ":⚠️ - Change Guild Owner"
 msgstr ":⚠️ - ギルドオーナーを変更する"
 
-#: discordedit\editguild.py:237 discordedit\editguild.py:244
+#: discordedit\editguild.py:405 discordedit\editguild.py:412
 msgid "Do you really want to change guild owner of the guild {guild.name} ({guild.id})?"
 msgstr "ギルド {guild.name} ({guild.id}) のギルドオーナーを本当に変更したいのでしょうか？"
 
-#: discordedit\editguild.py:264
+#: discordedit\editguild.py:432
 #, docstring
 msgid "Edit guild verification level."
 msgstr "ギルドの認証レベルを編集する。"
 
-#: discordedit\editguild.py:282
+#: discordedit\editguild.py:450
 #, docstring
 msgid "Edit guild notification level."
 msgstr "ギルドの通知レベルを編集する。"
 
-#: discordedit\editguild.py:298
+#: discordedit\editguild.py:466
 #, docstring
 msgid "Edit guild explicit content filter."
 msgstr "ギルドの露骨なコンテンツフィルターを編集する。"
 
-#: discordedit\editguild.py:312
+#: discordedit\editguild.py:480
 #, docstring
 msgid "Edit guild vanity code."
 msgstr "ギルドバニティコードを編集する。"
 
-#: discordedit\editguild.py:328
+#: discordedit\editguild.py:496
 #, docstring
 msgid "Edit guild system channel."
 msgstr "ギルドシステムのチャンネルを編集する。"
 
-#: discordedit\editguild.py:344
+#: discordedit\editguild.py:512
 #, docstring
 msgid "Edit guild system channel flags."
 msgstr "ギルドシステムのチャンネルフラグを編集する。"
 
-#: discordedit\editguild.py:360
+#: discordedit\editguild.py:528
 #, docstring
 msgid "Edit guild preferred locale.\n\n"
 "        american_english = 'en-US'\n"
@@ -352,65 +400,65 @@ msgstr "ギルドの優先ロケールを編集する。\n\n"
 "        ベトナミ語 = 'vi'\n"
 "        "
 
-#: discordedit\editguild.py:408
+#: discordedit\editguild.py:576
 #, docstring
 msgid "Edit guild rules channel."
 msgstr "ギルドルールチャンネルを編集する。"
 
-#: discordedit\editguild.py:426
+#: discordedit\editguild.py:594
 #, docstring
 msgid "Edit guild public updates channel."
 msgstr "ギルドの公開アップデートチャンネルを編集する。"
 
-#: discordedit\editguild.py:442
+#: discordedit\editguild.py:614
 #, docstring
 msgid "Edit guild premium progress bar enabled."
 msgstr "編集ギルドプレミアムプログレスバーが有効になりました。"
 
-#: discordedit\editguild.py:458
+#: discordedit\editguild.py:630
 #, docstring
 msgid "Edit guild discoverable state."
 msgstr "ギルドの発見可能な状態を編集する。"
 
-#: discordedit\editguild.py:474
+#: discordedit\editguild.py:646
 #, docstring
 msgid "Edit guild invites disabled state."
 msgstr "ギルド招待の無効化状態を編集する。"
 
-#: discordedit\editguild.py:488
+#: discordedit\editguild.py:660
 #, docstring
 msgid "Edit guild invites widget enabled state."
 msgstr "編集ギルド招待ウィジェットが有効な状態。"
 
-#: discordedit\editguild.py:504
+#: discordedit\editguild.py:676
 #, docstring
 msgid "Edit guild invites widget channel."
 msgstr "ギルド招待ウィジェットチャンネルを編集します。"
 
-#: discordedit\editguild.py:522
+#: discordedit\editguild.py:694
 #, docstring
 msgid "Edit guild invites raid alerts disabled state."
 msgstr "ギルド招待のレイドアラート無効状態を編集する。"
 
-#: discordedit\editguild.py:540
+#: discordedit\editguild.py:712
 #, docstring
 msgid "Edit guild invites safety alerts channel."
 msgstr "ギルドは安全警告チャンネルを招待します。"
 
-#: discordedit\editguild.py:559
+#: discordedit\editguild.py:731
 #, docstring
 msgid "Delete guild (if the bot is owner)."
 msgstr "ギルドを削除する（botがオーナーである場合）。"
 
-#: discordedit\editguild.py:564
+#: discordedit\editguild.py:736
 msgid "⚠️ - Delete Guild"
 msgstr "⚠️ - ギルドを削除する"
 
-#: discordedit\editguild.py:565 discordedit\editguild.py:572
+#: discordedit\editguild.py:737 discordedit\editguild.py:744
 msgid "Do you really want to delete the guild {guild.name} ({guild.id})?"
 msgstr "ギルド {guild.name} ({guild.id}) を本当に削除したいのでしょうか？"
 
-#: discordedit\editguild.py:590
+#: discordedit\editguild.py:762
 #, docstring
 msgid "View and edit guild."
 msgstr "ギルドの閲覧・編集"
@@ -423,72 +471,72 @@ msgstr "位置は整数値でなければならない。"
 msgid "The indicated position must be between 1 and {max_guild_roles_position}."
 msgstr "指示された位置は、1～ {max_guild_roles_position}の間でなければなりません。"
 
-#: discordedit\editrole.py:70 discordedit\edittextchannel.py:57
+#: discordedit\editrole.py:69 discordedit\edittextchannel.py:57
 #: discordedit\editvoicechannel.py:57
 msgid "This permission is invalid."
 msgstr "この許可は無効です。"
 
-#: discordedit\editrole.py:93
+#: discordedit\editrole.py:92
 #, docstring
 msgid "A cog to edit roles!"
 msgstr "役割を編集するためのコグです！"
 
-#: discordedit\editrole.py:105
+#: discordedit\editrole.py:104
 msgid "I can not let you edit @{role.name} ({role.id}) because that role is higher than or equal to your highest role in the Discord hierarchy."
 msgstr "{role.name} ({role.id}) の編集を許可することはできません。そのロールは、Discordヒエラルキーにおけるあなたの最高ロールよりも高いか等しいからです。"
 
-#: discordedit\editrole.py:111
+#: discordedit\editrole.py:110
 msgid "I can not edit @{role.name} ({role.id}) because that role is higher than or equal to my highest role in the Discord hierarchy."
 msgstr "{role.name} ({role.id}) を編集することはできません。なぜなら、そのロールはDiscordのヒエラルキーにおいて、私の最高位以上のロールだからです。"
 
-#: discordedit\editrole.py:133
+#: discordedit\editrole.py:132
 #, docstring
 msgid "Create a role."
 msgstr "ロールを作成します。"
 
-#: discordedit\editrole.py:151
+#: discordedit\editrole.py:150
 #, docstring
 msgid "List all roles in the current guild."
 msgstr "現在のギルドでの役割をすべて列挙する。"
 
-#: discordedit\editrole.py:157
+#: discordedit\editrole.py:156
 msgid "List of roles in {guild.name} ({guild.id})"
 msgstr "{guild.name} の役割一覧 ({guild.id})"
 
-#: discordedit\editrole.py:170
+#: discordedit\editrole.py:169
 #, docstring
 msgid "Edit role name."
 msgstr "ロール名を編集する。"
 
-#: discordedit\editrole.py:186
+#: discordedit\editrole.py:185
 #, docstring
 msgid "Edit role color."
 msgstr "ロールカラーを編集する。"
 
-#: discordedit\editrole.py:202
+#: discordedit\editrole.py:201
 #, docstring
 msgid "Edit role hoist."
 msgstr "エディット・ロール・ホイスト"
 
-#: discordedit\editrole.py:223
+#: discordedit\editrole.py:222
 #, docstring
 msgid "Edit role display icon.\n\n"
-"        `display_icon` can a Unicode emoji, a custom emoji or an url. You can also upload an attachment.\n"
+"        `display_icon` can be an Unicode emoji, a custom emoji or an url. You can also upload an attachment.\n"
 "        "
 msgstr "ロールの表示アイコンを編集します。\n\n"
 "        display_icon`にはUnicode絵文字、カスタム絵文字、またはURLを指定できます。添付ファイルをアップロードすることもできます。\n"
 "        "
 
-#: discordedit\editrole.py:229
-msgid "This server doesn't have `ROLE_ICONS` feature. This server needs more boosts to perform this action."
-msgstr "このサーバーには `ROLE_ICONS` 機能がありません。このサーバーはこのアクションを実行するためにさらなるブーストが必要です。"
+#: discordedit\editrole.py:228
+msgid "This server doesn't have the `ROLE_ICONS` feature. This server needs more boosts to perform this action."
+msgstr "このサーバーには `ROLE_ICONS` 機能がありません。このサーバーではこのアクションを実行するためにさらにブーストが必要です。"
 
-#: discordedit\editrole.py:274
+#: discordedit\editrole.py:272
 #, docstring
 msgid "Edit role mentionable."
 msgstr "エディットロールの言及可能。"
 
-#: discordedit\editrole.py:292
+#: discordedit\editrole.py:290
 #, docstring
 msgid "Edit role position.\n\n"
 "        Warning: The role with a position 1 is the highest role in the Discord hierarchy.\n"
@@ -497,7 +545,7 @@ msgstr "ロールポジションを編集する。\n\n"
 "        警告ポジションが1のロールは、Discordの階層で最も高いロールです。\n"
 "        "
 
-#: discordedit\editrole.py:315
+#: discordedit\editrole.py:313
 #, docstring
 msgid "Edit role permissions.\n\n"
 "        You must possess the permissions you wish to modify.\n\n"
@@ -564,29 +612,29 @@ msgstr "ロール権限を編集します。\n\n"
 "        - `send_messages_in_threads`\n"
 "        "
 
-#: discordedit\editrole.py:352 discordedit\edittextchannel.py:526
-#: discordedit\editvoicechannel.py:466
+#: discordedit\editrole.py:350 discordedit\edittextchannel.py:564
+#: discordedit\editvoicechannel.py:464
 msgid "You need to provide at least one permission."
 msgstr "少なくとも1つの許可を提供する必要があります。"
 
-#: discordedit\editrole.py:358
+#: discordedit\editrole.py:356
 msgid "You don't have the permission {permission_name} in this guild."
 msgstr "このギルドでは、 {permission_name} 、許可を得ていない。"
 
-#: discordedit\editrole.py:380
+#: discordedit\editrole.py:378
 #, docstring
 msgid "Delete a role."
 msgstr "ロールを削除する。"
 
-#: discordedit\editrole.py:385
+#: discordedit\editrole.py:383
 msgid "⚠️ - Delete role"
 msgstr "⚠️ - 役割を削除する"
 
-#: discordedit\editrole.py:386 discordedit\editrole.py:393
+#: discordedit\editrole.py:384 discordedit\editrole.py:391
 msgid "Do you really want to delete the role {role.mention} ({role.id})?"
 msgstr "{role.mention} ({role.id}) という役割を本当に削除したいのでしょうか？"
 
-#: discordedit\editrole.py:414
+#: discordedit\editrole.py:412
 #, docstring
 msgid "View and edit role."
 msgstr "ロールの表示と編集"
@@ -623,7 +671,7 @@ msgstr "{guild.name} のテキストチャンネル一覧 ({guild.id})"
 msgid "Clone a text channel."
 msgstr "テキストチャンネルをクローンする。"
 
-#: discordedit\edittextchannel.py:186
+#: discordedit\edittextchannel.py:189
 #, docstring
 msgid "Create an invite for a text channel.\n\n"
 "        `max_age`: How long the invite should last in days. If it's 0 then the invite doesn't expire.\n"
@@ -638,17 +686,17 @@ msgstr "テキストチャネルの招待を作成する。\n\n"
 "        `unique`：一意の招待URLを作成するかどうかを指定します。デフォルトはTrueです。Falseに設定すると、以前に作成された招待状が返されます。\n"
 "        "
 
-#: discordedit\edittextchannel.py:218
+#: discordedit\edittextchannel.py:224
 #, docstring
 msgid "Edit text channel name."
 msgstr "テキストチャンネル名を編集する。"
 
-#: discordedit\edittextchannel.py:240
+#: discordedit\edittextchannel.py:249
 #, docstring
 msgid "Edit text channel topic."
 msgstr "テキストチャンネルのトピックを編集する。"
 
-#: discordedit\edittextchannel.py:262
+#: discordedit\edittextchannel.py:274
 #, docstring
 msgid "Edit text channel position.\n\n"
 "        Warning: Only text channels are taken into account. Channel 1 is the highest positioned text channel.\n"
@@ -659,22 +707,22 @@ msgstr "テキストチャンネルの位置を編集する。\n\n"
 "        チャンネルを現在のカテゴリーから外れる位置に移動させることはできません。\n"
 "        "
 
-#: discordedit\edittextchannel.py:287
+#: discordedit\edittextchannel.py:302
 #, docstring
 msgid "Edit text channel nsfw."
 msgstr "テキストチャンネルを編集する nsfw."
 
-#: discordedit\edittextchannel.py:310
+#: discordedit\edittextchannel.py:328
 #, docstring
 msgid "Edit text channel syncpermissions with category."
 msgstr "テキストチャンネルのsyncpermissionsをカテゴリで編集する。"
 
-#: discordedit\edittextchannel.py:333
+#: discordedit\edittextchannel.py:354
 #, docstring
 msgid "Edit text channel category."
 msgstr "テキストチャンネルのカテゴリーを編集する。"
 
-#: discordedit\edittextchannel.py:354
+#: discordedit\edittextchannel.py:378
 #, docstring
 msgid "Edit text channel slowmode delay.\n\n"
 "        Specifies the slowmode rate limit for user in this channel. A value of 0s disables slowmode. The maximum value possible is 21600s.\n"
@@ -683,7 +731,7 @@ msgstr "テキストチャネルのスローモード遅延を編集する。\n\
 "        このチャネルのユーザーのスローモードレート制限を指定します。0sの値はスローモードを無効にします。最大値は21600sです。\n"
 "        "
 
-#: discordedit\edittextchannel.py:382
+#: discordedit\edittextchannel.py:408
 #, docstring
 msgid "Edit text channel type.\n\n"
 "        `text`: 0\n"
@@ -696,7 +744,7 @@ msgstr "テキストチャンネルの種類を編集する。\n\n"
 "        現在、ChannelType.text と ChannelType.news の間の変換のみがサポートされています。これはGuild.featuresにNEWSを含むギルドにのみ利用可能です。\n"
 "        "
 
-#: discordedit\edittextchannel.py:410
+#: discordedit\edittextchannel.py:439
 #, docstring
 msgid "Edit text channel default auto archive duration.\n\n"
 "        The new default auto archive duration in minutes for threads created in this channel. Must be one of `60`, `1440`, `4320`, or `10080`.\n"
@@ -705,7 +753,7 @@ msgstr "編集テキストチャンネルのデフォルトの自動アーカイ
 "        このチャンネルで作成されたスレッドの新しいデフォルトの自動アーカイブ期間を分単位で指定します。60`, `1440`, `4320`, `10080` のいずれかを指定する必要があります。\n"
 "        "
 
-#: discordedit\edittextchannel.py:436
+#: discordedit\edittextchannel.py:468
 #, docstring
 msgid "Edit text channel default thread slowmode delay.\n\n"
 "        The new default thread slowmode delay in seconds for threads created in this channel. Must be between 0 and 21600 (6 hours) seconds.\n"
@@ -714,7 +762,7 @@ msgstr "編集テキストチャネルのデフォルトスレッドスローモ
 "        このチャンネルで作成されるスレッドの新しいデフォルトのスレッドスローモード遅延時間 (秒)。0 から 21600 (6 時間) 秒の間でなければなりません。\n"
 "        "
 
-#: discordedit\edittextchannel.py:466
+#: discordedit\edittextchannel.py:501
 #, docstring
 msgid "Edit text channel overwrites/permissions.\n\n"
 "        You may not specify `True` or `False` to reset the permission(s).\n"
@@ -783,54 +831,54 @@ msgstr "編集テキストチャンネルの上書き/パーミッション。\n
 "        - `send_messages_in_threads`\n"
 "        "
 
-#: discordedit\edittextchannel.py:511 discordedit\editvoicechannel.py:451
+#: discordedit\edittextchannel.py:549 discordedit\editvoicechannel.py:449
 msgid "You need to provide a role or user you want to edit permissions for."
 msgstr "編集権限を与えたいロールやユーザーを指定する必要があります。"
 
-#: discordedit\edittextchannel.py:532 discordedit\editvoicechannel.py:472
+#: discordedit\edittextchannel.py:570 discordedit\editvoicechannel.py:470
 msgid "You don't have the permission {permission_name} in this channel."
 msgstr "このチャンネルでは、 {permission_name}。"
 
-#: discordedit\edittextchannel.py:558 discordedit\editvoicechannel.py:498
+#: discordedit\edittextchannel.py:595 discordedit\editvoicechannel.py:495
 msgid "You cannot remove permissions from you in this channel."
 msgstr "このチャンネルでは、あなたからの許可を削除することはできません。"
 
-#: discordedit\edittextchannel.py:568 discordedit\editvoicechannel.py:508
+#: discordedit\edittextchannel.py:605 discordedit\editvoicechannel.py:505
 msgid "You cannot remove permissions from the bot in this channel."
 msgstr "このチャンネルでは、ボットの権限を削除することはできません。"
 
-#: discordedit\edittextchannel.py:587
+#: discordedit\edittextchannel.py:624
 #, docstring
 msgid "Delete a text channel."
 msgstr "テキストチャンネルを削除する。"
 
-#: discordedit\edittextchannel.py:594
+#: discordedit\edittextchannel.py:634
 msgid "⚠️ - Delete text channel"
 msgstr "⚠️ - テキストチャンネルを削除する"
 
-#: discordedit\edittextchannel.py:595 discordedit\edittextchannel.py:602
+#: discordedit\edittextchannel.py:635 discordedit\edittextchannel.py:642
 msgid "Do you really want to delete the text channel {channel.mention} ({channel.id})?"
 msgstr "テキストチャンネル {channel.mention} ({channel.id}) を本当に削除するのですか？"
 
-#: discordedit\edittextchannel.py:621
+#: discordedit\edittextchannel.py:661
 #, docstring
 msgid "View and edit text channel."
 msgstr "テキストチャンネルの表示と編集"
 
-#: discordedit\editthread.py:62
+#: discordedit\editthread.py:103
 msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
 msgstr "絵文字 役割は絵文字の後に `;`, `,`, `|`, `-` のいずれかで区切られた役割でなければなりません。"
 
-#: discordedit\editthread.py:72
+#: discordedit\editthread.py:113
 #, docstring
 msgid "A cog to edit threads!"
 msgstr "スレッドを編集するためのコグです！"
 
-#: discordedit\editthread.py:93
+#: discordedit\editthread.py:134
 msgid "I can not edit the thread {thread.mention} ({thread.id}) because you don't have the `manage_channel` permission."
 msgstr "スレッド {thread.mention} ({thread.id}) は `manage_channel` 権限がないため編集することができません。"
 
-#: discordedit\editthread.py:117
+#: discordedit\editthread.py:158
 #, docstring
 msgid "Create a thread.\n\n"
 "        You'll join it automatically.\n"
@@ -839,51 +887,51 @@ msgstr "スレッドを作成してください。\n\n"
 "        自動的に参加します。\n"
 "        "
 
-#: discordedit\editthread.py:141
+#: discordedit\editthread.py:182
 #, docstring
 msgid "List all threads in the current guild."
 msgstr "現在のギルドの全スレッドを一覧表示します。"
 
-#: discordedit\editthread.py:149
+#: discordedit\editthread.py:190
 msgid "List of threads in {guild.name} ({guild.id})"
 msgstr "{guild.name} のスレッド一覧 ({guild.id})"
 
-#: discordedit\editthread.py:165
+#: discordedit\editthread.py:206
 #, docstring
 msgid "Edit thread name."
 msgstr "スレッド名を編集する。"
 
-#: discordedit\editthread.py:187
+#: discordedit\editthread.py:227
 #, docstring
 msgid "Edit thread archived."
 msgstr "編集スレッドをアーカイブ化しました。"
 
-#: discordedit\editthread.py:210
+#: discordedit\editthread.py:249
 #, docstring
 msgid "Edit thread locked."
 msgstr "編集スレッドがロックされました。"
 
-#: discordedit\editthread.py:234
+#: discordedit\editthread.py:272
 #, docstring
 msgid "Edit thread pinned."
 msgstr "編集スレッドをピン留めしました。"
 
-#: discordedit\editthread.py:259
+#: discordedit\editthread.py:296
 #, docstring
 msgid "Edit thread invitable."
 msgstr "編集スレッド不可。"
 
-#: discordedit\editthread.py:286
+#: discordedit\editthread.py:322
 #, docstring
 msgid "Edit thread auto archive duration."
 msgstr "スレッド自動アーカイブの期間を編集する。"
 
-#: discordedit\editthread.py:311
+#: discordedit\editthread.py:346
 #, docstring
 msgid "Edit thread slowmode delay."
 msgstr "編集スレッドslowmodeの遅延。"
 
-#: discordedit\editthread.py:336
+#: discordedit\editthread.py:370
 #, docstring
 msgid "Edit thread applied tags.\n\n"
 "        ```\n"
@@ -898,30 +946,30 @@ msgstr "編集スレッド適用タグ\n\n"
 "        ```\n"
 "        "
 
-#: discordedit\editthread.py:367
+#: discordedit\editthread.py:400
 #, docstring
 msgid "Add member to thread."
 msgstr "スレッドにメンバーを追加"
 
-#: discordedit\editthread.py:393
+#: discordedit\editthread.py:425
 #, docstring
 msgid "Remove member from thread."
 msgstr "スレッドからメンバーを削除する。"
 
-#: discordedit\editthread.py:415
+#: discordedit\editthread.py:446
 #, docstring
 msgid "Delete a thread."
 msgstr "スレッドを削除する。"
 
-#: discordedit\editthread.py:426
+#: discordedit\editthread.py:456
 msgid "⚠️ - Delete thread"
 msgstr "⚠️ - スレッドを削除する"
 
-#: discordedit\editthread.py:427 discordedit\editthread.py:434
+#: discordedit\editthread.py:457 discordedit\editthread.py:464
 msgid "Do you really want to delete the thread {thread.mention} ({thread.id})?"
 msgstr "スレッド {thread.mention} ({thread.id}) を本当に削除したいのでしょうか？"
 
-#: discordedit\editthread.py:449
+#: discordedit\editthread.py:479
 #, docstring
 msgid "View and edit thread."
 msgstr "スレッドの表示と編集"
@@ -993,12 +1041,12 @@ msgstr "音声チャネルのビットレートを編集する。\n\n"
 "        レベル 3: 384000\n"
 "        "
 
-#: discordedit\editvoicechannel.py:253
+#: discordedit\editvoicechannel.py:252
 #, docstring
 msgid "Edit voice channel nsfw."
 msgstr "エディットボイスチャンネルnsfw"
 
-#: discordedit\editvoicechannel.py:274
+#: discordedit\editvoicechannel.py:273
 #, docstring
 msgid "Edit voice channel user limit.\n\n"
 "        It must be a number between 0 and 99.\n"
@@ -1007,7 +1055,7 @@ msgstr "音声チャネルのユーザー制限を編集する。\n\n"
 "        0～99の数字である必要があります。\n"
 "        。                "
 
-#: discordedit\editvoicechannel.py:293
+#: discordedit\editvoicechannel.py:292
 #, docstring
 msgid "Edit voice channel position.\n\n"
 "        Warning: Only voice channels are taken into account. Channel 1 is the highest positioned voice channel.\n"
@@ -1018,17 +1066,17 @@ msgstr "音声チャンネル位置を編集する。\n\n"
 "        チャンネルは、現在のカテゴリーから外れる位置に移動することはできません。\n"
 "        "
 
-#: discordedit\editvoicechannel.py:313
+#: discordedit\editvoicechannel.py:312
 #, docstring
 msgid "Edit voice channel sync permissions."
 msgstr "音声チャンネルの同期権限を編集する。"
 
-#: discordedit\editvoicechannel.py:334
+#: discordedit\editvoicechannel.py:333
 #, docstring
 msgid "Edit voice channel category."
 msgstr "音声チャンネルのカテゴリーを編集する。"
 
-#: discordedit\editvoicechannel.py:353
+#: discordedit\editvoicechannel.py:352
 #, docstring
 msgid "Edit voice channel slowmode delay.\n\n"
 "        Specifies the slowmode rate limit for user in this channel. A value of 0s disables slowmode. The maximum value possible is 21600s.\n"
@@ -1037,7 +1085,7 @@ msgstr "音声チャネルのスローモード遅延を編集する。\n\n"
 "        このチャネルのユーザーのスローモードレート制限を指定します。0sの値はスローモードを無効にします。最大値は21600sです。\n"
 "        "
 
-#: discordedit\editvoicechannel.py:379
+#: discordedit\editvoicechannel.py:377
 #, docstring
 msgid "Edit voice channel video quality mode.\n\n"
 "        auto = 1\n"
@@ -1048,7 +1096,7 @@ msgstr "音声チャネルのビデオ品質モードを編集する\n\n"
 "        full = 2\n"
 "        "
 
-#: discordedit\editvoicechannel.py:408
+#: discordedit\editvoicechannel.py:406
 #, docstring
 msgid "Edit voice channel overwrites/permissions.\n\n"
 "        You may not specify `True` or `False` to reset the overwrite(s).\n"
@@ -1117,25 +1165,25 @@ msgstr "音声チャンネルの上書き/許可を編集する。\n\n"
 "        - `send_messages_in_threads`\n"
 "        "
 
-#: discordedit\editvoicechannel.py:527
+#: discordedit\editvoicechannel.py:524
 #, docstring
 msgid "Delete voice channel."
 msgstr "音声チャンネルを削除する。"
 
-#: discordedit\editvoicechannel.py:532
+#: discordedit\editvoicechannel.py:529
 msgid "⚠️ - Delete voice channel"
 msgstr "⚠️ - 音声チャンネルを削除する"
 
-#: discordedit\editvoicechannel.py:533 discordedit\editvoicechannel.py:540
+#: discordedit\editvoicechannel.py:530 discordedit\editvoicechannel.py:537
 msgid "Do you really want to delete the voice channel {channel.mention} ({channel.id})?"
 msgstr "音声チャンネル {channel.mention} ({channel.id}) を本当に削除するのでしょうか？"
 
-#: discordedit\editvoicechannel.py:559
+#: discordedit\editvoicechannel.py:556
 #, docstring
 msgid "View and edit voice channel."
 msgstr "音声チャンネルの表示と編集"
 
-#: discordedit\view.py:121
+#: discordedit\view.py:120
 msgid "You are not allowed to execute this command."
 msgstr "このコマンドの実行は許可されていません。"
 

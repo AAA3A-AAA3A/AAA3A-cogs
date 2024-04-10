@@ -1,0 +1,150 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:42\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/devutils/locales/messages.pot\n"
+"X-Crowdin-File-ID: 312\n"
+"Language: ru_RU\n"
+
+#: devutils\devutils.py:51
+msgid "No valid log level provided."
+msgstr "Не указан допустимый уровень журнала."
+
+#: devutils\devutils.py:80
+msgid "No valid discord object provided."
+msgstr "Не указан действительный объект раздора."
+
+#: devutils\devutils.py:85
+#, docstring
+msgid "Various development utilities!"
+msgstr "Различные утилиты для разработки!"
+
+#: devutils\devutils.py:136
+#, docstring
+msgid "\n"
+"        Repeats a command a specified number of times.\n\n"
+"        `--sleep <int>` is an optional flag specifying how much time to wait between command invocations.\n"
+"        "
+msgstr "\n"
+"        Повторяет команду указанное количество раз.\n\n"
+"        `--sleep <int>` - необязательный флаг, указывающий, сколько времени нужно ждать между вызовами команд.\n"
+"        "
+
+#: devutils\devutils.py:157 devutils\devutils.py:233 devutils\devutils.py:249
+msgid "You have not specified a correct command."
+msgstr "Вы не указали правильную команду."
+
+#: devutils\devutils.py:159 devutils\devutils.py:251
+msgid "You can't execute yourself this command."
+msgstr "Вы не можете выполнить эту команду самостоятельно."
+
+#: devutils\devutils.py:172
+#, docstring
+msgid "Execute multiple commands at once. Split them using |."
+msgstr "Выполняйте несколько команд одновременно. Разделите их с помощью |."
+
+#: devutils\devutils.py:187 devutils\devutils.py:209
+msgid "`{command}` isn't a valid command."
+msgstr "`{command}` не является допустимой командой."
+
+#: devutils\devutils.py:193 devutils\devutils.py:215
+msgid "You can't execute yourself `{command}`."
+msgstr "Вы не можете казнить себя `{command}`."
+
+#: devutils\devutils.py:222
+#, docstring
+msgid "Bypass a command's checks and cooldowns."
+msgstr "Обходите проверки и кулдауны команд."
+
+#: devutils\devutils.py:238
+#, docstring
+msgid "Run a command timing execution and catching exceptions."
+msgstr "Запустите команду, засекая время ее выполнения и отлавливая исключения."
+
+#: devutils\devutils.py:257
+msgid "Command `{command}` finished in `{timing}`s."
+msgstr "Команда `{command}` завершилась через `{timing}``."
+
+#: devutils\devutils.py:264
+#, docstring
+msgid "Reinvoke a command message.\n\n"
+"        You may reply to a message to reinvoke it or pass a message ID/link.\n"
+"        The command will be invoked with the author and the channel of the specified message.\n"
+"        "
+msgstr "Отмена командного сообщения.\n\n"
+"        Вы можете ответить на сообщение, чтобы отозвать его, или передать идентификатор сообщения/ссылку.\n"
+"        Команда будет вызвана с указанием автора и канала указанного сообщения.\n"
+"        "
+
+#: devutils\devutils.py:285
+msgid "The command isn't valid."
+msgstr "Команда недействительна."
+
+#: devutils\devutils.py:287
+msgid "This command can't be executed."
+msgstr "Эта команда не может быть выполнена."
+
+#: devutils\devutils.py:293
+#, docstring
+msgid "Change the logging level for a logger. if no name is provided, the root logger (red) is used.\n\n"
+"        Levels are the following:\n"
+"        - `0`: `CRITICAL`\n"
+"        - `1`: `ERROR`\n"
+"        - `2`: `WARNING`\n"
+"        - `3`: `INFO`\n"
+"        - `4`: `DEBUG`\n"
+"        - `5`: `VERBOSE`\n"
+"        - `6`: `TRACE`\n"
+"        "
+msgstr "Если имя не указано, используется корневой регистратор (красный).\n\n"
+"        Уровни следующие:\n"
+"        - `0`: `КРИТИЧЕСКИЙ`\n"
+"        - `1`: `ОШИБКА`\n"
+"        - `2`: `ПРЕДУПРЕЖДЕНИЕ`\n"
+"        - `3`: `ИНФОРМАЦИЯ`\n"
+"        - `4`: `ОТЛАДКА`\n"
+"        - `5`: `VERBOSE`\n"
+"        - `6`: `ТРАССИРОВКА`\n"
+"        "
+
+#: devutils\devutils.py:307
+msgid "Logger `{logger_name}` level set to `{level}`."
+msgstr "Уровень регистратора `{logger_name}` установлен на `{level}`."
+
+#: devutils\devutils.py:316
+#, docstring
+msgid "Force reload a module (to use code changes without restarting your bot).\n\n"
+"        ⚠️ Please only use this if you know what you're doing.\n"
+"        "
+msgstr "Принудительная перезагрузка модуля (чтобы использовать изменения кода без перезапуска бота).\n\n"
+"        ⚠️ Пожалуйста, используйте это только в том случае, если вы знаете, что делаете.\n"
+"        "
+
+#: devutils\devutils.py:332
+msgid "I couldn't find any module with this name."
+msgstr "Я не смог найти ни одного модуля с таким названием."
+
+#: devutils\devutils.py:336
+msgid "Module(s) {modules} reloaded."
+msgstr "Модуль(ы) {modules} перезагружен(ы)."
+
+#: devutils\devutils.py:342
+msgid "Modules [...] reloaded."
+msgstr "Модули [...] перезагружены."
+
+#: devutils\devutils.py:346
+#, docstring
+msgid "Display the JSON of a Discord object with a raw request."
+msgstr "Отображение JSON объекта Discord при необработанном запросе."
+

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:10\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:37\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -33,18 +33,18 @@ msgstr "[Κάντε κλικ εδώ για να δείτε την απομαγν
 
 #: exportchannel\exportchannel.py:44
 #, docstring
-msgid "A cog to export all or part of a channel's messages to an html file!"
-msgstr "Ένα γρανάζι για την εξαγωγή όλων ή μέρους των μηνυμάτων ενός καναλιού σε ένα αρχείο html!"
+msgid "A cog to export all or a part of the messages of a channel in an html file!"
+msgstr "Μια επιλογή για την εξαγωγή όλων ή μέρους των μηνυμάτων ενός καναλιού σε ένα αρχείο html!"
 
 #: exportchannel\exportchannel.py:67
 msgid "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
 msgstr "Συγγνώμη, δεν μπορώ να διαβάσω το περιεχόμενο των μηνυμάτων στο {channel.mention} ({channel.id})."
 
-#: exportchannel\exportchannel.py:97
-msgid "Sorry. I could not find any message."
+#: exportchannel\exportchannel.py:108
+msgid "Sorry. I could not find any messages."
 msgstr "Συγγνώμη. Δεν μπόρεσα να βρω κανένα μήνυμα."
 
-#: exportchannel\exportchannel.py:157
+#: exportchannel\exportchannel.py:179
 #, docstring
 msgid "Export all of a channel's messages to an html file.\n\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
@@ -55,9 +55,22 @@ msgstr "Εξαγωγή όλων των μηνυμάτων ενός καναλι�
 "        Να θυμάστε ότι η εξαγωγή των μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:185
+#: exportchannel\exportchannel.py:205
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a specific file in an html file.\n\n"
+"        Specify the message to export, with its ID or its link.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Εξαγωγή ενός συγκεκριμένου αρχείου σε αρχείο html.\n\n"
+"        Καθορίστε το μήνυμα προς εξαγωγή, με το αναγνωριστικό του ή το σύνδεσμό του.\n"
+"        Σημείωση: όλα τα συνημμένα και τα avatars των χρηστών αποθηκεύονται με το σύνδεσμο Discord σε αυτό το αρχείο.\n"
+"        Να θυμάστε ότι η εξαγωγή μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS.\n"
+"        "
+
+#: exportchannel\exportchannel.py:242
+#, docstring
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the number of messages since the end of the channel.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
@@ -68,9 +81,9 @@ msgstr "Εξαγωγή μέρους των μηνυμάτων ενός κανα�
 "        Να θυμάστε ότι η εξαγωγή μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:221
+#: exportchannel\exportchannel.py:280
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the before message (id or link) or a valid snowflake.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
@@ -78,12 +91,12 @@ msgid "Export part of a channel's messages to an html file.\n\n"
 msgstr "Εξαγωγή μέρους των μηνυμάτων ενός καναλιού σε αρχείο html.\n\n"
 "        Καθορίστε το προηγούμενο μήνυμα (id ή σύνδεσμος) ή μια έγκυρη χιονονιφάδα.\n"
 "        Σημείωση: όλα τα συνημμένα και τα avatars των χρηστών αποθηκεύονται με το σύνδεσμο Discord σε αυτό το αρχείο.\n"
-"        Να θυμάστε ότι η εξαγωγή των μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS.\n"
+"        Να θυμάστε ότι η εξαγωγή μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:253
+#: exportchannel\exportchannel.py:314
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the after message (id or link) or a valid snowflake.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
@@ -91,12 +104,12 @@ msgid "Export part of a channel's messages to an html file.\n\n"
 msgstr "Εξαγωγή μέρους των μηνυμάτων ενός καναλιού σε αρχείο html.\n\n"
 "        Καθορίστε το μήνυμα μετά (id ή σύνδεσμος) ή μια έγκυρη χιονονιφάδα.\n"
 "        Σημείωση: όλα τα συνημμένα και τα avatars των χρηστών αποθηκεύονται με το σύνδεσμο Discord σε αυτό το αρχείο.\n"
-"        Να θυμάστε ότι η εξαγωγή των μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS.\n"
+"        Να θυμάστε ότι η εξαγωγή μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:286
+#: exportchannel\exportchannel.py:349
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the before and after messages (id or link) or a valid snowflake.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
@@ -107,9 +120,9 @@ msgstr "Εξαγωγή μέρους των μηνυμάτων ενός κανα�
 "        Να θυμάστε ότι η εξαγωγή των μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:321
+#: exportchannel\exportchannel.py:386
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the user/member (id, name or mention).\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
@@ -120,9 +133,9 @@ msgstr "Εξαγωγή μέρους των μηνυμάτων ενός κανα�
 "        Να θυμάστε ότι η εξαγωγή μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:359
+#: exportchannel\exportchannel.py:426
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the bool option.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"

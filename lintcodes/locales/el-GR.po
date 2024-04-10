@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:12\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:23\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -78,12 +78,12 @@ msgstr "Μορφοποίηση κώδικα με Flake8, με σημαίες.\n\
 "        - `--max_complexity <integer>`\n"
 "        "
 
-#: lintcodes\lintcodes.py:171
+#: lintcodes\lintcodes.py:172
 #, docstring
 msgid "Format code with PyLint, without flags, just the code."
 msgstr "Μορφοποιήστε τον κώδικα με την PyLint, χωρίς σημαίες, μόνο τον κώδικα."
 
-#: lintcodes\lintcodes.py:178
+#: lintcodes\lintcodes.py:179
 #, docstring
 msgid "Format code with PyLint, with flags.\n\n"
 "        **Supported flags:**\n"
@@ -100,12 +100,12 @@ msgstr "Μορφοποίηση κώδικα με PyLint, με σημαίες.\n\
 "        - `--ενεργοποίηση <enable_list>`\n"
 "        "
 
-#: lintcodes\lintcodes.py:193
+#: lintcodes\lintcodes.py:195
 #, docstring
 msgid "Format code with MyPy, without flags, just the code."
 msgstr "Μορφοποίηση κώδικα με το MyPy, χωρίς σημαίες, μόνο ο κώδικας."
 
-#: lintcodes\lintcodes.py:200
+#: lintcodes\lintcodes.py:202
 #, docstring
 msgid "Format code with MyPy, with flags.\n\n"
 "        **Supported flags:**\n"
@@ -244,12 +244,12 @@ msgstr "Μορφοποίηση κώδικα με το MyPy, με σημαίες.
 "          - `--pretty <yes>`\n"
 "        "
 
-#: lintcodes\lintcodes.py:281
+#: lintcodes\lintcodes.py:284
 #, docstring
 msgid "Format code with Bandit, without flags, just the code."
 msgstr "Μορφοποιήστε τον κώδικα με το Bandit, χωρίς σημαίες, μόνο τον κώδικα."
 
-#: lintcodes\lintcodes.py:288
+#: lintcodes\lintcodes.py:291
 #, docstring
 msgid "Format code with Bandit, with flags.\n\n"
 "        **Supported flags:**\n"
@@ -270,27 +270,27 @@ msgstr "Μορφοποίηση κώδικα με Bandit, με σημαίες.\n\
 "        - `--πιστοσύνη <low/medium/high>`\n"
 "        "
 
-#: lintcodes\lintcodes.py:306
+#: lintcodes\lintcodes.py:310
 #, docstring
 msgid "Format code with Black, without flags, just the code."
 msgstr "Μορφοποιήστε τον κώδικα με μαύρο χρώμα, χωρίς σημαίες, μόνο τον κώδικα."
 
-#: lintcodes\lintcodes.py:312
+#: lintcodes\lintcodes.py:316
 #, docstring
 msgid "Format code with Isort, without flags, just the code."
 msgstr "Μορφοποιήστε τον κώδικα με το Isort, χωρίς σημαίες, μόνο τον κώδικα."
 
-#: lintcodes\lintcodes.py:318
+#: lintcodes\lintcodes.py:322
 #, docstring
 msgid "Format code with Yapf, without flags, just the code."
 msgstr "Μορφοποιήστε τον κώδικα με το Yapf, χωρίς σημαίες, μόνο τον κώδικα."
 
-#: lintcodes\lintcodes.py:324
+#: lintcodes\lintcodes.py:328
 #, docstring
 msgid "Format code with AutoPep8, without flags, just the code."
 msgstr "Μορφοποίηση κώδικα με το AutoPep8, χωρίς σημαίες, μόνο τον κώδικα."
 
-#: lintcodes\lintcodes.py:330
+#: lintcodes\lintcodes.py:334
 #, docstring
 msgid "Format code with PyRight, without flags, just the code.\n\n"
 "        **Supported flags:**\n"
@@ -301,17 +301,17 @@ msgstr "Μορφοποίηση κώδικα με PyRight, χωρίς σημαί�
 "        - `--code <code>`\n"
 "        "
 
-#: lintcodes\lintcodes.py:341
+#: lintcodes\lintcodes.py:345
 #, docstring
 msgid "Format code with PyRight, with flags."
 msgstr "Μορφοποίηση κώδικα με PyRight, με σημαίες."
 
-#: lintcodes\lintcodes.py:347
+#: lintcodes\lintcodes.py:352
 #, docstring
 msgid "Format code with Ruff, without flags, just the code."
 msgstr "Μορφοποιήστε τον κώδικα με Ruff, χωρίς σημαίες, μόνο τον κώδικα."
 
-#: lintcodes\lintcodes.py:354
+#: lintcodes\lintcodes.py:359
 #, docstring
 msgid "Format code with Ruff, with flags.\n\n"
 "        **Supported flags:**\n"

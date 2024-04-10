@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:11\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:42\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Crowdin-File-ID: 86\n"
 "Language: nl_NL\n"
 
-#: editfile\editfile.py:28
+#: editfile\editfile.py:29
 #, docstring
 msgid "A cog to get a file and replace it from its path from Discord!\n\n"
 "    ⚠️ This cog can be very dangerous, since it allows direct read/write/delete of files on the bot’s machine, considering the fact that reading the wrong file can expose sensitive information like tokens and deleting the wrong file can corrupt the bot or the system entirely.\n"
@@ -26,7 +26,7 @@ msgstr "Een tandwiel om een bestand op te halen en te vervangen vanaf het pad va
 "    ⚠️ Dit tandwiel kan erg gevaarlijk zijn, omdat het direct lezen/schrijven/verwijderen van bestanden op de machine van de bot mogelijk maakt, gezien het feit dat het lezen van het verkeerde bestand gevoelige informatie zoals tokens kan blootleggen en het verwijderen van het verkeerde bestand de bot of het systeem volledig kan beschadigen.\n"
 "    "
 
-#: editfile\editfile.py:59
+#: editfile\editfile.py:60
 #, docstring
 msgid "Get a file on the bot's host machine from its path.\n"
 "        `#L10` or `#L10-L30` is supported.\n"
@@ -35,37 +35,37 @@ msgstr "Haal een bestand op van het pad op de hostmachine van de bot.\n"
 "        `#L10` of `#L10-L30` wordt ondersteund.\n"
 "        "
 
-#: editfile\editfile.py:64 editfile\editfile.py:140
+#: editfile\editfile.py:65 editfile\editfile.py:141
 msgid "Couldn't parse this input."
 msgstr "Kan deze invoer niet verwerken."
 
-#: editfile\editfile.py:76
+#: editfile\editfile.py:77
 msgid "Cowardly refusing to read a file with no size stat. (it may be empty, endless or inaccessible)."
 msgstr "Lafhartig weigeren om een bestand zonder grootte-statistieken te lezen. (het kan leeg, eindeloos of ontoegankelijk zijn)."
 
-#: editfile\editfile.py:82
+#: editfile\editfile.py:83
 msgid "Cowardly refusing to read a file >128MB."
 msgstr "Lafhartig weigeren om een bestand >128MB te lezen."
 
-#: editfile\editfile.py:100 editfile\editfile.py:261 editfile\editfile.py:271
-#: editfile\editfile.py:284 editfile\editfile.py:295
+#: editfile\editfile.py:101 editfile\editfile.py:293 editfile\editfile.py:303
+#: editfile\editfile.py:316 editfile\editfile.py:327
 msgid "This file cannot be found on the host machine."
 msgstr "Dit bestand kan niet worden gevonden op de hostmachine."
 
-#: editfile\editfile.py:104 editfile\editfile.py:167 editfile\editfile.py:265
-#: editfile\editfile.py:275 editfile\editfile.py:288 editfile\editfile.py:299
+#: editfile\editfile.py:105 editfile\editfile.py:168 editfile\editfile.py:297
+#: editfile\editfile.py:307 editfile\editfile.py:320 editfile\editfile.py:331
 msgid "The path you specified refers to a directory, not a file."
 msgstr "Het pad dat je hebt opgegeven verwijst naar een map, niet naar een bestand."
 
-#: editfile\editfile.py:124 editfile\editfile.py:158
+#: editfile\editfile.py:125 editfile\editfile.py:159
 msgid "There are only {len_lines} lines in this file."
 msgstr "Er zijn slechts {len_lines} regels in dit bestand."
 
-#: editfile\editfile.py:129
+#: editfile\editfile.py:130
 msgid "Here are the contents of the file `{path}`."
 msgstr "Hier is de inhoud van het bestand `{path}`."
 
-#: editfile\editfile.py:134
+#: editfile\editfile.py:135
 #, docstring
 msgid "Replace a file on the bot's host machine from its path.\n"
 "        `#L10` or `#L10-L30` is supported.\n"
@@ -74,59 +74,64 @@ msgstr "Vervang een bestand op de hostmachine van de bot vanaf het pad.\n"
 "        `#L10` of `#L10-L30` wordt ondersteund.\n"
 "        "
 
-#: editfile\editfile.py:163
+#: editfile\editfile.py:164
 msgid "This original file cannot be found on the host machine."
 msgstr "Dit originele bestand kan niet worden gevonden op de hostmachine."
 
-#: editfile\editfile.py:171
+#: editfile\editfile.py:172
 msgid "You must send the command with an attachment that will be used to replace the original file."
 msgstr "Je moet de opdracht verzenden met een bijlage die zal worden gebruikt om het originele bestand te vervangen."
 
-#: editfile\editfile.py:196
+#: editfile\editfile.py:197
 msgid "This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly."
 msgstr "Dit is het originele/oude bestand dat beschikbaar is op pad `{path}`. Normaal gesproken is dit bestand correct vervangen."
 
-#: editfile\editfile.py:204
+#: editfile\editfile.py:205
 #, docstring
 msgid "Get a cog directory on the bot's host machine from its name."
 msgstr "Verkrijg een tandwielmap op de hostmachine van de bot aan de hand van zijn naam."
 
-#: editfile\editfile.py:207
+#: editfile\editfile.py:208
 msgid "Could not find a cog with this name."
 msgstr "Kon geen radertje met deze naam vinden."
 
-#: editfile\editfile.py:213
+#: editfile\editfile.py:214
 msgid "This cog has not yet stored any persistent data in its data folder."
 msgstr "Dit tandwiel heeft nog geen persistente gegevens opgeslagen in zijn gegevensmap."
 
-#: editfile\editfile.py:233
+#: editfile\editfile.py:234
 #, docstring
 msgid "List all files/directories of a directory from its path."
 msgstr "Alle bestanden/mappen van een map weergeven vanaf het pad."
 
-#: editfile\editfile.py:237
+#: editfile\editfile.py:238 editfile\editfile.py:262
 msgid "This directory cannot be found on the host machine."
 msgstr "Deze map kan niet gevonden worden op de hostmachine."
 
-#: editfile\editfile.py:241
+#: editfile\editfile.py:242 editfile\editfile.py:266
 msgid "The path you specified refers to a file, not a directory."
 msgstr "Het pad dat je hebt opgegeven verwijst naar een bestand, niet naar een map."
 
-#: editfile\editfile.py:257
+#: editfile\editfile.py:258
+#, docstring
+msgid "Make a tree with all files/directories of a directory from its path."
+msgstr "Maak een boomstructuur met alle bestanden/mappen van een map vanaf het pad."
+
+#: editfile\editfile.py:289
 #, docstring
 msgid "Rename a file."
 msgstr "Een bestand hernoemen."
 
-#: editfile\editfile.py:277
+#: editfile\editfile.py:309
 msgid "The `{path}` file has been renamed."
 msgstr "Het `{path}` bestand heeft een andere naam gekregen."
 
-#: editfile\editfile.py:281
+#: editfile\editfile.py:313
 #, docstring
 msgid "Delete a file."
 msgstr "Een bestand verwijderen."
 
-#: editfile\editfile.py:301
+#: editfile\editfile.py:333
 msgid "The `{path}` file has been deleted."
 msgstr "Het `{path}` bestand is verwijderd."
 

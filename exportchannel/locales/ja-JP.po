@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:11\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:38\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -33,18 +33,18 @@ msgstr "[記録はこちら]({url})"
 
 #: exportchannel\exportchannel.py:44
 #, docstring
-msgid "A cog to export all or part of a channel's messages to an html file!"
-msgstr "チャンネルのメッセージの全部または一部をhtmlファイルに書き出すためのコグです！"
+msgid "A cog to export all or a part of the messages of a channel in an html file!"
+msgstr "チャンネルのメッセージの全部または一部をhtmlファイルに書き出すための歯車！"
 
 #: exportchannel\exportchannel.py:67
 msgid "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
 msgstr "申し訳ありませんが、 {channel.mention} ({channel.id}) のメッセージの内容は読めません。"
 
-#: exportchannel\exportchannel.py:97
-msgid "Sorry. I could not find any message."
-msgstr "すみません。メッセージは見つかりませんでした。"
+#: exportchannel\exportchannel.py:108
+msgid "Sorry. I could not find any messages."
+msgstr "すみません。メッセージが見つかりませんでした。"
 
-#: exportchannel\exportchannel.py:157
+#: exportchannel\exportchannel.py:179
 #, docstring
 msgid "Export all of a channel's messages to an html file.\n\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
@@ -55,48 +55,61 @@ msgstr "チャンネルの全メッセージをhtmlファイルにエクスポ�
 "        Discordから他のユーザーのメッセージをエクスポートすることは、TOSを尊重しないことを忘れないでください。\n"
 "        "
 
-#: exportchannel\exportchannel.py:185
+#: exportchannel\exportchannel.py:205
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a specific file in an html file.\n\n"
+"        Specify the message to export, with its ID or its link.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "特定のファイルをhtmlファイルにエクスポートします。\n\n"
+"        エクスポートするメッセージのIDまたはリンクを指定します。\n"
+"        注意: すべての添付ファイルとユーザーアバターは、このファイルの Discord リンクと一緒に保存されます。\n"
+"        Discordから他のユーザーのメッセージをエクスポートすることはTOSを尊重しないことを忘れないでください。\n"
+"        "
+
+#: exportchannel\exportchannel.py:242
+#, docstring
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the number of messages since the end of the channel.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
 msgstr "チャンネルのメッセージの一部を html ファイルに書き出す。\n\n"
-"        チャンネル終了時からのメッセージ数を指定します。\n"
-"        注意：すべての添付ファイルとユーザーアバターは、このファイル内のDiscordリンクと一緒に保存されます。\n"
-"        Discordから他のユーザーのメッセージをエクスポートすることは、TOSを尊重しないことを忘れないでください。\n"
+"        チャンネル終了時からのメッセージ数を指定してください。\n"
+"        注意: すべての添付ファイルとユーザーアバターはこのファイルの Discord リンクと一緒に保存されます。\n"
+"        Discordから他のユーザーのメッセージをエクスポートすることはTOSを尊重しないことを忘れないでください。\n"
 "        "
 
-#: exportchannel\exportchannel.py:221
+#: exportchannel\exportchannel.py:280
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the before message (id or link) or a valid snowflake.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
-msgstr "チャネルのメッセージの一部を html ファイルに書き出す。\n\n"
-"        ビフォアメッセージ（idまたはリンク）または有効なsnowflakeを指定してください。\n"
-"        注意: すべての添付ファイルとユーザーアバターはこのファイルのDiscordリンクと一緒に保存されます。\n"
+msgstr "チャンネルのメッセージの一部を html ファイルに書き出す。\n\n"
+"        ビフォアメッセージ（idまたはリンク）または有効なスノーフレークを指定してください。\n"
+"        注意: すべての添付ファイルとユーザーアバターはこのファイル内のDiscordリンクと一緒に保存されます。\n"
 "        Discordから他のユーザーのメッセージをエクスポートすることはTOSを尊重しないことを忘れないでください。\n"
 "        "
 
-#: exportchannel\exportchannel.py:253
+#: exportchannel\exportchannel.py:314
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the after message (id or link) or a valid snowflake.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
-msgstr "チャネルのメッセージの一部を html ファイルに書き出す。\n\n"
-"        アフターメッセージ（idまたはリンク）または有効なsnowflakeを指定してください。\n"
+msgstr "チャンネルのメッセージの一部を html ファイルに書き出す。\n\n"
+"        アフターメッセージ（idまたはリンク）または有効なスノーフレークを指定してください。\n"
 "        注意: すべての添付ファイルとユーザーアバターはこのファイルのDiscordリンクと一緒に保存されます。\n"
 "        Discordから他のユーザーのメッセージをエクスポートすることはTOSを尊重しないことを忘れないでください。\n"
 "        "
 
-#: exportchannel\exportchannel.py:286
+#: exportchannel\exportchannel.py:349
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the before and after messages (id or link) or a valid snowflake.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
@@ -107,29 +120,29 @@ msgstr "チャンネルのメッセージの一部を html ファイルに書き
 "        Discordから他のユーザーのメッセージをエクスポートすることはTOSを尊重しないことを忘れないでください。\n"
 "        "
 
-#: exportchannel\exportchannel.py:321
+#: exportchannel\exportchannel.py:386
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the user/member (id, name or mention).\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
-msgstr "チャンネルのメッセージの一部をhtmlファイルに書き出す。\n\n"
-"        ユーザー/メンバー (ID、名前、または言及) を指定します。\n"
-"        注意: すべての添付ファイルとユーザーアバターは、このファイルの Discord リンクと一緒に保存されます。\n"
+msgstr "チャンネルのメッセージの一部をhtmlファイルにエクスポートする。\n\n"
+"        ユーザー/メンバー（id、名前または言及）を指定します。\n"
+"        注意: すべての添付ファイルとユーザーアバターはこのファイルのDiscordリンクと一緒に保存されます。\n"
 "        Discordから他のユーザーのメッセージをエクスポートすることはTOSを尊重しないことを忘れないでください。\n"
 "        "
 
-#: exportchannel\exportchannel.py:359
+#: exportchannel\exportchannel.py:426
 #, docstring
-msgid "Export part of a channel's messages to an html file.\n\n"
+msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the bool option.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
-msgstr "チャンネルのメッセージの一部をhtmlファイルに書き出す。\n\n"
-"        boolオプションを指定します。\n"
-"        注意：すべての添付ファイルとユーザーアバターは、このファイルのDiscordリンクとともに保存されます。\n"
-"        Discordから他のユーザーのメッセージをエクスポートすることは、TOSを尊重しないことを忘れないでください。\n"
+msgstr "チャンネルのメッセージの一部を html ファイルに書き出す。\n\n"
+"        boolオプションを指定してください。\n"
+"        注意: すべての添付ファイルとユーザーアバターはこのファイルの Discord リンクと一緒に保存されます。\n"
+"        Discordから他のユーザーのメッセージをエクスポートすることはTOSを尊重しないことを忘れないでください。\n"
 "        "
 

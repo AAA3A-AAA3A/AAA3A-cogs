@@ -183,7 +183,7 @@ class DashboardRPC:
                 "uptime": int(self.bot.uptime.timestamp()),
             },
             "constants": {
-                "MIN_PREFIX_LENGTH": core_commands.MINIMUM_PREFIX_LENGTH,
+                "MIN_PREFIX_LENGTH": getattr(core_commands, "MINIMUM_PREFIX_LENGTH", 1),  # Added by #6013 in Red 3.5.6.
                 "MAX_PREFIX_LENGTH": core_commands.MAX_PREFIX_LENGTH,
                 "MAX_DISCORD_PERMISSIONS_VALUE": discord.Permissions.all().value,
             },

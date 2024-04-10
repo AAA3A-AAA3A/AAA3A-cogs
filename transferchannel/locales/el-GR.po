@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-08-10 13:42+0200\n"
-"PO-Revision-Date: 2023-08-10 11:46\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:37\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -17,115 +17,127 @@ msgstr ""
 "X-Crowdin-File-ID: 104\n"
 "Language: el_GR\n"
 
-#: transferchannel\transferchannel.py:23
-#: transferchannel\transferchannel.py:267
+#: transferchannel\transferchannel.py:24
+#: transferchannel\transferchannel.py:335
+#: transferchannel\transferchannel.py:367
 msgid "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
 msgstr "Υπάρχουν {count_messages} μεταφερόμενα μηνύματα από το {source.mention} στο {destination.mention}."
 
-#: transferchannel\transferchannel.py:45
+#: transferchannel\transferchannel.py:46
 #, docstring
-msgid "A cog to transfer all messages channel in a other channel!"
-msgstr "Ένα γρανάζι για τη μεταφορά όλων των μηνυμάτων σε ένα άλλο κανάλι!"
+msgid "A cog to transfer messages from a channel to another channel, with many options!"
+msgstr "Ένα γρανάζι για τη μεταφορά μηνυμάτων από ένα κανάλι σε ένα άλλο κανάλι, με πολλές επιλογές!"
 
-#: transferchannel\transferchannel.py:106
+#: transferchannel\transferchannel.py:105
 msgid "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
 msgstr "Συγγνώμη, δεν μπορώ να διαβάσω το περιεχόμενο των μηνυμάτων στο {source.mention} ({source.id})."
 
-#: transferchannel\transferchannel.py:113
+#: transferchannel\transferchannel.py:112
 msgid "I need to have all the permissions to send messages with embeds in {destination.guild.name} ({destination.guild.id})."
 msgstr "Πρέπει να έχω όλα τα δικαιώματα για να στέλνω μηνύματα με ενσωματώσεις στο {destination.guild.name} ({destination.guild.id})."
 
-#: transferchannel\transferchannel.py:119
-msgid "I need to have all the permission to create webhooks in {destination.guild.name} ({destination.guild.id})."
-msgstr "Πρέπει να έχω όλα τα δικαιώματα για τη δημιουργία webhooks στο {destination.guild.name} ({destination.guild.id})."
+#: transferchannel\transferchannel.py:118
+msgid "I need to have all the permission to create webhooks in {destination.guild.name} ({destination.guild.id}). You can use embeds or text messages by adding `embeds`/`messages` to your command."
+msgstr "Πρέπει να έχω όλα τα δικαιώματα για τη δημιουργία webhooks στο {destination.guild.name} ({destination.guild.id}). Μπορείτε να χρησιμοποιήσετε embeds ή μηνύματα κειμένου προσθέτοντας `embeds`/`messages` στην εντολή σας."
 
-#: transferchannel\transferchannel.py:149
-msgid "Sorry. I could not find any message."
+#: transferchannel\transferchannel.py:161
+msgid "Sorry. I could not find any messages."
 msgstr "Συγγνώμη. Δεν μπόρεσα να βρω κανένα μήνυμα."
 
-#: transferchannel\transferchannel.py:182
+#: transferchannel\transferchannel.py:242
 msgid "**Author:** {message.author.mention} ({message.author.id})"
 msgstr "**Συγγραφέας:** {message.author.mention} ({message.author.id})"
 
-#: transferchannel\transferchannel.py:185
+#: transferchannel\transferchannel.py:245
 msgid "**Channel:** <#{message.channel.id}>"
 msgstr "** Κανάλι:** <#{message.channel.id}>"
 
-#: transferchannel\transferchannel.py:186
+#: transferchannel\transferchannel.py:246
 msgid "**Time (UTC):** {iso_format}"
 msgstr "**Ώρα (UTC):** {iso_format}"
 
-#: transferchannel\transferchannel.py:226
+#: transferchannel\transferchannel.py:295
 #, docstring
-msgid "Transfer all messages channel in a other channel. This might take a long time.\n\n"
-"        Remember that transfering other users' messages in does not respect the TOS.\n"
+msgid "Transfer all messages from a channel to another channel. This might take a long time.\n\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
 "        "
-msgstr "Μεταφορά όλων των μηνυμάτων του καναλιού σε ένα άλλο κανάλι. Αυτό μπορεί να πάρει πολύ χρόνο.\n\n"
-"        Να θυμάστε ότι η μεταφορά των μηνυμάτων άλλων χρηστών δεν σέβεται το TOS.\n"
+msgstr "Μεταφορά όλων των μηνυμάτων από ένα κανάλι σε ένα άλλο κανάλι. Αυτό μπορεί να πάρει πολύ χρόνο.\n\n"
+"        Να θυμάστε ότι η μεταφορά μηνυμάτων άλλων χρηστών δεν σέβεται το TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:251
+#: transferchannel\transferchannel.py:319
 #, docstring
-msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
-"        Specify the number of messages since the end of the channel.\n"
-"        Remember that transfering other users' messages in does not respect the TOS.\n"
+msgid "Transfer a specific message to another channel. This might take a long time.\n\n"
+"        Specify the message to transfer, with its ID or its link.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
 "        "
-msgstr "Μεταφέρει ένα μέρος των μηνυμάτων ενός καναλιού σε ένα άλλο κανάλι. Αυτό μπορεί να πάρει πολύ χρόνο.\n\n"
+msgstr "Μεταφορά ενός συγκεκριμένου μηνύματος σε άλλο κανάλι. Αυτό μπορεί να διαρκέσει πολύ χρόνο.\n\n"
+"        Καθορίστε το μήνυμα προς μεταφορά, με το αναγνωριστικό του ή τη σύνδεσή του.\n"
+"        Να θυμάστε ότι η μεταφορά μηνυμάτων άλλων χρηστών δεν σέβεται το TOS.\n"
+"        "
+
+#: transferchannel\transferchannel.py:351
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the number of messages since the end of the channel.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Μεταφορά μέρους των μηνυμάτων από ένα κανάλι σε ένα άλλο κανάλι. Αυτό μπορεί να διαρκέσει πολύ χρόνο.\n\n"
 "        Καθορίστε τον αριθμό των μηνυμάτων από το τέλος του καναλιού.\n"
 "        Να θυμάστε ότι η μεταφορά μηνυμάτων άλλων χρηστών δεν σέβεται το TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:281
+#: transferchannel\transferchannel.py:381
 #, docstring
-msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
 "        Specify the before message (id or link) or a valid Discord snowflake.\n"
-"        Remember that transfering other users' messages in does not respect the TOS.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
 "        "
-msgstr "Μεταφέρει ένα μέρος των μηνυμάτων ενός καναλιού σε ένα άλλο κανάλι. Αυτό μπορεί να πάρει πολύ χρόνο.\n\n"
+msgstr "Μεταφορά μέρους των μηνυμάτων από ένα κανάλι σε ένα άλλο κανάλι. Αυτό μπορεί να διαρκέσει πολύ χρόνο.\n\n"
 "        Καθορίστε το προηγούμενο μήνυμα (αναγνωριστικό ή σύνδεσμο) ή μια έγκυρη χιονονιφάδα Discord.\n"
-"        Να θυμάστε ότι η μεταφορά των μηνυμάτων άλλων χρηστών στο δεν σέβεται το TOS.\n"
-"        "
-
-#: transferchannel\transferchannel.py:307
-#, docstring
-msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
-"        Specify the after message (id or link) or a valid Discord snowflake.\n"
-"        Remember that transfering other users' messages in does not respect the TOS.\n"
-"        "
-msgstr "Μεταφέρει ένα μέρος των μηνυμάτων ενός καναλιού σε ένα άλλο κανάλι. Αυτό μπορεί να πάρει πολύ χρόνο.\n\n"
-"        Καθορίστε το μήνυμα μετά (id ή σύνδεσμος) ή μια έγκυρη χιονονιφάδα Discord.\n"
-"        Να θυμάστε ότι η μεταφορά των μηνυμάτων άλλων χρηστών στο δεν σέβεται το TOS.\n"
-"        "
-
-#: transferchannel\transferchannel.py:334
-#, docstring
-msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
-"        Specify the between messages (id or link) or a valid snowflake.\n"
-"        Remember that transfering other users' messages in does not respect the TOS.\n"
-"        "
-msgstr "Μεταφέρει ένα μέρος των μηνυμάτων ενός καναλιού σε ένα άλλο κανάλι. Αυτό μπορεί να πάρει πολύ χρόνο.\n\n"
-"        Καθορίστε το μεταξύ των μηνυμάτων (id ή link) ή μια έγκυρη χιονονιφάδα.\n"
-"        Να θυμάστε ότι η μεταφορά των μηνυμάτων άλλων χρηστών δεν σέβεται το TOS.\n"
-"        "
-
-#: transferchannel\transferchannel.py:361
-#, docstring
-msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
-"        Specify the user/member (id, name or mention).\n"
-"        Remember that transfering other users' messages in does not respect the TOS.\n"
-"        "
-msgstr "Μεταφέρει ένα μέρος των μηνυμάτων ενός καναλιού σε ένα άλλο κανάλι. Αυτό μπορεί να πάρει πολύ χρόνο.\n\n"
-"        Καθορίστε τον χρήστη/μέλος (id, όνομα ή αναφορά).\n"
 "        Να θυμάστε ότι η μεταφορά μηνυμάτων άλλων χρηστών δεν σέβεται το TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:393
+#: transferchannel\transferchannel.py:407
 #, docstring
-msgid "Transfer a part of a channel's messages channel in a other channel. This might take a long time.\n\n"
-"        Specify the bool option.\n"
-"        Remember that transfering other users' messages in does not respect the TOS.\n"
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the after message (id or link) or a valid Discord snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
 "        "
-msgstr "Μεταφέρει ένα μέρος των μηνυμάτων ενός καναλιού σε ένα άλλο κανάλι. Αυτό μπορεί να πάρει πολύ χρόνο.\n\n"
+msgstr "Μεταφορά μέρους των μηνυμάτων από ένα κανάλι σε ένα άλλο κανάλι. Αυτό μπορεί να διαρκέσει πολύ χρόνο.\n\n"
+"        Καθορίστε το μήνυμα μετά (id ή σύνδεσμος) ή μια έγκυρη χιονονιφάδα Discord.\n"
+"        Να θυμάστε ότι η μεταφορά μηνυμάτων άλλων χρηστών δεν σέβεται το TOS.\n"
+"        "
+
+#: transferchannel\transferchannel.py:434
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the between messages (id or link) or a valid snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Μεταφορά μέρους των μηνυμάτων από ένα κανάλι σε ένα άλλο κανάλι. Αυτό μπορεί να διαρκέσει πολύ χρόνο.\n\n"
+"        Καθορίστε το μεταξύ των μηνυμάτων (id ή link) ή μια έγκυρη χιονονιφάδα.\n"
+"        Να θυμάστε ότι η μεταφορά μηνυμάτων άλλων χρηστών δεν σέβεται το TOS.\n"
+"        "
+
+#: transferchannel\transferchannel.py:461
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the user/member (id, name or mention).\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Μεταφορά μέρους των μηνυμάτων από ένα κανάλι σε ένα άλλο κανάλι. Αυτό μπορεί να διαρκέσει πολύ χρόνο.\n\n"
+"        Καθορίστε τον χρήστη/μέλος (αναγνωριστικό, όνομα ή αναφορά).\n"
+"        Να θυμάστε ότι η μεταφορά μηνυμάτων άλλων χρηστών δεν σέβεται το TOS.\n"
+"        "
+
+#: transferchannel\transferchannel.py:493
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the bool option.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Μεταφορά μέρους των μηνυμάτων από ένα κανάλι σε ένα άλλο κανάλι. Αυτό μπορεί να διαρκέσει πολύ χρόνο.\n\n"
 "        Καθορίστε την επιλογή bool.\n"
 "        Να θυμάστε ότι η μεταφορά μηνυμάτων άλλων χρηστών δεν σέβεται το TOS.\n"
 "        "

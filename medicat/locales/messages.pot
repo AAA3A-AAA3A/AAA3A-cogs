@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-22 14:22+0200\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: medicat\medicat.py:51
 msgid ""
 "Please feel free to modify MediCat to YOUR individual needs! 😄\n"
-"To add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\n"
+"To add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear in the Ventoy menu.\n"
 "Then you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template.\n"
 "Absolutely, I encourage it!"
 msgstr ""
@@ -31,9 +31,9 @@ msgstr ""
 
 #: medicat\medicat.py:57
 msgid ""
-"Absolutely. I will never charge money for MediCat, or accept donations. "
-"However, feel free to share your ideas, questions, and concerns in this "
-"thread. That's how you can give back. 🙂"
+"Absolutely. I will never charge money for MediCat. We accept donations but "
+"it is in no way required. However, feel free to share your ideas, questions,"
+" and concerns in this discord. That's how you can give back. 🙂"
 msgstr ""
 
 #: medicat\medicat.py:62
@@ -51,14 +51,14 @@ msgid ""
 msgstr ""
 
 #: medicat\medicat.py:68
-msgid "How to make a donation?"
+msgid "How can I make a donation?"
 msgstr ""
 
 #: medicat\medicat.py:69
 msgid ""
 "@Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\n"
 "@MON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\n"
-"@AAA3A (Medicat Developer): Nothing"
+"@AAA3A (Medicat Developer): <https://www.buymeacoffee.com/aaa3a>"
 msgstr ""
 
 #: medicat\medicat.py:74
@@ -68,7 +68,8 @@ msgstr ""
 #: medicat\medicat.py:75
 msgid ""
 "The latest version of Medicat USB is 21.12!\n"
-"||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||"
+"||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||\n"
+"There is not currently an ETA for an updated release due to time restrictions"
 msgstr ""
 
 #: medicat\medicat.py:80
@@ -105,18 +106,18 @@ msgstr ""
 
 #: medicat\medicat.py:93
 msgid ""
-"In order to see what files are missing using the quick SFV program, please "
-"scroll all the way to the top once it has finished scanning."
+"In order to see what files are missing using the quick SFV program, Please "
+"wait for it to scan the entire USB and then look for the files with the ❌"
 msgstr ""
 
 #: medicat\medicat.py:99
-msgid "How do I download the Medicat USB iso file?"
+msgid "How do I download the Medicat USB iso/img file?"
 msgstr ""
 
 #: medicat\medicat.py:100
 msgid ""
 "Medicat USB is not available as an iso file.\n"
-"Previously, Medicat USB was available as an iso file. Now it uses Ventoy to run. It is currently impossible to put Ventoy and therefore Medicat USB in an iso file, or at least not without difficulties."
+"Previously, Medicat USB was available as an iso file. Now it uses Ventoy to run. It is currently impossible to put Ventoy and therefore Medicat USB in an iso file."
 msgstr ""
 
 #: medicat\medicat.py:105
@@ -202,10 +203,9 @@ msgstr ""
 
 #: medicat\medicat.py:143
 msgid ""
-"MediCat USB is now a rolling release, so will be regularly updated with "
-"major releases, and minor updates as needed (Typically monthly or bi-"
-"monthly). The links here will always be the latest version. The PortableApps"
-" are easily updatable by the user, once they have been 'burned' to USB."
+"Medicat is currently on hiatus.\n"
+"Due to personal reasons, neither Jayro, Matt or AAA3A have the time to develop Medicat full time.\n"
+"We do encourage you to update the tools as you see fit on your end."
 msgstr ""
 
 #: medicat\medicat.py:148
@@ -241,7 +241,7 @@ msgid "Test!"
 msgstr ""
 
 #: medicat\medicat.py:159
-msgid "Test."
+msgid "did that work for you?"
 msgstr ""
 
 #: medicat\medicat.py:280
@@ -298,7 +298,7 @@ msgstr ""
 msgid "Get the latest versions of each Medicat USB bootable tool."
 msgstr ""
 
-#: medicat\medicat.py:803
+#: medicat\medicat.py:803 medicat\medicat.py:943
 msgid "View FCportables Official Website"
 msgstr ""
 
@@ -309,10 +309,15 @@ msgstr ""
 
 #: medicat\medicat.py:902
 #, docstring
+msgid "Get the download link of each Medicat USB bootable tool."
+msgstr ""
+
+#: medicat\medicat.py:963
+#, docstring
 msgid "Get an embed to check loops status."
 msgstr ""
 
-#: medicat\medicat.py:909
+#: medicat\medicat.py:970
 #, docstring
 msgid "Update Medicat cog directly."
 msgstr ""

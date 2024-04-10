@@ -1,0 +1,76 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: linkquoter\converters.py:45 linkquoter\converters.py:57
+msgid "Can't read messages in {channel.mention}."
+msgstr ""
+
+#: linkquoter\converters.py:49
+msgid "Can't read message history in {channel.mention}."
+msgstr ""
+
+#: linkquoter\converters.py:65
+msgid "I can only quote messages from servers."
+msgstr ""
+
+#: linkquoter\converters.py:69
+msgid "Messages from NSFW channels cannot be quoted in non-NSFW channels."
+msgstr ""
+
+#: linkquoter\converters.py:82
+msgid "This server is not opted in to quote messages from other servers."
+msgstr ""
+
+#: linkquoter\converters.py:86
+msgid ""
+"That server is not opted in to allow its messages to be quoted in other "
+"servers."
+msgstr ""
+
+#: linkquoter\converters.py:95
+msgid "You don't have permission to read messages in that channel."
+msgstr ""
+
+#: linkquoter\linkquoter.py:55
+#, docstring
+msgid "Quote any Discord message from its link!"
+msgstr ""
+
+#: linkquoter\linkquoter.py:217
+msgid "{author.display_name} said..."
+msgstr ""
+
+#: linkquoter\linkquoter.py:241
+msgid "Attachments:"
+msgstr ""
+
+#: linkquoter\linkquoter.py:252
+msgid "Stickers:"
+msgstr ""
+
+#: linkquoter\linkquoter.py:266
+msgid "Replying to:"
+msgstr ""
+
+#: linkquoter\linkquoter.py:267
+msgid "Click to view attachments."
+msgstr ""
+
+#: linkquoter\linkquoter.py:337
+#, docstring
+msgid "Migrate config from LinkQuoter by Phen."
+msgstr ""
+
+#: linkquoter\linkquoter.py:362
+msgid "Data successfully migrated from LinkQuoter by Phen."
+msgstr ""

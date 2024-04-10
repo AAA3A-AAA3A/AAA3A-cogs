@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-22 14:22+0200\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,50 +16,50 @@ msgstr ""
 msgid "A cog to allow a member to choose custom prefixes, just for them!"
 msgstr ""
 
-#: memberprefix\memberprefix.py:161
+#: memberprefix\memberprefix.py:160
 msgid "You now use this server or global prefixes."
 msgstr ""
 
-#: memberprefix\memberprefix.py:165
+#: memberprefix\memberprefix.py:164
 msgid ""
 "A prefix is above the maximal length (25 characters).\n"
 "This is possible for global or per-server prefixes, but not for per-member prefixes."
 msgstr ""
 
-#: memberprefix\memberprefix.py:171
+#: memberprefix\memberprefix.py:170
 msgid ""
 "Prefixes cannot start with `/`, as it conflicts with Discord's slash "
 "commands."
 msgstr ""
 
-#: memberprefix\memberprefix.py:176
+#: memberprefix\memberprefix.py:175
 msgid ""
 "Prefix for you only set. You can use current prefixes or mention the bot to "
 "invoke a command, or reset your prefixes with the same command if you forget"
 " them."
 msgstr ""
 
-#: memberprefix\memberprefix.py:182
+#: memberprefix\memberprefix.py:181
 msgid ""
 "Prefixes for you only set. You can use current prefixes or mention the bot "
 "to invoke a command, or reset your prefixes with the same command if you "
 "forget them."
 msgstr ""
 
-#: memberprefix\memberprefix.py:197
+#: memberprefix\memberprefix.py:196
 #, docstring
 msgid "Clear prefixes for a specified member in a specified server."
 msgstr ""
 
-#: memberprefix\memberprefix.py:199
+#: memberprefix\memberprefix.py:198
 msgid "Prefixes cleared for this member in this guild."
 msgstr ""
 
-#: memberprefix\memberprefix.py:203
+#: memberprefix\memberprefix.py:202
 #, docstring
 msgid "Clear all members prefixes for a specified server."
 msgstr ""
 
-#: memberprefix\memberprefix.py:205
+#: memberprefix\memberprefix.py:204
 msgid "All members prefixes purged in this guild."
 msgstr ""

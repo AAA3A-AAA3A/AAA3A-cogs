@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-22 14:22+0200\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,30 +18,30 @@ msgid ""
 "send commands errors in configured channels!"
 msgstr ""
 
-#: consolelogs\consolelogs.py:265
+#: consolelogs\consolelogs.py:264
 msgid "No logs to display."
 msgstr ""
 
-#: consolelogs\consolelogs.py:416
+#: consolelogs\consolelogs.py:415
 #, docstring
 msgid ""
 "Scroll the console logs, for all levels/loggers or provided level/logger "
 "name."
 msgstr ""
 
-#: consolelogs\consolelogs.py:452
+#: consolelogs\consolelogs.py:451
 #, docstring
 msgid ""
 "View the console logs one by one, for all levels/loggers or provided "
 "level/logger name."
 msgstr ""
 
-#: consolelogs\consolelogs.py:463
+#: consolelogs\consolelogs.py:462
 #, docstring
 msgid "Display the stats for the bot logs since the bot start."
 msgstr ""
 
-#: consolelogs\consolelogs.py:496
+#: consolelogs\consolelogs.py:495
 #, docstring
 msgid ""
 "Enable errors logging in a channel.\n"
@@ -58,28 +58,28 @@ msgid ""
 "        "
 msgstr ""
 
-#: consolelogs\consolelogs.py:517
+#: consolelogs\consolelogs.py:516
 msgid "I don't have the permissions to send embeds in this channel."
 msgstr ""
 
-#: consolelogs\consolelogs.py:533
+#: consolelogs\consolelogs.py:532
 msgid "Errors logging enabled in {channel.mention}."
 msgstr ""
 
-#: consolelogs\consolelogs.py:537
+#: consolelogs\consolelogs.py:540
 #, docstring
 msgid "Disable errors logging in a channel."
 msgstr ""
 
-#: consolelogs\consolelogs.py:540
+#: consolelogs\consolelogs.py:543
 msgid "Errors logging isn't enabled in this channel."
 msgstr ""
 
-#: consolelogs\consolelogs.py:543
+#: consolelogs\consolelogs.py:546
 msgid "Errors logging disabled in {channel.mention}."
 msgstr ""
 
-#: consolelogs\consolelogs.py:547
+#: consolelogs\consolelogs.py:550
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr ""

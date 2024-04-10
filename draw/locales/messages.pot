@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-22 14:22+0200\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,13 +20,13 @@ msgstr ""
 msgid "This message isn't in the cache."
 msgstr ""
 
-#: draw\start_view.py:93 draw\start_view.py:102
+#: draw\start_view.py:94 draw\start_view.py:103
 msgid ""
 "Create a new Draw Board with `height = {height}`, `width = {width}` and "
 "`background = {background}`."
 msgstr ""
 
-#: draw\view.py:331
+#: draw\view.py:332
 msgid ""
 "Please type all the colors you want to add. They can be either or all of:\n"
 "• The hex codes (e.g. `ff64c4` or `ff64c4ff` to include alpha) **separated by space**,\n"
@@ -35,19 +35,19 @@ msgid ""
 "• Any image file (first 5 abundant colors will be extracted)."
 msgstr ""
 
-#: draw\view.py:404
+#: draw\view.py:402
 msgid ""
 "Please send a message containing the emojis you want to add to your palette."
 " E.g. `😎 I like turtles 🐢`."
 msgstr ""
 
-#: draw\view.py:817
+#: draw\view.py:809
 msgid ""
 "Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`,"
 " `A`, `10`, etc."
 msgstr ""
 
-#: draw\view.py:949
+#: draw\view.py:938
 msgid ""
 "Please type the cells with the main colors names. One color for each line, separated from the cell by a \":\". Example: `A1:red\n"
 "B7-C9:green`."

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-22 14:22+0200\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgstr ""
 msgid "{public.value} is not a recognised boolean option."
 msgstr ""
 
-#: gistshandler\view.py:101 gistshandler\view.py:199 gistshandler\view.py:384
+#: gistshandler\view.py:101 gistshandler\view.py:199 gistshandler\view.py:381
 msgid "GitHub token is invalid or expired."
 msgstr ""
 
@@ -46,10 +46,10 @@ msgstr ""
 msgid "Gist `{gist.id}` updated."
 msgstr ""
 
-#: gistshandler\view.py:388
+#: gistshandler\view.py:385
 msgid "You're not allowed to delete this gist."
 msgstr ""
 
-#: gistshandler\view.py:394
+#: gistshandler\view.py:391
 msgid "Gist `{gist.id}` deleted."
 msgstr ""

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-22 14:22+0200\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -191,7 +191,7 @@ msgstr ""
 msgid "A cog to sanction members, with buttons!"
 msgstr ""
 
-#: simplesanction\simplesanction.py:215
+#: simplesanction\simplesanction.py:209
 #, docstring
 msgid ""
 "\n"
@@ -204,7 +204,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction\simplesanction.py:250
+#: simplesanction\simplesanction.py:244
 #, docstring
 msgid ""
 "\n"
@@ -217,7 +217,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction\simplesanction.py:286
+#: simplesanction\simplesanction.py:280
 #, docstring
 msgid ""
 "\n"
@@ -230,7 +230,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction\simplesanction.py:321
+#: simplesanction\simplesanction.py:315
 #, docstring
 msgid ""
 "\n"
@@ -245,7 +245,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction\simplesanction.py:358
+#: simplesanction\simplesanction.py:352
 #, docstring
 msgid ""
 "\n"
@@ -260,7 +260,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction\simplesanction.py:396
+#: simplesanction\simplesanction.py:390
 #, docstring
 msgid ""
 "\n"
@@ -276,7 +276,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction\simplesanction.py:434
+#: simplesanction\simplesanction.py:428
 #, docstring
 msgid ""
 "\n"
@@ -289,7 +289,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction\simplesanction.py:469
+#: simplesanction\simplesanction.py:463
 #, docstring
 msgid ""
 "\n"
@@ -302,7 +302,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction\simplesanction.py:504
+#: simplesanction\simplesanction.py:498
 #, docstring
 msgid ""
 "\n"
@@ -315,7 +315,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction\simplesanction.py:540
+#: simplesanction\simplesanction.py:534
 #, docstring
 msgid ""
 "\n"
@@ -330,7 +330,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction\simplesanction.py:578
+#: simplesanction\simplesanction.py:572
 #, docstring
 msgid ""
 "\n"
@@ -345,21 +345,21 @@ msgid ""
 "        "
 msgstr ""
 
-#: simplesanction\simplesanction.py:620 simplesanction\types.py:89
+#: simplesanction\simplesanction.py:614 simplesanction\types.py:89
 #: simplesanction\types.py:103 simplesanction\types.py:146
 #: simplesanction\types.py:151
 msgid "The reason was not given."
 msgstr ""
 
-#: simplesanction\simplesanction.py:624 simplesanction\view.py:101
+#: simplesanction\simplesanction.py:618 simplesanction\view.py:99
 msgid "Sanction Member"
 msgstr ""
 
-#: simplesanction\simplesanction.py:625
+#: simplesanction\simplesanction.py:619
 msgid "Which member do you want to sanction? (Type `cancel` to cancel.)"
 msgstr ""
 
-#: simplesanction\simplesanction.py:643 simplesanction\types.py:125
+#: simplesanction\simplesanction.py:637 simplesanction\types.py:125
 #: simplesanction\types.py:148
 msgid "Timed out, please try again."
 msgstr ""
@@ -386,12 +386,12 @@ msgid ""
 "*The command may have failed. If so, an error will be displayed below.*"
 msgstr ""
 
-#: simplesanction\types.py:203 simplesanction\view.py:127
+#: simplesanction\types.py:203 simplesanction\view.py:125
 msgid "Reason:"
 msgstr ""
 
 #: simplesanction\types.py:208 simplesanction\types.py:214
-#: simplesanction\view.py:130
+#: simplesanction\view.py:128
 msgid "Duration:"
 msgstr ""
 
@@ -407,13 +407,13 @@ msgstr ""
 msgid "You can't execute this command, in this context."
 msgstr ""
 
-#: simplesanction\view.py:103
+#: simplesanction\view.py:101
 msgid ""
 "This tool allows you to easily sanction a server member.\n"
 "Member mention: {member.mention} - Member ID: {member.id}"
 msgstr ""
 
-#: simplesanction\view.py:137
+#: simplesanction\view.py:135
 msgid ""
 "You are using this command in Fake mode, so no action will be taken, but I "
 "will pretend it is the case."

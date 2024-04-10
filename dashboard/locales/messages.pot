@@ -1,0 +1,51 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: dashboard\dashboard.py:32
+msgid "This is not a valid URL."
+msgstr ""
+
+#: dashboard\dashboard.py:34
+msgid ""
+"This is not a valid Dashboard redirect URI: it must end with `/callback`."
+msgstr ""
+
+#: dashboard\dashboard.py:42
+msgid "This third party is not available."
+msgstr ""
+
+#: dashboard\dashboard.py:48
+#, docstring
+msgid ""
+"Interact with your bot through a web dashboard!\n"
+"\n"
+"    ⚠️ This package is a fork of Neuro Assassin's work, and isn't endorsed by the Org at all.\n"
+"    "
+msgstr ""
+
+#: dashboard\dashboard.py:306
+#, docstring
+msgid "Set the client secret needed for Discord Oauth."
+msgstr ""
+
+#: dashboard\dashboard.py:315
+msgid "Discord Secret"
+msgstr ""
+
+#: dashboard\dashboard.py:323
+msgid "Discord OAuth secret set."
+msgstr ""
+
+#: dashboard\dashboard.py:359
+msgid "Click on the button below to set a secret for Discord OAuth."
+msgstr ""

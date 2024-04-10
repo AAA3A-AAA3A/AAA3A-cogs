@@ -1,0 +1,72 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: presencechart\presencechart.py:23
+#, docstring
+msgid ""
+"A cog to make a chart with the different Discord statuses (presence) of a "
+"Discord member, in the previous x days (last 100 days maximum)!"
+msgstr ""
+
+#: presencechart\presencechart.py:135
+msgid "{member_or_role.guild.name} Members' Presence"
+msgstr ""
+
+#: presencechart\presencechart.py:139
+msgid "{member_or_role.guild.name} {member_or_role.name}' Presence"
+msgstr ""
+
+#: presencechart\presencechart.py:145
+msgid "{member_or_role.display_name}'s Presence"
+msgstr ""
+
+#: presencechart\presencechart.py:335
+#, docstring
+msgid ""
+"Make a chart with the different Discord statuses (presence) of a Discord "
+"member, in the previous x days (last 100 days maximum)."
+msgstr ""
+
+#: presencechart\presencechart.py:339
+msgid ""
+"This user is in the ignored users list (`{prefix}presencechart ignoreme`)."
+msgstr ""
+
+#: presencechart\presencechart.py:383
+#, docstring
+msgid ""
+"Make a chart with the different Discord statuses (presence) of all members "
+"of the guild/server."
+msgstr ""
+
+#: presencechart\presencechart.py:406
+#, docstring
+msgid ""
+"Make a chart with the different Discord statuses (presence) of all members "
+"of the specfied role."
+msgstr ""
+
+#: presencechart\presencechart.py:423
+#, docstring
+msgid "Asking PresenceChart to ignore your statuses (presence)."
+msgstr ""
+
+#: presencechart\presencechart.py:431
+msgid ""
+"You will no longer be seen by this cog and the data I held on you have been "
+"deleted."
+msgstr ""
+
+#: presencechart\presencechart.py:438
+msgid "You'll be seen again by this cog."
+msgstr ""

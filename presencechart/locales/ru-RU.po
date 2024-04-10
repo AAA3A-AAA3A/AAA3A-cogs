@@ -1,0 +1,68 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:43\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/presencechart/locales/messages.pot\n"
+"X-Crowdin-File-ID: 318\n"
+"Language: ru_RU\n"
+
+#: presencechart\presencechart.py:23
+#, docstring
+msgid "A cog to make a chart with the different Discord statuses (presence) of a Discord member, in the previous x days (last 100 days maximum)!"
+msgstr "Ког для создания графика с различными статусами (присутствием) участника Discord за последние x дней (максимум 100 дней)!"
+
+#: presencechart\presencechart.py:135
+msgid "{member_or_role.guild.name} Members' Presence"
+msgstr "{member_or_role.guild.name} Присутствие членов"
+
+#: presencechart\presencechart.py:139
+msgid "{member_or_role.guild.name} {member_or_role.name}' Presence"
+msgstr "{member_or_role.guild.name} {member_or_role.name}' Присутствие"
+
+#: presencechart\presencechart.py:145
+msgid "{member_or_role.display_name}'s Presence"
+msgstr "{member_or_role.display_name}Присутствие"
+
+#: presencechart\presencechart.py:335
+#, docstring
+msgid "Make a chart with the different Discord statuses (presence) of a Discord member, in the previous x days (last 100 days maximum)."
+msgstr "Составьте график с различными статусами (присутствием) участника Discord за последние x дней (максимум 100 дней)."
+
+#: presencechart\presencechart.py:339
+msgid "This user is in the ignored users list (`{prefix}presencechart ignoreme`)."
+msgstr "Этот пользователь находится в списке игнорируемых пользователей (`{prefix}presencechart ignoreme`)."
+
+#: presencechart\presencechart.py:383
+#, docstring
+msgid "Make a chart with the different Discord statuses (presence) of all members of the guild/server."
+msgstr "Составьте таблицу с различными статусами (присутствием) в Discord всех членов гильдии/сервера."
+
+#: presencechart\presencechart.py:406
+#, docstring
+msgid "Make a chart with the different Discord statuses (presence) of all members of the specfied role."
+msgstr "Составьте таблицу с различными статусами (присутствием) в Discord всех членов указанной роли."
+
+#: presencechart\presencechart.py:423
+#, docstring
+msgid "Asking PresenceChart to ignore your statuses (presence)."
+msgstr "Попросите PresenceChart игнорировать ваши статусы (присутствие)."
+
+#: presencechart\presencechart.py:431
+msgid "You will no longer be seen by this cog and the data I held on you have been deleted."
+msgstr "Вы больше не будете видны этому когу, а имеющиеся у меня данные о вас будут удалены."
+
+#: presencechart\presencechart.py:438
+msgid "You'll be seen again by this cog."
+msgstr "Вы снова увидите эту шестеренку."
+

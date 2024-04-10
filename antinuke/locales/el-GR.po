@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-07-15 19:18\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:20\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -22,48 +22,48 @@ msgstr ""
 msgid "A cog to remove all permissions from a person who deletes a channel!"
 msgstr "Ένα γρανάζι για την αφαίρεση όλων των δικαιωμάτων από ένα άτομο που διαγράφει ένα κανάλι!"
 
-#: antinuke\antinuke.py:182
+#: antinuke\antinuke.py:179
 msgid "All your roles have been taken away because you have deleted channel #{old_channel}.\n"
 "Your previous roles: {rolelist_name}"
 msgstr "Όλοι οι ρόλοι σας έχουν αφαιρεθεί επειδή διαγράψατε το κανάλι #{old_channel}.\n"
 "Οι προηγούμενοι ρόλοι σας: {rolelist_name}"
 
-#: antinuke\antinuke.py:194
+#: antinuke\antinuke.py:191
 msgid "All roles in {perp} ({perp.id}) roles have been removed as a result of the antinuke system being triggered on this server."
 msgstr "Όλοι οι ρόλοι στο {perp} ({perp.id}) έχουν αφαιρεθεί ως αποτέλεσμα της ενεργοποίησης του συστήματος antinuke σε αυτόν τον διακομιστή."
 
-#: antinuke\antinuke.py:203
+#: antinuke\antinuke.py:200
 msgid "The user {perp} has deleted the channel #{old_channel.name}!"
 msgstr "Ο χρήστης {perp} διέγραψε το κανάλι #{old_channel.name}!"
 
-#: antinuke\antinuke.py:206
+#: antinuke\antinuke.py:203
 msgid "To prevent him from doing anything else, I took away as many roles as my current permissions would allow.\n"
 "User mention: {perp.mention} - User ID: {perp.id}"
 msgstr "Για να τον εμποδίσω να κάνει οτιδήποτε άλλο, του αφαίρεσα όσους περισσότερους ρόλους μου επέτρεπαν τα τρέχοντα δικαιώματά μου.\n"
 "Αναφορά χρήστη: {perp.mention} - Αναγνωριστικό χρήστη: {perp.id}"
 
-#: antinuke\antinuke.py:217
+#: antinuke\antinuke.py:214
 msgid "Before I intervened, the user had the following roles:"
 msgstr "Πριν παρέμβω, ο χρήστης είχε τους ακόλουθους ρόλους:"
 
-#: antinuke\antinuke.py:253
+#: antinuke\antinuke.py:250
 #, docstring
 msgid "Reset number detected for a user."
 msgstr "Επαναφορά αριθμού που εντοπίστηκε για έναν χρήστη."
 
-#: antinuke\antinuke.py:255
+#: antinuke\antinuke.py:252
 msgid "Only the owner of this server can access these commands!"
 msgstr "Μόνο ο ιδιοκτήτης αυτού του διακομιστή μπορεί να έχει πρόσβαση σε αυτές τις εντολές!"
 
-#: antinuke\antinuke.py:269
+#: antinuke\antinuke.py:266
 msgid "All former roles of {user} ({user.id}) have been restored at the request of the server owner."
 msgstr "Όλοι οι προηγούμενοι ρόλοι του {user} ({user.id}) έχουν αποκατασταθεί κατόπιν αιτήματος του ιδιοκτήτη του διακομιστή."
 
-#: antinuke\antinuke.py:273
+#: antinuke\antinuke.py:270
 msgid "Restored roles for {user.name} ({user.id})."
 msgstr "Αποκατάσταση των ρόλων του {user.name} ({user.id})."
 
-#: antinuke\antinuke.py:277
+#: antinuke\antinuke.py:274
 msgid "Count reset for {user.name} ({user.id})."
 msgstr "Επαναφορά της καταμέτρησης για το {user.name} ({user.id})."
 

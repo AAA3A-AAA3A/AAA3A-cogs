@@ -1,0 +1,551 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:40\n"
+"Last-Translator: \n"
+"Language-Team: Portuguese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pt-PT\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/reminders/locales/messages.pot\n"
+"X-Crowdin-File-ID: 239\n"
+"Language: pt_PT\n"
+
+#: reminders\converters.py:112
+msgid "Invalid timezone provided."
+msgstr "Fuso horário inválido fornecido."
+
+#: reminders\converters.py:535 reminders\reminders.py:886
+#: reminders\reminders.py:1084
+msgid "You haven't any reminders."
+msgstr "Não tem nenhum lembrete."
+
+#: reminders\converters.py:544
+msgid "Reminder ID must be an integer."
+msgstr "O ID do lembrete tem de ser um número inteiro."
+
+#: reminders\converters.py:548
+msgid "You haven't any reminder with this id."
+msgstr "Não tem qualquer lembrete com esta identificação."
+
+#: reminders\reminders.py:61
+msgid "You're not allowed to execute the `[p]remindme` command in this channel."
+msgstr "Não é permitido executar o comando `[p]remindme` neste canal."
+
+#: reminders\reminders.py:69
+#, docstring
+msgid "Don't forget anything anymore! Reminders in DMs, channels, FIFO commands scheduler, say scheduler... With 'Me Too', snooze and buttons."
+msgstr "Já não se esquece de nada! Lembretes em DMs, canais, agendamento de comandos FIFO, agendamento de palavras... Com botões 'Me Too', snooze e..."
+
+#: reminders\reminders.py:303 reminders\reminders.py:433
+#: reminders\reminders.py:620 reminders\reminders.py:737
+msgid "You have reached the limit of {minimum_user_reminders} reminders per user."
+msgstr "Atingiu o limite de {minimum_user_reminders} lembretes por utilizador."
+
+#: reminders\reminders.py:325 reminders\reminders.py:455
+#: reminders\reminders.py:637 reminders\reminders.py:750
+#: reminders\reminders.py:1053
+msgid "You are not allowed to create repeating reminders."
+msgstr "Não é permitido criar lembretes repetidos."
+
+#: reminders\reminders.py:339 reminders\reminders.py:469
+#: reminders\reminders.py:651 reminders\reminders.py:764
+#: reminders\reminders.py:1068
+msgid "The repeat timedelta must be greater than {minimum_repeat} minutes."
+msgstr "O timedelta de repetição deve ser superior a {minimum_repeat} minutos."
+
+#: reminders\reminders.py:370 reminders\reminders.py:547
+#: reminders\reminders.py:980
+msgid "Your reminder text is too long."
+msgstr "O seu texto de lembrete é demasiado longo."
+
+#: reminders\reminders.py:494
+msgid "You can't create a reminder in {destination}."
+msgstr "Não é possível criar um lembrete em {destination}."
+
+#: reminders\reminders.py:500 reminders\reminders.py:772
+msgid "I can't send messages in this channel."
+msgstr "Não consigo enviar mensagens neste canal."
+
+#: reminders\reminders.py:502
+msgid "I can't send embeds in this channel."
+msgstr "Não consigo enviar incorporações neste canal."
+
+#: reminders\reminders.py:511
+msgid "Since you don't have the `mention_everyone` permission, you can't create a reminder that will mention more than 3 people or mention role(s)."
+msgstr "Uma vez que não tem a permissão `mention_everyone`, não pode criar um lembrete que mencione mais de 3 pessoas ou mencione função(ões)."
+
+#: reminders\reminders.py:517
+msgid "Due to the message character limit, you can only mention a maximum of 10 users or roles."
+msgstr "Devido ao limite de caracteres da mensagem, só é possível mencionar um máximo de 10 utilizadores ou funções."
+
+#: reminders\reminders.py:605
+#, docstring
+msgid "Create a FIFO/command reminder. The chosen command will be executed with you as invoker. Don't provide the prefix.\n\n"
+"        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.\n"
+"        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
+"        Use `[p]reminder timetips` to display tips for time parsing.\n\n"
+"        Examples:\n"
+"        - `[p]reminder fifo #destination \"at 10h every day\" ping\n"
+"        "
+msgstr "Criar um lembrete FIFO/comando. O comando escolhido será executado tendo-o como invocador. Não forneça o prefixo.\n\n"
+"        O tempo especificado pode ser analisado de forma difusa ou usar os kwargs `in`, `on` e `every` para encontrar uma regra de repetição e seu texto.\n"
+"        Não é necessário colocar aspas em torno do argumento tempo. Para uma análise mais precisa, você pode colocar aspas ao redor do texto. Coloque aspas em volta do tempo também, se ele contiver espaços.\n"
+"        Utilize `[p]reminder timetips` para exibir dicas de análise de tempo.\n\n"
+"        Exemplos:\n"
+"        - `[p]reminder fifo #destination \"at 10h every day\" ping\n"
+"        "
+
+#: reminders\reminders.py:626
+msgid "You're not allowed to create FIFO/commands reminders."
+msgstr "Não é permitido criar lembretes FIFO/comandos."
+
+#: reminders\reminders.py:668
+msgid "This command doesn't exist."
+msgstr "Este comando não existe."
+
+#: reminders\reminders.py:675
+msgid "You can't execute this command, in this context."
+msgstr "Não é possível executar este comando, neste contexto."
+
+#: reminders\reminders.py:679
+msgid "The command `{command.qualified_name}` can't be scheduled, because it's a suspicious command."
+msgstr "O comando `{command.qualified_name}` não pode ser agendado, porque é um comando suspeito."
+
+#: reminders\reminders.py:722
+#, docstring
+msgid "Create a reminder who will say/send text.\n\n"
+"        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.\n"
+"        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
+"        Use `[p]reminder timetips` to display tips for time parsing.\n\n"
+"        Examples:\n"
+"        - `[p]reminder say #destination \"at 9h every day\" Hello everyone!\n"
+"        "
+msgstr "Criar um lembrete que irá dizer/enviar texto.\n\n"
+"        O tempo especificado pode ser analisado de forma difusa ou utilizar os kwargs `in`, `on` e `every` para encontrar uma regra de repetição e o seu texto.\n"
+"        Não é necessário colocar aspas no argumento de tempo. Para uma análise mais precisa, você pode colocar aspas ao redor do texto. Coloque aspas em volta do tempo também, se ele contiver espaços.\n"
+"        Utilize `[p]reminder timetips` para exibir dicas de análise de tempo.\n\n"
+"        Exemplos:\n"
+"        - `[p]reminder say #destination \"at 9h every day\" Olá a todos!\n"
+"        "
+
+#: reminders\reminders.py:780
+msgid "You can't or I can't send messages in this channel."
+msgstr "Não podes ou eu não posso enviar mensagens neste canal."
+
+#: reminders\reminders.py:817
+#, docstring
+msgid "Show time parsing tips."
+msgstr "Mostrar dicas de análise de tempo."
+
+#: reminders\reminders.py:818
+msgid "\n"
+"            Allowed **absolutes** are:\n"
+"            • `eoy` - Remind at end of year at 17:00.\n"
+"            • `eom` - Remind at end of month at 17:00.\n"
+"            • `eow` - Remind at end of working week (or next friday) at 17:00.\n"
+"            • `eod` - Remind at end of day at 17:00.\n\n"
+"            Allowed **intervals** are:\n"
+"            • `years`/`year`/`y`\n"
+"            • `months`/`month`/`mo`\n"
+"            • `weeks`/`week`/`w`\n"
+"            • `days`/`day`/`d`\n"
+"            • `hours`/`hour`/`hrs`/`hr`/`h`\n"
+"            • `minutes`/`minute`/`mins`/`min`/`m`\n\n"
+"            You can combine **relative intervals** like this:\n"
+"            • `[in] 1y 1mo 2 days, and -5h`\n"
+"            • `on 29th may at 18h, and every year`\n\n"
+"            **Timestamps** and **iso-timestamps** are supported:\n"
+"            • For ISO, be aware that specifying a timezone will ignore your timezone.\n\n"
+"            **Dates** are supported, you can try different formats:\n"
+"            • `5 jul`, `5th july`, `july 5`\n"
+"            • `23 sept at 3pm`, `23 sept at 15:00`\n"
+"            • `2030`\n"
+"            • `[at] 10pm`\n"
+"            • `friday at 9h`\n"
+"            Note: the parser uses day-first and year-last (`01/02/03` -> `1st February 2003`).\n\n"
+"            **Cron triggers** are supported:\n"
+"            • Check https://crontab.guru/.\n"
+"            "
+msgstr "\n"
+"            Os **absolutos** permitidos são:\n"
+"            - `eoy` - Lembrar no fim do ano às 17:00.\n"
+"            - `eom` - Lembrar no fim do mês às 17:00.\n"
+"            - `eow` - Lembrar no final da semana de trabalho (ou na próxima sexta-feira) às 17:00.\n"
+"            - `eod` - Lembrar no final do dia às 17:00.\n\n"
+"            Os **intervalos** permitidos são:\n"
+"            - `years`/`year`/`y`\n"
+"            - `months`/`month`/`mo`\n"
+"            - `weeks`/`week`/`w`\n"
+"            - `days`/`day`/`d`\n"
+"            - `hours`/`hour`/`hrs`/`hr`/`h`\n"
+"            - `minutes`/`minute`/`mins`/`min`/`m`\n\n"
+"            Você pode combinar **intervalos relativos** assim:\n"
+"            - `[in] 1y 1mo 2 dias, e -5h`\n"
+"            - `em 29 de maio às 18h, e todos os anos`\n\n"
+"            **Timestamps** e **iso-timestamps** são suportados:\n"
+"            - Para ISO, tenha em atenção que a especificação de um fuso horário irá ignorar o seu fuso horário.\n\n"
+"            **Datas** são suportadas, pode tentar diferentes formatos:\n"
+"            - `5 jul`, `5th july`, `july 5`\n"
+"            - `23 sept at 3pm`, `23 sept at 15:00`\n"
+"            - `2030`\n"
+"            - `[at] 10pm`\n"
+"            - `friday at 9h`\n"
+"            Nota: o analisador utiliza o dia-primeiro e o ano-último (`01/02/03` -> `1st February 2003`).\n\n"
+"            **Cron triggers** são suportados:\n"
+"            - Veja https://crontab.guru/.\n"
+"            "
+
+#: reminders\reminders.py:861
+#, docstring
+msgid "Set your timezone for the time converter.\n\n"
+"        Timezone should be specified in the format: `Continent/City`.\n"
+"        Example: `Europe/Paris`, `America/New_York`...\n"
+"        You can find a list of valid timezones at: https://timezonedb.com/time-zones.\n"
+"        "
+msgstr "Defina o seu fuso horário para o conversor de tempo.\n\n"
+"        O fuso horário deve ser especificado no formato: `Continente/Cidade`.\n"
+"        Exemplo: `Europa/Paris`, `América/Nova_York`...\n"
+"        Pode encontrar uma lista de fusos horários válidos em: https://timezonedb.com/time-zones.\n"
+"        "
+
+#: reminders\reminders.py:868
+msgid "Your timezone has been set to `{timezone}`."
+msgstr "O seu fuso horário foi definido para `{timezone}`."
+
+#: reminders\reminders.py:878
+#, docstring
+msgid "List your existing reminders.\n\n"
+"        Sort options:\n"
+"        - `expire`: Display them in order of next triggering.\n"
+"        - `created`: Display them in order of creating.\n"
+"        - `id`: Display them in order of their ID.\n"
+"        "
+msgstr "Liste os seus lembretes existentes.\n\n"
+"        Opções de ordenação:\n"
+"        - `expirar`: Mostra-os por ordem do próximo accionamento.\n"
+"        - `criado`: Mostra-os por ordem de criação.\n"
+"        - `id`: Mostra-os por ordem do seu ID.\n"
+"        "
+
+#: reminders\reminders.py:902
+msgid "Your Reminders"
+msgstr "Os seus lembretes"
+
+#: reminders\reminders.py:904
+msgid " (Content type `{content_type}`)"
+msgstr " (Tipo de conteúdo `{content_type}`)"
+
+#: reminders\reminders.py:908
+msgid "You have {len_reminders} reminders{of_this_content_type}. Use `{clean_prefix}reminder edit #ID` to edit a reminder."
+msgstr "Tem {len_reminders} lembretes{of_this_content_type}. Utilize `{clean_prefix}reminder edit #ID` para editar um lembrete."
+
+#: reminders\reminders.py:912
+msgid " of this content type"
+msgstr " deste tipo de conteúdo"
+
+#: reminders\reminders.py:931
+#, docstring
+msgid "Remove existing Reminder(s) from their IDs.\n\n"
+"        - Use `last` to remove your last created reminder.\n"
+"        - Use `next` to remove your next triggered reminder.\n"
+"        "
+msgstr "Remover lembrete(s) existente(s) dos seus IDs.\n\n"
+"        - Utilize `last` para remover o seu último lembrete criado.\n"
+"        - Utilize `next` para remover o seu próximo lembrete ativado.\n"
+"        "
+
+#: reminders\reminders.py:943
+msgid "Your reminder {reminder_id} has been successfully removed."
+msgstr "O seu lembrete {reminder_id} foi removido com sucesso."
+
+#: reminders\reminders.py:949
+msgid "Your reminders {reminders_ids} have been successfully removed."
+msgstr "Os seus lembretes {reminders_ids} foram removidos com sucesso."
+
+#: reminders\reminders.py:956
+#, docstring
+msgid "Edit an existing Reminder from its ID.\n\n"
+"        - Use `last` to edit your last created reminder.\n"
+"        - Use `next` to edit your next triggered reminder.\n"
+"        "
+msgstr "Editar um lembrete existente a partir do seu ID.\n\n"
+"        - Utilize `last` para editar o seu último lembrete criado.\n"
+"        - Use `next` para editar o próximo lembrete acionado.\n"
+"        "
+
+#: reminders\reminders.py:974
+#, docstring
+msgid "Edit the text of an existing Reminder from its ID.\n\n"
+"        - Use `last` to edit your last created reminder.\n"
+"        - Use `next` to edit your next triggered reminder.\n"
+"        "
+msgstr "Editar o texto de um lembrete existente a partir do seu ID.\n\n"
+"        - Utilize `last` para editar o seu último lembrete criado.\n"
+"        - Use `next` para editar o próximo lembrete acionado.\n"
+"        "
+
+#: reminders\reminders.py:990 reminders\reminders.py:1014
+#: reminders\reminders.py:1075 reminders\views.py:154 reminders\views.py:378
+#: reminders\views.py:439
+msgid "Your reminder **#{reminder_id}** has been successfully edited."
+msgstr "O seu lembrete **#{reminder_id}** foi editado com sucesso."
+
+#: reminders\reminders.py:999
+#, docstring
+msgid "Edit the expires time of an existing Reminder from its ID.\n\n"
+"        - Use `last` to edit your last created reminder.\n"
+"        - Use `next` to edit your next triggered reminder.\n"
+"        It's the same converter as for creation, but without the option of repetition.\n"
+"        "
+msgstr "Editar a hora de expiração de um lembrete existente a partir do seu ID.\n\n"
+"        - Utilize `last` para editar o seu último lembrete criado.\n"
+"        - Use `next` para editar o próximo lembrete acionado.\n"
+"        É o mesmo conversor da criação, mas sem a opção de repetição.\n"
+"        "
+
+#: reminders\reminders.py:1023
+#, docstring
+msgid "Edit the repeat of an existing Reminder from its ID.\n\n"
+"        - Use `last` to edit your last created reminder.\n"
+"        - Use `next` to edit your next triggered reminder.\n\n"
+"        Allowed **intervals** are:\n"
+"        • `years`/`year`/`y`\n"
+"        • `months`/`month`/`mo`\n"
+"        • `weeks`/`week`/`w`\n"
+"        • `days`/`day`/`d`\n"
+"        • `hours`/`hour`/`hrs`/`hr`/`h`\n"
+"        • `minutes`/`minute`/`mins`/`min`/`m`\n\n"
+"        You can combine **relative intervals** like this:\n"
+"        • `1y 1mo 2 days -5h`\n"
+"        "
+msgstr "Editar a repetição de um lembrete existente a partir do seu ID.\n\n"
+"        - Utilize `last` para editar o seu último lembrete criado.\n"
+"        - Use `next` para editar o próximo lembrete acionado.\n\n"
+"        Os **intervalos** permitidos são:\n"
+"        - `years`/`year`/`y`\n"
+"        - `months`/`month`/`mo`\n"
+"        - `weeks`/`week`/`w`\n"
+"        - `days`/`day`/`d`\n"
+"        - `hours`/`hour`/`hrs`/`hr`/`h`\n"
+"        - `minutes`/`minute`/`mins`/`min`/`m`\n\n"
+"        Você pode combinar **intervalos relativos** assim:\n"
+"        - `1y 1mo 2 days -5h`\n"
+"        "
+
+#: reminders\reminders.py:1082
+#, docstring
+msgid "Clear all your existing reminders."
+msgstr "Limpar todos os lembretes existentes."
+
+#: reminders\reminders.py:1087 reminders\reminders.py:1151
+msgid "⚠️ - Reminders"
+msgstr "⚠️ - Lembretes"
+
+#: reminders\reminders.py:1088
+msgid "Do you really want to remove ALL your reminders?"
+msgstr "Quer mesmo remover TODOS os seus lembretes?"
+
+#: reminders\reminders.py:1100
+msgid "All your reminders have been successfully removed."
+msgstr "Todos os seus lembretes foram removidos com sucesso."
+
+#: reminders\reminders.py:1146
+#, docstring
+msgid "Clear all existing reminders for a user."
+msgstr "Limpar todos os lembretes existentes para um utilizador."
+
+#: reminders\reminders.py:1148
+msgid "This user haven't any reminders."
+msgstr "Este utilizador não tem quaisquer lembretes."
+
+#: reminders\reminders.py:1152
+msgid "Do you really want to remove ALL {user.display_name}'s reminders?"
+msgstr "Pretende mesmo remover TODOS os lembretes de {user.display_name}?"
+
+#: reminders\reminders.py:1166
+msgid "All user's reminders have been successfully removed."
+msgstr "Todos os lembretes do utilizador foram removidos com sucesso."
+
+#: reminders\reminders.py:1170
+#, docstring
+msgid "Get an embed to check loops status."
+msgstr "Obter uma incorporação para verificar o estado dos loops."
+
+#: reminders\reminders.py:1176
+#, docstring
+msgid "Migrate Reminders from RemindMe by PhasecoreX."
+msgstr "Migrar lembretes do RemindMe by PhasecoreX."
+
+#: reminders\reminders.py:1183
+msgid "RemindMe by PhasecoreX has no data in this bot."
+msgstr "RemindMe by PhasecoreX não tem dados neste bot."
+
+#: reminders\reminders.py:1187
+msgid "RemindMe by PhasecoreX use an old/new data schema version and isn't compatible with this cog actually."
+msgstr "O RemindMe da PhasecoreX utiliza uma versão antiga/nova do esquema de dados e não é compatível com esta engrenagem."
+
+#: reminders\reminders.py:1245
+msgid "Data successfully migrated from RemindMe by PhasecoreX."
+msgstr "Dados migrados com sucesso do RemindMe pela PhasecoreX."
+
+#: reminders\reminders.py:1249
+#, docstring
+msgid "Migrate Reminders from FIFO by Fox."
+msgstr "Migrar Lembretes de FIFO por Fox."
+
+#: reminders\reminders.py:1329
+msgid "Data successfully migrated from FIFO by Fox."
+msgstr "Dados migrados com sucesso do FIFO por Fox."
+
+#: reminders\types.py:393
+msgid ", and then **{interval}**"
+msgstr "e, em seguida, **{interval}**"
+
+#: reminders\types.py:397
+msgid ", with **{nb_repeat_rules} repeat rules**"
+msgstr ", com **{nb_repeat_rules} repetir regras**"
+
+#: reminders\types.py:406
+msgid "{state}Okay, I will dispatch {this} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+msgstr "{state}Muito bem, vou enviar {this} **{interval_string}** ({timestamp}){and_every}. [Lembrete **#{reminder_id}**]"
+
+#: reminders\types.py:411
+msgid "{state}Okay, I will execute this command{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+msgstr "{state}Muito bem, vou executar este comando{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Lembrete **#{reminder_id}**]"
+
+#: reminders\types.py:416
+msgid "{state}Okay, I will say {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+msgstr "{state}Muito bem, vou dizer {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Lembrete **#{reminder_id}**]"
+
+#: reminders\types.py:420
+msgid "{state}Okay, I will remind {targets_mentions} of {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+msgstr "{state}Muito bem, vou recordar {targets_mentions} de {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Lembrete **#{reminder_id}**]"
+
+#: reminders\types.py:429
+msgid "you"
+msgstr "tu"
+
+#: reminders\types.py:431
+msgid "the event `{event_name}`"
+msgstr "o evento `{event_name}`"
+
+#: reminders\types.py:434
+msgid "this command"
+msgstr "este comando"
+
+#: reminders\types.py:438
+msgid "this message"
+msgstr "esta mensagem"
+
+#: reminders\types.py:440
+msgid "this"
+msgstr "este"
+
+#: reminders\types.py:445
+msgid "that"
+msgstr "que"
+
+#: reminders\types.py:451
+msgid " in {destination_mention}"
+msgstr " em {destination_mention}"
+
+#: reminders\types.py:459
+msgid " in {destination} (Not found.)"
+msgstr " em {destination} (Não encontrado.)"
+
+#: reminders\types.py:471
+msgid "• **Next Expires at**: {expires_at_timestamp} ({expires_in_timestamp})\n"
+"• **Created at**: {created_at_timestamp} ({created_in_timestamp})\n"
+"• **Repeat**: {repeat}\n"
+"• **Title**: {title}\n"
+"• **Content type**: `{content_type}`\n"
+"• **Content**: {content}\n"
+"• **Targets**: {targets}\n"
+"• **Destination**: {destination}\n"
+"• **Jump URL**: {jump_url}\n"
+msgstr "- **Next Expires at**: {expires_at_timestamp} ({expires_in_timestamp})\n"
+"- **Criado em**: {created_at_timestamp} ({created_in_timestamp})\n"
+"- **Repetição**: {repeat}\n"
+"- **Título**: {title}\n"
+"- **Tipo de conteúdo**: `{content_type}`\n"
+"- **Content**: {content}\n"
+"- **Targets**: {targets}\n"
+"- **Destino**: {destination}\n"
+"- **Jump URL**: {jump_url}\n"
+
+#: reminders\types.py:490 reminders\views.py:235 reminders\views.py:414
+#: reminders\views.py:428 reminders\views.py:513 reminders\views.py:531
+msgid "No existing repeat rule(s)."
+msgstr "Não existe(m) regra(s) de repetição."
+
+#: reminders\types.py:493
+msgid "{nb_repeat_rules} repeat rules."
+msgstr "{nb_repeat_rules} regras de repetição."
+
+#: reminders\types.py:497
+msgid "Not provided."
+msgstr "Não fornecido."
+
+#: reminders\types.py:510
+msgid "No content."
+msgstr "Sem conteúdo."
+
+#: reminders\types.py:524
+msgid "No target(s)."
+msgstr "Nenhum objetivo(s)."
+
+#: reminders\types.py:525
+msgid "In DMs"
+msgstr "Em DMs"
+
+#: reminders\types.py:607
+msgid "You asked me to remind you about {this}, {interval_string}.\n\n"
+msgstr "Pediste-me para te lembrar de {this}, {interval_string}.\n\n"
+
+#: reminders\types.py:613
+msgid "You asked me to remind you about [this message]({message_jump_url}) from {author_mention} ({author_id}), {interval_string}.\n\n"
+msgstr "Pediu-me que lhe recordasse [esta mensagem]({message_jump_url}) de {author_mention} ({author_id}), {interval_string}.\n\n"
+
+#: reminders\types.py:629
+msgid "This was supposed to send {interval_string} ago. I might be having network or server issues, or perhaps I just started up. Sorry about that!\n\n"
+msgstr "Isto devia ter sido enviado há {interval_string}. Posso estar a ter problemas de rede ou de servidor, ou talvez tenha acabado de começar. Peço desculpa por isso!\n\n"
+
+#: reminders\types.py:633
+msgid "Next trigger in {interval_string}."
+msgstr "Próximo gatilho em {interval_string}."
+
+#: reminders\types.py:786 reminders\views.py:559
+msgid "Jump to original message"
+msgstr "Ir para a mensagem original"
+
+#: reminders\views.py:100
+msgid "The image URL must be a valid URL."
+msgstr "O URL da imagem deve ser um URL válido."
+
+#: reminders\views.py:231
+msgid "Reminder #{reminder_id} Repeat Rules"
+msgstr "Lembrete #{reminder_id} Regras de repetição"
+
+#: reminders\views.py:257 reminders\views.py:299 reminders\views.py:716
+msgid "Reminder **#{reminder_id}** deleted."
+msgstr "Lembrete **#{reminder_id}** eliminado."
+
+#: reminders\views.py:421
+msgid "No existing repeat rule found with this index number."
+msgstr "Não foi encontrada nenhuma regra de repetição existente com este número de índice."
+
+#: reminders\views.py:497
+msgid "A maximum of 10 repeat rules per reminder is supported."
+msgstr "É suportado um máximo de 10 regras de repetição por lembrete."
+
+#: reminders\views.py:536
+msgid "Reminder **#{reminder_id}** edited."
+msgstr "Lembrete **#{reminder_id}** editado."
+

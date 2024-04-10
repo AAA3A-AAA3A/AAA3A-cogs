@@ -1,0 +1,46 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:22\n"
+"Last-Translator: \n"
+"Language-Team: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: nl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/codesnippets/locales/messages.pot\n"
+"X-Crowdin-File-ID: 227\n"
+"Language: nl_NL\n"
+
+#: codesnippets\codesnippets.py:67
+#, docstring
+msgid "A cog to send code content from a GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL!"
+msgstr "Een tandwiel om code-inhoud van een GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL te versturen!"
+
+#: codesnippets\codesnippets.py:495
+msgid "No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found."
+msgstr "Geen GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL gevonden."
+
+#: codesnippets\codesnippets.py:533
+#, docstring
+msgid "Add a channel where the cog have to send automatically code snippets from URLs."
+msgstr "Voeg een kanaal toe waar het tandwiel automatisch codefragmenten van URL's naartoe moet sturen."
+
+#: codesnippets\codesnippets.py:537
+msgid "The cog is already enabled in this channel"
+msgstr "Het tandwiel is al ingeschakeld in dit kanaal"
+
+#: codesnippets\codesnippets.py:548
+#, docstring
+msgid "Remove a channel where the cog have to send automatically code snippets from URLs."
+msgstr "Verwijder een kanaal waar het tandwiel automatisch codefragmenten van URL's moet verzenden."
+
+#: codesnippets\codesnippets.py:552
+msgid "The cog is already disabled in this channel"
+msgstr "Het tandwiel is al uitgeschakeld in dit kanaal"
+

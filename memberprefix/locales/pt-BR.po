@@ -1,0 +1,64 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:40\n"
+"Last-Translator: \n"
+"Language-Team: Portuguese, Brazilian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pt-BR\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/memberprefix/locales/messages.pot\n"
+"X-Crowdin-File-ID: 92\n"
+"Language: pt_BR\n"
+
+#: memberprefix\memberprefix.py:20
+#, docstring
+msgid "A cog to allow a member to choose custom prefixes, just for them!"
+msgstr "Uma engrenagem para permitir a um membro escolher prefixos personalizados, só para eles!"
+
+#: memberprefix\memberprefix.py:160
+msgid "You now use this server or global prefixes."
+msgstr "Utiliza agora este servidor ou prefixos globais."
+
+#: memberprefix\memberprefix.py:164
+msgid "A prefix is above the maximal length (25 characters).\n"
+"This is possible for global or per-server prefixes, but not for per-member prefixes."
+msgstr "Um prefixo está acima do comprimento máximo (25 caracteres).\n"
+"Isto é possível para os prefixos globais ou por servidor, mas não para os prefixos por membro."
+
+#: memberprefix\memberprefix.py:170
+msgid "Prefixes cannot start with `/`, as it conflicts with Discord's slash commands."
+msgstr "Os prefixos não podem começar com `/`, uma vez que entram em conflito com os comandos de corte da Discord."
+
+#: memberprefix\memberprefix.py:175
+msgid "Prefix for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."
+msgstr "Prefixo para si apenas definido. Pode utilizar os prefixos actuais ou mencionar o bot para invocar um comando, ou repor os seus prefixos com o mesmo comando se se esquecer deles."
+
+#: memberprefix\memberprefix.py:181
+msgid "Prefixes for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."
+msgstr "Os prefixos só são definidos por si. Pode utilizar os prefixos actuais ou mencionar o bot para invocar um comando, ou repor os seus prefixos com o mesmo comando se se esquecer deles."
+
+#: memberprefix\memberprefix.py:196
+#, docstring
+msgid "Clear prefixes for a specified member in a specified server."
+msgstr "Limpa os prefixos de um membro especificado num servidor especificado."
+
+#: memberprefix\memberprefix.py:198
+msgid "Prefixes cleared for this member in this guild."
+msgstr "Prefixos autorizados para este membro neste grémio."
+
+#: memberprefix\memberprefix.py:202
+#, docstring
+msgid "Clear all members prefixes for a specified server."
+msgstr "Limpa todos os prefixos de membros de um servidor especificado."
+
+#: memberprefix\memberprefix.py:204
+msgid "All members prefixes purged in this guild."
+msgstr "Os prefixos de todos os membros são eliminados neste grémio."
+

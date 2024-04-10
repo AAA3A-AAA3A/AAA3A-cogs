@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2024-04-10 12:37\n"
+"Last-Translator: \n"
+"Language-Team: Spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-ES\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/minecraft/locales/messages.pot\n"
+"X-Crowdin-File-ID: 235\n"
+"Language: es_ES\n"
+
+#: minecraft\minecraft.py:48
+msgid "Unable to get data from Minecraft API: {e.message}."
+msgstr "No se pueden obtener datos de la API de Minecraft: {e.message}."
+
+#: minecraft\minecraft.py:52
+msgid "{argument} not found on Mojang servers."
+msgstr "{argument} no se encuentra en los servidores de Mojang."
+
+#: minecraft\minecraft.py:60
+msgid "{argument} is found, but has incorrect UUID."
+msgstr "{argument} pero tiene un UUID incorrecto."
+
+#: minecraft\minecraft.py:66
+#, docstring
+msgid "A cog to display informations about Minecraft Java users and servers, and notify for each change of a server!"
+msgstr "Un engranaje para mostrar información sobre los usuarios y servidores de Minecraft Java, y notificar cada cambio de un servidor!"
+
+#: minecraft\minecraft.py:196
+msgid "Latency"
+msgstr "Latencia"
+
+#: minecraft\minecraft.py:198
+msgid "Players"
+msgstr "Jugadores"
+
+#: minecraft\minecraft.py:216
+msgid "Version"
+msgstr "Versión"
+
+#: minecraft\minecraft.py:256
+#, docstring
+msgid "Get Minecraft Java player skin by name."
+msgstr "Obtener Minecraft Java jugador de la piel por su nombre."
+
+#: minecraft\minecraft.py:279
+msgid "Unable to get data from Crafatar: {}"
+msgstr "No se pueden obtener datos de Crafatar: {}"
+
+#: minecraft\minecraft.py:291
+msgid "Provided by Crafatar."
+msgstr "Proporcionado por Crafatar."
+
+#: minecraft\minecraft.py:297
+#, docstring
+msgid "Get informations about a Minecraft Java server."
+msgstr "Obtén información sobre un servidor Java de Minecraft."
+
+#: minecraft\minecraft.py:303 minecraft\minecraft.py:338
+msgid "No data found for this Minecraft server. Maybe it doesn't exist or its data are temporarily unavailable."
+msgstr "No se han encontrado datos para este servidor. Puede que no exista o los datos no están disponibles temporalmente."
+
+#: minecraft\minecraft.py:315
+#, docstring
+msgid "Add a Minecraft Java server in Config to get automatically new status."
+msgstr "Añade un servidor Java Minecraft en Config para obtener automáticamente un nuevo estado."
+
+#: minecraft\minecraft.py:326
+msgid "I don't have sufficient permissions in this channel to send messages with embeds."
+msgstr "No tengo suficientes permisos en este canal para enviar mensajes con incrustados."
+
+#: minecraft\minecraft.py:332
+msgid "This server has already been added."
+msgstr "Este servidor ya ha sido añadido."
+
+#: minecraft\minecraft.py:346
+msgid "Server added to this channel."
+msgstr "Servidor añadido a este canal."
+
+#: minecraft\minecraft.py:353
+#, docstring
+msgid "Remove a Minecraft Java server in Config."
+msgstr "Eliminar un servidor Java de Minecraft en Config."
+
+#: minecraft\minecraft.py:358
+msgid "This server isn't in the Config."
+msgstr "Este servidor no está en el Config."
+
+#: minecraft\minecraft.py:363
+msgid "Server removed from this channel."
+msgstr "Servidor eliminado de este canal."
+
+#: minecraft\minecraft.py:370
+#, docstring
+msgid "Include players joining or leaving the server in notifications."
+msgstr "Incluye jugadores entrando y saliendo del servidor en las notificaciones."
+
+#: minecraft\minecraft.py:377
+msgid "I will not check players for the notifications."
+msgstr "No comprobaré jugadores para las notificaciones."
+
+#: minecraft\minecraft.py:379
+msgid "I will check players for the notifications."
+msgstr "Comprobaré jugadores para las notificaciones."
+
+#: minecraft\minecraft.py:386
+#, docstring
+msgid "Edit the last message sent for changes."
+msgstr "Edita el último mensaje enviado por cambios."
+
+#: minecraft\minecraft.py:391
+msgid "I will not edit my last message for the notifications."
+msgstr "No editaré mi último mensaje para las notificaciones."
+
+#: minecraft\minecraft.py:393
+msgid "I will edit my last message for the notifications."
+msgstr "Editaré mi último mensaje para las notificaciones."
+
+#: minecraft\minecraft.py:398
+#, docstring
+msgid "Force check Minecraft Java servers in Config."
+msgstr "Forzar la comprobación de los servidores Java de Minecraft en Config."
+
+#: minecraft\minecraft.py:400
+msgid "Servers checked."
+msgstr "Servidores comprobados."
+
+#: minecraft\minecraft.py:406
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "Obtener un embed para comprobar el estado del bucle."
+

@@ -1,0 +1,58 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:23\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/draw/locales/messages.pot\n"
+"X-Crowdin-File-ID: 231\n"
+"Language: ru_RU\n"
+
+#: draw\draw.py:40
+#, docstring
+msgid "A cog to make pixel arts on Discord!"
+msgstr "Ког для создания пиксель-артов на Discord!"
+
+#: draw\draw.py:174
+msgid "This message isn't in the cache."
+msgstr "Этого сообщения нет в кэше."
+
+#: draw\start_view.py:94 draw\start_view.py:103
+msgid "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`."
+msgstr "Создайте новую Доску рисования с `высотой = {height}`, `шириной = {width}` и `фоном = {background}`."
+
+#: draw\view.py:332
+msgid "Please type all the colors you want to add. They can be either or all of:\n"
+"• The hex codes (e.g. `ff64c4` or `ff64c4ff` to include alpha) **separated by space**,\n"
+"• The RGB(A) values separated by space or comma or both (e.g. `(255 100 196)` or `(255, 100, 196, 125)`) of each color **surrounded by brackets**\n"
+"• Any emoji whose main color you want to extract (e.g. 🐸 will give 77b255)\n"
+"• Any image file (first 5 abundant colors will be extracted)."
+msgstr "Пожалуйста, введите все цвета, которые вы хотите добавить. Они могут быть любыми или всеми:\n"
+"- шестнадцатеричные коды (например, `ff64c4` или `ff64c4ff` для включения альфы) **разделенные пробелом**,\n"
+"- значения RGB(A), разделенные пробелом или запятой, или оба (например. `(255 100 196)` или `(255, 100, 196, 125)`) каждого цвета **окруженные скобками**\n"
+"- Любой эмодзи, чей основной цвет вы хотите извлечь (например, 🐸 даст 77b255)\n"
+"- Любой файл изображения (первые 5 обильных цветов будут извлечены)."
+
+#: draw\view.py:402
+msgid "Please send a message containing the emojis you want to add to your palette. E.g. `😎 I like turtles 🐢`."
+msgstr "Пожалуйста, отправьте сообщение с эмодзи, которые вы хотите добавить в свою палитру. Например, `😎 Я люблю черепах 🐢`."
+
+#: draw\view.py:809
+msgid "Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`, `A`, `10`, etc."
+msgstr "Введите ячейку, в которую вы хотите переместить курсор. Например, `A1`, `a1`, `A10`, `A`, `10` и т.д."
+
+#: draw\view.py:938
+msgid "Please type the cells with the main colors names. One color for each line, separated from the cell by a \":\". Example: `A1:red\n"
+"B7-C9:green`."
+msgstr "Пожалуйста, введите ячейки с названиями основных цветов. Один цвет для каждой строки, отделенный от ячейки знаком \":\". Пример: `A1:красный\n"
+"B7-C9:зеленый`."
+

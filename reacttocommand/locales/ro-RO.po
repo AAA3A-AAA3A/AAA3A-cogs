@@ -1,0 +1,90 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:36\n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ro\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/reacttocommand/locales/messages.pot\n"
+"X-Crowdin-File-ID: 94\n"
+"Language: ro_RO\n"
+
+#: reacttocommand\reacttocommand.py:78
+#, docstring
+msgid "A cog to allow a user to execute a command by clicking on a reaction!"
+msgstr "O rotiță pentru a permite unui utilizator să execute o comandă făcând clic pe o reacție!"
+
+#: reacttocommand\reacttocommand.py:277
+#, docstring
+msgid "Add a reaction-command for a message.\n\n"
+"        There should be no prefix in the command.\n"
+"        The command will be invoked with the permissions of the user who clicked on the reaction.\n"
+"        This user must be able to see writing in the channel.\n"
+"        "
+msgstr "Adăugați o comandă de reacție pentru un mesaj.\n\n"
+"        Comanda nu trebuie să aibă prefix.\n"
+"        Comanda va fi invocată cu permisiunile utilizatorului care a făcut clic pe reacție.\n"
+"        Acest utilizator trebuie să fie capabil să vadă scrisul în canal.\n"
+"        "
+
+#: reacttocommand\reacttocommand.py:291
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to add reactions and to see the messages in that channel."
+msgstr "Nu am suficiente permisiuni pe canalul în care se află mesajul pe care l-ați specificat.\n"
+"Am nevoie de permisiuni pentru a adăuga reacții și pentru a vedea mesajele din acel canal."
+
+#: reacttocommand\reacttocommand.py:301
+msgid "You have not specified a correct command."
+msgstr "Nu ați specificat o comandă corectă."
+
+#: reacttocommand\reacttocommand.py:307
+msgid "An error has occurred. It is possible that the emoji you provided is invalid."
+msgstr "S-a produs o eroare. Este posibil ca emoji-ul pe care l-ați furnizat să nu fie valid."
+
+#: reacttocommand\reacttocommand.py:314
+msgid "Reaction-command added to this message."
+msgstr "Comandă de reacție adăugată la acest mesaj."
+
+#: reacttocommand\reacttocommand.py:318
+#, docstring
+msgid "Remove a reaction-command for a message."
+msgstr "Eliminarea unei comenzi de reacție pentru un mesaj."
+
+#: reacttocommand\reacttocommand.py:322 reacttocommand\reacttocommand.py:344
+msgid "No reaction-command is configured for this message."
+msgstr "Pentru acest mesaj nu este configurată nicio comandă de reacție."
+
+#: reacttocommand\reacttocommand.py:326
+msgid "I wasn't watching for this reaction on this message."
+msgstr "Nu mă așteptam la această reacție pe acest mesaj."
+
+#: reacttocommand\reacttocommand.py:336
+msgid "Reaction-command removed from this message."
+msgstr "Comanda de reacție a fost eliminată din acest mesaj."
+
+#: reacttocommand\reacttocommand.py:340
+#, docstring
+msgid "Clear all reactions-commands for a message."
+msgstr "Șterge toate reacțiile-comandă pentru un mesaj."
+
+#: reacttocommand\reacttocommand.py:353
+msgid "Reactions-commands cleared for this message."
+msgstr "Reacții - comenzi eliminate pentru acest mesaj."
+
+#: reacttocommand\reacttocommand.py:357
+#, docstring
+msgid "Clear all reactions-commands for a guild."
+msgstr "Șterge toate reacțiile-comandă pentru o breaslă."
+
+#: reacttocommand\reacttocommand.py:359
+msgid "All reactions-commands purged."
+msgstr "Toate reacțiile-comandele au fost eliminate."
+

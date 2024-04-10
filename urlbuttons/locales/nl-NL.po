@@ -1,0 +1,144 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:42\n"
+"Last-Translator: \n"
+"Language-Team: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: nl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/urlbuttons/locales/messages.pot\n"
+"X-Crowdin-File-ID: 152\n"
+"Language: nl_NL\n"
+
+#: urlbuttons\converters.py:25
+msgid "It's not a valid public URL."
+msgstr "Het is geen geldige openbare URL."
+
+#: urlbuttons\converters.py:91
+msgid "Emoji Url must be an emoji followed by a url separated by either `;`, `,`, `|`, or `-`."
+msgstr "Emoji Url moet een emoji zijn gevolgd door een url gescheiden door `;`, `,`, `|`, of `-`."
+
+#: urlbuttons\urlbuttons.py:24
+msgid "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
+msgstr "Ik moet de auteur van het bericht zijn. Je kunt EmbedUtils van AAA3A gebruiken om er een te versturen."
+
+#: urlbuttons\urlbuttons.py:33
+#, docstring
+msgid "A cog to have url-buttons!"
+msgstr "Een radertje voor url-knoppen!"
+
+#: urlbuttons\urlbuttons.py:124
+#, docstring
+msgid "Add a url-button for a message."
+msgstr "Een url-knop voor een bericht toevoegen."
+
+#: urlbuttons\urlbuttons.py:132
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "Ik heb niet voldoende rechten in de chatroom waar het bericht dat je hebt gespecificeerd zich bevindt.\n"
+"Ik heb de rechten nodig om de berichten in die chatroom te zien."
+
+#: urlbuttons\urlbuttons.py:137
+msgid "Url must start with `https` or `http`."
+msgstr "Url moet beginnen met `https` of `http`."
+
+#: urlbuttons\urlbuttons.py:140
+msgid "You have to specify at least an emoji or a label."
+msgstr "Je moet minimaal een emoji of label toevoegen."
+
+#: urlbuttons\urlbuttons.py:147
+msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "De emoji die je hebt geselecteerd lijkt ongeldig. Controleer of het een emoji is. Als je Nitro hebt, heb je misschien een aangepaste emoji van een andere server gebruikt."
+
+#: urlbuttons\urlbuttons.py:154 urlbuttons\urlbuttons.py:203
+msgid "This message already has components."
+msgstr "Dit bericht heeft al onderdelen."
+
+#: urlbuttons\urlbuttons.py:158 urlbuttons\urlbuttons.py:207
+msgid "I can't do more than 25 url-buttons for one message."
+msgstr "Ik kan niet meer dan 25 url-knoppen gebruiken voor één bericht."
+
+#: urlbuttons\urlbuttons.py:180
+#, docstring
+msgid "Add a url-button for a message.\n\n"
+"        ```[p]urlbuttons bulk <message> :red_circle:|<https://github.com/Cog-Creators/Red-DiscordBot> :smiley:|<https://github.com/Cog-Creators/Red-SmileyBot> :green_circle:|<https://github.com/Cog-Creators/Green-DiscordBot>```\n"
+"        "
+msgstr "Een url-knop voor een bericht toevoegen.\n\n"
+"        ```[p]url-knoppen bulk <message> :red_circle:|<https://github.com/Cog-Creators/Red-DiscordBot> :smiley:|<https://github.com/Cog-Creators/Red-SmileyBot> :green_circle:|<https://github.com/Cog-Creators/Green-DiscordBot>``\n"
+"        "
+
+#: urlbuttons\urlbuttons.py:186
+msgid "You have not specified any valid url-button."
+msgstr "Je hebt geen geldige url-knop opgegeven."
+
+#: urlbuttons\urlbuttons.py:196
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Een emoji die je hebt geselecteerd lijkt ongeldig. Controleer of het een emoji is. Als je Nitro hebt, kan het zijn dat je een aangepaste emoji van een andere server hebt gebruikt."
+
+#: urlbuttons\urlbuttons.py:227
+#, docstring
+msgid "Remove a url-button for a message.\n\n"
+"        Use `[p]urlbuttons list <message>` to find the config identifier.\n"
+"        "
+msgstr "Verwijder een url-knop voor een bericht.\n\n"
+"        Gebruik `[p]urlbuttons list <message>` om de config identifier te vinden.\n"
+"        "
+
+#: urlbuttons\urlbuttons.py:234 urlbuttons\urlbuttons.py:280
+msgid "No url-button is configured for this message."
+msgstr "Er is geen url-knop geconfigureerd voor dit bericht."
+
+#: urlbuttons\urlbuttons.py:238
+msgid "I wasn't watching for this button on this message."
+msgstr "Ik lette niet op deze knop bij dit bericht."
+
+#: urlbuttons\urlbuttons.py:251 urlbuttons\urlbuttons.py:267
+msgid "Url-buttons cleared for this message."
+msgstr "Url-knoppen gewist voor dit bericht."
+
+#: urlbuttons\urlbuttons.py:255
+#, docstring
+msgid "Clear all url-buttons for a message."
+msgstr "Wis alle url-knoppen voor een bericht."
+
+#: urlbuttons\urlbuttons.py:259
+msgid "No role-button is configured for this message."
+msgstr "Er is geen rolknop geconfigureerd voor dit bericht."
+
+#: urlbuttons\urlbuttons.py:272
+#, docstring
+msgid "List all url-buttons of this server or display the settings for a specific one."
+msgstr "Toont alle url-knoppen van deze server of de instellingen voor een specifieke."
+
+#: urlbuttons\urlbuttons.py:286
+msgid "No url-buttons in this server."
+msgstr "Geen url-knoppen in deze server."
+
+#: urlbuttons\urlbuttons.py:288
+msgid "URL Buttons"
+msgstr "URL-knoppen"
+
+#: urlbuttons\urlbuttons.py:289
+msgid "There is {len_url_buttons} url buttons in this server."
+msgstr "Er is {len_url_buttons} url-knoppen in deze server."
+
+#: urlbuttons\urlbuttons.py:299
+msgid "Message Jump Link: {message_jump_link}\n"
+msgstr "Ga naar bericht: {message_jump_link}\n"
+
+#: urlbuttons\urlbuttons.py:320
+#, docstring
+msgid "Clear all url-buttons for a guild."
+msgstr "Wis alle url-knoppen voor een gilde."
+
+#: urlbuttons\urlbuttons.py:322
+msgid "All url-buttons purged."
+msgstr "Alle url-knoppen verwijderd."
+

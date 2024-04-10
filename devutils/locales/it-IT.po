@@ -1,0 +1,150 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:42\n"
+"Last-Translator: \n"
+"Language-Team: Italian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: it\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/devutils/locales/messages.pot\n"
+"X-Crowdin-File-ID: 312\n"
+"Language: it_IT\n"
+
+#: devutils\devutils.py:51
+msgid "No valid log level provided."
+msgstr "Non è stato fornito un livello di log valido."
+
+#: devutils\devutils.py:80
+msgid "No valid discord object provided."
+msgstr "Non è stato fornito un oggetto discordia valido."
+
+#: devutils\devutils.py:85
+#, docstring
+msgid "Various development utilities!"
+msgstr "Diverse utilità di sviluppo!"
+
+#: devutils\devutils.py:136
+#, docstring
+msgid "\n"
+"        Repeats a command a specified number of times.\n\n"
+"        `--sleep <int>` is an optional flag specifying how much time to wait between command invocations.\n"
+"        "
+msgstr "\n"
+"        Ripete un comando per un numero specifico di volte.\n\n"
+"        `--sleep <int>` è un flag opzionale che specifica il tempo di attesa tra un comando e l'altro.\n"
+"        "
+
+#: devutils\devutils.py:157 devutils\devutils.py:233 devutils\devutils.py:249
+msgid "You have not specified a correct command."
+msgstr "Non è stato specificato un comando corretto."
+
+#: devutils\devutils.py:159 devutils\devutils.py:251
+msgid "You can't execute yourself this command."
+msgstr "Non è possibile eseguire da soli questo comando."
+
+#: devutils\devutils.py:172
+#, docstring
+msgid "Execute multiple commands at once. Split them using |."
+msgstr "Eseguire più comandi contemporaneamente. Divideteli usando |."
+
+#: devutils\devutils.py:187 devutils\devutils.py:209
+msgid "`{command}` isn't a valid command."
+msgstr "`{command}` non è un comando valido."
+
+#: devutils\devutils.py:193 devutils\devutils.py:215
+msgid "You can't execute yourself `{command}`."
+msgstr "Non è possibile eseguire se stessi `{command}`."
+
+#: devutils\devutils.py:222
+#, docstring
+msgid "Bypass a command's checks and cooldowns."
+msgstr "Bypassare i controlli e i cooldown di un comando."
+
+#: devutils\devutils.py:238
+#, docstring
+msgid "Run a command timing execution and catching exceptions."
+msgstr "Eseguire un comando temporizzando l'esecuzione e catturando le eccezioni."
+
+#: devutils\devutils.py:257
+msgid "Command `{command}` finished in `{timing}`s."
+msgstr "Il comando `{command}` è terminato in `{timing}`s."
+
+#: devutils\devutils.py:264
+#, docstring
+msgid "Reinvoke a command message.\n\n"
+"        You may reply to a message to reinvoke it or pass a message ID/link.\n"
+"        The command will be invoked with the author and the channel of the specified message.\n"
+"        "
+msgstr "Revocare un messaggio di comando.\n\n"
+"        È possibile rispondere a un messaggio per revocarlo o passare un ID/link del messaggio.\n"
+"        Il comando verrà invocato con l'autore e il canale del messaggio specificato.\n"
+"        "
+
+#: devutils\devutils.py:285
+msgid "The command isn't valid."
+msgstr "Il comando non è valido."
+
+#: devutils\devutils.py:287
+msgid "This command can't be executed."
+msgstr "Questo comando non può essere eseguito."
+
+#: devutils\devutils.py:293
+#, docstring
+msgid "Change the logging level for a logger. if no name is provided, the root logger (red) is used.\n\n"
+"        Levels are the following:\n"
+"        - `0`: `CRITICAL`\n"
+"        - `1`: `ERROR`\n"
+"        - `2`: `WARNING`\n"
+"        - `3`: `INFO`\n"
+"        - `4`: `DEBUG`\n"
+"        - `5`: `VERBOSE`\n"
+"        - `6`: `TRACE`\n"
+"        "
+msgstr "Se non viene fornito alcun nome, viene utilizzato il logger root (rosso).\n\n"
+"        I livelli sono i seguenti:\n"
+"        - `0`: `CRITICO`\n"
+"        - `1`: `ERRORE`\n"
+"        - `2`: `AVVISO`\n"
+"        - `3`: `INFO`\n"
+"        - `4`: `DEBUG`\n"
+"        - `5`: `VERBOSE`\n"
+"        - `6`: `TRACCIA`\n"
+"        "
+
+#: devutils\devutils.py:307
+msgid "Logger `{logger_name}` level set to `{level}`."
+msgstr "Il livello del logger `{logger_name}` è impostato su `{level}`."
+
+#: devutils\devutils.py:316
+#, docstring
+msgid "Force reload a module (to use code changes without restarting your bot).\n\n"
+"        ⚠️ Please only use this if you know what you're doing.\n"
+"        "
+msgstr "Forza il ricaricamento di un modulo (per utilizzare le modifiche al codice senza riavviare il bot).\n\n"
+"        ⚠️ Usare questa funzione solo se si sa cosa si sta facendo.\n"
+"        "
+
+#: devutils\devutils.py:332
+msgid "I couldn't find any module with this name."
+msgstr "Non ho trovato nessun modulo con questo nome."
+
+#: devutils\devutils.py:336
+msgid "Module(s) {modules} reloaded."
+msgstr "Modulo(i) {modules} ricaricato."
+
+#: devutils\devutils.py:342
+msgid "Modules [...] reloaded."
+msgstr "Moduli [...] ricaricati."
+
+#: devutils\devutils.py:346
+#, docstring
+msgid "Display the JSON of a Discord object with a raw request."
+msgstr "Visualizza il JSON di un oggetto Discord con una richiesta grezza."
+

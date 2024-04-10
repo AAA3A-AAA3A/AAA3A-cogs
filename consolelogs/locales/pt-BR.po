@@ -1,0 +1,94 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:41\n"
+"Last-Translator: \n"
+"Language-Team: Portuguese, Brazilian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pt-BR\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/consolelogs/locales/messages.pot\n"
+"X-Crowdin-File-ID: 261\n"
+"Language: pt_BR\n"
+
+#: consolelogs\consolelogs.py:94
+#, docstring
+msgid "A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!"
+msgstr "Uma engrenagem para visualizar os registos da consola, com botões e opções de filtragem, e para enviar comandos de erros nos canais configurados!"
+
+#: consolelogs\consolelogs.py:264
+msgid "No logs to display."
+msgstr "Não há registos a apresentar."
+
+#: consolelogs\consolelogs.py:415
+#, docstring
+msgid "Scroll the console logs, for all levels/loggers or provided level/logger name."
+msgstr "Percorre os registos da consola, para todos os níveis/loggers ou para o nome do nível/logger fornecido."
+
+#: consolelogs\consolelogs.py:451
+#, docstring
+msgid "View the console logs one by one, for all levels/loggers or provided level/logger name."
+msgstr "Ver os registos da consola um a um, para todos os níveis/registadores ou para o nome do nível/registador fornecido."
+
+#: consolelogs\consolelogs.py:462
+#, docstring
+msgid "Display the stats for the bot logs since the bot start."
+msgstr "Exibe as estatísticas dos registros do bot desde o início do bot."
+
+#: consolelogs\consolelogs.py:495
+#, docstring
+msgid "Enable errors logging in a channel.\n\n"
+"        **Parameters:**\n"
+"        - `channel`: The channel where the commands errors will be sent.\n"
+"        - `global_errors`: Log errors for the entire bot, not just the channel server.\n"
+"        - `prefixed_commands_errors`: Log prefixed commands errors.\n"
+"        - `slash_commands_errors`: Log slash commands errors.\n"
+"        - `dpy_ignored_exceptions`: Log dpy ignored exceptions (events listeners and Views errors).\n"
+"        - `full_console`: Log all the console logs.\n"
+"        - `guild_invite`: Add a button \"Guild Invite\" in commands errors logs, only for community servers.\n"
+"        - `ignored_cogs`: Ignore some cogs for `prefixed_commands_errors` and `slash_commands_errors`. You have to use the cog qualified_name like `ConsoleLogs` for this cog.\n"
+"        "
+msgstr "Ativar o registro de erros em um canal.\n\n"
+"        **Parametros:**\n"
+"        - `channel`: O canal para o qual os erros dos comandos serão enviados.\n"
+"        - `global_errors`: Registrar erros para todo o bot, não apenas para o servidor do canal.\n"
+"        - `prefixed_commands_errors`: Registra erros de comandos prefixados.\n"
+"        - `slash_commands_errors`: Registra erros de comandos de barra.\n"
+"        - `dpy_ignored_exceptions`: Registra exceções ignoradas pelo dpy (ouvintes de eventos e erros de visualizações).\n"
+"        - `full_console`: Registra todos os logs do console.\n"
+"        - `guild_invite`: Adiciona um botão \"Guild Invite\" nos registros de erros dos comandos, apenas para servidores comunitários.\n"
+"        - `ignored_cogs`: Ignora alguns cogs para `prefixed_commands_errors` e `slash_commands_errors`. Você deve usar o nome qualificado do cog como `ConsoleLogs` para esse cog.\n"
+"        "
+
+#: consolelogs\consolelogs.py:516
+msgid "I don't have the permissions to send embeds in this channel."
+msgstr "Não tenho permissões para enviar incorporações neste canal."
+
+#: consolelogs\consolelogs.py:532
+msgid "Errors logging enabled in {channel.mention}."
+msgstr "Registo de erros ativado em {channel.mention}."
+
+#: consolelogs\consolelogs.py:540
+#, docstring
+msgid "Disable errors logging in a channel."
+msgstr "Desativar o registo de erros num canal."
+
+#: consolelogs\consolelogs.py:543
+msgid "Errors logging isn't enabled in this channel."
+msgstr "O registo de erros não está ativado neste canal."
+
+#: consolelogs\consolelogs.py:546
+msgid "Errors logging disabled in {channel.mention}."
+msgstr "Registo de erros desativado em {channel.mention}."
+
+#: consolelogs\consolelogs.py:550
+#, docstring
+msgid "Get an embed to check loops status."
+msgstr "Obter uma incorporação para verificar o estado dos loops."
+

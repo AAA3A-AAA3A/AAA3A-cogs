@@ -1,0 +1,90 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:18\n"
+"Last-Translator: \n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: de\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/reacttocommand/locales/messages.pot\n"
+"X-Crowdin-File-ID: 94\n"
+"Language: de_DE\n"
+
+#: reacttocommand\reacttocommand.py:78
+#, docstring
+msgid "A cog to allow a user to execute a command by clicking on a reaction!"
+msgstr "Ein Zahnrad, mit dem ein Benutzer einen Befehl ausführen kann, indem er auf eine Reaktion klickt!"
+
+#: reacttocommand\reacttocommand.py:277
+#, docstring
+msgid "Add a reaction-command for a message.\n\n"
+"        There should be no prefix in the command.\n"
+"        The command will be invoked with the permissions of the user who clicked on the reaction.\n"
+"        This user must be able to see writing in the channel.\n"
+"        "
+msgstr "Hinzufügen eines Reaktionsbefehls für eine Nachricht.\n\n"
+"        Der Befehl sollte kein Präfix enthalten.\n"
+"        Der Befehl wird mit den Rechten des Benutzers aufgerufen, der auf die Reaktion geklickt hat.\n"
+"        Dieser Benutzer muss in der Lage sein, das Schreiben im Kanal zu sehen.\n"
+"        "
+
+#: reacttocommand\reacttocommand.py:291
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to add reactions and to see the messages in that channel."
+msgstr "Ich habe keine ausreichenden Berechtigungen für den Kanal, in dem sich die von Ihnen angegebene Nachricht befindet.\n"
+"Ich benötige die Berechtigung, Reaktionen hinzuzufügen und die Nachrichten in diesem Kanal zu sehen."
+
+#: reacttocommand\reacttocommand.py:301
+msgid "You have not specified a correct command."
+msgstr "Sie haben keinen korrekten Befehl angegeben."
+
+#: reacttocommand\reacttocommand.py:307
+msgid "An error has occurred. It is possible that the emoji you provided is invalid."
+msgstr "Es ist ein Fehler aufgetreten. Es ist möglich, dass das von Ihnen angegebene Emoji ungültig ist."
+
+#: reacttocommand\reacttocommand.py:314
+msgid "Reaction-command added to this message."
+msgstr "Reaktionsbefehl zu dieser Nachricht hinzugefügt."
+
+#: reacttocommand\reacttocommand.py:318
+#, docstring
+msgid "Remove a reaction-command for a message."
+msgstr "Entfernen eines Reaktionsbefehls für eine Nachricht."
+
+#: reacttocommand\reacttocommand.py:322 reacttocommand\reacttocommand.py:344
+msgid "No reaction-command is configured for this message."
+msgstr "Für diese Meldung ist kein Reaktionsbefehl konfiguriert."
+
+#: reacttocommand\reacttocommand.py:326
+msgid "I wasn't watching for this reaction on this message."
+msgstr "Ich habe nicht mit einer solchen Reaktion auf diese Nachricht gerechnet."
+
+#: reacttocommand\reacttocommand.py:336
+msgid "Reaction-command removed from this message."
+msgstr "Der Reaktionsbefehl wurde aus dieser Nachricht entfernt."
+
+#: reacttocommand\reacttocommand.py:340
+#, docstring
+msgid "Clear all reactions-commands for a message."
+msgstr "Alle Reaktionsbefehle für eine Nachricht löschen."
+
+#: reacttocommand\reacttocommand.py:353
+msgid "Reactions-commands cleared for this message."
+msgstr "Reaktionsbefehle, die für diese Nachricht freigegeben wurden."
+
+#: reacttocommand\reacttocommand.py:357
+#, docstring
+msgid "Clear all reactions-commands for a guild."
+msgstr "Alle Reaktionsbefehle für eine Gilde löschen."
+
+#: reacttocommand\reacttocommand.py:359
+msgid "All reactions-commands purged."
+msgstr "Alle Reaktions-Befehle werden gelöscht."
+

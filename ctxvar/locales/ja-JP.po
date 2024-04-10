@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:42\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/ctxvar/locales/messages.pot\n"
+"X-Crowdin-File-ID: 82\n"
+"Language: ja_JP\n"
+
+#: ctxvar\ctxvar.py:65
+msgid "No Discord object found."
+msgstr "Discordのオブジェクトは見つかりませんでした。"
+
+#: ctxvar\ctxvar.py:81 ctxvar\ctxvar.py:214 ctxvar\ctxvar.py:265
+#: ctxvar\ctxvar.py:346
+msgid "I couldn't find any cog, command, or object named `{thing}`."
+msgstr "{thing}`という名前の歯車、コマンド、オブジェクトは見つかりませんでした。"
+
+#: ctxvar\ctxvar.py:104
+#, docstring
+msgid "A cog to list and display the contents of all sub-functions of `ctx`!"
+msgstr "ctx`のすべてのサブファンクションの内容をリストアップして表示するためのコグである！"
+
+#: ctxvar\ctxvar.py:132
+#, docstring
+msgid "Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."
+msgstr "'ctx' クラスのインスタンスまたはそのサブアトリビュートのすべての属性とその値の一覧を表示する。"
+
+#: ctxvar\ctxvar.py:136 ctxvar\ctxvar.py:197 ctxvar\ctxvar.py:248
+#: ctxvar\ctxvar.py:329
+msgid "The cog Dev must be loaded, to make sure you know what you are doing."
+msgstr "コグ・デヴは、必ず、読み込む必要があります。"
+
+#: ctxvar\ctxvar.py:147
+msgid "The argument you specified is not a subclass of the instance."
+msgstr "指定した引数は、インスタンスのサブクラスではありません。"
+
+#: ctxvar\ctxvar.py:154
+msgid "Here are all the variables and their associated values that can be used in this instance class."
+msgstr "このインスタンスクラスで使用できるすべての変数とその関連値です。"
+
+#: ctxvar\ctxvar.py:193
+#, docstring
+msgid "Display a list of all attributes of the provided object (debug not async)."
+msgstr "提供されたオブジェクトのすべての属性のリストを表示する（非同期でないデバッグ）。"
+
+#: ctxvar\ctxvar.py:244
+#, docstring
+msgid "Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."
+msgstr "提供されたオブジェクトに対して `rich.help(obj=object, ...)` を実行する（非同期でなくデバッグ）。"
+
+#: ctxvar\ctxvar.py:325
+#, docstring
+msgid "Execute `ast.dump(ast.parse(<code content>))` on the provided object (debug not async)."
+msgstr "与えられたオブジェクトに対して `ast.dump(ast.parse(<code content>))` を実行する（非同期ではなくデバッグ）。"
+
+#: ctxvar\ctxvar.py:366
+#, docstring
+msgid "List attributes of the provided object like dpy objects (debug not async)."
+msgstr "提供されたオブジェクトの属性をdpyオブジェクトのようにリストアップする（非同期でないデバッグ）。"
+
+#: ctxvar\ctxvar.py:451
+#, docstring
+msgid "Parse the Markdown syntax for a specified message's content or a string."
+msgstr "指定されたメッセージの内容または文字列のMarkdown構文を解析します。"
+
+#: ctxvar\ctxvar.py:465
+msgid "Error in the module used for this command."
+msgstr "このコマンドに使用されているモジュールにエラーがある。"
+

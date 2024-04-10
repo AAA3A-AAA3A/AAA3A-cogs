@@ -1,0 +1,86 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-08-10 13:42+0200\n"
+"PO-Revision-Date: 2024-04-10 12:39\n"
+"Last-Translator: \n"
+"Language-Team: Portuguese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pt-PT\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/cmdchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 80\n"
+"Language: pt_PT\n"
+
+#: cmdchannel\cmdchannel.py:17
+#, docstring
+msgid "A cog to send the result of a command to another channel!"
+msgstr "Uma engrenagem para enviar o resultado de um comando para outro canal!"
+
+#: cmdchannel\cmdchannel.py:86
+#, docstring
+msgid "Act as if the command had been typed in the channel of your choice.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
+"        Use `[p]cmdchannel`!\n"
+"        "
+msgstr "Actua como se o comando tivesse sido digitado no canal da sua escolha.\n"
+"        O prefixo não deve ser introduzido se se tratar de um comando. Será apenas uma mensagem, caso o comando seja inválido.\n\n"
+"        Utilize `[p]cmdchannel`!\n"
+"        "
+
+#: cmdchannel\cmdchannel.py:94 cmdchannel\cmdchannel.py:162
+msgid "To send commands to another server, you must be there."
+msgstr "Para enviar comandos para outro servidor, é necessário estar presente."
+
+#: cmdchannel\cmdchannel.py:117
+#, docstring
+msgid "Act as if the command had been typed by imitating the specified user.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
+"        Use `[p]cmduser`!\n"
+"        "
+msgstr "Age como se o comando tivesse sido digitado, imitando o utilizador especificado.\n"
+"        O prefixo não deve ser introduzido se se tratar de um comando. Será apenas uma mensagem, se o comando for inválido.\n\n"
+"        Utilize `[p]cmduser`!\n"
+"        "
+
+#: cmdchannel\cmdchannel.py:126 cmdchannel\cmdchannel.py:167
+msgid "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
+msgstr "Para poder executar um comando como outro utilizador, o cog Dev deve ser carregado, para ter a certeza do que se está a fazer."
+
+#: cmdchannel\cmdchannel.py:150
+#, docstring
+msgid "Act as if the command had been typed in the channel of your choice by imitating the specified user.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
+"        Use `[p]cmduserchannel`!\n"
+"        "
+msgstr "Age como se o comando tivesse sido digitado no canal da sua escolha, imitando o utilizador especificado.\n"
+"        O prefixo não deve ser introduzido se se tratar de um comando. Será apenas uma mensagem, se o comando for inválido.\n\n"
+"        Use `[p]cmduserchannel`!\n"
+"        "
+
+#: cmdchannel\cmdchannel.py:184
+#, docstring
+msgid "Test variables."
+msgstr "Variáveis de teste."
+
+#: cmdchannel\cmdchannel.py:186
+msgid "Testvar"
+msgstr "Testvar"
+
+#: cmdchannel\cmdchannel.py:187
+msgid "Variables:"
+msgstr "Variáveis:"
+
+#: cmdchannel\cmdchannel.py:188
+msgid "Author:"
+msgstr "Autor:"
+
+#: cmdchannel\cmdchannel.py:189
+msgid "Channel:"
+msgstr "Canal:"
+

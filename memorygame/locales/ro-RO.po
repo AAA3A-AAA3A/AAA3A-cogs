@@ -1,0 +1,45 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:37\n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ro\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/memorygame/locales/messages.pot\n"
+"X-Crowdin-File-ID: 185\n"
+"Language: ro_RO\n"
+
+#: memorygame\memorygame.py:27
+#, docstring
+msgid "A cog to play to Memory game, with buttons, leaderboard and Red bank!"
+msgstr "O rotiță pentru a juca la joc de memorie, cu butoane, clasament și Red bank!"
+
+#: memorygame\memorygame.py:169
+msgid "No one has played this game yet."
+msgstr "Nimeni nu a jucat acest joc până acum."
+
+#: memorygame\memorygame.py:212
+#, docstring
+msgid "Reset leaderboard in the guild."
+msgstr "Resetarea clasamentului în breaslă."
+
+#: memorygame\view.py:231
+msgid "You won in {game_time} seconds, with {tries} tries and {wrong_matches} wrong matches!"
+msgstr "Ați câștigat în {game_time} secunde, cu {tries} încercări și {wrong_matches} meciuri greșite!"
+
+#: memorygame\view.py:235
+msgid " You win {final_prize} credits on the bank economy system!"
+msgstr " Câștigi {final_prize} credite pe sistemul economiei bancare!"
+
+#: memorygame\view.py:255
+msgid "You lose, because you tried too many times ({tries} tries and {wrong_matches} wrong matches)."
+msgstr "Ai pierdut, pentru că ai încercat de prea multe ori ({tries} încercări și {wrong_matches} meciuri greșite)."
+

@@ -1,0 +1,78 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:38\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/dev/locales/messages.pot\n"
+"X-Crowdin-File-ID: 263\n"
+"Language: ja_JP\n"
+
+#: dev\dev.py:481
+#, docstring
+msgid "Various development focused utilities!"
+msgstr "開発に特化した各種ユーティリティ！"
+
+#: dev\dev.py:764 dev\dev.py:828 dev\dev.py:1037
+msgid "Unreadable attachment with `utf-8`."
+msgstr "utf-8`の添付ファイルが読めない。"
+
+#: dev\dev.py:783
+msgid "This message isn't reachable."
+msgstr "このメッセージは届きません。"
+
+#: dev\dev.py:891
+msgid "Already running a REPL session in this channel. Exit it with `quit`."
+msgstr "このチャンネルですでに REPL セッションを実行している。quit`で終了してください。"
+
+#: dev\dev.py:895
+msgid "Already running a REPL session in this channel. Resume the REPL with `{prefix}replresume`."
+msgstr "このチャンネルですでにREPLセッションを実行している。{prefix}replresume`でREPLを再開する。"
+
+#: dev\dev.py:907
+msgid "Enter code to execute or evaluate. `exit()` or `quit` to exit. `{prefix}replpause` to pause."
+msgstr "実行または評価するコードを入力する。exit()`または `quit` で終了する。{prefix}replpause` で一時停止する。"
+
+#: dev\dev.py:952
+msgid "Exiting."
+msgstr "退場する。"
+
+#: dev\dev.py:960
+msgid "There is no currently running REPL session in this channel."
+msgstr "このチャネルでは、現在実行中のREPLセッションはない。"
+
+#: dev\dev.py:966
+msgid "The REPL session in this channel has been resumed."
+msgstr "このチャネルのREPLセッションが再開された。"
+
+#: dev\dev.py:968
+msgid "The REPL session in this channel is now paused."
+msgstr "このチャネルのREPLセッションは一時停止している。"
+
+#: dev\dev.py:990
+msgid "Bot owners will now bypass all commands with cooldowns{optional_duration}."
+msgstr "ボット所有者は、クールダウンのあるすべてのコマンドをバイパスするようになりました{optional_duration}。"
+
+#: dev\dev.py:1000
+msgid "Bot owners will no longer bypass all commands with cooldowns{optional_duration}."
+msgstr "ボット所有者は、クールダウンを持つすべてのコマンドをバイパスしなくなった{optional_duration}。"
+
+#: dev\dev.py:1128
+#, docstring
+msgid "Display all Dev environment values."
+msgstr "すべてのDev環境の値を表示する。"
+
+#: dev\dev.py:1137
+#, docstring
+msgid "Reset its own locals in evals."
+msgstr "エバリュエーションでローカルをリセットする。"
+

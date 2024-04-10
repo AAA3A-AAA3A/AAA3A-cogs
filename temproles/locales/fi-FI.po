@@ -1,0 +1,225 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:38\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/temproles/locales/messages.pot\n"
+"X-Crowdin-File-ID: 247\n"
+"Language: fi_FI\n"
+
+#: temproles\temproles.py:39
+#, docstring
+msgid "A cog to assign temporary roles to users, expiring after a set time!"
+msgstr "Hammasratas, jonka avulla käyttäjille voidaan antaa tilapäisiä rooleja, jotka päättyvät tietyn ajan kuluttua!"
+
+#: temproles\temproles.py:166 temproles\temproles.py:250
+#: temproles\temproles.py:308 temproles\temproles.py:353
+#: temproles\temproles.py:437
+msgid "Temp Roles"
+msgstr "Väliaikaiset roolit"
+
+#: temproles\temproles.py:167
+msgid "Temp Role {temp_role.mention} ({temp_role.id}) has been automatically unassigned from {member.mention} ({member.id})."
+msgstr "Temppu-rooli {temp_role.mention} ({temp_role.id}) on automaattisesti poistettu {member.mention} ({member.id}) -roolista."
+
+#: temproles\temproles.py:197
+#, docstring
+msgid "Assign/Add a TempRole to a member, for a specified duration."
+msgstr "Määrittää/lisätä jäsenelle TempRole-roolin määritellyksi ajaksi."
+
+#: temproles\temproles.py:206
+msgid "This role is already a TempRole of this member. Do you want to edit the duration?\n"
+"Currently, this Temp Role expires {timestamp}."
+msgstr "Tämä rooli on jo tämän jäsenen TempRole. Haluatko muokata kestoa?\n"
+"Tällä hetkellä tämän tilapäisroolin voimassaolo päättyy {timestamp}."
+
+#: temproles\temproles.py:214
+msgid "This member already has {role.mention} ({role.id})."
+msgstr "Tällä jäsenellä on jo {role.mention} ({role.id})."
+
+#: temproles\temproles.py:220
+msgid "This role cannot be assigned due to the Discord role hierarchy."
+msgstr "Tätä roolia ei voi määrittää Discordin roolihierarkian vuoksi."
+
+#: temproles\temproles.py:226
+msgid "You can't assign this role to this member, due to the Discord role hierarchy."
+msgstr "Et voi määrittää tätä roolia tälle jäsenelle Discordin roolihierarkian vuoksi."
+
+#: temproles\temproles.py:232 temproles\temproles.py:291
+msgid "The time set is way too high, consider setting something reasonable."
+msgstr "Asetettu aika on aivan liian korkea, harkitse jotain kohtuullista."
+
+#: temproles\temproles.py:251 temproles\temproles.py:259
+msgid "Self "
+msgstr "Self "
+
+#: temproles\temproles.py:252
+msgid "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {time_string}."
+msgstr "Tilapäinen rooli {role.mention} ({role.id}) on annettu {member.mention} ({member.id}) {author.mention} ({author.id}) toimesta. Päättyy osoitteessa {time_string}."
+
+#: temproles\temproles.py:260
+msgid "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires **in {time_string}** ({timestamp})."
+msgstr "Temp Role {role.mention} ({role.id}) on annettu {member.mention} ({member.id}). Vanhentuu **ssa {time_string}** ({timestamp})."
+
+#: temproles\temproles.py:281
+#, docstring
+msgid "Edit a TempRole for a member, for a specified duration."
+msgstr "Muokkaa jäsenen TempRole-roolia määritellyksi ajaksi."
+
+#: temproles\temproles.py:285
+msgid "This role isn't a TempRole of this member."
+msgstr "Tämä rooli ei ole tämän jäsenen TempRole."
+
+#: temproles\temproles.py:309
+msgid "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {time_string}."
+msgstr "Temp Role {role.mention} ({role.id}) on muokattu {member.mention} ({member.id}) varten {author.mention} ({author.id}) toimesta. Voimassaoloaika päättyy osoitteessa {time_string}."
+
+#: temproles\temproles.py:316
+msgid "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}). Expires **in {time_string}** ({timestamp})."
+msgstr "Temp Role {role.mention} ({role.id}) on muokattu muotoon {member.mention} ({member.id}). Vanhentuu **ssa {time_string}** ({timestamp})."
+
+#: temproles\temproles.py:332
+#, docstring
+msgid "Unassign/Remove a TempRole from a member."
+msgstr "Poista/poistaa TempRole-roolin jäseneltä."
+
+#: temproles\temproles.py:336
+msgid "This role isn't a temprole of this member."
+msgstr "Tämä rooli ei ole tämän jäsenen temppeli."
+
+#: temproles\temproles.py:354
+msgid "TempRole {role.mention} ({role.id}) has been unassigned from {member.mention} ({member.id}) by {author.mention} ({author.id})."
+msgstr "TempRole {role.mention} ({role.id}) on vapautettu {member.mention} ({member.id}) {author.mention} ({author.id}) toimesta."
+
+#: temproles\temproles.py:361
+msgid "Temp Role {role.mention} ({role.id}) has been unassigned from {member.mention} ({member.id})."
+msgstr "Tilapäisrooli {role.mention} ({role.id}) on vapautettu {member.mention} ({member.id})."
+
+#: temproles\temproles.py:376
+#, docstring
+msgid "List active Temp Roles on this server, for optional specified member and/or role."
+msgstr "Luettelo palvelimen aktiivisista tilapäisrooleista valinnaisen määritetyn jäsenen ja/tai roolin osalta."
+
+#: temproles\temproles.py:379
+msgid "This member has this Temp Role."
+msgstr "Tällä jäsenellä on tämä väliaikainen rooli."
+
+#: temproles\temproles.py:381
+msgid "This member hasn't this Temp Role."
+msgstr "Tällä jäsenellä ei ole tätä tilapäisroolia."
+
+#: temproles\temproles.py:384
+msgid "This member hasn't any Temp Roles."
+msgstr "Tällä jäsenellä ei ole väliaikaisia rooleja."
+
+#: temproles\temproles.py:386
+msgid "This member has these Temp Roles: {temp_roles}."
+msgstr "Tällä jäsenellä on seuraavat väliaikaiset roolit: {temp_roles}."
+
+#: temproles\temproles.py:405
+msgid "No members have this Temp Role."
+msgstr "Kenelläkään jäsenellä ei ole tätä väliaikaista roolia."
+
+#: temproles\temproles.py:407
+msgid "These members have this Temp Role: {temp_roles_members}."
+msgstr "Näillä jäsenillä on tämä väliaikainen rooli: {temp_roles_members}."
+
+#: temproles\temproles.py:432
+msgid "No active Temp Roles on this server."
+msgstr "Tällä palvelimella ei ole aktiivisia tilapäisrooleja."
+
+#: temproles\temproles.py:448
+#, docstring
+msgid "Set the logs channel for Temp Roles."
+msgstr "Aseta lokikanava tilapäisrooleille."
+
+#: temproles\temproles.py:451
+msgid "Logs channel unset."
+msgstr "Lokien kanava ei ole asetettu."
+
+#: temproles\temproles.py:455
+msgid "I need of the `embed_links` permission in the logs channel."
+msgstr "Tarvitsen `embed_links`-oikeutta lokikanavassa."
+
+#: temproles\temproles.py:458
+msgid "Logs channel set."
+msgstr "Lokien kanavasarja."
+
+#: temproles\temproles.py:469
+#, docstring
+msgid "Add an allowed self Temp Role.\n\n"
+"        **Parameters:**\n"
+"        - `min_time`: The minimum time for the self temp role. `none` to disable. Defaults is 1 day.\n"
+"        - `max_time`: The minimum time for the self temp role. `none` to disable. Defaults is 365 days.\n"
+"        "
+msgstr "Lisää sallittu oma tilapäisrooli.\n\n"
+"        **Parametrit:**\n"
+"        - `min_time`: Vähimmäisaika self temp -roolille. `none` poistaa käytöstä. Oletusarvo on 1 päivä.\n"
+"        - `max_time`: Self temp -roolin vähimmäisaika. `none` poistaa käytöstä. Oletusarvo on 365 päivää.\n"
+"        "
+
+#: temproles\temproles.py:479
+msgid "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy."
+msgstr "Roolia {role.mention} ({role.id}) ei voida määrittää Discordin roolihierarkian vuoksi."
+
+#: temproles\temproles.py:486
+msgid "This role is already an allowed self temp role."
+msgstr "Tämä rooli on jo nyt sallittu oma sijaisrooli."
+
+#: temproles\temproles.py:493
+msgid "Allowed self Temp Role added."
+msgstr "Sallittu itse Temp-rooli lisätty."
+
+#: temproles\temproles.py:498
+#, docstring
+msgid "Remove an allowed self Temp Role."
+msgstr "Poistaa sallitun itsesi Temp-roolin."
+
+#: temproles\temproles.py:502
+msgid "This role isn't an allowed self temp role."
+msgstr "Tämä rooli ei ole sallittu itsenäinen sijaisrooli."
+
+#: temproles\temproles.py:506
+msgid "Allowed self Temp Role removed."
+msgstr "Sallittu itse Temp Role poistettu."
+
+#: temproles\temproles.py:512
+#, docstring
+msgid "Assign/Add an allowed self Temp Role to yourself, for a specified duration."
+msgstr "Määritä/lisää itsellesi sallittu itsellesi tilapäisrooli määritellyksi ajaksi."
+
+#: temproles\temproles.py:517
+msgid "This role isn't an allowed self Temp Role on this server."
+msgstr "Tämä rooli ei ole tällä palvelimella sallittu self Temp -rooli."
+
+#: temproles\temproles.py:525
+msgid "The time for this role must be greater than {min_time_string}."
+msgstr "Tehtävän keston on oltava yli {min_time_string}."
+
+#: temproles\temproles.py:535
+msgid "The time for this role must be less than {max_time_string}."
+msgstr "Tehtävän keston on oltava alle {max_time_string}."
+
+#: temproles\temproles.py:543 temproles\temproles.py:550
+#, docstring
+msgid "Unassign/Remove an allowed self Temp Role from yourself."
+msgstr "Poista/poistaa itsellesi sallitun väliaikaisen roolin itseltäsi."
+
+#: temproles\temproles.py:545
+msgid "You can't remove this role from yourself."
+msgstr "Et voi poistaa tätä roolia itseltäsi."
+
+#: temproles\temproles.py:573
+msgid "Self Temp Roles"
+msgstr "Self Temp -roolit"
+

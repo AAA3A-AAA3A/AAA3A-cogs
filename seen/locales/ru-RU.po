@@ -1,0 +1,208 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:40\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/seen/locales/messages.pot\n"
+"X-Crowdin-File-ID: 150\n"
+"Language: ru_RU\n"
+
+#: seen\seen.py:24
+#, docstring
+msgid "A cog to check when a member/role/channel/category/user/guild was last active!"
+msgstr "Пробел, чтобы проверить, когда член/роль/канал/категория/пользователь/гильдия были активны в последний раз!"
+
+#: seen\seen.py:944
+msgid "[This message]({message_link}) has been sent by {member_mention}."
+msgstr "[Это сообщение] ({message_link}) было отправлено {member_mention}."
+
+#: seen\seen.py:948
+msgid "[This message]({message_link}) has been edited by {member_mention}."
+msgstr "[Это сообщение] ({message_link}) было отредактировано {member_mention}."
+
+#: seen\seen.py:952
+msgid "The reaction {reaction} has been added to [this message]({message_link}) by {member_mention}."
+msgstr "Реакция {reaction} была добавлена в [это сообщение]({message_link}) пользователем {member_mention}."
+
+#: seen\seen.py:960
+msgid "The reaction {reaction} has been removed to the [this message]({message_link}) by {member_mention}."
+msgstr "Реакция {reaction} была удалена в [это сообщение]({message_link}) по {member_mention}."
+
+#: seen\seen.py:992
+msgid "This {object_type} is in the ignored users list (`{prefix}seen ignoreme`)."
+msgstr "Этот {object_type} находится в списке игнорируемых пользователей (`{prefix}seen ignoreme`)."
+
+#: seen\seen.py:1059
+msgid "**The user {_object.mention} was seen {seen}.**"
+msgstr "**Пользователь {_object.mention} был замечен {seen}.**"
+
+#: seen\seen.py:1067
+msgid "**The member {_object.mention} was seen {seen}.**"
+msgstr "**Участник {_object.mention} был замечен {seen}.**"
+
+#: seen\seen.py:1075
+msgid "**The role {_object.mention} was seen {seen}.**"
+msgstr "**Роль {_object.mention} была замечена {seen}.**"
+
+#: seen\seen.py:1083
+msgid "**The text channel {_object.mention} was seen {seen}.**"
+msgstr "**Текстовый канал {_object.mention} был замечен {seen}.**"
+
+#: seen\seen.py:1091
+msgid "**The category {_object.name} was seen {seen}.**"
+msgstr "**Категория {_object.name} была замечена {seen}.**"
+
+#: seen\seen.py:1099
+msgid "**The guild {_object.name} was seen {seen}.**"
+msgstr "**Гильдия {_object.name} была замечена {seen}.**"
+
+#: seen\seen.py:1247
+#, docstring
+msgid "Check when a member was last active!"
+msgstr "Проверьте, когда пользователь был активен в последний раз!"
+
+#: seen\seen.py:1267
+#, docstring
+msgid "Check when a role was last active!"
+msgstr "Проверьте, когда роль была активна в последний раз!"
+
+#: seen\seen.py:1286
+#, docstring
+msgid "Check when a channel was last active!"
+msgstr "Проверьте, когда канал был активен в последний раз!"
+
+#: seen\seen.py:1293
+msgid "You do not have permission to view this channel."
+msgstr "У вас нет разрешения на просмотр этого канала."
+
+#: seen\seen.py:1309
+#, docstring
+msgid "Check when a category was last active!"
+msgstr "Проверьте, когда категория была активна в последний раз!"
+
+#: seen\seen.py:1321
+msgid "You do not have permission to view any of the channels in this category."
+msgstr "У вас нет разрешения на просмотр каналов в этой категории."
+
+#: seen\seen.py:1338
+#, docstring
+msgid "Check when a old member was last active!"
+msgstr "Проверьте, когда старый пользователь был активен в последний раз!"
+
+#: seen\seen.py:1366
+#, docstring
+msgid "Check when a guild was last active!"
+msgstr "Проверьте, когда гильдия была активна в последний раз!"
+
+#: seen\seen.py:1386
+#, docstring
+msgid "Check when a user was last active!"
+msgstr "Проверьте, когда пользователь был активен в последний раз!"
+
+#: seen\seen.py:1405
+#, docstring
+msgid "Check when a old user was last active!"
+msgstr "Проверьте, когда старый пользователь был в последний раз активен!"
+
+#: seen\seen.py:1430
+#, docstring
+msgid "View a Seen Board for members/roles/channels/categories/guilds/users!\n\n"
+"        `bots` is a parameter for `members` and `users`. `include_role` and `exclude_role` are parameters for only `members`.\n"
+"        "
+msgstr "Просмотрите доску объявлений для участников/ролей/каналов/категорий/гильдий/пользователей!\n\n"
+"        `bots` является параметром для `members` и `users`. `include_role` и `exclude_role` являются параметрами только для `members`.\n"
+"        "
+
+#: seen\seen.py:1436
+msgid "You're not allowed to view the Seen board for guilds and users."
+msgstr "Вам не разрешено просматривать Seen board для гильдий и пользователей."
+
+#: seen\seen.py:1451
+#, docstring
+msgid "Get Config data stats."
+msgstr "Получение статистики данных конфигурации."
+
+#: seen\seen.py:1485
+#, docstring
+msgid "Enable or disable a listener."
+msgstr "Включите или отключите слушателя."
+
+#: seen\seen.py:1491
+msgid "Listener enabled for this/these type(s)."
+msgstr "Слушатель включен для этого/этих типов."
+
+#: seen\seen.py:1493
+msgid "Listener disabled for this/these type(s)."
+msgstr "Слушатель отключен для этого/этих типов."
+
+#: seen\seen.py:1497
+#, docstring
+msgid "Asking Seen to ignore your actions."
+msgstr "Просить Seen игнорировать ваши действия."
+
+#: seen\seen.py:1505
+msgid "You will no longer be seen by this cog and the data I held on you have been deleted."
+msgstr "Вы больше не будете видны этому когу, а имеющиеся у меня данные о вас будут удалены."
+
+#: seen\seen.py:1512
+msgid "You'll be seen again by this cog."
+msgstr "Вы снова увидите эту шестеренку."
+
+#: seen\seen.py:1517
+#, docstring
+msgid "Ignore or unignore a specific user."
+msgstr "Игнорирование или исключение из игнора определенного пользователя."
+
+#: seen\seen.py:1524
+msgid "{user.mention} ({user.id}) will no longer be seen by this cog, and their data has been deleted."
+msgstr "{user.mention} ({user.id}) больше не будут видны этому когу, а их данные были удалены."
+
+#: seen\seen.py:1533
+msgid "{user.mention} ({user.id}) will be seen again by this cog."
+msgstr "{user.mention} ({user.id}) снова увидит этот зубчик."
+
+#: seen\seen.py:1541
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "Получить эмбед для проверки состояния цикла."
+
+#: seen\seen.py:1552
+#, docstring
+msgid "Purge Config for a specified _type or all."
+msgstr "Очистить конфигурацию для указанного _типа или всех."
+
+#: seen\seen.py:1559
+msgid "All Seen data purged."
+msgstr "Все данные Seen удалены."
+
+#: seen\seen.py:1571
+msgid "Seen data purged for this type."
+msgstr "Просмотр данных, очищенных для этого типа."
+
+#: seen\seen.py:1576
+#, docstring
+msgid "Migrate Seen from Seen by Aikaterna."
+msgstr "Мигрировать Увиденное от Увиденного от Aikaterna."
+
+#: seen\seen.py:1583
+msgid "Seen by Aikaterna has no data in this bot."
+msgstr "Seen by Aikaterna не имеет данных в этом боте."
+
+#: seen\seen.py:1587
+msgid "Seen by Aikaterna use an old/new data schema version and isn't compatible with this cog actually."
+msgstr "Видел Aikaterna использует старую/новую версию схемы данных и не совместим с этой шестеренкой."
+
+#: seen\seen.py:1650
+msgid "Data successfully migrated from Seen by Aikaterna."
+msgstr "Данные успешно перенесены из Seen by Aikaterna."
+

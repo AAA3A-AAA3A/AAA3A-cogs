@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:42\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/ctxvar/locales/messages.pot\n"
+"X-Crowdin-File-ID: 82\n"
+"Language: ru_RU\n"
+
+#: ctxvar\ctxvar.py:65
+msgid "No Discord object found."
+msgstr "Объект Discord не найден."
+
+#: ctxvar\ctxvar.py:81 ctxvar\ctxvar.py:214 ctxvar\ctxvar.py:265
+#: ctxvar\ctxvar.py:346
+msgid "I couldn't find any cog, command, or object named `{thing}`."
+msgstr "Я не смог найти ни одной шестеренки, команды или объекта с именем `{thing}`."
+
+#: ctxvar\ctxvar.py:104
+#, docstring
+msgid "A cog to list and display the contents of all sub-functions of `ctx`!"
+msgstr "Ког для перечисления и отображения содержимого всех подфункций `ctx`!"
+
+#: ctxvar\ctxvar.py:132
+#, docstring
+msgid "Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."
+msgstr "Вывести список всех атрибутов и их значений экземпляра класса 'ctx' или его податрибутов."
+
+#: ctxvar\ctxvar.py:136 ctxvar\ctxvar.py:197 ctxvar\ctxvar.py:248
+#: ctxvar\ctxvar.py:329
+msgid "The cog Dev must be loaded, to make sure you know what you are doing."
+msgstr "Для того чтобы убедиться, что вы знаете, что делаете, необходимо загрузить шестеренку Dev."
+
+#: ctxvar\ctxvar.py:147
+msgid "The argument you specified is not a subclass of the instance."
+msgstr "Указанный вами аргумент не является подклассом экземпляра."
+
+#: ctxvar\ctxvar.py:154
+msgid "Here are all the variables and their associated values that can be used in this instance class."
+msgstr "Вот все переменные и связанные с ними значения, которые могут быть использованы в этом классе экземпляра."
+
+#: ctxvar\ctxvar.py:193
+#, docstring
+msgid "Display a list of all attributes of the provided object (debug not async)."
+msgstr "Вывод списка всех атрибутов предоставленного объекта (debug not async)."
+
+#: ctxvar\ctxvar.py:244
+#, docstring
+msgid "Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."
+msgstr "Выполнение `rich.help(obj=object, ...)` на предоставленном объекте (debug not async)."
+
+#: ctxvar\ctxvar.py:325
+#, docstring
+msgid "Execute `ast.dump(ast.parse(<code content>))` on the provided object (debug not async)."
+msgstr "Выполнение `ast.dump(ast.parse(<code content>))` на предоставленном объекте (debug not async)."
+
+#: ctxvar\ctxvar.py:366
+#, docstring
+msgid "List attributes of the provided object like dpy objects (debug not async)."
+msgstr "Перечислить атрибуты предоставленного объекта как объекты dpy (debug not async)."
+
+#: ctxvar\ctxvar.py:451
+#, docstring
+msgid "Parse the Markdown syntax for a specified message's content or a string."
+msgstr "Разбор синтаксиса Markdown для содержимого указанного сообщения или строки."
+
+#: ctxvar\ctxvar.py:465
+msgid "Error in the module used for this command."
+msgstr "Ошибка в модуле, используемом для этой команды."
+

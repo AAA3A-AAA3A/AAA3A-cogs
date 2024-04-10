@@ -1,0 +1,58 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-08-10 13:42+0200\n"
+"PO-Revision-Date: 2023-08-10 11:46\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/discordsearch/locales/messages.pot\n"
+"X-Crowdin-File-ID: 138\n"
+"Language: ja_JP\n"
+
+#: discordsearch\discordsearch.py:34
+#, docstring
+msgid "A cog to edit roles!"
+msgstr "役割を編集するためのコグです！"
+
+#: discordsearch\discordsearch.py:106
+msgid "You must provide at least one parameter."
+msgstr "少なくとも1つのパラメータを指定する必要があります。"
+
+#: discordsearch\discordsearch.py:167
+msgid "Your regex process took too long. Removing from memory."
+msgstr "正規表現処理に時間がかかりすぎました。メモリから削除します。"
+
+#: discordsearch\discordsearch.py:173
+msgid "There is an error in your regex.\n"
+"{e}"
+msgstr "正規表現に誤りがあります。\n"
+"{e}"
+
+#: discordsearch\discordsearch.py:211
+msgid "Look at the original message."
+msgstr "元のメッセージを見てください。"
+
+#: discordsearch\discordsearch.py:227
+msgid "Search in #{channel.name} ({channel.id})"
+msgstr "#{channel.name} で検索 ({channel.id})"
+
+#: discordsearch\discordsearch.py:228
+msgid "Sorry, I could not find any results."
+msgstr "申し訳ありませんが、結果は見つかりませんでした。"
+
+#: discordsearch\discordsearch.py:241
+msgid "Search in #{channel.name} ({channel.id}) in {total}s"
+msgstr "#{channel.name} で検索 ({channel.id}) in {total}s"
+
+#: discordsearch\discordsearch.py:253
+msgid "Unrecognized date/time."
+msgstr "認識できない日付/時刻。"
+

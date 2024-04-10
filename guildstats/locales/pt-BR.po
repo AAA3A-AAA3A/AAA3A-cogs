@@ -1,0 +1,409 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:41\n"
+"Last-Translator: \n"
+"Language-Team: Portuguese, Brazilian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pt-BR\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/guildstats/locales/messages.pot\n"
+"X-Crowdin-File-ID: 271\n"
+"Language: pt_BR\n"
+
+#: guildstats\guildstats.py:68
+msgid "No member/category/text channel/voice channel found."
+msgstr "Nenhum membro/categoria/canal de texto/canal de voz foi encontrado."
+
+#: guildstats\guildstats.py:74
+#, docstring
+msgid "A cog to generate images with messages and voice stats, for members, roles, guilds, categories, text channels, voice channels and activities!"
+msgstr "Uma engrenagem para gerar imagens com mensagens e estatísticas de voz, para membros, funções, guildas, categorias, canais de texto, canais de voz e atividades!"
+
+#: guildstats\guildstats.py:2951
+msgid "Role {_object.name}"
+msgstr "Função {_object.name}"
+
+#: guildstats\guildstats.py:2958
+msgid "Guild Stats"
+msgstr "Estatísticas da guilda"
+
+#: guildstats\guildstats.py:2973
+msgid "Messages Stats"
+msgstr "Estatísticas de mensagens"
+
+#: guildstats\guildstats.py:2980
+msgid "Voice Stats"
+msgstr "Estatísticas de voz"
+
+#: guildstats\guildstats.py:2986
+msgid "Activities Stats"
+msgstr "Estatísticas de atividades"
+
+#: guildstats\guildstats.py:2995
+msgid "Top Stats"
+msgstr "Principais estatísticas"
+
+#: guildstats\guildstats.py:3003
+msgid "Activity - {activity_name}"
+msgstr "Atividade - {activity_name}"
+
+#: guildstats\guildstats.py:3015
+msgid "Category - {_object.name}"
+msgstr "Categoria - {_object.name}"
+
+#: guildstats\guildstats.py:3101 guildstats\guildstats.py:3135
+msgid "Created On"
+msgstr "Criado em"
+
+#: guildstats\guildstats.py:3116
+msgid "Joined On"
+msgstr "Juntos"
+
+#: guildstats\guildstats.py:3233 guildstats\guildstats.py:3911
+#: guildstats\guildstats.py:4753 guildstats\guildstats.py:4813
+#: guildstats\guildstats.py:4864 guildstats\guildstats.py:4881
+#: guildstats\guildstats.py:5344 guildstats\guildstats.py:5563
+msgid "Graphic"
+msgstr "Gráfico"
+
+#: guildstats\guildstats.py:3298 guildstats\guildstats.py:4271
+#: guildstats\guildstats.py:4533 guildstats\guildstats.py:5212
+#: guildstats\guildstats.py:5431
+msgid "Contributors"
+msgstr "Contribuintes"
+
+#: guildstats\guildstats.py:3506 guildstats\guildstats.py:5599
+#: guildstats\guildstats.py:5641
+msgid "Tracking data in this server for {interval_string}."
+msgstr "Dados de rastreamento nesse servidor para {interval_string}."
+
+#: guildstats\guildstats.py:3515 guildstats\guildstats.py:5608
+#: guildstats\guildstats.py:5650
+msgid "Only {members_type} are taken into account."
+msgstr "Somente o site {members_type} é levado em consideração."
+
+#: guildstats\guildstats.py:3647 guildstats\guildstats.py:3929
+#: guildstats\guildstats.py:4192 guildstats\guildstats.py:4454
+#: guildstats\guildstats.py:4898 guildstats\guildstats.py:5142
+#: guildstats\guildstats.py:5361
+msgid "Server Lookback"
+msgstr "Retrospectiva do servidor"
+
+#: guildstats\guildstats.py:3657 guildstats\guildstats.py:3940
+#: guildstats\guildstats.py:4908
+msgid "Text"
+msgstr "Texto"
+
+#: guildstats\guildstats.py:3668 guildstats\guildstats.py:3812
+#: guildstats\guildstats.py:3954 guildstats\guildstats.py:4772
+#: guildstats\guildstats.py:4919
+msgid "Voice"
+msgstr "Voz"
+
+#: guildstats\guildstats.py:3681 guildstats\guildstats.py:3969
+#: guildstats\guildstats.py:4217 guildstats\guildstats.py:4772
+#: guildstats\guildstats.py:4932 guildstats\guildstats.py:5167
+msgid "Messages"
+msgstr "Mensagens"
+
+#: guildstats\guildstats.py:3691 guildstats\guildstats.py:3736
+#: guildstats\guildstats.py:3980 guildstats\guildstats.py:4034
+#: guildstats\guildstats.py:4228 guildstats\guildstats.py:4282
+#: guildstats\guildstats.py:4490 guildstats\guildstats.py:4544
+#: guildstats\guildstats.py:4942 guildstats\guildstats.py:4987
+#: guildstats\guildstats.py:5177 guildstats\guildstats.py:5222
+#: guildstats\guildstats.py:5396 guildstats\guildstats.py:5441
+msgid "1d"
+msgstr "1d"
+
+#: guildstats\guildstats.py:3702 guildstats\guildstats.py:3747
+#: guildstats\guildstats.py:3994 guildstats\guildstats.py:4048
+#: guildstats\guildstats.py:4242 guildstats\guildstats.py:4296
+#: guildstats\guildstats.py:4504 guildstats\guildstats.py:4558
+#: guildstats\guildstats.py:4953 guildstats\guildstats.py:4998
+#: guildstats\guildstats.py:5188 guildstats\guildstats.py:5233
+#: guildstats\guildstats.py:5407 guildstats\guildstats.py:5452
+msgid "7d"
+msgstr "7d"
+
+#: guildstats\guildstats.py:3713 guildstats\guildstats.py:3759
+#: guildstats\guildstats.py:4008 guildstats\guildstats.py:4062
+#: guildstats\guildstats.py:4256 guildstats\guildstats.py:4310
+#: guildstats\guildstats.py:4518 guildstats\guildstats.py:4572
+#: guildstats\guildstats.py:4964 guildstats\guildstats.py:5010
+#: guildstats\guildstats.py:5199 guildstats\guildstats.py:5245
+#: guildstats\guildstats.py:5418 guildstats\guildstats.py:5464
+msgid "30d"
+msgstr "30d"
+
+#: guildstats\guildstats.py:3726 guildstats\guildstats.py:4023
+#: guildstats\guildstats.py:4479 guildstats\guildstats.py:4977
+#: guildstats\guildstats.py:5386
+msgid "Voice Activity"
+msgstr "Atividade de voz"
+
+#: guildstats\guildstats.py:3789
+msgid "Server Ranks"
+msgstr "Classificações de servidores"
+
+#: guildstats\guildstats.py:3805 guildstats\guildstats.py:3818
+msgid "No data."
+msgstr "Não há dados."
+
+#: guildstats\guildstats.py:3827
+msgid "Top Channels & Activity"
+msgstr "Principais canais e atividades"
+
+#: guildstats\guildstats.py:4077 guildstats\guildstats.py:4829
+#: guildstats\guildstats.py:5025
+msgid "Top Members"
+msgstr "Principais membros"
+
+#: guildstats\guildstats.py:4135 guildstats\guildstats.py:5083
+msgid "Top Channels"
+msgstr "Principais canais"
+
+#: guildstats\guildstats.py:4325 guildstats\guildstats.py:5279
+msgid "Top Messages Members"
+msgstr "Membros do Top Messages"
+
+#: guildstats\guildstats.py:4389
+msgid "Top Messages Channels"
+msgstr "Principais canais de mensagens"
+
+#: guildstats\guildstats.py:4587 guildstats\guildstats.py:5498
+msgid "Top Voice Members"
+msgstr "Principais membros do Voice"
+
+#: guildstats\guildstats.py:4651
+msgid "Top Voice Channels"
+msgstr "Principais canais de voz"
+
+#: guildstats\guildstats.py:4716
+msgid "Top Activities (Applications)"
+msgstr "Principais atividades (aplicativos)"
+
+#: guildstats\guildstats.py:4771
+msgid "Tope"
+msgstr "Tope"
+
+#: guildstats\guildstats.py:4772
+msgid "Members"
+msgstr "Membros"
+
+#: guildstats\guildstats.py:4772
+msgid "Channels"
+msgstr "Canais"
+
+#: guildstats\guildstats.py:5260 guildstats\guildstats.py:5479
+msgid "Server Rank"
+msgstr "Classificação do servidor"
+
+#: guildstats\guildstats.py:5771 guildstats\guildstats.py:5811
+#: guildstats\guildstats.py:5847 guildstats\guildstats.py:5873
+#: guildstats\guildstats.py:5899 guildstats\guildstats.py:5925
+#: guildstats\guildstats.py:5954 guildstats\guildstats.py:5987
+#: guildstats\guildstats.py:6017 guildstats\guildstats.py:6048
+#: guildstats\guildstats.py:6079 guildstats\guildstats.py:6112
+msgid "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
+msgstr "Essa engrenagem está desativada nesta guilda. Os administradores podem ativá-la com o comando `{prefix}guildstats enable`."
+
+#: guildstats\guildstats.py:5778 guildstats\guildstats.py:5818
+#: guildstats\guildstats.py:6119
+msgid "This user is in the ignored users list (`{prefix}guildstats ignoreme`)."
+msgstr "Esse usuário está na lista de usuários ignorados (`{prefix}guildstats ignoreme`)."
+
+#: guildstats\guildstats.py:5802
+#, docstring
+msgid "Display stats for a specified member."
+msgstr "Exibe as estatísticas de um membro especificado."
+
+#: guildstats\guildstats.py:5838
+#, docstring
+msgid "Display stats for a specified role."
+msgstr "Exibir estatísticas para uma função especificada."
+
+#: guildstats\guildstats.py:5866
+#, docstring
+msgid "Display stats for this guild."
+msgstr "Exibir estatísticas para essa guilda."
+
+#: guildstats\guildstats.py:5892
+#, docstring
+msgid "Display stats for the messages in this guild."
+msgstr "Exibe as estatísticas das mensagens dessa guilda."
+
+#: guildstats\guildstats.py:5918
+#, docstring
+msgid "Display stats for the voice in this guild."
+msgstr "Exibe as estatísticas da voz nesta guilda."
+
+#: guildstats\guildstats.py:5943
+#, docstring
+msgid "Display stats for activities in this guild."
+msgstr "Exibir estatísticas das atividades dessa guilda."
+
+#: guildstats\guildstats.py:5946 guildstats\guildstats.py:6071
+#: guildstats\guildstats.py:6104
+msgid "Activities stats are disabled on this bot."
+msgstr "As estatísticas de atividades estão desativadas nesse bot."
+
+#: guildstats\guildstats.py:5975
+#, docstring
+msgid "Display stats for a specified category."
+msgstr "Exibir estatísticas para uma categoria especificada."
+
+#: guildstats\guildstats.py:6008
+#, docstring
+msgid "Display stats for a specified channel."
+msgstr "Exibir estatísticas de um canal especificado."
+
+#: guildstats\guildstats.py:6022
+msgid "Threads aren't supported by this cog."
+msgstr "Os tópicos não são suportados por essa engrenagem."
+
+#: guildstats\guildstats.py:6039
+#, docstring
+msgid "Display top stats for voice/messages members/channels."
+msgstr "Exibir as principais estatísticas de membros/canais de voz/mensagens."
+
+#: guildstats\guildstats.py:6068
+#, docstring
+msgid "Display stats for a specific activity in this guild."
+msgstr "Exibe as estatísticas de uma atividade específica nesta guilda."
+
+#: guildstats\guildstats.py:6099
+#, docstring
+msgid "Display graphic for members, roles guilds, text channels, voice channels and activities."
+msgstr "Exibir gráficos para membros, funções, guildas, canais de texto, canais de voz e atividades."
+
+#: guildstats\guildstats.py:6135
+#, docstring
+msgid "Asking GuildStats to ignore your actions."
+msgstr "Solicitar que o GuildStats ignore suas ações."
+
+#: guildstats\guildstats.py:6143
+msgid "You will no longer be seen by this cog and the data I held on you have been deleted."
+msgstr "Você não será mais visto por essa engrenagem e os dados que eu mantinha sobre você foram excluídos."
+
+#: guildstats\guildstats.py:6150
+msgid "You'll be seen again by this cog."
+msgstr "Serás visto novamente por esta engrenagem."
+
+#: guildstats\guildstats.py:6155
+#, docstring
+msgid "Ignore or unignore a specific user."
+msgstr "Ignore ou cancele a ignorar um usuário específico."
+
+#: guildstats\guildstats.py:6162
+msgid "{user.mention} ({user.id}) will no longer be seen by this cog, and their data has been deleted."
+msgstr "{user.mention} ({user.id}) não serão mais vistos por essa engrenagem, e seus dados foram excluídos."
+
+#: guildstats\guildstats.py:6171
+msgid "{user.mention} ({user.id}) will be seen again by this cog."
+msgstr "{user.mention} ({user.id}) será vista novamente por essa engrenagem."
+
+#: guildstats\guildstats.py:6178
+#, docstring
+msgid "Ignore or unignore a specific category."
+msgstr "Ignorar ou cancelar a ignorar uma categoria específica."
+
+#: guildstats\guildstats.py:6186
+msgid "`{category.name}` ({category.id}) will now be ignored in stats (except for the specific category one)."
+msgstr "`{category.name}` ({category.id}) agora será ignorado nas estatísticas (exceto para a categoria específica um)."
+
+#: guildstats\guildstats.py:6194
+msgid "`{category.name}` ({category.id}) will no longer be ignored in stats."
+msgstr "O `{category.name}` ({category.id}) não será mais ignorado nas estatísticas."
+
+#: guildstats\guildstats.py:6207
+#, docstring
+msgid "Ignore or unignore a specific channel."
+msgstr "Ignorar ou cancelar a ignorar um canal específico."
+
+#: guildstats\guildstats.py:6213
+msgid "{channel.mention} ({channel.id}) will now be ignored in stats (except for the specific channel one)."
+msgstr "{channel.mention} ({channel.id}) agora será ignorado nas estatísticas (exceto para o canal específico)."
+
+#: guildstats\guildstats.py:6221
+msgid "{channel.mention} ({channel.id}) will no longer be ignored in stats."
+msgstr "{channel.mention} ({channel.id}) não será mais ignorado nas estatísticas."
+
+#: guildstats\guildstats.py:6229
+#, docstring
+msgid "Ignore or unignore a specific activity."
+msgstr "Ignorar ou cancelar a ignorar uma atividade específica."
+
+#: guildstats\guildstats.py:6237
+msgid "The activity `{activity_name}` will now be ignored in stats (except for the specific activity one)."
+msgstr "A atividade `{activity_name}` agora será ignorada nas estatísticas (exceto a atividade específica)."
+
+#: guildstats\guildstats.py:6245
+msgid "The activity `{activity_name}` will no longer be ignored in stats."
+msgstr "A atividade `{activity_name}` não será mais ignorada nas estatísticas."
+
+#: guildstats\guildstats.py:6253
+#, docstring
+msgid "Enable or disable activities stats."
+msgstr "Ativar ou desativar as estatísticas de atividades."
+
+#: guildstats\guildstats.py:6259
+#, docstring
+msgid "Enable or disable by default the cog in the bot guilds."
+msgstr "Ativar ou desativar por padrão a engrenagem nas guildas de bots."
+
+#: guildstats\guildstats.py:6265
+#, docstring
+msgid "Enable the cog in this guild/server."
+msgstr "Habilite a engrenagem nesta guilda/servidor."
+
+#: guildstats\guildstats.py:6269
+msgid "GuildStats already enabled in this guild/server."
+msgstr "O GuildStats já está ativado nesta guilda/servidor."
+
+#: guildstats\guildstats.py:6272
+msgid "GuildStats enabled in this guild/server."
+msgstr "GuildStats ativado nesta guilda/servidor."
+
+#: guildstats\guildstats.py:6277
+#, docstring
+msgid "Disable the cog in this guild/server."
+msgstr "Desativar a engrenagem nesta guilda/servidor."
+
+#: guildstats\guildstats.py:6281
+msgid "GuildStats already disabled in this guild/server."
+msgstr "O GuildStats já está desativado nesta guilda/servidor."
+
+#: guildstats\guildstats.py:6284
+msgid "GuildStats disabled in this guild/server."
+msgstr "GuildStats desativado nesta guilda/servidor."
+
+#: guildstats\guildstats.py:6290
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "Obter uma incorporação para verificar o estado do laço."
+
+#: guildstats\guildstats.py:6301
+#, docstring
+msgid "Purge Config for the current guild."
+msgstr "Purge Config para a guilda atual."
+
+#: guildstats\guildstats.py:6306
+msgid "All GuildStats data purged for this guild."
+msgstr "Todos os dados do GuildStats foram removidos para esta guilda."
+
+#: guildstats\guildstats.py:6309
+msgid "All GuildStats activities data purged for this guild."
+msgstr "Todos os dados de atividades do GuildStats foram removidos para essa guilda."
+
+#: guildstats\guildstats.py:6328
+msgid "All GuildStats {_type} data purged for this guild."
+msgstr "Todos os dados do GuildStats {_type} foram removidos para essa guilda."
+

@@ -1,0 +1,256 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:36\n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ro\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/discordmodals/locales/messages.pot\n"
+"X-Crowdin-File-ID: 84\n"
+"Language: ro_RO\n"
+
+#: discordmodals\discordmodals.py:34
+msgid "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
+msgstr "Eu trebuie să fiu autorul mesajului. Puteți folosi EmbedUtils de AAA3A pentru a trimite unul."
+
+#: discordmodals\discordmodals.py:123
+msgid "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)"
+msgstr "Eroare la analizarea YAML. Vă rugăm să vă asigurați că formatul este valid (un validator YAML poate fi de ajutor)"
+
+#: discordmodals\discordmodals.py:142
+msgid "The argument `/{arg}` is required in the root in the YAML."
+msgstr "Argumentul `/{arg}` este necesar în rădăcina din YAML."
+
+#: discordmodals\discordmodals.py:147
+msgid "The argument `/{arg}` is invalid in in the YAML. Check the spelling."
+msgstr "Argumentul `/{arg}` nu este valid în YAML. Verificați ortografia."
+
+#: discordmodals\discordmodals.py:157
+msgid "The argument `/button/{arg}` is required in the YAML."
+msgstr "Argumentul `/button/{arg}` este necesar în YAML."
+
+#: discordmodals\discordmodals.py:162
+msgid "The argument `/button/{arg}` is invalid in the YAML. Check the spelling."
+msgstr "Argumentul `/button/{arg}` nu este valid în YAML. Verificați ortografia."
+
+#: discordmodals\discordmodals.py:176 discordmodals\discordmodals.py:180
+msgid "The argument `/button/style` must be a number between 1 and 4."
+msgstr "Argumentul `/button/style` trebuie să fie un număr între 1 și 4."
+
+#: discordmodals\discordmodals.py:188
+msgid "The argument `/button/modal` must be a list of text inputs."
+msgstr "Argumentul `/button/modal` trebuie să fie o listă de intrări de text."
+
+#: discordmodals\discordmodals.py:200
+msgid "You can only have 5 text inputs by modal."
+msgstr "Puteți avea doar 5 intrări de text în fiecare modă."
+
+#: discordmodals\discordmodals.py:206
+msgid "The argument `/modal/{count}/{arg}` is required in the YAML."
+msgstr "Argumentul `/modal/{count}/{arg}` este necesar în YAML."
+
+#: discordmodals\discordmodals.py:213
+msgid "The argument `/modal/{count}/{arg}` is invalid in the YAML. Check the spelling."
+msgstr "Argumentul `/modal/{count}/{arg}` nu este valid în YAML. Verificați ortografia."
+
+#: discordmodals\discordmodals.py:219
+msgid "The argument `/modal/{count}/label` must be less than 45 characters long."
+msgstr "Argumentul `/modal/{count}/label` trebuie să aibă o lungime mai mică de 45 de caractere."
+
+#: discordmodals\discordmodals.py:229 discordmodals\discordmodals.py:235
+msgid "The argument `/modal/{count}/style` must be a number between 1 and 2."
+msgstr "Argumentul `/modal/{count}/style` trebuie să fie un număr între 1 și 2."
+
+#: discordmodals\discordmodals.py:247
+msgid "The argument `/modal/{count}/required` must be a boolean (True or False)."
+msgstr "Argumentul `/modal/{count}/required` trebuie să fie un boolean (True sau False)."
+
+#: discordmodals\discordmodals.py:257
+msgid "The argument `/modal/{count}/default` must be less than 4000 characters long."
+msgstr "Argumentul `/modal/{count}/default` trebuie să aibă o lungime mai mică de 4000 de caractere."
+
+#: discordmodals\discordmodals.py:265
+msgid "The argument `/modal/{count}/placeholder` must be less than 100 characters long."
+msgstr "Argumentul `/modal/{count}/placeholder` trebuie să aibă o lungime mai mică de 100 de caractere."
+
+#: discordmodals\discordmodals.py:273
+msgid "The argument `/modal/{count}/min_length` must be between 0 and 4000."
+msgstr "Argumentul `/modal/{count}/min_length` trebuie să fie cuprins între 0 și 4000."
+
+#: discordmodals\discordmodals.py:281
+msgid "The argument `/modal/{count}/max_length` must be between 0 and 4000."
+msgstr "Argumentul `/modal/{count}/max_length` trebuie să fie cuprins între 0 și 4000."
+
+#: discordmodals\discordmodals.py:307
+msgid "The argument `/anonymous` must be a boolean (True or False)."
+msgstr "Argumentul `/anonymous` trebuie să fie un boolean (True sau False)."
+
+#: discordmodals\discordmodals.py:317
+msgid "The argument `/unique_answer` must be a boolean (True or False)."
+msgstr "Argumentul `/unique_answer` trebuie să fie un boolean (True sau False)."
+
+#: discordmodals\discordmodals.py:363
+#, docstring
+msgid "A cog to use Discord Modals, forms with graphic interface!"
+msgstr "O rotiță pentru a utiliza Discord Modals, formulare cu interfață grafică!"
+
+#: discordmodals\discordmodals.py:491
+msgid "This message is not in Config."
+msgstr "Acest mesaj nu se află în Config."
+
+#: discordmodals\discordmodals.py:545 discordmodals\discordmodals.py:635
+msgid "Sorry. An error has occurred."
+msgstr "Îmi pare rău. A apărut o eroare."
+
+#: discordmodals\discordmodals.py:561
+msgid "The channel in which I was to send the results of this Modal no longer exists. Please notify an administrator of this server."
+msgstr "Canalul în care trebuia să trimit rezultatele acestui mod nu mai există. Vă rugăm să anunțați un administrator al acestui server."
+
+#: discordmodals\discordmodals.py:576
+msgid "I don't have sufficient permissions in the destination channel (view channel, send messages, send embeds). Please notify an administrator of this server."
+msgstr "Nu am suficiente permisiuni în canalul de destinație (vizualizare canal, trimiterea de mesaje, trimiterea de inserții). Vă rugăm să anunțați un administrator al acestui server."
+
+#: discordmodals\discordmodals.py:614
+msgid "The role that was to be assigned no longer exists. Please notify an administrator."
+msgstr "Rolul care trebuia să fie atribuit nu mai există. Vă rugăm să anunțați un administrator."
+
+#: discordmodals\discordmodals.py:624
+msgid "The role that was to be assigned could not be assigned. Please notify an administrator."
+msgstr "Rolul care trebuia să fie atribuit nu a putut fi atribuit. Vă rugăm să anunțați un administrator."
+
+#: discordmodals\discordmodals.py:644
+msgid "Thank you for sending this Modal!"
+msgstr "Vă mulțumim pentru trimiterea acestui Modal!"
+
+#: discordmodals\discordmodals.py:669
+#, docstring
+msgid "Add a Modal for a message.\n\n"
+"        Use YAML syntax to set up everything.\n\n"
+"        **Example:**\n"
+"        ```\n"
+"        [p]discordmodals add <message>\n"
+"        title: Report a bug\n"
+"        button:\n"
+"          label: Report\n"
+"          emoji: ⚠️\n"
+"          style: 4 # blurple = 1, grey = 2, green = 3, red = 4\n"
+"        modal:\n"
+"          - label: What is the problem?\n"
+"            style: 2 # short = 1, paragraph = 2\n"
+"            required: True\n"
+"            default: None\n"
+"            placeholder: None\n"
+"            min_length: None\n"
+"            max_length: None\n"
+"        channel: general # id, mention, name\n"
+"        anonymous: False\n"
+"        unique_answer: False\n"
+"        messages:\n"
+"          error: Error!\n"
+"          submit: Form submitted.\n"
+"        pings: user1, user2, role1, role2\n"
+"        whitelist_roles: role1, role2\n"
+"        blacklist_roles: role3, role4\n"
+"        assign_roles: role5, role6\n"
+"        ```\n"
+"        The `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous`, `unique_answer`, `messages`, `pings`, `whitelist_roles`, `blacklist_roles` and `assign_roles` are not required.\n"
+"        "
+msgstr "Adăugați o modalitate pentru un mesaj.\n\n"
+"        Utilizați sintaxa YAML pentru a configura totul.\n\n"
+"        **Exemplu:**\n"
+"        ```\n"
+"        [p]discordmodals add <message>\n"
+"        title: Raportează o eroare\n"
+"        buton:\n"
+"          etichetă: Raportează\n"
+"          emoji: ⚠️\n"
+"          style: 4 # blurple = 1, grey = 2, green = 3, red = 4\n"
+"        modal:\n"
+"          - label: Care este problema?\n"
+"            style: 2 # short = 1, paragraph = 2\n"
+"            required: True\n"
+"            default: None\n"
+"            placeholder: None\n"
+"            min_length: Nici unul\n"
+"            max_length: None\n"
+"        channel: general # id, mention, name\n"
+"        anonymous: False\n"
+"        unique_answer: False\n"
+"        messages:\n"
+"          error: Error!\n"
+"          submit: Formular trimis.\n"
+"        pings: user1, user2, role1, role2\n"
+"        whitelist_roles: role1, role2\n"
+"        blacklist_roles: role3, role4\n"
+"        assign_roles: role5, role6\n"
+"        ```\n"
+"        `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous`, `unique_answer`, `messages`, `pings`, `whitelist_roles`, `blacklist_roles` și `assign_roles` nu sunt obligatorii.\n"
+"        "
+
+#: discordmodals\discordmodals.py:704
+msgid "This message already has a Modal."
+msgstr "Acest mesaj are deja un Modal."
+
+#: discordmodals\discordmodals.py:706
+msgid "This message already has components."
+msgstr "Acest mesaj are deja componente."
+
+#: discordmodals\discordmodals.py:719
+msgid "Sorry. An error occurred when I tried to put the button on the message."
+msgstr "Îmi pare rău. A apărut o eroare când am încercat să pun butonul pe mesaj."
+
+#: discordmodals\discordmodals.py:762
+msgid "Modal created."
+msgstr "Modalitate creată."
+
+#: discordmodals\discordmodals.py:767
+#, docstring
+msgid "List all Modals of this server or display the settings for a specific one."
+msgstr "Afișează toate modalele acestui server sau afișează setările pentru unul anume."
+
+#: discordmodals\discordmodals.py:774
+msgid "No modal is configured for this message."
+msgstr "Nu este configurată nicio modalitate pentru acest mesaj."
+
+#: discordmodals\discordmodals.py:779
+msgid "No modals in this server."
+msgstr "Nu există modale în acest server."
+
+#: discordmodals\discordmodals.py:781
+msgid "Modals"
+msgstr "Modele"
+
+#: discordmodals\discordmodals.py:786
+msgid "There is {len_modals} modals in this server."
+msgstr "Există {len_modals} modals în acest server."
+
+#: discordmodals\discordmodals.py:791
+msgid "Message Jump Link: {message_jump_link}\n"
+msgstr "Mesaj Jump Link: {message_jump_link}\n"
+
+#: discordmodals\discordmodals.py:801
+#, docstring
+msgid "Remove a Modal for a message."
+msgstr "Îndepărtați o modalitate pentru un mesaj."
+
+#: discordmodals\discordmodals.py:804
+msgid "No Modal is configured for this message."
+msgstr "Nu este configurată nicio modalitate pentru acest mesaj."
+
+#: discordmodals\discordmodals.py:814
+#, docstring
+msgid "Clear all Modals for a guild."
+msgstr "Șterge toate modalele pentru o breaslă."
+
+#: discordmodals\discordmodals.py:816
+msgid "All Modals purged."
+msgstr "Toate modalele au fost eliminate."
+

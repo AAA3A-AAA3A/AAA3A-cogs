@@ -1,0 +1,64 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:43\n"
+"Last-Translator: \n"
+"Language-Team: Ukrainian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: uk\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/viewpermissions/locales/messages.pot\n"
+"X-Crowdin-File-ID: 322\n"
+"Language: uk_UA\n"
+
+#: viewpermissions\viewpermissions.py:25
+msgid "`{argument}` isn't a valid permission name"
+msgstr "`{argument}` є недійсним ім'ям дозволу"
+
+#: viewpermissions\viewpermissions.py:32
+#, docstring
+msgid "A cog to display permissions for roles and members, at guild level or in a specified channel!"
+msgstr "Гвинтик для відображення дозволів для ролей та учасників на рівні гільдії або у вказаному каналі!"
+
+#: viewpermissions\viewpermissions.py:202
+msgid "Advanced "
+msgstr "Розширений "
+
+#: viewpermissions\viewpermissions.py:202
+#: viewpermissions\viewpermissions.py:256
+msgid "View Permissions"
+msgstr "Дозволи на перегляд"
+
+#: viewpermissions\viewpermissions.py:209
+#: viewpermissions\viewpermissions.py:261
+msgid "\n"
+"**Role(s):** {roles}"
+msgstr "\n"
+"**Ролі:** {roles}"
+
+#: viewpermissions\viewpermissions.py:213
+#: viewpermissions\viewpermissions.py:265
+msgid "\n"
+"**Member(s):** {members}"
+msgstr "\n"
+"**Член(и):** {members}"
+
+#: viewpermissions\viewpermissions.py:219
+msgid "\n"
+"**Channel:** {channel}"
+msgstr "\n"
+"**Канал:** {channel}"
+
+#: viewpermissions\viewpermissions.py:223
+#: viewpermissions\viewpermissions.py:271
+msgid "\n"
+"**Permission(s) checked:** {permissions}"
+msgstr "\n"
+"**Дозвіл(и) перевірено:** {permissions}"
+

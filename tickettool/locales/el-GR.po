@@ -1,0 +1,564 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:37\n"
+"Last-Translator: \n"
+"Language-Team: Greek\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: el\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/tickettool/locales/messages.pot\n"
+"X-Crowdin-File-ID: 102\n"
+"Language: el_GR\n"
+
+#: tickettool\settings.py:15 tickettool\settings.py:18
+#: tickettool\tickettool.py:776 tickettool\tickettool.py:779
+#: tickettool\tickettool.py:806
+msgid "This profile does not exist."
+msgstr "Αυτό το προφίλ δεν υπάρχει."
+
+#: tickettool\settings.py:27
+msgid "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
+msgstr "Εγώ πρέπει να είμαι ο συντάκτης του μηνύματος. Μπορείτε να χρησιμοποιήσετε το EmbedUtils by AAA3A για να στείλετε ένα."
+
+#: tickettool\settings.py:54
+#, docstring
+msgid "Send a message with a button to open a ticket or dropdown with possible reasons.\n\n"
+"        Examples:\n"
+"        - `[p]settickettool message <profile> #general \"🐛|Report a bug|If you find a bug, report it here.|bug\" \"⚠️|Report a user|If you find a malicious user, report it here.|user\"`\n"
+"        - `[p]settickettool <profile> 1234567890-0987654321`\n"
+"        "
+msgstr "Στείλτε ένα μήνυμα με ένα κουμπί για να ανοίξετε ένα εισιτήριο ή ένα πτυσσόμενο μενού με τους πιθανούς λόγους.\n\n"
+"        Παραδείγματα:\n"
+"        - `[p]settickettool message <profile> #general \"🐛|Report a bug|If you find a bug, report it here.|bug\" \"⚠️|Report a user|If you find a malicious user, report it here.|user\"`\n"
+"        - `[p]settickettool <profile> 1234567890-0987654321`\n"
+"        "
+
+#: tickettool\settings.py:70
+msgid "I don't have sufficient permissions in this channel to view it and to send messages into."
+msgstr "Δεν έχω επαρκή δικαιώματα σε αυτό το κανάλι για να το βλέπω και να στέλνω μηνύματα."
+
+#: tickettool\settings.py:97 tickettool\tickettool.py:356
+msgid "Create ticket"
+msgstr "Δημιουργία εισιτηρίου"
+
+#: tickettool\settings.py:116
+msgid "A different value must be provided for each dropdown option."
+msgstr "Πρέπει να παρέχεται διαφορετική τιμή για κάθε πτυσσόμενη επιλογή."
+
+#: tickettool\settings.py:124
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Ένα emoji που επιλέξατε φαίνεται άκυρο. Ελέγξτε ότι πρόκειται για emoji. Αν έχετε Nitro, μπορεί να έχετε χρησιμοποιήσει ένα προσαρμοσμένο emoji από άλλο διακομιστή."
+
+#: tickettool\ticket.py:91
+msgid "No reason provided."
+msgstr "Δεν παρέχεται λόγος."
+
+#: tickettool\ticket.py:245
+msgid "Creating the ticket {ticket.id}."
+msgstr "Δημιουργία του εισιτηρίου {ticket.id}."
+
+#: tickettool\ticket.py:266
+msgid "The dynamic channel name does not contain correct variable names and must be re-configured with `[p]settickettool dynamicchannelname`."
+msgstr "Το όνομα του δυναμικού καναλιού δεν περιέχει σωστά ονόματα μεταβλητών και πρέπει να ρυθμιστεί εκ νέου με την εντολή `[p]settickettool dynamicchannelname`."
+
+#: tickettool\ticket.py:275 tickettool\ticket.py:528 tickettool\ticket.py:890
+#: tickettool\ticket.py:969 tickettool\tickettool.py:369
+msgid "Close"
+msgstr "Κλείστε το"
+
+#: tickettool\ticket.py:282 tickettool\ticket.py:535 tickettool\ticket.py:615
+#: tickettool\ticket.py:897 tickettool\ticket.py:976
+#: tickettool\tickettool.py:383
+msgid "Claim"
+msgstr "Διεκδίκηση"
+
+#: tickettool\ticket.py:289 tickettool\ticket.py:542 tickettool\ticket.py:622
+#: tickettool\ticket.py:904 tickettool\ticket.py:983
+#: tickettool\tickettool.py:390
+msgid "Delete"
+msgstr "Διαγραφή"
+
+#: tickettool\ticket.py:303 tickettool\ticket.py:429
+msgid "Ticket Created"
+msgstr "Δημιουργήθηκε εισιτήριο"
+
+#: tickettool\ticket.py:304
+msgid "Thank you for creating a ticket on this server!"
+msgstr "Σας ευχαριστούμε που δημιουργήσατε ένα εισιτήριο σε αυτόν τον διακομιστή!"
+
+#: tickettool\ticket.py:315
+msgid "🎟️ Ticket ID: {ticket.id}\n"
+"🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+"☢️ Ticket reason: {short_reason}\n"
+msgstr "🎟️ Αναγνωριστικό εισιτηρίου: {ticket.id}\n"
+"🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+"☢️ Αιτία έκδοσης του δελτίου: {short_reason}\n"
+
+#: tickettool\ticket.py:395
+msgid "⚠ At least one user (the ticket owner or a team member) could not be added to the ticket thread. Maybe the user doesn't have access to the parent forum/text channel. If the server uses private threads in a text channel, the bot does not have the `manage_messages` permission in this channel."
+msgstr "⚠ Τουλάχιστον ένας χρήστης (ο ιδιοκτήτης του εισιτηρίου ή ένα μέλος της ομάδας) δεν μπόρεσε να προστεθεί στο νήμα του εισιτηρίου. Ίσως ο χρήστης δεν έχει πρόσβαση στο γονικό φόρουμ/κανάλι κειμένου. Εάν ο διακομιστής χρησιμοποιεί ιδιωτικά νήματα σε ένα κανάλι κειμένου, το bot δεν έχει το δικαίωμα `manage_messages` σε αυτό το κανάλι."
+
+#: tickettool\ticket.py:430
+msgid "The ticket was created by {ticket.created_by}."
+msgstr "Το εισιτήριο δημιουργήθηκε από {ticket.created_by}."
+
+#: tickettool\ticket.py:436
+msgid "Report on the creation of the ticket {ticket.id}."
+msgstr "Έκθεση σχετικά με τη δημιουργία του εισιτηρίου {ticket.id}."
+
+#: tickettool\ticket.py:476
+msgid "Opening the ticket {ticket.id}."
+msgstr "Άνοιγμα του εισιτηρίου {ticket.id}."
+
+#: tickettool\ticket.py:505 tickettool\ticket.py:513
+msgid "Ticket Opened"
+msgstr "Ανοιχτό εισιτήριο"
+
+#: tickettool\ticket.py:514
+msgid "The ticket was opened by {ticket.opened_by}."
+msgstr "Το εισιτήριο άνοιξε ο {ticket.opened_by}."
+
+#: tickettool\ticket.py:520 tickettool\ticket.py:600
+msgid "Report on the close of the ticket {ticket.id}."
+msgstr "Αναφορά για το κλείσιμο του εισιτηρίου {ticket.id}."
+
+#: tickettool\ticket.py:608 tickettool\tickettool.py:376
+msgid "Re-open"
+msgstr "Επαναλειτουργία του"
+
+#: tickettool\ticket.py:675 tickettool\ticket.py:712
+#: tickettool\tickettool.py:1060 tickettool\tickettool.py:1102
+msgid "Cannot execute action on a text channel."
+msgstr "Δεν είναι δυνατή η εκτέλεση ενέργειας σε κανάλι κειμένου."
+
+#: tickettool\ticket.py:701
+msgid "Report on the lock of the ticket {ticket.id}."
+msgstr "Έκθεση σχετικά με την κλειδαριά του εισιτηρίου {ticket.id}."
+
+#: tickettool\ticket.py:738
+msgid "Report on the unlock of the ticket {ticket.id}."
+msgstr "Έκθεση σχετικά με το ξεκλείδωμα του εισιτηρίου {ticket.id}."
+
+#: tickettool\ticket.py:755
+msgid "Renaming the ticket {ticket.id}. (`{ticket.channel.name}` to `{new_name}`)"
+msgstr "Μετονομασία του εισιτηρίου {ticket.id}. (`{ticket.channel.name}` σε `{new_name}`)"
+
+#: tickettool\ticket.py:765
+msgid "Ticket Renamed."
+msgstr "Μετονομασία εισιτηρίου."
+
+#: tickettool\ticket.py:783
+msgid "Ticket Deleted"
+msgstr "Εισιτήριο Διαγράφηκε"
+
+#: tickettool\ticket.py:784
+msgid "The ticket was deleted by {ticket.deleted_by}."
+msgstr "Το εισιτήριο διαγράφηκε από το {ticket.deleted_by}."
+
+#: tickettool\ticket.py:807
+msgid "Report on the deletion of the ticket {ticket.id}."
+msgstr "Έκθεση σχετικά με τη διαγραφή του εισιτηρίου {ticket.id}."
+
+#: tickettool\ticket.py:824
+msgid "Deleting the ticket {ticket.id}."
+msgstr "Διαγραφή του εισιτηρίου {ticket.id}."
+
+#: tickettool\ticket.py:845
+msgid "A ticket cannot be claimed if it is closed."
+msgstr "Ένα εισιτήριο δεν μπορεί να διεκδικηθεί εάν έχει κλείσει."
+
+#: tickettool\ticket.py:849
+msgid "A bot cannot claim a ticket."
+msgstr "Ένα bot δεν μπορεί να διεκδικήσει ένα εισιτήριο."
+
+#: tickettool\ticket.py:863
+msgid "Claiming the ticket {ticket.id}."
+msgstr "Διεκδίκηση του εισιτηρίου {ticket.id}."
+
+#: tickettool\ticket.py:918
+msgid "Ticket claimed."
+msgstr "Διεκδίκηση εισιτηρίου."
+
+#: tickettool\ticket.py:932
+msgid "A ticket cannot be unclaimed if it is closed."
+msgstr "Ένα εισιτήριο δεν μπορεί να μη διεκδικηθεί εάν έχει κλείσει."
+
+#: tickettool\ticket.py:948
+msgid "Unclaiming the ticket {ticket.id}."
+msgstr "Ακύρωση του εισιτηρίου {ticket.id}."
+
+#: tickettool\ticket.py:997
+msgid "Ticket unclaimed."
+msgstr "Εισιτήριο που δεν διεκδικείται."
+
+#: tickettool\ticket.py:1011
+msgid "Cannot execute action in a thread channel."
+msgstr "Δεν είναι δυνατή η εκτέλεση ενέργειας σε κανάλι νήματος."
+
+#: tickettool\ticket.py:1018
+msgid "Changing owner of the ticket {ticket.id}."
+msgstr "Αλλαγή ιδιοκτήτη του εισιτηρίου {ticket.id}."
+
+#: tickettool\ticket.py:1022
+msgid "You cannot transfer ownership of a ticket to a bot."
+msgstr "Δεν μπορείτε να μεταβιβάσετε την κυριότητα ενός εισιτηρίου σε ένα bot."
+
+#: tickettool\ticket.py:1051
+msgid "Owner Modified."
+msgstr "Ιδιοκτήτης Τροποποιήθηκε."
+
+#: tickettool\ticket.py:1070
+msgid "Adding a member to the ticket {ticket.id}."
+msgstr "Προσθήκη μέλους στο εισιτήριο {ticket.id}."
+
+#: tickettool\ticket.py:1077 tickettool\ticket.py:1114
+msgid "You cannot add a bot to a ticket. ({member})"
+msgstr "Δεν μπορείτε να προσθέσετε ένα bot σε ένα εισιτήριο. ({member})"
+
+#: tickettool\ticket.py:1081 tickettool\ticket.py:1118
+msgid "This member is already the owner of this ticket. ({member})"
+msgstr "Αυτό το μέλος είναι ήδη ο ιδιοκτήτης αυτού του εισιτηρίου. ({member})"
+
+#: tickettool\ticket.py:1087 tickettool\ticket.py:1124
+msgid "This member is an administrator for the tickets system. They will always have access to the ticket anyway. ({member})"
+msgstr "Αυτό το μέλος είναι διαχειριστής του συστήματος εισιτηρίων. Θα έχει πάντα πρόσβαση στο εισιτήριο ούτως ή άλλως. ({member})"
+
+#: tickettool\ticket.py:1093 tickettool\ticket.py:1130
+msgid "This member already has access to this ticket. ({member})"
+msgstr "Αυτό το μέλος έχει ήδη πρόσβαση σε αυτό το εισιτήριο. ({member})"
+
+#: tickettool\ticket.py:1144
+msgid "⚠ At least one user (the ticket owner or a team member) could not be added to the ticket thread. Maybe the user the user doesn't have access to the parent forum/text channel. If the server uses private threads in a text channel, the bot does not have the `manage_messages` permission in this channel."
+msgstr "⚠ Τουλάχιστον ένας χρήστης (ο ιδιοκτήτης του εισιτηρίου ή ένα μέλος της ομάδας) δεν μπόρεσε να προστεθεί στο νήμα του εισιτηρίου. Ίσως ο χρήστης ο χρήστης δεν έχει πρόσβαση στο γονικό φόρουμ/κανάλι κειμένου. Εάν ο διακομιστής χρησιμοποιεί ιδιωτικά νήματα σε ένα κανάλι κειμένου, το bot δεν έχει το δικαίωμα `manage_messages` σε αυτό το κανάλι."
+
+#: tickettool\ticket.py:1168
+msgid "Removing a member to the ticket {ticket.id}."
+msgstr "Αφαίρεση μέλους από το ticket {ticket.id}."
+
+#: tickettool\ticket.py:1174 tickettool\ticket.py:1204
+msgid "You cannot remove a bot to a ticket ({member})."
+msgstr "Δεν μπορείτε να αφαιρέσετε ένα bot από ένα ticket ({member})."
+
+#: tickettool\ticket.py:1180 tickettool\ticket.py:1210
+msgid "You cannot remove the owner of this ticket. ({member})"
+msgstr "Δεν μπορείτε να αφαιρέσετε τον ιδιοκτήτη αυτού του εισιτηρίου. ({member})"
+
+#: tickettool\ticket.py:1186 tickettool\ticket.py:1216
+msgid "This member is an administrator for the tickets system. They will always have access to the ticket. ({member})"
+msgstr "Αυτό το μέλος είναι διαχειριστής του συστήματος εισιτηρίων. Θα έχει πάντα πρόσβαση στο εισιτήριο. ({member})"
+
+#: tickettool\ticket.py:1192 tickettool\ticket.py:1222
+msgid "This member is not in the list of those authorised to access the ticket. ({member})"
+msgstr "Αυτό το μέλος δεν περιλαμβάνεται στη λίστα των ατόμων που έχουν δικαίωμα πρόσβασης στο εισιτήριο. ({member})"
+
+#: tickettool\tickettool.py:32
+#, docstring
+msgid "A cog to manage a tickets system!"
+msgstr "Ένα γρανάζι για τη διαχείριση ενός συστήματος εισιτηρίων!"
+
+#: tickettool\tickettool.py:89
+msgid "To get help on this server or to make an order for example, you can create a ticket.\n"
+"Just use the command `{prefix}ticket create` or click on the button below.\n"
+"You can then use the `{prefix}ticket` subcommands to manage your ticket."
+msgstr "Για να λάβετε βοήθεια σε αυτόν τον διακομιστή ή για να κάνετε μια παραγγελία για παράδειγμα, μπορείτε να δημιουργήσετε ένα εισιτήριο.\n"
+"Απλά χρησιμοποιήστε την εντολή `{prefix}ticket create` ή κάντε κλικ στο παρακάτω κουμπί.\n"
+"Στη συνέχεια μπορείτε να χρησιμοποιήσετε τις υποεντολές `{prefix}ticket` για να διαχειριστείτε το εισιτήριό σας."
+
+#: tickettool\tickettool.py:420
+msgid "Choose the reason for open a ticket."
+msgstr "Επιλέξτε τον λόγο για τον οποίο ανοίγετε ένα εισιτήριο."
+
+#: tickettool\tickettool.py:538
+msgid "Action taken for the ticket system."
+msgstr "Ανάληψη δράσης για το σύστημα εισιτηρίων."
+
+#: tickettool\tickettool.py:572
+msgid "Ticket ID:"
+msgstr "Αναγνωριστικό εισιτηρίου:"
+
+#: tickettool\tickettool.py:575
+msgid "Owned by:"
+msgstr "Ιδιοκτήτης:"
+
+#: tickettool\tickettool.py:583
+msgid "Channel:"
+msgstr "Κανάλι:"
+
+#: tickettool\tickettool.py:590
+msgid "Closed by:"
+msgstr "Έκλεισε από:"
+
+#: tickettool\tickettool.py:598
+msgid "Deleted by:"
+msgstr "Διαγράφηκε από:"
+
+#: tickettool\tickettool.py:606
+msgid "Closed at:"
+msgstr "Έκλεισε στο:"
+
+#: tickettool\tickettool.py:613 tickettool\tickettool.py:639
+msgid "Reason:"
+msgstr "Λόγος:"
+
+#: tickettool\tickettool.py:624
+msgid "Ticket [{ticket.profile}] {ticket.id} - Action taken"
+msgstr "Ticket [{ticket.profile}] {ticket.id} - Ενέργειες"
+
+#: tickettool\tickettool.py:704
+msgid "You're not in a ticket."
+msgstr "Δεν έχετε εισιτήριο."
+
+#: tickettool\tickettool.py:708
+msgid "This ticket isn't {status}ed."
+msgstr "Αυτό το εισιτήριο δεν είναι {status}ed."
+
+#: tickettool\tickettool.py:717
+msgid "This ticket is {status}."
+msgstr "Αυτό το εισιτήριο είναι {status}."
+
+#: tickettool\tickettool.py:726
+msgid "You're not allowed to lock this ticket."
+msgstr "Δεν επιτρέπεται να κλειδώσετε αυτό το εισιτήριο."
+
+#: tickettool\tickettool.py:769
+msgid "You're not allowed to view this ticket."
+msgstr "Δεν επιτρέπεται να δείτε αυτό το εισιτήριο."
+
+#: tickettool\tickettool.py:798
+#, docstring
+msgid "Create a Ticket.\n\n"
+"        If only one profile has been created on this server, you don't need to specify its name.\n"
+"        "
+msgstr "Δημιουργήστε ένα εισιτήριο.\n\n"
+"        Εάν έχει δημιουργηθεί μόνο ένα προφίλ σε αυτόν τον διακομιστή, δεν χρειάζεται να καθορίσετε το όνομά του.\n"
+"        "
+
+#: tickettool\tickettool.py:813
+msgid "The ticket system is not enabled on this server. Please ask an administrator of this server to use the `{ctx.prefix}settickettool` subcommands to configure it."
+msgstr "Το σύστημα εισιτηρίων δεν είναι ενεργοποιημένο σε αυτόν τον διακομιστή. Ζητήστε από έναν διαχειριστή αυτού του διακομιστή να χρησιμοποιήσει τις υποεντολές `{ctx.prefix}settickettool` για να το ρυθμίσετε."
+
+#: tickettool\tickettool.py:819
+msgid "The category `open` or the category `close` have not been configured. Please ask an administrator of this server to use the `{ctx.prefix}settickettool` subcommands to configure it."
+msgstr "Η κατηγορία `open` ή η κατηγορία `close` δεν έχει ρυθμιστεί. Ζητήστε από έναν διαχειριστή αυτού του διακομιστή να χρησιμοποιήσει τις υποεντολές `{ctx.prefix}settickettool` για να τις ρυθμίσει."
+
+#: tickettool\tickettool.py:826
+msgid "Sorry. You have already reached the limit of {limit} open tickets."
+msgstr "Συγγνώμη. Έχετε ήδη φτάσει στο όριο των {limit} ανοικτών εισιτηρίων."
+
+#: tickettool\tickettool.py:837
+msgid "The bot does not have `manage_channels` permission on the `open` and `close` categories to allow the ticket system to function properly. Please notify an administrator of this server."
+msgstr "Το bot δεν έχει το δικαίωμα `manage_channels` στις κατηγορίες `open` και `close` για να επιτρέψει τη σωστή λειτουργία του συστήματος εισιτηρίων. Παρακαλούμε ενημερώστε έναν διαχειριστή αυτού του διακομιστή."
+
+#: tickettool\tickettool.py:846
+msgid "The bot does not have `manage_channel` permission in the forum channel to allow the ticket system to function properly. Please notify an administrator of this server."
+msgstr "Το ρομπότ δεν έχει το δικαίωμα `manage_channel` στο κανάλι του φόρουμ για να επιτρέψει τη σωστή λειτουργία του συστήματος εισιτηρίων. Παρακαλούμε ενημερώστε έναν διαχειριστή αυτού του διακομιστή."
+
+#: tickettool\tickettool.py:877
+msgid "Please provide the required informations by clicking on the button below."
+msgstr "Παρακαλούμε συμπληρώστε τις απαιτούμενες πληροφορίες κάνοντας κλικ στο παρακάτω κουμπί."
+
+#: tickettool\tickettool.py:930
+#, docstring
+msgid "Export all the messages of an existing Ticket in html format.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        "
+msgstr "Εξαγωγή όλων των μηνυμάτων ενός υπάρχοντος εισιτηρίου σε μορφή html.\n"
+"        Σημείωση: όλα τα συνημμένα και τα avatars των χρηστών αποθηκεύονται με το σύνδεσμο Discord σε αυτό το αρχείο.\n"
+"        "
+
+#: tickettool\tickettool.py:947
+msgid "Here is the html file of the transcript of all the messages in this ticket.\n"
+"Please note: all attachments and user avatars are saved with the Discord link in this file."
+msgstr "Εδώ είναι το αρχείο html με την απομαγνητοφώνηση όλων των μηνυμάτων σε αυτό το εισιτήριο.\n"
+"Παρακαλώ σημειώστε: όλα τα συνημμένα και τα avatars των χρηστών αποθηκεύονται με το σύνδεσμο Discord σε αυτό το αρχείο."
+
+#: tickettool\tickettool.py:979
+#, docstring
+msgid "Open an existing Ticket."
+msgstr "Ανοίξτε ένα υπάρχον Εισιτήριο."
+
+#: tickettool\tickettool.py:984
+msgid "The ticket system is not enabled on this server."
+msgstr "Το σύστημα εισιτηρίων δεν είναι ενεργοποιημένο σε αυτόν τον διακομιστή."
+
+#: tickettool\tickettool.py:1010
+#, docstring
+msgid "Close an existing Ticket."
+msgstr "Κλείστε ένα υπάρχον Εισιτήριο."
+
+#: tickettool\tickettool.py:1021
+msgid "Do you really want to close the ticket {ticket.id}?"
+msgstr "Θέλετε πραγματικά να κλείσετε το εισιτήριο {ticket.id};"
+
+#: tickettool\tickettool.py:1057
+#, docstring
+msgid "Lock an existing Ticket."
+msgstr "Κλειδώστε ένα υπάρχον Εισιτήριο."
+
+#: tickettool\tickettool.py:1064
+msgid "Do you really want to lock the ticket {ticket.id}?"
+msgstr "Θέλετε πραγματικά να κλειδώσετε το εισιτήριο {ticket.id};"
+
+#: tickettool\tickettool.py:1099
+#, docstring
+msgid "Unlock an existing locked Ticket."
+msgstr "Ξεκλειδώστε ένα υπάρχον κλειδωμένο Εισιτήριο."
+
+#: tickettool\tickettool.py:1127
+#, docstring
+msgid "Rename an existing Ticket."
+msgstr "Μετονομασία ενός υπάρχοντος εισιτηρίου."
+
+#: tickettool\tickettool.py:1153
+#, docstring
+msgid "Delete an existing Ticket.\n\n"
+"        If a logs channel is defined, an html file containing all the messages of this ticket will be generated.\n"
+"        (Attachments are not supported, as they are saved with their Discord link)\n"
+"        "
+msgstr "Διαγράψτε ένα υπάρχον Εισιτήριο.\n\n"
+"        Εάν έχει οριστεί ένα κανάλι καταγραφής, θα δημιουργηθεί ένα αρχείο html που θα περιέχει όλα τα μηνύματα αυτού του εισιτηρίου.\n"
+"        (Τα συνημμένα αρχεία δεν υποστηρίζονται, καθώς αποθηκεύονται με τον σύνδεσμο τους στο Discord)\n"
+"        "
+
+#: tickettool\tickettool.py:1162
+msgid "Do you really want to delete all the messages of the ticket {ticket.id}?"
+msgstr "Θέλετε πραγματικά να διαγράψετε όλα τα μηνύματα του εισιτηρίου {ticket.id};"
+
+#: tickettool\tickettool.py:1166
+msgid "If a logs channel is defined, an html file containing all the messages of this ticket will be generated. (Attachments are not supported, as they are saved with their Discord link.)"
+msgstr "Εάν έχει οριστεί ένα κανάλι καταγραφής, θα δημιουργηθεί ένα αρχείο html που θα περιέχει όλα τα μηνύματα αυτού του εισιτηρίου. (Τα συνημμένα αρχεία δεν υποστηρίζονται, καθώς αποθηκεύονται με τον σύνδεσμο τους στο Discord.)"
+
+#: tickettool\tickettool.py:1202
+#, docstring
+msgid "Claim an existing Ticket."
+msgstr "Διεκδικήστε ένα υπάρχον εισιτήριο."
+
+#: tickettool\tickettool.py:1226
+#, docstring
+msgid "Unclaim an existing Ticket."
+msgstr "Ακυρώστε ένα υπάρχον Εισιτήριο."
+
+#: tickettool\tickettool.py:1252
+#, docstring
+msgid "Change the owner of an existing Ticket."
+msgstr "Αλλαγή του ιδιοκτήτη ενός υπάρχοντος Εισιτηρίου."
+
+#: tickettool\tickettool.py:1278
+#, docstring
+msgid "Add a member to an existing Ticket."
+msgstr "Προσθέστε ένα μέλος σε ένα υπάρχον Εισιτήριο."
+
+#: tickettool\tickettool.py:1303
+#, docstring
+msgid "Remove a member to an existing Ticket."
+msgstr "Αφαίρεση ενός μέλους από ένα υπάρχον Ticket."
+
+#: tickettool\tickettool.py:1317
+#, docstring
+msgid "List the existing Tickets for a profile. You can provide a status and/or a ticket owner."
+msgstr "Λίστα με τα υπάρχοντα εισιτήρια για ένα προφίλ. Μπορείτε να δώσετε μια κατάσταση και/ή έναν ιδιοκτήτη εισιτηρίου."
+
+#: tickettool\tickettool.py:1338
+msgid "No tickets to show."
+msgstr "Δεν υπάρχουν εισιτήρια για επίδειξη."
+
+#: tickettool\tickettool.py:1379
+msgid "The profile for which this button was configured no longer exists."
+msgstr "Το προφίλ για το οποίο έχει ρυθμιστεί αυτό το κουμπί δεν υπάρχει πλέον."
+
+#: tickettool\tickettool.py:1442 tickettool\tickettool.py:1501
+#: tickettool\tickettool.py:1505 tickettool\tickettool.py:1523
+#: tickettool\tickettool.py:1527 tickettool\tickettool.py:1547
+#: tickettool\tickettool.py:1551 tickettool\tickettool.py:1621
+#: tickettool\tickettool.py:1625
+msgid "You are not allowed to execute this command."
+msgstr "Δεν επιτρέπεται η εκτέλεση αυτής της εντολής."
+
+#: tickettool\tickettool.py:1446 tickettool\tickettool.py:1451
+#: tickettool\tickettool.py:1455
+msgid "You have chosen to create a ticket."
+msgstr "Έχετε επιλέξει να δημιουργήσετε ένα εισιτήριο."
+
+#: tickettool\tickettool.py:1477
+msgid "You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+msgstr "Επιλέξατε να κλείσετε αυτό το εισιτήριο. Εάν αυτό δεν γίνει, δεν έχετε τα απαραίτητα δικαιώματα για την εκτέλεση αυτής της εντολής."
+
+#: tickettool\tickettool.py:1509
+msgid "You have chosen to re-open this ticket."
+msgstr "Επιλέξατε να ανοίξετε ξανά αυτό το εισιτήριο."
+
+#: tickettool\tickettool.py:1531
+msgid "You have chosen to claim this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+msgstr "Επιλέξατε να διεκδικήσετε αυτό το εισιτήριο. Εάν αυτό δεν έχει γίνει, δεν έχετε τα απαραίτητα δικαιώματα για την εκτέλεση αυτής της εντολής."
+
+#: tickettool\tickettool.py:1571
+msgid "This message is not in TicketTool config."
+msgstr "Αυτό το μήνυμα δεν υπάρχει στη διαμόρφωση του TicketTool."
+
+#: tickettool\tickettool.py:1580
+msgid "The profile for which this dropdown was configured no longer exists."
+msgstr "Το προφίλ για το οποίο έχει ρυθμιστεί αυτό το αναπτυσσόμενο μενού δεν υπάρχει πλέον."
+
+#: tickettool\tickettool.py:1647 tickettool\tickettool.py:1654
+msgid "You have chosen to create a ticket with the reason `{reason}`."
+msgstr "Έχετε επιλέξει να δημιουργήσετε ένα εισιτήριο με την αιτιολογία `{reason}`."
+
+#: tickettool\tickettool.py:1800
+msgid "No open tickets by this user in this server."
+msgstr "Δεν υπάρχουν ανοιχτά εισιτήρια από αυτόν τον χρήστη σε αυτόν τον διακομιστή."
+
+#: tickettool\utils.py:155
+msgid "Emoji Label must be An emoji followed by a label, and optionnaly by a description and a value (for rename ticket channel), separated by either `;`, `,`, `|`, or `-`."
+msgstr "Emoji Label πρέπει να είναι Ένα emoji ακολουθούμενο από μια ετικέτα, και προαιρετικά από μια περιγραφή και μια τιμή (για μετονομασία καναλιού εισιτηρίου), διαχωρισμένα είτε με `;`, `,`, `|`, ή `-`."
+
+#: tickettool\utils.py:172
+msgid "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)"
+msgstr "Σφάλμα ανάλυσης YAML. Παρακαλούμε βεβαιωθείτε ότι η μορφή είναι έγκυρη (μπορεί να βοηθήσει ένας επικυρωτής YAML)"
+
+#: tickettool\utils.py:186
+msgid "You can only have 5 text inputs."
+msgstr "Μπορείτε να έχετε μόνο 5 εισόδους κειμένου."
+
+#: tickettool\utils.py:192
+msgid "The argument `/{count}/{arg}` is required in the YAML."
+msgstr "Το όρισμα `/{count}/{arg}` απαιτείται στο YAML."
+
+#: tickettool\utils.py:199
+msgid "The argument `/{count}/{arg}` is invalid in the YAML. Check the spelling."
+msgstr "Το όρισμα `/{count}/{arg}` είναι άκυρο στην YAML. Ελέγξτε την ορθογραφία."
+
+#: tickettool\utils.py:205
+msgid "The argument `/modal/{count}/label` must be less than 45 characters long."
+msgstr "Το όρισμα `/modal/{count}/label` πρέπει να έχει μήκος μικρότερο από 45 χαρακτήρες."
+
+#: tickettool\utils.py:215 tickettool\utils.py:221
+msgid "The argument `/{count}/style` must be a number between 1 and 2."
+msgstr "Το όρισμα `/{count}/style` πρέπει να είναι ένας αριθμός μεταξύ 1 και 2."
+
+#: tickettool\utils.py:244
+msgid "The argument `/{count}/required` must be a boolean (True or False)."
+msgstr "Το όρισμα `/{count}/required` πρέπει να είναι boolean (True ή False)."
+
+#: tickettool\utils.py:254
+msgid "The argument `/modal/{count}/default` must be less than 4000 characters long."
+msgstr "Το όρισμα `/modal/{count}/default` πρέπει να έχει μήκος μικρότερο από 4000 χαρακτήρες."
+
+#: tickettool\utils.py:262
+msgid "The argument `/modal/{count}/placeholder` must be less than 100 characters long."
+msgstr "Το όρισμα `/modal/{count}/placeholder` πρέπει να έχει μήκος μικρότερο από 100 χαρακτήρες."
+
+#: tickettool\utils.py:270
+msgid "The argument `/modal/{count}/min_length` must be between 0 and 4000."
+msgstr "Το όρισμα `/modal/{count}/min_length` πρέπει να είναι μεταξύ 0 και 4000."
+
+#: tickettool\utils.py:278
+msgid "The argument `/modal/{count}/max_length` must be between 0 and 4000."
+msgstr "Το όρισμα `/modal/{count}/max_length` πρέπει να είναι μεταξύ 0 και 4000."
+

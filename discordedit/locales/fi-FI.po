@@ -1,0 +1,1189 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:38\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/discordedit/locales/messages.pot\n"
+"X-Crowdin-File-ID: 163\n"
+"Language: fi_FI\n"
+
+#: discordedit\discordedit.py:23
+#, docstring
+msgid "A cog to edit Discord default objects, like guilds, roles, text channels, voice channels, threads and AutoMod!"
+msgstr "Logi, jolla voit muokata Discordin oletusobjekteja, kuten kiltoja, rooleja, tekstikanavia, äänikanavia, säikeitä ja AutoModia!"
+
+#: discordedit\editautomod.py:18 discordedit\editguild.py:27
+#: discordedit\editrole.py:25 discordedit\edittextchannel.py:27
+#: discordedit\editthread.py:32 discordedit\editvoicechannel.py:27
+#: discordedit\view.py:18
+msgid "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n"
+"{error}"
+msgstr "Yritin tehdä jotain, johon Discord ei antanut minulle lupia. Komentosi ei onnistunut.\n"
+"{error}"
+
+#: discordedit\editautomod.py:30
+msgid "Invalid rule ID."
+msgstr "Virheellinen sääntötunnus."
+
+#: discordedit\editautomod.py:34
+msgid "Rule not found."
+msgstr "Sääntöä ei löydy."
+
+#: discordedit\editautomod.py:43 discordedit\editautomod.py:72
+msgid "Invalid JSON."
+msgstr "Virheellinen JSON."
+
+#: discordedit\editautomod.py:50
+msgid "Invalid data. Must be a dict with `trigger_type` and `trigger_metadara` keys."
+msgstr "Virheelliset tiedot. Täytyy olla dict, jossa on `trigger_type`- ja `trigger_metadara`-avaimet."
+
+#: discordedit\editautomod.py:55
+msgid "Invalid trigger type."
+msgstr "Virheellinen laukaisutyyppi."
+
+#: discordedit\editautomod.py:61
+msgid "Invalid trigger metadata."
+msgstr "Laukaisun metatiedot ovat virheellisiä."
+
+#: discordedit\editautomod.py:75 discordedit\editautomod.py:85
+msgid "Invalid data. Must be a list of dicts with `type` and `data` keys."
+msgstr "Virheelliset tiedot. Täytyy olla luettelo dicteistä, joiden avaimet ovat `type` ja `data`."
+
+#: discordedit\editautomod.py:90
+msgid "Invalid action type."
+msgstr "Virheellinen toimintatyyppi."
+
+#: discordedit\editautomod.py:97
+msgid "Invalid action metadata."
+msgstr "Toiminnon metatiedot ovat virheellisiä."
+
+#: discordedit\editautomod.py:104
+#, docstring
+msgid "A cog to edit AutoMod rules!"
+msgstr "Hammasratas AutoMod-sääntöjen muokkaamiseen!"
+
+#: discordedit\editautomod.py:126
+#, docstring
+msgid "Create an AutoMod rule.\n\n"
+"        event_type:\n"
+"        - message_send = 1\n\n"
+"        `trigger` and `actions` arguments must be JSON with specified keys. Warning, remove all spaces in the trigger dict.\n"
+"        trigger:\n"
+"        - `trigger_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types\n"
+"        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
+"        actions:\n"
+"        - `action_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-types\n"
+"        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
+"        "
+msgstr "Luo AutoMod-sääntö.\n\n"
+"        event_type:\n"
+"        -\n\n"
+"        `trigger`- ja `actions`-argumenttien on oltava JSON-alkuisia ja niillä on oltava määritetyt avaimet. Varoitus, poista kaikki välilyönnit trigger dictistä.\n"
+"        trigger:\n"
+"        - `trigger_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types\n"
+"        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
+"        actions:\n"
+"        - `action_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-types\n"
+"        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
+"        "
+
+#: discordedit\editautomod.py:152
+msgid "AutoMod rule {rule.name} ({rule.id}) created."
+msgstr "AutoMod-sääntö {rule.name} ({rule.id}) luotu."
+
+#: discordedit\editautomod.py:160
+#, docstring
+msgid "List all AutoMod rules in the current guild."
+msgstr "Luettele kaikki nykyisen killan AutoMod-säännöt."
+
+#: discordedit\editautomod.py:166
+msgid "List of AutoMod rules in {guild.name} ({guild.id})"
+msgstr "Luettelo AutoMod-säännöistä osoitteessa {guild.name} ({guild.id})"
+
+#: discordedit\editautomod.py:181
+#, docstring
+msgid "Edit AutoMod rule name."
+msgstr "Muokkaa AutoMod-säännön nimeä."
+
+#: discordedit\editautomod.py:217
+#, docstring
+msgid "Edit AutoMod rule trigger.\n\n"
+"        trigger:\n"
+"        - `trigger_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types\n"
+"        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
+"        "
+msgstr "Muokkaa AutoMod-säännön triggeriä.\n\n"
+"        trigger:\n"
+"        - `trigger_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types\n"
+"        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
+"        "
+
+#: discordedit\editautomod.py:241
+#, docstring
+msgid "Edit AutoMod rule actions.\n\n"
+"        actions:\n"
+"        - `action_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-types\n"
+"        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
+"        "
+msgstr "Muokkaa AutoMod-säännön toimia.\n\n"
+"        toimet:\n"
+"        - https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-types\n"
+"        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
+"        "
+
+#: discordedit\editautomod.py:261
+#, docstring
+msgid "Edit AutoMod rule enabled."
+msgstr "Muokkaa AutoMod-sääntöä käytössä."
+
+#: discordedit\editautomod.py:280
+#, docstring
+msgid "Edit AutoMod rule exempt roles."
+msgstr "Muokkaa AutoMod-säännön vapautettuja rooleja."
+
+#: discordedit\editautomod.py:303
+#, docstring
+msgid "Edit AutoMod rule exempt channels."
+msgstr "Muokkaa AutoMod-säännön vapautettuja kanavia."
+
+#: discordedit\editautomod.py:321
+#, docstring
+msgid "Delete automod rule."
+msgstr "Poista automod-sääntö."
+
+#: discordedit\editautomod.py:325
+msgid "⚠️ - Delete AutoMod rule"
+msgstr "⚠️ - Poista AutoMod-sääntö"
+
+#: discordedit\editautomod.py:326 discordedit\editautomod.py:333
+msgid "Do you really want to delete the AutoMod rule {rule.name} ({rule.id}) in {guild.name} ({guild.id})?"
+msgstr "Haluatko todella poistaa AutoMod-säännön {rule.name} ({rule.id}) osoitteesta {guild.name} ({guild.id})?"
+
+#: discordedit\editautomod.py:409 discordedit\editautomod.py:432
+msgid "Rule `{rule.name} ({rule.id})` edited."
+msgstr "Sääntöä `{rule.name} ({rule.id})` muokattu."
+
+#: discordedit\editautomod.py:623
+msgid "Select channels/roles to exempt for the AutoMod rule `{rule.name} ({rule.id})`."
+msgstr "Valitse kanavat/roolit, jotka vapautetaan AutoMod-säännöstä `{rule.name} ({rule.id})`."
+
+#: discordedit\editautomod.py:645
+msgid "Rule `{rule.name} ({rule.id})` enabled."
+msgstr "Sääntö `{rule.name} ({rule.id})` käytössä."
+
+#: discordedit\editautomod.py:647
+msgid "Rule {rule.name} `{rule.id}` disabled."
+msgstr "Sääntö {rule.name} `{rule.id}` poistettu käytöstä."
+
+#: discordedit\editautomod.py:665
+msgid "Rule `{rule.name} ({rule.id})` deleted."
+msgstr "Poistetaan sääntö `{rule.name} ({rule.id})`."
+
+#: discordedit\editguild.py:47
+msgid "Converting to `Locale` failed for parameter `preferred_locale`."
+msgstr "Muuttaminen `Locale`-luokaksi epäonnistui parametrin `preferred_locale` osalta."
+
+#: discordedit\editguild.py:59 discordedit\editguild.py:67
+msgid "The verification level must be `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` or `4`."
+msgstr "Varmennustaso on oltava \"ei mitään\", \"matala\", \"keskitaso\", \"korkea\", \"korkein\", \"0\", \"1\", \"2\", \"3\" tai \"4\"."
+
+#: discordedit\editguild.py:78 discordedit\editguild.py:82
+#: discordedit\editguild.py:90
+msgid "The video quality mode must be `0` or `1`."
+msgstr "Videon laatutilan on oltava \"0\" tai \"1\"."
+
+#: discordedit\editguild.py:98
+#, docstring
+msgid "A cog to edit guilds!"
+msgstr "Kiltojen muokkaamiseen tarkoitettu hammasratas!"
+
+#: discordedit\editguild.py:119
+#, docstring
+msgid "Create a guild with the bot as owner."
+msgstr "Luo kilta, jonka omistajana on botti."
+
+#: discordedit\editguild.py:137
+#, docstring
+msgid "Clone a guild."
+msgstr "Kloonaa kilta."
+
+#: discordedit\editguild.py:159
+#, docstring
+msgid "Edit guild name."
+msgstr "Muokkaa killan nimeä."
+
+#: discordedit\editguild.py:175
+#, docstring
+msgid "Edit guild description."
+msgstr "Muokkaa killan kuvausta."
+
+#: discordedit\editguild.py:193
+#, docstring
+msgid "Edit guild icon.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "Muokkaa killan kuvaketta.\n\n"
+"        Voit käyttää URL-osoitetta tai ladata liitetiedoston.\n"
+"        "
+
+#: discordedit\editguild.py:228
+#, docstring
+msgid "Edit guild banner.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "Muokkaa killan banneria.\n\n"
+"        Voit käyttää URL-osoitetta tai ladata liitetiedoston.\n"
+"        "
+
+#: discordedit\editguild.py:235
+msgid "This server doesn't have the `BANNER` feature. This server needs more boosts to perform this action."
+msgstr "Tällä palvelimella ei ole \"BANNER\"-ominaisuutta. Tämä palvelin tarvitsee lisää tehosteita tämän toiminnon suorittamiseen."
+
+#: discordedit\editguild.py:269
+#, docstring
+msgid "Edit guild splash.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "Muokkaa killan splashia.\n\n"
+"        Voit käyttää URL-osoitetta tai ladata liitetiedoston.\n"
+"        "
+
+#: discordedit\editguild.py:276
+msgid "This server doesn't have the `INVITE_SPLASH` feature. This server needs more boosts to perform this action."
+msgstr "Tällä palvelimella ei ole `INVITE_SPLASH`-ominaisuutta. Tämä palvelin tarvitsee lisää tehosteita tämän toiminnon suorittamiseen."
+
+#: discordedit\editguild.py:310
+#, docstring
+msgid "Edit guild discovery splash.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "Muokkaa killan löytöräiskintää.\n\n"
+"        Voit käyttää URL-osoitetta tai ladata liitetiedoston.\n"
+"        "
+
+#: discordedit\editguild.py:317
+msgid "This server doesn't have the `DISCOVERABLE` feature. This server needs more boosts to perform this action."
+msgstr "Tällä palvelimella ei ole `DISCOVERABLE`-ominaisuutta. Tämä palvelin tarvitsee lisää tehosteita tämän toiminnon suorittamiseen."
+
+#: discordedit\editguild.py:349
+#, docstring
+msgid "Edit guild community state."
+msgstr "Muokkaa killan yhteisön tilaa."
+
+#: discordedit\editguild.py:365
+#, docstring
+msgid "Edit guild afkchannel."
+msgstr "Muokkaa killan afk-kanavaa."
+
+#: discordedit\editguild.py:379
+#, docstring
+msgid "Edit guild afk timeout."
+msgstr "Muokkaa killan afk-aikakatkaisua."
+
+#: discordedit\editguild.py:399
+#, docstring
+msgid "Edit guild owner (if the bot is bot owner)."
+msgstr "Muokkaa killan omistajaa (jos botti on bottiomistaja)."
+
+#: discordedit\editguild.py:404
+msgid ":⚠️ - Change Guild Owner"
+msgstr ":⚠️ - Vaihda killan omistajaa"
+
+#: discordedit\editguild.py:405 discordedit\editguild.py:412
+msgid "Do you really want to change guild owner of the guild {guild.name} ({guild.id})?"
+msgstr "Haluatko todella vaihtaa killan omistajan killan {guild.name} ({guild.id})?"
+
+#: discordedit\editguild.py:432
+#, docstring
+msgid "Edit guild verification level."
+msgstr "Muokkaa killan varmennustasoa."
+
+#: discordedit\editguild.py:450
+#, docstring
+msgid "Edit guild notification level."
+msgstr "Muokkaa killan ilmoitustasoa."
+
+#: discordedit\editguild.py:466
+#, docstring
+msgid "Edit guild explicit content filter."
+msgstr "Muokkaa killan yksiselitteisen sisällön suodatinta."
+
+#: discordedit\editguild.py:480
+#, docstring
+msgid "Edit guild vanity code."
+msgstr "Muokkaa killan turhamaisuuskoodia."
+
+#: discordedit\editguild.py:496
+#, docstring
+msgid "Edit guild system channel."
+msgstr "Muokkaa kiltajärjestelmän kanavaa."
+
+#: discordedit\editguild.py:512
+#, docstring
+msgid "Edit guild system channel flags."
+msgstr "Muokkaa killan järjestelmän kanavalippuja."
+
+#: discordedit\editguild.py:528
+#, docstring
+msgid "Edit guild preferred locale.\n\n"
+"        american_english = 'en-US'\n"
+"        british_english = 'en-GB'\n"
+"        bulgarian = 'bg'\n"
+"        chinese = 'zh-CN'\n"
+"        taiwan_chinese = 'zh-TW'\n"
+"        croatian = 'hr'\n"
+"        czech = 'cs'\n"
+"        danish = 'da'\n"
+"        dutch = 'nl'\n"
+"        finnish = 'fi'\n"
+"        french = 'fr'\n"
+"        german = 'de'\n"
+"        greek = 'el'\n"
+"        hindi = 'hi'\n"
+"        hungarian = 'hu'\n"
+"        italian = 'it'\n"
+"        japanese = 'ja'\n"
+"        korean = 'ko'\n"
+"        lithuanian = 'lt'\n"
+"        norwegian = 'no'\n"
+"        polish = 'pl'\n"
+"        brazil_portuguese = 'pt-BR'\n"
+"        romanian = 'ro'\n"
+"        russian = 'ru'\n"
+"        spain_spanish = 'es-ES'\n"
+"        swedish = 'sv-SE'\n"
+"        thai = 'th'\n"
+"        turkish = 'tr'\n"
+"        ukrainian = 'uk'\n"
+"        vietnamese = 'vi'\n"
+"        "
+msgstr "Muokkaa killan suosimaa paikkakuntaa.\n\n"
+"        american_english = 'en-US'\n"
+"        british_english = 'en-GB'\n"
+"        bulgarian = 'bg'\n"
+"        chinese = 'zh-CN'\n"
+"        taiwan_chinese = 'zh-TW'\n"
+"        kroatia = 'hr'\n"
+"        tšekki = 'cs'\n"
+"        tanska = 'da'\n"
+"        hollanti = 'nl'\n"
+"        suomi = 'fi'\n"
+"        ranska = 'fr'\n"
+"        saksa = 'de'\n"
+"        kreikka = 'el'\n"
+"        hindi = 'hi'\n"
+"        unkari = 'hu'\n"
+"        italia = 'it'\n"
+"        japani = 'ja'\n"
+"        korea = 'ko'\n"
+"        liettua = 'lt'\n"
+"        norja = 'no'\n"
+"        puola = 'pl'\n"
+"        brasilian_portugali = 'pt-BR'\n"
+"        romanian kieli = 'ro'\n"
+"        venäjän kieli = 'ru'\n"
+"        espanjan_spanja = 'es-ES'\n"
+"        ruotsin kieli = 'sv-SE'\n"
+"        thai kieli = 'th'\n"
+"        turkki kieli = 'tr'\n"
+"        ukrainan kieli = 'uk'\n"
+"        vietnamin kieli = 'vi'\n"
+"        "
+
+#: discordedit\editguild.py:576
+#, docstring
+msgid "Edit guild rules channel."
+msgstr "Muokkaa killan sääntöjen kanavaa."
+
+#: discordedit\editguild.py:594
+#, docstring
+msgid "Edit guild public updates channel."
+msgstr "Muokkaa killan julkista päivityskanavaa."
+
+#: discordedit\editguild.py:614
+#, docstring
+msgid "Edit guild premium progress bar enabled."
+msgstr "Muokkaa killan premiumia edistymispalkki käytössä."
+
+#: discordedit\editguild.py:630
+#, docstring
+msgid "Edit guild discoverable state."
+msgstr "Muokkaa killan löydettävissä olevaa tilaa."
+
+#: discordedit\editguild.py:646
+#, docstring
+msgid "Edit guild invites disabled state."
+msgstr "Muokkaa killan kutsut pois käytöstä -tilaa."
+
+#: discordedit\editguild.py:660
+#, docstring
+msgid "Edit guild invites widget enabled state."
+msgstr "Muokkaa killan kutsuja -widgetin tila käytössä."
+
+#: discordedit\editguild.py:676
+#, docstring
+msgid "Edit guild invites widget channel."
+msgstr "Muokkaa killan kutsuja widget-kanava."
+
+#: discordedit\editguild.py:694
+#, docstring
+msgid "Edit guild invites raid alerts disabled state."
+msgstr "Muokkaa killan kutsuja raid-hälytykset pois käytöstä tilassa."
+
+#: discordedit\editguild.py:712
+#, docstring
+msgid "Edit guild invites safety alerts channel."
+msgstr "Muokkaa kilta kutsuu turvallisuushälytykset-kanavaa."
+
+#: discordedit\editguild.py:731
+#, docstring
+msgid "Delete guild (if the bot is owner)."
+msgstr "Poista kilta (jos botti on omistaja)."
+
+#: discordedit\editguild.py:736
+msgid "⚠️ - Delete Guild"
+msgstr "⚠️ - Poista kilta"
+
+#: discordedit\editguild.py:737 discordedit\editguild.py:744
+msgid "Do you really want to delete the guild {guild.name} ({guild.id})?"
+msgstr "Haluatko todella poistaa killan {guild.name} ({guild.id})?"
+
+#: discordedit\editguild.py:762
+#, docstring
+msgid "View and edit guild."
+msgstr "Näytä ja muokkaa kiltaa."
+
+#: discordedit\editrole.py:50
+msgid "The position must be an integer."
+msgstr "Sijainnin on oltava kokonaisluku."
+
+#: discordedit\editrole.py:54
+msgid "The indicated position must be between 1 and {max_guild_roles_position}."
+msgstr "Ilmoitetun asennon on oltava 1 ja {max_guild_roles_position}välillä."
+
+#: discordedit\editrole.py:69 discordedit\edittextchannel.py:57
+#: discordedit\editvoicechannel.py:57
+msgid "This permission is invalid."
+msgstr "Tämä lupa ei ole voimassa."
+
+#: discordedit\editrole.py:92
+#, docstring
+msgid "A cog to edit roles!"
+msgstr "Roolinmuokkauksen hammasratas!"
+
+#: discordedit\editrole.py:104
+msgid "I can not let you edit @{role.name} ({role.id}) because that role is higher than or equal to your highest role in the Discord hierarchy."
+msgstr "En voi antaa sinun muokata @{role.name} ({role.id}), koska tämä rooli on korkeampi tai yhtä suuri kuin korkein roolisi Discordin hierarkiassa."
+
+#: discordedit\editrole.py:110
+msgid "I can not edit @{role.name} ({role.id}) because that role is higher than or equal to my highest role in the Discord hierarchy."
+msgstr "En voi muokata @{role.name} ({role.id}), koska tämä rooli on korkeampi tai yhtä suuri kuin korkein roolini Discordin hierarkiassa."
+
+#: discordedit\editrole.py:132
+#, docstring
+msgid "Create a role."
+msgstr "Luo rooli."
+
+#: discordedit\editrole.py:150
+#, docstring
+msgid "List all roles in the current guild."
+msgstr "Luettele kaikki nykyisen killan roolit."
+
+#: discordedit\editrole.py:156
+msgid "List of roles in {guild.name} ({guild.id})"
+msgstr "Luettelo rooleista osoitteessa {guild.name} ({guild.id})"
+
+#: discordedit\editrole.py:169
+#, docstring
+msgid "Edit role name."
+msgstr "Muokkaa roolin nimeä."
+
+#: discordedit\editrole.py:185
+#, docstring
+msgid "Edit role color."
+msgstr "Muokkaa roolin väriä."
+
+#: discordedit\editrole.py:201
+#, docstring
+msgid "Edit role hoist."
+msgstr "Muokkaa roolinostinta."
+
+#: discordedit\editrole.py:222
+#, docstring
+msgid "Edit role display icon.\n\n"
+"        `display_icon` can be an Unicode emoji, a custom emoji or an url. You can also upload an attachment.\n"
+"        "
+msgstr "Muokkaa roolin näyttökuvaketta.\n\n"
+"        `display_icon` voi olla Unicode-emoji, mukautettu emoji tai url. Voit myös ladata liitetiedoston.\n"
+"        "
+
+#: discordedit\editrole.py:228
+msgid "This server doesn't have the `ROLE_ICONS` feature. This server needs more boosts to perform this action."
+msgstr "Tällä palvelimella ei ole `ROLE_ICONS`-ominaisuutta. Tämä palvelin tarvitsee lisää tehosteita tämän toiminnon suorittamiseen."
+
+#: discordedit\editrole.py:272
+#, docstring
+msgid "Edit role mentionable."
+msgstr "Muokkaa mainittavaa roolia."
+
+#: discordedit\editrole.py:290
+#, docstring
+msgid "Edit role position.\n\n"
+"        Warning: The role with a position 1 is the highest role in the Discord hierarchy.\n"
+"        "
+msgstr "Muokkaa roolin asemaa.\n\n"
+"        Varoitus: Rooli, jonka asema on 1, on Discordin hierarkiassa korkein rooli.\n"
+"        "
+
+#: discordedit\editrole.py:313
+#, docstring
+msgid "Edit role permissions.\n\n"
+"        You must possess the permissions you wish to modify.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
+"        "
+msgstr "Muokkaa roolioikeuksia.\n\n"
+"        Sinulla on oltava oikeudet, joita haluat muuttaa.\n\n"
+"        - `create_instant_invite`\n"
+"        - `manage_channels`\n"
+"        - `add_reactions`\n"
+"        - `priority_speaker`\n"
+"        - `stream`\n"
+"        - `read_messages`\n"
+"        - `send_messages`\n"
+"        - `send_tts_messages`\n"
+"        - `manage_messages`\n"
+"        - `embed_links`\n"
+"        - `attach_files`\n"
+"        - `read_message_history`\n"
+"        - `mention_everyone`\n"
+"        - `external_emojis`\n"
+"        - `connect`\n"
+"        - `speak`\n"
+"        - `mute_members`\n"
+"        - `deafen_members`\n"
+"        - `move_members`\n"
+"        - `use_voice_activation`\n"
+"        - `manage_roles`\n"
+"        - `manage_webhooks`\n"
+"        - `use_application_commands`\n"
+"        - `request_to_speak`\n"
+"        - `manage_threads`\n"
+"        - `create_public_threads`\n"
+"        - `create_private_threads`\n"
+"        - `external_stickers`\n"
+"        - `send_messages_in_threads`\n"
+"        "
+
+#: discordedit\editrole.py:350 discordedit\edittextchannel.py:564
+#: discordedit\editvoicechannel.py:464
+msgid "You need to provide at least one permission."
+msgstr "Sinun on annettava vähintään yksi lupa."
+
+#: discordedit\editrole.py:356
+msgid "You don't have the permission {permission_name} in this guild."
+msgstr "Sinulla ei ole lupaa {permission_name} tässä killassa."
+
+#: discordedit\editrole.py:378
+#, docstring
+msgid "Delete a role."
+msgstr "Poista rooli."
+
+#: discordedit\editrole.py:383
+msgid "⚠️ - Delete role"
+msgstr "⚠️ - Poista rooli"
+
+#: discordedit\editrole.py:384 discordedit\editrole.py:391
+msgid "Do you really want to delete the role {role.mention} ({role.id})?"
+msgstr "Haluatko todella poistaa roolin {role.mention} ({role.id})?"
+
+#: discordedit\editrole.py:412
+#, docstring
+msgid "View and edit role."
+msgstr "Näytä ja muokkaa roolia."
+
+#: discordedit\edittextchannel.py:68 discordedit\edittextchannel.py:72
+msgid "The channel type must be `text`, `news`, `0` or `5`."
+msgstr "Kanavan tyypin on oltava `text`, `news`, `0` tai `5`."
+
+#: discordedit\edittextchannel.py:77
+#, docstring
+msgid "A cog to edit text channels!"
+msgstr "Hammasratas tekstikanavien muokkaamiseen!"
+
+#: discordedit\edittextchannel.py:97
+msgid "I can not edit the text channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
+msgstr "En voi muokata tekstikanavaa {channel.mention} ({channel.id}), koska minulla ei ole oikeutta `manage_channel`."
+
+#: discordedit\edittextchannel.py:119
+#, docstring
+msgid "Create a text channel."
+msgstr "Luo tekstikanava."
+
+#: discordedit\edittextchannel.py:137
+#, docstring
+msgid "List all text channels in the current guild."
+msgstr "Luettele kaikki nykyisen killan tekstikanavat."
+
+#: discordedit\edittextchannel.py:143
+msgid "List of text channels in {guild.name} ({guild.id})"
+msgstr "Luettelo tekstikanavista osoitteessa {guild.name} ({guild.id})"
+
+#: discordedit\edittextchannel.py:162
+#, docstring
+msgid "Clone a text channel."
+msgstr "Kloonaa tekstikanava."
+
+#: discordedit\edittextchannel.py:189
+#, docstring
+msgid "Create an invite for a text channel.\n\n"
+"        `max_age`: How long the invite should last in days. If it's 0 then the invite doesn't expire.\n"
+"        `max_uses`: How many uses the invite could be used for. If it's 0 then there are unlimited uses.\n"
+"        `temporary`: Denotes that the invite grants temporary membership (i.e. they get kicked after they disconnect).\n"
+"        `unique`: Indicates if a unique invite URL should be created. Defaults to True. If this is set to False then it will return a previously created invite.\n"
+"        "
+msgstr "Luo kutsu tekstikanavalle.\n\n"
+"        `max_age`: Kuinka kauan kutsun tulisi kestää päivinä. Jos se on 0, kutsu ei vanhene.\n"
+"        `max_uses`: Kuinka monta käyttökertaa kutsua voidaan käyttää. Jos se on 0, niin käyttöä on rajattomasti.\n"
+"        `temporary`: Ilmaisee, että kutsu antaa tilapäisen jäsenyyden (ts. kutsut potkitaan pois, kun yhteys on katkaistu).\n"
+"        `unique`: Ilmaisee, onko kutsun URL-osoite luotava yksilöllisesti. Oletusarvo on True. Jos tämän arvoksi asetetaan False, se palauttaa aiemmin luodun kutsun.\n"
+"        "
+
+#: discordedit\edittextchannel.py:224
+#, docstring
+msgid "Edit text channel name."
+msgstr "Muokkaa tekstikanavan nimeä."
+
+#: discordedit\edittextchannel.py:249
+#, docstring
+msgid "Edit text channel topic."
+msgstr "Muokkaa tekstikanavan aihetta."
+
+#: discordedit\edittextchannel.py:274
+#, docstring
+msgid "Edit text channel position.\n\n"
+"        Warning: Only text channels are taken into account. Channel 1 is the highest positioned text channel.\n"
+"        Channels cannot be moved to a position that takes them out of their current category.\n"
+"        "
+msgstr "Muokkaa tekstikanavan sijaintia.\n\n"
+"        Varoitus: Vain tekstikanavat otetaan huomioon. Kanava 1 on korkeimmalle sijoitettu tekstikanava.\n"
+"        Kanavia ei voi siirtää asemaan, joka vie ne pois niiden nykyisestä luokasta.\n"
+"        "
+
+#: discordedit\edittextchannel.py:302
+#, docstring
+msgid "Edit text channel nsfw."
+msgstr "Muokkaa tekstikanavaa nsfw."
+
+#: discordedit\edittextchannel.py:328
+#, docstring
+msgid "Edit text channel syncpermissions with category."
+msgstr "Muokkaa tekstikanavan synkronointilupia luokan kanssa."
+
+#: discordedit\edittextchannel.py:354
+#, docstring
+msgid "Edit text channel category."
+msgstr "Muokkaa tekstikanavan luokkaa."
+
+#: discordedit\edittextchannel.py:378
+#, docstring
+msgid "Edit text channel slowmode delay.\n\n"
+"        Specifies the slowmode rate limit for user in this channel. A value of 0s disables slowmode. The maximum value possible is 21600s.\n"
+"        "
+msgstr "Muokkaa tekstikanavan slowmode-viive.\n\n"
+"        Määrittää slowmode-nopeusrajan käyttäjälle tässä kanavassa. Arvo 0s poistaa slowmoden käytöstä. Suurin mahdollinen arvo on 21600s.\n"
+"        "
+
+#: discordedit\edittextchannel.py:408
+#, docstring
+msgid "Edit text channel type.\n\n"
+"        `text`: 0\n"
+"        `news`: 5\n"
+"        Currently, only conversion between ChannelType.text and ChannelType.news is supported. This is only available to guilds that contain NEWS in Guild.features.\n"
+"        "
+msgstr "Muokkaa tekstikanavan tyyppiä.\n\n"
+"        `text`: 0\n"
+"        `news`: 5\n"
+"        Tällä hetkellä tuetaan vain ChannelType.textin ja ChannelType.newsin välistä muuntamista. Tämä on käytettävissä vain killoille, jotka sisältävät NEWS-kohdassa Guild.features.\n"
+"        "
+
+#: discordedit\edittextchannel.py:439
+#, docstring
+msgid "Edit text channel default auto archive duration.\n\n"
+"        The new default auto archive duration in minutes for threads created in this channel. Must be one of `60`, `1440`, `4320`, or `10080`.\n"
+"        "
+msgstr "Muokkaa tekstikanavan oletusarvoista automaattisen arkistoinnin kestoa.\n\n"
+"        Uusi automaattisen arkistoinnin oletuskesto minuutteina tässä kanavassa luoduille säikeille. Pitää olla jokin seuraavista: `60`, `1440`, `4320` tai `10080`.\n"
+"        "
+
+#: discordedit\edittextchannel.py:468
+#, docstring
+msgid "Edit text channel default thread slowmode delay.\n\n"
+"        The new default thread slowmode delay in seconds for threads created in this channel. Must be between 0 and 21600 (6 hours) seconds.\n"
+"        "
+msgstr "Muokkaa tekstikanavan oletusketjun hidastetilan viivettä.\n\n"
+"        Uusi oletussäikeen hidastustilan viive sekunteina tässä kanavassa luoduille säikeille. Sen on oltava välillä 0-21600 (6 tuntia) sekuntia.\n"
+"        "
+
+#: discordedit\edittextchannel.py:501
+#, docstring
+msgid "Edit text channel overwrites/permissions.\n\n"
+"        You may not specify `True` or `False` to reset the permission(s).\n"
+"        You must possess the permissions you wish to modify.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
+"        "
+msgstr "Muokkaa tekstikanavan tekstin ylikirjoituksia/oikeuksia.\n\n"
+"        Et voi määrittää `True` tai `False` nollataksesi oikeudet.\n"
+"        Sinulla on oltava oikeudet, joita haluat muuttaa.\n\n"
+"        - `create_instant_invite`\n"
+"        - `manage_channels`\n"
+"        - `add_reactions`\n"
+"        - `priority_speaker`\n"
+"        - `stream`\n"
+"        - `read_messages`\n"
+"        - `send_messages`\n"
+"        - `send_tts_messages`\n"
+"        - `manage_messages`\n"
+"        - `embed_links`\n"
+"        - `attach_files`\n"
+"        - `read_message_history`\n"
+"        - `mention_everyone`\n"
+"        - `external_emojis`\n"
+"        - `connect`\n"
+"        - `speak`\n"
+"        - `mute_members`\n"
+"        - `deafen_members`\n"
+"        - `move_members`\n"
+"        - `use_voice_activation`\n"
+"        - `manage_roles`\n"
+"        - `manage_webhooks`\n"
+"        - `use_application_commands`\n"
+"        - `request_to_speak`\n"
+"        - `manage_threads`\n"
+"        - `create_public_threads`\n"
+"        - `create_private_threads`\n"
+"        - `external_stickers`\n"
+"        - `send_messages_in_threads`\n"
+"        "
+
+#: discordedit\edittextchannel.py:549 discordedit\editvoicechannel.py:449
+msgid "You need to provide a role or user you want to edit permissions for."
+msgstr "Sinun on annettava rooli tai käyttäjä, jonka oikeuksia haluat muokata."
+
+#: discordedit\edittextchannel.py:570 discordedit\editvoicechannel.py:470
+msgid "You don't have the permission {permission_name} in this channel."
+msgstr "Sinulla ei ole lupaa {permission_name} tällä kanavalla."
+
+#: discordedit\edittextchannel.py:595 discordedit\editvoicechannel.py:495
+msgid "You cannot remove permissions from you in this channel."
+msgstr "Et voi poistaa lupia sinulta tällä kanavalla."
+
+#: discordedit\edittextchannel.py:605 discordedit\editvoicechannel.py:505
+msgid "You cannot remove permissions from the bot in this channel."
+msgstr "Et voi poistaa botin käyttöoikeuksia tällä kanavalla."
+
+#: discordedit\edittextchannel.py:624
+#, docstring
+msgid "Delete a text channel."
+msgstr "Tekstikanavan poistaminen."
+
+#: discordedit\edittextchannel.py:634
+msgid "⚠️ - Delete text channel"
+msgstr "⚠️ - Poista tekstikanava"
+
+#: discordedit\edittextchannel.py:635 discordedit\edittextchannel.py:642
+msgid "Do you really want to delete the text channel {channel.mention} ({channel.id})?"
+msgstr "Haluatko todella poistaa tekstikanavan {channel.mention} ({channel.id})?"
+
+#: discordedit\edittextchannel.py:661
+#, docstring
+msgid "View and edit text channel."
+msgstr "Tekstikanavan tarkastelu ja muokkaus."
+
+#: discordedit\editthread.py:103
+msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
+msgstr "Emoji Rooli on oltava emoji, jota seuraa rooli erotettuna joko `;`, `,`, `|` tai `-`."
+
+#: discordedit\editthread.py:113
+#, docstring
+msgid "A cog to edit threads!"
+msgstr "Pyörä kierteiden muokkaamista varten!"
+
+#: discordedit\editthread.py:134
+msgid "I can not edit the thread {thread.mention} ({thread.id}) because you don't have the `manage_channel` permission."
+msgstr "En voi muokata viestiketjua {thread.mention} ({thread.id}), koska sinulla ei ole oikeutta `manage_channel`."
+
+#: discordedit\editthread.py:158
+#, docstring
+msgid "Create a thread.\n\n"
+"        You'll join it automatically.\n"
+"        "
+msgstr "Luo säie.\n\n"
+"        Liityt siihen automaattisesti.\n"
+"        "
+
+#: discordedit\editthread.py:182
+#, docstring
+msgid "List all threads in the current guild."
+msgstr "Luettele kaikki nykyisen killan viestiketjut."
+
+#: discordedit\editthread.py:190
+msgid "List of threads in {guild.name} ({guild.id})"
+msgstr "Luettelo kierteistä osoitteessa {guild.name} ({guild.id})"
+
+#: discordedit\editthread.py:206
+#, docstring
+msgid "Edit thread name."
+msgstr "Muokkaa viestiketjun nimeä."
+
+#: discordedit\editthread.py:227
+#, docstring
+msgid "Edit thread archived."
+msgstr "Muokkaa säiettä arkistoitu."
+
+#: discordedit\editthread.py:249
+#, docstring
+msgid "Edit thread locked."
+msgstr "Muokkaa säiettä lukittu."
+
+#: discordedit\editthread.py:272
+#, docstring
+msgid "Edit thread pinned."
+msgstr "Muokkaa säiettä kiinnitetty."
+
+#: discordedit\editthread.py:296
+#, docstring
+msgid "Edit thread invitable."
+msgstr "Muokkaa säiettä kutsuttavissa."
+
+#: discordedit\editthread.py:322
+#, docstring
+msgid "Edit thread auto archive duration."
+msgstr "Muokkaa säikeen automaattisen arkistoinnin kestoa."
+
+#: discordedit\editthread.py:346
+#, docstring
+msgid "Edit thread slowmode delay."
+msgstr "Muokkaa säiettä slowmode-viive."
+
+#: discordedit\editthread.py:370
+#, docstring
+msgid "Edit thread applied tags.\n\n"
+"        ```\n"
+"        [p]editthread appliedtags \"<name>|<emoji>|[moderated]\"\n"
+"        [p]editthread appliedtags \"Reporting|⚠️|True\" \"Bug|🐛\"\n"
+"        ```\n"
+"        "
+msgstr "Muokkaa säiettä käytetyt tunnisteet.\n\n"
+"        ```\n"
+"        [p]editthread appliedtags \"<name>|<emoji>|[moderated]\"\n"
+"        [p]editthread appliedtags \"Reporting|⚠️|True\" \"Bug|🐛\"\n"
+"        ```\n"
+"        "
+
+#: discordedit\editthread.py:400
+#, docstring
+msgid "Add member to thread."
+msgstr "Lisää jäsen viestiketjuun."
+
+#: discordedit\editthread.py:425
+#, docstring
+msgid "Remove member from thread."
+msgstr "Poista jäsen säikeestä."
+
+#: discordedit\editthread.py:446
+#, docstring
+msgid "Delete a thread."
+msgstr "Poista säie."
+
+#: discordedit\editthread.py:456
+msgid "⚠️ - Delete thread"
+msgstr "⚠️ - Poista viestiketju"
+
+#: discordedit\editthread.py:457 discordedit\editthread.py:464
+msgid "Do you really want to delete the thread {thread.mention} ({thread.id})?"
+msgstr "Haluatko todella poistaa viestiketjun {thread.mention} ({thread.id})?"
+
+#: discordedit\editthread.py:479
+#, docstring
+msgid "View and edit thread."
+msgstr "Näytä ja muokkaa säiettä."
+
+#: discordedit\editvoicechannel.py:66 discordedit\editvoicechannel.py:70
+msgid "The video quality mode must be `1` or `2`."
+msgstr "Videon laatutilan on oltava `1` tai `2`."
+
+#: discordedit\editvoicechannel.py:75
+#, docstring
+msgid "A cog to edit voice channels!"
+msgstr "Hammasratas äänikanavien muokkaamiseen!"
+
+#: discordedit\editvoicechannel.py:95
+msgid "I can not edit the voice channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
+msgstr "En voi muokata äänikanavaa {channel.mention} ({channel.id}), koska minulla ei ole oikeutta `manage_channel`."
+
+#: discordedit\editvoicechannel.py:117
+#, docstring
+msgid "Create a voice channel."
+msgstr "Luo äänikanava."
+
+#: discordedit\editvoicechannel.py:135
+#, docstring
+msgid "List all voice channels in the current guild."
+msgstr "Luettele kaikki nykyisen killan äänikanavat."
+
+#: discordedit\editvoicechannel.py:141
+msgid "List of voice channels in {guild.name} ({guild.id})"
+msgstr "Luettelo äänikanavista osoitteessa {guild.name} ({guild.id})"
+
+#: discordedit\editvoicechannel.py:160
+#, docstring
+msgid "Clone a voice channel."
+msgstr "Kloonaa äänikanava."
+
+#: discordedit\editvoicechannel.py:182
+#, docstring
+msgid "Create an invite for a voice channel.\n\n"
+"        `max_age`: How long the invite should last in days. If it's 0 then the invite doesn't expire.\n"
+"        `max_uses`: How many uses the invite could be used for. If it's 0 then there are unlimited uses.\n"
+"        `temporary`: Denotes that the invite grants temporary membership (i.e. they get kicked after they disconnect).\n"
+"        `unique`: Indicates if a unique invite URL should be created. Defaults to True. If this is set to False then it will return a previously created invite.\n"
+"        "
+msgstr "Luo kutsu äänikanavalle.\n\n"
+"        `max_age`: Kuinka kauan kutsun tulisi kestää päivinä. Jos se on 0, kutsu ei vanhene.\n"
+"        `max_uses`: Kuinka monta käyttökertaa kutsua voidaan käyttää. Jos se on 0, niin käyttöä on rajattomasti.\n"
+"        `temporary`: Ilmaisee, että kutsu antaa tilapäisen jäsenyyden (ts. kutsut potkitaan pois, kun yhteys on katkaistu).\n"
+"        `unique`: Ilmaisee, onko kutsun URL-osoite luotava yksilöllisesti. Oletusarvo on True. Jos tämän arvoksi asetetaan False, se palauttaa aiemmin luodun kutsun.\n"
+"        "
+
+#: discordedit\editvoicechannel.py:212
+#, docstring
+msgid "Edit voice channel name."
+msgstr "Muokkaa äänikanavan nimeä."
+
+#: discordedit\editvoicechannel.py:228
+#, docstring
+msgid "Edit voice channel bitrate.\n\n"
+"        It must be a number between 8000 and\n"
+"        Level 1: 128000\n"
+"        Level 2: 256000\n"
+"        Level 3: 384000\n"
+"        "
+msgstr "Muokkaa äänikanavan bittinopeutta.\n\n"
+"        Sen on oltava luku välillä 8000 ja\n"
+"        Taso 1: 128000\n"
+"        Taso 2: 256000\n"
+"        Taso 3: 384000\n"
+"        "
+
+#: discordedit\editvoicechannel.py:252
+#, docstring
+msgid "Edit voice channel nsfw."
+msgstr "Muokkaa äänikanavaa nsfw."
+
+#: discordedit\editvoicechannel.py:273
+#, docstring
+msgid "Edit voice channel user limit.\n\n"
+"        It must be a number between 0 and 99.\n"
+"        "
+msgstr "Muokkaa äänikanavan käyttäjärajaa.\n\n"
+"        Sen on oltava numero välillä 0-99.\n"
+"        .                "
+
+#: discordedit\editvoicechannel.py:292
+#, docstring
+msgid "Edit voice channel position.\n\n"
+"        Warning: Only voice channels are taken into account. Channel 1 is the highest positioned voice channel.\n"
+"        Channels cannot be moved to a position that takes them out of their current category.\n"
+"        "
+msgstr "Muokkaa äänikanavan sijaintia.\n\n"
+"        Varoitus: Vain äänikanavat otetaan huomioon. Kanava 1 on korkeimmalle sijoitettu äänikanava.\n"
+"        Kanavia ei voi siirtää asemaan, joka vie ne pois niiden nykyisestä luokasta.\n"
+"        "
+
+#: discordedit\editvoicechannel.py:312
+#, docstring
+msgid "Edit voice channel sync permissions."
+msgstr "Muokkaa äänikanavan synkronointioikeuksia."
+
+#: discordedit\editvoicechannel.py:333
+#, docstring
+msgid "Edit voice channel category."
+msgstr "Muokkaa äänikanavan luokkaa."
+
+#: discordedit\editvoicechannel.py:352
+#, docstring
+msgid "Edit voice channel slowmode delay.\n\n"
+"        Specifies the slowmode rate limit for user in this channel. A value of 0s disables slowmode. The maximum value possible is 21600s.\n"
+"        "
+msgstr "Muokkaa äänikanavan hidastetilan viivettä.\n\n"
+"        Määrittää tämän kanavan käyttäjän slowmode-nopeusrajan. Arvo 0s poistaa slowmoden käytöstä. Suurin mahdollinen arvo on 21600s.\n"
+"        "
+
+#: discordedit\editvoicechannel.py:377
+#, docstring
+msgid "Edit voice channel video quality mode.\n\n"
+"        auto = 1\n"
+"        full = 2\n"
+"        "
+msgstr "Muokkaa puhekanavan videon laatutilaa.\n\n"
+"        auto = 1\n"
+"        full = 2\n"
+"        "
+
+#: discordedit\editvoicechannel.py:406
+#, docstring
+msgid "Edit voice channel overwrites/permissions.\n\n"
+"        You may not specify `True` or `False` to reset the overwrite(s).\n"
+"        You must possess the permissions you wish to modify.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
+"        "
+msgstr "Muokkaa äänikanavan ylikirjoituksia/oikeuksia.\n\n"
+"        Et voi määrittää `True` tai `False` nollataksesi ylikirjoitukset.\n"
+"        Sinulla on oltava oikeudet, joita haluat muuttaa.\n\n"
+"        - `create_instant_invite`\n"
+"        - `manage_channels`\n"
+"        - `add_reactions`\n"
+"        - `priority_speaker`\n"
+"        - `stream`\n"
+"        - `read_messages`\n"
+"        - `send_messages`\n"
+"        - `send_tts_messages`\n"
+"        - `manage_messages`\n"
+"        - `embed_links`\n"
+"        - `attach_files`\n"
+"        - `read_message_history`\n"
+"        - `mention_everyone`\n"
+"        - `external_emojis`\n"
+"        - `connect`\n"
+"        - `speak`\n"
+"        - `mute_members`\n"
+"        - `deafen_members`\n"
+"        - `move_members`\n"
+"        - `use_voice_activation`\n"
+"        - `manage_roles`\n"
+"        - `manage_webhooks`\n"
+"        - `use_application_commands`\n"
+"        - `request_to_speak`\n"
+"        - `manage_threads`\n"
+"        - `create_public_threads`\n"
+"        - `create_private_threads`\n"
+"        - `external_stickers`\n"
+"        - `send_messages_in_threads`\n"
+"        "
+
+#: discordedit\editvoicechannel.py:524
+#, docstring
+msgid "Delete voice channel."
+msgstr "Poista äänikanava."
+
+#: discordedit\editvoicechannel.py:529
+msgid "⚠️ - Delete voice channel"
+msgstr "⚠️ - Poista äänikanava"
+
+#: discordedit\editvoicechannel.py:530 discordedit\editvoicechannel.py:537
+msgid "Do you really want to delete the voice channel {channel.mention} ({channel.id})?"
+msgstr "Haluatko todella poistaa äänikanavan {channel.mention} ({channel.id})?"
+
+#: discordedit\editvoicechannel.py:556
+#, docstring
+msgid "View and edit voice channel."
+msgstr "Tarkastele ja muokkaa äänikanavaa."
+
+#: discordedit\view.py:120
+msgid "You are not allowed to execute this command."
+msgstr "Et saa suorittaa tätä komentoa."
+

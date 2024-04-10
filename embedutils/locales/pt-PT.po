@@ -1,0 +1,278 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:42\n"
+"Last-Translator: \n"
+"Language-Team: Portuguese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pt-PT\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/embedutils/locales/messages.pot\n"
+"X-Crowdin-File-ID: 314\n"
+"Language: pt_PT\n"
+
+#: embedutils\converters.py:63 embedutils\converters.py:78
+msgid "This doesn't seem to be properly formatted embed {conversion_type}. Refer to the link on `{ctx.clean_prefix}help {ctx.command.qualified_name}`."
+msgstr "Parece que esta incorporação não está corretamente formatada {conversion_type}. Consulte a ligação em `{ctx.clean_prefix}help {ctx.command.qualified_name}`."
+
+#: embedutils\converters.py:90
+msgid "JSON Parse Error"
+msgstr "Erro de análise JSON"
+
+#: embedutils\converters.py:101
+msgid "YAML Parse Error"
+msgstr "Erro de análise YAML"
+
+#: embedutils\converters.py:111
+msgid "The `content` field is not supported for this command."
+msgstr "O campo `content` não é suportado por este comando."
+
+#: embedutils\converters.py:125
+msgid "Embed Parse Error"
+msgstr "Incorporar erro de análise"
+
+#: embedutils\converters.py:130
+msgid "Embed size exceeds Discord limit of 6000 characters ({length})."
+msgstr "O tamanho da incorporação excede o limite de 6000 caracteres do Discord ({length})."
+
+#: embedutils\converters.py:142 embedutils\embedutils.py:102
+#: embedutils\embedutils.py:135 embedutils\embedutils.py:167
+#: embedutils\embedutils.py:202 embedutils\embedutils.py:233
+#: embedutils\embedutils.py:264 embedutils\embedutils.py:307
+#: embedutils\embedutils.py:414 embedutils\embedutils.py:505
+#: embedutils\embedutils.py:682 embedutils\embedutils.py:738
+msgid "Embed Send Error"
+msgstr "Erro de envio de incorporação"
+
+#: embedutils\converters.py:155
+msgid "Use `{ctx.prefix}help {ctx.command.qualified_name}` to see an example."
+msgstr "Utilize `{ctx.prefix}help {ctx.command.qualified_name}` para ver um exemplo."
+
+#: embedutils\converters.py:195
+msgid "Embed limit reached ({limit})."
+msgstr "Limite de incorporação atingido ({limit})."
+
+#: embedutils\converters.py:200
+msgid "Failed to convert input into embeds."
+msgstr "Falha ao converter a entrada em incorporações."
+
+#: embedutils\converters.py:219
+msgid "It's not a valid channel or thread."
+msgstr "Não é um canal ou um tópico válido."
+
+#: embedutils\converters.py:223
+msgid "I do not have permissions to send embeds in {channel.mention}."
+msgstr "Não tenho permissões para enviar ficheiros incorporados em {channel.mention}."
+
+#: embedutils\converters.py:230
+msgid "You do not have permissions to send embeds in {channel.mention}."
+msgstr "Não tem permissões para enviar incorporações em {channel.mention}."
+
+#: embedutils\converters.py:242
+msgid "I have to be the author of the message. You can use the command without providing a message to send one."
+msgstr "Tenho de ser o autor da mensagem. Pode utilizar o comando sem fornecer uma mensagem para a enviar."
+
+#: embedutils\converters.py:252
+msgid "You are not allowed to edit embeds of an existing message (bot owner can set the permissions with the cog Permissions on the command `[p]embed edit`)."
+msgstr "Não é permitido editar incorporações de uma mensagem existente (o proprietário do bot pode definir as permissões com a engrenagem Permissões no comando `[p]embed edit`)."
+
+#: embedutils\embedutils.py:44
+#, docstring
+msgid "Create, send, and store embeds!"
+msgstr "Criar, enviar e armazenar incorporações!"
+
+#: embedutils\embedutils.py:112
+#, docstring
+msgid "Post embeds from valid JSON.\n\n"
+"        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Here's an example: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n"
+"        You can use an [**embeds creator**](https://embedutils.com/) to get a JSON payload.\n\n"
+"        If you provide a message, it will be edited.\n"
+"        You can use an attachment and the command `[p]embed yamlfile` will be invoked automatically.\n"
+"        "
+msgstr "Publique incorporações de JSON válido.\n\n"
+"        Isso deve estar no formato esperado por [**esta documentação do Discord**] (https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Aqui está um exemplo: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n"
+"        Pode utilizar um [**embeds creator**](https://embedutils.com/) para obter um payload JSON.\n\n"
+"        Se fornecer uma mensagem, esta será editada.\n"
+"        Pode utilizar um anexo e o comando `[p]embed yamlfile` será invocado automaticamente.\n"
+"        "
+
+#: embedutils\embedutils.py:145
+#, docstring
+msgid "Post embeds from valid YAML.\n\n"
+"        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Here's an example: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n\n"
+"        If you provide a message, it will be edited.\n"
+"        You can use an attachment and the command `[p]embed yamlfile` will be invoked automatically.\n"
+"        "
+msgstr "Publica incorporações a partir de YAML válido.\n\n"
+"        Isso deve estar no formato esperado por [**esta documentação do Discord**] (https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Aqui está um exemplo: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n\n"
+"        Se fornecer uma mensagem, esta será editada.\n"
+"        Pode usar um anexo e o comando `[p]embed yamlfile` será invocado automaticamente.\n"
+"        "
+
+#: embedutils\embedutils.py:173
+#, docstring
+msgid "Post an embed from a valid JSON file (upload it).\n\n"
+"        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Here's an example: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n"
+"        You can use an [**embeds creator**](https://embedutils.com/) to get a JSON payload.\n\n"
+"        If you provide a message, it will be edited.\n"
+"        "
+msgstr "Publique uma incorporação a partir de um ficheiro JSON válido (carregue-o).\n\n"
+"        Ele deve estar no formato esperado por [**esta documentação do Discord**] (https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Aqui está um exemplo: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n"
+"        Pode utilizar um [**embeds creator**](https://embedutils.com/) para obter um payload JSON.\n\n"
+"        Se forneceres uma mensagem, esta será editada.\n"
+"        "
+
+#: embedutils\embedutils.py:188 embedutils\embedutils.py:219
+#: embedutils\embedutils.py:388 embedutils\embedutils.py:398
+#: embedutils\embedutils.py:478 embedutils\embedutils.py:488
+msgid "Unreadable attachment with `utf-8`."
+msgstr "Anexo ilegível com `utf-8`."
+
+#: embedutils\embedutils.py:208
+#, docstring
+msgid "Post an embed from a valid YAML file (upload it).\n\n"
+"        If you provide a message, it will be edited.\n"
+"        "
+msgstr "Publique uma incorporação a partir de um ficheiro YAML válido (carregue-o).\n\n"
+"        Se fornecer uma mensagem, esta será editada.\n"
+"        "
+
+#: embedutils\embedutils.py:245
+#, docstring
+msgid "Post embeds from a GitHub/Gist/Pastebin/Hastebin link containing valid JSON.\n\n"
+"        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Here's an example: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n\n"
+"        If you provide a message, it will be edited.\n"
+"        "
+msgstr "Publique incorporações de um link GitHub/Gist/Pastebin/Hastebin contendo JSON válido.\n\n"
+"        Isso deve estar no formato esperado por [**esta documentação do Discord**] (https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Aqui está um exemplo: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n\n"
+"        Se forneceres uma mensagem, ela será editada.\n"
+"        "
+
+#: embedutils\embedutils.py:275
+#, docstring
+msgid "Post embed(s) from an existing message.\n\n"
+"        The message must have at least one embed.\n"
+"        You can specify an index (starting by 0) if you want to send only one of the embeds.\n"
+"        You can include the content of the message already sent.\n\n"
+"        If you provide a message, it will be edited.\n"
+"        "
+msgstr "Publicar incorporação(ões) de uma mensagem existente.\n\n"
+"        A mensagem deve ter pelo menos uma incorporação.\n"
+"        Pode especificar um índice (começando por 0) se pretender enviar apenas uma das incorporações.\n"
+"        Pode incluir o conteúdo da mensagem já enviada.\n\n"
+"        Se fornecer uma mensagem, esta será editada.\n"
+"        "
+
+#: embedutils\embedutils.py:318
+#, docstring
+msgid "Download a JSON file for a message's embed(s).\n\n"
+"        The message must have at least one embed.\n"
+"        You can specify an index (starting by 0) if you want to include only one of the embeds.\n"
+"        You can include the content of the message already sent.\n"
+"        "
+msgstr "Descarrega um ficheiro JSON para a(s) incorporação(ões) de uma mensagem.\n\n"
+"        A mensagem deve ter pelo menos uma incorporação.\n"
+"        Pode especificar um índice (começando por 0) se pretender incluir apenas uma das incorporações.\n"
+"        Pode incluir o conteúdo da mensagem já enviada.\n"
+"        "
+
+#: embedutils\embedutils.py:368
+#, docstring
+msgid "Edit a message sent by [botname].\n\n"
+"        It would be better to use the `message` parameter of all the other commands.\n"
+"        "
+msgstr "Edita uma mensagem enviada por [botname].\n\n"
+"        Seria melhor usar o parâmetro `message` de todos os outros comandos.\n"
+"        "
+
+#: embedutils\embedutils.py:450
+#, docstring
+msgid "Store an embed.\n\n"
+"        Put the name in quotes if it is multiple words.\n"
+"        The `locked` argument specifies whether the embed should be locked to mod and superior only (guild level) or bot owners only (global level).\n"
+"        "
+msgstr "Guardar uma incorporação.\n\n"
+"        Coloca o nome entre aspas se ele tiver várias palavras.\n"
+"        O argumento `locked` especifica se o embed deve ser bloqueado apenas para mod e superior (nível de guilda) ou apenas para donos de bots (nível global).\n"
+"        "
+
+#: embedutils\embedutils.py:458 embedutils\embedutils.py:539
+#: embedutils\embedutils.py:558 embedutils\embedutils.py:590
+#: embedutils\embedutils.py:622 embedutils\embedutils.py:651
+#: embedutils\embedutils.py:704
+msgid "You can't manage global stored embeds."
+msgstr "Não é possível gerir incorporações globais armazenadas."
+
+#: embedutils\embedutils.py:516
+msgid "This server has reached the embed limit of {embed_limit}. You must remove an embed with `{ctx.clean_prefix}embed unstore` before you can add a new one."
+msgstr "Este servidor atingiu o limite de incorporações de {embed_limit}. É necessário remover um embed com `{ctx.clean_prefix}embed unstore` antes de poder adicionar um novo embed."
+
+#: embedutils\embedutils.py:535
+#, docstring
+msgid "Remove a stored embed."
+msgstr "Remover uma incorporação armazenada."
+
+#: embedutils\embedutils.py:545 embedutils\embedutils.py:595
+#: embedutils\embedutils.py:627
+msgid "This is not a stored embed at this level."
+msgstr "Não se trata de uma incorporação armazenada a este nível."
+
+#: embedutils\embedutils.py:554 embedutils\embedutils.py:586
+#, docstring
+msgid "Get info about a stored embed."
+msgstr "Obter informações sobre uma embed armazenada."
+
+#: embedutils\embedutils.py:564
+msgid "No stored embeds is configured at this level."
+msgstr "Não são configuradas incorporações armazenadas a este nível."
+
+#: embedutils\embedutils.py:568
+msgid "Global "
+msgstr "Mundial "
+
+#: embedutils\embedutils.py:568
+msgid "Stored Embeds"
+msgstr "Embutidos armazenados"
+
+#: embedutils\embedutils.py:618
+#, docstring
+msgid "Download a JSON file for a stored embed."
+msgstr "Descarregar um ficheiro JSON para uma incorporação armazenada."
+
+#: embedutils\embedutils.py:647
+#, docstring
+msgid "Post stored embeds."
+msgstr "Lançar incorporações armazenadas."
+
+#: embedutils\embedutils.py:671 embedutils\embedutils.py:724
+msgid "`{name}` is not a stored embed at this level."
+msgstr "`{name}` não é um embed armazenado a este nível."
+
+#: embedutils\embedutils.py:700
+#, docstring
+msgid "Post stored embeds with a webhook."
+msgstr "Publique incorporações armazenadas com um webhook."
+
+#: embedutils\embedutils.py:743
+#, docstring
+msgid "Migrate stored embeds from EmbedUtils by Phen."
+msgstr "Migrar incorporações armazenadas de EmbedUtils por Phen."
+
+#: embedutils\embedutils.py:787
+msgid "Data successfully migrated from EmbedUtils by Phen."
+msgstr "Dados migrados com sucesso do EmbedUtils por Phen."
+

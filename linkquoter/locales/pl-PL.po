@@ -1,0 +1,81 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:42\n"
+"Last-Translator: \n"
+"Language-Team: Polish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/linkquoter/locales/messages.pot\n"
+"X-Crowdin-File-ID: 316\n"
+"Language: pl_PL\n"
+
+#: linkquoter\converters.py:45 linkquoter\converters.py:57
+msgid "Can't read messages in {channel.mention}."
+msgstr "Nie można odczytać wiadomości w {channel.mention}."
+
+#: linkquoter\converters.py:49
+msgid "Can't read message history in {channel.mention}."
+msgstr "Nie można odczytać historii wiadomości w {channel.mention}."
+
+#: linkquoter\converters.py:65
+msgid "I can only quote messages from servers."
+msgstr "Mogę tylko cytować wiadomości z serwerów."
+
+#: linkquoter\converters.py:69
+msgid "Messages from NSFW channels cannot be quoted in non-NSFW channels."
+msgstr "Wiadomości z kanałów NSFW nie mogą być cytowane na kanałach innych niż NSFW."
+
+#: linkquoter\converters.py:82
+msgid "This server is not opted in to quote messages from other servers."
+msgstr "Ten serwer nie jest uprawniony do cytowania wiadomości z innych serwerów."
+
+#: linkquoter\converters.py:86
+msgid "That server is not opted in to allow its messages to be quoted in other servers."
+msgstr "Serwer ten nie posiada opcji zezwalającej na cytowanie jego wiadomości na innych serwerach."
+
+#: linkquoter\converters.py:95
+msgid "You don't have permission to read messages in that channel."
+msgstr "Nie masz uprawnień do odczytywania wiadomości na tym kanale."
+
+#: linkquoter\linkquoter.py:55
+#, docstring
+msgid "Quote any Discord message from its link!"
+msgstr "Zacytuj dowolną wiadomość Discord z linku!"
+
+#: linkquoter\linkquoter.py:217
+msgid "{author.display_name} said..."
+msgstr "{author.display_name} powiedział (...)"
+
+#: linkquoter\linkquoter.py:241
+msgid "Attachments:"
+msgstr "Załączniki:"
+
+#: linkquoter\linkquoter.py:252
+msgid "Stickers:"
+msgstr "Naklejki:"
+
+#: linkquoter\linkquoter.py:266
+msgid "Replying to:"
+msgstr "Odpowiadając na:"
+
+#: linkquoter\linkquoter.py:267
+msgid "Click to view attachments."
+msgstr "Kliknij, aby wyświetlić załączniki."
+
+#: linkquoter\linkquoter.py:337
+#, docstring
+msgid "Migrate config from LinkQuoter by Phen."
+msgstr "Migracja konfiguracji z LinkQuoter przez Phen."
+
+#: linkquoter\linkquoter.py:362
+msgid "Data successfully migrated from LinkQuoter by Phen."
+msgstr "Dane zostały pomyślnie zmigrowane z LinkQuoter przez Phen."
+

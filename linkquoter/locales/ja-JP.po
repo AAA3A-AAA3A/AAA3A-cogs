@@ -1,0 +1,81 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:42\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/linkquoter/locales/messages.pot\n"
+"X-Crowdin-File-ID: 316\n"
+"Language: ja_JP\n"
+
+#: linkquoter\converters.py:45 linkquoter\converters.py:57
+msgid "Can't read messages in {channel.mention}."
+msgstr "{channel.mention}のメッセージが読めない。"
+
+#: linkquoter\converters.py:49
+msgid "Can't read message history in {channel.mention}."
+msgstr "{channel.mention}のメッセージ履歴が読めない。"
+
+#: linkquoter\converters.py:65
+msgid "I can only quote messages from servers."
+msgstr "私はサーバーからのメッセージしか引用できない。"
+
+#: linkquoter\converters.py:69
+msgid "Messages from NSFW channels cannot be quoted in non-NSFW channels."
+msgstr "NSFWチャンネルからのメッセージは、NSFWチャンネル以外で引用することはできません。"
+
+#: linkquoter\converters.py:82
+msgid "This server is not opted in to quote messages from other servers."
+msgstr "このサーバーは、他のサーバーからのメッセージの引用にオプトインされていない。"
+
+#: linkquoter\converters.py:86
+msgid "That server is not opted in to allow its messages to be quoted in other servers."
+msgstr "そのサーバーは、自分のメッセージが他のサーバーで引用されるようにオプトインされていない。"
+
+#: linkquoter\converters.py:95
+msgid "You don't have permission to read messages in that channel."
+msgstr "あなたにはそのチャンネルのメッセージを読む権限がありません。"
+
+#: linkquoter\linkquoter.py:55
+#, docstring
+msgid "Quote any Discord message from its link!"
+msgstr "Discordのメッセージをリンクから引用する！"
+
+#: linkquoter\linkquoter.py:217
+msgid "{author.display_name} said..."
+msgstr "{author.display_name} とは..."
+
+#: linkquoter\linkquoter.py:241
+msgid "Attachments:"
+msgstr "添付ファイル"
+
+#: linkquoter\linkquoter.py:252
+msgid "Stickers:"
+msgstr "ステッカー："
+
+#: linkquoter\linkquoter.py:266
+msgid "Replying to:"
+msgstr "返信する"
+
+#: linkquoter\linkquoter.py:267
+msgid "Click to view attachments."
+msgstr "添付ファイルを見るにはクリックしてください。"
+
+#: linkquoter\linkquoter.py:337
+#, docstring
+msgid "Migrate config from LinkQuoter by Phen."
+msgstr "PhenによるLinkQuoterからのコンフィグ移行。"
+
+#: linkquoter\linkquoter.py:362
+msgid "Data successfully migrated from LinkQuoter by Phen."
+msgstr "PhenによるLinkQuoterからのデータ移行に成功。"
+

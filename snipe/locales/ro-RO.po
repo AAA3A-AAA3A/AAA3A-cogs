@@ -1,0 +1,243 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:41\n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ro\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/snipe/locales/messages.pot\n"
+"X-Crowdin-File-ID: 320\n"
+"Language: ro_RO\n"
+
+#: snipe\snipe.py:99
+msgid "Deleted Message (Sent at {created_timestamp})"
+msgstr "Mesaj șters (trimis la {created_timestamp})"
+
+#: snipe\snipe.py:103
+msgid "Edited Message (Sent at {created_timestamp})"
+msgstr "Mesaj editat (trimis la {created_timestamp})"
+
+#: snipe\snipe.py:112
+msgid "Channel:"
+msgstr "Canal:"
+
+#: snipe\snipe.py:114
+msgid "Deleted at:"
+msgstr "Șters la:"
+
+#: snipe\snipe.py:114
+msgid "Edited at:"
+msgstr "Editat la:"
+
+#: snipe\snipe.py:130
+msgid "Stickers:"
+msgstr "Autocolante:"
+
+#: snipe\snipe.py:138
+msgid "New Content:"
+msgstr "Conținut nou:"
+
+#: snipe\snipe.py:139 snipe\snipe.py:147
+msgid "Click to view attachments."
+msgstr "Faceți clic pentru a vedea atașamentele."
+
+#: snipe\snipe.py:146
+msgid "Replying to:"
+msgstr "Răspunzând la:"
+
+#: snipe\snipe.py:156
+#, docstring
+msgid "Bulk sniping deleted and edited messages, for moderation purpose!"
+msgstr "Bulk sniping mesajele șterse și editate, în scop de moderare!"
+
+#: snipe\snipe.py:226 snipe\snipe.py:256
+msgid "Deleted Message"
+msgstr "Mesaj șters"
+
+#: snipe\snipe.py:226 snipe\snipe.py:256
+msgid "Edited Message"
+msgstr "Mesaj editat"
+
+#: snipe\snipe.py:233 snipe\snipe.py:262 snipe\snipe.py:605
+msgid "Deleted Messages"
+msgstr "Mesaje șterse"
+
+#: snipe\snipe.py:233 snipe\snipe.py:262 snipe\snipe.py:954
+msgid "Edited Messages"
+msgstr "Mesaje editate"
+
+#: snipe\snipe.py:291
+#, docstring
+msgid "Snipe a deleted message."
+msgstr "Furișează un mesaj șters."
+
+#: snipe\snipe.py:300 snipe\snipe.py:338 snipe\snipe.py:374 snipe\snipe.py:413
+#: snipe\snipe.py:452 snipe\snipe.py:491 snipe\snipe.py:530 snipe\snipe.py:571
+#: snipe\snipe.py:649 snipe\snipe.py:687 snipe\snipe.py:723 snipe\snipe.py:762
+#: snipe\snipe.py:801 snipe\snipe.py:840 snipe\snipe.py:879 snipe\snipe.py:920
+msgid "You are not allowed to execute this command in this channel."
+msgstr "Nu aveți voie să executați această comandă în acest canal."
+
+#: snipe\snipe.py:306 snipe\snipe.py:344 snipe\snipe.py:380 snipe\snipe.py:419
+#: snipe\snipe.py:458 snipe\snipe.py:497 snipe\snipe.py:536 snipe\snipe.py:577
+#: snipe\snipe.py:655 snipe\snipe.py:693 snipe\snipe.py:729 snipe\snipe.py:768
+#: snipe\snipe.py:807 snipe\snipe.py:846 snipe\snipe.py:885 snipe\snipe.py:926
+msgid "This channel is in the ignored list."
+msgstr "Acest canal se află în lista de canale ignorate."
+
+#: snipe\snipe.py:309 snipe\snipe.py:347 snipe\snipe.py:383 snipe\snipe.py:422
+#: snipe\snipe.py:461 snipe\snipe.py:500 snipe\snipe.py:539 snipe\snipe.py:580
+msgid "No deleted message recorded in this channel."
+msgstr "Niciun mesaj șters înregistrat pe acest canal."
+
+#: snipe\snipe.py:317
+msgid "No deleted message at this index in this channel."
+msgstr "Nici un mesaj șters la acest index în acest canal."
+
+#: snipe\snipe.py:329
+#, docstring
+msgid "Bulk snipe deleted messages."
+msgstr "Extrageți în masă mesajele șterse."
+
+#: snipe\snipe.py:365
+#, docstring
+msgid "Bulk snipe deleted messages for the specified member."
+msgstr "Extrage în bloc mesajele șterse pentru membrul specificat."
+
+#: snipe\snipe.py:392 snipe\snipe.py:602
+msgid "No deleted message recorded for this member in this channel."
+msgstr "Nu s-a înregistrat niciun mesaj șters pentru acest membru în acest canal."
+
+#: snipe\snipe.py:404
+#, docstring
+msgid "Bulk snipe deleted messages with embeds."
+msgstr "Extrageți în masă mesajele șterse cu inserții."
+
+#: snipe\snipe.py:431 snipe\snipe.py:780
+msgid "No deleted message with embeds recorded in this channel."
+msgstr "Niciun mesaj șters cu inserții înregistrat în acest canal."
+
+#: snipe\snipe.py:443
+#, docstring
+msgid "Bulk snipe deleted messages with roles/users mentions."
+msgstr "Extragerea în masă a mesajelor șterse cu mențiuni de roluri/utilizatori."
+
+#: snipe\snipe.py:470 snipe\snipe.py:819
+msgid "No deleted message with mentions recorded in this channel."
+msgstr "Nici un mesaj șters cu mențiuni înregistrate în acest canal."
+
+#: snipe\snipe.py:482
+#, docstring
+msgid "Bulk snipe deleted messages with roles mentions."
+msgstr "Extrageți în masă mesajele șterse cu mențiuni de roluri."
+
+#: snipe\snipe.py:509 snipe\snipe.py:858
+msgid "No deleted message with roles mentions recorded in this channel."
+msgstr "Nici un mesaj șters cu mențiuni de roluri înregistrate în acest canal."
+
+#: snipe\snipe.py:521
+#, docstring
+msgid "Bulk snipe deleted messages with members mentions."
+msgstr "Extrageți în masă mesajele șterse cu mențiuni ale membrilor."
+
+#: snipe\snipe.py:548 snipe\snipe.py:897
+msgid "No deleted message with members mentions recorded in this channel."
+msgstr "Nici un mesaj șters cu mențiuni ale membrilor nu a fost înregistrat în acest canal."
+
+#: snipe\snipe.py:562
+#, docstring
+msgid "List deleted messages."
+msgstr "Lista mesajelor șterse."
+
+#: snipe\snipe.py:640
+#, docstring
+msgid "Snipe an edited message."
+msgstr "Furișează un mesaj editat."
+
+#: snipe\snipe.py:658 snipe\snipe.py:696 snipe\snipe.py:732 snipe\snipe.py:771
+#: snipe\snipe.py:810 snipe\snipe.py:849 snipe\snipe.py:888 snipe\snipe.py:929
+msgid "No edited message recorded in this channel."
+msgstr "Nici un mesaj editat nu a fost înregistrat pe acest canal."
+
+#: snipe\snipe.py:666
+msgid "No edited message at this index in this channel."
+msgstr "Nici un mesaj editat la acest index în acest canal."
+
+#: snipe\snipe.py:678
+#, docstring
+msgid "Bulk snipe edited messages."
+msgstr "Extragerea în masă a mesajelor editate."
+
+#: snipe\snipe.py:714
+#, docstring
+msgid "Bulk snipe edited messages for the specified member."
+msgstr "Extrage în bloc mesajele editate pentru membrul specificat."
+
+#: snipe\snipe.py:741 snipe\snipe.py:951
+msgid "No edited message recorded for this member in this channel."
+msgstr "Nu s-a înregistrat niciun mesaj editat pentru acest membru în acest canal."
+
+#: snipe\snipe.py:753
+#, docstring
+msgid "Bulk snipe edited messages with embeds."
+msgstr "Extragerea în masă a mesajelor editate cu inserții."
+
+#: snipe\snipe.py:792
+#, docstring
+msgid "Bulk snipe edited messages with roles/users mentions."
+msgstr "Extragerea în masă a mesajelor editate cu mențiuni de roluri/utilizatori."
+
+#: snipe\snipe.py:831
+#, docstring
+msgid "Bulk snipe edited messages with roles mentions."
+msgstr "Extragerea în masă a mesajelor editate cu mențiuni de roluri."
+
+#: snipe\snipe.py:870
+#, docstring
+msgid "Bulk snipe edited messages with members mentions."
+msgstr "Extragerea în masă a mesajelor editate cu mențiuni ale membrilor."
+
+#: snipe\snipe.py:911
+#, docstring
+msgid "List edited messages."
+msgstr "Lista mesajelor editate."
+
+#: snipe\snipe.py:975
+#, docstring
+msgid "Show stats about Snipe cache."
+msgstr "Afișează statisticile despre memoria cache Snipe."
+
+#: snipe\snipe.py:978
+msgid "Snipe Stats"
+msgstr "Statistici Snipe"
+
+#: snipe\snipe.py:980
+msgid "Deleted Messages Cache Size:"
+msgstr "Dimensiunea cache-ului mesajelor șterse:"
+
+#: snipe\snipe.py:984
+msgid "Edited Messages Cache Size:"
+msgstr "Mesaje editate Mărimea cache-ului:"
+
+#: snipe\snipe.py:989
+msgid "Total Cache Size:"
+msgstr "Dimensiunea totală a cache-ului:"
+
+#: snipe\snipe.py:994
+msgid "Cache Entries:"
+msgstr "Intrări în memoria cache:"
+
+#: snipe\snipe.py:995
+msgid "**Deleted Messages:** `{len_deleted_messages}`\n"
+"**Edited Messages:** `{len_edited_messages}`"
+msgstr "**Mesaje șterse:** `{len_deleted_messages}`\n"
+"**Mesaje modificate:** `{len_edited_messages}`"
+

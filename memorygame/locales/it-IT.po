@@ -1,0 +1,45 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:22\n"
+"Last-Translator: \n"
+"Language-Team: Italian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: it\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/memorygame/locales/messages.pot\n"
+"X-Crowdin-File-ID: 185\n"
+"Language: it_IT\n"
+
+#: memorygame\memorygame.py:27
+#, docstring
+msgid "A cog to play to Memory game, with buttons, leaderboard and Red bank!"
+msgstr "Un ingranaggio per giocare a Memory, con pulsanti, classifica e banca rossa!"
+
+#: memorygame\memorygame.py:169
+msgid "No one has played this game yet."
+msgstr "Nessuno ha ancora giocato a questo gioco."
+
+#: memorygame\memorygame.py:212
+#, docstring
+msgid "Reset leaderboard in the guild."
+msgstr "Azzeramento della classifica della gilda."
+
+#: memorygame\view.py:231
+msgid "You won in {game_time} seconds, with {tries} tries and {wrong_matches} wrong matches!"
+msgstr "Hai vinto in {game_time} secondi, con {tries} tentativi e {wrong_matches} partite sbagliate!"
+
+#: memorygame\view.py:235
+msgid " You win {final_prize} credits on the bank economy system!"
+msgstr " Vincete {final_prize} crediti con il sistema di economia bancaria!"
+
+#: memorygame\view.py:255
+msgid "You lose, because you tried too many times ({tries} tries and {wrong_matches} wrong matches)."
+msgstr "Si perde perché si è provato troppe volte ({tries} tentativi e {wrong_matches} partite sbagliate)."
+

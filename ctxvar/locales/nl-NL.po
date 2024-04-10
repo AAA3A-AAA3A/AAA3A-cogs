@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:42\n"
+"Last-Translator: \n"
+"Language-Team: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: nl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/ctxvar/locales/messages.pot\n"
+"X-Crowdin-File-ID: 82\n"
+"Language: nl_NL\n"
+
+#: ctxvar\ctxvar.py:65
+msgid "No Discord object found."
+msgstr "Geen Discord-object gevonden."
+
+#: ctxvar\ctxvar.py:81 ctxvar\ctxvar.py:214 ctxvar\ctxvar.py:265
+#: ctxvar\ctxvar.py:346
+msgid "I couldn't find any cog, command, or object named `{thing}`."
+msgstr "Ik kon geen tandwiel, commando of object met de naam `{thing}` vinden."
+
+#: ctxvar\ctxvar.py:104
+#, docstring
+msgid "A cog to list and display the contents of all sub-functions of `ctx`!"
+msgstr "Een tandwiel om de inhoud van alle subfuncties van `ctx` op te sommen en weer te geven!"
+
+#: ctxvar\ctxvar.py:132
+#, docstring
+msgid "Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."
+msgstr "Geeft een lijst weer van alle attributen en hun waarden van de instantie van de klasse 'ctx' of de subattributen ervan."
+
+#: ctxvar\ctxvar.py:136 ctxvar\ctxvar.py:197 ctxvar\ctxvar.py:248
+#: ctxvar\ctxvar.py:329
+msgid "The cog Dev must be loaded, to make sure you know what you are doing."
+msgstr "Het tandwiel Dev moet worden geladen om er zeker van te zijn dat je weet wat je doet."
+
+#: ctxvar\ctxvar.py:147
+msgid "The argument you specified is not a subclass of the instance."
+msgstr "Het argument dat je hebt opgegeven is geen subklasse van de instantie."
+
+#: ctxvar\ctxvar.py:154
+msgid "Here are all the variables and their associated values that can be used in this instance class."
+msgstr "Hier zijn alle variabelen en hun bijbehorende waarden die kunnen worden gebruikt in deze instantieklasse."
+
+#: ctxvar\ctxvar.py:193
+#, docstring
+msgid "Display a list of all attributes of the provided object (debug not async)."
+msgstr "Een lijst met alle attributen van het opgegeven object weergeven (debug niet async)."
+
+#: ctxvar\ctxvar.py:244
+#, docstring
+msgid "Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."
+msgstr "Voert `rich.help(obj=object, ...)` uit op het opgegeven object (debug niet async)."
+
+#: ctxvar\ctxvar.py:325
+#, docstring
+msgid "Execute `ast.dump(ast.parse(<code content>))` on the provided object (debug not async)."
+msgstr "Voert `ast.dump(ast.parse(<code content>))` uit op het opgegeven object (debug niet async)."
+
+#: ctxvar\ctxvar.py:366
+#, docstring
+msgid "List attributes of the provided object like dpy objects (debug not async)."
+msgstr "Lijstattributen van het geleverde object zoals dpy-objecten (debug niet async)."
+
+#: ctxvar\ctxvar.py:451
+#, docstring
+msgid "Parse the Markdown syntax for a specified message's content or a string."
+msgstr "Parseer de Markdown syntaxis voor de inhoud van een opgegeven bericht of een string."
+
+#: ctxvar\ctxvar.py:465
+msgid "Error in the module used for this command."
+msgstr "Fout in de module die voor deze opdracht wordt gebruikt."
+

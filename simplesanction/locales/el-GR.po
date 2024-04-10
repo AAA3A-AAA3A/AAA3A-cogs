@@ -1,0 +1,417 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:21\n"
+"Last-Translator: \n"
+"Language-Team: Greek\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: el\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/simplesanction/locales/messages.pot\n"
+"X-Crowdin-File-ID: 98\n"
+"Language: el_GR\n"
+
+#: simplesanction\constants.py:18
+msgid "Here is my informations about {member.display_name} ({member.id})."
+msgstr "Εδώ είναι οι πληροφορίες μου για το {member.display_name} ({member.id})."
+
+#: simplesanction\constants.py:27
+msgid "Why do you want to warn {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Γιατί θέλετε να προειδοποιήσετε το {member.display_name} ({member.id}); (Πληκτρολογήστε `cancel` για ακύρωση ή `not` για καμία.)"
+
+#: simplesanction\constants.py:31
+msgid "The member {member.display_name} ({member.id}) has received a warning."
+msgstr "Το μέλος {member.display_name} ({member.id}) έλαβε προειδοποίηση."
+
+#: simplesanction\constants.py:42
+msgid "Why do you want to ban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Γιατί θέλετε να απαγορεύσετε το {member.display_name} ({member.id}); (Πληκτρολογήστε `cancel` για να ακυρώσετε ή `not` για να μην ακυρώσετε.)"
+
+#: simplesanction\constants.py:45
+msgid "Do you really want to ban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Θέλετε πραγματικά να απαγορεύσετε το {member.display_name} ({member.id}); (Πληκτρολογήστε `cancel` για να ακυρώσετε ή `not` για να μην ακυρώσετε.)"
+
+#: simplesanction\constants.py:48
+msgid "The member {member.display_name} ({member.id}) has been banned."
+msgstr "Το μέλος {member.display_name} ({member.id}) έχει αποκλειστεί."
+
+#: simplesanction\constants.py:57
+msgid "Why do you want to softban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Γιατί θέλετε να κάνετε softban στο {member.display_name} ({member.id}); (Πληκτρολογήστε `cancel` για να ακυρώσετε ή `not` για να μην ακυρώσετε.)"
+
+#: simplesanction\constants.py:60
+msgid "Do you really want to softban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Θέλετε πραγματικά να κάνετε softban {member.display_name} ({member.id}); (Πληκτρολογήστε `cancel` για να ακυρώσετε ή `not` για να μην ακυρώσετε.)"
+
+#: simplesanction\constants.py:63
+msgid "The member {member.display_name} ({member.id}) has been softbanned."
+msgstr "Το μέλος {member.display_name} ({member.id}) έχει αποκλειστεί."
+
+#: simplesanction\constants.py:71
+msgid "How long do you want to tempban {member.display_name} ({member.id})? (Type `cancel` to cancel.)"
+msgstr "Πόσο καιρό θέλετε να απαγορεύσετε το {member.display_name} ({member.id}); (Πληκτρολογήστε `cancel` για να ακυρώσετε.)"
+
+#: simplesanction\constants.py:74
+msgid "Why do you want to tempban {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Γιατί θέλετε να απαγορεύσετε το {member.display_name} ({member.id}) κατά τη διάρκεια του {duration}; (Πληκτρολογήστε `cancel` για να ακυρώσετε ή `not` για να μην ακυρώσετε.)"
+
+#: simplesanction\constants.py:77
+msgid "Do you really want to tempban {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Θέλετε πραγματικά να απαγορεύσετε το {member.display_name} ({member.id}) κατά τη διάρκεια του {duration}; (Πληκτρολογήστε `cancel` για να ακυρώσετε ή `not` για να μην ακυρώσετε.)"
+
+#: simplesanction\constants.py:80
+msgid "The member {member.display_name} ({member.id}) has been tempbanned and will be unbanned in {duration}."
+msgstr "Το μέλος {member.display_name} ({member.id}) έχει αποκλειστεί προσωρινά και θα απελευθερωθεί στο {duration}."
+
+#: simplesanction\constants.py:91
+msgid "Why do you want to kick {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Γιατί θέλετε να κλωτσήσετε το {member.display_name} ({member.id}); (Πληκτρολογήστε `cancel` για να ακυρώσετε ή `not` για να μην ακυρώσετε.)"
+
+#: simplesanction\constants.py:94
+msgid "Do you really want to kick {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Θέλετε πραγματικά να κλωτσήσετε το {member.display_name} ({member.id}); (Πληκτρολογήστε `cancel` για να ακυρώσετε ή `not` για να μην ακυρώσετε.)"
+
+#: simplesanction\constants.py:97
+msgid "The member {member.display_name} ({member.id}) has been kicked."
+msgstr "Το μέλος {member.display_name} ({member.id}) αποβλήθηκε."
+
+#: simplesanction\constants.py:106
+msgid "Why do you want to mute {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Γιατί θέλετε να κάνετε σιωπή στο {member.display_name} ({member.id}); (Πληκτρολογήστε `cancel` για να ακυρώσετε ή `not` για να μην ακυρώσετε.)"
+
+#: simplesanction\constants.py:109
+msgid "Do you really want to mute {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Θέλετε πραγματικά να κάνετε σιωπή στο {member.display_name} ({member.id}); (Πληκτρολογήστε `cancel` για να ακυρώσετε ή `not` για να μην ακυρώσετε.)"
+
+#: simplesanction\constants.py:112
+msgid "The member {member.display_name} ({member.id}) has been muted."
+msgstr "Το μέλος {member.display_name} ({member.id}) έχει σιγήσει."
+
+#: simplesanction\constants.py:121
+msgid "Why do you want to mute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Γιατί θέλετε να κάνετε σίγαση του {member.display_name} ({member.id}) στο {channel.mention}; (Πληκτρολογήστε `cancel` για να ακυρώσετε ή `not` για να μην ακυρώσετε.)"
+
+#: simplesanction\constants.py:124
+msgid "Do you really want to mute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Θέλετε πραγματικά να κάνετε σιωπή στο {member.display_name} ({member.id}) στο {channel.mention}; (Πληκτρολογήστε `cancel` για να ακυρώσετε ή `not` για να μην ακυρώσετε.)"
+
+#: simplesanction\constants.py:127
+msgid "The member {member.display_name} ({member.id}) has been muted in {channel.mention}."
+msgstr "Το μέλος {member.display_name} ({member.id}) έχει σιγήσει στο {channel.mention}."
+
+#: simplesanction\constants.py:137
+msgid "How long do you want to tempmute {member.display_name} ({member.id})? (Type `cancel` to cancel.)"
+msgstr "Πόσο καιρό θέλετε να κάνετε προσωρινή σίγαση στο {member.display_name} ({member.id}); (Πληκτρολογήστε `cancel` για ακύρωση.)"
+
+#: simplesanction\constants.py:140
+msgid "Why do you want to tempmute {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Γιατί θέλετε να κάνετε προσωρινή σίγαση του {member.display_name} ({member.id}) κατά τη διάρκεια του {duration}; (Πληκτρολογήστε `cancel` για να ακυρώσετε ή `not` για να μην ακυρώσετε.)"
+
+#: simplesanction\constants.py:143
+msgid "Do you really want to tempmute {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Θέλετε πραγματικά να κάνετε προσωρινή σίγαση του {member.display_name} ({member.id}) κατά τη διάρκεια του {duration}; (Πληκτρολογήστε `cancel` για να ακυρώσετε ή `not` για να μην ακυρώσετε.)"
+
+#: simplesanction\constants.py:146
+msgid "The member {member.display_name} ({member.id}) has been tempmuted and will be unmuted in {duration}."
+msgstr "Το μέλος {member.display_name} ({member.id}) έχει υποστεί προσωρινή μετατροπή και θα αποσυμβολιστεί στο {duration}."
+
+#: simplesanction\constants.py:156
+msgid "How long do you want to tempmute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel.)"
+msgstr "Πόσο καιρό θέλετε να κάνετε προσωρινή σίγαση του {member.display_name} ({member.id}) στο {channel.mention}; (Πληκτρολογήστε `cancel` για ακύρωση.)"
+
+#: simplesanction\constants.py:159
+msgid "Why do you want to tempmute {member.display_name} ({member.id}) in {channel.mention} during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Γιατί θέλετε να κάνετε προσωρινή σίγαση του {member.display_name} ({member.id}) στο {channel.mention} κατά τη διάρκεια του {duration}; (Πληκτρολογήστε `cancel` για να ακυρώσετε ή `not` για να μην ακυρώσετε.)"
+
+#: simplesanction\constants.py:162
+msgid "Do you really want to tempmute {member.display_name} ({member.id}) in {channel.mention} during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Θέλετε πραγματικά να κάνετε προσωρινή σίγαση του {member.display_name} ({member.id}) στο {channel.mention} κατά τη διάρκεια του {duration}; (Πληκτρολογήστε `cancel` για να ακυρώσετε ή `not` για να μην ακυρώσετε.)"
+
+#: simplesanction\constants.py:165
+msgid "The member {member.display_name} ({member.id}) has been tempmuted in {channel.mention} and will be unmuted in {duration}."
+msgstr "Το μέλος {member.display_name} ({member.id}) έχει προσωρινά ρυθμιστεί στο {channel.mention} και θα απορυθμιστεί στο {duration}."
+
+#: simplesanction\simplesanction.py:47
+msgid "You're not allowed to execute the `[p]sanction` command in this channel."
+msgstr "Δεν επιτρέπεται η εκτέλεση της εντολής \"[p]sanction\" σε αυτό το κανάλι."
+
+#: simplesanction\simplesanction.py:55
+#, docstring
+msgid "A cog to sanction members, with buttons!"
+msgstr "Ένα γρανάζι για την επιβολή κυρώσεων στα μέλη, με κουμπιά!"
+
+#: simplesanction\simplesanction.py:209
+#, docstring
+msgid "\n"
+"        - Sanction a member quickly and easily.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 0 @member`\n"
+"        - `[p]sanction 0 @member What are these roles?`\n"
+"        - `[p]sanction 0 012345678987654321`\n"
+"        "
+msgstr "\n"
+"        - Επιβολή κυρώσεων σε ένα μέλος γρήγορα και εύκολα.\n\n"
+"        Παραδείγματα:\n"
+"[p]\n"
+"[p]- Τι είναι αυτοί οι ρόλοι; `\n"
+"        - `[p]sanction 0 012345678987654321`\n"
+"        "
+
+#: simplesanction\simplesanction.py:244
+#, docstring
+msgid "\n"
+"         - ℹ️ Show informations about a member.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 1 @member`: UserInfo for no reason.\n"
+"        - `[p]sanction 1 @member What are these roles?`: UserInfo for the reason \"What are these roles?\".\n"
+"        - `[p]sanction 1 012345678987654321`: UserInfo with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - ℹ️ Εμφάνιση πληροφοριών για ένα μέλος.\n\n"
+"        Παραδείγματα:\n"
+"        - `[p]sanction 1 @member`: UserInfo χωρίς λόγο.\n"
+"        - `[p]sanction 1 @member Τι είναι αυτοί οι ρόλοι; `: Πληροφορίες χρήστη για τον λόγο \"Ποιοι είναι αυτοί οι ρόλοι;\".\n"
+"        - \"[p]sanction 1 012345678987654321\": UserInfo με το αναγνωριστικό που δόθηκε.\n"
+"        "
+
+#: simplesanction\simplesanction.py:280
+#, docstring
+msgid "\n"
+"         - ⚠️ Add a simple warning on a member.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 2 @member not`: Warn for no reason.\n"
+"        - `[p]sanction 2 @member Insults`: Warn for the reason \"Insults\".\n"
+"        - `[p]sanction 2 012345678987654321 Advertising`: Warn the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - ⚠️ Προσθέστε μια απλή προειδοποίηση για ένα μέλος.\n\n"
+"        Παραδείγματα:\n"
+"        - `[p]sanction 2 @member not`: Προειδοποίηση χωρίς λόγο.\n"
+"        - `[p]sanction 2 @member Insults`: Προειδοποίηση για τον λόγο \"Προσβολές\".\n"
+"        - `[p]sanction 2 012345678987654321 Advertising`: Προειδοποίηση του χρήστη με το αναγνωριστικό που δόθηκε.\n"
+"        "
+
+#: simplesanction\simplesanction.py:315
+#, docstring
+msgid "\n"
+"         - 🔨 Ban a member from this server.\n\n"
+"        It won't delete messages by default.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 3 @member not`: Ban for no reason.\n"
+"        - `[p]sanction 3 @member Insults`: Ban for the reason \"Insults\".\n"
+"        - `[p]sanction 3 012345678987654321 Advertising`: Ban the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - 🔨 Απαγόρευση ενός μέλους από αυτόν τον διακομιστή.\n\n"
+"        Δεν θα διαγράψει μηνύματα από προεπιλογή.\n\n"
+"        Παραδείγματα:\n"
+"        - `[p]sanction 3 @member not`: Απαγόρευση χωρίς λόγο.\n"
+"        - `[p]sanction 3 @member Insults`: Απαγόρευση για τον λόγο \"Προσβολές\".\n"
+"        - `[p]sanction 3 012345678987654321 Advertising`: Απαγόρευση του χρήστη με το αναγνωριστικό που δόθηκε.\n"
+"        "
+
+#: simplesanction\simplesanction.py:352
+#, docstring
+msgid "\n"
+"         - 🔂 SoftBan a member from this server.\n\n"
+"        This means that the user will be banned and immediately unbanned, so it will purge their messages in a period, in all channels.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 4 @member not`: SoftBan for no reason\n"
+"        - `[p]sanction 4 @member Insults`: SoftBan for the reason \"Insults\"\n"
+"        - `[p]sanction 4 012345678987654321 Advertising`: SoftBan the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - 🔂 SoftBan ενός μέλους από αυτόν τον διακομιστή.\n\n"
+"        Αυτό σημαίνει ότι ο χρήστης θα αποκλειστεί και θα ξεμπανταριστεί αμέσως, οπότε θα καθαρίσει τα μηνύματά του σε μια περίοδο, σε όλα τα κανάλια.\n\n"
+"        Παραδείγματα:\n"
+"        - `[p]sanction 4 @member not`: SoftBan χωρίς λόγο\n"
+"        - `[p]sanction 4 @member Insults`: SoftBan για τον λόγο \"Προσβολές\"\n"
+"        - `[p]sanction 4 012345678987654321 Advertising`: SoftBan του χρήστη με το αναγνωριστικό που δόθηκε.\n"
+"        "
+
+#: simplesanction\simplesanction.py:390
+#, docstring
+msgid "\n"
+"         - 💨 TempBan a member from this server.\n\n"
+"        It won't delete messages by default.\n"
+"        If you want to perform a temporary ban, provide the time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 5 @member not`: Ban for no reason.\n"
+"        - `[p]sanction 5 @member 7d Insults`: 7 days ban for the reason \"Insults\".\n"
+"        - `[p]sanction 5 012345678987654321 Advertising`: Ban the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - 💨 Προσωρινήαπαγόρευση ενός μέλους από αυτόν τον διακομιστή.\n\n"
+"        Δεν θα διαγράψει μηνύματα από προεπιλογή.\n"
+"        Αν θέλετε να εκτελέσετε προσωρινή απαγόρευση, δώστε το χρόνο πριν από την αιτία.\n\n"
+"        Παραδείγματα:\n"
+"        - `[p]sanction 5 @member not`: Απαγόρευση χωρίς λόγο.\n"
+"        - `[p]sanction 5 @member 7d Insults`: Απαγόρευση 7 ημερών για τον λόγο \"Insults\".\n"
+"        - `[p]sanction 5 012345678987654321 Advertising`: Απαγόρευση του χρήστη με το αναγνωριστικό που δόθηκε.\n"
+"        "
+
+#: simplesanction\simplesanction.py:428
+#, docstring
+msgid "\n"
+"         - 👢 Kick a member from this server.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 6 @member not`: Kick for no reason.\n"
+"        - `[p]sanction 6 @member Insults`: Kick for the reason \"Insults\".\n"
+"        - `[p]sanction 6 012345678987654321 Advertising`: Kick the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - 👢 Διώξτε ένα μέλος από αυτόν τον διακομιστή.\n\n"
+"        Παραδείγματα:\n"
+"        - `[p]sanction 6 @member not`: Κλωτσιά χωρίς λόγο.\n"
+"        - `[p]sanction 6 @member Insults`: Κλωτσιά για τον λόγο \"Προσβολές\".\n"
+"        - `[p]sanction 6 012345678987654321 Advertising`: Κλωτσάει τον χρήστη με το αναγνωριστικό που δόθηκε.\n"
+"        "
+
+#: simplesanction\simplesanction.py:463
+#, docstring
+msgid "\n"
+"         - 🔇 Mute a member in all channels, including voice channels.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 7 @member not`: Infinite mute for no reason.\n"
+"        - `[p]sanction 7 @member Spam`:Infinite  mute for the reason \"Spam\".\n"
+"        - `[p]sanction 7 @member Advertising`: Infinite mute for the reason \"Advertising\".\n"
+"        "
+msgstr "\n"
+"         - 🔇 Σίγαση ενός μέλους σε όλα τα κανάλια, συμπεριλαμβανομένων των φωνητικών καναλιών.\n\n"
+"        Παραδείγματα:\n"
+"        - `[p]sanction 7 @member not`: Άπειρη σίγαση χωρίς λόγο.\n"
+"        - `[p]sanction 7 @member Spam`: Άπειρη σίγαση για τον λόγο \"Spam\".\n"
+"        - `[p]sanction 7 @member Advertising`: Άπειρη σίγαση για τον λόγο \"Advertising\".\n"
+"        "
+
+#: simplesanction\simplesanction.py:498
+#, docstring
+msgid "\n"
+"         - 👊 Mute a member in this channel.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 8 @member not`: Infinite mute for no reason.\n"
+"        - `[p]sanction 8 @member Spam`: Infinite mute for the reason \"Spam\".\n"
+"        - `[p]sanction 8 @member Advertising`: Infinite mute for the reason \"Advertising\".\n"
+"        "
+msgstr "\n"
+"         - 👊 Σίγαση ενός μέλους σε αυτό το κανάλι.\n\n"
+"        Παραδείγματα:\n"
+"        - `[p]sanction 8 @member not`: Άπειρη σίγαση χωρίς λόγο.\n"
+"        - `[p]sanction 8 @member Spam`: Άπειρη σίγαση για τον λόγο \"Spam\".\n"
+"        - `[p]sanction 8 @member Advertising`: Άπειρη σίγαση για τον λόγο \"Advertising\".\n"
+"        "
+
+#: simplesanction\simplesanction.py:534
+#, docstring
+msgid "\n"
+"         - ⏳ TempMute a member in all channels, including voice channels.\n\n"
+"        You can set a timed mute by providing a valid time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 9 @member 30m not`: 30 minutes mute for no reason.\n"
+"        - `[p]sanction 9 @member 5h Spam`: 5 hours mute for the reason \"Spam\".\n"
+"        - `[p]sanction 9 @member 3d Advertising`: 3 days mute for the reason \"Advertising\".\n"
+"        "
+msgstr "\n"
+"         - ⏳ TempMute ένα μέλος σε όλα τα κανάλια, συμπεριλαμβανομένων των φωνητικών καναλιών.\n\n"
+"        Μπορείτε να ορίσετε μια χρονομετρημένη σίγαση παρέχοντας έναν έγκυρο χρόνο πριν από την αιτία.\n\n"
+"        Παραδείγματα:\n"
+"        - `[p]sanction 9 @member 30m not`: 30 λεπτά σίγασης χωρίς λόγο.\n"
+"        - `[p]sanction 9 @member 5h Spam`: 5 ώρες σίγασης για τον λόγο \"Spam\".\n"
+"        - `[p]sanction 9 @member 3d Advertising`: 3 ημέρες σίγαση για τον λόγο \"Διαφήμιση\".\n"
+"        "
+
+#: simplesanction\simplesanction.py:572
+#, docstring
+msgid "\n"
+"         - ⌛ TempMute a member in this channel.\n\n"
+"        You can set a timed mute by providing a valid time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 10 @member 30m not`: 30 minutes mute for no reason.\n"
+"        - `[p]sanction 10 @member 5h Spam`: 5 hours mute for the reason \"Spam\".\n"
+"        - `[p]sanction 10 @member 3d Advertising`: 3 days mute for the reason \"Advertising\".\n"
+"        "
+msgstr "\n"
+"         - ⌛ Προσωρινή σίγαση ενός μέλους σε αυτό το κανάλι.\n\n"
+"        Μπορείτε να ορίσετε μια χρονομετρημένη σίγαση παρέχοντας μια έγκυρη ώρα πριν από την αιτία.\n\n"
+"        Παραδείγματα:\n"
+"        - `[p]sanction 10 @member 30m not`: 30 λεπτά σίγασης χωρίς λόγο.\n"
+"        - `[p]sanction 10 @member 5h Spam`: 5 ώρες σίγασης για τον λόγο \"Spam\".\n"
+"        - `[p]sanction 10 @member 3d Advertising`: 3 ημέρες σίγασης για τον λόγο \"Διαφήμιση\".\n"
+"        "
+
+#: simplesanction\simplesanction.py:614 simplesanction\types.py:89
+#: simplesanction\types.py:103 simplesanction\types.py:146
+#: simplesanction\types.py:151
+msgid "The reason was not given."
+msgstr "Ο λόγος δεν δόθηκε."
+
+#: simplesanction\simplesanction.py:618 simplesanction\view.py:99
+msgid "Sanction Member"
+msgstr "Κυρώσεις Μέλος"
+
+#: simplesanction\simplesanction.py:619
+msgid "Which member do you want to sanction? (Type `cancel` to cancel.)"
+msgstr "Ποιο μέλος θέλετε να τιμωρήσετε; (Πληκτρολογήστε `cancel` για να ακυρώσετε.)"
+
+#: simplesanction\simplesanction.py:637 simplesanction\types.py:125
+#: simplesanction\types.py:148
+msgid "Timed out, please try again."
+msgstr "Ο χρόνος έχει λήξει, παρακαλώ προσπαθήστε ξανά."
+
+#: simplesanction\types.py:65
+msgid "The cog `{cog_required}` is not loaded. Please load it, with the command `{prefix}load {cog_required_lowered}`."
+msgstr "Το γρανάζι \"{cog_required}\" δεν έχει φορτωθεί. Παρακαλώ φορτώστε το, με την εντολή `{prefix}load {cog_required_lowered}`."
+
+#: simplesanction\types.py:82
+msgid "The sanction duration."
+msgstr "Η διάρκεια της κύρωσης."
+
+#: simplesanction\types.py:173
+msgid "This cog allows you to easily sanction a server member.\n"
+"Member mention: {member.mention} - Member ID: {member.id}"
+msgstr "Αυτό το γρανάζι σας επιτρέπει να κυρώσετε εύκολα ένα μέλος του διακομιστή.\n"
+"Αναφορά μέλους: {member.mention} - Αναγνωριστικό μέλους: {member.id}"
+
+#: simplesanction\types.py:197
+msgid "\n"
+"*The command may have failed. If so, an error will be displayed below.*"
+msgstr "\n"
+"*Η εντολή ενδέχεται να έχει αποτύχει. Αν ναι, θα εμφανιστεί ένα σφάλμα παρακάτω.*"
+
+#: simplesanction\types.py:203 simplesanction\view.py:125
+msgid "Reason:"
+msgstr "Λόγος:"
+
+#: simplesanction\types.py:208 simplesanction\types.py:214
+#: simplesanction\view.py:128
+msgid "Duration:"
+msgstr "Διάρκεια:"
+
+#: simplesanction\types.py:215
+msgid "Infinity"
+msgstr "Άπειρο"
+
+#: simplesanction\types.py:238
+msgid "This command doesn't exist."
+msgstr "Αυτή η εντολή δεν υπάρχει."
+
+#: simplesanction\types.py:243
+msgid "You can't execute this command, in this context."
+msgstr "Δεν μπορείτε να εκτελέσετε αυτή την εντολή, σε αυτό το πλαίσιο."
+
+#: simplesanction\view.py:101
+msgid "This tool allows you to easily sanction a server member.\n"
+"Member mention: {member.mention} - Member ID: {member.id}"
+msgstr "Αυτό το εργαλείο σας επιτρέπει να κυρώσετε εύκολα ένα μέλος του διακομιστή.\n"
+"Αναφορά μέλους: {member.mention} - Αναγνωριστικό μέλους: {member.id}"
+
+#: simplesanction\view.py:135
+msgid "You are using this command in Fake mode, so no action will be taken, but I will pretend it is the case."
+msgstr "Χρησιμοποιείτε αυτή την εντολή σε λειτουργία Fake, οπότε δεν θα γίνει καμία ενέργεια, αλλά θα προσποιηθώ ότι είναι έτσι."
+

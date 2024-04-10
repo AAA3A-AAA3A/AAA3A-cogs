@@ -1,0 +1,208 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:38\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/seen/locales/messages.pot\n"
+"X-Crowdin-File-ID: 150\n"
+"Language: ja_JP\n"
+
+#: seen\seen.py:24
+#, docstring
+msgid "A cog to check when a member/role/channel/category/user/guild was last active!"
+msgstr "メンバー/ロール/チャンネル/カテゴリ/ユーザー/ギルドが最後にアクティブになったのはいつなのかを確認するためのコグです！"
+
+#: seen\seen.py:944
+msgid "[This message]({message_link}) has been sent by {member_mention}."
+msgstr "[このメッセージ]({message_link})は {member_mention}によって送信されました。"
+
+#: seen\seen.py:948
+msgid "[This message]({message_link}) has been edited by {member_mention}."
+msgstr "[This message]({message_link}) has been edited by {member_mention}."
+
+#: seen\seen.py:952
+msgid "The reaction {reaction} has been added to [this message]({message_link}) by {member_mention}."
+msgstr "{member_mention}によって、[このメッセージ]({message_link}) にリアクション {reaction} が追加されました。"
+
+#: seen\seen.py:960
+msgid "The reaction {reaction} has been removed to the [this message]({message_link}) by {member_mention}."
+msgstr "リアクション {reaction} は {member_mention}によって [this message]({message_link}) に削除された。"
+
+#: seen\seen.py:992
+msgid "This {object_type} is in the ignored users list (`{prefix}seen ignoreme`)."
+msgstr "この {object_type} は無視されるユーザーリストに入っている(`{prefix}seen ignoreme`)。"
+
+#: seen\seen.py:1059
+msgid "**The user {_object.mention} was seen {seen}.**"
+msgstr "**ユーザー {_object.mention} は {seen}.** を見た。"
+
+#: seen\seen.py:1067
+msgid "**The member {_object.mention} was seen {seen}.**"
+msgstr "**メンバー {_object.mention} は {seen}.** を見た。"
+
+#: seen\seen.py:1075
+msgid "**The role {_object.mention} was seen {seen}.**"
+msgstr "{seen}** {_object.mention} を見た。"
+
+#: seen\seen.py:1083
+msgid "**The text channel {_object.mention} was seen {seen}.**"
+msgstr "**テキスト・チャンネル {_object.mention} {seen}.** を見た。"
+
+#: seen\seen.py:1091
+msgid "**The category {_object.name} was seen {seen}.**"
+msgstr "{seen}** {_object.name} というカテゴリーが見られた。"
+
+#: seen\seen.py:1099
+msgid "**The guild {_object.name} was seen {seen}.**"
+msgstr "**The guild {_object.name} was seen {seen}.**."
+
+#: seen\seen.py:1247
+#, docstring
+msgid "Check when a member was last active!"
+msgstr "メンバーが最後に活動したのはいつなのかを確認する！"
+
+#: seen\seen.py:1267
+#, docstring
+msgid "Check when a role was last active!"
+msgstr "ロールが最後にアクティブになったのはいつなのかを確認する！"
+
+#: seen\seen.py:1286
+#, docstring
+msgid "Check when a channel was last active!"
+msgstr "チャンネルが最後にアクティブになったのはいつなのかを確認する！"
+
+#: seen\seen.py:1293
+msgid "You do not have permission to view this channel."
+msgstr "このチャンネルを見る権限がありません。"
+
+#: seen\seen.py:1309
+#, docstring
+msgid "Check when a category was last active!"
+msgstr "カテゴリーが最後にアクティブになったのはいつなのかを確認する！"
+
+#: seen\seen.py:1321
+msgid "You do not have permission to view any of the channels in this category."
+msgstr "このカテゴリのチャンネルを視聴する許可はありません。"
+
+#: seen\seen.py:1338
+#, docstring
+msgid "Check when a old member was last active!"
+msgstr "旧メンバーが最後に活動したのはいつなのかを確認する！"
+
+#: seen\seen.py:1366
+#, docstring
+msgid "Check when a guild was last active!"
+msgstr "ギルドが最後にアクティブになったのはいつなのかを確認します！"
+
+#: seen\seen.py:1386
+#, docstring
+msgid "Check when a user was last active!"
+msgstr "ユーザーが最後にアクティブになったのはいつなのかを確認する！"
+
+#: seen\seen.py:1405
+#, docstring
+msgid "Check when a old user was last active!"
+msgstr "古いユーザーが最後にアクティブになったのはいつなのかを確認する！"
+
+#: seen\seen.py:1430
+#, docstring
+msgid "View a Seen Board for members/roles/channels/categories/guilds/users!\n\n"
+"        `bots` is a parameter for `members` and `users`. `include_role` and `exclude_role` are parameters for only `members`.\n"
+"        "
+msgstr "メンバー/ロール/チャンネル/カテゴリー/ギルド/ユーザー用のSeen Boardを表示します！\n\n"
+"        bot` は `members` と `users` のパラメータです。include_role`と `exclude_role`は `members` のみのパラメータです。\n"
+"        "
+
+#: seen\seen.py:1436
+msgid "You're not allowed to view the Seen board for guilds and users."
+msgstr "ギルドやユーザー向けのSeenボードの閲覧が禁止されています。"
+
+#: seen\seen.py:1451
+#, docstring
+msgid "Get Config data stats."
+msgstr "Configデータの統計情報を取得します。"
+
+#: seen\seen.py:1485
+#, docstring
+msgid "Enable or disable a listener."
+msgstr "リスナーを有効化または無効化する。"
+
+#: seen\seen.py:1491
+msgid "Listener enabled for this/these type(s)."
+msgstr "リスナーが有効になっている。"
+
+#: seen\seen.py:1493
+msgid "Listener disabled for this/these type(s)."
+msgstr "リスナーはこの/これらのタイプでは無効です。"
+
+#: seen\seen.py:1497
+#, docstring
+msgid "Asking Seen to ignore your actions."
+msgstr "Seenに自分の行動を無視するよう求める。"
+
+#: seen\seen.py:1505
+msgid "You will no longer be seen by this cog and the data I held on you have been deleted."
+msgstr "あなたはもうこの歯車には表示されず、私が保持していたあなたのデータは削除されました。"
+
+#: seen\seen.py:1512
+msgid "You'll be seen again by this cog."
+msgstr "この歯車にまた会えるだろう。"
+
+#: seen\seen.py:1517
+#, docstring
+msgid "Ignore or unignore a specific user."
+msgstr "特定のユーザーを無視または無視解除する。"
+
+#: seen\seen.py:1524
+msgid "{user.mention} ({user.id}) will no longer be seen by this cog, and their data has been deleted."
+msgstr "{user.mention} ({user.id}) はこの歯車からは見えなくなり、そのデータは削除された。"
+
+#: seen\seen.py:1533
+msgid "{user.mention} ({user.id}) will be seen again by this cog."
+msgstr "{user.mention} ({user.id})は、この歯車によって再び見られることになる。"
+
+#: seen\seen.py:1541
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "ループの状態を確認するためのエンベデッドを取得します。"
+
+#: seen\seen.py:1552
+#, docstring
+msgid "Purge Config for a specified _type or all."
+msgstr "指定された_typeまたはすべてのConfigをパージします。"
+
+#: seen\seen.py:1559
+msgid "All Seen data purged."
+msgstr "すべてのシーンのデータが消去された。"
+
+#: seen\seen.py:1571
+msgid "Seen data purged for this type."
+msgstr "このタイプでパージされたデータを見た。"
+
+#: seen\seen.py:1576
+#, docstring
+msgid "Migrate Seen from Seen by Aikaterna."
+msgstr "アイカテルナの「セーン」から「セーン」を移動。"
+
+#: seen\seen.py:1583
+msgid "Seen by Aikaterna has no data in this bot."
+msgstr "Seen by Aikaternaにこのボットのデータはありません。"
+
+#: seen\seen.py:1587
+msgid "Seen by Aikaterna use an old/new data schema version and isn't compatible with this cog actually."
+msgstr "アイカテルナが見たところでは、古い／新しいデータスキーマのバージョンを使っており、この歯車とは互換性がない。"
+
+#: seen\seen.py:1650
+msgid "Data successfully migrated from Seen by Aikaterna."
+msgstr "Seen by Aikaternaからのデータ移行に成功。"
+

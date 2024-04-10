@@ -1,0 +1,69 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:20\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/antinuke/locales/messages.pot\n"
+"X-Crowdin-File-ID: 72\n"
+"Language: ru_RU\n"
+
+#: antinuke\antinuke.py:21
+#, docstring
+msgid "A cog to remove all permissions from a person who deletes a channel!"
+msgstr "Коготь для удаления всех прав доступа у человека, удаляющего канал!"
+
+#: antinuke\antinuke.py:179
+msgid "All your roles have been taken away because you have deleted channel #{old_channel}.\n"
+"Your previous roles: {rolelist_name}"
+msgstr "Все ваши роли были удалены, потому что вы удалили канал #{old_channel}.\n"
+"Ваши предыдущие роли: {rolelist_name}"
+
+#: antinuke\antinuke.py:191
+msgid "All roles in {perp} ({perp.id}) roles have been removed as a result of the antinuke system being triggered on this server."
+msgstr "Все роли {perp} ({perp.id}) были удалены в результате срабатывания системы антинюк на этом сервере."
+
+#: antinuke\antinuke.py:200
+msgid "The user {perp} has deleted the channel #{old_channel.name}!"
+msgstr "Пользователь {perp} удалил канал #{old_channel.name}!"
+
+#: antinuke\antinuke.py:203
+msgid "To prevent him from doing anything else, I took away as many roles as my current permissions would allow.\n"
+"User mention: {perp.mention} - User ID: {perp.id}"
+msgstr "Чтобы он больше ничего не смог сделать, я убрал столько ролей, сколько позволят мои текущие права.\n"
+"Упоминание пользователя: {perp.mention} - Идентификатор пользователя: {perp.id}"
+
+#: antinuke\antinuke.py:214
+msgid "Before I intervened, the user had the following roles:"
+msgstr "До моего вмешательства пользователь имел следующие роли:"
+
+#: antinuke\antinuke.py:250
+#, docstring
+msgid "Reset number detected for a user."
+msgstr "Сброс номера, обнаруженного для пользователя."
+
+#: antinuke\antinuke.py:252
+msgid "Only the owner of this server can access these commands!"
+msgstr "Только владелец этого сервера может получить доступ к этим командам!"
+
+#: antinuke\antinuke.py:266
+msgid "All former roles of {user} ({user.id}) have been restored at the request of the server owner."
+msgstr "Все прежние роли {user} ({user.id}) были восстановлены по просьбе владельца сервера."
+
+#: antinuke\antinuke.py:270
+msgid "Restored roles for {user.name} ({user.id})."
+msgstr "Восстановление ролей для {user.name} ({user.id})."
+
+#: antinuke\antinuke.py:274
+msgid "Count reset for {user.name} ({user.id})."
+msgstr "Сброс счета для {user.name} ({user.id})."
+

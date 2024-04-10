@@ -1,0 +1,144 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:40\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/transferchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 104\n"
+"Language: ru_RU\n"
+
+#: transferchannel\transferchannel.py:24
+#: transferchannel\transferchannel.py:335
+#: transferchannel\transferchannel.py:367
+msgid "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
+msgstr "Есть {count_messages} переданных сообщений с {source.mention} на {destination.mention}."
+
+#: transferchannel\transferchannel.py:46
+#, docstring
+msgid "A cog to transfer messages from a channel to another channel, with many options!"
+msgstr "Передача сообщений с канала на другой канал, с множеством опций!"
+
+#: transferchannel\transferchannel.py:105
+msgid "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
+msgstr "Извините, я не могу прочитать содержание сообщений в {source.mention} ({source.id})."
+
+#: transferchannel\transferchannel.py:112
+msgid "I need to have all the permissions to send messages with embeds in {destination.guild.name} ({destination.guild.id})."
+msgstr "Мне необходимо иметь все права на отправку сообщений с вложениями в {destination.guild.name} ({destination.guild.id})."
+
+#: transferchannel\transferchannel.py:118
+msgid "I need to have all the permission to create webhooks in {destination.guild.name} ({destination.guild.id}). You can use embeds or text messages by adding `embeds`/`messages` to your command."
+msgstr "Мне нужно иметь все разрешения на создание веб-хуков в {destination.guild.name} ({destination.guild.id}). Вы можете использовать вставки или текстовые сообщения, добавив `embeds`/`messages` к вашей команде."
+
+#: transferchannel\transferchannel.py:161
+msgid "Sorry. I could not find any messages."
+msgstr "Извините. Я не смог найти ни одного сообщения."
+
+#: transferchannel\transferchannel.py:242
+msgid "**Author:** {message.author.mention} ({message.author.id})"
+msgstr "**Автор:** {message.author.mention} ({message.author.id})"
+
+#: transferchannel\transferchannel.py:245
+msgid "**Channel:** <#{message.channel.id}>"
+msgstr "**Канал:** <#{message.channel.id}>"
+
+#: transferchannel\transferchannel.py:246
+msgid "**Time (UTC):** {iso_format}"
+msgstr "**Время (UTC):** {iso_format}"
+
+#: transferchannel\transferchannel.py:295
+#, docstring
+msgid "Transfer all messages from a channel to another channel. This might take a long time.\n\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Передайте все сообщения из канала в другой канал. Это может занять много времени.\n\n"
+"        Помните, что передача сообщений других пользователей не соблюдает TOS.\n"
+"        "
+
+#: transferchannel\transferchannel.py:319
+#, docstring
+msgid "Transfer a specific message to another channel. This might take a long time.\n\n"
+"        Specify the message to transfer, with its ID or its link.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Передача определенного сообщения на другой канал. Это может занять много времени.\n\n"
+"        Укажите сообщение для передачи, указав его ID или ссылку.\n"
+"        Помните, что передача сообщений других пользователей не соответствует TOS.\n"
+"        "
+
+#: transferchannel\transferchannel.py:351
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the number of messages since the end of the channel.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Передача части сообщений из канала в другой канал. Это может занять много времени.\n\n"
+"        Укажите количество сообщений, прошедших с момента завершения канала.\n"
+"        Помните, что передача сообщений других пользователей не соблюдает TOS.\n"
+"        "
+
+#: transferchannel\transferchannel.py:381
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the before message (id or link) or a valid Discord snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Передача части сообщений из канала в другой канал. Это может занять много времени.\n\n"
+"        Укажите предыдущее сообщение (id или ссылку) или валидную снежинку Discord.\n"
+"        Помните, что передача сообщений других пользователей не соответствует TOS.\n"
+"        "
+
+#: transferchannel\transferchannel.py:407
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the after message (id or link) or a valid Discord snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Передача части сообщений из канала в другой канал. Это может занять много времени.\n\n"
+"        Укажите сообщение после (id или ссылку) или валидную снежинку Discord.\n"
+"        Помните, что передача сообщений других пользователей не соответствует TOS.\n"
+"        "
+
+#: transferchannel\transferchannel.py:434
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the between messages (id or link) or a valid snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Передача части сообщений из канала в другой канал. Это может занять много времени.\n\n"
+"        Укажите промежуточные сообщения (id или ссылку) или валидную снежинку.\n"
+"        Помните, что передача сообщений других пользователей не соответствует TOS.\n"
+"        "
+
+#: transferchannel\transferchannel.py:461
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the user/member (id, name or mention).\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Передача части сообщений из канала в другой канал. Это может занять много времени.\n\n"
+"        Укажите пользователя/члена (id, имя или упоминание).\n"
+"        Помните, что передача сообщений других пользователей не соответствует TOS.\n"
+"        "
+
+#: transferchannel\transferchannel.py:493
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the bool option.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Передача части сообщений из канала в другой канал. Это может занять много времени.\n\n"
+"        Укажите опцию bool.\n"
+"        Помните, что передача сообщений других пользователей не соблюдает TOS.\n"
+"        "
+

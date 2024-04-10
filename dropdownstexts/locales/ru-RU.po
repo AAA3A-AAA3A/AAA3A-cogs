@@ -1,0 +1,144 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:40\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/dropdownstexts/locales/messages.pot\n"
+"X-Crowdin-File-ID: 158\n"
+"Language: ru_RU\n"
+
+#: dropdownstexts\converters.py:80
+msgid "Dropdown Text must be an emoji, followed by a label and a text, separated by either `;`, `,`, `|`, or `-`."
+msgstr "Выпадающий текст должен быть эмодзи, за которым следует метка и текст, разделенные либо `;`, `,`, `|`, либо `-`."
+
+#: dropdownstexts\dropdownstexts.py:28
+msgid "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
+msgstr "Я должен быть автором сообщения. Вы можете использовать EmbedUtils by AAA3A для отправки одного сообщения."
+
+#: dropdownstexts\dropdownstexts.py:37
+#, docstring
+msgid "A cog to have dropdowns-texts!"
+msgstr "Коготь, чтобы иметь выпадающие тексты!"
+
+#: dropdownstexts\dropdownstexts.py:135
+msgid "This message is not in Config."
+msgstr "Это сообщение отсутствует в Config."
+
+#: dropdownstexts\dropdownstexts.py:139
+msgid "This option is not in Config."
+msgstr "Эта опция отсутствует в Config."
+
+#: dropdownstexts\dropdownstexts.py:186
+#, docstring
+msgid "Add a dropdown-text for a message."
+msgstr "Добавьте выпадающий текст для сообщения."
+
+#: dropdownstexts\dropdownstexts.py:194 dropdownstexts\dropdownstexts.py:249
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "У меня недостаточно прав на канале, где находится указанное вами сообщение.\n"
+"Мне нужны разрешения, чтобы видеть сообщения в этом канале."
+
+#: dropdownstexts\dropdownstexts.py:203
+msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Выбранный вами эмодзи кажется недействительным. Проверьте, является ли это эмодзи. Если у вас есть Nitro, возможно, вы использовали пользовательский emoji с другого сервера."
+
+#: dropdownstexts\dropdownstexts.py:210 dropdownstexts\dropdownstexts.py:268
+msgid "This message already has components."
+msgstr "В этом сообщении уже есть компоненты."
+
+#: dropdownstexts\dropdownstexts.py:214 dropdownstexts\dropdownstexts.py:272
+msgid "I can't do more than 25 dropdown-texts for one message."
+msgstr "Я не могу сделать более 25 выпадающих текстов для одного сообщения."
+
+#: dropdownstexts\dropdownstexts.py:237
+#, docstring
+msgid "Add dropdown-texts for a message."
+msgstr "Добавьте выпадающие тексты для сообщения."
+
+#: dropdownstexts\dropdownstexts.py:240
+msgid "You have not specified any valid dropdown-text."
+msgstr "Вы не указали ни одного правильного выпадающего текста."
+
+#: dropdownstexts\dropdownstexts.py:261
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Выбранный вами эмодзи кажется недопустимым. Проверьте, является ли это эмодзи. Если у вас есть Nitro, возможно, вы использовали пользовательский emoji с другого сервера."
+
+#: dropdownstexts\dropdownstexts.py:296
+#, docstring
+msgid "Remove a dropdown-text for a message.\n\n"
+"        Use `[p]dropdownstexts list <message>` to find the config identifier.\n"
+"        "
+msgstr "Удаление выпадающего текста для сообщения.\n\n"
+"        Используйте `[p]dropdownstexts list <message>`, чтобы найти идентификатор конфигурации.\n"
+"        "
+
+#: dropdownstexts\dropdownstexts.py:303 dropdownstexts\dropdownstexts.py:329
+msgid "No dropdown-texts is configured for this message."
+msgstr "Для этого сообщения не настроены выпадающие тексты."
+
+#: dropdownstexts\dropdownstexts.py:307
+msgid "I wasn't watching for this dropdown-text on this message."
+msgstr "Я не следил за этим выпадающим текстом в этом сообщении."
+
+#: dropdownstexts\dropdownstexts.py:321
+msgid "Dropdowns-buttons cleared for this message."
+msgstr "Выпадающие кнопки очищены для этого сообщения."
+
+#: dropdownstexts\dropdownstexts.py:325
+#, docstring
+msgid "Clear a dropdown-texts for a message."
+msgstr "Очистить выпадающий текст для сообщения."
+
+#: dropdownstexts\dropdownstexts.py:337
+msgid "Dropdown-texts cleared for this message."
+msgstr "Выпадающие тексты очищены для этого сообщения."
+
+#: dropdownstexts\dropdownstexts.py:342
+#, docstring
+msgid "List all dropdowns-texts of this server or display the settings for a specific one."
+msgstr "Перечислите все dropdowns-тексты этого сервера или отобразите настройки для конкретного."
+
+#: dropdownstexts\dropdownstexts.py:350
+msgid "No dropdown-text is configured for this message."
+msgstr "Для этого сообщения не настроен выпадающий текст."
+
+#: dropdownstexts\dropdownstexts.py:356
+msgid "No dropdowns-texts in this server."
+msgstr "На этом сервере нет выпадающих текстов."
+
+#: dropdownstexts\dropdownstexts.py:358
+msgid "Dropdowns Texts"
+msgstr "Тексты выпадающих окон"
+
+#: dropdownstexts\dropdownstexts.py:359
+msgid "There is {len_dropdowns_texts} dropdowns texts in this server."
+msgstr "На этом сервере есть {len_dropdowns_texts} выпадающих текстов."
+
+#: dropdownstexts\dropdownstexts.py:370
+msgid "Message Jump Link: {message_jump_link}\n"
+msgstr "Сообщение Перейти Ссылка: {message_jump_link}\n"
+
+#: dropdownstexts\dropdownstexts.py:391
+#, docstring
+msgid "Clear all dropdowns-texts for a guild."
+msgstr "Очистить все выпадающие тексты для гильдии."
+
+#: dropdownstexts\dropdownstexts.py:393
+msgid "All dropdowns-texts purged."
+msgstr "Все выпадающие тексты очищены."
+
+#: dropdownstexts\dropdownstexts.py:425
+msgid "Select an option."
+msgstr "Выберите вариант."
+

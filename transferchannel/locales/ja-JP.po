@@ -1,0 +1,144 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:38\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/transferchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 104\n"
+"Language: ja_JP\n"
+
+#: transferchannel\transferchannel.py:24
+#: transferchannel\transferchannel.py:335
+#: transferchannel\transferchannel.py:367
+msgid "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
+msgstr "{source.mention} から {destination.mention}へ、 {count_messages} のメッセージが転送されています。"
+
+#: transferchannel\transferchannel.py:46
+#, docstring
+msgid "A cog to transfer messages from a channel to another channel, with many options!"
+msgstr "あるチャンネルから別のチャンネルにメッセージを転送するための歯車で、多くのオプションがある！"
+
+#: transferchannel\transferchannel.py:105
+msgid "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
+msgstr "申し訳ありませんが、 {source.mention} ({source.id}) のメッセージの内容は読めません。"
+
+#: transferchannel\transferchannel.py:112
+msgid "I need to have all the permissions to send messages with embeds in {destination.guild.name} ({destination.guild.id})."
+msgstr "{destination.guild.name} ({destination.guild.id}) の埋め込みメッセージを送信するためのすべてのパーミッションが必要です。"
+
+#: transferchannel\transferchannel.py:118
+msgid "I need to have all the permission to create webhooks in {destination.guild.name} ({destination.guild.id}). You can use embeds or text messages by adding `embeds`/`messages` to your command."
+msgstr "{destination.guild.name} ({destination.guild.id}) でウェブフックを作成するすべての権限が必要です。embeds`/`messages`をコマンドに追加することで、embedsやテキストメッセージを使用することができます。"
+
+#: transferchannel\transferchannel.py:161
+msgid "Sorry. I could not find any messages."
+msgstr "すみません。メッセージが見つかりませんでした。"
+
+#: transferchannel\transferchannel.py:242
+msgid "**Author:** {message.author.mention} ({message.author.id})"
+msgstr "** 著者:** {message.author.mention} ({message.author.id})"
+
+#: transferchannel\transferchannel.py:245
+msgid "**Channel:** <#{message.channel.id}>"
+msgstr "**チャンネル:** ＜#{message.channel.id}＞。"
+
+#: transferchannel\transferchannel.py:246
+msgid "**Time (UTC):** {iso_format}"
+msgstr "**Time (UTC):** {iso_format}"
+
+#: transferchannel\transferchannel.py:295
+#, docstring
+msgid "Transfer all messages from a channel to another channel. This might take a long time.\n\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "あるチャンネルから別のチャンネルにすべてのメッセージを転送する。これには長い時間がかかるかもしれません。\n\n"
+"        他のユーザーのメッセージを転送することはTOSを尊重しないことを忘れないでください。\n"
+"        "
+
+#: transferchannel\transferchannel.py:319
+#, docstring
+msgid "Transfer a specific message to another channel. This might take a long time.\n\n"
+"        Specify the message to transfer, with its ID or its link.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "特定のメッセージを別のチャンネルに転送する。これには長い時間がかかるかもしれない。\n\n"
+"        転送するメッセージをIDかリンクで指定してください。\n"
+"        他のユーザーのメッセージを転送することはTOSを尊重しないことを忘れないでください。\n"
+"        "
+
+#: transferchannel\transferchannel.py:351
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the number of messages since the end of the channel.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "あるチャンネルから別のチャンネルにメッセージの一部を転送する。これには長い時間がかかるかもしれない。\n\n"
+"        チャネルの終了時点からのメッセージ数を指定してください。\n"
+"        他のユーザーのメッセージを転送することは TOS に反することを忘れないでください。\n"
+"        "
+
+#: transferchannel\transferchannel.py:381
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the before message (id or link) or a valid Discord snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "あるチャンネルから別のチャンネルにメッセージの一部を転送する。これは時間がかかるかもしれません。\n\n"
+"        転送前のメッセージ（idまたはリンク）または有効なDiscord snowflakeを指定してください。\n"
+"        他のユーザーのメッセージを転送することはTOSを尊重しないことを忘れないでください。\n"
+"        "
+
+#: transferchannel\transferchannel.py:407
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the after message (id or link) or a valid Discord snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "あるチャンネルから別のチャンネルにメッセージの一部を転送する。これは時間がかかるかもしれません。\n\n"
+"        転送後のメッセージ（idまたはリンク）または有効なDiscordのsnowflakeを指定してください。\n"
+"        他のユーザーのメッセージを転送することはTOSを尊重しないことを忘れないでください。\n"
+"        "
+
+#: transferchannel\transferchannel.py:434
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the between messages (id or link) or a valid snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "あるチャンネルから別のチャンネルにメッセージの一部を転送する。これには時間がかかるかもしれない。\n\n"
+"        間のメッセージ (id または link) または有効なスノーフレークを指定してください。\n"
+"        他のユーザのメッセージを転送することは TOS を無視することを忘れないでください。\n"
+"        "
+
+#: transferchannel\transferchannel.py:461
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the user/member (id, name or mention).\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "あるチャンネルから別のチャンネルにメッセージの一部を転送する。これには長い時間がかかるかもしれない。\n\n"
+"        ユーザー/メンバー (ID、名前、言及) を指定してください。\n"
+"        他のユーザーのメッセージを転送することはTOSを尊重しないことを忘れないでください。\n"
+"        "
+
+#: transferchannel\transferchannel.py:493
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the bool option.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "あるチャンネルから別のチャンネルにメッセージの一部を転送する。これには時間がかかるかもしれない。\n\n"
+"        bool オプションを指定してください。\n"
+"        他のユーザのメッセージを転送することは TOS に反することを忘れないでください。\n"
+"        "
+

@@ -1,0 +1,84 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:40\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/getdocs/locales/messages.pot\n"
+"X-Crowdin-File-ID: 183\n"
+"Language: ru_RU\n"
+
+#: getdocs\getdocs.py:220 getdocs\getdocs.py:349 getdocs\getdocs.py:411
+msgid "Please provide a valid documentations source."
+msgstr "Пожалуйста, укажите достоверный источник документации."
+
+#: getdocs\getdocs.py:231
+#, docstring
+msgid "A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."
+msgstr "Ког для получения и отображения некоторых документов в Discord! Используйте `[p]listsources`, чтобы получить список всех доступных источников."
+
+#: getdocs\getdocs.py:366
+msgid "Documentations cache is not yet built."
+msgstr "Кэш документации еще не создан."
+
+#: getdocs\getdocs.py:422
+msgid "No results found."
+msgstr "Результаты не найдены."
+
+#: getdocs\getdocs.py:574
+#, docstring
+msgid "\n"
+"        Enable Documentations source(s).\n"
+"        "
+msgstr "\n"
+"        Включить источник(и) документации.\n"
+"        "
+
+#: getdocs\getdocs.py:581
+msgid "The source `{source}` is already enabled."
+msgstr "Источник `{source}` уже включен."
+
+#: getdocs\getdocs.py:585 getdocs\getdocs.py:614
+msgid "The source `{source}` doesn't exist."
+msgstr "Источник `{source}` не существует."
+
+#: getdocs\getdocs.py:603
+#, docstring
+msgid "\n"
+"        Disable Documentations source(s).\n"
+"        "
+msgstr "\n"
+"        Отключите источник(и) документации.\n"
+"        "
+
+#: getdocs\getdocs.py:610
+msgid "The source `{source}` is already disabled."
+msgstr "Источник `{source}` уже отключен."
+
+#: getdocs\getdocs.py:621
+#, docstring
+msgid "\n"
+"        Show stats about all documentations sources.\n"
+"        "
+msgstr "\n"
+"        Показать статистику по всем источникам документации.\n"
+"        "
+
+#: getdocs\getdocs.py:655
+#, docstring
+msgid "Get an embed to check loops status."
+msgstr "Получите вставку для проверки состояния петель."
+
+#: getdocs\getdocs.py:1735
+msgid "RTFM caching isn't finished."
+msgstr "Кэширование RTFM не завершено."
+

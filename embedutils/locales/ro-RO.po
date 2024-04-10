@@ -1,0 +1,278 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:41\n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ro\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/embedutils/locales/messages.pot\n"
+"X-Crowdin-File-ID: 314\n"
+"Language: ro_RO\n"
+
+#: embedutils\converters.py:63 embedutils\converters.py:78
+msgid "This doesn't seem to be properly formatted embed {conversion_type}. Refer to the link on `{ctx.clean_prefix}help {ctx.command.qualified_name}`."
+msgstr "Acest lucru nu pare a fi formatat corespunzător embed {conversion_type}. Consultați linkul de pe `{ctx.clean_prefix}help {ctx.command.qualified_name}`."
+
+#: embedutils\converters.py:90
+msgid "JSON Parse Error"
+msgstr "Eroare JSON Parse Error"
+
+#: embedutils\converters.py:101
+msgid "YAML Parse Error"
+msgstr "Eroare YAML Parse Error"
+
+#: embedutils\converters.py:111
+msgid "The `content` field is not supported for this command."
+msgstr "Câmpul `content` nu este acceptat pentru această comandă."
+
+#: embedutils\converters.py:125
+msgid "Embed Parse Error"
+msgstr "Eroare de analiză Embed Parse"
+
+#: embedutils\converters.py:130
+msgid "Embed size exceeds Discord limit of 6000 characters ({length})."
+msgstr "Mărimea mesajului depășește limita Discord de 6000 de caractere ({length})."
+
+#: embedutils\converters.py:142 embedutils\embedutils.py:102
+#: embedutils\embedutils.py:135 embedutils\embedutils.py:167
+#: embedutils\embedutils.py:202 embedutils\embedutils.py:233
+#: embedutils\embedutils.py:264 embedutils\embedutils.py:307
+#: embedutils\embedutils.py:414 embedutils\embedutils.py:505
+#: embedutils\embedutils.py:682 embedutils\embedutils.py:738
+msgid "Embed Send Error"
+msgstr "Înscrieți trimiteți eroare"
+
+#: embedutils\converters.py:155
+msgid "Use `{ctx.prefix}help {ctx.command.qualified_name}` to see an example."
+msgstr "Utilizați `{ctx.prefix}help {ctx.command.qualified_name}` pentru a vedea un exemplu."
+
+#: embedutils\converters.py:195
+msgid "Embed limit reached ({limit})."
+msgstr "Limita de încorporare a fost atinsă ({limit})."
+
+#: embedutils\converters.py:200
+msgid "Failed to convert input into embeds."
+msgstr "Nu a reușit să convertească datele de intrare în embed-uri."
+
+#: embedutils\converters.py:219
+msgid "It's not a valid channel or thread."
+msgstr "Nu este un canal sau un subiect valid."
+
+#: embedutils\converters.py:223
+msgid "I do not have permissions to send embeds in {channel.mention}."
+msgstr "Nu am permisiuni pentru a trimite embed-uri în {channel.mention}."
+
+#: embedutils\converters.py:230
+msgid "You do not have permissions to send embeds in {channel.mention}."
+msgstr "Nu aveți permisiuni pentru a trimite embed-uri în {channel.mention}."
+
+#: embedutils\converters.py:242
+msgid "I have to be the author of the message. You can use the command without providing a message to send one."
+msgstr "Eu trebuie să fiu autorul mesajului. Puteți utiliza comanda fără a furniza un mesaj pentru a trimite unul."
+
+#: embedutils\converters.py:252
+msgid "You are not allowed to edit embeds of an existing message (bot owner can set the permissions with the cog Permissions on the command `[p]embed edit`)."
+msgstr "Nu aveți permisiunea de a edita embed-urile unui mesaj existent (proprietarul bot-ului poate seta permisiunile cu ajutorul butonului Permissions din comanda `[p]embed edit`)."
+
+#: embedutils\embedutils.py:44
+#, docstring
+msgid "Create, send, and store embeds!"
+msgstr "Creați, trimiteți și stocați embed-uri!"
+
+#: embedutils\embedutils.py:112
+#, docstring
+msgid "Post embeds from valid JSON.\n\n"
+"        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Here's an example: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n"
+"        You can use an [**embeds creator**](https://embedutils.com/) to get a JSON payload.\n\n"
+"        If you provide a message, it will be edited.\n"
+"        You can use an attachment and the command `[p]embed yamlfile` will be invoked automatically.\n"
+"        "
+msgstr "Postați încorporări din JSON valid.\n\n"
+"        Acesta trebuie să fie în formatul așteptat de [**această documentație Discord**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Iată un exemplu: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n"
+"        Puteți utiliza un [**embeds creator**](https://embedutils.com/) pentru a obține o sarcină utilă JSON.\n\n"
+"        Dacă furnizați un mesaj, acesta va fi editat.\n"
+"        Puteți utiliza un atașament și comanda `[p]embed yamlfile` va fi invocată automat.\n"
+"        "
+
+#: embedutils\embedutils.py:145
+#, docstring
+msgid "Post embeds from valid YAML.\n\n"
+"        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Here's an example: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n\n"
+"        If you provide a message, it will be edited.\n"
+"        You can use an attachment and the command `[p]embed yamlfile` will be invoked automatically.\n"
+"        "
+msgstr "Postați încorporări din YAML valid.\n\n"
+"        Acesta trebuie să fie în formatul așteptat de [**această documentație Discord**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Iată un exemplu: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n\n"
+"        Dacă furnizați un mesaj, acesta va fi editat.\n"
+"        Puteți folosi un atașament și comanda `[p]embed yamlfile` va fi invocată automat.\n"
+"        "
+
+#: embedutils\embedutils.py:173
+#, docstring
+msgid "Post an embed from a valid JSON file (upload it).\n\n"
+"        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Here's an example: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n"
+"        You can use an [**embeds creator**](https://embedutils.com/) to get a JSON payload.\n\n"
+"        If you provide a message, it will be edited.\n"
+"        "
+msgstr "Postați un embed dintr-un fișier JSON valid (încărcați-l).\n\n"
+"        Acesta trebuie să fie în formatul așteptat de [**această documentație Discord**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Iată un exemplu: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n"
+"        Puteți utiliza un [**embeds creator**](https://embedutils.com/) pentru a obține o sarcină utilă JSON.\n\n"
+"        Dacă furnizați un mesaj, acesta va fi editat.\n"
+"        "
+
+#: embedutils\embedutils.py:188 embedutils\embedutils.py:219
+#: embedutils\embedutils.py:388 embedutils\embedutils.py:398
+#: embedutils\embedutils.py:478 embedutils\embedutils.py:488
+msgid "Unreadable attachment with `utf-8`."
+msgstr "Atașament ilizibil cu `utf-8`."
+
+#: embedutils\embedutils.py:208
+#, docstring
+msgid "Post an embed from a valid YAML file (upload it).\n\n"
+"        If you provide a message, it will be edited.\n"
+"        "
+msgstr "Postați o inserție dintr-un fișier YAML valid (încărcați-l).\n\n"
+"        Dacă furnizați un mesaj, acesta va fi editat.\n"
+"        "
+
+#: embedutils\embedutils.py:245
+#, docstring
+msgid "Post embeds from a GitHub/Gist/Pastebin/Hastebin link containing valid JSON.\n\n"
+"        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Here's an example: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n\n"
+"        If you provide a message, it will be edited.\n"
+"        "
+msgstr "Postați încorporări dintr-un link GitHub/Gist/Pastebin/Hastebin care conține un JSON valid.\n\n"
+"        Acesta trebuie să fie în formatul așteptat de [**această documentație Discord**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Iată un exemplu: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n\n"
+"        Dacă furnizați un mesaj, acesta va fi editat.\n"
+"        "
+
+#: embedutils\embedutils.py:275
+#, docstring
+msgid "Post embed(s) from an existing message.\n\n"
+"        The message must have at least one embed.\n"
+"        You can specify an index (starting by 0) if you want to send only one of the embeds.\n"
+"        You can include the content of the message already sent.\n\n"
+"        If you provide a message, it will be edited.\n"
+"        "
+msgstr "Postați inserții dintr-un mesaj existent.\n\n"
+"        Mesajul trebuie să aibă cel puțin un embed.\n"
+"        Puteți specifica un index (începând cu 0) dacă doriți să trimiteți doar una dintre inserții.\n"
+"        Puteți include conținutul mesajului deja trimis.\n\n"
+"        Dacă furnizați un mesaj, acesta va fi editat.\n"
+"        "
+
+#: embedutils\embedutils.py:318
+#, docstring
+msgid "Download a JSON file for a message's embed(s).\n\n"
+"        The message must have at least one embed.\n"
+"        You can specify an index (starting by 0) if you want to include only one of the embeds.\n"
+"        You can include the content of the message already sent.\n"
+"        "
+msgstr "Descărcați un fișier JSON pentru elementele încorporate ale unui mesaj.\n\n"
+"        Mesajul trebuie să aibă cel puțin o inserție.\n"
+"        Puteți specifica un index (începând cu 0) dacă doriți să includeți doar unul dintre elementele încorporate.\n"
+"        Puteți include conținutul mesajului deja trimis.\n"
+"        "
+
+#: embedutils\embedutils.py:368
+#, docstring
+msgid "Edit a message sent by [botname].\n\n"
+"        It would be better to use the `message` parameter of all the other commands.\n"
+"        "
+msgstr "Editați un mesaj trimis de [botname].\n\n"
+"        Ar fi mai bine să folosiți parametrul `message` din toate celelalte comenzi.\n"
+"        "
+
+#: embedutils\embedutils.py:450
+#, docstring
+msgid "Store an embed.\n\n"
+"        Put the name in quotes if it is multiple words.\n"
+"        The `locked` argument specifies whether the embed should be locked to mod and superior only (guild level) or bot owners only (global level).\n"
+"        "
+msgstr "Stocați un embed.\n\n"
+"        Puneți numele între ghilimele dacă este format din mai multe cuvinte.\n"
+"        Argumentul `locked` specifică dacă embed-ul trebuie să fie blocat doar pentru mod și superior (nivel de breaslă) sau doar pentru proprietarii de roboți (nivel global).\n"
+"        "
+
+#: embedutils\embedutils.py:458 embedutils\embedutils.py:539
+#: embedutils\embedutils.py:558 embedutils\embedutils.py:590
+#: embedutils\embedutils.py:622 embedutils\embedutils.py:651
+#: embedutils\embedutils.py:704
+msgid "You can't manage global stored embeds."
+msgstr "Nu puteți gestiona încorporările stocate la nivel global."
+
+#: embedutils\embedutils.py:516
+msgid "This server has reached the embed limit of {embed_limit}. You must remove an embed with `{ctx.clean_prefix}embed unstore` before you can add a new one."
+msgstr "Acest server a atins limita de încorporare a {embed_limit}. Trebuie să eliminați un embed cu `{ctx.clean_prefix}embed unstore` înainte de a putea adăuga unul nou."
+
+#: embedutils\embedutils.py:535
+#, docstring
+msgid "Remove a stored embed."
+msgstr "Îndepărtarea unei încorporări stocate."
+
+#: embedutils\embedutils.py:545 embedutils\embedutils.py:595
+#: embedutils\embedutils.py:627
+msgid "This is not a stored embed at this level."
+msgstr "Aceasta nu este o încorporare stocată la acest nivel."
+
+#: embedutils\embedutils.py:554 embedutils\embedutils.py:586
+#, docstring
+msgid "Get info about a stored embed."
+msgstr "Obține informații despre o încorporare stocată."
+
+#: embedutils\embedutils.py:564
+msgid "No stored embeds is configured at this level."
+msgstr "La acest nivel nu este configurată nicio încorporare stocată."
+
+#: embedutils\embedutils.py:568
+msgid "Global "
+msgstr "Global "
+
+#: embedutils\embedutils.py:568
+msgid "Stored Embeds"
+msgstr "Embed-uri stocate"
+
+#: embedutils\embedutils.py:618
+#, docstring
+msgid "Download a JSON file for a stored embed."
+msgstr "Descărcați un fișier JSON pentru o încorporare stocată."
+
+#: embedutils\embedutils.py:647
+#, docstring
+msgid "Post stored embeds."
+msgstr "Postați încorporări stocate."
+
+#: embedutils\embedutils.py:671 embedutils\embedutils.py:724
+msgid "`{name}` is not a stored embed at this level."
+msgstr "`{name}` nu este o încorporare stocată la acest nivel."
+
+#: embedutils\embedutils.py:700
+#, docstring
+msgid "Post stored embeds with a webhook."
+msgstr "Postați încorporări stocate cu un webhook."
+
+#: embedutils\embedutils.py:743
+#, docstring
+msgid "Migrate stored embeds from EmbedUtils by Phen."
+msgstr "Migrează embed-urile stocate din EmbedUtils by Phen."
+
+#: embedutils\embedutils.py:787
+msgid "Data successfully migrated from EmbedUtils by Phen."
+msgstr "Datele au fost migrate cu succes din EmbedUtils de către Phen."
+

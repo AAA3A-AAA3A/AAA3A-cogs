@@ -1,0 +1,58 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:23\n"
+"Last-Translator: \n"
+"Language-Team: Greek\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: el\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/draw/locales/messages.pot\n"
+"X-Crowdin-File-ID: 231\n"
+"Language: el_GR\n"
+
+#: draw\draw.py:40
+#, docstring
+msgid "A cog to make pixel arts on Discord!"
+msgstr "Ένα γρανάζι για να κάνετε pixel arts στο Discord!"
+
+#: draw\draw.py:174
+msgid "This message isn't in the cache."
+msgstr "Αυτό το μήνυμα δεν βρίσκεται στην προσωρινή μνήμη."
+
+#: draw\start_view.py:94 draw\start_view.py:103
+msgid "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`."
+msgstr "Δημιουργήστε ένα νέο πίνακα σχεδίασης με `height = {height}`, `width = {width}` και `background = {background}`."
+
+#: draw\view.py:332
+msgid "Please type all the colors you want to add. They can be either or all of:\n"
+"• The hex codes (e.g. `ff64c4` or `ff64c4ff` to include alpha) **separated by space**,\n"
+"• The RGB(A) values separated by space or comma or both (e.g. `(255 100 196)` or `(255, 100, 196, 125)`) of each color **surrounded by brackets**\n"
+"• Any emoji whose main color you want to extract (e.g. 🐸 will give 77b255)\n"
+"• Any image file (first 5 abundant colors will be extracted)."
+msgstr "Πληκτρολογήστε όλα τα χρώματα που θέλετε να προσθέσετε. Μπορούν να είναι ένα ή όλα τα εξής:\n"
+"- Οι δεκαεξαδικοί κωδικοί (π.χ. \"ff64c4\" ή \"ff64c4ff\" για να συμπεριλάβετε το άλφα) **διαχωρισμένοι με διάστημα**,\n"
+"- Οι τιμές RGB(A) χωρισμένες με διάστημα ή κόμμα ή και τα δύο (π.χ. `(255 100 196)` ή `(255, 100, 196, 125)`) του κάθε χρώματος **περιτριγυρισμένες από αγκύλες**\n"
+"- Οποιοδήποτε emoji του οποίου το κύριο χρώμα θέλετε να εξαγάγετε (π.χ. 🐸 θα δώσει 77b255)\n"
+"- Οποιοδήποτε αρχείο εικόνας (τα 5 πρώτα άφθονα χρώματα θα εξαχθούν)."
+
+#: draw\view.py:402
+msgid "Please send a message containing the emojis you want to add to your palette. E.g. `😎 I like turtles 🐢`."
+msgstr "Παρακαλούμε στείλτε ένα μήνυμα με τα emojis που θέλετε να προσθέσετε στην παλέτα σας. Π.χ. `😎 Μου αρέσουν οι χελώνες 🐢`."
+
+#: draw\view.py:809
+msgid "Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`, `A`, `10`, etc."
+msgstr "Πληκτρολογήστε το κελί στο οποίο θέλετε να μετακινήσετε τον κέρσορα. π.χ. `Α1`, `α1`, `Α10`, `Α`, `10`, κ.λπ."
+
+#: draw\view.py:938
+msgid "Please type the cells with the main colors names. One color for each line, separated from the cell by a \":\". Example: `A1:red\n"
+"B7-C9:green`."
+msgstr "Πληκτρολογήστε τα κελιά με τα ονόματα των κύριων χρωμάτων. Ένα χρώμα για κάθε γραμμή, χωρισμένο από το κελί με \":\". Παράδειγμα: `A1:κόκκινο\n"
+"B7-C9:πράσινο`."
+

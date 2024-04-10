@@ -1,0 +1,225 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:37\n"
+"Last-Translator: \n"
+"Language-Team: French\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/temproles/locales/messages.pot\n"
+"X-Crowdin-File-ID: 247\n"
+"Language: fr_FR\n"
+
+#: temproles\temproles.py:39
+#, docstring
+msgid "A cog to assign temporary roles to users, expiring after a set time!"
+msgstr "Un rouage permettant d'attribuer des rôles temporaires aux utilisateurs, expirant après une période déterminée !"
+
+#: temproles\temproles.py:166 temproles\temproles.py:250
+#: temproles\temproles.py:308 temproles\temproles.py:353
+#: temproles\temproles.py:437
+msgid "Temp Roles"
+msgstr "Rôles temporaires"
+
+#: temproles\temproles.py:167
+msgid "Temp Role {temp_role.mention} ({temp_role.id}) has been automatically unassigned from {member.mention} ({member.id})."
+msgstr "Le rôle temporaire {temp_role.mention} ({temp_role.id}) a été automatiquement désaffecté de {member.mention} ({member.id})."
+
+#: temproles\temproles.py:197
+#, docstring
+msgid "Assign/Add a TempRole to a member, for a specified duration."
+msgstr "Attribuer/Ajouter un rôle temporaire à un membre, pour une durée déterminée."
+
+#: temproles\temproles.py:206
+msgid "This role is already a TempRole of this member. Do you want to edit the duration?\n"
+"Currently, this Temp Role expires {timestamp}."
+msgstr "Ce rôle est déjà un rôle temporaire de ce membre. Voulez-vous modifier la durée ?\n"
+"Actuellement, ce rôle temporaire expire à l'adresse {timestamp}."
+
+#: temproles\temproles.py:214
+msgid "This member already has {role.mention} ({role.id})."
+msgstr "Ce membre possède déjà {role.mention} ({role.id})."
+
+#: temproles\temproles.py:220
+msgid "This role cannot be assigned due to the Discord role hierarchy."
+msgstr "Ce rôle ne peut pas être attribué en raison de la hiérarchie des rôles sur Discord."
+
+#: temproles\temproles.py:226
+msgid "You can't assign this role to this member, due to the Discord role hierarchy."
+msgstr "Vous ne pouvez pas attribuer ce rôle à ce membre, en raison de la hiérarchie des rôles sur Discord."
+
+#: temproles\temproles.py:232 temproles\temproles.py:291
+msgid "The time set is way too high, consider setting something reasonable."
+msgstr "Le délai fixé est beaucoup trop élevé, envisagez de fixer un délai raisonnable."
+
+#: temproles\temproles.py:251 temproles\temproles.py:259
+msgid "Self "
+msgstr "Autonome "
+
+#: temproles\temproles.py:252
+msgid "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {time_string}."
+msgstr "Le rôle temporaire {role.mention} ({role.id}) a été attribué à {member.mention} ({member.id}) par {author.mention} ({author.id}). Expire à {time_string}."
+
+#: temproles\temproles.py:260
+msgid "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires **in {time_string}** ({timestamp})."
+msgstr "Le rôle temporaire {role.mention} ({role.id}) a été attribué à {member.mention} ({member.id}). Expire **en {time_string}** ({timestamp})."
+
+#: temproles\temproles.py:281
+#, docstring
+msgid "Edit a TempRole for a member, for a specified duration."
+msgstr "Modifier un rôle temporaire pour un membre, pour une durée déterminée."
+
+#: temproles\temproles.py:285
+msgid "This role isn't a TempRole of this member."
+msgstr "Ce rôle n'est pas un rôle temporaire de ce membre."
+
+#: temproles\temproles.py:309
+msgid "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {time_string}."
+msgstr "Le rôle temporaire {role.mention} ({role.id}) a été modifié pour {member.mention} ({member.id}) par {author.mention} ({author.id}). Expire à {time_string}."
+
+#: temproles\temproles.py:316
+msgid "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}). Expires **in {time_string}** ({timestamp})."
+msgstr "Le rôle temporaire {role.mention} ({role.id}) a été modifié pour {member.mention} ({member.id}). Expire **en {time_string}** ({timestamp})."
+
+#: temproles\temproles.py:332
+#, docstring
+msgid "Unassign/Remove a TempRole from a member."
+msgstr "Désassigner/supprimer un rôle temporaire à un membre."
+
+#: temproles\temproles.py:336
+msgid "This role isn't a temprole of this member."
+msgstr "Ce rôle n'est pas un modèle pour ce membre."
+
+#: temproles\temproles.py:354
+msgid "TempRole {role.mention} ({role.id}) has been unassigned from {member.mention} ({member.id}) by {author.mention} ({author.id})."
+msgstr "Le rôle temporaire {role.mention} ({role.id}) a été retiré à {member.mention} ({member.id}) par {author.mention} ({author.id})."
+
+#: temproles\temproles.py:361
+msgid "Temp Role {role.mention} ({role.id}) has been unassigned from {member.mention} ({member.id})."
+msgstr "Le rôle temporaire {role.mention} ({role.id}) a été désaffecté de {member.mention} ({member.id})."
+
+#: temproles\temproles.py:376
+#, docstring
+msgid "List active Temp Roles on this server, for optional specified member and/or role."
+msgstr "Liste des rôles temporaires actifs sur ce serveur, pour le membre et/ou le rôle optionnel spécifié."
+
+#: temproles\temproles.py:379
+msgid "This member has this Temp Role."
+msgstr "Ce membre a ce rôle temporaire."
+
+#: temproles\temproles.py:381
+msgid "This member hasn't this Temp Role."
+msgstr "Ce membre n'a pas ce rôle Temp."
+
+#: temproles\temproles.py:384
+msgid "This member hasn't any Temp Roles."
+msgstr "Ce membre n'a pas de rôle temporaire."
+
+#: temproles\temproles.py:386
+msgid "This member has these Temp Roles: {temp_roles}."
+msgstr "Ce membre a ces rôles temporaires : {temp_roles}."
+
+#: temproles\temproles.py:405
+msgid "No members have this Temp Role."
+msgstr "Aucun membre n'a ce rôle temporaire."
+
+#: temproles\temproles.py:407
+msgid "These members have this Temp Role: {temp_roles_members}."
+msgstr "Ces membres ont ce rôle temporaire : {temp_roles_members}."
+
+#: temproles\temproles.py:432
+msgid "No active Temp Roles on this server."
+msgstr "Aucun rôle temporaire actif sur ce serveur."
+
+#: temproles\temproles.py:448
+#, docstring
+msgid "Set the logs channel for Temp Roles."
+msgstr "Définir le canal de journalisation pour les rôles temporaires."
+
+#: temproles\temproles.py:451
+msgid "Logs channel unset."
+msgstr "Consigne le canal non paramétré."
+
+#: temproles\temproles.py:455
+msgid "I need of the `embed_links` permission in the logs channel."
+msgstr "J'ai besoin de l'autorisation `embed_links` dans le canal logs."
+
+#: temproles\temproles.py:458
+msgid "Logs channel set."
+msgstr "Enregistre le jeu de canaux."
+
+#: temproles\temproles.py:469
+#, docstring
+msgid "Add an allowed self Temp Role.\n\n"
+"        **Parameters:**\n"
+"        - `min_time`: The minimum time for the self temp role. `none` to disable. Defaults is 1 day.\n"
+"        - `max_time`: The minimum time for the self temp role. `none` to disable. Defaults is 365 days.\n"
+"        "
+msgstr "Ajouter un rôle temporaire autorisé.\n\n"
+"        **Paramètres:**\n"
+"        - `min_time` : La durée minimale pour le rôle temporaire self. `none` pour le désactiver. La valeur par défaut est de 1 jour.\n"
+"        - `max_time` : La durée minimale pour le rôle d'intérimaire self. `none` pour le désactiver. La valeur par défaut est 365 jours.\n"
+"        "
+
+#: temproles\temproles.py:479
+msgid "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy."
+msgstr "Le rôle {role.mention} ({role.id}) ne peut pas être attribué en raison de la hiérarchie des rôles de Discord."
+
+#: temproles\temproles.py:486
+msgid "This role is already an allowed self temp role."
+msgstr "Ce rôle est déjà autorisé en tant qu'intérimaire."
+
+#: temproles\temproles.py:493
+msgid "Allowed self Temp Role added."
+msgstr "Rôle d'intérimaire autorisé ajouté."
+
+#: temproles\temproles.py:498
+#, docstring
+msgid "Remove an allowed self Temp Role."
+msgstr "Supprimer un rôle auto Temp autorisé."
+
+#: temproles\temproles.py:502
+msgid "This role isn't an allowed self temp role."
+msgstr "Ce rôle n'est pas un rôle d'intérimaire autorisé."
+
+#: temproles\temproles.py:506
+msgid "Allowed self Temp Role removed."
+msgstr "Autorisé self Temp Role supprimé."
+
+#: temproles\temproles.py:512
+#, docstring
+msgid "Assign/Add an allowed self Temp Role to yourself, for a specified duration."
+msgstr "Attribuer/Ajouter un rôle temporaire autorisé à soi-même, pour une durée déterminée."
+
+#: temproles\temproles.py:517
+msgid "This role isn't an allowed self Temp Role on this server."
+msgstr "Ce rôle n'est pas un rôle d'intérimaire autorisé sur ce serveur."
+
+#: temproles\temproles.py:525
+msgid "The time for this role must be greater than {min_time_string}."
+msgstr "La durée de ce rôle doit être supérieure à {min_time_string}."
+
+#: temproles\temproles.py:535
+msgid "The time for this role must be less than {max_time_string}."
+msgstr "Le temps consacré à ce rôle doit être inférieur à {max_time_string}."
+
+#: temproles\temproles.py:543 temproles\temproles.py:550
+#, docstring
+msgid "Unassign/Remove an allowed self Temp Role from yourself."
+msgstr "Désassigner/supprimer un rôle temporaire autorisé."
+
+#: temproles\temproles.py:545
+msgid "You can't remove this role from yourself."
+msgstr "Vous ne pouvez pas vous soustraire à ce rôle."
+
+#: temproles\temproles.py:573
+msgid "Self Temp Roles"
+msgstr "Rôles d'intérimaires"
+

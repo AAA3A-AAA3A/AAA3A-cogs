@@ -1,0 +1,144 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:38\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/transferchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 104\n"
+"Language: fi_FI\n"
+
+#: transferchannel\transferchannel.py:24
+#: transferchannel\transferchannel.py:335
+#: transferchannel\transferchannel.py:367
+msgid "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
+msgstr "Siirrettyjä viestejä on {count_messages} osoitteesta {source.mention} osoitteeseen {destination.mention}."
+
+#: transferchannel\transferchannel.py:46
+#, docstring
+msgid "A cog to transfer messages from a channel to another channel, with many options!"
+msgstr "Viestien siirtämiseen kanavalta toiselle kanavalle tarkoitettu hammasratas, jossa on monia vaihtoehtoja!"
+
+#: transferchannel\transferchannel.py:105
+msgid "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
+msgstr "Anteeksi, mutta en pysty lukemaan viestien sisältöä osoitteessa {source.mention} ({source.id})."
+
+#: transferchannel\transferchannel.py:112
+msgid "I need to have all the permissions to send messages with embeds in {destination.guild.name} ({destination.guild.id})."
+msgstr "Minun on saatava kaikki oikeudet lähettää viestejä, joissa on upotuksia osoitteessa {destination.guild.name} ({destination.guild.id})."
+
+#: transferchannel\transferchannel.py:118
+msgid "I need to have all the permission to create webhooks in {destination.guild.name} ({destination.guild.id}). You can use embeds or text messages by adding `embeds`/`messages` to your command."
+msgstr "Minun on saatava kaikki oikeudet luoda verkkokoukkuja osoitteessa {destination.guild.name} ({destination.guild.id}). Voit käyttää upotuksia tai tekstiviestejä lisäämällä komentoosi `embeds`/`messages`."
+
+#: transferchannel\transferchannel.py:161
+msgid "Sorry. I could not find any messages."
+msgstr "Olen pahoillani. En löytänyt mitään viestejä."
+
+#: transferchannel\transferchannel.py:242
+msgid "**Author:** {message.author.mention} ({message.author.id})"
+msgstr "**Tekijä:** {message.author.mention} ({message.author.id})"
+
+#: transferchannel\transferchannel.py:245
+msgid "**Channel:** <#{message.channel.id}>"
+msgstr "**Kanava:** <#{message.channel.id}>"
+
+#: transferchannel\transferchannel.py:246
+msgid "**Time (UTC):** {iso_format}"
+msgstr "**Aika (UTC):** {iso_format}"
+
+#: transferchannel\transferchannel.py:295
+#, docstring
+msgid "Transfer all messages from a channel to another channel. This might take a long time.\n\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Siirtää kaikki viestit kanavalta toiselle kanavalle. Tämä saattaa kestää kauan.\n\n"
+"        Muista, että toisten käyttäjien viestien siirtäminen ei ole TOS:n mukaista.\n"
+"        "
+
+#: transferchannel\transferchannel.py:319
+#, docstring
+msgid "Transfer a specific message to another channel. This might take a long time.\n\n"
+"        Specify the message to transfer, with its ID or its link.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Siirrä tietty viesti toiselle kanavalle. Tämä saattaa kestää kauan.\n\n"
+"        Määritä siirrettävä viesti ja sen tunnus tai linkki.\n"
+"        Muista, että toisten käyttäjien viestien siirtäminen ei noudata TOS:ia.\n"
+"        "
+
+#: transferchannel\transferchannel.py:351
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the number of messages since the end of the channel.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Siirtää osan viesteistä kanavalta toiselle kanavalle. Tämä saattaa kestää kauan.\n\n"
+"        Määritä viestien määrä kanavan päättymisen jälkeen.\n"
+"        Muista, että toisten käyttäjien viestien siirtäminen ei noudata TOS:ää.\n"
+"        "
+
+#: transferchannel\transferchannel.py:381
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the before message (id or link) or a valid Discord snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Siirtää osan viesteistä kanavalta toiselle kanavalle. Tämä saattaa kestää kauan.\n\n"
+"        Määritä edeltävä viesti (id tai linkki) tai kelvollinen Discord-lumihiutale.\n"
+"        Muista, että toisten käyttäjien viestien siirtäminen ei noudata TOS:ia.\n"
+"        "
+
+#: transferchannel\transferchannel.py:407
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the after message (id or link) or a valid Discord snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Siirtää osan viesteistä kanavalta toiselle kanavalle. Tämä saattaa kestää kauan.\n\n"
+"        Määritä jälkiviesti (id tai linkki) tai kelvollinen Discord-lumihiutale.\n"
+"        Muista, että toisten käyttäjien viestien siirtäminen ei noudata TOS:ia.\n"
+"        "
+
+#: transferchannel\transferchannel.py:434
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the between messages (id or link) or a valid snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Siirtää osan viesteistä kanavalta toiselle kanavalle. Tämä saattaa kestää kauan.\n\n"
+"        Määritä viestien väliset viestit (id tai linkki) tai kelvollinen lumihiutale.\n"
+"        Muista, että toisten käyttäjien viestien siirtäminen ei noudata TOS:ia.\n"
+"        "
+
+#: transferchannel\transferchannel.py:461
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the user/member (id, name or mention).\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Siirtää osan viesteistä kanavalta toiselle kanavalle. Tämä saattaa kestää kauan.\n\n"
+"        Määritä käyttäjä/jäsen (id, nimi tai maininta).\n"
+"        Muista, että muiden käyttäjien viestien siirtäminen ei noudata TOS:ia.\n"
+"        "
+
+#: transferchannel\transferchannel.py:493
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the bool option.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Siirtää osan viesteistä kanavalta toiselle kanavalle. Tämä saattaa kestää kauan.\n\n"
+"        Määritä bool-vaihtoehto.\n"
+"        Muista, että toisten käyttäjien viestien siirtäminen ei noudata TOS:ää.\n"
+"        "
+

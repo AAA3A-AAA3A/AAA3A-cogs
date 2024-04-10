@@ -1,0 +1,88 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-08-22 14:22+0200\n"
+"PO-Revision-Date: 2023-08-22 12:29\n"
+"Last-Translator: \n"
+"Language-Team: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: nl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/acronymgame/locales/messages.pot\n"
+"X-Crowdin-File-ID: 225\n"
+"Language: nl_NL\n"
+
+#: acronymgame\acronymgame.py:21
+#, docstring
+msgid "A cog to play a random match of Acrononym game, with Modals!"
+msgstr "Een radertje om een willekeurig Acrononiem-spel te spelen, met Modals!"
+
+#: acronymgame\view.py:39
+msgid "You have already joined this game, with `{answer}` answer."
+msgstr "Je hebt al meegedaan aan dit spel, met `{answer}` als antwoord."
+
+#: acronymgame\view.py:47
+msgid "Sorry, maximum 20 players."
+msgstr "Sorry, maximaal 20 spelers."
+
+#: acronymgame\view.py:52
+msgid "Sorry, the vote has already started."
+msgstr "Sorry, de stemming is al begonnen."
+
+#: acronymgame\view.py:58
+msgid "Sorry, the number of words in your answer must be {len_words}."
+msgstr "Sorry, het aantal woorden in je antwoord moet {len_words} zijn."
+
+#: acronymgame\view.py:67
+msgid "Sorry, the initial of each word in your answer must be each letter of the acronym ({acronym})."
+msgstr "Sorry, de beginletter van elk woord in je antwoord moet elke letter van het acroniem zijn ({acronym})."
+
+#: acronymgame\view.py:79
+msgid "Join the game by clicking on the button below and entering your acronym. Maximum 20 players.\n"
+msgstr "Doe mee door op de knop hieronder te klikken en je afkorting in te voeren. Maximaal 20 spelers.\n"
+
+#: acronymgame\view.py:84
+msgid "Game joined with `{answer}` answer."
+msgstr "Spel verbonden met `{answer}` antwoord."
+
+#: acronymgame\view.py:131
+msgid "Join the game by clicking on the button below and entering your acronym. Maximum 20 players."
+msgstr "Doe mee door op de knop hieronder te klikken en je afkorting in te voeren. Maximaal 20 spelers."
+
+#: acronymgame\view.py:146
+msgid "At least three players are needed to play."
+msgstr "Er zijn minstens drie spelers nodig om te spelen."
+
+#: acronymgame\view.py:155
+msgid "Use the dropdown below to vote for the best answer for the random acronym. All guild members can vote.\n"
+msgstr "Gebruik de dropdown hieronder om te stemmen op het beste antwoord voor de willekeurige afkorting. Alle gildeleden kunnen stemmen.\n"
+
+#: acronymgame\view.py:168
+msgid "No vote given."
+msgstr "Geen stem uitgebracht."
+
+#: acronymgame\view.py:198
+msgid "Here is the leaderboard for this game:"
+msgstr "Hier is het klassement voor dit spel:"
+
+#: acronymgame\view.py:204
+msgid "Winner{s}: {winners}!"
+msgstr "Winnaar{s}: {winners}!"
+
+#: acronymgame\view.py:241
+msgid "You have already voted in this game."
+msgstr "Je hebt al gestemd in dit spel."
+
+#: acronymgame\view.py:247
+msgid "You can't vote for yourself."
+msgstr "Je kunt niet op jezelf stemmen."
+
+#: acronymgame\view.py:253
+msgid "Vote given for answer {num}."
+msgstr "Stem gegeven voor antwoord {num}."
+

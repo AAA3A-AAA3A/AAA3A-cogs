@@ -1,0 +1,240 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:37\n"
+"Last-Translator: \n"
+"Language-Team: Greek\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: el\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/rolesbuttons/locales/messages.pot\n"
+"X-Crowdin-File-ID: 96\n"
+"Language: el_GR\n"
+
+#: rolesbuttons\converters.py:82
+msgid "The {role.mention} role is a bot integration role and cannot be assigned or removed."
+msgstr "Ο ρόλος {role.mention} είναι ένας ρόλος ενσωμάτωσης bot και δεν μπορεί να εκχωρηθεί ή να αφαιρεθεί."
+
+#: rolesbuttons\converters.py:88
+msgid "The {role.mention} role is an integration role and cannot be assigned or removed."
+msgstr "Ο ρόλος {role.mention} είναι ρόλος ολοκλήρωσης και δεν μπορεί να εκχωρηθεί ή να αφαιρεθεί."
+
+#: rolesbuttons\converters.py:94
+msgid "The {role.mention} role is a premium subscriber role and can only be assigned or removed by Nitro boosting the server."
+msgstr "Ο ρόλος {role.mention} είναι ένας ρόλος συνδρομητή premium και μπορεί να εκχωρηθεί ή να αφαιρεθεί μόνο από το Nitro boosting του διακομιστή."
+
+#: rolesbuttons\converters.py:100
+msgid "The {role.mention} role is higher than my highest role in the discord hierarchy."
+msgstr "Ο ρόλος {role.mention} είναι υψηλότερος από τον υψηλότερο ρόλο μου στην ιεραρχία της διχόνοιας."
+
+#: rolesbuttons\converters.py:106
+msgid "The {role.mention} role is higher than your highest role in the discord hierarchy."
+msgstr "Ο ρόλος {role.mention} είναι υψηλότερος από τον υψηλότερο ρόλο σας στην ιεραρχία της διχόνοιας."
+
+#: rolesbuttons\converters.py:124
+msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
+msgstr "Emoji Ο ρόλος πρέπει να είναι ένα emoji ακολουθούμενο από έναν ρόλο χωρισμένο είτε με `;`, `,`, `|`, ή `-`."
+
+#: rolesbuttons\rolesbuttons.py:29
+msgid "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
+msgstr "Εγώ πρέπει να είμαι ο συντάκτης του μηνύματος. Μπορείτε να χρησιμοποιήσετε το EmbedUtils by AAA3A για να στείλετε ένα."
+
+#: rolesbuttons\rolesbuttons.py:38
+#, docstring
+msgid "A cog to have roles-buttons!"
+msgstr "Ένα γρανάζι να έχει ρόλους-κουμπιά!"
+
+#: rolesbuttons\rolesbuttons.py:131
+msgid "This message is not in Config."
+msgstr "Αυτό το μήνυμα δεν είναι στο Config."
+
+#: rolesbuttons\rolesbuttons.py:134
+msgid "This button is not in Config."
+msgstr "Αυτό το κουμπί δεν είναι στη Ρύθμιση."
+
+#: rolesbuttons\rolesbuttons.py:142
+msgid "The role ({role_id}) I have to give you no longer exists. Please notify an administrator of this server."
+msgstr "Ο ρόλος ({role_id}) που πρέπει να σας δώσω δεν υπάρχει πλέον. Παρακαλώ ενημερώστε έναν διαχειριστή αυτού του διακομιστή."
+
+#: rolesbuttons\rolesbuttons.py:161
+msgid "Role-button of {interaction.message.id} in {interaction.channel.id}."
+msgstr "Ρόλος-κουμπί του {interaction.message.id} στο {interaction.channel.id}."
+
+#: rolesbuttons\rolesbuttons.py:167
+msgid "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
+msgstr "Δεν μπόρεσα να σας προσθέσω τον ρόλο {role.mention} ({role.id}). Παρακαλώ ενημερώστε έναν διαχειριστή αυτού του διακομιστή."
+
+#: rolesbuttons\rolesbuttons.py:175
+msgid "You now have the {role.mention} ({role.id}) role."
+msgstr "Έχετε τώρα το ρόλο {role.mention} ({role.id})."
+
+#: rolesbuttons\rolesbuttons.py:186
+msgid "I could not remove the role {role.mention} ({role.id}) role from you. Please notify an administrator of this server."
+msgstr "Δεν μπόρεσα να αφαιρέσω το ρόλο {role.mention} ({role.id}) από εσάς. Παρακαλώ ενημερώστε έναν διαχειριστή αυτού του διακομιστή."
+
+#: rolesbuttons\rolesbuttons.py:194
+msgid "You no longer have the role {role.mention} ({role.id})."
+msgstr "Δεν έχετε πλέον τον ρόλο {role.mention} ({role.id})."
+
+#: rolesbuttons\rolesbuttons.py:244
+#, docstring
+msgid "Add a role-button for a message.\n\n"
+"        (Use the number for the color.)\n"
+"        • `primary`: 1\n"
+"        • `secondary`: 2\n"
+"        • `success`: 3\n"
+"        • `danger`: 4\n"
+"        # Aliases\n"
+"        • `blurple`: 1\n"
+"        • `grey`: 2\n"
+"        • `gray`: 2\n"
+"        • `green`: 3\n"
+"        • `red`: 4\n"
+"        "
+msgstr "Προσθέστε ένα κουμπί ρόλου για ένα μήνυμα.\n\n"
+"        (Χρησιμοποιήστε τον αριθμό για το χρώμα.)\n"
+"        - `primary`: 1\n"
+"        - \"δευτερεύων\": 2\n"
+"        - \"επιτυχία\": 3\n"
+"        - \"κίνδυνος\": 4\n"
+"        # Ψευδώνυμα\n"
+"        - `blurple`: 1\n"
+"        - `grey`: 2\n"
+"        - `gray`: 2\n"
+"        - `green`: 3\n"
+"        - `red`: 4\n"
+"        "
+
+#: rolesbuttons\rolesbuttons.py:265 rolesbuttons\rolesbuttons.py:328
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "Δεν έχω επαρκή δικαιώματα στο κανάλι στο οποίο βρίσκεται το μήνυμα που προσδιορίσατε.\n"
+"Χρειάζομαι τα δικαιώματα για να δω τα μηνύματα σε αυτό το κανάλι."
+
+#: rolesbuttons\rolesbuttons.py:271
+msgid "You have to specify at least an emoji or a label."
+msgstr "Πρέπει να προσδιορίσετε τουλάχιστον ένα emoji ή μια ετικέτα."
+
+#: rolesbuttons\rolesbuttons.py:278
+msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Το emoji που επιλέξατε φαίνεται άκυρο. Ελέγξτε ότι πρόκειται για emoji. Αν έχετε Nitro, μπορεί να έχετε χρησιμοποιήσει ένα προσαρμοσμένο emoji από άλλο διακομιστή."
+
+#: rolesbuttons\rolesbuttons.py:285 rolesbuttons\rolesbuttons.py:347
+msgid "This message already has components."
+msgstr "Αυτό το μήνυμα έχει ήδη στοιχεία."
+
+#: rolesbuttons\rolesbuttons.py:289 rolesbuttons\rolesbuttons.py:351
+msgid "I can't do more than 25 roles-buttons for one message."
+msgstr "Δεν μπορώ να κάνω περισσότερους από 25 ρόλους-κουμπιά για ένα μήνυμα."
+
+#: rolesbuttons\rolesbuttons.py:313
+#, docstring
+msgid "Add roles-buttons for a message.\n\n"
+"        ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```\n"
+"        "
+msgstr "Προσθήκη ρόλων-κουμπιών για ένα μήνυμα.\n\n"
+"        ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```\n"
+"        "
+
+#: rolesbuttons\rolesbuttons.py:319
+msgid "You have not specified any valid role-button."
+msgstr "Δεν έχετε καθορίσει κανένα έγκυρο κουμπί-ρόλο."
+
+#: rolesbuttons\rolesbuttons.py:340
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Ένα emoji που επιλέξατε φαίνεται άκυρο. Ελέγξτε ότι πρόκειται για emoji. Αν έχετε Nitro, μπορεί να έχετε χρησιμοποιήσει ένα προσαρμοσμένο emoji από άλλο διακομιστή."
+
+#: rolesbuttons\rolesbuttons.py:376
+#, docstring
+msgid "Choose a mode for the roles-buttons of a message.\n\n"
+"        Type `add_or_remove`:\n"
+"        - Users get the role if they do not already have it, or lose it.\n"
+"        Type `add_only`:\n"
+"        - Users can only get the role, but only manual action will remove it.\n"
+"        Type `remove_only`:\n"
+"        - Users can only lose a role, and will not be able to get it again without a manual action.\n"
+"        Type `replace`:\n"
+"        - Same as add_or_remove, but the roles from this message will be mutually exclusive, and getting one will remove the previous.\n"
+"        "
+msgstr "Επιλέξτε μια λειτουργία για τους ρόλους-κουμπιά ενός μηνύματος.\n\n"
+"        Τύπος `add_or_remove`:\n"
+"        - Οι χρήστες αποκτούν το ρόλο αν δεν τον έχουν ήδη, ή τον χάνουν.\n"
+"        Τύπος `add_only`:\n"
+"        - Οι χρήστες μπορούν μόνο να αποκτήσουν το ρόλο, αλλά μόνο χειροκίνητη ενέργεια θα τον αφαιρέσει.\n"
+"        Τύπος `remove_only`:\n"
+"        - Οι χρήστες μπορούν μόνο να χάσουν έναν ρόλο και δεν θα μπορούν να τον αποκτήσουν ξανά χωρίς χειροκίνητη ενέργεια.\n"
+"        Τύπος `replace`:\n"
+"        - Το ίδιο με το add_or_remove, αλλά οι ρόλοι από αυτό το μήνυμα θα είναι αμοιβαία αποκλειόμενοι και η απόκτηση ενός θα καταργήσει τον προηγούμενο.\n"
+"        "
+
+#: rolesbuttons\rolesbuttons.py:390
+msgid "No role-button is configured for this message. e"
+msgstr "Δεν έχει ρυθμιστεί κουμπί ρόλου για αυτό το μήνυμα. e"
+
+#: rolesbuttons\rolesbuttons.py:395
+msgid "Mode set for the roles-buttons of this message."
+msgstr "Λειτουργία που έχει οριστεί για τους ρόλους-κουμπιά αυτού του μηνύματος."
+
+#: rolesbuttons\rolesbuttons.py:401
+#, docstring
+msgid "Remove a role-button for a message.\n\n"
+"        Use `[p]rolesbuttons list <message>` to find the config identifier.\n"
+"        "
+msgstr "Αφαίρεση ενός κουμπιού ρόλου για ένα μήνυμα.\n\n"
+"        Χρησιμοποιήστε `[p]rolesbuttons list <message>` για να βρείτε το αναγνωριστικό παραμέτρων.\n"
+"        "
+
+#: rolesbuttons\rolesbuttons.py:408 rolesbuttons\rolesbuttons.py:437
+#: rolesbuttons\rolesbuttons.py:459
+msgid "No role-button is configured for this message."
+msgstr "Δεν έχει ρυθμιστεί κουμπί ρόλου για αυτό το μήνυμα."
+
+#: rolesbuttons\rolesbuttons.py:412
+msgid "I wasn't watching for this button on this message."
+msgstr "Δεν πρόσεχα αυτό το κουμπί σε αυτό το μήνυμα."
+
+#: rolesbuttons\rolesbuttons.py:429 rolesbuttons\rolesbuttons.py:446
+msgid "Roles-buttons cleared for this message."
+msgstr "Οι ρόλοι-κουμπιά καθαρίστηκαν για αυτό το μήνυμα."
+
+#: rolesbuttons\rolesbuttons.py:433
+#, docstring
+msgid "Clear all roles-buttons for a message."
+msgstr "Καθαρισμός όλων των ρόλων-κουμπιών για ένα μήνυμα."
+
+#: rolesbuttons\rolesbuttons.py:451
+#, docstring
+msgid "List all roles-buttons of this server or display the settings for a specific one."
+msgstr "Λίστα όλων των ρόλων-κουμπιών αυτού του διακομιστή ή εμφάνιση των ρυθμίσεων για έναν συγκεκριμένο."
+
+#: rolesbuttons\rolesbuttons.py:465
+msgid "No roles-buttons in this server."
+msgstr "Δεν υπάρχουν ρόλοι-κουμπιά σε αυτόν τον διακομιστή."
+
+#: rolesbuttons\rolesbuttons.py:467
+msgid "Roles Buttons"
+msgstr "Κουμπιά ρόλων"
+
+#: rolesbuttons\rolesbuttons.py:468
+msgid "There is {len_roles_buttons} roles buttons in this server."
+msgstr "Υπάρχουν {len_roles_buttons} κουμπιά ρόλων σε αυτόν τον διακομιστή."
+
+#: rolesbuttons\rolesbuttons.py:478
+msgid "Message Jump Link: {message_jump_link}\n"
+msgstr "Σύνδεσμος άλματος μηνύματος: {message_jump_link}\n"
+
+#: rolesbuttons\rolesbuttons.py:499
+#, docstring
+msgid "Clear all roles-buttons for a guild."
+msgstr "Καθαρίστε όλους τους ρόλους-κουμπιά για μια συντεχνία."
+
+#: rolesbuttons\rolesbuttons.py:501
+msgid "All roles-buttons purged."
+msgstr "Όλοι οι ρόλοι-κουμπιά καθαρίζονται."
+

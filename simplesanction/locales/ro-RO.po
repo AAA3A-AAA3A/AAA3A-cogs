@@ -1,0 +1,417 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:36\n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ro\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/simplesanction/locales/messages.pot\n"
+"X-Crowdin-File-ID: 98\n"
+"Language: ro_RO\n"
+
+#: simplesanction\constants.py:18
+msgid "Here is my informations about {member.display_name} ({member.id})."
+msgstr "Iată informațiile mele despre {member.display_name} ({member.id})."
+
+#: simplesanction\constants.py:27
+msgid "Why do you want to warn {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "De ce vrei să avertizezi {member.display_name} ({member.id})? (Tastați `cancel` pentru a anula sau `not` pentru a nu anula.)"
+
+#: simplesanction\constants.py:31
+msgid "The member {member.display_name} ({member.id}) has received a warning."
+msgstr "Membrul {member.display_name} ({member.id}) a primit un avertisment."
+
+#: simplesanction\constants.py:42
+msgid "Why do you want to ban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "De ce vreți să interziceți {member.display_name} ({member.id})? (Tastați `cancel` pentru a anula sau `not` pentru a nu anula.)"
+
+#: simplesanction\constants.py:45
+msgid "Do you really want to ban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Chiar vrei să interzici {member.display_name} ({member.id})? (Tastați `cancel` pentru a anula sau `not` pentru niciuna.)"
+
+#: simplesanction\constants.py:48
+msgid "The member {member.display_name} ({member.id}) has been banned."
+msgstr "Membrul {member.display_name} ({member.id}) a fost dat afară."
+
+#: simplesanction\constants.py:57
+msgid "Why do you want to softban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "De ce vrei să faci softban {member.display_name} ({member.id})? (Tastați `cancel` pentru a anula sau `not` pentru a nu anula.)"
+
+#: simplesanction\constants.py:60
+msgid "Do you really want to softban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Chiar vrei să faci softban {member.display_name} ({member.id})? (Tastați `cancel` pentru a anula sau `not` pentru a nu anula.)"
+
+#: simplesanction\constants.py:63
+msgid "The member {member.display_name} ({member.id}) has been softbanned."
+msgstr "Membrul {member.display_name} ({member.id}) a fost dat afară din joc."
+
+#: simplesanction\constants.py:71
+msgid "How long do you want to tempban {member.display_name} ({member.id})? (Type `cancel` to cancel.)"
+msgstr "Cât timp vrei să tempban {member.display_name} ({member.id})? (Tastați `cancel` pentru a anula.)"
+
+#: simplesanction\constants.py:74
+msgid "Why do you want to tempban {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "De ce vrei să interzici temporar {member.display_name} ({member.id}) în timpul {duration}? (Tastați `cancel` pentru a anula sau `not` pentru a nu anula.)"
+
+#: simplesanction\constants.py:77
+msgid "Do you really want to tempban {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Chiar vrei să interzici temporar {member.display_name} ({member.id}) în timpul {duration}? (Tastați `cancel` pentru a anula sau `not` pentru a nu anula.)"
+
+#: simplesanction\constants.py:80
+msgid "The member {member.display_name} ({member.id}) has been tempbanned and will be unbanned in {duration}."
+msgstr "Membrul {member.display_name} ({member.id}) a fost tempbanned și va fi debranșat în {duration}."
+
+#: simplesanction\constants.py:91
+msgid "Why do you want to kick {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "De ce vrei să dai cu piciorul la {member.display_name} ({member.id})? (Tastați `cancel` pentru a anula sau `not` pentru a nu anula.)"
+
+#: simplesanction\constants.py:94
+msgid "Do you really want to kick {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Chiar vrei să dai cu piciorul {member.display_name} ({member.id})? (Tastați `cancel` pentru a anula sau `not` pentru a nu anula.)"
+
+#: simplesanction\constants.py:97
+msgid "The member {member.display_name} ({member.id}) has been kicked."
+msgstr "Membrul {member.display_name} ({member.id}) a fost dat afară."
+
+#: simplesanction\constants.py:106
+msgid "Why do you want to mute {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "De ce vreți să puneți în surdină {member.display_name} ({member.id})? (Tastați `cancel` pentru a anula sau `not` pentru niciuna.)"
+
+#: simplesanction\constants.py:109
+msgid "Do you really want to mute {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Chiar vreți să dezactivați {member.display_name} ({member.id})? (Tastați `cancel` pentru a anula sau `not` pentru niciuna.)"
+
+#: simplesanction\constants.py:112
+msgid "The member {member.display_name} ({member.id}) has been muted."
+msgstr "Membrul {member.display_name} ({member.id}) a fost dezactivat."
+
+#: simplesanction\constants.py:121
+msgid "Why do you want to mute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "De ce doriți să dezactivați {member.display_name} ({member.id}) în {channel.mention}? (Tastați `cancel` pentru a anula sau `not` pentru niciuna.)"
+
+#: simplesanction\constants.py:124
+msgid "Do you really want to mute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Chiar vreți să dezactivați {member.display_name} ({member.id}) în {channel.mention}? (Tastați `cancel` pentru a anula sau `not` pentru niciuna.)"
+
+#: simplesanction\constants.py:127
+msgid "The member {member.display_name} ({member.id}) has been muted in {channel.mention}."
+msgstr "Membrul {member.display_name} ({member.id}) a fost dezactivat în {channel.mention}."
+
+#: simplesanction\constants.py:137
+msgid "How long do you want to tempmute {member.display_name} ({member.id})? (Type `cancel` to cancel.)"
+msgstr "Cât timp doriți să temperați {member.display_name} ({member.id})? (Tastați `cancel` pentru a anula.)"
+
+#: simplesanction\constants.py:140
+msgid "Why do you want to tempmute {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "De ce doriți să temporizați {member.display_name} ({member.id}) în timpul {duration}? (Tastați `cancel` pentru a anula sau `not` pentru niciuna.)"
+
+#: simplesanction\constants.py:143
+msgid "Do you really want to tempmute {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Chiar vreți să temporizați {member.display_name} ({member.id}) în timpul {duration}? (Tastați `cancel` pentru a anula sau `not` pentru niciuna.)"
+
+#: simplesanction\constants.py:146
+msgid "The member {member.display_name} ({member.id}) has been tempmuted and will be unmuted in {duration}."
+msgstr "Membrul {member.display_name} ({member.id}) a fost temporizat și va fi dezactivat în {duration}."
+
+#: simplesanction\constants.py:156
+msgid "How long do you want to tempmute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel.)"
+msgstr "Cât timp doriți să temperați {member.display_name} ({member.id}) în {channel.mention}? (Tastați `cancel` pentru a anula.)"
+
+#: simplesanction\constants.py:159
+msgid "Why do you want to tempmute {member.display_name} ({member.id}) in {channel.mention} during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "De ce doriți să temperați {member.display_name} ({member.id}) în {channel.mention} în timpul {duration}? (Tastați `cancel` pentru a anula sau `not` pentru niciuna.)"
+
+#: simplesanction\constants.py:162
+msgid "Do you really want to tempmute {member.display_name} ({member.id}) in {channel.mention} during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Chiar doriți să temperați {member.display_name} ({member.id}) în {channel.mention} în timpul {duration}? (Tastați `cancel` pentru a anula sau `not` pentru niciuna.)"
+
+#: simplesanction\constants.py:165
+msgid "The member {member.display_name} ({member.id}) has been tempmuted in {channel.mention} and will be unmuted in {duration}."
+msgstr "Membrul {member.display_name} ({member.id}) a fost temporizat în {channel.mention} și va fi dezactivat în {duration}."
+
+#: simplesanction\simplesanction.py:47
+msgid "You're not allowed to execute the `[p]sanction` command in this channel."
+msgstr "Nu ai voie să execuți comanda `[p]sanction` în acest canal."
+
+#: simplesanction\simplesanction.py:55
+#, docstring
+msgid "A cog to sanction members, with buttons!"
+msgstr "O rotiță pentru sancționarea membrilor, cu butoane!"
+
+#: simplesanction\simplesanction.py:209
+#, docstring
+msgid "\n"
+"        - Sanction a member quickly and easily.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 0 @member`\n"
+"        - `[p]sanction 0 @member What are these roles?`\n"
+"        - `[p]sanction 0 012345678987654321`\n"
+"        "
+msgstr "\n"
+"        - Sancționați un membru rapid și ușor.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 0 @member`\n"
+"        - `[p]sanction 0 @member Care sunt aceste roluri?`\n"
+"        - `[p]sanction 0 012345678987654321`\n"
+"        "
+
+#: simplesanction\simplesanction.py:244
+#, docstring
+msgid "\n"
+"         - ℹ️ Show informations about a member.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 1 @member`: UserInfo for no reason.\n"
+"        - `[p]sanction 1 @member What are these roles?`: UserInfo for the reason \"What are these roles?\".\n"
+"        - `[p]sanction 1 012345678987654321`: UserInfo with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - ℹ️ Afișează informații despre un membru.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 1 @member`: UserInfo fără motiv.\n"
+"        - `[p]sanction 1 @member Care sunt aceste roluri?`: UserInfo pentru motivul \"Care sunt aceste roluri?\".\n"
+"        - `[p]sanction 1 012345678987654321`: UserInfo cu ID-ul furnizat.\n"
+"        "
+
+#: simplesanction\simplesanction.py:280
+#, docstring
+msgid "\n"
+"         - ⚠️ Add a simple warning on a member.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 2 @member not`: Warn for no reason.\n"
+"        - `[p]sanction 2 @member Insults`: Warn for the reason \"Insults\".\n"
+"        - `[p]sanction 2 012345678987654321 Advertising`: Warn the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - ⚠️ Adăugați un avertisment simplu pentru un membru.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 2 @member not`: Avertizează fără motiv.\n"
+"        - `[p]sanction 2 @member Insults`: Avertizează pentru motivul \"Insults\".\n"
+"        - `[p]sanction 2 012345678987654321 Advertising`: Avertizează utilizatorul cu ID-ul furnizat.\n"
+"        "
+
+#: simplesanction\simplesanction.py:315
+#, docstring
+msgid "\n"
+"         - 🔨 Ban a member from this server.\n\n"
+"        It won't delete messages by default.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 3 @member not`: Ban for no reason.\n"
+"        - `[p]sanction 3 @member Insults`: Ban for the reason \"Insults\".\n"
+"        - `[p]sanction 3 012345678987654321 Advertising`: Ban the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - 🔨 Interziceți un membru de pe acest server.\n\n"
+"        În mod implicit, nu va șterge mesajele.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 3 @member not`: Interzice fără motiv.\n"
+"        - `[p]sanction 3 @member Insults`: Ban pentru motivul \"Insulte\".\n"
+"        - `[p]sanction 3 012345678987654321 Advertising`: Bannează utilizatorul cu ID-ul furnizat.\n"
+"        "
+
+#: simplesanction\simplesanction.py:352
+#, docstring
+msgid "\n"
+"         - 🔂 SoftBan a member from this server.\n\n"
+"        This means that the user will be banned and immediately unbanned, so it will purge their messages in a period, in all channels.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 4 @member not`: SoftBan for no reason\n"
+"        - `[p]sanction 4 @member Insults`: SoftBan for the reason \"Insults\"\n"
+"        - `[p]sanction 4 012345678987654321 Advertising`: SoftBan the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - 🔂 Interziceți temporar accesul unui membru pe acest server.\n\n"
+"        Acest lucru înseamnă că utilizatorul va fi banat și imediat debranșat, astfel încât îi va curăța mesajele într-o perioadă, în toate canalele.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 4 @member not`: SoftBan pentru nici un motiv\n"
+"        - `[p]sanction 4 @member Insults`: SoftBan pentru motivul \"insulte\"\n"
+"        - `[p]sanction 4 012345678987654321 Advertising`: SoftBan pe utilizatorul cu ID-ul furnizat.\n"
+"        "
+
+#: simplesanction\simplesanction.py:390
+#, docstring
+msgid "\n"
+"         - 💨 TempBan a member from this server.\n\n"
+"        It won't delete messages by default.\n"
+"        If you want to perform a temporary ban, provide the time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 5 @member not`: Ban for no reason.\n"
+"        - `[p]sanction 5 @member 7d Insults`: 7 days ban for the reason \"Insults\".\n"
+"        - `[p]sanction 5 012345678987654321 Advertising`: Ban the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - 💨 TempBan un membru de pe acest server.\n\n"
+"        În mod implicit, nu va șterge mesajele.\n"
+"        Dacă doriți să efectuați un ban temporar, furnizați timpul înainte de motiv.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 5 @member not`: Ban fără motiv.\n"
+"        - `[p]sanction 5 @member 7d Insults`: Interzicere de 7 zile pentru motivul \"Insults\".\n"
+"        - `[p]sanction 5 012345678987654321 Publicitate`: Interziceți utilizatorul cu ID-ul furnizat.\n"
+"        "
+
+#: simplesanction\simplesanction.py:428
+#, docstring
+msgid "\n"
+"         - 👢 Kick a member from this server.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 6 @member not`: Kick for no reason.\n"
+"        - `[p]sanction 6 @member Insults`: Kick for the reason \"Insults\".\n"
+"        - `[p]sanction 6 012345678987654321 Advertising`: Kick the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - 👢 Eliminați un membru de pe acest server.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 6 @member not`: Lovitură fără motiv.\n"
+"        - `[p]sanction 6 @member Insults`: Lovitură pentru motivul \"Insulte\".\n"
+"        - `[p]sanction 6 012345678987654321 Advertising`: Lovește utilizatorul cu ID-ul furnizat.\n"
+"        "
+
+#: simplesanction\simplesanction.py:463
+#, docstring
+msgid "\n"
+"         - 🔇 Mute a member in all channels, including voice channels.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 7 @member not`: Infinite mute for no reason.\n"
+"        - `[p]sanction 7 @member Spam`:Infinite  mute for the reason \"Spam\".\n"
+"        - `[p]sanction 7 @member Advertising`: Infinite mute for the reason \"Advertising\".\n"
+"        "
+msgstr "\n"
+"         - 🔇 Dezactivarea sunetului unui membru pe toate canalele, inclusiv pe canalele vocale.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 7 @member not`: Mutare infinită fără motiv.\n"
+"        - `[p]sanction 7 @member Spam`: Mutere infinită pentru motivul \"Spam\".\n"
+"        - `[p]sanction 7 @member Advertising`: Mute la infinit pentru motivul \"Advertising\".\n"
+"        "
+
+#: simplesanction\simplesanction.py:498
+#, docstring
+msgid "\n"
+"         - 👊 Mute a member in this channel.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 8 @member not`: Infinite mute for no reason.\n"
+"        - `[p]sanction 8 @member Spam`: Infinite mute for the reason \"Spam\".\n"
+"        - `[p]sanction 8 @member Advertising`: Infinite mute for the reason \"Advertising\".\n"
+"        "
+msgstr "\n"
+"         - 👊 Puneți în surdină un membru din acest canal.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 8 @member not`: Mutere infinită fără motiv.\n"
+"        - `[p]sanction 8 @member Spam`: Mutere infinită pentru motivul \"Spam\".\n"
+"        - `[p]sanction 8 @member Advertising`: Mutere infinită pentru motivul \"Advertising\".\n"
+"        "
+
+#: simplesanction\simplesanction.py:534
+#, docstring
+msgid "\n"
+"         - ⏳ TempMute a member in all channels, including voice channels.\n\n"
+"        You can set a timed mute by providing a valid time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 9 @member 30m not`: 30 minutes mute for no reason.\n"
+"        - `[p]sanction 9 @member 5h Spam`: 5 hours mute for the reason \"Spam\".\n"
+"        - `[p]sanction 9 @member 3d Advertising`: 3 days mute for the reason \"Advertising\".\n"
+"        "
+msgstr "\n"
+"         - ⏳ TempMute un membru pe toate canalele, inclusiv pe canalele de voce.\n\n"
+"        Puteți seta o mute temporizată, furnizând un timp valabil înainte de motiv.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 9 @member 30m not`: 30 de minute de mute fără motiv.\n"
+"        - `[p]sanction 9 @member 5h Spam`: 5 ore de mute pentru motivul \"Spam\".\n"
+"        - `[p]sanction 9 @member 3d Advertising`: 3 zile mute pentru motivul \"Publicitate\".\n"
+"        "
+
+#: simplesanction\simplesanction.py:572
+#, docstring
+msgid "\n"
+"         - ⌛ TempMute a member in this channel.\n\n"
+"        You can set a timed mute by providing a valid time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 10 @member 30m not`: 30 minutes mute for no reason.\n"
+"        - `[p]sanction 10 @member 5h Spam`: 5 hours mute for the reason \"Spam\".\n"
+"        - `[p]sanction 10 @member 3d Advertising`: 3 days mute for the reason \"Advertising\".\n"
+"        "
+msgstr "\n"
+"         - ⌛ TempMute un membru în acest canal.\n\n"
+"        Puteți seta o dezactivare temporizată furnizând o oră validă înainte de motiv.\n\n"
+"        Exemple:\n"
+"        - `[p]sanction 10 @member 30m not`: 30 de minute de mute fără motiv.\n"
+"        - `[p]sanction 10 @member 5h Spam`: 5 ore de mute pentru motivul \"Spam\".\n"
+"        - `[p]sanction 10 @member 3d Advertising`: 3 zile mute pentru motivul \"Publicitate\".\n"
+"        "
+
+#: simplesanction\simplesanction.py:614 simplesanction\types.py:89
+#: simplesanction\types.py:103 simplesanction\types.py:146
+#: simplesanction\types.py:151
+msgid "The reason was not given."
+msgstr "Motivul nu a fost precizat."
+
+#: simplesanction\simplesanction.py:618 simplesanction\view.py:99
+msgid "Sanction Member"
+msgstr "Membru sancțiune"
+
+#: simplesanction\simplesanction.py:619
+msgid "Which member do you want to sanction? (Type `cancel` to cancel.)"
+msgstr "Ce membru doriți să sancționați? (Tastați `cancel` pentru a anula.)"
+
+#: simplesanction\simplesanction.py:637 simplesanction\types.py:125
+#: simplesanction\types.py:148
+msgid "Timed out, please try again."
+msgstr "Timed out, vă rugăm să încercați din nou."
+
+#: simplesanction\types.py:65
+msgid "The cog `{cog_required}` is not loaded. Please load it, with the command `{prefix}load {cog_required_lowered}`."
+msgstr "Rotița `{cog_required}` nu este încărcată. Vă rugăm să îl încărcați cu comanda `{prefix}load {cog_required_lowered}`."
+
+#: simplesanction\types.py:82
+msgid "The sanction duration."
+msgstr "Durata sancțiunii."
+
+#: simplesanction\types.py:173
+msgid "This cog allows you to easily sanction a server member.\n"
+"Member mention: {member.mention} - Member ID: {member.id}"
+msgstr "Această rotiță vă permite să sancționați cu ușurință un membru al serverului.\n"
+"Mențiune membru: {member.mention} - ID membru: {member.id}"
+
+#: simplesanction\types.py:197
+msgid "\n"
+"*The command may have failed. If so, an error will be displayed below.*"
+msgstr "\n"
+"*Comanda poate să fi eșuat. În acest caz, se va afișa o eroare mai jos.*"
+
+#: simplesanction\types.py:203 simplesanction\view.py:125
+msgid "Reason:"
+msgstr "Motivul:"
+
+#: simplesanction\types.py:208 simplesanction\types.py:214
+#: simplesanction\view.py:128
+msgid "Duration:"
+msgstr "Durata:"
+
+#: simplesanction\types.py:215
+msgid "Infinity"
+msgstr "Infinit"
+
+#: simplesanction\types.py:238
+msgid "This command doesn't exist."
+msgstr "Această comandă nu există."
+
+#: simplesanction\types.py:243
+msgid "You can't execute this command, in this context."
+msgstr "Nu puteți executa această comandă, în acest context."
+
+#: simplesanction\view.py:101
+msgid "This tool allows you to easily sanction a server member.\n"
+"Member mention: {member.mention} - Member ID: {member.id}"
+msgstr "Acest instrument vă permite să sancționați cu ușurință un membru al serverului.\n"
+"Mențiunea membrului: {member.mention} - ID-ul membrului: {member.id}"
+
+#: simplesanction\view.py:135
+msgid "You are using this command in Fake mode, so no action will be taken, but I will pretend it is the case."
+msgstr "Folosiți această comandă în modul Fake, așa că nu se va lua nicio măsură, dar voi pretinde că este cazul."
+

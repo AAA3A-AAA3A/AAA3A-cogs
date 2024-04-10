@@ -1,0 +1,1189 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:40\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/discordedit/locales/messages.pot\n"
+"X-Crowdin-File-ID: 163\n"
+"Language: ru_RU\n"
+
+#: discordedit\discordedit.py:23
+#, docstring
+msgid "A cog to edit Discord default objects, like guilds, roles, text channels, voice channels, threads and AutoMod!"
+msgstr "Коготь для редактирования объектов Discord по умолчанию, таких как гильдии, роли, текстовые каналы, голосовые каналы, потоки и AutoMod!"
+
+#: discordedit\editautomod.py:18 discordedit\editguild.py:27
+#: discordedit\editrole.py:25 discordedit\edittextchannel.py:27
+#: discordedit\editthread.py:32 discordedit\editvoicechannel.py:27
+#: discordedit\view.py:18
+msgid "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n"
+"{error}"
+msgstr "Я попытался сделать что-то, на что Discord отказал мне в разрешениях. Ваша команда не смогла успешно завершиться.\n"
+"{error}"
+
+#: discordedit\editautomod.py:30
+msgid "Invalid rule ID."
+msgstr "Неверный идентификатор правила."
+
+#: discordedit\editautomod.py:34
+msgid "Rule not found."
+msgstr "Правило не найдено."
+
+#: discordedit\editautomod.py:43 discordedit\editautomod.py:72
+msgid "Invalid JSON."
+msgstr "Неверный JSON."
+
+#: discordedit\editautomod.py:50
+msgid "Invalid data. Must be a dict with `trigger_type` and `trigger_metadara` keys."
+msgstr "Неверные данные. Должно быть диктой с ключами `trigger_type` и `trigger_metadara`."
+
+#: discordedit\editautomod.py:55
+msgid "Invalid trigger type."
+msgstr "Неверный тип триггера."
+
+#: discordedit\editautomod.py:61
+msgid "Invalid trigger metadata."
+msgstr "Неверные метаданные триггера."
+
+#: discordedit\editautomod.py:75 discordedit\editautomod.py:85
+msgid "Invalid data. Must be a list of dicts with `type` and `data` keys."
+msgstr "Неверные данные. Должен быть список dicts с ключами `type` и `data`."
+
+#: discordedit\editautomod.py:90
+msgid "Invalid action type."
+msgstr "Неверный тип действия."
+
+#: discordedit\editautomod.py:97
+msgid "Invalid action metadata."
+msgstr "Неверные метаданные действия."
+
+#: discordedit\editautomod.py:104
+#, docstring
+msgid "A cog to edit AutoMod rules!"
+msgstr "Зубец для редактирования правил AutoMod!"
+
+#: discordedit\editautomod.py:126
+#, docstring
+msgid "Create an AutoMod rule.\n\n"
+"        event_type:\n"
+"        - message_send = 1\n\n"
+"        `trigger` and `actions` arguments must be JSON with specified keys. Warning, remove all spaces in the trigger dict.\n"
+"        trigger:\n"
+"        - `trigger_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types\n"
+"        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
+"        actions:\n"
+"        - `action_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-types\n"
+"        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
+"        "
+msgstr "Создайте правило AutoMod.\n\n"
+"        event_type:\n"
+"        - message_send = 1\n\n"
+"        Аргументы `trigger` и `actions` должны быть JSON с указанными ключами. Внимание, удалите все пробелы в дикте триггера.\n"
+"        trigger:\n"
+"        - `trigger_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types\n"
+"        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
+"        actions:\n"
+"        - `action_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-types\n"
+"        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
+"        "
+
+#: discordedit\editautomod.py:152
+msgid "AutoMod rule {rule.name} ({rule.id}) created."
+msgstr "Создано правило AutoMod {rule.name} ({rule.id})."
+
+#: discordedit\editautomod.py:160
+#, docstring
+msgid "List all AutoMod rules in the current guild."
+msgstr "Список всех правил AutoMod в текущей гильдии."
+
+#: discordedit\editautomod.py:166
+msgid "List of AutoMod rules in {guild.name} ({guild.id})"
+msgstr "Список правил AutoMod в {guild.name} ({guild.id})"
+
+#: discordedit\editautomod.py:181
+#, docstring
+msgid "Edit AutoMod rule name."
+msgstr "Редактирование имени правила AutoMod."
+
+#: discordedit\editautomod.py:217
+#, docstring
+msgid "Edit AutoMod rule trigger.\n\n"
+"        trigger:\n"
+"        - `trigger_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types\n"
+"        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
+"        "
+msgstr "Редактировать триггер правила AutoMod.\n\n"
+"        триггер:\n"
+"        - `trigger_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types\n"
+"        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
+"        "
+
+#: discordedit\editautomod.py:241
+#, docstring
+msgid "Edit AutoMod rule actions.\n\n"
+"        actions:\n"
+"        - `action_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-types\n"
+"        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
+"        "
+msgstr "Редактирование действий правил AutoMod.\n\n"
+"        действия:\n"
+"        - `тип_действия`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-types\n"
+"        - `метаданные_действия`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
+"        "
+
+#: discordedit\editautomod.py:261
+#, docstring
+msgid "Edit AutoMod rule enabled."
+msgstr "Включено правило редактирования AutoMod."
+
+#: discordedit\editautomod.py:280
+#, docstring
+msgid "Edit AutoMod rule exempt roles."
+msgstr "Редактирование исключающих ролей правила AutoMod."
+
+#: discordedit\editautomod.py:303
+#, docstring
+msgid "Edit AutoMod rule exempt channels."
+msgstr "Редактирование исключающих каналов по правилу AutoMod."
+
+#: discordedit\editautomod.py:321
+#, docstring
+msgid "Delete automod rule."
+msgstr "Удалить правило автомода."
+
+#: discordedit\editautomod.py:325
+msgid "⚠️ - Delete AutoMod rule"
+msgstr "⚠️ - Удалить правило AutoMod"
+
+#: discordedit\editautomod.py:326 discordedit\editautomod.py:333
+msgid "Do you really want to delete the AutoMod rule {rule.name} ({rule.id}) in {guild.name} ({guild.id})?"
+msgstr "Вы действительно хотите удалить правило AutoMod {rule.name} ({rule.id}) в {guild.name} ({guild.id})?"
+
+#: discordedit\editautomod.py:409 discordedit\editautomod.py:432
+msgid "Rule `{rule.name} ({rule.id})` edited."
+msgstr "Правило `{rule.name} ({rule.id})` отредактировано."
+
+#: discordedit\editautomod.py:623
+msgid "Select channels/roles to exempt for the AutoMod rule `{rule.name} ({rule.id})`."
+msgstr "Выберите каналы/роли для исключения из правила AutoMod `{rule.name} ({rule.id})`."
+
+#: discordedit\editautomod.py:645
+msgid "Rule `{rule.name} ({rule.id})` enabled."
+msgstr "Правило `{rule.name} ({rule.id})` включено."
+
+#: discordedit\editautomod.py:647
+msgid "Rule {rule.name} `{rule.id}` disabled."
+msgstr "Правило {rule.name} `{rule.id}` отключено."
+
+#: discordedit\editautomod.py:665
+msgid "Rule `{rule.name} ({rule.id})` deleted."
+msgstr "Правило `{rule.name} ({rule.id})` удалено."
+
+#: discordedit\editguild.py:47
+msgid "Converting to `Locale` failed for parameter `preferred_locale`."
+msgstr "Преобразование в `Locale` не удалось для параметра `preferred_locale`."
+
+#: discordedit\editguild.py:59 discordedit\editguild.py:67
+msgid "The verification level must be `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` or `4`."
+msgstr "Уровень проверки должен быть `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` или `4`."
+
+#: discordedit\editguild.py:78 discordedit\editguild.py:82
+#: discordedit\editguild.py:90
+msgid "The video quality mode must be `0` or `1`."
+msgstr "Режим качества видео должен быть `0` или `1`."
+
+#: discordedit\editguild.py:98
+#, docstring
+msgid "A cog to edit guilds!"
+msgstr "Коготь для редактирования гильдий!"
+
+#: discordedit\editguild.py:119
+#, docstring
+msgid "Create a guild with the bot as owner."
+msgstr "Создайте гильдию с ботом в качестве владельца."
+
+#: discordedit\editguild.py:137
+#, docstring
+msgid "Clone a guild."
+msgstr "Клонировать гильдию."
+
+#: discordedit\editguild.py:159
+#, docstring
+msgid "Edit guild name."
+msgstr "Редактировать название гильдии."
+
+#: discordedit\editguild.py:175
+#, docstring
+msgid "Edit guild description."
+msgstr "Редактировать описание гильдии."
+
+#: discordedit\editguild.py:193
+#, docstring
+msgid "Edit guild icon.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "Отредактируйте значок гильдии.\n\n"
+"        Вы можете использовать URL-адрес или загрузить вложение.\n"
+"        "
+
+#: discordedit\editguild.py:228
+#, docstring
+msgid "Edit guild banner.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "Отредактируйте баннер гильдии.\n\n"
+"        Вы можете использовать URL-адрес или загрузить вложение.\n"
+"        "
+
+#: discordedit\editguild.py:235
+msgid "This server doesn't have the `BANNER` feature. This server needs more boosts to perform this action."
+msgstr "На этом сервере нет функции `БАННЕР`. Этому серверу нужно больше бустов, чтобы выполнить это действие."
+
+#: discordedit\editguild.py:269
+#, docstring
+msgid "Edit guild splash.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "Отредактируйте гильдийную заставку.\n\n"
+"        Вы можете использовать URL-адрес или загрузить вложение.\n"
+"        "
+
+#: discordedit\editguild.py:276
+msgid "This server doesn't have the `INVITE_SPLASH` feature. This server needs more boosts to perform this action."
+msgstr "На этом сервере нет функции `INVITE_SPLASH`. Этому серверу требуется больше бустов для выполнения этого действия."
+
+#: discordedit\editguild.py:310
+#, docstring
+msgid "Edit guild discovery splash.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "Отредактируйте всплеск открытия гильдии.\n\n"
+"        Вы можете использовать URL-адрес или загрузить вложение.\n"
+"        "
+
+#: discordedit\editguild.py:317
+msgid "This server doesn't have the `DISCOVERABLE` feature. This server needs more boosts to perform this action."
+msgstr "На этом сервере нет функции `DISCOVERABLE`. Этому серверу требуется больше усилений для выполнения этого действия."
+
+#: discordedit\editguild.py:349
+#, docstring
+msgid "Edit guild community state."
+msgstr "Отредактируйте состояние сообщества гильдии."
+
+#: discordedit\editguild.py:365
+#, docstring
+msgid "Edit guild afkchannel."
+msgstr "Редактировать афк-канал гильдии."
+
+#: discordedit\editguild.py:379
+#, docstring
+msgid "Edit guild afk timeout."
+msgstr "Редактирование тайм-аута гильдии."
+
+#: discordedit\editguild.py:399
+#, docstring
+msgid "Edit guild owner (if the bot is bot owner)."
+msgstr "Редактировать владельца гильдии (если бот является владельцем бота)."
+
+#: discordedit\editguild.py:404
+msgid ":⚠️ - Change Guild Owner"
+msgstr ":⚠️ - Сменить владельца гильдии"
+
+#: discordedit\editguild.py:405 discordedit\editguild.py:412
+msgid "Do you really want to change guild owner of the guild {guild.name} ({guild.id})?"
+msgstr "Вы действительно хотите сменить владельца гильдии {guild.name} ({guild.id})?"
+
+#: discordedit\editguild.py:432
+#, docstring
+msgid "Edit guild verification level."
+msgstr "Редактировать уровень проверки гильдии."
+
+#: discordedit\editguild.py:450
+#, docstring
+msgid "Edit guild notification level."
+msgstr "Редактирование уровня уведомления гильдии."
+
+#: discordedit\editguild.py:466
+#, docstring
+msgid "Edit guild explicit content filter."
+msgstr "Редактирование фильтра явного содержимого гильдии."
+
+#: discordedit\editguild.py:480
+#, docstring
+msgid "Edit guild vanity code."
+msgstr "Отредактируйте код тщеславия гильдии."
+
+#: discordedit\editguild.py:496
+#, docstring
+msgid "Edit guild system channel."
+msgstr "Редактировать канал системы гильдий."
+
+#: discordedit\editguild.py:512
+#, docstring
+msgid "Edit guild system channel flags."
+msgstr "Редактирование флагов каналов системы гильдий."
+
+#: discordedit\editguild.py:528
+#, docstring
+msgid "Edit guild preferred locale.\n\n"
+"        american_english = 'en-US'\n"
+"        british_english = 'en-GB'\n"
+"        bulgarian = 'bg'\n"
+"        chinese = 'zh-CN'\n"
+"        taiwan_chinese = 'zh-TW'\n"
+"        croatian = 'hr'\n"
+"        czech = 'cs'\n"
+"        danish = 'da'\n"
+"        dutch = 'nl'\n"
+"        finnish = 'fi'\n"
+"        french = 'fr'\n"
+"        german = 'de'\n"
+"        greek = 'el'\n"
+"        hindi = 'hi'\n"
+"        hungarian = 'hu'\n"
+"        italian = 'it'\n"
+"        japanese = 'ja'\n"
+"        korean = 'ko'\n"
+"        lithuanian = 'lt'\n"
+"        norwegian = 'no'\n"
+"        polish = 'pl'\n"
+"        brazil_portuguese = 'pt-BR'\n"
+"        romanian = 'ro'\n"
+"        russian = 'ru'\n"
+"        spain_spanish = 'es-ES'\n"
+"        swedish = 'sv-SE'\n"
+"        thai = 'th'\n"
+"        turkish = 'tr'\n"
+"        ukrainian = 'uk'\n"
+"        vietnamese = 'vi'\n"
+"        "
+msgstr "Отредактируйте предпочитаемую локаль гильдии.\n\n"
+"        american_english = 'en-US'\n"
+"        british_english = 'en-GB'\n"
+"        bulgarian = 'bg'\n"
+"        chinese = 'zh-CN'\n"
+"        taiwan_chinese = 'zh-...TW'\n"
+"        croatian = 'hr'\n"
+"        czech = 'cs'\n"
+"        danish = 'da'\n"
+"        dutch = 'nl'\n"
+"        finnish = 'fi'\n"
+"        french = 'fr'\n"
+"        german = 'de'\n"
+"        greek = 'el'\n"
+"        hindi = 'hi'\n"
+"        hungarian = 'hu'\n"
+"        italian = 'it'\n"
+"        japanese = 'ja'\n"
+"        korean = 'ko'\n"
+"        lithuanian = 'lt'\n"
+"        norwegian = 'no'\n"
+"        polish = 'pl'\n"
+"        brazil_portuguese = 'pt-...BR'\n"
+"        romanian = 'ro'\n"
+"        russian = 'ru'\n"
+"        spain_spanish = 'es-ES'\n"
+"        swedish = 'sv-SE'\n"
+"        thai = 'th'\n"
+"        turkish = 'tr'\n"
+"        ukrainian = 'uk'\n"
+"        vietnamese = 'vi'\n"
+"        "
+
+#: discordedit\editguild.py:576
+#, docstring
+msgid "Edit guild rules channel."
+msgstr "Редактировать канал правил гильдии."
+
+#: discordedit\editguild.py:594
+#, docstring
+msgid "Edit guild public updates channel."
+msgstr "Редактирование канала публичных обновлений гильдии."
+
+#: discordedit\editguild.py:614
+#, docstring
+msgid "Edit guild premium progress bar enabled."
+msgstr "Включен прогресс-бар редактирования премиума гильдии."
+
+#: discordedit\editguild.py:630
+#, docstring
+msgid "Edit guild discoverable state."
+msgstr "Редактирование состояния открытости гильдии."
+
+#: discordedit\editguild.py:646
+#, docstring
+msgid "Edit guild invites disabled state."
+msgstr "Редактирование состояния отключения приглашений гильдии."
+
+#: discordedit\editguild.py:660
+#, docstring
+msgid "Edit guild invites widget enabled state."
+msgstr "Включено состояние виджета \"Редактирование приглашений в гильдии\"."
+
+#: discordedit\editguild.py:676
+#, docstring
+msgid "Edit guild invites widget channel."
+msgstr "Редактирование канала виджета приглашений гильдии."
+
+#: discordedit\editguild.py:694
+#, docstring
+msgid "Edit guild invites raid alerts disabled state."
+msgstr "Редактирование состояния отключения оповещений о рейдах в гильдиях."
+
+#: discordedit\editguild.py:712
+#, docstring
+msgid "Edit guild invites safety alerts channel."
+msgstr "Отредактируйте канал предупреждений о безопасности гильдии."
+
+#: discordedit\editguild.py:731
+#, docstring
+msgid "Delete guild (if the bot is owner)."
+msgstr "Удалить гильдию (если бот является владельцем)."
+
+#: discordedit\editguild.py:736
+msgid "⚠️ - Delete Guild"
+msgstr "⚠️ - Удалить гильдию"
+
+#: discordedit\editguild.py:737 discordedit\editguild.py:744
+msgid "Do you really want to delete the guild {guild.name} ({guild.id})?"
+msgstr "Вы действительно хотите удалить гильдию {guild.name} ({guild.id})?"
+
+#: discordedit\editguild.py:762
+#, docstring
+msgid "View and edit guild."
+msgstr "Просмотр и редактирование гильдии."
+
+#: discordedit\editrole.py:50
+msgid "The position must be an integer."
+msgstr "Позиция должна быть целым числом."
+
+#: discordedit\editrole.py:54
+msgid "The indicated position must be between 1 and {max_guild_roles_position}."
+msgstr "Указанная позиция должна быть между 1 и {max_guild_roles_position}."
+
+#: discordedit\editrole.py:69 discordedit\edittextchannel.py:57
+#: discordedit\editvoicechannel.py:57
+msgid "This permission is invalid."
+msgstr "Это разрешение недействительно."
+
+#: discordedit\editrole.py:92
+#, docstring
+msgid "A cog to edit roles!"
+msgstr "Зубчик для редактирования ролей!"
+
+#: discordedit\editrole.py:104
+msgid "I can not let you edit @{role.name} ({role.id}) because that role is higher than or equal to your highest role in the Discord hierarchy."
+msgstr "Я не могу позволить вам редактировать @{role.name} ({role.id}), потому что эта роль выше или равна вашей высшей роли в иерархии Discord."
+
+#: discordedit\editrole.py:110
+msgid "I can not edit @{role.name} ({role.id}) because that role is higher than or equal to my highest role in the Discord hierarchy."
+msgstr "Я не могу редактировать @{role.name} ({role.id}), потому что эта роль выше или равна моей высшей роли в иерархии Discord."
+
+#: discordedit\editrole.py:132
+#, docstring
+msgid "Create a role."
+msgstr "Создайте роль."
+
+#: discordedit\editrole.py:150
+#, docstring
+msgid "List all roles in the current guild."
+msgstr "Перечислите все роли в текущей гильдии."
+
+#: discordedit\editrole.py:156
+msgid "List of roles in {guild.name} ({guild.id})"
+msgstr "Список ролей в {guild.name} ({guild.id})"
+
+#: discordedit\editrole.py:169
+#, docstring
+msgid "Edit role name."
+msgstr "Редактирование имени роли."
+
+#: discordedit\editrole.py:185
+#, docstring
+msgid "Edit role color."
+msgstr "Редактирование цвета роли."
+
+#: discordedit\editrole.py:201
+#, docstring
+msgid "Edit role hoist."
+msgstr "Редактировать роль подъемника."
+
+#: discordedit\editrole.py:222
+#, docstring
+msgid "Edit role display icon.\n\n"
+"        `display_icon` can be an Unicode emoji, a custom emoji or an url. You can also upload an attachment.\n"
+"        "
+msgstr "Редактирование значка отображения роли.\n\n"
+"        В качестве `display_icon` может выступать эмодзи Unicode, пользовательский эмодзи или url. Вы также можете загрузить вложение.\n"
+"        "
+
+#: discordedit\editrole.py:228
+msgid "This server doesn't have the `ROLE_ICONS` feature. This server needs more boosts to perform this action."
+msgstr "На этом сервере нет функции `ROLE_ICONS`. Этому серверу требуется больше усилений для выполнения этого действия."
+
+#: discordedit\editrole.py:272
+#, docstring
+msgid "Edit role mentionable."
+msgstr "Редактирование роли упоминания."
+
+#: discordedit\editrole.py:290
+#, docstring
+msgid "Edit role position.\n\n"
+"        Warning: The role with a position 1 is the highest role in the Discord hierarchy.\n"
+"        "
+msgstr "Редактировать позицию роли.\n\n"
+"        Внимание: Роль с позицией 1 является самой высокой ролью в иерархии Discord.\n"
+"        "
+
+#: discordedit\editrole.py:313
+#, docstring
+msgid "Edit role permissions.\n\n"
+"        You must possess the permissions you wish to modify.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
+"        "
+msgstr "Редактирование разрешений роли.\n\n"
+"        Вы должны обладать правами, которые хотите изменить.\n\n"
+"        - `create_instant_invite`\n"
+"        - `manage_channels`\n"
+"        - `add_reactions`\n"
+"        - `priority_speaker`\n"
+"        - `stream`\n"
+"        - `read_messages`\n"
+"        - `end_messages`\n"
+"        -... `end_tts_messages`\n"
+"        - `manage_messages`\n"
+"        - `embed_links`\n"
+"        - `attach_files`\n"
+"        - `read_message_history`\n"
+"        - `mention_everyone`\n"
+"        - `external_emojis`\n"
+"        - `connect`\n"
+"        - `говорит`\n"
+"        - `mute_members`\n"
+"        - `deafen_members`\n"
+"        - `move_members`\n"
+"        - `use_voice_activation`\n"
+"        - `manage_roles`\n"
+"        - `manage_webhooks`\n"
+"        - `use_application_commands`\n"
+"        - `request_to_speak`\n"
+"        - `управление_потоками`\n"
+"        - `создание_общественных_потоков`\n"
+"        - `создание_частных_потоков`\n"
+"        - `внешние_стикеры`\n"
+"        - `отправка_сообщений_в_потоках`\n"
+"        "
+
+#: discordedit\editrole.py:350 discordedit\edittextchannel.py:564
+#: discordedit\editvoicechannel.py:464
+msgid "You need to provide at least one permission."
+msgstr "Вам необходимо предоставить хотя бы одно разрешение."
+
+#: discordedit\editrole.py:356
+msgid "You don't have the permission {permission_name} in this guild."
+msgstr "У вас нет разрешения {permission_name} в этой гильдии."
+
+#: discordedit\editrole.py:378
+#, docstring
+msgid "Delete a role."
+msgstr "Удалить роль."
+
+#: discordedit\editrole.py:383
+msgid "⚠️ - Delete role"
+msgstr "⚠️ - Удалить роль"
+
+#: discordedit\editrole.py:384 discordedit\editrole.py:391
+msgid "Do you really want to delete the role {role.mention} ({role.id})?"
+msgstr "Вы действительно хотите удалить роль {role.mention} ({role.id})?"
+
+#: discordedit\editrole.py:412
+#, docstring
+msgid "View and edit role."
+msgstr "Просмотр и редактирование роли."
+
+#: discordedit\edittextchannel.py:68 discordedit\edittextchannel.py:72
+msgid "The channel type must be `text`, `news`, `0` or `5`."
+msgstr "Тип канала должен быть `text`, `news`, `0` или `5`."
+
+#: discordedit\edittextchannel.py:77
+#, docstring
+msgid "A cog to edit text channels!"
+msgstr "Зубец для редактирования текстовых каналов!"
+
+#: discordedit\edittextchannel.py:97
+msgid "I can not edit the text channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
+msgstr "Я не могу редактировать текстовый канал {channel.mention} ({channel.id}), потому что у меня нет разрешения `manage_channel`."
+
+#: discordedit\edittextchannel.py:119
+#, docstring
+msgid "Create a text channel."
+msgstr "Создайте текстовый канал."
+
+#: discordedit\edittextchannel.py:137
+#, docstring
+msgid "List all text channels in the current guild."
+msgstr "Список всех текстовых каналов в текущей гильдии."
+
+#: discordedit\edittextchannel.py:143
+msgid "List of text channels in {guild.name} ({guild.id})"
+msgstr "Список текстовых каналов в {guild.name} ({guild.id})"
+
+#: discordedit\edittextchannel.py:162
+#, docstring
+msgid "Clone a text channel."
+msgstr "Клонирование текстового канала."
+
+#: discordedit\edittextchannel.py:189
+#, docstring
+msgid "Create an invite for a text channel.\n\n"
+"        `max_age`: How long the invite should last in days. If it's 0 then the invite doesn't expire.\n"
+"        `max_uses`: How many uses the invite could be used for. If it's 0 then there are unlimited uses.\n"
+"        `temporary`: Denotes that the invite grants temporary membership (i.e. they get kicked after they disconnect).\n"
+"        `unique`: Indicates if a unique invite URL should be created. Defaults to True. If this is set to False then it will return a previously created invite.\n"
+"        "
+msgstr "Создание приглашения для текстового канала.\n\n"
+"        `max_age`: Сколько времени должно длиться приглашение в днях. Если это значение равно 0, то срок действия приглашения не истекает.\n"
+"        `max_uses`: Сколько раз приглашение может быть использовано. Если значение равно 0, то количество использований неограниченно.\n"
+"        `temporary`: Обозначает, что приглашение предоставляет временное членство (т.е. после отключения от сети их выкинут).\n"
+"        `unique`: Указывает, следует ли создавать уникальный URL приглашения. По умолчанию имеет значение True. Если установлено значение False, то будет возвращено ранее созданное приглашение.\n"
+"        "
+
+#: discordedit\edittextchannel.py:224
+#, docstring
+msgid "Edit text channel name."
+msgstr "Редактирование названия текстового канала."
+
+#: discordedit\edittextchannel.py:249
+#, docstring
+msgid "Edit text channel topic."
+msgstr "Редактирование темы текстового канала."
+
+#: discordedit\edittextchannel.py:274
+#, docstring
+msgid "Edit text channel position.\n\n"
+"        Warning: Only text channels are taken into account. Channel 1 is the highest positioned text channel.\n"
+"        Channels cannot be moved to a position that takes them out of their current category.\n"
+"        "
+msgstr "Редактирование положения текстового канала.\n\n"
+"        Внимание: Учитываются только текстовые каналы. Канал 1 является самым высокорасположенным текстовым каналом.\n"
+"        Каналы нельзя перемещать в положение, которое выводит их из текущей категории.\n"
+"        "
+
+#: discordedit\edittextchannel.py:302
+#, docstring
+msgid "Edit text channel nsfw."
+msgstr "Редактировать текстовый канал nsfw."
+
+#: discordedit\edittextchannel.py:328
+#, docstring
+msgid "Edit text channel syncpermissions with category."
+msgstr "Редактирование текстового канала syncpermissions с категорией."
+
+#: discordedit\edittextchannel.py:354
+#, docstring
+msgid "Edit text channel category."
+msgstr "Редактирование категории текстового канала."
+
+#: discordedit\edittextchannel.py:378
+#, docstring
+msgid "Edit text channel slowmode delay.\n\n"
+"        Specifies the slowmode rate limit for user in this channel. A value of 0s disables slowmode. The maximum value possible is 21600s.\n"
+"        "
+msgstr "Редактирование текстового канала slowmode delay.\n\n"
+"        Определяет ограничение скорости медленного режима для пользователя в этом канале. Значение 0 с отключает медленный режим. Максимально возможное значение - 21600 с.\n"
+"        "
+
+#: discordedit\edittextchannel.py:408
+#, docstring
+msgid "Edit text channel type.\n\n"
+"        `text`: 0\n"
+"        `news`: 5\n"
+"        Currently, only conversion between ChannelType.text and ChannelType.news is supported. This is only available to guilds that contain NEWS in Guild.features.\n"
+"        "
+msgstr "Редактирование типа текстового канала.\n\n"
+"        `text`: 0\n"
+"        `news`: 5\n"
+"        В настоящее время поддерживается только преобразование между ChannelType.text и ChannelType.news. Это доступно только для гильдий, которые содержат NEWS в Guild.features.\n"
+"        "
+
+#: discordedit\edittextchannel.py:439
+#, docstring
+msgid "Edit text channel default auto archive duration.\n\n"
+"        The new default auto archive duration in minutes for threads created in this channel. Must be one of `60`, `1440`, `4320`, or `10080`.\n"
+"        "
+msgstr "Редактировать текстовый канал Продолжительность автоархива по умолчанию.\n\n"
+"        Новая длительность автоархива по умолчанию в минутах для потоков, созданных в этом канале. Должно быть одно из `60`, `1440`, `4320` или `10080`.\n"
+"        "
+
+#: discordedit\edittextchannel.py:468
+#, docstring
+msgid "Edit text channel default thread slowmode delay.\n\n"
+"        The new default thread slowmode delay in seconds for threads created in this channel. Must be between 0 and 21600 (6 hours) seconds.\n"
+"        "
+msgstr "Задержка медленного режима потока по умолчанию для текстового канала.\n\n"
+"        Новая задержка медленного режима потока по умолчанию в секундах для потоков, созданных в этом канале. Должно быть от 0 до 21600 (6 часов) секунд.\n"
+"        "
+
+#: discordedit\edittextchannel.py:501
+#, docstring
+msgid "Edit text channel overwrites/permissions.\n\n"
+"        You may not specify `True` or `False` to reset the permission(s).\n"
+"        You must possess the permissions you wish to modify.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
+"        "
+msgstr "Редактирование перезаписи/разрешения текстового канала.\n\n"
+"        Вы не можете указывать `True` или `False` для сброса разрешения (разрешений).\n"
+"        Вы должны обладать правами, которые хотите изменить.\n\n"
+"        - `create_instant_invite`\n"
+"        - `manage_channels`\n"
+"        - `add_reactions`\n"
+"        - `priority_speaker`\n"
+"        - `stream`\n"
+"        - `read_messages`\n"
+"        - `end_messages`\n"
+"        -... `end_tts_messages`\n"
+"        - `manage_messages`\n"
+"        - `embed_links`\n"
+"        - `attach_files`\n"
+"        - `read_message_history`\n"
+"        - `mention_everyone`\n"
+"        - `external_emojis`\n"
+"        - `connect`\n"
+"        - `говорит`\n"
+"        - `mute_members`\n"
+"        - `deafen_members`\n"
+"        - `move_members`\n"
+"        - `use_voice_activation`\n"
+"        - `manage_roles`\n"
+"        - `manage_webhooks`\n"
+"        - `use_application_commands`\n"
+"        - `request_to_speak`\n"
+"        - `управление_потоками`\n"
+"        - `создание_общественных_потоков`\n"
+"        - `создание_частных_потоков`\n"
+"        - `внешние_стикеры`\n"
+"        - `отправка_сообщений_в_потоках`\n"
+"        "
+
+#: discordedit\edittextchannel.py:549 discordedit\editvoicechannel.py:449
+msgid "You need to provide a role or user you want to edit permissions for."
+msgstr "Вам необходимо указать роль или пользователя, для которого вы хотите отредактировать разрешения."
+
+#: discordedit\edittextchannel.py:570 discordedit\editvoicechannel.py:470
+msgid "You don't have the permission {permission_name} in this channel."
+msgstr "У вас нет разрешения {permission_name} на этот канал."
+
+#: discordedit\edittextchannel.py:595 discordedit\editvoicechannel.py:495
+msgid "You cannot remove permissions from you in this channel."
+msgstr "Вы не можете снять с себя полномочия в этом канале."
+
+#: discordedit\edittextchannel.py:605 discordedit\editvoicechannel.py:505
+msgid "You cannot remove permissions from the bot in this channel."
+msgstr "Вы не можете снять разрешения с бота в этом канале."
+
+#: discordedit\edittextchannel.py:624
+#, docstring
+msgid "Delete a text channel."
+msgstr "Удалить текстовый канал."
+
+#: discordedit\edittextchannel.py:634
+msgid "⚠️ - Delete text channel"
+msgstr "⚠️ - Удалить текстовый канал"
+
+#: discordedit\edittextchannel.py:635 discordedit\edittextchannel.py:642
+msgid "Do you really want to delete the text channel {channel.mention} ({channel.id})?"
+msgstr "Вы действительно хотите удалить текстовый канал {channel.mention} ({channel.id})?"
+
+#: discordedit\edittextchannel.py:661
+#, docstring
+msgid "View and edit text channel."
+msgstr "Просмотр и редактирование текстового канала."
+
+#: discordedit\editthread.py:103
+msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
+msgstr "Роль эмодзи должна быть эмодзи, за которым следует роль, разделенная либо `;`, `,`, `|`, либо `-`."
+
+#: discordedit\editthread.py:113
+#, docstring
+msgid "A cog to edit threads!"
+msgstr "Коготь для редактирования потоков!"
+
+#: discordedit\editthread.py:134
+msgid "I can not edit the thread {thread.mention} ({thread.id}) because you don't have the `manage_channel` permission."
+msgstr "Я не могу редактировать поток {thread.mention} ({thread.id}), потому что у вас нет прав `manage_channel`."
+
+#: discordedit\editthread.py:158
+#, docstring
+msgid "Create a thread.\n\n"
+"        You'll join it automatically.\n"
+"        "
+msgstr "Создайте тему.\n\n"
+"        Вы присоединитесь к ней автоматически.\n"
+"        "
+
+#: discordedit\editthread.py:182
+#, docstring
+msgid "List all threads in the current guild."
+msgstr "Перечислить все темы в текущей гильдии."
+
+#: discordedit\editthread.py:190
+msgid "List of threads in {guild.name} ({guild.id})"
+msgstr "Список нитей в {guild.name} ({guild.id})"
+
+#: discordedit\editthread.py:206
+#, docstring
+msgid "Edit thread name."
+msgstr "Редактировать название темы."
+
+#: discordedit\editthread.py:227
+#, docstring
+msgid "Edit thread archived."
+msgstr "Редактировать тему архивировано."
+
+#: discordedit\editthread.py:249
+#, docstring
+msgid "Edit thread locked."
+msgstr "Редактирование темы закрыто."
+
+#: discordedit\editthread.py:272
+#, docstring
+msgid "Edit thread pinned."
+msgstr "Редактирование нити прикреплено."
+
+#: discordedit\editthread.py:296
+#, docstring
+msgid "Edit thread invitable."
+msgstr "Редактирование нити неизбежно."
+
+#: discordedit\editthread.py:322
+#, docstring
+msgid "Edit thread auto archive duration."
+msgstr "Редактирование длительности автоархива темы."
+
+#: discordedit\editthread.py:346
+#, docstring
+msgid "Edit thread slowmode delay."
+msgstr "Редактирование нити задержки медленного режима."
+
+#: discordedit\editthread.py:370
+#, docstring
+msgid "Edit thread applied tags.\n\n"
+"        ```\n"
+"        [p]editthread appliedtags \"<name>|<emoji>|[moderated]\"\n"
+"        [p]editthread appliedtags \"Reporting|⚠️|True\" \"Bug|🐛\"\n"
+"        ```\n"
+"        "
+msgstr "Редактировать тему примененные теги.\n\n"
+"        ```\n"
+"        [p]editthread appliedtags \"<name>|<emoji>|[moderated]\"\n"
+"        [p]editthread appliedtags \"Reporting|⚠️|True\" \"Bug|🐛\"\n"
+"        ```\n"
+"        "
+
+#: discordedit\editthread.py:400
+#, docstring
+msgid "Add member to thread."
+msgstr "Добавить участника в тему."
+
+#: discordedit\editthread.py:425
+#, docstring
+msgid "Remove member from thread."
+msgstr "Удалите участника из темы."
+
+#: discordedit\editthread.py:446
+#, docstring
+msgid "Delete a thread."
+msgstr "Удалить тему."
+
+#: discordedit\editthread.py:456
+msgid "⚠️ - Delete thread"
+msgstr "⚠️ - Удалить нить"
+
+#: discordedit\editthread.py:457 discordedit\editthread.py:464
+msgid "Do you really want to delete the thread {thread.mention} ({thread.id})?"
+msgstr "Вы действительно хотите удалить тему {thread.mention} ({thread.id})?"
+
+#: discordedit\editthread.py:479
+#, docstring
+msgid "View and edit thread."
+msgstr "Просмотр и редактирование темы."
+
+#: discordedit\editvoicechannel.py:66 discordedit\editvoicechannel.py:70
+msgid "The video quality mode must be `1` or `2`."
+msgstr "Режим качества видео должен быть `1` или `2`."
+
+#: discordedit\editvoicechannel.py:75
+#, docstring
+msgid "A cog to edit voice channels!"
+msgstr "Зубчатка для редактирования голосовых каналов!"
+
+#: discordedit\editvoicechannel.py:95
+msgid "I can not edit the voice channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
+msgstr "Я не могу редактировать голосовой канал {channel.mention} ({channel.id}), потому что у меня нет разрешения `manage_channel`."
+
+#: discordedit\editvoicechannel.py:117
+#, docstring
+msgid "Create a voice channel."
+msgstr "Создайте голосовой канал."
+
+#: discordedit\editvoicechannel.py:135
+#, docstring
+msgid "List all voice channels in the current guild."
+msgstr "Список всех голосовых каналов в текущей гильдии."
+
+#: discordedit\editvoicechannel.py:141
+msgid "List of voice channels in {guild.name} ({guild.id})"
+msgstr "Список голосовых каналов в {guild.name} ({guild.id})"
+
+#: discordedit\editvoicechannel.py:160
+#, docstring
+msgid "Clone a voice channel."
+msgstr "Клонирование голосового канала."
+
+#: discordedit\editvoicechannel.py:182
+#, docstring
+msgid "Create an invite for a voice channel.\n\n"
+"        `max_age`: How long the invite should last in days. If it's 0 then the invite doesn't expire.\n"
+"        `max_uses`: How many uses the invite could be used for. If it's 0 then there are unlimited uses.\n"
+"        `temporary`: Denotes that the invite grants temporary membership (i.e. they get kicked after they disconnect).\n"
+"        `unique`: Indicates if a unique invite URL should be created. Defaults to True. If this is set to False then it will return a previously created invite.\n"
+"        "
+msgstr "Создание приглашения для голосового канала.\n\n"
+"        `max_age`: Сколько времени должно длиться приглашение в днях. Если это значение равно 0, то срок действия приглашения не истекает.\n"
+"        `max_uses`: Сколько раз приглашение может быть использовано. Если значение равно 0, то количество использований неограниченно.\n"
+"        `temporary`: Обозначает, что приглашение предоставляет временное членство (т.е. после отключения от сети их выкинут).\n"
+"        `unique`: Указывает, следует ли создавать уникальный URL приглашения. По умолчанию имеет значение True. Если установлено значение False, то будет возвращено ранее созданное приглашение.\n"
+"        "
+
+#: discordedit\editvoicechannel.py:212
+#, docstring
+msgid "Edit voice channel name."
+msgstr "Редактирование названия голосового канала."
+
+#: discordedit\editvoicechannel.py:228
+#, docstring
+msgid "Edit voice channel bitrate.\n\n"
+"        It must be a number between 8000 and\n"
+"        Level 1: 128000\n"
+"        Level 2: 256000\n"
+"        Level 3: 384000\n"
+"        "
+msgstr "Редактирование битрейта голосового канала.\n\n"
+"        Это должно быть число от 8000 до\n"
+"        Уровень 1: 128000\n"
+"        Уровень 2: 256000\n"
+"        Уровень 3: 384000\n"
+"        "
+
+#: discordedit\editvoicechannel.py:252
+#, docstring
+msgid "Edit voice channel nsfw."
+msgstr "Редактирование голосового канала nsfw."
+
+#: discordedit\editvoicechannel.py:273
+#, docstring
+msgid "Edit voice channel user limit.\n\n"
+"        It must be a number between 0 and 99.\n"
+"        "
+msgstr "Редактирование лимита пользователей голосового канала.\n\n"
+"        Это должно быть число от 0 до 99.\n"
+"        "
+
+#: discordedit\editvoicechannel.py:292
+#, docstring
+msgid "Edit voice channel position.\n\n"
+"        Warning: Only voice channels are taken into account. Channel 1 is the highest positioned voice channel.\n"
+"        Channels cannot be moved to a position that takes them out of their current category.\n"
+"        "
+msgstr "Редактирование положения голосового канала.\n\n"
+"        Внимание: Учитываются только голосовые каналы. Канал 1 является самым высоко расположенным голосовым каналом.\n"
+"        Каналы нельзя перемещать в положение, которое выводит их из текущей категории.\n"
+"        "
+
+#: discordedit\editvoicechannel.py:312
+#, docstring
+msgid "Edit voice channel sync permissions."
+msgstr "Редактирование разрешений синхронизации голосового канала."
+
+#: discordedit\editvoicechannel.py:333
+#, docstring
+msgid "Edit voice channel category."
+msgstr "Редактирование категории голосового канала."
+
+#: discordedit\editvoicechannel.py:352
+#, docstring
+msgid "Edit voice channel slowmode delay.\n\n"
+"        Specifies the slowmode rate limit for user in this channel. A value of 0s disables slowmode. The maximum value possible is 21600s.\n"
+"        "
+msgstr "Редактирование задержки медленного режима голосового канала.\n\n"
+"        Определяет ограничение скорости медленного режима для пользователя в этом канале. Значение 0 с отключает медленный режим. Максимально возможное значение - 21600 с.\n"
+"        "
+
+#: discordedit\editvoicechannel.py:377
+#, docstring
+msgid "Edit voice channel video quality mode.\n\n"
+"        auto = 1\n"
+"        full = 2\n"
+"        "
+msgstr "Редактирование режима качества видео голосового канала.\n\n"
+"        auto = 1\n"
+"        full = 2\n"
+"        "
+
+#: discordedit\editvoicechannel.py:406
+#, docstring
+msgid "Edit voice channel overwrites/permissions.\n\n"
+"        You may not specify `True` or `False` to reset the overwrite(s).\n"
+"        You must possess the permissions you wish to modify.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
+"        "
+msgstr "Редактирование перезаписи/разрешения голосового канала.\n\n"
+"        Вы не можете указывать `True` или `False` для сброса перезаписи.\n"
+"        Вы должны обладать правами, которые хотите изменить.\n\n"
+"        - `create_instant_invite`\n"
+"        - `manage_channels`\n"
+"        - `add_reactions`\n"
+"        - `priority_speaker`\n"
+"        - `stream`\n"
+"        - `read_messages`\n"
+"        - `end_messages`\n"
+"        -... `end_tts_messages`\n"
+"        - `manage_messages`\n"
+"        - `embed_links`\n"
+"        - `attach_files`\n"
+"        - `read_message_history`\n"
+"        - `mention_everyone`\n"
+"        - `external_emojis`\n"
+"        - `connect`\n"
+"        - `говорит`\n"
+"        - `mute_members`\n"
+"        - `deafen_members`\n"
+"        - `move_members`\n"
+"        - `use_voice_activation`\n"
+"        - `manage_roles`\n"
+"        - `manage_webhooks`\n"
+"        - `use_application_commands`\n"
+"        - `request_to_speak`\n"
+"        - `управление_потоками`\n"
+"        - `создание_общественных_потоков`\n"
+"        - `создание_частных_потоков`\n"
+"        - `внешние_стикеры`\n"
+"        - `отправка_сообщений_в_потоках`\n"
+"        "
+
+#: discordedit\editvoicechannel.py:524
+#, docstring
+msgid "Delete voice channel."
+msgstr "Удалить голосовой канал."
+
+#: discordedit\editvoicechannel.py:529
+msgid "⚠️ - Delete voice channel"
+msgstr "⚠️ - Удалить голосовой канал"
+
+#: discordedit\editvoicechannel.py:530 discordedit\editvoicechannel.py:537
+msgid "Do you really want to delete the voice channel {channel.mention} ({channel.id})?"
+msgstr "Вы действительно хотите удалить голосовой канал {channel.mention} ({channel.id})?"
+
+#: discordedit\editvoicechannel.py:556
+#, docstring
+msgid "View and edit voice channel."
+msgstr "Просмотр и редактирование голосового канала."
+
+#: discordedit\view.py:120
+msgid "You are not allowed to execute this command."
+msgstr "Вам не разрешено выполнять эту команду."
+

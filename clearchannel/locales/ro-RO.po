@@ -1,0 +1,58 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:36\n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ro\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/clearchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 78\n"
+"Language: ro_RO\n"
+
+#: clearchannel\clearchannel.py:20
+#, docstring
+msgid "A cog to delete ALL messages of a channel!\n\n"
+"    ⚠ The channel will be cloned, and then **deleted**.\n"
+"    "
+msgstr "O rotiță pentru a șterge TOATE mesajele de pe un canal!\n\n"
+"    ⚠ Canalul va fi clonat și apoi **șters**.\n"
+"    "
+
+#: clearchannel\clearchannel.py:101
+msgid "⚠️ - ClearChannel"
+msgstr "⚠️ - ClearChannel"
+
+#: clearchannel\clearchannel.py:102
+msgid "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?\n"
+"⚠ The channel will be cloned, and then **deleted**."
+msgstr "Chiar doriți să ștergeți TOATE mesajele de pe canalul {old_channel.mention} ({old_channel.id})?\n"
+"⚠ Canalul va fi clonat și apoi **șters**."
+
+#: clearchannel\clearchannel.py:112
+msgid "Clear Channel requested by {ctx.author} ({ctx.author.id})."
+msgstr "Clear Channel solicitată de {ctx.author} ({ctx.author.id})."
+
+#: clearchannel\clearchannel.py:118
+msgid "🗑️-Deleted-{old_channel.name}"
+msgstr "🗑️-Deleted-{old_channel.name}"
+
+#: clearchannel\clearchannel.py:132
+msgid "ClearChannel"
+msgstr "ClearChannel"
+
+#: clearchannel\clearchannel.py:133
+msgid "ALL the messages in this channel have been deleted..."
+msgstr "TOATE mesajele de pe acest canal au fost șterse..."
+
+#: clearchannel\clearchannel.py:151
+msgid "All messages in channel #{old_channel.name} ({old_channel.id}) have been deleted! You can find the new channel, with the same permissions: #{new_channel.name} ({new_channel.id})."
+msgstr "Toate mesajele de pe canalul #{old_channel.name} ({old_channel.id}) au fost șterse! Puteți găsi noul canal, cu aceleași permisiuni: #{new_channel.name} ({new_channel.id})."
+

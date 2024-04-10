@@ -1,0 +1,46 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:22\n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ro\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/codesnippets/locales/messages.pot\n"
+"X-Crowdin-File-ID: 227\n"
+"Language: ro_RO\n"
+
+#: codesnippets\codesnippets.py:67
+#, docstring
+msgid "A cog to send code content from a GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL!"
+msgstr "O rotiță pentru a trimite conținut de cod de la un URL GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin!"
+
+#: codesnippets\codesnippets.py:495
+msgid "No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found."
+msgstr "Nu s-a găsit nicio adresă URL GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin."
+
+#: codesnippets\codesnippets.py:533
+#, docstring
+msgid "Add a channel where the cog have to send automatically code snippets from URLs."
+msgstr "Adăugați un canal în care dispozitivul trebuie să trimită automat fragmente de cod din URL-uri."
+
+#: codesnippets\codesnippets.py:537
+msgid "The cog is already enabled in this channel"
+msgstr "Rotița este deja activată în acest canal"
+
+#: codesnippets\codesnippets.py:548
+#, docstring
+msgid "Remove a channel where the cog have to send automatically code snippets from URLs."
+msgstr "Îndepărtați un canal prin care dispozitivul trebuie să trimită automat fragmente de cod din URL-uri."
+
+#: codesnippets\codesnippets.py:552
+msgid "The cog is already disabled in this channel"
+msgstr "Rotița este deja dezactivată în acest canal"
+

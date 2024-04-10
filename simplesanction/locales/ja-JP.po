@@ -1,0 +1,417 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:21\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/simplesanction/locales/messages.pot\n"
+"X-Crowdin-File-ID: 98\n"
+"Language: ja_JP\n"
+
+#: simplesanction\constants.py:18
+msgid "Here is my informations about {member.display_name} ({member.id})."
+msgstr "{member.display_name} ({member.id}) についての情報です。"
+
+#: simplesanction\constants.py:27
+msgid "Why do you want to warn {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "なぜ {member.display_name} ({member.id}) に警告したいのですか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください)"
+
+#: simplesanction\constants.py:31
+msgid "The member {member.display_name} ({member.id}) has received a warning."
+msgstr "メンバー {member.display_name} ({member.id}) が警告を受けました。"
+
+#: simplesanction\constants.py:42
+msgid "Why do you want to ban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "なぜ {member.display_name} ({member.id}) を禁止したいのですか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください)"
+
+#: simplesanction\constants.py:45
+msgid "Do you really want to ban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "{member.display_name} ({member.id}) を本当に禁止したいですか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください)"
+
+#: simplesanction\constants.py:48
+msgid "The member {member.display_name} ({member.id}) has been banned."
+msgstr "メンバー {member.display_name} ({member.id}) は追放されました。"
+
+#: simplesanction\constants.py:57
+msgid "Why do you want to softban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "{member.display_name} ({member.id}) をソフトバンする理由は何ですか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください)"
+
+#: simplesanction\constants.py:60
+msgid "Do you really want to softban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "{member.display_name} ({member.id}) を本当にソフトバンしますか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください)。"
+
+#: simplesanction\constants.py:63
+msgid "The member {member.display_name} ({member.id}) has been softbanned."
+msgstr "メンバー {member.display_name} ({member.id}) はソフトバンされた。"
+
+#: simplesanction\constants.py:71
+msgid "How long do you want to tempban {member.display_name} ({member.id})? (Type `cancel` to cancel.)"
+msgstr "{member.display_name} ({member.id}) をいつまで一時停止しますか？(キャンセルするには`cancel`と入力してください。）"
+
+#: simplesanction\constants.py:74
+msgid "Why do you want to tempban {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "なぜ {duration}中に {member.display_name} ({member.id}) を一時停止したいのですか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください)。"
+
+#: simplesanction\constants.py:77
+msgid "Do you really want to tempban {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "{duration}の間、 {member.display_name} ({member.id}) を本当に一時停止しますか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください）。"
+
+#: simplesanction\constants.py:80
+msgid "The member {member.display_name} ({member.id}) has been tempbanned and will be unbanned in {duration}."
+msgstr "メンバー {member.display_name} ({member.id}) は臨時追放され、 {duration}で追放が解かれます。"
+
+#: simplesanction\constants.py:91
+msgid "Why do you want to kick {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "なぜ {member.display_name} ({member.id}) を蹴りたいのですか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください)"
+
+#: simplesanction\constants.py:94
+msgid "Do you really want to kick {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "{member.display_name} ({member.id}) を本当に蹴りたいですか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください)"
+
+#: simplesanction\constants.py:97
+msgid "The member {member.display_name} ({member.id}) has been kicked."
+msgstr "メンバー {member.display_name} ({member.id}) がキックされた。"
+
+#: simplesanction\constants.py:106
+msgid "Why do you want to mute {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "なぜ {member.display_name} ({member.id}) をミュートしたいのですか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください)。"
+
+#: simplesanction\constants.py:109
+msgid "Do you really want to mute {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "{member.display_name} ({member.id}) を本当にミュートしますか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください)。"
+
+#: simplesanction\constants.py:112
+msgid "The member {member.display_name} ({member.id}) has been muted."
+msgstr "メンバー {member.display_name} ({member.id}) がミュートされました。"
+
+#: simplesanction\constants.py:121
+msgid "Why do you want to mute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "{channel.mention}の {member.display_name} ({member.id}) をミュートしたいのはなぜですか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください)"
+
+#: simplesanction\constants.py:124
+msgid "Do you really want to mute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "{channel.mention}の {member.display_name} ({member.id}) を本当にミュートしますか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください)"
+
+#: simplesanction\constants.py:127
+msgid "The member {member.display_name} ({member.id}) has been muted in {channel.mention}."
+msgstr "メンバー {member.display_name} ({member.id}) は {channel.mention}でミュートされている。"
+
+#: simplesanction\constants.py:137
+msgid "How long do you want to tempmute {member.display_name} ({member.id})? (Type `cancel` to cancel.)"
+msgstr "{member.display_name} ({member.id}) をどのくらいの時間テンパミュートしますか？(キャンセルするには`cancel`と入力してください。）"
+
+#: simplesanction\constants.py:140
+msgid "Why do you want to tempmute {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "{duration}の間、 {member.display_name} ({member.id}) を一時停止したいのはなぜですか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください)"
+
+#: simplesanction\constants.py:143
+msgid "Do you really want to tempmute {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "{duration}の間、本当に {member.display_name} ({member.id}) を一時停止しますか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください)"
+
+#: simplesanction\constants.py:146
+msgid "The member {member.display_name} ({member.id}) has been tempmuted and will be unmuted in {duration}."
+msgstr "メンバー {member.display_name} ({member.id}) はテンポミュートされており、 {duration}でミュートが解除されます。"
+
+#: simplesanction\constants.py:156
+msgid "How long do you want to tempmute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel.)"
+msgstr "{channel.mention}の {member.display_name} ({member.id}) をどれくらいの時間テンパミュートしますか？(キャンセルするには`cancel`と入力してください。）"
+
+#: simplesanction\constants.py:159
+msgid "Why do you want to tempmute {member.display_name} ({member.id}) in {channel.mention} during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "{duration}の間に {channel.mention} の {member.display_name} ({member.id}) を一時停止したいのはなぜですか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください)"
+
+#: simplesanction\constants.py:162
+msgid "Do you really want to tempmute {member.display_name} ({member.id}) in {channel.mention} during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "{duration}の間、 {channel.mention} の {member.display_name} ({member.id}) を一時停止しますか？(キャンセルする場合は`cancel`、しない場合は`not`と入力してください)"
+
+#: simplesanction\constants.py:165
+msgid "The member {member.display_name} ({member.id}) has been tempmuted in {channel.mention} and will be unmuted in {duration}."
+msgstr "メンバー {member.display_name} ({member.id}) は {channel.mention} でテンポミュートされ、 {duration}でミュート解除されます。"
+
+#: simplesanction\simplesanction.py:47
+msgid "You're not allowed to execute the `[p]sanction` command in this channel."
+msgstr "このチャンネルでは`[p]sanction`コマンドを実行することはできません。"
+
+#: simplesanction\simplesanction.py:55
+#, docstring
+msgid "A cog to sanction members, with buttons!"
+msgstr "会員制裁のための歯車、ボタン付き！"
+
+#: simplesanction\simplesanction.py:209
+#, docstring
+msgid "\n"
+"        - Sanction a member quickly and easily.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 0 @member`\n"
+"        - `[p]sanction 0 @member What are these roles?`\n"
+"        - `[p]sanction 0 012345678987654321`\n"
+"        "
+msgstr "\n"
+"        - 素早く簡単にメンバーに制裁を加えることができます。\n\n"
+"        例\n"
+"        -[p]sanction 0 @member`\n"
+"        - `[p]sanction 0 @member これらのロールは何ですか？ `\n"
+"        - `[p]sanction 0 012345678987654321`\n"
+"        "
+
+#: simplesanction\simplesanction.py:244
+#, docstring
+msgid "\n"
+"         - ℹ️ Show informations about a member.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 1 @member`: UserInfo for no reason.\n"
+"        - `[p]sanction 1 @member What are these roles?`: UserInfo for the reason \"What are these roles?\".\n"
+"        - `[p]sanction 1 012345678987654321`: UserInfo with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - ℹ️ メンバーに関する情報を表示します。\n\n"
+"        例\n"
+"        -[p]sanction 1 @member`：理由なくユーザー情報を表示する。\n"
+"        - `[p]sanction 1 @member これらの役割は何ですか`：これらの役割は何ですか? \"という理由によるユーザー情報です。\n"
+"        -[p]sanction 1 012345678987654321`：指定されたIDを持つUserInfo。\n"
+"        "
+
+#: simplesanction\simplesanction.py:280
+#, docstring
+msgid "\n"
+"         - ⚠️ Add a simple warning on a member.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 2 @member not`: Warn for no reason.\n"
+"        - `[p]sanction 2 @member Insults`: Warn for the reason \"Insults\".\n"
+"        - `[p]sanction 2 012345678987654321 Advertising`: Warn the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - ⚠️ メンバーに簡単な警告を追加します。\n\n"
+"        例\n"
+"        -[p]sanction 2 @member not`：理由なく警告する。\n"
+"        -[p]sanction 2 @member Insults`：Insults \"という理由で警告する。\n"
+"        -[p]sanction 2 012345678987654321 Advertising`：指定されたIDのユーザーに警告する。\n"
+"        "
+
+#: simplesanction\simplesanction.py:315
+#, docstring
+msgid "\n"
+"         - 🔨 Ban a member from this server.\n\n"
+"        It won't delete messages by default.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 3 @member not`: Ban for no reason.\n"
+"        - `[p]sanction 3 @member Insults`: Ban for the reason \"Insults\".\n"
+"        - `[p]sanction 3 012345678987654321 Advertising`: Ban the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - 🔨 メンバーをこのサーバーから追放する。\n\n"
+"        デフォルトではメッセージは削除されません。\n\n"
+"        例\n"
+"        -[p]sanction 3 @member not`：理由なく追放する。\n"
+"        -[p]sanction 3 @member Insults`：Insults \"を理由にBAN。\n"
+"        -[p]sanction 3 012345678987654321 Advertising`：指定されたIDのユーザーをBANする。\n"
+"        "
+
+#: simplesanction\simplesanction.py:352
+#, docstring
+msgid "\n"
+"         - 🔂 SoftBan a member from this server.\n\n"
+"        This means that the user will be banned and immediately unbanned, so it will purge their messages in a period, in all channels.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 4 @member not`: SoftBan for no reason\n"
+"        - `[p]sanction 4 @member Insults`: SoftBan for the reason \"Insults\"\n"
+"        - `[p]sanction 4 012345678987654321 Advertising`: SoftBan the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - ᔂ メンバーをこのサーバーからソフトBANする。\n\n"
+"        これは、そのユーザーをBANし、すぐにBANを解除することを意味します。\n\n"
+"        例\n"
+"        -[p]sanction 4 @member not`：\n"
+"        - `[p]sanction 4 @member Insults`：\n"
+"        - `[p]sanction 4 012345678987654321 Advertising`：指定された ID のユーザーを SoftBan します。\n"
+"        "
+
+#: simplesanction\simplesanction.py:390
+#, docstring
+msgid "\n"
+"         - 💨 TempBan a member from this server.\n\n"
+"        It won't delete messages by default.\n"
+"        If you want to perform a temporary ban, provide the time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 5 @member not`: Ban for no reason.\n"
+"        - `[p]sanction 5 @member 7d Insults`: 7 days ban for the reason \"Insults\".\n"
+"        - `[p]sanction 5 012345678987654321 Advertising`: Ban the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - このサーバからメンバーを一時的に追放します。\n\n"
+"        デフォルトではメッセージは削除されません。\n"
+"        一時的にアクセス禁止にしたい場合は、理由の前に時間を入力してください。\n\n"
+"        例\n"
+"        -[p]sanction 5 @member not`：理由なくBANする。\n"
+"        -[p]sanction 5 @member 7d Insults`: \"Insults \"という理由で7日間BAN。\n"
+"        -[p]sanction 5 012345678987654321 Advertising`：指定されたIDのユーザーをBAN。\n"
+"        "
+
+#: simplesanction\simplesanction.py:428
+#, docstring
+msgid "\n"
+"         - 👢 Kick a member from this server.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 6 @member not`: Kick for no reason.\n"
+"        - `[p]sanction 6 @member Insults`: Kick for the reason \"Insults\".\n"
+"        - `[p]sanction 6 012345678987654321 Advertising`: Kick the user with the ID provided.\n"
+"        "
+msgstr "\n"
+"         - ᑢ このサーバーからメンバーをキックします。\n\n"
+"        例\n"
+"        -[p]sanction 6 @member not`：理由なくキックする。\n"
+"        -[p]sanction 6 @member Insults`：Insults \"という理由でキックする。\n"
+"        -[p]sanction 6 012345678987654321 Advertising`：指定されたIDのユーザーをキックする。\n"
+"        "
+
+#: simplesanction\simplesanction.py:463
+#, docstring
+msgid "\n"
+"         - 🔇 Mute a member in all channels, including voice channels.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 7 @member not`: Infinite mute for no reason.\n"
+"        - `[p]sanction 7 @member Spam`:Infinite  mute for the reason \"Spam\".\n"
+"        - `[p]sanction 7 @member Advertising`: Infinite mute for the reason \"Advertising\".\n"
+"        "
+msgstr "\n"
+"         - ᔇ 音声チャンネルを含む、すべてのチャンネルでメンバーをミュートします。\n\n"
+"        例\n"
+"        -[p]sanction 7 @member not`：理由なくミュートする。\n"
+"        -[p]sanction 7 @member Spam`: \"Spam \"という理由で無限ミュート。\n"
+"        -[p]sanction 7 @member Advertising`：広告」を理由に無制限にミュート。\n"
+"        "
+
+#: simplesanction\simplesanction.py:498
+#, docstring
+msgid "\n"
+"         - 👊 Mute a member in this channel.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 8 @member not`: Infinite mute for no reason.\n"
+"        - `[p]sanction 8 @member Spam`: Infinite mute for the reason \"Spam\".\n"
+"        - `[p]sanction 8 @member Advertising`: Infinite mute for the reason \"Advertising\".\n"
+"        "
+msgstr "\n"
+"         - 👊 このチャンネルのメンバーをミュートします。\n\n"
+"        例\n"
+"        -[p]sanction 8 @member not`：理由なく無限にミュートする。\n"
+"        -[p]sanction 8 @member Spam`：スパム \"を理由に無制限にミュートする。\n"
+"        -[p]sanction 8 @member Advertising`：Advertising`: \"Advertising \"を理由に無限ミュート。\n"
+"        "
+
+#: simplesanction\simplesanction.py:534
+#, docstring
+msgid "\n"
+"         - ⏳ TempMute a member in all channels, including voice channels.\n\n"
+"        You can set a timed mute by providing a valid time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 9 @member 30m not`: 30 minutes mute for no reason.\n"
+"        - `[p]sanction 9 @member 5h Spam`: 5 hours mute for the reason \"Spam\".\n"
+"        - `[p]sanction 9 @member 3d Advertising`: 3 days mute for the reason \"Advertising\".\n"
+"        "
+msgstr "\n"
+"         - 音声チャンネルを含む全チャンネルでメンバーをミュートする。\n\n"
+"        理由の前に有効な時間を指定することで、時間指定のミュートを設定できます。\n\n"
+"        例\n"
+"        -[p]sanction 9 @member 30m not`：理由なしで30分間ミュート。\n"
+"        -[p]sanction 9 @member 5h Spam`：Spam\" という理由で5時間ミュート。\n"
+"        -[p]sanction 9 @member 3d Advertising`：広告」を理由に3日間ミュート。\n"
+"        "
+
+#: simplesanction\simplesanction.py:572
+#, docstring
+msgid "\n"
+"         - ⌛ TempMute a member in this channel.\n\n"
+"        You can set a timed mute by providing a valid time before the reason.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 10 @member 30m not`: 30 minutes mute for no reason.\n"
+"        - `[p]sanction 10 @member 5h Spam`: 5 hours mute for the reason \"Spam\".\n"
+"        - `[p]sanction 10 @member 3d Advertising`: 3 days mute for the reason \"Advertising\".\n"
+"        "
+msgstr "\n"
+"         - チャンネル内のメンバーをミュートする。\n\n"
+"        理由の前に有効な時間を指定することで、時間指定のミュートを設定できます。\n\n"
+"        例\n"
+"        -[p]sanction 10 @member 30m not`：理由なしで30分間ミュート。\n"
+"        -[p]sanction 10 @member 5h Spam`：Spam\" という理由で5時間ミュート。\n"
+"        -[p]sanction 10 @member 3d Advertising`：広告」を理由に3日間ミュート。\n"
+"        "
+
+#: simplesanction\simplesanction.py:614 simplesanction\types.py:89
+#: simplesanction\types.py:103 simplesanction\types.py:146
+#: simplesanction\types.py:151
+msgid "The reason was not given."
+msgstr "理由は明かされていない。"
+
+#: simplesanction\simplesanction.py:618 simplesanction\view.py:99
+msgid "Sanction Member"
+msgstr "サンクション・メンバー"
+
+#: simplesanction\simplesanction.py:619
+msgid "Which member do you want to sanction? (Type `cancel` to cancel.)"
+msgstr "どのメンバーに制裁を加えますか？(キャンセルするには`cancel`と入力してください）。"
+
+#: simplesanction\simplesanction.py:637 simplesanction\types.py:125
+#: simplesanction\types.py:148
+msgid "Timed out, please try again."
+msgstr "タイムアウトしました、もう一度お試しください。"
+
+#: simplesanction\types.py:65
+msgid "The cog `{cog_required}` is not loaded. Please load it, with the command `{prefix}load {cog_required_lowered}`."
+msgstr "コグ `{cog_required}` がロードされていません。{prefix}load {cog_required_lowered}` コマンドでロードしてください。"
+
+#: simplesanction\types.py:82
+msgid "The sanction duration."
+msgstr "制裁期間。"
+
+#: simplesanction\types.py:173
+msgid "This cog allows you to easily sanction a server member.\n"
+"Member mention: {member.mention} - Member ID: {member.id}"
+msgstr "このコグを使うと、サーバーメンバーを簡単に制裁することができます。\n"
+"メンバー紹介: {member.mention} - メンバーID: {member.id}"
+
+#: simplesanction\types.py:197
+msgid "\n"
+"*The command may have failed. If so, an error will be displayed below.*"
+msgstr "\n"
+"*コマンドが失敗した可能性があります。その場合、以下のようにエラーが表示されます。"
+
+#: simplesanction\types.py:203 simplesanction\view.py:125
+msgid "Reason:"
+msgstr "理由"
+
+#: simplesanction\types.py:208 simplesanction\types.py:214
+#: simplesanction\view.py:128
+msgid "Duration:"
+msgstr "期間です："
+
+#: simplesanction\types.py:215
+msgid "Infinity"
+msgstr "インフィニティ"
+
+#: simplesanction\types.py:238
+msgid "This command doesn't exist."
+msgstr "このコマンドは存在しません。"
+
+#: simplesanction\types.py:243
+msgid "You can't execute this command, in this context."
+msgstr "このコマンドを、この文脈で実行することはできない。"
+
+#: simplesanction\view.py:101
+msgid "This tool allows you to easily sanction a server member.\n"
+"Member mention: {member.mention} - Member ID: {member.id}"
+msgstr "このツールを使えば、サーバー会員を簡単に制裁することができる。\n"
+"メンバー紹介: {member.mention} - メンバーID: {member.id}"
+
+#: simplesanction\view.py:135
+msgid "You are using this command in Fake mode, so no action will be taken, but I will pretend it is the case."
+msgstr "あなたはこのコマンドをフェイク・モードで使っているので、何のアクションも取られないが、私はそうであるかのように装う。"
+

@@ -1,0 +1,171 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:43\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/webhook/locales/messages.pot\n"
+"X-Crowdin-File-ID: 324\n"
+"Language: ru_RU\n"
+
+#: webhook\webhook.py:50
+msgid "Webhook Session Initiated"
+msgstr "Инициирован сеанс Webhook"
+
+#: webhook\webhook.py:51
+msgid "Session Created by {author.display_name} ({author.id})."
+msgstr "Сессия создана {author.display_name} ({author.id})."
+
+#: webhook\webhook.py:64
+msgid "Session initialization failed as provided webhook link was invalid."
+msgstr "Инициализация сеанса не удалась, так как предоставленная ссылка на веб-крючок оказалась недействительной."
+
+#: webhook\webhook.py:69
+msgid "I will send all messages in this channel to the webhook until the session is closed with `{ctx.clean_prefix}webhook session close` or there are 2 minutes of inactivity."
+msgstr "Я буду отправлять все сообщения в этом канале на вебхук до тех пор, пока сессия не будет закрыта с помощью `{ctx.clean_prefix}webhook session close` или пока не пройдет 2 минуты бездействия."
+
+#: webhook\webhook.py:97
+#, docstring
+msgid "Various webhook commands to create and send messages along webhooks!"
+msgstr "Различные команды webhook для создания и отправки сообщений по webhook!"
+
+#: webhook\webhook.py:118
+msgid "That doesn't look like a webhook link."
+msgstr "Это не похоже на ссылку вебхука."
+
+#: webhook\webhook.py:135
+msgid "Use `{ctx.prefix}help {ctx.command.qualified_name}` to see an example."
+msgstr "Используйте `{ctx.prefix}help {ctx.command.qualified_name}`, чтобы посмотреть пример."
+
+#: webhook\webhook.py:158
+msgid "I can not do that because I don't have the `manage_webhooks` permission."
+msgstr "Я не могу этого сделать, потому что у меня нет разрешения `manage_webhooks`."
+
+#: webhook\webhook.py:180
+#, docstring
+msgid "Creates a webhook in the channel specified with the name specified.\n\n"
+"        If no channel is specified then it will default to the current channel.\n"
+"        "
+msgstr "Создает вебхук в указанном канале с указанным именем.\n\n"
+"        Если канал не указан, то по умолчанию будет использоваться текущий канал.\n"
+"        "
+
+#: webhook\webhook.py:199
+#, docstring
+msgid "Sends a message to the specified webhook using your display name and you avatar."
+msgstr "Отправляет сообщение на указанный веб-хук, используя ваше отображаемое имя и аватар."
+
+#: webhook\webhook.py:219
+#, docstring
+msgid "Sends a message a channel as a webhook using your display name and your avatar.\n\n"
+"        You can attach files to the command.\n"
+"        "
+msgstr "Отправляет сообщение на канал в виде веб-хука, используя ваше отображаемое имя и аватар.\n\n"
+"        К команде можно прикрепить файлы.\n"
+"        "
+
+#: webhook\webhook.py:253
+#, docstring
+msgid "Sends a message a channel as a webhook using the display name and the avatar of a specified member.\n\n"
+"        You can attach files to the command.\n"
+"        "
+msgstr "Отправляет сообщение на канал в виде веб-хука с использованием отображаемого имени и аватара указанного пользователя.\n\n"
+"        К команде можно прикрепить файлы.\n"
+"        "
+
+#: webhook\webhook.py:288
+#, docstring
+msgid "Sends a message a channel as a webhook using a specified display name and a specified avatar url.\n\n"
+"        You can attach files to the command.\n"
+"        "
+msgstr "Отправляет сообщение на канал в виде веб-хука, используя указанное имя отображения и указанный url аватара.\n\n"
+"        К команде можно прикрепить файлы.\n"
+"        "
+
+#: webhook\webhook.py:322
+#, docstring
+msgid "Sends a message a channel as a webhook using Clyde's display name and avatar.\n\n"
+"        You can attach files to the command.\n"
+"        "
+msgstr "Отправляет сообщение на канал в виде веб-хука, используя отображаемое имя и аватар Клайда.\n\n"
+"        К команде можно прикрепить файлы.\n"
+"        "
+
+#: webhook\webhook.py:348
+#, docstring
+msgid "Show all members in the server that have the permission `manage_webhooks`."
+msgstr "Показать всех пользователей сервера, имеющих право `manage_webhooks`."
+
+#: webhook\webhook.py:370
+msgid "No one here has the permission `manage_webhooks` other than the owner."
+msgstr "Никто здесь не имеет права `manage_webhooks`, кроме владельца."
+
+#: webhook\webhook.py:374
+msgid "Members with the permission `manage_webhooks`"
+msgstr "Пользователи с правами `manage_webhooks`."
+
+#: webhook\webhook.py:390
+#, docstring
+msgid "Edit a message sent by a webhook.\n\n"
+"        You can attach files to the command.\n"
+"        "
+msgstr "Редактирование сообщения, отправленного веб-крючком.\n\n"
+"        К команде можно прикреплять файлы.\n"
+"        "
+
+#: webhook\webhook.py:410
+msgid "No webhook found for this message."
+msgstr "Для этого сообщения не найден веб-крючок."
+
+#: webhook\webhook.py:423
+#, docstring
+msgid "Delete all webhooks in this server."
+msgstr "Удалите все веб-крючки на этом сервере."
+
+#: webhook\webhook.py:426
+msgid "There are no webhooks in this server."
+msgstr "На этом сервере нет веб-крючков."
+
+#: webhook\webhook.py:430
+msgid "⚠️ - Webhooks Deletion"
+msgstr "⚠️ - Удаление веб-крючков"
+
+#: webhook\webhook.py:431
+msgid "This will delete all webhooks in the server. Are you sure you want to do this?"
+msgstr "Это приведет к удалению всех веб-хуков на сервере. Вы уверены, что хотите это сделать?"
+
+#: webhook\webhook.py:441
+msgid "Deleting all webhooks..."
+msgstr "Удаление всех веб-крючков..."
+
+#: webhook\webhook.py:453 webhook\webhook.py:455
+msgid "{count} webhooks deleted."
+msgstr "{count} веб-крючки удалены."
+
+#: webhook\webhook.py:460
+#, docstring
+msgid "Initiate a session within this channel sending messages to a specified webhook link."
+msgstr "Инициирует сеанс в этом канале, отправляя сообщения на указанную ссылку веб-хука."
+
+#: webhook\webhook.py:463
+msgid "This channel already has an ongoing session. Use `{ctx.clean_prefix}webhook session close` to close it."
+msgstr "На этом канале уже есть текущая сессия. Используйте `{ctx.clean_prefix}webhook session close`, чтобы закрыть его."
+
+#: webhook\webhook.py:474
+#, docstring
+msgid "Close an ongoing webhook session in a channel."
+msgstr "Закрытие текущей сессии веб-хука в канале."
+
+#: webhook\webhook.py:478
+msgid "This channel does not have an ongoing webhook session. Start one with `{ctx.clean_prefix}webhook session`."
+msgstr "У этого канала нет текущей сессии webhook. Запустите его с помощью `{ctx.clean_prefix}webhook session`."
+

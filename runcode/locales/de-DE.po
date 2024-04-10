@@ -1,0 +1,112 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:10\n"
+"Last-Translator: \n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: de\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/runcode/locales/messages.pot\n"
+"X-Crowdin-File-ID: 187\n"
+"Language: de_DE\n"
+
+#: runcode\runcode.py:44
+msgid "The cog is not fully charged."
+msgstr "Das Zahnrad ist nicht vollständig geladen."
+
+#: runcode\runcode.py:47 runcode\runcode.py:314
+msgid "Incorrect language identifier for your code.\n"
+"To list all the supported languages identifiers, please use `{ctx.prefix}setruncode listidentifiers`."
+msgstr "Falscher Sprachidentifikator für Ihren Code.\n"
+"Um alle unterstützten Sprachbezeichner aufzulisten, verwenden Sie bitte `{ctx.prefix}setruncode listidentifiers`."
+
+#: runcode\runcode.py:90 runcode\runcode.py:106
+msgid "No flags in argument."
+msgstr "Keine Flaggen im Argument."
+
+#: runcode\runcode.py:112
+#, docstring
+msgid "A cog to compile and run codes in some languages! Use `[p]setruncode listlanguages` to get a list of all the available languages."
+msgstr "Ein Werkzeug zum Kompilieren und Ausführen von Codes in einigen Sprachen! Benutze `[p]setruncode listlanguages` um eine Liste aller verfügbaren Sprachen zu erhalten."
+
+#: runcode\runcode.py:255
+msgid "File must be smaller than 20 kio."
+msgstr "Die Datei muss kleiner als 20 kio sein."
+
+#: runcode\runcode.py:289
+msgid "Please provide the code!"
+msgstr "Bitte geben Sie den Code an!"
+
+#: runcode\runcode.py:305
+msgid "Incorrect syntax, please use Markdown's syntax for your code."
+msgstr "Falsche Syntax, bitte verwenden Sie die Syntax von Markdown für Ihren Code."
+
+#: runcode\runcode.py:395
+msgid "The language of your code could not be found. Specify it with the `language` parameter."
+msgstr "Die Sprache deines Codes konnte nicht gefunden werden. Geben Sie sie mit dem Parameter `language` an."
+
+#: runcode\runcode.py:424
+msgid "`{engine}` is not a correct engine for {code_language}\n"
+"To list all the available engine for it, please use `{ctx.prefix}setruncode listengines {code_language}`."
+msgstr "{engine}\" ist keine korrekte Engine für {code_language}\n"
+". Um alle verfügbaren Engines aufzulisten, verwenden Sie bitte{ctx.prefix}setruncode listengines {code_language}\"."
+
+#: runcode\runcode.py:437
+msgid "There is no options available for compilation using `{engine}`.\n"
+"Ignoring this option."
+msgstr "Es gibt keine Optionen für die Kompilierung mit `{engine}`.\n"
+"Diese Option wird ignoriert."
+
+#: runcode\runcode.py:450
+msgid "There is no options available for runtime execution `{engine}`.\n"
+"Ignoring this option."
+msgstr "Es ist keine Option für die Laufzeitausführung `{engine}` verfügbar.\n"
+"Diese Option wird ignoriert."
+
+#: runcode\runcode.py:586
+#, docstring
+msgid "\n"
+"        Shows a list of all the available languages, or Wandbox or Tio API.\n"
+"        "
+msgstr "\n"
+"        Zeigt eine Liste aller verfügbaren Sprachen, oder Wandbox oder Tio API.\n"
+"        "
+
+#: runcode\runcode.py:607
+#, docstring
+msgid "\n"
+"        Shows a list of all the available engines for a specified language, only for Wandbox API.\n\n"
+"        Arguments:\n"
+"        - `language`: The language name.\n"
+"        "
+msgstr "\n"
+"        Zeigt eine Liste aller verfügbaren Engines für eine bestimmte Sprache an, nur für Wandbox API.\n\n"
+"        Argumente:\n"
+"        - `Sprache`: Der Name der Sprache.\n"
+"        "
+
+#: runcode\runcode.py:635
+#, docstring
+msgid "\n"
+"        Lists all the languages identifiers recognized by the bot, only for Wandbox API.\n"
+"        "
+msgstr "\n"
+"        Listet alle vom Bot erkannten Sprachkennungen auf, nur für Wandbox API.\n"
+"        "
+
+#: runcode\runcode.py:652
+#, docstring
+msgid "\n"
+"        Lists all the languages extensions.\n"
+"        "
+msgstr "\n"
+"        Listet alle Spracherweiterungen auf.\n"
+"        "
+

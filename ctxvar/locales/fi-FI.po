@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:41\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/ctxvar/locales/messages.pot\n"
+"X-Crowdin-File-ID: 82\n"
+"Language: fi_FI\n"
+
+#: ctxvar\ctxvar.py:65
+msgid "No Discord object found."
+msgstr "Discord-objektia ei löytynyt."
+
+#: ctxvar\ctxvar.py:81 ctxvar\ctxvar.py:214 ctxvar\ctxvar.py:265
+#: ctxvar\ctxvar.py:346
+msgid "I couldn't find any cog, command, or object named `{thing}`."
+msgstr "En löytänyt mitään hammasta, komentoa tai objektia nimeltä `{thing}`."
+
+#: ctxvar\ctxvar.py:104
+#, docstring
+msgid "A cog to list and display the contents of all sub-functions of `ctx`!"
+msgstr "Logi, joka listaa ja näyttää `ctx`: n kaikkien alitoimintojen sisällön!"
+
+#: ctxvar\ctxvar.py:132
+#, docstring
+msgid "Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."
+msgstr "Näyttää luettelon luokan 'ctx' tai sen alaattribuuttien kaikista attribuuteista ja niiden arvoista."
+
+#: ctxvar\ctxvar.py:136 ctxvar\ctxvar.py:197 ctxvar\ctxvar.py:248
+#: ctxvar\ctxvar.py:329
+msgid "The cog Dev must be loaded, to make sure you know what you are doing."
+msgstr "Hammaspyörä Dev on ladattava, jotta tiedät, mitä olet tekemässä."
+
+#: ctxvar\ctxvar.py:147
+msgid "The argument you specified is not a subclass of the instance."
+msgstr "Määrittämäsi argumentti ei ole instanssin aliluokka."
+
+#: ctxvar\ctxvar.py:154
+msgid "Here are all the variables and their associated values that can be used in this instance class."
+msgstr "Tässä ovat kaikki muuttujat ja niihin liittyvät arvot, joita voidaan käyttää tässä esimerkkiluokassa."
+
+#: ctxvar\ctxvar.py:193
+#, docstring
+msgid "Display a list of all attributes of the provided object (debug not async)."
+msgstr "Näyttää luettelon kaikista annetun objektin attribuuteista (debug ei asynkroninen)."
+
+#: ctxvar\ctxvar.py:244
+#, docstring
+msgid "Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."
+msgstr "Suorita `rich.help(obj=objekti, ...)` annetulle objektille (debug ei asynkinen)."
+
+#: ctxvar\ctxvar.py:325
+#, docstring
+msgid "Execute `ast.dump(ast.parse(<code content>))` on the provided object (debug not async)."
+msgstr "Suorita `ast.dump(ast.parse(<code content>))` annetulle objektille (debug ei asynkinen)."
+
+#: ctxvar\ctxvar.py:366
+#, docstring
+msgid "List attributes of the provided object like dpy objects (debug not async)."
+msgstr "Luetteloi annetun objektin attribuutit kuten dpy-objektit (debug ei asynkroninen)."
+
+#: ctxvar\ctxvar.py:451
+#, docstring
+msgid "Parse the Markdown syntax for a specified message's content or a string."
+msgstr "Parseeraa määritetyn viestin sisällön tai merkkijonon Markdown-syntaksin."
+
+#: ctxvar\ctxvar.py:465
+msgid "Error in the module used for this command."
+msgstr "Virhe tässä komennossa käytetyssä moduulissa."
+

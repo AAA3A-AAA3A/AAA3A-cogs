@@ -1,0 +1,409 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:38\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/guildstats/locales/messages.pot\n"
+"X-Crowdin-File-ID: 271\n"
+"Language: fi_FI\n"
+
+#: guildstats\guildstats.py:68
+msgid "No member/category/text channel/voice channel found."
+msgstr "Jäsen/luokka/tekstikanava/äänikanava ei löytynyt."
+
+#: guildstats\guildstats.py:74
+#, docstring
+msgid "A cog to generate images with messages and voice stats, for members, roles, guilds, categories, text channels, voice channels and activities!"
+msgstr "Ohjain, joka luo kuvia, joissa on viestejä ja äänitilastoja, jäsenille, rooleille, killoille, kategorioille, tekstikanaville, äänikanaville ja aktiviteeteille!"
+
+#: guildstats\guildstats.py:2951
+msgid "Role {_object.name}"
+msgstr "Rooli {_object.name}"
+
+#: guildstats\guildstats.py:2958
+msgid "Guild Stats"
+msgstr "Killan tilastot"
+
+#: guildstats\guildstats.py:2973
+msgid "Messages Stats"
+msgstr "Viestit Tilastot"
+
+#: guildstats\guildstats.py:2980
+msgid "Voice Stats"
+msgstr "Äänitilastot"
+
+#: guildstats\guildstats.py:2986
+msgid "Activities Stats"
+msgstr "Toimintatilastot"
+
+#: guildstats\guildstats.py:2995
+msgid "Top Stats"
+msgstr "Parhaat tilastot"
+
+#: guildstats\guildstats.py:3003
+msgid "Activity - {activity_name}"
+msgstr "Toiminta - {activity_name}"
+
+#: guildstats\guildstats.py:3015
+msgid "Category - {_object.name}"
+msgstr "Kategoria - {_object.name}"
+
+#: guildstats\guildstats.py:3101 guildstats\guildstats.py:3135
+msgid "Created On"
+msgstr "Created On"
+
+#: guildstats\guildstats.py:3116
+msgid "Joined On"
+msgstr "Joined On"
+
+#: guildstats\guildstats.py:3233 guildstats\guildstats.py:3911
+#: guildstats\guildstats.py:4753 guildstats\guildstats.py:4813
+#: guildstats\guildstats.py:4864 guildstats\guildstats.py:4881
+#: guildstats\guildstats.py:5344 guildstats\guildstats.py:5563
+msgid "Graphic"
+msgstr "Graafinen"
+
+#: guildstats\guildstats.py:3298 guildstats\guildstats.py:4271
+#: guildstats\guildstats.py:4533 guildstats\guildstats.py:5212
+#: guildstats\guildstats.py:5431
+msgid "Contributors"
+msgstr "Avustajat"
+
+#: guildstats\guildstats.py:3506 guildstats\guildstats.py:5599
+#: guildstats\guildstats.py:5641
+msgid "Tracking data in this server for {interval_string}."
+msgstr "Seurantatiedot tällä palvelimella osoitteessa {interval_string}."
+
+#: guildstats\guildstats.py:3515 guildstats\guildstats.py:5608
+#: guildstats\guildstats.py:5650
+msgid "Only {members_type} are taken into account."
+msgstr "Vain {members_type} otetaan huomioon."
+
+#: guildstats\guildstats.py:3647 guildstats\guildstats.py:3929
+#: guildstats\guildstats.py:4192 guildstats\guildstats.py:4454
+#: guildstats\guildstats.py:4898 guildstats\guildstats.py:5142
+#: guildstats\guildstats.py:5361
+msgid "Server Lookback"
+msgstr "Palvelimen takaisinkatselu"
+
+#: guildstats\guildstats.py:3657 guildstats\guildstats.py:3940
+#: guildstats\guildstats.py:4908
+msgid "Text"
+msgstr "Teksti"
+
+#: guildstats\guildstats.py:3668 guildstats\guildstats.py:3812
+#: guildstats\guildstats.py:3954 guildstats\guildstats.py:4772
+#: guildstats\guildstats.py:4919
+msgid "Voice"
+msgstr "Ääni"
+
+#: guildstats\guildstats.py:3681 guildstats\guildstats.py:3969
+#: guildstats\guildstats.py:4217 guildstats\guildstats.py:4772
+#: guildstats\guildstats.py:4932 guildstats\guildstats.py:5167
+msgid "Messages"
+msgstr "Viestit"
+
+#: guildstats\guildstats.py:3691 guildstats\guildstats.py:3736
+#: guildstats\guildstats.py:3980 guildstats\guildstats.py:4034
+#: guildstats\guildstats.py:4228 guildstats\guildstats.py:4282
+#: guildstats\guildstats.py:4490 guildstats\guildstats.py:4544
+#: guildstats\guildstats.py:4942 guildstats\guildstats.py:4987
+#: guildstats\guildstats.py:5177 guildstats\guildstats.py:5222
+#: guildstats\guildstats.py:5396 guildstats\guildstats.py:5441
+msgid "1d"
+msgstr "1d"
+
+#: guildstats\guildstats.py:3702 guildstats\guildstats.py:3747
+#: guildstats\guildstats.py:3994 guildstats\guildstats.py:4048
+#: guildstats\guildstats.py:4242 guildstats\guildstats.py:4296
+#: guildstats\guildstats.py:4504 guildstats\guildstats.py:4558
+#: guildstats\guildstats.py:4953 guildstats\guildstats.py:4998
+#: guildstats\guildstats.py:5188 guildstats\guildstats.py:5233
+#: guildstats\guildstats.py:5407 guildstats\guildstats.py:5452
+msgid "7d"
+msgstr "7d"
+
+#: guildstats\guildstats.py:3713 guildstats\guildstats.py:3759
+#: guildstats\guildstats.py:4008 guildstats\guildstats.py:4062
+#: guildstats\guildstats.py:4256 guildstats\guildstats.py:4310
+#: guildstats\guildstats.py:4518 guildstats\guildstats.py:4572
+#: guildstats\guildstats.py:4964 guildstats\guildstats.py:5010
+#: guildstats\guildstats.py:5199 guildstats\guildstats.py:5245
+#: guildstats\guildstats.py:5418 guildstats\guildstats.py:5464
+msgid "30d"
+msgstr "30d"
+
+#: guildstats\guildstats.py:3726 guildstats\guildstats.py:4023
+#: guildstats\guildstats.py:4479 guildstats\guildstats.py:4977
+#: guildstats\guildstats.py:5386
+msgid "Voice Activity"
+msgstr "Puheaktiviteetti"
+
+#: guildstats\guildstats.py:3789
+msgid "Server Ranks"
+msgstr "Palvelimen sijoitukset"
+
+#: guildstats\guildstats.py:3805 guildstats\guildstats.py:3818
+msgid "No data."
+msgstr "Ei tietoja."
+
+#: guildstats\guildstats.py:3827
+msgid "Top Channels & Activity"
+msgstr "Parhaat kanavat & Toiminta"
+
+#: guildstats\guildstats.py:4077 guildstats\guildstats.py:4829
+#: guildstats\guildstats.py:5025
+msgid "Top Members"
+msgstr "Top Jäsenet"
+
+#: guildstats\guildstats.py:4135 guildstats\guildstats.py:5083
+msgid "Top Channels"
+msgstr "Parhaat kanavat"
+
+#: guildstats\guildstats.py:4325 guildstats\guildstats.py:5279
+msgid "Top Messages Members"
+msgstr "Parhaat viestit Jäsenet"
+
+#: guildstats\guildstats.py:4389
+msgid "Top Messages Channels"
+msgstr "Parhaat viestit Kanavat"
+
+#: guildstats\guildstats.py:4587 guildstats\guildstats.py:5498
+msgid "Top Voice Members"
+msgstr "Top Voice Jäsenet"
+
+#: guildstats\guildstats.py:4651
+msgid "Top Voice Channels"
+msgstr "Parhaat äänikanavat"
+
+#: guildstats\guildstats.py:4716
+msgid "Top Activities (Applications)"
+msgstr "Tärkeimmät toiminnot (sovellukset)"
+
+#: guildstats\guildstats.py:4771
+msgid "Tope"
+msgstr "Tope"
+
+#: guildstats\guildstats.py:4772
+msgid "Members"
+msgstr "Jäsenet"
+
+#: guildstats\guildstats.py:4772
+msgid "Channels"
+msgstr "Kanavat"
+
+#: guildstats\guildstats.py:5260 guildstats\guildstats.py:5479
+msgid "Server Rank"
+msgstr "Palvelimen sijoitus"
+
+#: guildstats\guildstats.py:5771 guildstats\guildstats.py:5811
+#: guildstats\guildstats.py:5847 guildstats\guildstats.py:5873
+#: guildstats\guildstats.py:5899 guildstats\guildstats.py:5925
+#: guildstats\guildstats.py:5954 guildstats\guildstats.py:5987
+#: guildstats\guildstats.py:6017 guildstats\guildstats.py:6048
+#: guildstats\guildstats.py:6079 guildstats\guildstats.py:6112
+msgid "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
+msgstr "Tämä hammasratas on poistettu käytöstä tässä killassa. Ylläpitäjät voivat ottaa sen käyttöön komennolla `{prefix}guildstats enable`."
+
+#: guildstats\guildstats.py:5778 guildstats\guildstats.py:5818
+#: guildstats\guildstats.py:6119
+msgid "This user is in the ignored users list (`{prefix}guildstats ignoreme`)."
+msgstr "Tämä käyttäjä on sivuutettujen käyttäjien listalla (`{prefix}guildstats ignoreme`)."
+
+#: guildstats\guildstats.py:5802
+#, docstring
+msgid "Display stats for a specified member."
+msgstr "Näytä määritetyn jäsenen tilastot."
+
+#: guildstats\guildstats.py:5838
+#, docstring
+msgid "Display stats for a specified role."
+msgstr "Näytä määritetyn roolin tilastot."
+
+#: guildstats\guildstats.py:5866
+#, docstring
+msgid "Display stats for this guild."
+msgstr "Näytä tämän killan tilastot."
+
+#: guildstats\guildstats.py:5892
+#, docstring
+msgid "Display stats for the messages in this guild."
+msgstr "Näytä tämän killan viestien tilastot."
+
+#: guildstats\guildstats.py:5918
+#, docstring
+msgid "Display stats for the voice in this guild."
+msgstr "Näytä tämän killan äänen tilastot."
+
+#: guildstats\guildstats.py:5943
+#, docstring
+msgid "Display stats for activities in this guild."
+msgstr "Näytä tämän killan toimintojen tilastot."
+
+#: guildstats\guildstats.py:5946 guildstats\guildstats.py:6071
+#: guildstats\guildstats.py:6104
+msgid "Activities stats are disabled on this bot."
+msgstr "Toimintatilastot on poistettu käytöstä tässä botissa."
+
+#: guildstats\guildstats.py:5975
+#, docstring
+msgid "Display stats for a specified category."
+msgstr "Näytä määritetyn luokan tilastot."
+
+#: guildstats\guildstats.py:6008
+#, docstring
+msgid "Display stats for a specified channel."
+msgstr "Näytä määritetyn kanavan tilastot."
+
+#: guildstats\guildstats.py:6022
+msgid "Threads aren't supported by this cog."
+msgstr "Tämä hammasratas ei tue säikeitä."
+
+#: guildstats\guildstats.py:6039
+#, docstring
+msgid "Display top stats for voice/messages members/channels."
+msgstr "Näytä ääni-/viestijäsenten/-kanavien parhaat tilastot."
+
+#: guildstats\guildstats.py:6068
+#, docstring
+msgid "Display stats for a specific activity in this guild."
+msgstr "Näytä killan tietyn toiminnan tilastot."
+
+#: guildstats\guildstats.py:6099
+#, docstring
+msgid "Display graphic for members, roles guilds, text channels, voice channels and activities."
+msgstr "Näytä graafinen kuva jäsenistä, rooleista, killoista, tekstikanavista, äänikanavista ja aktiviteeteista."
+
+#: guildstats\guildstats.py:6135
+#, docstring
+msgid "Asking GuildStats to ignore your actions."
+msgstr "Pyydät GuildStatsia jättämään toimintasi huomiotta."
+
+#: guildstats\guildstats.py:6143
+msgid "You will no longer be seen by this cog and the data I held on you have been deleted."
+msgstr "Tämä hammasratas ei enää näe sinua, ja sinua koskevat tietoni on poistettu."
+
+#: guildstats\guildstats.py:6150
+msgid "You'll be seen again by this cog."
+msgstr "Tämä hammasratas näkee sinut taas."
+
+#: guildstats\guildstats.py:6155
+#, docstring
+msgid "Ignore or unignore a specific user."
+msgstr "Jätä tietty käyttäjä huomiotta tai poista sen huomiotta jättäminen."
+
+#: guildstats\guildstats.py:6162
+msgid "{user.mention} ({user.id}) will no longer be seen by this cog, and their data has been deleted."
+msgstr "{user.mention} ({user.id}) ei enää näy tässä hammasrattaassa, ja niiden tiedot on poistettu."
+
+#: guildstats\guildstats.py:6171
+msgid "{user.mention} ({user.id}) will be seen again by this cog."
+msgstr "{user.mention} ({user.id}) nähdään jälleen tämän hammasrattaan toimesta."
+
+#: guildstats\guildstats.py:6178
+#, docstring
+msgid "Ignore or unignore a specific category."
+msgstr "Jätä tietty luokka huomiotta tai poista sen huomioiminen."
+
+#: guildstats\guildstats.py:6186
+msgid "`{category.name}` ({category.id}) will now be ignored in stats (except for the specific category one)."
+msgstr "`{category.name}` ({category.id}) jätetään nyt huomioimatta tilastoissa (lukuun ottamatta tiettyä luokkaa)."
+
+#: guildstats\guildstats.py:6194
+msgid "`{category.name}` ({category.id}) will no longer be ignored in stats."
+msgstr "`{category.name}` ({category.id}) ei enää jätetä huomiotta tilastoissa."
+
+#: guildstats\guildstats.py:6207
+#, docstring
+msgid "Ignore or unignore a specific channel."
+msgstr "Jätä tietty kanava huomiotta tai poista sen huomiotta jättäminen."
+
+#: guildstats\guildstats.py:6213
+msgid "{channel.mention} ({channel.id}) will now be ignored in stats (except for the specific channel one)."
+msgstr "{channel.mention} ({channel.id}) jätetään nyt huomioimatta tilastoissa (lukuun ottamatta tiettyä kanavaa)."
+
+#: guildstats\guildstats.py:6221
+msgid "{channel.mention} ({channel.id}) will no longer be ignored in stats."
+msgstr "{channel.mention} ({channel.id}) ei enää jätetä huomiotta tilastoissa."
+
+#: guildstats\guildstats.py:6229
+#, docstring
+msgid "Ignore or unignore a specific activity."
+msgstr "Jätä tietty toiminto huomiotta tai poista sen huomiotta jättäminen."
+
+#: guildstats\guildstats.py:6237
+msgid "The activity `{activity_name}` will now be ignored in stats (except for the specific activity one)."
+msgstr "Aktiviteetti `{activity_name}` jätetään nyt huomiotta tilastoissa (lukuun ottamatta tiettyä aktiviteettia)."
+
+#: guildstats\guildstats.py:6245
+msgid "The activity `{activity_name}` will no longer be ignored in stats."
+msgstr "Toimintoa `{activity_name}` ei enää jätetä huomiotta tilastoissa."
+
+#: guildstats\guildstats.py:6253
+#, docstring
+msgid "Enable or disable activities stats."
+msgstr "Ota toimintatilastot käyttöön tai poista ne käytöstä."
+
+#: guildstats\guildstats.py:6259
+#, docstring
+msgid "Enable or disable by default the cog in the bot guilds."
+msgstr "Ota oletusarvoisesti käyttöön tai poista käytöstä bottien kiltojen hammasrattaat."
+
+#: guildstats\guildstats.py:6265
+#, docstring
+msgid "Enable the cog in this guild/server."
+msgstr "Ota hammasratas käyttöön tässä killassa/palvelimella."
+
+#: guildstats\guildstats.py:6269
+msgid "GuildStats already enabled in this guild/server."
+msgstr "GuildStats on jo käytössä tässä killassa/palvelimessa."
+
+#: guildstats\guildstats.py:6272
+msgid "GuildStats enabled in this guild/server."
+msgstr "GuildStats käytössä tässä killassa/palvelimella."
+
+#: guildstats\guildstats.py:6277
+#, docstring
+msgid "Disable the cog in this guild/server."
+msgstr "Poista hammasratas käytöstä tässä killassa/palvelimessa."
+
+#: guildstats\guildstats.py:6281
+msgid "GuildStats already disabled in this guild/server."
+msgstr "GuildStats on jo poistettu käytöstä tässä killassa/palvelimessa."
+
+#: guildstats\guildstats.py:6284
+msgid "GuildStats disabled in this guild/server."
+msgstr "GuildStats poistettu käytöstä tässä killassa/palvelimella."
+
+#: guildstats\guildstats.py:6290
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "Hae upotus silmukan tilan tarkistamista varten."
+
+#: guildstats\guildstats.py:6301
+#, docstring
+msgid "Purge Config for the current guild."
+msgstr "Puhdista nykyisen killan konfiguraatio."
+
+#: guildstats\guildstats.py:6306
+msgid "All GuildStats data purged for this guild."
+msgstr "Kaikki GuildStats-tiedot tyhjennetään tämän killan osalta."
+
+#: guildstats\guildstats.py:6309
+msgid "All GuildStats activities data purged for this guild."
+msgstr "Kaikki GuildStats-toimintatiedot puhdistetaan tämän killan osalta."
+
+#: guildstats\guildstats.py:6328
+msgid "All GuildStats {_type} data purged for this guild."
+msgstr "Kaikki GuildStats {_type} -tiedot puhdistetaan tämän killan osalta."
+

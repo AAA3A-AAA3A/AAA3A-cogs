@@ -1,0 +1,88 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-08-22 14:22+0200\n"
+"PO-Revision-Date: 2023-08-22 12:29\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/acronymgame/locales/messages.pot\n"
+"X-Crowdin-File-ID: 225\n"
+"Language: ru_RU\n"
+
+#: acronymgame\acronymgame.py:21
+#, docstring
+msgid "A cog to play a random match of Acrononym game, with Modals!"
+msgstr "Шестеренка для игры в случайный матч по игре с аббревиатурами, с модалами!"
+
+#: acronymgame\view.py:39
+msgid "You have already joined this game, with `{answer}` answer."
+msgstr "Вы уже присоединились к этой игре, с ответом `{answer}`."
+
+#: acronymgame\view.py:47
+msgid "Sorry, maximum 20 players."
+msgstr "Извините, максимум 20 игроков."
+
+#: acronymgame\view.py:52
+msgid "Sorry, the vote has already started."
+msgstr "Извините, голосование уже началось."
+
+#: acronymgame\view.py:58
+msgid "Sorry, the number of words in your answer must be {len_words}."
+msgstr "Извините, количество слов в вашем ответе должно быть {len_words}."
+
+#: acronymgame\view.py:67
+msgid "Sorry, the initial of each word in your answer must be each letter of the acronym ({acronym})."
+msgstr "Извините, инициалом каждого слова в вашем ответе должна быть каждая буква аббревиатуры ({acronym})."
+
+#: acronymgame\view.py:79
+msgid "Join the game by clicking on the button below and entering your acronym. Maximum 20 players.\n"
+msgstr "Присоединяйтесь к игре, нажав на кнопку ниже и введя свою аббревиатуру. Максимум 20 игроков.\n"
+
+#: acronymgame\view.py:84
+msgid "Game joined with `{answer}` answer."
+msgstr "Игра началась с ответа `{answer}`."
+
+#: acronymgame\view.py:131
+msgid "Join the game by clicking on the button below and entering your acronym. Maximum 20 players."
+msgstr "Присоединяйтесь к игре, нажав на кнопку ниже и введя свою аббревиатуру. Максимум 20 игроков."
+
+#: acronymgame\view.py:146
+msgid "At least three players are needed to play."
+msgstr "Для игры необходимо как минимум три игрока."
+
+#: acronymgame\view.py:155
+msgid "Use the dropdown below to vote for the best answer for the random acronym. All guild members can vote.\n"
+msgstr "Используйте выпадающий список ниже, чтобы проголосовать за лучший ответ на случайную аббревиатуру. Голосовать могут все члены гильдии.\n"
+
+#: acronymgame\view.py:168
+msgid "No vote given."
+msgstr "Голосование не проводилось."
+
+#: acronymgame\view.py:198
+msgid "Here is the leaderboard for this game:"
+msgstr "Вот таблица лидеров для этой игры:"
+
+#: acronymgame\view.py:204
+msgid "Winner{s}: {winners}!"
+msgstr "Победитель{s}: {winners}!"
+
+#: acronymgame\view.py:241
+msgid "You have already voted in this game."
+msgstr "Вы уже проголосовали в этой игре."
+
+#: acronymgame\view.py:247
+msgid "You can't vote for yourself."
+msgstr "Вы не можете голосовать за себя."
+
+#: acronymgame\view.py:253
+msgid "Vote given for answer {num}."
+msgstr "Голос отдан за ответ {num}."
+

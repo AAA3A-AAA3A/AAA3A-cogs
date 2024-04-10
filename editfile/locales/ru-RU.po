@@ -1,0 +1,137 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:39\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/editfile/locales/messages.pot\n"
+"X-Crowdin-File-ID: 86\n"
+"Language: ru_RU\n"
+
+#: editfile\editfile.py:29
+#, docstring
+msgid "A cog to get a file and replace it from its path from Discord!\n\n"
+"    ⚠️ This cog can be very dangerous, since it allows direct read/write/delete of files on the bot’s machine, considering the fact that reading the wrong file can expose sensitive information like tokens and deleting the wrong file can corrupt the bot or the system entirely.\n"
+"    "
+msgstr "Ког для получения файла и замены его по пути из Discord!\n\n"
+"    ⚠️ Эта шестеренка может быть очень опасной, так как позволяет напрямую читать/писать/удалять файлы на машине бота, учитывая тот факт, что чтение неправильного файла может привести к раскрытию конфиденциальной информации, например, токенов, а удаление неправильного файла может привести к повреждению бота или всей системы.\n"
+"    "
+
+#: editfile\editfile.py:60
+#, docstring
+msgid "Get a file on the bot's host machine from its path.\n"
+"        `#L10` or `#L10-L30` is supported.\n"
+"        "
+msgstr "Получить файл на хост-машине бота по его пути.\n"
+"        Поддерживаются `#L10` или `#L10-L30`.\n"
+"        "
+
+#: editfile\editfile.py:65 editfile\editfile.py:141
+msgid "Couldn't parse this input."
+msgstr "Не удалось разобрать этот ввод."
+
+#: editfile\editfile.py:77
+msgid "Cowardly refusing to read a file with no size stat. (it may be empty, endless or inaccessible)."
+msgstr "Трусливый отказ от чтения файла, не имеющего статистики размера. (он может быть пустым, бесконечным или недоступным)."
+
+#: editfile\editfile.py:83
+msgid "Cowardly refusing to read a file >128MB."
+msgstr "Трусливый отказ читать файл размером >128 МБ."
+
+#: editfile\editfile.py:101 editfile\editfile.py:293 editfile\editfile.py:303
+#: editfile\editfile.py:316 editfile\editfile.py:327
+msgid "This file cannot be found on the host machine."
+msgstr "Этот файл не может быть найден на хост-машине."
+
+#: editfile\editfile.py:105 editfile\editfile.py:168 editfile\editfile.py:297
+#: editfile\editfile.py:307 editfile\editfile.py:320 editfile\editfile.py:331
+msgid "The path you specified refers to a directory, not a file."
+msgstr "Указанный вами путь относится к каталогу, а не к файлу."
+
+#: editfile\editfile.py:125 editfile\editfile.py:159
+msgid "There are only {len_lines} lines in this file."
+msgstr "В этом файле всего {len_lines} строк."
+
+#: editfile\editfile.py:130
+msgid "Here are the contents of the file `{path}`."
+msgstr "Вот содержимое файла `{path}`."
+
+#: editfile\editfile.py:135
+#, docstring
+msgid "Replace a file on the bot's host machine from its path.\n"
+"        `#L10` or `#L10-L30` is supported.\n"
+"        "
+msgstr "Заменить файл на хост-машине бота по его пути.\n"
+"        Поддерживается `#L10` или `#L10-L30`.\n"
+"        "
+
+#: editfile\editfile.py:164
+msgid "This original file cannot be found on the host machine."
+msgstr "Этот оригинальный файл не может быть найден на хост-машине."
+
+#: editfile\editfile.py:172
+msgid "You must send the command with an attachment that will be used to replace the original file."
+msgstr "Вы должны отправить команду с вложением, которое будет использовано для замены оригинального файла."
+
+#: editfile\editfile.py:197
+msgid "This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly."
+msgstr "Это оригинальный/старый файл, доступный по пути `{path}`. Обычно этот файл заменен правильно."
+
+#: editfile\editfile.py:205
+#, docstring
+msgid "Get a cog directory on the bot's host machine from its name."
+msgstr "Получите каталог cog на хост-машине бота из его имени."
+
+#: editfile\editfile.py:208
+msgid "Could not find a cog with this name."
+msgstr "Не удалось найти зубца с таким названием."
+
+#: editfile\editfile.py:214
+msgid "This cog has not yet stored any persistent data in its data folder."
+msgstr "Эта шестеренка еще не сохранила в своей папке данных никаких постоянных данных."
+
+#: editfile\editfile.py:234
+#, docstring
+msgid "List all files/directories of a directory from its path."
+msgstr "Перечислить все файлы/каталоги каталога по его пути."
+
+#: editfile\editfile.py:238 editfile\editfile.py:262
+msgid "This directory cannot be found on the host machine."
+msgstr "Этот каталог не может быть найден на хост-машине."
+
+#: editfile\editfile.py:242 editfile\editfile.py:266
+msgid "The path you specified refers to a file, not a directory."
+msgstr "Указанный вами путь относится к файлу, а не к каталогу."
+
+#: editfile\editfile.py:258
+#, docstring
+msgid "Make a tree with all files/directories of a directory from its path."
+msgstr "Создайте дерево со всеми файлами/каталогами каталога по его пути."
+
+#: editfile\editfile.py:289
+#, docstring
+msgid "Rename a file."
+msgstr "Переименовать файл."
+
+#: editfile\editfile.py:309
+msgid "The `{path}` file has been renamed."
+msgstr "Файл `{path}` был переименован."
+
+#: editfile\editfile.py:313
+#, docstring
+msgid "Delete a file."
+msgstr "Удалить файл."
+
+#: editfile\editfile.py:333
+msgid "The `{path}` file has been deleted."
+msgstr "Файл `{path}` был удален."
+

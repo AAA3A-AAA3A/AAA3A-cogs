@@ -1,0 +1,69 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:20\n"
+"Last-Translator: \n"
+"Language-Team: Polish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/antinuke/locales/messages.pot\n"
+"X-Crowdin-File-ID: 72\n"
+"Language: pl_PL\n"
+
+#: antinuke\antinuke.py:21
+#, docstring
+msgid "A cog to remove all permissions from a person who deletes a channel!"
+msgstr "Trybik do usuwania wszystkich uprawnień osobie, która usuwa kanał!"
+
+#: antinuke\antinuke.py:179
+msgid "All your roles have been taken away because you have deleted channel #{old_channel}.\n"
+"Your previous roles: {rolelist_name}"
+msgstr "Wszystkie Twoje role zostały odebrane, ponieważ usunąłeś kanał #{old_channel}.\n"
+"Twoje poprzednie role: {rolelist_name}"
+
+#: antinuke\antinuke.py:191
+msgid "All roles in {perp} ({perp.id}) roles have been removed as a result of the antinuke system being triggered on this server."
+msgstr "Wszystkie role w {perp} ({perp.id}) role zostały usunięte w wyniku uruchomienia systemu antinuke na tym serwerze."
+
+#: antinuke\antinuke.py:200
+msgid "The user {perp} has deleted the channel #{old_channel.name}!"
+msgstr "Użytkownik {perp} usunął kanał #{old_channel.name}!"
+
+#: antinuke\antinuke.py:203
+msgid "To prevent him from doing anything else, I took away as many roles as my current permissions would allow.\n"
+"User mention: {perp.mention} - User ID: {perp.id}"
+msgstr "Żeby nie mógł robić nic więcej, zabrałem mu tyle ról, na ile pozwalały moje obecne uprawnienia.\n"
+"Wspomnienie o użytkowniku: {perp.mention} - ID użytkownika: {perp.id}"
+
+#: antinuke\antinuke.py:214
+msgid "Before I intervened, the user had the following roles:"
+msgstr "Zanim interweniowałem, użytkownik miał następujące role:"
+
+#: antinuke\antinuke.py:250
+#, docstring
+msgid "Reset number detected for a user."
+msgstr "Zresetowany numer wykryty dla użytkownika."
+
+#: antinuke\antinuke.py:252
+msgid "Only the owner of this server can access these commands!"
+msgstr "Tylko właściciel tego serwera ma dostęp do tych poleceń!"
+
+#: antinuke\antinuke.py:266
+msgid "All former roles of {user} ({user.id}) have been restored at the request of the server owner."
+msgstr "Wszystkie dawne role {user} ({user.id}) zostały przywrócone na prośbę właściciela serwera."
+
+#: antinuke\antinuke.py:270
+msgid "Restored roles for {user.name} ({user.id})."
+msgstr "Przywrócone role dla {user.name} ({user.id})."
+
+#: antinuke\antinuke.py:274
+msgid "Count reset for {user.name} ({user.id})."
+msgstr "Reset licznika dla {user.name} ({user.id})."
+

@@ -1,0 +1,46 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:22\n"
+"Last-Translator: \n"
+"Language-Team: Ukrainian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: uk\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/codesnippets/locales/messages.pot\n"
+"X-Crowdin-File-ID: 227\n"
+"Language: uk_UA\n"
+
+#: codesnippets\codesnippets.py:67
+#, docstring
+msgid "A cog to send code content from a GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL!"
+msgstr "Гвинтик для надсилання вмісту коду з URL-адреси GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin!"
+
+#: codesnippets\codesnippets.py:495
+msgid "No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found."
+msgstr "Не знайдено URL-адреси GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin."
+
+#: codesnippets\codesnippets.py:533
+#, docstring
+msgid "Add a channel where the cog have to send automatically code snippets from URLs."
+msgstr "Додайте канал, куди гвинтик має автоматично надсилати фрагменти коду з URL-адрес."
+
+#: codesnippets\codesnippets.py:537
+msgid "The cog is already enabled in this channel"
+msgstr "У цьому каналі гвинтик уже ввімкнено"
+
+#: codesnippets\codesnippets.py:548
+#, docstring
+msgid "Remove a channel where the cog have to send automatically code snippets from URLs."
+msgstr "Видаліть канал, за яким гвинтик має автоматично надсилати фрагменти коду з URL-адрес."
+
+#: codesnippets\codesnippets.py:552
+msgid "The cog is already disabled in this channel"
+msgstr "У цьому каналі гвинтик уже вимкнено"
+

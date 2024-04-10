@@ -1,0 +1,66 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2023-08-06 17:09\n"
+"Last-Translator: \n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: de\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/sudo/locales/messages.pot\n"
+"X-Crowdin-File-ID: 100\n"
+"Language: de_DE\n"
+
+#: sudo\sudo.py:41
+#, docstring
+msgid "A cog to allow bot owners to be normal users in terms of permissions!\n\n"
+"    ⚠️ This cog makes bot owners unable to be perceived as bot owners in commands while the cog is loaded unless the `[p]su` command is used.\n"
+"    "
+msgstr "Ein Cog, das es Bot-Besitzern erlaubt, normale Benutzer zu sein, was die Berechtigungen angeht!\n\n"
+"    ⚠️ Dieses Cog sorgt dafür, dass Bot-Besitzer in Befehlen nicht als Bot-Besitzer wahrgenommen werden können, solange das Cog geladen ist, es sei denn, der Befehl `[p]su` wird verwendet.\n"
+"    "
+
+#: sudo\sudo.py:115
+#, docstring
+msgid "Sudo as the owner of the bot.\n\n"
+"        Use `[p]su`!\n"
+"        "
+msgstr "Sudo als Besitzer des Bots.\n\n"
+"        Verwenden Sie \"[p]su\"!\n"
+"        "
+
+#: sudo\sudo.py:124
+#, docstring
+msgid "Unsudo as normal user.\n\n"
+"        Use `[p]unsu`!\n"
+"        "
+msgstr "Unsudo als normaler Benutzer.\n\n"
+"        Verwenden Sie `[p]unsu`!\n"
+"        "
+
+#: sudo\sudo.py:135
+#, docstring
+msgid "Rise as the bot owner for the specified command only.\n\n"
+"        Use `[p]sudo`!\n"
+"        "
+msgstr "Steigt als Bot-Besitzer nur für den angegebenen Befehl auf.\n\n"
+"        Verwenden Sie `[p]sudo`!\n"
+"        "
+
+#: sudo\sudo.py:164
+#, docstring
+msgid "Sudo as the owner of the bot for the specified timeout.\n"
+"        The time should be between 10 seconds and 1 day.\n\n"
+"        Use `[p]sutimeout`!\n"
+"        "
+msgstr "Sudo als Besitzer des Bots für die angegebene Zeitspanne.\n"
+"        Die Zeit sollte zwischen 10 Sekunden und 1 Tag liegen.\n\n"
+"        Verwenden Sie `[p]sutimeout`!\n"
+"        "
+

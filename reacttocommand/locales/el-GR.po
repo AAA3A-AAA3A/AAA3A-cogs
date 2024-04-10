@@ -1,0 +1,90 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:19\n"
+"Last-Translator: \n"
+"Language-Team: Greek\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: el\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/reacttocommand/locales/messages.pot\n"
+"X-Crowdin-File-ID: 94\n"
+"Language: el_GR\n"
+
+#: reacttocommand\reacttocommand.py:78
+#, docstring
+msgid "A cog to allow a user to execute a command by clicking on a reaction!"
+msgstr "Ένα γρανάζι που επιτρέπει στο χρήστη να εκτελέσει μια εντολή κάνοντας κλικ σε μια αντίδραση!"
+
+#: reacttocommand\reacttocommand.py:277
+#, docstring
+msgid "Add a reaction-command for a message.\n\n"
+"        There should be no prefix in the command.\n"
+"        The command will be invoked with the permissions of the user who clicked on the reaction.\n"
+"        This user must be able to see writing in the channel.\n"
+"        "
+msgstr "Προσθέστε μια εντολή αντίδρασης για ένα μήνυμα.\n\n"
+"        Δεν πρέπει να υπάρχει πρόθεμα στην εντολή.\n"
+"        Η εντολή θα κληθεί με τα δικαιώματα του χρήστη που έκανε κλικ στην αντίδραση.\n"
+"        Αυτός ο χρήστης πρέπει να μπορεί να βλέπει τα γραπτά στο κανάλι.\n"
+"        "
+
+#: reacttocommand\reacttocommand.py:291
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to add reactions and to see the messages in that channel."
+msgstr "Δεν έχω επαρκή δικαιώματα στο κανάλι στο οποίο βρίσκεται το μήνυμα που προσδιορίσατε.\n"
+"Χρειάζομαι τα δικαιώματα για να προσθέσω αντιδράσεις και να δω τα μηνύματα σε αυτό το κανάλι."
+
+#: reacttocommand\reacttocommand.py:301
+msgid "You have not specified a correct command."
+msgstr "Δεν έχετε καθορίσει μια σωστή εντολή."
+
+#: reacttocommand\reacttocommand.py:307
+msgid "An error has occurred. It is possible that the emoji you provided is invalid."
+msgstr "Εμφανίστηκε σφάλμα. Είναι πιθανό το emoji που δώσατε να μην είναι έγκυρο."
+
+#: reacttocommand\reacttocommand.py:314
+msgid "Reaction-command added to this message."
+msgstr "Η εντολή αντίδρασης προστέθηκε σε αυτό το μήνυμα."
+
+#: reacttocommand\reacttocommand.py:318
+#, docstring
+msgid "Remove a reaction-command for a message."
+msgstr "Κατάργηση μιας εντολής αντίδρασης για ένα μήνυμα."
+
+#: reacttocommand\reacttocommand.py:322 reacttocommand\reacttocommand.py:344
+msgid "No reaction-command is configured for this message."
+msgstr "Δεν έχει ρυθμιστεί καμία εντολή αντίδρασης για αυτό το μήνυμα."
+
+#: reacttocommand\reacttocommand.py:326
+msgid "I wasn't watching for this reaction on this message."
+msgstr "Δεν περίμενα αυτή την αντίδραση σε αυτό το μήνυμα."
+
+#: reacttocommand\reacttocommand.py:336
+msgid "Reaction-command removed from this message."
+msgstr "Η εντολή αντίδρασης αφαιρέθηκε από αυτό το μήνυμα."
+
+#: reacttocommand\reacttocommand.py:340
+#, docstring
+msgid "Clear all reactions-commands for a message."
+msgstr "Διαγραφή όλων των αντιδράσεων-εντολών για ένα μήνυμα."
+
+#: reacttocommand\reacttocommand.py:353
+msgid "Reactions-commands cleared for this message."
+msgstr "Αντιδράσεις-εντολές που έχουν εκκαθαριστεί για αυτό το μήνυμα."
+
+#: reacttocommand\reacttocommand.py:357
+#, docstring
+msgid "Clear all reactions-commands for a guild."
+msgstr "Καθαρίστε όλες τις αντιδράσεις-εντολές για μια συντεχνία."
+
+#: reacttocommand\reacttocommand.py:359
+msgid "All reactions-commands purged."
+msgstr "Όλες οι αντιδράσεις-εντολές εκκαθαρίζονται."
+

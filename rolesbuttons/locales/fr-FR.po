@@ -1,0 +1,240 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:26\n"
+"Last-Translator: \n"
+"Language-Team: French\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/rolesbuttons/locales/messages.pot\n"
+"X-Crowdin-File-ID: 96\n"
+"Language: fr_FR\n"
+
+#: rolesbuttons\converters.py:82
+msgid "The {role.mention} role is a bot integration role and cannot be assigned or removed."
+msgstr "Le rôle {role.mention} est un rôle d'intégration des robots et ne peut être ni attribué ni supprimé."
+
+#: rolesbuttons\converters.py:88
+msgid "The {role.mention} role is an integration role and cannot be assigned or removed."
+msgstr "Le rôle {role.mention} est un rôle d'intégration et ne peut être ni attribué ni supprimé."
+
+#: rolesbuttons\converters.py:94
+msgid "The {role.mention} role is a premium subscriber role and can only be assigned or removed by Nitro boosting the server."
+msgstr "Le rôle {role.mention} est un rôle d'abonné premium et ne peut être attribué ou supprimé que par Nitro boosting du serveur."
+
+#: rolesbuttons\converters.py:100
+msgid "The {role.mention} role is higher than my highest role in the discord hierarchy."
+msgstr "Le rôle de {role.mention} est plus élevé que mon rôle le plus élevé dans la hiérarchie de la discorde."
+
+#: rolesbuttons\converters.py:106
+msgid "The {role.mention} role is higher than your highest role in the discord hierarchy."
+msgstr "Le rôle {role.mention} est plus élevé que votre rôle le plus élevé dans la hiérarchie de la discorde."
+
+#: rolesbuttons\converters.py:124
+msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
+msgstr "Emoji Le rôle doit être un emoji suivi d'un rôle séparé par `;`, `,`, `|`, ou `-`."
+
+#: rolesbuttons\rolesbuttons.py:29
+msgid "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
+msgstr "Je dois être l'auteur du message. Vous pouvez utiliser EmbedUtils by AAA3A pour en envoyer un."
+
+#: rolesbuttons\rolesbuttons.py:38
+#, docstring
+msgid "A cog to have roles-buttons!"
+msgstr "Un cog pour avoir des rôles-boutons !"
+
+#: rolesbuttons\rolesbuttons.py:131
+msgid "This message is not in Config."
+msgstr "Ce message n'est pas dans Config."
+
+#: rolesbuttons\rolesbuttons.py:134
+msgid "This button is not in Config."
+msgstr "Ce bouton n'est pas dans Config."
+
+#: rolesbuttons\rolesbuttons.py:142
+msgid "The role ({role_id}) I have to give you no longer exists. Please notify an administrator of this server."
+msgstr "Le rôle ({role_id}) que je dois vous donner n'existe plus. Veuillez en informer un administrateur de ce serveur."
+
+#: rolesbuttons\rolesbuttons.py:161
+msgid "Role-button of {interaction.message.id} in {interaction.channel.id}."
+msgstr "Rôle-bouton de {interaction.message.id} dans {interaction.channel.id}."
+
+#: rolesbuttons\rolesbuttons.py:167
+msgid "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
+msgstr "Je n'ai pas pu vous ajouter le rôle {role.mention} ({role.id}). Veuillez en informer un administrateur de ce serveur."
+
+#: rolesbuttons\rolesbuttons.py:175
+msgid "You now have the {role.mention} ({role.id}) role."
+msgstr "Vous avez maintenant le rôle de {role.mention} ({role.id})."
+
+#: rolesbuttons\rolesbuttons.py:186
+msgid "I could not remove the role {role.mention} ({role.id}) role from you. Please notify an administrator of this server."
+msgstr "Je n'ai pas pu vous retirer le rôle {role.mention} ({role.id}). Veuillez en informer un administrateur de ce serveur."
+
+#: rolesbuttons\rolesbuttons.py:194
+msgid "You no longer have the role {role.mention} ({role.id})."
+msgstr "Vous n'avez plus le rôle {role.mention} ({role.id})."
+
+#: rolesbuttons\rolesbuttons.py:244
+#, docstring
+msgid "Add a role-button for a message.\n\n"
+"        (Use the number for the color.)\n"
+"        • `primary`: 1\n"
+"        • `secondary`: 2\n"
+"        • `success`: 3\n"
+"        • `danger`: 4\n"
+"        # Aliases\n"
+"        • `blurple`: 1\n"
+"        • `grey`: 2\n"
+"        • `gray`: 2\n"
+"        • `green`: 3\n"
+"        • `red`: 4\n"
+"        "
+msgstr "Ajouter un bouton de rôle pour un message.\n\n"
+"        (Utilisez le numéro pour la couleur.)\n"
+"        - `primary` : 1\n"
+"        - `secondaire` : 2\n"
+"        - `success` : 3\n"
+"        - `danger` : 4\n"
+"        # Alias\n"
+"        - `blurple` : 1\n"
+"        - `grey` : 2\n"
+"        - `gray` : 2\n"
+"        - `green` : 3\n"
+"        - `red` : 4\n"
+"        "
+
+#: rolesbuttons\rolesbuttons.py:265 rolesbuttons\rolesbuttons.py:328
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "Je n'ai pas les permissions suffisantes dans le canal où se trouve le message que vous avez spécifié.\n"
+"J'ai besoin des permissions pour voir les messages dans ce canal."
+
+#: rolesbuttons\rolesbuttons.py:271
+msgid "You have to specify at least an emoji or a label."
+msgstr "Vous devez spécifier au moins un emoji ou une étiquette."
+
+#: rolesbuttons\rolesbuttons.py:278
+msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "L'emoji que vous avez sélectionné ne semble pas valide. Vérifiez qu'il s'agit bien d'un emoji. Si vous avez Nitro, vous avez peut-être utilisé un emoji personnalisé provenant d'un autre serveur."
+
+#: rolesbuttons\rolesbuttons.py:285 rolesbuttons\rolesbuttons.py:347
+msgid "This message already has components."
+msgstr "Ce message comporte déjà des éléments."
+
+#: rolesbuttons\rolesbuttons.py:289 rolesbuttons\rolesbuttons.py:351
+msgid "I can't do more than 25 roles-buttons for one message."
+msgstr "Je ne peux pas mettre plus de 25 boutons de rôle pour un message."
+
+#: rolesbuttons\rolesbuttons.py:313
+#, docstring
+msgid "Add roles-buttons for a message.\n\n"
+"        ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```\n"
+"        "
+msgstr "Ajouter des boutons de rôles pour un message.\n\n"
+"        ```[p]rolesbuttons bulk <message> :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```\n"
+"        "
+
+#: rolesbuttons\rolesbuttons.py:319
+msgid "You have not specified any valid role-button."
+msgstr "Vous n'avez pas spécifié de bouton de rôle valide."
+
+#: rolesbuttons\rolesbuttons.py:340
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "L'emoji que vous avez sélectionné ne semble pas valide. Vérifiez qu'il s'agit bien d'un emoji. Si vous avez Nitro, vous avez peut-être utilisé un emoji personnalisé provenant d'un autre serveur."
+
+#: rolesbuttons\rolesbuttons.py:376
+#, docstring
+msgid "Choose a mode for the roles-buttons of a message.\n\n"
+"        Type `add_or_remove`:\n"
+"        - Users get the role if they do not already have it, or lose it.\n"
+"        Type `add_only`:\n"
+"        - Users can only get the role, but only manual action will remove it.\n"
+"        Type `remove_only`:\n"
+"        - Users can only lose a role, and will not be able to get it again without a manual action.\n"
+"        Type `replace`:\n"
+"        - Same as add_or_remove, but the roles from this message will be mutually exclusive, and getting one will remove the previous.\n"
+"        "
+msgstr "Choisissez un mode pour les boutons de rôles d'un message.\n\n"
+"        Type `add_or_remove` :\n"
+"        - Les utilisateurs obtiennent le rôle s'ils ne l'ont pas déjà, ou le perdent.\n"
+"        Type `add_only` :\n"
+"        - Les utilisateurs peuvent seulement obtenir le rôle, mais seule une action manuelle peut l'enlever.\n"
+"        Type `remove_only` :\n"
+"        - Les utilisateurs ne peuvent que perdre un rôle, et ne pourront pas le récupérer sans une action manuelle.\n"
+"        Type `replace` :\n"
+"        - Identique à add_or_remove, mais les rôles de ce message seront mutuellement exclusifs, et l'obtention d'un rôle supprimera le précédent.\n"
+"        "
+
+#: rolesbuttons\rolesbuttons.py:390
+msgid "No role-button is configured for this message. e"
+msgstr "Aucun bouton de rôle n'est configuré pour ce message. e"
+
+#: rolesbuttons\rolesbuttons.py:395
+msgid "Mode set for the roles-buttons of this message."
+msgstr "Mode défini pour les boutons de rôle de ce message."
+
+#: rolesbuttons\rolesbuttons.py:401
+#, docstring
+msgid "Remove a role-button for a message.\n\n"
+"        Use `[p]rolesbuttons list <message>` to find the config identifier.\n"
+"        "
+msgstr "Supprimer un bouton de rôle pour un message.\n\n"
+"        Utilisez `[p]rolesbuttons list <message>` pour trouver l'identifiant de la configuration.\n"
+"        "
+
+#: rolesbuttons\rolesbuttons.py:408 rolesbuttons\rolesbuttons.py:437
+#: rolesbuttons\rolesbuttons.py:459
+msgid "No role-button is configured for this message."
+msgstr "Aucun bouton de rôle n'est configuré pour ce message."
+
+#: rolesbuttons\rolesbuttons.py:412
+msgid "I wasn't watching for this button on this message."
+msgstr "Je ne regardais pas pour ce bouton sur ce message."
+
+#: rolesbuttons\rolesbuttons.py:429 rolesbuttons\rolesbuttons.py:446
+msgid "Roles-buttons cleared for this message."
+msgstr "Rôles-boutons effacés pour ce message."
+
+#: rolesbuttons\rolesbuttons.py:433
+#, docstring
+msgid "Clear all roles-buttons for a message."
+msgstr "Effacer tous les boutons de rôles pour un message."
+
+#: rolesbuttons\rolesbuttons.py:451
+#, docstring
+msgid "List all roles-buttons of this server or display the settings for a specific one."
+msgstr "Liste tous les boutons de rôles de ce serveur ou affiche les paramètres d'un bouton spécifique."
+
+#: rolesbuttons\rolesbuttons.py:465
+msgid "No roles-buttons in this server."
+msgstr "Il n'y a pas de boutons de rôles dans ce serveur."
+
+#: rolesbuttons\rolesbuttons.py:467
+msgid "Roles Buttons"
+msgstr "Boutons de rôles"
+
+#: rolesbuttons\rolesbuttons.py:468
+msgid "There is {len_roles_buttons} roles buttons in this server."
+msgstr "Il y a {len_roles_buttons} boutons de rôles dans ce serveur."
+
+#: rolesbuttons\rolesbuttons.py:478
+msgid "Message Jump Link: {message_jump_link}\n"
+msgstr "Message Jump Link : {message_jump_link}\n"
+
+#: rolesbuttons\rolesbuttons.py:499
+#, docstring
+msgid "Clear all roles-buttons for a guild."
+msgstr "Effacer tous les boutons de rôles d'une guilde."
+
+#: rolesbuttons\rolesbuttons.py:501
+msgid "All roles-buttons purged."
+msgstr "Tous les rôles-boutons sont purgés."
+

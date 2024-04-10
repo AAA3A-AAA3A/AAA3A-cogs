@@ -1,0 +1,86 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-08-10 13:42+0200\n"
+"PO-Revision-Date: 2023-08-10 11:45\n"
+"Last-Translator: \n"
+"Language-Team: Greek\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: el\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/cmdchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 80\n"
+"Language: el_GR\n"
+
+#: cmdchannel\cmdchannel.py:17
+#, docstring
+msgid "A cog to send the result of a command to another channel!"
+msgstr "Ένα γρανάζι για την αποστολή του αποτελέσματος μιας εντολής σε ένα άλλο κανάλι!"
+
+#: cmdchannel\cmdchannel.py:86
+#, docstring
+msgid "Act as if the command had been typed in the channel of your choice.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
+"        Use `[p]cmdchannel`!\n"
+"        "
+msgstr "Ενεργήστε σαν να είχε πληκτρολογηθεί η εντολή στο κανάλι της επιλογής σας.\n"
+"        Το πρόθεμα δεν πρέπει να εισαχθεί εάν πρόκειται για εντολή. Θα είναι μόνο ένα μήνυμα, εάν η εντολή είναι άκυρη.\n\n"
+"        Χρησιμοποιήστε `[p]cmdchannel`!\n"
+"        "
+
+#: cmdchannel\cmdchannel.py:94 cmdchannel\cmdchannel.py:162
+msgid "To send commands to another server, you must be there."
+msgstr "Για να στείλετε εντολές σε έναν άλλο διακομιστή, πρέπει να βρίσκεστε εκεί."
+
+#: cmdchannel\cmdchannel.py:117
+#, docstring
+msgid "Act as if the command had been typed by imitating the specified user.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
+"        Use `[p]cmduser`!\n"
+"        "
+msgstr "Ενεργεί σαν να είχε πληκτρολογηθεί η εντολή μιμούμενος τον καθορισμένο χρήστη.\n"
+"        Το πρόθεμα δεν πρέπει να εισαχθεί εάν πρόκειται για εντολή. Θα είναι μόνο ένα μήνυμα, εάν η εντολή είναι άκυρη.\n\n"
+"        Χρησιμοποιήστε `[p]cmduser`!\n"
+"        "
+
+#: cmdchannel\cmdchannel.py:126 cmdchannel\cmdchannel.py:167
+msgid "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
+msgstr "Για να μπορέσετε να εκτελέσετε μια εντολή ως άλλος χρήστης, πρέπει να φορτώσετε το cog Dev, για να βεβαιωθείτε ότι ξέρετε τι κάνετε."
+
+#: cmdchannel\cmdchannel.py:150
+#, docstring
+msgid "Act as if the command had been typed in the channel of your choice by imitating the specified user.\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
+"        Use `[p]cmduserchannel`!\n"
+"        "
+msgstr "Ενεργήστε σαν να είχε πληκτρολογηθεί η εντολή στο κανάλι της επιλογής σας, μιμούμενοι τον καθορισμένο χρήστη.\n"
+"        Το πρόθεμα δεν πρέπει να εισαχθεί εάν πρόκειται για εντολή. Θα είναι μόνο ένα μήνυμα, εάν η εντολή είναι άκυρη.\n\n"
+"        Χρησιμοποιήστε `[p]cmduserchannel`!\n"
+"        "
+
+#: cmdchannel\cmdchannel.py:184
+#, docstring
+msgid "Test variables."
+msgstr "Μεταβλητές δοκιμής."
+
+#: cmdchannel\cmdchannel.py:186
+msgid "Testvar"
+msgstr "Testvar"
+
+#: cmdchannel\cmdchannel.py:187
+msgid "Variables:"
+msgstr "Μεταβλητές:"
+
+#: cmdchannel\cmdchannel.py:188
+msgid "Author:"
+msgstr "Συγγραφέας:"
+
+#: cmdchannel\cmdchannel.py:189
+msgid "Channel:"
+msgstr "Κανάλι:"
+

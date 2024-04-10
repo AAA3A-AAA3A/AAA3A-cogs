@@ -1,0 +1,78 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:37\n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ro\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/dev/locales/messages.pot\n"
+"X-Crowdin-File-ID: 263\n"
+"Language: ro_RO\n"
+
+#: dev\dev.py:481
+#, docstring
+msgid "Various development focused utilities!"
+msgstr "Diverse utilități axate pe dezvoltare!"
+
+#: dev\dev.py:764 dev\dev.py:828 dev\dev.py:1037
+msgid "Unreadable attachment with `utf-8`."
+msgstr "Atașament ilizibil cu `utf-8`."
+
+#: dev\dev.py:783
+msgid "This message isn't reachable."
+msgstr "Acest mesaj nu este accesibil."
+
+#: dev\dev.py:891
+msgid "Already running a REPL session in this channel. Exit it with `quit`."
+msgstr "Rulează deja o sesiune REPL în acest canal. Ieșiți din ea cu `quit`."
+
+#: dev\dev.py:895
+msgid "Already running a REPL session in this channel. Resume the REPL with `{prefix}replresume`."
+msgstr "Rulează deja o sesiune REPL în acest canal. Reluați REPL cu `{prefix}replresume`."
+
+#: dev\dev.py:907
+msgid "Enter code to execute or evaluate. `exit()` or `quit` to exit. `{prefix}replpause` to pause."
+msgstr "Introduceți codul care urmează să fie executat sau evaluat. `exit()` sau `quit` pentru a ieși. `{prefix}replpause` pentru a face o pauză."
+
+#: dev\dev.py:952
+msgid "Exiting."
+msgstr "Ieșire."
+
+#: dev\dev.py:960
+msgid "There is no currently running REPL session in this channel."
+msgstr "Nu există nicio sesiune REPL în curs de desfășurare în acest canal."
+
+#: dev\dev.py:966
+msgid "The REPL session in this channel has been resumed."
+msgstr "Sesiunea REPL din acest canal a fost reluată."
+
+#: dev\dev.py:968
+msgid "The REPL session in this channel is now paused."
+msgstr "Sesiunea REPL din acest canal este acum în pauză."
+
+#: dev\dev.py:990
+msgid "Bot owners will now bypass all commands with cooldowns{optional_duration}."
+msgstr "Proprietarii de roboți vor ocoli acum toate comenzile cu cooldowns{optional_duration}."
+
+#: dev\dev.py:1000
+msgid "Bot owners will no longer bypass all commands with cooldowns{optional_duration}."
+msgstr "Proprietarii de roboți nu vor mai ocoli toate comenzile cu cooldowns{optional_duration}."
+
+#: dev\dev.py:1128
+#, docstring
+msgid "Display all Dev environment values."
+msgstr "Afișează toate valorile mediului Dev."
+
+#: dev\dev.py:1137
+#, docstring
+msgid "Reset its own locals in evals."
+msgstr "Resetează propriile locale în evaluări."
+

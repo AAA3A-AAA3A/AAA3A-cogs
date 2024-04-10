@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-07-15 19:19\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:38\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -23,21 +23,21 @@ msgstr "Medicat USBに独自のブータブルツール（iso、wim、vhd）やP
 
 #: medicat\medicat.py:51
 msgid "Please feel free to modify MediCat to YOUR individual needs! 😄\n"
-"To add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear on the Ventoy menu.\n"
+"To add your own bootable tools to Medicat USB, simply put the files in any sub-folder (except those with a `.ventoyignore` file at their root) of your USB stick. As if by magic, the new tools will appear in the Ventoy menu.\n"
 "Then you can add a custom name, icon, description, by editing the `USB\\ventoy\\ventoy.json` file following the template.\n"
 "Absolutely, I encourage it!"
 msgstr "MediCatをあなたの個々のニーズに合わせて自由に変更してください！😄\n"
-"Medicat USBに独自のブータブルツールを追加するには、USBスティックの任意のサブフォルダ（ルートに `.ventoyignore` ファイルがあるものを除く）にファイルを置くだけです。まるで魔法にかかったように、新しいツールがVentoyメニューに表示されます。\n"
-"あとは、テンプレートに従って `USBventoy.json` ファイルを編集すれば、カスタム名、アイコン、説明を追加することができます。\n"
-"もちろん、私はそれを奨励します！"
+"Medicat USBに独自のブータブルツールを追加するには、USBスティックの任意のサブフォルダ（ルートに`.ventoyignore`ファイルがあるものを除く）にファイルを置くだけです。まるで魔法のように、新しいツールがVentoyメニューに表示されます。\n"
+"そして、テンプレートに従って`USBventoyventoy.json`ファイルを編集することで、カスタム名、アイコン、説明を追加できる。\n"
+"もちろん、私はそれを奨励する！"
 
 #: medicat\medicat.py:56
 msgid "Is Medicat free?"
 msgstr "メディキャットは無料ですか？"
 
 #: medicat\medicat.py:57
-msgid "Absolutely. I will never charge money for MediCat, or accept donations. However, feel free to share your ideas, questions, and concerns in this thread. That's how you can give back. 🙂"
-msgstr "絶対です。私はMediCatのためにお金を請求することも、寄付を受け入れることも決してありません。しかし、あなたのアイデア、質問、懸念をこのスレッドで遠慮なく共有してください。そうすることで恩返しができるのです。"
+msgid "Absolutely. I will never charge money for MediCat. We accept donations but it is in no way required. However, feel free to share your ideas, questions, and concerns in this discord. That's how you can give back. 🙂"
+msgstr "もちろんです。MediCatのためにお金を請求することはありません。寄付は受け付けていますが、決して必要ではありません。しかし、あなたのアイデア、質問、懸念をこのディスコードで遠慮なくシェアしてください。そうすることで恩返しができるんだ。"
 
 #: medicat\medicat.py:62
 msgid "How do I install Medicat USB?"
@@ -58,16 +58,16 @@ msgstr "1) 最新版の Ventoy を USB メモリにインストールします (
 "警告：ウイルス対策ソフトを無効にすることを忘れないでください（詳しくは`virus`コマンドを参照してください）。"
 
 #: medicat\medicat.py:68
-msgid "How to make a donation?"
-msgstr "寄付の方法について教えてください。"
+msgid "How can I make a donation?"
+msgstr "どうすれば寄付できますか？"
 
 #: medicat\medicat.py:69
 msgid "@Jayro (Creator of Medicat): <https://ko-fi.com/jayrojones>\n"
 "@MON5TERMATT (Medicat Developer): <https://ko-fi.com/mon5termatt>\n"
-"@AAA3A (Medicat Developer): Nothing"
-msgstr "ジェイロ(メディキャットクリエイター)：@Jayro(Medicatクリエイター) <https://ko-fi.com/jayrojones>\n"
-"MON5TERMATT（メディキャット開発者）：@MON5TERMATT（メディキャット開発者）： <https://ko-fi.com/mon5termatt>\n"
-"AAA3A（メディキャット開発者）：@AAA3A（メディキャット開発者）：何もない"
+"@AAA3A (Medicat Developer): <https://www.buymeacoffee.com/aaa3a>"
+msgstr "ジェイロ（メディキャット開発者）：<https://ko-fi.com/jayrojones>\n"
+"@MON5TERMATT (Medicat 開発者)：<https://ko-fi.com/mon5termatt>\n"
+"@AAA3A (Medicat 開発者)：<https://www.buymeacoffee.com/aaa3a>"
 
 #: medicat\medicat.py:74
 msgid "What is the latest version of Medicat USB?"
@@ -75,9 +75,11 @@ msgstr "メディキャットUSBの最新バージョンは？"
 
 #: medicat\medicat.py:75
 msgid "The latest version of Medicat USB is 21.12!\n"
-"||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||"
-msgstr "メディキャットUSBの最新バージョンは21.12です！\n"
-"||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||"
+"||<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||\n"
+"There is not currently an ETA for an updated release due to time restrictions"
+msgstr "Medicat USBの最新バージョンは21.12です！\n"
+"|<https://gbatemp.net/threads/medicat-usb-a-multiboot-linux-usb-for-pc-repair.361577/>||\n"
+"時間的制約のため、現在のところ更新リリースのETAはありません。"
 
 #: medicat\medicat.py:80
 msgid "How to download one of the menus?"
@@ -112,22 +114,22 @@ msgid "No, it doesn't work like that. It's a WinPE image (Windows Pre-install En
 msgstr "いいえ、そのような仕組みではありません。メモリ上で動作するWinPEイメージ（Windows Pre-install Environment）なんだ。主な用途は、トラブルが発生したPCのトラブルシューティングです。"
 
 #: medicat\medicat.py:92
-msgid "See what files are missing using the quick SFV program"
-msgstr "クイックSFVプログラムを使って、不足しているファイルを確認する"
+msgid "See what files are missing using the quick SFV program."
+msgstr "クイックSFVプログラムを使って、不足しているファイルを確認する。"
 
 #: medicat\medicat.py:93
-msgid "In order to see what files are missing using the quick SFV program, please scroll all the way to the top once it has finished scanning."
-msgstr "クイックSFVプログラムを使ってどのようなファイルが欠けているかを確認するためには、スキャンが終了したら、一番上までスクロールしてください。"
+msgid "In order to see what files are missing using the quick SFV program, Please wait for it to scan the entire USB and then look for the files with the ❌"
+msgstr "クイックSFVプログラムを使用して、どのファイルが見つからないかを確認するには、USB全体をスキャンするのを待ってから、❌でファイルを探してください。"
 
 #: medicat\medicat.py:99
-msgid "How do I download the Medicat USB iso file?"
-msgstr "メディキャットUSBのisoファイルをダウンロードするにはどうすればよいですか？"
+msgid "How do I download the Medicat USB iso/img file?"
+msgstr "Medicat USB iso/imgファイルのダウンロード方法を教えてください。"
 
 #: medicat\medicat.py:100
 msgid "Medicat USB is not available as an iso file.\n"
-"Previously, Medicat USB was available as an iso file. Now it uses Ventoy to run. It is currently impossible to put Ventoy and therefore Medicat USB in an iso file, or at least not without difficulties."
-msgstr "Medicat USBは、isoファイルでのご提供はしておりません。\n"
-"以前は、Medicat USBはisoファイルとして利用可能でした。現在は、Ventoyを使用して実行するようになっています。現在、Ventoyを、したがってMedicat USBをisoファイルに入れることは不可能であり、少なくとも困難はない。"
+"Previously, Medicat USB was available as an iso file. Now it uses Ventoy to run. It is currently impossible to put Ventoy and therefore Medicat USB in an iso file."
+msgstr "Medicat USBがisoファイルとして利用できません。\n"
+"以前は、Medicat USBはisoファイルとして利用できました。現在は、Ventoyを使用しています。現在、isoファイルにVentoyとMedicat USBを入れることは不可能です。"
 
 #: medicat\medicat.py:105
 msgid "Can I run the PortableApps on my current PC without booting up MediCat?"
@@ -174,10 +176,22 @@ msgstr "**Medicat USB**は、Ventoy上で動作するブータブルメニュー
 "<https://gbatemp.net/threads/medicat-second-opinion-a-collection-of-bootable-antivirus-boot-disks-on-a-single-usb-device.577842/>"
 
 #: medicat\medicat.py:123
+msgid "What to do about security violation when trying to boot into Medicat?"
+msgstr "メディキャット起動時のセキュリティ違反はどうすればいい？"
+
+#: medicat\medicat.py:124
+msgid "When you encounter this screen, it means that secure boot is enabled on your computer. You could get past this screen using one of these two methods:\n"
+"1. Disable secure boot option into your BIOS.\n"
+"2. Enroll the security key from the 3 options menu showed at that screen, selecting `Enroll key` from disk and choosing the `ENROLL_THIS_KEY_IN_MOKMANAGER.cer` file onto the `VTOYEFI` partition."
+msgstr "この画面が表示されたら、セキュアブートがコンピュータで有効になっていることを意味します。\n"
+"1. BIOSでセキュアブートオプションを無効にする。BIOSでセキュアブートオプションを無効にする。\n"
+"2.その画面で表示される3つのオプションメニューから、ディスクから`Enroll key`を選択し、`VTOYEFI`パーティションに`ENROLL_THIS_KEY_IN_MOKMANAGER.cer`ファイルを選択してセキュリティキーを登録する。"
+
+#: medicat\medicat.py:130
 msgid "Why does my antivirus software detect Medicat as a virus?"
 msgstr "ウイルス対策ソフトがMedicatをウイルスとして検出するのはなぜですか？"
 
-#: medicat\medicat.py:124
+#: medicat\medicat.py:131
 msgid "Medicat USB does not contain any viruses! If an antivirus software detects one of its files as such, it is a false positive.\n"
 "As you know, Medicat USB contains tools that can reset a partition, find a password, and modify the system. Portable applications can be falsely flagged because of how they are cracked and packaged.\n"
 "For these reasons all antivirus software's 'real-time scanning' should be disabled when installing, and sometimes even when using, Medicat USB.\n"
@@ -187,27 +201,31 @@ msgstr "Medicat USBには、ウイルスは含まれていません！アンチ�
 "これらの理由から、Medicat USBをインストールするとき、そして時には使用するときにも、すべてのアンチウイルスソフトの「リアルタイムスキャン」を無効にする必要があります。\n"
 "このプロジェクトに関連するすべてのスクリプト（3人の開発者のうちの1人が公開）およびVentoyにも、このスクリプトはありません。"
 
-#: medicat\medicat.py:129
+#: medicat\medicat.py:136
 msgid "What is Medicat USB?"
 msgstr "メディキャットUSBとは？"
 
-#: medicat\medicat.py:130
+#: medicat\medicat.py:137
 msgid "Medicat USB contains tools to backup/restore data, to manage disks/partitions, to reset/bypass/find a Windows password, to use software with admin rights from a winPE, to do virus scans. In addition, it uses Ventoy, which allows you to add your own bootable tools with a simple copy and paste."
 msgstr "Medicat USBには、データのバックアップ/リストア、ディスク/パーティションの管理、Windowsパスワードのリセット/バイパス/検索、winPEから管理者権限でソフトウェアを使用する、ウイルススキャンを行うためのツールが含まれています。また、Ventoyを採用しており、コピー＆ペーストで独自のブータブルツールを追加することができます。"
 
-#: medicat\medicat.py:135
+#: medicat\medicat.py:142
 msgid "How often will Medicat be updated?"
 msgstr "メディキャットはどのくらいの頻度で更新されますか？"
 
-#: medicat\medicat.py:136
-msgid "MediCat USB is now a rolling release, so will be regularly updated with major releases, and minor updates as needed (Typically monthly or bi-monthly). The links here will always be the latest version. The PortableApps are easily updatable by the user, once they have been 'burned' to USB."
-msgstr "MediCat USBは現在ローリングリリースとなっており、定期的にメジャーリリースとマイナーアップデートが行われます（通常、毎月または隔月に行われます）。ここにあるリンクは、常に最新版となります。PortableAppsは、一度USBに「焼く」ことで、ユーザーによって簡単にアップデートすることができます。"
+#: medicat\medicat.py:143
+msgid "Medicat is currently on hiatus.\n"
+"Due to personal reasons, neither Jayro, Matt or AAA3A have the time to develop Medicat full time.\n"
+"We do encourage you to update the tools as you see fit on your end."
+msgstr "Medicatは現在休止中です。\n"
+"個人的な理由により、Jayro、Matt、AAA3AともにMedicatをフルタイムで開発する時間がありません。\n"
+"私たちは、各自が適切と思うようにツールを更新することを奨励しています。"
 
-#: medicat\medicat.py:141
+#: medicat\medicat.py:148
 msgid "Why doesn't Ventoy display Wim and VHD files?"
 msgstr "VentoyでWimファイルやVHDファイルが表示されないのはなぜですか？"
 
-#: medicat\medicat.py:142
+#: medicat\medicat.py:149
 msgid "You must download an additional plugin/file and place it in the `USB\\ventoy\\` folder (create it if necessary).\n\n"
 "**WimBoot Plugin (https://ventoy.net/en/plugin_wimboot.html):**\n"
 "- Download `ventoy_wimboot.img` file from <https://github.com/ventoy/wimiso/releases>.\n"
@@ -223,11 +241,11 @@ msgstr "追加のプラグイン/ファイルをダウンロードし、`USBvent
 "- <https://github.com/ventoy/vhdiso/releases>から `ventoy_vhdboot.img` ファイルをダウンロードします．\n"
 "- このファイルをUSBメモリの`ventoy`パーティション内の`ventoy`ディレクトリ（`/ventoy/ventoy_vhdboot.img`）に配置すれば完了です。"
 
-#: medicat\medicat.py:147
+#: medicat\medicat.py:154
 msgid "X & Y"
 msgstr "X & Y"
 
-#: medicat\medicat.py:148
+#: medicat\medicat.py:155
 msgid "What is the context?\n"
 "If you have any problems or would like to ask for help, please give information about what you are not able to do. Don't just say you don't understand how to make x software work, say where you are, what is wrong with it and what is the potential error. \n"
 "Thank you for your understanding."
@@ -235,81 +253,86 @@ msgstr "どのような背景があるのでしょうか？\n"
 "何か問題があったり、助けを求めたい場合は、何ができないのかについて情報を与えてください。単にxソフトの動かし方がわからないというだけでなく、どこがどう間違っているのか、潜在的なエラーは何なのかを言ってください。 \n"
 "ご理解のほど、よろしくお願いいたします。"
 
-#: medicat\medicat.py:152
+#: medicat\medicat.py:159
 msgid "Test!"
 msgstr "テストする！"
 
-#: medicat\medicat.py:152
-msgid "Test."
-msgstr "テストする。"
+#: medicat\medicat.py:159
+msgid "did that work for you?"
+msgstr "それでうまくいったのか？"
 
-#: medicat\medicat.py:273
+#: medicat\medicat.py:280
 #, docstring
 msgid "This cog will only work on x server and therefore cannot be used by the general public!"
 msgstr "このコグはエックスサーバーでのみ動作するため、一般の方が使用することはできません！"
 
-#: medicat\medicat.py:446
+#: medicat\medicat.py:453
 msgid "This Ventoy version doesn't exists."
 msgstr "このVentoyバージョンは存在しない。"
 
-#: medicat\medicat.py:482
+#: medicat\medicat.py:489
 msgid "Ventoy v{ventoy_version_str} has been released!"
 msgstr "Ventoy v{ventoy_version_str} がリリースされました！"
 
-#: medicat\medicat.py:485
+#: medicat\medicat.py:492
 msgid "New features:"
 msgstr "新機能を搭載しました："
 
-#: medicat\medicat.py:490
+#: medicat\medicat.py:497
 msgid "Download this version:"
 msgstr "このバージョンをダウンロードしてください："
 
-#: medicat\medicat.py:498
+#: medicat\medicat.py:505
 msgid "View on Ventoy Official Website"
 msgstr "Ventoy公式サイトで見る"
 
-#: medicat\medicat.py:582
+#: medicat\medicat.py:589
 msgid "{tool} now has a new version!"
 msgstr "{tool} は、新バージョンになりました！"
 
-#: medicat\medicat.py:596
+#: medicat\medicat.py:603
 msgid "View on FCportables Official Website"
 msgstr "FCportablesオフィシャルサイトで見る"
 
-#: medicat\medicat.py:737
+#: medicat\medicat.py:747
 #, docstring
 msgid "Get the latest version of Ventoy."
 msgstr "Ventoyの最新バージョンを入手することができます。"
 
-#: medicat\medicat.py:741 medicat\medicat.py:752
+#: medicat\medicat.py:751 medicat\medicat.py:761
 msgid "An error has occurred. Please try again."
 msgstr "エラーが発生しました。もう一度お試しください。"
 
-#: medicat\medicat.py:746
+#: medicat\medicat.py:757
 #, docstring
 msgid "Get a version of Ventoy."
 msgstr "Ventoyのバージョンを取得します。"
 
-#: medicat\medicat.py:757
+#: medicat\medicat.py:767
 #, docstring
 msgid "Get the latest versions of each Medicat USB bootable tool."
 msgstr "各メディキャットUSBブータブルツールの最新版を入手することができます。"
 
-#: medicat\medicat.py:793
+#: medicat\medicat.py:803 medicat\medicat.py:943
 msgid "View FCportables Official Website"
 msgstr "FCportables公式サイトを見る"
 
-#: medicat\medicat.py:811
+#: medicat\medicat.py:822
 #, docstring
 msgid "Get the debug for a FCportables's tool."
 msgstr "FCportablesのツールのデバッグを取得します。"
 
-#: medicat\medicat.py:890
+#: medicat\medicat.py:902
+#, docstring
+msgid "Get the download link of each Medicat USB bootable tool."
+msgstr "各Medicat USBブータブルツールのダウンロードリンクを入手する。"
+
+#: medicat\medicat.py:963
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "ループの状態を確認するためのエンベデッドを取得します。"
 
-#: medicat\medicat.py:897
+#: medicat\medicat.py:970
 #, docstring
 msgid "Update Medicat cog directly."
 msgstr "Medicat cogを直接更新します。"

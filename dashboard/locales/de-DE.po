@@ -1,0 +1,57 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:41\n"
+"Last-Translator: \n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: de\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/dashboard/locales/messages.pot\n"
+"X-Crowdin-File-ID: 308\n"
+"Language: de_DE\n"
+
+#: dashboard\dashboard.py:32
+msgid "This is not a valid URL."
+msgstr "Dies ist keine gültige URL."
+
+#: dashboard\dashboard.py:34
+msgid "This is not a valid Dashboard redirect URI: it must end with `/callback`."
+msgstr "Dies ist kein gültiger Dashboard-Redirect-URI: Er muss mit `/callback` enden."
+
+#: dashboard\dashboard.py:42
+msgid "This third party is not available."
+msgstr "Diese dritte Partei ist nicht verfügbar."
+
+#: dashboard\dashboard.py:48
+#, docstring
+msgid "Interact with your bot through a web dashboard!\n\n"
+"    ⚠️ This package is a fork of Neuro Assassin's work, and isn't endorsed by the Org at all.\n"
+"    "
+msgstr "Interagieren Sie mit Ihrem Bot über ein Web-Dashboard!\n\n"
+"    ⚠️ Dieses Paket ist eine Abspaltung der Arbeit von Neuro Assassin und wird von der Org in keiner Weise unterstützt.\n"
+"    "
+
+#: dashboard\dashboard.py:306
+#, docstring
+msgid "Set the client secret needed for Discord Oauth."
+msgstr "Legen Sie das Client-Geheimnis fest, das für Discord Oauth benötigt wird."
+
+#: dashboard\dashboard.py:315
+msgid "Discord Secret"
+msgstr "Diskord Geheimnis"
+
+#: dashboard\dashboard.py:323
+msgid "Discord OAuth secret set."
+msgstr "Discord OAuth-Geheimsatz."
+
+#: dashboard\dashboard.py:359
+msgid "Click on the button below to set a secret for Discord OAuth."
+msgstr "Klicken Sie auf die Schaltfläche unten, um ein Geheimnis für Discord OAuth festzulegen."
+

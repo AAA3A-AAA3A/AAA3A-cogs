@@ -1,0 +1,409 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:38\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/guildstats/locales/messages.pot\n"
+"X-Crowdin-File-ID: 271\n"
+"Language: ja_JP\n"
+
+#: guildstats\guildstats.py:68
+msgid "No member/category/text channel/voice channel found."
+msgstr "メンバー/カテゴリー/テキストチャンネル/ボイスチャンネルが見つかりません。"
+
+#: guildstats\guildstats.py:74
+#, docstring
+msgid "A cog to generate images with messages and voice stats, for members, roles, guilds, categories, text channels, voice channels and activities!"
+msgstr "メンバー、ロール、ギルド、カテゴリー、テキスト・チャンネル、ボイス・チャンネル、アクティビティ用の、メッセージとボイスの統計情報を含む画像を生成するための歯車です！"
+
+#: guildstats\guildstats.py:2951
+msgid "Role {_object.name}"
+msgstr "役割 {_object.name}"
+
+#: guildstats\guildstats.py:2958
+msgid "Guild Stats"
+msgstr "ギルドの統計"
+
+#: guildstats\guildstats.py:2973
+msgid "Messages Stats"
+msgstr "メッセージの統計"
+
+#: guildstats\guildstats.py:2980
+msgid "Voice Stats"
+msgstr "声の統計"
+
+#: guildstats\guildstats.py:2986
+msgid "Activities Stats"
+msgstr "アクティビティ統計"
+
+#: guildstats\guildstats.py:2995
+msgid "Top Stats"
+msgstr "トップ統計"
+
+#: guildstats\guildstats.py:3003
+msgid "Activity - {activity_name}"
+msgstr "活動 - {activity_name}"
+
+#: guildstats\guildstats.py:3015
+msgid "Category - {_object.name}"
+msgstr "カテゴリー - {_object.name}"
+
+#: guildstats\guildstats.py:3101 guildstats\guildstats.py:3135
+msgid "Created On"
+msgstr "作成日"
+
+#: guildstats\guildstats.py:3116
+msgid "Joined On"
+msgstr "参加"
+
+#: guildstats\guildstats.py:3233 guildstats\guildstats.py:3911
+#: guildstats\guildstats.py:4753 guildstats\guildstats.py:4813
+#: guildstats\guildstats.py:4864 guildstats\guildstats.py:4881
+#: guildstats\guildstats.py:5344 guildstats\guildstats.py:5563
+msgid "Graphic"
+msgstr "グラフィック"
+
+#: guildstats\guildstats.py:3298 guildstats\guildstats.py:4271
+#: guildstats\guildstats.py:4533 guildstats\guildstats.py:5212
+#: guildstats\guildstats.py:5431
+msgid "Contributors"
+msgstr "投稿者"
+
+#: guildstats\guildstats.py:3506 guildstats\guildstats.py:5599
+#: guildstats\guildstats.py:5641
+msgid "Tracking data in this server for {interval_string}."
+msgstr "このサーバーの追跡データは、 {interval_string}。"
+
+#: guildstats\guildstats.py:3515 guildstats\guildstats.py:5608
+#: guildstats\guildstats.py:5650
+msgid "Only {members_type} are taken into account."
+msgstr "{members_type} のみが考慮される。"
+
+#: guildstats\guildstats.py:3647 guildstats\guildstats.py:3929
+#: guildstats\guildstats.py:4192 guildstats\guildstats.py:4454
+#: guildstats\guildstats.py:4898 guildstats\guildstats.py:5142
+#: guildstats\guildstats.py:5361
+msgid "Server Lookback"
+msgstr "サーバー・ルックバック"
+
+#: guildstats\guildstats.py:3657 guildstats\guildstats.py:3940
+#: guildstats\guildstats.py:4908
+msgid "Text"
+msgstr "テキスト"
+
+#: guildstats\guildstats.py:3668 guildstats\guildstats.py:3812
+#: guildstats\guildstats.py:3954 guildstats\guildstats.py:4772
+#: guildstats\guildstats.py:4919
+msgid "Voice"
+msgstr "声"
+
+#: guildstats\guildstats.py:3681 guildstats\guildstats.py:3969
+#: guildstats\guildstats.py:4217 guildstats\guildstats.py:4772
+#: guildstats\guildstats.py:4932 guildstats\guildstats.py:5167
+msgid "Messages"
+msgstr "メッセージ"
+
+#: guildstats\guildstats.py:3691 guildstats\guildstats.py:3736
+#: guildstats\guildstats.py:3980 guildstats\guildstats.py:4034
+#: guildstats\guildstats.py:4228 guildstats\guildstats.py:4282
+#: guildstats\guildstats.py:4490 guildstats\guildstats.py:4544
+#: guildstats\guildstats.py:4942 guildstats\guildstats.py:4987
+#: guildstats\guildstats.py:5177 guildstats\guildstats.py:5222
+#: guildstats\guildstats.py:5396 guildstats\guildstats.py:5441
+msgid "1d"
+msgstr "1d"
+
+#: guildstats\guildstats.py:3702 guildstats\guildstats.py:3747
+#: guildstats\guildstats.py:3994 guildstats\guildstats.py:4048
+#: guildstats\guildstats.py:4242 guildstats\guildstats.py:4296
+#: guildstats\guildstats.py:4504 guildstats\guildstats.py:4558
+#: guildstats\guildstats.py:4953 guildstats\guildstats.py:4998
+#: guildstats\guildstats.py:5188 guildstats\guildstats.py:5233
+#: guildstats\guildstats.py:5407 guildstats\guildstats.py:5452
+msgid "7d"
+msgstr "7d"
+
+#: guildstats\guildstats.py:3713 guildstats\guildstats.py:3759
+#: guildstats\guildstats.py:4008 guildstats\guildstats.py:4062
+#: guildstats\guildstats.py:4256 guildstats\guildstats.py:4310
+#: guildstats\guildstats.py:4518 guildstats\guildstats.py:4572
+#: guildstats\guildstats.py:4964 guildstats\guildstats.py:5010
+#: guildstats\guildstats.py:5199 guildstats\guildstats.py:5245
+#: guildstats\guildstats.py:5418 guildstats\guildstats.py:5464
+msgid "30d"
+msgstr "30d"
+
+#: guildstats\guildstats.py:3726 guildstats\guildstats.py:4023
+#: guildstats\guildstats.py:4479 guildstats\guildstats.py:4977
+#: guildstats\guildstats.py:5386
+msgid "Voice Activity"
+msgstr "音声活動"
+
+#: guildstats\guildstats.py:3789
+msgid "Server Ranks"
+msgstr "サーバーランク"
+
+#: guildstats\guildstats.py:3805 guildstats\guildstats.py:3818
+msgid "No data."
+msgstr "データはない。"
+
+#: guildstats\guildstats.py:3827
+msgid "Top Channels & Activity"
+msgstr "トップチャンネルとアクティビティ"
+
+#: guildstats\guildstats.py:4077 guildstats\guildstats.py:4829
+#: guildstats\guildstats.py:5025
+msgid "Top Members"
+msgstr "トップメンバー"
+
+#: guildstats\guildstats.py:4135 guildstats\guildstats.py:5083
+msgid "Top Channels"
+msgstr "トップチャンネル"
+
+#: guildstats\guildstats.py:4325 guildstats\guildstats.py:5279
+msgid "Top Messages Members"
+msgstr "トップメッセージ"
+
+#: guildstats\guildstats.py:4389
+msgid "Top Messages Channels"
+msgstr "トップメッセージ・チャンネル"
+
+#: guildstats\guildstats.py:4587 guildstats\guildstats.py:5498
+msgid "Top Voice Members"
+msgstr "トップ・ボイス・メンバー"
+
+#: guildstats\guildstats.py:4651
+msgid "Top Voice Channels"
+msgstr "トップ音声チャンネル"
+
+#: guildstats\guildstats.py:4716
+msgid "Top Activities (Applications)"
+msgstr "トップ・アクティビティ（アプリケーション）"
+
+#: guildstats\guildstats.py:4771
+msgid "Tope"
+msgstr "トープ"
+
+#: guildstats\guildstats.py:4772
+msgid "Members"
+msgstr "メンバー"
+
+#: guildstats\guildstats.py:4772
+msgid "Channels"
+msgstr "チャンネル"
+
+#: guildstats\guildstats.py:5260 guildstats\guildstats.py:5479
+msgid "Server Rank"
+msgstr "サーバーランク"
+
+#: guildstats\guildstats.py:5771 guildstats\guildstats.py:5811
+#: guildstats\guildstats.py:5847 guildstats\guildstats.py:5873
+#: guildstats\guildstats.py:5899 guildstats\guildstats.py:5925
+#: guildstats\guildstats.py:5954 guildstats\guildstats.py:5987
+#: guildstats\guildstats.py:6017 guildstats\guildstats.py:6048
+#: guildstats\guildstats.py:6079 guildstats\guildstats.py:6112
+msgid "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
+msgstr "このギルドではこの歯車は無効になっています。管理者はコマンド `{prefix}guildstats enable` で有効にすることができます。"
+
+#: guildstats\guildstats.py:5778 guildstats\guildstats.py:5818
+#: guildstats\guildstats.py:6119
+msgid "This user is in the ignored users list (`{prefix}guildstats ignoreme`)."
+msgstr "このユーザーは無視ユーザーリストに含まれています (`{prefix}guildstats ignoreme`)。"
+
+#: guildstats\guildstats.py:5802
+#, docstring
+msgid "Display stats for a specified member."
+msgstr "指定したメンバーの統計情報を表示します。"
+
+#: guildstats\guildstats.py:5838
+#, docstring
+msgid "Display stats for a specified role."
+msgstr "指定されたロールの統計情報を表示します。"
+
+#: guildstats\guildstats.py:5866
+#, docstring
+msgid "Display stats for this guild."
+msgstr "このギルドのステータスを表示する。"
+
+#: guildstats\guildstats.py:5892
+#, docstring
+msgid "Display stats for the messages in this guild."
+msgstr "このギルドのメッセージのステータスを表示します。"
+
+#: guildstats\guildstats.py:5918
+#, docstring
+msgid "Display stats for the voice in this guild."
+msgstr "このギルドのボイスのステータスを表示します。"
+
+#: guildstats\guildstats.py:5943
+#, docstring
+msgid "Display stats for activities in this guild."
+msgstr "このギルドでの活動の統計情報を表示します。"
+
+#: guildstats\guildstats.py:5946 guildstats\guildstats.py:6071
+#: guildstats\guildstats.py:6104
+msgid "Activities stats are disabled on this bot."
+msgstr "このボットではアクティビティ統計は無効になっています。"
+
+#: guildstats\guildstats.py:5975
+#, docstring
+msgid "Display stats for a specified category."
+msgstr "指定したカテゴリの統計情報を表示する。"
+
+#: guildstats\guildstats.py:6008
+#, docstring
+msgid "Display stats for a specified channel."
+msgstr "指定したチャンネルの統計情報を表示する。"
+
+#: guildstats\guildstats.py:6022
+msgid "Threads aren't supported by this cog."
+msgstr "スレッドはこの歯車ではサポートされていない。"
+
+#: guildstats\guildstats.py:6039
+#, docstring
+msgid "Display top stats for voice/messages members/channels."
+msgstr "音声/メッセージのメンバー/チャンネルのトップ統計情報を表示します。"
+
+#: guildstats\guildstats.py:6068
+#, docstring
+msgid "Display stats for a specific activity in this guild."
+msgstr "このギルドの特定の活動のステータスを表示する。"
+
+#: guildstats\guildstats.py:6099
+#, docstring
+msgid "Display graphic for members, roles guilds, text channels, voice channels and activities."
+msgstr "メンバー、ロールギルド、テキストチャンネル、ボイスチャンネル、アクティビティのグラフィックを表示します。"
+
+#: guildstats\guildstats.py:6135
+#, docstring
+msgid "Asking GuildStats to ignore your actions."
+msgstr "GuildStatsに自分の行動を無視するように依頼する。"
+
+#: guildstats\guildstats.py:6143
+msgid "You will no longer be seen by this cog and the data I held on you have been deleted."
+msgstr "あなたはもうこの歯車には表示されず、私が保持していたあなたのデータは削除されました。"
+
+#: guildstats\guildstats.py:6150
+msgid "You'll be seen again by this cog."
+msgstr "この歯車にまた会えるだろう。"
+
+#: guildstats\guildstats.py:6155
+#, docstring
+msgid "Ignore or unignore a specific user."
+msgstr "特定のユーザーを無視または無視解除する。"
+
+#: guildstats\guildstats.py:6162
+msgid "{user.mention} ({user.id}) will no longer be seen by this cog, and their data has been deleted."
+msgstr "{user.mention} ({user.id}) はこの歯車からは見えなくなり、そのデータは削除された。"
+
+#: guildstats\guildstats.py:6171
+msgid "{user.mention} ({user.id}) will be seen again by this cog."
+msgstr "{user.mention} ({user.id})は、この歯車によって再び見られることになる。"
+
+#: guildstats\guildstats.py:6178
+#, docstring
+msgid "Ignore or unignore a specific category."
+msgstr "特定のカテゴリーを無視または無視解除する。"
+
+#: guildstats\guildstats.py:6186
+msgid "`{category.name}` ({category.id}) will now be ignored in stats (except for the specific category one)."
+msgstr "{category.name}` ({category.id}) は統計では無視されるようになりました（特定のカテゴリーを除く）。"
+
+#: guildstats\guildstats.py:6194
+msgid "`{category.name}` ({category.id}) will no longer be ignored in stats."
+msgstr "{category.name}` ({category.id}) は統計で無視されなくなった。"
+
+#: guildstats\guildstats.py:6207
+#, docstring
+msgid "Ignore or unignore a specific channel."
+msgstr "特定のチャンネルを無視または無視解除する。"
+
+#: guildstats\guildstats.py:6213
+msgid "{channel.mention} ({channel.id}) will now be ignored in stats (except for the specific channel one)."
+msgstr "{channel.mention} ({channel.id}) は統計で無視されるようになりました（特定のチャンネルのものを除く）。"
+
+#: guildstats\guildstats.py:6221
+msgid "{channel.mention} ({channel.id}) will no longer be ignored in stats."
+msgstr "{channel.mention} ({channel.id}) は統計で無視されなくなる。"
+
+#: guildstats\guildstats.py:6229
+#, docstring
+msgid "Ignore or unignore a specific activity."
+msgstr "特定のアクティビティを無視または無視解除します。"
+
+#: guildstats\guildstats.py:6237
+msgid "The activity `{activity_name}` will now be ignored in stats (except for the specific activity one)."
+msgstr "{activity_name}`のアクティビティは統計では無視されるようになりました（特定のアクティビティを除く）。"
+
+#: guildstats\guildstats.py:6245
+msgid "The activity `{activity_name}` will no longer be ignored in stats."
+msgstr "{activity_name}`のアクティビティは統計で無視されなくなった。"
+
+#: guildstats\guildstats.py:6253
+#, docstring
+msgid "Enable or disable activities stats."
+msgstr "アクティビティ統計を有効または無効にする。"
+
+#: guildstats\guildstats.py:6259
+#, docstring
+msgid "Enable or disable by default the cog in the bot guilds."
+msgstr "ボットギルドのコグをデフォルトで有効または無効にする。"
+
+#: guildstats\guildstats.py:6265
+#, docstring
+msgid "Enable the cog in this guild/server."
+msgstr "このギルド/サーバーで歯車を有効にする。"
+
+#: guildstats\guildstats.py:6269
+msgid "GuildStats already enabled in this guild/server."
+msgstr "このギルド/サーバーではすでにGuildStatsが有効になっています。"
+
+#: guildstats\guildstats.py:6272
+msgid "GuildStats enabled in this guild/server."
+msgstr "このギルド/サーバーでGuildStatsが有効になっている。"
+
+#: guildstats\guildstats.py:6277
+#, docstring
+msgid "Disable the cog in this guild/server."
+msgstr "このギルド/サーバーのコグを無効にします。"
+
+#: guildstats\guildstats.py:6281
+msgid "GuildStats already disabled in this guild/server."
+msgstr "このギルド/サーバーではGuildStatsはすでに無効になっています。"
+
+#: guildstats\guildstats.py:6284
+msgid "GuildStats disabled in this guild/server."
+msgstr "このギルド/サーバーではGuildStatsが無効になっています。"
+
+#: guildstats\guildstats.py:6290
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "ループの状態を確認するためのエンベデッドを取得します。"
+
+#: guildstats\guildstats.py:6301
+#, docstring
+msgid "Purge Config for the current guild."
+msgstr "現在のギルドのコンフィグをパージします。"
+
+#: guildstats\guildstats.py:6306
+msgid "All GuildStats data purged for this guild."
+msgstr "このギルドのすべてのGuildStatsデータがパージされました。"
+
+#: guildstats\guildstats.py:6309
+msgid "All GuildStats activities data purged for this guild."
+msgstr "このギルドのすべてのGuildStatsアクティビティデータがパージされました。"
+
+#: guildstats\guildstats.py:6328
+msgid "All GuildStats {_type} data purged for this guild."
+msgstr "このギルドのすべてのGuildStats {_type} データがパージされました。"
+

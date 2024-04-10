@@ -1,0 +1,57 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:26\n"
+"Last-Translator: \n"
+"Language-Team: French\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/dashboard/locales/messages.pot\n"
+"X-Crowdin-File-ID: 308\n"
+"Language: fr_FR\n"
+
+#: dashboard\dashboard.py:32
+msgid "This is not a valid URL."
+msgstr "Il ne s'agit pas d'une URL valide."
+
+#: dashboard\dashboard.py:34
+msgid "This is not a valid Dashboard redirect URI: it must end with `/callback`."
+msgstr "Ce n'est pas un URI de redirection valide pour le tableau de bord : il doit se terminer par `/callback`."
+
+#: dashboard\dashboard.py:42
+msgid "This third party is not available."
+msgstr "Ce tiers n'est pas disponible."
+
+#: dashboard\dashboard.py:48
+#, docstring
+msgid "Interact with your bot through a web dashboard!\n\n"
+"    ⚠️ This package is a fork of Neuro Assassin's work, and isn't endorsed by the Org at all.\n"
+"    "
+msgstr "Interagissez avec votre bot à travers un tableau de bord web !\n\n"
+"    ⚠️ Ce paquet est un fork du travail de Neuro Assassin, et n'est pas du tout approuvé par l'Org.\n"
+"    "
+
+#: dashboard\dashboard.py:306
+#, docstring
+msgid "Set the client secret needed for Discord Oauth."
+msgstr "Définir le secret client nécessaire pour Discord Oauth."
+
+#: dashboard\dashboard.py:315
+msgid "Discord Secret"
+msgstr "Secret de discorde"
+
+#: dashboard\dashboard.py:323
+msgid "Discord OAuth secret set."
+msgstr "Ensemble de secrets OAuth de Discord."
+
+#: dashboard\dashboard.py:359
+msgid "Click on the button below to set a secret for Discord OAuth."
+msgstr "Cliquez sur le bouton ci-dessous pour définir un secret pour Discord OAuth."
+

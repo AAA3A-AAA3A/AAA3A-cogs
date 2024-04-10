@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:09\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:41\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Crowdin-File-ID: 86\n"
 "Language: el_GR\n"
 
-#: editfile\editfile.py:28
+#: editfile\editfile.py:29
 #, docstring
 msgid "A cog to get a file and replace it from its path from Discord!\n\n"
 "    ⚠️ This cog can be very dangerous, since it allows direct read/write/delete of files on the bot’s machine, considering the fact that reading the wrong file can expose sensitive information like tokens and deleting the wrong file can corrupt the bot or the system entirely.\n"
@@ -26,7 +26,7 @@ msgstr "Ένα γρανάζι για να πάρετε ένα αρχείο κα�
 "    ⚠️ Αυτό το cog μπορεί να είναι πολύ επικίνδυνο, καθώς επιτρέπει την άμεση ανάγνωση/εγγραφή/διαγραφή αρχείων στο μηχάνημα του bot, λαμβάνοντας υπόψη το γεγονός ότι η ανάγνωση του λάθος αρχείου μπορεί να εκθέσει ευαίσθητες πληροφορίες όπως tokens και η διαγραφή του λάθος αρχείου μπορεί να καταστρέψει το bot ή το σύστημα εντελώς.\n"
 "    "
 
-#: editfile\editfile.py:59
+#: editfile\editfile.py:60
 #, docstring
 msgid "Get a file on the bot's host machine from its path.\n"
 "        `#L10` or `#L10-L30` is supported.\n"
@@ -35,37 +35,37 @@ msgstr "Λήψη ενός αρχείου στον υπολογιστή-ξενι�
 "        Υποστηρίζεται η επιλογή `#L10` ή `#L10-L30`.\n"
 "        "
 
-#: editfile\editfile.py:64 editfile\editfile.py:140
+#: editfile\editfile.py:65 editfile\editfile.py:141
 msgid "Couldn't parse this input."
 msgstr "Δεν μπόρεσε να αναλύσει αυτή την είσοδο."
 
-#: editfile\editfile.py:76
+#: editfile\editfile.py:77
 msgid "Cowardly refusing to read a file with no size stat. (it may be empty, endless or inaccessible)."
 msgstr "Αρνείται δειλά να διαβάσει ένα αρχείο χωρίς size stat. (μπορεί να είναι άδειο, ατελείωτο ή μη προσβάσιμο)."
 
-#: editfile\editfile.py:82
+#: editfile\editfile.py:83
 msgid "Cowardly refusing to read a file >128MB."
 msgstr "Αρνείται δειλά να διαβάσει ένα αρχείο >128MB."
 
-#: editfile\editfile.py:100 editfile\editfile.py:261 editfile\editfile.py:271
-#: editfile\editfile.py:284 editfile\editfile.py:295
+#: editfile\editfile.py:101 editfile\editfile.py:293 editfile\editfile.py:303
+#: editfile\editfile.py:316 editfile\editfile.py:327
 msgid "This file cannot be found on the host machine."
 msgstr "Αυτό το αρχείο δεν μπορεί να βρεθεί στο μηχάνημα υποδοχής."
 
-#: editfile\editfile.py:104 editfile\editfile.py:167 editfile\editfile.py:265
-#: editfile\editfile.py:275 editfile\editfile.py:288 editfile\editfile.py:299
+#: editfile\editfile.py:105 editfile\editfile.py:168 editfile\editfile.py:297
+#: editfile\editfile.py:307 editfile\editfile.py:320 editfile\editfile.py:331
 msgid "The path you specified refers to a directory, not a file."
 msgstr "Η διαδρομή που καθορίσατε αναφέρεται σε έναν κατάλογο, όχι σε ένα αρχείο."
 
-#: editfile\editfile.py:124 editfile\editfile.py:158
+#: editfile\editfile.py:125 editfile\editfile.py:159
 msgid "There are only {len_lines} lines in this file."
 msgstr "Υπάρχουν μόνο {len_lines} γραμμές σε αυτό το αρχείο."
 
-#: editfile\editfile.py:129
+#: editfile\editfile.py:130
 msgid "Here are the contents of the file `{path}`."
 msgstr "Ακολουθούν τα περιεχόμενα του αρχείου `{path}`."
 
-#: editfile\editfile.py:134
+#: editfile\editfile.py:135
 #, docstring
 msgid "Replace a file on the bot's host machine from its path.\n"
 "        `#L10` or `#L10-L30` is supported.\n"
@@ -74,59 +74,64 @@ msgstr "Αντικαταστήστε ένα αρχείο στον υπολογι
 "        Υποστηρίζεται η επιλογή `#L10` ή `#L10-L30`.\n"
 "        "
 
-#: editfile\editfile.py:163
+#: editfile\editfile.py:164
 msgid "This original file cannot be found on the host machine."
 msgstr "Αυτό το αρχικό αρχείο δεν μπορεί να βρεθεί στο μηχάνημα υποδοχής."
 
-#: editfile\editfile.py:171
+#: editfile\editfile.py:172
 msgid "You must send the command with an attachment that will be used to replace the original file."
 msgstr "Πρέπει να στείλετε την εντολή με ένα συνημμένο αρχείο που θα χρησιμοποιηθεί για την αντικατάσταση του αρχικού αρχείου."
 
-#: editfile\editfile.py:196
+#: editfile\editfile.py:197
 msgid "This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly."
 msgstr "Αυτό είναι το αρχικό/παλιό αρχείο που είναι διαθέσιμο στη διαδρομή `{path}`. Κανονικά, αυτό το αρχείο έχει αντικατασταθεί σωστά."
 
-#: editfile\editfile.py:204
+#: editfile\editfile.py:205
 #, docstring
 msgid "Get a cog directory on the bot's host machine from its name."
 msgstr "Λαμβάνετε έναν κατάλογο cog στον υπολογιστή-ξενιστή του bot από το όνομά του."
 
-#: editfile\editfile.py:207
+#: editfile\editfile.py:208
 msgid "Could not find a cog with this name."
 msgstr "Δεν μπόρεσε να βρει ένα γρανάζι με αυτό το όνομα."
 
-#: editfile\editfile.py:213
+#: editfile\editfile.py:214
 msgid "This cog has not yet stored any persistent data in its data folder."
 msgstr "Αυτό το γρανάζι δεν έχει ακόμη αποθηκεύσει μόνιμα δεδομένα στο φάκελο δεδομένων του."
 
-#: editfile\editfile.py:233
+#: editfile\editfile.py:234
 #, docstring
 msgid "List all files/directories of a directory from its path."
 msgstr "Λίστα όλων των αρχείων/καταλόγων ενός καταλόγου από τη διαδρομή του."
 
-#: editfile\editfile.py:237
+#: editfile\editfile.py:238 editfile\editfile.py:262
 msgid "This directory cannot be found on the host machine."
 msgstr "Αυτός ο κατάλογος δεν μπορεί να βρεθεί στο μηχάνημα υποδοχής."
 
-#: editfile\editfile.py:241
+#: editfile\editfile.py:242 editfile\editfile.py:266
 msgid "The path you specified refers to a file, not a directory."
 msgstr "Η διαδρομή που καθορίσατε αναφέρεται σε ένα αρχείο, όχι σε έναν κατάλογο."
 
-#: editfile\editfile.py:257
+#: editfile\editfile.py:258
+#, docstring
+msgid "Make a tree with all files/directories of a directory from its path."
+msgstr "Δημιουργήστε ένα δέντρο με όλα τα αρχεία/καταλόγους ενός καταλόγου από τη διαδρομή του."
+
+#: editfile\editfile.py:289
 #, docstring
 msgid "Rename a file."
 msgstr "Μετονομασία ενός αρχείου."
 
-#: editfile\editfile.py:277
+#: editfile\editfile.py:309
 msgid "The `{path}` file has been renamed."
 msgstr "Το αρχείο \"{path}\" έχει μετονομαστεί."
 
-#: editfile\editfile.py:281
+#: editfile\editfile.py:313
 #, docstring
 msgid "Delete a file."
 msgstr "Διαγράψτε ένα αρχείο."
 
-#: editfile\editfile.py:301
+#: editfile\editfile.py:333
 msgid "The `{path}` file has been deleted."
 msgstr "Το αρχείο \"{path}\" έχει διαγραφεί."
 

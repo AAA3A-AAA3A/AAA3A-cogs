@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-08-22 14:22+0200\n"
-"PO-Revision-Date: 2023-08-22 12:28\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:21\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -146,7 +146,7 @@ msgstr "Et saa suorittaa komentoa `[p]sanction` tällä kanavalla."
 msgid "A cog to sanction members, with buttons!"
 msgstr "Hammasratas jäsenten sanktioimiseksi, painikkeilla!"
 
-#: simplesanction\simplesanction.py:215
+#: simplesanction\simplesanction.py:209
 #, docstring
 msgid "\n"
 "        - Sanction a member quickly and easily.\n\n"
@@ -163,7 +163,7 @@ msgstr "\n"
 "        - `[p]sanction 0 012345678987654321`\n"
 "        ?                "
 
-#: simplesanction\simplesanction.py:250
+#: simplesanction\simplesanction.py:244
 #, docstring
 msgid "\n"
 "         - ℹ️ Show informations about a member.\n\n"
@@ -180,7 +180,7 @@ msgstr "\n"
 "        - ``[p]sanction 1 012345678987654321`: UserInfo annetulla tunnuksella.\n"
 "        "
 
-#: simplesanction\simplesanction.py:286
+#: simplesanction\simplesanction.py:280
 #, docstring
 msgid "\n"
 "         - ⚠️ Add a simple warning on a member.\n\n"
@@ -197,7 +197,7 @@ msgstr "\n"
 "        - `[p]sanction 2 012345678987654321 Advertising`: Varoittaa käyttäjää annetulla tunnuksella.\n"
 "        "
 
-#: simplesanction\simplesanction.py:321
+#: simplesanction\simplesanction.py:315
 #, docstring
 msgid "\n"
 "         - 🔨 Ban a member from this server.\n\n"
@@ -216,7 +216,7 @@ msgstr "\n"
 "        - `[p]sanction 3 012345678987654321 Advertising`: Kielletään käyttäjä annetulla tunnuksella.\n"
 "        "
 
-#: simplesanction\simplesanction.py:358
+#: simplesanction\simplesanction.py:352
 #, docstring
 msgid "\n"
 "         - 🔂 SoftBan a member from this server.\n\n"
@@ -235,7 +235,7 @@ msgstr "\n"
 "        - `[p]sanction 4 012345678987654321 Advertising`: SoftBan käyttäjälle annetulla tunnuksella.\n"
 "        "
 
-#: simplesanction\simplesanction.py:396
+#: simplesanction\simplesanction.py:390
 #, docstring
 msgid "\n"
 "         - 💨 TempBan a member from this server.\n\n"
@@ -256,7 +256,7 @@ msgstr "\n"
 "        - `[p]sanction 5 012345678987654321 Advertising`: Bannaa käyttäjä annetulla tunnuksella.\n"
 "        "
 
-#: simplesanction\simplesanction.py:434
+#: simplesanction\simplesanction.py:428
 #, docstring
 msgid "\n"
 "         - 👢 Kick a member from this server.\n\n"
@@ -273,7 +273,7 @@ msgstr "\n"
 "        - `[p]sanction 6 012345678987654321 Advertising`: Potkaise käyttäjä, jolla on annettu tunnus.\n"
 "        "
 
-#: simplesanction\simplesanction.py:469
+#: simplesanction\simplesanction.py:463
 #, docstring
 msgid "\n"
 "         - 🔇 Mute a member in all channels, including voice channels.\n\n"
@@ -290,7 +290,7 @@ msgstr "\n"
 "        - `[p]sanction 7 @member Advertising`: Loputon mykistys syystä \"Mainonta\".\n"
 "        "
 
-#: simplesanction\simplesanction.py:504
+#: simplesanction\simplesanction.py:498
 #, docstring
 msgid "\n"
 "         - 👊 Mute a member in this channel.\n\n"
@@ -307,7 +307,7 @@ msgstr "\n"
 "        - `[p]sanction 8 @member Advertising`: Loputon mykistys syystä \"Mainonta\".\n"
 "        "
 
-#: simplesanction\simplesanction.py:540
+#: simplesanction\simplesanction.py:534
 #, docstring
 msgid "\n"
 "         - ⏳ TempMute a member in all channels, including voice channels.\n\n"
@@ -326,7 +326,7 @@ msgstr "\n"
 "        - `[p]sanction 9 @member 3d Advertising`: 3 päivän mykistys syystä \"Mainonta\".\n"
 "        "
 
-#: simplesanction\simplesanction.py:578
+#: simplesanction\simplesanction.py:572
 #, docstring
 msgid "\n"
 "         - ⌛ TempMute a member in this channel.\n\n"
@@ -345,21 +345,21 @@ msgstr "\n"
 "        - `[p]sanction 10 @member 3d Advertising`: 3 päivän mykistys syystä \"Mainonta\".\n"
 "        "
 
-#: simplesanction\simplesanction.py:620 simplesanction\types.py:89
+#: simplesanction\simplesanction.py:614 simplesanction\types.py:89
 #: simplesanction\types.py:103 simplesanction\types.py:146
 #: simplesanction\types.py:151
 msgid "The reason was not given."
 msgstr "Syytä ei kerrottu."
 
-#: simplesanction\simplesanction.py:624 simplesanction\view.py:101
+#: simplesanction\simplesanction.py:618 simplesanction\view.py:99
 msgid "Sanction Member"
 msgstr "Seuraamus Jäsen"
 
-#: simplesanction\simplesanction.py:625
+#: simplesanction\simplesanction.py:619
 msgid "Which member do you want to sanction? (Type `cancel` to cancel.)"
 msgstr "Ketä jäsentä haluatte rangaista? (Kirjoita `cancel` peruuttaaksesi.)"
 
-#: simplesanction\simplesanction.py:643 simplesanction\types.py:125
+#: simplesanction\simplesanction.py:637 simplesanction\types.py:125
 #: simplesanction\types.py:148
 msgid "Timed out, please try again."
 msgstr "Aika loppui, yritä uudelleen."
@@ -384,12 +384,12 @@ msgid "\n"
 msgstr "\n"
 "*Komento on saattanut epäonnistua. Jos näin on, alla näkyy virheilmoitus.*"
 
-#: simplesanction\types.py:203 simplesanction\view.py:127
+#: simplesanction\types.py:203 simplesanction\view.py:125
 msgid "Reason:"
 msgstr "Syy:"
 
 #: simplesanction\types.py:208 simplesanction\types.py:214
-#: simplesanction\view.py:130
+#: simplesanction\view.py:128
 msgid "Duration:"
 msgstr "Kesto:"
 
@@ -405,13 +405,13 @@ msgstr "Tätä komentoa ei ole olemassa."
 msgid "You can't execute this command, in this context."
 msgstr "Et voi suorittaa tätä komentoa tässä yhteydessä."
 
-#: simplesanction\view.py:103
+#: simplesanction\view.py:101
 msgid "This tool allows you to easily sanction a server member.\n"
 "Member mention: {member.mention} - Member ID: {member.id}"
 msgstr "Tämän työkalun avulla voit helposti sanktioida palvelimen jäsenen.\n"
 "Jäsenmaininta: {member.mention} - Jäsenen ID: {member.id}"
 
-#: simplesanction\view.py:137
+#: simplesanction\view.py:135
 msgid "You are using this command in Fake mode, so no action will be taken, but I will pretend it is the case."
 msgstr "Käytät tätä komentoa Fake-tilassa, joten mitään toimenpiteitä ei tehdä, mutta teeskentelen, että näin on."
 

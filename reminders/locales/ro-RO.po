@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:32\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:37\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -17,114 +17,134 @@ msgstr ""
 "X-Crowdin-File-ID: 239\n"
 "Language: ro_RO\n"
 
-#: reminders\converters.py:108
+#: reminders\converters.py:112
 msgid "Invalid timezone provided."
 msgstr "Fusul orar furnizat nu este valid."
 
-#: reminders\converters.py:428 reminders\reminders.py:806
-#: reminders\reminders.py:979
+#: reminders\converters.py:535 reminders\reminders.py:886
+#: reminders\reminders.py:1084
 msgid "You haven't any reminders."
 msgstr "Nu aveți niciun memento."
 
-#: reminders\converters.py:437
+#: reminders\converters.py:544
 msgid "Reminder ID must be an integer."
 msgstr "ID-ul de reamintire trebuie să fie un număr întreg."
 
-#: reminders\converters.py:441
+#: reminders\converters.py:548
 msgid "You haven't any reminder with this id."
 msgstr "Nu aveți nici o amintire cu acest id."
 
-#: reminders\reminders.py:62
+#: reminders\reminders.py:61
 msgid "You're not allowed to execute the `[p]remindme` command in this channel."
 msgstr "Nu aveți voie să executați comanda `[p]remindme` în acest canal."
 
-#: reminders\reminders.py:70
+#: reminders\reminders.py:69
 #, docstring
-msgid "Don't forget anything anymore! Reminders in DMs, channels, FIFO commands sheduler, say sheduler... With 'Me Too', snooze and buttons."
-msgstr "Nu mai uitați nimic! Amintiri în DM-uri, canale, comenzi FIFO, comenzi FIFO sheduler, spune sheduler... Cu 'Me Too', snooze și butoane."
+msgid "Don't forget anything anymore! Reminders in DMs, channels, FIFO commands scheduler, say scheduler... With 'Me Too', snooze and buttons."
+msgstr "Nu mai uitați nimic! Amintiri în DM-uri, canale, planificator de comenzi FIFO, planificator de comenzi... Cu 'Me Too', snooze și butoane."
 
-#: reminders\reminders.py:312 reminders\reminders.py:428
-#: reminders\reminders.py:584 reminders\reminders.py:681
+#: reminders\reminders.py:303 reminders\reminders.py:433
+#: reminders\reminders.py:620 reminders\reminders.py:737
 msgid "You have reached the limit of {minimum_user_reminders} reminders per user."
 msgstr "Ați atins limita de {minimum_user_reminders} memento-uri pentru fiecare utilizator."
 
-#: reminders\reminders.py:332 reminders\reminders.py:448
-#: reminders\reminders.py:599 reminders\reminders.py:692
-#: reminders\reminders.py:948
+#: reminders\reminders.py:325 reminders\reminders.py:455
+#: reminders\reminders.py:637 reminders\reminders.py:750
+#: reminders\reminders.py:1053
 msgid "You are not allowed to create repeating reminders."
 msgstr "Nu aveți voie să creați memento-uri care se repetă."
 
-#: reminders\reminders.py:346 reminders\reminders.py:462
-#: reminders\reminders.py:613 reminders\reminders.py:706
-#: reminders\reminders.py:963
+#: reminders\reminders.py:339 reminders\reminders.py:469
+#: reminders\reminders.py:651 reminders\reminders.py:764
+#: reminders\reminders.py:1068
 msgid "The repeat timedelta must be greater than {minimum_repeat} minutes."
 msgstr "Timedelta de repetare trebuie să fie mai mare de {minimum_repeat} minute."
 
-#: reminders\reminders.py:377 reminders\reminders.py:525
-#: reminders\reminders.py:875
+#: reminders\reminders.py:370 reminders\reminders.py:547
+#: reminders\reminders.py:980
 msgid "Your reminder text is too long."
 msgstr "Textul de atenționare este prea lung."
 
-#: reminders\reminders.py:484
+#: reminders\reminders.py:494
 msgid "You can't create a reminder in {destination}."
 msgstr "Nu puteți crea un memento în {destination}."
 
-#: reminders\reminders.py:495
-msgid "You can't mention roles in {destination}."
-msgstr "Nu poți menționa roluri în {destination}."
+#: reminders\reminders.py:500 reminders\reminders.py:772
+msgid "I can't send messages in this channel."
+msgstr "Nu pot trimite mesaje pe acest canal."
 
-#: reminders\reminders.py:572
+#: reminders\reminders.py:502
+msgid "I can't send embeds in this channel."
+msgstr "Nu pot să trimit embed-uri pe acest canal."
+
+#: reminders\reminders.py:511
+msgid "Since you don't have the `mention_everyone` permission, you can't create a reminder that will mention more than 3 people or mention role(s)."
+msgstr "Deoarece nu aveți permisiunea `mention_everyone`, nu puteți crea un memento care să menționeze mai mult de 3 persoane sau să menționeze roluri."
+
+#: reminders\reminders.py:517
+msgid "Due to the message character limit, you can only mention a maximum of 10 users or roles."
+msgstr "Din cauza limitei de caractere a mesajului, puteți menționa doar un număr maxim de 10 utilizatori sau roluri."
+
+#: reminders\reminders.py:605
 #, docstring
 msgid "Create a FIFO/command reminder. The chosen command will be executed with you as invoker. Don't provide the prefix.\n\n"
 "        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.\n"
-"        You don't have to put quotes around the time argument.\n"
-"        Use `[p]reminder timetips` to display tips for time parsing.\n"
+"        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
+"        Use `[p]reminder timetips` to display tips for time parsing.\n\n"
+"        Examples:\n"
+"        - `[p]reminder fifo #destination \"at 10h every day\" ping\n"
 "        "
 msgstr "Creați un memento FIFO/comandă. Comanda aleasă va fi executată cu dumneavoastră ca invocator. Nu furnizați prefixul.\n\n"
 "        Timpul specificat poate fi analizat fuzzy sau folosiți kwargs `in`, `on` și `every` pentru a găsi o regulă de repetare și textul dvs.\n"
-"        Nu trebuie să puneți ghilimele în jurul argumentului time.\n"
-"        Utilizați `[p]reminder timetips` pentru a afișa sfaturi pentru analiza timpului.\n"
+"        Nu trebuie să puneți ghilimele în jurul argumentului time. Pentru o analiză mai precisă, puteți pune ghilimele în jurul textului. Puneți ghilimele și în jurul timpului, dacă acesta conține spații.\n"
+"        Utilizați `[p]reminder timetips` pentru a afișa sfaturi pentru analiza timpului.\n\n"
+"        Exemple:\n"
+"        - `[p]reminder fifo #destinație \"la ora 10 în fiecare zi\" ping\n"
 "        "
 
-#: reminders\reminders.py:590
+#: reminders\reminders.py:626
 msgid "You're not allowed to create FIFO/commands reminders."
 msgstr "Nu aveți voie să creați memento-uri FIFO/comandă."
 
-#: reminders\reminders.py:629
+#: reminders\reminders.py:668
 msgid "This command doesn't exist."
 msgstr "Această comandă nu există."
 
-#: reminders\reminders.py:636
+#: reminders\reminders.py:675
 msgid "You can't execute this command, in this context."
 msgstr "Nu puteți executa această comandă, în acest context."
 
-#: reminders\reminders.py:639
+#: reminders\reminders.py:679
 msgid "The command `{command.qualified_name}` can't be scheduled, because it's a suspicious command."
 msgstr "Comanda `{command.qualified_name}` nu poate fi programată, deoarece este o comandă suspectă."
 
-#: reminders\reminders.py:669
+#: reminders\reminders.py:722
 #, docstring
 msgid "Create a reminder who will say/send text.\n\n"
 "        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.\n"
-"        You don't have to put quotes around the time argument.\n"
-"        Use `[p]reminder timetips` to display tips for time parsing.\n"
+"        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
+"        Use `[p]reminder timetips` to display tips for time parsing.\n\n"
+"        Examples:\n"
+"        - `[p]reminder say #destination \"at 9h every day\" Hello everyone!\n"
 "        "
 msgstr "Creați un memento care va spune/trimite un text.\n\n"
-"        Timpul specificat poate fi analizat în mod fuzzy sau utilizați kwargs `in`, `on` și `every` pentru a găsi o regulă de repetare și textul dvs.\n"
-"        Nu trebuie să puneți ghilimele în jurul argumentului time.\n"
-"        Utilizați `[p]reminder timetips` pentru a afișa sfaturi pentru analiza timpului.\n"
+"        Timpul specificat poate fi analizat în mod fuzzy sau puteți utiliza kwargs `in`, `on` și `every` pentru a găsi o regulă de repetare și textul dvs.\n"
+"        Nu trebuie să puneți ghilimele în jurul argumentului time. Pentru o analiză mai precisă, puteți pune ghilimele în jurul textului. Puneți ghilimele și în jurul timpului, dacă acesta conține spații.\n"
+"        Utilizați `[p]reminder timetips` pentru a afișa sfaturi pentru analiza timpului.\n\n"
+"        Exemple:\n"
+"        - `[p]reminder say #destinație \"la ora 9 în fiecare zi\" Bună ziua tuturor!\n"
 "        "
 
-#: reminders\reminders.py:716
+#: reminders\reminders.py:780
 msgid "You can't or I can't send messages in this channel."
 msgstr "Tu nu poți sau eu nu pot trimite mesaje pe acest canal."
 
-#: reminders\reminders.py:743
+#: reminders\reminders.py:817
 #, docstring
 msgid "Show time parsing tips."
 msgstr "Afișați sfaturi de analiză a timpului."
 
-#: reminders\reminders.py:744
+#: reminders\reminders.py:818
 msgid "\n"
 "            Allowed **absolutes** are:\n"
 "            • `eoy` - Remind at end of year at 17:00.\n"
@@ -139,16 +159,17 @@ msgid "\n"
 "            • `hours`/`hour`/`hrs`/`hr`/`h`\n"
 "            • `minutes`/`minute`/`mins`/`min`/`m`\n\n"
 "            You can combine **relative intervals** like this:\n"
-"            • `1y 1mo 2 days, and -5h`\n"
+"            • `[in] 1y 1mo 2 days, and -5h`\n"
 "            • `on 29th may at 18h, and every year`\n\n"
 "            **Timestamps** and **iso-timestamps** are supported:\n"
-"            • Be aware that specifying a timezone will ignore your timezone.\n\n"
+"            • For ISO, be aware that specifying a timezone will ignore your timezone.\n\n"
 "            **Dates** are supported, you can try different formats:\n"
 "            • `5 jul`, `5th july`, `july 5`\n"
 "            • `23 sept at 3pm`, `23 sept at 15:00`\n"
 "            • `2030`\n"
+"            • `[at] 10pm`\n"
 "            • `friday at 9h`\n"
-"            Note: the parser uses day-first and year-last: (`01/02/03` -> `1st February 2003`)\n\n"
+"            Note: the parser uses day-first and year-last (`01/02/03` -> `1st February 2003`).\n\n"
 "            **Cron triggers** are supported:\n"
 "            • Check https://crontab.guru/.\n"
 "            "
@@ -166,34 +187,39 @@ msgstr "\n"
 "            - `hours`/`hour`/`hrs`/`hr`/`h`\n"
 "            - `minutes`/`minute`/`mins`/`min`/`min`/`m`\n\n"
 "            Puteți combina **intervale relative** astfel:\n"
-"            - `1y 1mo 2 days, and -5h`\n"
-"            - `on 29th may at 18h, and every year`\n\n"
+"            - `[in] 1y 1mo 2 zile, și -5h`\n"
+"            - `pe 29 mai la 18h, și în fiecare an`\n\n"
 "            **Timestamps** și **iso-timestamps** sunt acceptate:\n"
-"            - Rețineți că specificarea unui fus orar va ignora fusul dumneavoastră orar.\n\n"
+"            - Pentru ISO, trebuie să știți că specificarea unui fus orar va ignora fusul orar.\n\n"
 "            **Datele** sunt acceptate, puteți încerca diferite formate:\n"
 "            - `5 iulie`, `5 iulie`, `5 iulie`, `5 iulie`\n"
 "            - `23 septembrie la ora 15:00`, `23 septembrie la ora 15:00`\n"
 "            - `2030`\n"
-"            - `vineri la ora 9:00`\n"
-"            Notă: parserul utilizează ziua întâi și anul trecut: (`01/02/03` -> `1 februarie 2003`)\n\n"
-"            **Sunt acceptate declanșatoarele de cron**:\n"
+"            - `[at] 10pm`\n"
+"            - `vineri la ora 9`\n"
+"            Notă: parserul utilizează ziua întâi și anul trecut (`01/02/03` -> `1 februarie 2003`).\n\n"
+"            **Sunt acceptate declanșatoarele de cronologie**:\n"
 "            - Verificați https://crontab.guru/.\n"
 "            "
 
-#: reminders\reminders.py:784
+#: reminders\reminders.py:861
 #, docstring
 msgid "Set your timezone for the time converter.\n\n"
-"        `Europe/Paris`, `America/New_York`...\n"
+"        Timezone should be specified in the format: `Continent/City`.\n"
+"        Example: `Europe/Paris`, `America/New_York`...\n"
+"        You can find a list of valid timezones at: https://timezonedb.com/time-zones.\n"
 "        "
 msgstr "Setați fusul orar pentru convertorul de timp.\n\n"
-"        `Europa/Paris`, `America/New_York`...\n"
+"        Fusul orar trebuie să fie specificat în formatul: `Continent/City`.\n"
+"        Exemplu: `Europa/Paris`, `America/New_York`...\n"
+"        Puteți găsi o listă cu fusurile orare valabile la: https://timezonedb.com/time-zones.\n"
 "        "
 
-#: reminders\reminders.py:789
+#: reminders\reminders.py:868
 msgid "Your timezone has been set to `{timezone}`."
 msgstr "Zona dvs. orară a fost setată la `{timezone}`."
 
-#: reminders\reminders.py:798
+#: reminders\reminders.py:878
 #, docstring
 msgid "List your existing reminders.\n\n"
 "        Sort options:\n"
@@ -208,34 +234,42 @@ msgstr "Enumerați memento-urile existente.\n\n"
 "        - `id`: Afișează-le în ordinea ID-ului lor.\n"
 "        "
 
-#: reminders\reminders.py:822
+#: reminders\reminders.py:902
 msgid "Your Reminders"
 msgstr "Amintirile dumneavoastră"
 
-#: reminders\reminders.py:823
-msgid "Use `{clean_prefix}reminder edit #ID` to edit a reminder."
-msgstr "Utilizați `{clean_prefix}reminder edit #ID` pentru a edita un memento."
+#: reminders\reminders.py:904
+msgid " (Content type `{content_type}`)"
+msgstr " (Tip de conținut `{content_type}`)"
 
-#: reminders\reminders.py:829
-msgid "You have {len_reminders} reminders."
-msgstr "Aveți {len_reminders} memento-uri."
+#: reminders\reminders.py:908
+msgid "You have {len_reminders} reminders{of_this_content_type}. Use `{clean_prefix}reminder edit #ID` to edit a reminder."
+msgstr "Aveți {len_reminders} memento-uri{of_this_content_type}. Utilizați `{clean_prefix}reminder edit #ID` pentru a edita un memento."
 
-#: reminders\reminders.py:839
+#: reminders\reminders.py:912
+msgid " of this content type"
+msgstr " a acestui tip de conținut"
+
+#: reminders\reminders.py:931
 #, docstring
-msgid "Remove an existing Reminder from its ID.\n\n"
+msgid "Remove existing Reminder(s) from their IDs.\n\n"
 "        - Use `last` to remove your last created reminder.\n"
 "        - Use `next` to remove your next triggered reminder.\n"
 "        "
-msgstr "Elimină un memento existent din ID-ul său.\n\n"
+msgstr "Îndepărtați reamintirile existente din ID-urile lor.\n\n"
 "        - Utilizați `last` pentru a elimina ultimul memento creat.\n"
 "        - Utilizați `next` pentru a elimina următorul memento creat.\n"
 "        "
 
-#: reminders\reminders.py:846
-msgid "The reminder **#{reminder_id}** has been successfully removed."
-msgstr "Avertismentul **#{reminder_id}** a fost eliminat cu succes."
+#: reminders\reminders.py:943
+msgid "Your reminder {reminder_id} has been successfully removed."
+msgstr "Memento-ul {reminder_id} a fost eliminat cu succes."
 
-#: reminders\reminders.py:853
+#: reminders\reminders.py:949
+msgid "Your reminders {reminders_ids} have been successfully removed."
+msgstr "Amintirile {reminders_ids} au fost eliminate cu succes."
+
+#: reminders\reminders.py:956
 #, docstring
 msgid "Edit an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -246,7 +280,7 @@ msgstr "Modificați un memento existent din ID-ul acestuia.\n\n"
 "        - Utilizați `next` pentru a edita următorul memento creat.\n"
 "        "
 
-#: reminders\reminders.py:869
+#: reminders\reminders.py:974
 #, docstring
 msgid "Edit the text of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -257,26 +291,26 @@ msgstr "Modificați textul unui memento existent din ID-ul acestuia.\n\n"
 "        - Utilizați `next` pentru a edita următorul memento creat.\n"
 "        "
 
-#: reminders\reminders.py:885 reminders\reminders.py:909
-#: reminders\reminders.py:970 reminders\views.py:138 reminders\views.py:341
-#: reminders\views.py:392
-msgid "The reminder **#{reminder_id}** has been successfully edited."
-msgstr "Amintirea **#{reminder_id}** a fost editată cu succes."
+#: reminders\reminders.py:990 reminders\reminders.py:1014
+#: reminders\reminders.py:1075 reminders\views.py:154 reminders\views.py:378
+#: reminders\views.py:439
+msgid "Your reminder **#{reminder_id}** has been successfully edited."
+msgstr "Amintirea dvs. **#{reminder_id}** a fost editată cu succes."
 
-#: reminders\reminders.py:894
+#: reminders\reminders.py:999
 #, docstring
-msgid "Edit the text of an existing Reminder from its ID.\n\n"
+msgid "Edit the expires time of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
 "        - Use `next` to edit your next triggered reminder.\n"
 "        It's the same converter as for creation, but without the option of repetition.\n"
 "        "
-msgstr "Modificați textul unui memento existent din ID-ul acestuia.\n\n"
+msgstr "Modificați ora de expirare a unui memento existent din ID-ul acestuia.\n\n"
 "        - Utilizați `last` pentru a edita ultimul memento creat.\n"
 "        - Utilizați `next` pentru a edita următorul memento creat.\n"
 "        Este același convertor ca pentru creare, dar fără opțiunea de repetare.\n"
 "        "
 
-#: reminders\reminders.py:918
+#: reminders\reminders.py:1023
 #, docstring
 msgid "Edit the repeat of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -305,106 +339,135 @@ msgstr "Modificați repetarea unui memento existent din ID-ul acestuia.\n\n"
 "        - `1an 1lună 2 zile -5h`\n"
 "        "
 
-#: reminders\reminders.py:977
+#: reminders\reminders.py:1082
 #, docstring
 msgid "Clear all your existing reminders."
 msgstr "Ștergeți toate memento-urile existente."
 
-#: reminders\reminders.py:982 reminders\reminders.py:1046
+#: reminders\reminders.py:1087 reminders\reminders.py:1151
 msgid "⚠️ - Reminders"
 msgstr "⚠️ - Reamintiri"
 
-#: reminders\reminders.py:983
+#: reminders\reminders.py:1088
 msgid "Do you really want to remove ALL your reminders?"
 msgstr "Chiar doriți să eliminați TOATE memento-urile?"
 
-#: reminders\reminders.py:995
+#: reminders\reminders.py:1100
 msgid "All your reminders have been successfully removed."
 msgstr "Toate memento-urile au fost eliminate cu succes."
 
-#: reminders\reminders.py:1041
+#: reminders\reminders.py:1146
 #, docstring
 msgid "Clear all existing reminders for a user."
 msgstr "Ștergeți toate memento-urile existente pentru un utilizator."
 
-#: reminders\reminders.py:1043
+#: reminders\reminders.py:1148
 msgid "This user haven't any reminders."
 msgstr "Acest utilizator nu are niciun memento."
 
-#: reminders\reminders.py:1047
+#: reminders\reminders.py:1152
 msgid "Do you really want to remove ALL {user.display_name}'s reminders?"
 msgstr "Chiar vreți să eliminați TOATE memento-urile de pe {user.display_name}?"
 
-#: reminders\reminders.py:1061
+#: reminders\reminders.py:1166
 msgid "All user's reminders have been successfully removed."
 msgstr "Toate memento-urile utilizatorului au fost eliminate cu succes."
 
-#: reminders\reminders.py:1065
+#: reminders\reminders.py:1170
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "Obțineți o inserție pentru a verifica starea buclelor."
 
-#: reminders\reminders.py:1071
+#: reminders\reminders.py:1176
 #, docstring
 msgid "Migrate Reminders from RemindMe by PhasecoreX."
 msgstr "Migrați reamintirile de la RemindMe by PhasecoreX."
 
-#: reminders\reminders.py:1078
+#: reminders\reminders.py:1183
 msgid "RemindMe by PhasecoreX has no data in this bot."
 msgstr "RemindMe by PhasecoreX nu are date în acest robot."
 
-#: reminders\reminders.py:1082
+#: reminders\reminders.py:1187
 msgid "RemindMe by PhasecoreX use an old/new data schema version and isn't compatible with this cog actually."
 msgstr "RemindMe by PhasecoreX utilizează o versiune veche/nouă a schemei de date și nu este compatibilă cu acest mecanism."
 
-#: reminders\types.py:285
+#: reminders\reminders.py:1245
+msgid "Data successfully migrated from RemindMe by PhasecoreX."
+msgstr "Date migrate cu succes de la RemindMe de către PhasecoreX."
+
+#: reminders\reminders.py:1249
+#, docstring
+msgid "Migrate Reminders from FIFO by Fox."
+msgstr "Migrarea Reminderilor din FIFO de către Fox."
+
+#: reminders\reminders.py:1329
+msgid "Data successfully migrated from FIFO by Fox."
+msgstr "Datele au fost migrate cu succes din FIFO de către Fox."
+
+#: reminders\types.py:393
 msgid ", and then **{interval}**"
 msgstr ", și apoi **{interval}**"
 
-#: reminders\types.py:287
-msgid ", with **advanced repeat rules**"
-msgstr ", cu **reguli avansate de repetare**"
+#: reminders\types.py:397
+msgid ", with **{nb_repeat_rules} repeat rules**"
+msgstr ", cu **{nb_repeat_rules} reguli de repetare**"
 
-#: reminders\types.py:294
+#: reminders\types.py:406
+msgid "{state}Okay, I will dispatch {this} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+msgstr "{state}Bine, voi expedia {this} **{interval_string}** ({timestamp}){and_every}. [Amintire **#{reminder_id}**]"
+
+#: reminders\types.py:411
 msgid "{state}Okay, I will execute this command{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
 msgstr "{state}Bine, voi executa această comandă{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
 
-#: reminders\types.py:297
+#: reminders\types.py:416
 msgid "{state}Okay, I will say {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
 msgstr "{state}Bine, voi spune {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Amintire **#{reminder_id}**]"
 
-#: reminders\types.py:299
-msgid "{state}Okay, I will remind {target_mention} of {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
-msgstr "{state}Bine, o să amintesc {target_mention} de {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reamintire **#{reminder_id}**]"
+#: reminders\types.py:420
+msgid "{state}Okay, I will remind {targets_mentions} of {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+msgstr "{state}Bine, o să amintesc {targets_mentions} de {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reamintire **#{reminder_id}**]"
 
-#: reminders\types.py:305
+#: reminders\types.py:429
 msgid "you"
 msgstr "tu"
 
-#: reminders\types.py:307
+#: reminders\types.py:431
+msgid "the event `{event_name}`"
+msgstr "evenimentul `{event_name}`"
+
+#: reminders\types.py:434
+msgid "this command"
+msgstr "această comandă"
+
+#: reminders\types.py:438
 msgid "this message"
 msgstr "acest mesaj"
 
-#: reminders\types.py:309
+#: reminders\types.py:440
 msgid "this"
 msgstr "acest"
 
-#: reminders\types.py:313
+#: reminders\types.py:445
+msgid "that"
+msgstr "că"
+
+#: reminders\types.py:451
 msgid " in {destination_mention}"
 msgstr " în {destination_mention}"
 
-#: reminders\types.py:313
+#: reminders\types.py:459
 msgid " in {destination} (Not found.)"
 msgstr " în {destination} (Nu a fost găsit.)"
 
-#: reminders\types.py:321
+#: reminders\types.py:471
 msgid "• **Next Expires at**: {expires_at_timestamp} ({expires_in_timestamp})\n"
 "• **Created at**: {created_at_timestamp} ({created_in_timestamp})\n"
 "• **Repeat**: {repeat}\n"
 "• **Title**: {title}\n"
 "• **Content type**: `{content_type}`\n"
 "• **Content**: {content}\n"
-"• **Target**: {destination}\n"
+"• **Targets**: {targets}\n"
 "• **Destination**: {destination}\n"
 "• **Jump URL**: {jump_url}\n"
 msgstr "- ** Următorul expiră la**: {expires_at_timestamp} ({expires_in_timestamp})\n"
@@ -413,76 +476,76 @@ msgstr "- ** Următorul expiră la**: {expires_at_timestamp} ({expires_in_timest
 "- **Titlu**: {title}\n"
 "- **Tip de conținut**: `{content_type}`\n"
 "- **Content**: {content}\n"
-"- **Target**: {destination}\n"
+"- **Destinații**: {targets}\n"
 "- **Destinație**: {destination}\n"
 "- **Jump URL**: {jump_url}\n"
 
-#: reminders\types.py:338 reminders\views.py:219 reminders\views.py:375
-#: reminders\views.py:386 reminders\views.py:459 reminders\views.py:476
+#: reminders\types.py:490 reminders\views.py:235 reminders\views.py:414
+#: reminders\views.py:428 reminders\views.py:513 reminders\views.py:531
 msgid "No existing repeat rule(s)."
 msgstr "Nu există reguli de repetare."
 
-#: reminders\types.py:341
-msgid "Advanced repeat rules."
-msgstr "Reguli avansate de repetare."
+#: reminders\types.py:493
+msgid "{nb_repeat_rules} repeat rules."
+msgstr "{nb_repeat_rules} reguli de repetare."
 
-#: reminders\types.py:345
+#: reminders\types.py:497
 msgid "Not provided."
 msgstr "Nu este furnizat."
 
-#: reminders\types.py:355
+#: reminders\types.py:510
 msgid "No content."
 msgstr "Fără conținut."
 
-#: reminders\types.py:364
-msgid "No target."
-msgstr "Fără țintă."
+#: reminders\types.py:524
+msgid "No target(s)."
+msgstr "Nu există țintă(e)."
 
-#: reminders\types.py:365
+#: reminders\types.py:525
 msgid "In DMs"
 msgstr "În DMs"
 
-#: reminders\types.py:423
+#: reminders\types.py:607
 msgid "You asked me to remind you about {this}, {interval_string}.\n\n"
 msgstr "M-ați rugat să vă reamintesc despre {this}, {interval_string}.\n\n"
 
-#: reminders\types.py:429
+#: reminders\types.py:613
 msgid "You asked me to remind you about [this message]({message_jump_url}) from {author_mention} ({author_id}), {interval_string}.\n\n"
 msgstr "M-ați rugat să vă reamintesc despre [acest mesaj]({message_jump_url}) de la {author_mention} ({author_id}), {interval_string}.\n\n"
 
-#: reminders\types.py:445
+#: reminders\types.py:629
 msgid "This was supposed to send {interval_string} ago. I might be having network or server issues, or perhaps I just started up. Sorry about that!\n\n"
 msgstr "Trebuia să fie trimisă acum {interval_string}. S-ar putea să am probleme cu rețeaua sau cu serverul, sau poate că tocmai am început. Îmi pare rău pentru asta!\n\n"
 
-#: reminders\types.py:449
+#: reminders\types.py:633
 msgid "Next trigger in {interval_string}."
 msgstr "Următorul declanșator în {interval_string}."
 
-#: reminders\views.py:97
+#: reminders\types.py:786 reminders\views.py:559
+msgid "Jump to original message"
+msgstr "Salt la mesajul original"
+
+#: reminders\views.py:100
 msgid "The image URL must be a valid URL."
 msgstr "URL-ul imaginii trebuie să fie un URL valid."
 
-#: reminders\views.py:215
+#: reminders\views.py:231
 msgid "Reminder #{reminder_id} Repeat Rules"
 msgstr "Reamintire #{reminder_id} Repetați regulile"
 
-#: reminders\views.py:241 reminders\views.py:282 reminders\views.py:657
+#: reminders\views.py:257 reminders\views.py:299 reminders\views.py:716
 msgid "Reminder **#{reminder_id}** deleted."
 msgstr "Reminder **#{reminder_id}** șters."
 
-#: reminders\views.py:325
-msgid "No interval found in your input."
-msgstr "Nu s-a găsit niciun interval în datele introduse."
-
-#: reminders\views.py:380
+#: reminders\views.py:421
 msgid "No existing repeat rule found with this index number."
 msgstr "Nu s-a găsit nicio regulă de repetare existentă cu acest număr de index."
 
-#: reminders\views.py:445
+#: reminders\views.py:497
 msgid "A maximum of 10 repeat rules per reminder is supported."
 msgstr "Se acceptă un număr maxim de 10 reguli de repetare pentru fiecare memento."
 
-#: reminders\views.py:481
+#: reminders\views.py:536
 msgid "Reminder **#{reminder_id}** edited."
 msgstr "Reminder **#{reminder_id}** editat."
 

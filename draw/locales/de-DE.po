@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-07-15 19:18\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:22\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -26,11 +26,11 @@ msgstr "Ein Rädchen zum Erstellen von Pixelkunst auf Discord!"
 msgid "This message isn't in the cache."
 msgstr "Diese Nachricht befindet sich nicht im Cache."
 
-#: draw\start_view.py:93 draw\start_view.py:102
+#: draw\start_view.py:94 draw\start_view.py:103
 msgid "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`."
 msgstr "Erstellen Sie eine neue Zeichentafel mit `Höhe = {height}`, `Breite = {width}` und `Hintergrund = {background}`."
 
-#: draw\view.py:331
+#: draw\view.py:332
 msgid "Please type all the colors you want to add. They can be either or all of:\n"
 "• The hex codes (e.g. `ff64c4` or `ff64c4ff` to include alpha) **separated by space**,\n"
 "• The RGB(A) values separated by space or comma or both (e.g. `(255 100 196)` or `(255, 100, 196, 125)`) of each color **surrounded by brackets**\n"
@@ -42,15 +42,15 @@ msgstr "Bitte geben Sie alle Farben ein, die Sie hinzufügen möchten. Sie könn
 "- Jedes Emoji, dessen Hauptfarbe Sie extrahieren möchten (z.B. 🐸 ergibt 77b255)\n"
 "- Jede Bilddatei (die ersten 5 reichlich vorhandenen Farben werden extrahiert)."
 
-#: draw\view.py:404
+#: draw\view.py:402
 msgid "Please send a message containing the emojis you want to add to your palette. E.g. `😎 I like turtles 🐢`."
 msgstr "Bitte sende eine Nachricht mit den Emojis, die du zu deiner Palette hinzufügen möchtest. Z.B. `😎 Ich mag Schildkröten 🐢`."
 
-#: draw\view.py:817
+#: draw\view.py:809
 msgid "Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`, `A`, `10`, etc."
 msgstr "Bitte geben Sie die Zelle ein, in die Sie den Cursor bewegen möchten, z. B. \"A1\", \"A1\", \"A10\", \"A\", \"10\" usw."
 
-#: draw\view.py:949
+#: draw\view.py:938
 msgid "Please type the cells with the main colors names. One color for each line, separated from the cell by a \":\". Example: `A1:red\n"
 "B7-C9:green`."
 msgstr "Bitte geben Sie die Zellen mit den Namen der Hauptfarben ein. Eine Farbe für jede Zeile, getrennt von der Zelle durch ein \":\". Beispiel: `A1:rot\n"

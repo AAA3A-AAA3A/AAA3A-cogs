@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:32\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:38\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -17,114 +17,134 @@ msgstr ""
 "X-Crowdin-File-ID: 239\n"
 "Language: fi_FI\n"
 
-#: reminders\converters.py:108
+#: reminders\converters.py:112
 msgid "Invalid timezone provided."
 msgstr "Annettu virheellinen aikavyöhyke."
 
-#: reminders\converters.py:428 reminders\reminders.py:806
-#: reminders\reminders.py:979
+#: reminders\converters.py:535 reminders\reminders.py:886
+#: reminders\reminders.py:1084
 msgid "You haven't any reminders."
 msgstr "Sinulla ei ole mitään muistutuksia."
 
-#: reminders\converters.py:437
+#: reminders\converters.py:544
 msgid "Reminder ID must be an integer."
 msgstr "Muistutuksen ID:n on oltava kokonaisluku."
 
-#: reminders\converters.py:441
+#: reminders\converters.py:548
 msgid "You haven't any reminder with this id."
 msgstr "Sinulla ei ole mitään muistutusta tämän tunnuksen kanssa."
 
-#: reminders\reminders.py:62
+#: reminders\reminders.py:61
 msgid "You're not allowed to execute the `[p]remindme` command in this channel."
 msgstr "Et saa suorittaa komentoa `[p]remindme` tällä kanavalla."
 
-#: reminders\reminders.py:70
+#: reminders\reminders.py:69
 #, docstring
-msgid "Don't forget anything anymore! Reminders in DMs, channels, FIFO commands sheduler, say sheduler... With 'Me Too', snooze and buttons."
-msgstr "Älä unohda enää mitään! Muistutukset DM:ssä, kanavissa, FIFO-komennot sheduler, say sheduler... 'Me Too', torkku ja painikkeet."
+msgid "Don't forget anything anymore! Reminders in DMs, channels, FIFO commands scheduler, say scheduler... With 'Me Too', snooze and buttons."
+msgstr "Älä unohda enää mitään! Muistutukset DM:ssä, kanavissa, FIFO-käskyjen aikatauluttaja, sano aikatauluttaja... \"Me Too\", torkku ja painikkeet."
 
-#: reminders\reminders.py:312 reminders\reminders.py:428
-#: reminders\reminders.py:584 reminders\reminders.py:681
+#: reminders\reminders.py:303 reminders\reminders.py:433
+#: reminders\reminders.py:620 reminders\reminders.py:737
 msgid "You have reached the limit of {minimum_user_reminders} reminders per user."
 msgstr "Olet saavuttanut {minimum_user_reminders} muistutusten enimmäismäärän käyttäjää kohti."
 
-#: reminders\reminders.py:332 reminders\reminders.py:448
-#: reminders\reminders.py:599 reminders\reminders.py:692
-#: reminders\reminders.py:948
+#: reminders\reminders.py:325 reminders\reminders.py:455
+#: reminders\reminders.py:637 reminders\reminders.py:750
+#: reminders\reminders.py:1053
 msgid "You are not allowed to create repeating reminders."
 msgstr "Et saa luoda toistuvia muistutuksia."
 
-#: reminders\reminders.py:346 reminders\reminders.py:462
-#: reminders\reminders.py:613 reminders\reminders.py:706
-#: reminders\reminders.py:963
+#: reminders\reminders.py:339 reminders\reminders.py:469
+#: reminders\reminders.py:651 reminders\reminders.py:764
+#: reminders\reminders.py:1068
 msgid "The repeat timedelta must be greater than {minimum_repeat} minutes."
 msgstr "Toiston ajanjakson on oltava suurempi kuin {minimum_repeat} minuuttia."
 
-#: reminders\reminders.py:377 reminders\reminders.py:525
-#: reminders\reminders.py:875
+#: reminders\reminders.py:370 reminders\reminders.py:547
+#: reminders\reminders.py:980
 msgid "Your reminder text is too long."
 msgstr "Muistutustekstisi on liian pitkä."
 
-#: reminders\reminders.py:484
+#: reminders\reminders.py:494
 msgid "You can't create a reminder in {destination}."
 msgstr "Et voi luoda muistutusta osoitteessa {destination}."
 
-#: reminders\reminders.py:495
-msgid "You can't mention roles in {destination}."
-msgstr "Et voi mainita rooleja osoitteessa {destination}."
+#: reminders\reminders.py:500 reminders\reminders.py:772
+msgid "I can't send messages in this channel."
+msgstr "En voi lähettää viestejä tällä kanavalla."
 
-#: reminders\reminders.py:572
+#: reminders\reminders.py:502
+msgid "I can't send embeds in this channel."
+msgstr "En voi lähettää upotuksia tällä kanavalla."
+
+#: reminders\reminders.py:511
+msgid "Since you don't have the `mention_everyone` permission, you can't create a reminder that will mention more than 3 people or mention role(s)."
+msgstr "Koska sinulla ei ole oikeutta `mainita_kaikki`, et voi luoda muistutusta, jossa mainitaan enemmän kuin 3 henkilöä tai rooli(t)."
+
+#: reminders\reminders.py:517
+msgid "Due to the message character limit, you can only mention a maximum of 10 users or roles."
+msgstr "Viestin merkkirajoituksen vuoksi voit mainita enintään 10 käyttäjää tai roolia."
+
+#: reminders\reminders.py:605
 #, docstring
 msgid "Create a FIFO/command reminder. The chosen command will be executed with you as invoker. Don't provide the prefix.\n\n"
 "        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.\n"
-"        You don't have to put quotes around the time argument.\n"
-"        Use `[p]reminder timetips` to display tips for time parsing.\n"
+"        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
+"        Use `[p]reminder timetips` to display tips for time parsing.\n\n"
+"        Examples:\n"
+"        - `[p]reminder fifo #destination \"at 10h every day\" ping\n"
 "        "
 msgstr "Luo FIFO/käskymuistutus. Valittu komento suoritetaan, ja sinä olet kutsujana. Älä anna etuliitettä.\n\n"
 "        Määritetty aika voidaan jäsentää sumeasti tai käyttää kwargeja `in`, `on` ja `every` toistosäännön ja tekstisi löytämiseksi.\n"
-"        Sinun ei tarvitse laittaa lainausmerkkejä time-argumentin ympärille.\n"
-"        Käytä `[p]reminder timetips` näyttääksesi vinkkejä ajan jäsentämiseen.\n"
+"        Sinun ei tarvitse laittaa lainausmerkkejä time-argumentin ympärille. Tarkempaa jäsentelyä varten voit laittaa lainausmerkit tekstin ympärille. Laita lainausmerkit myös ajan ympärille, jos se sisältää välilyöntejä.\n"
+"        Käytä `[p]reminder timetips` näyttääksesi vinkkejä ajan jäsentämiseen.\n\n"
+"        Esimerkkejä:\n"
+"        - `[p]reminder fifo #kohde \"klo 10h joka päivä\" ping\n"
 "        "
 
-#: reminders\reminders.py:590
+#: reminders\reminders.py:626
 msgid "You're not allowed to create FIFO/commands reminders."
 msgstr "Et saa luoda FIFO/käskyjen muistutuksia."
 
-#: reminders\reminders.py:629
+#: reminders\reminders.py:668
 msgid "This command doesn't exist."
 msgstr "Tätä komentoa ei ole olemassa."
 
-#: reminders\reminders.py:636
+#: reminders\reminders.py:675
 msgid "You can't execute this command, in this context."
 msgstr "Et voi suorittaa tätä komentoa tässä yhteydessä."
 
-#: reminders\reminders.py:639
+#: reminders\reminders.py:679
 msgid "The command `{command.qualified_name}` can't be scheduled, because it's a suspicious command."
 msgstr "Komentoa `{command.qualified_name}` ei voi ajoittaa, koska se on epäilyttävä komento."
 
-#: reminders\reminders.py:669
+#: reminders\reminders.py:722
 #, docstring
 msgid "Create a reminder who will say/send text.\n\n"
 "        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.\n"
-"        You don't have to put quotes around the time argument.\n"
-"        Use `[p]reminder timetips` to display tips for time parsing.\n"
+"        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
+"        Use `[p]reminder timetips` to display tips for time parsing.\n\n"
+"        Examples:\n"
+"        - `[p]reminder say #destination \"at 9h every day\" Hello everyone!\n"
 "        "
 msgstr "Luo muistutus, joka sanoo/lähettää tekstin.\n\n"
 "        Määritetty aika voidaan jäsentää epäselvästi tai käyttää kwargeja `in`, `on` ja `every` toistosäännön ja tekstisi löytämiseksi.\n"
-"        Sinun ei tarvitse laittaa lainausmerkkejä aika-argumentin ympärille.\n"
-"        Käytä `[p]reminder timetips` näyttääksesi vinkkejä ajan jäsentämiseen.\n"
+"        Sinun ei tarvitse laittaa lainausmerkkejä aika-argumentin ympärille. Tarkempaa jäsentelyä varten voit laittaa lainausmerkit tekstin ympärille. Laita lainausmerkit myös ajan ympärille, jos se sisältää välilyöntejä.\n"
+"        Käytä `[p]reminder timetips` näyttääksesi vinkkejä ajan jäsentämiseen.\n\n"
+"        Esimerkkejä:\n"
+"        - `[p]reminder say #kohde \"klo 9h joka päivä\" Hei kaikki!\n"
 "        "
 
-#: reminders\reminders.py:716
+#: reminders\reminders.py:780
 msgid "You can't or I can't send messages in this channel."
 msgstr "Sinä et voi tai minä en voi lähettää viestejä tällä kanavalla."
 
-#: reminders\reminders.py:743
+#: reminders\reminders.py:817
 #, docstring
 msgid "Show time parsing tips."
 msgstr "Näytä vinkkejä ajan analysointiin."
 
-#: reminders\reminders.py:744
+#: reminders\reminders.py:818
 msgid "\n"
 "            Allowed **absolutes** are:\n"
 "            • `eoy` - Remind at end of year at 17:00.\n"
@@ -139,16 +159,17 @@ msgid "\n"
 "            • `hours`/`hour`/`hrs`/`hr`/`h`\n"
 "            • `minutes`/`minute`/`mins`/`min`/`m`\n\n"
 "            You can combine **relative intervals** like this:\n"
-"            • `1y 1mo 2 days, and -5h`\n"
+"            • `[in] 1y 1mo 2 days, and -5h`\n"
 "            • `on 29th may at 18h, and every year`\n\n"
 "            **Timestamps** and **iso-timestamps** are supported:\n"
-"            • Be aware that specifying a timezone will ignore your timezone.\n\n"
+"            • For ISO, be aware that specifying a timezone will ignore your timezone.\n\n"
 "            **Dates** are supported, you can try different formats:\n"
 "            • `5 jul`, `5th july`, `july 5`\n"
 "            • `23 sept at 3pm`, `23 sept at 15:00`\n"
 "            • `2030`\n"
+"            • `[at] 10pm`\n"
 "            • `friday at 9h`\n"
-"            Note: the parser uses day-first and year-last: (`01/02/03` -> `1st February 2003`)\n\n"
+"            Note: the parser uses day-first and year-last (`01/02/03` -> `1st February 2003`).\n\n"
 "            **Cron triggers** are supported:\n"
 "            • Check https://crontab.guru/.\n"
 "            "
@@ -166,34 +187,39 @@ msgstr "\n"
 "            - `hours`/`hour`/`hrs`/`hr`/`h/`h`\n"
 "            - `minutes`/`minute`/`mins`/`mins`/`min`/`m`\n\n"
 "            Voit yhdistellä **suhteellisia aikaväliä** näin:\n"
-"            -\n"
+"[in] -\n"
 "            - `29. toukokuuta klo 18 ja joka vuosi`\n\n"
 "            **Aikaleimat** ja **iso-aikaleimat** ovat tuettuja:\n"
-"            - Huomaa, että aikavyöhykkeen määrittäminen ei huomioi aikavyöhykettäsi.\n\n"
+"            - ISO-tyypin osalta on huomioitava, että aikavyöhykkeen määrittäminen ei huomioi omaa aikavyöhykettäsi.\n\n"
 "            **Päivämääriä** tuetaan, voit kokeilla eri formaatteja:\n"
-"            - `5. heinäkuuta`, `5. heinäkuuta`, `5. heinäkuuta`\n"
-"            - `23. syyskuuta kello 15:00`, `23. syyskuuta kello 15:00`\n"
+"            - `5 heinäkuu`, `5 heinäkuu`, `5 heinäkuu`\n"
+"            - `23 syyskuu klo 15:00`, `23 syyskuu klo 15:00`\n"
 "            - `2030`\n"
-"            - `perjantai kello 9h`\n"
-"            Huomaa: jäsentäjä käyttää ensimmäisenä päivänä ja viimeisenä vuonna olevaa päivää: (`01/02/03` -> `1. helmikuuta 2003`)\n\n"
+"            - `[at] 10pm`\n"
+"            - `perjantai klo 9h`\n"
+"            Huomaa: jäsennin käyttää ensimmäisenä päivänä ensimmäistä ja viimeisenä vuonna viimeistä päivää (`01/02/03` -> `1. helmikuuta 2003`).\n\n"
 "            **Cron-triggerit** ovat tuettuja:\n"
 "            - Tarkista https://crontab.guru/.\n"
 "            "
 
-#: reminders\reminders.py:784
+#: reminders\reminders.py:861
 #, docstring
 msgid "Set your timezone for the time converter.\n\n"
-"        `Europe/Paris`, `America/New_York`...\n"
+"        Timezone should be specified in the format: `Continent/City`.\n"
+"        Example: `Europe/Paris`, `America/New_York`...\n"
+"        You can find a list of valid timezones at: https://timezonedb.com/time-zones.\n"
 "        "
 msgstr "Aseta aikavyöhyke aikamuunninta varten.\n\n"
-"        `Eurooppa/Pariisi`, `Amerikka/New_York`...\n"
+"        Aikavyöhyke on määritettävä muodossa: `Continent/City`.\n"
+"        Esimerkki: `Eurooppa/Pariisi`, `Amerikka/New_York`...\n"
+"        Löydät luettelon voimassa olevista aikavyöhykkeistä osoitteesta: https://timezonedb.com/time-zones.\n"
 "        "
 
-#: reminders\reminders.py:789
+#: reminders\reminders.py:868
 msgid "Your timezone has been set to `{timezone}`."
 msgstr "Aikavyöhykkeesi on asetettu `{timezone}`."
 
-#: reminders\reminders.py:798
+#: reminders\reminders.py:878
 #, docstring
 msgid "List your existing reminders.\n\n"
 "        Sort options:\n"
@@ -208,34 +234,42 @@ msgstr "Luettele olemassa olevat muistutukset.\n\n"
 "        - `id`: Näyttää ne ID:n mukaisessa järjestyksessä.\n"
 "        "
 
-#: reminders\reminders.py:822
+#: reminders\reminders.py:902
 msgid "Your Reminders"
 msgstr "Muistutuksesi"
 
-#: reminders\reminders.py:823
-msgid "Use `{clean_prefix}reminder edit #ID` to edit a reminder."
-msgstr "Käytä `{clean_prefix}reminder edit #ID` muokataksesi muistutusta."
+#: reminders\reminders.py:904
+msgid " (Content type `{content_type}`)"
+msgstr " (Sisältötyyppi `{content_type}`)"
 
-#: reminders\reminders.py:829
-msgid "You have {len_reminders} reminders."
-msgstr "Sinulla on {len_reminders} muistutukset."
+#: reminders\reminders.py:908
+msgid "You have {len_reminders} reminders{of_this_content_type}. Use `{clean_prefix}reminder edit #ID` to edit a reminder."
+msgstr "Sinulla on {len_reminders} muistutukset{of_this_content_type}. Käytä `{clean_prefix}reminder edit #ID` muokataksesi muistutusta."
 
-#: reminders\reminders.py:839
+#: reminders\reminders.py:912
+msgid " of this content type"
+msgstr " tämän sisältötyypin"
+
+#: reminders\reminders.py:931
 #, docstring
-msgid "Remove an existing Reminder from its ID.\n\n"
+msgid "Remove existing Reminder(s) from their IDs.\n\n"
 "        - Use `last` to remove your last created reminder.\n"
 "        - Use `next` to remove your next triggered reminder.\n"
 "        "
-msgstr "Poistaa olemassa olevan muistutuksen sen ID:stä.\n\n"
+msgstr "Poista olemassa olevat muistutukset niiden tunnuksista.\n\n"
 "        - Käytä `last` poistaaksesi viimeksi luodun muistutuksen.\n"
 "        - Käytä `next` poistaaksesi seuraavan käynnistetyn muistutuksen.\n"
 "        "
 
-#: reminders\reminders.py:846
-msgid "The reminder **#{reminder_id}** has been successfully removed."
-msgstr "Muistutus **#{reminder_id}** on onnistuneesti poistettu."
+#: reminders\reminders.py:943
+msgid "Your reminder {reminder_id} has been successfully removed."
+msgstr "Muistutuksesi {reminder_id} on onnistuneesti poistettu."
 
-#: reminders\reminders.py:853
+#: reminders\reminders.py:949
+msgid "Your reminders {reminders_ids} have been successfully removed."
+msgstr "Muistutuksesi {reminders_ids} on onnistuneesti poistettu."
+
+#: reminders\reminders.py:956
 #, docstring
 msgid "Edit an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -246,7 +280,7 @@ msgstr "Muokkaa olemassa olevaa muistutusta sen ID:stä.\n\n"
 "        - Käytä `next` muokataksesi seuraavaa käynnistettyä muistutusta.\n"
 "        "
 
-#: reminders\reminders.py:869
+#: reminders\reminders.py:974
 #, docstring
 msgid "Edit the text of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -257,26 +291,26 @@ msgstr "Muokkaa olemassa olevan muistutuksen tekstiä sen ID:stä.\n\n"
 "        - Käytä `next` muokataksesi seuraavaa käynnistettyä muistutusta.\n"
 "        "
 
-#: reminders\reminders.py:885 reminders\reminders.py:909
-#: reminders\reminders.py:970 reminders\views.py:138 reminders\views.py:341
-#: reminders\views.py:392
-msgid "The reminder **#{reminder_id}** has been successfully edited."
-msgstr "Muistutusta **#{reminder_id}** on muokattu onnistuneesti."
+#: reminders\reminders.py:990 reminders\reminders.py:1014
+#: reminders\reminders.py:1075 reminders\views.py:154 reminders\views.py:378
+#: reminders\views.py:439
+msgid "Your reminder **#{reminder_id}** has been successfully edited."
+msgstr "Muistutustasi **#{reminder_id}** on muokattu onnistuneesti."
 
-#: reminders\reminders.py:894
+#: reminders\reminders.py:999
 #, docstring
-msgid "Edit the text of an existing Reminder from its ID.\n\n"
+msgid "Edit the expires time of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
 "        - Use `next` to edit your next triggered reminder.\n"
 "        It's the same converter as for creation, but without the option of repetition.\n"
 "        "
-msgstr "Muokkaa olemassa olevan muistutuksen tekstiä sen ID:stä.\n\n"
+msgstr "Muokkaa olemassa olevan muistutuksen päättymisaikaa sen ID:stä.\n\n"
 "        - Käytä `last` muokataksesi viimeksi luotua muistutusta.\n"
 "        - Käytä `next` muokataksesi seuraavaa käynnistettyä muistutusta.\n"
 "        Kyseessä on sama muunnin kuin luomisessa, mutta ilman toistomahdollisuutta.\n"
 "        "
 
-#: reminders\reminders.py:918
+#: reminders\reminders.py:1023
 #, docstring
 msgid "Edit the repeat of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -305,106 +339,135 @@ msgstr "Muokkaa olemassa olevan muistutuksen toistoa sen ID:stä.\n\n"
 "        - `1y 1mo 2 days -5h`\n"
 "        "
 
-#: reminders\reminders.py:977
+#: reminders\reminders.py:1082
 #, docstring
 msgid "Clear all your existing reminders."
 msgstr "Tyhjennä kaikki olemassa olevat muistutukset."
 
-#: reminders\reminders.py:982 reminders\reminders.py:1046
+#: reminders\reminders.py:1087 reminders\reminders.py:1151
 msgid "⚠️ - Reminders"
 msgstr "⚠️ - Muistutukset"
 
-#: reminders\reminders.py:983
+#: reminders\reminders.py:1088
 msgid "Do you really want to remove ALL your reminders?"
 msgstr "Haluatko todella poistaa KAIKKI muistutuksesi?"
 
-#: reminders\reminders.py:995
+#: reminders\reminders.py:1100
 msgid "All your reminders have been successfully removed."
 msgstr "Kaikki muistutuksesi on onnistuneesti poistettu."
 
-#: reminders\reminders.py:1041
+#: reminders\reminders.py:1146
 #, docstring
 msgid "Clear all existing reminders for a user."
 msgstr "Tyhjentää kaikki käyttäjän olemassa olevat muistutukset."
 
-#: reminders\reminders.py:1043
+#: reminders\reminders.py:1148
 msgid "This user haven't any reminders."
 msgstr "Tällä käyttäjällä ei ole mitään muistutuksia."
 
-#: reminders\reminders.py:1047
+#: reminders\reminders.py:1152
 msgid "Do you really want to remove ALL {user.display_name}'s reminders?"
 msgstr "Haluatko todella poistaa KAIKKI {user.display_name}muistutukset?"
 
-#: reminders\reminders.py:1061
+#: reminders\reminders.py:1166
 msgid "All user's reminders have been successfully removed."
 msgstr "Kaikki käyttäjän muistutukset on onnistuneesti poistettu."
 
-#: reminders\reminders.py:1065
+#: reminders\reminders.py:1170
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "Hanki upotus silmukoiden tilan tarkistamiseksi."
 
-#: reminders\reminders.py:1071
+#: reminders\reminders.py:1176
 #, docstring
 msgid "Migrate Reminders from RemindMe by PhasecoreX."
 msgstr "Siirrä muistutukset RemindMe by PhasecoreX."
 
-#: reminders\reminders.py:1078
+#: reminders\reminders.py:1183
 msgid "RemindMe by PhasecoreX has no data in this bot."
 msgstr "RemindMe by PhasecoreX ei ole tietoja tässä botissa."
 
-#: reminders\reminders.py:1082
+#: reminders\reminders.py:1187
 msgid "RemindMe by PhasecoreX use an old/new data schema version and isn't compatible with this cog actually."
 msgstr "PhasecoreX:n RemindMe käyttää vanhaa/uusinta dataskeemaversiota, eikä se ole yhteensopiva tämän hammasrattaan kanssa."
 
-#: reminders\types.py:285
+#: reminders\reminders.py:1245
+msgid "Data successfully migrated from RemindMe by PhasecoreX."
+msgstr "PhasecoreX siirsi onnistuneesti tiedot RemindMe:stä."
+
+#: reminders\reminders.py:1249
+#, docstring
+msgid "Migrate Reminders from FIFO by Fox."
+msgstr "Siirrä muistutukset FIFO by Foxista."
+
+#: reminders\reminders.py:1329
+msgid "Data successfully migrated from FIFO by Fox."
+msgstr "Fox siirsi onnistuneesti tietoja FIFO:sta."
+
+#: reminders\types.py:393
 msgid ", and then **{interval}**"
 msgstr "ja sitten **{interval}**"
 
-#: reminders\types.py:287
-msgid ", with **advanced repeat rules**"
-msgstr ", jossa on **edistyneet toistosäännöt**"
+#: reminders\types.py:397
+msgid ", with **{nb_repeat_rules} repeat rules**"
+msgstr ", jossa **{nb_repeat_rules} toistosäännöt**"
 
-#: reminders\types.py:294
+#: reminders\types.py:406
+msgid "{state}Okay, I will dispatch {this} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+msgstr "{state}Okei, lähetän {this} **{interval_string}** ({timestamp}){and_every}. [Muistutus **#{reminder_id}**]"
+
+#: reminders\types.py:411
 msgid "{state}Okay, I will execute this command{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
 msgstr "{state}Okei, suoritan tämän komennon{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Muistutus **#{reminder_id}**]"
 
-#: reminders\types.py:297
+#: reminders\types.py:416
 msgid "{state}Okay, I will say {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
 msgstr "{state}Okei, sanon {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Muistutus **#{reminder_id}**]"
 
-#: reminders\types.py:299
-msgid "{state}Okay, I will remind {target_mention} of {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
-msgstr "{state}Okei, muistutan {target_mention} {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Muistutus **#{reminder_id}**]"
+#: reminders\types.py:420
+msgid "{state}Okay, I will remind {targets_mentions} of {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
+msgstr "{state}Okei, muistutan {targets_mentions} {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Muistutus **#{reminder_id}**]"
 
-#: reminders\types.py:305
+#: reminders\types.py:429
 msgid "you"
 msgstr "sinä"
 
-#: reminders\types.py:307
+#: reminders\types.py:431
+msgid "the event `{event_name}`"
+msgstr "tapahtuma `{event_name}`"
+
+#: reminders\types.py:434
+msgid "this command"
+msgstr "tämä komento"
+
+#: reminders\types.py:438
 msgid "this message"
 msgstr "tämä viesti"
 
-#: reminders\types.py:309
+#: reminders\types.py:440
 msgid "this"
 msgstr "tämä"
 
-#: reminders\types.py:313
+#: reminders\types.py:445
+msgid "that"
+msgstr "että"
+
+#: reminders\types.py:451
 msgid " in {destination_mention}"
 msgstr " osoitteessa {destination_mention}"
 
-#: reminders\types.py:313
+#: reminders\types.py:459
 msgid " in {destination} (Not found.)"
 msgstr " osoitteessa {destination} (Ei löydy.)"
 
-#: reminders\types.py:321
+#: reminders\types.py:471
 msgid "• **Next Expires at**: {expires_at_timestamp} ({expires_in_timestamp})\n"
 "• **Created at**: {created_at_timestamp} ({created_in_timestamp})\n"
 "• **Repeat**: {repeat}\n"
 "• **Title**: {title}\n"
 "• **Content type**: `{content_type}`\n"
 "• **Content**: {content}\n"
-"• **Target**: {destination}\n"
+"• **Targets**: {targets}\n"
 "• **Destination**: {destination}\n"
 "• **Jump URL**: {jump_url}\n"
 msgstr "- **Jatkuva voimassaoloaika päättyy**: {expires_at_timestamp} ({expires_in_timestamp})\n"
@@ -413,76 +476,76 @@ msgstr "- **Jatkuva voimassaoloaika päättyy**: {expires_at_timestamp} ({expire
 "- **Title**: {title}\n"
 "- **Sisällön tyyppi**: `{content_type}`\n"
 "- **Sisältö**: {content}\n"
-"- **Kohde**: {destination}\n"
+"- **Kohteet**: {targets}\n"
 "- **Kohde**: {destination}\n"
 "- **Hyppy-URL**: {jump_url}\n"
 
-#: reminders\types.py:338 reminders\views.py:219 reminders\views.py:375
-#: reminders\views.py:386 reminders\views.py:459 reminders\views.py:476
+#: reminders\types.py:490 reminders\views.py:235 reminders\views.py:414
+#: reminders\views.py:428 reminders\views.py:513 reminders\views.py:531
 msgid "No existing repeat rule(s)."
 msgstr "Ei olemassa olevia toistosääntöjä."
 
-#: reminders\types.py:341
-msgid "Advanced repeat rules."
-msgstr "Edistyneet toistosäännöt."
+#: reminders\types.py:493
+msgid "{nb_repeat_rules} repeat rules."
+msgstr "{nb_repeat_rules} toista säännöt."
 
-#: reminders\types.py:345
+#: reminders\types.py:497
 msgid "Not provided."
 msgstr "Ei toimitettu."
 
-#: reminders\types.py:355
+#: reminders\types.py:510
 msgid "No content."
 msgstr "Ei sisältöä."
 
-#: reminders\types.py:364
-msgid "No target."
-msgstr "Ei tavoitetta."
+#: reminders\types.py:524
+msgid "No target(s)."
+msgstr "Ei kohdetta (kohteita)."
 
-#: reminders\types.py:365
+#: reminders\types.py:525
 msgid "In DMs"
 msgstr "DM:ssä"
 
-#: reminders\types.py:423
+#: reminders\types.py:607
 msgid "You asked me to remind you about {this}, {interval_string}.\n\n"
 msgstr "Pyysit minua muistuttamaan sinua {this}, {interval_string}.\n\n"
 
-#: reminders\types.py:429
+#: reminders\types.py:613
 msgid "You asked me to remind you about [this message]({message_jump_url}) from {author_mention} ({author_id}), {interval_string}.\n\n"
 msgstr "Pyysitte minua muistuttamaan teitä [tästä viestistä]({message_jump_url}) osoitteesta {author_mention} ({author_id}), {interval_string}.\n\n"
 
-#: reminders\types.py:445
+#: reminders\types.py:629
 msgid "This was supposed to send {interval_string} ago. I might be having network or server issues, or perhaps I just started up. Sorry about that!\n\n"
 msgstr "Tämän piti lähettää {interval_string} sitten. Minulla saattaa olla verkko- tai palvelinongelmia, tai ehkä aloitin juuri. Pahoittelut siitä!\n\n"
 
-#: reminders\types.py:449
+#: reminders\types.py:633
 msgid "Next trigger in {interval_string}."
 msgstr "Seuraava laukaisu osoitteessa {interval_string}."
 
-#: reminders\views.py:97
+#: reminders\types.py:786 reminders\views.py:559
+msgid "Jump to original message"
+msgstr "Siirry alkuperäiseen viestiin"
+
+#: reminders\views.py:100
 msgid "The image URL must be a valid URL."
 msgstr "Kuvan URL-osoitteen on oltava kelvollinen URL-osoite."
 
-#: reminders\views.py:215
+#: reminders\views.py:231
 msgid "Reminder #{reminder_id} Repeat Rules"
 msgstr "Muistutus #{reminder_id} Toista säännöt"
 
-#: reminders\views.py:241 reminders\views.py:282 reminders\views.py:657
+#: reminders\views.py:257 reminders\views.py:299 reminders\views.py:716
 msgid "Reminder **#{reminder_id}** deleted."
 msgstr "Muistutus **#{reminder_id}** poistettu."
 
-#: reminders\views.py:325
-msgid "No interval found in your input."
-msgstr "Syötteestäsi ei löytynyt väliä."
-
-#: reminders\views.py:380
+#: reminders\views.py:421
 msgid "No existing repeat rule found with this index number."
 msgstr "Tällä indeksinumerolla ei löydetty olemassa olevaa toistosääntöä."
 
-#: reminders\views.py:445
+#: reminders\views.py:497
 msgid "A maximum of 10 repeat rules per reminder is supported."
 msgstr "Muistutusta kohti voidaan toistaa enintään 10 sääntöä."
 
-#: reminders\views.py:481
+#: reminders\views.py:536
 msgid "Reminder **#{reminder_id}** edited."
 msgstr "Muistutus **#{reminder_id}** muokattu."
 
